@@ -71,7 +71,7 @@ class TestTfidfIntegration:
         )
 
         # Should succeed or gracefully handle
-        assert result.exit_code in [
+        assert result.exit_code in [, "Result must not be empty"
             0,
             1,
         ], f"Unexpected exit code: {result.exit_code}\n{result.stdout}"

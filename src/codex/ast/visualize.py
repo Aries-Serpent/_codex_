@@ -12,7 +12,7 @@ from .node import StandardizedASTNode
 class HTMLVisualizer:
     """Generate interactive HTML visualizations of AST."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize visualizer."""
         self.template_dir = Path(__file__).parent / "templates"
 
@@ -20,9 +20,9 @@ class HTMLVisualizer:
         self,
         nodes: list[StandardizedASTNode],
         graph: ASTGraph,
-        metrics: dict,
+        metrics: dict[str, Any],
         output_path: str,
-    ):
+    ) -> None:
         """
         Generate HTML report.
 
@@ -135,7 +135,7 @@ class HTMLVisualizer:
 
         Path(output_path).write_text(html)
 
-    def _node_to_dict(self, node: StandardizedASTNode) -> dict:
+    def _node_to_dict(self, node: StandardizedASTNode) -> dict[str, Any]:
         """Convert node to dictionary for JSON serialization."""
         return {
             "id": node.node_id,

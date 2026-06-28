@@ -1267,7 +1267,7 @@ class QuantumPlansetEngine:
 
         # Build entanglement bonds from step declarations
         bonds: list[EntanglementBond] = []
-        seen_bonds: set = set()
+        seen_bonds: set[Any] = set()
         for step in steps:
             for partner_id in step.entangled_with:
                 bond_key = tuple(sorted([step.step_id, partner_id]))
@@ -1322,7 +1322,7 @@ class QuantumPlansetEngine:
         viable.sort(key=lambda s: s.effective_amplitude(), reverse=True)
 
         # Build ordered path respecting entanglement
-        seen_ids: set = set()
+        seen_ids: set[Any] = set()
         path: list[PlanStep] = []
 
         # Index for fast lookup
@@ -1386,7 +1386,7 @@ class QuantumPlansetEngine:
         b_by_action: dict[str, PlanStep] = {s.action: s for s in planset_b.steps}
 
         result_steps: list[PlanStep] = []
-        used_b_actions: set = set()
+        used_b_actions: set[Any] = set()
 
         for step_a in planset_a.steps:
             if step_a.action in b_by_action:

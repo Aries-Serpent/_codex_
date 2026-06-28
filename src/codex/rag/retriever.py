@@ -60,7 +60,7 @@ class Retriever:
         self._load_index()
         self._load_model()
 
-    def _load_index(self):
+    def _load_index(self) -> None:
         """Load FAISS index and metadata from disk."""
         from codex.rag.indexer import load_index
 
@@ -81,7 +81,7 @@ class Retriever:
             logger.error("Error loading index: <ERROR_TYPE>")
             raise
 
-    def _load_model(self):
+    def _load_model(self) -> None:
         """Load embedding model for query encoding."""
         if SentenceTransformer is None:
             logger.error(
@@ -260,7 +260,7 @@ class Retriever:
             "index_metadata": self.index_metadata,
         }
 
-    def reload(self):
+    def reload(self) -> None:
         """Reload the index from disk (useful if index was updated)."""
         logger.info("Reloading index from disk")
         self._load_index()
@@ -399,7 +399,7 @@ class LRUCache:
         self.misses += 1
         return None
 
-    def put(self, key: str, value: Any):
+    def put(self, key: str, value: Any) -> None:
         """
         Put value in cache.
 
@@ -418,7 +418,7 @@ class LRUCache:
             if len(self.cache) > self.maxsize:
                 self.cache.popitem(last=False)
 
-    def clear(self):
+    def clear(self) -> None:
         """Clear all cache entries."""
         self.cache.clear()
         self.hits = 0
@@ -599,7 +599,7 @@ class CachedRetriever(Retriever):
 
         return results
 
-    def clear_cache(self):
+    def clear_cache(self) -> None:
         """Clear all cached query results."""
         self.query_cache.clear()
         self.cache_timestamps.clear()
@@ -620,7 +620,7 @@ class CachedRetriever(Retriever):
         )
         return cache_stats
 
-    def invalidate_expired(self):
+    def invalidate_expired(self) -> None:
         """Manually invalidate all expired cache entries."""
         current_time = time()
         expired_keys = [
@@ -671,7 +671,7 @@ class RAGRetriever:
         )
         return self
 
-    def query(self, query_text: str, top_k: int = 5, min_score: float = 0.0) -> list:
+    def query(self, query_text: str, top_k: int = 5, min_score: float = 0.0) -> list[Any]:
         """Delegate query to the underlying retriever (requires :meth:`load` first)."""
         if self._retriever is None:
             raise RuntimeError(

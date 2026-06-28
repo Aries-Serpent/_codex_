@@ -122,7 +122,7 @@ def _configure_otlp_if_needed(trace_mod: Any) -> None:
 
 
 @contextlib.contextmanager
-def _skill_span(skill_id: str, version: str, trace_id: str, attrs: dict[str, Any]):
+def _skill_span(skill_id: str, version: str, trace_id: str, attrs: dict[str, Any]) -> None:
     """Yield an OTel span for a skill invocation, or yield None as a no-op."""
     if importlib.util.find_spec("opentelemetry") is None:
         yield None
@@ -269,7 +269,7 @@ def skill_invocation_span(
     timeout_ms: int | None = None,
     doc_path: str | None = None,
     tracer_name: str = "codex.skill",
-):
+) -> None:
     """Context manager wrapping a skill execution in an OTel span.
 
     Compatible with the research-branch ``SkillExecutionEnvelope``; also

@@ -222,7 +222,7 @@ class TestCLICompleteness:
         result = cli_runner.invoke(cli, ["--help"])
         assert result.exit_code == 0, "Result must not be empty"
         # Should show available commands (look for Commands section in Click output)
-        assert (
+        assert (, "Condition must be true"
             "Commands:" in result.output
             or "commands:" in result.output.lower()
             or len(result.output) > 100

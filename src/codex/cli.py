@@ -12,7 +12,9 @@ try:
 
     defusedxml.defuse_stdlib()
 except (ImportError, AttributeError):  # pragma: no cover - optional dep
-    logger.debug("defusedxml not available — skipping XML defusal")  # codeql[py/clear-text-logging-sensitive-data]
+    logger.debug(
+        "defusedxml not available — skipping XML defusal"
+    )  # codeql[py/clear-text-logging-sensitive-data]
 
 import importlib  # noqa: E402
 import json  # noqa: E402
@@ -27,13 +29,17 @@ import click  # noqa: E402
 try:  # pragma: no cover - optional dependency
     import typer as _typer
 except (ImportError, AttributeError):  # pragma: no cover - degrade gracefully when Typer missing
-    logger.debug("Suppressed exception in handler", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+    logger.debug(
+        "Suppressed exception in handler", exc_info=True
+    )  # codeql[py/clear-text-logging-sensitive-data]
 else:  # pragma: no cover - exercised in Typer-enabled environments
     try:
         from codex.cli_knowledge import app as knowledge_typer_app
         from codex.cli_release import app as release_typer_app
     except (ImportError, AttributeError):  # pragma: no cover - Typer sub-app import guard
-        logger.debug("Suppressed exception in handler", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+        logger.debug(
+            "Suppressed exception in handler", exc_info=True
+        )  # codeql[py/clear-text-logging-sensitive-data]
     else:
         app = _typer.Typer(help="Codex Typer CLI (release + knowledge)")
         app.add_typer(release_typer_app, name="release")
@@ -133,7 +139,9 @@ def _fix_pool(max_workers: int | None = None) -> None:
             _log_error("POOL", "warm connection", str(exc), f"db={db}")
             break
 
-    print(f"enabled SQLite pooling (warm={workers}) for {db}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(
+        f"enabled SQLite pooling (warm={workers}) for {db}"
+    )  # codeql[py/clear-text-logging-sensitive-data]
 
 
 ALLOWED_TASKS = {
@@ -172,7 +180,13 @@ def _register_click_command(
     try:
         module = importlib.import_module(module_path)
         command = getattr(module, attr)
-    except (IOError, OSError, ImportError, ModuleNotFoundError, AttributeError) as exc:  # pragma: no cover - optional dependency path
+    except (
+        IOError,
+        OSError,
+        ImportError,
+        ModuleNotFoundError,
+        AttributeError,
+    ) as exc:  # pragma: no cover - optional dependency path
         message = f"{name} command unavailable: {exc}"
         group.add_command(_missing_command(name, message, help_text))
         return
@@ -199,7 +213,13 @@ def _register_typer_app(
     try:
         module = importlib.import_module(module_path)
         app = getattr(module, attr)
-    except (IOError, OSError, ImportError, ModuleNotFoundError, AttributeError) as exc:  # pragma: no cover - optional dependency path
+    except (
+        IOError,
+        OSError,
+        ImportError,
+        ModuleNotFoundError,
+        AttributeError,
+    ) as exc:  # pragma: no cover - optional dependency path
         message = f"{name} command unavailable: {exc}"
         group.add_command(_missing_command(name, message, help_text))
         return
@@ -682,7 +702,9 @@ def resume_cmd(run_dir: Path) -> None:
                 parsed = json.loads(content)
                 click.echo(json.dumps(parsed, indent=2, sort_keys=True))
             except (IOError, OSError):
-                logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+                logger.warning(
+                    "Exception occurred", exc_info=True
+                )  # codeql[py/clear-text-logging-sensitive-data]
                 click.echo(content)
             raise SystemExit(0)
 
@@ -696,7 +718,9 @@ def resume_cmd(run_dir: Path) -> None:
                     parsed = json.loads(content)
                     click.echo(json.dumps(parsed, indent=2, sort_keys=True))
                 except (IOError, OSError):
-                    logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+                    logger.warning(
+                        "Exception occurred", exc_info=True
+                    )  # codeql[py/clear-text-logging-sensitive-data]
                     click.echo(content)
                 raise SystemExit(0)
 
@@ -1412,7 +1436,9 @@ def clean_logs_cmd(older_than: int, dry_run: bool, yes: bool) -> None:
                     deleted += 1
                 except (IOError, OSError) as e:
                     error_type = type(e).__name__
-                    logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+                    logger.debug(
+                        "Exception: <ERROR_TYPE>"
+                    )  # codeql[py/clear-text-logging-sensitive-data]
                     click.echo(f"⚠️  Failed to delete {f}: {e}", err=True)
 
             click.echo(f"✅ Deleted {deleted} files")
@@ -1483,7 +1509,9 @@ def duplication_check(path: str, min_lines: int, threshold: float, output: str |
                 total_lines += len(py_file.read_text().splitlines())
             except (OSError, UnicodeDecodeError) as e:
                 error_type = type(e).__name__
-                logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+                logger.debug(
+                    "Exception: <ERROR_TYPE>"
+                )  # codeql[py/clear-text-logging-sensitive-data]
                 click.echo(f"⚠️  Skipping {py_file}: {e}", err=True)
 
         # Calculate ratio
@@ -1590,7 +1618,9 @@ def duplication_report(path: str, min_lines: int, format: str, output: str, save
                 files_scanned += 1
             except (OSError, UnicodeDecodeError):
                 # Skip files that can't be read or decoded
-                logger.debug("Skipping unreadable file: %s", py_file)  # codeql[py/clear-text-logging-sensitive-data]
+                logger.debug(
+                    "Skipping unreadable file: %s", py_file
+                )  # codeql[py/clear-text-logging-sensitive-data]
 
         # Calculate ratio
         ratio = calculate_duplication_ratio(duplicates, total_lines)
@@ -1806,7 +1836,9 @@ try:
     # Add quantum orchestrator as a subcommand group
     cli.add_command(quantum_cli, name="quantum")
 except (ImportError, AttributeError):  # pragma: no cover - optional module
-    logger.debug("quantum_orchestrator CLI not available — skipping registration")  # codeql[py/clear-text-logging-sensitive-data]
+    logger.debug(
+        "quantum_orchestrator CLI not available — skipping registration"
+    )  # codeql[py/clear-text-logging-sensitive-data]
 
 
 _register_external_cli()
@@ -1840,7 +1872,9 @@ def workflow_scan(workflows_dir: str, format: str, triggerable_only: bool) -> No
     except ImportError as e:
         error_type = type(e).__name__
         logger.debug("ImportError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
-        logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+        logger.warning(
+            "ImportError: <ERROR_TYPE>", exc_info=True
+        )  # codeql[py/clear-text-logging-sensitive-data]
         click.echo("Error: workflow services not available", err=True)
         sys.exit(1)
 
@@ -1934,7 +1968,9 @@ def _get_auth():
             import secrets as _sec
 
             _secret = _sec.token_urlsafe(32)
-            logger.debug("Generated ephemeral CLI signing material (in-process only)")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.debug(
+                "Generated ephemeral CLI signing material (in-process only)"
+            )  # codeql[py/clear-text-logging-sensitive-data]
         _tm = TokenManager(secret_key=_secret)
         _cli_auth = Authenticator(user_store=_cli_user_store, token_manager=_tm)
     return _cli_auth
@@ -2097,7 +2133,9 @@ def _cache_credentials(username: str, access_token: str, refresh_token: str) -> 
         click.echo("   Credentials cached (keyring)")
         return
     except ImportError:
-        logger.debug("keyring not installed — fall through to file-based storage")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.debug(
+            "keyring not installed — fall through to file-based storage"
+        )  # codeql[py/clear-text-logging-sensitive-data]
     except (IOError, OSError) as exc:  # pragma: no cover — runtime keyring backend error
         click.echo(
             f"   ⚠️  Keyring backend error: {exc}. Falling back to file-based storage.",
@@ -2110,7 +2148,9 @@ def _cache_credentials(username: str, access_token: str, refresh_token: str) -> 
     try:
         _CACHE_FILE.chmod(0o600)
     except OSError:  # pragma: no cover — Windows may not support chmod
-        logger.debug("chmod 600 failed — Windows may not support POSIX permissions")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.debug(
+            "chmod 600 failed — Windows may not support POSIX permissions"
+        )  # codeql[py/clear-text-logging-sensitive-data]
     click.echo("   Credentials cached (~/.codex/credentials.json)")
 
 
@@ -2123,15 +2163,21 @@ def _load_cached_credentials() -> dict | None:
         if raw:
             return json.loads(raw)
     except ImportError:
-        logger.debug("keyring not installed — fall through to file-based lookup")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.debug(
+            "keyring not installed — fall through to file-based lookup"
+        )  # codeql[py/clear-text-logging-sensitive-data]
     except (IOError, OSError):  # pragma: no cover — runtime keyring read error
-        logger.debug("keyring read error — falling back to file-based lookup")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.debug(
+            "keyring read error — falling back to file-based lookup"
+        )  # codeql[py/clear-text-logging-sensitive-data]
 
     if _CACHE_FILE.exists():
         try:
             return json.loads(_CACHE_FILE.read_text(encoding="utf-8"))
         except (json.JSONDecodeError, OSError) as exc:
-            logger.debug("Failed to load cached auth state file: %s", type(exc).__name__)  # codeql[py/clear-text-logging-sensitive-data]
+            logger.debug(
+                "Failed to load cached auth state file: %s", type(exc).__name__
+            )  # codeql[py/clear-text-logging-sensitive-data]
             return None
     return None
 
@@ -2143,9 +2189,13 @@ def _clear_cached_credentials() -> None:
 
         keyring.delete_password(_KEYRING_SERVICE, "credentials")
     except ImportError:
-        logger.debug("keyring not installed — nothing to clear")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.debug(
+            "keyring not installed — nothing to clear"
+        )  # codeql[py/clear-text-logging-sensitive-data]
     except (IOError, OSError):  # pragma: no cover — runtime keyring delete error
-        logger.debug("keyring delete error — entry may not exist or backend unavailable")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.debug(
+            "keyring delete error — entry may not exist or backend unavailable"
+        )  # codeql[py/clear-text-logging-sensitive-data]
     if _CACHE_FILE.exists():
         _CACHE_FILE.unlink(missing_ok=True)
 

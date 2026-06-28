@@ -1,7 +1,7 @@
 """Role management for authorization system."""
 
 from dataclasses import dataclass, field
-from typing import  Optional
+from typing import Optional
 
 
 @dataclass
@@ -18,7 +18,7 @@ class Role:
 class RoleManager:
     """Manages roles and their associations with permissions."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the role manager."""
         self._roles: dict[str, Role] = {}
         self._user_roles: dict[str, set[str]] = {}

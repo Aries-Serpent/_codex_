@@ -139,7 +139,7 @@ _TEST_SENTINEL_RE = re.compile(
 )
 
 
-def run(payload: dict) -> dict:
+def run(payload: dict[str, Any]) -> dict[str, Any]:
     """Parse CI/pytest output and return classified failure records.
 
     Parameters
@@ -161,7 +161,7 @@ def run(payload: dict) -> dict:
         return {"failures": [], "summary": {"total": 0, "categories": {}}}
 
     max_failures: int = int(payload.get("max_failures", 50))
-    failures: list[dict] = []
+    failures: list[dict[str, Any]] = []
     seen: set[str] = set()
 
     # ── Classify by known patterns ───────────────────────────────────────────

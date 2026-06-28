@@ -40,7 +40,7 @@ except (ImportError, AttributeError):  # pragma: no cover - optional dependency
     _AutoTokenizer = None  # type: ignore[misc,assignment]
 
 
-def _resolve_auto_tokenizer():
+def _resolve_auto_tokenizer() -> None:
     """Attempt to import ``AutoTokenizer`` lazily.
 
     This allows test environments to register lightweight stubs in ``sys.modules``
@@ -146,7 +146,7 @@ class TokenizerAdapter(ABC):
 
 @tokenizers.register("whitespace")
 class _CallableInt(int):
-    def __new__(cls, value: int):
+    def __new__(cls, value: int) -> None:
         return super().__new__(cls, int(value))
 
     def __call__(self) -> int:
@@ -418,8 +418,8 @@ class HFTokenizer(TokenizerAdapter):
                 tj = Path(artifacts_dir) / "tokenizer.json"
                 if not tj.exists():
                     raise FileNotFoundError(f"tokenizer.json not found in {artifacts_dir}")
-                self._tk = PreTrainedTokenizerFast(tokenizer_file=str(tj))  # type: ignore
-                self._tk.add_special_tokens(  # type: ignore[attr-defined]
+                self._tk = PreTrainedTokenizerFast(tokenizer_file=str(tj))
+                self._tk.add_special_tokens(
                     {
                         "pad_token": "[PAD]",  # nosec B105
                         "bos_token": "[BOS]",  # nosec B105

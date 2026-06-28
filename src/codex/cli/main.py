@@ -260,7 +260,7 @@ if TYPER_AVAILABLE:
             raise typer.Exit(code=1)
 
         # Flatten node tree into a list for the visualizer.
-        def _flatten(node, acc):
+        def _flatten(node, acc) -> None:
             acc.append(node)
             for child in node.children or []:
                 _flatten(child, acc)
@@ -275,7 +275,7 @@ if TYPER_AVAILABLE:
             webbrowser.open(f"file://{output}")
         typer.echo(f"AST report written to {output} ({len(nodes)} nodes from {source})")
 
-    def main():
+    def main() -> None:
         """Main entry point."""
         # Emit typer import error warning if it occurred
         if _TYPER_IMPORT_ERROR:
@@ -289,7 +289,7 @@ if TYPER_AVAILABLE:
 
 else:
     # Fallback to argparse
-    def main():
+    def main() -> None:
         """Main entry point using argparse."""
         parser = argparse.ArgumentParser(
             description="Codex Python Ingestion Pipeline CLI",

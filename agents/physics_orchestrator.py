@@ -57,7 +57,7 @@ class ForceVector:
     y: float = 0.0  # y component for 3D vector representation
     z: float = 0.0  # z component for 3D vector representation
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Calculate magnitude from x, y, z if provided"""
         # If x, y, z are provided (non-zero) and magnitude is 0, calculate magnitude
         if (self.x != 0.0 or self.y != 0.0 or self.z != 0.0) and self.magnitude == 0.0:
@@ -107,7 +107,7 @@ class ActionPath:
     total_energy: float = field(default=0.0, init=False)
     optimization_score: float = field(default=0.0, init=False)
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize calculated fields and handle energy alias"""
         if self.energy > 0.0 and self.potential_energy == 0.0:
             # If energy is provided but potential_energy is not, use energy
@@ -221,10 +221,10 @@ class PhysicsInspiredOrchestrator:
         self,
         config_path: Optional[Path] = None,
         *,
-        config: Optional[dict] = None,
+        config: Optional[dict[str, Any]] = None,
     ):
         self.config = config if config is not None else self._load_config(config_path)
-        self.decision_history: list[dict] = []
+        self.decision_history: list[dict[str, Any]] = []
         self.force_vectors: list[ForceVector] = []
         self._mlp_scorer: Optional[Any] = None
 
@@ -237,7 +237,7 @@ class PhysicsInspiredOrchestrator:
                 hidden_dim=int(self.config.get("mlp_hidden_dim", 4)),
             )
 
-    def _load_config(self, config_path: Optional[Path]) -> dict:
+    def _load_config(self, config_path: Optional[Path]) -> dict[str, Any]:
         """Load orchestrator configuration (internal)"""
         default_config = {
             "deliberation_time": 5.0,  # seconds to think before acting
@@ -257,7 +257,7 @@ class PhysicsInspiredOrchestrator:
 
         return default_config
 
-    def load_config(self) -> dict:
+    def load_config(self) -> dict[str, Any]:
         """
         Public method to load and return current configuration.
 
@@ -477,7 +477,7 @@ class PhysicsInspiredOrchestrator:
         # Return the best path (could add constraint checking here if needed)
         return ranked_paths[0] if ranked_paths else None
 
-    def orchestrate(self, state: DecisionState, possible_actions: list[ActionPath]) -> dict:
+    def orchestrate(self, state: DecisionState, possible_actions: list[ActionPath]) -> dict[str, Any]:
         """
         Complete orchestration cycle: ASSESS → DELIBERATE → OPTIMIZE → ACT
 
@@ -1213,7 +1213,7 @@ class EnergyState:
     state_id: str = ""
     internal_energy: Optional[float] = None  # Alias for energy
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Handle internal_energy alias"""
         if self.internal_energy is not None:
             self.energy = self.internal_energy
@@ -1401,7 +1401,7 @@ class SwarmParticle:
     personal_best_position: Optional[tuple[float, ...]] = field(default=None)
     personal_best_score: float = field(default=float("-inf"))
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.personal_best_position is None:
             self.personal_best_position = self.position
 
@@ -1446,7 +1446,7 @@ class SwarmIntelligence:
         self.particles: list[SwarmParticle] = []
         self.global_best_position: Optional[tuple[float, ...]] = None
         self.global_best_score: float = float("-inf")
-        self.iteration_history: list[dict] = []
+        self.iteration_history: list[dict[str, Any]] = []
 
     def initialize_swarm(self, bounds: list[tuple[float, float]]) -> None:
         """
@@ -2078,7 +2078,7 @@ class QuantumState:
     amplitudes: dict[str, complex]  # State amplitudes (complex numbers)
     basis_states: list[str] = field(default_factory=list)  # Possible states
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if not self.basis_states and self.amplitudes:
             self.basis_states = list(self.amplitudes.keys())
         # Normalize amplitudes
@@ -2340,10 +2340,10 @@ class SuperpositionExplorer:
     - Risk-hedged decision making
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.paths: list[ActionPath] = []
         self.superposition_state: Optional[QuantumState] = None
-        self.evaluation_history: list[dict] = []
+        self.evaluation_history: list[dict[str, Any]] = []
 
     def add_path(self, path: ActionPath) -> None:
         """Add a path to the superposition"""
@@ -2519,9 +2519,9 @@ class PINNValidator:
     - Causality: effects follow causes
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.constraints: list[dict[str, Any]] = []
-        self.validation_history: list[dict] = []
+        self.validation_history: list[dict[str, Any]] = []
 
         # Default physics constraints
         self._add_default_constraints()
@@ -2660,7 +2660,7 @@ class QuantumPhysicsOrchestrator:
     6. MEASURE: Collapse to optimal decision
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.quantum_walk = QuantumWalkExplorer()
         self.superposition = SuperpositionExplorer()
         self.pinn_validator = PINNValidator()
@@ -2669,7 +2669,7 @@ class QuantumPhysicsOrchestrator:
         self.reflection = ReflectionLoop()
 
         self.entanglements: list[EntangledDependency] = []
-        self.decision_log: list[dict] = []
+        self.decision_log: list[dict[str, Any]] = []
 
     def add_entanglement(self, decision_a: str, decision_b: str, correlation: float = 0.5) -> None:
         """Add entanglement between two decisions"""
@@ -2838,7 +2838,7 @@ class QuantumOperator:
     dimension: int = 10  # Fock space dimension (max occupation number)
     grid_size: Optional[int] = None  # Alias for dimension (backward compatibility)
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         # Use grid_size if provided, otherwise use dimension
         if self.grid_size is not None:
             self.dimension = self.grid_size
@@ -3126,7 +3126,7 @@ class PathIntegralCalculator:
         Default Lagrangian: L = T - V (kinetic - potential)
         """
         if lagrangian is None:
-            def lagrangian(state):
+            def lagrangian(state) -> None:
                 return state.get("kinetic", 0) - state.get("potential", 0)
 
         action = 0.0
@@ -3466,7 +3466,7 @@ class PhysicsCalculatorSuite:
     - PINNValidator: Physics-informed validation
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.quantum_operator = QuantumOperator()
         self.conservation_checker = ConservationLawChecker()
         self.path_integral = PathIntegralCalculator()

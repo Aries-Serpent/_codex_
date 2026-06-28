@@ -12,15 +12,12 @@ Coverage Target: 95%+
 Generated: 2026-06-28
 """
 
-import pytest
 import asyncio
-from typing import Optional, Union, List, Dict, Any, Set, Tuple
-from unittest.mock import Mock, MagicMock, patch
-from decimal import Decimal
-from datetime import datetime, timedelta
 import threading
 import time
-import sys
+from typing import Any, Optional, Union
+
+import pytest
 
 
 class TestBoundaryConditions:
@@ -340,6 +337,7 @@ class TestAsyncConcurrencyEdgeCases:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_empty_async_operation(self):
         """Test empty async operation."""
         async def empty_coro():
@@ -349,6 +347,7 @@ class TestAsyncConcurrencyEdgeCases:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_immediate_return(self):
         """Test async function that returns immediately."""
         async def immediate():
@@ -357,6 +356,7 @@ class TestAsyncConcurrencyEdgeCases:
         assert result == 42, "Result must not be empty"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_async_with_delay(self):
         """Test async function with delay."""
@@ -368,25 +368,26 @@ class TestAsyncConcurrencyEdgeCases:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_async_exception_handling(self):
         """Test async exception handling."""
         async def failing_coro():
             raise ValueError("async error")
-        
+
         with pytest.raises(ValueError):
             await failing_coro()
 
     def test_threading_edge_case(self):
         """Test threading edge case."""
         result = []
-        
+
         def worker():
             result.append(1)
-        
+
         thread = threading.Thread(target=worker)
         thread.start()
         thread.join(timeout=1.0)
-        
+
         assert len(result) == 1, "Result must not be empty"
 
     def test_timeout_edge_case(self):
@@ -398,12 +399,13 @@ class TestAsyncConcurrencyEdgeCases:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_concurrent_tasks(self):
         """Test concurrent async tasks."""
         async def task(n):
             await asyncio.sleep(0.001)
             return n * 2
-        
+
         tasks = [task(i) for i in range(5)]
         results = await asyncio.gather(*tasks)
         assert len(results) == 5, "Results must not be empty"
@@ -411,15 +413,16 @@ class TestAsyncConcurrencyEdgeCases:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_race_condition_simulation(self):
         """Test race condition simulation."""
         counter = {"value": 0}
         lock = asyncio.Lock()
-        
+
         async def increment():
             async with lock:
                 counter["value"] += 1
-        
+
         await asyncio.gather(increment(), increment(), increment())
         assert counter["value"] == 3, "Value must be initialized"
 
@@ -535,7 +538,7 @@ class TestStateManagementEdgeCases:
         """Test invalid state transition."""
         state = "init"
         valid_transitions = {"init": ["running"], "running": ["stopped"]}
-        
+
         if state in valid_transitions:
             pass  # Valid transition
 
@@ -551,7 +554,7 @@ class TestStateManagementEdgeCases:
         original_state = {"value": 1}
         modified_state = original_state.copy()
         modified_state["value"] = 999
-        
+
         # Rollback
         state = original_state
         assert state["value"] == 1, "Value must be initialized"
@@ -593,7 +596,7 @@ class TestIntegrationEdgeCases:
                 self.acquired = True
             def release(self):
                 self.acquired = False
-        
+
         resource = Resource()
         resource.acquire()
         assert resource.acquired is True, "acquired is not valid"
@@ -604,7 +607,7 @@ class TestIntegrationEdgeCases:
         """Test error recovery pattern."""
         attempts = 0
         success = False
-        
+
         for attempt in range(3):
             attempts += 1
             try:
@@ -614,46 +617,46 @@ class TestIntegrationEdgeCases:
                     raise ValueError("retry")
             except ValueError:
                 pass
-        
+
         assert success is True, "success is not valid"
 
     def test_cascading_operations(self):
         """Test cascading operations."""
         value = 1
         operations = [lambda x: x * 2, lambda x: x + 10, lambda x: x // 2]
-        
+
         for op in operations:
             value = op(value)
-        
+
         assert value == 6, "Value must be initialized"
 
     def test_dependency_resolution(self):
         """Test dependency resolution."""
         dependencies = {"a": [], "b": ["a"], "c": ["b"]}
         resolved = []
-        
+
         while dependencies:
             for key, deps in list(dependencies.items()):
                 if all(d in resolved for d in deps):
                     resolved.append(key)
                     del dependencies[key]
                     break
-        
+
         assert resolved == ["a", "b", "c"]
 
     def test_cross_module_state_sharing(self):
         """Test cross-module state sharing."""
         shared_state = {"value": 0}
-        
+
         def module_a_operate():
             shared_state["value"] += 1
-        
+
         def module_b_operate():
             shared_state["value"] += 10
-        
+
         module_a_operate()
         module_b_operate()
-        
+
         assert shared_state["value"] == 11, "Value must be initialized"
 
 
@@ -991,17 +994,19 @@ class TestExtendedAsyncVariations:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     @pytest.mark.parametrize("delay_ms", [0, 1, 5, 10])
     async def test_async_delays(self, delay_ms):
         """Test async operations with various delays."""
         async def delayed_op():
             await asyncio.sleep(delay_ms / 1000.0)
             return delay_ms
-        
+
         result = await delayed_op()
         assert result == delay_ms, "Result must not be empty"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.parametrize("task_count", [1, 2, 3, 5])
     async def test_async_task_counts(self, task_count):
@@ -1009,7 +1014,7 @@ class TestExtendedAsyncVariations:
         async def simple_task():
             await asyncio.sleep(0.001)
             return 1
-        
+
         tasks = [simple_task() for _ in range(task_count)]
         results = await asyncio.gather(*tasks)
         assert len(results) == task_count, "Results must not be empty"
@@ -1335,17 +1340,19 @@ class TestComprehensiveAsyncConcurrency:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     @pytest.mark.parametrize("task_id", range(5))
     async def test_simple_async_tasks(self, task_id):
         """Test simple async tasks."""
         async def task():
             await asyncio.sleep(0.001)
             return task_id
-        
+
         result = await task()
         assert result == task_id, "Result must not be empty"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.parametrize("delay", [0.001, 0.005, 0.01])
     async def test_async_delays_precision(self, delay):
@@ -1355,23 +1362,23 @@ class TestComprehensiveAsyncConcurrency:
             await asyncio.sleep(delay)
             elapsed = time.time() - start
             return elapsed >= delay * 0.8  # Allow 20% variance
-        
+
         result = await delayed()
         assert result is True, "Result must not be empty"
 
     def test_threading_scenarios(self):
         """Test threading scenarios."""
         results = []
-        
+
         def worker(value):
             results.append(value)
-        
+
         threads = [threading.Thread(target=worker, args=(i,)) for i in range(3)]
         for t in threads:
             t.start()
         for t in threads:
             t.join()
-        
+
         assert len(results) == 3, "Results must not be empty"
 
 

@@ -56,7 +56,7 @@ class PluginHealth:
     last_error: Optional[str] = None
     quarantined_at: Optional[str] = None  # ISO8601 timestamp when quarantined
 
-    def record_success(self):
+    def record_success(self) -> None:
         """Record successful execution."""
         self.failure_count = 0
         self.last_success = datetime.now(UTC).isoformat()
@@ -77,7 +77,7 @@ class PluginHealth:
         self.last_failure = datetime.now(UTC).isoformat()
         self.last_error = error
 
-    def set_quarantined(self):
+    def set_quarantined(self) -> None:
         """set plugin to quarantined status."""
         self.status = PluginStatus.QUARANTINED
         self.quarantined_at = datetime.now(UTC).isoformat()
@@ -160,7 +160,7 @@ class Plugin(ABC):
         """
 
     @abstractmethod
-    def cleanup(self):
+    def cleanup(self) -> None:
         """Clean up plugin resources."""
 
     def get_contract(self) -> PluginContract:
@@ -467,7 +467,7 @@ class PluginManager:
 
         return results
 
-    def cleanup_all(self):
+    def cleanup_all(self) -> None:
         """Clean up all plugins."""
         for plugin_name, plugin in self.plugins.items():
             try:

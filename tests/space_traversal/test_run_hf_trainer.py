@@ -114,7 +114,8 @@ def test_run_hf_trainer_accepts_empty_texts(monkeypatch, tmp_path):
     except (ValueError, RuntimeError) as exc:
         # Acceptable: empty dataset raises a clear ValueError or RuntimeError
         assert (, "Condition must be true"
-            "empty" in str(exc).lower()
+            "empty" in str(exc).lower(
+        ), "Condition must be true"
             or "dataset" in str(exc).lower()
             or "no samples" in str(exc).lower()
             or "0" in str(exc)

@@ -588,7 +588,7 @@ class PatternDataset:
         """Get sample by index."""
         return self._samples[idx]
 
-    def __iter__(self):
+    def __iter__(self) -> None:
         """Iterate over samples."""
         return iter(self._samples)
 

@@ -134,7 +134,7 @@ class ReasoningStep:
         """Set evidence_used via evidence property."""
         self.evidence_used = value
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Handle parameter aliases and defaults"""
         # Use description if provided and thought is empty
         if self.description and not self.thought:
@@ -143,7 +143,7 @@ class ReasoningStep:
         elif self.thought and not self.description:
             self.description = self.thought
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
 
@@ -176,8 +176,8 @@ class MentalNode:
 
     # Metadata
     tags: list[str] = field(default_factory=list)
-    context: dict = field(default_factory=dict)
-    metadata: dict = field(default_factory=dict)
+    context: dict[str, Any] = field(default_factory=dict[str, Any])
+    metadata: dict[str, Any] = field(default_factory=dict[str, Any])
 
     def add_reasoning_step(
         self,
@@ -220,7 +220,7 @@ class MentalNode:
         """Record a lesson learned from this node"""
         self.lessons_learned.append({"timestamp": get_timestamp(), "lesson": lesson})
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for serialization"""
         d = asdict(self)
         d["node_type"] = self.node_type.value
@@ -266,7 +266,7 @@ class MentalEdge:
         """Alias for target_id for backward compatibility."""
         return self.target_id
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         d = asdict(self)
         d["edge_type"] = self.edge_type.value if self.edge_type else None
         return d
@@ -298,8 +298,8 @@ class MentalMappingModel:
         self.nodes_needing_review: set[str] = set()
 
         # Learning history
-        self.learning_history: list[dict] = []
-        self.pattern_library: dict[str, dict] = {}
+        self.learning_history: list[dict[str, Any]] = []
+        self.pattern_library: dict[str, dict[str, Any]] = {}
 
         # Self-appraisal metrics
         self.appraisal_metrics = {
@@ -315,12 +315,12 @@ class MentalMappingModel:
         self,
         node_type: NodeType,
         content: str = "",
-        properties: Optional[dict] = None,
+        properties: Optional[dict[str, Any]] = None,
         confidence: float = 0.5,
         importance: float = 0.5,
         tags: Optional[list[str]] = None,
-        context: Optional[dict] = None,
-        metadata: Optional[dict] = None,
+        context: Optional[dict[str, Any]] = None,
+        metadata: Optional[dict[str, Any]] = None,
     ) -> MentalNode:
         """
         Create a new node in the mental map.
@@ -372,7 +372,7 @@ class MentalMappingModel:
         return node
 
     def create_node_id(
-        self, node_type: NodeType, properties: Optional[dict] = None, **kwargs
+        self, node_type: NodeType, properties: Optional[dict[str, Any]] = None, **kwargs
     ) -> str:
         """
         Create a new node and return its ID (backward compatibility method).
@@ -410,7 +410,7 @@ class MentalMappingModel:
         source: str | MentalNode | None = None,  # Alias for source_id
         target: str | MentalNode | None = None,  # Alias for target_id
         edge_type: EdgeType | None = None,
-        properties: dict | None = None,
+        properties: dict[str, Any] | None = None,
         weight: float = 1.0,
         justification: str = "",
         evidence: list[str] | None = None,
@@ -473,7 +473,7 @@ class MentalMappingModel:
         return edge
 
     def think_through_problem(
-        self, problem: str, context: dict | None = None
+        self, problem: str, context: dict[str, Any] | None = None
     ) -> tuple[MentalNode, list[ReasoningStep]]:
         """
         Think through a problem, storing the complete reasoning chain
@@ -926,7 +926,7 @@ class MentalMappingModel:
             reviewed = sum(1 for n in self.nodes.values() if n.review_count > 0)
             self.appraisal_metrics["review_rate"] = reviewed / len(self.nodes)
 
-    def get_mental_map_summary(self) -> dict:
+    def get_mental_map_summary(self) -> dict[str, Any]:
         """Get a summary of the mental map"""
         return {
             "map_id": self.map_id,

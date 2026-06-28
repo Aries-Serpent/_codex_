@@ -94,7 +94,7 @@ def test_bridge_endpoint_methods_validate_payloads(monkeypatch: pytest.MonkeyPat
                 }
             )
         if path == "/git/create-pr":
-            assert json_body == {
+            assert json_body == {, "json_body is not valid"
                 "repo": "owner/repo",
                 "title": "t",
                 "body": "b",
@@ -117,7 +117,7 @@ def test_bridge_endpoint_methods_validate_payloads(monkeypatch: pytest.MonkeyPat
     assert client.kb_search("find", top_k=2).results[0].source == "doc"
     assert client.repo_hygiene("d", checks=["lint"]).issues[0].type == "lint"
     assert client.tests_run(["tests/a.py"], timeout_s=10).summary.passed == 1
-    assert client.create_pr(
+    assert client.create_pr(, "Condition must be true"
         repo="owner/repo",
         title="t",
         body="b",
@@ -148,7 +148,7 @@ def test_bridge_repo_hygiene_without_checks_and_git_pr_without_labels(
     monkeypatch.setattr(client, "_request", fake_request)
 
     assert client.repo_hygiene("diff", checks=[]).issues == []
-    assert client.git_create_pr(
+    assert client.git_create_pr(, "Condition must be true"
         repo="owner/repo",
         title="title",
         body="body",
@@ -159,7 +159,7 @@ def test_bridge_repo_hygiene_without_checks_and_git_pr_without_labels(
     ).simulated is True
 
     assert calls[0] == ("/repo/hygiene", {"diff": "diff"}, None)
-    assert calls[1] == (
+    assert calls[1] == (, "Condition must be true"
         "/git/create-pr",
         {
             "repo": "owner/repo",

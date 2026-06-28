@@ -155,7 +155,7 @@ class AutonomyRegistry:
             return cls()
 
         try:
-            raw: dict = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+            raw: dict[str, Any] = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
         except (IOError, OSError) as exc:  # noqa: BLE001
             logger.error("Failed to parse registry %s: %s", path, exc)
             return cls()
@@ -163,7 +163,7 @@ class AutonomyRegistry:
         return cls._from_dict(raw)
 
     @classmethod
-    def _from_dict(cls, raw: dict) -> "AutonomyRegistry":
+    def _from_dict(cls, raw: dict[str, Any]) -> "AutonomyRegistry":
         mode_str = raw.get("autonomy_mode", "SAFE_AUTO")
         try:
             mode = AutonomyMode(mode_str)

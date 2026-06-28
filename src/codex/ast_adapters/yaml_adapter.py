@@ -28,7 +28,7 @@ class YAMLASTAdapter(BaseASTAdapter):
         1
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self._current_file: Optional[Path] = None
 

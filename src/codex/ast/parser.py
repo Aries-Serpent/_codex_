@@ -184,7 +184,7 @@ class UniversalParser:
         name = ""
         docstring = None
         decorators: list[str] = []
-        type_hints: dict = {}
+        type_hints: dict[str, Any] = {}
 
         if isinstance(node, ast.FunctionDef):
             node_type = NodeType.FUNCTION
@@ -260,7 +260,7 @@ class UniversalParser:
             return f"@{ast.unparse(decorator)}"
         return "@<unknown>"
 
-    def _extract_type_hints(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> dict:
+    def _extract_type_hints(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> dict[str, Any]:
         """Extract type hints from function definition."""
         hints = {}
 
@@ -279,7 +279,7 @@ class UniversalParser:
 class _LibCSTExtractor(cst.CSTVisitor if LIBCST_AVAILABLE else object):  # type: ignore[misc]
     """LibCST visitor to extract nodes."""
 
-    def __init__(self, file_path: Path, id_generator):
+    def __init__(self, file_path: Path, id_generator) -> None:
         self.file_path = file_path
         self.id_generator = id_generator
         self.nodes: list[StandardizedASTNode] = []

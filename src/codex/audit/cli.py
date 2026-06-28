@@ -16,14 +16,14 @@ logger = logging.getLogger(__name__)
 @click.option("--check-vulns", is_flag=True, help="Check for security vulnerabilities")
 @click.option("--format", type=click.Choice(["json", "yaml", "html"]), default="json")
 @click.option("--output", type=click.Path(), help="Output file")
-def audit_main(_check_dependencies: bool, _check_vulns: bool, format: str, output: str):
+def audit_main(_check_dependencies: bool, _check_vulns: bool, format: str, output: str) -> None:
     """Run security and quality audit.
 
     Examples:
         codex-audit --check-dependencies --check-vulns
         codex-audit --format html --output audit.html
     """
-    result: dict = {"status": "ok", "vulnerabilities": [], "summary": {}}
+    result: dict[str, Any] = {"status": "ok", "vulnerabilities": [], "summary": {}}
 
     # Try pip-audit first
     pip_audit_result = None

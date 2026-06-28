@@ -90,7 +90,7 @@ try:  # pragma: no cover - optional model registry
     from codex_ml.models.registry import get_model
 except (IOError, OSError):  # pragma: no cover - minimal training may not need registry
 
-    def get_model(*args: Any, **kwargs: Any):
+    def get_model(*args: Any, **kwargs: Any) -> None:
         raise RuntimeError("codex_ml.models.registry is unavailable")
 
 
@@ -108,7 +108,9 @@ def _maybe_collect_system_metrics(enabled: bool) -> Optional[dict[str, float]]:
     try:
         metrics = collect_system_metrics()
     except (ValueError, TypeError, RuntimeError):
-        logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+        logger.warning(
+            "Exception occurred", exc_info=True
+        )  # codeql[py/clear-text-logging-sensitive-data]
         logger.debug(
             "Failed to collect system metrics for training metrics payload",
             exc_info=True,
@@ -179,7 +181,9 @@ def _looks_like_local_source(identifier: os.PathLike[str] | str | None) -> bool:
     except OSError as e:
         error_type = type(e).__name__
         logger.debug("OSError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
-        logger.warning("OSError: <ERROR_TYPE>", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+        logger.warning(
+            "OSError: <ERROR_TYPE>", exc_info=True
+        )  # codeql[py/clear-text-logging-sensitive-data]
         return False
 
 
@@ -259,7 +263,9 @@ def main(argv: Sequence[str] | None = None) -> int:
                     )
                 except (IOError, OSError) as e:
                     error_type = type(e).__name__
-                    logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+                    logger.debug(
+                        "Exception: <ERROR_TYPE>"
+                    )  # codeql[py/clear-text-logging-sensitive-data]
                     logger.warning(
                         f"Exception: {e}", exc_info=True
                     )  # Metadata write failure; continue training
@@ -519,13 +525,17 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
                 encoding="utf-8",
             )
         except (IOError, OSError):
-            logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning(
+                "Exception occurred", exc_info=True
+            )  # codeql[py/clear-text-logging-sensitive-data]
             config_snapshot = None
     else:
         metrics_root = Path(cfg.log_dir)
 
     metrics_logger = FileLogger(root=metrics_root, formats=log_formats, filename_stem=metrics_stem)
-    metrics_path = metrics_logger.paths().get("ndjson")  # codeql[py/clear-text-logging-sensitive-data]
+    metrics_path = metrics_logger.paths().get(
+        "ndjson"
+    )  # codeql[py/clear-text-logging-sensitive-data]
     if metrics_path is not None and metrics_path.exists():
         try:
             metrics_path.unlink()
@@ -540,12 +550,16 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
         try:
             return len(data)
         except (IOError, OSError):
-            logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning(
+                "Exception occurred", exc_info=True
+            )  # codeql[py/clear-text-logging-sensitive-data]
             return None
 
     metadata_logger: Any = metrics_logger
     if "csv" in log_formats:
-        ndjson_target = metrics_logger.paths().get("ndjson")  # codeql[py/clear-text-logging-sensitive-data]
+        ndjson_target = metrics_logger.paths().get(
+            "ndjson"
+        )  # codeql[py/clear-text-logging-sensitive-data]
 
         class _NdjsonOnlyLogger:
             def __init__(self, target: Path) -> None:
@@ -598,7 +612,9 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
             )
             system_logger.start()  # codeql[py/clear-text-logging-sensitive-data]
         except (ValueError, TypeError, RuntimeError):
-            logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning(
+                "Exception occurred", exc_info=True
+            )  # codeql[py/clear-text-logging-sensitive-data]
             system_logger = None
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)
@@ -671,7 +687,9 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
                 max_grad_norm=cfg.dp_max_grad_norm,
             )
         except (ValueError, TypeError, RuntimeError):
-            logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning(
+                "Exception occurred", exc_info=True
+            )  # codeql[py/clear-text-logging-sensitive-data]
             privacy_engine = None
 
     use_amp = cfg.dtype in {"fp16", "bf16"} and torch.cuda.is_available()
@@ -705,7 +723,9 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
                     mlf.log_params(_as_flat_params(params))
                 except (ValueError, TypeError, RuntimeError) as e:
                     error_type = type(e).__name__
-                    logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+                    logger.debug(
+                        "Exception: <ERROR_TYPE>"
+                    )  # codeql[py/clear-text-logging-sensitive-data]
                     logger.warning(
                         f"Exception: {e}", exc_info=True
                     )  # MLflow parameter logging failed; continue training
@@ -786,14 +806,20 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
                         try:
                             _codex_log_all(global_step, {"train_loss": loss_val}, loggers)
                         except (ValueError, TypeError, RuntimeError):
-                            logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
-                            print(f"step {global_step}: loss {loss_val:.4f}")  # codeql[py/clear-text-logging-sensitive-data]
+                            logger.warning(
+                                "Exception occurred", exc_info=True
+                            )  # codeql[py/clear-text-logging-sensitive-data]
+                            print(
+                                f"step {global_step}: loss {loss_val:.4f}"
+                            )  # codeql[py/clear-text-logging-sensitive-data]
                         if cfg.mlflow_enable:
                             try:
                                 mlf.log_metrics({"train/loss": loss_val}, step=global_step)
                             except (ValueError, TypeError, RuntimeError) as e:
                                 error_type = type(e).__name__
-                                logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+                                logger.debug(
+                                    "Exception: <ERROR_TYPE>"
+                                )  # codeql[py/clear-text-logging-sensitive-data]
                                 logger.warning(
                                     f"Exception: {e}", exc_info=True
                                 )  # MLflow metric logging failed; continue training
@@ -840,7 +866,9 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
                                 _codex_log_all(global_step, numeric_metrics, loggers)
                             except (ValueError, TypeError, RuntimeError) as e:
                                 error_type = type(e).__name__
-                                logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+                                logger.debug(
+                                    "Exception: <ERROR_TYPE>"
+                                )  # codeql[py/clear-text-logging-sensitive-data]
                                 logger.warning(
                                     f"Exception: {e}", exc_info=True
                                 )  # Codex logging failed; continue training
@@ -852,7 +880,9 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
                                 )
                             except (ValueError, TypeError, RuntimeError) as e:
                                 error_type = type(e).__name__
-                                logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+                                logger.debug(
+                                    "Exception: <ERROR_TYPE>"
+                                )  # codeql[py/clear-text-logging-sensitive-data]
                                 logger.warning(
                                     f"Exception: {e}", exc_info=True
                                 )  # MLflow eval metric logging failed; continue training
@@ -898,7 +928,9 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
                                 )
                             except (ValueError, TypeError, RuntimeError) as e:
                                 error_type = type(e).__name__
-                                logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+                                logger.debug(
+                                    "Exception: <ERROR_TYPE>"
+                                )  # codeql[py/clear-text-logging-sensitive-data]
                                 logger.warning(
                                     f"Exception: {e}", exc_info=True
                                 )  # MLflow privacy metric logging failed; continue training
@@ -912,7 +944,9 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
                             )
                     except (ValueError, TypeError, RuntimeError) as e:
                         error_type = type(e).__name__
-                        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+                        logger.debug(
+                            "Exception: <ERROR_TYPE>"
+                        )  # codeql[py/clear-text-logging-sensitive-data]
                         logger.warning(
                             f"Exception: {e}", exc_info=True
                         )  # Privacy accounting failed; continue training
@@ -922,7 +956,9 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
                     system_logger.stop()  # codeql[py/clear-text-logging-sensitive-data]
                 except (ValueError, TypeError, RuntimeError) as e:
                     error_type = type(e).__name__
-                    logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+                    logger.debug(
+                        "Exception: <ERROR_TYPE>"
+                    )  # codeql[py/clear-text-logging-sensitive-data]
                     logger.warning(
                         f"Exception: {e}", exc_info=True
                     )  # System logger cleanup failed; continue
@@ -955,11 +991,15 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
                     try:
                         mlf.log_artifact(str(artifact))
                     except (ValueError, TypeError, RuntimeError):
-                        logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+                        logger.warning(
+                            "Exception occurred", exc_info=True
+                        )  # codeql[py/clear-text-logging-sensitive-data]
                         continue  # Artifact logging failed; try next artifact
             except (ValueError, TypeError, RuntimeError) as e:
                 error_type = type(e).__name__
-                logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+                logger.debug(
+                    "Exception: <ERROR_TYPE>"
+                )  # codeql[py/clear-text-logging-sensitive-data]
                 logger.warning(
                     f"Exception: {e}", exc_info=True
                 )  # MLflow final metrics logging failed; continue

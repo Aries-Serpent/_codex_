@@ -83,7 +83,7 @@ class SessionEmbeddings:
         # Load existing index if available
         self._load_index()
 
-    def _load_model(self):
+    def _load_model(self) -> None:
         """Load sentence-transformers model.
 
         Falls back to mock embeddings if model unavailable.

@@ -12,7 +12,7 @@ __all__ = ["CsvSink", "MetricsSink", "NdjsonSink", "NullSink", "create_sink"]
 
 @runtime_checkable
 class MetricsSink(Protocol):
-    def write(self, row: dict) -> None:
+    def write(self, row: dict[str, Any]) -> None:
         pass
 
     def close(self) -> None:
@@ -22,7 +22,7 @@ class MetricsSink(Protocol):
 class NullSink:
     """Sink that discards all metrics."""
 
-    def write(self, row: dict) -> None:  # pragma: no cover - intentionally empty
+    def write(self, row: dict[str, Any]) -> None:  # pragma: no cover - intentionally empty
         return None
 
     def close(self) -> None:  # pragma: no cover - intentionally empty
@@ -38,7 +38,7 @@ class CsvSink:
         self._writer = csv.DictWriter(self.fp, fieldnames=self.fieldnames)
         self._wrote_header = False
 
-    def write(self, row: dict) -> None:
+    def write(self, row: dict[str, Any]) -> None:
         if not self._wrote_header:
             self._writer.writeheader()
             self._wrote_header = True
@@ -53,7 +53,7 @@ class CsvSink:
 class NdjsonSink:
     fp: TextIO
 
-    def write(self, row: dict) -> None:
+    def write(self, row: dict[str, Any]) -> None:
         self.fp.write(json.dumps(row, ensure_ascii=False) + "\n")
         self.fp.flush()
 

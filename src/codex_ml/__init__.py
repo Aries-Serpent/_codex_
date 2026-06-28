@@ -34,12 +34,12 @@ except (
         def __init__(self, name: str):
             self._name = name
 
-        def __getattr__(self, item: str):  # pragma: no cover - defensive
+        def __getattr__(self, item: str) -> None:  # pragma: no cover - defensive
             raise AttributeError(
                 f"Optional dependency for '{self._name}' is missing; install codex-ml[configs]"
             )
 
-        def __call__(self, *args, **kwargs):  # pragma: no cover - defensive
+        def __call__(self, *args, **kwargs) -> None:  # pragma: no cover - defensive
             raise RuntimeError(
                 f"Optional dependency for '{self._name}' is missing; install codex-ml[configs]"
             )
@@ -54,7 +54,7 @@ try:  # pragma: no cover - optional dependency tree
     from .pipeline import run_codex_pipeline
 except (ImportError, AttributeError):  # pragma: no cover - degrade gracefully when configs missing
 
-    def run_codex_pipeline(*_args, **_kwargs):  # type: ignore[misc]
+    def run_codex_pipeline(*_args, **_kwargs) -> None:  # type: ignore[misc]
         raise RuntimeError("Optional dependencies for run_codex_pipeline are missing")
 
 
@@ -81,10 +81,10 @@ except (
         def __init__(self, name: str):
             self._name = name
 
-        def __call__(self, *_args, **_kwargs):  # pragma: no cover - defensive
+        def __call__(self, *_args, **_kwargs) -> None:  # pragma: no cover - defensive
             raise RuntimeError(f"Metrics module unavailable; {self._name} requires optional extras")
 
-        def __getattr__(self, _item: str):  # pragma: no cover - defensive
+        def __getattr__(self, _item: str) -> None:  # pragma: no cover - defensive
             msg = f"Metrics module unavailable; {self._name} requires optional extras"
             raise AttributeError(msg)
 
@@ -134,12 +134,12 @@ except (
         def __init__(self, name: str):
             self._name = name
 
-        def __getattr__(self, item: str):  # pragma: no cover - defensive
+        def __getattr__(self, item: str) -> None:  # pragma: no cover - defensive
             raise AttributeError(
                 f"Optional dependency for '{self._name}' is missing; install codex-ml[symbolic]"
             )
 
-        def __call__(self, *_args, **_kwargs):  # pragma: no cover - defensive
+        def __call__(self, *_args, **_kwargs) -> None:  # pragma: no cover - defensive
             raise RuntimeError(
                 f"Optional dependency for '{self._name}' is missing; install codex-ml[symbolic]"
             )
@@ -190,7 +190,7 @@ _EXPORT_MAP = {
 }
 
 
-def __getattr__(name: str):
+def __getattr__(name: str) -> None:
     """Lazily import heavy optional modules on first access."""
 
     if name not in _EXPORT_MAP:

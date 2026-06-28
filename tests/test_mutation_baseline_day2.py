@@ -4,9 +4,8 @@ Designed to catch common mutations in key ML functions
 Each test is atomic with single assertion for mutation detection
 """
 
+
 import pytest
-import tempfile
-from unittest.mock import Mock, patch, MagicMock
 
 
 class TestDtypeResolution:
@@ -52,7 +51,7 @@ class TestDtypeResolution:
 
         result_lower = _resolve_dtype("fp32")
         result_upper = _resolve_dtype("FP32")
-        
+
         # Both should resolve to same type
         assert result_lower is not None and result_upper is not None, "result_lower must be initialized"
 
@@ -166,7 +165,7 @@ class TestPipelineState:
 
         try:
             execution_log = []
-            
+
             # Minimal test
             pipeline = Pipeline({})
             assert pipeline is not None, "pipeline must be initialized"
@@ -245,7 +244,7 @@ class TestRegistryLookup:
         try:
             registry = Registry()
             registry.register("key", "value")
-            
+
             result = registry.get("key")
             assert result is not None, "result must be initialized"
         except (TypeError, KeyError, NotImplementedError):
@@ -261,7 +260,7 @@ class TestRegistryLookup:
         try:
             registry = Registry()
             registry.register("exists", "value")
-            
+
             assert "exists" in registry, "Condition must be true"
             assert "missing" not in registry, "Condition must be true"
         except (TypeError, NotImplementedError):
@@ -277,7 +276,7 @@ class TestRegistryLookup:
         try:
             registry = Registry()
             registry.register("key", "value1")
-            
+
             # Second register should raise or replace
             with pytest.raises((ValueError, KeyError)):
                 registry.register("key", "value2")
@@ -318,7 +317,7 @@ class TestDeviceHandling:
 
         model = nn.Linear(10, 10)
         devices = {p.device.type for p in model.parameters()}
-        
+
         # Should have exactly one device type
         assert len(devices) == 1, "Devices must not be empty"
 
@@ -344,7 +343,7 @@ class TestTypeCoercion:
         value = None
         default = "default_value"
         result = value or default
-        
+
         assert result == default, "Result must not be empty"
 
 

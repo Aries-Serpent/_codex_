@@ -287,7 +287,7 @@ def cmd_run(
         if not path.exists():
             typer.echo(f"Payload file not found: {path}", err=True)
             raise typer.Exit(1)
-        payload_data: dict = json.loads(path.read_text(encoding="utf-8"))
+        payload_data: dict[str, Any] = json.loads(path.read_text(encoding="utf-8"))
     else:
         try:
             payload_data = json.loads(payload)

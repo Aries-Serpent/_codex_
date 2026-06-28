@@ -10,7 +10,7 @@ from .session_db import SessionDB
 DEFAULT_LOG_DB = _DEFAULT_LOG_DB
 
 
-def fetch_messages(session_id: str, db_path: Optional[Path] = None):
+def fetch_messages(session_id: str, db_path: Optional[Path] = None) -> None:
     """Wrapper exposing :func:`fetch_messages.fetch_messages` at package level."""
 
     path = Path(db_path or DEFAULT_LOG_DB)

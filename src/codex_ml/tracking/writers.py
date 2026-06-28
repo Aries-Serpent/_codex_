@@ -197,7 +197,9 @@ class _SummaryRotator:
                     size = self.path.stat().st_size
                 except FileNotFoundError as e:
                     error_type = type(e).__name__
-                    logger.debug("FileNotFoundError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+                    logger.debug(
+                        "FileNotFoundError: <ERROR_TYPE>"
+                    )  # codeql[py/clear-text-logging-sensitive-data]
                     size = 0
                 if size > 0:
                     self._rotate()
@@ -210,7 +212,9 @@ class _SummaryRotator:
             size = self.path.stat().st_size
         except FileNotFoundError as e:
             error_type = type(e).__name__
-            logger.debug("FileNotFoundError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.debug(
+                "FileNotFoundError: <ERROR_TYPE>"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             return
         if size + incoming_bytes <= self.max_bytes:
             return
@@ -345,7 +349,7 @@ class BaseWriter(ABC):
     """Simple interface for metric writers."""
 
     @abstractmethod
-    def log(self, row: dict) -> None:  # pragma: no cover - interface
+    def log(self, row: dict[str, Any]) -> None:  # pragma: no cover - interface
         """Persist a single metrics row."""
 
     def close(self) -> None:  # pragma: no cover - interface
@@ -401,7 +405,7 @@ class NdjsonWriter(BaseWriter):
                 **rotation,
             )
 
-    def log(self, row: dict) -> None:
+    def log(self, row: dict[str, Any]) -> None:
         record = dict(row)
         if not self._legacy:
             iso = datetime.now(timezone.utc).isoformat()
@@ -456,7 +460,9 @@ class NdjsonWriter(BaseWriter):
                     "descriptor",
                 ),
             )
-            self._manifest_logger.log(manifest_ordered)  # codeql[py/clear-text-logging-sensitive-data]
+            self._manifest_logger.log(
+                manifest_ordered
+            )  # codeql[py/clear-text-logging-sensitive-data]
 
     def _prepare_manifest(
         self, record: dict[str, Any]
@@ -519,11 +525,15 @@ class NdjsonWriter(BaseWriter):
             try:
                 self._manifest_logger.close()  # type: ignore[union-attr]
             except (ValueError, TypeError, RuntimeError):  # pragma: no cover
-                logger.debug("Suppressed exception in handler", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+                logger.debug(
+                    "Suppressed exception in handler", exc_info=True
+                )  # codeql[py/clear-text-logging-sensitive-data]
         try:
             self._logger.close()  # codeql[py/clear-text-logging-sensitive-data]
         except (IOError, OSError):  # pragma: no cover
-            logger.debug("Suppressed exception in handler", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+            logger.debug(
+                "Suppressed exception in handler", exc_info=True
+            )  # codeql[py/clear-text-logging-sensitive-data]
 
 
 class TensorBoardWriter(BaseWriter):
@@ -541,7 +551,9 @@ class TensorBoardWriter(BaseWriter):
                 extra={"dependencies": _collect_dependency_flags()},
             )
         except (IOError, OSError) as exc:  # pragma: no cover - optional
-            logger.debug("TensorBoard writer disabled", exc_info=exc)  # codeql[py/clear-text-logging-sensitive-data]
+            logger.debug(
+                "TensorBoard writer disabled", exc_info=exc
+            )  # codeql[py/clear-text-logging-sensitive-data]
             self._writer = None
             if isinstance(exc, ImportError):
                 self._disabled_reason = format_optional_dependency_error(
@@ -558,7 +570,7 @@ class TensorBoardWriter(BaseWriter):
                 extra={"dependencies": _collect_dependency_flags()},
             )
 
-    def log(self, row: dict) -> None:
+    def log(self, row: dict[str, Any]) -> None:
         if self._writer is None:
             return
         val = row.get("value")
@@ -572,7 +584,9 @@ class TensorBoardWriter(BaseWriter):
                 self._writer.flush()
                 self._writer.close()
             except (IOError, OSError):  # pragma: no cover
-                logger.debug("Suppressed exception in handler", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+                logger.debug(
+                    "Suppressed exception in handler", exc_info=True
+                )  # codeql[py/clear-text-logging-sensitive-data]
 
     def status(self) -> Optional[str]:
         return self._disabled_reason
@@ -584,7 +598,7 @@ class MLflowWriter(BaseWriter):
         uri: str | None,
         exp_name: str,
         run_name: str,
-        tags: dict,
+        tags: dict[str, Any],
         *,
         summary_path: str | Path | None = None,
     ) -> None:
@@ -638,7 +652,9 @@ class MLflowWriter(BaseWriter):
         except (IOError, OSError) as exc:  # pragma: no cover - optional
             self._mlflow = None
             self._run = None
-            logger.debug("MLflow writer disabled", exc_info=exc)  # codeql[py/clear-text-logging-sensitive-data]
+            logger.debug(
+                "MLflow writer disabled", exc_info=exc
+            )  # codeql[py/clear-text-logging-sensitive-data]
             if isinstance(exc, ImportError):
                 self._disabled_reason = format_optional_dependency_error(
                     "mlflow",
@@ -654,7 +670,7 @@ class MLflowWriter(BaseWriter):
                 extra=summary_extra,
             )
 
-    def log(self, row: dict) -> None:
+    def log(self, row: dict[str, Any]) -> None:
         if self._mlflow is None:
             return
         val = row.get("value")
@@ -666,7 +682,9 @@ class MLflowWriter(BaseWriter):
             try:
                 self._mlflow.end_run()
             except (IOError, OSError):  # pragma: no cover
-                logger.debug("Suppressed exception in handler", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+                logger.debug(
+                    "Suppressed exception in handler", exc_info=True
+                )  # codeql[py/clear-text-logging-sensitive-data]
 
     def status(self) -> Optional[str]:
         return self._disabled_reason
@@ -677,7 +695,7 @@ class WandbWriter(BaseWriter):
         self,
         project: str,
         run_name: str,
-        tags: dict,
+        tags: dict[str, Any],
         mode: str = "offline",
         *,
         summary_path: str | Path | None = None,
@@ -705,7 +723,9 @@ class WandbWriter(BaseWriter):
             )
         except (IOError, OSError) as exc:  # pragma: no cover - optional
             self._run = None
-            logger.debug("Weights & Biases writer disabled", exc_info=exc)  # codeql[py/clear-text-logging-sensitive-data]
+            logger.debug(
+                "Weights & Biases writer disabled", exc_info=exc
+            )  # codeql[py/clear-text-logging-sensitive-data]
             if isinstance(exc, ImportError):
                 self._disabled_reason = format_optional_dependency_error(
                     "wandb",
@@ -724,7 +744,7 @@ class WandbWriter(BaseWriter):
                 },
             )
 
-    def log(self, row: dict) -> None:
+    def log(self, row: dict[str, Any]) -> None:
         if self._run is None:
             return
         val = row.get("value")
@@ -737,7 +757,9 @@ class WandbWriter(BaseWriter):
             try:
                 self._run.finish()
             except (IOError, OSError):  # pragma: no cover
-                logger.debug("Suppressed exception in handler", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+                logger.debug(
+                    "Suppressed exception in handler", exc_info=True
+                )  # codeql[py/clear-text-logging-sensitive-data]
 
     def status(self) -> Optional[str]:
         return self._disabled_reason
@@ -767,21 +789,27 @@ class CompositeWriter(BaseWriter):
                 f"{name} ({detail})" if detail else name
                 for name, detail in self._disabled_components
             )
-            print(f"[tracking] degraded writers: {summary}", file=sys.stderr)  # codeql[py/clear-text-logging-sensitive-data]
+            print(
+                f"[tracking] degraded writers: {summary}", file=sys.stderr
+            )  # codeql[py/clear-text-logging-sensitive-data]
 
-    def log(self, row: dict) -> None:
+    def log(self, row: dict[str, Any]) -> None:
         for w in self._writers:
             try:
                 w.log(row)
             except (IOError, OSError) as exc:  # pragma: no cover - robustness
-                logger.debug("Writer log error", exc_info=exc)  # codeql[py/clear-text-logging-sensitive-data]
+                logger.debug(
+                    "Writer log error", exc_info=exc
+                )  # codeql[py/clear-text-logging-sensitive-data]
 
     def close(self) -> None:
         for w in self._writers:
             try:
                 w.close()
             except (IOError, OSError) as exc:  # pragma: no cover - robustness
-                logger.debug("Writer close error", exc_info=exc)  # codeql[py/clear-text-logging-sensitive-data]
+                logger.debug(
+                    "Writer close error", exc_info=exc
+                )  # codeql[py/clear-text-logging-sensitive-data]
 
     @property
     def disabled_components(self) -> tuple[tuple[str, str], ...]:
@@ -830,7 +858,9 @@ class MLflowMetricWriter:
     def _initialize(self) -> None:
         """Initialize MLflow connection."""
         if not MLFLOW_CLIENT_AVAILABLE:
-            logger.warning("MLflow not available - metrics will not be tracked")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning(
+                "MLflow not available - metrics will not be tracked"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             return
 
         try:
@@ -840,11 +870,15 @@ class MLflowMetricWriter:
             mlflow.set_experiment(self.experiment_name)
             self._client = MlflowClient(self.tracking_uri)
             self._initialized = True
-            logger.info(f"MLflow initialized: {self.tracking_uri}")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.info(
+                f"MLflow initialized: {self.tracking_uri}"
+            )  # codeql[py/clear-text-logging-sensitive-data]
         except (IOError, OSError) as e:
             error_type = type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
-            logger.error("Failed to initialize MLflow: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.error(
+                "Failed to initialize MLflow: <ERROR_TYPE>"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             self._initialized = False
 
     def write(self, metrics: dict[str, float], step: int = 0) -> bool:
@@ -865,7 +899,9 @@ class MLflowMetricWriter:
             import mlflow
 
             if mlflow.active_run() is None:
-                logger.warning("No active MLflow run - cannot log metrics")  # codeql[py/clear-text-logging-sensitive-data]
+                logger.warning(
+                    "No active MLflow run - cannot log metrics"
+                )  # codeql[py/clear-text-logging-sensitive-data]
                 return False
 
             mlflow.log_metrics(metrics, step=step)
@@ -873,7 +909,9 @@ class MLflowMetricWriter:
         except (IOError, OSError) as e:
             error_type = type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
-            logger.warning("Failed to log metrics to MLflow: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning(
+                "Failed to log metrics to MLflow: <ERROR_TYPE>"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             return False
 
     def write_metric(self, key: str, value: float, step: int = 0) -> bool:
@@ -915,7 +953,9 @@ class MLflowParamWriter:
             import mlflow
 
             if mlflow.active_run() is None:
-                logger.warning("No active MLflow run - cannot log params")  # codeql[py/clear-text-logging-sensitive-data]
+                logger.warning(
+                    "No active MLflow run - cannot log params"
+                )  # codeql[py/clear-text-logging-sensitive-data]
                 return False
 
             # MLflow params must be strings
@@ -925,7 +965,9 @@ class MLflowParamWriter:
         except (IOError, OSError) as e:
             error_type = type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
-            logger.warning("Failed to log params: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning(
+                "Failed to log params: <ERROR_TYPE>"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             return False
 
     def write_config(self, config: dict[str, Any], prefix: str = "") -> bool:
@@ -986,7 +1028,9 @@ class MLflowArtifactWriter:
             import mlflow
 
             if mlflow.active_run() is None:
-                logger.warning("No active MLflow run - cannot log artifact")  # codeql[py/clear-text-logging-sensitive-data]
+                logger.warning(
+                    "No active MLflow run - cannot log artifact"
+                )  # codeql[py/clear-text-logging-sensitive-data]
                 return False
 
             mlflow.log_artifact(str(local_path), artifact_path)
@@ -994,7 +1038,9 @@ class MLflowArtifactWriter:
         except (IOError, OSError) as e:
             error_type = type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
-            logger.warning("Failed to log artifact: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning(
+                "Failed to log artifact: <ERROR_TYPE>"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             return False
 
     def log_dict(
@@ -1010,7 +1056,9 @@ class MLflowArtifactWriter:
             import mlflow
 
             if mlflow.active_run() is None:
-                logger.warning("No active MLflow run - cannot log dict")  # codeql[py/clear-text-logging-sensitive-data]
+                logger.warning(
+                    "No active MLflow run - cannot log dict"
+                )  # codeql[py/clear-text-logging-sensitive-data]
                 return False
 
             mlflow.log_dict(data, filename)
@@ -1018,7 +1066,9 @@ class MLflowArtifactWriter:
         except (IOError, OSError) as e:
             error_type = type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
-            logger.warning("Failed to log dict artifact: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning(
+                "Failed to log dict artifact: <ERROR_TYPE>"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             return False
 
     def log_model(
@@ -1046,7 +1096,9 @@ class MLflowArtifactWriter:
             import mlflow
 
             if mlflow.active_run() is None:
-                logger.warning("No active MLflow run - cannot log model")  # codeql[py/clear-text-logging-sensitive-data]
+                logger.warning(
+                    "No active MLflow run - cannot log model"
+                )  # codeql[py/clear-text-logging-sensitive-data]
                 return False
 
             # Attempt to detect model type
@@ -1065,8 +1117,12 @@ class MLflowArtifactWriter:
                     mlflow.pytorch.log_model(model, artifact_path)
                 except ImportError as e:
                     error_type = type(e).__name__
-                    logger.debug("ImportError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
-                    logger.warning("mlflow.pytorch is not available; cannot log PyTorch model.")  # codeql[py/clear-text-logging-sensitive-data]
+                    logger.debug(
+                        "ImportError: <ERROR_TYPE>"
+                    )  # codeql[py/clear-text-logging-sensitive-data]
+                    logger.warning(
+                        "mlflow.pytorch is not available; cannot log PyTorch model."
+                    )  # codeql[py/clear-text-logging-sensitive-data]
                     return False
             else:
                 # Try robust sklearn detection using isinstance
@@ -1077,7 +1133,9 @@ class MLflowArtifactWriter:
                     is_sklearn = isinstance(model, BaseEstimator)
                 except ImportError as e:
                     error_type = type(e).__name__
-                    logger.debug("ImportError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+                    logger.debug(
+                        "ImportError: <ERROR_TYPE>"
+                    )  # codeql[py/clear-text-logging-sensitive-data]
                     # Fallback: check characteristic methods (may have false positives)
                     model_module = getattr(type(model), "__module__", "")
                     has_fit = callable(getattr(model, "fit", None))
@@ -1092,19 +1150,25 @@ class MLflowArtifactWriter:
                         mlflow.sklearn.log_model(model, artifact_path)
                     except ImportError as e:
                         error_type = type(e).__name__
-                        logger.debug("ImportError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+                        logger.debug(
+                            "ImportError: <ERROR_TYPE>"
+                        )  # codeql[py/clear-text-logging-sensitive-data]
                         logger.warning(
                             "mlflow.sklearn is not available; cannot log scikit-learn model."
                         )
                         return False
                 else:
-                    logger.warning(f"Unsupported model type for MLflow logging: {type(model)}")  # codeql[py/clear-text-logging-sensitive-data]
+                    logger.warning(
+                        f"Unsupported model type for MLflow logging: {type(model)}"
+                    )  # codeql[py/clear-text-logging-sensitive-data]
                     return False
             return True
         except (ValueError, TypeError, RuntimeError) as e:
             error_type = type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
-            logger.warning("Failed to log model: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning(
+                "Failed to log model: <ERROR_TYPE>"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             return False
 
 
@@ -1125,11 +1189,11 @@ class MLflowRunManager:
         self.tags = tags or {}
         self._run = None
 
-    def start_run(self):
+    def start_run(self) -> None:
         """Context manager for MLflow run."""
         return self
 
-    def __enter__(self):
+    def __enter__(self) -> None:
         """Enter context manager."""
         if not MLFLOW_CLIENT_AVAILABLE or not self.metric_writer._initialized:
             return self
@@ -1138,23 +1202,29 @@ class MLflowRunManager:
             import mlflow
 
             self._run = mlflow.start_run(run_name=self.run_name, tags=self.tags)
-            self._run.__enter__()
+            self._run.__enter__()  # type: ignore[attr-defined]
         except (ImportError, AttributeError) as e:
             error_type = type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
-            logger.warning("Failed to start MLflow run: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning(
+                "Failed to start MLflow run: <ERROR_TYPE>"
+            )  # codeql[py/clear-text-logging-sensitive-data]
 
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         """Exit context manager."""
         if self._run is not None:
             try:
                 self._run.__exit__(exc_type, exc_val, exc_tb)
             except (ValueError, TypeError, RuntimeError) as e:
                 error_type = type(e).__name__
-                logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
-                logger.warning("Failed to end MLflow run: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+                logger.debug(
+                    "Exception: <ERROR_TYPE>"
+                )  # codeql[py/clear-text-logging-sensitive-data]
+                logger.warning(
+                    "Failed to end MLflow run: <ERROR_TYPE>"
+                )  # codeql[py/clear-text-logging-sensitive-data]
             finally:
                 self._run = None
         return False
@@ -1166,7 +1236,9 @@ class MLflowRunManager:
             try:
                 return self._run.info.run_id
             except (IOError, OSError):
-                logger.debug("Suppressed exception in handler", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+                logger.debug(
+                    "Suppressed exception in handler", exc_info=True
+                )  # codeql[py/clear-text-logging-sensitive-data]
         return None
 
     def log_metrics(self, metrics: dict[str, float], step: int = 0) -> bool:

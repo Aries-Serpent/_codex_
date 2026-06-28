@@ -168,7 +168,7 @@ class UnusedCodeAnalyzer(ASTAnalyzer):
         and usages during a single analyze() call on the module node.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize unused code analyzer."""
         # Stateless - no instance variables needed
 
@@ -184,8 +184,8 @@ class UnusedCodeAnalyzer(ASTAnalyzer):
             return findings
 
         # Collect definitions and usages in a single pass (thread-safe)
-        defined_names: set = set()
-        used_names: set = set()
+        defined_names: set[Any] = set[Any]()
+        used_names: set[Any] = set[Any]()
 
         for child in node.walk():
             # Track definitions

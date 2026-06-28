@@ -103,7 +103,7 @@ class InsufficientScopesError(AuthorizationError):
 
     def __init__(
         self,
-        required_scopes: Optional[list] = None,
+        required_scopes: Optional[list[Any]] = None,
         message: str = "Insufficient permissions",
     ):
         super().__init__(message, "insufficient_scopes")

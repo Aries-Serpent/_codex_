@@ -3,11 +3,12 @@
 import ast
 import json
 from pathlib import Path
+from typing import Any
 
 import click
 
 
-def _analyze_module(path: Path) -> dict:
+def _analyze_module(path: Path) -> dict[str, Any]:
     try:
         source = path.read_text(encoding="utf-8", errors="replace")
     except (IOError, OSError):
@@ -46,7 +47,7 @@ def _analyze_module(path: Path) -> dict:
 @click.option("--format", type=click.Choice(["json", "yaml", "html", "csv"]), default="json")
 @click.option("--output", type=click.Path(), help="Output file (default: stdout)")
 @click.option("--threshold", type=int, default=50, help="Long function threshold")
-def analyze_main(path: str, format: str, output: str, threshold: int):
+def analyze_main(path: str, format: str, output: str, threshold: int) -> None:
     """Analyze code quality and generate metrics report.
 
     Examples:
@@ -54,7 +55,7 @@ def analyze_main(path: str, format: str, output: str, threshold: int):
         codex-analyze src/ --threshold 40
     """
     root = Path(path)
-    modules: list[dict] = []
+    modules: list[dict[str, Any]] = []
     for py_file in sorted(root.rglob("*.py")):
         modules.append(_analyze_module(py_file))
 

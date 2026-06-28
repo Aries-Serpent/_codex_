@@ -107,8 +107,9 @@ class TestScopeValidator:
                     TokenScope.WRITE_REPO,
                     TokenScope.READ_REPO,
                 ]
-            )
-            is True
+
+        ), "Condition must be true"
+            == True
         )
 
     def test_has_any_scope_failure(self):
@@ -120,8 +121,9 @@ class TestScopeValidator:
                     TokenScope.WRITE_WORKFLOW,
                     TokenScope.ADMIN_REPO,
                 ]
-            )
-            is False
+
+        ), "Condition must be true"
+            == False
         )
 
     def test_require_scope_success(self):

@@ -154,7 +154,9 @@ def safe_log_message(message: str, mask_secrets: bool = True) -> str:
     return sanitized
 
 
-def sanitize_dict_for_log(data: dict, max_length: int = 500, mask_secrets: bool = True) -> dict:
+def sanitize_dict_for_log(
+    data: dict[str, Any], max_length: int = 500, mask_secrets: bool = True
+) -> dict[str, Any]:
     """
     Sanitize all values in a dictionary for logging.
 

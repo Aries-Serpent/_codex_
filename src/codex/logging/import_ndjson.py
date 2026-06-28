@@ -119,7 +119,7 @@ def _parse_ts(ts: str | None) -> float | None:
 
 
 @contextlib.contextmanager
-def _open_locked(path: Path):
+def _open_locked(path: Path) -> None:
     """Open ``path`` and acquire a shared advisory lock while reading."""
     f = path.open(encoding="utf-8")
     try:

@@ -51,7 +51,7 @@ def _set_mode(path: Path, mode_str: str) -> None:
     )
 
 
-def _templated_bytes(data: bytes, vars: dict) -> bytes:
+def _templated_bytes(data: bytes, vars: dict[str, Any]) -> bytes:
     if not vars:
         return data
     try:
@@ -126,7 +126,7 @@ def _safe_extract(tar: tarfile.TarFile, dest: Path) -> None:
         tar.extract(member, dest.as_posix())
 
 
-def _evidence_append_release(action: str, payload: dict) -> None:
+def _evidence_append_release(action: str, payload: dict[str, Any]) -> None:
     actor = os.getenv("CODEX_ACTOR", "codex")
     evidence_append(action=action, actor=actor, tool="release", repo="_codex_", context=payload)
 
@@ -147,7 +147,7 @@ def _clean_path(path: Path) -> None:
 
     if path.is_dir():
 
-        def _onerror(func, p, exc_info):  # pragma: no cover - defensive cleanup
+        def _onerror(func, p, exc_info) -> None:  # pragma: no cover - defensive cleanup
             with contextlib.suppress(OSError):
                 os.chmod(p, 0o700)  # nosec B103 -- nosemgrep: python.lang.security.audit.insecure-file-permissions.insecure-file-permissions -- temporary owner-only mode applied to force-delete locked tree entries before immediately removing them
             func(p)
@@ -158,7 +158,7 @@ def _clean_path(path: Path) -> None:
     path.unlink()
 
 
-def pack_release(manifest_path: Path, staging_dir: Path, bundle_path: Path) -> tuple[Path, dict]:
+def pack_release(manifest_path: Path, staging_dir: Path, bundle_path: Path) -> tuple[Path, dict[str, Any]]:
     """
     Build a deterministic tar.gz bundle from a manifest referencing archive tombstones.
     Returns (bundle_path, locked_manifest_dict).
@@ -265,7 +265,7 @@ def pack_release(manifest_path: Path, staging_dir: Path, bundle_path: Path) -> t
     return bundle_path, manifest_dict
 
 
-def verify_bundle(bundle_path: Path) -> dict:
+def verify_bundle(bundle_path: Path) -> dict[str, Any]:
     import tarfile
 
     with tarfile.open(bundle_path.as_posix(), "r:gz") as tar:

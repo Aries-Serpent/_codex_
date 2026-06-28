@@ -153,7 +153,7 @@ class _AwaitableDict(dict[str, Any]):
         super().__init__(*args, **kwargs)
         self._loader = loader
 
-    def __await__(self):
+    def __await__(self) -> None:
         async def _resolve() -> _AwaitableDict:
             if self._loader is not None:
                 data = await self._loader()
@@ -247,11 +247,11 @@ class GitHubApp:
         """Check whether *installation* has *permission*."""
         return permission in installation.permissions
 
-    def handle_installation_callback(self, code: str) -> dict:
+    def handle_installation_callback(self, code: str) -> dict[str, Any]:
         """Handle the OAuth callback after app installation."""
         return self.exchange_code_for_token(code)
 
-    def exchange_code_for_token(self, code: str) -> dict:
+    def exchange_code_for_token(self, code: str) -> dict[str, Any]:
         """Exchange an installation code for an access token."""
 
         async def _load() -> dict[str, Any]:
@@ -310,7 +310,9 @@ class GitHubApp:
         """Return tracked active installations."""
         return list(self._active_installations)
 
-    def refresh_installation_token(self, installation_id: str, old_token: dict[str, Any]) -> dict:
+    def refresh_installation_token(
+        self, installation_id: str, old_token: dict[str, Any]
+    ) -> dict[str, Any]:
         """Refresh an installation token for compatibility tests."""
 
         async def _load() -> dict[str, Any]:
@@ -813,7 +815,7 @@ def build_app_manifest(
 # ---------------------------------------------------------------------------
 
 
-def _resolve_github_token() -> list[tuple]:
+def _resolve_github_token() -> list[tuple[Any, ...]]:
     """
     Resolve GitHub PAT tokens from the environment in priority order.
 

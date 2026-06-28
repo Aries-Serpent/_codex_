@@ -23,9 +23,9 @@ class DataConfig:
 
 @dataclass
 class DatasetSplits:
-    train: list
-    val: list
-    test: list
+    train: list[Any]
+    val: list[Any]
+    test: list[Any]
     cache_path: Path | None = None
     from_cache: bool = False
 
@@ -37,7 +37,7 @@ def _normalise_ratios(cfg: DataConfig) -> tuple[float, float, float]:
     return cfg.train_ratio / total, cfg.val_ratio / total, cfg.test_ratio / total
 
 
-def _load_raw_dataset(path: Path) -> list:
+def _load_raw_dataset(path: Path) -> list[Any]:
     if not path.exists():
         raise FileNotFoundError(f"Dataset not found: {path}")
     if path.suffix.lower() in {".jsonl", ".ndjson"}:

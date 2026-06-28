@@ -51,7 +51,7 @@ class SemanticVersion:
             self.patch += 1
 
 
-def determine_bump(diff_entries: list[dict]) -> str:
+def determine_bump(diff_entries: list[dict[str, Any]]) -> str:
     """Determine the semantic version bump level based on diff operations."""
 
     level = "patch"
@@ -66,7 +66,7 @@ def determine_bump(diff_entries: list[dict]) -> str:
 
 def update_artifact_version(
     artifact_name: str,
-    diff: list[dict],
+    diff: list[dict[str, Any]],
     version_file: Path = Path("artifact_versions.json"),
     changelog_file: Path = Path("docs/CHANGELOG.md"),
 ) -> None:

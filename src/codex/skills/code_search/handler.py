@@ -18,7 +18,7 @@ _CONTEXT_LINES = 3
 _PYTHON_GLOB = "**/*.py"
 
 
-def run(payload: dict) -> dict:
+def run(payload: dict[str, Any]) -> dict[str, Any]:
     """Search codebase for *query* and return matched snippets.
 
     Parameters
@@ -51,7 +51,7 @@ def run(payload: dict) -> dict:
     except re.error as exc:
         return {"matches": [], "error": f"Invalid regex pattern: {exc}"}
 
-    matches: list[dict] = []
+    matches: list[dict[str, Any]] = []
     for py_file in sorted(root.glob(glob_pattern)):
         if "__pycache__" in str(py_file):
             continue

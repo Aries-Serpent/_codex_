@@ -82,7 +82,7 @@ class AccuracyMetric(MetricAdapter):
         self._total = 0
 
     @staticmethod
-    def _flatten(nested: Any) -> list:
+    def _flatten(nested: Any) -> list[Any]:
         """Flatten nested lists/tensors."""
         if isinstance(nested, (int, float)):
             return [nested]

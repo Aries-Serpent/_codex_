@@ -39,7 +39,7 @@ class ModelVersion:
     dataset_hash: Optional[str] = None
     drift_score: Optional[float] = None
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "version": self.version,
@@ -51,7 +51,7 @@ class ModelVersion:
         }
 
     @classmethod
-    def from_dict(cls, data: dict) -> ModelVersion:
+    def from_dict(cls, data: dict[str, Any]) -> ModelVersion:
         """Create from dictionary."""
         return cls(
             version=data["version"],
@@ -76,7 +76,7 @@ class ModelRegistry:
         self.versions: list[ModelVersion] = []
         self.load()
 
-    def load(self):
+    def load(self) -> None:
         """Load registry from disk."""
         if self.registry_path.exists():
             try:
@@ -87,7 +87,7 @@ class ModelRegistry:
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.warning("Failed to load registry: <ERROR_TYPE>")
 
-    def save(self):
+    def save(self) -> None:
         """Save registry to disk."""
         self.registry_path.parent.mkdir(parents=True, exist_ok=True)
         data = {"versions": [v.to_dict() for v in self.versions]}

@@ -311,15 +311,15 @@ def evaluate(
 def _run_dataset_evaluation(
     dataset_path: str,
     output_dir: str,
-    metric_names: list,
+    metric_names: list[Any],
     limit: Optional[int],
-    tokenizer_cfg: dict,
-) -> dict:
+    tokenizer_cfg: dict[str, Any],
+) -> dict[str, Any]:
     """Run dataset evaluation pipeline and write output files."""
     import json as _json
 
     # Load dataset
-    records: list[dict] = []
+    records: list[dict[str, Any]] = []
     try:
         with open(dataset_path, encoding="utf-8") as fh:
             for line in fh:
@@ -337,7 +337,7 @@ def _run_dataset_evaluation(
             logger.debug("Ignoring invalid limit value %r; using all records", limit)
 
     # Load vocabulary if tiny-vocab tokenizer
-    vocab: Optional[dict] = None
+    vocab: Optional[dict[str, Any]] = None
     tok_name = tokenizer_cfg.get("name", "")
     tok_path = (tokenizer_cfg.get("cfg") or {}).get("path")
     if tok_name == "tiny-vocab" and tok_path:
@@ -346,7 +346,7 @@ def _run_dataset_evaluation(
         except (IOError, OSError):
             vocab = {}
 
-    def _tokenize(text: str) -> list:
+    def _tokenize(text: str) -> list[Any]:
         if vocab is None:
             return text.split()
         unk = vocab.get("<unk>", 0)

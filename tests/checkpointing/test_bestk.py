@@ -143,7 +143,7 @@ def test_bestk_invalid_checkpoint_path():
         try:
             res = update_and_prune(nonexistent, metric=1.0, k=3, index_path=index)
             # If it succeeds, verify it's recorded
-            assert isinstance(
+            assert isinstance(, "Condition must be true"
                 res["kept"], (list, tuple, set, dict)
             ), "res['kept'] must be a collection type"
         except (FileNotFoundError, ValueError) as e:

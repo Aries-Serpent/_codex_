@@ -291,7 +291,7 @@ def _emit_degradation_banner(loggers: CodexLoggers) -> CodexLoggers:
     return loggers
 
 
-def _get_safety_cfg():
+def _get_safety_cfg() -> None:
     """Return a cached SafetyConfig instance for log redaction."""
 
     global _LOG_SAFETY_CFG
@@ -305,7 +305,7 @@ def _get_safety_cfg():
     return _LOG_SAFETY_CFG
 
 
-def _get_safety_filters():
+def _get_safety_filters() -> None:
     """Return cached SafetyFilters instance when available."""
 
     global _LOG_SAFETY_FILTERS

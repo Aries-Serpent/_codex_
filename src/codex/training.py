@@ -74,7 +74,9 @@ try:
 except ImportError as e:
     error_type = type(e).__name__
     logger.debug("ImportError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
-    logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+    logger.warning(
+        "ImportError: <ERROR_TYPE>", exc_info=True
+    )  # codeql[py/clear-text-logging-sensitive-data]
     # Provide compatibility stubs when training module is not available
     from dataclasses import dataclass
     from typing import Any, Optional
@@ -134,25 +136,33 @@ def _build_safe_ckpt_payload(
         try:
             payload["meta"].update(dict(extra))
         except (ValueError, TypeError, RuntimeError):
-            logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning(
+                "Exception occurred", exc_info=True
+            )  # codeql[py/clear-text-logging-sensitive-data]
             payload["meta"]["_extra_error"] = "failed to merge extra metadata"
     if hasattr(model, "state_dict"):
         try:
             payload["model_state_dict"] = model.state_dict()
         except (ValueError, TypeError, RuntimeError):
-            logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning(
+                "Exception occurred", exc_info=True
+            )  # codeql[py/clear-text-logging-sensitive-data]
             payload["model_state_dict"] = {}
     if hasattr(optimizer, "state_dict"):
         try:
             payload["optimizer_state_dict"] = optimizer.state_dict()
         except (ValueError, TypeError, RuntimeError):
-            logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning(
+                "Exception occurred", exc_info=True
+            )  # codeql[py/clear-text-logging-sensitive-data]
             payload["optimizer_state_dict"] = {}
     if scheduler is not None and hasattr(scheduler, "state_dict"):
         try:
             payload["scheduler_state_dict"] = scheduler.state_dict()
         except (IOError, OSError):
-            logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning(
+                "Exception occurred", exc_info=True
+            )  # codeql[py/clear-text-logging-sensitive-data]
             payload["scheduler_state_dict"] = {}
     return payload
 
@@ -182,7 +192,9 @@ def save_checkpoint(
     except (IOError, OSError) as e:
         error_type = type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
-        logger.warning("Exception: <ERROR_TYPE>", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+        logger.warning(
+            "Exception: <ERROR_TYPE>", exc_info=True
+        )  # codeql[py/clear-text-logging-sensitive-data]
     return str(p)
 
 
@@ -220,7 +232,9 @@ def _safe_token_accuracy(y_true, y_pred) -> float:
         match = sum(1 for i in range(n) if y_true[i] == y_pred[i])
         return match / float(n)
     except (ImportError, AttributeError):
-        logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+        logger.warning(
+            "Exception occurred", exc_info=True
+        )  # codeql[py/clear-text-logging-sensitive-data]
         return 0.0
 
 
@@ -234,7 +248,9 @@ def _safe_perplexity(nll_values) -> float:
         mean = sum(vals) / float(len(vals))
         return float(math.exp(max(0.0, mean)))
     except (ImportError, AttributeError):
-        logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+        logger.warning(
+            "Exception occurred", exc_info=True
+        )  # codeql[py/clear-text-logging-sensitive-data]
         return float("inf")
 
 
@@ -242,7 +258,7 @@ try:  # Attempt to import metrics; fall back to safe implementations
     from codex_ml.metrics import perplexity, token_accuracy
 except (ImportError, AttributeError):  # pragma: no cover - fallback if metrics module missing
 
-    def _fallback_perplexity(nll):
+    def _fallback_perplexity(nll) -> None:
         """Simple perplexity wrapper used when metrics module is unavailable."""
 
         return _safe_perplexity(nll if hasattr(nll, "__iter__") else [nll])
@@ -337,7 +353,9 @@ def run_functional_training(
                 sanitized_text = filters.enforce(sanitized_text, stage="prompt")
             except SafetyViolation as exc:
                 error_type = type(exc).__name__
-                logger.debug("SafetyViolation: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+                logger.debug(
+                    "SafetyViolation: <ERROR_TYPE>"
+                )  # codeql[py/clear-text-logging-sensitive-data]
                 ctx = json.dumps(
                     {
                         "stage": "prompt",
@@ -372,8 +390,12 @@ def run_functional_training(
                 dataset_paths.append(Path(entry))
             except TypeError as e:
                 error_type = type(e).__name__
-                logger.debug("TypeError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
-                logger.warning("TypeError: <ERROR_TYPE>", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+                logger.debug(
+                    "TypeError: <ERROR_TYPE>"
+                )  # codeql[py/clear-text-logging-sensitive-data]
+                logger.warning(
+                    "TypeError: <ERROR_TYPE>", exc_info=True
+                )  # codeql[py/clear-text-logging-sensitive-data]
                 continue
 
     if artifact_root is not None:
@@ -400,8 +422,12 @@ def run_functional_training(
                     key = str(candidate.resolve()) if candidate.exists() else str(candidate)
                 except OSError as e:
                     error_type = type(e).__name__
-                    logger.debug("OSError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
-                    logger.warning("OSError: <ERROR_TYPE>", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+                    logger.debug(
+                        "OSError: <ERROR_TYPE>"
+                    )  # codeql[py/clear-text-logging-sensitive-data]
+                    logger.warning(
+                        "OSError: <ERROR_TYPE>", exc_info=True
+                    )  # codeql[py/clear-text-logging-sensitive-data]
                     key = str(candidate)
                 if key in seen:
                     continue
@@ -418,7 +444,7 @@ def run_functional_training(
             from codex_ml.peft.peft_adapter import apply_lora
         except (ImportError, AttributeError):  # pragma: no cover - optional dependency
 
-            def apply_lora(model, *_args, **_kwargs):
+            def apply_lora(model, *_args, **_kwargs) -> None:
                 return model
 
         model = None
@@ -558,7 +584,9 @@ def _run_minilm_training(
     val_split = max(0.0, min(0.999, float(val_split)))
     test_split = max(0.0, min(0.999, float(test_split)))
     if val_split + test_split >= 1.0:
-        logger.warning("val_split + test_split >= 1; clamping to 0")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.warning(
+            "val_split + test_split >= 1; clamping to 0"
+        )  # codeql[py/clear-text-logging-sensitive-data]
         val_split = 0.0
         test_split = 0.0
     n_val = int(total * val_split)
@@ -570,7 +598,9 @@ def _run_minilm_training(
         n_val = 0
         n_test = 0
         # total >= 2 here (validated above), so always log the warning
-        logger.warning("dataset too small for validation/test split; using all data for training")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.warning(
+            "dataset too small for validation/test split; using all data for training"
+        )  # codeql[py/clear-text-logging-sensitive-data]
     train_tokens = tokens[:n_train]
     val_tokens = tokens[n_train : n_train + n_val]
     _ = tokens[n_train + n_val : n_train + n_val + n_test]
@@ -633,12 +663,18 @@ def _run_minilm_training(
                 if load_info and load_info.get("meta"):
                     epoch = load_info["meta"].get("epoch")
                     if epoch is not None:
-                        print(f"Resumed training from checkpoint epoch {epoch}")  # codeql[py/clear-text-logging-sensitive-data]
+                        print(
+                            f"Resumed training from checkpoint epoch {epoch}"
+                        )  # codeql[py/clear-text-logging-sensitive-data]
             except (ValueError, TypeError, RuntimeError) as e:
                 error_type = type(e).__name__
-                logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+                logger.debug(
+                    "Exception: <ERROR_TYPE>"
+                )  # codeql[py/clear-text-logging-sensitive-data]
                 # Non-fatal: continue training anew if resume fails
-                print(f"Warning: failed to resume from {resume_from}: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+                print(
+                    f"Warning: failed to resume from {resume_from}: <ERROR_TYPE>"
+                )  # codeql[py/clear-text-logging-sensitive-data]
 
     inputs = data[:, :-1].to(dev)
     targets = data[:, 1:].to(dev)
@@ -660,7 +696,9 @@ def _run_minilm_training(
         try:
             writer = SummaryWriter(log_dir=str(tb_dir))
         except (IOError, OSError):
-            logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning(
+                "Exception occurred", exc_info=True
+            )  # codeql[py/clear-text-logging-sensitive-data]
             writer = None
 
     loggers: CodexLoggers = _codex_logging_bootstrap(monitoring_args or argparse.Namespace())
@@ -668,7 +706,7 @@ def _run_minilm_training(
     for epoch in range(3):
         logits = None
 
-        def _compute_loss(_):
+        def _compute_loss(_) -> None:
             nonlocal logits
             logits = model(inputs)
             return F.cross_entropy(logits.reshape(-1, cfg.vocab_size), targets.reshape(-1))
@@ -692,11 +730,15 @@ def _run_minilm_training(
         try:
             acc = float(token_accuracy(preds, tgt))
         except (ValueError, TypeError, RuntimeError):
-            logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning(
+                "Exception occurred", exc_info=True
+            )  # codeql[py/clear-text-logging-sensitive-data]
             try:
                 acc = float(token_accuracy(logits, targets))
             except (ValueError, TypeError, RuntimeError):
-                logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+                logger.warning(
+                    "Exception occurred", exc_info=True
+                )  # codeql[py/clear-text-logging-sensitive-data]
                 acc = float("nan")
 
         # perplexity: prefer logits-based API with from_logits, fall back to loss-based
@@ -709,11 +751,15 @@ def _run_minilm_training(
                 )
             )
         except (ValueError, TypeError, RuntimeError):
-            logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning(
+                "Exception occurred", exc_info=True
+            )  # codeql[py/clear-text-logging-sensitive-data]
             try:
                 ppl = float(perplexity(loss_val))
             except (IOError, OSError):
-                logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+                logger.warning(
+                    "Exception occurred", exc_info=True
+                )  # codeql[py/clear-text-logging-sensitive-data]
                 ppl = float("nan")
 
         if writer:
@@ -733,7 +779,9 @@ def _run_minilm_training(
         except (IOError, OSError) as exc:
             error_type = type(exc).__name__
             logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
-            print("[monitoring-error] <ERROR_TYPE>", file=sys.stderr)  # codeql[py/clear-text-logging-sensitive-data]
+            print(
+                "[monitoring-error] <ERROR_TYPE>", file=sys.stderr
+            )  # codeql[py/clear-text-logging-sensitive-data]
 
         if mgr:
             try:
@@ -747,8 +795,12 @@ def _run_minilm_training(
                 )
             except (IOError, OSError) as e:
                 error_type = type(e).__name__
-                logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
-                print(f"Warning: checkpoint save failed at epoch {epoch + 1}: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+                logger.debug(
+                    "Exception: <ERROR_TYPE>"
+                )  # codeql[py/clear-text-logging-sensitive-data]
+                print(
+                    f"Warning: checkpoint save failed at epoch {epoch + 1}: <ERROR_TYPE>"
+                )  # codeql[py/clear-text-logging-sensitive-data]
 
         if writer:
             writer.add_scalar("loss", loss_val, epoch)
@@ -769,12 +821,16 @@ def _run_minilm_training(
                 try:
                     v_acc = float(token_accuracy(v_preds, v_tgt))
                 except (ValueError, TypeError, RuntimeError):
-                    logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+                    logger.warning(
+                        "Exception occurred", exc_info=True
+                    )  # codeql[py/clear-text-logging-sensitive-data]
                     v_acc = _safe_token_accuracy(v_tgt, v_preds)
                 try:
                     v_ppl = float(perplexity(float(v_loss.item())))
                 except (ValueError, TypeError, RuntimeError):
-                    logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+                    logger.warning(
+                        "Exception occurred", exc_info=True
+                    )  # codeql[py/clear-text-logging-sensitive-data]
                     v_ppl = _safe_perplexity([float(v_loss.item())])
 
             try:
@@ -787,8 +843,12 @@ def _run_minilm_training(
                 _codex_log_all(epoch + 1, val_metrics, loggers)
             except (IOError, OSError) as exc:
                 error_type = type(exc).__name__
-                logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
-                print("[monitoring-error] <ERROR_TYPE>", file=sys.stderr)  # codeql[py/clear-text-logging-sensitive-data]
+                logger.debug(
+                    "Exception: <ERROR_TYPE>"
+                )  # codeql[py/clear-text-logging-sensitive-data]
+                print(
+                    "[monitoring-error] <ERROR_TYPE>", file=sys.stderr
+                )  # codeql[py/clear-text-logging-sensitive-data]
             emit_validation_metric_record(
                 str(metrics_file),
                 {
@@ -811,7 +871,9 @@ def _run_minilm_training(
         except (IOError, OSError) as exc:
             error_type = type(exc).__name__
             logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
-            print("[monitoring-error] <ERROR_TYPE>", file=sys.stderr)  # codeql[py/clear-text-logging-sensitive-data]
+            print(
+                "[monitoring-error] <ERROR_TYPE>", file=sys.stderr
+            )  # codeql[py/clear-text-logging-sensitive-data]
 
     if system_metrics_logger is not None:
         system_metrics_logger.stop()  # codeql[py/clear-text-logging-sensitive-data]
@@ -944,7 +1006,7 @@ def load_training_cfg(**kwargs: Any) -> Any:
         return {"training": kwargs}
 
 
-def run_hf_trainer(texts: Any, output_dir: Any, **kwargs: Any) -> dict:
+def run_hf_trainer(texts: Any, output_dir: Any, **kwargs: Any) -> dict[str, Any]:
     """Run HuggingFace-style trainer on the provided texts.
 
     Public hook so tests can patch it via
@@ -969,7 +1031,7 @@ def run_hf_trainer(texts: Any, output_dir: Any, **kwargs: Any) -> dict:
     ) or {"loss": 0.0}
 
 
-def main(argv: Optional[list] = None) -> None:  # pragma: no cover - convenience CLI
+def main(argv: Optional[list[Any]] = None) -> None:  # pragma: no cover - convenience CLI
     parser = build_parser()
     # Add engine and output-dir args used by peft-comprehensive tests
     parser.add_argument(
@@ -1056,7 +1118,7 @@ def main(argv: Optional[list] = None) -> None:  # pragma: no cover - convenience
         if tokenizer.pad_token is None:
             tokenizer.pad_token = tokenizer.eos_token
 
-        def _encode_with_labels(tok, txts):
+        def _encode_with_labels(tok, txts) -> None:
             """Tokenize *txts* and create labels (padding → -100)."""
             enc = tok(txts, padding=True, return_tensors="pt")
             ids = enc["input_ids"]
@@ -1084,7 +1146,9 @@ def main(argv: Optional[list] = None) -> None:  # pragma: no cover - convenience
         return
 
     if not args.use_deeplearning:
-        print("Symbolic pipeline is not wired for CLI; use programmatic API instead.")  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            "Symbolic pipeline is not wired for CLI; use programmatic API instead."
+        )  # codeql[py/clear-text-logging-sensitive-data]
         return
 
     run_functional_training(
@@ -1126,11 +1190,13 @@ def _codex_autodevice(cli_device: str | None = None) -> str:
             return "cpu"
         return "cuda" if torch.cuda.is_available() else "cpu"
     except (ImportError, AttributeError):
-        logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+        logger.warning(
+            "Exception occurred", exc_info=True
+        )  # codeql[py/clear-text-logging-sensitive-data]
         return cli_device or "cpu"
 
 
-def _codex_maybe_scheduler(optimizer, name: str | None, **kw):
+def _codex_maybe_scheduler(optimizer, name: str | None, **kw) -> None:
     try:
         import torch.optim as optim
 
@@ -1144,12 +1210,14 @@ def _codex_maybe_scheduler(optimizer, name: str | None, **kw):
                 optimizer, step_size=kw.get("step_size", 10), gamma=kw.get("gamma", 0.1)
             )
     except (ValueError, TypeError, RuntimeError):
-        logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+        logger.warning(
+            "Exception occurred", exc_info=True
+        )  # codeql[py/clear-text-logging-sensitive-data]
         return None
     return None
 
 
-def _codex_epoch_metrics(y_true, y_pred) -> dict:
+def _codex_epoch_metrics(y_true, y_pred) -> dict[str, Any]:
     try:
         from codex_ml.metrics import token_accuracy
         from codex_ml.metrics.api import perplexity as perplexity_from_preds
@@ -1159,40 +1227,46 @@ def _codex_epoch_metrics(y_true, y_pred) -> dict:
             "perplexity": float(perplexity_from_preds(y_true, y_pred)),
         }
     except (IOError, OSError):
-        logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+        logger.warning(
+            "Exception occurred", exc_info=True
+        )  # codeql[py/clear-text-logging-sensitive-data]
         return {"token_accuracy": 0.0, "perplexity": 0.0}  # nosec B105
 
 
-def _codex_write_metrics(run_dir: Path, record: dict):
+def _codex_write_metrics(run_dir: Path, record: dict[str, Any]) -> None:
     run_dir.mkdir(parents=True, exist_ok=True)
     f = run_dir / "metrics.json"
     with f.open("a", encoding="utf-8") as fh:
         fh.write(json.dumps(record) + "\n")
 
 
-def _codex_apply_training_integration(args, train_loop_fn, config: dict):
+def _codex_apply_training_integration(args, train_loop_fn, config: dict[str, Any]) -> None:
     if not getattr(args, "use_deeplearning", False):
         return train_loop_fn
     device = _codex_autodevice(getattr(args, "device", None))
     grad_clip = float(getattr(args, "grad_clip", 0.0) or 0.0)
     sched_name = getattr(args, "scheduler", None)
 
-    def wrapped_train_loop(epoch_cb=None):
+    def wrapped_train_loop(epoch_cb=None) -> None:
         last_sched = None
         if epoch_cb is None:
 
-            def epoch_cb(epoch, model=None, optimizer=None, y_true=None, y_pred=None):
+            def epoch_cb(epoch, model=None, optimizer=None, y_true=None, y_pred=None) -> None:
                 pass
 
-        def cb(epoch, model=None, optimizer=None, y_true=None, y_pred=None):
+        def cb(epoch, model=None, optimizer=None, y_true=None, y_pred=None) -> None:
             nonlocal last_sched
             if grad_clip > 0 and model is not None and clip_grad_norm_ is not None:
                 try:
                     clip_grad_norm_(model.parameters(), grad_clip)
                 except (ValueError, TypeError, RuntimeError) as e:
                     error_type = type(e).__name__
-                    logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
-                    logger.warning("Exception: <ERROR_TYPE>", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+                    logger.debug(
+                        "Exception: <ERROR_TYPE>"
+                    )  # codeql[py/clear-text-logging-sensitive-data]
+                    logger.warning(
+                        "Exception: <ERROR_TYPE>", exc_info=True
+                    )  # codeql[py/clear-text-logging-sensitive-data]
             if optimizer is not None and sched_name and last_sched is None:
                 last_sched = _codex_maybe_scheduler(optimizer, sched_name)
             if last_sched is not None:
@@ -1200,8 +1274,12 @@ def _codex_apply_training_integration(args, train_loop_fn, config: dict):
                     last_sched.step()
                 except (ValueError, TypeError, RuntimeError) as e:
                     error_type = type(e).__name__
-                    logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
-                    logger.warning("Exception: <ERROR_TYPE>", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+                    logger.debug(
+                        "Exception: <ERROR_TYPE>"
+                    )  # codeql[py/clear-text-logging-sensitive-data]
+                    logger.warning(
+                        "Exception: <ERROR_TYPE>", exc_info=True
+                    )  # codeql[py/clear-text-logging-sensitive-data]
             rec = {
                 "ts": int(time.time()),
                 "epoch": int(epoch),
@@ -1256,7 +1334,7 @@ def codex_train_step(
     accum_steps=1,
     precision="fp32",
     grad_clip=None,
-):
+) -> None:
     use_fp16 = (precision == "fp16") and _codex_amp_supported()
     scaler = torch.cuda.amp.GradScaler() if use_fp16 else None
     optimizer.zero_grad(set_to_none=True)
@@ -1293,8 +1371,12 @@ def codex_train_step(
                 clip_grad_norm_(model.parameters(), grad_clip)
             except (ValueError, TypeError, RuntimeError) as e:
                 error_type = type(e).__name__
-                logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
-                logger.warning("Exception: <ERROR_TYPE>", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+                logger.debug(
+                    "Exception: <ERROR_TYPE>"
+                )  # codeql[py/clear-text-logging-sensitive-data]
+                logger.warning(
+                    "Exception: <ERROR_TYPE>", exc_info=True
+                )  # codeql[py/clear-text-logging-sensitive-data]
         scaler.step(optimizer)
         scaler.update()
     else:
@@ -1303,8 +1385,12 @@ def codex_train_step(
                 clip_grad_norm_(model.parameters(), grad_clip)
             except (ValueError, TypeError, RuntimeError) as e:
                 error_type = type(e).__name__
-                logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
-                logger.warning("Exception: <ERROR_TYPE>", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
+                logger.debug(
+                    "Exception: <ERROR_TYPE>"
+                )  # codeql[py/clear-text-logging-sensitive-data]
+                logger.warning(
+                    "Exception: <ERROR_TYPE>", exc_info=True
+                )  # codeql[py/clear-text-logging-sensitive-data]
         optimizer.step()
 
     if scheduler:

@@ -35,7 +35,7 @@ class BaseBrainAdapter:
     behavior while maintaining the standard interface.
     """
 
-    def __init__(self, agent_id: str, **kwargs):
+    def __init__(self, agent_id: str, **kwargs) -> None:
         """
         Initialize the adapter.
 
@@ -46,15 +46,15 @@ class BaseBrainAdapter:
         self.brain = AgentBrainInterface(agent_id=agent_id, **kwargs)
         self.agent_id = agent_id
 
-    def query_patterns(self, symptoms, **kwargs):
+    def query_patterns(self, symptoms, **kwargs) -> None:
         """Query patterns with optional category filtering."""
         return self.brain.query_patterns(symptoms, **kwargs)
 
-    def submit_learning(self, pattern_id: str, outcome: str, **kwargs):
+    def submit_learning(self, pattern_id: str, outcome: str, **kwargs) -> None:
         """Submit learning feedback."""
         return self.brain.submit_learning(pattern_id, outcome, **kwargs)
 
-    def diagnose(self, symptoms, **kwargs):
+    def diagnose(self, symptoms, **kwargs) -> None:
         """Perform diagnosis."""
         return self.brain.diagnose(symptoms, **kwargs)
 
@@ -68,7 +68,7 @@ class CICDAdapter(BaseBrainAdapter):
 
     CATEGORY = "ci_cd"
 
-    def query_patterns(self, symptoms, **kwargs):
+    def query_patterns(self, symptoms, **kwargs) -> None:
         """Query CI/CD-specific patterns."""
         kwargs.setdefault("category", self.CATEGORY)
         return super().query_patterns(symptoms, **kwargs)
@@ -83,7 +83,7 @@ class TestingAdapter(BaseBrainAdapter):
 
     CATEGORY = "testing"
 
-    def query_patterns(self, symptoms, **kwargs):
+    def query_patterns(self, symptoms, **kwargs) -> None:
         """Query testing-specific patterns."""
         kwargs.setdefault("category", self.CATEGORY)
         return super().query_patterns(symptoms, **kwargs)
@@ -98,7 +98,7 @@ class SecurityAdapter(BaseBrainAdapter):
 
     CATEGORY = "security"
 
-    def query_patterns(self, symptoms, **kwargs):
+    def query_patterns(self, symptoms, **kwargs) -> None:
         """Query security-specific patterns."""
         kwargs.setdefault("category", self.CATEGORY)
         return super().query_patterns(symptoms, **kwargs)

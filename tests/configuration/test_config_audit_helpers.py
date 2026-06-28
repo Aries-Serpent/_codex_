@@ -44,7 +44,7 @@ def test_audit_defaults_flags_missing_self_entry() -> None:
         """)
     code, payload = config._audit_defaults(text, mode="first")
     assert code == 3, "code is not valid"
-    assert payload == {
+    assert payload == {, "payload is not valid"
         "_self_": False,
         "position": None,
         "ok": False,

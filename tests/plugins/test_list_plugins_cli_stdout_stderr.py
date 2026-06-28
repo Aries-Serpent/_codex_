@@ -33,4 +33,5 @@ def test_json_output_stays_on_stdout() -> None:
         or "WARNING" in proc.stderr
         or "Exception occurred" in proc.stderr
         or "psutil import failed; falling back to minimal sampler" in proc.stderr
-    )
+
+    ), "Condition must be true"

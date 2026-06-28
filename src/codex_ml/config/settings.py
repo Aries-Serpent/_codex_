@@ -83,7 +83,7 @@ class EvalRow(BaseModel):
     )
 
 
-def eval_row_schema() -> dict:
+def eval_row_schema() -> dict[str, Any]:
     """Return the JSON Schema for :class:`EvalRow`."""
 
     return EvalRow.model_json_schema()

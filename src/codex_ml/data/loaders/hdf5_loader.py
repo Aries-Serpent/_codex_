@@ -82,7 +82,7 @@ class HDF5Loader:
             logger.debug("Exception: <ERROR_TYPE>")
             raise ValueError(f"Invalid HDF5 file: {e}") from e
 
-    def load(self):
+    def load(self) -> None:
         """
         Load HDF5 dataset into memory
 
@@ -167,7 +167,7 @@ class HDF5Loader:
         """
         paths = []
 
-        def visitor(name, obj):
+        def visitor(name, obj) -> None:
             if isinstance(obj, h5py.Dataset):
                 paths.append(name)
 

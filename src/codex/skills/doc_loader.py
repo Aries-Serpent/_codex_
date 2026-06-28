@@ -51,7 +51,7 @@ _DEFAULT_AGENTS_ROOT = _repo_root() / ".github" / "agents"
 _RE_FRONTMATTER = re.compile(r"^---\s*\n(.*?)\n---", re.DOTALL)
 
 
-def _extract_frontmatter(text: str) -> dict:
+def _extract_frontmatter(text: str) -> dict[str, Any]:
     """Parse YAML frontmatter from a Markdown file.  Returns {} on failure."""
     if yaml is None:  # pragma: no cover
         return {}
@@ -66,7 +66,7 @@ def _extract_frontmatter(text: str) -> dict:
 
 
 def _frontmatter_to_manifest(
-    fm: dict,
+    fm: dict[str, Any],
     *,
     doc_path: str,
     text: str,

@@ -298,7 +298,7 @@ class CircuitBreaker:
             if self.config.persist_state:
                 self._save_state()
 
-    def get_state(self) -> dict:
+    def get_state(self) -> dict[str, Any]:
         """Get current circuit breaker state"""
         return {
             "state": self.state.value,
@@ -310,7 +310,7 @@ class CircuitBreaker:
             "metrics": self.metrics.copy(),
         }
 
-    def get_metrics(self) -> dict:
+    def get_metrics(self) -> dict[str, Any]:
         """Get detailed metrics"""
         with self.lock:
             return {
@@ -406,7 +406,7 @@ def retry_with_backoff(
     initial_delay: float = 1.0,
     max_delay: float = 60.0,
     backoff_factor: float = 2.0,
-    exceptions: tuple = (Exception,),
+    exceptions: tuple[Any, ...] = (Exception,),
     *args,
     **kwargs,
 ) -> Any:
@@ -593,7 +593,7 @@ class PerModelCircuitBreaker:
         breaker = self.get_breaker(model_name)
         return breaker.call(func, *args, **kwargs)
 
-    def get_all_states(self) -> dict[str, dict]:
+    def get_all_states(self) -> dict[str, dict[str, Any]]:
         """Get states of all circuit breakers
 
         Returns:
@@ -602,7 +602,7 @@ class PerModelCircuitBreaker:
         with self.lock:
             return {name: breaker.get_state() for name, breaker in self.breakers.items()}
 
-    def get_all_metrics(self) -> dict[str, dict]:
+    def get_all_metrics(self) -> dict[str, dict[str, Any]]:
         """Get metrics from all circuit breakers
 
         Returns:

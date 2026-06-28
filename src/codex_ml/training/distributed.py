@@ -288,7 +288,7 @@ def distributed_context(config: Optional[DistributedConfig] = None):
 def launch_distributed(
     fn: Callable,
     world_size: int,
-    args: tuple = (),
+    args: tuple[Any, ...] = (),
     kwargs: Optional[dict[str, Any]] = None,
     backend: str = "nccl",
 ) -> None:

@@ -142,7 +142,7 @@ class ThreadSafeSessionEmbeddings:
     ) -> bool:
         """Add session to index (exclusive write)."""
 
-        def _add():
+        def _add() -> None:
             if not HAS_FAISS:
                 # Store only in metadata
                 self._metadata[session_id] = {
@@ -159,11 +159,11 @@ class ThreadSafeSessionEmbeddings:
                 return False
 
             # Add to index
-            self._index.add(np.array([embedding]))
+            self._index.add(np.array([embedding]))  # type: ignore[attr-defined]
 
             # Store metadata
             self._metadata[session_id] = {
-                "index_id": self._index.ntotal - 1,
+                "index_id": self._index.ntotal - 1,  # type: ignore[attr-defined]
                 "description": description,
                 "patterns": patterns,
                 "keywords": keywords,
@@ -192,7 +192,7 @@ class ThreadSafeSessionEmbeddings:
     ) -> list[dict[str, Any]]:
         """Find similar sessions (concurrent read with read-write lock)."""
 
-        def _find():
+        def _find() -> None:
             if query_session_id not in self._metadata:
                 return []
 
@@ -217,7 +217,7 @@ class ThreadSafeSessionEmbeddings:
                 return []
 
             # Search index
-            distances, indices = self._index.search(np.array([embedding]), k + 1)
+            distances, indices = self._index.search(np.array([embedding]), k + 1)  # type: ignore[attr-defined]
 
             # Convert to results
             results = []
@@ -253,7 +253,7 @@ class ThreadSafeSessionEmbeddings:
     def get_embedding(self, session_id: str) -> Optional[np.ndarray]:
         """Get embedding for session (concurrent read)."""
 
-        def _get():
+        def _get() -> None:
             if session_id not in self._metadata:
                 return None
 
@@ -268,7 +268,7 @@ class ThreadSafeSessionEmbeddings:
 
             # Reconstruct embedding from index
             try:
-                embedding = self._index.reconstruct(int(idx))
+                embedding = self._index.reconstruct(int(idx))  # type: ignore[attr-defined]
                 return embedding.astype(np.float32)
             except (IOError, OSError) as e:
                 error_type = type(e).__name__
@@ -324,11 +324,11 @@ class ThreadSafeSessionEmbeddings:
         }
         save_metrics(metrics_dict, self.metrics_path)  # type: ignore[arg-type]
 
-    def __enter__(self):
+    def __enter__(self) -> None:
         """Context manager entry."""
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         """Context manager exit."""
         self.save_index()
         self.save_metrics()

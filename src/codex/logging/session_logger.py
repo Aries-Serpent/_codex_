@@ -114,7 +114,7 @@ def _default_db_path() -> Path:
     return Path(os.getenv("CODEX_LOG_DB_PATH", str(DEFAULT_LOG_DB)))
 
 
-def init_db(db_path: Optional[Path] = None):
+def init_db(db_path: Optional[Path] = None) -> None:
     """Initialize SQLite table for session events if absent."""
     p = Path(db_path or _default_db_path())
     key = str(p)
@@ -186,7 +186,7 @@ def _fallback_log_event(
     message: str,
     db_path: Optional[Path] = None,
     meta: Optional[dict[str, Any]] = None,
-):
+) -> None:
     p = init_db(db_path)
     key = str(p)
     if USE_POOL:
@@ -238,7 +238,7 @@ def log_event(
     message: str,
     db_path: Optional[Path] = None,
     meta: Optional[dict[str, Any]] = None,
-):
+) -> None:
     """Delegate to shared log_event if available, otherwise fallback."""
     if _shared_log_event is not None:
         if getattr(_shared_log_event, "__module__", "") == "codex.monkeypatch.log_adapters":
@@ -307,7 +307,7 @@ def log_message(
     message,
     db_path: Optional[Path] = None,
     meta: Optional[dict[str, Any]] = None,
-):
+) -> None:
     """Validate role, normalize message to string, ensure DB init, and write.
 
     Args:
@@ -372,7 +372,7 @@ class SessionLogger:
             logger.warning("session_end DB log failed", exc_info=True)
         return False
 
-    def log(self, role: str, message):
+    def log(self, role: str, message) -> None:
         log_message(self.session_id, role, message, db_path=self.db_path)
 
 

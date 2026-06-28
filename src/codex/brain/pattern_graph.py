@@ -33,10 +33,10 @@ class PatternNode:
     created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     last_accessed: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
 
-    def __hash__(self):
+    def __hash__(self) -> None:
         return hash(self.id)
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> None:
         if not isinstance(other, PatternNode):
             return False
         return self.id == other.id
@@ -70,7 +70,7 @@ class PatternGraph:
     - Export to GraphML
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize empty graph."""
         self.nodes: dict[str, PatternNode] = {}
         self.edges: list[PatternEdge] = []
@@ -132,7 +132,7 @@ class PatternGraph:
         """
         chains = []
 
-        def dfs(current_id: str, chain: list[str], length: int):
+        def dfs(current_id: str, chain: list[str], length: int) -> None:
             if length >= max_length:
                 return
 
@@ -154,7 +154,7 @@ class PatternGraph:
         paths = []
         visited = set()
 
-        def dfs(current_id: str, path: list[str]):
+        def dfs(current_id: str, path: list[str]) -> None:
             if current_id in visited:
                 return
             visited.add(current_id)
@@ -366,7 +366,7 @@ class PatternGraph:
 class GraphBuilder:
     """Builds pattern graphs from discovered patterns."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize graph builder."""
         self.graph = PatternGraph()
 

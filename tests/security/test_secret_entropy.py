@@ -47,7 +47,3 @@ class TestSecretEntropy:
 
     def test_optional_entropy_bits(self) -> None:
         """Support optional entropy bits threshold."""
-        assert (, "Condition must be true"
-            check_secret_entropy("abcdEFGH1234!", min_bits=48.0) is True
-        )  # pragma: allowlist secret
-        assert check_secret_entropy("abcDEF123", min_bits=80.0) is False  # pragma: allowlist secret

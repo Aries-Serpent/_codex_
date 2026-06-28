@@ -185,7 +185,7 @@ class QueryResult(BaseModel):
     text: str
     file: str
     score: float
-    metadata: Optional[dict] = None
+    metadata: Optional[dict[str, Any]] = None
 
 
 class QueryResponse(BaseModel):
@@ -259,13 +259,13 @@ class StatsResponse(BaseModel):
     embedding_dim: int
     created_at: str
     size_mb: float
-    metadata: dict
+    metadata: dict[str, Any]
 
 
 class MetricsResponse(BaseModel):
     """Metrics response."""
 
-    metrics: dict
+    metrics: dict[str, Any]
     timestamp: str
 
 
@@ -499,7 +499,7 @@ async def delete_index(
 
 @app.post("/rag/merge", response_model=MergeIndicesResponse, tags=["RAG"])
 @limiter.limit("5/minute")
-async def merge_indices(request: Request, merge_request: MergeIndicesRequest):
+async def merge_indices(request: Request, merge_request: MergeIndicesRequest) -> None:
     """Merge multiple indices."""
     try:
         from codex.rag import IndexOperation, manage_tenant_indices
@@ -529,7 +529,7 @@ async def merge_indices(request: Request, merge_request: MergeIndicesRequest):
 
 @app.get("/rag/stats/{index_name}", response_model=StatsResponse, tags=["RAG"])
 @limiter.limit("30/minute")
-async def get_stats(request: Request, index_name: str, tenant_id: str = "default"):
+async def get_stats(request: Request, index_name: str, tenant_id: str = "default") -> None:
     """Get statistics for an index."""
     try:
         from codex.rag import IndexOperation, load_index, manage_tenant_indices
@@ -577,7 +577,7 @@ async def get_stats(request: Request, index_name: str, tenant_id: str = "default
 
 @app.get("/rag/metrics", response_model=MetricsResponse, tags=["RAG"])
 @limiter.limit("30/minute")
-async def get_metrics(request: Request):
+async def get_metrics(request: Request) -> None:
     """Get RAG system metrics."""
     try:
         from codex.rag import get_metrics
@@ -597,13 +597,13 @@ async def get_metrics(request: Request):
 
 
 @app.exception_handler(404)
-async def not_found_handler(request: Request, exc: HTTPException):
+async def not_found_handler(request: Request, exc: HTTPException) -> None:
     """Handle 404 errors."""
     return JSONResponse(status_code=404, content={"detail": str(exc.detail), "status": "not_found"})
 
 
 @app.exception_handler(500)
-async def internal_error_handler(request: Request, exc: HTTPException):
+async def internal_error_handler(request: Request, exc: HTTPException) -> None:
     """Handle 500 errors."""
     return JSONResponse(status_code=500, content={"detail": str(exc.detail), "status": "error"})
 
@@ -612,14 +612,14 @@ async def internal_error_handler(request: Request, exc: HTTPException):
 
 
 @app.on_event("startup")
-async def startup_event():
+async def startup_event() -> None:
     """Initialize on startup."""
     logger.info("RAG API Server starting")
     logger.info("Documentation available at /docs")
 
 
 @app.on_event("shutdown")
-async def shutdown_event():
+async def shutdown_event() -> None:
     """Cleanup on shutdown."""
     print("👋 RAG API Server shutting down...")
 

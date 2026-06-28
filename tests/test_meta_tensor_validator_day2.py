@@ -7,6 +7,7 @@ Fixed in torch >= 2.2.0
 """
 
 import sys
+
 import pytest
 
 # Guard for PyTorch 2.x + Python 3.12 isinstance() union-type bug
@@ -82,7 +83,7 @@ class TestMetaTensorValidation:
             pytest.skip("Factory creation failed")
 
         model = factory.create(model_type="tiny", device="cpu")
-        
+
         # All parameters should be on CPU
         for param in model.parameters():
             assert param.device.type == "cpu", f"Found param on {param.device}"
@@ -100,7 +101,7 @@ class TestMetaTensorValidation:
             nn.ReLU(),
             nn.Linear(20, 5)
         )
-        
+
         # All params should be on same device
         devices = {p.device for p in model.parameters()}
         assert len(devices) == 1, f"Mixed devices: {devices}"
@@ -122,7 +123,7 @@ class TestPEFTCompatibility:
             alpha=16,
             target_modules=["q_proj", "v_proj"]
         )
-        
+
         assert cfg.r > 0, "LoRA rank must be positive"
         assert cfg.alpha > 0, "LoRA alpha must be positive"
         assert cfg.target_modules is not None, "Target modules required"
@@ -136,7 +137,7 @@ class TestPEFTCompatibility:
             pytest.skip("LoraBuildCfg not available")
 
         cfg = LoraBuildCfg()
-        
+
         assert cfg.r == 8, "Default rank should be 8"
         assert cfg.alpha == 16, "Default alpha should be 16"
         assert cfg.dropout == 0.0, "Default dropout should be 0"
@@ -146,7 +147,7 @@ class TestPEFTCompatibility:
     def test_lora_build_no_peft(self):
         """Should handle graceful fallback when PEFT not installed."""
         try:
-            from codex_ml.models.peft_hooks import build_lora, LoraBuildCfg
+            from codex_ml.models.peft_hooks import LoraBuildCfg, build_lora
         except (ImportError, AttributeError):
             pytest.skip("LoRA functions not available")
 
@@ -157,7 +158,7 @@ class TestPEFTCompatibility:
 
         model = nn.Linear(10, 10)
         cfg = LoraBuildCfg(r=8)
-        
+
         # Should return model unchanged if PEFT unavailable
         result = build_lora(model, cfg)
         assert result is not None, "result must be initialized"
@@ -195,7 +196,7 @@ class TestModelInitialization:
         try:
             import os
             os.environ.pop("CODEX_ML_QUANTIZATION", None)
-            
+
             factory = create_model_factory()
             assert factory is not None, "factory must be initialized"
         except Exception as _err:
@@ -214,11 +215,11 @@ class TestModelInitialization:
             nn.ReLU(),
             nn.Linear(20, 5)
         )
-        
+
         # Should handle forward pass
         x = torch.randn(2, 10)
         output = model(x)
-        
+
         assert output.shape == (2, 5), f"Unexpected output shape: {output.shape}"
 
 

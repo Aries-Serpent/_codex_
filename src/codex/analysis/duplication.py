@@ -44,9 +44,9 @@ def _hash_file(path: Path) -> str:
     try:
         return hashlib.sha256(path.read_bytes()).hexdigest()
     except OSError as e:
-       logger.debug(f"OSError: {type(e).__name__}")
-       logger.warning(f"OSError: {type(e).__name__}", exc_info=True)
-       return ""
+        logger.debug(f"OSError: {type(e).__name__}")
+        logger.warning(f"OSError: {type(e).__name__}", exc_info=True)
+        return ""
 
 
 def _assess_severity(ratio: float, *, acceptable: float, warning: float, critical: float) -> str:
@@ -100,7 +100,7 @@ def analyze_duplication(
     def _format_paths(paths: list[Path]) -> list[str]:
         return [str(p.relative_to(base)) for p in paths]
 
-    def _format_duplicate_groups():
+    def _format_duplicate_groups() -> None:
         formatted: list[dict[str, Any]] = []
         for stem, paths in sorted(duplicate_groups.items(), key=lambda item: -len(item[1]))[:20]:
             formatted.append(
@@ -112,7 +112,7 @@ def analyze_duplication(
             )
         return formatted
 
-    def _format_content_duplicates():
+    def _format_content_duplicates() -> None:
         entries: list[dict[str, Any]] = []
         for digest, paths in content_hashes.items():
             if len(paths) > 1:

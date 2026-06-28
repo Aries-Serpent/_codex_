@@ -52,7 +52,7 @@ class TrafficSplitter:
         >>> target = splitter.route_request(request_id)
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.blue_weight = 100
         self.green_weight = 0
         self.blue_healthy = True
@@ -128,7 +128,7 @@ class TrafficSplitter:
         else:
             self.green_healthy = healthy
 
-    def reset_stats(self):
+    def reset_stats(self) -> None:
         """Reset error and request counters."""
         self.blue_errors = 0
         self.green_errors = 0
@@ -261,7 +261,7 @@ class BlueGreenDeployment:
         self.rollback_triggered = True
         self.current_green_version = None
 
-    def complete_rollout(self):
+    def complete_rollout(self) -> None:
         """Complete rollout and promote green to blue."""
         print(f"Rollout complete: {self.current_green_version} promoted to blue")
         self.current_blue_version = self.current_green_version

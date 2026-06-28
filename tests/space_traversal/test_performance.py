@@ -64,7 +64,7 @@ def test_file_cache_expiry(tmp_path: Path):
         if result is None:
             break
         time.sleep(0.1)  # Poll every 100ms
-    
+
     assert result is None, "Result must be expired"
 
 
@@ -87,9 +87,9 @@ def test_file_cache_invalidate(tmp_path: Path):
             break
         if attempt < max_attempts - 1:
             time.sleep(0.05)  # Small sleep to allow file system to sync
-    
+
     assert result is True, "Condition must be true"
-    
+
     # Verify deletion with retry
     retrieved = None
     for attempt in range(max_attempts):
@@ -98,7 +98,7 @@ def test_file_cache_invalidate(tmp_path: Path):
             break
         if attempt < max_attempts - 1:
             time.sleep(0.05)
-    
+
     assert retrieved is None, "Condition must be true"
     assert cache.invalidate("key1") is False, "Condition must be true"
 
@@ -121,7 +121,7 @@ def test_file_cache_clear(tmp_path: Path):
 
     count = cache.clear()
     assert count == 3, "Count must be greater than zero"
-    
+
     # Fix: Add retry logic to verify files are actually deleted
     # (handles file system sync delays on slow CI runners)
     max_attempts = 3

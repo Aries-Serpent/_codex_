@@ -80,7 +80,7 @@ class ReadWriteLock:
         self.metrics = LockMetrics()
 
     @contextmanager
-    def read_lock(self):
+    def read_lock(self) -> None:
         """Acquire read lock (allow concurrent readers)."""
         start_time = time.time()
         acquired = False
@@ -113,7 +113,7 @@ class ReadWriteLock:
                         self._read_ready.notify_all()
 
     @contextmanager
-    def write_lock(self):
+    def write_lock(self) -> None:
         """Acquire write lock (exclusive, single writer)."""
         start_time = time.time()
         acquired = False
@@ -276,7 +276,7 @@ class ArchiveOperationLock:
             return self._session_locks[session_id]
 
     @contextmanager
-    def archive_lock(self, session_id: str):
+    def archive_lock(self, session_id: str) -> None:
         """Acquire exclusive lock for archive operation."""
         lock = self.acquire_session_lock(session_id)
         start_time = time.time()

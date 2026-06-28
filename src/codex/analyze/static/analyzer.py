@@ -243,7 +243,7 @@ def _calculate_complexity(tree: ast.AST) -> ComplexityMetrics:
     )
 
 
-def _resolve_tool(tool: str, trusted_dirs: Optional[list] = None) -> Optional[str]:
+def _resolve_tool(tool: str, trusted_dirs: Optional[list[Any]] = None) -> Optional[str]:
     """
     Resolve tool path from PATH with optional trusted directory validation.
 

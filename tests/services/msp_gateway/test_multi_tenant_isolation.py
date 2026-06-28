@@ -8,17 +8,19 @@ with no cross-tenant access or data leakage.
 from __future__ import annotations
 
 import json
+
 import pytest
 
 pytest.importorskip("fastapi")
 pytest.importorskip("pydantic_settings")
 
 from fastapi import FastAPI, Request
-from fastapi.testclient import TestClient
- # pragma: allowlist secret # pragma: allowlist secret
-from services.msp_gateway.middleware import TenantContextMiddleware, RateLimitMiddleware
-from services.msp_gateway.middleware.tenant_context import TenantRegistry
+from fastapi.testclient import TestClient # pragma: allowlist secret # pragma: allowlist secret
+
+# pragma: allowlist secret # pragma: allowlist secret
+from services.msp_gateway.middleware import RateLimitMiddleware, TenantContextMiddleware
 from services.msp_gateway.middleware import tenant_context as tc_module
+from services.msp_gateway.middleware.tenant_context import TenantRegistry
 
 
 def test_multi_tenant_isolation_data_separation(

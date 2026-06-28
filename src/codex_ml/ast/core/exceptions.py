@@ -9,7 +9,7 @@ across the AST analysis framework.
 class ASTError(Exception):
     """Base exception for all AST operations."""
 
-    def __init__(self, message: str, details: dict | None = None):
+    def __init__(self, message: str, details: dict[str, Any] | None = None):
         super().__init__(message)
         self.message = message
         self.details = details or {}
@@ -88,6 +88,6 @@ class CycleDetectedError(ASTError):
     Raised when topological sort is attempted on a graph with cycles.
     """
 
-    def __init__(self, message: str = "Circular dependency detected", cycle: list | None = None):
+    def __init__(self, message: str = "Circular dependency detected", cycle: list[Any] | None = None):
         super().__init__(message)
         self.cycle = cycle or []

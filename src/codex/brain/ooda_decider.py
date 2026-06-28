@@ -87,7 +87,7 @@ class DecisionDirective:
 class ConfidenceScorer:
     """Scores confidence of decisions."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.min_confidence_threshold = 0.70
         self.auto_approve_threshold = 0.85
 
@@ -280,7 +280,7 @@ class SemanticActionSelector:
 class OODADecider:
     """Main decider: orchestrates autonomous decision-making."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.confidence_scorer = ConfidenceScorer()
         self.guardrail_validator = GuardrailValidator()
         self.action_selector = SemanticActionSelector()

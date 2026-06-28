@@ -49,7 +49,7 @@ def benchmark_embedding_providers(
                 # Benchmark encoding
                 result = runner.run_benchmark(
                     name=f"{provider_name}_encode_{size}",
-                    func=provider.encode,
+                    func=provider.encode,  # type: ignore[attr-defined]
                     texts=texts,
                     runs=runs,
                 )
@@ -76,7 +76,7 @@ def benchmark_embedding_providers(
     }
 
 
-def _get_provider(name: str):
+def _get_provider(name: str) -> None:
     """Get embedding provider by name."""
     from codex.rag.embeddings import create_embedding_provider
 
@@ -134,7 +134,7 @@ def benchmark_embedding_quality(
             provider = _get_provider(provider_name)
 
             # Encode queries
-            query_embeddings = provider.encode(test_queries)
+            query_embeddings = provider.encode(test_queries)  # type: ignore[attr-defined]
 
             # Calculate pairwise similarities
             similarities = []

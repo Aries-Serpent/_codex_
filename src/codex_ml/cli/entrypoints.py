@@ -40,7 +40,7 @@ try:  # pragma: no cover - structured logging is optional offline
 except (ValueError, TypeError):  # pragma: no cover - degrade gracefully without structured logging
     ArgparseJSONParser = None
 
-    def init_json_logging():
+    def init_json_logging() -> None:
         class _NullLogger:
             def info(self, *_a: object, **_k: object) -> None:
                 return None
@@ -63,7 +63,7 @@ except (ValueError, TypeError):  # pragma: no cover - degrade gracefully without
         def __exit__(self, *_exc: object) -> None:  # pragma: no cover - trivial branch
             return None
 
-    def capture_exceptions(logger=None, **_kwargs):
+    def capture_exceptions(logger=None, **_kwargs) -> None:
         if callable(logger) and not isinstance(logger, type):
             return logger
         return _CaptureContext()

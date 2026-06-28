@@ -3,10 +3,9 @@ Day 3: Edge Cases & Integration Tests
 Advanced error handling, boundary conditions, and module integration
 """
 
-import pytest
 import tempfile
-from pathlib import Path
-from unittest.mock import Mock, patch
+
+import pytest
 
 
 class TestModelEdgeCases:
@@ -47,7 +46,7 @@ class TestModelEdgeCases:
         model = nn.ModuleList([
             nn.Linear(10, 10),  # default dtype
         ])
-        
+
         dtypes = {p.dtype for p in model.parameters()}
         assert len(dtypes) >= 1, "Dtypes must not be empty"
 
@@ -61,7 +60,7 @@ class TestModelEdgeCases:
 
         model = nn.Linear(10, 10)
         model.register_buffer("running_mean", torch.zeros(10))
-        
+
         buffers = list(model.buffers())
         assert len(buffers) > 0, "Buffers must not be empty"
 
@@ -75,12 +74,12 @@ class TestModelEdgeCases:
 
         model = nn.Linear(10, 10)
         hook_called = []
-        
+
         def hook(module, input, output):
             hook_called.append(True)
-        
+
         model.register_forward_hook(hook)
-        
+
         # Forward pass should trigger hook
         x = torch.randn(2, 10)
         _ = model(x)
@@ -235,7 +234,6 @@ class TestPipelineEdgeCases:
 
     def test_pipeline_step_timeout(self):
         """Should handle step timeouts."""
-        import time
         try:
             from codex_ml.pipeline import Pipeline
         except (ImportError, AttributeError):
@@ -263,7 +261,7 @@ class TestDataValidation:
             "age": int,
         }
         data = {"name": "Alice", "age": 30}
-        
+
         try:
             result = validate_schema(data, schema)
             assert result is True, "Result must not be empty"
@@ -282,7 +280,7 @@ class TestDataValidation:
             "age": int,
         }
         data = {"name": "Alice", "age": "thirty"}
-        
+
         try:
             with pytest.raises((TypeError, ValueError)):
                 validate_schema(data, schema)
@@ -298,7 +296,7 @@ class TestDataValidation:
 
         required = ["name", "age"]
         data = {"name": "Alice"}
-        
+
         try:
             with pytest.raises((ValueError, KeyError)):
                 validate_required_fields(data, required)
@@ -315,7 +313,7 @@ class TestDataValidation:
         try:
             validate_range(50, min_val=0, max_val=100)
             assert True, "True is not valid"
-            
+
             with pytest.raises((ValueError, AssertionError)):
                 validate_range(150, min_val=0, max_val=100)
         except (NotImplementedError, TypeError):
@@ -328,29 +326,30 @@ class TestConcurrency:
     def test_threadsafe_registry_access(self):
         """Registry should be thread-safe."""
         try:
-            from codex_ml.registry import Registry
             import threading
+
+            from codex_ml.registry import Registry
         except (ImportError, AttributeError):
             pytest.skip("Registry or threading not available")
 
         try:
             registry = Registry()
             results = []
-            
+
             def register_item(key, value):
                 registry.register(key, value)
                 results.append(registry.get(key))
-            
+
             threads = [
                 threading.Thread(target=register_item, args=(f"key_{i}", f"val_{i}"))
                 for i in range(5)
             ]
-            
+
             for t in threads:
                 t.start()
             for t in threads:
                 t.join()
-            
+
             assert len(results) == 5, "Results must not be empty"
         except (NotImplementedError, RuntimeError):
             pytest.skip("Concurrent registry access not tested")
@@ -385,7 +384,7 @@ class TestIntegration:
         try:
             # Load data
             data = load_data("test_data")
-            
+
             # Create model
             factory = create_model_factory()
             if factory:
@@ -397,9 +396,9 @@ class TestIntegration:
     def test_tokenizer_model_compatibility(self):
         """Tokenizer output should work with model."""
         try:
-            from codex_ml.tokenization import get_tokenizer
             import torch
             import torch.nn as nn
+            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer or PyTorch not available")
 
@@ -407,11 +406,11 @@ class TestIntegration:
             tokenizer = get_tokenizer()
             if tokenizer is None:
                 pytest.skip("Tokenizer creation failed")
-            
+
             # Encode text
             text = "hello world"
             tokens = tokenizer.encode(text)
-            
+
             # Should produce valid token IDs
             assert all(isinstance(t, int) for t in tokens)
         except (ValueError, TypeError):
@@ -420,9 +419,10 @@ class TestIntegration:
     def test_checkpoint_recovery_flow(self):
         """Should recover from checkpoint."""
         try:
+            from pathlib import Path
+
             import torch
             import torch.nn as nn
-            from pathlib import Path
         except ImportError:
             pytest.skip("PyTorch not available")
 
@@ -431,11 +431,11 @@ class TestIntegration:
                 # Save model
                 model = nn.Linear(10, 10)
                 torch.save(model.state_dict(), Path(tmpdir) / "model.pt")
-                
+
                 # Load model
                 new_model = nn.Linear(10, 10)
                 new_model.load_state_dict(torch.load(Path(tmpdir) / "model.pt"))
-                
+
                 assert new_model is not None, "new_model must be initialized"
             except (IOError, RuntimeError):
                 pytest.skip("Checkpoint recovery failed")
@@ -458,11 +458,11 @@ class TestPerformanceCharacteristics:
 
         try:
             texts = [f"Text {i}" for i in range(100)]
-            
+
             start = time.time()
             result = tokenizer.batch_encode_plus(texts)
             elapsed = time.time() - start
-            
+
             # Should process 100 texts reasonably fast
             assert elapsed < 10.0, "elapsed is not valid"
         except (NotImplementedError, TypeError):
@@ -482,35 +482,36 @@ class TestPerformanceCharacteristics:
             nn.ReLU(),
             nn.Linear(200, 10)
         )
-        
+
         x = torch.randn(32, 100)
-        
+
         start = time.time()
         for _ in range(10):
             _ = model(x)
         elapsed = time.time() - start
-        
+
         # 10 forward passes should be fast
         assert elapsed < 1.0, "elapsed is not valid"
 
     def test_memory_efficiency(self):
         """Should not leak memory."""
         try:
+            import gc
+
             import torch
             import torch.nn as nn
-            import gc
         except ImportError:
             pytest.skip("PyTorch not available")
 
         gc.collect()
         torch.cuda.empty_cache() if torch.cuda.is_available() else None
-        
+
         # Create and delete many objects
         for _ in range(100):
             model = nn.Linear(100, 100)
             _ = model(torch.randn(10, 100))
             del model
-        
+
         gc.collect()
         # If we reach here without OOM, test passes
         assert True, "True is not valid"

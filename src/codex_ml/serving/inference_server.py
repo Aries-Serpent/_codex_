@@ -475,7 +475,7 @@ if FASTAPI_AVAILABLE:
             auth_dependencies = [Security(verify_auth)]
 
         @app.get("/")
-        def root() -> dict:
+        def root() -> dict[str, Any]:
             return {
                 "service": "codex-inference",
                 "version": "0.2.0",
@@ -483,12 +483,12 @@ if FASTAPI_AVAILABLE:
             }
 
         @app.get("/health")
-        def health() -> dict:
+        def health() -> dict[str, Any]:
             """Health check with circuit breaker status"""
             return server.health_check()
 
         @app.get("/ready")
-        def readiness() -> dict:
+        def readiness() -> dict[str, Any]:
             """Readiness check"""
             health = server.health_check()
             return {
@@ -498,12 +498,12 @@ if FASTAPI_AVAILABLE:
             }
 
         @app.get("/live")
-        def liveness() -> dict:
+        def liveness() -> dict[str, Any]:
             """Liveness check - always returns 200 if server is running"""
             return {"status": "alive", "uptime": time.time() - start_time}
 
         @app.get("/metrics")
-        def metrics() -> dict:
+        def metrics() -> dict[str, Any]:
             """Metrics endpoint"""
             metrics_data = {
                 "request_count": server.total_requests,

@@ -70,7 +70,7 @@ class User:
         """Return True if the user has *role*."""
         return role in self.roles
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Serialise to a dict, omitting the password hash."""
         return {
             "user_id": self.user_id,

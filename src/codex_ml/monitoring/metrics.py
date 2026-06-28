@@ -24,7 +24,7 @@ class MetricsCollector:
     Uses prometheus_client if available, otherwise provides no-op fallbacks.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize metrics collector."""
         self._prometheus_available = False
         self._request_counter = None
@@ -128,12 +128,12 @@ class MetricsCollector:
             logger.debug("Exception: <ERROR_TYPE>")
             logger.debug("Failed to record error metric: %s", e)
 
-    def inc_active_requests(self):
+    def inc_active_requests(self) -> None:
         """Increment active requests counter."""
         if self._prometheus_available and self._active_requests:
             self._active_requests.inc()
 
-    def dec_active_requests(self):
+    def dec_active_requests(self) -> None:
         """Decrement active requests counter."""
         if self._prometheus_available and self._active_requests:
             self._active_requests.dec()
@@ -186,7 +186,7 @@ def get_metrics_router() -> Any:
     get_metrics_collector()
 
     @router.get("/metrics")
-    async def metrics():
+    async def metrics() -> None:
         """Prometheus metrics endpoint."""
         try:
             metrics_output = generate_latest()

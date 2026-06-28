@@ -50,7 +50,7 @@ class ValidationResult:
     warnings: list[str] = field(default_factory=list)
     metadata: dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "rule_name": self.rule_name,
@@ -466,7 +466,7 @@ class SchemaValidationRule(ValidationRule):
             )
 
 
-class ValidationSummary(list):
+class ValidationSummary(list[Any]):
     """List of ValidationResult objects with an aggregate ``is_valid`` property."""
 
     @property
@@ -478,7 +478,7 @@ class ValidationSummary(list):
 class DataValidator:
     """Orchestrates multiple validation rules."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize validator."""
         self.rules: list[ValidationRule] = []
 

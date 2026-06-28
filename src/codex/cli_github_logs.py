@@ -15,7 +15,7 @@ import click
 logger = logging.getLogger(__name__)
 
 
-def _get_github_client():
+def _get_github_client() -> None:
     """Get GitHub client instance."""
     try:
         from services.github.client import GitHubClientSync
@@ -28,7 +28,7 @@ def _get_github_client():
 
 
 @click.group(name="github-logs")
-def cli():
+def cli() -> None:
     """Fetch GitHub Actions logs via CLI.
 
     Examples:
@@ -61,7 +61,7 @@ def fetch_check_run_logs(
     check_run_id: int,
     output: Optional[str],
     format: str,
-):
+) -> None:
     """Fetch logs from a GitHub Actions check run.
 
     Args:
@@ -85,10 +85,10 @@ def fetch_check_run_logs(
         click.echo(f"Fetching check run {check_run_id} logs from {owner}/{repo}...", err=True)
 
         # Fetch the check run details first
-        check_run = client.get_check_run(owner, repo, check_run_id)
+        check_run = client.get_check_run(owner, repo, check_run_id)  # type: ignore[attr-defined]
 
         # Fetch logs
-        logs = client.get_check_run_logs(owner, repo, check_run_id)
+        logs = client.get_check_run_logs(owner, repo, check_run_id)  # type: ignore[attr-defined]
 
         # Format output
         if format == "json":
@@ -143,7 +143,7 @@ def fetch_job_logs(
     job_id: int,
     output: Optional[str],
     format: str,
-):
+) -> None:
     """Fetch logs from a GitHub Actions workflow job.
 
     Args:
@@ -164,7 +164,7 @@ def fetch_job_logs(
         click.echo(f"Fetching job {job_id} logs from {owner}/{repo}...", err=True)
 
         # Fetch logs
-        logs = client.get_job_logs(owner, repo, job_id)
+        logs = client.get_job_logs(owner, repo, job_id)  # type: ignore[attr-defined]
 
         # Format output
         if format == "json":
@@ -210,7 +210,7 @@ def list_check_runs(
     ref: str,
     status: Optional[str],
     name: Optional[str],
-):
+) -> None:
     """List check runs for a git reference.
 
     Args:
@@ -230,7 +230,7 @@ def list_check_runs(
 
         click.echo(f"Fetching check runs for {owner}/{repo}@{ref}...", err=True)
 
-        check_runs = client.list_check_runs_for_ref(
+        check_runs = client.list_check_runs_for_ref(  # type: ignore[attr-defined]
             owner, repo, ref, check_name=name, status=status
         )
 

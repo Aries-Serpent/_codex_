@@ -112,7 +112,7 @@ class EntanglementManager:
     - Support for transactional groups
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         # Primary storage: canonical pair key -> EntangledPair
         self.entangled_pairs: dict[tuple[str, str], EntangledPair] = {}
 

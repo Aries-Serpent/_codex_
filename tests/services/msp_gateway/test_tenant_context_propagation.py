@@ -7,7 +7,6 @@ lifecycle, including middleware stack, routers, and nested operations.
 
 from __future__ import annotations
 
-import asyncio
 import pytest
 
 pytest.importorskip("fastapi")
@@ -16,9 +15,9 @@ pytest.importorskip("pydantic_settings")
 from fastapi import FastAPI, Request
 from fastapi.testclient import TestClient
 
-from services.msp_gateway.middleware import TenantContextMiddleware, RateLimitMiddleware
-from services.msp_gateway.middleware.tenant_context import TenantRegistry
+from services.msp_gateway.middleware import RateLimitMiddleware, TenantContextMiddleware
 from services.msp_gateway.middleware import tenant_context as tc_module
+from services.msp_gateway.middleware.tenant_context import TenantRegistry
 
 
 def test_tenant_context_propagation_basic(

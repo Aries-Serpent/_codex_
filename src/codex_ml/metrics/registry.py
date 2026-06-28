@@ -353,7 +353,7 @@ def alias_metric(alias: str, target: str, *, override: bool = True) -> None:
     at call time, ensuring both names always resolve to the same implementation.
     """
 
-    def _alias_wrapper(*args, **kwargs):
+    def _alias_wrapper(*args, **kwargs) -> None:
         fn = metric_registry.get(target)
         return fn(*args, **kwargs)
 

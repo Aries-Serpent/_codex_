@@ -4,7 +4,7 @@
 class AccessControl:
     """Comprehensive access_control implementation."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize AccessControl."""
         self._data = {}
         self._config = {}

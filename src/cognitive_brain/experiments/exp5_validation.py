@@ -82,7 +82,9 @@ def run_exp5_validation(scenarios: int = 200, seed: int = 42) -> EXP5Results:
         EXP5Results with all validation metrics
     """
     print("=" * 70)  # codeql[py/clear-text-logging-sensitive-data]
-    print("EXP-5: Quantum Memory Management Validation")  # codeql[py/clear-text-logging-sensitive-data]
+    print(
+        "EXP-5: Quantum Memory Management Validation"
+    )  # codeql[py/clear-text-logging-sensitive-data]
     print("=" * 70)  # codeql[py/clear-text-logging-sensitive-data]
     print(f"Scenarios: {scenarios} | Seed: {seed}")  # codeql[py/clear-text-logging-sensitive-data]
     print()  # codeql[py/clear-text-logging-sensitive-data]
@@ -91,8 +93,12 @@ def run_exp5_validation(scenarios: int = 200, seed: int = 42) -> EXP5Results:
     print("Generating complex scenarios...")  # codeql[py/clear-text-logging-sensitive-data]
     scenario_data = generate_complex_scenarios(count=scenarios, seed=seed)
     scenario_stats = get_scenario_statistics(scenario_data)
-    print(f"✓ Generated {len(scenario_data)} scenarios")  # codeql[py/clear-text-logging-sensitive-data]
-    print(f"  Avg ambiguity: {scenario_stats['avg_ambiguity']:.3f}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(
+        f"✓ Generated {len(scenario_data)} scenarios"
+    )  # codeql[py/clear-text-logging-sensitive-data]
+    print(
+        f"  Avg ambiguity: {scenario_stats['avg_ambiguity']:.3f}"
+    )  # codeql[py/clear-text-logging-sensitive-data]
     print()  # codeql[py/clear-text-logging-sensitive-data]
 
     # Initialize components
@@ -127,7 +133,9 @@ def run_exp5_validation(scenarios: int = 200, seed: int = 42) -> EXP5Results:
 
     for i, (audit, _, _) in enumerate(scenario_data):
         if i % 50 == 0:
-            print(f"  Progress: {i}/{len(scenario_data)}")  # codeql[py/clear-text-logging-sensitive-data]
+            print(
+                f"  Progress: {i}/{len(scenario_data)}"
+            )  # codeql[py/clear-text-logging-sensitive-data]
 
         start_time = time.time()
         assessment = memory_assessor.assess_with_memory(audit)
@@ -136,17 +144,23 @@ def run_exp5_validation(scenarios: int = 200, seed: int = 42) -> EXP5Results:
         memory_times.append(elapsed_ms)
         memory_decisions.append(assessment.decision)
 
-    print(f"✓ Completed {len(scenario_data)} memory-augmented assessments")  # codeql[py/clear-text-logging-sensitive-data]
+    print(
+        f"✓ Completed {len(scenario_data)} memory-augmented assessments"
+    )  # codeql[py/clear-text-logging-sensitive-data]
     print()  # codeql[py/clear-text-logging-sensitive-data]
 
     # Run baseline assessments (no memory)
-    print("Running baseline assessments (no memory)...")  # codeql[py/clear-text-logging-sensitive-data]
+    print(
+        "Running baseline assessments (no memory)..."
+    )  # codeql[py/clear-text-logging-sensitive-data]
     baseline_times = []
     baseline_decisions = []
 
     for i, (audit, _, _) in enumerate(scenario_data):
         if i % 50 == 0:
-            print(f"  Progress: {i}/{len(scenario_data)}")  # codeql[py/clear-text-logging-sensitive-data]
+            print(
+                f"  Progress: {i}/{len(scenario_data)}"
+            )  # codeql[py/clear-text-logging-sensitive-data]
 
         start_time = time.time()
         assessment = baseline_assessor.assess_compliance(audit)
@@ -155,7 +169,9 @@ def run_exp5_validation(scenarios: int = 200, seed: int = 42) -> EXP5Results:
         baseline_times.append(elapsed_ms)
         baseline_decisions.append(assessment.decision)
 
-    print(f"✓ Completed {len(scenario_data)} baseline assessments")  # codeql[py/clear-text-logging-sensitive-data]
+    print(
+        f"✓ Completed {len(scenario_data)} baseline assessments"
+    )  # codeql[py/clear-text-logging-sensitive-data]
     print()  # codeql[py/clear-text-logging-sensitive-data]
 
     # Calculate metrics
@@ -201,12 +217,18 @@ def run_exp5_validation(scenarios: int = 200, seed: int = 42) -> EXP5Results:
 
     # Print results
     print("=" * 70)  # codeql[py/clear-text-logging-sensitive-data]
-    print("EXP-5 Results: Quantum Memory Management")  # codeql[py/clear-text-logging-sensitive-data]
+    print(
+        "EXP-5 Results: Quantum Memory Management"
+    )  # codeql[py/clear-text-logging-sensitive-data]
     print("=" * 70)  # codeql[py/clear-text-logging-sensitive-data]
     print()  # codeql[py/clear-text-logging-sensitive-data]
     print("Time Performance:")  # codeql[py/clear-text-logging-sensitive-data]
-    print(f"  Avg time (with memory):    {avg_time_memory:.2f}ms")  # codeql[py/clear-text-logging-sensitive-data]
-    print(f"  Avg time (baseline):       {avg_time_baseline:.2f}ms")  # codeql[py/clear-text-logging-sensitive-data]
+    print(
+        f"  Avg time (with memory):    {avg_time_memory:.2f}ms"
+    )  # codeql[py/clear-text-logging-sensitive-data]
+    print(
+        f"  Avg time (baseline):       {avg_time_baseline:.2f}ms"
+    )  # codeql[py/clear-text-logging-sensitive-data]
     print(
         f"  Time reduction:            {time_reduction_pct:.1%} {'✅' if time_reduction_pct >= 0.15 else '❌'} (target ≥ 15%)"  # noqa: E501
     )
@@ -215,28 +237,48 @@ def run_exp5_validation(scenarios: int = 200, seed: int = 42) -> EXP5Results:
     print(
         f"  Cache hit rate:            {cache_hit_rate:.1%} {'✅' if cache_hit_rate >= 0.30 else '❌'} (target > 30%)"  # noqa: E501
     )
-    print(f"  Cache hits:                {memory_stats['cache_hits']}")  # codeql[py/clear-text-logging-sensitive-data]
-    print(f"  Cache misses:              {memory_stats['cache_misses']}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(
+        f"  Cache hits:                {memory_stats['cache_hits']}"
+    )  # codeql[py/clear-text-logging-sensitive-data]
+    print(
+        f"  Cache misses:              {memory_stats['cache_misses']}"
+    )  # codeql[py/clear-text-logging-sensitive-data]
     print()  # codeql[py/clear-text-logging-sensitive-data]
     print("Accuracy:")  # codeql[py/clear-text-logging-sensitive-data]
     print(
         f"  Memory vs Baseline:        {accuracy:.1%} {'✅' if accuracy >= 0.95 else '❌'} (target ≥ 95%)"  # noqa: E501
     )
-    print(f"  Agreements:                {agreements}/{len(memory_decisions)}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(
+        f"  Agreements:                {agreements}/{len(memory_decisions)}"
+    )  # codeql[py/clear-text-logging-sensitive-data]
     print()  # codeql[py/clear-text-logging-sensitive-data]
     print("k₁ Optimization:")  # codeql[py/clear-text-logging-sensitive-data]
     print(
         f"  k₁ (with memory):          {k1_memory:.4f} {'✅' if k1_memory <= 0.345 else '❌'} (target ≤ 0.345)"  # noqa: E501
     )
-    print(f"  k₁ (baseline):             {k1_baseline:.4f}")  # codeql[py/clear-text-logging-sensitive-data]
-    print(f"  k₁ improvement:            {k1_improvement_pct:.2f}%")  # codeql[py/clear-text-logging-sensitive-data]
+    print(
+        f"  k₁ (baseline):             {k1_baseline:.4f}"
+    )  # codeql[py/clear-text-logging-sensitive-data]
+    print(
+        f"  k₁ improvement:            {k1_improvement_pct:.2f}%"
+    )  # codeql[py/clear-text-logging-sensitive-data]
     print()  # codeql[py/clear-text-logging-sensitive-data]
     print("Memory System Stats:")  # codeql[py/clear-text-logging-sensitive-data]
-    print(f"  STM size:                  {memory_stats['stm_size']}/{memory_stats['stm_capacity']}")  # codeql[py/clear-text-logging-sensitive-data]
-    print(f"  LTM size:                  {memory_stats['ltm_size']}/{memory_stats['ltm_capacity']}")  # codeql[py/clear-text-logging-sensitive-data]
-    print(f"  Patterns stored:           {memory_stats['total_stored']}")  # codeql[py/clear-text-logging-sensitive-data]
-    print(f"  Patterns consolidated:     {memory_stats['total_consolidated']}")  # codeql[py/clear-text-logging-sensitive-data]
-    print(f"  Consolidation rate:        {memory_stats['consolidation_rate']:.1%}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(
+        f"  STM size:                  {memory_stats['stm_size']}/{memory_stats['stm_capacity']}"
+    )  # codeql[py/clear-text-logging-sensitive-data]
+    print(
+        f"  LTM size:                  {memory_stats['ltm_size']}/{memory_stats['ltm_capacity']}"
+    )  # codeql[py/clear-text-logging-sensitive-data]
+    print(
+        f"  Patterns stored:           {memory_stats['total_stored']}"
+    )  # codeql[py/clear-text-logging-sensitive-data]
+    print(
+        f"  Patterns consolidated:     {memory_stats['total_consolidated']}"
+    )  # codeql[py/clear-text-logging-sensitive-data]
+    print(
+        f"  Consolidation rate:        {memory_stats['consolidation_rate']:.1%}"
+    )  # codeql[py/clear-text-logging-sensitive-data]
     print()  # codeql[py/clear-text-logging-sensitive-data]
     print("=" * 70)  # codeql[py/clear-text-logging-sensitive-data]
 
@@ -249,21 +291,41 @@ def run_exp5_validation(scenarios: int = 200, seed: int = 42) -> EXP5Results:
     )
 
     if success:
-        print("✅ Phase 8.1 SUCCESS: All criteria met!")  # codeql[py/clear-text-logging-sensitive-data]
-        print(f"   k₁={k1_memory:.4f} (target ≤ 0.345)")  # codeql[py/clear-text-logging-sensitive-data]
-        print(f"   Cache hit rate={cache_hit_rate:.1%} (target > 30%)")  # codeql[py/clear-text-logging-sensitive-data]
-        print(f"   Time reduction={time_reduction_pct:.1%} (target ≥ 15%)")  # codeql[py/clear-text-logging-sensitive-data]
-        print(f"   Accuracy={accuracy:.1%} (target ≥ 95%)")  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            "✅ Phase 8.1 SUCCESS: All criteria met!"
+        )  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            f"   k₁={k1_memory:.4f} (target ≤ 0.345)"
+        )  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            f"   Cache hit rate={cache_hit_rate:.1%} (target > 30%)"
+        )  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            f"   Time reduction={time_reduction_pct:.1%} (target ≥ 15%)"
+        )  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            f"   Accuracy={accuracy:.1%} (target ≥ 95%)"
+        )  # codeql[py/clear-text-logging-sensitive-data]
     else:
-        print("⚠️  Phase 8.1 INCOMPLETE: Some criteria not met")  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            "⚠️  Phase 8.1 INCOMPLETE: Some criteria not met"
+        )  # codeql[py/clear-text-logging-sensitive-data]
         if k1_memory > 0.345:
-            print(f"   ❌ k₁={k1_memory:.4f} (need ≤ 0.345)")  # codeql[py/clear-text-logging-sensitive-data]
+            print(
+                f"   ❌ k₁={k1_memory:.4f} (need ≤ 0.345)"
+            )  # codeql[py/clear-text-logging-sensitive-data]
         if cache_hit_rate < 0.30:
-            print(f"   ❌ cache_hit_rate={cache_hit_rate:.1%} (need > 30%)")  # codeql[py/clear-text-logging-sensitive-data]
+            print(
+                f"   ❌ cache_hit_rate={cache_hit_rate:.1%} (need > 30%)"
+            )  # codeql[py/clear-text-logging-sensitive-data]
         if time_reduction_pct < 0.15:
-            print(f"   ❌ time_reduction={time_reduction_pct:.1%} (need ≥ 15%)")  # codeql[py/clear-text-logging-sensitive-data]
+            print(
+                f"   ❌ time_reduction={time_reduction_pct:.1%} (need ≥ 15%)"
+            )  # codeql[py/clear-text-logging-sensitive-data]
         if accuracy < 0.95:
-            print(f"   ❌ accuracy={accuracy:.1%} (need ≥ 95%)")  # codeql[py/clear-text-logging-sensitive-data]
+            print(
+                f"   ❌ accuracy={accuracy:.1%} (need ≥ 95%)"
+            )  # codeql[py/clear-text-logging-sensitive-data]
 
     print("=" * 70)  # codeql[py/clear-text-logging-sensitive-data]
 
@@ -306,7 +368,15 @@ if __name__ == "__main__":
     # Summary
     print()  # codeql[py/clear-text-logging-sensitive-data]
     print("EXP-5 Complete. Key findings:")  # codeql[py/clear-text-logging-sensitive-data]
-    print(f"- k₁ improved from {results.k1_without_memory:.4f} to {results.k1_with_memory:.4f}")  # codeql[py/clear-text-logging-sensitive-data]
-    print(f"- Cache hit rate: {results.cache_hit_rate:.1%}")  # codeql[py/clear-text-logging-sensitive-data]
-    print(f"- Time savings: {results.time_reduction_pct:.1%}")  # codeql[py/clear-text-logging-sensitive-data]
-    print(f"- Accuracy maintained: {results.accuracy_vs_full:.1%}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(
+        f"- k₁ improved from {results.k1_without_memory:.4f} to {results.k1_with_memory:.4f}"
+    )  # codeql[py/clear-text-logging-sensitive-data]
+    print(
+        f"- Cache hit rate: {results.cache_hit_rate:.1%}"
+    )  # codeql[py/clear-text-logging-sensitive-data]
+    print(
+        f"- Time savings: {results.time_reduction_pct:.1%}"
+    )  # codeql[py/clear-text-logging-sensitive-data]
+    print(
+        f"- Accuracy maintained: {results.accuracy_vs_full:.1%}"
+    )  # codeql[py/clear-text-logging-sensitive-data]

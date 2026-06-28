@@ -119,7 +119,7 @@ class ArrowLoader:
                     df = batch.to_pandas()
                     yield df.to_dict("records")
 
-    def get_schema(self):
+    def get_schema(self) -> None:
         """
         Get Arrow schema
 

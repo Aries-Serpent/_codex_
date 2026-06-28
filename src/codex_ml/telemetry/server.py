@@ -25,7 +25,7 @@ try:  # optional dependency
 
     _HAS_PROM = True
 except (ConnectionError, TimeoutError):  # pragma: no cover - optional
-    start_http_server = None  # type: ignore[assignment]
+    start_http_server = None
     _HAS_PROM = False
 
 logger = logging.getLogger(__name__)

@@ -162,6 +162,7 @@ class TestAsyncWorkflows:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_basic_async_workflow(self):
         """Test basic async workflow."""
         import asyncio
@@ -184,6 +185,7 @@ class TestAsyncWorkflows:
         assert all(item["processed"] for item in processed), "Item must not be empty"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -215,6 +217,7 @@ class TestAsyncWorkflows:
         assert resource.closed, "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -369,6 +372,7 @@ class TestFullSystemIntegration:
             pytest.skip("tomllib not available")
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)

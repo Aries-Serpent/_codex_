@@ -7,9 +7,7 @@ Tests force vectors, action paths, orchestrator logic, and physics-based calcula
 
 from __future__ import annotations
 
-import json
 import math
-from pathlib import Path
 from unittest.mock import Mock, patch
 
 import pytest
@@ -464,7 +462,7 @@ class TestDecisionState:
         force1 = ForceVector(name="urgency", magnitude=0.8, priority=1.5)
         force2 = ForceVector(name="constraint", magnitude=0.3, priority=0.5)
         state = DecisionState(active_forces=[force1, force2])
-        
+
         assert len(state.active_forces) == 2, "Collection must not be empty"
         assert state.active_forces[0].name == "urgency", "name is not valid"
         assert state.active_forces[1].name == "constraint", "name is not valid"
@@ -473,7 +471,7 @@ class TestDecisionState:
         """Test constraints list."""
         constraints = ["budget_limit", "time_constraint", "resource_availability"]
         state = DecisionState(constraints=constraints)
-        
+
         assert len(state.constraints) == 3, "Collection must not be empty"
         assert "budget_limit" in state.constraints, "Condition must be true"
 
@@ -481,7 +479,7 @@ class TestDecisionState:
         """Test quantum-like state vector representation."""
         state_vector = [0.7, 0.3, 0.5, 0.2]
         state = DecisionState(state_vector=state_vector)
-        
+
         assert state.state_vector == state_vector, "state_vector is not valid"
         assert len(state.state_vector) == 4, "Collection must not be empty"
 
@@ -507,7 +505,7 @@ class TestActionPathCalculations:
             friction=0.0,
             momentum=0.0,
         )
-        
+
         total = path.calculate_total_energy()
         # E = 50 + 30 - 0*5 + 0*10 = 80
         assert total == 80.0, "total is not valid"
@@ -520,7 +518,7 @@ class TestActionPathCalculations:
             friction=0.0,
             momentum=5.0,
         )
-        
+
         total = path.calculate_total_energy()
         # E = 100 + 50 - 5*5 + 0*10 = 100 + 50 - 25 = 125
         assert total == 125.0, "total is not valid"
@@ -533,7 +531,7 @@ class TestActionPathCalculations:
             friction=3.0,
             momentum=0.0,
         )
-        
+
         total = path.calculate_total_energy()
         # E = 50 + 50 - 0 + 3*10 = 100 + 30 = 130
         assert total == 130.0, "total is not valid"
@@ -546,7 +544,7 @@ class TestActionPathCalculations:
             friction=2.5,
             momentum=6.0,
         )
-        
+
         total = path.calculate_total_energy()
         # E = 70 + 40 - 6*5 + 2.5*10 = 70 + 40 - 30 + 25 = 105
         assert total == 105.0, "total is not valid"
@@ -562,9 +560,9 @@ class TestActionPathCalculations:
             friction=1.0,
         )
         path.total_energy = 100.0
-        
+
         score = path.calculate_optimization_score()
-        
+
         # Score = (0.9 * 0.8 * max(5, 0.1) * (1 + 0.5*0.5)) / (100 * (1+0.2) * (1+1))
         # = (0.72 * 5 * 1.25) / (100 * 1.2 * 2)
         # = 4.5 / 240 = 0.01875
@@ -596,9 +594,9 @@ class TestActionPathCalculations:
             friction=1.0,
         )
         path.total_energy = 100.0
-        
+
         score = path.calculate_optimization_score()
-        
+
         if expected_positive:
             assert score >= 0, "score must be greater than zero"
 
@@ -614,9 +612,9 @@ class TestActionPathCalculations:
             impact=0.9,
             urgency=0.6,
         )
-        
+
         features = path._extract_mlp_features()
-        
+
         assert len(features) == 8, "Features must not be empty"
         assert features[0] == pytest.approx(0.5, abs=0.01)  # potential_energy/100
         assert features[1] == pytest.approx(0.3, abs=0.01)  # kinetic_energy/100
@@ -630,7 +628,7 @@ class TestPhysicsInspiredOrchestratorCore:
     def test_orchestrator_initialization(self) -> None:
         """Test orchestrator initialization."""
         orch = PhysicsInspiredOrchestrator()
-        
+
         assert orch.config is not None, "config must be initialized"
         assert orch.decision_history == [], "decision_history is not valid"
         assert orch.force_vectors == [], "force_vectors is not valid"
@@ -641,7 +639,7 @@ class TestPhysicsInspiredOrchestratorCore:
     def test_load_config(self, orchestrator_fixture: PhysicsInspiredOrchestrator) -> None:
         """Test loading configuration."""
         config = orchestrator_fixture.load_config()
-        
+
         assert config["deliberation_time"] == 1.0, "Condition must be true"
         assert config["confidence_threshold"] == 0.6, "Condition must be true"
         assert config["energy_budget"] == 100.0, "Condition must be true"
@@ -656,7 +654,7 @@ class TestPhysicsInspiredOrchestratorCore:
             "risk_tolerance": 0.3,
         }
         orch = PhysicsInspiredOrchestrator(config=custom_config)
-        
+
         assert orch.config["deliberation_time"] == 10.0, "Condition must be true"
         assert orch.config["confidence_threshold"] == 0.7, "Condition must be true"
         assert orch.config["energy_budget"] == 200.0, "Condition must be true"
@@ -671,13 +669,13 @@ class TestPhysicsInspiredOrchestratorCore:
     ) -> None:
         """Test assess_situation method."""
         assessment = orchestrator_fixture.assess_situation(decision_state_fixture)
-        
+
         assert "distance_to_goal" in assessment, "Condition must be true"
         assert "system_entropy" in assessment, "Condition must be true"
         assert "attractive_potential" in assessment, "Condition must be true"
         assert "repulsive_potential" in assessment, "Condition must be true"
         assert "net_potential" in assessment, "Condition must be true"
-        
+
         # Verify print was called
         assert mock_print.called, "Condition must be true"
 
@@ -694,7 +692,7 @@ class TestEnergyState:
             temperature=1.0,
             entropy=10.0,
         )
-        
+
         assert state.energy == 50.0, "energy is not valid"
         assert state.temperature == 1.0, "temperature is not valid"
         assert state.entropy == 10.0, "entropy is not valid"
@@ -704,7 +702,7 @@ class TestEnergyState:
         """Test EnergyState default values."""
         config = {"empty": True}
         state = EnergyState(configuration=config)
-        
+
         assert state.energy == 0.0, "energy is not valid"
         assert state.temperature == 1.0, "temperature is not valid"
         assert state.entropy == 0.0, "entropy is not valid"
@@ -718,7 +716,7 @@ class TestEnergyState:
             temperature=2.0,
             entropy=5.0,
         )
-        
+
         # F = E - T*S = 10 - 2*5 = 0
         free_e = state.free_energy()
         assert free_e == pytest.approx(0.0, abs=0.01)
@@ -731,7 +729,7 @@ class TestEnergyState:
             energy=10.0,
             temperature=1.0,
         )
-        
+
         prob = state.boltzmann_probability(reference_energy=5.0)
         # P ∝ exp(-(10-5)/1) = exp(-5) ≈ 0.0067
         assert prob > 0, "prob must be greater than zero"
@@ -744,7 +742,7 @@ class TestEnergyLandscape:
     def test_energy_landscape_initialization(self) -> None:
         """Test EnergyLandscape initialization."""
         landscape = EnergyLandscape(temperature=1.0)
-        
+
         assert landscape.temperature == 1.0, "temperature is not valid"
         assert landscape.states == [], "states is not valid"
         assert landscape.partition_function == 0.0, "partition_function is not valid"
@@ -752,46 +750,46 @@ class TestEnergyLandscape:
     def test_add_energy_state(self) -> None:
         """Test adding energy states to landscape."""
         landscape = EnergyLandscape(temperature=1.0)
-        
+
         state1 = EnergyState(configuration={"id": 1}, energy=5.0)
         state2 = EnergyState(configuration={"id": 2}, energy=10.0)
-        
+
         landscape.add_state(state1)
         landscape.add_state(state2)
-        
+
         assert len(landscape.states) == 2, "Collection must not be empty"
 
     def test_select_state_with_boltzmann(self) -> None:
         """Test selecting state using Boltzmann distribution."""
         landscape = EnergyLandscape(temperature=1.0)
-        
+
         for i in range(5):
             state = EnergyState(configuration={"id": i}, energy=float(i))
             landscape.add_state(state)
-        
+
         selected = landscape.select_state()
-        
+
         assert selected is not None, "selected must be initialized"
         assert selected in landscape.states, "Condition must be true"
 
     def test_cool_system(self) -> None:
         """Test cooling system (simulated annealing)."""
         landscape = EnergyLandscape(temperature=10.0)
-        
+
         for i in range(3):
             state = EnergyState(configuration={"id": i}, energy=float(i))
             landscape.add_state(state)
-        
+
         initial_temp = landscape.temperature
         landscape.cool_system(cooling_rate=0.9)
-        
+
         assert landscape.temperature < initial_temp, "temperature is not valid"
         assert landscape.temperature == pytest.approx(initial_temp * 0.9, rel=1e-5)
 
     def test_minimize_free_energy(self) -> None:
         """Test free energy minimization."""
         landscape = EnergyLandscape(temperature=1.0)
-        
+
         for i in range(3):
             state = EnergyState(
                 configuration={"id": i},
@@ -799,7 +797,7 @@ class TestEnergyLandscape:
                 entropy=1.0,
             )
             landscape.add_state(state)
-        
+
         best_state = landscape.minimize_free_energy(max_iterations=10)
         assert best_state is not None, "best_state must be initialized"
 
@@ -814,7 +812,7 @@ class TestDiffusionFlowModel:
             resolution=10,
             diffusion_coefficient=0.5,
         )
-        
+
         assert model.dimensions == 2, "dimensions is not valid"
         assert model.resolution == 10, "resolution is not valid"
         assert model.diffusion_coefficient == 0.5, "diffusion_coefficient is not valid"
@@ -826,18 +824,18 @@ class TestDiffusionFlowModel:
     def test_add_attractor(self) -> None:
         """Test adding attractor to field."""
         model = DiffusionFlowModel()
-        
+
         model.add_attractor((0.5, 0.5), strength=2.0)
-        
+
         assert len(model.attractors) == 1, "Collection must not be empty"
         assert len(model.potential_field) > 0, "Collection must not be empty"
 
     def test_add_repulsor(self) -> None:
         """Test adding repulsor to field."""
         model = DiffusionFlowModel()
-        
+
         model.add_repulsor((0.2, 0.2), strength=1.5)
-        
+
         assert len(model.repulsors) == 1, "Collection must not be empty"
         assert len(model.potential_field) > 0, "Collection must not be empty"
 
@@ -845,9 +843,9 @@ class TestDiffusionFlowModel:
         """Test gradient calculation."""
         model = DiffusionFlowModel(resolution=10)
         model.add_attractor((0.5, 0.5), strength=1.0)
-        
+
         gradient = model.get_gradient((0.3, 0.3))
-        
+
         assert isinstance(gradient, tuple)
         assert len(gradient) == 2, "Gradient must not be empty"
 
@@ -855,9 +853,9 @@ class TestDiffusionFlowModel:
         """Test creating flow vector at position."""
         model = DiffusionFlowModel()
         model.add_attractor((0.8, 0.8), strength=1.0)
-        
+
         flow = model.create_flow_at((0.2, 0.2), diffusion=0.1)
-        
+
         assert isinstance(flow, FlowVector)
         assert flow.position == (0.2, 0.2)
         assert len(model.flow_vectors) == 1, "Collection must not be empty"
@@ -866,21 +864,21 @@ class TestDiffusionFlowModel:
         """Test flow simulation."""
         model = DiffusionFlowModel(resolution=20)
         model.add_attractor((0.8, 0.8), strength=2.0)
-        
+
         trajectory = model.simulate_flow((0.2, 0.2), steps=50, dt=0.1)
-        
+
         assert len(trajectory) > 1, "Trajectory must not be empty"
         assert trajectory[0] == (0.2, 0.2)
 
     def test_integrate_with_mental_mapping(self) -> None:
         """Test integration with mental mapping."""
         model = DiffusionFlowModel(resolution=15)
-        
+
         result = model.integrate_with_mental_mapping(
             problem_position=(0.1, 0.1),
             goal_position=(0.9, 0.9),
         )
-        
+
         assert "trajectory" in result, "Result must not be empty"
         assert "steps_to_goal" in result, "Result must not be empty"
         assert "final_position" in result, "Result must not be empty"
@@ -898,7 +896,7 @@ class TestFlowVector:
             gradient=(0.05, 0.08),
             diffusion_coefficient=0.1,
         )
-        
+
         assert flow.position == (0.5, 0.5)
         assert flow.velocity == (0.1, 0.2)
         assert flow.gradient == (0.05, 0.08)
@@ -912,9 +910,9 @@ class TestFlowVector:
             gradient=(0.05, 0.0),
             diffusion_coefficient=0.1,
         )
-        
+
         new_pos = flow.step(dt=0.1)
-        
+
         assert isinstance(new_pos, tuple)
         assert len(new_pos) == 2, "New_pos must not be empty"
 
@@ -925,9 +923,9 @@ class TestFlowVector:
             velocity=(3.0, 4.0),
             gradient=(0.0, 0.0),
         )
-        
+
         mag = flow.magnitude()
-        
+
         assert mag == pytest.approx(5.0, rel=1e-5)
 
 
@@ -937,7 +935,7 @@ class TestSwarmIntelligence:
     def test_swarm_initialization(self) -> None:
         """Test SwarmIntelligence initialization."""
         swarm = SwarmIntelligence(num_particles=10, dimensions=2)
-        
+
         assert swarm.num_particles == 10, "num_particles is not valid"
         assert swarm.dimensions == 2, "dimensions is not valid"
         assert len(swarm.particles) == 0, "Collection must not be empty"
@@ -946,9 +944,9 @@ class TestSwarmIntelligence:
         """Test particle creation via initialize_swarm."""
         swarm = SwarmIntelligence(num_particles=5, dimensions=2)
         bounds = [(0.0, 1.0), (0.0, 1.0)]
-        
+
         swarm.initialize_swarm(bounds)
-        
+
         assert len(swarm.particles) == 5, "Collection must not be empty"
         for particle in swarm.particles:
             assert isinstance(particle, SwarmParticle)
@@ -958,7 +956,7 @@ class TestSwarmIntelligence:
     def test_swarm_evaluate_fitness(self) -> None:
         """Test fitness evaluation."""
         swarm = SwarmIntelligence(num_particles=3, dimensions=2)
-        
+
         fitness = swarm.evaluate_fitness((0.5, 0.5))
         assert isinstance(fitness, float)
         assert fitness < 0, "fitness is not valid"
@@ -967,9 +965,9 @@ class TestSwarmIntelligence:
         """Test that particles are within bounds after initialization."""
         swarm = SwarmIntelligence(num_particles=10, dimensions=2)
         bounds = [(0.0, 1.0), (0.0, 1.0)]
-        
+
         swarm.initialize_swarm(bounds)
-        
+
         for particle in swarm.particles:
             for pos in particle.position:
                 assert 0.0 <= pos <= 1.0, "0 is not valid"
@@ -984,7 +982,7 @@ class TestSwarmParticle:
             position=(0.5, 0.5),
             velocity=(0.1, 0.1),
         )
-        
+
         assert particle.position == (0.5, 0.5)
         assert particle.velocity == (0.1, 0.1)
 
@@ -994,7 +992,7 @@ class TestSwarmParticle:
             position=(0.5, 0.5),
             velocity=(0.1, 0.1),
         )
-        
+
         # personal_best_position should default to position via __post_init__
         assert particle.personal_best_position == (0.5, 0.5)
 
@@ -1005,7 +1003,7 @@ class TestSwarmParticle:
             velocity=(0.1, 0.1),
             personal_best_score=0.75,
         )
-        
+
         assert particle.personal_best_score == 0.75, "personal_best_score is not valid"
 
 
@@ -1020,7 +1018,7 @@ class TestImportMigration:
             new_import="from agents.physics_orchestrator import Model",
             line_number=42,
         )
-        
+
         assert migration.file_path == "src/agents/orchestrator.py", "file_path is not valid"
         assert migration.old_import == "from agents.decision_models import Model", "old_import is not valid"
         assert migration.new_import == "from agents.physics_orchestrator import Model", "new_import is not valid"
@@ -1034,9 +1032,9 @@ class TestImportMigration:
             new_import="from agents.new import Module",
             line_number=10,
         )
-        
+
         migration.calculate_properties()
-        
+
         assert migration.potential_energy > 0, "potential_energy must be greater than zero"
         assert migration.impact > 0, "impact must be greater than zero"
         assert migration.confidence > 0, "confidence must be greater than zero"
@@ -1052,9 +1050,9 @@ class TestImportMigration:
             new_import="from agents import new",
             line_number=5,
         )
-        
+
         migration.calculate_properties()
-        
+
         # CLI files should have high impact
         assert migration.impact == 0.9, "impact is not valid"
 
@@ -1066,9 +1064,9 @@ class TestImportMigration:
             new_import="from agents import new",
             line_number=3,
         )
-        
+
         migration.calculate_properties()
-        
+
         # Test files should have medium-high impact
         assert migration.impact == 0.7, "impact is not valid"
 
@@ -1095,20 +1093,20 @@ class TestForceVectorAdvanced:
     ) -> None:
         """Test 3D magnitude calculations with parametrization."""
         vector = ForceVector(x=x, y=y, z=z)
-        
+
         assert vector.magnitude == pytest.approx(expected_mag, rel=0.01)
 
     def test_priority_scaling_effects(self) -> None:
         """Test priority scaling with different values."""
         priorities = [0.5, 1.0, 2.0, 5.0]
-        
+
         for priority in priorities:
             vector = ForceVector(
                 magnitude=1.0,
                 direction=0.0,
                 priority=priority,
             )
-            
+
             x, _y = vector.get_components()
             assert x == pytest.approx(priority, rel=0.01)
 
@@ -1122,7 +1120,7 @@ class TestErrorHandling:
             potential_energy=-10.0,
             kinetic_energy=-5.0,
         )
-        
+
         # Should not raise, but values should be preserved
         assert path.potential_energy == -10.0, "potential_energy is not valid"
         assert path.kinetic_energy == -5.0, "kinetic_energy is not valid"
@@ -1133,7 +1131,7 @@ class TestErrorHandling:
             current_position=None,
             goal_position=None,
         )
-        
+
         assert state.current_position is None, "current_position is not valid"
         assert state.goal_position is None, "goal_position is not valid"
 
@@ -1143,23 +1141,23 @@ class TestErrorHandling:
     ) -> None:
         """Test orchestrator assess with minimal state."""
         state = DecisionState()
-        
+
         with patch('builtins.print'):
             assessment = orchestrator_fixture.assess_situation(state)
-        
+
         assert assessment is not None, "assessment must be initialized"
 
     def test_energy_landscape_with_zero_temperature(self) -> None:
         """Test EnergyLandscape with near-zero temperature."""
         landscape = EnergyLandscape(temperature=0.001)
-        
+
         for i in range(3):
             state = EnergyState(
                 configuration={"id": i},
                 energy=float(i),
             )
             landscape.add_state(state)
-        
+
         selected = landscape.select_state()
         assert selected is not None, "selected must be initialized"
 
@@ -1167,9 +1165,9 @@ class TestErrorHandling:
         """Test DiffusionFlowModel with single attractor."""
         model = DiffusionFlowModel()
         model.add_attractor((0.5, 0.5), strength=1.0)
-        
+
         trajectory = model.simulate_flow((0.5, 0.5), steps=10)
-        
+
         # Starting at attractor should have minimal movement
         assert len(trajectory) >= 1, "Trajectory must not be empty"
 
@@ -1187,10 +1185,10 @@ class TestIntegrationScenarios:
             goal_position="target",
             available_resources=0.9,
         )
-        
+
         with patch('builtins.print'):
             assessment = orchestrator_fixture.assess_situation(state)
-        
+
         assert assessment is not None, "assessment must be initialized"
         assert "distance_to_goal" in assessment, "Condition must be true"
 
@@ -1202,17 +1200,17 @@ class TestIntegrationScenarios:
             friction=1.0,
             momentum=5.0,
         )
-        
+
         path2 = ActionPath(
             potential_energy=40.0,
             kinetic_energy=60.0,
             friction=2.0,
             momentum=8.0,
         )
-        
+
         e1 = path1.calculate_total_energy()
         e2 = path2.calculate_total_energy()
-        
+
         # Both should produce valid energies
         assert e1 > 0, "e1 must be greater than zero"
         assert e2 > 0, "e2 must be greater than zero"
@@ -1222,10 +1220,10 @@ class TestIntegrationScenarios:
         swarm = SwarmIntelligence(num_particles=5, dimensions=2)
         bounds = [(0.0, 1.0), (0.0, 1.0)]
         swarm.initialize_swarm(bounds)
-        
+
         model = DiffusionFlowModel()
         model.add_attractor((0.8, 0.8), strength=2.0)
-        
+
         assert len(swarm.particles) == 5, "Collection must not be empty"
         assert len(model.attractors) == 1, "Collection must not be empty"
 
@@ -1240,10 +1238,10 @@ class TestPhysicsCalculationAccuracy:
             direction=math.pi / 4,
             priority=1.0,
         )
-        
+
         x, y = vector.get_components()
         expected = math.sqrt(2) / 2
-        
+
         assert x == pytest.approx(expected, abs=1e-10)
         assert y == pytest.approx(expected, abs=1e-10)
 
@@ -1255,10 +1253,10 @@ class TestPhysicsCalculationAccuracy:
             friction=1.234,
             momentum=4.567,
         )
-        
+
         total = path.calculate_total_energy()
         expected = 33.33 + 66.67 - (4.567 * 5.0) + (1.234 * 10.0)
-        
+
         assert total == pytest.approx(expected, abs=1e-10)
 
 
@@ -1277,7 +1275,7 @@ class TestOrchestratorOrchestrationCycle:
             time_available=0.8,
             current_velocity=0.6,
         )
-        
+
         with patch('builtins.print'):
             # ASSESS phase
             assessment = orchestrator_fixture.assess_situation(state)
@@ -1309,9 +1307,9 @@ class TestEdgeCaseBoundaryConditions:
             direction=direction,
             priority=priority,
         )
-        
+
         x, _y = vector.get_components()
-        
+
         if isinstance(expected_x, float) and not isinstance(expected_x, type(pytest.approx(0))):
             assert x == expected_x, "x is not valid"
         else:
@@ -1340,9 +1338,9 @@ class TestEdgeCaseBoundaryConditions:
             friction=friction,
             momentum=momentum,
         )
-        
+
         total = path.calculate_total_energy()
-        
+
         # Verify formula: E = P + K - M*5 + F*10
         expected = potential + kinetic - (momentum * 5.0) + (friction * 10.0)
         assert total == pytest.approx(expected, rel=0.01)
@@ -1351,13 +1349,13 @@ class TestEdgeCaseBoundaryConditions:
         """Test that diffusion flow converges toward attractors."""
         model = DiffusionFlowModel(resolution=20)
         model.add_attractor((0.9, 0.9), strength=2.0)
-        
+
         trajectory = model.simulate_flow((0.1, 0.1), steps=100, dt=0.05)
-        
+
         # Final position should be closer to attractor than initial
         initial_dist = math.hypot(0.1 - 0.9, 0.1 - 0.9)
         final_dist = math.hypot(trajectory[-1][0] - 0.9, trajectory[-1][1] - 0.9)
-        
+
         assert final_dist < initial_dist, "final_dist is not valid"
 
 
@@ -1371,11 +1369,11 @@ class TestPhysicsLawsConsistency:
             ActionPath(potential_energy=30.0, kinetic_energy=70.0),
             ActionPath(potential_energy=80.0, kinetic_energy=20.0),
         ]
-        
+
         total_mechanical_energy = sum(
             p.potential_energy + p.kinetic_energy for p in paths
         )
-        
+
         # Should sum to 100 (simplified conservation check)
         assert total_mechanical_energy == 300.0, "total_mechanical_energy is not valid"
 
@@ -1384,12 +1382,12 @@ class TestPhysicsLawsConsistency:
         # Two perpendicular unit forces
         f1 = ForceVector(magnitude=1.0, direction=0.0, priority=1.0)
         f2 = ForceVector(magnitude=1.0, direction=math.pi / 2, priority=1.0)
-        
+
         x1, y1 = f1.get_components()
         x2, y2 = f2.get_components()
-        
+
         total_mag = math.hypot(x1 + x2, y1 + y2)
-        
+
         # Two perpendicular unit vectors should result in sqrt(2)
         assert total_mag == pytest.approx(math.sqrt(2), abs=0.01)
 
@@ -1401,17 +1399,17 @@ class TestPhysicsLawsConsistency:
             friction=1.0,
             momentum=0.0,
         )
-        
+
         path_high_momentum = ActionPath(
             potential_energy=100.0,
             kinetic_energy=50.0,
             friction=1.0,
             momentum=10.0,
         )
-        
+
         e_low = path_low_momentum.calculate_total_energy()
         e_high = path_high_momentum.calculate_total_energy()
-        
+
         # High momentum should result in lower total energy
         assert e_high < e_low, "e_high is not valid"
 
@@ -1423,17 +1421,17 @@ class TestPhysicsLawsConsistency:
             friction=0.0,
             momentum=5.0,
         )
-        
+
         path_high_friction = ActionPath(
             potential_energy=100.0,
             kinetic_energy=50.0,
             friction=10.0,
             momentum=5.0,
         )
-        
+
         e_low = path_low_friction.calculate_total_energy()
         e_high = path_high_friction.calculate_total_energy()
-        
+
         # High friction should result in higher total energy
         assert e_high > e_low, "e_high must be greater than zero"
 
@@ -1448,36 +1446,36 @@ class TestStatisticalMechanics:
             energy=5.0,
             temperature=1.0,
         )
-        
+
         state_high = EnergyState(
             configuration={"id": 2},
             energy=20.0,
             temperature=1.0,
         )
-        
+
         prob_low = state_low.boltzmann_probability(reference_energy=0.0)
         prob_high = state_high.boltzmann_probability(reference_energy=0.0)
-        
+
         assert prob_low > prob_high, "prob_low must be greater than zero"
 
     def test_free_energy_calculation_temperature_dependence(self) -> None:
         """Test that free energy depends on temperature."""
         config = {"test": True}
-        
+
         state_cold = EnergyState(
             configuration=config,
             energy=10.0,
             temperature=0.1,
             entropy=5.0,
         )
-        
+
         state_hot = EnergyState(
             configuration=config,
             energy=10.0,
             temperature=10.0,
             entropy=5.0,
         )
-        
+
         # F = E - T*S
         # Cold: F = 10 - 0.1*5 = 9.5
         # Hot: F = 10 - 10*5 = -40
@@ -1487,16 +1485,16 @@ class TestStatisticalMechanics:
     def test_gibbs_distribution_probability_normalization(self) -> None:
         """Test that Gibbs probabilities sum to approximately 1."""
         landscape = EnergyLandscape(temperature=1.0)
-        
+
         for i in range(5):
             state = EnergyState(
                 configuration={"id": i},
                 energy=float(i),
             )
             landscape.add_state(state)
-        
+
         total_prob = sum(
             landscape.gibbs_probability(state) for state in landscape.states
         )
-        
+
         assert total_prob == pytest.approx(1.0, abs=0.01)

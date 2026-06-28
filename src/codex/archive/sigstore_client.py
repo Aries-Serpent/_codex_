@@ -62,7 +62,7 @@ class SignstoreClient:
     is unavailable.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize Sigstore client with GitHub OIDC integration."""
         self.oidc_token = os.getenv("SIGSTORE_ID_TOKEN") or self._get_github_token()
         self.fulcio_url = os.getenv("SIGSTORE_FULCIO_URL", "https://fulcio.sigstore.dev")

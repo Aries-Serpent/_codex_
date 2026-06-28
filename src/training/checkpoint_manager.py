@@ -311,7 +311,7 @@ class CheckpointManager:  # type: ignore[no-redef]
             return self.save_now(step, payload, metrics, prefix, rng_state=rng_state)
         return None
 
-    def callback(self):
+    def callback(self) -> None:
         """Return a ``TrainerCallback`` that uses this manager."""
         if not self.save_steps:
             raise RuntimeError("save_steps must be set to use callback()")
@@ -328,7 +328,7 @@ class CheckpointManager:  # type: ignore[no-redef]
                 self.scaler = None
                 self._logs: Optional[dict[str, float]] = None
 
-            def on_train_begin(self, args, state, control, **kwargs):
+            def on_train_begin(self, args, state, control, **kwargs) -> None:
                 self.model = kwargs.get("model")
                 self.optimizer = kwargs.get("optimizer")
                 self.lr_scheduler = kwargs.get("lr_scheduler")
@@ -337,11 +337,11 @@ class CheckpointManager:  # type: ignore[no-redef]
                     raise RuntimeError("model and optimizer are required for checkpointing")
                 return control
 
-            def on_log(self, args, state, control, logs=None, **kwargs):
+            def on_log(self, args, state, control, logs=None, **kwargs) -> None:
                 self._logs = dict(logs or {})
                 return control
 
-            def on_step_end(self, args, state, control, **kwargs):
+            def on_step_end(self, args, state, control, **kwargs) -> None:
                 step = state.global_step
                 # Keep explicit None handling because some legacy/test state shims
                 # initialize global_step lazily before first step.

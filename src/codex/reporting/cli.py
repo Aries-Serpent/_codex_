@@ -11,9 +11,9 @@ logger = logging.getLogger(__name__)
 _METRICS_FILE = Path(".codex/metrics.ndjson")
 
 
-def _load_metrics(n: int = 10) -> list[dict]:
+def _load_metrics(n: int = 10) -> list[dict[str, Any]]:
     """Load last n entries from .codex/metrics.ndjson."""
-    entries: list[dict] = []
+    entries: list[dict[str, Any]] = []
     if _METRICS_FILE.exists():
         try:
             lines = _METRICS_FILE.read_text().splitlines()
@@ -38,7 +38,7 @@ def _load_metrics(n: int = 10) -> list[dict]:
     type=click.Choice(["summary", "detail", "trend"]),
     default="summary",
 )
-def report_main(format: str, output: str, _report_type: str):
+def report_main(format: str, output: str, _report_type: str) -> None:
     """Generate code quality reports.
 
     Examples:
@@ -69,7 +69,7 @@ def report_main(format: str, output: str, _report_type: str):
 @click.command()
 @click.option("--output", type=click.Path(), default=None)
 @click.option("--open", "open_browser", is_flag=True, help="Open in browser after generation")
-def dashboard_main(output: str, open_browser: bool):
+def dashboard_main(output: str, open_browser: bool) -> None:
     """Generate interactive quality dashboard.
 
     Examples:

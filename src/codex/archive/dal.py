@@ -683,7 +683,7 @@ class PostgresDAL(BaseDAL):
         self.conn = self.pg.connect(self.dsn)
         self.ensure_schema()
 
-    def _sql_ident(self, name: str):
+    def _sql_ident(self, name: str) -> None:
         from psycopg import sql
 
         self.validate_identifier(name, self._ALLOWED_TABLES)

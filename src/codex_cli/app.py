@@ -144,7 +144,7 @@ if _USE_TYPER:
             entries.append((path.stem, description, path))
         return entries
 
-    def _load_yaml(path: Path) -> dict:
+    def _load_yaml(path: Path) -> dict[str, Any]:
         try:
             import yaml
         except (IOError, OSError) as exc:  # pragma: no cover - optional dependency missing
@@ -310,7 +310,7 @@ else:  # pragma: no cover - click fallback
             entries.append((path.stem, description, path))
         return entries
 
-    def _load_yaml(path: Path) -> dict:
+    def _load_yaml(path: Path) -> dict[str, Any]:
         try:
             import yaml
         except (IOError, OSError) as exc:  # pragma: no cover - optional dependency missing

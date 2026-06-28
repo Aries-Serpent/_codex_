@@ -408,7 +408,7 @@ class ASTStorage:
         analysis_id: str,
         metric_name: str,
         metric_value: float,
-        metadata: Optional[dict] = None,
+        metadata: Optional[dict[str, Any]] = None,
     ) -> None:
         """Save a metric value.
 

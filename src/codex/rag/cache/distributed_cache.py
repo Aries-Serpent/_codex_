@@ -125,7 +125,7 @@ class RedisCacheBackend(BaseCacheBackend):
         self._connected = False
         self._lock = threading.Lock()
 
-    def _get_client(self):
+    def _get_client(self) -> None:
         """Get Redis client with lazy initialization."""
         if self._client is not None:
             return self._client if self._connected else None
@@ -147,7 +147,7 @@ class RedisCacheBackend(BaseCacheBackend):
                 )
 
                 # Test connection
-                self._client.ping()
+                self._client.ping()  # type: ignore[attr-defined]
                 self._connected = True
                 logger.info(
                     f"Connected to Redis at {self.config.redis_host}:{self.config.redis_port}"

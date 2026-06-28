@@ -104,7 +104,7 @@ class MFAProvider:
     MAX_ATTEMPTS = 3
     LOCKOUT_DURATION = 900  # 15 minutes in seconds
 
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Initialize MFA provider.
 
@@ -327,7 +327,7 @@ class MFAProvider:
         del self._locked_users[user_id]
         return False
 
-    def _record_attempt(self, user_id: str, success: bool):
+    def _record_attempt(self, user_id: str, success: bool) -> None:
         """Record MFA verification attempt."""
         attempt = MFAAttempt(
             user_id=user_id,

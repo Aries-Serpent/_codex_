@@ -295,7 +295,7 @@ def run_unit_tests(code_str: str, tests_dir: str) -> dict[str, int]:  # pragma: 
         shutil.rmtree(tmpdir, ignore_errors=True)
 
 
-def _materialise(sequence: Iterable) -> list:
+def _materialise(sequence: Iterable) -> list[Any]:
     """Convert an iterable to a list (helper function)."""
     return list(sequence)
 

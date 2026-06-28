@@ -114,7 +114,8 @@ class TestWorkflowTriggerValidation:
         Simulation/dispatch-only workflows (those whose sole trigger is
         ``workflow_dispatch``) are intentional manual tools and are excluded.
         """
-        workflows_dir = Path(".github/workflows")
+        workflows_dir = Path(".github/workflows"
+            ), "Condition must be true"
         if workflows_dir.exists():
             for workflow in workflows_dir.glob("*test*.yml"):
                 try:
@@ -163,7 +164,8 @@ class TestWorkflowJobValidation:
 
     def test_jobs_have_runs_on(self) -> None:
         """Test that jobs specify runs-on."""
-        workflows_dir = Path(".github/workflows")
+        workflows_dir = Path(".github/workflows"
+            ), "Condition must be true"
         if workflows_dir.exists():
             for workflow in workflows_dir.glob("*.yml"):
                 try:
@@ -178,7 +180,8 @@ class TestWorkflowJobValidation:
 
     def test_jobs_have_steps(self) -> None:
         """Test that jobs have steps."""
-        workflows_dir = Path(".github/workflows")
+        workflows_dir = Path(".github/workflows"
+                        ), "Condition must be true"
         if workflows_dir.exists():
             for workflow in workflows_dir.glob("*.yml"):
                 try:
@@ -202,7 +205,8 @@ class TestWorkflowSecurityValidation:
 
     def test_no_hardcoded_secrets(self) -> None:
         """Test that workflows don't have hardcoded secrets."""
-        workflows_dir = Path(".github/workflows")
+        workflows_dir = Path(".github/workflows"
+                        ), "Condition must be true"
         sensitive_patterns = [
             r"password\s*=\s*['\"][^'\"]+['\"]",
             r"token\s*=\s*['\"][^'\"]+['\"]",

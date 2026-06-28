@@ -83,7 +83,7 @@ def _redact(text: str, patterns: list[re.Pattern[str]], label: str) -> tuple[str
     return text, count
 
 
-def _safe_load_yaml(policy_yaml: str) -> dict:
+def _safe_load_yaml(policy_yaml: str) -> dict[str, Any]:
     if not policy_yaml or yaml is None:
         return {}
     try:
@@ -108,7 +108,7 @@ def _extend_patterns(base: list[re.Pattern[str]], patterns: Iterable[str] | None
 
 def sanitize_prompt(
     text: str, cfg: SafetyConfig | None = None, *, policy_yaml: str | None = None
-) -> dict:
+) -> dict[str, Any]:
     """Sanitise ``text`` before it is used as a prompt."""
 
     cfg = cfg or SafetyConfig()
@@ -133,7 +133,7 @@ def sanitize_prompt(
     return {"text": tx, "flags": flags, "redactions": {"secrets": r1, "pii": r2}}
 
 
-def sanitize_output(text: str, cfg: SafetyConfig | None = None) -> dict:
+def sanitize_output(text: str, cfg: SafetyConfig | None = None) -> dict[str, Any]:
     """Redact secrets/PII and optionally truncate model output."""
 
     cfg = cfg or SafetyConfig()

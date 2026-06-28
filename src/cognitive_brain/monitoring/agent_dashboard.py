@@ -78,10 +78,10 @@ except ImportError:
         def observe(self, *_, **__):
             pass
 
-    _cognitive_decisions_total = _NoOpMetric()  # type: ignore[assignment]
-    _cognitive_coherence = _NoOpMetric()  # type: ignore[assignment]
-    _cognitive_latency = _NoOpMetric()  # type: ignore[assignment]
-    _cognitive_errors_total = _NoOpMetric()  # type: ignore[assignment]
+    _cognitive_decisions_total = _NoOpMetric()
+    _cognitive_coherence = _NoOpMetric()
+    _cognitive_latency = _NoOpMetric()
+    _cognitive_errors_total = _NoOpMetric()
     _PROMETHEUS_AVAILABLE = False
 
 
