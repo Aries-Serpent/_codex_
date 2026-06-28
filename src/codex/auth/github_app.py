@@ -310,7 +310,9 @@ class GitHubApp:
         """Return tracked active installations."""
         return list(self._active_installations)
 
-    def refresh_installation_token(self, installation_id: str, old_token: dict[str, Any]) -> dict[str, Any]:
+    def refresh_installation_token(
+        self, installation_id: str, old_token: dict[str, Any]
+    ) -> dict[str, Any]:
         """Refresh an installation token for compatibility tests."""
 
         async def _load() -> dict[str, Any]:

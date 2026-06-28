@@ -16,7 +16,6 @@ import hashlib
 import json
 import logging
 import threading
-import time
 from collections import OrderedDict
 from datetime import datetime, timedelta, timezone
 from enum import Enum
@@ -73,9 +72,7 @@ class CacheEntry(Generic[T]):
 
         # Promote to HOT segment after 5 accesses
         if self.access_count >= 5 and self.segment == CacheSegment.WARM:
-            logger.debug(
-                f"Promoting cache entry to HOT (access_count={self.access_count})"
-            )
+            logger.debug(f"Promoting cache entry to HOT (access_count={self.access_count})")
             self.segment = CacheSegment.HOT
 
 
@@ -193,9 +190,7 @@ class UnifiedCache(Generic[T]):
             self.misses += 1
             return None
 
-    def _set_internal(
-        self, key: str, value: T, segment: CacheSegment = CacheSegment.WARM
-    ) -> None:
+    def _set_internal(self, key: str, value: T, segment: CacheSegment = CacheSegment.WARM) -> None:
         """Internal set without lock (caller must hold lock)."""
         entry = CacheEntry(value, segment)
 
@@ -276,7 +271,9 @@ class UnifiedCache(Generic[T]):
                 "hit_rate": f"{hit_rate:.1f}%",
                 "hits": self.hits,
                 "misses": self.misses,
-                "total_entries": len(self.hot_entries) + len(self.warm_entries) + len(self.cold_entries),
+                "total_entries": len(self.hot_entries)
+                + len(self.warm_entries)
+                + len(self.cold_entries),
                 "hot_entries": len(self.hot_entries),
                 "warm_entries": len(self.warm_entries),
                 "cold_entries": len(self.cold_entries),
@@ -293,25 +290,19 @@ class UnifiedCache(Generic[T]):
             cleaned = 0
 
             # Clean hot segment
-            expired_keys = [
-                k for k, v in self.hot_entries.items() if v.is_expired()
-            ]
+            expired_keys = [k for k, v in self.hot_entries.items() if v.is_expired()]
             for key in expired_keys:
                 del self.hot_entries[key]
                 cleaned += 1
 
             # Clean warm segment
-            expired_keys = [
-                k for k, v in self.warm_entries.items() if v.is_expired()
-            ]
+            expired_keys = [k for k, v in self.warm_entries.items() if v.is_expired()]
             for key in expired_keys:
                 del self.warm_entries[key]
                 cleaned += 1
 
             # Clean cold segment
-            expired_keys = [
-                k for k, v in self.cold_entries.items() if v.is_expired()
-            ]
+            expired_keys = [k for k, v in self.cold_entries.items() if v.is_expired()]
             for key in expired_keys:
                 del self.cold_entries[key]
                 cleaned += 1

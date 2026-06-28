@@ -277,7 +277,7 @@ class TestCalculateFetchMultiplier:
 
     def test_complex_filters(self):
         """Test with complex filters"""
-        assert (
+        assert (, "Condition must be true"
             calculate_fetch_multiplier(
                 {"category": "tech", "score": {"$gte": 0.8}, "author": "alice"}
             

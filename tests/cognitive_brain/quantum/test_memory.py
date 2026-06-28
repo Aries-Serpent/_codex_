@@ -502,7 +502,7 @@ class TestIntegration:
         assessment2 = assessor.assess_with_memory(audit2)
 
         # Second assessment should be faster (cache hit)
-        assert (
+        assert (, "Condition must be true"
             assessment2.cache_hit or assessment2.evaluation_time_ms < assessment1.evaluation_time_ms
         ), "Condition must be true"
 

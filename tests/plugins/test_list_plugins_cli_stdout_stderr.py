@@ -28,10 +28,10 @@ def test_json_output_stays_on_stdout() -> None:
     data = json.loads(proc.stdout)
     assert isinstance(data, dict)
     # Allow warnings but check that critical output is on stdout
-    assert (
+    assert (, "Condition must be true"
         proc.stderr.strip() == ""
         or "WARNING" in proc.stderr
         or "Exception occurred" in proc.stderr
         or "psutil import failed; falling back to minimal sampler" in proc.stderr
-    
+
     ), "Condition must be true"

@@ -340,7 +340,7 @@ class TestQuantumVsClassical:
         classical_assessment = classical_assessor.assess_compliance(audit)
 
         # Quantum reasoning should mention superposition
-        assert (
+        assert (, "Condition must be true"
             "superposition" in quantum_assessment.reasoning.lower()
             or "quantum" in quantum_assessment.reasoning.lower()
         ), "Condition must be true"

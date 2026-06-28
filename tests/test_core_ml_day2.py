@@ -3,11 +3,10 @@ Core Module Tests — codex_ml.core
 Configuration management, registry, and pipeline execution patterns
 """
 
-import pytest
-import json
 import tempfile
 from pathlib import Path
-from unittest.mock import Mock, patch
+
+import pytest
 
 
 class TestConfigurationManagement:
@@ -25,7 +24,7 @@ class TestConfigurationManagement:
             "learning_rate": 0.001,
             "batch_size": 32,
         }
-        
+
         try:
             config = load_config(config_dict)
             assert config is not None, "config must be initialized"
@@ -46,7 +45,7 @@ learning_rate: 0.001
 batch_size: 32
 """)
             f.flush()
-            
+
             try:
                 config = load_config(f.name)
                 assert config is not None, "config must be initialized"
@@ -83,7 +82,7 @@ batch_size: 32
         try:
             defaults = get_default_config()
             assert defaults is not None, "defaults must be initialized"
-            
+
             # Should have reasonable defaults
             assert "learning_rate" in defaults or "lr" in defaults, "Condition must be true"
         except (NotImplementedError, KeyError):
@@ -92,7 +91,7 @@ batch_size: 32
     def test_config_env_variable_injection(self):
         """Configuration should support environment variable overrides."""
         import os
-        
+
         try:
             from codex_ml.config_schema import load_config_with_env
         except (ImportError, AttributeError):
@@ -121,10 +120,10 @@ class TestRegistrySystem:
 
         try:
             registry = Registry()
-            
+
             def dummy_plugin():
                 return "test"
-            
+
             registry.register("test_plugin", dummy_plugin)
             assert "test_plugin" in registry, "Condition must be true"
         except (NotImplementedError, TypeError):
@@ -140,7 +139,7 @@ class TestRegistrySystem:
         try:
             registry = Registry()
             registry.register("test", lambda: 42)
-            
+
             plugin = registry.get("test")
             assert plugin is not None, "plugin must be initialized"
             assert callable(plugin), "Condition must be true"
@@ -157,18 +156,18 @@ class TestRegistrySystem:
         try:
             registry = Registry()
             call_count = 0
-            
+
             def counted_plugin():
                 nonlocal call_count
                 call_count += 1
                 return call_count
-            
+
             registry.register("counted", counted_plugin)
-            
+
             # Multiple lookups should use cache
             first = registry.get("counted")
             second = registry.get("counted")
-            
+
             # Check if caching is implemented (may not be)
             assert first is not None, "first must be initialized"
             assert second is not None, "second must be initialized"
@@ -207,7 +206,7 @@ class TestPipelineExecution:
                     {"name": "train", "type": "trainer"},
                 ]
             }
-            
+
             pipeline = Pipeline(config)
             assert pipeline is not None, "pipeline must be initialized"
         except (TypeError, ValueError):
@@ -222,15 +221,15 @@ class TestPipelineExecution:
 
         try:
             execution_order = []
-            
+
             class TrackedStep:
                 def __init__(self, name):
                     self.name = name
-                
+
                 def execute(self, data):
                     execution_order.append(self.name)
                     return data
-            
+
             # Would need actual pipeline implementation
             # to verify execution order
             assert True, "True is not valid"
@@ -252,7 +251,7 @@ class TestPipelineExecution:
                 ],
                 "error_handling": "raise"
             }
-            
+
             pipeline = Pipeline(config)
             # Pipeline should have error handling config
             assert pipeline is not None, "pipeline must be initialized"
@@ -268,11 +267,11 @@ class TestPipelineExecution:
 
         try:
             pipeline = Pipeline({})
-            
+
             # Test context manager pattern
             with pipeline:
                 pass
-            
+
             # Verify cleanup occurred (implementation dependent)
             assert True, "True is not valid"
         except (TypeError, NotImplementedError):
@@ -287,7 +286,7 @@ class TestPipelineExecution:
 
         try:
             pipeline = Pipeline({})
-            
+
             # Check state tracking
             assert hasattr(pipeline, "state") or hasattr(pipeline, "status")
         except (AttributeError, NotImplementedError):
@@ -383,7 +382,7 @@ class TestDataPipeline:
         try:
             data = [1, 2, 3, 4, 5]
             batches = list(batch_process(data, batch_size=2))
-            
+
             # Should create batches
             assert len(batches) > 0, "Batches must not be empty"
         except (TypeError, NotImplementedError):
@@ -403,7 +402,7 @@ class TestObservability:
         try:
             logger = get_structured_logger("test")
             assert logger is not None, "logger must be initialized"
-            
+
             # Should have logging methods
             assert hasattr(logger, "info") or hasattr(logger, "log")
         except (NotImplementedError, AttributeError):
@@ -419,7 +418,7 @@ class TestObservability:
         try:
             collector = MetricsCollector()
             collector.record("accuracy", 0.95)
-            
+
             # Should retrieve recorded metrics
             metrics = collector.get_all()
             assert metrics is not None, "metrics must be initialized"
@@ -436,7 +435,7 @@ class TestObservability:
         try:
             tracker = EventTracker()
             tracker.record_event("training_start", {"epoch": 1})
-            
+
             # Should retrieve events
             events = tracker.get_events()
             assert events is not None or True, "events must be initialized"

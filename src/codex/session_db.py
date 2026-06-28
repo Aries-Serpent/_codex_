@@ -22,7 +22,7 @@ try:
 except ImportError:
     PARQUET_AVAILABLE = False
     pd = None
-    pq = None  # type: ignore[assignment]
+    pq = None
 
 logger = logging.getLogger(__name__)
 

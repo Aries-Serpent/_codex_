@@ -16,8 +16,8 @@ from fastapi import FastAPI, Request
 from fastapi.testclient import TestClient
 
 from services.msp_gateway.middleware import TenantContextMiddleware
-from services.msp_gateway.middleware.tenant_context import TenantRegistry
 from services.msp_gateway.middleware import tenant_context as tc_module
+from services.msp_gateway.middleware.tenant_context import TenantRegistry
 
 
 def test_tenant_routing_single_endpoint_different_keys(

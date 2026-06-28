@@ -418,8 +418,8 @@ class HFTokenizer(TokenizerAdapter):
                 tj = Path(artifacts_dir) / "tokenizer.json"
                 if not tj.exists():
                     raise FileNotFoundError(f"tokenizer.json not found in {artifacts_dir}")
-                self._tk = PreTrainedTokenizerFast(tokenizer_file=str(tj))  # type: ignore
-                self._tk.add_special_tokens(  # type: ignore[attr-defined]
+                self._tk = PreTrainedTokenizerFast(tokenizer_file=str(tj))
+                self._tk.add_special_tokens(
                     {
                         "pad_token": "[PAD]",  # nosec B105
                         "bos_token": "[BOS]",  # nosec B105

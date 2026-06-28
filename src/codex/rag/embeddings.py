@@ -79,11 +79,15 @@ class LocalSentenceTransformerProvider:
         try:
             from codex.rag._model_utils import safe_load_sentence_transformer
 
-            logger.info(f"Loading local embedding model: {self.model_name}")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.info(
+                f"Loading local embedding model: {self.model_name}"
+            )  # codeql[py/clear-text-logging-sensitive-data]
 
             self.model = safe_load_sentence_transformer(self.model_name, self.cache_dir)
 
-            logger.info("Local embedding model loaded successfully on CPU")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.info(
+                "Local embedding model loaded successfully on CPU"
+            )  # codeql[py/clear-text-logging-sensitive-data]
 
         except ImportError:
             logger.error(
@@ -93,7 +97,9 @@ class LocalSentenceTransformerProvider:
             raise
         except (ValueError, TypeError) as e:
             error_type = type(e).__name__
-            logger.error("Error loading local embedding model: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.error(
+                "Error loading local embedding model: <ERROR_TYPE>"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             raise
 
     def encode(
@@ -167,11 +173,15 @@ class OpenAIEmbeddingProvider:
     def _initialize_client(self, api_key: str) -> None:
         """Initialize OpenAI client."""
         if OpenAI is None:
-            logger.error("openai package not installed. Install with: pip install openai")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.error(
+                "openai package not installed. Install with: pip install openai"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             raise ImportError("openai package not installed")
 
         self.client = OpenAI(api_key=api_key)
-        logger.info(f"Initialized OpenAI client with model: {self.model_name}")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.info(
+            f"Initialized OpenAI client with model: {self.model_name}"
+        )  # codeql[py/clear-text-logging-sensitive-data]
 
     def encode(self, texts: list[str], batch_size: int = 100, **kwargs) -> np.ndarray:
         """
@@ -201,7 +211,9 @@ class OpenAIEmbeddingProvider:
 
             except (ValueError, TypeError, RuntimeError) as e:
                 error_type = type(e).__name__
-                logger.error(f"Error encoding batch {i}-{i + len(batch)}: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+                logger.error(
+                    f"Error encoding batch {i}-{i + len(batch)}: <ERROR_TYPE>"
+                )  # codeql[py/clear-text-logging-sensitive-data]
                 raise
 
         return np.array(embeddings)
@@ -245,7 +257,9 @@ class CachedEmbeddingProvider:
         self.cache_hits = 0
         self.cache_misses = 0
 
-        logger.info(f"Initialized embedding cache at {self.cache_dir}")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.info(
+            f"Initialized embedding cache at {self.cache_dir}"
+        )  # codeql[py/clear-text-logging-sensitive-data]
 
     def encode(
         self,
@@ -267,7 +281,9 @@ class CachedEmbeddingProvider:
             numpy array of embeddings
         """
         if cache_key is None:
-            logger.debug("No cache key provided; bypassing cache")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.debug(
+                "No cache key provided; bypassing cache"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             return self.provider.encode(texts, **kwargs)
 
         cache_file = self.cache_dir / f"{cache_key}.npz"
@@ -281,16 +297,22 @@ class CachedEmbeddingProvider:
                     data = np.load(cache_file, allow_pickle=False)
                     embeddings = data["embeddings"]
                     self.cache_hits += 1
-                    logger.debug(f"Cache hit for key: {cache_key}")  # codeql[py/clear-text-logging-sensitive-data]
+                    logger.debug(
+                        f"Cache hit for key: {cache_key}"
+                    )  # codeql[py/clear-text-logging-sensitive-data]
                     return embeddings
                 except (IOError, OSError, ValueError) as e:
                     error_type = type(e).__name__
-                    logger.warning(f"Error loading cache: {error_type}")  # codeql[py/clear-text-logging-sensitive-data]
+                    logger.warning(
+                        f"Error loading cache: {error_type}"
+                    )  # codeql[py/clear-text-logging-sensitive-data]
                     # Continue to regenerate cache
 
         # Cache miss - generate embeddings
         self.cache_misses += 1
-        logger.debug(f"Cache miss for key: {cache_key}")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.debug(
+            f"Cache miss for key: {cache_key}"
+        )  # codeql[py/clear-text-logging-sensitive-data]
         embeddings = self.provider.encode(texts, **kwargs)
 
         # Save to cache
@@ -309,11 +331,15 @@ class CachedEmbeddingProvider:
             with open(metadata_file, "w") as f:
                 json.dump(cache_metadata, f, indent=2)
 
-            logger.debug(f"Saved embeddings to cache: {cache_key}")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.debug(
+                f"Saved embeddings to cache: {cache_key}"
+            )  # codeql[py/clear-text-logging-sensitive-data]
 
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.warning("Error saving to cache: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning(
+                "Error saving to cache: <ERROR_TYPE>"
+            )  # codeql[py/clear-text-logging-sensitive-data]
 
         return embeddings
 
@@ -338,7 +364,9 @@ class CachedEmbeddingProvider:
             if provided_metadata and "file_mtime" in provided_metadata:
                 cached_mtime = cache_metadata.get("file_mtime")
                 if cached_mtime != provided_metadata["file_mtime"]:
-                    logger.debug("Cache invalid: file mtime changed")  # codeql[py/clear-text-logging-sensitive-data]
+                    logger.debug(
+                        "Cache invalid: file mtime changed"
+                    )  # codeql[py/clear-text-logging-sensitive-data]
                     return False
 
             # Add more validation rules as needed
@@ -346,7 +374,9 @@ class CachedEmbeddingProvider:
 
         except (ValueError, TypeError, RuntimeError) as e:
             error_type = type(e).__name__
-            logger.warning("Error validating cache: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning(
+                "Error validating cache: <ERROR_TYPE>"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             return False
 
     def get_dimension(self) -> int:
@@ -412,60 +442,84 @@ def create_embedding_provider(
     """  # noqa: E501
     # Auto-fallback logic with intelligent provider selection
     if provider_type == "auto":
-        logger.info("Auto-selecting embedding provider...")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.info(
+            "Auto-selecting embedding provider..."
+        )  # codeql[py/clear-text-logging-sensitive-data]
 
         # Priority 1: Try sentence-transformers (best quality, requires internet for first download)
         try:
-            logger.info("Attempting sentence-transformers provider")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.info(
+                "Attempting sentence-transformers provider"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             model_name_st = model_name or "sentence-transformers/all-MiniLM-L6-v2"
             provider: EmbeddingProvider = LocalSentenceTransformerProvider(  # type: ignore[assignment]
                 model_name=model_name_st, **kwargs
             )
-            logger.info("✓ Using sentence-transformers provider")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.info(
+                "✓ Using sentence-transformers provider"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             if use_cache:
                 return CachedEmbeddingProvider(provider, cache_dir)
             return provider
         except (ImportError, AttributeError, RuntimeError) as e:
             error_type = type(e).__name__
-            logger.debug(f"sentence-transformers unavailable: {error_type}")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.debug(
+                f"sentence-transformers unavailable: {error_type}"
+            )  # codeql[py/clear-text-logging-sensitive-data]
 
         # Priority 2: Try Ollama (good quality, local server)
         try:
             from .providers.ollama_provider import OllamaEmbeddingProvider
 
-            logger.info("Attempting Ollama provider")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.info(
+                "Attempting Ollama provider"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             model_name_ollama = model_name or "nomic-embed-text"
             provider = OllamaEmbeddingProvider(model_name=model_name_ollama, **kwargs)  # type: ignore[assignment]
             if provider._check_health():  # type: ignore[attr-defined]
-                logger.info("✓ Using Ollama provider")  # codeql[py/clear-text-logging-sensitive-data]
+                logger.info(
+                    "✓ Using Ollama provider"
+                )  # codeql[py/clear-text-logging-sensitive-data]
                 if use_cache:
                     return CachedEmbeddingProvider(provider, cache_dir)
                 return provider
-            logger.debug("Ollama server not running")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.debug(
+                "Ollama server not running"
+            )  # codeql[py/clear-text-logging-sensitive-data]
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.debug("Ollama unavailable: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.debug(
+                "Ollama unavailable: <ERROR_TYPE>"
+            )  # codeql[py/clear-text-logging-sensitive-data]
 
         # Priority 3: Try llama.cpp (excellent performance, requires model file)
         if "model_path" in kwargs:
             try:
                 from .providers.llamacpp_provider import LlamaCppEmbeddingProvider
 
-                logger.info("Attempting llama.cpp provider")  # codeql[py/clear-text-logging-sensitive-data]
+                logger.info(
+                    "Attempting llama.cpp provider"
+                )  # codeql[py/clear-text-logging-sensitive-data]
                 provider = LlamaCppEmbeddingProvider(**kwargs)  # type: ignore[assignment]
-                logger.info("✓ Using llama.cpp provider")  # codeql[py/clear-text-logging-sensitive-data]
+                logger.info(
+                    "✓ Using llama.cpp provider"
+                )  # codeql[py/clear-text-logging-sensitive-data]
                 if use_cache:
                     return CachedEmbeddingProvider(provider, cache_dir)
                 return provider
             except (ImportError, AttributeError) as e:
                 error_type = type(e).__name__
-                logger.debug("llama.cpp unavailable: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+                logger.debug(
+                    "llama.cpp unavailable: <ERROR_TYPE>"
+                )  # codeql[py/clear-text-logging-sensitive-data]
 
         # Priority 4: Try GPT4All (easy setup, good quality)
         try:
             from .providers.gpt4all_provider import GPT4AllEmbeddingProvider
 
-            logger.info("Attempting GPT4All provider")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.info(
+                "Attempting GPT4All provider"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             model_name_gpt4all = model_name or "nomic-embed-text-v1.5"
             provider = GPT4AllEmbeddingProvider(model_name=model_name_gpt4all, **kwargs)  # type: ignore[assignment]
             logger.info("✓ Using GPT4All provider")  # codeql[py/clear-text-logging-sensitive-data]
@@ -474,10 +528,14 @@ def create_embedding_provider(
             return provider
         except (ValueError, TypeError, RuntimeError) as e:
             error_type = type(e).__name__
-            logger.debug("GPT4All unavailable: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.debug(
+                "GPT4All unavailable: <ERROR_TYPE>"
+            )  # codeql[py/clear-text-logging-sensitive-data]
 
         # Priority 5: Fall back to TF-IDF (always works, offline)
-        logger.info("Falling back to TF-IDF provider (offline-capable)")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.info(
+            "Falling back to TF-IDF provider (offline-capable)"
+        )  # codeql[py/clear-text-logging-sensitive-data]
         max_features = kwargs.get("max_features", 384)
         provider = TfidfEmbeddingProvider(max_features=max_features)
         logger.info("✓ Using TF-IDF provider")  # codeql[py/clear-text-logging-sensitive-data]
@@ -541,7 +599,9 @@ def create_embedding_provider(
     if use_cache:
         provider = CachedEmbeddingProvider(provider, cache_dir=cache_dir)
 
-    logger.info(f"Created embedding provider: {provider.__class__.__name__}")  # codeql[py/clear-text-logging-sensitive-data]
+    logger.info(
+        f"Created embedding provider: {provider.__class__.__name__}"
+    )  # codeql[py/clear-text-logging-sensitive-data]
     return provider
 
 
@@ -582,7 +642,9 @@ class TfidfEmbeddingProvider:
         try:
             from sklearn.feature_extraction.text import TfidfVectorizer
         except ImportError:
-            logger.error("scikit-learn not installed. Install with: pip install scikit-learn")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.error(
+                "scikit-learn not installed. Install with: pip install scikit-learn"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             raise
 
         self.max_features = max_features
@@ -594,7 +656,9 @@ class TfidfEmbeddingProvider:
             max_df=0.95,  # Maximum document frequency (filter common words)
         )
         self.is_fitted = False
-        logger.info(f"Initialized TF-IDF provider (dimension={max_features}, offline-capable=True)")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.info(
+            f"Initialized TF-IDF provider (dimension={max_features}, offline-capable=True)"
+        )  # codeql[py/clear-text-logging-sensitive-data]
 
     def encode(self, texts: list[str], **kwargs) -> np.ndarray:
         """
@@ -617,7 +681,9 @@ class TfidfEmbeddingProvider:
         # Fit on first call
         if not self.is_fitted:
             n_docs = len(texts)
-            logger.info(f"Fitting TF-IDF vectorizer on {n_docs} texts")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.info(
+                f"Fitting TF-IDF vectorizer on {n_docs} texts"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             try:
                 # Guard against small corpora:
                 # When the corpus is small relative to max_df, pruning can eliminate all terms.
@@ -648,17 +714,23 @@ class TfidfEmbeddingProvider:
                 )
             except (ValueError, TypeError) as e:
                 error_type = type(e).__name__
-                logger.error("Error fitting TF-IDF vectorizer: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+                logger.error(
+                    "Error fitting TF-IDF vectorizer: <ERROR_TYPE>"
+                )  # codeql[py/clear-text-logging-sensitive-data]
                 raise
 
         # Transform texts to embeddings
         try:
             embeddings = self.vectorizer.transform(texts).toarray()
-            logger.debug(f"Encoded {len(texts)} texts to shape {embeddings.shape} (TF-IDF)")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.debug(
+                f"Encoded {len(texts)} texts to shape {embeddings.shape} (TF-IDF)"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             return embeddings
         except (ValueError, TypeError) as e:
             error_type = type(e).__name__
-            logger.error("Error transforming texts with TF-IDF: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.error(
+                "Error transforming texts with TF-IDF: <ERROR_TYPE>"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             raise
 
     def get_dimension(self) -> int:

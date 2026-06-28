@@ -33,7 +33,7 @@ except (ImportError, AttributeError):  # pragma: no cover - optional dependency
 try:
     import parso  # optional
 except (ValueError, TypeError):  # pragma: no cover - optional dependency
-    parso = None  # type: ignore[assignment]
+    parso = None
 
 
 @dataclass

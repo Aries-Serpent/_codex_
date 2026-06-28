@@ -38,9 +38,9 @@ def test_secret_scan_stub_detects_pattern(tmp_path: Path):
     assert data["total_findings"] >= 1, "Value must be greater than zero"
     first = data["findings"][0]
     # Snippet is sanitized before storage — accept any redaction sentinel.
-    assert (
+    assert (, "Condition must be true"
         "AWS_SECRET" in first["snippet"]
         or "[REDACTED]" in first["snippet"]
         or first["snippet"] == "<redacted>"
-    
+
     ), "Condition must be true"

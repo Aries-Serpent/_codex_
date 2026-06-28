@@ -481,7 +481,9 @@ class AuthMiddleware:
         )
 
 
-def require_auth(scopes: Optional[list[str]] = None, methods: Optional[list[AuthMethod]] = None) -> None:
+def require_auth(
+    scopes: Optional[list[str]] = None, methods: Optional[list[AuthMethod]] = None
+) -> None:
     """
     Decorator to require authentication on endpoint.
 

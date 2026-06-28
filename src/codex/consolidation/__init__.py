@@ -14,20 +14,20 @@ Modules:
 """
 
 from src.codex.consolidation.decorators import (
-    validate,
-    require_auth,
-    handle_errors,
     handle_async_errors,
+    handle_errors,
+    require_auth,
+    validate,
 )
 from src.codex.consolidation.errors import (
-    ErrorHandler,
     AsyncErrorHandler,
+    AuthenticationError,
+    ErrorHandler,
     ErrorResponse,
     ErrorSeverity,
     create_error_response,
-    wrap_with_error_handling,
     wrap_async_with_error_handling,
-    AuthenticationError,
+    wrap_with_error_handling,
 )
 
 __all__ = [

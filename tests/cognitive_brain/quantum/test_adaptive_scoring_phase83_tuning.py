@@ -33,7 +33,7 @@ def test_tune_k1_from_pda_history_ignores_invalid_lines(tmp_path):
 def test_extract_success_signal_ignores_boolean_ci_counts():
     optimizer = AdaptiveScoringOptimizer()
 
-    assert (
+    assert (, "Condition must be true"
         optimizer._extract_success_signal({"ci_checks_green": True, "ci_checks_red": False}) is None
     ), "Condition must be true"
     assert optimizer._extract_success_signal({"ci_checks_green": 3, "ci_checks_red": False}) is None

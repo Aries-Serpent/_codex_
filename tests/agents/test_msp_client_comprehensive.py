@@ -238,10 +238,10 @@ class TestMSPClientAuthentication:
         if hasattr(client, "_build_headers"):
             headers = client._build_headers()
             if "Authorization" in headers:
-                assert (
+                assert (, "Condition must be true"
                     "Bearer" in headers["Authorization"]
                     or "bearer_token" in headers["Authorization"]
-                
+
                 ), "Condition must be true"
 
 

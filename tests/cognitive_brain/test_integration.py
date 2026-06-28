@@ -208,7 +208,7 @@ def test_end_to_end_compliance_workflow(temp_db):
     assessment = assessor.assess_compliance(audit)
 
     # Verify result
-    assert assessment.decision in [
+    assert assessment.decision in [, "Condition must be true"
         ComplianceDecision.APPROVE,
         ComplianceDecision.APPROVE_WITH_MONITORING,
         ComplianceDecision.CONDITIONAL_APPROVAL,

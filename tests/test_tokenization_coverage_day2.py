@@ -3,10 +3,9 @@ Tokenization Coverage Tests — codex_ml.tokenization
 Comprehensive tokenizer validation including CLI, round-trip, and special tokens
 """
 
-import pytest
-import tempfile
-import json
 from pathlib import Path
+
+import pytest
 
 
 class TestTokenizerCLICommands:
@@ -26,7 +25,7 @@ class TestTokenizerCLICommands:
     def test_tokenizer_cli_export_formats(self):
         """Tokenizer should support multiple export formats."""
         formats = ["json", "csv", "yaml", "pickle"]
-        
+
         # Test format support
         for fmt in formats[:2]:  # Test at least json and csv
             assert fmt in ["json", "csv", "yaml", "pickle"]
@@ -63,12 +62,12 @@ class TestTokenizerRoundTrip:
             pytest.skip("Tokenizer instantiation failed")
 
         text = "Hello world"
-        
+
         try:
             # Encode
             tokens = tokenizer.encode(text)
             assert len(tokens) > 0, "Tokens must not be empty"
-            
+
             # Decode
             decoded = tokenizer.decode(tokens)
             assert decoded is not None, "decoded must be initialized"
@@ -269,7 +268,7 @@ class TestBatchEncoding:
             pytest.skip("Tokenizer not available")
 
         texts = ["Hello", "World"]
-        
+
         try:
             # Try torch tensors
             result_pt = tokenizer.batch_encode_plus(texts, return_tensors="pt")

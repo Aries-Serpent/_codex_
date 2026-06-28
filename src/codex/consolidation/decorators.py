@@ -15,7 +15,7 @@ LOC reduction: 180 lines
 
 import functools
 import logging
-from typing import Any, Callable, Optional, TypeVar, Union
+from typing import Any, Callable, Optional, TypeVar
 
 logger = logging.getLogger(__name__)
 
@@ -112,9 +112,7 @@ def require_auth(
             # 2. Extract scopes from token
             # 3. Check if required scopes are present
             # For now, we'll just log it
-            logger.debug(
-                f"Auth check passed for {func.__name__} with scopes: {required_scopes}"
-            )
+            logger.debug(f"Auth check passed for {func.__name__} with scopes: {required_scopes}")
 
             return func(*args, **kwargs)
 
@@ -158,9 +156,7 @@ def handle_errors(
                 return func(*args, **kwargs)
             except exception_types as e:
                 log_func = getattr(logger, log_level, logger.error)
-                log_func(
-                    f"Error in {func.__name__}: {str(e)}", exc_info=True
-                )
+                log_func(f"Error in {func.__name__}: {str(e)}", exc_info=True)
                 return fallback_return
 
         return wrapper  # type: ignore
@@ -202,9 +198,7 @@ def handle_async_errors(
                 return await func(*args, **kwargs)
             except exception_types as e:
                 log_func = getattr(logger, log_level, logger.error)
-                log_func(
-                    f"Error in async {func.__name__}: {str(e)}", exc_info=True
-                )
+                log_func(f"Error in async {func.__name__}: {str(e)}", exc_info=True)
                 return fallback_return
 
         return wrapper  # type: ignore

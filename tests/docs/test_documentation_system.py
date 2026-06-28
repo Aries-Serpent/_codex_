@@ -443,7 +443,7 @@ class TestDocumentationQualityAssurance:
             "warnings": ["Link timeout: https://example.com"],
         }
 
-        assert (
+        assert (, "Condition must be true"
             validation_result["valid_links"] + validation_result["broken_links"]
             <= validation_result["total_links"]
         

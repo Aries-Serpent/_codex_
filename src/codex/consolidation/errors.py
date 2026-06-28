@@ -13,11 +13,11 @@ Locations consolidated:
 LOC reduction: 320 lines
 """
 
-import logging
 import functools
-from typing import Any, Callable, Dict, Optional, TypeVar, Union
+import logging
 from dataclasses import dataclass
 from enum import Enum
+from typing import Any, Callable, Dict, Optional, TypeVar
 
 logger = logging.getLogger(__name__)
 

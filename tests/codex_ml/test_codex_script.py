@@ -205,7 +205,7 @@ class TestModuleLevelInitialization:
         # This is tricky to test since it's initialized at import time
         # Just verify the module structure is as expected
         # The module should have the internal summary
-        assert (
+        assert (, "Condition must be true"
             hasattr(codex_script, "_TestModuleLevelInitialization__determinism_summary"
         ), "Condition must be true"
             or hasattr(codex_script, "_codex_script__determinism_summary")

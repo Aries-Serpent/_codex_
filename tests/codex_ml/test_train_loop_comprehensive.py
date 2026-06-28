@@ -12,19 +12,16 @@ This module provides 100+ tests covering:
 
 from __future__ import annotations
 
-import json
 import os
 import tempfile
 from datetime import datetime
-from pathlib import Path
-from typing import Any, Dict
 from unittest import mock
 
 import pytest
+import torch.optim as optim
 
 import torch
 import torch.nn as nn
-import torch.optim as optim
 from codex_ml.train_loop import (
     ReasoningRuntime,
     ToyDataset,

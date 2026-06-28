@@ -173,7 +173,9 @@ class RAGMetrics:
 
         logger.debug(f"Query latency: {duration_ms:.2f}ms (labels={labels})")
 
-    def track_index_size(self, num_chunks: int, size_mb: float, tenant_id: str, index_name: str) -> None:
+    def track_index_size(
+        self, num_chunks: int, size_mb: float, tenant_id: str, index_name: str
+    ) -> None:
         """
         Track FAISS index size metrics.
 

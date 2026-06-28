@@ -3,10 +3,11 @@ Data Pipeline & RAG Validation Tests
 Covers data loading, transformation, and RAG index health
 """
 
-import pytest
-import tempfile
 import json
+import tempfile
 from pathlib import Path
+
+import pytest
 
 
 class TestDataLoading:
@@ -22,7 +23,7 @@ class TestDataLoading:
         with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
             json.dump({"key": "value"}, f)
             f.flush()
-            
+
             try:
                 data = load_json_data(f.name)
                 assert data is not None, "data must be initialized"
@@ -42,7 +43,7 @@ class TestDataLoading:
         with tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False) as f:
             f.write("col1,col2\n1,2\n3,4\n")
             f.flush()
-            
+
             try:
                 data = load_csv_data(f.name)
                 assert data is not None, "data must be initialized"
@@ -69,7 +70,7 @@ class TestDataLoading:
             try:
                 df = pd.DataFrame({"col1": [1, 2], "col2": [3, 4]})
                 df.to_parquet(f.name)
-                
+
                 data = load_parquet_data(f.name)
                 assert data is not None, "data must be initialized"
             except Exception as _err:
@@ -142,7 +143,7 @@ class TestDataTransformation:
     def test_chained_transforms(self):
         """Should chain multiple transforms."""
         try:
-            from codex_ml.data_utils import Transform, ChainedTransform
+            from codex_ml.data_utils import ChainedTransform, Transform
         except (ImportError, AttributeError):
             pytest.skip("Transform utilities not available")
 
@@ -206,8 +207,9 @@ class TestRAGIndexHealth:
     def test_rag_tensor_materialization(self):
         """RAG tensors should not be on meta device."""
         try:
-            import torch
             from codex_ml.rag import get_rag_index
+
+            import torch
         except (ImportError, AttributeError):
             pytest.skip("PyTorch or RAG module not available")
 
@@ -215,7 +217,7 @@ class TestRAGIndexHealth:
             index = get_rag_index()
             if index is None:
                 pytest.skip("RAG index not available")
-            
+
             # Check for meta tensors in index
             for name, param in index.named_parameters():
                 assert param.device.type != "meta", f"Found meta tensor: {name}"
@@ -246,11 +248,11 @@ class TestRAGIndexHealth:
 
         try:
             index = RAGIndex()
-            
+
             start = time.time()
             results = index.retrieve("test", k=5)
             elapsed_ms = (time.time() - start) * 1000
-            
+
             # Should be < 1 second (1000ms)
             assert elapsed_ms < 1000, f"Retrieval too slow: {elapsed_ms}ms"
         except (FileNotFoundError, NotImplementedError, TypeError):
@@ -277,7 +279,7 @@ class TestCheckpointing:
             try:
                 model = nn.Linear(10, 10)
                 checkpoint_path = Path(tmpdir) / "model.pt"
-                
+
                 save_checkpoint(model, checkpoint_path)
                 assert checkpoint_path.exists(), "Condition must be true"
             except (TypeError, NotImplementedError):
@@ -286,7 +288,7 @@ class TestCheckpointing:
     def test_checkpoint_load(self):
         """Should load model checkpoints."""
         try:
-            from codex_ml.utils.checkpointing import save_checkpoint, load_checkpoint
+            from codex_ml.utils.checkpointing import load_checkpoint, save_checkpoint
         except (ImportError, AttributeError):
             pytest.skip("Checkpointing not available")
 
@@ -300,10 +302,10 @@ class TestCheckpointing:
             try:
                 model = nn.Linear(10, 10)
                 checkpoint_path = Path(tmpdir) / "model.pt"
-                
+
                 save_checkpoint(model, checkpoint_path)
                 loaded_model = load_checkpoint(checkpoint_path)
-                
+
                 assert loaded_model is not None, "loaded_model must be initialized"
             except (TypeError, FileNotFoundError):
                 pytest.skip("Checkpoint save/load not fully implemented")
@@ -311,7 +313,7 @@ class TestCheckpointing:
     def test_checkpoint_resume_state(self):
         """Should preserve training state in checkpoint."""
         try:
-            from codex_ml.utils.checkpointing import save_checkpoint, load_checkpoint
+            from codex_ml.utils.checkpointing import load_checkpoint, save_checkpoint
         except (ImportError, AttributeError):
             pytest.skip("Checkpointing not available")
 
@@ -322,15 +324,15 @@ class TestCheckpointing:
                 "epoch": 10,
                 "step": 1000,
             }
-            
+
             with tempfile.NamedTemporaryFile(suffix='.pt', delete=False) as f:
                 import torch
                 torch.save(checkpoint, f.name)
-                
+
                 loaded = torch.load(f.name)
                 assert loaded["epoch"] == 10, "Condition must be true"
                 assert loaded["step"] == 1000, "Condition must be true"
-                
+
                 Path(f.name).unlink()
         except (TypeError, NotImplementedError):
             pytest.skip("State preservation not tested")
@@ -359,7 +361,7 @@ class TestErrorHandling:
         with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
             f.write("{invalid json")
             f.flush()
-            
+
             try:
                 with pytest.raises((json.JSONDecodeError, ValueError)):
                     load_json_data(f.name)
@@ -408,7 +410,7 @@ class TestMemoryManagement:
             # Process large dataset in batches
             data = list(range(10000))
             batches = list(batch_process(data, batch_size=100))
-            
+
             # Should have 100 batches (10000/100)
             assert len(batches) == 100, "Batches must not be empty"
         except (TypeError, NotImplementedError):
@@ -425,7 +427,7 @@ class TestMemoryManagement:
             def data_gen():
                 for i in range(1000):
                     yield i
-            
+
             batches = batch_generator(data_gen(), batch_size=10)
             # Should be a generator, not a list
             assert hasattr(batches, "__next__")
