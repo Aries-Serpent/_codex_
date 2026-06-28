@@ -6,7 +6,7 @@ import importlib
 import importlib.util
 import logging
 from pathlib import Path
-from typing import Optional
+from typing import cast, Optional
 
 from . import AnalysisPlugin, ASTPlugin
 
@@ -103,7 +103,7 @@ class PluginLoader:
 
                 elif issubclass(attr, AnalysisPlugin) and attr is not AnalysisPlugin:
                     try:
-                        plugin_instance = attr()
+                        plugin_instance = attr()  # type: ignore[misc]
                         self._analysis_plugins[plugin_instance.name] = plugin_instance  # type: ignore[attr-defined]
                         logger.info(f"Registered analysis plugin: {plugin_instance.name}")  # type: ignore[attr-defined]
                     except (IOError, OSError) as e:

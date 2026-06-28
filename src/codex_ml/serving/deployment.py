@@ -53,8 +53,8 @@ class TrafficSplitter:
     """
 
     def __init__(self) -> None:
-        self.blue_weight = 100
-        self.green_weight = 0
+        self.blue_weight: float = 100.0
+        self.green_weight: float = 0.0
         self.blue_healthy = True
         self.green_healthy = True
         self.blue_errors = 0
