@@ -1,32 +1,35 @@
-# Session Context — 2026-06-28T03:15:16Z
+# Session Context — 2026-06-28T03:32:15Z
 **Branch:** `0D_base_`  **PR:** #5113  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4835` (✅)
-- GraphQL remaining: `4944` (✅)
+- REST remaining: `4354` (✅)
+- GraphQL remaining: `4978` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #5113 — chore: merge main into 0D_base_, fix CodeQL security alerts, and apply test quality enhancements
+## 📋 PR #5113 — chore: merge main into 0D_base_, fix CodeQL security alerts, resolve CI failures, and apply test quality enhancements
 State: `open`  Draft: `False`  Branch: `0D_base_` → `main`
+
+### ❌ 1 Failing CI Check(s)
+- `CodeQL` (failure)
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-28)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-28)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-28)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-28)
+- **Validation Pipeline** — `failure` on `0D_base_` (2026-06-28)
+- **RAG Module Tests** — `failure` on `0D_base_` (2026-06-28)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-28)
 
 ## 📝 Recent Commits
-- `43a044a9` chore: resolve merge conflict in session context — copilot-swe-agent[bot] (2026-06-28)
-- `24e16730` fix: add assertion messages, async timeouts, and mock cleanup (Pattern 36/37/38  — copilot-swe-agent[bot] (2026-06-28)
-- `b07cf642` chore: update accountability report with session work (CTEP Mode activation) — copilot-swe-agent[bot] (2026-06-28)
-- `ed1ce610` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-06-28)
-- `e1514dcc` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-06-28)
-- `344f79c7` Merge branch '0D_base_' of https://github.com/Aries-Serpent/_codex_ into 0D_base — copilot-swe-agent[bot] (2026-06-28)
-- `cda704aa` fix(security): improve XSS regex pattern to properly match script end tags (Code — copilot-swe-agent[bot] (2026-06-28)
-- `a03f1d58` 🧠 Update cognitive brain patterns [automated] — github-actions[bot] (2026-06-28)
+- `64108d3e` fix(ci): nightly codebase health sweep — 0D_base_ [skip ci] — github-actions[bot] (2026-06-28)
+- `0fd60b12` fix(ci): resolve Semgrep SARIF generation and governance compliance failures — CI Auto-Healer Agent (2026-06-28)
+- `081151c7` docs: update accountability report and changelog with Semgrep action hash fix — copilot-swe-agent[bot] (2026-06-28)
+- `5f8f63fe` fix(ci): update semgrep and codeql-action to valid commit hashes — copilot-swe-agent[bot] (2026-06-28)
+- `1ca75d18` fix: update accountability report and changelog with CodeQL configuration fix (c — copilot-swe-agent[bot] (2026-06-28)
+- `9fc79ac5` fix(codeql): add Go language configuration to resolve '1 configuration not found — copilot-swe-agent[bot] (2026-06-28)
+- `d637f364` fix: update accountability report and changelog for CI rescue session (REQ-4/REQ — copilot-swe-agent[bot] (2026-06-28)
+- `6a28a7e1` WIP: Initial assessment of PR #5113 issues and blocking comments — copilot-swe-agent[bot] (2026-06-28)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
