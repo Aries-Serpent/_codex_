@@ -359,16 +359,16 @@ You've learned:
 
 **Goal:** Understand autonomous agent systems
 
-1. **Read:** [Cognitive Brain Guide](./cognitive_brain/README.md)
+1. **Read:** [Agent Development Guide](../AGENTS.md)
 
 2. **Explore agent system:**
-   ```pythonfrom codex.agents import list_agents
+   ```python
+from codex.agents import list_agents
 agents = list_agents()
 print(f"Available agents: {len(agents)}")
 
 for agent in agents[:5]:
     print(f"- {agent.name}: {agent.capabilities}")
-
 ```
 
 3. **Create a simple agent:**
@@ -555,12 +555,12 @@ Choose a specialization based on your interests:
    - Bayesian optimization
    - Experiment tracking
 
-3. **[Model Evaluation](./evaluation/README.md)**
+3. **[Model Evaluation](./guides/fairness_evaluation_guide.md)**
    - Custom metrics
    - Benchmarking
    - A/B testing
 
-4. **[Model Serving](./inference/README.md)**
+4. **[Model Serving](./guides/inference_server_guide.md)**
    - Ray Serve setup
    - Batch inference
    - Real-time serving
@@ -575,12 +575,12 @@ Choose a specialization based on your interests:
    - Multi-stage builds
    - Image optimization
 
-2. **[Kubernetes Deployment](./infrastructure/kubernetes_guide.md)**
+2. **[Kubernetes Deployment](./infrastructure/README.md)**
    - Pod configuration
    - Service setup
    - Auto-scaling
 
-3. **[Cloud Integration](./infrastructure/cloud_integration.md)**
+3. **[Cloud Integration](./infrastructure/README.md)**
    - S3/GCS storage
    - Cloud training
    - Monitoring and logging
@@ -595,22 +595,22 @@ Choose a specialization based on your interests:
 **Time:** 8-10 hours  
 **Focus:** Agent design, decision-making, memory
 
-1. **[Cognitive Brain Fundamentals](./cognitive_brain/README.md)**
+1. **[Cognitive Brain Fundamentals](../AGENTS.md)**
    - Quantum decision engine
    - Probability weighting
    - Decision-making architecture
 
-2. **[Agent Development](./cognitive_brain/agent_development_guide.md)**
+2. **[Agent Development](../agent/OPERATIONAL_GUIDELINES.md)**
    - Creating custom agents
    - Task routing
    - Error handling
 
-3. **[Memory Systems](./cognitive_brain/memory_guide.md)**
+3. **[Memory Systems](../agent/OPERATIONAL_GUIDELINES.md#memory)**
    - STM/LTM architecture
    - Pattern compression
    - Semantic retrieval
 
-4. **[Agent Orchestration](./cognitive_brain/orchestration_guide.md)**
+4. **[Agent Orchestration](../agent/OPERATIONAL_GUIDELINES.md#orchestration)**
    - Workflow definition
    - Task dependency graphs
    - Agent coordination
@@ -620,7 +620,7 @@ Choose a specialization based on your interests:
 **Time:** 6-8 hours  
 **Focus:** Data engineering, testing strategies
 
-1. **[Data Loading & Processing](./data/data_processing_guide.md)**
+1. **[Data Loading & Processing](./guides/ab_testing_guide.md)**
    - Dataset loading
    - Preprocessing
    - Data validation
@@ -630,12 +630,12 @@ Choose a specialization based on your interests:
    - Integration testing
    - End-to-end testing
 
-3. **[Mutation Testing](./testing/mutation_testing_guide.md)**
+3. **[Mutation Testing](./testing/ai_test_generation_guide.md)**
    - Mutmut setup
    - Coverage analysis
    - Test quality metrics
 
-4. **[Continuous Monitoring](./monitoring/README.md)**
+4. **[Continuous Monitoring](./operations/monitoring_guide.md)**
    - Metrics collection
    - Alerting
    - Dashboards
@@ -678,8 +678,8 @@ Use this checklist to track your progress:
 | **Architecture** | 20 min | [Architecture Guide](./ARCHITECTURE.md) |
 | **Configuration** | 30 min | [Hydra Guide](./configuration/HYDRA_GUIDE.md) |
 | **Training** | 60 min | [Training Guide](./training/README.md) |
-| **Evaluation** | 45 min | [Evaluation Guide](./evaluation/README.md) |
-| **Agents** | 60 min | [Cognitive Brain](./cognitive_brain/README.md) |
+| **Evaluation** | 45 min | [Evaluation Guide](./guides/fairness_evaluation_guide.md) |
+| **Agents** | 60 min | [Custom Agents](../AGENTS.md) |
 | **Deployment** | 90 min | [Infrastructure Guide](./infrastructure/README.md) |
 | **Contributing** | 30 min | [Contributing Guide](../CONTRIBUTING.md) |
 | **Troubleshooting** | As-needed | [Troubleshooting Guide](./TROUBLESHOOTING.md) |
