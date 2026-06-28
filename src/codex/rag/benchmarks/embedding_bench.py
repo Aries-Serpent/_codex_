@@ -76,7 +76,7 @@ def benchmark_embedding_providers(
     }
 
 
-def _get_provider(name: str) -> None:
+def _get_provider(name: str) -> object:
     """Get embedding provider by name."""
     from codex.rag.embeddings import create_embedding_provider
 

@@ -531,7 +531,7 @@ def _read_structured_file(path: Path) -> object:
         raise typer.BadParameter(f"Failed to parse {path}: {exc}") from exc
 
 
-def _get_zendesk_client(env: str) -> None:
+def _get_zendesk_client(env: str) -> object:
     module_spec = importlib.util.find_spec("zenpy")
     if module_spec is None:
         raise RuntimeError("Zenpy is required to connect to Zendesk.")
