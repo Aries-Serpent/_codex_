@@ -13,7 +13,7 @@ import os
 import sqlite3
 import threading
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 try:  # pragma: no cover - allow running standalone
     from .config import DEFAULT_LOG_DB
