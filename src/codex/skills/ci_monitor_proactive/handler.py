@@ -42,7 +42,7 @@ _REPO_ROOT = Path(__file__).resolve().parents[4]
 _SCRIPT = _REPO_ROOT / "scripts" / "ci" / "proactive_ci_monitor.py"
 
 
-def _load_monitor_module() -> None:
+def _load_monitor_module() -> Any:
     if "proactive_ci_monitor" in sys.modules:
         return sys.modules["proactive_ci_monitor"]
     spec = importlib.util.spec_from_file_location("proactive_ci_monitor", _SCRIPT)

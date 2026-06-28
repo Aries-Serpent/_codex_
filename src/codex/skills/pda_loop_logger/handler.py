@@ -61,7 +61,7 @@ _REPO_ROOT = Path(__file__).resolve().parents[4]  # src/codex/skills/pda_loop_lo
 _SCRIPT = _REPO_ROOT / "scripts" / "ci" / "pda_failure_logger.py"
 
 
-def _load_logger_module() -> None:
+def _load_logger_module() -> Any:
     """Dynamically import pda_failure_logger from scripts/ci/."""
     if "pda_failure_logger" in sys.modules:
         return sys.modules["pda_failure_logger"]
