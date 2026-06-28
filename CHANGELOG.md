@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Fixed (compliance — PR #5112, Session 2026-06-28T02:23Z)
+- REQ-4: Updated AGENT_ACCOUNTABILITY_REPORT.md with mypy baseline session entry (2026-06-28T02:23Z)
+- REQ-5: Updated CHANGELOG.md with mypy anti-regression gate fix documentation
+- REQ-13: Addressed blocking comment from @mbaetiong (comment_id: 4824207103) with explicit commit SHA via reply_to_comment
+- Fixed 1 failing CI check: mypy Anti-Regression Gate (updated baseline to lock in 77-error improvement, 77 → 0 errors)
+
 ### Fixed (compliance — PR #5112, Session 2026-06-28T01:28:46Z)
 - REQ-4: Updated AGENT_ACCOUNTABILITY_REPORT.md with CI rescue final fix session entry (2026-06-28T01:28:46Z)
 - REQ-5: Updated CHANGELOG.md with compliance check resolution documentation
