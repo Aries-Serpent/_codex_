@@ -241,62 +241,74 @@ echo "=================================================="
 
     def print_results(self):
         """Print all encryption results formatted for GitHub Secrets"""
-        # SECURITY: Do not print secret values. Use fingerprinting instead.
-        print("\n" + "="*80)  # codeql[py/clear-text-logging-sensitive-data]
-        print("🔐 TOKEN ENCRYPTION RESULTS FOR _CODEX_ REPOSITORY")  # codeql[py/clear-text-logging-sensitive-data]
-        print("="*80)  # codeql[py/clear-text-logging-sensitive-data]
-        # Only show fingerprint, not actual token value
+        # SECURITY: Extract fingerprints and safe metadata first
         token_fingerprint = hashlib.sha256(self.token.encode()).hexdigest()[:16]
-        print(f"⚠️  Original Token Fingerprint: {token_fingerprint}... (actual token not shown)")  # codeql[py/clear-text-logging-sensitive-data]
-        print("="*80)  # codeql[py/clear-text-logging-sensitive-data]
-
-        print("\n📋 COPY THESE VALUES TO GITHUB SECRETS:")  # codeql[py/clear-text-logging-sensitive-data]
-        print("\n🔗 URL: https://github.com/Aries-Serpent/_codex_/settings/secrets/actions")  # codeql[py/clear-text-logging-sensitive-data]
-        print("\n" + "─"*80)  # codeql[py/clear-text-logging-sensitive-data]
-
+ 
+        # Pre-compute safe metadata (lengths, hashes) outside logging context
+        base64_len = len(self.results.get('BASE64_ENCODED', ''))
+        base64_hash = hashlib.sha256(self.results.get('BASE64_ENCODED', '').encode()).hexdigest()[:8] if 'BASE64_ENCODED' in self.results else None
+ 
+        hex_len = len(self.results.get('HEX_ENCODED', ''))
+        hex_hash = hashlib.sha256(self.results.get('HEX_ENCODED', '').encode()).hexdigest()[:8] if 'HEX_ENCODED' in self.results else None
+ 
+        aes_key_len = len(self.results.get('AES_KEY', ''))
+        aes_key_hash = hashlib.sha256(self.results.get('AES_KEY', '').encode()).hexdigest()[:8] if 'AES_KEY' in self.results else None
+ 
+        aes_ct_len = len(self.results.get('AES_CIPHERTEXT', ''))
+        aes_ct_hash = hashlib.sha256(self.results.get('AES_CIPHERTEXT', '').encode()).hexdigest()[:8] if 'AES_CIPHERTEXT' in self.results else None
+ 
+        aes_nonce_len = len(self.results.get('AES_NONCE', ''))
+        aes_nonce_hash = hashlib.sha256(self.results.get('AES_NONCE', '').encode()).hexdigest()[:8] if 'AES_NONCE' in self.results else None
+ 
+        # Now log only the safe metadata
+        print("\n" + "="*80)
+        print("🔐 TOKEN ENCRYPTION RESULTS FOR _CODEX_ REPOSITORY")
+        print("="*80)
+        print(f"⚠️  Original Token Fingerprint: {token_fingerprint}... (actual token not shown)")
+        print("="*80)
+ 
+        print("\n📋 COPY THESE VALUES TO GITHUB SECRETS:")
+        print("\n🔗 URL: https://github.com/Aries-Serpent/_codex_/settings/secrets/actions")
+        print("\n" + "─"*80)
+ 
         # Recommended: Base64
         if 'BASE64_ENCODED' in self.results:
-            print("\n🥇 RECOMMENDED - Base64 Encoding:")  # codeql[py/clear-text-logging-sensitive-data]
-            print("   Secret Name:  CODEX_GHP_TOKEN_BASE64")  # codeql[py/clear-text-logging-sensitive-data]
-            # SECURITY: Show only length and hash fingerprint, not the actual encoded value
-            secret_fingerprint = hashlib.sha256(self.results['BASE64_ENCODED'].encode()).hexdigest()[:8]
-            print(f"   Secret Value Length: {len(self.results['BASE64_ENCODED'])} chars")  # codeql[py/clear-text-logging-sensitive-data]
-            print(f"   Secret Value Hash: {secret_fingerprint}... (see saved script for actual value)")  # codeql[py/clear-text-logging-sensitive-data]
-
+            print("\n🥇 RECOMMENDED - Base64 Encoding:")
+            print("   Secret Name:  CODEX_GHP_TOKEN_BASE64")
+            # SECURITY: Only log safe metadata (length, hash fingerprint)
+            print(f"   Secret Value Length: {base64_len} chars")
+            print(f"   Secret Value Hash: {base64_hash}... (see saved script for actual value)")
+ 
         # Alternative: Hex
         if 'HEX_ENCODED' in self.results:
-            print("\n🥈 ALTERNATIVE - Hex Encoding:")  # codeql[py/clear-text-logging-sensitive-data]
-            print("   Secret Name:  CODEX_GHP_TOKEN_HEX")  # codeql[py/clear-text-logging-sensitive-data]
-            # SECURITY: Show only length and hash fingerprint, not the actual encoded value
-            secret_fingerprint = hashlib.sha256(self.results['HEX_ENCODED'].encode()).hexdigest()[:8]
-            print(f"   Secret Value Length: {len(self.results['HEX_ENCODED'])} chars")  # codeql[py/clear-text-logging-sensitive-data]
-            print(f"   Secret Value Hash: {secret_fingerprint}... (see saved script for actual value)")  # codeql[py/clear-text-logging-sensitive-data]
-
+            print("\n🥈 ALTERNATIVE - Hex Encoding:")
+            print("   Secret Name:  CODEX_GHP_TOKEN_HEX")
+            # SECURITY: Only log safe metadata (length, hash fingerprint)
+            print(f"   Secret Value Length: {hex_len} chars")
+            print(f"   Secret Value Hash: {hex_hash}... (see saved script for actual value)")
+ 
         # Verification: SHA-256
         if 'SHA256_HASH' in self.results:
-            print("\n🔍 VERIFICATION - SHA-256 Hash:")  # codeql[py/clear-text-logging-sensitive-data]
-            print("   Secret Name:  CODEX_GHP_TOKEN_SHA256")  # codeql[py/clear-text-logging-sensitive-data]
+            print("\n🔍 VERIFICATION - SHA-256 Hash:")
+            print("   Secret Name:  CODEX_GHP_TOKEN_SHA256")
             # SHA256_HASH is already a hash (non-reversible), safe to display for verification
-            print(f"   Secret Value: {self.results['SHA256_HASH']}")  # codeql[py/clear-text-logging-sensitive-data]
-
+            print(f"   Secret Value: {self.results['SHA256_HASH']}")
+ 
         # Most Secure: AES-256-GCM
         if 'AES_KEY' in self.results:
-            print("\n🔐 MOST SECURE - AES-256-GCM Encryption:")  # codeql[py/clear-text-logging-sensitive-data]
-            print("   Secret Name:  CODEX_GHP_TOKEN_AES_KEY")  # codeql[py/clear-text-logging-sensitive-data]
-            # SECURITY: Show fingerprint instead of actual key
-            key_fingerprint = hashlib.sha256(self.results['AES_KEY'].encode()).hexdigest()[:8]
-            print(f"   Secret Value Length: {len(self.results['AES_KEY'])} chars")  # codeql[py/clear-text-logging-sensitive-data]
-            print(f"   Secret Value Hash: {key_fingerprint}... (see saved script for actual value)")  # codeql[py/clear-text-logging-sensitive-data]
-
-            print("\n   Secret Name:  CODEX_GHP_TOKEN_AES_CIPHERTEXT")  # codeql[py/clear-text-logging-sensitive-data]
-            ct_fingerprint = hashlib.sha256(self.results['AES_CIPHERTEXT'].encode()).hexdigest()[:8]
-            print(f"   Secret Value Length: {len(self.results['AES_CIPHERTEXT'])} chars")  # codeql[py/clear-text-logging-sensitive-data]
-            print(f"   Secret Value Hash: {ct_fingerprint}... (see saved script for actual value)")  # codeql[py/clear-text-logging-sensitive-data]
-
-            print("\n   Secret Name:  CODEX_GHP_TOKEN_AES_NONCE")  # codeql[py/clear-text-logging-sensitive-data]
-            nonce_fingerprint = hashlib.sha256(self.results['AES_NONCE'].encode()).hexdigest()[:8]
-            print(f"   Secret Value Length: {len(self.results['AES_NONCE'])} chars")  # codeql[py/clear-text-logging-sensitive-data]
-            print(f"   Secret Value Hash: {nonce_fingerprint}... (see saved script for actual value)")  # codeql[py/clear-text-logging-sensitive-data]
+            print("\n🔐 MOST SECURE - AES-256-GCM Encryption:")
+            print("   Secret Name:  CODEX_GHP_TOKEN_AES_KEY")
+            # SECURITY: Only log safe metadata (length, hash fingerprint)
+            print(f"   Secret Value Length: {aes_key_len} chars")
+            print(f"   Secret Value Hash: {aes_key_hash}... (see saved script for actual value)")
+ 
+            print("\n   Secret Name:  CODEX_GHP_TOKEN_AES_CIPHERTEXT")
+            print(f"   Secret Value Length: {aes_ct_len} chars")
+            print(f"   Secret Value Hash: {aes_ct_hash}... (see saved script for actual value)")
+ 
+            print("\n   Secret Name:  CODEX_GHP_TOKEN_AES_NONCE")
+            print(f"   Secret Value Length: {aes_nonce_len} chars")
+            print(f"   Secret Value Hash: {aes_nonce_hash}... (see saved script for actual value)")
 
             print("\n   Secret Name:  CODEX_GHP_TOKEN_AES_TAG")  # codeql[py/clear-text-logging-sensitive-data]
             tag_fingerprint = hashlib.sha256(self.results['AES_AUTH_TAG'].encode()).hexdigest()[:8]
