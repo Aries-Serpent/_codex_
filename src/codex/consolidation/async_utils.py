@@ -215,7 +215,12 @@ class AsyncRetryManager(AsyncContextBase):
                         f"'{self.operation_name}' failed after {self.max_retries} attempts"
                     )
 
-        raise last_exception
+        if last_exception is not None:
+            raise last_exception
+        raise RuntimeError(
+            f"'{self.operation_name}' could not be executed: no retry attempts were made "
+            f"(max_retries={self.max_retries})"
+        )
 
 
 @asynccontextmanager
