@@ -308,49 +308,49 @@ jobs:
           CACHE_START=$(date +%s)
           echo "[MODEL-CACHE] Downloading all-MiniLM-L6-v2 model (this may take 2-5 minutes)..."
           "$PYTHON_BIN" << 'PYTHON_SCRIPT'
-from sentence_transformers import SentenceTransformer
-import os
-import sys
-import time
-
-try:
-    cache_dir = os.path.expanduser('~/.cache/torch/sentence_transformers')
-    os.makedirs(cache_dir, exist_ok=True)
-    
-    print(f"[MODEL-CACHE] Pre-downloading sentence-transformers model...")
-    hf_token = os.getenv('HF_TOKEN') or None
-    
-    if hf_token and hf_token.strip():
-       print(f"[MODEL-CACHE] Using HF_TOKEN (first 10 chars): {hf_token[:10]}...")
-    else:
-       print("[MODEL-CACHE] No HF_TOKEN provided (using public access)")
-       hf_token = None
-    
-    start_time = time.time()
-    
-    model = SentenceTransformer(
-       'sentence-transformers/all-MiniLM-L6-v2',
-       cache_folder=cache_dir,
-       token=hf_token
-    )
-    
-    load_time = time.time() - start_time
-    
-    # Verify the model is functional
-    print("[MODEL-CACHE] Testing model functionality...")
-    test_sentences = ["test sentence 1", "test sentence 2"]
-    embeddings = model.encode(test_sentences)
-    print(f"[MODEL-CACHE] ✓ Model cached successfully to {cache_dir}")
-    print(f"[MODEL-CACHE] ✓ Embedding dimension verified: {embeddings.shape}")
-    print(f"[MODEL-CACHE] ✓ Model load time: {load_time:.2f}s")
-    
-except Exception as e:
-    print(f"[MODEL-CACHE] ⚠️  Warning: Failed to pre-download model: {e}")
-    print("[MODEL-CACHE] Tests will download model on-demand (may add 2-5 min to first test)")
-    import traceback
-    traceback.print_exc()
-    sys.exit(0)  # Don't fail workflow - model will be downloaded during tests
-PYTHON_SCRIPT
+          from sentence_transformers import SentenceTransformer
+          import os
+          import sys
+          import time
+           
+          try:
+              cache_dir = os.path.expanduser('~/.cache/torch/sentence_transformers')
+              os.makedirs(cache_dir, exist_ok=True)
+               
+              print(f"[MODEL-CACHE] Pre-downloading sentence-transformers model...")
+              hf_token = os.getenv('HF_TOKEN') or None
+               
+              if hf_token and hf_token.strip():
+                  print(f"[MODEL-CACHE] Using HF_TOKEN (first 10 chars): {hf_token[:10]}...")
+              else:
+                  print("[MODEL-CACHE] No HF_TOKEN provided (using public access)")
+                  hf_token = None
+               
+              start_time = time.time()
+               
+              model = SentenceTransformer(
+                  'sentence-transformers/all-MiniLM-L6-v2',
+                  cache_folder=cache_dir,
+                  token=hf_token
+              )
+               
+              load_time = time.time() - start_time
+               
+              # Verify the model is functional
+              print("[MODEL-CACHE] Testing model functionality...")
+              test_sentences = ["test sentence 1", "test sentence 2"]
+              embeddings = model.encode(test_sentences)
+              print(f"[MODEL-CACHE] ✓ Model cached successfully to {cache_dir}")
+              print(f"[MODEL-CACHE] ✓ Embedding dimension verified: {embeddings.shape}")
+              print(f"[MODEL-CACHE] ✓ Model load time: {load_time:.2f}s")
+               
+          except Exception as e:
+              print(f"[MODEL-CACHE] ⚠️  Warning: Failed to pre-download model: {e}")
+              print("[MODEL-CACHE] Tests will download model on-demand (may add 2-5 min to first test)")
+              import traceback
+              traceback.print_exc()
+              sys.exit(0)  # Don't fail workflow - model will be downloaded during tests
+          PYTHON_SCRIPT
            
           CACHE_END=$(date +%s)
           CACHE_DURATION=$((CACHE_END - CACHE_START))
@@ -563,27 +563,27 @@ PYTHON_SCRIPT
           # Parse coverage from XML report with detailed error reporting
           echo "[COVERAGE-CHECK] Extracting coverage percentage from XML..."
           COVERAGE=$("$PYTHON_BIN" << 'COVERAGE_PARSER'
-import xml.etree.ElementTree as ET
-import sys
-
-try:
-    tree = ET.parse('coverage.xml')
-    root = tree.getroot()
-    line_rate = float(root.attrib.get('line-rate', 0)) * 100
-    print(f'{line_rate:.2f}')
-except ET.ParseError as e:
-    print(f'ERROR: XML parse error: {e}', file=sys.stderr)
-    print('0.00')  # Return 0 to cause failure below
-    sys.exit(1)
-except KeyError as e:
-    print(f'ERROR: Missing attribute in XML: {e}', file=sys.stderr)
-    print('0.00')
-    sys.exit(1)
-except Exception as e:
-    print(f'ERROR: {e}', file=sys.stderr)
-    print('0.00')
-    sys.exit(1)
-COVERAGE_PARSER
+          import xml.etree.ElementTree as ET
+          import sys
+           
+          try:
+              tree = ET.parse('coverage.xml')
+              root = tree.getroot()
+              line_rate = float(root.attrib.get('line-rate', 0)) * 100
+              print(f'{line_rate:.2f}')
+          except ET.ParseError as e:
+              print(f'ERROR: XML parse error: {e}', file=sys.stderr)
+              print('0.00')  # Return 0 to cause failure below
+              sys.exit(1)
+          except KeyError as e:
+              print(f'ERROR: Missing attribute in XML: {e}', file=sys.stderr)
+              print('0.00')
+              sys.exit(1)
+          except Exception as e:
+              print(f'ERROR: {e}', file=sys.stderr)
+              print('0.00')
+              sys.exit(1)
+          COVERAGE_PARSER
           )
            
           if [ $? -ne 0 ]; then
