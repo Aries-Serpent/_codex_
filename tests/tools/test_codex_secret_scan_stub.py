@@ -15,7 +15,7 @@ def test_secret_scan_stub_detects_pattern(tmp_path: Path):
     src.write_text(
         "api_key = 'AWS_SECRET_ACCESS_KEY=abc123'\nprint('hello')\n",
         encoding="utf-8",
-    )
+    ) # pragma: allowlist secret
 
     rc = ss.main(
         [

@@ -15,7 +15,7 @@ pytest.importorskip("fastapi")
 pytest.importorskip("pydantic_settings")
 
 from fastapi import FastAPI, Request
-from fastapi.testclient import TestClient
+from fastapi.testclient import TestClient # pragma: allowlist secret # pragma: allowlist secret
 
 # pragma: allowlist secret # pragma: allowlist secret
 from services.msp_gateway.middleware import RateLimitMiddleware, TenantContextMiddleware
