@@ -476,7 +476,8 @@ if typer is not None:
             app(args)
             return 0
         except SystemExit as e:
-            return e.code if e.code is not None else 0
+            code = e.code if isinstance(e.code, int) else 0
+            return code if code is not None else 0
 
     cli = _typer_cli_wrapper
 

@@ -56,14 +56,30 @@ try:
     CheckpointImpl = _ckpt_wrap.CheckpointImpl
     apply_activation_checkpointing = _ckpt_wrap.apply_activation_checkpointing
     checkpoint_wrapper = _ckpt_wrap.checkpoint_wrapper
-    BackwardPrefetch = _fsdp.BackwardPrefetch  # type: ignore[misc]
-    CPUOffload = _fsdp.CPUOffload  # type: ignore[misc]
-    FullStateDictConfig = _fsdp.FullStateDictConfig  # type: ignore[misc]
-    MixedPrecision = _fsdp.MixedPrecision  # type: ignore[misc]
-    ShardedStateDictConfig = _fsdp.ShardedStateDictConfig  # type: ignore[misc]
-    ShardingStrategy = _fsdp.ShardingStrategy  # type: ignore[misc]
-    StateDictType = _fsdp.StateDictType  # type: ignore[misc]
-    FSDP = _fsdp.FullyShardedDataParallel  # type: ignore[misc]
+    BackwardPrefetch = _fsdp.BackwardPrefetch
+
+
+    CPUOffload = _fsdp.CPUOffload
+
+
+    FullStateDictConfig = _fsdp.FullStateDictConfig
+
+
+    MixedPrecision = _fsdp.MixedPrecision
+
+
+    ShardedStateDictConfig = _fsdp.ShardedStateDictConfig
+
+
+    ShardingStrategy = _fsdp.ShardingStrategy
+
+
+    StateDictType = _fsdp.StateDictType
+
+
+    FSDP = _fsdp.FullyShardedDataParallel
+
+
     size_based_auto_wrap_policy = _fsdp_wrap.size_based_auto_wrap_policy
     transformer_auto_wrap_policy = _fsdp_wrap.transformer_auto_wrap_policy
 
@@ -76,8 +92,12 @@ except (ImportError, AttributeError) as e:
     logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
     TORCH_AVAILABLE = False
     # Define mock classes for offline/testing
-    FSDP = None  # type: ignore[misc,assignment]
-    ShardingStrategy = None  # type: ignore[misc,assignment]
+    FSDP = None
+
+
+    ShardingStrategy = None
+
+
 
 
 class FSDPShardingStrategy(Enum):

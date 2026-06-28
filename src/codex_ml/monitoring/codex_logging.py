@@ -32,7 +32,9 @@ try:  # pragma: no cover - optional
 
     SummaryWriter = _tb.SummaryWriter
 except (IOError, OSError):  # pragma: no cover - tensorboard not installed
-    SummaryWriter = None  # type: ignore[misc, assignment]
+    SummaryWriter = None
+
+
 
 try:  # pragma: no cover - optional
     import wandb
@@ -69,10 +71,14 @@ try:  # pragma: no cover - optional
 except (IOError, OSError):  # pragma: no cover - torch not installed
     torch = None  # type: ignore[assignment]
 
-SummaryWriter = None  # type: ignore[misc, assignment]
+SummaryWriter = None
+
+
 try:  # pragma: no cover - optional
     if torch is not None:
-        SummaryWriter = torch.utils.tensorboard.SummaryWriter  # type: ignore[misc]
+        SummaryWriter = torch.utils.tensorboard.SummaryWriter
+
+
 except (IOError, OSError):  # pragma: no cover - tensorboard not installed
     logger.debug("Suppressed exception in handler", exc_info=True)
 _ensure_local_mlflow_tracking_uri_default()

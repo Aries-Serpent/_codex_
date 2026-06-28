@@ -260,7 +260,7 @@ if TYPER_AVAILABLE:
             raise typer.Exit(code=1)
 
         # Flatten node tree into a list for the visualizer.
-        def _flatten(node, acc) -> None:
+        def _flatten(node, acc) -> list:
             acc.append(node)
             for child in node.children or []:
                 _flatten(child, acc)

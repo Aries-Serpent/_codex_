@@ -295,7 +295,7 @@ class HFTokenizerAdapter(TokenizerAdapter):
         return_dict: bool = False,
         padding: bool | str = True,
         truncation: bool = True,
-    ) -> None:
+    ) -> object:
         """Encode a list of ``texts`` in a vectorized manner.
 
         Ensures GPT‑2 style tokenizers expose a pad token when padding is

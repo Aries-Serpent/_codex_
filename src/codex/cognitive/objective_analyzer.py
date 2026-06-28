@@ -205,7 +205,7 @@ class MetricStore:
         if store_path is None:
             store_path = Path(".codex/cognitive_brain/metric_store.json")
         self.store_path = store_path
-        self._metrics: dict[str, Any][str, list[dict]] = {}
+        self._metrics: dict[str, list[dict[str, Any]]] = {}
         self._load()
 
     def _load(self) -> None:

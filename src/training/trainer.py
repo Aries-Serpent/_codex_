@@ -67,7 +67,7 @@ except (ValueError, TypeError):  # pragma: no cover - propagate a consistent run
     nn = Any  # type: ignore[assignment]
     GradScaler = _NoOpScaler
 
-    def autocast(*, enabled: bool = False) -> None:
+    def autocast(*, enabled: bool = False) -> object:
         return contextlib.nullcontext()
 
     DataLoader = Any

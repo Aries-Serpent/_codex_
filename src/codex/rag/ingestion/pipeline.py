@@ -368,7 +368,7 @@ class IngestionPipeline:
 
             result.status = IngestionStatus.COMPLETED
 
-        except (IOError, OSError) as e:
+        except Exception as e:
             result.status = IngestionStatus.FAILED
             result.error_message = str(e)
             logger.error(f"Ingestion failed for {path}: <ERROR_TYPE>")
@@ -423,7 +423,7 @@ class IngestionPipeline:
                 try:
                     result = future.result()
                     self._update_batch_result(batch_result, result)
-                except (IOError, OSError) as e:
+                except Exception as e:
                     self._handle_ingestion_error(batch_result, path, e)
 
     def _process_sequential(
@@ -436,7 +436,7 @@ class IngestionPipeline:
             try:
                 result = self._ingest_with_retry(path)
                 self._update_batch_result(batch_result, result)
-            except (IOError, OSError) as e:
+            except Exception as e:
                 if not self.config.continue_on_error:
                     raise
                 self._handle_ingestion_error(batch_result, path, e)
@@ -501,7 +501,7 @@ class IngestionPipeline:
                 if result.status == IngestionStatus.FAILED and result.validation_result:
                     return result
 
-            except (IOError, OSError) as e:
+            except Exception as e:
                 last_error = e
                 if attempt < self.config.max_retries:
                     time.sleep(self.config.retry_delay_seconds * (attempt + 1))

@@ -14,6 +14,7 @@ import importlib.util
 import sys
 from pathlib import Path
 from types import ModuleType
+from typing import Any
 
 
 def _load_real_module() -> ModuleType | None:

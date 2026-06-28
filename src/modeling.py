@@ -261,6 +261,7 @@ def load_tokenizer(
 
     try:
         tokenizer = AutoTokenizer.from_pretrained(tokenizer_name, **kwargs)  # nosec B615
+        assert tokenizer is not None, f"Failed to load tokenizer {tokenizer_name}"
         # Set pad_token to eos_token if not already set (common default)
         if getattr(tokenizer, "pad_token", None) is None and getattr(tokenizer, "eos_token", None):
             LOGGER.warning(
@@ -419,7 +420,7 @@ def load_model(
         ) from exc
 
     try:
-        model = model.to(device)
+        model = model.to(device)  # type: ignore[attr-defined]
     except (ImportError, AttributeError) as exc:  # pragma: no cover - propagate but annotate
         raise RuntimeError(f"Failed to move model to device '{device}': {exc}") from exc
 

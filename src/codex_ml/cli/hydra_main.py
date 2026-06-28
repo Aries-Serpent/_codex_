@@ -33,7 +33,7 @@ try:
     from codex_ml import distributed as _distributed  # type: ignore[attr-defined]
 except (ImportError, AttributeError):  # pragma: no cover - safe fallback
 
-    def init_distributed_if_needed(*_args, **_kwargs) -> None:
+    def init_distributed_if_needed(*_args, **_kwargs) -> bool:
         return False
 
     def cleanup_distributed() -> None:
@@ -68,7 +68,9 @@ try:  # pragma: no cover - hydra optional at runtime
     except ImportError as e:
         error_type = type(e).__name__
         logger.debug("hydra not available: <ERROR_TYPE>")
-        import config_legacy as hydra  # type: ignore[no-redef]
+        import config_legacy as hydra
+
+
     from omegaconf import DictConfig, OmegaConf
 except (ImportError, AttributeError):  # pragma: no cover - degrade gracefully when hydra missing
     hydra = None

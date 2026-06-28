@@ -132,7 +132,9 @@ from typing import Any, Optional, cast
 try:  # pragma: no cover - numpy optional in offline environments
     import numpy as np
 except (IOError, OSError):  # pragma: no cover - numpy missing
-    np = None  # type: ignore[assignment]
+    np = None
+
+
 
 try:  # pragma: no cover - optional datasets dependency
     from datasets import Dataset  # type: ignore[attr-defined]

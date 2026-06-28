@@ -27,8 +27,12 @@ try:  # Optional dependency: prometheus-client
 
     _HAS_PROMETHEUS = True
 except (IOError, OSError):  # pragma: no cover - optional dependency path
-    CollectorRegistry = None  # type: ignore[misc,assignment]
-    Counter = Gauge = Histogram = None  # type: ignore[misc,assignment]
+    CollectorRegistry = None
+
+
+    Counter = Gauge = Histogram = None
+
+
     _HAS_PROMETHEUS = False
 
 
@@ -77,42 +81,56 @@ class CodexMetricsRegistry:
             self.active_sessions = _NoopMetric()
             return
 
-        self.training_steps = Counter(  # type: ignore[assignment]
+        self.training_steps = Counter(
+
+
             f"{namespace}_training_steps_total",
             "Total training steps completed",
             registry=self.registry,
         )
-        self.training_loss = Gauge(  # type: ignore[assignment]
+        self.training_loss = Gauge(
+
+
             f"{namespace}_training_loss",
             "Current training loss",
             registry=self.registry,
         )
-        self.training_duration_seconds = Histogram(  # type: ignore[assignment]
+        self.training_duration_seconds = Histogram(
+
+
             f"{namespace}_training_duration_seconds",
             "Training loop duration in seconds",
             buckets=(1, 5, 10, 30, 60, 300),
             registry=self.registry,
         )
-        self.inference_requests = Counter(  # type: ignore[assignment]
+        self.inference_requests = Counter(
+
+
             f"{namespace}_inference_requests_total",
             "Total inference requests",
             labelnames=["endpoint"],
             registry=self.registry,
         )
-        self.inference_latency_seconds = Histogram(  # type: ignore[assignment]
+        self.inference_latency_seconds = Histogram(
+
+
             f"{namespace}_inference_latency_seconds",
             "Inference request latency in seconds",
             labelnames=["endpoint"],
             buckets=(0.01, 0.05, 0.1, 0.5, 1.0, 5.0),
             registry=self.registry,
         )
-        self.data_loading_duration_seconds = Histogram(  # type: ignore[assignment]
+        self.data_loading_duration_seconds = Histogram(
+
+
             f"{namespace}_data_loading_duration_seconds",
             "Data loader iteration time in seconds",
             buckets=(0.1, 0.5, 1.0, 5.0, 10.0),
             registry=self.registry,
         )
-        self.active_sessions = Gauge(  # type: ignore[assignment]
+        self.active_sessions = Gauge(
+
+
             f"{namespace}_active_sessions",
             "Number of active training or inference sessions",
             registry=self.registry,

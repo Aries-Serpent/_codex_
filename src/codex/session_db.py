@@ -276,7 +276,7 @@ class SessionDB:
         if session_id in self._cache:
             del self._cache[session_id]
 
-    def cleanup_old_archives(self, max_iterations: int = 30) -> None:
+    def cleanup_old_archives(self, max_iterations: int = 30) -> int:
         """Delete archived sessions older than max_iterations
 
         Args:

@@ -39,7 +39,9 @@ try:  # pragma: no cover - optional dependency
     except ImportError as e:
         error_type = type(e).__name__
         logger.debug("hydra not available: <ERROR_TYPE>")
-        import config_legacy as hydra  # type: ignore[no-redef]
+        import config_legacy as hydra
+
+
     from omegaconf import MISSING
 except (ImportError, AttributeError):  # pragma: no cover - optional dependency
     hydra = None
@@ -231,7 +233,7 @@ def train(cfg: TrainTokenizerConfig) -> Path:
             except (IOError, OSError):  # pragma: no cover - dependency still missing
                 logger.warning("Exception occurred", exc_info=True)
             else:
-                sys.modules.setdefault("sentencepiece_model_pb2", _sp_model_pb2)
+                sys.modules.setdefault("sentencepiece_model_pb2", _sp_model_pb2)  # type: ignore[arg-type]
         try:
             tok = SentencePieceUnigramTokenizer.from_spm(str(model_path))
         except (IOError, OSError):

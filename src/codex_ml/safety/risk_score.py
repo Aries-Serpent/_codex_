@@ -33,7 +33,7 @@ WEIGHTS: dict[str, float] = {
 }
 
 
-def _load_classifier() -> None:
+def _load_classifier() -> object:
     global _classifier
     if pipeline is None:
         return None

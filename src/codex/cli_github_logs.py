@@ -15,7 +15,7 @@ import click
 logger = logging.getLogger(__name__)
 
 
-def _get_github_client() -> None:
+def _get_github_client() -> object:
     """Get GitHub client instance."""
     try:
         from services.github.client import GitHubClientSync

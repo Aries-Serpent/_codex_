@@ -20,7 +20,7 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, Generator
 
 from codex.archive.api import store
 from codex.archive.util import json_dumps_sorted, utcnow_iso
@@ -59,7 +59,7 @@ def infer_intent(path: str) -> str:
     return "admin"
 
 
-def iter_sources(root: Path) -> None:
+def iter_sources(root: Path) -> Generator[Path, None, None]:
     exclude = {".git", ".venv", ".codex", "artifacts", "dist", "__pycache__"}
     for p in root.rglob("*"):
         if p.is_dir():
@@ -79,7 +79,7 @@ def build_kb(
     dedup: bool = True,
 ) -> dict[str, Any]:
     staged: list[dict[str, object]] = []
-    for src in iter_sources(root):  # type: ignore[attr-defined]
+    for src in iter_sources(root):
         norm, mime = normalize_file(src)
         scrubbed, flags = scrub(norm, allow_gpl=allow_gpl)
         chunks = chunk_by_headings(scrubbed, target_tokens=min(1024, max_tokens_per_rec))

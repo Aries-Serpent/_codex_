@@ -85,7 +85,7 @@ _RESOURCE_NAME_FIELDS: dict[str, tuple[str, ...]] = {
 }
 
 
-def _get_client(env: str) -> None:
+def _get_client(env: str) -> object:
     module_spec = importlib.util.find_spec("zenpy")
     if module_spec is None:
         LOGGER.error("Zenpy package is not installed; cannot apply changes.")
@@ -117,7 +117,7 @@ def _load_api_objects_module() -> ModuleType | None:
     return _API_OBJECTS_MODULE
 
 
-def _get_api_class(class_name: str) -> None:
+def _get_api_class(class_name: str) -> object:
     module = _load_api_objects_module()
     if module is None:
         return None
@@ -166,7 +166,7 @@ def _operation_name(resource: str, entry: Mapping[str, Any], data: Mapping[str, 
     return ""
 
 
-def _find_existing(existing: list[Any], resource: str, name: str) -> None:
+def _find_existing(existing: list[Any], resource: str, name: str) -> Any:
     if not name:
         return None
     for item in existing:

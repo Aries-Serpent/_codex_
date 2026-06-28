@@ -374,7 +374,7 @@ class EvaluationRunner:
 class _nullcontext:
     """Fallback context manager when torch.no_grad() not available."""
 
-    def __enter__(self) -> None:
+    def __enter__(self) -> "_nullcontext":
         return self
 
     def __exit__(self, *args) -> None:

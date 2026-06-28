@@ -32,7 +32,9 @@ try:  # pragma: no cover - torch is optional
     import torch
 except (ImportError, AttributeError):  # pragma: no cover - execution environments without torch
     torch = None  # type: ignore[assignment]
-    dist = None  # type: ignore[assignment]
+    dist = None
+
+
 
 _OPT_IN_VALUES = {"1", "true", "TRUE", "True", "YES", "yes", "on", "ON"}
 _FALLBACK_ENV_FLAGS = ("CODEX_DDP_ENABLE",)

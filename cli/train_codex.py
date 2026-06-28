@@ -124,6 +124,7 @@ def _build_model(config: dict[str, Any], tokenizer) -> AutoModelForCausalLM:
             n_head=model_config.get("num_heads", 2),
         )
         model = AutoModelForCausalLM.from_config(hf_config)
+    assert model is not None, "Failed to build model"
     return model
 
 

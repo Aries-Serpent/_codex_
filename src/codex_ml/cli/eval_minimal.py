@@ -10,7 +10,7 @@ from codex_ml.cli import utils as cli_utils  # type: ignore[attr-defined]
 from codex_ml.logging.experiment import ExperimentTracker
 
 
-def _import_training_loop() -> None:
+def _import_training_loop() -> object:
     from codex_ml.training import loop as training_loop
 
     return training_loop

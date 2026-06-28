@@ -92,8 +92,8 @@ else:  # pragma: no cover - exercised in minimal test envs
     IS_CODEX_STUB = True
     _MISSING_MSG = "sentencepiece is not installed in this environment. Install sentencepiece to enable these features."
 
-    def __getattr__(name: str) -> None:
+    def __getattr__(name: str) -> object:
         raise AttributeError(_MISSING_MSG)
 
-    def __dir__() -> None:  # pragma: no cover - simple stub helper
+    def __dir__() -> list[str]:  # pragma: no cover - simple stub helper
         return []

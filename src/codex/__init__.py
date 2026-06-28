@@ -32,7 +32,7 @@ _SUBMODULES = {
 
 
 # Lazy-load __version__ to avoid cyclic import
-def __getattr__(name: str) -> str:
+def __getattr__(name: str) -> object:
     if name == "__version__":
         from ._version import __version__
 

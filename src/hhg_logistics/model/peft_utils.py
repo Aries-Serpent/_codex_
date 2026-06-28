@@ -99,6 +99,7 @@ def load_hf_llm(
             use_fast=use_fast,
             trust_remote_code=trust_remote_code,  # nosec B615
         )
+    assert tokenizer is not None, f"Failed to load tokenizer {tok_name}"
     if tokenizer.pad_token_id is None:
         tokenizer.pad_token = tokenizer.eos_token
 
@@ -108,6 +109,7 @@ def load_hf_llm(
         low_cpu_mem_usage=low_cpu_mem_usage,
         trust_remote_code=trust_remote_code,  # nosec B615
     )
+    assert model is not None, f"Failed to load model {pretrained}"
     return HFModelBundle(model=model, tokenizer=tokenizer)
 
 
