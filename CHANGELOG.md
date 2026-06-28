@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+### Fixed (CI failure resolution — PR #5116, Session 2026-06-28T15:20Z)
+- Fixed auth test syntax error in `tests/auth/test_github_app.py:139` — invalid multi-line `all()` generator expression unblocking 1,100+ tests
+- Fixed semgrep pragma misplacement in `src/cache/redis_cache.py` — moved `nosemgrep` suppression from closing paren to code line
+- Fixed semgrep false positive finding in checkpoint_core.py — added pattern-not-inside exceptions to suppress overly broad rule matching on "numpy" strings
+- Resolved via commit 474bada5 leveraging ci-failure-resolution-agent for parallel diagnostic + fix workflow
+- Verified locally with syntax validation and mypy baseline checks
+- Replied to blocking comment #4826518847 from @mbaetiong with commit SHA and resolution details
+
 ### Fixed (CI rescue — PR #5116, Session 2026-06-28T14:29Z)
 - REQ-4: Updated AGENT_ACCOUNTABILITY_REPORT.md with CI rescue and compliance session entry (2026-06-28T14:29Z)
 - REQ-5: Updated CHANGELOG.md with CI rescue documentation and compliance fix tracking
