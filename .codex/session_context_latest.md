@@ -1,74 +1,86 @@
-# Session Context — 2026-06-28T03:05:20Z
-**Branch:** `0D_base_`  **PR:** #5113  **Access:** `rest, graphql, gh_cli`
+# Agent Session Context Digest
 
-## 🔌 Access Strategy
-- Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4746` (✅)
-- GraphQL remaining: `4973` (✅)
-- gh CLI: ✅
-- CodeQL CLI: ❌
-
-## 📋 PR #5113 — chore: merge main into 0D_base_ and fix CodeQL security alerts
-State: `open`  Draft: `False`  Branch: `0D_base_` → `main`
-
-### ❌ 5 Failing CI Check(s)
-- `Governance Compliance` (failure)
-- `🧠 Cognitive Pre-flight Check` (cancelled)
-- `🛡️ Restore required PR checkboxes` (cancelled)
-- `Dispatch & Auto-Approve Newly-Checked Workflows` (cancelled)
-- `🚦 Comment review gate` (failure)
-
-## 🚨 Recent CI Failures (last 5 runs)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-28)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-28)
-- **Semgrep SAST (SARIF Upload)** — `failure` on `0D_base_` (2026-06-28)
-- **Workflow Compliance Gate** — `failure` on `0D_base_` (2026-06-28)
-- **Unified Governance Check** — `failure` on `0D_base_` (2026-06-28)
-
-## 📝 Recent Commits
-- `e036d078` Potential fix for pull request finding 'Illegal raise' — Statix (2026-06-28)
-- `ccce5199` fix(ci): pin semgrep and codeql-action to commit hashes (CodeQL security alert r — copilot-swe-agent[bot] (2026-06-28)
-- `24ebbc6e` Merge main into 0D_base_ - resolve 738 conflicts — copilot-swe-agent[bot] (2026-06-28)
-- `9f7ec6c0` fix: resolve merge conflict marker in GITHUB_VARIABLES_MASTER_GUIDE.md — copilot-swe-agent[bot] (2026-06-28)
-- `98e77c9e` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-06-28)
-- `8223dd25` Merge pull request #5112 from Aries-Serpent/copilot/explore-codebase-implementat — Statix (2026-06-28)
-- `0ea87994` fix: update accountability and changelog for mypy baseline fix (REQ-4/REQ-5) — copilot-swe-agent[bot] (2026-06-28)
-- `e0c4b3cb` fix: update mypy baseline to lock in type-checking improvements (REQ-4/REQ-5) — copilot-swe-agent[bot] (2026-06-28)
-
-## ⚙️ Repository Variables (live)
-- `COPILOT_AGENT_AUTH_ENABLED` = `true`
-- `COPILOT_AGENT_MAX_AUTONOMY_LEVEL` = `D`
-- `COGNITIVE_BRAIN_SESSION_NUMBER` = `1455`
-- `CODEX_CI_FAILURE_RATE` = `3.9:ok`
-- `CODEX_CI_LAST_GREEN_SHA` = `80f79be81b00701520487125f105cf33902be9b9`
-- `COPILOT_AGENT_FIREWALL_ENABLED` = `true`
-
-## 🔁 PDA Loop — Last 5 Iterations
-- [2026-06-27] `PDA-AUTO-20260627`: ?
-- [2026-06-28] `PDA-AUTO-20260628`: ?
-- [2026-06-27] `PDA-AUTO-20260627`: ?
-
-## 📜 Codebase Agency Policy (excerpt)
-```
-# AI Codebase Agency Policy
-
-**Version:** 1.1.0
-**Effective Date:** 2026-01-05
-**Status:** Mandatory for ALL AI agents
-**Enforcement:** Policy violations require immediate correction
+> **Generated:** 2026-06-28T03:12:01Z  
+> **Repository:** Aries-Serpent/_codex_  
+> **Script:** `scripts/ci/session_bootstrap.py`
 
 ---
 
-## Purpose
+## 📋 Fetched Context
 
-This policy establishes mandatory guidelines for ALL AI agents (GitHub Copilot, custom agents, and automated systems) working within the `Aries-Serpent/_codex_` repository. The goal is to ensure:
-
-- Comprehensive problem resolution
-- Consistent code quality
-- Knowledge transfer between agent sessions
-- Cumulative codebase improvements
-- Maintainable and documented solutions
+### 🔀 [PR] 5113
+**URL:** https://github.com/Aries-Serpent/_codex_/pull/5113  
+**Summary:** (offline mode — not fetched)
 
 ---
 
+## 🔬 CI Triage Results
+
+_Triage not run (--skip-triage or script unavailable)._
+
+---
+
+## 🚨 Blocking Issues
+
+_None — baseline is healthy._
+
+### ⚠ Warnings
+
+- ⚠ --offline: 1 URL(s) found but not fetched.
+- ⚠ --skip-triage: CI triage checks not run
+
+---
+
+## 🗺️ Coverage Intelligence
+
+> _Map generated: 2026-03-30T19:22:24Z_  
+> _Overall line rate: 10.5%_
+> _Total uncovered functions: 15 | High-risk: 15_
+
+**🔴 Zero-coverage modules (120):**
+- `logging_config`
+- `codex.chat`
+- `codex.cli`
+- `codex.logging.config`
+- `codex.logging.conversation_logger`
+- `codex.logging.db_utils`
+- `codex.logging.export`
+- `codex.logging.fetch_messages`
+- `codex.logging.import_ndjson`
+- `codex.logging.query_logs`
+- _…and 110 more_
+
+**🟡 Low-coverage modules <50% (44):**
+- `codex.training` (11.2%)
+- `codex_ml.data_utils` (16.7%)
+- `codex_ml.pipeline` (12.9%)
+- `codex_ml.symbolic_pipeline` (30.2%)
+- `codex_ml.cli.codex_cli` (41.8%)
+- `codex_ml.cli.main` (32.9%)
+- `codex_ml.data.checksums` (26.9%)
+- `codex_ml.data.loader` (18.2%)
+- `codex_ml.eval.datasets` (17.3%)
+- `codex_ml.eval.eval_runner` (23.5%)
+- _…and 34 more_
+
+
+---
+
+## 🩺 Session Diagnostic Protocol Checklist
+
+Copy into `AGENT_ACCOUNTABILITY_REPORT.md` pre-flight section:
+
+```markdown
+- [x] D-00 session_bootstrap.py — 1 URL(s) found, triage ⏭️ skipped
+- [ ] D-01 Memories loaded
+- [ ] D-02 CODEBASE_AGENCY_POLICY.md reviewed
+- [ ] D-03 Accountability report loaded (last 3 sessions)
+- [ ] D-04 CHANGELOG [Unreleased] reviewed
+- [ ] D-05 PR comments reviewed
+- [ ] D-06 CI status checked
+- [ ] D-07 ci_triage_repro.sh passed
+- [ ] D-08 Baseline documented
 ```
+
+---
+_Auto-generated by `session_bootstrap.py` at 2026-06-28T03:12:01Z_
