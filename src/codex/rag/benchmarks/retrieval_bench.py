@@ -62,8 +62,8 @@ def benchmark_retrieval(
                     )
 
                     if result.success:
-                        result.metadata["index_size"] = index_size
-                        result.metadata["top_k"] = top_k
+                        result.metadata["index_size"] = index_size  # type: ignore[index]
+                        result.metadata["top_k"] = top_k  # type: ignore[index]
 
     # Calculate percentiles
     _calculate_percentiles(runner.results)
@@ -117,7 +117,7 @@ def _query_index(query: str, index_name: str, top_k: int, tmpdir: str) -> list[d
     return retriever.query(query, top_k=top_k)
 
 
-def _calculate_percentiles(results: list) -> None:
+def _calculate_percentiles(results: list[Any]) -> None:
     """Calculate and add percentile information to results."""
     import statistics
 
@@ -144,7 +144,7 @@ def _percentile(data: list[float], percentile: float) -> float:
     return sorted_data[min(index, len(sorted_data) - 1)]
 
 
-def _get_latency_percentiles(results: list) -> dict[str, float]:
+def _get_latency_percentiles(results: list[Any]) -> dict[str, float]:
     """Get latency percentiles from results."""
     import statistics
 

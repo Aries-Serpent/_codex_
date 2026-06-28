@@ -58,7 +58,7 @@ class ApprovalRequest:
     approved_by: str | None = None
     approved_at: datetime | None = None
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "id": self.id,
@@ -85,7 +85,7 @@ class ExecutionResult:
     automation_level: AutomationLevel
     required_approval: bool
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "success": self.success,
@@ -398,19 +398,19 @@ def create_executor(
 
 
 # Convenience functions
-def run_advisory_mode() -> dict:
+def run_advisory_mode() -> dict[str, Any]:
     """Run in advisory mode (Level 1)."""
     executor = create_executor(AutomationLevel.LEVEL_1_ADVISORY)
     return executor.run_evaluation_cycle()
 
 
-def run_semi_autonomous() -> dict:
+def run_semi_autonomous() -> dict[str, Any]:
     """Run in semi-autonomous mode (Level 2)."""
     executor = create_executor(AutomationLevel.LEVEL_2_SEMI_AUTONOMOUS)
     return executor.run_evaluation_cycle()
 
 
-def run_fully_autonomous() -> dict:
+def run_fully_autonomous() -> dict[str, Any]:
     """Run in fully autonomous mode (Level 3)."""
     executor = create_executor(AutomationLevel.LEVEL_3_FULLY_AUTONOMOUS)
     return executor.run_evaluation_cycle()

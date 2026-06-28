@@ -29,7 +29,7 @@ class DocSyncIssue:
 class DocumentationValidator:
     """Validate documentation against implementation."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.issues: list[DocSyncIssue] = []
 
     def validate_file(self, file_path: Path) -> list[DocSyncIssue]:

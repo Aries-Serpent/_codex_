@@ -602,7 +602,7 @@ class CognitiveBrain:
                │
                └── brain.orchestrator   → PlansetOrchestrator
                    brain.engine         → QuantumPlansetEngine
-                   brain.capabilities   → Dict[agent_id → [ImprovementArea]]
+                   brain.capabilities   → dict[agent_id → [ImprovementArea]]
 
     Parameters
     ----------

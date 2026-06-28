@@ -1,0 +1,13 @@
+"""Type stub for transformers optional dependency stub"""
+from typing import Any
+
+class _Stub:
+    def __init__(self, target: str) -> None: ...
+    def __call__(self, *args: Any, **kwargs: Any) -> Any: ...
+
+def _load_real_module() -> Any: ...
+
+AutoModel: _Stub
+AutoModelForCausalLM: _Stub
+AutoTokenizer: _Stub
+def __getattr__(name: str) -> Any: ...

@@ -24,8 +24,8 @@ except ImportError as e:
     error_type = type(e).__name__
     logger.debug("ImportError: <ERROR_TYPE>")
     logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
-    torch = None
-    F = None
+    torch = None  # type: ignore[assignment]
+    F = None  # type: ignore[assignment]
 
 
 class PerplexityMetric(MetricAdapter):

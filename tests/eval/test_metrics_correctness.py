@@ -6,7 +6,7 @@ Test module for metrics correctness.
 
 import pytest
 
-from codex_ml.eval import metrics as M
+from codex_ml.metrics import metrics_deprecated as M
 
 
 def test_perplexity_known_value():

@@ -21,17 +21,17 @@ try:
     FASTAPI_AVAILABLE = True
 except ImportError:  # pragma: no cover
     FASTAPI_AVAILABLE = False
-    FastAPI = None
-    HTTPException = Exception
-    BaseModel = object
-    APIKeyHeader = None
-    Security = None
-    TrustedHostMiddleware = None
+    FastAPI = None  # type: ignore[misc,assignment]
+    HTTPException = Exception  # type: ignore[misc,assignment]
+    BaseModel = object  # type: ignore[misc,assignment]
+    APIKeyHeader = None  # type: ignore[misc,assignment]
+    Security = None  # type: ignore[assignment]
+    TrustedHostMiddleware = None  # type: ignore[misc,assignment]
 
-    def Field(*a: Any, **k: Any) -> None:
+    def Field(*a: Any, **k: Any) -> None:  # type: ignore[no-redef]
         return None
 
-    Request = object
+    Request = object  # type: ignore[misc,assignment]
 
 logger = logging.getLogger(__name__)
 
@@ -330,7 +330,7 @@ class ModelServer:
             import math
             import random
 
-            embeddings: list[list[float]] = []
+            embeddings: list[list[float]] = []  # type: ignore[no-redef]
             for text in texts:
                 seed = abs(hash(text)) % _MAX_EMBEDDING_SEED
                 rng = random.Random(seed)  # nosec B311 — non-cryptographic ML sampling/shuffling
@@ -475,7 +475,7 @@ if FASTAPI_AVAILABLE:
             auth_dependencies = [Security(verify_auth)]
 
         @app.get("/")
-        def root() -> dict:
+        def root() -> dict[str, Any]:
             return {
                 "service": "codex-inference",
                 "version": "0.2.0",
@@ -483,12 +483,12 @@ if FASTAPI_AVAILABLE:
             }
 
         @app.get("/health")
-        def health() -> dict:
+        def health() -> dict[str, Any]:
             """Health check with circuit breaker status"""
             return server.health_check()
 
         @app.get("/ready")
-        def readiness() -> dict:
+        def readiness() -> dict[str, Any]:
             """Readiness check"""
             health = server.health_check()
             return {
@@ -498,12 +498,12 @@ if FASTAPI_AVAILABLE:
             }
 
         @app.get("/live")
-        def liveness() -> dict:
+        def liveness() -> dict[str, Any]:
             """Liveness check - always returns 200 if server is running"""
             return {"status": "alive", "uptime": time.time() - start_time}
 
         @app.get("/metrics")
-        def metrics() -> dict:
+        def metrics() -> dict[str, Any]:
             """Metrics endpoint"""
             metrics_data = {
                 "request_count": server.total_requests,
@@ -521,7 +521,7 @@ if FASTAPI_AVAILABLE:
         )
         def predict(request: PredictionRequest, http_request: Request):
             client_key = (
-                http_request.client.host if getattr(http_request, "client", None) else "global"
+                http_request.client.host if getattr(http_request, "client", None) else "global"  # type: ignore[union-attr]
             )
             if not limiter.is_allowed(client_key):
                 raise HTTPException(status_code=429, detail="Rate limit exceeded")

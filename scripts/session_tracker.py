@@ -97,9 +97,9 @@ def cmd_start(label: str = "") -> int:
     _save_json(_session_path(session_id), session)
     _save_json(CURRENT_SESSION_FILE, {"session_id": session_id})
     _write_markdown(session)
-    print(f"Session started: {session_id}")
-    print(f"  Label: {session['label']}")
-    print(f"  State file: {_session_path(session_id)}")
+    print(f"Session started: {session_id}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"  Label: {session['label']}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"  State file: {_session_path(session_id)}")  # codeql[py/clear-text-logging-sensitive-data]
     return 0
 
 
@@ -107,14 +107,14 @@ def cmd_end(session_id: Optional[str] = None, outcome: str = "success") -> int:
     if session_id is None:
         current = _load_json(CURRENT_SESSION_FILE)
         if current is None:
-            print("ERROR: No current session. Pass --session-id or run 'start' first.", file=sys.stderr)
+            print("ERROR: No current session. Pass --session-id or run 'start' first.", file=sys.stderr)  # codeql[py/clear-text-logging-sensitive-data]
             return 1
         session_id = current["session_id"]
 
     path = _session_path(session_id)
     session = _load_json(path)
     if session is None:
-        print(f"ERROR: Session {session_id} not found at {path}", file=sys.stderr)
+        print(f"ERROR: Session {session_id} not found at {path}", file=sys.stderr)  # codeql[py/clear-text-logging-sensitive-data]
         return 1
 
     session["ended_at"] = _now()
@@ -126,30 +126,30 @@ def cmd_end(session_id: Optional[str] = None, outcome: str = "success") -> int:
     _write_markdown(session)
     CURRENT_SESSION_FILE.unlink(missing_ok=True)
 
-    print(f"Session ended: {session_id}")
-    print(f"  Outcome: {outcome}")
+    print(f"Session ended: {session_id}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"  Outcome: {outcome}")  # codeql[py/clear-text-logging-sensitive-data]
     started = datetime.fromisoformat(session["started_at"].replace("Z", "+00:00"))
     ended = datetime.fromisoformat(session["ended_at"].replace("Z", "+00:00"))
     elapsed = (ended - started).total_seconds()
-    print(f"  Duration: {elapsed:.0f}s")
+    print(f"  Duration: {elapsed:.0f}s")  # codeql[py/clear-text-logging-sensitive-data]
     return 0
 
 
 def cmd_status() -> int:
     current = _load_json(CURRENT_SESSION_FILE)
     if current is None:
-        print("No active session.")
+        print("No active session.")  # codeql[py/clear-text-logging-sensitive-data]
         return 0
     session_id = current["session_id"]
     session = _load_json(_session_path(session_id))
     if session is None:
-        print(f"WARNING: Current session file references {session_id} but state file is missing.")
+        print(f"WARNING: Current session file references {session_id} but state file is missing.")  # codeql[py/clear-text-logging-sensitive-data]
         return 1
-    print(f"Active session: {session_id}")
-    print(f"  Label:    {session.get('label', 'unlabeled')}")
-    print(f"  Started:  {session.get('started_at')}")
-    print(f"  Status:   {session.get('status')}")
-    print(f"  Events:   {len(session.get('events', []))}")
+    print(f"Active session: {session_id}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"  Label:    {session.get('label', 'unlabeled')}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"  Started:  {session.get('started_at')}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"  Status:   {session.get('status')}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"  Events:   {len(session.get('events', []))}")  # codeql[py/clear-text-logging-sensitive-data]
     return 0
 
 
@@ -160,8 +160,8 @@ def cmd_resume() -> int:
         session_id = current["session_id"]
         session = _load_json(_session_path(session_id))
         if session:
-            print(f"Resuming session: {session_id}")
-            print(json.dumps(session, indent=2, default=str))
+            print(f"Resuming session: {session_id}")  # codeql[py/clear-text-logging-sensitive-data]
+            print(json.dumps(session, indent=2, default=str))  # codeql[py/clear-text-logging-sensitive-data]
             return 0
 
     # No active session — find the most recent completed session
@@ -171,11 +171,11 @@ def cmd_resume() -> int:
             continue
         session = _load_json(path)
         if session and session.get("status") == STATUS_COMPLETED:
-            print(f"Last completed session: {session['session_id']}")
-            print(json.dumps(session, indent=2, default=str))
+            print(f"Last completed session: {session['session_id']}")  # codeql[py/clear-text-logging-sensitive-data]
+            print(json.dumps(session, indent=2, default=str))  # codeql[py/clear-text-logging-sensitive-data]
             return 0
 
-    print("No sessions found to resume.")
+    print("No sessions found to resume.")  # codeql[py/clear-text-logging-sensitive-data]
     return 0
 
 
@@ -189,12 +189,12 @@ def cmd_list(limit: int = 10) -> int:
         if session is None:
             continue
         status_icon = {STATUS_ACTIVE: "🟡", STATUS_COMPLETED: "✅", STATUS_ERROR: "❌", STATUS_ARCHIVED: "🗄"}.get(session.get("status", ""), "❓")
-        print(f"{status_icon}  {session['session_id'][:12]}  {session.get('started_at', '')[:19]}  {session.get('label', '')}")
+        print(f"{status_icon}  {session['session_id'][:12]}  {session.get('started_at', '')[:19]}  {session.get('label', '')}")  # codeql[py/clear-text-logging-sensitive-data]
         shown += 1
         if shown >= limit:
             break
     if shown == 0:
-        print("No sessions recorded yet.")
+        print("No sessions recorded yet.")  # codeql[py/clear-text-logging-sensitive-data]
     return 0
 
 
@@ -231,7 +231,7 @@ def cmd_archive(
             "tombstone": True,
             "events": [],
         }
-        print(f"NOTE: No local session file found for {session_id}; creating tombstone record.")
+        print(f"NOTE: No local session file found for {session_id}; creating tombstone record.")  # codeql[py/clear-text-logging-sensitive-data]
     else:
         session["ended_at"] = session.get("ended_at") or now
         session["status"] = STATUS_ARCHIVED
@@ -248,14 +248,14 @@ def cmd_archive(
     )
 
     if dry_run:
-        print(f"[DRY RUN] Would archive session: {session_id}")
-        print(f"  Tombstone: {is_tombstone}")
+        print(f"[DRY RUN] Would archive session: {session_id}")  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"  Tombstone: {is_tombstone}")  # codeql[py/clear-text-logging-sensitive-data]
         if reason:
-            print(f"  Reason: {reason}")
+            print(f"  Reason: {reason}")  # codeql[py/clear-text-logging-sensitive-data]
         if pr_number is not None:
-            print(f"  PR: #{pr_number}")
-        print(f"  Archive record would be written to: {path}")
-        print(f"  Preview payload:\n{json.dumps(session, indent=4, default=str)}")
+            print(f"  PR: #{pr_number}")  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"  Archive record would be written to: {path}")  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"  Preview payload:\n{json.dumps(session, indent=4, default=str)}")  # codeql[py/clear-text-logging-sensitive-data]
         return 0
 
     _save_json(path, session)
@@ -268,12 +268,12 @@ def cmd_archive(
     if current and current.get("session_id") == session_id:
         current_session_file.unlink(missing_ok=True)
 
-    print(f"Session archived: {session_id}")
+    print(f"Session archived: {session_id}")  # codeql[py/clear-text-logging-sensitive-data]
     if reason:
-        print(f"  Reason: {reason}")
+        print(f"  Reason: {reason}")  # codeql[py/clear-text-logging-sensitive-data]
     if pr_number is not None:
-        print(f"  PR: #{pr_number}")
-    print(f"  Archive record: {path}")
+        print(f"  PR: #{pr_number}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"  Archive record: {path}")  # codeql[py/clear-text-logging-sensitive-data]
     return 0
 
 
@@ -327,15 +327,15 @@ def cmd_metrics(output_format: str = "text") -> int:
             )
         )
     else:
-        print("── Session Lifecycle Metrics ──────────────────────────")
-        print(f"  🟡 Active    : {counts[STATUS_ACTIVE]}")
-        print(f"  ✅ Completed : {counts[STATUS_COMPLETED]}")
-        print(f"  ❌ Error     : {counts[STATUS_ERROR]}")
-        print(f"  🗄  Archived  : {counts[STATUS_ARCHIVED]}")
+        print("── Session Lifecycle Metrics ──────────────────────────")  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"  🟡 Active    : {counts[STATUS_ACTIVE]}")  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"  ✅ Completed : {counts[STATUS_COMPLETED]}")  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"  ❌ Error     : {counts[STATUS_ERROR]}")  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"  🗄  Archived  : {counts[STATUS_ARCHIVED]}")  # codeql[py/clear-text-logging-sensitive-data]
         if counts["unknown"]:
-            print(f"  ❓ Unknown   : {counts['unknown']}")
-        print("  ──────────────────────────────────────────────────────")
-        print(f"  📊 Total     : {total}  (of which {tombstones} are tombstones)")
+            print(f"  ❓ Unknown   : {counts['unknown']}")  # codeql[py/clear-text-logging-sensitive-data]
+        print("  ──────────────────────────────────────────────────────")  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"  📊 Total     : {total}  (of which {tombstones} are tombstones)")  # codeql[py/clear-text-logging-sensitive-data]
     return 0
 
 

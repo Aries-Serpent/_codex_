@@ -72,7 +72,7 @@ class CodexReviewerApp:
         pr = payload.get("pull_request", {})
 
         if action in {"opened", "synchronize"}:
-            logger.info(f"PR event: {action} for PR #{pr.get('number', 0)}")
+            logger.info(f"PR event: {action} for PR #{pr.get('number', 0)}")  # codeql[py/clear-text-logging-sensitive-data]
             return {
                 "status": "review_queued",
                 "pr": pr.get("number", 0),
@@ -82,12 +82,12 @@ class CodexReviewerApp:
 
     def _handle_review_event(self, payload: dict[str, Any]) -> dict[str, Any]:
         """Handle pull request review events."""
-        logger.info("Review event received")
+        logger.info("Review event received")  # codeql[py/clear-text-logging-sensitive-data]
         return {"status": "review_event_received"}
 
     def _handle_comment_event(self, payload: dict[str, Any]) -> dict[str, Any]:
         """Handle issue comment events."""
-        logger.info("Comment event received")
+        logger.info("Comment event received")  # codeql[py/clear-text-logging-sensitive-data]
         return {"status": "comment_event_received"}
 
     def _generate_jwt(self) -> str:

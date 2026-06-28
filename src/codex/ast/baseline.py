@@ -11,7 +11,7 @@ from typing import Optional
 logger = logging.getLogger(__name__)
 
 
-def _safe_json_loads(data: str) -> dict:
+def _safe_json_loads(data: str) -> dict[str, Any]:
     """Safely parse JSON, returning empty dict on failure."""
     try:
         return json.loads(data) if data else {}

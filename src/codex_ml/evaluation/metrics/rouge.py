@@ -108,7 +108,7 @@ class RougeMetric(MetricAdapter):
             error_type = type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.debug("Exception caught, returning", exc_info=True)
-            return {f"{self.name}_error": str(e)}
+            return {f"{self.name}_error": str(e)}  # type: ignore[dict-item]
 
     def _compute_basic(self) -> dict[str, float]:
         """Basic ROUGE approximation without rouge-score."""
@@ -134,6 +134,6 @@ class RougeMetric(MetricAdapter):
         avg_score = total_score / len(self._predictions) if self._predictions else 0.0
 
         results = {rouge_type: avg_score for rouge_type in self.rouge_types}
-        results[f"{self.name}_warning"] = "rouge-score not installed, using basic approximation"
+        results[f"{self.name}_warning"] = "rouge-score not installed, using basic approximation"  # type: ignore[assignment]
 
         return results

@@ -60,9 +60,9 @@ if (
         transformers.PreTrainedTokenizerBase,
     )
 else:  # pragma: no cover - optional dependency missing
-    AutoModel = None
-    AutoModelForCausalLM = None
-    AutoTokenizer = None
+    AutoModel = None  # type: ignore[assignment]
+    AutoModelForCausalLM = None  # type: ignore[assignment]
+    AutoTokenizer = None  # type: ignore[assignment]
     PreTrainedModel = cast("type[HF_PreTrainedModel]", object)
     PreTrainedTokenizerBase = cast("type[HF_PreTrainedTokenizerBase]", object)
 
@@ -76,7 +76,7 @@ logger = logging.getLogger(__name__)
 try:  # pragma: no cover - optional dependency
     import torch
 except (ImportError, AttributeError):  # pragma: no cover - torch is optional at import time
-    torch = None
+    torch = None  # type: ignore[assignment]
 
 
 _CAUSAL_LM_REGISTRY: dict[str, Callable[..., Any]] = {}
@@ -169,7 +169,7 @@ def load_tokenizer(
     *,
     revision: Optional[str] = None,
     trust_remote_code: bool = False,
-) -> PreTrainedTokenizerBase:
+) -> PreTrainedTokenizerBase:  # type: ignore[valid-type]
     if not TRANSFORMERS_AVAILABLE or AutoTokenizer is None:
         raise ImportError("transformers is required to load tokenizers")
     rev = _required_revision(repo_id, revision)
@@ -191,7 +191,7 @@ def load_model(
     revision: Optional[str] = None,
     trust_remote_code: bool = False,
     peft_path: Optional[str | os.PathLike[str]] = None,
-) -> PreTrainedModel:
+) -> PreTrainedModel:  # type: ignore[valid-type]
     """Load a base transformer model and optionally attach a PEFT adapter."""
 
     if not TRANSFORMERS_AVAILABLE or AutoModel is None:
@@ -240,7 +240,7 @@ def load_causal_lm(
     dtype: Optional[str] = None,
     peft_cfg: Optional[dict[str, Any]] = None,
     peft_path: Optional[str | os.PathLike[str]] = None,
-) -> PreTrainedModel:
+) -> PreTrainedModel:  # type: ignore[valid-type]
     if not TRANSFORMERS_AVAILABLE or AutoModelForCausalLM is None:
         raise ImportError("transformers is required to load causal language models")
     if isinstance(repo_id, str):

@@ -53,7 +53,7 @@ def _install_accelerate_compat() -> None:
         return
 
     class _CompatAccelerator(_BaseAccelerator):
-        def __init__(self, *args, **kwargs):
+        def __init__(self, *args, **kwargs) -> None:
             # Normalize project_dir
             if "logging_dir" in kwargs and "project_dir" not in kwargs:
                 kwargs["project_dir"] = kwargs.pop("logging_dir")
@@ -135,10 +135,10 @@ except (IOError, OSError):  # pragma: no cover - numpy missing
     np = None
 
 try:  # pragma: no cover - optional datasets dependency
-    from datasets import Dataset
+    from datasets import Dataset  # type: ignore[attr-defined]
 except (ImportError, AttributeError):  # pragma: no cover - datasets missing
 
-    class Dataset:
+    class Dataset:  # type: ignore[no-redef]
         """Minimal stand-in for datasets.Dataset used in tests/offline.
 
         Provides enough surface to not explode during unit tests that don't
@@ -193,23 +193,23 @@ except (ImportError, AttributeError):  # pragma: no cover - transformers missing
         def __init__(self, *args: Any, **kwargs: Any) -> None:
             raise ImportError("transformers dependency not available in offline mode")
 
-    AutoModelForCausalLM = _MissingTransformersObject
-    AutoTokenizer = _MissingTransformersObject
-    DataCollatorForLanguageModeling = _MissingTransformersObject
+    AutoModelForCausalLM = _MissingTransformersObject  # type: ignore[misc,assignment]
+    AutoTokenizer = _MissingTransformersObject  # type: ignore[misc,assignment]
+    DataCollatorForLanguageModeling = _MissingTransformersObject  # type: ignore[misc,assignment]
 
-    class EarlyStoppingCallback:
+    class EarlyStoppingCallback:  # type: ignore[no-redef]
         def __init__(self, *args: Any, **kwargs: Any) -> None:
             raise ImportError("transformers EarlyStoppingCallback unavailable in offline mode")
 
-    class TrainerCallback:
+    class TrainerCallback:  # type: ignore[no-redef]
         pass
 
-    class TrainingArguments:
+    class TrainingArguments:  # type: ignore[no-redef]
         def __init__(self, *args: Any, **kwargs: Any) -> None:
             self.args = args
             self.kwargs = kwargs
 
-    class Trainer:
+    class Trainer:  # type: ignore[no-redef]
         def __init__(self, *args: Any, **kwargs: Any) -> None:
             raise ImportError("transformers.Trainer unavailable in offline mode")
 
@@ -267,7 +267,7 @@ from codex_ml.monitoring.codex_logging import (
 )
 from codex_ml.monitoring.schema import LogRecord
 from codex_ml.peft.peft_adapter import apply_lora
-from codex_ml.utils.checkpointing import (
+from codex_ml.utils.checkpointing import (  # type: ignore[attr-defined]
     build_payload_bytes,
     load_payload,
     set_seed,
@@ -284,7 +284,7 @@ from omegaconf import OmegaConf
 try:  # optional checkpoint callback
     from training.checkpoint_manager import CheckpointManager
 except (IOError, OSError) as exc:  # pragma: no cover - missing in some envs
-    CheckpointManager = None
+    CheckpointManager = None  # type: ignore[misc,assignment]
     log_error("checkpoint_import", str(exc), "src.training.checkpoint_manager")
 
 try:  # Optional TensorBoard integration
@@ -299,7 +299,7 @@ except (IOError, OSError):  # pragma: no cover - optional dep
     _Accelerator = None
 
 
-def _make_accelerator(**accelerate_kwargs: Any):
+def _make_accelerator(**accelerate_kwargs: Any) -> None:
     """Construct an Accelerator using the global compatibility shim."""
     if _Accelerator is None:
         return None
@@ -317,7 +317,7 @@ def _normalize_identifier(identifier: os.PathLike[str] | str | None) -> str | No
     return str(identifier)
 
 
-def _maybe_import_mlflow():
+def _maybe_import_mlflow() -> None:
     if importlib.util.find_spec("mlflow") is None:
         return None
     return importlib.import_module("mlflow")
@@ -442,7 +442,7 @@ def build_trainer(
     early_stop_patience: int | None = 3,
     early_stop_threshold: float | None = 0.0,
     **kw,
-):
+) -> None:
     """Construct a HF Trainer with optional early stopping and named LR scheduler."""
     if early_stop_patience:
         # Early stop needs a coherent best-model metric setup
@@ -562,7 +562,7 @@ def build_training_args(
     )
 
 
-def _compute_metrics(eval_pred):
+def _compute_metrics(eval_pred) -> None:
     """Compute token accuracy and perplexity for evaluation.
 
     Parameters
@@ -593,7 +593,7 @@ def _compute_metrics(eval_pred):
     return {"token_accuracy": float(acc), "perplexity": ppl}
 
 
-def _seed_everything(seed: int = 42):
+def _seed_everything(seed: int = 42) -> None:
     """set deterministic seeds across all libraries.
 
     Parameters
@@ -621,7 +621,7 @@ def _seed_everything(seed: int = 42):
             logger.warning("Could not enable deterministic algorithms: %s", e)
 
 
-def _worker_init_fn(worker_id):
+def _worker_init_fn(worker_id) -> None:
     """Initialize worker with deterministic seed.
 
     Parameters
@@ -648,7 +648,7 @@ class NDJSONMetricsWriter:
         self.async_write = async_write
         self._async = AsyncLogFile(str(self.path)) if async_write else None
 
-    def write(self, obj: dict | LogRecord) -> None:
+    def write(self, obj: dict[str, Any] | LogRecord) -> None:
         """Write ``obj`` as a JSON line respecting the strict schema."""
 
         if isinstance(obj, LogRecord):
@@ -1215,18 +1215,18 @@ def run_hf_trainer(
                     self.scaler = None
                     self._logs: dict[str, float] | None = None
 
-                def on_train_begin(self, args, state, control, **kwargs):
+                def on_train_begin(self, args, state, control, **kwargs) -> None:
                     self.model = kwargs.get("model")
                     self.optimizer = kwargs.get("optimizer")
                     self.lr_scheduler = kwargs.get("lr_scheduler")
                     self.scaler = kwargs.get("scaler")
                     return control
 
-                def on_log(self, args, state, control, logs=None, **kwargs):
+                def on_log(self, args, state, control, logs=None, **kwargs) -> None:
                     self._logs = dict(logs or {})
                     return control
 
-                def on_step_end(self, args, state, control, **kwargs):
+                def on_step_end(self, args, state, control, **kwargs) -> None:
                     step = state.global_step
                     if (
                         step
@@ -1311,10 +1311,10 @@ def run_hf_trainer(
     trainer.save_model()
 
     # Collect metrics
-    metrics = dict(result.metrics)
+    metrics = dict(result.metrics)  # type: ignore[attr-defined]
     if eval_ds is not None:
         eval_metrics = trainer.evaluate()
-        metrics.update({f"eval_{k}": v for k, v in eval_metrics.items()})
+        metrics.update({f"eval_{k}": v for k, v in eval_metrics.items()})  # type: ignore[attr-defined]
     metrics.setdefault("global_step", trainer.state.global_step)
 
     # Codex offline logging

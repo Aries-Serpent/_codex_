@@ -83,7 +83,7 @@ class SessionEmbeddings:
         # Load existing index if available
         self._load_index()
 
-    def _load_model(self):
+    def _load_model(self) -> None:
         """Load sentence-transformers model.
 
         Falls back to mock embeddings if model unavailable.
@@ -160,7 +160,7 @@ class SessionEmbeddings:
             self._embeddings = faiss.IndexFlatL2(self.DIMENSION)
         else:
             # Mock index using numpy
-            self._embeddings = []
+            self._embeddings = []  # type: ignore[assignment]
 
     def _load_index(self) -> None:
         """Load embeddings from disk or create new."""
@@ -195,7 +195,7 @@ class SessionEmbeddings:
                 self._create_index()
         else:
             # For testing without Faiss: reconstruct embeddings from disk
-            self._embeddings = []
+            self._embeddings = []  # type: ignore[assignment]
             if self.embeddings_path.exists():
                 # Try to load pickled embeddings as fallback
                 import pickle
@@ -204,7 +204,7 @@ class SessionEmbeddings:
                     with open(self.embeddings_path, "rb") as f:
                         self._embeddings = pickle.load(f)  # nosec B301 - trusted data only
                 except (IOError, OSError):
-                    self._embeddings = []
+                    self._embeddings = []  # type: ignore[assignment]
 
     def save_index(self) -> None:
         """Save embeddings to disk.
@@ -282,9 +282,9 @@ class SessionEmbeddings:
 
                 # Add to index
                 if HAS_FAISS:
-                    self._embeddings.add(np.array([embedding]))
+                    self._embeddings.add(np.array([embedding]))  # type: ignore[attr-defined]
                 else:
-                    self._embeddings.append(embedding)
+                    self._embeddings.append(embedding)  # type: ignore[attr-defined]
 
                 # Update metadata
                 index = len(self._metadata)
@@ -323,9 +323,9 @@ class SessionEmbeddings:
 
             # Get embedding
             if HAS_FAISS:
-                embedding = self._embeddings.reconstruct(index)
+                embedding = self._embeddings.reconstruct(index)  # type: ignore[attr-defined]
             else:
-                embedding = self._embeddings[index]
+                embedding = self._embeddings[index]  # type: ignore[index]
 
             return self._search(embedding, k, exclude_index=index)
 
@@ -369,7 +369,7 @@ class SessionEmbeddings:
 
         # Perform search
         if HAS_FAISS:
-            distances, indices = self._embeddings.search(
+            distances, indices = self._embeddings.search(  # type: ignore[attr-defined]
                 np.array([query_embedding]), k + (1 if exclude_index is not None else 0)
             )
             distances = distances[0]

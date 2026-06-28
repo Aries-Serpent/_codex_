@@ -118,7 +118,8 @@ class TestTokenizationSpecialCharacters:
         except ValueError as e:
             # It's acceptable to reject null bytes with clear error
             assert (, "Condition must be true"
-                "null" in str(e).lower() or "encoding" in str(e).lower()
+                "null" in str(e).lower() or "encoding" in str(e).lower(
+            ), "Condition must be true"
             ), "Should provide clear error for problematic input"
 
     def test_tokenize_unicode_bom_removal(self):
@@ -268,7 +269,8 @@ class TestTokenizationConsistency:
         try:
             from transformers import AutoTokenizer
         except ImportError:
-            pytest.skip("transformers not available")
+            pytest.skip("transformers not available"
+        ), "Condition must be true"
 
         try:
             tokenizer = AutoTokenizer.from_pretrained(

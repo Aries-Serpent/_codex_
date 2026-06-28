@@ -1,0 +1,70 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.1.1, pluggy-1.6.0
+rootdir: /home/runner/work/_codex_/_codex_
+configfile: pytest.ini
+plugins: anyio-4.14.1, cov-7.1.0
+collected 79 items
+
+tests/phase6_wave1/test_batch_1_unit_tests.py s.FF..........FFFFFFF..... [ 32%]
+.........                                                                [ 44%]
+tests/phase6_wave1/test_batch_2_integration_tests.py ................... [ 68%]
+..............                                                           [ 86%]
+tests/phase6_wave1/test_batch_3_error_paths.py .FFF.......               [100%]
+
+=================================== FAILURES ===================================
+E   ModuleNotFoundError: No module named 'prometheus_client'
+
+During handling of the above exception, another exception occurred:
+E   ModuleNotFoundError: No module named 'prometheus_client'
+/home/runner/work/_codex_/_codex_/src/codex_ml/safety/moderation.py:52: ModuleNotFoundError: No module named 'prometheus_client'
+E   ModuleNotFoundError: No module named 'prometheus_client'
+
+During handling of the above exception, another exception occurred:
+E   ModuleNotFoundError: No module named 'prometheus_client'
+/home/runner/work/_codex_/_codex_/src/codex_ml/safety/moderation.py:52: ModuleNotFoundError: No module named 'prometheus_client'
+E   ModuleNotFoundError: No module named 'charset_normalizer'
+/home/runner/work/_codex_/_codex_/src/ingestion/encoding_detect.py:34: ModuleNotFoundError: No module named 'charset_normalizer'
+E   ModuleNotFoundError: No module named 'charset_normalizer'
+/home/runner/work/_codex_/_codex_/src/ingestion/encoding_detect.py:34: ModuleNotFoundError: No module named 'charset_normalizer'
+E   ModuleNotFoundError: No module named 'charset_normalizer'
+/home/runner/work/_codex_/_codex_/src/ingestion/encoding_detect.py:34: ModuleNotFoundError: No module named 'charset_normalizer'
+E   ModuleNotFoundError: No module named 'charset_normalizer'
+/home/runner/work/_codex_/_codex_/src/ingestion/encoding_detect.py:34: ModuleNotFoundError: No module named 'charset_normalizer'
+E   ModuleNotFoundError: No module named 'charset_normalizer'
+/home/runner/work/_codex_/_codex_/src/ingestion/encoding_detect.py:34: ModuleNotFoundError: No module named 'charset_normalizer'
+E   ModuleNotFoundError: No module named 'charset_normalizer'
+/home/runner/work/_codex_/_codex_/src/ingestion/encoding_detect.py:34: ModuleNotFoundError: No module named 'charset_normalizer'
+E   ModuleNotFoundError: No module named 'charset_normalizer'
+/home/runner/work/_codex_/_codex_/src/ingestion/encoding_detect.py:34: ModuleNotFoundError: No module named 'charset_normalizer'
+E   ModuleNotFoundError: No module named 'charset_normalizer'
+/home/runner/work/_codex_/_codex_/src/ingestion/encoding_detect.py:34: ModuleNotFoundError: No module named 'charset_normalizer'
+E   ModuleNotFoundError: No module named 'charset_normalizer'
+/home/runner/work/_codex_/_codex_/src/ingestion/encoding_detect.py:34: ModuleNotFoundError: No module named 'charset_normalizer'
+E   ModuleNotFoundError: No module named 'charset_normalizer'
+/home/runner/work/_codex_/_codex_/src/ingestion/encoding_detect.py:34: ModuleNotFoundError: No module named 'charset_normalizer'
+=============================== warnings summary ===============================
+../../../.local/lib/python3.12/site-packages/_pytest/config/__init__.py:1464
+  /home/runner/.local/lib/python3.12/site-packages/_pytest/config/__init__.py:1464: PytestConfigWarning: Unknown config option: asyncio_default_fixture_loop_scope
+  
+    self._warn_or_fail_if_strict(f"Unknown config option: {key}\n")
+
+../../../.local/lib/python3.12/site-packages/_pytest/config/__init__.py:1464
+  /home/runner/.local/lib/python3.12/site-packages/_pytest/config/__init__.py:1464: PytestConfigWarning: Unknown config option: asyncio_mode
+  
+    self._warn_or_fail_if_strict(f"Unknown config option: {key}\n")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/phase6_wave1/test_batch_1_unit_tests.py::TestCodexUtilsImports::test_1a3_codex_utils_submodules - ModuleNotFoundError: No module named 'prometheus_client'
+FAILED tests/phase6_wave1/test_batch_1_unit_tests.py::TestCodexUtilsImports::test_1a4_tracking_module_exists - ModuleNotFoundError: No module named 'prometheus_client'
+FAILED tests/phase6_wave1/test_batch_1_unit_tests.py::TestIngestionModules::test_1c2_pipeline_module - ModuleNotFoundError: No module named 'charset_normalizer'
+FAILED tests/phase6_wave1/test_batch_1_unit_tests.py::TestIngestionModules::test_1c3_file_ingestor - ModuleNotFoundError: No module named 'charset_normalizer'
+FAILED tests/phase6_wave1/test_batch_1_unit_tests.py::TestIngestionModules::test_1c4_encoding_detect - ModuleNotFoundError: No module named 'charset_normalizer'
+FAILED tests/phase6_wave1/test_batch_1_unit_tests.py::TestIngestionModules::test_1c5_csv_ingestor - ModuleNotFoundError: No module named 'charset_normalizer'
+FAILED tests/phase6_wave1/test_batch_1_unit_tests.py::TestIngestionModules::test_1c6_json_ingestor - ModuleNotFoundError: No module named 'charset_normalizer'
+FAILED tests/phase6_wave1/test_batch_1_unit_tests.py::TestIngestionModules::test_1c7_ingestion_utils - ModuleNotFoundError: No module named 'charset_normalizer'
+FAILED tests/phase6_wave1/test_batch_1_unit_tests.py::TestIngestionModules::test_1c8_io_text_module - ModuleNotFoundError: No module named 'charset_normalizer'
+FAILED tests/phase6_wave1/test_batch_3_error_paths.py::TestDataPipelineErrorHandling::test_3a2_json_ingestor_module - ModuleNotFoundError: No module named 'charset_normalizer'
+FAILED tests/phase6_wave1/test_batch_3_error_paths.py::TestDataPipelineErrorHandling::test_3a3_csv_ingestor_module - ModuleNotFoundError: No module named 'charset_normalizer'
+FAILED tests/phase6_wave1/test_batch_3_error_paths.py::TestDataPipelineErrorHandling::test_3a4_encoding_detect_module - ModuleNotFoundError: No module named 'charset_normalizer'
+============= 12 failed, 66 passed, 1 skipped, 2 warnings in 0.93s =============

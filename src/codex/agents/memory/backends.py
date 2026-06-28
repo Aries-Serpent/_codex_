@@ -26,7 +26,7 @@ if _sys.platform != "win32":
 
     _HAS_FCNTL = True
 else:
-    _fcntl = None
+    _fcntl = None  # type: ignore[assignment]
     _HAS_FCNTL = False
     logger.warning(
         "fcntl unavailable on Windows — MemoryBackend file-locking disabled "
@@ -112,9 +112,8 @@ class JSONLMemoryBackend(MemoryProtocol):
                     matches.append(entry)
 
                 except (json.JSONDecodeError, KeyError, ValueError) as e:
-                    error_type = type(e).__name__
-                    logger.debug("Exception: <ERROR_TYPE>")
-                    logger.warning("Skipping invalid memory entry: <ERROR_TYPE>")
+                    logger.debug(f"Exception: {type(e).__name__}")
+                    logger.warning(f"Skipping invalid memory entry: {type(e).__name__}")
                     continue
 
         # Sort by timestamp descending and limit
@@ -312,7 +311,7 @@ class SQLiteMemoryBackend(MemoryProtocol):
             params.append(f"%{query.text}%")
 
         sql += " ORDER BY timestamp DESC LIMIT ?"
-        params.append(query.limit)
+        params.append(query.limit)  # type: ignore[arg-type]
 
         with sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row

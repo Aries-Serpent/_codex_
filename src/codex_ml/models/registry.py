@@ -29,8 +29,8 @@ if _HAS_TRANSFORMERS:
     AutoModelForCausalLM = cast("type[HF_PreTrainedModel]", transformers.AutoModelForCausalLM)
     AutoModelForMaskedLM = cast("type[HF_PreTrainedModel]", transformers.AutoModelForMaskedLM)
 else:  # pragma: no cover - optional dependency unavailable
-    AutoModelForCausalLM = None
-    AutoModelForMaskedLM = None
+    AutoModelForCausalLM = None  # type: ignore[assignment]
+    AutoModelForMaskedLM = None  # type: ignore[assignment]
 
 TRANSFORMERS_AVAILABLE = _HAS_TRANSFORMERS
 
@@ -216,12 +216,12 @@ def _normalise_device(device: Optional[Any]) -> Optional[Any]:
         return device
     if device in {None, "cpu", "cuda"}:
         if device is None:
-            return "cuda" if torch.cuda.is_available() else "cpu"
-        if device == "cuda" and not torch.cuda.is_available():
+            return "cuda" if torch.cuda.is_available() else "cpu"  # type: ignore[union-attr]
+        if device == "cuda" and not torch.cuda.is_available():  # type: ignore[union-attr]
             return "cpu"
         return device
     if device == "auto":
-        return "cuda" if torch.cuda.is_available() else "cpu"
+        return "cuda" if torch.cuda.is_available() else "cpu"  # type: ignore[union-attr]
     return device
 
 

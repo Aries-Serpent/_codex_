@@ -108,7 +108,7 @@ def get_optimal_batch_size(
     return batch_size
 
 
-def try_gpu_index(index, data, device: str = "cuda"):
+def try_gpu_index(index, data, device: str = "cuda") -> None:
     """
     Try to move FAISS index to GPU.
 

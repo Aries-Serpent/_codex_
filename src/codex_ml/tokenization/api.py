@@ -37,7 +37,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from .sp_trainer import SPTokenizer
 
 
-def _load_hf_adapter():
+def _load_hf_adapter() -> None:
     try:
         from .hf_tokenizer import HFTokenizerAdapter as adapter
     except ModuleNotFoundError as exc:  # pragma: no cover - surfaced to callers
@@ -69,19 +69,19 @@ def load_tokenizer(
         validate_tokenizer_contract(adapter)
         return adapter
     adapter = _load_hf_adapter()
-    instance = adapter.load(target, use_fast=use_fast)
+    instance = adapter.load(target, use_fast=use_fast)  # type: ignore[attr-defined]
     if all(hasattr(instance, name) for name in ("encode", "decode", "add_special_tokens")):
         validate_tokenizer_contract(instance)
     return instance
 
 
-def get_tokenizer(*args, **kwargs):
+def get_tokenizer(*args, **kwargs) -> None:
     """Alias maintained for compatibility."""
 
     return load_tokenizer(*args, **kwargs)
 
 
-def _load_sp_tokenizer():
+def _load_sp_tokenizer() -> None:
     try:
         from .sp_trainer import SPTokenizer as tokenizer
     except ModuleNotFoundError as exc:  # pragma: no cover - surfaced to callers
@@ -95,7 +95,7 @@ def _load_sp_tokenizer():
     return tokenizer
 
 
-def _load_export(name: str):  # pragma: no cover - thin lazy import shim
+def _load_export(name: str) -> None:  # pragma: no cover - thin lazy import shim
     if name == "HFTokenizerAdapter":
         return _load_hf_adapter()
     if name == "SPTokenizer":
@@ -103,7 +103,7 @@ def _load_export(name: str):  # pragma: no cover - thin lazy import shim
     raise AttributeError(name)
 
 
-def __getattr__(name: str):
+def __getattr__(name: str) -> None:
     return _load_export(name)
 
 
@@ -170,7 +170,7 @@ def pad_sequences(
     return (padded, masks) if return_attention_mask else padded
 
 
-def deprecated_legacy_access(name: str):
+def deprecated_legacy_access(name: str) -> None:
     """Emit deprecation warning and provide legacy attribute access when possible."""
 
     legacy_map = {

@@ -97,3 +97,7 @@ query-filters:
 # Python-specific configuration
 python:
   version: "3.12"
+
+# Go-specific configuration
+go:
+  version: "1.21"

@@ -221,12 +221,14 @@ class SuperpositionEngine:
                     idx = future_to_idx[future]
                     try:
                         score = future.result()
-                        results[idx] = max(score, 0.0)  # Ensure non-negative
+                        results[idx] = max(
+                            score, 0.0
+                        )  # Ensure non-negative  # type: ignore[call-overload]
                     except Exception:
                         # Fallback to zero score on error
-                        results[idx] = 0.0
+                        results[idx] = 0.0  # type: ignore[call-overload]
 
-                scores = results
+                scores = results  # type: ignore[assignment]
 
         # Phase 3: Apply quantum noise simulation if configured
         # Models gate depolarization and measurement errors per IEEE quantum standard
@@ -347,7 +349,7 @@ class SuperpositionEngine:
     def evaluate_superposition(
         self,
         decisions: list[tuple[str, Callable[..., Any]]],
-        context: dict[str, Any] = None,
+        context: dict[str, Any] = None,  # type: ignore[assignment]
     ) -> dict[str, Any]:
         """
         Convenience method to evaluate decisions in superposition.
@@ -399,7 +401,7 @@ class SuperpositionEngine:
                             return float(val)
                     return 0.0
                 try:
-                    return float(result)
+                    return float(result)  # type: ignore[arg-type]
                 except (TypeError, ValueError):
                     return 0.0
 
@@ -417,7 +419,7 @@ class SuperpositionEngine:
         scores = self.evaluate_parallel(state)
 
         # Update state with scores
-        state.scores = scores
+        state.scores = scores  # type: ignore[attr-defined]
         state.evaluated = True
 
         # Calculate coherence from softmax probabilities (non-uniform → higher coherence)

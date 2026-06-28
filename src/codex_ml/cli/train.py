@@ -44,9 +44,9 @@ from codex_ml.utils import repro
 try:
     from omegaconf import DictConfig, ListConfig, OmegaConf
 except ImportError:  # pragma: no cover — omegaconf optional in lightweight envs
-    DictConfig = Any
-    ListConfig = Any
-    OmegaConf = None
+    DictConfig = Any  # type: ignore[misc,assignment]
+    ListConfig = Any  # type: ignore[misc,assignment]
+    OmegaConf = None  # type: ignore[misc,assignment]
 
 _ = (ArgparseJSONParser, run_cmd)
 

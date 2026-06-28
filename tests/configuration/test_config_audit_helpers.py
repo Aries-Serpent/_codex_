@@ -49,7 +49,7 @@ def test_audit_defaults_flags_missing_self_entry() -> None:
         "position": None,
         "ok": False,
         "unresolved_refs": False,
-    }
+    }, "payload is not valid"
 
 
 def test_audit_defaults_detects_out_of_order_self_marker() -> None:

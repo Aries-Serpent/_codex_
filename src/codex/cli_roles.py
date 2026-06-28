@@ -14,7 +14,7 @@ from codex.zendesk.model.role import Role as ZendeskRole
 app = typer.Typer(help="Role matrix and permission harmonization.")
 
 
-def _load_jsonl_or_json(path: Path):
+def _load_jsonl_or_json(path: Path) -> None:
     if path.suffix.lower() == ".jsonl":
         with path.open("r", encoding="utf-8") as handle:
             return [json.loads(line) for line in handle if line.strip()]
@@ -30,8 +30,8 @@ def export_matrix(
     zendesk_raw = _load_jsonl_or_json(zendesk_roles_file)
     dynamics_raw = _load_jsonl_or_json(dynamics_roles_file)
 
-    zendesk_roles = [ZendeskRole.model_validate(item) for item in zendesk_raw]
-    dynamics_roles = [DynamicsRole.model_validate(item) for item in dynamics_raw]
+    zendesk_roles = [ZendeskRole.model_validate(item) for item in zendesk_raw]  # type: ignore[attr-defined]
+    dynamics_roles = [DynamicsRole.model_validate(item) for item in dynamics_raw]  # type: ignore[attr-defined]
 
     matrix = build_role_matrix(zendesk_roles, dynamics_roles)
     output_json.write_text(json.dumps(matrix, indent=2), encoding="utf-8")

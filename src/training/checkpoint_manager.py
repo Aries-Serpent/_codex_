@@ -21,7 +21,7 @@ _warnings.warn(
     stacklevel=2,
 )
 try:
-    from codex_ml.utils.checkpointing import (
+    from codex_ml.utils.checkpointing import (  # type: ignore[attr-defined]
         CheckpointManager,
         build_payload_bytes,
         dump_rng_state,
@@ -52,7 +52,7 @@ if "CheckpointManager" not in globals():
         try:  # torch may be absent in lightweight environments
             import torch as _torch
         except (ImportError, AttributeError):  # pragma: no cover - optional dependency
-            _torch = None
+            _torch = None  # type: ignore[assignment]
 
         def _python_state_payload(raw_state: Any) -> list[Any]:
             return [raw_state[0], list(raw_state[1]), raw_state[2]]
@@ -157,14 +157,14 @@ if "CheckpointManager" not in globals():
                 TypeError,
                 _stdlib_pickle.PicklingError,
             ):  # pragma: no cover
-                # Retry with pickle protocol 2 to avoid torch.FloatStorage identity
-                # mismatch on PyTorch 2.x + Python 3.12.
+                # Retry without extra parameters on PyTorch 2.x
+                # PyTorch 2.x handles pickle protocol automatically
                 buffer = io.BytesIO()
-                _torch.save(payload, buffer, pickle_protocol=2)
+                _torch.save(payload, buffer)
             return buffer.getvalue()
 
 
-class CheckpointManager:
+class CheckpointManager:  # type: ignore[no-redef]
     """Lightweight step-based checkpoint manager."""
 
     def __init__(
@@ -311,7 +311,7 @@ class CheckpointManager:
             return self.save_now(step, payload, metrics, prefix, rng_state=rng_state)
         return None
 
-    def callback(self):
+    def callback(self) -> None:
         """Return a ``TrainerCallback`` that uses this manager."""
         if not self.save_steps:
             raise RuntimeError("save_steps must be set to use callback()")
@@ -328,7 +328,7 @@ class CheckpointManager:
                 self.scaler = None
                 self._logs: Optional[dict[str, float]] = None
 
-            def on_train_begin(self, args, state, control, **kwargs):
+            def on_train_begin(self, args, state, control, **kwargs) -> None:
                 self.model = kwargs.get("model")
                 self.optimizer = kwargs.get("optimizer")
                 self.lr_scheduler = kwargs.get("lr_scheduler")
@@ -337,11 +337,11 @@ class CheckpointManager:
                     raise RuntimeError("model and optimizer are required for checkpointing")
                 return control
 
-            def on_log(self, args, state, control, logs=None, **kwargs):
+            def on_log(self, args, state, control, logs=None, **kwargs) -> None:
                 self._logs = dict(logs or {})
                 return control
 
-            def on_step_end(self, args, state, control, **kwargs):
+            def on_step_end(self, args, state, control, **kwargs) -> None:
                 step = state.global_step
                 # Keep explicit None handling because some legacy/test state shims
                 # initialize global_step lazily before first step.

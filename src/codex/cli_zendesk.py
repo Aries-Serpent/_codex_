@@ -342,7 +342,7 @@ def apply(
         raise typer.BadParameter(message)
 
     try:
-        handlers[resource](plan_payload, env, dry_run=dry_run)
+        handlers[resource](plan_payload, env, dry_run=dry_run)  # type: ignore[call-arg]
         if not dry_run:
             update_artifact_version(f"zendesk/{resource}", operations_list)
     except ValueError as exc:
@@ -531,7 +531,7 @@ def _read_structured_file(path: Path) -> object:
         raise typer.BadParameter(f"Failed to parse {path}: {exc}") from exc
 
 
-def _get_zendesk_client(env: str):
+def _get_zendesk_client(env: str) -> None:
     module_spec = importlib.util.find_spec("zenpy")
     if module_spec is None:
         raise RuntimeError("Zenpy is required to connect to Zendesk.")

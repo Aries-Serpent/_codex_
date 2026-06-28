@@ -16,7 +16,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +40,7 @@ class Action:
     action_type: DecisionType
     description: str
     target: str  # What to act on
-    parameters: Dict[str, Any] = field(default_factory=dict)
+    parameters: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -52,7 +52,7 @@ class RankedAction:
     success_probability: float  # 0-1 historical
     risk_level: str  # low, medium, high, critical
     estimated_impact: float  # 0-1
-    required_resources: List[str] = field(default_factory=list)
+    required_resources: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -72,11 +72,11 @@ class DecisionDirective:
     decision_id: str
     timestamp: datetime
     action: Action
-    candidates: List[RankedAction]
+    candidates: list[RankedAction]
     confidence: float  # Overall confidence (0-1)
-    assigned_agents: List[str]  # Agent IDs to execute
+    assigned_agents: list[str]  # Agent IDs to execute
     parallel_execution: bool
-    guardrail_checks: List[GuardrailCheck]
+    guardrail_checks: list[GuardrailCheck]
     audit_id: str
     decision_rationale: str
     requires_approval: bool  # True if confidence < threshold
@@ -87,7 +87,7 @@ class DecisionDirective:
 class ConfidenceScorer:
     """Scores confidence of decisions."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.min_confidence_threshold = 0.70
         self.auto_approve_threshold = 0.85
 
@@ -144,7 +144,7 @@ class GuardrailValidator:
         decision: Action,
         confidence: float,
         agent_availability: float,
-    ) -> List[GuardrailCheck]:
+    ) -> list[GuardrailCheck]:
         """Validate decision against guardrails."""
         checks = []
 
@@ -241,7 +241,7 @@ class SemanticActionSelector:
         observable_state: Any,
         oriented_context: Any,
         candidate_count: int = 5,
-    ) -> List[Action]:
+    ) -> list[Action]:
         """Select candidate actions based on state and context."""
         try:
             # In production, use semantic similarity to rank actions
@@ -280,11 +280,11 @@ class SemanticActionSelector:
 class OODADecider:
     """Main decider: orchestrates autonomous decision-making."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.confidence_scorer = ConfidenceScorer()
         self.guardrail_validator = GuardrailValidator()
         self.action_selector = SemanticActionSelector()
-        self.audit_trail: List[DecisionDirective] = []
+        self.audit_trail: list[DecisionDirective] = []
 
     def decide(
         self,
@@ -433,6 +433,6 @@ class OODADecider:
             requires_approval=True,
         )
 
-    def get_audit_trail(self, limit: int = 100) -> List[DecisionDirective]:
+    def get_audit_trail(self, limit: int = 100) -> list[DecisionDirective]:
         """Get recent decisions from audit trail."""
         return self.audit_trail[-limit:]

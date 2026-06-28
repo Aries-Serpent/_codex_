@@ -128,7 +128,7 @@ python -m pip install --upgrade pip setuptools wheel
 pip install pytest pytest-cov pytest-xdist pytest-timeout pytest-rerunfailures
 
 # 3. Install the package with test dependencies
-pip install -e ".[test]"
+pip install -e ".[dev]"
 ```
 
 This order ensures plugins are available before the editable package install.
@@ -221,7 +221,7 @@ pip install pytest-rerunfailures>=12.0
 **Solution**:
 1. Run validation script: `python scripts/validate_test_env.py`
 2. Reinstall from requirements: `pip install -r requirements-test.txt`
-3. If using editable install: `pip install -e .[test]`
+3. If using editable install: `pip install -e .[dev]`
 
 #### "timeout argument conflicts"
 

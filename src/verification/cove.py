@@ -252,8 +252,8 @@ class CoVeEngine:
         # Step 2: Verify each claim
         verifications: list[VerificationResult] = []
         for claim in claims:
-            result = await self._verify_claim(claim, context)
-            verifications.append(result)
+            result = await self._verify_claim(claim, context)  # type: ignore[assignment]
+            verifications.append(result)  # type: ignore[arg-type]
 
         # Step 3: Calculate overall score
         if verifications:

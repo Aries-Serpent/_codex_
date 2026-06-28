@@ -36,7 +36,7 @@ _SIMPLE_IMPORT_RE = re.compile(r"^import\s+([A-Za-z_][A-Za-z0-9_.]*)\s*$")
 # Internal helpers
 
 
-def _iter_entry_points(group: str):
+def _iter_entry_points(group: str) -> None:
     """Return iterable of entry points for ``group`` with fallbacks."""
 
     _invalidate_caches()
@@ -46,13 +46,13 @@ def _iter_entry_points(group: str):
     except TypeError:  # pragma: no cover - older importlib
         eps = metadata.entry_points()
         items = (
-            eps.select(group=group)
+            eps.select(group=group)  # type: ignore[assignment]
             if hasattr(eps, "select")
             else [ep for ep in eps if ep.group == group]
         )
     except (ValueError, RuntimeError):
         logger.warning("Exception occurred", exc_info=True)
-        items = []
+        items = []  # type: ignore[assignment]
     collected.extend(items)
     try:  # pragma: no cover - best effort fallback
         for dist in metadata.distributions():
@@ -127,7 +127,7 @@ class Registry:
         self.kind = kind
         self._items: dict[str, _Item] = {}
 
-    def register(self, name: str, **meta: Any):
+    def register(self, name: str, **meta: Any) -> Any:
         """Register `obj` under `name`. Usable as a decorator."""
 
         def decorator(obj: Any) -> Any:

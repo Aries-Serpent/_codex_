@@ -28,7 +28,7 @@ def approx_tokens(s: str) -> int:
     return max(1, math.ceil(len(s) / 4))
 
 
-def split_by_headings(md: str) -> list[dict]:
+def split_by_headings(md: str) -> list[dict[str, Any]]:
     parts = []
     matches = list(_HDR.finditer(md))
     if not matches:
@@ -43,9 +43,9 @@ def split_by_headings(md: str) -> list[dict]:
 
 def chunk_by_headings(
     md: str, *, target_tokens: int = 1024, overlap_tokens: int = 64
-) -> list[dict]:
+) -> list[dict[str, Any]]:
     sections = split_by_headings(md)
-    out: list[dict] = []
+    out: list[dict[str, Any]] = []
     idx = 0
     for sec in sections:
         buf = sec["text"]

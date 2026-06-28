@@ -342,7 +342,7 @@ class CacheManager:
             return False
 
 
-def main():
+def main() -> None:
     """CLI interface for cache management."""
     import argparse
 

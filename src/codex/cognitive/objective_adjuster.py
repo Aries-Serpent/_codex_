@@ -80,7 +80,7 @@ class Objective:
     deadline: datetime | None = None
     tags: list[str] = field(default_factory=list)
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "id": self.id,
@@ -98,7 +98,7 @@ class Objective:
         }
 
     @classmethod
-    def from_dict(cls, data: dict) -> "Objective":
+    def from_dict(cls, data: dict[str, Any]) -> "Objective":
         """Create from dictionary."""
         return cls(
             id=data["id"],
@@ -125,7 +125,7 @@ class AdjustmentRule:
     trigger: AdjustmentTrigger
     condition: Callable[[HealthReport], bool]
     action: AdjustmentType
-    parameters: dict
+    parameters: dict[str, Any]
     priority: int = 0  # Higher priority rules evaluated first
     enabled: bool = True
     cooldown_hours: int = 24  # Minimum hours between applications
@@ -159,13 +159,13 @@ class Adjustment:
     type: AdjustmentType
     objective_id: str | None
     description: str
-    parameters: dict
+    parameters: dict[str, Any]
     status: str  # proposed, approved, applied, rejected, rolled_back
     proposed_at: datetime
     applied_at: datetime | None = None
     applied_by: str | None = None  # "autonomous" or user identifier
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "id": self.id,
@@ -189,8 +189,8 @@ class ObjectiveStore:
         if store_path is None:
             store_path = Path(".codex/cognitive_brain/objective_store.json")
         self.store_path = store_path
-        self._objectives: dict[str, dict] = {}
-        self._adjustments: list[dict] = []
+        self._objectives: dict[str, Any][str, dict] = {}
+        self._adjustments: list[dict[str, Any]] = []
         self._load()
 
     def _load(self) -> None:
@@ -457,7 +457,7 @@ class ObjectiveAdjuster:
         if adjustment.type == AdjustmentType.PRIORITY_INCREASE:
             objective_id = adjustment.parameters.get("objective_id")
             if objective_id:
-                objective = self.store.get_objective(objective_id)
+                objective = self.store.get_objective(objective_id)  # type: ignore[assignment]
                 if objective and objective.priority.value > 0:
                     objective.priority = ObjectivePriority(objective.priority.value - 1)
                     objective.updated_at = now
@@ -472,7 +472,7 @@ class ObjectiveAdjuster:
         elif adjustment.type == AdjustmentType.PAUSE_OBJECTIVE:
             objective_id = adjustment.parameters.get("objective_id")
             if objective_id:
-                objective = self.store.get_objective(objective_id)
+                objective = self.store.get_objective(objective_id)  # type: ignore[assignment]
                 if objective:
                     objective.status = "paused"
                     objective.updated_at = now
@@ -486,7 +486,7 @@ class ObjectiveAdjuster:
 
         return None
 
-    def _create_objective_from_template(self, template: dict) -> Objective:
+    def _create_objective_from_template(self, template: dict[str, Any]) -> Objective:
         """Create an objective from a template."""
         now = datetime.now(timezone.utc)
         objective_id = f"OBJ-{int(now.timestamp())}"
@@ -549,7 +549,7 @@ class ObjectiveAdjuster:
         self.store.add_objective(objective)
         return objective
 
-    def get_adjustment_summary(self) -> dict:
+    def get_adjustment_summary(self) -> dict[str, Any]:
         """Get a summary of recent adjustments."""
         adjustments = self.store.get_adjustments(limit=50)
 

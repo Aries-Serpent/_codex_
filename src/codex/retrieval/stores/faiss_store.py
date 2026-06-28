@@ -129,7 +129,7 @@ class FAISSStore(VectorStore):
 
         return status
 
-    def create_index(self, embeddings: np.ndarray, documents: list[dict[str, Any]]):
+    def create_index(self, embeddings: np.ndarray, documents: list[dict[str, Any]]) -> None:
         """Create a new FAISS index with validation
 
         Args:
@@ -210,7 +210,7 @@ class FAISSStore(VectorStore):
         """Compute SHA-256 checksum of embedding data"""
         return hashlib.sha256(data.tobytes()).hexdigest()
 
-    def save(self, path: Optional[str] = None):
+    def save(self, path: Optional[str] = None) -> None:
         """Save index and documents to disk with checksum validation
 
         Args:
@@ -251,7 +251,7 @@ class FAISSStore(VectorStore):
             json.dump(metadata, f, indent=2)
         logger.info(f"Saved metadata with checksum to {meta_path}")
 
-    def load(self, path: Optional[str] = None):
+    def load(self, path: Optional[str] = None) -> None:
         """Load index and documents from disk with validation
 
         Args:

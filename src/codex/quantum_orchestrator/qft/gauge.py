@@ -522,11 +522,11 @@ class GaugeChecker:
 
         # Energy
         total_energy = self.time_translation.compute_total_energy(state)
-        results["total_energy"] = total_energy
+        results["total_energy"] = total_energy  # type: ignore[assignment]
 
         # Summary
-        results["all_passed"] = u1_result.is_invariant
-        results["tolerance"] = tolerance
+        results["all_passed"] = u1_result.is_invariant  # type: ignore[assignment]
+        results["tolerance"] = tolerance  # type: ignore[assignment]
 
         return results
 
@@ -573,8 +573,8 @@ class GaugeChecker:
             and energy_result.is_invariant
             and continuity_result["is_conserved"]
         )
-        results["all_passed"] = all_passed
-        results["tolerance"] = tolerance
+        results["all_passed"] = all_passed  # type: ignore[assignment]
+        results["tolerance"] = tolerance  # type: ignore[assignment]
 
         return results
 

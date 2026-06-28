@@ -191,7 +191,7 @@ class AnalyzerRegistry:
 
         return findings
 
-    def get_statistics(self, findings: list[Finding]) -> dict:
+    def get_statistics(self, findings: list[Finding]) -> dict[str, Any]:
         """Get statistics about findings.
 
         Args:

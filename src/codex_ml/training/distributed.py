@@ -173,7 +173,7 @@ class DistributedManager:
             self._initialized = False
             logger.info("Distributed training cleaned up")
 
-    def wrap_model(self, model: torch.nn.Module) -> torch.nn.Module | DDP:
+    def wrap_model(self, model: torch.nn.Module) -> torch.nn.Module | DDP:  # type: ignore[valid-type]
         """Wrap model for distributed training.
 
         Args:
@@ -234,7 +234,7 @@ class DistributedManager:
     def all_reduce(
         self,
         tensor: torch.Tensor,
-        op: dist.ReduceOp = dist.ReduceOp.SUM,
+        op: dist.ReduceOp = dist.ReduceOp.SUM,  # type: ignore[name-defined]
     ) -> torch.Tensor:
         """All-reduce tensor across processes.
 
@@ -288,7 +288,7 @@ def distributed_context(config: Optional[DistributedConfig] = None):
 def launch_distributed(
     fn: Callable,
     world_size: int,
-    args: tuple = (),
+    args: tuple[Any, ...] = (),
     kwargs: Optional[dict[str, Any]] = None,
     backend: str = "nccl",
 ) -> None:

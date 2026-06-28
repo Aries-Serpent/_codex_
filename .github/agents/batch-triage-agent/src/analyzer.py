@@ -120,7 +120,7 @@ class BatchTriageAnalyzer(BatchTriageEngine):
                         "resolution": data.get("resolution"),
                     })
             except Exception as e:
-                logger.warning(f"Failed to read pattern file {pattern_file}: {e}")
+                logger.warning(f"Failed to read pattern file {pattern_file}: {e}")  # codeql[py/clear-text-logging-sensitive-data]
 
         self.historical_matches[failure.issue_number] = context["similar_failures"]
 

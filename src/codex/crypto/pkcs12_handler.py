@@ -4,7 +4,7 @@
 class PKCS12Handler:
     """Comprehensive pkcs12_handler implementation."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize PKCS12Handler."""
         self._data = {}
         self._config = {}

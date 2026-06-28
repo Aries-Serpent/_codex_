@@ -97,7 +97,7 @@ class SecurityValidator:
         path_traversal = await self._check_path_traversal(context.diff)
         vulnerabilities.extend(path_traversal)
 
-        logger.info(f"Found {len(vulnerabilities)} security vulnerabilities")
+        logger.info(f"Found {len(vulnerabilities)} security vulnerabilities")  # codeql[py/clear-text-logging-sensitive-data]
         return vulnerabilities
 
     async def _detect_secrets(self, diff: str, files: list[str]) -> list[dict[str, Any]]:

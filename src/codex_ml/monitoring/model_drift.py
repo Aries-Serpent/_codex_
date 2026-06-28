@@ -219,8 +219,8 @@ class DriftResult:
             return f"[epoch={self.epoch}] No drift detected."
         return f"[epoch={self.epoch}] DRIFT DETECTED — " + "; ".join(self.reasons)
 
-    def to_dict(self) -> dict:
-        out: dict = {
+    def to_dict(self) -> dict[str, Any]:
+        out: dict[str, Any] = {
             "drift_detected": self.drift_detected,
             "js_divergence": self.js_divergence,
             "js_threshold": self.js_threshold,

@@ -51,9 +51,9 @@ class CodeSmell:
     line_start: int
     line_end: int
     suggestion: Optional[str] = None
-    metadata: dict = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to dictionary."""
         return {
             "rule_id": self.rule_id,
@@ -99,7 +99,7 @@ class CodeSmellDetector:
     MIN_NAME_LENGTH = 2
     MAX_NAME_LENGTH = 40
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize detector with default rules."""
         self.rules: dict[str, SmellRule] = {}
         self._register_default_rules()
@@ -359,7 +359,7 @@ class CodeSmellDetector:
         """Detect deeply nested code blocks."""
         smells = []
 
-        def check_depth(node: ast.AST, depth: int = 0):
+        def check_depth(node: ast.AST, depth: int = 0) -> None:
             # Increment depth for control structures
             nesting_nodes = (
                 ast.If,

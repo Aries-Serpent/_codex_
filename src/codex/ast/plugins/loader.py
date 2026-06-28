@@ -23,13 +23,13 @@ class PluginLoader:
     3. Local plugin directory
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize plugin loader."""
         self._ast_plugins: dict[str, ASTPlugin] = {}
         self._analysis_plugins: dict[str, AnalysisPlugin] = {}
         self._loaded = False
 
-    def discover_plugins(self):
+    def discover_plugins(self) -> None:
         """Discover all available plugins."""
         if self._loaded:
             return
@@ -46,7 +46,7 @@ class PluginLoader:
             f"{len(self._analysis_plugins)} analysis plugins"
         )
 
-    def _load_builtin_plugins(self):
+    def _load_builtin_plugins(self) -> None:
         """Load built-in plugins from codex.ast.plugins package."""
         builtin_dir = Path(__file__).parent
 
@@ -59,7 +59,7 @@ class PluginLoader:
                 error_type = type(e).__name__
                 logger.warning(f"Failed to load plugin {module_name}: <ERROR_TYPE>")
 
-    def _load_external_plugins(self):
+    def _load_external_plugins(self) -> None:
         """Load plugins from installed packages."""
         # Look for packages with 'codex_ast_plugin_' prefix
         try:
@@ -84,7 +84,7 @@ class PluginLoader:
             error_type = type(e).__name__
             logger.debug("External plugin discovery failed: <ERROR_TYPE>")
 
-    def _register_from_module(self, module):
+    def _register_from_module(self, module) -> None:
         """Register plugins from a module."""
         for attr_name in dir(module):
             attr = getattr(module, attr_name)
@@ -104,8 +104,8 @@ class PluginLoader:
                 elif issubclass(attr, AnalysisPlugin) and attr is not AnalysisPlugin:
                     try:
                         plugin_instance = attr()
-                        self._analysis_plugins[plugin_instance.name] = plugin_instance
-                        logger.info(f"Registered analysis plugin: {plugin_instance.name}")
+                        self._analysis_plugins[plugin_instance.name] = plugin_instance  # type: ignore[attr-defined]
+                        logger.info(f"Registered analysis plugin: {plugin_instance.name}")  # type: ignore[attr-defined]
                     except (IOError, OSError) as e:
                         error_type = type(e).__name__
                         logger.warning(

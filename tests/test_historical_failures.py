@@ -241,7 +241,7 @@ class TestIntegration:
 
         # Test report generation
         md_report = report.to_markdown()
-        assert ", "Condition must be true"
+        assert md_report, "Report markdown must not be empty"
 
         json_report = report.to_json()
         assert json.loads(json_report) is not None, "Value must be initialized"

@@ -44,7 +44,7 @@ class MetricsConfig:
     embedding_throughput_window: int = 500
     index_build_time_window: int = 100
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Validate configuration."""
         if self.query_latency_window < self.MIN_WINDOW_SIZE:
             raise ValueError(
@@ -145,7 +145,7 @@ class RAGMetrics:
         tenant_id: Optional[str] = None,
         index_name: Optional[str] = None,
         cache_hit: Optional[bool] = None,
-    ):
+    ) -> None:
         """
         Track query latency for performance monitoring.
 
@@ -173,7 +173,9 @@ class RAGMetrics:
 
         logger.debug(f"Query latency: {duration_ms:.2f}ms (labels={labels})")
 
-    def track_index_size(self, num_chunks: int, size_mb: float, tenant_id: str, index_name: str):
+    def track_index_size(
+        self, num_chunks: int, size_mb: float, tenant_id: str, index_name: str
+    ) -> None:
         """
         Track FAISS index size metrics.
 
@@ -197,7 +199,7 @@ class RAGMetrics:
 
         logger.info(f"Index size tracked: {key} = {size_mb:.2f}MB ({num_chunks} chunks)")
 
-    def track_cache_hit_rate(self, hits: int, misses: int):
+    def track_cache_hit_rate(self, hits: int, misses: int) -> None:
         """
         Track cache hit rate for LRU cache performance.
 
@@ -213,7 +215,7 @@ class RAGMetrics:
 
         logger.info(f"Cache hit rate: {hit_rate:.2%} (hits={hits}, misses={misses})")
 
-    def track_embedding_throughput(self, texts_per_sec: float):
+    def track_embedding_throughput(self, texts_per_sec: float) -> None:
         """
         Track embedding generation throughput.
 
@@ -233,7 +235,7 @@ class RAGMetrics:
         index_name: str,
         num_files: int,
         num_chunks: int,
-    ):
+    ) -> None:
         """
         Track index build time for capacity planning.
 
@@ -262,7 +264,7 @@ class RAGMetrics:
             f"({num_files} files, {num_chunks} chunks)"
         )
 
-    def track_error(self, error_type: str, error_message: str):
+    def track_error(self, error_type: str, error_message: str) -> None:
         """
         Track errors for alerting and debugging.
 
@@ -500,7 +502,7 @@ class RAGMetrics:
 
         return {"Namespace": "Codex/RAG", "MetricData": metric_data}
 
-    def reset(self):
+    def reset(self) -> None:
         """Reset all metrics (useful for testing)."""
         self.query_latencies.clear()
         self.index_sizes.clear()
@@ -539,7 +541,7 @@ def get_metrics() -> RAGMetrics:
     return _global_metrics
 
 
-def reset_metrics():
+def reset_metrics() -> None:
     """Reset global metrics instance."""
     if _global_metrics:
         _global_metrics.reset()

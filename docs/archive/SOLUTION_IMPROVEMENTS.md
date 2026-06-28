@@ -174,7 +174,7 @@ uv pip install --system -e .[dev]
 ## Lessons Learned
 
 1. **Prefer package installation over separate requirements files** when testing the package itself
-2. **Use extras (e.g., [dev], [test]) to organize dependencies** by purpose
+2. **Use extras (e.g., [dev], [dev]) to organize dependencies** by purpose
 3. **Include all dependency sources in cache keys** for reliable invalidation
 4. **Align CI workflows** to use consistent installation patterns
 5. **Leverage fast package managers** like `uv` for CI performance

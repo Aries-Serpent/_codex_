@@ -74,7 +74,7 @@ class Plan(BaseModel):
     operations: Sequence[Operation]
 
 
-def validate_plan(plan_data: dict) -> Plan:
+def validate_plan(plan_data: dict[str, Any]) -> Plan:
     """Validate and coerce an arbitrary plan payload into the canonical model."""
 
     return Plan.model_validate(plan_data)

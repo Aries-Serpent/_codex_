@@ -378,9 +378,9 @@ class ProvenanceMetadata:
     embedding_model: str
     retrieval_score: float
     char_range: Optional[tuple[int, int]] = None
-    metadata: Optional[dict] = None
+    metadata: Optional[dict[str, Any]] = None
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for serialization."""
         return {
             "source_file": str(self.source_file),
@@ -394,7 +394,7 @@ class ProvenanceMetadata:
         }
 
     @classmethod
-    def from_dict(cls, data: dict) -> "ProvenanceMetadata":
+    def from_dict(cls, data: dict[str, Any]) -> "ProvenanceMetadata":
         """Create from dictionary."""
         return cls(
             source_file=Path(data["source_file"]),

@@ -25,7 +25,7 @@ class LatencyHistogram:
     total_count: int = 0
     total_sum: float = 0.0
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize bucket counts"""
         if not hasattr(self, "counts") or self.counts is None:
             self.counts = {bucket: 0 for bucket in self.buckets}
@@ -91,7 +91,7 @@ class PrometheusMetrics:
     - Circuit breaker metrics (state, failures, recoveries)
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize metrics collector"""
         self.lock = Lock()
 
@@ -157,7 +157,7 @@ class PrometheusMetrics:
                 self.model_load_count[model_name] += 1
 
                 if model_name not in self.model_load_latency:
-                    self.model_load_latency[model_name] = LatencyHistogram(
+                    self.model_load_latency[model_name] = LatencyHistogram(  # type: ignore[call-arg]
                         buckets=[100, 500, 1000, 2000, 5000, 10000, 30000]
                     )
 
@@ -179,7 +179,7 @@ class PrometheusMetrics:
             self.model_prediction_count[model_name] += num_samples
 
             if model_name not in self.model_prediction_latency:
-                self.model_prediction_latency[model_name] = LatencyHistogram(
+                self.model_prediction_latency[model_name] = LatencyHistogram(  # type: ignore[call-arg]
                     buckets=[10, 25, 50, 100, 250, 500, 1000, 2500, 5000]
                 )
 
@@ -335,7 +335,7 @@ class PrometheusMetrics:
 
         return "\n".join(lines) + "\n"
 
-    def get_summary(self) -> dict:
+    def get_summary(self) -> dict[str, Any]:
         """Get summary of all metrics
 
         Returns:

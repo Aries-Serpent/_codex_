@@ -124,7 +124,7 @@ class WandBBackend(LoggerBackend):
 class LoggerRegistry:
     """Central logger registry"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.backends: dict[str, LoggerBackend] = {}
 
     def register(self, name: str, backend: LoggerBackend) -> None:
@@ -149,7 +149,7 @@ class LoggerRegistry:
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.error("Failed end: <ERROR_TYPE>")
 
-    def log_metrics(self, metrics: dict, step: Optional[int] = None) -> None:
+    def log_metrics(self, metrics: dict[str, Any], step: Optional[int] = None) -> None:
         for backend in self.backends.values():
             try:
                 backend.log_metrics(metrics, step)
@@ -158,7 +158,7 @@ class LoggerRegistry:
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.error("Failed log: <ERROR_TYPE>")
 
-    def log_params(self, params: dict) -> None:
+    def log_params(self, params: dict[str, Any]) -> None:
         for backend in self.backends.values():
             try:
                 backend.log_params(params)

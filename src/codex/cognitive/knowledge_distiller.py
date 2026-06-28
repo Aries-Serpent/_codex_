@@ -259,7 +259,7 @@ class LearningExtractor:
         r"remember:",
     ]
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize extractor."""
         self._patterns = [re.compile(p, re.IGNORECASE) for p in self.LEARNING_PATTERNS]
 
@@ -310,7 +310,7 @@ class DecisionExtractor:
         r"strategy:",
     ]
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize extractor."""
         self._patterns = [re.compile(p, re.IGNORECASE) for p in self.DECISION_PATTERNS]
 

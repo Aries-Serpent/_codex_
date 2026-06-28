@@ -224,7 +224,7 @@ class DBManager:
             self._logger.debug("Error closing connection: <ERROR_TYPE>")
 
     @contextmanager
-    def connection(self, auto_init: bool = True):
+    def connection(self, auto_init: bool = True) -> None:
         """Context manager for database connections.
 
         Args:

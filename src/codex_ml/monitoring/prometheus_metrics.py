@@ -27,8 +27,8 @@ try:  # Optional dependency: prometheus-client
 
     _HAS_PROMETHEUS = True
 except (IOError, OSError):  # pragma: no cover - optional dependency path
-    CollectorRegistry = None
-    Counter = Gauge = Histogram = None
+    CollectorRegistry = None  # type: ignore[misc,assignment]
+    Counter = Gauge = Histogram = None  # type: ignore[misc,assignment]
     _HAS_PROMETHEUS = False
 
 
@@ -50,7 +50,7 @@ class _NoopMetric:
     def labels(self, **_: str) -> _NoopMetric:  # pragma: no cover - trivial
         return self
 
-    @contextmanager
+    @contextmanager  # type: ignore[arg-type]
     def time(self) -> Iterable[None]:  # pragma: no cover - trivial
         yield
 
@@ -143,7 +143,7 @@ class CodexMetricsRegistry:
 
         self.data_loading_duration_seconds.observe(max(0.0, float(seconds)))
 
-    @contextmanager
+    @contextmanager  # type: ignore[arg-type]
     def track_duration(self) -> Iterable[None]:
         """Context manager that records execution duration in ``training_duration``."""
 

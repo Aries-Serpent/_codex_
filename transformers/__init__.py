@@ -44,13 +44,13 @@ class _Stub:
     def __init__(self, target: str) -> None:
         self._target = target
 
-    def __call__(self, *args, **kwargs):  # pragma: no cover - defensive
+    def __call__(self, *args, **kwargs) -> None:  # pragma: no cover - defensive
         raise ImportError(
             f"Optional dependency '{self._target}' is not installed; "
             "install transformers to enable this functionality."
         )
 
-    def __getattr__(self, name: str):  # pragma: no cover - defensive
+    def __getattr__(self, name: str) -> None:  # pragma: no cover - defensive
         raise AttributeError(
             f"Optional dependency '{self._target}' is not installed; "
             "install transformers to enable this functionality."
@@ -68,21 +68,21 @@ else:  # pragma: no cover - exercised in minimal test envs
     _ERR = "transformers is not installed"
 
     class PreTrainedModel:
-        def __init__(self, *args, **kwargs):
+        def __init__(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
-        def forward(self, *args, **kwargs):
+        def forward(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
-        def generate(self, *args, **kwargs):
-            raise ImportError(_ERR)
-
-        @classmethod
-        def from_pretrained(cls, *args, **kwargs):
+        def generate(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
         @classmethod
-        def from_config(cls, *args, **kwargs):
+        def from_pretrained(cls, *args, **kwargs) -> None:
+            raise ImportError(_ERR)
+
+        @classmethod
+        def from_config(cls, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
     class PreTrainedTokenizerBase:
@@ -98,67 +98,67 @@ else:  # pragma: no cover - exercised in minimal test envs
         vocab_size: int = 0
         name_or_path: str = ""
 
-        def __init__(self, *args, **kwargs):
+        def __init__(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
-        def __call__(self, *args, **kwargs):
+        def __call__(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
-        def encode(self, *args, **kwargs):
+        def encode(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
-        def decode(self, *args, **kwargs):
+        def decode(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
-        def batch_decode(self, *args, **kwargs):
+        def batch_decode(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
-        def add_special_tokens(self, *args, **kwargs):
+        def add_special_tokens(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
-        def convert_tokens_to_ids(self, *args, **kwargs):
+        def convert_tokens_to_ids(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
-        def save_pretrained(self, *args, **kwargs):
+        def save_pretrained(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
         @classmethod
-        def from_pretrained(cls, *args, **kwargs):
+        def from_pretrained(cls, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
     class PreTrainedTokenizerFast(PreTrainedTokenizerBase):
         pass
 
     class GPT2Config:
-        def __init__(self, *args, **kwargs):
+        def __init__(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
     class AutoModel:
         @classmethod
-        def from_pretrained(cls, *args, **kwargs):
+        def from_pretrained(cls, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
         @classmethod
-        def from_config(cls, *args, **kwargs):
+        def from_config(cls, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
     class AutoConfig:
         @classmethod
-        def from_pretrained(cls, *args, **kwargs):
+        def from_pretrained(cls, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
         @classmethod
-        def for_model(cls, *args, **kwargs):
+        def for_model(cls, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
-        def to_dict(self, *args, **kwargs):
+        def to_dict(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
-        def save_pretrained(self, *args, **kwargs):
+        def save_pretrained(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
     class AutoModelForCausalLM(AutoModel):
-        def generate(self, *args, **kwargs):
+        def generate(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
     class AutoModelForMaskedLM(AutoModel):
@@ -187,19 +187,19 @@ else:  # pragma: no cover - exercised in minimal test envs
 
     class AutoTokenizer:
         @classmethod
-        def from_pretrained(cls, *args, **kwargs):
+        def from_pretrained(cls, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
     class BitsAndBytesConfig:
-        def __init__(self, *args, **kwargs):
+        def __init__(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
     class DataCollatorForLanguageModeling:
-        def __init__(self, *args, **kwargs):
+        def __init__(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
     class EarlyStoppingCallback:
-        def __init__(self, *args, **kwargs):
+        def __init__(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
     class TrainerCallback:
@@ -221,14 +221,14 @@ else:  # pragma: no cover - exercised in minimal test envs
         local_rank: int = -1
         world_size: int = 1
 
-        def __init__(self, *args, **kwargs):
+        def __init__(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
     class TrainerState:
         epoch: float = 0.0
         global_step: int = 0
         best_metric: float | None = None
-        log_history: list = []
+        log_history: list[Any] = []
 
     class Trainer:
         model: PreTrainedModel
@@ -236,34 +236,34 @@ else:  # pragma: no cover - exercised in minimal test envs
         lr_scheduler: object
         state: TrainerState
 
-        def __init__(self, *args, **kwargs):
+        def __init__(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
-        def train(self, *args, **kwargs):
+        def train(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
-        def evaluate(self, *args, **kwargs):
+        def evaluate(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
-        def save_model(self, *args, **kwargs):
+        def save_model(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
-        def add_callback(self, *args, **kwargs):
+        def add_callback(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
-        def get_train_dataloader(self, *args, **kwargs):
+        def get_train_dataloader(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
-        def create_optimizer_and_scheduler(self, *args, **kwargs):
+        def create_optimizer_and_scheduler(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
-        def prediction_loop(self, *args, **kwargs):
+        def prediction_loop(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
-        def compute_loss(self, *args, **kwargs):
+        def compute_loss(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
-    def get_scheduler(*args, **kwargs):
+    def get_scheduler(*args, **kwargs) -> None:
         raise ImportError(_ERR)
 
     __version__ = "999.0.0+stub"

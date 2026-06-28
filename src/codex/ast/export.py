@@ -49,7 +49,7 @@ class ExportResult:
     success: bool
     error: Optional[str] = None
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to dictionary."""
         return {
             "format": self.format.value,
@@ -69,7 +69,7 @@ class KnowledgeGraphExporter:
     - Combined knowledge graphs
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize exporter."""
         self.nodes: list[StandardizedASTNode] = []
         self.graph: Optional[DependencyGraph] = None
@@ -179,13 +179,13 @@ class KnowledgeGraphExporter:
         }
         return json.dumps(data, indent=2, default=str)
 
-    def _node_to_full_dict(self, node: StandardizedASTNode) -> dict:
+    def _node_to_full_dict(self, node: StandardizedASTNode) -> dict[str, Any]:
         """Convert node and all children to dictionary."""
         data = node.to_dict()
         data["children_full"] = [self._node_to_full_dict(child) for child in node.children]
         return data
 
-    def _graph_to_dict(self) -> dict:
+    def _graph_to_dict(self) -> dict[str, Any]:
         """Convert dependency graph to dictionary."""
         if not self.graph:
             return {}
@@ -201,7 +201,7 @@ class KnowledgeGraphExporter:
             "cycles": self.graph.detect_cycles(),
         }
 
-    def _metrics_to_dict(self) -> dict:
+    def _metrics_to_dict(self) -> dict[str, Any]:
         """Convert metrics to dictionary."""
         if not self.metrics:
             return {}

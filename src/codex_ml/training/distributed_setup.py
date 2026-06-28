@@ -146,7 +146,7 @@ def is_main_process() -> bool:
     return get_rank() == 0
 
 
-def barrier():
+def barrier() -> None:
     """Synchronize all processes."""
     if is_distributed():
         dist.barrier()

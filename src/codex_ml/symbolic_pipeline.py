@@ -30,7 +30,7 @@ import re
 from dataclasses import dataclass, field
 from typing import Any, Optional
 
-from tokenization import TokenizerAdapter
+from src.codex_ml.tokenization import TokenizerAdapter
 
 __all__ = [
     "ModelHandle",

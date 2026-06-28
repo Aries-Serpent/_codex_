@@ -14,7 +14,7 @@ import json
 import logging
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from .concurrency import ReadWriteLock, log_error, save_metrics
 
@@ -77,7 +77,7 @@ class ThreadSafeSessionEmbeddings:
         # Concurrency primitives
         self._rw_lock = ReadWriteLock(timeout=60.0)
         self._index = None
-        self._metadata: Dict[str, Dict[str, Any]] = {}
+        self._metadata: dict[str, dict[str, Any]] = {}
         self._model = None
 
         # Load or initialize index
@@ -123,7 +123,7 @@ class ThreadSafeSessionEmbeddings:
             if self._model is None:
                 self._model = SentenceTransformer(self.MODEL_NAME)
 
-            embedding = self._model.encode(text, convert_to_numpy=True)
+            embedding = self._model.encode(text, convert_to_numpy=True)  # type: ignore[attr-defined]
             return embedding.astype(np.float32)
 
         except (ValueError, TypeError) as e:
@@ -137,12 +137,12 @@ class ThreadSafeSessionEmbeddings:
         self,
         session_id: str,
         description: str,
-        patterns: List[str],
-        keywords: List[str],
+        patterns: list[str],
+        keywords: list[str],
     ) -> bool:
         """Add session to index (exclusive write)."""
 
-        def _add():
+        def _add() -> None:
             if not HAS_FAISS:
                 # Store only in metadata
                 self._metadata[session_id] = {
@@ -159,11 +159,11 @@ class ThreadSafeSessionEmbeddings:
                 return False
 
             # Add to index
-            self._index.add(np.array([embedding]))
+            self._index.add(np.array([embedding]))  # type: ignore[attr-defined]
 
             # Store metadata
             self._metadata[session_id] = {
-                "index_id": self._index.ntotal - 1,
+                "index_id": self._index.ntotal - 1,  # type: ignore[attr-defined]
                 "description": description,
                 "patterns": patterns,
                 "keywords": keywords,
@@ -189,10 +189,10 @@ class ThreadSafeSessionEmbeddings:
         self,
         query_session_id: str,
         k: int = 5,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Find similar sessions (concurrent read with read-write lock)."""
 
-        def _find():
+        def _find() -> None:
             if query_session_id not in self._metadata:
                 return []
 
@@ -217,7 +217,7 @@ class ThreadSafeSessionEmbeddings:
                 return []
 
             # Search index
-            distances, indices = self._index.search(np.array([embedding]), k + 1)
+            distances, indices = self._index.search(np.array([embedding]), k + 1)  # type: ignore[attr-defined]
 
             # Convert to results
             results = []
@@ -253,7 +253,7 @@ class ThreadSafeSessionEmbeddings:
     def get_embedding(self, session_id: str) -> Optional[np.ndarray]:
         """Get embedding for session (concurrent read)."""
 
-        def _get():
+        def _get() -> None:
             if session_id not in self._metadata:
                 return None
 
@@ -268,7 +268,7 @@ class ThreadSafeSessionEmbeddings:
 
             # Reconstruct embedding from index
             try:
-                embedding = self._index.reconstruct(int(idx))
+                embedding = self._index.reconstruct(int(idx))  # type: ignore[attr-defined]
                 return embedding.astype(np.float32)
             except (IOError, OSError) as e:
                 error_type = type(e).__name__
@@ -309,7 +309,7 @@ class ThreadSafeSessionEmbeddings:
             log_error(e, "save_index", self.errors_path)
             return False
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get lock metrics."""
         return self._rw_lock.metrics.to_dict()
 
@@ -322,13 +322,13 @@ class ThreadSafeSessionEmbeddings:
             "index_size": self._index.ntotal if self._index else 0,
             "metadata_entries": len(self._metadata),
         }
-        save_metrics(metrics_dict, self.metrics_path)
+        save_metrics(metrics_dict, self.metrics_path)  # type: ignore[arg-type]
 
-    def __enter__(self):
+    def __enter__(self) -> None:
         """Context manager entry."""
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         """Context manager exit."""
         self.save_index()
         self.save_metrics()

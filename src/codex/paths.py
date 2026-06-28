@@ -28,7 +28,7 @@ PARSED_TREES_CACHE = CACHE_DIR / "parsed_trees"
 SIMILARITY_CACHE = CACHE_DIR / "similarity"
 
 
-def ensure_codex_structure():
+def ensure_codex_structure() -> None:
     """Create standard .codex directory structure.
 
     Creates:
@@ -127,7 +127,7 @@ def get_db_path(name: str, env_var: Optional[str] = None) -> Path:
         Path('/tmp/logs.db')
     """
     if env_var and os.getenv(env_var):
-        return Path(os.getenv(env_var))
+        return Path(os.getenv(env_var))  # type: ignore[arg-type]
 
     ensure_codex_structure()
     return CODEX_DIR / f"{name}.db"

@@ -446,7 +446,8 @@ class TestDocumentationQualityAssurance:
         assert (, "Condition must be true"
             validation_result["valid_links"] + validation_result["broken_links"]
             <= validation_result["total_links"]
-        )
+        
+        ), "Condition must be true"
 
     def test_documentation_metrics_collection(self):
         """Test documentation metrics can be collected"""

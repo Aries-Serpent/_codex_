@@ -71,7 +71,7 @@ def _configure_connection(conn: sqlite3.Connection) -> None:
 
 
 @contextlib.contextmanager
-def get_conn(db_path: str, pooled: bool | None = None):
+def get_conn(db_path: str, pooled: bool | None = None) -> None:
     """Context-managed connection; pooled when enabled.
 
     Behavior:
@@ -123,7 +123,7 @@ def _default_db_path() -> Path:
     return Path(os.getenv("CODEX_LOG_DB_PATH", str(DEFAULT_LOG_DB)))
 
 
-def fetch_messages(session_id: str, db_path: Optional[Path] = None):
+def fetch_messages(session_id: str, db_path: Optional[Path] = None) -> None:
     """Return logged messages for ``session_id``.
 
     The database is initialized if missing.  If ``session_events`` has no

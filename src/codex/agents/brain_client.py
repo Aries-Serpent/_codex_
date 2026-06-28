@@ -161,7 +161,7 @@ class BrainClient:
     # ── Internal helpers ──────────────────────────────────────────────────────
 
     @staticmethod
-    def _safe_urlopen(req: urllib.request.Request, timeout: int):
+    def _safe_urlopen(req: urllib.request.Request, timeout: int) -> None:
         """Validate the request URL scheme is http/https then call urlopen.
 
         Bandit B310: urllib.request.urlopen is flagged when the URL scheme is
@@ -209,7 +209,7 @@ class BrainClient:
         headers.update(self._auth_header())
         req = urllib.request.Request(url, headers=headers)
         try:
-            with self._safe_urlopen(req, timeout=self.timeout) as resp:
+            with self._safe_urlopen(req, timeout=self.timeout) as resp:  # type: ignore[attr-defined]
                 return json.loads(resp.read().decode())
         except urllib.error.HTTPError as exc:
             raise BrainClientError(f"GET {path} failed: HTTP {exc.code}") from exc
@@ -227,7 +227,7 @@ class BrainClient:
             headers.update(extra_headers)
         req = urllib.request.Request(url, data=data, headers=headers, method="POST")
         try:
-            with self._safe_urlopen(req, timeout=self.timeout) as resp:
+            with self._safe_urlopen(req, timeout=self.timeout) as resp:  # type: ignore[attr-defined]
                 return json.loads(resp.read().decode())
         except urllib.error.HTTPError as exc:
             body_text = exc.read().decode(errors="replace")
@@ -241,7 +241,7 @@ class BrainClient:
         headers.update(self._auth_header())
         req = urllib.request.Request(url, headers=headers, method="DELETE")
         try:
-            with self._safe_urlopen(req, timeout=self.timeout) as resp:
+            with self._safe_urlopen(req, timeout=self.timeout) as resp:  # type: ignore[attr-defined]
                 return json.loads(resp.read().decode())
         except urllib.error.HTTPError as exc:
             raise BrainClientError(f"DELETE {path} failed: HTTP {exc.code}") from exc
@@ -322,7 +322,7 @@ class BrainClient:
         url: str,
         headers: Optional[dict[str, str]] = None,
         params: Optional[dict[str, str]] = None,
-        body: Any = None,
+        body: Any | None = None,
         timeout: int = 30,
     ) -> dict[str, Any]:
         """Proxy an HTTP request through the server (secondary agent API mechanism).
@@ -429,7 +429,7 @@ class BrainClient:
         """
         return self._get("/api/ooda/metrics")
 
-    def ooda_process(self, input_data: Any, context: Any = None) -> dict[str, Any]:
+    def ooda_process(self, input_data: Any, context: Any | None = None) -> dict[str, Any]:
         """Route input through the OODA cognitive orchestrator.
 
         Parameters

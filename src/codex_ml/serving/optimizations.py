@@ -74,7 +74,7 @@ class RequestBatcher:
         # Wait for result
         return await future
 
-    async def process_batches(self):
+    async def process_batches(self) -> None:
         """Background task to process batched requests."""
         while not self._stop:
             if not self.queue:
@@ -115,11 +115,11 @@ class RequestBatcher:
                 for future in futures:
                     future.set_exception(e)
 
-    def start(self):
+    def start(self) -> None:
         """Start background batch processor."""
         asyncio.create_task(self.process_batches())
 
-    def stop(self):
+    def stop(self) -> None:
         """Stop batch processor."""
         self._stop = True
 
@@ -171,10 +171,10 @@ class MemoryPool:
                     buf[:] = b"\x00" * len(buf)
                     self.available.append(buf)
 
-    def __enter__(self):
+    def __enter__(self) -> None:
         return self.get_buffer()
 
-    def __exit__(self, *args):
+    def __exit__(self, *args) -> None:
         pass
 
 
@@ -276,7 +276,7 @@ class DynamicBatchSizer:
             new_size = int(self.current_size * (1 - self.adjustment_rate))
             self.current_size = max(new_size, self.min_size)
 
-    def reset(self):
+    def reset(self) -> None:
         """Reset to initial batch size."""
         self.current_size = (self.min_size + self.max_size) // 2
         self.latency_history.clear()

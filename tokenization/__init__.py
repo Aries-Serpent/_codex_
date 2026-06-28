@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import importlib
 import sys
+import warnings as _warnings
 from pathlib import Path
 
 _pkg_dir = Path(__file__).resolve().parent
@@ -19,11 +20,18 @@ if _pkg_src.exists():
     if pkg_src_str not in __path__:
         __path__.append(pkg_src_str)
 
+_warnings.warn(
+    "The root tokenization module is deprecated and will be removed in version 2.0. "
+    "Use src.codex_ml.tokenization instead.",
+    DeprecationWarning,
+    stacklevel=2,
+)
+
 __all__: list[str] = []
 _OPTIONAL_SUBMODULES = ("sentencepiece_adapter", "train_tokenizer")
 
 
-def __getattr__(name: str):  # pragma: no cover - shim for optional imports
+def __getattr__(name: str) -> None:  # pragma: no cover - shim for optional imports
     if name in _OPTIONAL_SUBMODULES:
         try:
             module = importlib.import_module(f"{__name__}.{name}")

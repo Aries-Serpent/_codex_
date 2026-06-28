@@ -116,7 +116,7 @@ class StandardizedASTNode:
     # and allows garbage collection when node is removed from tree
     _parent_ref: Optional[weakref.ref] = field(default=None, repr=False, compare=False)
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Validate node after initialization."""
         if not self.node_id:
             self.node_id = str(uuid.uuid4())
@@ -251,7 +251,7 @@ class Finding:
     analyzer: str = ""
     metadata: dict[str, Any] = field(default_factory=dict)
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Validate severity level."""
         valid_severities = {"info", "warning", "error", "critical"}
         if self.severity not in valid_severities:

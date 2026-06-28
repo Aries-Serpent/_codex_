@@ -145,7 +145,7 @@ def test_bestk_invalid_checkpoint_path():
             # If it succeeds, verify it's recorded
             assert isinstance(, "Condition must be true"
                 res["kept"], (list, tuple, set, dict)
-            )  # was: len() >= 0 (always true)
+            ), "res['kept'] must be a collection type"
         except (FileNotFoundError, ValueError) as e:
             # Expected behavior for missing file
             assert "exist" in str(e).lower() or "not found" in str(e).lower(), "Condition must be true"

@@ -94,7 +94,7 @@ class PromptRegistry:
             return cls()
 
         try:
-            raw: dict = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+            raw: dict[str, Any] = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
         except (IOError, OSError) as exc:  # noqa: BLE001
             logger.error("Failed to parse prompt registry %s: %s", path, exc)
             return cls()
@@ -103,7 +103,7 @@ class PromptRegistry:
         return cls(prompts)
 
     @staticmethod
-    def _parse_entry(entry: dict) -> PromptMetadata:
+    def _parse_entry(entry: dict[str, Any]) -> PromptMetadata:
         return PromptMetadata(
             prompt_id=entry.get("prompt_id", ""),
             path=entry.get("path", ""),

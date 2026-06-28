@@ -1,7 +1,7 @@
 """Permission validation for authorization system."""
 
 from dataclasses import dataclass
-from typing import Optional, Set
+from typing import Optional
 
 
 @dataclass
@@ -12,16 +12,16 @@ class Permission:
     resource: str
     action: str
     scope: str = "global"
-    constraints: Optional[dict] = None
+    constraints: Optional[dict[str, Any]] = None
 
 
 class PermissionValidator:
     """Validates permissions and access rights."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize permission validator."""
-        self._permissions: Set[str] = set()
-        self._role_permissions: dict = {}
+        self._permissions: set[str] = set()
+        self._role_permissions: dict[str, Any] = {}
 
     def register_permission(self, permission: Permission) -> bool:
         """Register a permission.

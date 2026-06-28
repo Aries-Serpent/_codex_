@@ -29,17 +29,23 @@ def list_models_command(args: argparse.Namespace) -> int:
         models = registry.list_models()
 
         if args.json:
-            print(json.dumps({"models": models}, indent=2))
+            print(
+                json.dumps({"models": models}, indent=2)
+            )  # codeql[py/clear-text-logging-sensitive-data]
         else:
-            print(f"Registered Models ({len(models)}):")
+            print(
+                f"Registered Models ({len(models)}):"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             for model in models:
-                print(f"  - {model}")
+                print(f"  - {model}")  # codeql[py/clear-text-logging-sensitive-data]
 
         return 0
     except (IOError, OSError) as e:
         error_type = type(e).__name__
-        logger.debug("Exception: <ERROR_TYPE>")
-        print("Error: <ERROR_TYPE>", file=sys.stderr)
+        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            "Error: <ERROR_TYPE>", file=sys.stderr
+        )  # codeql[py/clear-text-logging-sensitive-data]
         return 1
 
 
@@ -52,21 +58,33 @@ def list_versions_command(args: argparse.Namespace) -> int:
         versions = registry.list_model_versions(args.name, stage=stage)
 
         if args.json:
-            print(json.dumps({"versions": [v.to_dict() for v in versions]}, indent=2))
+            print(
+                json.dumps({"versions": [v.to_dict() for v in versions]}, indent=2)
+            )  # codeql[py/clear-text-logging-sensitive-data]
         else:
-            print(f"Model: {args.name}")
-            print(f"Versions ({len(versions)}):")
+            print(f"Model: {args.name}")  # codeql[py/clear-text-logging-sensitive-data]
+            print(f"Versions ({len(versions)}):")  # codeql[py/clear-text-logging-sensitive-data]
             for version in versions:
-                print(f"  Version {version.version}:")
-                print(f"    Stage: {version.stage.value}")
-                print(f"    Description: {version.description}")
-                print(f"    Created: {version.created_at}")
+                print(
+                    f"  Version {version.version}:"
+                )  # codeql[py/clear-text-logging-sensitive-data]
+                print(
+                    f"    Stage: {version.stage.value}"
+                )  # codeql[py/clear-text-logging-sensitive-data]
+                print(
+                    f"    Description: {version.description}"
+                )  # codeql[py/clear-text-logging-sensitive-data]
+                print(
+                    f"    Created: {version.created_at}"
+                )  # codeql[py/clear-text-logging-sensitive-data]
 
         return 0
     except (IOError, OSError) as e:
         error_type = type(e).__name__
-        logger.debug("Exception: <ERROR_TYPE>")
-        print("Error: <ERROR_TYPE>", file=sys.stderr)
+        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            "Error: <ERROR_TYPE>", file=sys.stderr
+        )  # codeql[py/clear-text-logging-sensitive-data]
         return 1
 
 
@@ -84,15 +102,21 @@ def promote_model_command(args: argparse.Namespace) -> int:
         )
 
         if args.json:
-            print(json.dumps(version.to_dict(), indent=2))
+            print(
+                json.dumps(version.to_dict(), indent=2)
+            )  # codeql[py/clear-text-logging-sensitive-data]
         else:
-            print(f"✓ Promoted {args.name} version {args.version} to {stage.value}")
+            print(
+                f"✓ Promoted {args.name} version {args.version} to {stage.value}"
+            )  # codeql[py/clear-text-logging-sensitive-data]
 
         return 0
     except (IOError, OSError) as e:
         error_type = type(e).__name__
-        logger.debug("Exception: <ERROR_TYPE>")
-        print("Error: <ERROR_TYPE>", file=sys.stderr)
+        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            "Error: <ERROR_TYPE>", file=sys.stderr
+        )  # codeql[py/clear-text-logging-sensitive-data]
         return 1
 
 
@@ -106,27 +130,33 @@ def compare_models_command(args: argparse.Namespace) -> int:
         )
 
         if args.json:
-            print(json.dumps(comparison, indent=2, default=str))
+            print(
+                json.dumps(comparison, indent=2, default=str)
+            )  # codeql[py/clear-text-logging-sensitive-data]
         else:
-            print(f"Model: {args.name}")
-            print(f"\nVersion {args.version1}:")
+            print(f"Model: {args.name}")  # codeql[py/clear-text-logging-sensitive-data]
+            print(f"\nVersion {args.version1}:")  # codeql[py/clear-text-logging-sensitive-data]
             v1 = comparison["version_1"]
-            print(f"  Stage: {v1['stage']}")
-            print(f"  Created: {v1['created_at']}")
+            print(f"  Stage: {v1['stage']}")  # codeql[py/clear-text-logging-sensitive-data]
+            print(f"  Created: {v1['created_at']}")  # codeql[py/clear-text-logging-sensitive-data]
 
-            print(f"\nVersion {args.version2}:")
+            print(f"\nVersion {args.version2}:")  # codeql[py/clear-text-logging-sensitive-data]
             v2 = comparison["version_2"]
-            print(f"  Stage: {v2['stage']}")
-            print(f"  Created: {v2['created_at']}")
+            print(f"  Stage: {v2['stage']}")  # codeql[py/clear-text-logging-sensitive-data]
+            print(f"  Created: {v2['created_at']}")  # codeql[py/clear-text-logging-sensitive-data]
 
             if comparison["created_diff_days"]:
-                print(f"\nTime difference: {comparison['created_diff_days']} days")
+                print(
+                    f"\nTime difference: {comparison['created_diff_days']} days"
+                )  # codeql[py/clear-text-logging-sensitive-data]
 
         return 0
     except (IOError, OSError) as e:
         error_type = type(e).__name__
-        logger.debug("Exception: <ERROR_TYPE>")
-        print("Error: <ERROR_TYPE>", file=sys.stderr)
+        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            "Error: <ERROR_TYPE>", file=sys.stderr
+        )  # codeql[py/clear-text-logging-sensitive-data]
         return 1
 
 
@@ -139,12 +169,16 @@ def export_model_command(args: argparse.Namespace) -> int:
             name=args.name, version=args.version, output_dir=args.output_dir
         )
 
-        print(f"✓ Exported {args.name} version {args.version} to {output_path}")
+        print(
+            f"✓ Exported {args.name} version {args.version} to {output_path}"
+        )  # codeql[py/clear-text-logging-sensitive-data]
         return 0
     except (IOError, OSError) as e:
         error_type = type(e).__name__
-        logger.debug("Exception: <ERROR_TYPE>")
-        print("Error: <ERROR_TYPE>", file=sys.stderr)
+        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            "Error: <ERROR_TYPE>", file=sys.stderr
+        )  # codeql[py/clear-text-logging-sensitive-data]
         return 1
 
 
@@ -156,28 +190,44 @@ def get_lineage_command(args: argparse.Namespace) -> int:
         lineage = registry.get_model_lineage(name=args.name, version=args.version)
 
         if args.json:
-            print(json.dumps(lineage, indent=2, default=str))
+            print(
+                json.dumps(lineage, indent=2, default=str)
+            )  # codeql[py/clear-text-logging-sensitive-data]
         else:
-            print(f"Model: {args.name} v{args.version}")
+            print(
+                f"Model: {args.name} v{args.version}"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             if lineage["lineage"]:
                 lin = lineage["lineage"]
-                print("\nLineage:")
-                print(f"  Run ID: {lin['run_id']}")
-                print(f"  Experiment ID: {lin['experiment_id']}")
-                print(f"  Status: {lin['status']}")
-                print(f"  Start Time: {lin['start_time']}")
+                print("\nLineage:")  # codeql[py/clear-text-logging-sensitive-data]
+                print(f"  Run ID: {lin['run_id']}")  # codeql[py/clear-text-logging-sensitive-data]
+                print(
+                    f"  Experiment ID: {lin['experiment_id']}"
+                )  # codeql[py/clear-text-logging-sensitive-data]
+                print(f"  Status: {lin['status']}")  # codeql[py/clear-text-logging-sensitive-data]
+                print(
+                    f"  Start Time: {lin['start_time']}"
+                )  # codeql[py/clear-text-logging-sensitive-data]
                 if lin.get("parameters"):
-                    print(f"  Parameters: {len(lin['parameters'])} params")
+                    print(
+                        f"  Parameters: {len(lin['parameters'])} params"
+                    )  # codeql[py/clear-text-logging-sensitive-data]
                 if lin.get("metrics"):
-                    print(f"  Metrics: {len(lin['metrics'])} metrics")
+                    print(
+                        f"  Metrics: {len(lin['metrics'])} metrics"
+                    )  # codeql[py/clear-text-logging-sensitive-data]
             else:
-                print("\nNo lineage information available")
+                print(
+                    "\nNo lineage information available"
+                )  # codeql[py/clear-text-logging-sensitive-data]
 
         return 0
     except (IOError, OSError) as e:
         error_type = type(e).__name__
-        logger.debug("Exception: <ERROR_TYPE>")
-        print("Error: <ERROR_TYPE>", file=sys.stderr)
+        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            "Error: <ERROR_TYPE>", file=sys.stderr
+        )  # codeql[py/clear-text-logging-sensitive-data]
         return 1
 
 

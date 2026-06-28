@@ -187,7 +187,7 @@ def _to_jsonable(obj: Any) -> Any:
     if isinstance(obj, (list, tuple, set)):
         return [_to_jsonable(v) for v in obj]
     if is_dataclass(obj):
-        return _to_jsonable(asdict(obj))
+        return _to_jsonable(asdict(obj))  # type: ignore[arg-type]
     if hasattr(obj, "__dict__"):
         return _to_jsonable({k: v for k, v in vars(obj).items() if not k.startswith("_")})
     try:

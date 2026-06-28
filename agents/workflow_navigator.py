@@ -113,7 +113,7 @@ class Workflow:
         """Return the number of steps in the workflow."""
         return len(self.steps)
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for serialization"""
         return {
             "workflow_id": self.workflow_id,
@@ -252,7 +252,7 @@ class WorkflowNavigator(Planner):
             )
         raise ValueError(f"Unknown workflow type: {workflow_type}")
 
-    def _register_default_workflows(self):
+    def _register_default_workflows(self) -> None:
         """Register the default tokenized workflows"""
 
         # AUDIT_EXEC - Audit Execution
@@ -747,7 +747,7 @@ class WorkflowNavigator(Planner):
 
         return workflows
 
-    def _save_workflow_state(self, workflow: Workflow, results: list[dict], success: bool) -> None:
+    def _save_workflow_state(self, workflow: Workflow, results: list[dict[str, Any]], success: bool) -> None:
         """Save workflow execution state"""
         timestamp = datetime.now(UTC).isoformat()
 

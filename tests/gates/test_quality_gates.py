@@ -11,8 +11,8 @@ from types import SimpleNamespace
 
 import pytest
 
-from codex_ml.eval import metrics as M
 from codex_ml.interfaces import get_component
+from codex_ml.metrics import metrics_deprecated as M
 from codex_ml.monitoring import codex_logging as cl
 from codex_ml.utils import set_reproducible
 from codex_ml.utils.checkpointing import (

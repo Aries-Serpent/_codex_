@@ -226,7 +226,7 @@ class TestCLICompleteness:
             "Commands:" in result.output
             or "commands:" in result.output.lower()
             or len(result.output) > 100
-        )
+        ), "Condition must be true"
 
     def test_tokenizer_group_help(self, cli_runner):
         """Tokenizer group help should list all subcommands."""
@@ -257,8 +257,7 @@ class TestCLICompleteness:
         """Invalid subcommand should show helpful error."""
         result = cli_runner.invoke(cli, ["invalid-command"])
         assert result.exit_code != 0, "Result must not be empty"
-        assert "Error" in result.output or "no such command" in result.output.lower(, "Result must not be empty"
-            ), "Result must not be empty"
+        assert "Error" in result.output or "no such command" in result.output.lower(), "Result must not be empty"
 
     def test_missing_required_option_error_message(self, cli_runner, temp_dir):
         """Missing required options should show clear error."""

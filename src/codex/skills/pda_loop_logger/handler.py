@@ -61,7 +61,7 @@ _REPO_ROOT = Path(__file__).resolve().parents[4]  # src/codex/skills/pda_loop_lo
 _SCRIPT = _REPO_ROOT / "scripts" / "ci" / "pda_failure_logger.py"
 
 
-def _load_logger_module():
+def _load_logger_module() -> Any:
     """Dynamically import pda_failure_logger from scripts/ci/."""
     if "pda_failure_logger" in sys.modules:
         return sys.modules["pda_failure_logger"]
@@ -121,7 +121,7 @@ def run(payload: dict[str, Any]) -> dict[str, Any]:
 # ---------------------------------------------------------------------------
 
 
-def _log_failure(mod: Any, p: dict) -> dict:
+def _log_failure(mod: Any, p: dict[str, Any]) -> dict[str, Any]:
     """Append a failure entry to the PDA JSONL store."""
     required = ["session", "pattern_id"]
     missing = [f for f in required if not p.get(f)]
@@ -150,7 +150,7 @@ def _log_failure(mod: Any, p: dict) -> dict:
     }
 
 
-def _log_fix(mod: Any, p: dict) -> dict:
+def _log_fix(mod: Any, p: dict[str, Any]) -> dict[str, Any]:
     """Append a fix-verification entry."""
     required = ["session", "pattern_id"]
     missing = [f for f in required if not p.get(f)]
@@ -176,7 +176,7 @@ def _log_fix(mod: Any, p: dict) -> dict:
     }
 
 
-def _log_session(mod: Any, p: dict) -> dict:
+def _log_session(mod: Any, p: dict[str, Any]) -> dict[str, Any]:
     """Append a session-completion summary entry."""
     entry = {
         "type": "session",
@@ -195,7 +195,7 @@ def _log_session(mod: Any, p: dict) -> dict:
     }
 
 
-def _summarize(mod: Any, p: dict) -> dict:
+def _summarize(mod: Any, p: dict[str, Any]) -> dict[str, Any]:
     """Return grounded solutions ranked by success rate."""
     entries = mod._read_log()
     pattern_id_filter = p.get("pattern_id")
@@ -204,7 +204,7 @@ def _summarize(mod: Any, p: dict) -> dict:
     # Count successes per pattern
     from collections import defaultdict
 
-    stats: dict[str, dict] = defaultdict(
+    stats: dict[str, Any][str, dict] = defaultdict(
         lambda: {
             "failures": 0,
             "fixes": 0,
@@ -242,7 +242,7 @@ def _summarize(mod: Any, p: dict) -> dict:
     }
 
 
-def _query(mod: Any, p: dict) -> dict:
+def _query(mod: Any, p: dict[str, Any]) -> dict[str, Any]:
     """Return raw log entries, optionally filtered by pattern_id or session."""
     entries = mod._read_log()
     pattern_id_filter = p.get("pattern_id")

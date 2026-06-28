@@ -214,7 +214,7 @@ def _extract_exports(tree: ast.AST) -> list[str]:
                             if isinstance(elt, ast.Constant):
                                 exports.append(str(elt.value))
                             elif isinstance(elt, ast.Str):  # Python < 3.8 compatibility
-                                exports.append(elt.s)
+                                exports.append(elt.s)  # type: ignore[arg-type]
 
     return sorted(set(exports))
 
@@ -243,7 +243,7 @@ def _calculate_complexity(tree: ast.AST) -> ComplexityMetrics:
     )
 
 
-def _resolve_tool(tool: str, trusted_dirs: Optional[list] = None) -> Optional[str]:
+def _resolve_tool(tool: str, trusted_dirs: Optional[list[Any]] = None) -> Optional[str]:
     """
     Resolve tool path from PATH with optional trusted directory validation.
 
@@ -489,10 +489,10 @@ def analyze(
         security_issues = _run_bandit(source_dir)
 
         # Associate issues with files
-        for issue in security_issues:
+        for issue in security_issues:  # type: ignore[assignment]
             for f in files:
                 if issue.file_path.endswith(f.path):
-                    f.security_issues.append(issue)
+                    f.security_issues.append(issue)  # type: ignore[arg-type]
 
     # Calculate summary
     total_loc = sum(f.loc for f in files)

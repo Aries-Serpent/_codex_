@@ -71,7 +71,7 @@ class PIIFlags:
     pii_aws_key: bool = False
     license_gpl: bool = False
     total_redactions: int = 0
-    redaction_details: list = field(default_factory=list)
+    redaction_details: list[Any] = field(default_factory=list)
 
 
 def _luhn_check(card_number: str) -> bool:
@@ -99,7 +99,7 @@ def scrub(
     enable_ssn: bool = True,
     enable_credit_card: bool = True,
     enable_aws_key: bool = True,
-) -> tuple[str, dict]:
+) -> tuple[str, dict[str, Any]]:
     """Scrub PII from text content.
 
     Args:

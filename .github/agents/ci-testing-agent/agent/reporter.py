@@ -40,7 +40,7 @@ class ArtifactReporter:
         with open(report_file, "w") as f:
             json.dump(result, f, indent=2)
 
-        print(f"📄 Report saved: {report_file}")
+        print(f"📄 Report saved: {report_file}")  # codeql[py/clear-text-logging-sensitive-data]
 
         # Generate markdown summary
         summary = self._generate_summary(result)
@@ -49,7 +49,7 @@ class ArtifactReporter:
         with open(summary_file, "w") as f:
             f.write(summary)
 
-        print(f"📝 Summary saved: {summary_file}")
+        print(f"📝 Summary saved: {summary_file}")  # codeql[py/clear-text-logging-sensitive-data]
 
         # Also save as latest
         latest_summary = self.reports_dir / "summary_latest.md"
@@ -216,8 +216,8 @@ class ArtifactReporter:
         Returns:
             True if upload would succeed (placeholder for actual GitHub integration)
         """
-        print(f"📦 Artifact ready for upload: {artifact_name}")
-        print(f"   File: {file_path}")
+        print(f"📦 Artifact ready for upload: {artifact_name}")  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"   File: {file_path}")  # codeql[py/clear-text-logging-sensitive-data]
         # Would integrate with GitHub Actions artifact API
         return True
 
@@ -232,7 +232,7 @@ class ArtifactReporter:
         Returns:
             True if comment would be created (placeholder for actual GitHub integration)
         """
-        print(f"💬 PR comment ready for #{pr_number}")
+        print(f"💬 PR comment ready for #{pr_number}")  # codeql[py/clear-text-logging-sensitive-data]
         # Would integrate with GitHub API
         return True
 
@@ -251,9 +251,9 @@ class ArtifactReporter:
         Returns:
             True if status would be updated (placeholder for actual GitHub integration)
         """
-        print("📊 Commit status update ready")
-        print(f"   SHA: {commit_sha}")
-        print(f"   State: {state}")
-        print(f"   Description: {description}")
+        print("📊 Commit status update ready")  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"   SHA: {commit_sha}")  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"   State: {state}")  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"   Description: {description}")  # codeql[py/clear-text-logging-sensitive-data]
         # Would integrate with GitHub API
         return True

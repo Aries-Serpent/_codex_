@@ -110,7 +110,7 @@ class TokenHealthCheck:
     issued_at: Optional[int] = None  # Unix timestamp
     expires_at: Optional[int] = None  # Unix timestamp
     scopes: list[str] = field(default_factory=list)
-    diagnostics: dict = field(default_factory=dict)
+    diagnostics: dict[str, Any] = field(default_factory=dict)
 
 
 class TokenHealthChecker:
@@ -404,7 +404,7 @@ class TokenCircuitBreaker:
         backoff = self._INITIAL_BACKOFF * record.backoff_multiplier
         return min(backoff, self._MAX_BACKOFF)
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize circuit breaker state for logging/monitoring."""
         return {
             source.value: {
@@ -506,7 +506,7 @@ class TokenRotationScheduler:
         """Get rotation info for source."""
         return self._rotation_info.get(source)
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize rotation schedule for logging/monitoring."""
         return {
             source.value: {
@@ -698,7 +698,7 @@ class TokenBroker:
 
     # ── Observability & State Access (Task 2.1.4) ──────────────────────────
 
-    def get_metrics(self) -> dict:
+    def get_metrics(self) -> dict[str, Any]:
         """Return metrics for monitoring: resolution count, health checks, CB state."""
         return {
             "resolution_count": self._resolution_count,

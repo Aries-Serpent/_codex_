@@ -22,7 +22,7 @@ except (IOError, OSError):  # pragma: no cover - PyYAML is optional
     yaml = None
 
 
-def _load_typer():
+def _load_typer() -> None:
     spec = importlib.util.find_spec("typer")
     if spec is None:
         return None
@@ -38,7 +38,7 @@ try:  # pragma: no cover - evaluation is optional
     from codex_ml.eval.eval_runner import evaluate_datasets
 except (ImportError, AttributeError):  # pragma: no cover
 
-    def evaluate_datasets(*args, **kwargs):
+    def evaluate_datasets(*args, **kwargs) -> None:
         return None
 
 
@@ -51,7 +51,7 @@ if typer is not None:
     _tokenizer_flag = os.getenv("CODEX_ENABLE_TOKENIZER_CLI", "1").lower()
     if _tokenizer_flag in {"1", "true", "yes", "on"}:
         try:  # pragma: no cover - optional import, guard mirrors Typer discovery
-            from codex_ml.cli import tokenizer as tokenizer_cli
+            from codex_ml.cli import tokenizer as tokenizer_cli  # type: ignore[attr-defined]
 
             app.add_typer(tokenizer_cli.app, name="tokenizer")
         except (ImportError, AttributeError) as e:
@@ -59,7 +59,7 @@ if typer is not None:
             logger.debug("Exception: <ERROR_TYPE>")
             logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 
-    from codex_ml.cli import _load_training_config
+    from codex_ml.cli import _load_training_config  # type: ignore[attr-defined]
 
     def _value_from_config(
         cli_value: Any,
@@ -360,7 +360,7 @@ if typer is not None:
         ),
     ) -> None:
         """Run evaluation using available evaluation modules."""
-        from codex_ml.cli import entrypoints as entry
+        from codex_ml.cli import entrypoints as entry  # type: ignore[attr-defined]
 
         eval_args: list[str] = []
         if dry_run:
@@ -480,7 +480,7 @@ if typer is not None:
 
     cli = _typer_cli_wrapper
 
-    def run_training(cfg, output_dir=None):
+    def run_training(cfg, output_dir=None) -> None:
         """Module-level stub for patching in tests (typer branch).
 
         The typer ``train`` command implements training directly; this stub
@@ -498,7 +498,7 @@ else:
         log_event,
         run_cmd,
     )
-    from codex_ml.pipeline import run_codex_pipeline_from_config
+    from codex_ml.pipeline import run_codex_pipeline_from_config  # type: ignore[attr-defined]
     from codex_ml.utils.optional import optional_import
 
     _ = (ArgparseJSONParser, run_cmd)
@@ -513,8 +513,8 @@ else:
     try:
         from omegaconf import DictConfig, OmegaConf  # pragma: no cover - optional
     except (ImportError, AttributeError):  # pragma: no cover - optional
-        DictConfig = Any
-        OmegaConf = None
+        DictConfig = Any  # type: ignore[misc,assignment]
+        OmegaConf = None  # type: ignore[misc,assignment]
 
     try:  # pragma: no cover - optional dependency
         from codex_digest.error_capture import log_error as _log_error
@@ -526,7 +526,7 @@ else:
     # Module-level variable to cache functional training main for testing/mocking
     _functional_training_main = None
 
-    def _load_functional_training_main():
+    def _load_functional_training_main() -> None:
         """Load functional training entry point (cached at module level)."""
         global _functional_training_main
         if _functional_training_main is None:
@@ -637,13 +637,13 @@ else:
 
     else:  # pragma: no cover - hydra missing
 
-        def main(cfg: Any = None) -> None:
+        def main(cfg: Any | None = None) -> None:
             raise ImportError(
                 "hydra-core is required to use codex_ml.cli.main; "
                 "install it with `pip install hydra-core`."
             )
 
-    def cli(argv: Optional[list[str]] = None) -> int:  # type: ignore
+    def cli(argv: Optional[list[str]] = None) -> int:
         logger = init_json_logging()
         args = list(argv) if argv is not None else sys.argv[1:]
 

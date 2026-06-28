@@ -15,17 +15,17 @@ class TestASTStorage:
     """Tests for ASTStorage class."""
 
     @pytest.fixture
-    def storage(self):
+    def storage(self) -> None:
         """Create temporary storage for testing."""
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
             yield ASTStorage(db_path)
 
-    def test_create_storage(self, storage):
+    def test_create_storage(self, storage) -> None:
         """Test creating storage."""
         assert storage.db_path.exists()
 
-    def test_save_analysis(self, storage):
+    def test_save_analysis(self, storage) -> None:
         """Test saving an analysis."""
         findings = [
             Finding(
@@ -48,12 +48,12 @@ class TestASTStorage:
         assert analysis["file_path"] == "test.py"
         assert analysis["finding_count"] == 1
 
-    def test_get_analysis_not_found(self, storage):
+    def test_get_analysis_not_found(self, storage) -> None:
         """Test getting non-existent analysis."""
         result = storage.get_analysis("nonexistent")
         assert result is None
 
-    def test_get_findings(self, storage):
+    def test_get_findings(self, storage) -> None:
         """Test getting findings."""
         findings = [
             Finding(
@@ -74,7 +74,7 @@ class TestASTStorage:
         retrieved = storage.get_findings(analysis_id="test-001")
         assert len(retrieved) == 2
 
-    def test_get_findings_filtered(self, storage):
+    def test_get_findings_filtered(self, storage) -> None:
         """Test getting filtered findings."""
         findings = [
             Finding(type="a", severity="warning", message="", analyzer="x"),
@@ -87,7 +87,7 @@ class TestASTStorage:
         assert len(warnings) == 1
         assert warnings[0].severity == "warning"
 
-    def test_list_analyses(self, storage):
+    def test_list_analyses(self, storage) -> None:
         """Test listing analyses."""
         for i in range(3):
             storage.save_analysis(f"test-{i:03d}", f"file{i}.py", [])
@@ -95,7 +95,7 @@ class TestASTStorage:
         analyses = storage.list_analyses()
         assert len(analyses) == 3
 
-    def test_delete_analysis(self, storage):
+    def test_delete_analysis(self, storage) -> None:
         """Test deleting an analysis."""
         storage.save_analysis("test-001", "test.py", [])
         assert storage.get_analysis("test-001") is not None
@@ -104,12 +104,12 @@ class TestASTStorage:
         assert result is True
         assert storage.get_analysis("test-001") is None
 
-    def test_delete_analysis_not_found(self, storage):
+    def test_delete_analysis_not_found(self, storage) -> None:
         """Test deleting non-existent analysis."""
         result = storage.delete_analysis("nonexistent")
         assert result is False
 
-    def test_get_statistics(self, storage):
+    def test_get_statistics(self, storage) -> None:
         """Test getting statistics."""
         findings = [
             Finding(type="a", severity="warning", message="", analyzer="x"),
@@ -123,7 +123,7 @@ class TestASTStorage:
         assert "warning" in stats["findings_by_severity"]
         assert "error" in stats["findings_by_severity"]
 
-    def test_save_metric(self, storage):
+    def test_save_metric(self, storage) -> None:
         """Test saving metrics."""
         storage.save_analysis("test-001", "test.py", [])
         storage.save_metric("test-001", "complexity_avg", 5.5)
@@ -132,7 +132,7 @@ class TestASTStorage:
         metrics = storage.get_metrics("test-001")
         assert len(metrics) == 2
 
-    def test_get_metrics_filtered(self, storage):
+    def test_get_metrics_filtered(self, storage) -> None:
         """Test getting filtered metrics."""
         storage.save_analysis("test-001", "test.py", [])
         storage.save_metric("test-001", "complexity_avg", 5.5)
@@ -143,7 +143,7 @@ class TestASTStorage:
         assert metrics[0]["metric_name"] == "complexity_avg"
         assert metrics[0]["metric_value"] == 5.5
 
-    def test_findings_with_location(self, storage):
+    def test_findings_with_location(self, storage) -> None:
         """Test findings with source location."""
         location = SourceLocation(
             file_path=Path("test.py"),

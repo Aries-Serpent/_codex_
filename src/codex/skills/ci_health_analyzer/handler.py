@@ -278,7 +278,7 @@ _RULES: list[dict[str, Any]] = [
 _CONFIDENCE_THRESHOLD = 0.5
 
 
-def _trend_summary(history: list[dict]) -> dict:
+def _trend_summary(history: list[dict[str, Any]]) -> dict[str, Any]:
     """Compute a trend window summary from a list of prior run results.
 
     Parameters
@@ -343,7 +343,7 @@ def _trend_summary(history: list[dict]) -> dict:
     }
 
 
-def run(payload: dict) -> dict:
+def run(payload: dict[str, Any]) -> dict[str, Any]:
     """Analyse CI run logs and return a health classification with trend window.
 
     Parameters
@@ -366,7 +366,7 @@ def run(payload: dict) -> dict:
         ``trend`` is ``None`` when no ``history`` is supplied.
     """
     logs: str = str(payload.get("run_logs", "")).strip()
-    history: list[dict] = list(payload.get("history") or [])
+    history: list[dict[str, Any]] = list[Any](payload.get("history") or [])
     if not logs:
         return {
             "category": "unknown",
@@ -383,8 +383,8 @@ def run(payload: dict) -> dict:
     workflow_name: str = str(payload.get("workflow_name", ""))
     commit_sha: str = str(payload.get("commit_sha", ""))
 
-    all_matches: list[dict] = []
-    best: dict | None = None
+    all_matches: list[dict[str, Any]] = []
+    best: dict[str, Any] | None = None
 
     for rule in _RULES:
         if rule["regex"].search(logs):
@@ -413,7 +413,7 @@ def run(payload: dict) -> dict:
         }
 
     # Build trend from history + current run
-    trend: dict | None = None
+    trend: dict[str, Any] | None = None
     if history:
         current_result = {
             "category": best["category"],

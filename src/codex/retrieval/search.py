@@ -118,7 +118,7 @@ class RetrievalEngine:
         documents: list[dict[str, Any]],
         index_name: str = "default",
         text_field: str = "content",
-    ):
+    ) -> None:
         """Build a new index for a tenant
 
         Args:

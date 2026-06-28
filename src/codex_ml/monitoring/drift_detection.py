@@ -102,7 +102,7 @@ class DriftDetector:
         """Get all alerts."""
         return self.alerts
 
-    def clear_alerts(self):
+    def clear_alerts(self) -> None:
         """Clear all alerts."""
         self.alerts = []
 
@@ -347,7 +347,7 @@ class ComprehensiveDriftMonitor:
         alerts.extend(self.model_detector.get_alerts())
         return alerts
 
-    def clear_all_alerts(self):
+    def clear_all_alerts(self) -> None:
         """Clear alerts from all detectors."""
         self.data_detector.clear_alerts()
         self.config_detector.clear_alerts()

@@ -4,7 +4,7 @@
 class DelegationHandler:
     """Comprehensive delegation_handler implementation."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize DelegationHandler."""
         self._data = {}
         self._config = {}

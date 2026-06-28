@@ -169,11 +169,11 @@ class SecureStorage:
             logger.debug("Suppressed exception in handler", exc_info=True)
         # Hash the key to get required length
         if isinstance(key, str):
-            key = key.encode("utf-8")
+            key = key.encode("utf-8")  # type: ignore[assignment]
 
         import hashlib
 
-        return hashlib.sha256(key).digest()[:length]
+        return hashlib.sha256(key).digest()[:length]  # type: ignore[arg-type]
 
     def encrypt(self, data: str) -> bytes:
         """

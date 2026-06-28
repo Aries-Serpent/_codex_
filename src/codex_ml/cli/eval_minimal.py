@@ -6,11 +6,11 @@ import argparse
 from pathlib import Path
 from typing import Any, Optional
 
-from codex_ml.cli import utils as cli_utils
+from codex_ml.cli import utils as cli_utils  # type: ignore[attr-defined]
 from codex_ml.logging.experiment import ExperimentTracker
 
 
-def _import_training_loop():
+def _import_training_loop() -> None:
     from codex_ml.training import loop as training_loop
 
     return training_loop

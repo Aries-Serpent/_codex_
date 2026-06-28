@@ -18,7 +18,7 @@ _AAIS_PRUNE_THRESHOLD = 0.30  # docs scoring below this are candidates for pruni
 _AAIS_REFRESH_THRESHOLD = 0.60  # docs scoring below this need refresh
 
 
-def plan_and_apply(payload: dict) -> dict:
+def plan_and_apply(payload: dict[str, Any]) -> dict[str, Any]:
     """Score, plan, and optionally apply doc refresh.
 
     Parameters
@@ -43,7 +43,7 @@ def plan_and_apply(payload: dict) -> dict:
         return {"plan": [], "aais_score": 0.0, "patches": [], "error": "paths is required"}
 
     scorer = AAISScorer()
-    plan: list[dict] = []
+    plan: list[dict[str, Any]] = []
     scores: list[float] = []
 
     for path_str in paths:
@@ -96,7 +96,7 @@ def plan_and_apply(payload: dict) -> dict:
 
     overall_aais = sum(scores) / len(scores) if scores else 0.0
 
-    patches: list[dict] = []
+    patches: list[dict[str, Any]] = []
     if "apply" in actions:
         for op in plan:
             if op["op"] == "prune":

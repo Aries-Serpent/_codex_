@@ -63,7 +63,7 @@ except ImportError:
             return sanitized[:max_length] + "...[truncated]"
         return sanitized
 
-    def sanitize_dict_for_log(data: dict, max_length: int = 500) -> dict:
+    def sanitize_dict_for_log(data: dict[str, Any], max_length: int = 500) -> dict[str, Any]:
         """Sanitize dictionary values for safe logging."""
         return {k: sanitize_log_input(v, max_length) for k, v in data.items()}
 

@@ -4,7 +4,7 @@
 class PolicyEngine:
     """Comprehensive policy_engine implementation."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize PolicyEngine."""
         self._data = {}
         self._config = {}

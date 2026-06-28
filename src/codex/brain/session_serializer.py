@@ -38,7 +38,7 @@ import json
 import logging
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import msgpack
 
@@ -53,7 +53,7 @@ class AgentStateSnapshot:
     agent_type: str
     status: str  # running, paused, completed, error
     version: str
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -66,16 +66,16 @@ class DecisionSnapshot:
     description: str
     confidence: float
     outcome: str  # success, pending, failed
-    work_items_affected: List[str] = field(default_factory=list)
-    metrics: Dict[str, Any] = field(default_factory=dict)
+    work_items_affected: list[str] = field(default_factory=list)
+    metrics: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
 class MemorySnapshot:
     """Snapshot of agent memory."""
 
-    short_term_memory: List[Dict[str, Any]] = field(default_factory=list)
-    long_term_memory: List[Dict[str, Any]] = field(default_factory=list)
+    short_term_memory: list[dict[str, Any]] = field(default_factory=list)
+    long_term_memory: list[dict[str, Any]] = field(default_factory=list)
     total_patterns: int = 0
     memory_usage_bytes: int = 0
 
@@ -85,13 +85,13 @@ class ExecutionProgressSnapshot:
     """Snapshot of execution progress."""
 
     current_task: Optional[str] = None
-    completed_tasks: List[str] = field(default_factory=list)
-    pending_tasks: List[str] = field(default_factory=list)
-    failed_tasks: List[str] = field(default_factory=list)
-    work_items: Dict[str, int] = field(
+    completed_tasks: list[str] = field(default_factory=list)
+    pending_tasks: list[str] = field(default_factory=list)
+    failed_tasks: list[str] = field(default_factory=list)
+    work_items: dict[str, int] = field(
         default_factory=lambda: {"total": 0, "completed": 0, "failed": 0, "pending": 0}
     )
-    milestones: Dict[str, Any] = field(
+    milestones: dict[str, Any] = field(
         default_factory=lambda: {"completed": [], "current": None, "pending": []}
     )
 
@@ -112,8 +112,8 @@ class ContextSnapshot:
     """Snapshot of execution context."""
 
     system_prompt_hash: str = ""
-    user_context: Dict[str, Any] = field(default_factory=dict)
-    configuration: Dict[str, Any] = field(default_factory=dict)
+    user_context: dict[str, Any] = field(default_factory=dict)
+    configuration: dict[str, Any] = field(default_factory=dict)
 
 
 class SessionSerializer:
@@ -122,7 +122,7 @@ class SessionSerializer:
     SCHEMA_VERSION = 1
     SERIALIZER_VERSION = "1.0.0"
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize SessionSerializer."""
         logger.info(f"SessionSerializer initialized: version={self.SERIALIZER_VERSION}")
 
@@ -130,11 +130,11 @@ class SessionSerializer:
         self,
         agent_state: Optional[AgentStateSnapshot] = None,
         memory_snapshot: Optional[MemorySnapshot] = None,
-        decision_history: Optional[List[DecisionSnapshot]] = None,
+        decision_history: Optional[list[DecisionSnapshot]] = None,
         execution_progress: Optional[ExecutionProgressSnapshot] = None,
         repository_state: Optional[RepositoryStateSnapshot] = None,
         context_snapshot: Optional[ContextSnapshot] = None,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Serialize complete session state.
 
         Args:
@@ -160,7 +160,7 @@ class SessionSerializer:
             "context_snapshot": self._serialize_context_snapshot(context_snapshot),
         }
 
-    def serialize_to_json(self, state_dict: Dict[str, Any]) -> str:
+    def serialize_to_json(self, state_dict: dict[str, Any]) -> str:
         """Serialize state dict to JSON string.
 
         Args:
@@ -177,7 +177,7 @@ class SessionSerializer:
             logger.error(f"Failed to serialize to JSON: {e}")
             raise
 
-    def serialize_to_binary(self, state_dict: Dict[str, Any]) -> bytes:
+    def serialize_to_binary(self, state_dict: dict[str, Any]) -> bytes:
         """Serialize state dict to binary (msgpack) format.
 
         Args:
@@ -196,7 +196,7 @@ class SessionSerializer:
             logger.error(f"Failed to serialize to binary: {e}")
             raise
 
-    def deserialize_from_json(self, json_str: str) -> Dict[str, Any]:
+    def deserialize_from_json(self, json_str: str) -> dict[str, Any]:
         """Deserialize state from JSON string.
 
         Args:
@@ -213,7 +213,7 @@ class SessionSerializer:
             logger.error(f"Failed to deserialize from JSON: {e}")
             raise
 
-    def deserialize_from_binary(self, binary_data: bytes) -> Dict[str, Any]:
+    def deserialize_from_binary(self, binary_data: bytes) -> dict[str, Any]:
         """Deserialize state from binary (msgpack) format.
 
         Args:
@@ -276,7 +276,7 @@ class SessionSerializer:
 
     # Private Methods
 
-    def _serialize_agent_state(self, agent_state: Optional[AgentStateSnapshot]) -> Dict[str, Any]:
+    def _serialize_agent_state(self, agent_state: Optional[AgentStateSnapshot]) -> dict[str, Any]:
         """Serialize agent state."""
         if not agent_state:
             return {
@@ -289,8 +289,8 @@ class SessionSerializer:
         return asdict(agent_state)
 
     def _serialize_decision_history(
-        self, decision_history: Optional[List[DecisionSnapshot]]
-    ) -> List[Dict[str, Any]]:
+        self, decision_history: Optional[list[DecisionSnapshot]]
+    ) -> list[dict[str, Any]]:
         """Serialize decision history."""
         if not decision_history:
             return []
@@ -298,7 +298,7 @@ class SessionSerializer:
 
     def _serialize_memory_snapshot(
         self, memory_snapshot: Optional[MemorySnapshot]
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Serialize memory snapshot."""
         if not memory_snapshot:
             return {
@@ -311,7 +311,7 @@ class SessionSerializer:
 
     def _serialize_execution_progress(
         self, execution_progress: Optional[ExecutionProgressSnapshot]
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Serialize execution progress."""
         if not execution_progress:
             return {
@@ -326,7 +326,7 @@ class SessionSerializer:
 
     def _serialize_repository_state(
         self, repository_state: Optional[RepositoryStateSnapshot]
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Serialize repository state."""
         if not repository_state:
             return {
@@ -340,7 +340,7 @@ class SessionSerializer:
 
     def _serialize_context_snapshot(
         self, context_snapshot: Optional[ContextSnapshot]
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Serialize context snapshot."""
         if not context_snapshot:
             return {
@@ -431,8 +431,8 @@ def create_decision_snapshot(
 
 
 def create_memory_snapshot(
-    short_term_memory: Optional[List[Dict[str, Any]]] = None,
-    long_term_memory: Optional[List[Dict[str, Any]]] = None,
+    short_term_memory: Optional[list[dict[str, Any]]] = None,
+    long_term_memory: Optional[list[dict[str, Any]]] = None,
     total_patterns: int = 0,
     memory_usage_bytes: int = 0,
 ) -> MemorySnapshot:
@@ -457,9 +457,9 @@ def create_memory_snapshot(
 
 def create_execution_progress_snapshot(
     current_task: Optional[str] = None,
-    completed_tasks: Optional[List[str]] = None,
-    pending_tasks: Optional[List[str]] = None,
-    failed_tasks: Optional[List[str]] = None,
+    completed_tasks: Optional[list[str]] = None,
+    pending_tasks: Optional[list[str]] = None,
+    failed_tasks: Optional[list[str]] = None,
 ) -> ExecutionProgressSnapshot:
     """Helper to create ExecutionProgressSnapshot.
 
@@ -508,8 +508,8 @@ def create_repository_state_snapshot(
 
 def create_context_snapshot(
     system_prompt_hash: str = "",
-    user_context: Optional[Dict[str, Any]] = None,
-    configuration: Optional[Dict[str, Any]] = None,
+    user_context: Optional[dict[str, Any]] = None,
+    configuration: Optional[dict[str, Any]] = None,
 ) -> ContextSnapshot:
     """Helper to create ContextSnapshot.
 

@@ -64,7 +64,7 @@ class TestEvaluationErrors:
 
     def test_metric_error_is_valueerror(self):
         """Test MetricError is a ValueError."""
-        from codex_ml.eval.metrics import MetricError
+        from codex_ml.metrics.metrics_deprecated import MetricError
 
         assert issubclass(MetricError, ValueError)
 
@@ -85,7 +85,7 @@ class TestPerplexityCalculation:
 
     def test_perplexity_perfect_predictions(self):
         """Test perplexity with perfect predictions."""
-        from codex_ml.eval.metrics import perplexity
+        from codex_ml.metrics.metrics_deprecated import perplexity
 
         # Perfect predictions: log probability = 0
         predictions = np.array([[1.0, 0.0, 0.0]])  # One-hot for class 0
@@ -107,7 +107,7 @@ class TestPerplexityCalculation:
 
     def test_perplexity_invalid_shape(self):
         """Test perplexity with mismatched shapes."""
-        from codex_ml.eval.metrics import MetricError, perplexity
+        from codex_ml.metrics.metrics_deprecated import MetricError, perplexity
 
         predictions = np.random.rand(10, 5)
         targets = np.zeros(8)  # Different length
@@ -367,7 +367,7 @@ class TestEvalEdgeCases:
 
     def test_perplexity_single_sample(self):
         """Test perplexity with single sample."""
-        from codex_ml.eval.metrics import perplexity
+        from codex_ml.metrics.metrics_deprecated import perplexity
 
         predictions = np.array([[0.1, 0.9]])
         targets = np.array([1])
@@ -412,7 +412,7 @@ class TestEvalErrorHandling:
 
     def test_perplexity_invalid_probabilities(self):
         """Test perplexity with invalid probability values."""
-        from codex_ml.eval.metrics import perplexity
+        from codex_ml.metrics.metrics_deprecated import perplexity
 
         # Probabilities should sum to 1 but don't
         predictions = np.array([[10.0, 20.0]])
@@ -445,7 +445,7 @@ class TestEvalUtils:
 
     def test_materialise_sequence(self):
         """Test _materialise function."""
-        from codex_ml.eval.metrics import _materialise
+        from codex_ml.metrics.metrics_deprecated import _materialise
 
         items = [1, 2, 3, 4, 5]
         result = _materialise(iter(items))
@@ -453,7 +453,7 @@ class TestEvalUtils:
 
     def test_ensure_equal_length_match(self):
         """Test _ensure_equal_length with matching lengths."""
-        from codex_ml.eval.metrics import _ensure_equal_length
+        from codex_ml.metrics.metrics_deprecated import _ensure_equal_length
 
         a = [1, 2, 3]
         b = [4, 5, 6]
@@ -462,7 +462,7 @@ class TestEvalUtils:
 
     def test_ensure_equal_length_mismatch(self):
         """Test _ensure_equal_length with mismatched lengths."""
-        from codex_ml.eval.metrics import _ensure_equal_length
+        from codex_ml.metrics.metrics_deprecated import _ensure_equal_length
 
         a = [1, 2, 3]
         b = [4, 5]

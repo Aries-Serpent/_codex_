@@ -28,4 +28,5 @@ def test_cli_help():
         "Codex ML CLI" in proc.stdout
         or "Commands" in proc.stdout
         or "Hydra-managed pipeline entrypoint" in proc.stdout
-    )
+
+    ), "Condition must be true"

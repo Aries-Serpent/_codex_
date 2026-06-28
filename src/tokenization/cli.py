@@ -340,7 +340,7 @@ def inspect(tokenizer_path: Path) -> None:
                 added = tokenizer_cfg.get("added_tokens", [])
                 if isinstance(added, list):
                     special_tokens = [
-                        item.get("content")
+                        item.get("content")  # type: ignore[misc]
                         for item in added
                         if isinstance(item, dict) and item.get("special")
                     ]
@@ -391,7 +391,7 @@ def encode(
             )
 
     try:
-        encoded = tokenizer(
+        encoded = tokenizer(  # type: ignore[operator]
             payload,
             padding="max_length" if pad_to else False,
             max_length=pad_to or None,

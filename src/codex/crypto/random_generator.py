@@ -4,7 +4,7 @@
 class RandomGenerator:
     """Comprehensive random_generator implementation."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize RandomGenerator."""
         self._data = {}
         self._config = {}
