@@ -143,7 +143,7 @@ class TestNetworkExceptions:
 
             result = None
             try:
-                urllib.request.urlopen("http://example.com")
+                urllib.request.urlopen("http://example.com")  # nosemgrep: semgrep.urllib-urlopen-dynamic - Test: URL is hardcoded and mocked with patch()
             except ConnectionError:
                 result = "connection_error"
             assert result == "connection_error", "Result must not be empty"

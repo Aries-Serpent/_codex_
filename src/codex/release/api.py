@@ -34,6 +34,7 @@ from codex.archive.api import restore  # noqa: E402
 from codex.archive.dal import ArchiveDAL  # noqa: E402
 from codex.evidence.core import evidence_append  # noqa: E402
 from codex.release.manifest import dump_manifest_locked, load_manifest  # noqa: E402
+from typing import Any
 
 
 def _set_mode(path: Path, mode_str: str) -> None:

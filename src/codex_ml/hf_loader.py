@@ -180,7 +180,7 @@ def load_tokenizer(
     )
     # Ensure pad_token is set; decoder-only models (GPT-2, LLaMA, Mistral …) omit it
     # because they use eos_token to pad — both serve as sequence terminators.
-    if tokenizer.pad_token is None and tokenizer.eos_token is not None:
+    if tokenizer is not None and tokenizer.pad_token is None and tokenizer.eos_token is not None:
         tokenizer.pad_token = tokenizer.eos_token
     return tokenizer
 
@@ -280,7 +280,7 @@ def load_causal_lm(
             **loader_kwargs,
         )
 
-    if device:
+    if device and model is not None:
         try:
             model = model.to(device)
         except (

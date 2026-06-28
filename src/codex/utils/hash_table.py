@@ -13,7 +13,7 @@ Features:
 AAIS Contribution: +3.0 points (Runtime Introspection)
 """
 
-from typing import Generic, Optional, TypeVar
+from typing import Any, Generic, Optional, TypeVar
 
 K = TypeVar("K")
 V = TypeVar("V")

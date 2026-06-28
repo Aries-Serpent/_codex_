@@ -193,7 +193,7 @@ class GitHubMCPPoster:
                     "X-GitHub-Api-Version": _API_VERSION,
                 },
             )
-            with urllib.request.urlopen(  # nosec B310  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- URL is validated by _validated_github_api_url()
+            with urllib.request.urlopen(  # nosec B310  # nosemgrep: semgrep.urllib-urlopen-dynamic -- URL is validated by _validated_github_api_url()
                 req, timeout=10
             ) as resp:
                 body = json.loads(resp.read().decode())
@@ -1491,7 +1491,7 @@ class GitHubMCPPoster:
             },
         )
         try:
-            with urllib.request.urlopen(  # nosec B310  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- URL is validated by _validated_github_api_url()
+            with urllib.request.urlopen(  # nosec B310  # nosemgrep: semgrep.urllib-urlopen-dynamic -- URL is validated by _validated_github_api_url()
                 req, timeout=30
             ) as resp:
                 return json.loads(resp.read())
@@ -1947,7 +1947,7 @@ class GitHubMCPPoster:
             },
         )
         try:
-            with urllib.request.urlopen(  # nosec B310  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- URL is validated by _validated_github_api_url()
+            with urllib.request.urlopen(  # nosec B310  # nosemgrep: semgrep.urllib-urlopen-dynamic -- URL is validated by _validated_github_api_url()
                 req, timeout=30
             ) as resp:
                 return json.loads(resp.read())
@@ -2002,7 +2002,7 @@ class GitHubMCPPoster:
                 },
             )
             try:
-                with urllib.request.urlopen(  # nosec B310  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- URL is validated by _validated_github_api_url()
+                with urllib.request.urlopen(  # nosec B310  # nosemgrep: semgrep.urllib-urlopen-dynamic -- URL is validated by _validated_github_api_url()
                     req, timeout=30
                 ) as resp:
                     body = resp.read()

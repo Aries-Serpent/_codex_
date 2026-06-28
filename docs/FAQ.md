@@ -128,7 +128,7 @@ python train.py training.learning_rate=0.001
 python train.py +experiment=my_experiment
 ```
 
-**Learn more:** See [Hydra Quick Start Guide](docs/configuration/hydra_quickstart.md)
+**Learn more:** See [Hydra Quick Start Guide](./configuration/hydra_quickstart.md)
 
 ---
 
@@ -286,7 +286,7 @@ python train.py \
   training.eval_every=100
 ```
 
-**Still slow?** Check [Performance Optimization Guide](docs/guides/performance_optimization_guide.md)
+**Still slow?** Check [Performance Optimization Guide](./guides/inference_performance.md)
 
 ---
 
@@ -565,7 +565,7 @@ curl http://localhost:8000/predict
 ```
 
 **Option 3: Cloud deployment (AWS/Azure/GCP)**
-Follow the [Deployment Guide](docs/guides/deployment_guide.md)
+Follow the [Deployment Guide](./guides/production_deployment.md)
 
 ---
 
@@ -660,13 +660,13 @@ docker run -p 8000:8000 codex-model:1.0-old
 |---------|----------|---------------|
 | **[GitHub Issues](https://github.com/Aries-Serpent/_codex_/issues)** | Bug reports, feature requests | 24-48 hours |
 | **[GitHub Discussions](https://github.com/Aries-Serpent/_codex_/discussions)** | Questions, ideas, help | 12-24 hours |
-| **[Documentation](docs/)** | Learning, reference | N/A (always available) |
+| **[Documentation](./README.md)** | Learning, reference | N/A (always available) |
 | **[Stack Overflow](https://stackoverflow.com/questions/tagged/codex-ml)** | General ML questions | Community |
 
 **Before asking:**
 1. Check [existing issues](https://github.com/Aries-Serpent/_codex_/issues) for your question
 2. Check [troubleshooting section](#troubleshooting) above
-3. Check [documentation](docs/)
+3. Check [documentation](./README.md)
 
 **How to contribute:**
 - Found a bug? Report it on [GitHub Issues](https://github.com/Aries-Serpent/_codex_/issues)
@@ -721,11 +721,11 @@ python -m codex_ml.serving.cli serve \
 
 | Concept | Why It Matters | Learn More |
 |---------|---------------|-----------| 
-| **Hydra** | Manage configurations without code changes | [Hydra Guide](docs/configuration/hydra_quickstart.md) |
-| **Training** | Core ML workflow - how to prepare & train models | [Training Guide](docs/guides/training_guide.md) |
-| **Evaluation** | Measure model quality - know if it's good | [Evaluation Guide](docs/guides/evaluation_guide.md) |
-| **Deployment** | Get models into production & live | [Deployment Guide](docs/guides/deployment_guide.md) |
-| **Monitoring** | Track model health over time | [Monitoring Guide](docs/guides/monitoring_guide.md) |
+| **Hydra** | Manage configurations without code changes | [Hydra Guide](./configuration/hydra_quickstart.md) |
+| **Training** | Core ML workflow - how to prepare & train models | [Training Guide](./training/README.md) |
+| **Evaluation** | Measure model quality - know if it's good | [Evaluation Guide](./evaluation/README.md) |
+| **Deployment** | Get models into production & live | [Deployment Guide](./guides/production_deployment.md) |
+| **Monitoring** | Track model health over time | [Monitoring Guide](./operations/monitoring_guide.md) |
 
 ---
 
@@ -749,11 +749,11 @@ python -m codex_ml.serving.cli serve \
 ## Additional Resources
 
 ### Documentation
-- 📖 [Main Documentation](docs/)
-- 🚀 [Quick Start Guide](docs/quickstart.md)
-- ⚙️ [Configuration Guide](docs/configuration/README.md)
-- 📊 [Evaluation Guide](docs/guides/evaluation_guide.md)
-- 🚢 [Deployment Guide](docs/guides/deployment_guide.md)
+- 📖 [Main Documentation](./README.md)
+- 🚀 [Quick Start Guide](./QUICKSTART.md)
+- ⚙️ [Configuration Guide](./configuration/)
+- 📊 [Evaluation Guide](./evaluation/README.md)
+- 🚢 [Deployment Guide](./guides/production_deployment.md)
 
 ### Community
 - 💬 [GitHub Discussions](https://github.com/Aries-Serpent/_codex_/discussions)
@@ -761,9 +761,9 @@ python -m codex_ml.serving.cli serve \
 - ⭐ [Star us on GitHub](https://github.com/Aries-Serpent/_codex_)
 
 ### Examples
-- 📝 [Code Examples](docs/examples/)
-- 📓 [Jupyter Notebooks](notebooks/)
-- 🧪 [Test Cases](tests/)
+- 📝 [Code Examples](../examples/)
+- 📓 [Jupyter Notebooks](../notebooks/)
+- 🧪 [Test Cases](../tests/)
 
 ---
 

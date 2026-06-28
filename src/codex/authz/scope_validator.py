@@ -1,3 +1,4 @@
+from typing import Any
 """Security scope_validator module."""
 
 
@@ -6,5 +7,5 @@ class ScopeValidator:
 
     def __init__(self) -> None:
         """Initialize ScopeValidator."""
-        self._data = {}
-        self._config = {}
+        self._data: dict[str, Any] = {}
+        self._config: dict[str, Any] = {}

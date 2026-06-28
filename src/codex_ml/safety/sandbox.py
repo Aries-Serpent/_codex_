@@ -33,7 +33,7 @@ except ImportError:  # Windows — resource is POSIX-only
 import subprocess  # nosec B404 - subprocess is required for sandboxing; see docs/security/Bandit_Fixes.md
 import tempfile
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 
 def _scrub_env() -> dict[str, Any]:

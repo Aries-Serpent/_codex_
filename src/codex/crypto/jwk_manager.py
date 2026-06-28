@@ -1,3 +1,4 @@
+from typing import Any
 """Security jwk_manager module."""
 
 
@@ -6,5 +7,5 @@ class JWKManager:
 
     def __init__(self) -> None:
         """Initialize JWKManager."""
-        self._data = {}
-        self._config = {}
+        self._data: dict[str, Any] = {}
+        self._config: dict[str, Any] = {}

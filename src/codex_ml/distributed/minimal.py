@@ -18,6 +18,7 @@ Author: Codex Team
 from __future__ import annotations
 
 import logging
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +32,7 @@ try:  # pragma: no cover - torch is optional
     import torch
 except (ImportError, AttributeError):  # pragma: no cover - execution environments without torch
     torch = None  # type: ignore[assignment]
-    dist = None
+    dist = None  # type: ignore[assignment]
 
 _OPT_IN_VALUES = {"1", "true", "TRUE", "True", "YES", "yes", "on", "ON"}
 _FALLBACK_ENV_FLAGS = ("CODEX_DDP_ENABLE",)
@@ -134,7 +135,7 @@ def init_distributed_if_needed(backend: str = "nccl", env_flag: str = "CODEX_DDP
         cuda_available = bool(torch and getattr(torch.cuda, "is_available", lambda: False)())
         if not cuda_available:
             chosen_backend = "gloo"
-    init_kwargs: dict[str, int] = {}
+    init_kwargs: dict[str, Any] = {}
     world_size = _parse_env_int("WORLD_SIZE")
     rank = _parse_env_int("RANK")
     local_rank = _parse_env_int("LOCAL_RANK")

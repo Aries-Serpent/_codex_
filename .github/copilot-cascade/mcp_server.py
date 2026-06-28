@@ -561,7 +561,7 @@ class MCPIntegration:
         if auth_token:
             headers["Authorization"] = f"Bearer {auth_token}"
         req = urllib.request.Request(url, data=data, headers=headers, method="POST")
-        with urllib.request.urlopen(  # nosec B310  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- URL is validated by _validated_network_url()
+        with urllib.request.urlopen(  # nosec B310  # nosemgrep: semgrep.urllib-urlopen-dynamic -- URL is validated by _validated_network_url()
             req, timeout=timeout
         ) as resp:
             return json.loads(resp.read())
@@ -708,7 +708,7 @@ class MCPIntegration:
             headers["Authorization"] = f"Bearer {auth_token}"
 
         req = urllib.request.Request(self, data=data, headers=headers, method="POST")
-        with urllib.request.urlopen(  # nosec B310  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- URL is validated by _validated_network_url()
+        with urllib.request.urlopen(  # nosec B310  # nosemgrep: semgrep.urllib-urlopen-dynamic -- URL is validated by _validated_network_url()
             req, timeout=timeout
         ) as resp:
             content_type = resp.headers.get("Content-Type", "")

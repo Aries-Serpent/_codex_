@@ -22,7 +22,7 @@ from __future__ import annotations
 import logging
 import re
 from pathlib import Path
-from typing import Literal
+from typing import Any, Literal
 
 from .models import BudgetConfig, DocMeta, PolicyConfig, RegisteredSkill, SkillManifest
 

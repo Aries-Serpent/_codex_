@@ -38,7 +38,7 @@ def _get(url: str, timeout: int = 5, max_retries: int = 5):
     last_error = None
     for attempt in range(max_retries):
         try:
-            with urllib.request.urlopen(  # nosec B310 -- test-only controlled URL; scheme/host/port constrained to http://localhost:8010 above  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- URL is constrained to localhost:8010 above
+            with urllib.request.urlopen(  # nosec B310 -- test-only controlled URL; scheme/host/port constrained to http://localhost:8010 above  # nosemgrep: semgrep.urllib-urlopen-dynamic -- URL is constrained to localhost:8010 above
                 url, timeout=timeout
             ) as r:
                 return json.loads(r.read().decode("utf-8"))

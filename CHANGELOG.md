@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed (CI rescue — PR #5115, Session 2026-06-28T06:52Z)
+- Fixed malformed checkpoint regression assertions and checksum calls in `tests/regression/test_checkpoint_roundtrip.py` that caused import/collection failures
+- Fixed missing `Any` import in `src/codex_ml/eval/metrics_original.py` for `list[Any]` annotation usage
+- Ran targeted syntax validation for changed files via `python -m compileall -q`
+
 ### Fixed (CI rescue — PR #5113, Session 2026-06-28T03:38Z)
 - REQ-4: Updated AGENT_ACCOUNTABILITY_REPORT.md with blocking comments resolution session entry (2026-06-28T03:38Z)
 - REQ-5: Updated CHANGELOG.md with CI rescue and compliance check resolution documentation

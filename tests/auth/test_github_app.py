@@ -136,9 +136,9 @@ class TestGenerateJWT:
         jwt = github_app.generate_jwt()
         sig = jwt.split(".")[2]
         # Should only contain base64url characters
-        assert all(, "Condition must be true"
+        assert all(
             c in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_" for c in sig
-        )
+        ), "Condition must be true"
 
 
 # ---------------------------------------------------------------------------

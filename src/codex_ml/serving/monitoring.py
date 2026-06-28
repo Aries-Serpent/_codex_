@@ -6,9 +6,9 @@ Provides Prometheus metrics, health checks, and distributed tracing.
 
 import logging
 from collections import defaultdict
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from threading import Lock
-from typing import Optional
+from typing import Any, DefaultDict, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -21,13 +21,13 @@ class LatencyHistogram:
     """
 
     buckets: list[float]  # Bucket boundaries in milliseconds
-    counts: dict[float, int]  # Count per bucket
+    counts: dict[float, int] = field(default_factory=dict)  # Count per bucket
     total_count: int = 0
     total_sum: float = 0.0
 
     def __post_init__(self) -> None:
         """Initialize bucket counts"""
-        if not hasattr(self, "counts") or self.counts is None:
+        if not self.counts:
             self.counts = {bucket: 0 for bucket in self.buckets}
 
     def observe(self, value_ms: float) -> None:
@@ -96,34 +96,34 @@ class PrometheusMetrics:
         self.lock = Lock()
 
         # Request metrics
-        self.request_count = defaultdict(int)  # {method: count}
-        self.request_latency = {}  # {endpoint: LatencyHistogram}
-        self.error_count = defaultdict(int)  # {error_type: count}
+        self.request_count: DefaultDict[str, int] = defaultdict(int)  # {method: count}
+        self.request_latency: dict[str, LatencyHistogram] = {}  # {endpoint: LatencyHistogram}
+        self.error_count: DefaultDict[str, int] = defaultdict(int)  # {error_type: count}
 
         # Model metrics
-        self.model_load_count = defaultdict(int)  # {model_name: count}
-        self.model_load_latency = {}  # {model_name: LatencyHistogram}
-        self.model_prediction_count = defaultdict(int)  # {model_name: count}
-        self.model_prediction_latency = {}  # {model_name: LatencyHistogram}
-        self.model_cache_hits = 0
-        self.model_cache_misses = 0
+        self.model_load_count: DefaultDict[str, int] = defaultdict(int)  # {model_name: count}
+        self.model_load_latency: dict[str, LatencyHistogram] = {}  # {model_name: LatencyHistogram}
+        self.model_prediction_count: DefaultDict[str, int] = defaultdict(int)  # {model_name: count}
+        self.model_prediction_latency: dict[str, LatencyHistogram] = {}  # {model_name: LatencyHistogram}
+        self.model_cache_hits: int = 0
+        self.model_cache_misses: int = 0
 
         # Resource metrics
-        self.cpu_usage_percent = 0.0
-        self.memory_usage_bytes = 0
-        self.gpu_usage_percent = {}  # {device_id: percent}
-        self.gpu_memory_bytes = {}  # {device_id: bytes}
+        self.cpu_usage_percent: float = 0.0
+        self.memory_usage_bytes: int = 0
+        self.gpu_usage_percent: dict[int, float] = {}  # {device_id: percent}
+        self.gpu_memory_bytes: dict[int, int] = {}  # {device_id: bytes}
 
         # Circuit breaker metrics
-        self.circuit_breaker_state = {}  # {model_name: state}
-        self.circuit_breaker_failures = defaultdict(int)  # {model_name: count}
-        self.circuit_breaker_recoveries = defaultdict(int)  # {model_name: count}
+        self.circuit_breaker_state: dict[str, str] = {}  # {model_name: state}
+        self.circuit_breaker_failures: DefaultDict[str, int] = defaultdict(int)  # {model_name: count}
+        self.circuit_breaker_recoveries: DefaultDict[str, int] = defaultdict(int)  # {model_name: count}
 
         # Initialize histograms
-        standard_buckets = [5, 10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000]
+        standard_buckets: list[float] = [5.0, 10.0, 25.0, 50.0, 100.0, 250.0, 500.0, 1000.0, 2500.0, 5000.0, 10000.0]
         self.request_latency["inference"] = LatencyHistogram(buckets=standard_buckets)
         self.request_latency["batch_inference"] = LatencyHistogram(buckets=standard_buckets)
-        self.request_latency["health"] = LatencyHistogram(buckets=[1, 5, 10, 25, 50, 100])
+        self.request_latency["health"] = LatencyHistogram(buckets=[1.0, 5.0, 10.0, 25.0, 50.0, 100.0])
 
         logger.info("PrometheusMetrics initialized")
 
@@ -157,8 +157,8 @@ class PrometheusMetrics:
                 self.model_load_count[model_name] += 1
 
                 if model_name not in self.model_load_latency:
-                    self.model_load_latency[model_name] = LatencyHistogram(  # type: ignore[call-arg]
-                        buckets=[100, 500, 1000, 2000, 5000, 10000, 30000]
+                    self.model_load_latency[model_name] = LatencyHistogram(
+                        buckets=[100.0, 500.0, 1000.0, 2000.0, 5000.0, 10000.0, 30000.0]
                     )
 
                 self.model_load_latency[model_name].observe(latency_ms)
@@ -179,8 +179,8 @@ class PrometheusMetrics:
             self.model_prediction_count[model_name] += num_samples
 
             if model_name not in self.model_prediction_latency:
-                self.model_prediction_latency[model_name] = LatencyHistogram(  # type: ignore[call-arg]
-                    buckets=[10, 25, 50, 100, 250, 500, 1000, 2500, 5000]
+                self.model_prediction_latency[model_name] = LatencyHistogram(
+                    buckets=[10.0, 25.0, 50.0, 100.0, 250.0, 500.0, 1000.0, 2500.0, 5000.0]
                 )
 
             self.model_prediction_latency[model_name].observe(latency_ms)

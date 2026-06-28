@@ -327,8 +327,8 @@ docs/
 3. Want to help write? See CONTRIBUTING.md
 
 ### Tracking & Updates
-- Track progress: [Campaign Database](docs/campaign-tracking.sql)
-- View metrics: `docs/CAMPAIGN_PROGRESS_REPORT.md`
+- View report: [CAMPAIGN_EXECUTION_REPORT.md](./CAMPAIGN_EXECUTION_REPORT.md)
+- View metrics: `CAMPAIGN_EXECUTION_REPORT.md`
 - Last updated: 2026-06-27
 
 ---

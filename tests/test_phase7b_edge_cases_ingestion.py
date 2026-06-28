@@ -62,7 +62,7 @@ class TestFileIngestorEdgeCases:
                     with pytest.raises((PermissionError, ValueError)):
                         ingestor.ingest(f.name)
                 finally:
-                    os.chmod(f.name, 0o644)
+                    os.chmod(f.name, 0o644)  # nosemgrep: semgrep.insecure-file-permissions - Test cleanup: restoring permissions on test file
                     os.unlink(f.name)
         except (AttributeError, NotImplementedError):
             pass

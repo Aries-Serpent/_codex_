@@ -59,7 +59,7 @@ DEFAULT_TOKENIZER_JSON = "artifacts/tokenizers/default/default/tokenizer.json"
 
 
 @lru_cache(maxsize=1)
-def _get_tokenizer_pipeline() -> None:
+def _get_tokenizer_pipeline():
     try:
         from codex_ml.tokenization import pipeline as tokenizer_pipeline
     except ModuleNotFoundError as exc:  # pragma: no cover - surfaced via Click

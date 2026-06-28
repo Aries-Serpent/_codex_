@@ -4,6 +4,7 @@ Exception hierarchy for AST operations.
 Provides a structured exception hierarchy for consistent error handling
 across the AST analysis framework.
 """
+from typing import Any
 
 
 class ASTError(Exception):

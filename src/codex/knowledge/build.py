@@ -28,6 +28,7 @@ from codex.knowledge.dedup import dedup_records
 from codex.knowledge.normalize import normalize_file
 from codex.knowledge.pii import scrub
 from codex.knowledge.schema import validate_kb
+from typing import Any
 
 DOMAINS = ("zendesk", "d365", "relocation", "sla", "ops")
 INTENTS = ("admin", "consultant", "runtime", "devops")

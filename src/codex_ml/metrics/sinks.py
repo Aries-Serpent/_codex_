@@ -5,7 +5,7 @@ from __future__ import annotations
 import csv
 import json
 from dataclasses import dataclass
-from typing import Protocol, TextIO, runtime_checkable
+from typing import Any, Protocol, TextIO, runtime_checkable
 
 __all__ = ["CsvSink", "MetricsSink", "NdjsonSink", "NullSink", "create_sink"]
 

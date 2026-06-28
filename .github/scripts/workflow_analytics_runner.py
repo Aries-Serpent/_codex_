@@ -415,7 +415,7 @@ def main():
 
     # Set outputs for GitHub Actions
     if os.getenv("GITHUB_OUTPUT"):
-        with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+        with open(os.environ["GITHUB_OUTPUT"], "a") as f:  # nosemgrep: semgrep.path-traversal-user-input - GITHUB_OUTPUT is trusted GitHub Actions env var
             f.write(f"patterns_detected={'true' if error_patterns else 'false'}\n")
             f.write(f"has_suggestions={'true' if statistics['health_status'] != 'HEALTHY' else 'false'}\n")
             f.write(f"health_status={statistics['health_status']}\n")

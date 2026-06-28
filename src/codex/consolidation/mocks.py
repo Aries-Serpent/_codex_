@@ -11,7 +11,7 @@ LOC reduction: 560 lines
 """
 
 from dataclasses import dataclass
-from typing import Any, Dict, Generic, List, Optional, TypeVar
+from typing import Any, Callable, Dict, Generic, List, Optional, TypeVar
 from unittest.mock import AsyncMock, MagicMock
 
 T = TypeVar("T")
@@ -197,7 +197,7 @@ class StubDataFactory:
         return {key: f"stub_{key}" for key in keys}
 
     @staticmethod
-    def create_stub_list(item_factory: Optional[callable] = None, count: int = 5) -> List[Any]:
+    def create_stub_list(item_factory: Optional[Callable[..., Any]] = None, count: int = 5) -> List[Any]:
         """Create a stub list."""
         if item_factory is None:
             item_factory = lambda i: {"id": i, "value": f"item_{i}"}

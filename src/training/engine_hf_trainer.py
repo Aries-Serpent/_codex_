@@ -132,7 +132,7 @@ from typing import Any, Optional, cast
 try:  # pragma: no cover - numpy optional in offline environments
     import numpy as np
 except (IOError, OSError):  # pragma: no cover - numpy missing
-    np = None
+    np = None  # type: ignore[assignment]
 
 try:  # pragma: no cover - optional datasets dependency
     from datasets import Dataset  # type: ignore[attr-defined]
@@ -299,7 +299,7 @@ except (IOError, OSError):  # pragma: no cover - optional dep
     _Accelerator = None
 
 
-def _make_accelerator(**accelerate_kwargs: Any) -> None:
+def _make_accelerator(**accelerate_kwargs: Any) -> Any:
     """Construct an Accelerator using the global compatibility shim."""
     if _Accelerator is None:
         return None
@@ -317,7 +317,7 @@ def _normalize_identifier(identifier: os.PathLike[str] | str | None) -> str | No
     return str(identifier)
 
 
-def _maybe_import_mlflow() -> None:
+def _maybe_import_mlflow() -> Any:
     if importlib.util.find_spec("mlflow") is None:
         return None
     return importlib.import_module("mlflow")
@@ -442,7 +442,7 @@ def build_trainer(
     early_stop_patience: int | None = 3,
     early_stop_threshold: float | None = 0.0,
     **kw,
-) -> None:
+) -> Trainer:
     """Construct a HF Trainer with optional early stopping and named LR scheduler."""
     if early_stop_patience:
         # Early stop needs a coherent best-model metric setup
@@ -562,7 +562,7 @@ def build_training_args(
     )
 
 
-def _compute_metrics(eval_pred) -> None:
+def _compute_metrics(eval_pred) -> dict[str, float]:
     """Compute token accuracy and perplexity for evaluation.
 
     Parameters
@@ -589,7 +589,7 @@ def _compute_metrics(eval_pred) -> None:
     except (ValueError, TypeError, RuntimeError):
         logger.warning("Exception occurred", exc_info=True)
         loss = None
-    ppl = float("inf") if loss in (None, 0) else math.exp(loss)
+    ppl = float("inf") if loss in (None, 0) else math.exp(cast(float, loss))
     return {"token_accuracy": float(acc), "perplexity": ppl}
 
 
@@ -1283,8 +1283,8 @@ def run_hf_trainer(
     )
     if custom_resume:
         try:
-            train_dl = trainer.get_train_dataloader()
-            steps_per_epoch = math.ceil(len(train_dl) / training_args.gradient_accumulation_steps)
+            train_dl = trainer.get_train_dataloader()  # type: ignore[func-returns-value]
+            steps_per_epoch = math.ceil(len(train_dl) / training_args.gradient_accumulation_steps)  # type: ignore[arg-type]
             max_steps = (
                 training_args.max_steps
                 if training_args.max_steps > 0
@@ -1307,13 +1307,13 @@ def run_hf_trainer(
         resume_ckpt = None
 
     # Train with optional checkpoint resumption
-    result = trainer.train(resume_from_checkpoint=str(resume_ckpt) if resume_ckpt else None)
+    result = trainer.train(resume_from_checkpoint=str(resume_ckpt) if resume_ckpt else None)  # type: ignore[func-returns-value]
     trainer.save_model()
 
     # Collect metrics
     metrics = dict(result.metrics)  # type: ignore[attr-defined]
     if eval_ds is not None:
-        eval_metrics = trainer.evaluate()
+        eval_metrics = trainer.evaluate()  # type: ignore[func-returns-value]
         metrics.update({f"eval_{k}": v for k, v in eval_metrics.items()})  # type: ignore[attr-defined]
     metrics.setdefault("global_step", trainer.state.global_step)
 

@@ -49,9 +49,9 @@ try:
     _HYDRA_AVAILABLE = True
 except ImportError:
     logger.debug("Hydra not available, using fallback")
-    compose = None
-    initialize_config_dir = None
-    HydraMissingConfigException = FileNotFoundError
+    compose = None  # type: ignore[assignment]
+    initialize_config_dir = None  # type: ignore[assignment]
+    HydraMissingConfigException = FileNotFoundError  # type: ignore[assignment,misc]
     _HYDRA_AVAILABLE = False
 
 # Try to import from config_legacy as fallback
