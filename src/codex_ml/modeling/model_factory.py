@@ -4,6 +4,7 @@ Provides a tiny placeholder API for constructing models given a config dict.
 Real implementations should handle dtype, device placement, and optional
 LoRA/PEFT hooks with guarded imports.
 """
+from typing import Any
 
 
 class DummyModel:

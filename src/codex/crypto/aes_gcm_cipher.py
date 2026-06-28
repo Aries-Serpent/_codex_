@@ -1,3 +1,4 @@
+from typing import Any
 """Security aes_gcm_cipher module."""
 
 
@@ -6,5 +7,5 @@ class AESGCMCipher:
 
     def __init__(self) -> None:
         """Initialize AESGCMCipher."""
-        self._data = {}
-        self._config = {}
+        self._data: dict[str, Any] = {}
+        self._config: dict[str, Any] = {}

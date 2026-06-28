@@ -1,4 +1,5 @@
 """Security vault_provider module."""
+from typing import Any
 
 
 class VaultProvider:
@@ -6,5 +7,5 @@ class VaultProvider:
 
     def __init__(self) -> None:
         """Initialize VaultProvider."""
-        self._data = {}
-        self._config = {}
+        self._data: dict[str, Any] = {}
+        self._config: dict[str, Any] = {}

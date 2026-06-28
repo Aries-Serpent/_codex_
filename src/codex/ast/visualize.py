@@ -7,6 +7,7 @@ from pathlib import Path
 
 from .graph import ASTGraph
 from .node import StandardizedASTNode
+from typing import Any
 
 
 class HTMLVisualizer:

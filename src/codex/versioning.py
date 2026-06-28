@@ -25,6 +25,7 @@ logger = logging.getLogger(__name__)
 import datetime  # noqa: E402
 import json  # noqa: E402
 from pathlib import Path  # noqa: E402
+from typing import Any
 
 
 class SemanticVersion:

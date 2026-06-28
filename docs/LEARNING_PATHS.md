@@ -585,7 +585,7 @@ Choose a specialization based on your interests:
    - Cloud training
    - Monitoring and logging
 
-4. **[CI/CD Pipelines](../CI.md)**
+4. **[CI/CD Pipelines](./CI.md)**
    - GitHub Actions setup
    - Testing automation
    - Deployment automation
@@ -595,22 +595,22 @@ Choose a specialization based on your interests:
 **Time:** 8-10 hours  
 **Focus:** Agent design, decision-making, memory
 
-1. **[Cognitive Brain Fundamentals](../AGENTS.md)**
+1. **[Cognitive Brain Fundamentals](./cognitive_brain/INDEX.md)**
    - Quantum decision engine
    - Probability weighting
    - Decision-making architecture
 
-2. **[Agent Development](../agent/OPERATIONAL_GUIDELINES.md)**
+2. **[Agent Development](./agent/OPERATIONAL_GUIDELINES.md)**
    - Creating custom agents
    - Task routing
    - Error handling
 
-3. **[Memory Systems](../agent/OPERATIONAL_GUIDELINES.md#memory)**
+3. **[Memory Systems](./cognitive_brain/INDEX.md#memory)**
    - STM/LTM architecture
    - Pattern compression
    - Semantic retrieval
 
-4. **[Agent Orchestration](../agent/OPERATIONAL_GUIDELINES.md#orchestration)**
+4. **[Agent Orchestration](./agent/OPERATIONAL_GUIDELINES.md#orchestration)**
    - Workflow definition
    - Task dependency graphs
    - Agent coordination
@@ -620,7 +620,7 @@ Choose a specialization based on your interests:
 **Time:** 6-8 hours  
 **Focus:** Data engineering, testing strategies
 
-1. **[Data Loading & Processing](./guides/ab_testing_guide.md)**
+1. **[Data Loading & Processing](./data/INDEX.md)**
    - Dataset loading
    - Preprocessing
    - Data validation

@@ -1,3 +1,4 @@
+from typing import Any
 """Security policy_engine module."""
 
 
@@ -6,5 +7,5 @@ class PolicyEngine:
 
     def __init__(self) -> None:
         """Initialize PolicyEngine."""
-        self._data = {}
-        self._config = {}
+        self._data: dict[str, Any] = {}
+        self._config: dict[str, Any] = {}

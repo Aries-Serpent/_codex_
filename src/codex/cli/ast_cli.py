@@ -9,7 +9,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Any
 
 from codex.ast_adapters import (
     JSONASTAdapter,

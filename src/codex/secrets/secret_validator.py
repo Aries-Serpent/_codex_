@@ -1,3 +1,4 @@
+from typing import Any
 """Security secret_validator module."""
 
 
@@ -6,5 +7,5 @@ class SecretValidator:
 
     def __init__(self) -> None:
         """Initialize SecretValidator."""
-        self._data = {}
-        self._config = {}
+        self._data: dict[str, Any] = {}
+        self._config: dict[str, Any] = {}

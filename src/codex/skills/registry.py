@@ -35,6 +35,7 @@ except (ImportError, AttributeError):  # pragma: no cover - optional but present
     yaml = None
 
 from .models import RegisteredSkill, SkillManifest
+from typing import Any
 
 logger = logging.getLogger(__name__)
 

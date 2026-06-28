@@ -1,3 +1,4 @@
+from typing import Any
 """Security signature_verification module."""
 
 
@@ -6,5 +7,5 @@ class SignatureVerifier:
 
     def __init__(self) -> None:
         """Initialize SignatureVerifier."""
-        self._data = {}
-        self._config = {}
+        self._data: dict[str, Any] = {}
+        self._config: dict[str, Any] = {}
