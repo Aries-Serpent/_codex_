@@ -57,7 +57,7 @@ def _resolve_auto_tokenizer() -> Any:
             logger.warning("Exception occurred", exc_info=True)
             _AutoTokenizer = None  # type: ignore[misc,assignment]
         else:
-            _AutoTokenizer = _Imported  # type: ignore[misc,assignment]
+            _AutoTokenizer = _Imported  # type: ignore[misc]
     return _AutoTokenizer
 
 
