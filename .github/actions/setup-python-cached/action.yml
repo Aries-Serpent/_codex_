@@ -333,44 +333,6 @@ runs:
         npm install -g --registry https://registry.npmjs.org markdown-link-check
 
     # ─────────────────────────────────────────────────────────────────
-    # L6 — Pre-commit hooks cache (~/.cache/pre-commit)
-    #    Pre-commit hooks are downloaded on first run and cached for
-    #    subsequent runs. Keyed on .pre-commit-config.yaml hash so
-    #    hook updates invalidate the cache automatically.
-    # ─────────────────────────────────────────────────────────────────
-    - name: 'Cache L6: pre-commit hooks (~/.cache/pre-commit)'
-      if: hashFiles('.pre-commit-config.yaml') != ''
-      uses: actions/cache@v5
-      with:
-        path: ~/.cache/pre-commit
-        key: ${{ runner.os }}-precommit-${{ inputs.cache-version || 'v2' }}-${{ hashFiles('.pre-commit-config.yaml') }}
-        restore-keys: |
-          ${{ runner.os }}-precommit-${{ inputs.cache-version || 'v2' }}-
-          ${{ runner.os }}-precommit-
-
-    # ─────────────────────────────────────────────────────────────────
-    # L7 — Build and test artifacts cache (build/, dist/, .nox/, etc.)
-    #    Caches compiled packages, test caches, and build outputs to
-    #    speed up incremental builds. Keyed on commit SHA so each push
-    #    gets fresh artifacts. Uses branch restore key for older artifacts.
-    # ─────────────────────────────────────────────────────────────────
-    - name: 'Cache L7: build artifacts (build/, dist/, .nox/, .pytest_cache/)'
-      uses: actions/cache@v5
-      with:
-        path: |
-          build/
-          dist/
-          .tox/
-          .nox/
-          .pytest_cache/
-          .mypy_cache/
-          *.egg-info/
-        key: ${{ runner.os }}-build-artifacts-${{ inputs.cache-version || 'v2' }}-${{ github.sha }}
-        restore-keys: |
-          ${{ runner.os }}-build-artifacts-${{ inputs.cache-version || 'v2' }}-
-          ${{ runner.os }}-build-artifacts-
-
-    # ─────────────────────────────────────────────────────────────────
     # 10. Expose venv on PATH and emit outputs
     # ─────────────────────────────────────────────────────────────────
     - name: Add venv to PATH

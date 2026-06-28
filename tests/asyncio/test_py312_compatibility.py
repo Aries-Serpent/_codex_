@@ -110,6 +110,7 @@ class TestRequestBatcherAsyncContext:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_request_batcher_import(self):
         """Test that RequestBatcher can be imported."""
         try:
@@ -120,6 +121,7 @@ class TestRequestBatcherAsyncContext:
             pytest.skip("RequestBatcher not available in this environment")
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -155,6 +157,7 @@ class TestAsyncDataLoaders:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_async_data_loader_import(self):
         """Test that async data loaders can be imported."""
         try:
@@ -165,6 +168,7 @@ class TestAsyncDataLoaders:
             pytest.skip("Data loaders not available")
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
