@@ -660,13 +660,13 @@ docker run -p 8000:8000 codex-model:1.0-old
 |---------|----------|---------------|
 | **[GitHub Issues](https://github.com/Aries-Serpent/_codex_/issues)** | Bug reports, feature requests | 24-48 hours |
 | **[GitHub Discussions](https://github.com/Aries-Serpent/_codex_/discussions)** | Questions, ideas, help | 12-24 hours |
-| **[Documentation](docs/)** | Learning, reference | N/A (always available) |
+| **[Documentation](./README.md)** | Learning, reference | N/A (always available) |
 | **[Stack Overflow](https://stackoverflow.com/questions/tagged/codex-ml)** | General ML questions | Community |
 
 **Before asking:**
 1. Check [existing issues](https://github.com/Aries-Serpent/_codex_/issues) for your question
 2. Check [troubleshooting section](#troubleshooting) above
-3. Check [documentation](docs/)
+3. Check [documentation](./README.md)
 
 **How to contribute:**
 - Found a bug? Report it on [GitHub Issues](https://github.com/Aries-Serpent/_codex_/issues)
