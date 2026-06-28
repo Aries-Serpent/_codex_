@@ -2,17 +2,24 @@
 
 ## [Unreleased]
 
-### Added (PHASE 6 WAVE 1 COMPLETE: Promotion Campaign & Test Suite — PR #5112, Session 2026-06-28T00:23Z)
+### Added (PHASE 6 WAVE 1 COMPLETE: Promotion Campaign & Test Suite — PR #5112, Session 2026-06-28T00:23-00:35Z)
 - **Phase 6 Wave 1 Campaign Execution Complete**: All 5 stages executed successfully (34 minutes elapsed, 3.7x faster than budget)
   - Stage 1: Critical blocker resolution (Path B strategy, 0 blockers remaining)
   - Stage 2: Promotion validation (PATH B compliance, 529 merge conflicts resolved)
   - Stage 3: 0D_base_ → main merge (172 commits promoted, successful integration)
   - Stage 4: TIER-1 test implementation (79 tests delivered, 100% pass rate, 0 flaky tests)
-  - Stage 5: Wave 2-5 orchestration briefs & coordination infrastructure
+  - Stage 5: Wave 2-5 orchestration briefs & coordination infrastructure (commit a1023e59)
 - **Test Delivery**: `tests/phase6_wave1/` — 79 TIER-1 tests (35 unit + 33 integration + 11 error paths) with deterministic 1.53s execution
-- **Wave 2-5 Infrastructure**: Complete orchestration briefs (.codex/WAVE_2_5_*.md), dispatch manifest, and coordination dashboard
-- **Campaign Reporting**: Phase 6 Wave 1 final campaign report with timeline analysis and next-phase readiness verification
-- **Metrics**: 100% decision gate pass rate, 0 regressions, 0 critical blockers, 1,345 tests suite total
+- **Wave 2-5 Multi-Agent Orchestration Briefs**:
+  - `AGENT_BRIEF_STAGE_5_WAVE2_DUPLICATION.md`: 15 duplication patterns, 9,561+ LOC reduction (4-6 weeks)
+  - `AGENT_BRIEF_STAGE_5_WAVE3_COVERAGE.md`: 160 TIER-2 tests across 3 parallel lanes (53-67 hours per lane)
+  - `AGENT_BRIEF_STAGE_5_WAVE4_MYPY.md`: 100% MyPy strict mode compliance (2-3 weeks)
+  - `AGENT_BRIEF_STAGE_5_WAVE5_CACHE.md`: 4-layer cache optimization, CI <30 min target (3-4 weeks)
+- **Dispatch & Coordination Infrastructure**:
+  - `PHASE_6_WAVE2_DISPATCH_MANIFEST.json`: 4-agent parallel orchestration with gates, feedback loops, escalation
+  - `PHASE_6_WAVE2_COORDINATION_DASHBOARD.md`: Real-time status tracking, daily/weekly checkpoints
+- **Campaign Reporting**: Phase 6 Wave 1 final campaign report with timeline analysis and Wave 2-5 readiness verification
+- **Metrics**: 100% decision gate pass rate, 0 regressions, 0 critical blockers, 1,345 tests suite total, 4 agents ready for parallel dispatch
 
 ### Fixed (malformed test assertions — PR #5110, Session 2026-06-27T12:17Z)
 - Fixed 11 critical test files with malformed assertions and syntax errors blocking CI validation (commit ef39d35a+)
