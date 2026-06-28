@@ -28,6 +28,7 @@ import logging
 import os
 import re
 from datetime import UTC, datetime, timedelta
+from types import ModuleType
 from typing import Any, Optional
 
 from security.providers.base import (
@@ -43,6 +44,7 @@ from security.providers.base import (
 logger = logging.getLogger(__name__)
 
 # Module-level requests availability flag — avoids repeated ImportError handling
+_requests: ModuleType | None
 try:
     import requests as _requests
 

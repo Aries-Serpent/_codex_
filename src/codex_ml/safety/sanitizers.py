@@ -27,8 +27,10 @@ logger = logging.getLogger(__name__)
 import re  # noqa: E402
 from collections.abc import Iterable  # noqa: E402
 from dataclasses import dataclass, field  # noqa: E402
+from types import ModuleType
 from typing import Any
 
+yaml: ModuleType | None
 try:  # pragma: no cover - optional dependency
     import yaml
 except (ImportError, AttributeError):  # pragma: no cover - optional dependency

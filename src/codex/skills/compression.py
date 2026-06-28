@@ -34,7 +34,9 @@ import tempfile
 import zipfile
 from dataclasses import dataclass
 from pathlib import Path
+from types import ModuleType
 
+yaml: ModuleType | None
 try:
     import yaml
 except (IOError, OSError):  # pragma: no cover

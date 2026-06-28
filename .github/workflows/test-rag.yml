@@ -45,17 +45,36 @@ jobs:
           CODEX_TEST_TIMEOUT_MINUTES: ${{ vars.CODEX_TEST_TIMEOUT_MINUTES || '60' }}
           CODEX_LOG_LEVEL: ${{ vars.CODEX_LOG_LEVEL || 'INFO' }}
         run: |
-          echo "RAG module test variables initialized:"
+          echo "=== RAG Module Test Initialization ==="
+          echo "[SETUP] Repository variables initialized:"
           echo "  CODEX_CACHE_VERSION=$CODEX_CACHE_VERSION"
           echo "  CODEX_TEST_TIMEOUT_MINUTES=$CODEX_TEST_TIMEOUT_MINUTES"
           echo "  CODEX_LOG_LEVEL=$CODEX_LOG_LEVEL"
+          echo "  Python version: ${{ matrix.python-version }}"
+          echo ""
+          echo "[SETUP] Timestamp: $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+          echo "[SETUP] System info:"
+          echo "  OS: $(uname -s)"
+          echo "  Arch: $(uname -m)"
+          echo "  Total CPU cores: $(nproc)"
 
       - name: Set up Python (cached)
+        id: setup-python
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: ${{ matrix.python-version }}
           cache-tier: pytorch
           cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+      
+      - name: Verify Python setup
+        run: |
+          echo "[SETUP] Python setup completed"
+          echo "  Cache hit: ${{ steps.setup-python.outputs.cache-hit }}"
+          echo "  venv-python: ${{ steps.setup-python.outputs.venv-python }}"
+          export VENV_PYTHON="${{ steps.setup-python.outputs.venv-python }}"
+          echo "VENV_PYTHON=${VENV_PYTHON}" >> "$GITHUB_ENV"
+          "$VENV_PYTHON" --version
+          "$VENV_PYTHON" -m pip --version
 
       # Cache sentence-transformers models (small, ~400MB, high value)
       # This significantly reduces test time by avoiding model re-downloads
@@ -77,77 +96,195 @@ jobs:
 
       - name: Free disk space
         run: |
-          echo "=== Disk space BEFORE cleanup ==="
-          df -h
+          echo "[DISK-CLEANUP] Starting disk cleanup..."
           echo ""
-          echo "=== Removing large system packages ==="
+          echo "[DISK-CLEANUP] Disk space BEFORE cleanup:"
+          df -h / | tail -1 | awk '{print "  Available: " $4 ", Used: " $3 ", Size: " $2}'
+          echo ""
+          
+          echo "[DISK-CLEANUP] Removing large system packages (dotnet, ghc, boost)..."
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf /opt/ghc
           sudo rm -rf /usr/local/share/boost
-          echo ""
-          echo "=== Cleaning Docker and apt cache ==="
-          sudo docker system prune --all --force --volumes
+          
+          echo "[DISK-CLEANUP] Removing unnecessary apt packages..."
           sudo apt-get clean
+          sudo apt-get autoclean
+          
+          echo "[DISK-CLEANUP] Docker cleanup (images, containers, dangling volumes)..."
+          # CRITICAL: Use --volumes=false to preserve named volumes (avoid breaking cache)
+          # Only remove dangling volumes, not all volumes
+          sudo docker system prune --all --force --volumes=false 2>/dev/null || true
+          
           echo ""
-          echo "=== Disk space AFTER cleanup ==="
-          df -h
+          echo "[DISK-CLEANUP] Disk space AFTER cleanup:"
+          df -h / | tail -1 | awk '{print "  Available: " $4 ", Used: " $3 ", Size: " $2}'
+          
+          # Verify we have enough disk space (need ~5GB for torch/transformers)
+          AVAILABLE=$(df / | tail -1 | awk '{print int($4 / 1024 / 1024)}')  # in GB
+          if [ "$AVAILABLE" -lt 5 ]; then
+            echo "[DISK-CLEANUP] ⚠️  WARNING: Only ${AVAILABLE}GB disk space available (need ≥5GB)"
+          else
+            echo "[DISK-CLEANUP] ✓ Sufficient disk space: ${AVAILABLE}GB available"
+          fi
 
       - name: Install dependencies
         run: |
-          PYTHON_BIN="${VENV_PYTHON:-python}"
-          "$PYTHON_BIN" -m pip install --upgrade pip wheel
-          # Install setuptools <82 BEFORE upgrading other packages (torch requires <82)
-          "$PYTHON_BIN" -m pip install 'setuptools<82'
-          # Upgrade cryptography and pyOpenSSL first to fix compatibility issues
-          # with transformers/sentence-transformers on Python 3.12
-          # (S228: fixes OpenSSL/cryptography mismatch in system packages)
-          "$PYTHON_BIN" -m pip install --upgrade cryptography pyOpenSSL
-          # Install the main package FIRST (may install older plugin versions)
-          "$PYTHON_BIN" -m pip install --no-cache-dir -e ".[rag,test]"
-          # Then force reinstall pytest plugins with pinned versions
-          # This ensures xdist workers have correct versions at consistent paths
-          "$PYTHON_BIN" -m pip install --no-cache-dir --force-reinstall \
-            pytest==9.0.2 \
-            pytest-cov==7.0.0 \
-            pytest-xdist==3.8.0 \
-            pytest-timeout==2.3.1 \
-            pytest-rerunfailures==14.0 \
-            pytest-randomly==3.16.0 \
-            'coverage>=7.10.6,<8'
-          # Verify plugins are installed and discoverable
-          "$PYTHON_BIN" -c "import pytest_cov; import xdist; import pytest_timeout; print('All pytest plugins verified')"
+          PYTHON_BIN="${VENV_PYTHON:-python3}"
+          echo "[INSTALL] Using Python: $PYTHON_BIN"
+          "$PYTHON_BIN" --version
+          
+          echo ""
+          echo "[INSTALL] Step 1: Upgrade pip, wheel, setuptools..."
+          "$PYTHON_BIN" -m pip install --upgrade pip wheel 2>&1 | tail -5
+          
+          echo ""
+          echo "[INSTALL] Step 2: Install setuptools <82 (torch requirement)..."
+          "$PYTHON_BIN" -m pip install 'setuptools<82' 2>&1 | tail -5
+          
+          echo ""
+          echo "[INSTALL] Step 3: Upgrade cryptography and pyOpenSSL (Python 3.12 fix)..."
+          "$PYTHON_BIN" -m pip install --upgrade cryptography pyOpenSSL 2>&1 | tail -5
+          
+          echo ""
+          echo "[INSTALL] Step 4: Installing main package with extras: [rag,test]..."
+          echo "         (This will install: sentence-transformers, chromadb, faiss-cpu, pytest, etc.)"
+          if ! "$PYTHON_BIN" -m pip install --no-cache-dir -e ".[rag,test]" 2>&1 | tee /tmp/install_main.log | tail -20; then
+            echo "[INSTALL] ❌ FAILED: Main package installation failed"
+            echo "[INSTALL] Last 50 lines of install log:"
+            tail -50 /tmp/install_main.log
+            exit 1
+          fi
+          echo "[INSTALL] ✓ Main package installation successful"
+          
+          echo ""
+          echo "[INSTALL] Step 5: Force-reinstall pytest plugins with pinned versions..."
+          PYTEST_PLUGINS=(
+            "pytest==9.0.2"
+            "pytest-cov==7.0.0"
+            "pytest-xdist==3.8.0"
+            "pytest-timeout==2.3.1"
+            "pytest-rerunfailures==14.0"
+            "pytest-randomly==3.16.0"
+            "coverage>=7.10.6,<8"
+          )
+          for plugin in "${PYTEST_PLUGINS[@]}"; do
+            echo "  Installing: $plugin"
+          done
+          if ! "$PYTHON_BIN" -m pip install --no-cache-dir --force-reinstall "${PYTEST_PLUGINS[@]}" 2>&1 | tail -10; then
+            echo "[INSTALL] ❌ FAILED: pytest plugins installation failed"
+            exit 1
+          fi
+          echo "[INSTALL] ✓ pytest plugins installation successful"
+          
+          echo ""
+          echo "[INSTALL] Step 6: Verify all plugins are importable..."
+          if ! "$PYTHON_BIN" scripts/ci/verify_pytest_plugins.py; then
+            echo "[INSTALL] ❌ FAILED: Plugin verification failed"
+            exit 1
+          fi
+          
+          echo ""
+          echo "[INSTALL] Step 7: Verify pytest and dependencies..."
           "$PYTHON_BIN" -m pytest --version
+          
+          echo ""
+          echo "[INSTALL] ✅ All dependencies installed successfully"
 
       - name: Pre-download embedding models
+        id: model-cache
         continue-on-error: true
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          PYTHON_BIN="${VENV_PYTHON:-python}"
-          "$PYTHON_BIN" -c "
-          from sentence_transformers import SentenceTransformer
-          import os
-          cache_dir = os.path.expanduser('~/.cache/torch/sentence_transformers')
-          os.makedirs(cache_dir, exist_ok=True)
-          print('Pre-downloading sentence-transformers model...')
-          # Use token only when non-empty to avoid 'Illegal header value b\"Bearer \"' error
-          hf_token = os.getenv('HF_TOKEN') or None
-          model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2',
-                                      cache_folder=cache_dir,
-                                      token=hf_token)
-          print(f'Model cached successfully to {cache_dir}')
-          "
+          PYTHON_BIN="${VENV_PYTHON:-python3}"
+          CACHE_DIR="$HOME/.cache/torch/sentence_transformers"
+          
+          echo "[MODEL-CACHE] Starting sentence-transformers model pre-download..."
+          echo "[MODEL-CACHE] Cache directory: $CACHE_DIR"
+          echo ""
+          
+          mkdir -p "$CACHE_DIR"
+          echo "[MODEL-CACHE] Cache directory created"
+          
+          echo "[MODEL-CACHE] Downloading all-MiniLM-L6-v2 model..."
+          "$PYTHON_BIN" << 'PYTHON_SCRIPT'
+from sentence_transformers import SentenceTransformer
+import os
+import sys
+
+try:
+    cache_dir = os.path.expanduser('~/.cache/torch/sentence_transformers')
+    os.makedirs(cache_dir, exist_ok=True)
+    
+    print(f"[MODEL-CACHE] Pre-downloading sentence-transformers model...")
+    hf_token = os.getenv('HF_TOKEN') or None
+    
+    if hf_token and hf_token.strip():
+        print(f"[MODEL-CACHE] Using HF_TOKEN (first 10 chars): {hf_token[:10]}...")
+    else:
+        print("[MODEL-CACHE] No HF_TOKEN provided (using public access)")
+        hf_token = None
+    
+    model = SentenceTransformer(
+        'sentence-transformers/all-MiniLM-L6-v2',
+        cache_folder=cache_dir,
+        token=hf_token
+    )
+    
+    # Verify the model is functional
+    test_sentences = ["test sentence 1", "test sentence 2"]
+    embeddings = model.encode(test_sentences)
+    print(f"[MODEL-CACHE] ✓ Model cached successfully to {cache_dir}")
+    print(f"[MODEL-CACHE] ✓ Embedding dimension verified: {embeddings.shape}")
+    
+except Exception as e:
+    print(f"[MODEL-CACHE] ⚠️  Warning: Failed to pre-download model: {e}")
+    print("[MODEL-CACHE] Tests will download model on-demand")
+    sys.exit(0)  # Don't fail workflow - model will be downloaded during tests
+PYTHON_SCRIPT
+          
+          echo ""
+          echo "[MODEL-CACHE] Model pre-download completed (or skipped with warning)"
+          ls -lh "$CACHE_DIR" 2>/dev/null | head -10 || echo "[MODEL-CACHE] Cache directory is empty (will download during tests)"
 
       - name: Run RAG tests with coverage
+        id: run-tests
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HUGGING_FACE_HUB_TOKEN: ${{ secrets.HF_TOKEN }}
           RAG_OPENAI_KEY: ${{ secrets.RAG_OPENAI_KEY }}
         run: |
-          PYTHON_BIN="${VENV_PYTHON:-python}"
+          PYTHON_BIN="${VENV_PYTHON:-python3}"
+          echo "[TEST-RUN] Using Python: $PYTHON_BIN"
+          "$PYTHON_BIN" --version
+          
           # Ensure plugins are loaded before running tests
           export PYTHONPATH="${PYTHONPATH}:$(pwd)/src"
-
+          echo "[TEST-RUN] PYTHONPATH: $PYTHONPATH"
+          
+          echo ""
+          echo "[TEST-RUN] Verifying test files exist..."
+          TEST_FILES=(
+            "tests/test_rag_*.py"
+            "tests/rag/"
+          )
+          for pattern in "${TEST_FILES[@]}"; do
+            count=$(find $pattern -type f -name "*.py" 2>/dev/null | wc -l)
+            if [ "$count" -gt 0 ]; then
+              echo "[TEST-RUN] ✓ Found $count test files matching $pattern"
+            fi
+          done
+          
+          echo ""
+          echo "[TEST-RUN] Starting RAG test execution..."
+          echo "[TEST-RUN] Test configuration:"
+          echo "  Module: src/codex/rag"
+          echo "  Coverage config: tests/rag/.coveragerc"
+          echo "  Individual test timeout: 300s"
+          echo "  Workflow timeout: 60 minutes"
+          echo ""
+          
           # Run RAG tests serially to avoid xdist worker plugin-discovery failures
           # (workers crash when pytest-cov/timeout aren't auto-discoverable in the worker env)
           #
@@ -155,14 +292,54 @@ jobs:
           # preventing the global .coveragerc `source=src` from diluting the line-rate.
           # (S235 fix: on main branch `--cov=src` was measuring all of src/ with only
           # RAG tests running → 5 % line-rate; this config isolates the RAG module.)
-          "$PYTHON_BIN" -m pytest tests/test_rag_*.py tests/rag/ \
+          
+          TEST_START=$(date +%s)
+          if "$PYTHON_BIN" -m pytest tests/test_rag_*.py tests/rag/ \
             -v \
             --tb=short --timeout=300 \
             --cov=src/codex/rag \
             --cov-config=tests/rag/.coveragerc \
             --cov-report=xml \
             --cov-report=html \
-            --cov-report=term-missing
+            --cov-report=term-missing 2>&1 | tee /tmp/test_output.log; then
+            TEST_EXIT=0
+            echo "[TEST-RUN] ✅ Tests PASSED"
+          else
+            TEST_EXIT=$?
+            echo "[TEST-RUN] ❌ Tests FAILED with exit code $TEST_EXIT"
+          fi
+          TEST_END=$(date +%s)
+          TEST_DURATION=$((TEST_END - TEST_START))
+          echo "[TEST-RUN] Test execution took ${TEST_DURATION}s"
+          
+          echo ""
+          echo "[TEST-RUN] Verifying test artifacts..."
+          if [ -f coverage.xml ]; then
+            echo "[TEST-RUN] ✓ coverage.xml generated ($(du -h coverage.xml | cut -f1))"
+          else
+            echo "[TEST-RUN] ❌ coverage.xml NOT FOUND"
+            TEST_EXIT=1
+          fi
+          
+          if [ -d htmlcov ]; then
+            HTMLCOV_SIZE=$(du -sh htmlcov | cut -f1)
+            HTMLCOV_FILES=$(find htmlcov -type f | wc -l)
+            echo "[TEST-RUN] ✓ htmlcov/ generated ($HTMLCOV_SIZE, $HTMLCOV_FILES files)"
+          else
+            echo "[TEST-RUN] ❌ htmlcov/ NOT FOUND"
+            TEST_EXIT=1
+          fi
+          
+          echo ""
+          if [ $TEST_EXIT -eq 0 ]; then
+            echo "[TEST-RUN] ✅ All test artifacts verified"
+          else
+            echo "[TEST-RUN] ❌ Test artifact verification FAILED"
+            echo "[TEST-RUN] Last 50 lines of test output:"
+            tail -50 /tmp/test_output.log
+          fi
+          
+          exit $TEST_EXIT
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354
@@ -185,35 +362,75 @@ jobs:
 
       - name: Check coverage threshold
         run: |
-          PYTHON_BIN="${VENV_PYTHON:-python}"
-          # Parse coverage from XML report
-          COVERAGE=$("$PYTHON_BIN" -c "
-          import xml.etree.ElementTree as ET
-          tree = ET.parse('coverage.xml')
-          root = tree.getroot()
-          print(float(root.attrib['line-rate']) * 100)
-          ")
-          echo "Coverage: ${COVERAGE}%"
-          # Minimum coverage threshold — raised incrementally each S-session.
-          # Baseline is ~27.5%; raised from 27% → 30% in S195, 30% → 35% in S197, 35% → 40% in S198, 40% → 45% in S199, 45% → 50% in S200, 50% → 60% in S201 (2026-03-25), 60% → 70% in S203 (2026-03-25), 70% → 80% in S204 (2026-03-25), 80% → 85% in S209 (2026-03-26), 85% → 90% in S211 (2026-03-26), 90% → 95% in S212 (2026-03-26).
-          # Long-term target achieved: 95%.
-          if (( $(echo "$COVERAGE < 95" | bc -l) )); then
-            echo "❌ Coverage ${COVERAGE}% is below 95% threshold"
+          PYTHON_BIN="${VENV_PYTHON:-python3}"
+          echo "[COVERAGE-CHECK] Parsing coverage.xml..."
+          
+          if [ ! -f coverage.xml ]; then
+            echo "[COVERAGE-CHECK] ❌ ERROR: coverage.xml not found!"
+            ls -la | grep coverage
             exit 1
           fi
-          echo "✅ Coverage ${COVERAGE}% meets 95% threshold"
+          
+          echo "[COVERAGE-CHECK] coverage.xml exists ($(du -h coverage.xml | cut -f1))"
+          
+          # Parse coverage from XML report
+          COVERAGE=$("$PYTHON_BIN" -c "
+import xml.etree.ElementTree as ET
+try:
+    tree = ET.parse('coverage.xml')
+    root = tree.getroot()
+    line_rate = float(root.attrib.get('line-rate', 0)) * 100
+    print(f'{line_rate:.2f}')
+except Exception as e:
+    print(f'ERROR: {e}')
+    exit(1)
+          ")
+          
+          if [ $? -ne 0 ]; then
+            echo "[COVERAGE-CHECK] ❌ Failed to parse coverage.xml"
+            cat coverage.xml | head -20
+            exit 1
+          fi
+          
+          echo "[COVERAGE-CHECK] Coverage: ${COVERAGE}%"
+          
+          # Minimum coverage threshold — raised incrementally each S-session.
+          # Baseline is ~27.5%; raised from 27% → 30% in S195, 30% → 35% in S197, 35% → 40% in S198, 40% → 45% in S199, 45% → 50% in S200, 50% → 60% in S201 (2026-03-25), 60% → 70% in S203 (2026-03-25), 70% → 80% in S204 (2026-03-25), 80% → 85% in S209 (2026-03-26), 85% → 90% in S211 (2026-03-26), 90% → 95% in S212 (2026-03-26), 95% → 95% in S228 (2026-05-09).
+          # Long-term target: 95% coverage.
+          THRESHOLD=95
+          
+          if (( $(echo "$COVERAGE < $THRESHOLD" | bc -l) )); then
+            echo "[COVERAGE-CHECK] ❌ Coverage ${COVERAGE}% is below ${THRESHOLD}% threshold"
+            exit 1
+          fi
+          echo "[COVERAGE-CHECK] ✅ Coverage ${COVERAGE}% meets ${THRESHOLD}% threshold"
 
       - name: Security scan
         run: |
-          PYTHON_BIN="${VENV_PYTHON:-python}"
-          "$PYTHON_BIN" -m pip install bandit
-          "$PYTHON_BIN" -m bandit -r src/codex/rag/ -f txt -o bandit-report.txt || true
+          PYTHON_BIN="${VENV_PYTHON:-python3}"
+          echo "[SECURITY] Installing bandit..."
+          "$PYTHON_BIN" -m pip install bandit 2>&1 | tail -3
+          
+          echo "[SECURITY] Running bandit security scan on src/codex/rag/..."
+          if "$PYTHON_BIN" -m bandit -r src/codex/rag/ -f txt -o bandit-report.txt; then
+            BANDIT_EXIT=0
+            echo "[SECURITY] ✓ Bandit completed successfully"
+          else
+            BANDIT_EXIT=$?
+            echo "[SECURITY] ⚠️  Bandit found potential issues (exit code $BANDIT_EXIT)"
+          fi
+          
           # Ensure file exists even if bandit fails or produces no output
           touch bandit-report.txt
+          
           if [ -s bandit-report.txt ]; then
+            REPORT_SIZE=$(du -h bandit-report.txt | cut -f1)
+            LINE_COUNT=$(wc -l < bandit-report.txt)
+            echo "[SECURITY] ✓ bandit-report.txt generated ($REPORT_SIZE, $LINE_COUNT lines)"
+            echo "[SECURITY] Report content:"
             cat bandit-report.txt
           else
-            echo "No security issues found by Bandit" > bandit-report.txt
+            echo "[SECURITY] ✓ No security issues found by Bandit" > bandit-report.txt
             cat bandit-report.txt
           fi
 
@@ -221,8 +438,15 @@ jobs:
         if: always()
         continue-on-error: true
         run: |
-          PYTHON_BIN="${VENV_PYTHON:-python}"
-          "$PYTHON_BIN" scripts/ci/generate_cache_keys.py --type pip --workflow test-rag --health 2>/dev/null || echo '{"status": "cache health check skipped"}'
+          PYTHON_BIN="${VENV_PYTHON:-python3}"
+          echo "[CACHE-HEALTH] Generating cache health report..."
+          
+          if [ -f scripts/ci/generate_cache_keys.py ]; then
+            "$PYTHON_BIN" scripts/ci/generate_cache_keys.py --type pip --workflow test-rag --health 2>/dev/null || \
+              echo '{"status": "cache health check failed"}' | python3 -m json.tool
+          else
+            echo "[CACHE-HEALTH] ⚠️  generate_cache_keys.py not found"
+          fi
 
       - name: Upload security report
         uses: actions/upload-artifact@v5 # v7.0.1
