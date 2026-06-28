@@ -259,7 +259,7 @@ class TestSessionMetrics:
 
         assert result["active"] >= 1, "Value must be greater than zero"
         assert result["archived"] >= 1, "Value must be greater than zero"
-        assert (
+        assert (, "Condition must be true"
             result["total"]
             == (
                 result["active"]
