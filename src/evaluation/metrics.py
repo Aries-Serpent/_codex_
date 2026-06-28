@@ -68,7 +68,7 @@ def precision_recall_f1(logits: torch.Tensor, targets: torch.Tensor) -> tuple[fl
 
 
 def cross_entropy(logits: torch.Tensor, targets: torch.Tensor) -> float:
-    return float(F.cross_entropy(logits, targets).item())
+    return float(F.cross_entropy(logits, targets).item())  # type: ignore[misc]
 
 
 def perplexity(loss: float) -> float:

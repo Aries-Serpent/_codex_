@@ -99,8 +99,8 @@ def load_hf_llm(
             use_fast=use_fast,
             trust_remote_code=trust_remote_code,  # nosec B615
         )
-    if tokenizer.pad_token_id is None:
-        tokenizer.pad_token = tokenizer.eos_token
+    if tokenizer.pad_token_id is None:  # type: ignore[attr-defined]
+        tokenizer.pad_token = tokenizer.eos_token  # type: ignore[attr-defined]
 
     torch_dtype = _resolve_dtype(dtype)
     model = AutoModelForCausalLM.from_pretrained(  # nosec B615        pretrained,
