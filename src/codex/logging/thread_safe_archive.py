@@ -55,7 +55,7 @@ class ThreadSafeArchive:
         )
 
     @contextmanager
-    def archive_session(self, session_id: str) -> None:
+    def archive_session(self, session_id: str):  # type: ignore[no-untyped-def]
         """Acquire exclusive lock for archive operation."""
         try:
             with self._archive_lock.archive_lock(session_id):
@@ -74,7 +74,7 @@ class ThreadSafeArchive:
             raise
 
     @contextmanager
-    def retrieve_session(self, session_id: str) -> None:
+    def retrieve_session(self, session_id: str):  # type: ignore[no-untyped-def]
         """Acquire exclusive lock for retrieval operation."""
         try:
             with self._archive_lock.archive_lock(session_id):
@@ -118,7 +118,7 @@ class ThreadSafeArchive:
         }
         save_metrics(metrics_dict, self.metrics_path)  # type: ignore[arg-type]
 
-    def __enter__(self) -> None:
+    def __enter__(self) -> "ThreadSafeArchive":
         """Context manager entry."""
         return self
 
