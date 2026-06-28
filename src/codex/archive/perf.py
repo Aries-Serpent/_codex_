@@ -63,6 +63,6 @@ def measure_decompression(
         wrapper.__doc__ = func.__doc__
         wrapper.__module__ = func.__module__
         wrapper.last_metrics = None  # type: ignore[attr-defined]
-        return wrapper  # type: ignore[return-value]
+        return wrapper
 
     return decorator

@@ -79,7 +79,7 @@ def build_kb(
     dedup: bool = True,
 ) -> dict[str, Any]:
     staged: list[dict[str, object]] = []
-    for src in iter_sources(root):  # type: ignore[attr-defined]
+    for src in iter_sources(root):
         norm, mime = normalize_file(src)
         scrubbed, flags = scrub(norm, allow_gpl=allow_gpl)
         chunks = chunk_by_headings(scrubbed, target_tokens=min(1024, max_tokens_per_rec))

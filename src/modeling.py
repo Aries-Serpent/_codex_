@@ -261,14 +261,15 @@ def load_tokenizer(
 
     try:
         tokenizer = AutoTokenizer.from_pretrained(tokenizer_name, **kwargs)  # nosec B615
+        assert tokenizer is not None, f"Failed to load tokenizer {tokenizer_name}"
         # Set pad_token to eos_token if not already set (common default)
-        if getattr(tokenizer, "pad_token", None) is None and getattr(tokenizer, "eos_token", None):  # type: ignore[attr-defined]
+        if getattr(tokenizer, "pad_token", None) is None and getattr(tokenizer, "eos_token", None):
             LOGGER.warning(
                 "Text backend '%s' has no pad token; falling back to EOS padding. "
                 "This may affect training behaviour.",
                 type(tokenizer).__name__,
             )
-            tokenizer.pad_token = tokenizer.eos_token  # type: ignore[attr-defined]
+            tokenizer.pad_token = tokenizer.eos_token
         return tokenizer
     except (
         ConnectionError,

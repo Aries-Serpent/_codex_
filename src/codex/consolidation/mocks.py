@@ -45,7 +45,7 @@ class FakeModel:
 
     id: str = "fake_id"
     name: str = "fake_name"
-    data: Dict[str, Any] = None
+    data: Dict[str, Any] | None = None
     active: bool = True
 
     def __post_init__(self) -> None:
