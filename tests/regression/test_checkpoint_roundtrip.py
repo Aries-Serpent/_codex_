@@ -91,9 +91,9 @@ class TestModelStatePickleRoundTrip:
         state_path = checkpoint_dir / "state.pkl"
         state_path.write_bytes(pickle.dumps(pretrained_model))
 
-        reloaded = pickle.loads(
+        reloaded = pickle.loads(  # nosemgrep: semgrep.unsafe-pickle-loads - Test: deserializing trusted local file
             state_path.read_bytes()
-        )  # noqa: S301 — test uses trusted local file  # nosemgrep: semgrep.unsafe-pickle-loads
+        )  # noqa: S301 — test uses trusted local file
         assert (reloaded.name == pretrained_model.name, "name is not valid"
         ), f"name changed after pickle: {reloaded.name!r}"
         assert (reloaded.stage == pretrained_model.stage, "stage is not valid"

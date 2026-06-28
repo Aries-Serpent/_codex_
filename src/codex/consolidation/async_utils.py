@@ -17,7 +17,7 @@ import asyncio
 import logging
 from abc import ABC, abstractmethod
 from contextlib import asynccontextmanager
-from typing import Any, AsyncGenerator, Generic, Optional, TypeVar
+from typing import Any, AsyncGenerator, Callable, Generic, Optional, TypeVar
 
 logger = logging.getLogger(__name__)
 
@@ -51,7 +51,7 @@ class AsyncContextBase(ABC, Generic[T]):
 class AsyncResourceManager(AsyncContextBase):
     """Generic async resource manager."""
 
-    def __init__(self, resource: Any, cleanup_func: Optional[callable] = None):
+    def __init__(self, resource: Any, cleanup_func: Optional[Callable[..., Any]] = None):
         self.resource = resource
         self.cleanup_func = cleanup_func
         self.is_open = False
@@ -182,7 +182,7 @@ class AsyncRetryManager(AsyncContextBase):
         """Cleanup after attempt."""
         pass
 
-    async def execute_with_retry(self, coro_func: callable, *args, **kwargs) -> Any:
+    async def execute_with_retry(self, coro_func: Callable[..., Any], *args, **kwargs) -> Any:
         """Execute async function with retry logic."""
         last_exception = None
 
@@ -217,7 +217,7 @@ class AsyncRetryManager(AsyncContextBase):
 
 @asynccontextmanager
 async def async_managed_resource(
-    resource: Any, cleanup_func: Optional[callable] = None
+    resource: Any, cleanup_func: Optional[Callable[..., Any]] = None
 ) -> AsyncGenerator[Any, None]:
     """Context manager factory for managed async resources."""
     manager = AsyncResourceManager(resource, cleanup_func)

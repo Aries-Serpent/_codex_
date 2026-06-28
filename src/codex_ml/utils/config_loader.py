@@ -45,8 +45,8 @@ try:  # pragma: no cover - optional dependency
         error_type = type(e).__name__
         logger.debug("ImportError: <ERROR_TYPE>")
         logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
-        from config_legacy import compose, initialize_config_dir  # type: ignore[no-redef]
-        from config_legacy.errors import MissingConfigException  # type: ignore[no-redef]
+        from config_legacy import compose, initialize_config_dir  # type: ignore[assignment]
+        from config_legacy.errors import MissingConfigException
 
     _HYDRA_AVAILABLE = True
 except (ImportError, AttributeError):  # pragma: no cover - import guard
@@ -57,7 +57,7 @@ except (ImportError, AttributeError):  # pragma: no cover - import guard
         _HYDRA_AVAILABLE = True
     except (IOError, OSError):  # pragma: no cover - import guard
         compose = None  # type: ignore[assignment]
-        initialize_config_dir = None  # type: ignore[assignment]
+        initialize_config_dir = None  # type: ignore[misc, assignment]
 
         class MissingConfigException(RuntimeError):  # type: ignore[no-redef]
             """Fallback error used when Hydra is unavailable."""
@@ -284,7 +284,7 @@ def load_training_cfg(
 
     cfg_dir = _CFG_DIR
     config_file = cfg_dir / f"{_PRIMARY}.yaml"
-    hydra_ready = bool(_HYDRA_AVAILABLE and compose and initialize_config_dir)
+    hydra_ready = _HYDRA_AVAILABLE
 
     if hydra_ready and cfg_dir.is_dir() and config_file.is_file():
         # Hydra Compose API: https://hydra.cc/docs/advanced/compose_api/
