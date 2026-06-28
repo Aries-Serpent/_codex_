@@ -69,7 +69,7 @@ def load_tokenizer(
         validate_tokenizer_contract(adapter)
         return adapter
     adapter = _load_hf_adapter()
-    instance = adapter.load(target, use_fast=use_fast)
+    instance = adapter.load(target, use_fast=use_fast)  # type: ignore[attr-defined]
     if all(hasattr(instance, name) for name in ("encode", "decode", "add_special_tokens")):
         validate_tokenizer_contract(instance)
     return instance

@@ -227,7 +227,7 @@ class KnowledgeGraphExporter:
         # Export nodes
         node_ids = set()
         for node in self.nodes:
-            for n in node.walk():
+            for n in node.walk():  # type: ignore[attr-defined]
                 if n.node_id not in node_ids:
                     node_ids.add(n.node_id)
                     lines.append(f'    <node id="{n.node_id}">')
@@ -248,7 +248,7 @@ class KnowledgeGraphExporter:
 
         # Export parent-child edges
         for node in self.nodes:
-            for n in node.walk():
+            for n in node.walk():  # type: ignore[attr-defined]
                 for child in n.children:
                     lines.append(f'    <edge source="{n.node_id}" target="{child.node_id}"/>')
 
@@ -278,7 +278,7 @@ class KnowledgeGraphExporter:
         # Export nodes
         node_ids = set()
         for node in self.nodes:
-            for n in node.walk():
+            for n in node.walk():  # type: ignore[attr-defined]
                 if n.node_id not in node_ids:
                     node_ids.add(n.node_id)
                     color = type_colors.get(n.type.value, "#FFFFFF")
@@ -302,7 +302,7 @@ class KnowledgeGraphExporter:
 
         # Export parent-child edges (dashed)
         for node in self.nodes:
-            for n in node.walk():
+            for n in node.walk():  # type: ignore[attr-defined]
                 for child in n.children:
                     lines.append(
                         f'  "{n.node_id}" -> "{child.node_id}" [style=dashed, color=gray];'
@@ -383,7 +383,7 @@ class KnowledgeGraphExporter:
 
         # Insert nodes
         for node in self.nodes:
-            for n in node.walk():
+            for n in node.walk():  # type: ignore[attr-defined]
                 cursor.execute(
                     """
                     INSERT OR REPLACE INTO nodes
@@ -473,7 +473,7 @@ class KnowledgeGraphExporter:
 
         type_counts: dict[str, int] = {}
         for node in self.nodes:
-            for n in node.walk():
+            for n in node.walk():  # type: ignore[attr-defined]
                 type_counts[n.type.value] = type_counts.get(n.type.value, 0) + 1
 
         if type_counts:

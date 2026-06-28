@@ -56,7 +56,7 @@ def measure_decompression(
         def wrapper(*args, **kwargs) -> None:
             with timer(metric_name) as metrics:
                 result = func(*args, **kwargs)
-            wrapper.last_metrics = metrics
+            wrapper.last_metrics = metrics  # type: ignore[attr-defined]
             return result
 
         wrapper.__name__ = func.__name__

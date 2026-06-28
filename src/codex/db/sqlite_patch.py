@@ -58,14 +58,14 @@ class PooledConnectionProxy:
 
     def __enter__(self) -> None:  # pragma: no cover - simple delegation
         # Replicate sqlite3.Connection context manager semantics without closing
-        self._conn.__enter__()
+        self._conn.__enter__()  # type: ignore[attr-defined]
         return self
 
     def __exit__(self, exc_type, exc, tb) -> None:  # pragma: no cover - simple delegation
         # Mirror sqlite3 behaviour: commit on success, rollback on error.
         if exc_type is None:
             try:
-                self._conn.commit()
+                self._conn.commit()  # type: ignore[attr-defined]
             except (ValueError, TypeError, RuntimeError):
                 logger.warning("Exception occurred", exc_info=True)
                 # Mirror sqlite behaviour which would raise the exception; allow
@@ -73,7 +73,7 @@ class PooledConnectionProxy:
                 raise
         else:
             try:
-                self._conn.rollback()
+                self._conn.rollback()  # type: ignore[attr-defined]
             except (ValueError, TypeError, RuntimeError) as e:
                 error_type = type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
@@ -100,7 +100,7 @@ class PooledConnectionProxy:
                     error_type = type(e).__name__
                     logger.debug("ValueError: <ERROR_TYPE>")
                     logger.warning("ValueError: <ERROR_TYPE>", exc_info=True)
-        return self._conn.close()
+        return self._conn.close()  # type: ignore[attr-defined]
 
 
 def _key(database: str) -> tuple[str, int, int, str]:

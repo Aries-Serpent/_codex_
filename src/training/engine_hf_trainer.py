@@ -1311,10 +1311,10 @@ def run_hf_trainer(
     trainer.save_model()
 
     # Collect metrics
-    metrics = dict(result.metrics)
+    metrics = dict(result.metrics)  # type: ignore[attr-defined]
     if eval_ds is not None:
         eval_metrics = trainer.evaluate()
-        metrics.update({f"eval_{k}": v for k, v in eval_metrics.items()})
+        metrics.update({f"eval_{k}": v for k, v in eval_metrics.items()})  # type: ignore[attr-defined]
     metrics.setdefault("global_step", trainer.state.global_step)
 
     # Codex offline logging

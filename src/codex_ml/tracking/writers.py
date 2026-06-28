@@ -1138,7 +1138,7 @@ class MLflowRunManager:
             import mlflow
 
             self._run = mlflow.start_run(run_name=self.run_name, tags=self.tags)
-            self._run.__enter__()
+            self._run.__enter__()  # type: ignore[attr-defined]
         except (ImportError, AttributeError) as e:
             error_type = type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]

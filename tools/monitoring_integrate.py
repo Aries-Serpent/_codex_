@@ -137,12 +137,12 @@ class SystemMetrics(threading.Thread):
                     )
                 if self.gpu_ok:
                     try:
-                        count = pynvml.nvmlDeviceGetCount()
+                        count = pynvml.nvmlDeviceGetCount()  # type: ignore[attr-defined]
                         gpus = []
                         for i in range(count):
-                            h = pynvml.nvmlDeviceGetHandleByIndex(i)
-                            util = pynvml.nvmlDeviceGetUtilizationRates(h)
-                            mem = pynvml.nvmlDeviceGetMemoryInfo(h)
+                            h = pynvml.nvmlDeviceGetHandleByIndex(i)  # type: ignore[attr-defined]
+                            util = pynvml.nvmlDeviceGetUtilizationRates(h)  # type: ignore[attr-defined]
+                            mem = pynvml.nvmlDeviceGetMemoryInfo(h)  # type: ignore[attr-defined]
                             gpus.append(
                                 {
                                     "index": i,
@@ -169,7 +169,7 @@ class SystemMetrics(threading.Thread):
         self._stop_event.set()
         if self.gpu_ok:
             try:
-                pynvml.nvmlShutdown()
+                pynvml.nvmlShutdown()  # type: ignore[attr-defined]
             except Exception:
                 _ = None  # suppressed: no action needed
 

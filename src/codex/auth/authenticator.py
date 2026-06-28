@@ -36,7 +36,7 @@ from .exceptions import (
 )
 from .mfa_provider import MFAProvider
 from .token_manager import TokenManager
-from .user_store import User, UserStore
+from .user_store import User, UserStore  # type: ignore[attr-defined]
 
 logger = logging.getLogger(__name__)
 

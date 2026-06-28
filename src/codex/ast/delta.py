@@ -50,7 +50,7 @@ class DeltaAnalyzer:
         """
         self.baseline_manager = baseline_manager
 
-    def analyze(self, current_files: dict[str, dict]) -> DeltaResult:
+    def analyze(self, current_files: dict[str, Any][str, dict]) -> DeltaResult:
         """Analyze delta between baseline and current state.
 
         Args:

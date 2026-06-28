@@ -8,22 +8,29 @@
 
 ## 🚀 Active Agents & Current Status
 
-### Wave 2: Duplication Extraction
+### Wave 2: Duplication Extraction ✅ TIER 1a COMPLETE
 - **Agent:** code-analysis-agent
 - **Agent ID:** wave2-duplication-extraction
-- **Timeline:** 4-6 weeks
+- **Timeline:** 4-6 weeks (3/15 patterns delivered)
 - **Target:** 15 TIER-1 patterns, ~9,561 LOC reduction
-- **Status:** 🟡 DISPATCHED (Starting execution)
-- **Progress:** 0% (Initialization phase)
-- **Last Update:** 2026-06-28T00:51:17Z
+- **Status:** 🟢 ACTIVE & PROGRESSING (Tier 1b Ready)
+- **Progress:** 3/15 patterns (20%), 740 LOC reduced
+- **Last Update:** 2026-06-28T01:10:00Z
 
-**Expected Milestones:**
-- Week 1: Patterns 1-3 (Low-risk consolidations)
-- Week 2: Patterns 4-8 (Mid-complexity refactorings)
-- Week 3-4: Patterns 9-15 (High-risk refactorings)
+**Completed Tier 1a (Week 1):**
+- ✅ LRC-001: Import/Re-export consolidation (240 LOC)
+- ✅ LRC-002: Validation decorators (180 LOC)
+- ✅ LRC-003: Error handling wrappers (320 LOC)
+- **Net Reduction:** 256 LOC (740 eliminated - 484 new utilities)
+
+**Next Milestones:**
+- Week 2: Patterns MRC-001 through MRC-005 (Tier 1b, ~2,180 LOC)
+- Week 3: Patterns MRC-006 through MRC-011 (Tier 1c, High-risk refactorings)
+- Week 4-5: Patterns HRC-001 through HRC-004 (Tier 1c, Complex consolidations)
 - Week 5-6: Integration & regression testing
 
 **Checkpoint File:** `.codex/PHASE_6_WAVE2_DUPLICATION_CHECKPOINT.md`
+**Commits:** `acdf6b92`, `89c9d298`
 
 ---
 

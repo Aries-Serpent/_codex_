@@ -147,7 +147,7 @@ class RedisCacheBackend(BaseCacheBackend):
                 )
 
                 # Test connection
-                self._client.ping()
+                self._client.ping()  # type: ignore[attr-defined]
                 self._connected = True
                 logger.info(
                     f"Connected to Redis at {self.config.redis_host}:{self.config.redis_port}"

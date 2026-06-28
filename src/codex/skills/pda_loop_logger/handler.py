@@ -204,7 +204,7 @@ def _summarize(mod: Any, p: dict[str, Any]) -> dict[str, Any]:
     # Count successes per pattern
     from collections import defaultdict
 
-    stats: dict[str, dict] = defaultdict(
+    stats: dict[str, Any][str, dict] = defaultdict(
         lambda: {
             "failures": 0,
             "fixes": 0,

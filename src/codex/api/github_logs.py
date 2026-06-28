@@ -69,7 +69,7 @@ class CheckRunsListResponse(BaseModel):
     check_runs: list[CheckRunInfo]
 
 
-def _get_github_client():
+def _get_github_client() -> None:
     """Get GitHub client instance."""
     try:
         from services.github.client import GitHubClientSync

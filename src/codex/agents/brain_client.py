@@ -209,7 +209,7 @@ class BrainClient:
         headers.update(self._auth_header())
         req = urllib.request.Request(url, headers=headers)
         try:
-            with self._safe_urlopen(req, timeout=self.timeout) as resp:
+            with self._safe_urlopen(req, timeout=self.timeout) as resp:  # type: ignore[attr-defined]
                 return json.loads(resp.read().decode())
         except urllib.error.HTTPError as exc:
             raise BrainClientError(f"GET {path} failed: HTTP {exc.code}") from exc
@@ -227,7 +227,7 @@ class BrainClient:
             headers.update(extra_headers)
         req = urllib.request.Request(url, data=data, headers=headers, method="POST")
         try:
-            with self._safe_urlopen(req, timeout=self.timeout) as resp:
+            with self._safe_urlopen(req, timeout=self.timeout) as resp:  # type: ignore[attr-defined]
                 return json.loads(resp.read().decode())
         except urllib.error.HTTPError as exc:
             body_text = exc.read().decode(errors="replace")
@@ -241,7 +241,7 @@ class BrainClient:
         headers.update(self._auth_header())
         req = urllib.request.Request(url, headers=headers, method="DELETE")
         try:
-            with self._safe_urlopen(req, timeout=self.timeout) as resp:
+            with self._safe_urlopen(req, timeout=self.timeout) as resp:  # type: ignore[attr-defined]
                 return json.loads(resp.read().decode())
         except urllib.error.HTTPError as exc:
             raise BrainClientError(f"DELETE {path} failed: HTTP {exc.code}") from exc

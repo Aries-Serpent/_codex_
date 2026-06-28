@@ -3,7 +3,7 @@
 from pathlib import Path
 from typing import Optional
 
-from .fetch_messages import DEFAULT_LOG_DB as _DEFAULT_LOG_DB
+from .fetch_messages import DEFAULT_LOG_DB as _DEFAULT_LOG_DB  # type: ignore[attr-defined]
 from .fetch_messages import fetch_messages as _fetch_messages
 from .session_db import SessionDB
 

@@ -151,7 +151,7 @@ def _model_cached() -> AutoModelForCausalLM:
             n_head=2,
         )
         model = AutoModelForCausalLM.from_config(config)
-    model.eval()
+    model.eval()  # type: ignore[attr-defined]
     return model
 
 

@@ -30,8 +30,8 @@ def export_matrix(
     zendesk_raw = _load_jsonl_or_json(zendesk_roles_file)
     dynamics_raw = _load_jsonl_or_json(dynamics_roles_file)
 
-    zendesk_roles = [ZendeskRole.model_validate(item) for item in zendesk_raw]
-    dynamics_roles = [DynamicsRole.model_validate(item) for item in dynamics_raw]
+    zendesk_roles = [ZendeskRole.model_validate(item) for item in zendesk_raw]  # type: ignore[attr-defined]
+    dynamics_roles = [DynamicsRole.model_validate(item) for item in dynamics_raw]  # type: ignore[attr-defined]
 
     matrix = build_role_matrix(zendesk_roles, dynamics_roles)
     output_json.write_text(json.dumps(matrix, indent=2), encoding="utf-8")

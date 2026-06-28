@@ -174,7 +174,7 @@ class SentencePieceAdapter:
         module = _get_sentencepiece()
         if self.model_path.exists():
             return self.load()
-        module.SentencePieceTrainer.train(
+        module.SentencePieceTrainer.train(  # type: ignore[attr-defined]
             input=str(input_path),
             model_prefix=str(self.model_prefix),
             vocab_size=vocab_size,
@@ -194,7 +194,7 @@ class SentencePieceAdapter:
             raise FileNotFoundError(f"Model file not found: {self.model_path}")
 
         module = _get_sentencepiece()
-        cls = module.SentencePieceProcessor
+        cls = module.SentencePieceProcessor  # type: ignore[attr-defined]
         try:
             proc = cls(model_file=str(self.model_path))
         except TypeError as e:

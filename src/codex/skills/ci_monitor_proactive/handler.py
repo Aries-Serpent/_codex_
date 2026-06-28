@@ -83,7 +83,7 @@ def run(payload: dict[str, Any]) -> dict[str, Any]:
         return {"status": "error", "message": f"proactive_ci_monitor unavailable: {exc}"}
 
     try:
-        report = mod.scan(
+        report = mod.scan(  # type: ignore[attr-defined]
             repo=repo,
             token=token,
             dry_run=dry_run,

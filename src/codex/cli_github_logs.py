@@ -85,10 +85,10 @@ def fetch_check_run_logs(
         click.echo(f"Fetching check run {check_run_id} logs from {owner}/{repo}...", err=True)
 
         # Fetch the check run details first
-        check_run = client.get_check_run(owner, repo, check_run_id)
+        check_run = client.get_check_run(owner, repo, check_run_id)  # type: ignore[attr-defined]
 
         # Fetch logs
-        logs = client.get_check_run_logs(owner, repo, check_run_id)
+        logs = client.get_check_run_logs(owner, repo, check_run_id)  # type: ignore[attr-defined]
 
         # Format output
         if format == "json":
@@ -164,7 +164,7 @@ def fetch_job_logs(
         click.echo(f"Fetching job {job_id} logs from {owner}/{repo}...", err=True)
 
         # Fetch logs
-        logs = client.get_job_logs(owner, repo, job_id)
+        logs = client.get_job_logs(owner, repo, job_id)  # type: ignore[attr-defined]
 
         # Format output
         if format == "json":
@@ -230,7 +230,7 @@ def list_check_runs(
 
         click.echo(f"Fetching check runs for {owner}/{repo}@{ref}...", err=True)
 
-        check_runs = client.list_check_runs_for_ref(
+        check_runs = client.list_check_runs_for_ref(  # type: ignore[attr-defined]
             owner, repo, ref, check_name=name, status=status
         )
 

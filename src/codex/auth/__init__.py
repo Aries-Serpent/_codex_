@@ -74,7 +74,7 @@ try:
 except ImportError:  # httpx or other optional dep missing
     OAuthConfig = OAuthManager = OAuthToken = None  # type: ignore[misc,assignment]
 from .token_manager import SessionInfo, TokenClaims, TokenManager, TokenType
-from .user_store import PasswordHasher, User, UserStore
+from .user_store import PasswordHasher, User, UserStore  # type: ignore[attr-defined]
 
 __all__ = [
     # Authenticator (high-level service)

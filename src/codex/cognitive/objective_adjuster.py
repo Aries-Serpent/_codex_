@@ -189,7 +189,7 @@ class ObjectiveStore:
         if store_path is None:
             store_path = Path(".codex/cognitive_brain/objective_store.json")
         self.store_path = store_path
-        self._objectives: dict[str, dict] = {}
+        self._objectives: dict[str, Any][str, dict] = {}
         self._adjustments: list[dict] = []
         self._load()
 
