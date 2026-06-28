@@ -25,7 +25,7 @@ try:
     import torch
     import torch.nn.functional as F
 
-    clip_grad_norm_ = torch.nn.utils.clip_grad_norm_
+    clip_grad_norm_ = torch.nn.utils.clip_grad_norm_  # type: ignore[attr-defined]
 except (ImportError, AttributeError):  # keep imports resilient
     torch = None  # type: ignore[assignment]
     F = None  # type: ignore[assignment]
@@ -709,7 +709,7 @@ def _run_minilm_training(
         def _compute_loss(_) -> Any:
             nonlocal logits
             logits = model(inputs)
-            return F.cross_entropy(logits.reshape(-1, cfg.vocab_size), targets.reshape(-1))
+            return F.cross_entropy(logits.reshape(-1, cfg.vocab_size), targets.reshape(-1))  # type: ignore[misc]
 
         loss_val = codex_train_step(
             model,
@@ -812,7 +812,7 @@ def _run_minilm_training(
         if val_inputs is not None:
             with torch.no_grad():
                 v_logits = model(val_inputs)
-                v_loss = F.cross_entropy(
+                v_loss = F.cross_entropy(  # type: ignore[misc]
                     v_logits.reshape(-1, cfg.vocab_size),
                     val_targets.reshape(-1),
                 )
@@ -1240,7 +1240,7 @@ def _codex_write_metrics(run_dir: Path, record: dict[str, Any]) -> None:
         fh.write(json.dumps(record) + "\n")
 
 
-def _codex_apply_training_integration(args, train_loop_fn, config: dict[str, Any]) -> None:
+def _codex_apply_training_integration(args, train_loop_fn, config: dict[str, Any]) -> Any:
     if not getattr(args, "use_deeplearning", False):
         return train_loop_fn
     device = _codex_autodevice(getattr(args, "device", None))
