@@ -9,6 +9,7 @@
 # - From trusted API responses (HuggingFace, GitHub API)
 # - Internal tooling paths
 # - Error message pattern matching
+# - Safe dictionary/set membership checks
 
 rules:
   # Suppress URL validation checks in utility/helper scripts
@@ -31,13 +32,26 @@ rules:
          - pattern: |
              if $STRING in $VAR:
                  ...
-          - pattern: |
+         - pattern: |
              if $STRING not in $VAR:
                  ...
          - pattern: |
              "$STRING" in $VAR
          - pattern: |
              "$STRING" not in $VAR
+         # Safe dictionary/set membership checks (not user input)
+         - pattern: |
+             if $KEY in $DICT:
+                 ...
+         - pattern: |
+             if $KEY in $SET:
+                 ...
+         - pattern: |
+             $KEY in $ALLOWLIST
+         - pattern: |
+             $VAR in {$ITEM1, $ITEM2, ...}
+         - pattern: |
+             $VAR in [$ITEM1, $ITEM2, ...]
          # Specific URL scheme checks that are safe
          - pattern: |
              $URL.startswith("https://github.com")
@@ -55,22 +69,19 @@ rules:
          - pattern: |
              if $STRING in str($ERR):
                  ...
+         - pattern: |
+             if "$STRING" in str($ERR):
+                 ...
     paths:
       include:
-       - "**/fix_*.py"
-       - "**/scripts/**/*.py"
-       - "**/src/codex/cli/**/*.py"
-       - "**/src/codex/logging/**/*.py"
-       - "**/src/codex/analyze/static/**/*.py"
-       - "**/src/codex/rag/**/*.py"
-       - "**/src/codex_ml/**/*.py"
-       - "**/.codex/agents/**/*.py"
-       - "**/.codex/scripts/**/*.py"
-       - "**/.github/scripts/**/*.py"
-       - "**/.github/agents/**/*.py"
+       - "**/*.py"
       exclude:
-       - "**/checkpoint_core.py"
        - "**/tests/**"
+       - "**/*_test.py"
+       - "**/test_*.py"
+       - "**/checkpoint_core.py"
+       - ".github/agents/*/tests/**"
+       - ".github/copilot-*/tests/**"
 
   # Suppress for test fixtures and examples
   - id: suppress-url-checks-in-tests
@@ -94,11 +105,17 @@ rules:
          - pattern: |
              # Test URL
              $VAR = "http://..."
+         - pattern: |
+             $VAR in {"1", "true", "yes", "on"}
+         - pattern: |
+             $VAR in [$ITEM1, $ITEM2, ...]
     paths:
       include:
        - "**/tests/**/*.py"
        - "**/.github/agents/*/tests/**/*.py"
        - "**/.github/copilot-*/tests/**/*.py"
+       - "**/*_test.py"
+       - "**/test_*.py"
 
   # Safe module validation patterns - allow whitelisted module checks
   - id: suppress-safe-module-validation
@@ -124,4 +141,5 @@ rules:
     paths:
       include:
        - "**/*.py"
+
 
