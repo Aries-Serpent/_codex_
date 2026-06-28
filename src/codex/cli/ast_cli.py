@@ -46,7 +46,7 @@ def get_adapter(language: str) -> None:
     return adapters[language]()
 
 
-def parse_command(args) -> None:
+def parse_command(args) -> int:
     """Parse a file and output the AST as JSON.
 
     Args:
@@ -77,7 +77,7 @@ def parse_command(args) -> None:
         return 1
 
 
-def stats_command(args) -> None:
+def stats_command(args) -> int:
     """Parse a file and output statistics about the AST.
 
     Args:

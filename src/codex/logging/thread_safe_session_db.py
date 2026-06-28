@@ -16,7 +16,7 @@ import sqlite3
 import threading
 import time
 from contextlib import contextmanager
-from typing import Any, Optional
+from typing import Any, Optional, Generator)
 
 from .concurrency import (
     DeadlockRecovery,
@@ -70,7 +70,7 @@ class ThreadSafeSessionDB:
         self._ensure_schema()
 
     @contextmanager
-    def _get_connection(self) -> None:
+    def _get_connection(self) -> Generator[sqlite3.Connection, None, None]:
         """Get thread-local connection from pool."""
         conn = self._connection_pool.get_connection()
         try:
@@ -82,7 +82,7 @@ class ThreadSafeSessionDB:
             raise
 
     @contextmanager
-    def _write_operation(self) -> None:
+    def _write_operation(self) -> Generator[sqlite3.Connection, None, None]:
         """Context manager for write operations with lock."""
         start_time = time.time()
         acquired = False
