@@ -13,12 +13,12 @@ Usage:
 """
 
 import logging
-from typing import Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
 
-def _import_bleu_rouge() -> None:
+def _import_bleu_rouge() -> tuple[Any, Any, Any]:
     """
     Attempt to import BLEU/ROUGE dependencies.
 
