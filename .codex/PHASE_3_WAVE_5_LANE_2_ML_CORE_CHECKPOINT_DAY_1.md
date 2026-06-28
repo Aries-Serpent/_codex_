@@ -34,7 +34,7 @@ Achieve **96%+ coverage** and **80%+ mutation score** across ML and core busines
 | codex_ml.data | 35 | 5,984 | P0 | ✅ Analyzed |
 | cognitive.ml | 6 | 3,691 | P1 | ✅ Analyzed |
 | codex_ml.tracking | 12 | 3,459 | P1 | ✅ Analyzed |
-| codex_ml.tokenization | 16 | 2,935 | P1 | ✅ Analyzed |
+| codex_ml.tokenization | 16 | 2,935 | P1 | ✅ Analyzed | <!-- pragma: allowlist secret -->
 | codex_ml.models | 13 | 1,841 | P0 | ✅ Analyzed |
 | codex_ml.modeling | 5 | 627 | P2 | ✅ Analyzed |
 
@@ -90,7 +90,7 @@ Achieve **96%+ coverage** and **80%+ mutation score** across ML and core busines
 |-----------|---------|--------|-----|----------|
 | CLI Commands | 50% | 100% | 15 | P0 |
 | Vocab Round-Trip | 60% | 100% | 20 | P0 |
-| Special Tokens | 40% | 100% | 15 | P0 |
+| Special Tokens | 40% | 100% | 15 | P0 | <!-- pragma: allowlist secret -->
 | Batch Encoding | 50% | 100% | 15 | P0 |
 | Truncation/Padding | 45% | 100% | 20 | P0 |
 
@@ -139,7 +139,7 @@ Achieve **96%+ coverage** and **80%+ mutation score** across ML and core busines
 | `build_lora` | models/peft_hooks.py | 10 | P0 |
 | `create_pipeline` | codex_ml/pipeline.py | 20 | P0 |
 | `write_tracking` | tracking/writers.py | 12 | P1 |
-| `encode_batch` | tokenization/* | 18 | P0 |
+| `encode_batch` | tokenization/* | 18 | P0 | <!-- pragma: allowlist secret -->
 | `get_model` | models/registry.py | 15 | P1 |
 | `to_device` | utils/* | 12 | P1 |
 
@@ -261,7 +261,7 @@ Achieve **96%+ coverage** and **80%+ mutation score** across ML and core busines
 |-----|--------|-------|-------|
 | Day 1 (TODAY) | Analysis & Planning | Gap identification | 237 |
 | Day 2 | Core Module Tests | codex_ml.core basics | 100+ |
-| Day 3 | Meta/Tokenization | Critical validations | 85 |
+| Day 3 | Meta/Tokenization | Critical validations | 85 | <!-- pragma: allowlist secret -->
 | Day 4 | Mutation Hardening | Weak assertions | 102 |
 | Day 5 | RAG & Integration | End-to-end validation | 50 |
 
@@ -274,7 +274,7 @@ Achieve **96%+ coverage** and **80%+ mutation score** across ML and core busines
 | Coverage % | ~40% | ≥96% | 80-96% | 🟡 BELOW |
 | Mutation Score | ~20% | ≥80% | 60-80% | 🟡 BELOW |
 | Meta Tensor Issues | TBD | 0 | — | ⏳ PENDING |
-| Tokenizer Round-Trip | 60% | 100% | >90% | 🟡 BELOW |
+| Tokenizer Round-Trip | 60% | 100% | >90% | 🟡 BELOW | <!-- pragma: allowlist secret -->
 | PEFT Target Coverage | 50% | ≥80% | 70-80% | 🟡 BELOW |
 | Test Flakiness | — | <5% | 5-10% | ⏳ PENDING |
 

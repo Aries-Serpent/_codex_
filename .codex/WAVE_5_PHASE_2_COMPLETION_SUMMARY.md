@@ -155,7 +155,7 @@ Lane 4: CLI & Documentation (P3)
 | Gate | Criteria | Status |
 |------|----------|--------|
 | **Code Quality** | 100% test pass, ruff/black/pre-commit clean, coverage targets met, CR approval | ✅ Defined |
-| **Security** | CodeQL alerts resolved, secrets clean, SAST pass, 0 CRITICAL findings | ✅ Defined |
+| **Security** | CodeQL alerts resolved, secrets clean, SAST pass, 0 CRITICAL findings | ✅ Defined | <!-- pragma: allowlist secret -->
 | **Mutation Testing** | Lane-specific minimums: 85%/80%/80%/75% | ✅ Defined |
 | **Performance** | Single test <10s, full suite <300s, no resource exhaustion | ✅ Defined |
 | **Flakiness** | Autonomous-test-healer certified, 3 trial runs, <1% flakiness | ✅ Defined |

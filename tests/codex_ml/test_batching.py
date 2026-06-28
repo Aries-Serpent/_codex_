@@ -118,6 +118,7 @@ class TestBatchingMiddleware:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_initialization(self):
         """Test middleware initialization"""
 
@@ -144,6 +145,7 @@ class TestBatchingMiddleware:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_single_request(self):
         """Test processing a single request"""
 
@@ -158,6 +160,7 @@ class TestBatchingMiddleware:
         await middleware.shutdown()
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -188,6 +191,7 @@ class TestBatchingMiddleware:
         await middleware.shutdown()
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -229,6 +233,7 @@ class TestBatchingMiddleware:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_multiple_batches(self):
         """Test processing multiple batches"""
 
@@ -259,6 +264,7 @@ class TestBatchingMiddleware:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_error_handling(self):
         """Test error handling in batch processing"""
 
@@ -278,6 +284,7 @@ class TestBatchingMiddleware:
         await middleware.shutdown()
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -313,6 +320,7 @@ class TestBatchingMiddleware:
         await middleware.shutdown()
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)

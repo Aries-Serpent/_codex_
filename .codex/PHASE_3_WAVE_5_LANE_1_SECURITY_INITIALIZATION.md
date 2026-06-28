@@ -122,9 +122,9 @@ Phase 3 Wave 5 Lane 1 (L1_SECURITY) **Hour 0-24 initialization is complete**. Al
 
 | Threat | Severity | Focus Areas | Modules |
 |--------|----------|------------|---------|
-| Authentication bypass | CRITICAL | Token validation, session fixation | auth.py |
+| Authentication bypass | CRITICAL | Token validation, session fixation | auth.py | <!-- pragma: allowlist secret -->
 | Authorization violation | CRITICAL | Permission checks, role confusion | authorization.py |
-| Secret exposure | CRITICAL | Hardcoded secrets, accidental leaks | secrets.py |
+| Secret exposure | CRITICAL | Hardcoded secrets, accidental leaks | secrets.py | <!-- pragma: allowlist secret -->
 | Cryptographic weakness | HIGH | Weak ciphers, IV reuse, key length | encryption.py |
 | Input validation bypass | HIGH | SQL injection, command injection, XSS | validation.py |
 | Dependency vulnerability | HIGH | Outdated packages, transitive deps | requirements.txt |
@@ -309,7 +309,7 @@ Phase 3 Wave 5 Lane 1 (L1_SECURITY) **Hour 0-24 initialization is complete**. Al
 | **Mutation** | 85%+ | Baseline | ✅ Ready |
 | **Tests** | 150-200 | 0 (starting) | 🚀 Starting |
 | **CodeQL** | 0 CRITICAL/HIGH | 0 | ✅ Clean |
-| **Secrets** | 0 | 0 | ✅ Clean |
+| **Secrets** | 0 | 0 | ✅ Clean | <!-- pragma: allowlist secret -->
 | **CVEs** | 0 | 0 | ✅ Clean |
 | **Flaky** | <5% | Baseline | ⏳ Testing |
 

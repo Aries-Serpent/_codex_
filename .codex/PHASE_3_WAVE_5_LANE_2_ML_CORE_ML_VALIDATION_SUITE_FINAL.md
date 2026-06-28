@@ -25,7 +25,7 @@
 | Category | Day 1 | Day 2 | Day 3 | Total | Target |
 |----------|-------|-------|-------|-------|--------|
 | Meta-Tensor Validation | — | 18 | 5 | 23 | 25 |
-| Tokenization Coverage | — | 30 | 12 | 42 | 85 |
+| Tokenization Coverage | — | 30 | 12 | 42 | 85 | <!-- pragma: allowlist secret -->
 | Core ML Modules | — | 25 | 18 | 43 | 50+ |
 | Mutation Baseline | — | 12 | 8 | 20 | 102 |
 | Data & RAG Validation | — | 16 | 15 | 31 | 40 |
@@ -41,7 +41,7 @@
 | File | Tests | Size | Purpose |
 |------|-------|------|---------|
 | test_meta_tensor_validator_day2.py | 18 | 7.7 KB | Model init validation |
-| test_tokenization_coverage_day2.py | 30 | 14.5 KB | Tokenizer comprehensiveness |
+| test_tokenization_coverage_day2.py | 30 | 14.5 KB | Tokenizer comprehensiveness | <!-- pragma: allowlist secret -->
 | test_core_ml_day2.py | 25 | 15.5 KB | Config/registry/pipeline |
 | test_mutation_baseline_day2.py | 12 | 12.3 KB | Mutation seed pool |
 | test_data_rag_validation_day2.py | 16 | 15.6 KB | Data loading & RAG health |
@@ -78,10 +78,10 @@
 
 | Module | Gap | Tests | Coverage |
 |--------|-----|-------|----------|
-| codex_ml.tokenization | 45% → 85% | 30 | ✅ HIGH |
+| codex_ml.tokenization | 45% → 85% | 30 | ✅ HIGH | <!-- pragma: allowlist secret -->
 | CLI commands | 50% → 80% | 12 | ✅ HIGH |
 | Vocab round-trip | 60% → 90% | 15 | ✅ HIGH |
-| Special tokens | 40% → 75% | 8 | ✅ MEDIUM |
+| Special tokens | 40% → 75% | 8 | ✅ MEDIUM | <!-- pragma: allowlist secret -->
 | Batch encoding | 50% → 85% | 10 | ✅ HIGH |
 
 **Key Validations**:
@@ -164,7 +164,7 @@
 | _resolve_dtype | factory.py | 12 | 3 |
 | build_lora | peft_hooks.py | 10 | 2 |
 | create_pipeline | pipeline.py | 15 | 4 |
-| batch_encode | tokenization | 18 | 5 |
+| batch_encode | tokenization | 18 | 5 | <!-- pragma: allowlist secret -->
 | get_model | registry.py | 12 | 3 |
 | DataTransform.transform | data_utils | 12 | 3 |
 | save_checkpoint | checkpointing | 10 | 2 |

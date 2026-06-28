@@ -78,6 +78,7 @@ class TestAutonomousAgentExecute:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_execute_empty_task(self, tmp_path):
         """Test execution with empty task returns error."""
         try:
@@ -104,6 +105,7 @@ class TestAutonomousAgentExecute:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_execute_none_task(self, tmp_path):
         """Test execution with None task returns error."""
         try:
@@ -121,6 +123,7 @@ class TestAutonomousAgentExecute:
             pytest.skip("autonomous_runner module not available")
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -162,6 +165,7 @@ class TestAutonomousAgentExecute:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_execute_dry_run_mode(self, tmp_path):
         """Test execution in dry-run mode."""
         try:
@@ -185,6 +189,7 @@ class TestAutonomousAgentExecute:
             pytest.skip("autonomous_runner module not available")
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -226,6 +231,7 @@ class TestSaveReport:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_save_report_creates_file(self, tmp_path):
         """Test that report file is created."""
         try:
@@ -256,6 +262,7 @@ class TestSaveReport:
             pytest.skip("autonomous_runner module not available")
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -360,6 +367,7 @@ class TestMainFunction:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_main_function_exists(self):
         """Test that main function exists and is async."""
         try:
@@ -372,6 +380,7 @@ class TestMainFunction:
             pytest.skip("autonomous_runner module not available")
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -427,6 +436,7 @@ class TestEdgeCases:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_execute_with_special_characters(self, tmp_path):
         """Test execution with special characters in task."""
         try:
@@ -457,6 +467,7 @@ class TestEdgeCases:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_execute_with_model_preference(self, tmp_path):
         """Test execution with specific model preference."""
         try:
@@ -478,6 +489,7 @@ class TestEdgeCases:
             pytest.skip("autonomous_runner module not available")
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)

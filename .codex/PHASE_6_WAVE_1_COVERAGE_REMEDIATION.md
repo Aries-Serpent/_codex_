@@ -59,7 +59,7 @@ These modules are security-critical, frequently-accessed, or core infrastructure
 **Test Generation Strategy**:
 ```
 Phase 1: Unit Tests (15 tests)
-  - JWT token validation (5 tests)
+  - JWT token validation (5 tests)  # pragma: allowlist secret
   - Session lifecycle (5 tests)
   - Message format validation (5 tests)
 
@@ -245,7 +245,7 @@ Phase 2: Integration Tests (16 tests)
 | `src/training` | 47.06% | 70% | 22.94% | 19 | 🟡 MEDIUM |
 | `src/data` | 60.0% | 70% | 10.0% | 8 | 🟡 MEDIUM |
 | `src/verification` | 50.0% | 70% | 20.0% | 17 | 🟡 MEDIUM |
-| `src/tokenizer` | 50.0% | 70% | 20.0% | 17 | 🟡 MEDIUM |
+| `src/tokenizer` | 50.0% | 70% | 20.0% | 17 | 🟡 MEDIUM | <!-- pragma: allowlist secret -->
 
 ---
 
@@ -312,30 +312,30 @@ class TestMCPAuthentication:
     
     @pytest.fixture
     def auth(self):
-        return MCP_Authentication(secret_key="test-secret")
+        return MCP_Authentication(secret_key="test-secret")  # pragma: allowlist secret
     
-    def test_token_validation_valid(self, auth):
-        """Test JWT token validation with valid token."""
-        token = auth.generate_token({"sub": "user123"})
-        result = auth.validate_token(token)
+    def test_token_validation_valid(self, auth):  # pragma: allowlist secret
+        """Test JWT token validation with valid token."""  # pragma: allowlist secret
+        token = auth.generate_token({"sub": "user123"})  # pragma: allowlist secret
+        result = auth.validate_token(token)  # pragma: allowlist secret
         assert result["sub"] == "user123"
     
-    def test_token_validation_expired(self, auth):
-        """Test JWT token validation with expired token."""
-        token = auth.generate_token(
+    def test_token_validation_expired(self, auth):  # pragma: allowlist secret
+        """Test JWT token validation with expired token."""  # pragma: allowlist secret
+        token = auth.generate_token(  # pragma: allowlist secret
             {"sub": "user123"},
             expires_in=-1  # Already expired
         )
-        with pytest.raises(ValueError, match="Token expired"):
-            auth.validate_token(token)
+        with pytest.raises(ValueError, match="Token expired"):  # pragma: allowlist secret
+            auth.validate_token(token)  # pragma: allowlist secret
     
-    def test_token_validation_invalid_signature(self, auth):
-        """Test JWT token validation with tampered token."""
-        token = auth.generate_token({"sub": "user123"})
-        tampered = token[:-10] + "corrupted!"
+    def test_token_validation_invalid_signature(self, auth):  # pragma: allowlist secret
+        """Test JWT token validation with tampered token."""  # pragma: allowlist secret
+        token = auth.generate_token({"sub": "user123"})  # pragma: allowlist secret
+        tampered = token[:-10] + "corrupted!"  # pragma: allowlist secret
         
         with pytest.raises(ValueError, match="Invalid signature"):
-            auth.validate_token(tampered)
+            auth.validate_token(tampered)  # pragma: allowlist secret
 ```
 
 #### Pattern 2: Integration Test Template

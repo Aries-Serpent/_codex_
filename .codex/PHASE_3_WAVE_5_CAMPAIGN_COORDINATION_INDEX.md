@@ -49,7 +49,7 @@ Execute Phase 3 Wave 5 comprehensive testing & validation across security, ML/co
 |------|-----------------|-------|----------|
 | Security audit | unified-security-scanner | June 29 | CR-L1 for Phase 4 |
 | CodeQL resolution | codeql-alert-resolution-agent | June 29 | - |
-| Secrets scanning | secret-detection-agent | June 30 | - |
+| Secrets scanning | secret-detection-agent | June 30 | - | <!-- pragma: allowlist secret -->
 | Security tests | test-enhancement-agent | July 1 | - |
 | Code review CR-L1 | security-alert-verification-agent | July 2 | **BLOCKER** |
 

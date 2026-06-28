@@ -140,7 +140,7 @@ Failed:      0 (tests never reached)
 |------------|-------|----------|----------|
 | `NameError: name 'pytest' is not defined` | ~15-20 | `tests/scripts/test_check_py312_deps.py:10`, `tests/workers/test_embedding_worker.py:x` | MEDIUM |
 | `SyntaxError` (malformed assertions) | ~5-10 | `tests/cli/test_phase7_cli_completeness_lane3.py:225` (`assert (, "..."`) | **CRITICAL** |
-| `SyntaxError` (unclosed parentheses) | ~3-5 | `tests/cli/test_tokenization_cli_comprehensive.py:157` | **CRITICAL** |
+| `SyntaxError` (unclosed parentheses) | ~3-5 | `tests/cli/test_tokenization_cli_comprehensive.py:157` | **CRITICAL** | <!-- pragma: allowlist secret -->
 | `AttributeError` (missing module attributes) | ~20-30 | `tests/security/test_github_provider.py` (lib.GEN_EMAIL missing) | MEDIUM |
 | `ValueError: torch.__spec__ is not set` | ~5-10 | `tests/unit/test_checkpointing.py` | MEDIUM |
 | `ImportError` (missing/broken imports) | ~100+ | Distributed across multiple test directories | MEDIUM |
@@ -269,8 +269,8 @@ ERROR tests/security/test_github_provider.py - AttributeError: module 'lib' has 
 ERROR tests/security/test_log_redaction.py
 ERROR tests/security/test_moderation_integration.py
 ERROR tests/security/test_scope_validation.py
-ERROR tests/security/test_secret_entropy.py
-ERROR tests/security/test_security_secrets.py
+ERROR tests/security/test_secret_entropy.py  # pragma: allowlist secret
+ERROR tests/security/test_security_secrets.py  # pragma: allowlist secret
 ERROR tests/security/test_tls_config.py
 ERROR tests/services/api/test_main_utils.py
 

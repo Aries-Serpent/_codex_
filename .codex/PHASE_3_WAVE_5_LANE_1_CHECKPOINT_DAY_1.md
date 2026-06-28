@@ -109,7 +109,7 @@
 | Metric | Value | Status |
 |--------|-------|--------|
 | **CodeQL Alerts** | 0 CRITICAL, 0 HIGH | ✅ CLEAN |
-| **Secrets Found** | 0 | ✅ CLEAN |
+| **Secrets Found** | 0 | ✅ CLEAN | <!-- pragma: allowlist secret -->
 | **Team Readiness** | 5/5 agents confirmed | ✅ READY |
 | **Test Templates** | 50+ ready | ✅ READY |
 | **Documentation** | 100% complete | ✅ COMPLETE |

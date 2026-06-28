@@ -297,7 +297,7 @@ Result: PR can merge only if all gates pass
 | Level | Definition | Example | Action |
 |-------|-----------|---------|--------|
 | **CRITICAL** | Exploitable vulnerability with high impact | SQL injection, RCE, auth bypass | Immediate fix required |
-| **HIGH** | Significant security risk | Weak crypto, hardcoded secrets, dangerous function use | Fix required before merge |
+| **HIGH** | Significant security risk | Weak crypto, hardcoded secrets, dangerous function use | Fix required before merge | <!-- pragma: allowlist secret -->
 | **MEDIUM** | Potential security issue | Log injection, unvalidated input | Review and suppress with reason |
 | **LOW** | Information or code quality issue | Unused variable, code smell | Advisory only |
 

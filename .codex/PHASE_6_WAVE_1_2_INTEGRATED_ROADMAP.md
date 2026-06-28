@@ -117,7 +117,7 @@ Wave 1 Total: 67 tests, ~12 min execution
 | `src/training` | 47.06% | ~55% | 75% | 19 | HIGH |
 | `src/data` | 60.0% | ~65% | 75% | 8 | MEDIUM |
 | `src/verification` | 50.0% | ~60% | 75% | 17 | MEDIUM |
-| `src/tokenizer` | 50.0% | ~60% | 75% | 15 | MEDIUM |
+| `src/tokenizer` | 50.0% | ~60% | 75% | 15 | MEDIUM | <!-- pragma: allowlist secret -->
 | **Wave 2 Subtotal** | **52.8%** | ~61% | **74%** | **70** |
 
 ### Wave 2 Implementation Strategy
@@ -155,13 +155,13 @@ test_verification_workflows.py (17 tests)
 
 #### Phase 2C: Tokenization & Integration (Days 5-6)
 ```
-test_tokenizer_encoding.py (10 tests)
-  ├─ Token encoding
+test_tokenizer_encoding.py (10 tests)  # pragma: allowlist secret
+  ├─ Token encoding  # pragma: allowlist secret
   ├─ Decoding verification
-  ├─ Special tokens
+  ├─ Special tokens  # pragma: allowlist secret
   └─ Vocabulary operations
 
-test_tokenizer_performance.py (5 tests)
+test_tokenizer_performance.py (5 tests)  # pragma: allowlist secret
   ├─ Batch processing
   ├─ Memory usage
   └─ Encoding speed

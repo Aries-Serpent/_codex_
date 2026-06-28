@@ -38,7 +38,7 @@ Based on `mypy_output.txt` and `.mypy_error_analysis.txt` analysis:
 
 | File | Line | Issue | Fix Pattern | Confidence |
 |------|------|-------|-------------|------------|
-| `src/tokenization/cli.py` | 21, 25 | None → Module | type: ignore[assignment] | HIGH |
+| `src/tokenization/cli.py` | 21, 25 | None → Module | type: ignore[assignment] | HIGH | <!-- pragma: allowlist secret -->
 | `src/codex_ml/monitoring/cli.py` | 31, 34 | None → Module | type: ignore[assignment] | HIGH |
 | `src/codex_ml/eval/eval_runner.py` | 36 | None → Module | type: ignore[assignment] | HIGH |
 | `src/codex_ml/cli/validate.py` | 55, 58 | None → Module | type: ignore[assignment] | HIGH |
@@ -338,7 +338,7 @@ import re
 from pathlib import Path
 
 CLI_FILES = [
-    "src/tokenization/cli.py",
+    "src/tokenization/cli.py",  # pragma: allowlist secret
     "src/codex_ml/monitoring/cli.py",
     "src/codex_ml/eval/eval_runner.py",
     "src/codex_ml/cli/validate.py",

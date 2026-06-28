@@ -340,6 +340,7 @@ class TestAsyncConcurrencyEdgeCases:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_empty_async_operation(self):
         """Test empty async operation."""
         async def empty_coro():
@@ -348,6 +349,7 @@ class TestAsyncConcurrencyEdgeCases:
         assert result is None, "Result must not be empty"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -364,6 +366,7 @@ class TestAsyncConcurrencyEdgeCases:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_async_with_delay(self):
         """Test async function with delay."""
         async def delayed():
@@ -373,6 +376,7 @@ class TestAsyncConcurrencyEdgeCases:
         assert result == "done", "Result must not be empty"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -410,6 +414,7 @@ class TestAsyncConcurrencyEdgeCases:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_concurrent_tasks(self):
         """Test concurrent async tasks."""
         async def task(n):
@@ -422,6 +427,7 @@ class TestAsyncConcurrencyEdgeCases:
         assert results == [0, 2, 4, 6, 8]
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -1009,6 +1015,7 @@ class TestExtendedAsyncVariations:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     @pytest.mark.parametrize("delay_ms", [0, 1, 5, 10])
     async def test_async_delays(self, delay_ms):
         """Test async operations with various delays."""
@@ -1020,6 +1027,7 @@ class TestExtendedAsyncVariations:
         assert result == delay_ms, "Result must not be empty"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -1359,6 +1367,7 @@ class TestComprehensiveAsyncConcurrency:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     @pytest.mark.parametrize("task_id", range(5))
     async def test_simple_async_tasks(self, task_id):
         """Test simple async tasks."""
@@ -1370,6 +1379,7 @@ class TestComprehensiveAsyncConcurrency:
         assert result == task_id, "Result must not be empty"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)

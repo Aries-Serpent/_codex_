@@ -97,7 +97,7 @@ MYPY-UNION-ATTR [union-attr]
 | 21 | `src/codex/archive/backend.py` | 21 | call-arg |
 | 22 | `src/codex/rag/embeddings.py` | 20 | no-untyped-def |
 | 23 | `src/codex_ml/serving/optimizations.py` | 20 | no-untyped-def |
-| 24 | `src/codex_ml/tokenization/hf_tokenizer.py` | 19 | attr-defined |
+| 24 | `src/codex_ml/tokenization/hf_tokenizer.py` | 19 | attr-defined | <!-- pragma: allowlist secret -->
 | 25 | `src/codex/cli/main.py` | 19 | no-untyped-def |
 
 ---

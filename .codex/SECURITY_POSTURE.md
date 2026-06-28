@@ -62,12 +62,12 @@
 - scripts/analyze_workflows.py (1 alert)
 - scripts/catalog_workflows.py (5 alerts)
 - scripts/ci/auto_fix_common_issues.py (2 alerts)
-- scripts/decode_workflow_secrets.py (1 alert)
+- scripts/decode_workflow_secrets.py (1 alert)  # pragma: allowlist secret
 - scripts/fix_security_issues.py (2 alerts)
-- scripts/github_secrets_sync.py (2 alerts)
-- scripts/ops/codex_mint_tokens_per_run.py (2 alerts)
+- scripts/github_secrets_sync.py (2 alerts)  # pragma: allowlist secret
+- scripts/ops/codex_mint_tokens_per_run.py (2 alerts)  # pragma: allowlist secret
 - scripts/ops/codex_repo_admin_bootstrap.py (1 alert)
-- scripts/security/verify_token_scope.py (5 alerts)
+- scripts/security/verify_token_scope.py (5 alerts)  # pragma: allowlist secret
 - src/codex/knowledge/pii.py (2 alerts)
 - src/security/providers/github_provider.py (2 alerts)
 - tests/integration/test_admin_automation_agent.py (1 alert)
@@ -105,8 +105,8 @@ Findings are suppressed (not fixed) only when ALL of the following conditions ar
 | Finding | Rule | Severity | Location | Rationale | Added |
 |---------|------|----------|----------|-----------|-------|
 | py/clear-text-storage-sensitive-data | 31 | HIGH | `.codex/reports/ci_workflow_analysis_artifacts_2026_01_30/workflow_analyzer.py:503` | Archived analysis artifact, not active code | Phase 4 |
-| py/log-injection | 40 | MEDIUM | `scripts/security/verify_token_scope.py:189` | Token validation output, parameterized context | Phase 4 |
-| py/uninitialized-local-variable | 50 | MEDIUM | `tools/codex_secret_scan_stub.py:145` | Stub/test tool, not production | Phase 4 |
+| py/log-injection | 40 | MEDIUM | `scripts/security/verify_token_scope.py:189` | Token validation output, parameterized context | Phase 4 | <!-- pragma: allowlist secret -->
+| py/uninitialized-local-variable | 50 | MEDIUM | `tools/codex_secret_scan_stub.py:145` | Stub/test tool, not production | Phase 4 | <!-- pragma: allowlist secret -->
 | py/unused-global-variable | 55 | MEDIUM | `tests/codex/test_cli_maps.py:12` | Test fixture, intentional | Phase 4 |
 | py/overwritten-inherited-attribute | 57 | MEDIUM | `.github/agents/github-security-validator-agent/src/agent.py:45` | Configuration inheritance pattern | Phase 4 |
 | py/pythagorean | 60 | MEDIUM | `tests/codex/test_math.py:89` | Test validation logic, correct pattern | Phase 4 |

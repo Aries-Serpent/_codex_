@@ -42,8 +42,8 @@ The log injection risk in verify_token_scope.py line 189 occurs when logging tok
 
 **Recommended Suppression**:
 ```python
-# Line 189 — Token scope validation output
-logger.info(f"Token validation: {token_name} has scopes {scopes}")  # nosec B608
+# Line 189 — Token scope validation output  # pragma: allowlist secret
+logger.info(f"Token validation: {token_name} has scopes {scopes}")  # nosec B608  # pragma: allowlist secret
 ```
 
 **Status**: APPROVED  
@@ -151,7 +151,7 @@ def test_pythagorean():
 | Finding ID | Rule | File | Category | Status |
 |-----------|------|------|----------|--------|
 | codeql_31 | py/clear-text-storage | archived artifact | Archived Code | APPROVED |
-| codeql_40 | py/log-injection | verify_token_scope.py | Mitigation Exists | APPROVED |
+| codeql_40 | py/log-injection | verify_token_scope.py | Mitigation Exists | APPROVED | <!-- pragma: allowlist secret -->
 | codeql_50 | py/uninitialized-var | stub tool | Non-Production | APPROVED |
 | codeql_55 | py/unused-global-var | test fixture | Test Code | APPROVED |
 | codeql_57 | py/overwritten-attr | agent config | Config Pattern | APPROVED |

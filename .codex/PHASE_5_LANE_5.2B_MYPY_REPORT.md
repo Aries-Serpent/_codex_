@@ -95,7 +95,7 @@
 | `src/codex/archive/backend.py` | 21 | `[call-arg]` |
 | `src/codex/rag/embeddings.py` | 20 | `[no-untyped-def]` |
 | `src/codex_ml/serving/optimizations.py` | 20 | `[no-untyped-def]` |
-| `src/codex_ml/tokenization/hf_tokenizer.py` | 19 | `[attr-defined]` |
+| `src/codex_ml/tokenization/hf_tokenizer.py` | 19 | `[attr-defined]` | <!-- pragma: allowlist secret -->
 | `src/codex/cli/main.py` | 19 | `[no-untyped-def]` |
 
 ## Remediation Strategy

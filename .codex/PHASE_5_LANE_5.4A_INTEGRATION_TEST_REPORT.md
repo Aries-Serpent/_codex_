@@ -258,7 +258,7 @@ The checkpoint config object is missing the `amp` (Automatic Mixed Precision) at
 | **API Integration** | 156 | ✅ PASS | REST endpoints, request/response handling |
 | **Database Layer** | 89 | ✅ PASS | SQL operations, transactions, migration |
 | **CI/CD Pipeline** | 67 | ✅ PASS | Workflow validation, artifact handling |
-| **Authentication** | 34 | ✅ PASS | Token generation, session management |
+| **Authentication** | 34 | ✅ PASS | Token generation, session management | <!-- pragma: allowlist secret -->
 | **Async Operations** | 112 | ✅ PASS | Event loops, concurrent execution |
 | **File Operations** | 45 | ✅ PASS | I/O, file uploads, serialization |
 | **Agent Framework** | 98 | ✅ PASS | Agent creation, orchestration, communication |

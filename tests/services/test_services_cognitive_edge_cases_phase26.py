@@ -144,6 +144,7 @@ class TestAsyncEdgeCases:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_async_cancellation(self):
         """Test async task cancellation"""
 
@@ -165,6 +166,7 @@ class TestAsyncEdgeCases:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_async_timeout(self):
         """Test async operation timeout"""
 
@@ -175,6 +177,7 @@ class TestAsyncEdgeCases:
             await asyncio.wait_for(slow_op(), timeout=0.1)
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)

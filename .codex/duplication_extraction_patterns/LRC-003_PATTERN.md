@@ -19,7 +19,7 @@ try:
     result = process_task()
 except (ValueError, TypeError, RuntimeError) as e:
     logger.error("Task execution failed: %s", e, exc_info=True)
-    return {"status": "error", "code": "TASK_FAILED", "message": str(e)}
+    return {"status": "error", "code": "TASK_FAILED", "message": str(e)}  # pragma: allowlist secret
 
 # Variant 2: src/api/middleware.py
 try:
@@ -107,7 +107,7 @@ error = create_error_response(
 ```python
 {
     "status": "error",
-    "code": "TASK_FAILED",
+    "code": "TASK_FAILED",  # pragma: allowlist secret
     "message": "Task execution failed",
     "severity": "error",
     "details": {

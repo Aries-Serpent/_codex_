@@ -28,7 +28,7 @@
 | governance | 86% | 286 | 143.0 | 🔴 URGENT |
 | authz | 76% | 77 | 38.5 | 🔴 HIGH |
 | crypto | 56% | 21 | 10.5 | 🔴 HIGH |
-| secrets | 98% | 9 | 4.5 | 🔴 HIGH |
+| secrets | 98% | 9 | 4.5 | 🔴 HIGH | <!-- pragma: allowlist secret -->
 | security | 98% | 1 | 0.5 | 🔴 HIGH |
 
 **P0 Summary:** 6 modules | 399 tests | 199.5 hours | **Immediate start required**

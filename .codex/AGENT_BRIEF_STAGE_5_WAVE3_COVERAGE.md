@@ -135,7 +135,7 @@ Phase 6 Wave 1 established 79 TIER-1 tests with 70%+ coverage baseline. Wave 3 f
 |----------|-------|----------|-----------------|
 | Unit: Data loaders | 12 | CSVLoader, JSONLoader, ImageLoader, TextLoader | 14 |
 | Unit: Transforms | 10 | Normalization, augmentation, filtering | 12 |
-| Unit: Preprocessing | 10 | Tokenization, embedding, scaling | 12 |
+| Unit: Preprocessing | 10 | Tokenization, embedding, scaling | 12 | <!-- pragma: allowlist secret -->
 | Unit: Sampling strategies | 8 | RandomSampler, StratifiedSampler, SequentialSampler | 9 |
 | Unit: Validation logic | 8 | Schema validation, dtype checks, range checks | 10 |
 | Integration: Full pipeline | 15 | Load→preprocess→augment→batch sequences | 18 |

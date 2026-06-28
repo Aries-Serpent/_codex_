@@ -400,7 +400,7 @@ def mock_batch():
     """Mock training batch."""
     return {
         'input_ids': torch.randn(32, 128),
-        'token_type_ids': torch.randint(0, 2, (32, 128)),
+        'token_type_ids': torch.randint(0, 2, (32, 128)),  # pragma: allowlist secret
         'attention_mask': torch.ones(32, 128),
         'labels': torch.randint(0, 1000, (32,))
     }

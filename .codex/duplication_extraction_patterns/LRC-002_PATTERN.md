@@ -66,7 +66,7 @@ def require_auth(scopes=None):
 from src.codex.consolidation import validate, require_auth, handle_errors
 
 @validate(
-    required_fields=['user_id', 'token'],
+    required_fields=['user_id', 'token'],  # pragma: allowlist secret
     field_validators={'user_id': lambda x: isinstance(x, int)}
 )
 @require_auth(required_scopes=['user:read', 'repo:admin'])
@@ -74,7 +74,7 @@ from src.codex.consolidation import validate, require_auth, handle_errors
     exception_types=(ValueError, KeyError),
     fallback_return={'status': 'error'}
 )
-def process_user(user_id: int, token: str) -> dict:
+def process_user(user_id: int, token: str) -> dict:  # pragma: allowlist secret
     return {'status': 'success', 'user_id': user_id}
 ```
 

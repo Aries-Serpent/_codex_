@@ -136,7 +136,7 @@ with prioritization by ROI and risk assessment. Total potential reduction: **9,5
 - **Locations:** `link_validator.py:217`, `scripts/copilot_session_log_retriever.py:40`
 - **Code Pattern:**
   ```python
-  api_key = os.environ.get('API_KEY', 'default')
+  api_key = os.environ.get('API_KEY', 'default')  # pragma: allowlist secret
   debug = os.getenv('DEBUG', 'False').lower() == 'true'
   ```
 - **Extract to:** `src/env_config.py` with get_env_str/int/bool()

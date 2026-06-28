@@ -17,17 +17,17 @@
 auth.py:
 ├── Public Functions (7):
 │   ├── authenticate() — main auth entry
-│   ├── get_token() — token retrieval
-│   ├── refresh_token() — token refresh
-│   ├── validate_token() — token validation
-│   ├── revoke_token() — token revocation
+│   ├── get_token() — token retrieval  # pragma: allowlist secret
+│   ├── refresh_token() — token refresh  # pragma: allowlist secret
+│   ├── validate_token() — token validation  # pragma: allowlist secret
+│   ├── revoke_token() — token revocation  # pragma: allowlist secret
 │   ├── get_permissions() — permission checking
 │   └── has_permission() — single permission check
 ├── Private Functions (1):
-│   └── _cache_token() — token caching
+│   └── _cache_token() — token caching  # pragma: allowlist secret
 └── Classes (3):
     ├── AuthManager (main interface)
-    ├── TokenError (exception)
+    ├── TokenError (exception)  # pragma: allowlist secret
     └── PermissionDenied (exception)
 ```
 

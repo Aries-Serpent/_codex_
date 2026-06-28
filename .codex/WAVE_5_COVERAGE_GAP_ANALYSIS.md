@@ -61,7 +61,7 @@
 | crypto | 12 | 121 | 12 | 42% | 98% | 56% | 21 | 10.5 | P0-2 |
 | authz | 8 | 333 | 21 | 22% | 98% | 76% | 77 | 38.5 | P0-3 |
 | governance | 1 | 1,084 | 31 | 12% | 98% | 86% | 286 | 143.0 | P0-4 |
-| secrets | 8 | 32 | 4 | 0% | 98% | 98% | 9 | 4.5 | P0-5 |
+| secrets | 8 | 32 | 4 | 0% | 98% | 98% | 9 | 4.5 | P0-5 | <!-- pragma: allowlist secret -->
 | security | 3 | 193 | 8 | 0% | 98% | 98% | 1 | 0.5 | P0-6 |
 
 **Tier Summary:** 6 modules | **399 tests** | **199.5 hours**
@@ -280,7 +280,7 @@ Top 15 by priority score:
 | Phase | Effort | Modules | Tests | Status |
 |-------|--------|---------|-------|--------|
 | **Week 1** | 100 hours | auth, crypto | 200 | Sprint A |
-| **Week 2** | 99.5 hours | authz, governance, secrets, security | 199 | Sprint B |
+| **Week 2** | 99.5 hours | authz, governance, secrets, security | 199 | Sprint B | <!-- pragma: allowlist secret -->
 | **Total** | **199.5 hours** | **6 modules** | **399 tests** | Ready |
 
 ### P1 Tier: Core Business Logic (3-4 Weeks)
@@ -360,7 +360,7 @@ All 54 modules show <50% measured coverage, indicating need for comprehensive te
 
 | Category | Modules | Total LOC | Avg Coverage | Action |
 |----------|---------|-----------|--------------|--------|
-| **Security/Auth** | auth, authz, crypto, governance, secrets, security | 6,615 | 10% | 🔴 URGENT |
+| **Security/Auth** | auth, authz, crypto, governance, secrets, security | 6,615 | 10% | 🔴 URGENT | <!-- pragma: allowlist secret -->
 | **ML/AI Pipeline** | cognitive, rag, brain, retrieval, training, inference | 41,018 | 8% | 🔴 URGENT |
 | **Infrastructure** | logging, archive, quantum_orchestrator, monitoring | 18,840 | 15% | 🟡 HIGH |
 | **CLI/Tools** | cli, agents, api, zendesk, refactoring | 8,963 | 12% | 🟠 MEDIUM |

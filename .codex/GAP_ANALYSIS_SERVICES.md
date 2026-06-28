@@ -35,7 +35,7 @@ services/
 │   ├── parser.py             (9 functions, 1 class)
 │   └── types.py              (5 functions, 20 classes)
 └── crawler/
-    ├── zendesk_sync.py       (13 functions, 3 classes)
+    ├── zendesk_sync.py       (13 functions, 3 classes)  # pragma: allowlist secret
     ├── content_diff.py       (19 functions, 6 classes) ⚠️ HIGH COMPLEXITY
     └── multi_locale_sync.py  (10 functions, 4 classes)
 ```
@@ -166,7 +166,7 @@ content_diff.py:
 │   ├── patch_to_json() — serialization
 │   └── parse_diff() — deserialization
 ├── Private Functions (9):
-│   ├── _tokenize_lines() — preprocessing
+│   ├── _tokenize_lines() — preprocessing  # pragma: allowlist secret
 │   ├── _compute_lcs() — longest common subsequence
 │   ├── _chunk_paragraphs() — grouping
 │   ├── _detect_conflicts() — merge conflict detection

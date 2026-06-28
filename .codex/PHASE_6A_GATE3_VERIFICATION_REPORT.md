@@ -132,7 +132,7 @@ Pass rate improvement:         +4.9% (47 net new passing)
 | Unit Tests | pytest units | ✅ PASS | 1,200+ passing |
 | Integration Tests | pytest integration | ✅ PASS | 867/914 (93.4%) |
 | Security Scanning | CodeQL + Bandit | ✅ PASS | No CRITICAL vulns |
-| Secrets Scanning | gitleaks | ✅ PASS | No secrets detected |
+| Secrets Scanning | gitleaks | ✅ PASS | No secrets detected | <!-- pragma: allowlist secret -->
 | Dependency Audit | pip-audit + safety | ✅ PASS | All pins resolved |
 | Documentation | Link validation | ✅ PASS | No broken links |
 
@@ -181,7 +181,7 @@ Overall Status: ALL GATES PASSING ✅
 [✅] No performance regressions detected
 [✅] No security vulnerabilities introduced
 [✅] Commit messages clear and descriptive
-[✅] No hardcoded credentials or secrets
+[✅] No hardcoded credentials or secrets  # pragma: allowlist secret
 [✅] Documentation updated accordingly
 [✅] Backward compatibility verified
 ```

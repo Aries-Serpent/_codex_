@@ -25,7 +25,7 @@ Each gap is scored on:
 | Task ID | Module | Function(s) | Impact | Complexity | Risk | Score | Tests |
 |---------|--------|------------|--------|-----------|------|-------|-------|
 | **A1** | services | github/client.py — core APIs | +8-10% | 2 | 5 | **39** | 8 |
-| **A2** | mcp | auth.py — token management | +5-7% | 3 | 5 | **35** | 6 |
+| **A2** | mcp | auth.py — token management | +5-7% | 3 | 5 | **35** | 6 | <!-- pragma: allowlist secret -->
 | **A3** | mcp | lifecycle.py — state machine | +6-8% | 3 | 5 | **36** | 7 |
 | **A4** | services | workflow/inventory.py — parsing | +5-7% | 2 | 4 | **27** | 4 |
 

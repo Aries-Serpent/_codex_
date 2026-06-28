@@ -160,7 +160,7 @@ TenantContextMiddleware (outermost - runs first)
     ↓
 RateLimitMiddleware
     ├─ Check request quota from tenant context
-    ├─ Deduct tokens on successful response
+    ├─ Deduct tokens on successful response  # pragma: allowlist secret
     └─ Return 429 if quota exceeded
     ↓
 Router (infer.py, kb.py, admin.py)

@@ -124,7 +124,7 @@
 | Gap analysis | 4935 items | ✅ 4935 items | **PASS** |
 | Phase gates | 3 phases | ✅ 4A, 4B, 5+ | **PASS** |
 | Documentation | Comprehensive | ✅ 6 docs, 57 KB | **PASS** |
-| Test prioritization | Risk-ranked | ✅ 82 tests, ROI scored | **PASS** |
+| Test prioritization | Risk-ranked | ✅ 82 tests, ROI scored | **PASS** | <!-- pragma: allowlist secret -->
 | Resource plan | Team allocation | ✅ 2 engineers, 46h | **PASS** |
 | Coverage roadmap | Phase targets | ✅ 4A: 25%+, 4B: 35%+, 5: 50%+ | **PASS** |
 

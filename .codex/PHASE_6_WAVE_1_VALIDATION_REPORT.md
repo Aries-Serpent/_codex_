@@ -152,7 +152,7 @@ Recent history:
 - bde6097e - Task 6.1: Pre-promotion validation checkpoint
 - fa7b20d0 - Phase 6 Wave 1: Initial checkpoint
 - e2cc4f85 - Apply remaining changes
-- cafa3348 - fix(ci): auto-sync .secrets.baseline
+- cafa3348 - fix(ci): auto-sync .secrets.baseline  # pragma: allowlist secret
 ```
 
 **Assessment:** ✅ Branch is healthy and ready for operations once blockers resolved.
@@ -225,7 +225,7 @@ Root Cause: Test collection errors prevent full suite execution
 ```
 Total violations: 66
 HIGH (must fix): 36 findings
-- All: Information Disclosure (clear-text secret logging)
+- All: Information Disclosure (clear-text secret logging)  # pragma: allowlist secret
 
 MEDIUM (review/fix): 30 findings
 - Log Injection: 6
@@ -290,10 +290,10 @@ python -m pytest tests/src/test_cli_phase10.py --collect-only -v --tb=short
 **Task 2.1: Implement Secure Logging Patterns**
 ```python
 # BEFORE (clear-text logging):
-logger.debug(f"API Key: {api_key}")
+logger.debug(f"API Key: {api_key}")  # pragma: allowlist secret
 
 # AFTER (redacted logging):
-logger.debug(f"API Key: {api_key[:8]}***REDACTED***")
+logger.debug(f"API Key: {api_key[:8]}***REDACTED***")  # pragma: allowlist secret
 ```
 
 **Task 2.2: Update Clear-Text Secret Logging**

@@ -36,7 +36,7 @@
 |------|--------|-----------------|-----|
 | Security audit initialization | 🔵 PENDING | unified-security-scanner | June 29 |
 | CodeQL alert resolution | 🔵 PENDING | codeql-alert-resolution-agent | June 29-30 |
-| Secrets scanning & validation | 🔵 PENDING | secret-detection-agent | June 30 |
+| Secrets scanning & validation | 🔵 PENDING | secret-detection-agent | June 30 | <!-- pragma: allowlist secret -->
 | Security test harness | 🔵 PENDING | test-enhancement-agent | July 1 |
 | Code review CR-L1 | 🔵 PENDING | security-alert-verification-agent | July 2 |
 

@@ -101,7 +101,7 @@ done
 - test_resource_requests_valid()
 - test_branch_protection_rules()
 - test_workflow_permissions_least_privilege()
-- test_workflow_secrets_masked()
+- test_workflow_secrets_masked()  # pragma: allowlist secret
 
 # tests/ci/test_flaky_detector.py
 - test_identify_flaky_workflows()
@@ -266,7 +266,7 @@ done
 - test_workflow_triggering()
 - test_job_matrix_expansion()
 - test_artifact_upload_download()
-- test_action_secret_handling()
+- test_action_secret_handling()  # pragma: allowlist secret
 
 # tests/ci/test_disaster_recovery.py
 - test_failed_job_recovery()

@@ -59,7 +59,7 @@
 |-----------|---|---|
 | CLI Commands | 50% → 80% | ✅ IMPROVED |
 | Vocab Round-Trip | 60% → 85% | ✅ IMPROVED |
-| Special Tokens | 40% → 75% | ✅ IMPROVED |
+| Special Tokens | 40% → 75% | ✅ IMPROVED | <!-- pragma: allowlist secret -->
 | Batch Encoding | 50% → 70% | ✅ IMPROVED |
 | Truncation/Padding | 45% → 75% | ✅ IMPROVED |
 
@@ -122,7 +122,7 @@
 | Module | Tests | Coverage Gap | Priority |
 |--------|-------|--------------|----------|
 | codex_ml.models | 18 | 60% → 80% | P0 |
-| codex_ml.tokenization | 30 | 45% → 80% | P0 |
+| codex_ml.tokenization | 30 | 45% → 80% | P0 | <!-- pragma: allowlist secret -->
 | codex_ml.core | 25 | 20% → 55% | P0 |
 | codex_ml.data | 8 | 25% → 50% | P1 |
 | codex_ml.tracking | 5 | 15% → 40% | P1 |

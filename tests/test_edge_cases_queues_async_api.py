@@ -318,6 +318,7 @@ class TestAsyncIteratorEdgeCases:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_empty_async_iterator(self):
         """Test empty async iterator"""
 
@@ -340,6 +341,7 @@ class TestAsyncIteratorEdgeCases:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_single_item_async_iterator(self):
         """Test async iterator with single item"""
 
@@ -353,6 +355,7 @@ class TestAsyncIteratorEdgeCases:
         assert items == ["item"], "Item must not be empty"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -384,6 +387,7 @@ class TestAsyncIteratorEdgeCases:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_async_iterator_exception(self):
         """Test async iterator exception handling"""
 
@@ -401,6 +405,7 @@ class TestAsyncIteratorEdgeCases:
         assert items == [1, 2]
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)

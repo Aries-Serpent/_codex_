@@ -436,7 +436,7 @@ src/
   │   ├── github/           (client, exceptions, types)
   │   ├── audio/            (processor, workflows, effects)
   │   ├── workflow/         (inventory, parser, types)
-  │   ├── crawler/          (zendesk_sync, content_diff, multi_locale)
+  │   ├── crawler/          (zendesk_sync, content_diff, multi_locale)  # pragma: allowlist secret
   │   └── mcp/              (lifecycle)
   ├── codex_ml/             (407 files, 3715 functions, 578 classes)
   │   ├── config_schema.py

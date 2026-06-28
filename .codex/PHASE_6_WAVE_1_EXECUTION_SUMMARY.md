@@ -45,7 +45,7 @@
 | `src/training` | 47.06% | 70% | -22.94% | 19 |
 | `src/data` | 60.0% | 70% | -10.0% | 8 |
 | `src/verification` | 50.0% | 70% | -20.0% | 17 |
-| `src/tokenizer` | 50.0% | 70% | -20.0% | 17 |
+| `src/tokenizer` | 50.0% | 70% | -20.0% | 17 | <!-- pragma: allowlist secret -->
 | **Wave 2 Total** | | | | **70+** |
 
 ---

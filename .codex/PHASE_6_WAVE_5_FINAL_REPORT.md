@@ -161,7 +161,7 @@ from codex.caching import UnifiedCache, CacheSegment, memoize
 
 # Create unified cache with warming
 def warm_encoder_cache():
-    return {"common_token": cached_value, ...}
+    return {"common_token": cached_value, ...}  # pragma: allowlist secret
 
 cache = UnifiedCache(
     max_size=10000,

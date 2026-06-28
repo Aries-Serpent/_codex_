@@ -165,7 +165,7 @@ assert result is not None, f"Result should be {type(expected)}, got None"
 # Shallow assertions
 assert metrics["eval_loss"] == pytest.approx(0.6)  # Only checks value
 assert metrics["perplexity"] == pytest.approx(expected_perplexity)
-assert metrics["token_accuracy"] == pytest.approx(1.0)
+assert metrics["token_accuracy"] == pytest.approx(1.0)  # pragma: allowlist secret
 ```
 
 **Enhancement Plan (Add 8-12 tests):**

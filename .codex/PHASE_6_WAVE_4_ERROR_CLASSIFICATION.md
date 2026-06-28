@@ -32,8 +32,8 @@ TOTAL WARNINGS:        51 errors (66.2%)
 
 | File | Line | Current | Fixed | Confidence |
 |------|------|---------|-------|------------|
-| tokenization/cli.py | 21 | `module = importlib.import_module(...)` | Add `# type: ignore[assignment]` | HIGH |
-| tokenization/cli.py | 25 | `module = importlib.import_module(...)` | Add `# type: ignore[assignment]` | HIGH |
+| tokenization/cli.py | 21 | `module = importlib.import_module(...)` | Add `# type: ignore[assignment]` | HIGH | <!-- pragma: allowlist secret -->
+| tokenization/cli.py | 25 | `module = importlib.import_module(...)` | Add `# type: ignore[assignment]` | HIGH | <!-- pragma: allowlist secret -->
 | codex_ml/monitoring/cli.py | 31 | `module = importlib.import_module(...)` | Add `# type: ignore[assignment]` | HIGH |
 | codex_ml/monitoring/cli.py | 34 | `module = importlib.import_module(...)` | Add `# type: ignore[assignment]` | HIGH |
 | codex_ml/eval/eval_runner.py | 36 | `module = importlib.import_module(...)` | Add `# type: ignore[assignment]` | HIGH |

@@ -44,7 +44,7 @@ Wave 5 Phase 2 deploys a **4-parallel-lane execution model** to deliver **1,500+
 | Module | Category | Current Coverage | Target | Tests |
 |--------|----------|------------------|--------|-------|
 | `src/codex/security/` | Auth & Crypto | 87% | 98%+ | 65 |
-| `src/codex/auth/` | Token & Session Mgmt | 89% | 98%+ | 45 |
+| `src/codex/auth/` | Token & Session Mgmt | 89% | 98%+ | 45 | <!-- pragma: allowlist secret -->
 | `src/codex/validators/` | Input Validation | 91% | 98%+ | 40 |
 | **Mutation-Critical** | Boundary & Logic | 82% | 85%+ | 50 |
 

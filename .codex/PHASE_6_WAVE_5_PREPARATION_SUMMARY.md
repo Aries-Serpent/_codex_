@@ -339,7 +339,7 @@ The comprehensive execution plan includes a 3-phase staged rollout (Development 
 | Backward compatibility issues | Data loss | Very Low | Migration job with verification |
 | Performance regression | CI slowdown | Low | Regression detection + rollback |
 | Adoption failures | Hit rate target miss | Low | Staged rollout with validation gates |
-| Security concerns | Data compromise | Very Low | No secrets in cache, encryption on L4 |
+| Security concerns | Data compromise | Very Low | No secrets in cache, encryption on L4 | <!-- pragma: allowlist secret -->
 
 ### Safety Measures
 - Regression detection: Automatic monitoring every 5 runs

@@ -109,7 +109,7 @@ Timeline: 6 execution days + Phase 4 (2 days) = 8 calendar days
 | Gate | Criteria |
 |------|----------|
 | **Code Quality** | 100% test pass, ruff/black/pre-commit clean, CR approval |
-| **Security** | CodeQL + secrets passed, 0 CRITICAL findings, SAST pass |
+| **Security** | CodeQL + secrets passed, 0 CRITICAL findings, SAST pass | <!-- pragma: allowlist secret -->
 | **Mutation Testing** | Lane minimums: 85%/80%/80%/75% |
 | **Performance** | Single test <10s, suite <300s, no resource exhaustion |
 | **Flakiness** | autonomous-test-healer certified, <1% flakiness |

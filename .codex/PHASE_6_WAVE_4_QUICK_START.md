@@ -205,7 +205,7 @@ bash .codex/phase_6_wave_4_auto_fix_scripts.sh --validate-only
 
 **Symptoms:**
 ```
-src/tokenization/cli.py:21: error: unused "type: ignore[assignment]" comment [unused-ignore]
+src/tokenization/cli.py:21: error: unused "type: ignore[assignment]" comment [unused-ignore]  # pragma: allowlist secret
 ```
 
 **Solution:**
@@ -223,7 +223,7 @@ mypy src/ --warn-unused-ignores --no-error-summary 2>&1 | grep "unused-ignore" |
 **Symptoms:**
 ```
 [1/5] Fixing assignment errors (importlib.import_module)...
-  ✗ File not found: src/tokenization/cli.py
+  ✗ File not found: src/tokenization/cli.py  # pragma: allowlist secret
 ```
 
 **Solution:**
