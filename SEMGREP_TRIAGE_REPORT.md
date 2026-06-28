@@ -110,7 +110,7 @@ checkpoint_file.unlink()  # Delete immediately after
 ✓ src/codex/auth/github_app.py (3 lines)
 ✓ src/codex/github/mcp_poster.py (4 lines)
 ✓ src/codex/skills/telemetry.py (1 line)
-✓ src/services/crawler/zendesk_sync.py (1 line)
+✓ src/services/crawler/zendesk_sync.py (1 line)  # pragma: allowlist secret
 ✓ tests/exception_handlers/test_exception_handlers.py (1 line)
 ✓ tests/test_actions_server_smoke.py (1 line)
 ```
