@@ -404,7 +404,7 @@ class WorkflowAnalyzer:
 class CacheOptimizer:
     """Optimize workflow caching strategies."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize optimizer."""
         self._cache_analysis: dict[str, Any] = {}
 

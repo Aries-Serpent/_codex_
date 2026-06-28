@@ -333,7 +333,7 @@ def main() -> None:
     print(f"Registered tools: {registry.get_tool_names()}")
 
     # Execute tools
-    async def test_execution():
+    async def test_execution() -> None:
         result1 = await registry.execute("echo", "Hello")
         print(f"echo result: {result1.output}")
 

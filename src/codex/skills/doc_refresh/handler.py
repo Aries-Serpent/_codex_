@@ -18,7 +18,7 @@ _AAIS_PRUNE_THRESHOLD = 0.30  # docs scoring below this are candidates for pruni
 _AAIS_REFRESH_THRESHOLD = 0.60  # docs scoring below this need refresh
 
 
-def plan_and_apply(payload: dict) -> dict:
+def plan_and_apply(payload: dict[str, Any]) -> dict[str, Any]:
     """Score, plan, and optionally apply doc refresh.
 
     Parameters

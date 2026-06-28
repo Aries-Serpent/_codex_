@@ -82,7 +82,7 @@ class SessionInfo:
         """Check if session is still active (default 30 minutes)."""
         return (time.time() - self.last_activity) < timeout
 
-    def update_activity(self):
+    def update_activity(self) -> None:
         """Update last activity timestamp."""
         self.last_activity = time.time()
 

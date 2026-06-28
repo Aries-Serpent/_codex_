@@ -119,7 +119,7 @@ class KeyPointExtractor:
         (r"(?:todo|pending|remaining):\s*(.+)", "todo"),
     ]
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize extractor."""
         self._patterns = [
             (re.compile(p, re.IGNORECASE), tag) for p, tag in self.IMPORTANCE_PATTERNS

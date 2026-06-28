@@ -141,7 +141,7 @@ class LlamaCppEmbeddingProvider:
     def __repr__(self) -> str:
         return f"LlamaCppEmbeddingProvider(model={self.model_path}, gpu_layers={self.n_gpu_layers})"
 
-    def __del__(self):
+    def __del__(self) -> None:
         """Cleanup model on deletion."""
         if hasattr(self, "model"):
             del self.model

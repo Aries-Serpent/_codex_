@@ -40,7 +40,7 @@ DEFAULT_RL_PATH = "codex_ml.interfaces.rl:BanditRLAgent"
 
 
 @contextmanager
-def _temporary_env(overrides: Mapping[str, Optional[str]]):
+def _temporary_env(overrides: Mapping[str, Optional[str]]) -> None:
     """Temporarily apply environment variable overrides."""
 
     previous: dict[str, Optional[str]] = {}

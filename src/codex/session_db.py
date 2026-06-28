@@ -41,7 +41,7 @@ class SessionDB:
         self.cache_max_size = 10 * 1024 * 1024  # 10 MB
         self.cache_current_size = 0
 
-    def _init_db(self):
+    def _init_db(self) -> None:
         """Initialize database with schema"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
@@ -143,7 +143,7 @@ class SessionDB:
         logger.info(f"Archived session {session_id} to {archive_location}")
         return str(archive_path)
 
-    def _update_archive_status(self, session_id: str, archive_location: str):
+    def _update_archive_status(self, session_id: str, archive_location: str) -> None:
         """Update session archive status in database"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
@@ -210,7 +210,7 @@ class SessionDB:
 
         return row_dict
 
-    def _cache_session(self, session_id: str, session_data: dict[str, Any]):
+    def _cache_session(self, session_id: str, session_data: dict[str, Any]) -> None:
         """Cache session with size limit"""
         # Simple size estimation
         data_size = len(json.dumps(session_data).encode("utf-8"))
@@ -255,7 +255,7 @@ class SessionDB:
 
         return candidates
 
-    def mark_deleted(self, session_id: str):
+    def mark_deleted(self, session_id: str) -> None:
         """Mark session as deleted (for retention policy)"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
@@ -276,7 +276,7 @@ class SessionDB:
         if session_id in self._cache:
             del self._cache[session_id]
 
-    def cleanup_old_archives(self, max_iterations: int = 30):
+    def cleanup_old_archives(self, max_iterations: int = 30) -> None:
         """Delete archived sessions older than max_iterations
 
         Args:

@@ -345,7 +345,7 @@ class BaseWriter(ABC):
     """Simple interface for metric writers."""
 
     @abstractmethod
-    def log(self, row: dict) -> None:  # pragma: no cover - interface
+    def log(self, row: dict[str, Any]) -> None:  # pragma: no cover - interface
         """Persist a single metrics row."""
 
     def close(self) -> None:  # pragma: no cover - interface
@@ -401,7 +401,7 @@ class NdjsonWriter(BaseWriter):
                 **rotation,
             )
 
-    def log(self, row: dict) -> None:
+    def log(self, row: dict[str, Any]) -> None:
         record = dict(row)
         if not self._legacy:
             iso = datetime.now(timezone.utc).isoformat()
@@ -558,7 +558,7 @@ class TensorBoardWriter(BaseWriter):
                 extra={"dependencies": _collect_dependency_flags()},
             )
 
-    def log(self, row: dict) -> None:
+    def log(self, row: dict[str, Any]) -> None:
         if self._writer is None:
             return
         val = row.get("value")
@@ -584,7 +584,7 @@ class MLflowWriter(BaseWriter):
         uri: str | None,
         exp_name: str,
         run_name: str,
-        tags: dict,
+        tags: dict[str, Any],
         *,
         summary_path: str | Path | None = None,
     ) -> None:
@@ -654,7 +654,7 @@ class MLflowWriter(BaseWriter):
                 extra=summary_extra,
             )
 
-    def log(self, row: dict) -> None:
+    def log(self, row: dict[str, Any]) -> None:
         if self._mlflow is None:
             return
         val = row.get("value")
@@ -677,7 +677,7 @@ class WandbWriter(BaseWriter):
         self,
         project: str,
         run_name: str,
-        tags: dict,
+        tags: dict[str, Any],
         mode: str = "offline",
         *,
         summary_path: str | Path | None = None,
@@ -724,7 +724,7 @@ class WandbWriter(BaseWriter):
                 },
             )
 
-    def log(self, row: dict) -> None:
+    def log(self, row: dict[str, Any]) -> None:
         if self._run is None:
             return
         val = row.get("value")
@@ -769,7 +769,7 @@ class CompositeWriter(BaseWriter):
             )
             print(f"[tracking] degraded writers: {summary}", file=sys.stderr)  # codeql[py/clear-text-logging-sensitive-data]
 
-    def log(self, row: dict) -> None:
+    def log(self, row: dict[str, Any]) -> None:
         for w in self._writers:
             try:
                 w.log(row)
@@ -1125,11 +1125,11 @@ class MLflowRunManager:
         self.tags = tags or {}
         self._run = None
 
-    def start_run(self):
+    def start_run(self) -> None:
         """Context manager for MLflow run."""
         return self
 
-    def __enter__(self):
+    def __enter__(self) -> None:
         """Enter context manager."""
         if not MLFLOW_CLIENT_AVAILABLE or not self.metric_writer._initialized:
             return self
@@ -1146,7 +1146,7 @@ class MLflowRunManager:
 
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         """Exit context manager."""
         if self._run is not None:
             try:

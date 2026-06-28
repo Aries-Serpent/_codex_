@@ -252,7 +252,7 @@ class RobinHoodHashTable(Generic[K, V]):
             self.table[idx] = (next_entry[0], next_entry[1], next_entry[2] - 1)
             idx = next_idx
 
-    def get_metrics(self) -> dict:
+    def get_metrics(self) -> dict[str, Any]:
         """
         Get performance metrics.
 
@@ -420,7 +420,7 @@ class CuckooHashTable(Generic[K, V]):
 
         return None
 
-    def get_metrics(self) -> dict:
+    def get_metrics(self) -> dict[str, Any]:
         """Get performance metrics."""
         return {
             "size": self.size,
@@ -432,7 +432,7 @@ class CuckooHashTable(Generic[K, V]):
         }
 
 
-def get_aais_contribution(hash_table) -> dict:
+def get_aais_contribution(hash_table) -> dict[str, Any]:
     """
     Calculate AAIS contribution from hash table metrics.
 

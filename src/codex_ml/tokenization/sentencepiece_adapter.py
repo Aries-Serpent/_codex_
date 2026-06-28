@@ -28,7 +28,7 @@ from typing import Optional  # noqa: E402
 spm = None
 
 
-def _get_sentencepiece():
+def _get_sentencepiece() -> None:
     """Return the ``sentencepiece`` module or raise ``ImportError``."""
 
     import sys as _sys
@@ -74,7 +74,7 @@ def _get_sentencepiece():
                 character_coverage: float,
                 model_type: str,
                 **_: object,
-            ):
+            ) -> None:
                 corpus_path = Path(input)
                 tokens: list[str] = []
                 if corpus_path.exists():
@@ -96,20 +96,20 @@ def _get_sentencepiece():
                         logger.warning("Exception occurred", exc_info=True)
                         self.vocab = []
 
-            def encode(self, text: str, out_type=int):
+            def encode(self, text: str, out_type=int) -> None:
                 token_to_id = {tok: idx for idx, tok in enumerate(self.vocab)} or {"<unk>": 0}
                 ids = [token_to_id.get(tok, 0) for tok in text.split()]
                 return ids if out_type is int else [str(i) for i in ids]
 
-            def decode(self, ids):
+            def decode(self, ids) -> None:
                 id_to_token = {idx: tok for idx, tok in enumerate(self.vocab)} or {0: "<unk>"}
                 return " ".join(id_to_token.get(int(i), "<unk>") for i in ids)
 
-            def get_piece_size(self):
+            def get_piece_size(self) -> None:
                 return len(self.vocab) if self.vocab else 1
 
             # Compatibility shims
-            def __getattr__(self, name: str):  # pragma: no cover - compatibility
+            def __getattr__(self, name: str) -> None:  # pragma: no cover - compatibility
                 """
                 Provide compatibility shims for certain attribute names.
 

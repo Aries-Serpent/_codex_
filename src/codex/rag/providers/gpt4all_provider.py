@@ -112,7 +112,7 @@ class GPT4AllEmbeddingProvider:
     def __repr__(self) -> str:
         return f"GPT4AllEmbeddingProvider(model={self.model_name}, dim={self.dimension})"
 
-    def __del__(self):
+    def __del__(self) -> None:
         """Cleanup embedder on deletion."""
         if hasattr(self, "embedder"):
             del self.embedder

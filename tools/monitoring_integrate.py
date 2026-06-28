@@ -79,7 +79,7 @@ def log_change(title: str, path: Path, rationale: str, body_snippet: str = "") -
 # ---------------- Optional imports with graceful fallback ----------------
 
 
-def try_import(module_name: str):
+def try_import(module_name: str) -> None:
     try:
         return __import__(module_name)
     except Exception:
@@ -319,7 +319,7 @@ class MonitoringSession:
         except Exception as e:
             q5("log_artifact", f"{type(e).__name__}: {e}", f"path={local_path}")
 
-    def log_system_metrics(self, payload: dict) -> None:
+    def log_system_metrics(self, payload: dict[str, Any]) -> None:
         try:
             append(self.logs / "system_metrics.jsonl", json.dumps(payload) + "\n")
             step = int(time.time())

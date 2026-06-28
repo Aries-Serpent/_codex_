@@ -302,7 +302,7 @@ class AuthMiddleware:
         token_manager: TokenManager,
         config: Optional[AuthConfig] = None,
         api_key_validator: Optional[APIKeyValidator] = None,
-    ):
+    ) -> None:
         """
         Initialize authentication middleware.
 
@@ -320,7 +320,7 @@ class AuthMiddleware:
             self.config.rate_limit_requests, self.config.rate_limit_window
         )
 
-    async def __call__(self, scope, receive, send):
+    async def __call__(self, scope, receive, send) -> None:
         """ASGI interface."""
         if scope["type"] != "http":
             await self.app(scope, receive, send)
@@ -427,7 +427,7 @@ class AuthMiddleware:
         logger.warning("API key authentication failed: Invalid key")
         return AuthResult(authenticated=False, method=AuthMethod.API_KEY, error="Invalid API key")
 
-    async def _send_unauthorized(self, send, error: Optional[str] = None):
+    async def _send_unauthorized(self, send, error: Optional[str] = None) -> None:
         """Send 401 Unauthorized response."""
         import json
 
@@ -452,7 +452,7 @@ class AuthMiddleware:
             }
         )
 
-    async def _send_rate_limited(self, send):
+    async def _send_rate_limited(self, send) -> None:
         """Send 429 Too Many Requests response."""
         import json
 
@@ -481,7 +481,7 @@ class AuthMiddleware:
         )
 
 
-def require_auth(scopes: Optional[list[str]] = None, methods: Optional[list[AuthMethod]] = None):
+def require_auth(scopes: Optional[list[str]] = None, methods: Optional[list[AuthMethod]] = None) -> None:
     """
     Decorator to require authentication on endpoint.
 
@@ -497,9 +497,9 @@ def require_auth(scopes: Optional[list[str]] = None, methods: Optional[list[Auth
     required_scopes = set(scopes or [])
     allowed_methods = set(methods or list(AuthMethod))
 
-    def decorator(func: Callable):
+    def decorator(func: Callable) -> None:
         @wraps(func)
-        async def wrapper(request, *args, **kwargs):
+        async def wrapper(request, *args, **kwargs) -> None:
             # Get auth result from request scope
             auth_result = getattr(request.scope.get("auth"), None, None)
 

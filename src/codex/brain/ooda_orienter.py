@@ -368,7 +368,7 @@ class OpportunityDetector:
 class OODAOrienter:
     """Main orienter: orchestrates all context injection."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.pattern_retriever = PatternRetriever()
         self.precedent_retriever = DecisionPrecedentRetriever()
         self.capability_analyzer = AgentCapabilityAnalyzer()

@@ -19,7 +19,7 @@ from codex.ast_adapters import (
 )
 
 
-def get_adapter(language: str):
+def get_adapter(language: str) -> None:
     """Get the appropriate adapter for the specified language.
 
     Args:
@@ -46,7 +46,7 @@ def get_adapter(language: str):
     return adapters[language]()
 
 
-def parse_command(args):
+def parse_command(args) -> None:
     """Parse a file and output the AST as JSON.
 
     Args:
@@ -77,7 +77,7 @@ def parse_command(args):
         return 1
 
 
-def stats_command(args):
+def stats_command(args) -> None:
     """Parse a file and output statistics about the AST.
 
     Args:
@@ -108,7 +108,7 @@ def stats_command(args):
         return 1
 
 
-def query_command(args):
+def query_command(args) -> None:
     """Parse a file and query for specific node types.
 
     Args:
@@ -155,7 +155,7 @@ def query_command(args):
         return 1
 
 
-def main(argv: Optional[list] = None):
+def main(argv: Optional[list] = None) -> None:
     """Main entry point for the CLI.
 
     Args:

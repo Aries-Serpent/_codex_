@@ -31,7 +31,7 @@ __all__: list[str] = []
 _OPTIONAL_SUBMODULES = ("sentencepiece_adapter", "train_tokenizer")
 
 
-def __getattr__(name: str):  # pragma: no cover - shim for optional imports
+def __getattr__(name: str) -> None:  # pragma: no cover - shim for optional imports
     if name in _OPTIONAL_SUBMODULES:
         try:
             module = importlib.import_module(f"{__name__}.{name}")

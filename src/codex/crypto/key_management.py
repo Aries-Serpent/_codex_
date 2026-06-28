@@ -4,7 +4,7 @@
 class KeyManager:
     """Comprehensive key_management implementation."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize KeyManager."""
         self._data = {}
         self._config = {}

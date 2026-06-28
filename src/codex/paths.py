@@ -28,7 +28,7 @@ PARSED_TREES_CACHE = CACHE_DIR / "parsed_trees"
 SIMILARITY_CACHE = CACHE_DIR / "similarity"
 
 
-def ensure_codex_structure():
+def ensure_codex_structure() -> None:
     """Create standard .codex directory structure.
 
     Creates:

@@ -67,7 +67,7 @@ class SessionDB:
         self._optimize_db()
 
     @contextmanager
-    def _get_connection(self):
+    def _get_connection(self) -> None:
         """
         Context manager for thread-safe database connections.
 

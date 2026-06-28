@@ -53,7 +53,7 @@ def _install_accelerate_compat() -> None:
         return
 
     class _CompatAccelerator(_BaseAccelerator):
-        def __init__(self, *args, **kwargs):
+        def __init__(self, *args, **kwargs) -> None:
             # Normalize project_dir
             if "logging_dir" in kwargs and "project_dir" not in kwargs:
                 kwargs["project_dir"] = kwargs.pop("logging_dir")
@@ -299,7 +299,7 @@ except (IOError, OSError):  # pragma: no cover - optional dep
     _Accelerator = None
 
 
-def _make_accelerator(**accelerate_kwargs: Any):
+def _make_accelerator(**accelerate_kwargs: Any) -> None:
     """Construct an Accelerator using the global compatibility shim."""
     if _Accelerator is None:
         return None
@@ -317,7 +317,7 @@ def _normalize_identifier(identifier: os.PathLike[str] | str | None) -> str | No
     return str(identifier)
 
 
-def _maybe_import_mlflow():
+def _maybe_import_mlflow() -> None:
     if importlib.util.find_spec("mlflow") is None:
         return None
     return importlib.import_module("mlflow")
@@ -442,7 +442,7 @@ def build_trainer(
     early_stop_patience: int | None = 3,
     early_stop_threshold: float | None = 0.0,
     **kw,
-):
+) -> None:
     """Construct a HF Trainer with optional early stopping and named LR scheduler."""
     if early_stop_patience:
         # Early stop needs a coherent best-model metric setup
@@ -562,7 +562,7 @@ def build_training_args(
     )
 
 
-def _compute_metrics(eval_pred):
+def _compute_metrics(eval_pred) -> None:
     """Compute token accuracy and perplexity for evaluation.
 
     Parameters
@@ -593,7 +593,7 @@ def _compute_metrics(eval_pred):
     return {"token_accuracy": float(acc), "perplexity": ppl}
 
 
-def _seed_everything(seed: int = 42):
+def _seed_everything(seed: int = 42) -> None:
     """set deterministic seeds across all libraries.
 
     Parameters
@@ -621,7 +621,7 @@ def _seed_everything(seed: int = 42):
             logger.warning("Could not enable deterministic algorithms: %s", e)
 
 
-def _worker_init_fn(worker_id):
+def _worker_init_fn(worker_id) -> None:
     """Initialize worker with deterministic seed.
 
     Parameters
@@ -648,7 +648,7 @@ class NDJSONMetricsWriter:
         self.async_write = async_write
         self._async = AsyncLogFile(str(self.path)) if async_write else None
 
-    def write(self, obj: dict | LogRecord) -> None:
+    def write(self, obj: dict[str, Any] | LogRecord) -> None:
         """Write ``obj`` as a JSON line respecting the strict schema."""
 
         if isinstance(obj, LogRecord):
@@ -1215,18 +1215,18 @@ def run_hf_trainer(
                     self.scaler = None
                     self._logs: dict[str, float] | None = None
 
-                def on_train_begin(self, args, state, control, **kwargs):
+                def on_train_begin(self, args, state, control, **kwargs) -> None:
                     self.model = kwargs.get("model")
                     self.optimizer = kwargs.get("optimizer")
                     self.lr_scheduler = kwargs.get("lr_scheduler")
                     self.scaler = kwargs.get("scaler")
                     return control
 
-                def on_log(self, args, state, control, logs=None, **kwargs):
+                def on_log(self, args, state, control, logs=None, **kwargs) -> None:
                     self._logs = dict(logs or {})
                     return control
 
-                def on_step_end(self, args, state, control, **kwargs):
+                def on_step_end(self, args, state, control, **kwargs) -> None:
                     step = state.global_step
                     if (
                         step

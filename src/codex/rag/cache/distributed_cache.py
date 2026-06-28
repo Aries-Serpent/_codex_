@@ -125,7 +125,7 @@ class RedisCacheBackend(BaseCacheBackend):
         self._connected = False
         self._lock = threading.Lock()
 
-    def _get_client(self):
+    def _get_client(self) -> None:
         """Get Redis client with lazy initialization."""
         if self._client is not None:
             return self._client if self._connected else None

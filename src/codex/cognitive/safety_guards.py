@@ -66,10 +66,10 @@ class AuditEvent:
     event_type: AuditEventType
     timestamp: datetime
     actor: str  # "autonomous" or user identifier
-    details: dict
-    context: dict = field(default_factory=dict)
+    details: dict[str, Any]
+    context: dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "id": self.id,
@@ -81,7 +81,7 @@ class AuditEvent:
         }
 
     @classmethod
-    def from_dict(cls, data: dict) -> "AuditEvent":
+    def from_dict(cls, data: dict[str, Any]) -> "AuditEvent":
         """Create from dictionary."""
         return cls(
             id=data["id"],
@@ -99,12 +99,12 @@ class RollbackRecord:
 
     id: str
     original_adjustment_id: str
-    original_state: dict
+    original_state: dict[str, Any]
     rolled_back_at: datetime
     rolled_back_by: str
     reason: str
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "id": self.id,
@@ -227,8 +227,8 @@ class AuditLog:
         self,
         event_type: AuditEventType,
         actor: str,
-        details: dict,
-        context: dict | None = None,
+        details: dict[str, Any],
+        context: dict[str, Any] | None = None,
     ) -> AuditEvent:
         """Log an audit event."""
         self._event_counter += 1
@@ -400,7 +400,7 @@ class SafetyGuard:
         return None
 
     def record_rollback(
-        self, adjustment_id: str, original_state: dict, rolled_back_by: str, reason: str
+        self, adjustment_id: str, original_state: dict[str, Any], rolled_back_by: str, reason: str
     ) -> RollbackRecord:
         """Record a rollback action."""
         self._rollback_counter += 1
@@ -488,7 +488,7 @@ def create_safety_guard() -> SafetyGuard:
 
 
 # Convenience functions
-def get_governance_report(days: int = 7) -> dict:
+def get_governance_report(days: int = 7) -> dict[str, Any]:
     """Get a governance report."""
     guard = create_safety_guard()
     return guard.generate_governance_report(days)

@@ -20,7 +20,7 @@ _DEFAULT_TOP_K = 5
 _EXCERPT_CHARS = 400
 
 
-def run(payload: dict) -> dict:
+def run(payload: dict[str, Any]) -> dict[str, Any]:
     """Retrieve document chunks matching the query in *payload*.
 
     Parameters

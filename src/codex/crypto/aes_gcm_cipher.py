@@ -4,7 +4,7 @@
 class AESGCMCipher:
     """Comprehensive aes_gcm_cipher implementation."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize AESGCMCipher."""
         self._data = {}
         self._config = {}

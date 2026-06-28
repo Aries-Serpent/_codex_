@@ -242,7 +242,7 @@ try:  # Attempt to import metrics; fall back to safe implementations
     from codex_ml.metrics import perplexity, token_accuracy
 except (ImportError, AttributeError):  # pragma: no cover - fallback if metrics module missing
 
-    def _fallback_perplexity(nll):
+    def _fallback_perplexity(nll) -> None:
         """Simple perplexity wrapper used when metrics module is unavailable."""
 
         return _safe_perplexity(nll if hasattr(nll, "__iter__") else [nll])
@@ -418,7 +418,7 @@ def run_functional_training(
             from codex_ml.peft.peft_adapter import apply_lora
         except (ImportError, AttributeError):  # pragma: no cover - optional dependency
 
-            def apply_lora(model, *_args, **_kwargs):
+            def apply_lora(model, *_args, **_kwargs) -> None:
                 return model
 
         model = None
@@ -668,7 +668,7 @@ def _run_minilm_training(
     for epoch in range(3):
         logits = None
 
-        def _compute_loss(_):
+        def _compute_loss(_) -> None:
             nonlocal logits
             logits = model(inputs)
             return F.cross_entropy(logits.reshape(-1, cfg.vocab_size), targets.reshape(-1))
@@ -944,7 +944,7 @@ def load_training_cfg(**kwargs: Any) -> Any:
         return {"training": kwargs}
 
 
-def run_hf_trainer(texts: Any, output_dir: Any, **kwargs: Any) -> dict:
+def run_hf_trainer(texts: Any, output_dir: Any, **kwargs: Any) -> dict[str, Any]:
     """Run HuggingFace-style trainer on the provided texts.
 
     Public hook so tests can patch it via
@@ -1056,7 +1056,7 @@ def main(argv: Optional[list] = None) -> None:  # pragma: no cover - convenience
         if tokenizer.pad_token is None:
             tokenizer.pad_token = tokenizer.eos_token
 
-        def _encode_with_labels(tok, txts):
+        def _encode_with_labels(tok, txts) -> None:
             """Tokenize *txts* and create labels (padding → -100)."""
             enc = tok(txts, padding=True, return_tensors="pt")
             ids = enc["input_ids"]
@@ -1130,7 +1130,7 @@ def _codex_autodevice(cli_device: str | None = None) -> str:
         return cli_device or "cpu"
 
 
-def _codex_maybe_scheduler(optimizer, name: str | None, **kw):
+def _codex_maybe_scheduler(optimizer, name: str | None, **kw) -> None:
     try:
         import torch.optim as optim
 
@@ -1149,7 +1149,7 @@ def _codex_maybe_scheduler(optimizer, name: str | None, **kw):
     return None
 
 
-def _codex_epoch_metrics(y_true, y_pred) -> dict:
+def _codex_epoch_metrics(y_true, y_pred) -> dict[str, Any]:
     try:
         from codex_ml.metrics import token_accuracy
         from codex_ml.metrics.api import perplexity as perplexity_from_preds
@@ -1163,28 +1163,28 @@ def _codex_epoch_metrics(y_true, y_pred) -> dict:
         return {"token_accuracy": 0.0, "perplexity": 0.0}  # nosec B105
 
 
-def _codex_write_metrics(run_dir: Path, record: dict):
+def _codex_write_metrics(run_dir: Path, record: dict[str, Any]) -> None:
     run_dir.mkdir(parents=True, exist_ok=True)
     f = run_dir / "metrics.json"
     with f.open("a", encoding="utf-8") as fh:
         fh.write(json.dumps(record) + "\n")
 
 
-def _codex_apply_training_integration(args, train_loop_fn, config: dict):
+def _codex_apply_training_integration(args, train_loop_fn, config: dict[str, Any]) -> None:
     if not getattr(args, "use_deeplearning", False):
         return train_loop_fn
     device = _codex_autodevice(getattr(args, "device", None))
     grad_clip = float(getattr(args, "grad_clip", 0.0) or 0.0)
     sched_name = getattr(args, "scheduler", None)
 
-    def wrapped_train_loop(epoch_cb=None):
+    def wrapped_train_loop(epoch_cb=None) -> None:
         last_sched = None
         if epoch_cb is None:
 
-            def epoch_cb(epoch, model=None, optimizer=None, y_true=None, y_pred=None):
+            def epoch_cb(epoch, model=None, optimizer=None, y_true=None, y_pred=None) -> None:
                 pass
 
-        def cb(epoch, model=None, optimizer=None, y_true=None, y_pred=None):
+        def cb(epoch, model=None, optimizer=None, y_true=None, y_pred=None) -> None:
             nonlocal last_sched
             if grad_clip > 0 and model is not None and clip_grad_norm_ is not None:
                 try:
@@ -1256,7 +1256,7 @@ def codex_train_step(
     accum_steps=1,
     precision="fp32",
     grad_clip=None,
-):
+) -> None:
     use_fp16 = (precision == "fp16") and _codex_amp_supported()
     scaler = torch.cuda.amp.GradScaler() if use_fp16 else None
     optimizer.zero_grad(set_to_none=True)

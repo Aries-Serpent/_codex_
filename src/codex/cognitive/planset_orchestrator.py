@@ -318,7 +318,7 @@ class PlansetOrchestrator:
         """
         ctx = context or {}
         records = self.survey()
-        seen_areas: set = set()
+        seen_areas: set[Any] = set()
         all_prompts: list[PromptSet] = []
 
         for rec in records:

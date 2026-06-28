@@ -36,7 +36,7 @@ def _scan_smells(
     long_fn_threshold: int = 50,
     max_args: int = 5,
     max_file_lines: int = 500,
-) -> dict:
+) -> dict[str, Any]:
     long_functions: list[dict] = []
     large_files: list[dict] = []
     many_args: list[dict] = []
@@ -92,10 +92,10 @@ def smell_main(
     format: str,
     output: str,
     config: str,
-    fail_on: tuple,
-    warn_on: tuple,
+    fail_on: tuple[Any, ...],
+    warn_on: tuple[Any, ...],
     fail_on_smells: bool,
-):
+) -> None:
     """Detect code smells based on configured thresholds.
 
     Examples:

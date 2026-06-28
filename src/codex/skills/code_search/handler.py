@@ -18,7 +18,7 @@ _CONTEXT_LINES = 3
 _PYTHON_GLOB = "**/*.py"
 
 
-def run(payload: dict) -> dict:
+def run(payload: dict[str, Any]) -> dict[str, Any]:
     """Search codebase for *query* and return matched snippets.
 
     Parameters

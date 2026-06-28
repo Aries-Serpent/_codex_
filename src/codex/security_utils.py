@@ -248,7 +248,7 @@ def safe_secret_reference(name: str = "", operation: str = "") -> str:
     return f"secret: {name}"
 
 
-def redact_dict_with_secret_keys(data: Optional[dict]) -> dict:
+def redact_dict_with_secret_keys(data: Optional[dict]) -> dict[str, Any]:
     """
     Redact a dictionary that uses secret names as keys.
 

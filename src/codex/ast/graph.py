@@ -10,7 +10,7 @@ from collections import defaultdict
 class DependencyGraph:
     """Directed graph for dependency analysis and cycle detection."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.nodes: set[str] = set()
         self.edges: dict[str, set[str]] = defaultdict(set)
         self.node_data: dict[str, dict] = {}
@@ -19,7 +19,7 @@ class DependencyGraph:
         self,
         node_id: str,
         dependencies: list[str] | None = None,
-        data: dict | None = None,
+        data: dict[str, Any] | None = None,
     ) -> None:
         """Add node to graph with optional metadata and dependencies.
 
@@ -63,7 +63,7 @@ class DependencyGraph:
         on_stack = {}
         sccs = []
 
-        def strongconnect(node_id: str):
+        def strongconnect(node_id: str) -> None:
             """Recursive SCC detection for single node."""
             index[node_id] = index_counter[0]
             lowlinks[node_id] = index_counter[0]
@@ -125,7 +125,7 @@ class DependencyGraph:
         visited = set()
         stack = []
 
-        def dfs(node_id: str):
+        def dfs(node_id: str) -> None:
             visited.add(node_id)
             for target in self.edges.get(node_id, set()):
                 if target not in visited:

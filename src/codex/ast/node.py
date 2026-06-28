@@ -108,7 +108,7 @@ class StandardizedASTNode:
             "metadata": self.metadata,
         }
 
-    def walk(self):
+    def walk(self) -> None:
         """Depth-first tree traversal."""
         yield self
         for child in self.children:

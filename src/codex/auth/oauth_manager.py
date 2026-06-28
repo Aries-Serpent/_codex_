@@ -35,7 +35,7 @@ class OAuthToken:
     created_at: float = 0.0
     expires_at: Optional[datetime] = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Set creation timestamp and expires_at if not provided."""
         if self.created_at == 0.0:
             self.created_at = time.time()
@@ -107,7 +107,7 @@ class OAuthManager:
     GITHUB_TOKEN_URL = "https://github.com/login/oauth/access_token"  # nosec B105
     GITHUB_API_URL = "https://api.github.com"
 
-    def __init__(self, config: Optional[OAuthConfig] = None, **config_kwargs):
+    def __init__(self, config: Optional[OAuthConfig] = None, **config_kwargs) -> None:
         """
         Initialize OAuth manager.
 
@@ -519,7 +519,7 @@ class OAuthManager:
             scope=token_response.get("scope"),
         )
 
-    def get_github_user(self, access_token: str) -> dict:
+    def get_github_user(self, access_token: str) -> dict[str, Any]:
         """
         Get GitHub user information using access token.
 

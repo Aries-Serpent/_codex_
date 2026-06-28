@@ -18,10 +18,10 @@ class Permission:
 class PermissionValidator:
     """Validates permissions and access rights."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize permission validator."""
         self._permissions: set[str] = set()
-        self._role_permissions: dict = {}
+        self._role_permissions: dict[str, Any] = {}
 
     def register_permission(self, permission: Permission) -> bool:
         """Register a permission.

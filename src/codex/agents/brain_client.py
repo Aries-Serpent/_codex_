@@ -161,7 +161,7 @@ class BrainClient:
     # ── Internal helpers ──────────────────────────────────────────────────────
 
     @staticmethod
-    def _safe_urlopen(req: urllib.request.Request, timeout: int):
+    def _safe_urlopen(req: urllib.request.Request, timeout: int) -> None:
         """Validate the request URL scheme is http/https then call urlopen.
 
         Bandit B310: urllib.request.urlopen is flagged when the URL scheme is

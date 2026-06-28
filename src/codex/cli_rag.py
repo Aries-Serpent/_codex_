@@ -30,7 +30,7 @@ except ImportError:  # pragma: no cover - optional dependency
     class RAGIndexer:  # type: ignore[no-redef]
         """Stub when codex.rag is not installed."""
 
-        def __init__(self, *args, **kwargs):
+        def __init__(self, *args, **kwargs) -> None:
             raise ImportError(
                 "RAGIndexer requires codex.rag extras. Install with: pip install -e '.[rag]'"
             )
@@ -45,7 +45,7 @@ except ImportError:  # pragma: no cover - optional dependency
     class RAGRetriever:  # type: ignore[no-redef]
         """Stub when codex.rag is not installed."""
 
-        def __init__(self, *args, **kwargs):
+        def __init__(self, *args, **kwargs) -> None:
             raise ImportError(
                 "RAGRetriever requires codex.rag extras. Install with: pip install -e '.[rag]'"
             )

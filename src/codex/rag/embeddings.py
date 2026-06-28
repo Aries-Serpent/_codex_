@@ -18,15 +18,15 @@ except ImportError:  # pragma: no cover - exercised in import-only test environm
         ndarray = object
 
         @staticmethod
-        def array(*_args, **_kwargs):
+        def array(*_args, **_kwargs) -> None:
             raise ImportError("numpy is required for codex.rag.embeddings operations")
 
         @staticmethod
-        def load(*_args, **_kwargs):
+        def load(*_args, **_kwargs) -> None:
             raise ImportError("numpy is required for codex.rag.embeddings cache loading")
 
         @staticmethod
-        def savez_compressed(*_args, **_kwargs):
+        def savez_compressed(*_args, **_kwargs) -> None:
             raise ImportError("numpy is required for codex.rag.embeddings cache writing")
 
     np = _NumpyFallback()
@@ -74,7 +74,7 @@ class LocalSentenceTransformerProvider:
         self.model = None
         self._load_model()
 
-    def _load_model(self):
+    def _load_model(self) -> None:
         """Load the embedding model."""
         try:
             from codex.rag._model_utils import safe_load_sentence_transformer
@@ -366,7 +366,7 @@ class CachedEmbeddingProvider:
             "cache_dir": str(self.cache_dir),
         }
 
-    def clear_cache(self):
+    def clear_cache(self) -> None:
         """Clear all cached embeddings."""
         import shutil
 

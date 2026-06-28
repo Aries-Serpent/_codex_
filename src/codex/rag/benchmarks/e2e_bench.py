@@ -201,7 +201,7 @@ def _build_e2e_index(size: int, tmpdir: str) -> None:
     )
 
 
-def _execute_query(query: str, index_name: str, tmpdir: str) -> list:
+def _execute_query(query: str, index_name: str, tmpdir: str) -> list[Any]:
     """Execute a single query."""
     from codex.rag.retriever import Retriever
 

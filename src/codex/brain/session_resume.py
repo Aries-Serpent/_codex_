@@ -57,7 +57,7 @@ class ResumeResult:
     error_message: Optional[str] = None
     warnings: list[str] = None  # type: ignore[assignment]
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.warnings is None:
             self.warnings = []
 
@@ -74,7 +74,7 @@ class RepositoryDivergence:
     uncommitted_changes: int
     conflicts: list[str] = None  # type: ignore[assignment]
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.conflicts is None:
             self.conflicts = []
 

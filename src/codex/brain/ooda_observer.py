@@ -140,7 +140,7 @@ class Observable:
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for JSON serialization."""
 
-        def serialize(obj):
+        def serialize(obj) -> None:
             if isinstance(obj, datetime):
                 return obj.isoformat()
             if isinstance(
@@ -453,7 +453,7 @@ class EnvironmentObserver:
 class EventObserver:
     """Observes system events."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.events: list[Event] = []
 
     def observe(self) -> list[Event]:
@@ -462,7 +462,7 @@ class EventObserver:
         # For now, return empty list (events are event-driven)
         return self.events.copy()
 
-    def record_event(self, event_type: str, source: str, severity: str, data: Dict):
+    def record_event(self, event_type: str, source: str, severity: str, data: Dict) -> None:
         """Record a new event."""
         self.events.append(
             Event(

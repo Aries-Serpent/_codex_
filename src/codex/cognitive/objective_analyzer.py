@@ -69,9 +69,9 @@ class MetricValue:
     metric_type: MetricType
     value: float
     timestamp: datetime
-    context: dict = field(default_factory=dict)
+    context: dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "metric_type": self.metric_type.value,
@@ -81,7 +81,7 @@ class MetricValue:
         }
 
     @classmethod
-    def from_dict(cls, data: dict) -> "MetricValue":
+    def from_dict(cls, data: dict[str, Any]) -> "MetricValue":
         """Create from dictionary."""
         return cls(
             metric_type=MetricType(data["metric_type"]),
@@ -132,7 +132,7 @@ class MetricAlert:
     timestamp: datetime
     acknowledged: bool = False
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "metric_type": self.metric_type.value,
@@ -159,7 +159,7 @@ class TrendAnalysis:
     end_value: float
     change_percent: float
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "metric_type": self.metric_type.value,
@@ -185,7 +185,7 @@ class HealthReport:
     trends: list[TrendAnalysis]
     recommendations: list[str]
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "timestamp": self.timestamp.isoformat(),
@@ -481,7 +481,7 @@ class ObjectiveAnalyzer:
         self.correlation_analyzer = CorrelationAnalyzer()
 
     def record_metric(
-        self, metric_type: MetricType, value: float, context: dict | None = None
+        self, metric_type: MetricType, value: float, context: dict[str, Any] | None = None
     ) -> MetricValue:
         """Record a new metric value."""
         metric = MetricValue(
@@ -654,19 +654,19 @@ def create_analyzer(store_path: Path | None = None) -> ObjectiveAnalyzer:
 
 
 # Convenience functions
-def record_coverage(value: float, context: dict | None = None) -> MetricValue:
+def record_coverage(value: float, context: dict[str, Any] | None = None) -> MetricValue:
     """Record a coverage metric."""
     analyzer = create_analyzer()
     return analyzer.record_metric(MetricType.COVERAGE, value, context)
 
 
-def record_security_vulns(count: int, context: dict | None = None) -> MetricValue:
+def record_security_vulns(count: int, context: dict[str, Any] | None = None) -> MetricValue:
     """Record security vulnerability count."""
     analyzer = create_analyzer()
     return analyzer.record_metric(MetricType.SECURITY, float(count), context)
 
 
-def record_ci_pass_rate(rate: float, context: dict | None = None) -> MetricValue:
+def record_ci_pass_rate(rate: float, context: dict[str, Any] | None = None) -> MetricValue:
     """Record CI/CD pass rate."""
     analyzer = create_analyzer()
     return analyzer.record_metric(MetricType.CI_CD, rate, context)

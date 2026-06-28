@@ -141,7 +141,7 @@ class MLPScorer:
         layer_names = []
 
         # Hook to capture MLP activations
-        def mlp_hook(module, input, output):
+        def mlp_hook(module, input, output) -> None:
             # Capture the output of MLP layers
             if isinstance(output, torch.Tensor):
                 mlp_activations.append(output.detach().cpu())

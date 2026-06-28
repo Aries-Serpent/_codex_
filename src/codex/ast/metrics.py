@@ -27,7 +27,7 @@ class CodeMetrics:
             return "D"
         return "F"
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to dictionary."""
         return {
             "cyclomatic_complexity": self.cyclomatic_complexity,
@@ -42,7 +42,7 @@ class CodeMetrics:
 class MetricsAggregator:
     """Aggregate and correlate metrics from multiple sources."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.metrics: dict[str, CodeMetrics] = {}
 
     def store_metrics(self, entity_id: str, metrics: CodeMetrics) -> None:
@@ -112,7 +112,7 @@ class MetricsAggregator:
 
         return numerator / (denom_cc * denom_cov)
 
-    def summary(self) -> dict:
+    def summary(self) -> dict[str, Any]:
         """Get summary statistics of all metrics."""
         if not self.metrics:
             return {}

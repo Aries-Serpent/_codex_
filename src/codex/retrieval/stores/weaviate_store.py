@@ -20,7 +20,7 @@ class WeaviateStore:
         url: Optional[str] = None,
         api_key: Optional[str] = None,
         **kwargs,
-    ):
+    ) -> None:
         self.index_name = index_name
         self.url = url
         self.api_key = api_key
@@ -29,19 +29,19 @@ class WeaviateStore:
             "Use FAISSStore for local vector search."
         )
 
-    def create_index(self, embeddings: np.ndarray, documents: list[dict[str, Any]]):
+    def create_index(self, embeddings: np.ndarray, documents: list[dict[str, Any]]) -> None:
         """Stub: Create index"""
         raise RuntimeError(
             "WeaviateStore is not available in offline mode. Use FAISSStore instead."
         )
 
-    def save(self):
+    def save(self) -> None:
         """Stub: Save index"""
         raise RuntimeError(
             "WeaviateStore is not available in offline mode. Use FAISSStore instead."
         )
 
-    def load(self):
+    def load(self) -> None:
         """Stub: Load index"""
         raise RuntimeError(
             "WeaviateStore is not available in offline mode. Use FAISSStore instead."

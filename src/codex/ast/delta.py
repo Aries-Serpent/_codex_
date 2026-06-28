@@ -95,7 +95,7 @@ class DeltaAnalyzer:
         logger.info(f"Delta analysis: {result.summary()}")
         return result
 
-    def analyze_file(self, file_path: str, current_data: dict) -> str:
+    def analyze_file(self, file_path: str, current_data: dict[str, Any]) -> str:
         """Analyze single file change status.
 
         Args:

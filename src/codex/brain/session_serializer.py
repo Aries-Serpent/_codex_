@@ -122,7 +122,7 @@ class SessionSerializer:
     SCHEMA_VERSION = 1
     SERIALIZER_VERSION = "1.0.0"
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize SessionSerializer."""
         logger.info(f"SessionSerializer initialized: version={self.SERIALIZER_VERSION}")
 

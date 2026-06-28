@@ -90,7 +90,7 @@ try:  # pragma: no cover - optional model registry
     from codex_ml.models.registry import get_model
 except (IOError, OSError):  # pragma: no cover - minimal training may not need registry
 
-    def get_model(*args: Any, **kwargs: Any):
+    def get_model(*args: Any, **kwargs: Any) -> None:
         raise RuntimeError("codex_ml.models.registry is unavailable")
 
 

@@ -65,7 +65,7 @@ class ExecutionReport:
 class AgentDispatcher:
     """Dispatches tasks to agents."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.available_agents = {
             "ci_auto_healer": {"latency": 127, "success_rate": 0.94},
             "semantic_router": {"latency": 23, "success_rate": 0.98},
@@ -200,7 +200,7 @@ class OutcomeValidator:
 class OODAactor:
     """Main actor: orchestrates action execution."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.dispatcher = AgentDispatcher()
         self.validator = OutcomeValidator()
 

@@ -113,7 +113,7 @@ def safe_log(
     log_func(safe_message, *safe_args, **safe_kwargs)
 
 
-def redact_dict(data: dict, exclude_keys: Optional[list] = None) -> dict:
+def redact_dict(data: dict[str, Any], exclude_keys: Optional[list] = None) -> dict[str, Any]:
     """
     Redact all values in a dictionary that might be sensitive.
     

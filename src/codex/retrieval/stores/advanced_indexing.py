@@ -143,7 +143,7 @@ class HNSWIndex:
             f"ef_construction={self.config.ef_construction}"
         )
 
-    def _create_index(self):
+    def _create_index(self) -> None:
         """Create the underlying FAISS HNSW index."""
         try:
             import faiss
@@ -324,7 +324,7 @@ class IVFPQIndex:
             f"m={self.config.m}, nbits={self.config.nbits}"
         )
 
-    def _create_index(self):
+    def _create_index(self) -> None:
         """Create the underlying FAISS IVF-PQ index."""
         try:
             import faiss

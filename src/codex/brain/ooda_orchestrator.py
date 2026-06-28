@@ -79,7 +79,7 @@ class CycleRecorder:
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
         self.in_memory_buffer: list[CycleRecord] = []
 
-    def record_cycle(self, cycle: CycleRecord):
+    def record_cycle(self, cycle: CycleRecord) -> None:
         """Record a cycle to persistent storage."""
         try:
             # Store in memory buffer
@@ -213,7 +213,7 @@ class OODAOrchestrator:
             duration_ms = (time.time() - start_time) * 1000
             return self._create_error_cycle(cycle_id, duration_ms, phase_latencies)
 
-    def _execute_observe_phase(self, phase_latencies: dict) -> Observable:
+    def _execute_observe_phase(self, phase_latencies: dict[str, Any]) -> Observable:
         """Execute OBSERVE phase."""
         observe_start = time.time()
         observable = self.observer.observe()
@@ -223,7 +223,7 @@ class OODAOrchestrator:
     def _execute_orient_phase(
         self,
         observable: Observable,
-        phase_latencies: dict,
+        phase_latencies: dict[str, Any],
     ) -> Orientation:
         """Execute ORIENT phase."""
         orient_start = time.time()
@@ -235,7 +235,7 @@ class OODAOrchestrator:
         self,
         observable: Observable,
         orientation: Orientation,
-        phase_latencies: dict,
+        phase_latencies: dict[str, Any],
     ) -> DecisionDirective:
         """Execute DECIDE phase."""
         decide_start = time.time()
@@ -250,7 +250,7 @@ class OODAOrchestrator:
     def _execute_act_phase(
         self,
         decision: DecisionDirective,
-        phase_latencies: dict,
+        phase_latencies: dict[str, Any],
     ) -> ExecutionReport:
         """Execute ACT phase."""
         act_start = time.time()
@@ -262,7 +262,7 @@ class OODAOrchestrator:
         self,
         cycle_id: str,
         start_time: float,
-        phase_latencies: dict,
+        phase_latencies: dict[str, Any],
         observable: Observable,
         orientation: Orientation,
         decision: DecisionDirective,
@@ -307,7 +307,7 @@ class OODAOrchestrator:
         self,
         cycle_id: str,
         duration_ms: float,
-        phase_latencies: dict,
+        phase_latencies: dict[str, Any],
     ) -> CycleRecord:
         """Create an error cycle record."""
         return CycleRecord(
@@ -372,7 +372,7 @@ class OODAOrchestrator:
         self,
         frequency_seconds: int = 10,
         max_cycles: Optional[int] = None,
-    ):
+    ) -> None:
         """Run OODA loops continuously."""
         cycle_count = 0
 
@@ -404,7 +404,7 @@ class OODAOrchestrator:
         """Get recent cycle records."""
         return self.recorder.get_recent_cycles(limit)
 
-    def print_metrics_dashboard(self):
+    def print_metrics_dashboard(self) -> None:
         """Print a metrics dashboard."""
         metrics = self.get_metrics()
 
@@ -465,6 +465,6 @@ class ParallelOODAOrchestrator(OODAOrchestrator):
                     logger.error(f"Failed to get result for {cycle_id}: {e}")
         return completed
 
-    def shutdown(self):
+    def shutdown(self) -> None:
         """Shutdown the executor."""
         self.executor.shutdown(wait=True)

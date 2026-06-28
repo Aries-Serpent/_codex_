@@ -139,7 +139,7 @@ _TEST_SENTINEL_RE = re.compile(
 )
 
 
-def run(payload: dict) -> dict:
+def run(payload: dict[str, Any]) -> dict[str, Any]:
     """Parse CI/pytest output and return classified failure records.
 
     Parameters

@@ -218,7 +218,7 @@ class AuditLogger:
     # ── I/O helpers ───────────────────────────────────────────────────────────
 
     @staticmethod
-    def _write_ndjson(path: Path, data: dict) -> None:
+    def _write_ndjson(path: Path, data: dict[str, Any]) -> None:
         try:
             path.parent.mkdir(parents=True, exist_ok=True)
             with path.open("a", encoding="utf-8") as fh:

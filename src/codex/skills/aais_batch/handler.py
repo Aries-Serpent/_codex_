@@ -22,7 +22,7 @@ _DEFAULT_THRESHOLD = 0.75
 _scorer = AAISScorer()
 
 
-def _get_max_concurrency(payload: dict, default: int) -> int:
+def _get_max_concurrency(payload: dict[str, Any], default: int) -> int:
     """Extract max_concurrency from payload with validation."""
     val = default
     if "max_concurrency" in payload:
@@ -41,10 +41,10 @@ def _get_max_concurrency(payload: dict, default: int) -> int:
 
 
 def _score_item(
-    item: dict,
+    item: dict[str, Any],
     threshold: float,
     include_dims: bool,
-) -> dict:
+) -> dict[str, Any]:
     """Score a single item dict and return the result entry."""
     item_id = str(item.get("id", ""))
     text = str(item.get("text", ""))
@@ -66,7 +66,7 @@ def _score_item(
     return entry
 
 
-def _build_summary(scores: list[dict], threshold: float) -> dict:
+def _build_summary(scores: list[dict], threshold: float) -> dict[str, Any]:
     passed = sum(1 for s in scores if s["pass"])
     total_score = sum(s["total"] for s in scores)
     avg = round(total_score / len(scores), 4) if scores else None
@@ -79,7 +79,7 @@ def _build_summary(scores: list[dict], threshold: float) -> dict:
     }
 
 
-def run(payload: dict) -> dict:
+def run(payload: dict[str, Any]) -> dict[str, Any]:
     """Score a list of items with the AAIS rubric (synchronous).
 
     Parameters
@@ -106,7 +106,7 @@ def run(payload: dict) -> dict:
         ``{"scores": [...], "summary": {...}}``.
         Each score entry has ``{id, total, pass, ...dimensions?}``.
     """
-    items: list[dict] = list(payload.get("items", []))
+    items: list[dict] = list[Any](payload.get("items", []))
     if not items:
         return {
             "scores": [],
@@ -132,7 +132,7 @@ def run(payload: dict) -> dict:
     }
 
 
-async def run_async(payload: dict) -> dict:
+async def run_async(payload: dict[str, Any]) -> dict[str, Any]:
     """Score a list of items with the AAIS rubric (async / concurrent).
 
     Dispatches each item to the default thread executor so CPU-bound scoring
@@ -156,7 +156,7 @@ async def run_async(payload: dict) -> dict:
     dict
         Same shape as :func:`run`.
     """
-    items: list[dict] = list(payload.get("items", []))
+    items: list[dict] = list[Any](payload.get("items", []))
     if not items:
         return {
             "scores": [],
@@ -171,11 +171,11 @@ async def run_async(payload: dict) -> dict:
     loop = asyncio.get_running_loop()
     sem = asyncio.Semaphore(max_concurrency)
 
-    async def _guarded(item: dict) -> dict:
+    async def _guarded(item: dict[str, Any]) -> dict[str, Any]:
         async with sem:
             return await loop.run_in_executor(None, _score_item, item, threshold, include_dims)
 
-    scores: list[dict] = list(await asyncio.gather(*[_guarded(item) for item in items]))
+    scores: list[dict] = list[Any](await asyncio.gather(*[_guarded(item) for item in items]))
 
     return {
         "scores": scores,

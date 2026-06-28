@@ -58,7 +58,7 @@ def infer_intent(path: str) -> str:
     return "admin"
 
 
-def iter_sources(root: Path):
+def iter_sources(root: Path) -> None:
     exclude = {".git", ".venv", ".codex", "artifacts", "dist", "__pycache__"}
     for p in root.rglob("*"):
         if p.is_dir():
@@ -76,7 +76,7 @@ def build_kb(
     allow_gpl: bool = False,
     max_tokens_per_rec: int = 2048,
     dedup: bool = True,
-) -> dict:
+) -> dict[str, Any]:
     staged: list[dict[str, object]] = []
     for src in iter_sources(root):
         norm, mime = normalize_file(src)
@@ -128,7 +128,7 @@ def archive_and_manifest(
     eval_path: Path | None,
     *,
     actor: str = "codex",
-) -> dict:
+) -> dict[str, Any]:
     comps = []
 
     def _store(p: Path, dest: str) -> None:

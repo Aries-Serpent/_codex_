@@ -15,7 +15,7 @@ import click
 logger = logging.getLogger(__name__)
 
 
-def _get_github_client():
+def _get_github_client() -> None:
     """Get GitHub client instance."""
     try:
         from services.github.client import GitHubClientSync
@@ -28,7 +28,7 @@ def _get_github_client():
 
 
 @click.group(name="github-logs")
-def cli():
+def cli() -> None:
     """Fetch GitHub Actions logs via CLI.
 
     Examples:
@@ -61,7 +61,7 @@ def fetch_check_run_logs(
     check_run_id: int,
     output: Optional[str],
     format: str,
-):
+) -> None:
     """Fetch logs from a GitHub Actions check run.
 
     Args:
@@ -143,7 +143,7 @@ def fetch_job_logs(
     job_id: int,
     output: Optional[str],
     format: str,
-):
+) -> None:
     """Fetch logs from a GitHub Actions workflow job.
 
     Args:
@@ -210,7 +210,7 @@ def list_check_runs(
     ref: str,
     status: Optional[str],
     name: Optional[str],
-):
+) -> None:
     """List check runs for a git reference.
 
     Args:

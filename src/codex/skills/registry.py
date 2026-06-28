@@ -42,7 +42,7 @@ logger = logging.getLogger(__name__)
 _DEFAULT_SKILLS_ROOT = Path(__file__).parent
 
 
-def _version_key(version: str) -> tuple:
+def _version_key(version: str) -> tuple[Any, ...]:
     """Return a sortable key for *version*.
 
     Uses ``packaging.version.Version`` when available for correct semver

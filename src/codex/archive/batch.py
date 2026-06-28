@@ -214,7 +214,7 @@ class BatchRestore:
 
 
 @contextmanager
-def _optional_timer(enabled: bool, name: str):
+def _optional_timer(enabled: bool, name: str) -> None:
     if enabled:
         with timer(name) as metrics:
             yield metrics
