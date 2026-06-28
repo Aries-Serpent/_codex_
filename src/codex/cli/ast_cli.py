@@ -19,7 +19,7 @@ from codex.ast_adapters import (
 )
 
 
-def get_adapter(language: str) -> None:
+def get_adapter(language: str) -> Any:
     """Get the appropriate adapter for the specified language.
 
     Args:
@@ -62,7 +62,7 @@ def parse_command(args) -> int:
             return 1
 
         adapter = get_adapter(args.language)
-        root = adapter.parse_file(str(file_path))  # type: ignore[attr-defined]
+        root = adapter.parse_file(str(file_path))
 
         # Convert AST to dictionary representation
         ast_dict = root.to_dict()
@@ -93,10 +93,10 @@ def stats_command(args) -> int:
             return 1
 
         adapter = get_adapter(args.language)
-        adapter.parse_file(str(file_path))  # type: ignore[attr-defined]
+        adapter.parse_file(str(file_path))
 
         # Get statistics
-        stats = adapter.get_stats()  # type: ignore[attr-defined]
+        stats = adapter.get_stats()
 
         # Output as formatted JSON
         print(json.dumps(stats, indent=2))
@@ -108,7 +108,7 @@ def stats_command(args) -> int:
         return 1
 
 
-def query_command(args) -> None:
+def query_command(args) -> int:
     """Parse a file and query for specific node types.
 
     Args:
@@ -124,10 +124,10 @@ def query_command(args) -> None:
             return 1
 
         adapter = get_adapter(args.language)
-        adapter.parse_file(str(file_path))  # type: ignore[attr-defined]
+        adapter.parse_file(str(file_path))
 
         # Query for nodes
-        nodes = adapter.find_nodes_by_type(args.type)  # type: ignore[attr-defined]
+        nodes = adapter.find_nodes_by_type(args.type)
 
         # Build result list
         result = []
@@ -155,7 +155,7 @@ def query_command(args) -> None:
         return 1
 
 
-def main(argv: Optional[list[Any]] = None) -> None:
+def main(argv: Optional[list[Any]] = None) -> int:
     """Main entry point for the CLI.
 
     Args:

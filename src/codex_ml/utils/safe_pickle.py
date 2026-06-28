@@ -227,7 +227,7 @@ def safe_pickle_load_bytes(
     # 1. The bytes were created by the current process or trusted local code
     # 2. The bytes came from a secure location with proper access controls
     # 3. The caller validated the source and integrity before calling this helper
-    return pickle.loads(data)  # nosec B301 # nosemgrep: semgrep_rules.py-pickle-load
+    return pickle.loads(data)  # nosec B301 # nosemgrep: semgrep.unsafe-pickle-loads
 
 
 def trusted_pickle_dumps(obj: Any, *, protocol: int | None = None) -> bytes:

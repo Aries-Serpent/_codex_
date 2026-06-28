@@ -28,10 +28,11 @@ from typing import Optional  # noqa: E402
 spm = None
 
 
-def _get_sentencepiece() -> None:
+def _get_sentencepiece() -> Any:
     """Return the ``sentencepiece`` module or raise ``ImportError``."""
 
     import sys as _sys
+    from typing import Any
 
     global spm
     # Check sys.modules first — allows tests to inject a stub via

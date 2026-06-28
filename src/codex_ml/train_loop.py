@@ -201,7 +201,7 @@ try:
     from codex_ml.utils.retention import prune_checkpoints
 except (ImportError, AttributeError):
 
-    def prune_checkpoints(*args, **kwargs) -> None:
+    def prune_checkpoints(*args, **kwargs) -> dict[str, Any]:
         return {"dry_run": True}
 
 
@@ -740,13 +740,13 @@ def _attempt_resume(model, optimizer, scheduler, checkpoint_dir: str | Path):
         return 1, resume_meta
 
 
-def _select_parameters_for_optimization(model) -> None:
+def _select_parameters_for_optimization(model) -> list[Any]:
     if model is None:
         return []
     return [p for p in model.parameters() if p.requires_grad]
 
 
-def _synthetic_step(model) -> None:
+def _synthetic_step(model) -> float:
     if model is None:
         return 0.0
     first_param = None
@@ -1036,7 +1036,7 @@ def _make_casting_collate(policy: str | None, desired: Any, device: Any, art_dir
     The collate keeps shapes and simply applies _cast_batch_for_policy element‑wise.
     """
 
-    def _collate(batch) -> None:
+    def _collate(batch) -> Any:
         if policy is None:
             return batch
         try:
@@ -1066,7 +1066,7 @@ def _init_scheduler(scheduler_cfg: Optional[dict[str, Any]], optimizer, total_ep
                 self.base_lrs = base_lrs
                 self.last_epoch = 0
 
-            def get_lr(self) -> None:
+            def get_lr(self) -> list[float]:
                 progress = min(self.last_epoch / self.total_epochs, 1.0)
                 scale = (1 - progress) + progress * self.final_scale
                 return [lr * scale for lr in self.base_lrs]
@@ -1077,7 +1077,7 @@ def _init_scheduler(scheduler_cfg: Optional[dict[str, Any]], optimizer, total_ep
                 for g, lr in zip(self.opt.param_groups, new_lrs, strict=False):
                     g["lr"] = lr
 
-            def state_dict(self) -> None:
+            def state_dict(self) -> dict[str, Any]:
                 return {
                     "last_epoch": self.last_epoch,
                     "total_epochs": self.total_epochs,
@@ -1104,7 +1104,7 @@ def _init_scheduler(scheduler_cfg: Optional[dict[str, Any]], optimizer, total_ep
     return None
 
 
-def _scheduler_current_lr(scheduler, optimizer) -> None:
+def _scheduler_current_lr(scheduler, optimizer) -> list[float] | None:
     if scheduler is None or optimizer is None:
         return None
     try:
@@ -2018,8 +2018,11 @@ def run_training(
                         try:
                             _batch = next(loader_iter)
                         except StopIteration:
-                            loader_iter = iter(train_loader)
-                            _batch = next(loader_iter)
+                            if train_loader is not None:
+                                loader_iter = iter(train_loader)
+                                _batch = next(loader_iter)
+                            else:
+                                raise
                         finally:
                             load_duration = time.perf_counter() - load_start
                             if metrics_registry is not None:

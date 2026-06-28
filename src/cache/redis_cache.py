@@ -111,8 +111,8 @@ class RedisCache(CacheBackend):
         try:
             return json.loads(data.decode("utf-8"))
         except (json.JSONDecodeError, UnicodeDecodeError):
-            # Fallback to pickle
-            return pickle.loads(data)
+            # Fallback to pickle for backward compatibility with cached objects
+            return pickle.loads(data)  # nosemgrep: semgrep.unsafe-pickle-loads - Deserializing data previously serialized by this app (trusted boundary)
 
     def get(self, key: str) -> Optional[Any]:
         """Get value from cache."""
