@@ -177,7 +177,7 @@ class TestModelValidationEdgeCases:
             assert batch_size > 0, f"Batch size {batch_size} must be positive"
             mock_model = MagicMock()
             mock_model.batch_size = batch_size
-            assert mock_model.batch_size == batch_size
+            assert mock_model.batch_size == batch_size, "batch_size is not valid"
 
 
 class TestErrorPathHandling:

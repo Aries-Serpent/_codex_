@@ -22,6 +22,7 @@ class TestMockBackend:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_connect(self, backend):
         """Test connection to mock backend."""
         result = await backend.connect()
@@ -30,6 +31,7 @@ class TestMockBackend:
         assert backend.is_connected is True, "is_connected is not valid"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -50,6 +52,7 @@ class TestMockBackend:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_health_check_connected(self, backend):
         """Test health check when connected."""
         await backend.connect()
@@ -64,6 +67,7 @@ class TestMockBackend:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_health_check_disconnected(self, backend):
         """Test health check when disconnected."""
         healthy = await backend.health_check()
@@ -71,6 +75,7 @@ class TestMockBackend:
         assert healthy is False, "healthy is not valid"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -102,6 +107,7 @@ class TestMockBackend:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_query_when_disconnected(self, backend):
         """Test query fails when not connected."""
         result = await backend.query("test")
@@ -110,6 +116,7 @@ class TestMockBackend:
         assert result.error == "Not connected", "Result must not be empty"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -138,6 +145,7 @@ class TestMockBackend:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_call_count(self, backend):
         """Test call counting."""
         await backend.connect()
@@ -149,6 +157,7 @@ class TestMockBackend:
         assert backend.get_call_count() == 3, "Count must be greater than zero"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)

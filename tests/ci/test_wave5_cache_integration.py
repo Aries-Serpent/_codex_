@@ -35,7 +35,7 @@ class TestDockerBuildCache:
         
         # Verify multi-stage structure
         assert "FROM python" in content and "AS" in content, "Multi-stage Docker build not found"
-        assert "RUN pip install" in content or "pip" in content.lower()
+        assert "RUN pip install" in content or "pip" in content.lower(), "Content must not be empty"
         assert "COPY" in content, "COPY instruction not found"
         
     def test_dockerfile_layer_ordering(self) -> None:
@@ -59,7 +59,7 @@ class TestDockerBuildCache:
         content = dockerfile.read_text()
         
         # BuildKit features to check
-        assert "#syntax=docker/dockerfile:1" in content or "BuildKit" in content, \
+        assert ", "Condition must be true"
             "Docker BuildKit syntax not detected"
 
 
@@ -72,8 +72,8 @@ class TestGitHubActionsCache:
         assert brief.exists(), "Brief file not found"
         
         content = brief.read_text()
-        assert "7-layer" in content or "Layer" in content
-        assert "hit rate" in content.lower()
+        assert "7-layer" in content or "Layer" in content, "Content must not be empty"
+        assert "hit rate" in content.lower(), "Content must not be empty"
 
     def test_cache_layer_configs_exist(self) -> None:
         """Verify GitHub Actions workflow cache configs exist."""
@@ -107,10 +107,10 @@ class TestRuntimePerformance:
         cache = UnifiedCache(max_size=1000)
         
         stats = cache.get_stats()
-        assert stats["hit_rate"] == "0.0%"
-        assert stats["hits"] == 0
-        assert stats["misses"] == 0
-        assert stats["total_entries"] == 0
+        assert stats["hit_rate"] == "0.0%", "Condition must be true"
+        assert stats["hits"] == 0, "Condition must be true"
+        assert stats["misses"] == 0, "Condition must be true"
+        assert stats["total_entries"] == 0, "Condition must be true"
 
     def test_cache_segmentation(self) -> None:
         """Test cache segmentation (HOT/WARM/COLD)."""
@@ -122,10 +122,10 @@ class TestRuntimePerformance:
         cache.set("cold_key", "cold_value", CacheSegment.COLD)
         
         stats = cache.get_stats()
-        assert stats["hot_entries"] == 1
-        assert stats["warm_entries"] == 1
-        assert stats["cold_entries"] == 1
-        assert stats["total_entries"] == 3
+        assert stats["hot_entries"] == 1, "Condition must be true"
+        assert stats["warm_entries"] == 1, "Condition must be true"
+        assert stats["cold_entries"] == 1, "Condition must be true"
+        assert stats["total_entries"] == 3, "Condition must be true"
 
     def test_cache_hit_rate_tracking(self) -> None:
         """Test cache hit rate tracking."""
@@ -135,17 +135,17 @@ class TestRuntimePerformance:
         cache.set("key2", "value2")
         
         # Two hits
-        assert cache.get("key1") == "value1"
-        assert cache.get("key2") == "value2"
+        assert cache.get("key1") == "value1", "Value must be initialized"
+        assert cache.get("key2") == "value2", "Value must be initialized"
         
         # One miss
-        assert cache.get("key3") is None
+        assert cache.get("key3") is None, "Condition must be true"
         
         stats = cache.get_stats()
-        assert stats["hits"] == 2
-        assert stats["misses"] == 1
+        assert stats["hits"] == 2, "Condition must be true"
+        assert stats["misses"] == 1, "Condition must be true"
         # Hit rate: 2 / (2+1) = 66.7%
-        assert "66" in stats["hit_rate"]
+        assert "66" in stats["hit_rate"], "Condition must be true"
 
     def test_adaptive_ttl_extension(self) -> None:
         """Test adaptive TTL extension on access."""
@@ -155,14 +155,14 @@ class TestRuntimePerformance:
         
         # First access should extend TTL
         value = cache.get("key1")
-        assert value == "value1"
+        assert value == "value1", "Value must be initialized"
         
         # Multiple accesses should promote to HOT after 5 accesses
         for i in range(5):
             cache.get("key1")
         
         stats = cache.get_stats()
-        assert stats["hot_entries"] >= 1  # Should be promoted to HOT
+        assert stats["hot_entries"] >= 1, "Value must be greater than zero"
 
     def test_cache_warming(self) -> None:
         """Test cache warming functionality."""
@@ -175,7 +175,7 @@ class TestRuntimePerformance:
         
         stats = cache.get_stats()
         # Should have warmed cache with 3 keys
-        assert stats["total_entries"] >= 1
+        assert stats["total_entries"] >= 1, "Value must be greater than zero"
 
     def test_lru_eviction(self) -> None:
         """Test LRU eviction when cache exceeds max_size."""
@@ -188,8 +188,8 @@ class TestRuntimePerformance:
         
         stats = cache.get_stats()
         # Total entries should not exceed max_size
-        assert stats["total_entries"] <= 3
-        assert stats["evictions"] >= 1
+        assert stats["total_entries"] <= 3, "Condition must be true"
+        assert stats["evictions"] >= 1, "Value must be greater than zero"
 
     def test_cache_invalidation(self) -> None:
         """Test manual cache invalidation."""
@@ -198,10 +198,10 @@ class TestRuntimePerformance:
         cache.set("key1", "value1")
         cache.invalidate("key1")
         
-        assert cache.get("key1") is None
+        assert cache.get("key1") is None, "Condition must be true"
         
         stats = cache.get_stats()
-        assert stats["total_entries"] == 0
+        assert stats["total_entries"] == 0, "Condition must be true"
 
     def test_bulk_cache_invalidation(self) -> None:
         """Test bulk cache invalidation."""
@@ -213,9 +213,9 @@ class TestRuntimePerformance:
         cache.invalidate_all()
         
         stats = cache.get_stats()
-        assert stats["total_entries"] == 0
-        assert stats["hits"] == 0
-        assert stats["misses"] == 0
+        assert stats["total_entries"] == 0, "Condition must be true"
+        assert stats["hits"] == 0, "Condition must be true"
+        assert stats["misses"] == 0, "Condition must be true"
 
     def test_concurrent_cache_access(self) -> None:
         """Test thread-safe concurrent cache access."""
@@ -240,7 +240,7 @@ class TestRuntimePerformance:
         
         # Should have processed all entries without crashes
         stats = cache.get_stats()
-        assert stats["total_entries"] > 0
+        assert stats["total_entries"] > 0, "Value must be greater than zero"
 
 
 class TestEndToEndCI:
@@ -262,19 +262,19 @@ class TestEndToEndCI:
         
         # Verify we can serialize metrics
         json_str = json.dumps(metrics, indent=2)
-        assert "layer1" in json_str
-        assert "complete" in json_str
+        assert "layer1" in json_str, "Condition must be true"
+        assert "complete" in json_str, "Condition must be true"
 
     def test_integration_test_suite_structure(self) -> None:
         """Verify integration test suite has all stages."""
         test_file = Path(__file__)
-        assert test_file.exists()
+        assert test_file.exists(), "Condition must be true"
         
         content = test_file.read_text()
-        assert "TestDockerBuildCache" in content
-        assert "TestGitHubActionsCache" in content
-        assert "TestRuntimePerformance" in content
-        assert "TestEndToEndCI" in content
+        assert "TestDockerBuildCache" in content, "Content must not be empty"
+        assert "TestGitHubActionsCache" in content, "Content must not be empty"
+        assert "TestRuntimePerformance" in content, "Content must not be empty"
+        assert "TestEndToEndCI" in content, "Content must not be empty"
 
     @pytest.mark.parametrize("metric,target", [
         ("docker_build_time", 15),  # minutes
@@ -286,7 +286,7 @@ class TestEndToEndCI:
         # This is a validation test that passes when metrics meet targets
         # In actual execution, these would be populated from real metrics
         assert metric in ["docker_build_time", "cache_hit_rate", "ci_total_time"]
-        assert target > 0
+        assert target > 0, "target must be greater than zero"
 
 
 class TestCacheStrategyDocumentation:
@@ -298,8 +298,8 @@ class TestCacheStrategyDocumentation:
         assert guide.exists(), "Cache strategy guide not found"
         
         content = guide.read_text()
-        assert "Layer" in content or "layer" in content
-        assert "cache" in content.lower()
+        assert "Layer" in content or "layer" in content, "Content must not be empty"
+        assert "cache" in content.lower(), "Content must not be empty"
 
     def test_final_report_exists(self) -> None:
         """Verify Wave 5 final report exists."""
@@ -308,7 +308,7 @@ class TestCacheStrategyDocumentation:
         
         content = report.read_text()
         # Check for key report indicators
-        assert any(keyword in content.lower() for keyword in [
+        assert any(keyword in content.lower() for keyword in [, "Content must not be empty"
             "wave 5", "cache", "complete", "final", "report", "layer"
         ]), "Report content doesn't match expected format"
 
@@ -319,7 +319,7 @@ class TestCacheStrategyDocumentation:
         if guide.exists():
             content = guide.read_text()
             # Check for key optimization strategies
-            assert any(keyword in content.lower() for keyword in [
+            assert any(keyword in content.lower() for keyword in [, "Content must not be empty"
                 "layer ordering", "lru", "ttl", "warm", "hit rate"
             ]), "Optimization rationale not documented"
 

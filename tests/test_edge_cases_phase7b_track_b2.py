@@ -574,6 +574,7 @@ class TestAsyncBoundaries:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_async_task_cancellation(self):
         """Test cancellation of async tasks"""
 
@@ -588,6 +589,7 @@ class TestAsyncBoundaries:
             await task
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -610,6 +612,7 @@ class TestAsyncBoundaries:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_async_timeout(self):
         """Test async operation timeouts"""
 
@@ -621,6 +624,7 @@ class TestAsyncBoundaries:
 
     @pytest.mark.parametrize("task_count", [0, 1, 5, 10, 100])
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
