@@ -40,7 +40,7 @@ except (ImportError, AttributeError):  # pragma: no cover - optional dependency
     _AutoTokenizer = None  # type: ignore[misc,assignment]
 
 
-def _resolve_auto_tokenizer() -> None:
+def _resolve_auto_tokenizer() -> Any:
     """Attempt to import ``AutoTokenizer`` lazily.
 
     This allows test environments to register lightweight stubs in ``sys.modules``
@@ -146,7 +146,7 @@ class TokenizerAdapter(ABC):
 
 @tokenizers.register("whitespace")
 class _CallableInt(int):
-    def __new__(cls, value: int) -> None:
+    def __new__(cls, value: int):  # type: ignore[no-untyped-def]
         return super().__new__(cls, int(value))
 
     def __call__(self) -> int:

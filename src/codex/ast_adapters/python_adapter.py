@@ -112,7 +112,7 @@ class PythonASTAdapter(BaseASTAdapter):
                 for stmt in cst_node.body.body:  # type: ignore[assignment]
                     self._process_node(stmt, parent)
             elif isinstance(cst_node.body, (list, tuple)):
-                for stmt in cst_node.body:  # type: ignore[assignment]
+                for stmt in cst_node.body:
                     self._process_node(stmt, parent)
 
     def _process_function(self, func: cst.FunctionDef, parent: StandardizedASTNode) -> None:
@@ -203,7 +203,7 @@ class PythonASTAdapter(BaseASTAdapter):
         elif isinstance(imp, cst.ImportFrom):
             # Handle dotted module names in from imports
             module = self._get_full_name(imp.module) if imp.module else ""
-            for name in imp.names:  # type: ignore[assignment]
+            for name in imp.names:  # type: ignore[union-attr]
                 if isinstance(name, cst.ImportAlias):
                     imported_name = (
                         name.name.value if isinstance(name.name, cst.Name) else str(name.name)
