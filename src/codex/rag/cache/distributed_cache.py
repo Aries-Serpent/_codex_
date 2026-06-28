@@ -125,7 +125,7 @@ class RedisCacheBackend(BaseCacheBackend):
         self._connected = False
         self._lock = threading.Lock()
 
-    def _get_client(self):
+    def _get_client(self) -> None:
         """Get Redis client with lazy initialization."""
         if self._client is not None:
             return self._client if self._connected else None
@@ -147,7 +147,7 @@ class RedisCacheBackend(BaseCacheBackend):
                 )
 
                 # Test connection
-                self._client.ping()
+                self._client.ping()  # type: ignore[attr-defined]
                 self._connected = True
                 logger.info(
                     f"Connected to Redis at {self.config.redis_host}:{self.config.redis_port}"
@@ -323,7 +323,7 @@ class DistributedCache:
         if self.config.backend in (CacheBackend.REDIS, CacheBackend.HYBRID):
             self._redis_backend = RedisCacheBackend(self.config)
         else:
-            self._redis_backend = None
+            self._redis_backend = None  # type: ignore[assignment]
 
         logger.info(f"DistributedCache initialized with backend: {self.config.backend.value}")
 
@@ -435,7 +435,7 @@ class DistributedCache:
             return self._redis_backend.contains(key)
 
         # Hybrid: check both
-        return self._memory_backend.contains(key) or (
+        return self._memory_backend.contains(key) or (  # type: ignore[return-value]
             self._redis_backend and self._redis_backend.contains(key)
         )
 

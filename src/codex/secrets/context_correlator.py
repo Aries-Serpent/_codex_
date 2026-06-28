@@ -4,7 +4,7 @@
 class ContextCorrelator:
     """Comprehensive context_correlator implementation."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize ContextCorrelator."""
         self._data = {}
         self._config = {}

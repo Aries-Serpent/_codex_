@@ -88,7 +88,7 @@ class DetectedIssue:
     details: dict[str, Any] = field(default_factory=dict)  # Alias for context
     detected_at: str = field(default_factory=lambda: datetime.now(UTC).isoformat())
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Handle backwards compatibility"""
         if not self.issue_id:
             self.issue_id = f"issue_{id(self)}"
@@ -132,7 +132,7 @@ class RemediationAction:
     executed: bool = False
     success: Optional[bool] = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Handle backwards compatibility"""
         if not self.action_id:
             self.action_id = f"action_{id(self)}"
@@ -172,7 +172,7 @@ class DiagnosticResult:
     diagnostics_run: list[str] = field(default_factory=list)
     timestamp: str = field(default_factory=lambda: datetime.now(UTC).isoformat())
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Handle backwards compatibility"""
         # Use remediation_actions if provided, otherwise use suggested_actions
         if self.remediation_actions and not self.suggested_actions:

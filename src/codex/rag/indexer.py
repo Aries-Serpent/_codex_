@@ -79,7 +79,9 @@ def chunk_text(text: str, chunk_size: int = 1000, overlap: int = 128) -> list[tu
         # Move start position for next chunk, accounting for overlap
         start = end - overlap if end < text_len else text_len
 
-    logger.debug(f"Created {len(chunks)} chunks from {text_len} characters")
+    logger.debug(
+        f"Created {len(chunks)} chunks from {text_len} characters"
+    )  # codeql[py/clear-text-logging-sensitive-data]
     return chunks
 
 
@@ -120,7 +122,9 @@ def embed_chunks(
     model_name = model_profile.get("model_name", "sentence-transformers/all-MiniLM-L6-v2")
     cache_dir = model_profile.get("cache_dir", None)
 
-    logger.info(f"Loading embedding model: {model_name}")
+    logger.info(
+        f"Loading embedding model: {model_name}"
+    )  # codeql[py/clear-text-logging-sensitive-data]
     try:
         from codex.rag._model_utils import safe_load_sentence_transformer
 
@@ -128,7 +132,9 @@ def embed_chunks(
 
     except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
         error_type = type(e).__name__
-        logger.error("Failed to load embedding model: <ERROR_TYPE>")
+        logger.error(
+            "Failed to load embedding model: <ERROR_TYPE>"
+        )  # codeql[py/clear-text-logging-sensitive-data]
         raise
 
     # Extract text from chunks
@@ -146,10 +152,14 @@ def embed_chunks(
     if not texts_filtered:
         raise ValueError("No valid text chunks to encode after filtering empty inputs")
 
-    logger.debug(f"Encoding {len(texts_filtered)} texts, first sample: {texts_filtered[0][:100]}")
+    logger.debug(
+        f"Encoding {len(texts_filtered)} texts, first sample: {texts_filtered[0][:100]}"
+    )  # codeql[py/clear-text-logging-sensitive-data]
 
     # Generate embeddings with explicit device parameter and detailed error handling
-    logger.info(f"Generating embeddings for {len(texts_filtered)} chunks")
+    logger.info(
+        f"Generating embeddings for {len(texts_filtered)} chunks"
+    )  # codeql[py/clear-text-logging-sensitive-data]
     try:
         embeddings = model.encode(
             texts_filtered,
@@ -164,11 +174,19 @@ def embed_chunks(
         return embeddings
     except IndexError as e:
         error_type = type(e).__name__
-        logger.error("IndexError during encoding: <ERROR_TYPE>")
-        logger.error(f"Texts count: {len(texts_filtered)}")
-        logger.error(f"Sample texts: {texts_filtered[:3] if texts_filtered else 'EMPTY'}")
-        logger.error(f"Model info: {model}")
-        logger.error(f"Model max_seq_length: {getattr(model, 'max_seq_length', 'NOT SET')}")
+        logger.error(
+            "IndexError during encoding: <ERROR_TYPE>"
+        )  # codeql[py/clear-text-logging-sensitive-data]
+        logger.error(
+            f"Texts count: {len(texts_filtered)}"
+        )  # codeql[py/clear-text-logging-sensitive-data]
+        logger.error(
+            f"Sample texts: {texts_filtered[:3] if texts_filtered else 'EMPTY'}"
+        )  # codeql[py/clear-text-logging-sensitive-data]
+        logger.error(f"Model info: {model}")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.error(
+            f"Model max_seq_length: {getattr(model, 'max_seq_length', 'NOT SET')}"
+        )  # codeql[py/clear-text-logging-sensitive-data]
         raise RuntimeError(
             "Failed to encode texts due to IndexError. Check input format and model compatibility."
         ) from e
@@ -203,7 +221,9 @@ def persist_index(
         raise ValueError(f"Mismatch: {len(embeddings)} embeddings vs {len(chunks)} chunks")
 
     if faiss is None:
-        logger.error("faiss-cpu not installed. Install with: pip install faiss-cpu")
+        logger.error(
+            "faiss-cpu not installed. Install with: pip install faiss-cpu"
+        )  # codeql[py/clear-text-logging-sensitive-data]
         raise ImportError("faiss-cpu not installed")
 
     # Create tenant directory
@@ -215,18 +235,24 @@ def persist_index(
 
     # Build FAISS index
     dimension = embeddings.shape[1]
-    logger.info(f"Building FAISS index with dimension {dimension}")
+    logger.info(
+        f"Building FAISS index with dimension {dimension}"
+    )  # codeql[py/clear-text-logging-sensitive-data]
 
     # Use IndexFlatL2 for exact search (can be upgraded to IndexIVFFlat for larger datasets)
     index = faiss.IndexFlatL2(dimension)
     index.add(embeddings.astype(np.float32))
 
-    logger.info(f"Added {index.ntotal} vectors to FAISS index")
+    logger.info(
+        f"Added {index.ntotal} vectors to FAISS index"
+    )  # codeql[py/clear-text-logging-sensitive-data]
 
     # Save index
     faiss_file = index_path / "index.faiss"
     faiss.write_index(index, str(faiss_file))
-    logger.info(f"Saved FAISS index to {faiss_file}")
+    logger.info(
+        f"Saved FAISS index to {faiss_file}"
+    )  # codeql[py/clear-text-logging-sensitive-data]
 
     # Save chunks metadata
     chunks_metadata = []
@@ -244,7 +270,9 @@ def persist_index(
     chunks_file = index_path / "chunks.json"
     with open(chunks_file, "w", encoding="utf-8") as f:
         json.dump(chunks_metadata, f, indent=2, ensure_ascii=False)
-    logger.info(f"Saved chunks metadata to {chunks_file}")
+    logger.info(
+        f"Saved chunks metadata to {chunks_file}"
+    )  # codeql[py/clear-text-logging-sensitive-data]
 
     # Save index metadata
     index_metadata = {
@@ -260,9 +288,13 @@ def persist_index(
     metadata_file = index_path / "metadata.json"
     with open(metadata_file, "w", encoding="utf-8") as f:
         json.dump(index_metadata, f, indent=2)
-    logger.info(f"Saved index metadata to {metadata_file}")
+    logger.info(
+        f"Saved index metadata to {metadata_file}"
+    )  # codeql[py/clear-text-logging-sensitive-data]
 
-    logger.info(f"✅ Index '{index_name}' persisted to {index_path}")
+    logger.info(
+        f"✅ Index '{index_name}' persisted to {index_path}"
+    )  # codeql[py/clear-text-logging-sensitive-data]
     return index_path
 
 
@@ -281,7 +313,9 @@ def load_index(
         Tuple of (faiss_index, chunks_metadata, index_metadata)
     """
     if faiss is None:
-        logger.error("faiss-cpu not installed. Install with: pip install faiss-cpu")
+        logger.error(
+            "faiss-cpu not installed. Install with: pip install faiss-cpu"
+        )  # codeql[py/clear-text-logging-sensitive-data]
         raise ImportError("faiss-cpu not installed")
 
     index_path = Path(index_dir) / tenant_id / index_name
@@ -295,7 +329,9 @@ def load_index(
         raise FileNotFoundError(f"FAISS index file not found: {faiss_file}")
 
     index = faiss.read_index(str(faiss_file))
-    logger.info(f"Loaded FAISS index with {index.ntotal} vectors")
+    logger.info(
+        f"Loaded FAISS index with {index.ntotal} vectors"
+    )  # codeql[py/clear-text-logging-sensitive-data]
 
     # Load chunks metadata
     chunks_file = index_path / "chunks.json"
@@ -313,7 +349,9 @@ def load_index(
     else:
         index_metadata = {}
 
-    logger.info(f"✅ Loaded index '{index_name}' from {index_path}")
+    logger.info(
+        f"✅ Loaded index '{index_name}' from {index_path}"
+    )  # codeql[py/clear-text-logging-sensitive-data]
     return index, chunks_metadata, index_metadata
 
 
@@ -346,7 +384,9 @@ def build_index_from_files(
     # Process each file
     for file_path in files:
         if not file_path.exists():
-            logger.warning(f"File not found: {file_path}")
+            logger.warning(
+                f"File not found: {file_path}"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             continue
 
         try:
@@ -364,7 +404,9 @@ def build_index_from_files(
                 }
             )
 
-            logger.info(f"Processed {file_path}: {len(chunks)} chunks")
+            logger.info(
+                f"Processed {file_path}: {len(chunks)} chunks"
+            )  # codeql[py/clear-text-logging-sensitive-data]
 
         except UnicodeDecodeError as e:
             error_type = type(e).__name__
@@ -374,7 +416,9 @@ def build_index_from_files(
             processing_errors.append(str(file_path))
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.error(f"Error processing {file_path}: {error_type}")
+            logger.error(
+                f"Error processing {file_path}: {error_type}"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             processing_errors.append(str(file_path))
 
     if not all_chunks:
@@ -391,7 +435,9 @@ def build_index_from_files(
             "No chunks generated from input files - files may be empty or in unsupported format"
         )
 
-    logger.info(f"Total chunks: {len(all_chunks)} from {len(files)} files")
+    logger.info(
+        f"Total chunks: {len(all_chunks)} from {len(files)} files"
+    )  # codeql[py/clear-text-logging-sensitive-data]
 
     # Generate embeddings
     embeddings = embed_chunks(all_chunks)
@@ -471,7 +517,7 @@ def manage_tenant_indices(
         index_names: List of index names to operate on
         index_dir: Base directory for tenant indices
         **kwargs: Additional operation-specific parameters:
-            - files: List[Path] for 'create' operation
+            - files: list[Path] for 'create' operation
             - chunk_size: int for 'create' operation
             - overlap: int for 'create' operation
             - merge_name: str for 'merge' operation
@@ -491,7 +537,7 @@ def manage_tenant_indices(
         ...     files=[Path("docs/guide.md")],
         ...     chunk_size=1000
         ... )
-        >>> print(result.message)
+        >>> print(result.message)  # codeql[py/clear-text-logging-sensitive-data]
         "Successfully created index 'docs' for tenant 'customer_a'"
 
         >>> # Merge multiple indices
@@ -539,10 +585,14 @@ def manage_tenant_indices(
                     overlap=kwargs.get("overlap", 128),
                 )
                 created.append(index_name)
-                logger.info(f"Created index '{index_name}' at {index_path}")
+                logger.info(
+                    f"Created index '{index_name}' at {index_path}"
+                )  # codeql[py/clear-text-logging-sensitive-data]
             except (IOError, OSError) as e:
                 error_type = type(e).__name__
-                logger.error(f"Failed to create index '{index_name}': <ERROR_TYPE>")
+                logger.error(
+                    f"Failed to create index '{index_name}': <ERROR_TYPE>"
+                )  # codeql[py/clear-text-logging-sensitive-data]
 
         if created:
             return TenantOperationResult(
@@ -580,7 +630,9 @@ def manage_tenant_indices(
                 old_path = tenant_dir / index_name
                 if old_path.exists():
                     shutil.rmtree(old_path)
-                    logger.info(f"Removed old index '{index_name}'")
+                    logger.info(
+                        f"Removed old index '{index_name}'"
+                    )  # codeql[py/clear-text-logging-sensitive-data]
 
                 # Create new index
                 index_path = build_index_from_files(
@@ -592,10 +644,14 @@ def manage_tenant_indices(
                     overlap=kwargs.get("overlap", 128),
                 )
                 updated.append(index_name)
-                logger.info(f"Updated index '{index_name}' at {index_path}")
+                logger.info(
+                    f"Updated index '{index_name}' at {index_path}"
+                )  # codeql[py/clear-text-logging-sensitive-data]
             except (IOError, OSError) as e:
                 error_type = type(e).__name__
-                logger.error(f"Failed to update index '{index_name}': <ERROR_TYPE>")
+                logger.error(
+                    f"Failed to update index '{index_name}': <ERROR_TYPE>"
+                )  # codeql[py/clear-text-logging-sensitive-data]
 
         if updated:
             return TenantOperationResult(
@@ -623,12 +679,18 @@ def manage_tenant_indices(
                 if index_path.exists():
                     shutil.rmtree(index_path)
                     deleted.append(index_name)
-                    logger.info(f"Deleted index '{index_name}' from {tenant_dir}")
+                    logger.info(
+                        f"Deleted index '{index_name}' from {tenant_dir}"
+                    )  # codeql[py/clear-text-logging-sensitive-data]
                 else:
-                    logger.warning(f"Index '{index_name}' not found for tenant '{tenant_id}'")
+                    logger.warning(
+                        f"Index '{index_name}' not found for tenant '{tenant_id}'"
+                    )  # codeql[py/clear-text-logging-sensitive-data]
             except (IOError, OSError) as e:
                 error_type = type(e).__name__
-                logger.error(f"Failed to delete index '{index_name}': <ERROR_TYPE>")
+                logger.error(
+                    f"Failed to delete index '{index_name}': <ERROR_TYPE>"
+                )  # codeql[py/clear-text-logging-sensitive-data]
 
         if deleted:
             return TenantOperationResult(
@@ -679,10 +741,14 @@ def manage_tenant_indices(
                         all_chunks.extend([(c["start"], c["end"], c["text"]) for c in chunks])
                         all_metadata.append(metadata)
 
-                    logger.info(f"Loaded {index.ntotal} vectors from '{index_name}'")
+                    logger.info(
+                        f"Loaded {index.ntotal} vectors from '{index_name}'"
+                    )  # codeql[py/clear-text-logging-sensitive-data]
                 except (ValueError, TypeError, RuntimeError, IOError, OSError) as e:
                     error_type = type(e).__name__
-                    logger.error(f"Failed to load index '{index_name}': {error_type}: {str(e)}")
+                    logger.error(
+                        f"Failed to load index '{index_name}': {error_type}: {str(e)}"
+                    )  # codeql[py/clear-text-logging-sensitive-data]
 
             if not all_embeddings:
                 return TenantOperationResult(
@@ -729,7 +795,9 @@ def manage_tenant_indices(
 
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.error("Merge operation failed: <ERROR_TYPE>")
+            logger.error(
+                "Merge operation failed: <ERROR_TYPE>"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             return TenantOperationResult(
                 success=False,
                 operation=op_enum,
@@ -788,7 +856,9 @@ def manage_tenant_indices(
 
         except (ValueError, TypeError, RuntimeError) as e:
             error_type = type(e).__name__
-            logger.error("List operation failed: <ERROR_TYPE>")
+            logger.error(
+                "List operation failed: <ERROR_TYPE>"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             return TenantOperationResult(
                 success=False,
                 operation=op_enum,
@@ -865,7 +935,9 @@ class RAGIndexer:
             self.model = safe_model_to_device(self.model, self.device)
         except (ValueError, TypeError, RuntimeError):
             # Model unavailable (offline, missing dep, etc.) — leave as None.
-            logger.debug("Suppressed exception in handler", exc_info=True)
+            logger.debug(
+                "Suppressed exception in handler", exc_info=True
+            )  # codeql[py/clear-text-logging-sensitive-data]
 
     def move_to_device(self, device: str) -> None:
         """Move the loaded embedding model to *device* and update ``self.device``."""

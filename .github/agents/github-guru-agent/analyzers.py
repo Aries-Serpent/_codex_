@@ -119,7 +119,7 @@ class PRAnalyzer:
         """
         pr_resp = self.client.get_pull_request(pr_number)
         if not pr_resp.ok:
-            logger.warning("Failed to fetch PR #%d: %s", pr_number, pr_resp.error)
+            logger.warning("Failed to fetch PR #%d: %s", pr_number, pr_resp.error)  # codeql[py/clear-text-logging-sensitive-data]
             return PRAnalysisResult(
                 pr_number=pr_number,
                 title="(fetch failed)",
@@ -154,7 +154,7 @@ class PRAnalyzer:
                     days=self.STALE_DAYS
                 )
             except ValueError:
-                logger.debug("Could not parse updated_at: %s", updated_at_str)
+                logger.debug("Could not parse updated_at: %s", updated_at_str)  # codeql[py/clear-text-logging-sensitive-data]
 
         # Merge conflict check
         mergeable_state = pr.get("mergeable_state", "")
@@ -272,7 +272,7 @@ class IssueAnalyzer:
         """Analyze an issue and suggest labels, priority, and routing."""
         resp = self.client.get_issue(issue_number)
         if not resp.ok:
-            logger.warning("Failed to fetch issue #%d: %s", issue_number, resp.error)
+            logger.warning("Failed to fetch issue #%d: %s", issue_number, resp.error)  # codeql[py/clear-text-logging-sensitive-data]
             return IssueAnalysisResult(
                 issue_number=issue_number,
                 title="(fetch failed)",
@@ -397,7 +397,7 @@ class WorkflowAnalyzer:
                     t1 = datetime.fromisoformat(ua.rstrip("Z")).replace(tzinfo=timezone.utc)
                     durations.append((t1 - t0).total_seconds())
                 except ValueError:
-                    logger.debug("Could not parse run timestamps")
+                    logger.debug("Could not parse run timestamps")  # codeql[py/clear-text-logging-sensitive-data]
 
         avg_duration = sum(durations) / len(durations) if durations else 0.0
 

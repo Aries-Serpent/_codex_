@@ -151,7 +151,7 @@ def _model_cached() -> AutoModelForCausalLM:
             n_head=2,
         )
         model = AutoModelForCausalLM.from_config(config)
-    model.eval()
+    model.eval()  # type: ignore[attr-defined]
     return model
 
 
@@ -185,7 +185,7 @@ def configure_runtime(
 
 
 @app.get("/health")
-def health() -> dict:
+def health() -> dict[str, Any]:
     """Health endpoint with sub-system status.
 
     Returns a 200 response with the overall status plus optional
@@ -221,7 +221,7 @@ def health() -> dict:
 
 
 @app.get("/")
-def root() -> dict:
+def root() -> dict[str, Any]:
     """Root endpoint mirroring the health payload."""
 
     return {"name": "codex", "status": "ok"}

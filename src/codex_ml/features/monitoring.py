@@ -44,7 +44,7 @@ class HealthAlert:
     timestamp: str
     metric_value: Optional[float] = None
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "feature_name": self.feature_name,
@@ -236,7 +236,7 @@ class FeatureHealthMonitor:
 
         return stale_features
 
-    def reset_error_counts(self):
+    def reset_error_counts(self) -> None:
         """Reset error counts for all features."""
         self.error_counts.clear()
         logger.info("Reset error counts for all features")

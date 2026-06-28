@@ -12,7 +12,7 @@ from pathlib import Path
 
 import pytest
 
-from src.tokenization import train_tokenizer
+from src.codex_ml.tokenization import train_tokenizer
 
 
 def test_iter_text_uses_chunk_size(monkeypatch):

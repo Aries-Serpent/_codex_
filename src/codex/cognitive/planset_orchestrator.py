@@ -12,10 +12,10 @@ Architecture
 
     PlansetOrchestrator
         │
-        ├── survey()           → List[PlansetRecord]
+        ├── survey()           → list[PlansetRecord]
         │       reads .codex/plans/ → maps filenames to ImprovementArea
         │
-        ├── generate_session() → List[PromptSet]
+        ├── generate_session() → list[PromptSet]
         │       runs engine.generate() + engine.collapse() per area
         │       returns ranked prompts ordered by amplitude
         │
@@ -248,7 +248,7 @@ class PlansetOrchestrator:
 
         Returns
         -------
-        List[PlansetRecord]
+        list[PlansetRecord]
             One record per ``.md`` file found, sorted by area then filename.
         """
         records: list[PlansetRecord] = []
@@ -313,12 +313,12 @@ class PlansetOrchestrator:
 
         Returns
         -------
-        List[PromptSet]
+        list[PromptSet]
             Ranked prompts, highest amplitude first.
         """
         ctx = context or {}
         records = self.survey()
-        seen_areas: set = set()
+        seen_areas: set[Any] = set()
         all_prompts: list[PromptSet] = []
 
         for rec in records:

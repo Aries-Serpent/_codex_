@@ -49,7 +49,7 @@ class SQLASTAdapter(BaseASTAdapter):
         >>> columns = adapter.get_columns()
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize SQL adapter."""
         if not _SQLPARSE_AVAILABLE:  # pragma: no cover
             raise ImportError(
@@ -93,7 +93,7 @@ class SQLASTAdapter(BaseASTAdapter):
             node_id=str(uuid.uuid4()),
             node_type="sql_document",
             name="root",
-            file_path=file_path,
+            file_path=file_path,  # type: ignore[arg-type]
             line_start=1,
             line_end=len(source.splitlines()),
             column_start=0,
@@ -186,7 +186,7 @@ class SQLASTAdapter(BaseASTAdapter):
 
         return keyword
 
-    def _extract_select_components(self, stmt: Statement, node: StandardizedASTNode):
+    def _extract_select_components(self, stmt: Statement, node: StandardizedASTNode) -> None:
         """Extract components from SELECT statement.
 
         Args:
@@ -254,7 +254,7 @@ class SQLASTAdapter(BaseASTAdapter):
 
         node.metadata.update({"tables": tables, "columns": columns, "has_where": has_where})
 
-    def _extract_insert_components(self, stmt: Statement, node: StandardizedASTNode):
+    def _extract_insert_components(self, stmt: Statement, node: StandardizedASTNode) -> None:
         """Extract components from INSERT statement.
 
         Args:
@@ -275,7 +275,7 @@ class SQLASTAdapter(BaseASTAdapter):
 
         node.metadata.update({"table": table_name, "columns": columns})
 
-    def _extract_update_components(self, stmt: Statement, node: StandardizedASTNode):
+    def _extract_update_components(self, stmt: Statement, node: StandardizedASTNode) -> None:
         """Extract components from UPDATE statement.
 
         Args:
@@ -294,7 +294,7 @@ class SQLASTAdapter(BaseASTAdapter):
 
         node.metadata.update({"table": table_name})
 
-    def _extract_delete_components(self, stmt: Statement, node: StandardizedASTNode):
+    def _extract_delete_components(self, stmt: Statement, node: StandardizedASTNode) -> None:
         """Extract components from DELETE statement.
 
         Args:
@@ -318,7 +318,7 @@ class SQLASTAdapter(BaseASTAdapter):
 
         node.metadata.update({"table": table_name})
 
-    def _extract_ddl_components(self, stmt: Statement, node: StandardizedASTNode):
+    def _extract_ddl_components(self, stmt: Statement, node: StandardizedASTNode) -> None:
         """Extract components from DDL statement.
 
         Args:

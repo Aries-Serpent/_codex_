@@ -14,8 +14,8 @@ from typing import Any
 try:  # pragma: no cover - optional dependency
     from omegaconf import DictConfig, OmegaConf
 except (IOError, OSError):  # pragma: no cover - optional dependency
-    DictConfig = Any
-    OmegaConf = None
+    DictConfig = Any  # type: ignore[misc,assignment]
+    OmegaConf = None  # type: ignore[misc,assignment]
 
 __all__ = [
     "ConfigError",
@@ -681,7 +681,7 @@ def load_app_config(
     overrides_cfg = override_dict(overrides)
     combined = _deep_update(combined, _to_plain(overrides_cfg))
 
-    def _build_section(section: str, cls: type, payload: Mapping[str, Any]):
+    def _build_section(section: str, cls: type, payload: Mapping[str, Any]) -> None:
         try:
             instance = cls()
             for key, value in payload.items():
@@ -815,10 +815,10 @@ try:  # pragma: no cover - optional dependency
         get_settings,
     )
 except ModuleNotFoundError:  # pragma: no cover - provide graceful fallback when pydantic missing
-    AppSettings = None
-    EvalRow = None
+    AppSettings = None  # type: ignore[misc,assignment]
+    EvalRow = None  # type: ignore[misc,assignment]
 
-    def eval_row_schema() -> dict:
+    def eval_row_schema() -> dict[str, Any]:
         raise ModuleNotFoundError(
             "pydantic is required to generate evaluation schemas; install the optional dependencies"
         )

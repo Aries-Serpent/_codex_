@@ -285,7 +285,7 @@ jobs:
     steps:
       - name: Install dependencies
         run: |
-          pip install -e ".[test]"
+          pip install -e ".[dev]"
           pip install pytest pytest-cov pytest-xdist pytest-timeout pytest-rerunfailures
 
       - name: Run tests

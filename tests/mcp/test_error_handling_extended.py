@@ -106,7 +106,7 @@ def test_multiple_error_types():
             "VALIDATION_ERROR",
             "RATE_LIMIT_EXCEEDED",
             "UNAUTHORIZED",
-        ]
+        ], "err.code must be one of the valid error codes"
 
 
 def test_error_propagation():

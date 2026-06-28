@@ -54,8 +54,8 @@ try:  # pragma: no cover - optional rich dependency
     from rich.console import Console
     from rich.table import Table
 except (ImportError, AttributeError):  # pragma: no cover - fallback
-    Console = None
-    Table = None
+    Console = None  # type: ignore[misc,assignment]
+    Table = None  # type: ignore[misc,assignment]
 
 from .config import DEFAULT_LOG_DB  # noqa: E402
 from .db_utils import (  # noqa: E402

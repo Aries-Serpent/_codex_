@@ -1,5 +1,5 @@
 # `_codex_` (codex-ml)
-> 🏆 **v0.1.0 Pre-Release** - Level 4 MLOps Certified ML platform with 34500+ tests, 70%+ coverage, 26 CVEs fixed, and 145 active autonomous agents.
+> 🏆 **v0.1.0 Pre-Release** - Level 4 MLOps Certified ML platform with 35500+ tests, 70%+ coverage, 26 CVEs fixed, and 145 active autonomous agents.
 
 **Roadmap to 100% Production Readiness**: We are currently in v0.1.0 and rapidly approaching 100% production readiness. All core systems are functionally complete. Our immediate next phase targets full CI/CD pipeline stabilization, final security audits, and continuous autonomous maintenance.
 
@@ -633,6 +633,16 @@ Package any part of the codebase for ChatGPT Project uploads with the MCP Packag
 ## Documentation
 
 All primary documentation now lives in the [`docs/`](docs/) directory.
+
+### 🎓 Getting Started (New!)
+
+Start here if you're new to Codex ML:
+
+- **[📖 5-Minute Onboarding Quickstart](docs/ONBOARDING_QUICKSTART.md)** — Install and run your first example in 5 minutes
+- **[📚 Learning Paths](docs/LEARNING_PATHS.md)** — Choose a structured learning journey (Beginner → Intermediate → Advanced)
+- **[🏗️ Complete Architecture Guide](docs/ARCHITECTURE.md)** — Understand the 5-layer architecture with Mermaid diagrams
+- **[🆘 Troubleshooting Guide](docs/TROUBLESHOOTING.md)** — Fix 25+ common issues
+- **[📑 Documentation Index](docs/DOCUMENTATION_INDEX.md)** — Central hub for all documentation
 
 ### 📁 repository Organization
 

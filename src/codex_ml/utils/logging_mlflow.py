@@ -40,7 +40,7 @@ def mlflow_run(
 
     run_stack: Optional[ExitStack] = ExitStack()
     try:
-        run_stack.enter_context(run())
+        run_stack.enter_context(run())  # type: ignore[union-attr]
     except (
         ImportError,
         AttributeError,

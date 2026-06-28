@@ -36,7 +36,7 @@ class FileCache:
         cache.invalidate_if_modified("scripts/survey.sh")  # Refresh if changed
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize file cache."""
         self._file_contents: dict[str, str] = {}
         self._file_mtimes: dict[str, float] = {}
@@ -149,7 +149,7 @@ class SearchCache:
         result2 = find_files('*.py', '/src')  # Returns cached result
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize search cache."""
         self._cache: dict[str, Any] = {}
         logger.info("SearchCache initialized")

@@ -101,7 +101,7 @@ class EmbeddingCache:
             Shorthand for ``EmbeddingCacheConfig(max_entries=max_size)``.
         """  # noqa: E501
         if config is None:
-            kw: dict = {}
+            kw: dict[str, Any] = {}
             if cache_dir is not None:
                 kw["enable_disk_cache"] = True
                 kw["disk_cache_path"] = cache_dir
@@ -122,19 +122,19 @@ class EmbeddingCache:
             self._disk_path = Path(self.config.disk_cache_path)
             self._disk_path.mkdir(parents=True, exist_ok=True)
         else:
-            self._disk_path = None
+            self._disk_path = None  # type: ignore[assignment]
 
         logger.debug(
             f"EmbeddingCache initialized: max_entries={self.config.max_entries}, "
             f"disk_cache={self.config.enable_disk_cache}"
         )
 
-    def _acquire_lock(self):
+    def _acquire_lock(self) -> None:
         """Acquire lock if thread-safe mode is enabled."""
         if self._lock:
             self._lock.acquire()
 
-    def _release_lock(self):
+    def _release_lock(self) -> None:
         """Release lock if thread-safe mode is enabled."""
         if self._lock:
             self._lock.release()

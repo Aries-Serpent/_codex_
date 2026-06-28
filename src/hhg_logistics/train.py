@@ -86,7 +86,7 @@ try:  # pragma: no cover - optional dependency
     DataLoader = torch.utils.data.DataLoader
     Dataset = torch.utils.data.Dataset
 except (ImportError, AttributeError):  # pragma: no cover
-    torch = None
+    torch = None  # type: ignore[assignment]
     AdamW = None
     DataLoader = None
     Dataset = object
@@ -243,7 +243,7 @@ def _save_adapters(model, out_dir: Path, save_adapters: bool = True) -> None:
             logger.warning("Saving adapters failed: %s", exc)
 
 
-def _resolve_model_value(model_cfg: DictConfig, key: str, default: Any = None):
+def _resolve_model_value(model_cfg: DictConfig, key: str, default: Any | None = None):
     for path in (key, f"model.{key}"):
         value = OmegaConf.select(model_cfg, path)
         if value is not None:

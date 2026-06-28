@@ -10,7 +10,7 @@ from codex_ml.ast.core.node import Finding, SourceLocation, StandardizedASTNode
 class TestSourceLocation:
     """Tests for SourceLocation dataclass."""
 
-    def test_create_source_location(self):
+    def test_create_source_location(self) -> None:
         """Test creating a source location."""
         loc = SourceLocation(
             file_path=Path("test.py"),
@@ -25,7 +25,7 @@ class TestSourceLocation:
         assert loc.column_start == 0
         assert loc.column_end == 50
 
-    def test_source_location_str(self):
+    def test_source_location_str(self) -> None:
         """Test string representation."""
         loc = SourceLocation(
             file_path=Path("test.py"),
@@ -34,28 +34,28 @@ class TestSourceLocation:
         )
         assert str(loc) == "test.py:10:0"
 
-    def test_from_string_full(self):
+    def test_from_string_full(self) -> None:
         """Test parsing full location string."""
         loc = SourceLocation.from_string("path/to/file.py:42:10")
         assert loc.file_path == Path("path/to/file.py")
         assert loc.line_start == 42
         assert loc.column_start == 10
 
-    def test_from_string_partial(self):
+    def test_from_string_partial(self) -> None:
         """Test parsing partial location string."""
         loc = SourceLocation.from_string("file.py:5")
         assert loc.file_path == Path("file.py")
         assert loc.line_start == 5
         assert loc.column_start == 0
 
-    def test_from_string_file_only(self):
+    def test_from_string_file_only(self) -> None:
         """Test parsing file-only location string."""
         loc = SourceLocation.from_string("file.py")
         assert loc.file_path == Path("file.py")
         assert loc.line_start == 1
         assert loc.column_start == 0
 
-    def test_to_dict(self):
+    def test_to_dict(self) -> None:
         """Test dictionary serialization."""
         loc = SourceLocation(
             file_path=Path("test.py"),
@@ -69,7 +69,7 @@ class TestSourceLocation:
         assert d["line_start"] == 10
         assert d["line_end"] == 20
 
-    def test_from_dict(self):
+    def test_from_dict(self) -> None:
         """Test dictionary deserialization."""
         data = {
             "file_path": "test.py",
@@ -86,7 +86,7 @@ class TestSourceLocation:
 class TestStandardizedASTNode:
     """Tests for StandardizedASTNode dataclass."""
 
-    def test_create_node(self):
+    def test_create_node(self) -> None:
         """Test creating a basic node."""
         node = StandardizedASTNode(
             node_id="test-001",
@@ -99,17 +99,17 @@ class TestStandardizedASTNode:
         assert node.children == []
         assert node.parent is None
 
-    def test_auto_generate_id(self):
+    def test_auto_generate_id(self) -> None:
         """Test auto-generated node ID."""
         node = StandardizedASTNode(node_id="", type="class", name="TestClass")
         assert node.node_id  # Should be non-empty UUID
 
-    def test_depth_root(self):
+    def test_depth_root(self) -> None:
         """Test depth calculation for root node."""
         root = StandardizedASTNode(node_id="root", type="module", name="module")
         assert root.depth == 0
 
-    def test_depth_nested(self):
+    def test_depth_nested(self) -> None:
         """Test depth calculation for nested nodes."""
         root = StandardizedASTNode(node_id="root", type="module", name="module")
         child = StandardizedASTNode(node_id="child", type="class", name="MyClass")
@@ -122,7 +122,7 @@ class TestStandardizedASTNode:
         assert child.depth == 1
         assert grandchild.depth == 2
 
-    def test_is_leaf(self):
+    def test_is_leaf(self) -> None:
         """Test leaf node detection."""
         parent = StandardizedASTNode(node_id="parent", type="class", name="Class")
         child = StandardizedASTNode(node_id="child", type="function", name="method")
@@ -131,7 +131,7 @@ class TestStandardizedASTNode:
         assert not parent.is_leaf
         assert child.is_leaf
 
-    def test_is_root(self):
+    def test_is_root(self) -> None:
         """Test root node detection."""
         parent = StandardizedASTNode(node_id="parent", type="class", name="Class")
         child = StandardizedASTNode(node_id="child", type="function", name="method")
@@ -140,7 +140,7 @@ class TestStandardizedASTNode:
         assert parent.is_root
         assert not child.is_root
 
-    def test_add_child(self):
+    def test_add_child(self) -> None:
         """Test adding child node."""
         parent = StandardizedASTNode(node_id="parent", type="class", name="Class")
         child = StandardizedASTNode(node_id="child", type="function", name="method")
@@ -151,7 +151,7 @@ class TestStandardizedASTNode:
         assert parent.children[0] == child
         assert child.parent == parent
 
-    def test_remove_child(self):
+    def test_remove_child(self) -> None:
         """Test removing child node."""
         parent = StandardizedASTNode(node_id="parent", type="class", name="Class")
         child = StandardizedASTNode(node_id="child", type="function", name="method")
@@ -163,7 +163,7 @@ class TestStandardizedASTNode:
         assert len(parent.children) == 0
         assert child.parent is None
 
-    def test_find_by_type(self):
+    def test_find_by_type(self) -> None:
         """Test finding nodes by type."""
         root = StandardizedASTNode(node_id="root", type="module", name="module")
         func1 = StandardizedASTNode(node_id="f1", type="function", name="func1")
@@ -179,7 +179,7 @@ class TestStandardizedASTNode:
         assert func1 in functions
         assert func2 in functions
 
-    def test_find_by_name(self):
+    def test_find_by_name(self) -> None:
         """Test finding nodes by name."""
         root = StandardizedASTNode(node_id="root", type="module", name="module")
         child1 = StandardizedASTNode(node_id="c1", type="function", name="target")
@@ -191,7 +191,7 @@ class TestStandardizedASTNode:
         results = root.find_by_name("target")
         assert len(results) == 2
 
-    def test_walk(self):
+    def test_walk(self) -> None:
         """Test tree traversal."""
         root = StandardizedASTNode(node_id="root", type="module", name="module")
         child1 = StandardizedASTNode(node_id="c1", type="class", name="Class1")
@@ -209,7 +209,7 @@ class TestStandardizedASTNode:
         assert child2 in all_nodes
         assert grandchild in all_nodes
 
-    def test_to_dict(self):
+    def test_to_dict(self) -> None:
         """Test dictionary serialization."""
         node = StandardizedASTNode(
             node_id="test",
@@ -223,7 +223,7 @@ class TestStandardizedASTNode:
         assert d["name"] == "test_func"
         assert d["metadata"]["docstring"] == "Test function"
 
-    def test_from_dict(self):
+    def test_from_dict(self) -> None:
         """Test dictionary deserialization."""
         data = {
             "node_id": "test",
@@ -242,7 +242,7 @@ class TestStandardizedASTNode:
 class TestFinding:
     """Tests for Finding dataclass."""
 
-    def test_create_finding(self):
+    def test_create_finding(self) -> None:
         """Test creating a finding."""
         finding = Finding(
             type="high_complexity",
@@ -255,18 +255,18 @@ class TestFinding:
         assert finding.message == "Function is too complex"
         assert finding.finding_id  # Should be auto-generated
 
-    def test_invalid_severity_normalized(self):
+    def test_invalid_severity_normalized(self) -> None:
         """Test that invalid severity is normalized."""
         finding = Finding(type="test", severity="invalid", message="Test")
         assert finding.severity == "info"  # Normalized to info
 
-    def test_valid_severities(self):
+    def test_valid_severities(self) -> None:
         """Test all valid severity levels."""
         for severity in ["info", "warning", "error", "critical"]:
             finding = Finding(type="test", severity=severity, message="Test")
             assert finding.severity == severity
 
-    def test_to_dict(self):
+    def test_to_dict(self) -> None:
         """Test dictionary serialization."""
         finding = Finding(
             finding_id="f-001",
@@ -280,7 +280,7 @@ class TestFinding:
         assert d["type"] == "unused_import"
         assert d["severity"] == "info"
 
-    def test_from_dict(self):
+    def test_from_dict(self) -> None:
         """Test dictionary deserialization."""
         data = {
             "finding_id": "f-001",

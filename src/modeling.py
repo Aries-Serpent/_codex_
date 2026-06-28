@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 try:  # pragma: no cover - optional dependency guard
     import torch
 except (ImportError, AttributeError):  # pragma: no cover - propagate a friendly error later
-    torch = None
+    torch = None  # type: ignore[assignment]
 
 try:  # pragma: no cover - optional dependency guard
     from transformers import (
@@ -27,10 +27,10 @@ except (
     ImportError,
     AttributeError,
 ):  # pragma: no cover - transformers unavailable; defer failure until use
-    AutoModelForCausalLM = None
-    AutoTokenizer = None
-    PreTrainedModel = Any
-    PreTrainedTokenizerBase = Any
+    AutoModelForCausalLM = None  # type: ignore[misc,assignment]
+    AutoTokenizer = None  # type: ignore[misc,assignment]
+    PreTrainedModel = Any  # type: ignore[misc,assignment]
+    PreTrainedTokenizerBase = Any  # type: ignore[misc,assignment]
 
 try:  # pragma: no cover - PEFT is optional for non-LoRA runs
     from peft import LoraConfig, get_peft_model
@@ -121,7 +121,7 @@ def _normalise_mapping(config: Mapping[str, Any]) -> MutableMapping[str, Any]:
     return dict(config)
 
 
-def _resolve_value(mapping: Mapping[str, Any], *keys: str, default: Any = None) -> Any:
+def _resolve_value(mapping: Mapping[str, Any], *keys: str, default: Any | None = None) -> Any:
     for key in keys:
         if key in mapping:
             return mapping[key]

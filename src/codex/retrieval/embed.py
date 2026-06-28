@@ -32,7 +32,7 @@ class EmbeddingModel:
         self.model = None
         self._load_model()
 
-    def _load_model(self):
+    def _load_model(self) -> None:
         """Load the embedding model"""
         try:
             from sentence_transformers import SentenceTransformer

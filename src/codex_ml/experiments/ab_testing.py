@@ -14,7 +14,7 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
-from typing import Dict, List, Sequence, Tuple
+from typing import Sequence
 
 # ---------------------------------------------------------------------------
 # Optional scipy import
@@ -155,7 +155,7 @@ def _t_critical(alpha: float, df: float) -> float:
 def _stdlib_ttest_ind(
     a: Sequence[float],
     b: Sequence[float],
-) -> Tuple[float, float]:
+) -> tuple[float, float]:
     """Pure-stdlib Welch's t-test.  Returns (t_statistic, p_value)."""
     n1, n2 = len(a), len(b)
     if n1 < 2 or n2 < 2:
@@ -178,8 +178,8 @@ class ABTest:
     """Container for a single A/B test configuration and raw metrics."""
 
     name: str
-    control_metrics: List[float]
-    treatment_metrics: List[float]
+    control_metrics: list[float]
+    treatment_metrics: list[float]
     alpha: float = 0.05
 
     def __post_init__(self) -> None:
@@ -196,7 +196,7 @@ class ABTestResult:
     winner: str  # "control" | "treatment" | "inconclusive"
     p_value: float
     effect_size: float  # Cohen's d
-    confidence_interval: Tuple[float, float]  # 95 % CI of the mean difference
+    confidence_interval: tuple[float, float]  # 95 % CI of the mean difference
     significant: bool
 
     def __post_init__(self) -> None:
@@ -306,8 +306,8 @@ class ABTestSuite:
     """
 
     def __init__(self) -> None:
-        self._tests: Dict[str, ABTest] = {}
-        self._results: Dict[str, ABTestResult] = {}
+        self._tests: dict[str, ABTest] = {}
+        self._results: dict[str, ABTestResult] = {}
 
     # ------------------------------------------------------------------
     # Mutation
@@ -324,7 +324,7 @@ class ABTestSuite:
     # Execution
     # ------------------------------------------------------------------
 
-    def run_all(self) -> Dict[str, ABTestResult]:
+    def run_all(self) -> dict[str, ABTestResult]:
         """Execute all registered tests and cache the results.
 
         Returns
@@ -346,7 +346,7 @@ class ABTestSuite:
     # Reporting
     # ------------------------------------------------------------------
 
-    def report(self) -> dict:
+    def report(self) -> dict[str, Any]:
         """Build a structured summary report.
 
         Calls :meth:`run_all` if results are not yet available.
@@ -362,7 +362,7 @@ class ABTestSuite:
         if not self._results:
             self.run_all()
 
-        tests_report: dict = {}
+        tests_report: dict[str, Any] = {}
         significant_count = 0
         inconclusive_count = 0
 

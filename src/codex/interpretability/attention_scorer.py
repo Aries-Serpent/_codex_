@@ -122,7 +122,7 @@ class AttentionScorer:
         layer_names = []
 
         # Hook to capture attention weights
-        def attention_hook(module, input, output):
+        def attention_hook(module, input, output) -> None:
             # output is typically (hidden_states, attention_probs)
             if isinstance(output, tuple) and len(output) > 1:
                 attn = output[1]

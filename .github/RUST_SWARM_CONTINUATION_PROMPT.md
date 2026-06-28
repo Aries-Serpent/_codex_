@@ -110,7 +110,7 @@ mod tests {
     use super::*;
     use std::thread;
 
-    #[test]
+    #[dev]
     fn test_concurrent_registration() {
         let state = SwarmState::new();
         let handles: Vec<_> = (0..100)

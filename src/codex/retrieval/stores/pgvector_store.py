@@ -298,7 +298,7 @@ class PGVectorStore:
             raise RuntimeError("Call initialize() first")
 
         # Group documents by shard
-        shard_groups: dict[int, list[tuple]] = {i: [] for i in range(self.num_shards)}
+        shard_groups: dict[str, Any][int, list[tuple]] = {i: [] for i in range(self.num_shards)}
 
         for doc, emb in zip(documents, embeddings, strict=False):
             if shard_mapper:
@@ -345,7 +345,7 @@ class PGVectorStore:
     async def _insert_to_shard(
         self,
         shard_id: int,
-        documents: list[tuple],
+        documents: list[tuple[Any, ...]],
     ) -> None:
         """Insert documents to a single shard using pipeline."""
         if not self.pool:
@@ -434,17 +434,17 @@ class PGVectorStore:
         return int(self._kmeans.predict(embedding.reshape(1, -1))[0])
 
     # Stub methods for backward compatibility
-    def create_index(self, embeddings: np.ndarray, documents: list[dict[str, Any]]):
+    def create_index(self, embeddings: np.ndarray, documents: list[dict[str, Any]]) -> None:
         """Stub: Use async insert_batch() instead."""
         raise RuntimeError(
             "Use async methods: await store.initialize() then "
             "await store.insert_batch(documents, embeddings)"
         )
 
-    def save(self):
+    def save(self) -> None:
         """Stub: Data is persisted automatically in PostgreSQL."""
         raise RuntimeError("Data is automatically persisted in PostgreSQL")
 
-    def load(self):
+    def load(self) -> None:
         """Stub: Data is loaded automatically from PostgreSQL."""
         raise RuntimeError("Data is automatically loaded from PostgreSQL")

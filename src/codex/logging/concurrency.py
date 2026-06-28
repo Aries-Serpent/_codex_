@@ -19,7 +19,7 @@ import time
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, TypeVar
+from typing import Any, Callable, Optional, TypeVar
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +30,7 @@ T = TypeVar("T")
 class LockMetrics:
     """Tracks lock contention metrics."""
 
-    lock_wait_time_ms: List[float] = field(default_factory=list)
+    lock_wait_time_ms: list[float] = field(default_factory=list)
     lock_contention_count: int = 0
     deadlock_retries: int = 0
     lock_held_count: int = 0
@@ -43,7 +43,7 @@ class LockMetrics:
         if wait_ms > 1.0:  # Log contention if wait > 1ms
             self.lock_contention_count += 1
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for JSON serialization."""
         return {
             "lock_wait_times_ms": self.lock_wait_time_ms[-100:],  # Keep last 100
@@ -80,7 +80,7 @@ class ReadWriteLock:
         self.metrics = LockMetrics()
 
     @contextmanager
-    def read_lock(self):
+    def read_lock(self) -> None:
         """Acquire read lock (allow concurrent readers)."""
         start_time = time.time()
         acquired = False
@@ -113,7 +113,7 @@ class ReadWriteLock:
                         self._read_ready.notify_all()
 
     @contextmanager
-    def write_lock(self):
+    def write_lock(self) -> None:
         """Acquire write lock (exclusive, single writer)."""
         start_time = time.time()
         acquired = False
@@ -174,7 +174,7 @@ class SQLiteConnectionPool:
         self.max_connections = max_connections
         self.timeout = timeout
         self._lock = threading.RLock()
-        self._connections: Dict[int, sqlite3.Connection] = {}
+        self._connections: dict[int, sqlite3.Connection] = {}
         self._thread_ids: set[int] = set()
         self.wal_mode = wal_mode
         self.metrics = LockMetrics()
@@ -264,7 +264,7 @@ class ArchiveOperationLock:
         self.timeout = timeout
         self.max_retries = max_retries
         self._lock = threading.Lock()
-        self._session_locks: Dict[str, threading.Lock] = {}
+        self._session_locks: dict[str, threading.Lock] = {}
         self._session_lock = threading.RLock()
         self.metrics = LockMetrics()
 
@@ -276,7 +276,7 @@ class ArchiveOperationLock:
             return self._session_locks[session_id]
 
     @contextmanager
-    def archive_lock(self, session_id: str):
+    def archive_lock(self, session_id: str) -> None:
         """Acquire exclusive lock for archive operation."""
         lock = self.acquire_session_lock(session_id)
         start_time = time.time()
@@ -349,7 +349,7 @@ class DeadlockRecovery:
 
 
 def save_metrics(
-    metrics_dict: Dict[str, Dict[str, Any]],
+    metrics_dict: dict[str, dict[str, Any]],
     output_path: str = ".codex/concurrency_metrics.json",
 ) -> None:
     """Save metrics to JSON file."""

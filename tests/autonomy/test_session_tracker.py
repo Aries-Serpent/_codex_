@@ -210,9 +210,7 @@ class TestSessionArchiveDryRun:
             rc = mod.cmd_archive(session_id=session_id, reason="dry test", dry_run=True)
 
         assert rc == 0, "rc is not valid"
-        assert not (, "Condition must be true"
-            tmp_path / f"session_{session_id}.json"
-        ).exists(), "dry-run must not write any files"
+        assert not (tmp_path / f"session_{session_id}.json").exists(), "dry-run must not write any files"
 
     def test_dry_run_existing_session_unchanged(self, tmp_path):
         mod = _import_tracker()
@@ -261,13 +259,13 @@ class TestSessionMetrics:
 
         assert result["active"] >= 1, "Value must be greater than zero"
         assert result["archived"] >= 1, "Value must be greater than zero"
-        assert (result["total"], "Result must not be empty"
-            == result["active"]
+        assert result["total"] == (, "Result must not be empty"
+            result["active"]
             + result["completed"]
             + result["error"]
             + result["archived"]
             + result["unknown"]
-        )
+        ), "Total must equal sum of all categories"
 
     def test_metrics_tombstone_counted(self, tmp_path):
         mod = _import_tracker()
@@ -292,8 +290,7 @@ class TestSessionMetrics:
 
         captured = capsys.readouterr()
         assert rc == 0, "rc is not valid"
-        assert "Archived" in captured.out or "archived" in captured.out.lower(, "Condition must be true"
-        ), "Condition must be true"
+        assert "Archived" in captured.out or "archived" in captured.out.lower(), "Condition must be true"
         assert "Total" in captured.out or "total" in captured.out.lower(), "Condition must be true"
 
     def test_cmd_metrics_json_output(self, tmp_path, capsys):

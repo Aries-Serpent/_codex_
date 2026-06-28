@@ -15,7 +15,7 @@ from __future__ import annotations
 import logging
 import time
 from contextlib import contextmanager
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Callable, Optional
 
 from .concurrency import ArchiveOperationLock, log_error, save_metrics
 
@@ -55,7 +55,7 @@ class ThreadSafeArchive:
         )
 
     @contextmanager
-    def archive_session(self, session_id: str):
+    def archive_session(self, session_id: str) -> None:
         """Acquire exclusive lock for archive operation."""
         try:
             with self._archive_lock.archive_lock(session_id):
@@ -74,7 +74,7 @@ class ThreadSafeArchive:
             raise
 
     @contextmanager
-    def retrieve_session(self, session_id: str):
+    def retrieve_session(self, session_id: str) -> None:
         """Acquire exclusive lock for retrieval operation."""
         try:
             with self._archive_lock.archive_lock(session_id):
@@ -105,7 +105,7 @@ class ThreadSafeArchive:
                 lock.release()
         return False
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get lock metrics."""
         return self._archive_lock.metrics.to_dict()
 
@@ -116,13 +116,13 @@ class ThreadSafeArchive:
             "component": "archive_operations",
             "archive_lock": self._archive_lock.metrics.to_dict(),
         }
-        save_metrics(metrics_dict, self.metrics_path)
+        save_metrics(metrics_dict, self.metrics_path)  # type: ignore[arg-type]
 
-    def __enter__(self):
+    def __enter__(self) -> None:
         """Context manager entry."""
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         """Context manager exit."""
         self.save_metrics()
 
@@ -189,7 +189,7 @@ class ArchiveSessionGuard:
         session_ids: list[str],
         archive_func: Callable,
         max_workers: int = 5,
-    ) -> Dict[str, bool]:
+    ) -> dict[str, bool]:
         """Archive multiple sessions in parallel with per-session locks."""
         import concurrent.futures
 

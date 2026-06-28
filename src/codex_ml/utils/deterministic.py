@@ -183,8 +183,8 @@ def check_deterministic_operations() -> dict[str, bool | None]:
             status["cudnn_deterministic"] = torch.backends.cudnn.deterministic
             status["cudnn_benchmark_disabled"] = not torch.backends.cudnn.benchmark
         else:
-            status["cudnn_deterministic"] = None
-            status["cudnn_benchmark_disabled"] = None
+            status["cudnn_deterministic"] = None  # type: ignore[assignment]
+            status["cudnn_benchmark_disabled"] = None  # type: ignore[assignment]
     except ImportError as e:
         error_type = type(e).__name__
         logger.debug("ImportError: <ERROR_TYPE>")
@@ -192,7 +192,7 @@ def check_deterministic_operations() -> dict[str, bool | None]:
         status["torch_available"] = False
         status["torch_deterministic"] = False
 
-    return status
+    return status  # type: ignore[return-value]
 
 
 def warn_non_deterministic_ops():

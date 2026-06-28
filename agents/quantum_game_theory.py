@@ -49,49 +49,49 @@ except ImportError as e:
         ndarray = list  # Type hint fallback
 
         @staticmethod
-        def ones(n, dtype=None):
+        def ones(n, dtype=None) -> None:
             """Stub for np.ones"""
             raise ImportError(
                 "numpy is required for quantum game theory. Install with: pip install numpy"
             )
 
         @staticmethod
-        def sqrt(x):
+        def sqrt(x) -> None:
             """Stub for np.sqrt"""
             raise ImportError(
                 "numpy is required for quantum game theory. Install with: pip install numpy"
             )
 
         @staticmethod
-        def zeros(shape, dtype=None):
+        def zeros(shape, dtype=None) -> None:
             """Stub for np.zeros"""
             raise ImportError(
                 "numpy is required for quantum game theory. Install with: pip install numpy"
             )
 
         @staticmethod
-        def exp(x):
+        def exp(x) -> None:
             """Stub for np.exp"""
             raise ImportError(
                 "numpy is required for quantum game theory. Install with: pip install numpy"
             )
 
         @staticmethod
-        def dot(a, b):
+        def dot(a, b) -> None:
             """Stub for np.dot"""
             raise ImportError(
                 "numpy is required for quantum game theory. Install with: pip install numpy"
             )
 
         @staticmethod
-        def conj(x):
+        def conj(x) -> None:
             """Stub for np.conj"""
             raise ImportError(
                 "numpy is required for quantum game theory. Install with: pip install numpy"
             )
 
         @staticmethod
-        def real(x):
+        def real(x) -> None:
             """Stub for np.real"""
             raise ImportError(
                 "numpy is required for quantum game theory. Install with: pip install numpy"
@@ -137,7 +137,7 @@ class StrategyState:
     probabilities: Optional[Any] = None  # np.ndarray when numpy available
     wavefunction: Optional[Any] = None  # np.ndarray when numpy available
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         # Handle string team names
         if isinstance(self.team, str):
             # Keep as string for flexibility, but could convert to TeamType
@@ -307,7 +307,7 @@ class PayoffOperator:
     team: TeamType | list[str] = TeamType.BLUE
     players: list[str] = field(default_factory=list)  # Alias for team
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Handle backwards compatibility"""
         # If players list provided, convert to team
         if self.players and not isinstance(self.team, TeamType):
@@ -360,7 +360,7 @@ class QuantumGameState:
     joint_wavefunction: Optional[np.ndarray] = None
     entanglement_strength: float = 0.0
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.joint_wavefunction is None:
             # Support both StrategyState objects and raw numpy probability arrays
             blue_wf = (

@@ -28,12 +28,12 @@ try:
     import torch.nn as nn
 except (ImportError, AttributeError):
     logger.warning("Exception occurred", exc_info=True)
-    nn = None
+    nn = None  # type: ignore[assignment]
 _REGISTRY: dict[str, Callable] = {}
 
 
 def _register(name: str):
-    def deco(fn):
+    def deco(fn) -> None:
         _REGISTRY[name.lower()] = fn
         return fn
 
@@ -41,22 +41,22 @@ def _register(name: str):
 
 
 @_register("relu")
-def relu():
+def relu() -> None:
     return nn.ReLU() if nn else (lambda x: x)
 
 
 @_register("gelu")
-def gelu():
+def gelu() -> None:
     return nn.GELU() if nn else (lambda x: x)
 
 
 @_register("silu")
-def silu():
+def silu() -> None:
     return nn.SiLU() if nn else (lambda x: x)
 
 
 @_register("swiglu")
-def swiglu():
+def swiglu() -> None:
     return nn.SiLU() if nn else (lambda x: x)
 
 

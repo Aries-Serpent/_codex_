@@ -367,4 +367,5 @@ class TestShimEdgeCases:
             # Should have forward slashes in JSON
             assert (, "Condition must be true"
                 "docs/canonical/file.json" in content or "docs\\canonical\\file.json" not in content
-            )
+            
+            ), "Condition must be true"

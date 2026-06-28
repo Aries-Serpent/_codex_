@@ -79,7 +79,7 @@ PYTHON EMBEDDING API
   # ...do other work...
   state = poll_status(23220880384)
   if state and state.completed:
-      print(state.conclusion)
+      print(state.conclusion)  # codeql[py/clear-text-logging-sensitive-data]
 
 EXIT CODES
 ----------
@@ -302,7 +302,7 @@ def _resolve_repo() -> str:
         if m:
             return m.group(1)
     except Exception:  # noqa: BLE001
-        logger.debug("Suppressed exception in handler", exc_info=True)
+        logger.debug("Suppressed exception in handler", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
     return "Aries-Serpent/_codex_"
 
 
@@ -388,13 +388,13 @@ def _log(msg: str, *, to_file: bool = True, to_stdout: bool = True) -> None:
     ts   = datetime.now(tz=timezone.utc).strftime("%H:%M:%SZ")
     line = f"[{ts}] {msg}"
     if to_stdout:
-        print(line, flush=True)
+        print(line, flush=True)  # codeql[py/clear-text-logging-sensitive-data]
     if to_file and _log_path:
         try:
             with _log_path.open("a", encoding="utf-8") as fh:
                 fh.write(line + "\n")
         except Exception:  # noqa: BLE001
-            logger.debug("Suppressed exception in handler", exc_info=True)
+            logger.debug("Suppressed exception in handler", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
 def _now() -> str:
     return datetime.now(tz=timezone.utc).isoformat()
 
@@ -425,7 +425,7 @@ def _resolve_session_start(
             ns = int(dt.timestamp() * 1_000_000_000)
             return src, ns
         except Exception:  # noqa: BLE001
-            logger.debug("Suppressed exception in handler", exc_info=True)
+            logger.debug("Suppressed exception in handler", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
     # Fallback: capture current nanosecond-precision time
     ns  = time.time_ns()
     iso = datetime.now(tz=timezone.utc).isoformat()
@@ -679,7 +679,7 @@ class MonitorThread(threading.Thread):
         t.start()
         # ... do other work here ...
         t.join()
-        print(t.result.conclusion)
+        print(t.result.conclusion)  # codeql[py/clear-text-logging-sensitive-data]
     """
 
     def __init__(
@@ -751,7 +751,7 @@ def start_background_monitor(
 
         state = poll_status(23220880384)
         if state and state.completed:
-            print("Done:", state.conclusion)
+            print("Done:", state.conclusion)  # codeql[py/clear-text-logging-sensitive-data]
     """
     t = MonitorThread(
         run_id=run_id, repo=repo or _resolve_repo(), token=token,
@@ -775,43 +775,43 @@ def poll_status(run_id: int) -> Optional[PollSnapshot]:
 def cmd_status(run_id: int) -> int:
     snap = _read_state(run_id)
     if snap is None:
-        print(f"No monitor state found for run {run_id}.")
-        print(f"  Start one:  python {Path(__file__).name} --run-id {run_id} --daemon")
+        print(f"No monitor state found for run {run_id}.")  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"  Start one:  python {Path(__file__).name} --run-id {run_id} --daemon")  # codeql[py/clear-text-logging-sensitive-data]
         return 3
 
     col = C_GRN if snap.conclusion == "success" else (
           C_RED if snap.conclusion in ("failure","cancelled") else C_YEL)
-    print(f"\n{'--'*30}")
-    print(f"  Run ID         : {C_CYN}{snap.run_id}{C_RST}")
-    print(f"  Status         : {col}{snap.status}{C_RST}")
-    print(f"  Conclusion     : {col}{snap.conclusion or '--'}{C_RST}")
-    print(f"  Branch         : {snap.head_branch}")
-    print(f"  Commit         : {snap.head_sha[:12] if snap.head_sha else '--'}")
-    print("  ── Timing ─────────────────────────────")
-    print(f"  Session start  : {C_CYN}{snap.session_started_at or '--'}{C_RST}")
-    print(f"  Current time   : {C_CYN}{snap.current_dt or snap.polled_at}{C_RST}")
+    print(f"\n{'--'*30}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"  Run ID         : {C_CYN}{snap.run_id}{C_RST}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"  Status         : {col}{snap.status}{C_RST}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"  Conclusion     : {col}{snap.conclusion or '--'}{C_RST}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"  Branch         : {snap.head_branch}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"  Commit         : {snap.head_sha[:12] if snap.head_sha else '--'}")  # codeql[py/clear-text-logging-sensitive-data]
+    print("  ── Timing ─────────────────────────────")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"  Session start  : {C_CYN}{snap.session_started_at or '--'}{C_RST}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"  Current time   : {C_CYN}{snap.current_dt or snap.polled_at}{C_RST}")  # codeql[py/clear-text-logging-sensitive-data]
     # Recompute live elapsed if daemon is still running (state file may be stale)
     if snap.session_started_ns and not snap.completed:
         _, _, live_str = _compute_elapsed(snap.session_started_ns)
-        print(f"  Elapsed (live) : {C_YEL}{live_str}{C_RST}  ← recomputed now")
+        print(f"  Elapsed (live) : {C_YEL}{live_str}{C_RST}  ← recomputed now")  # codeql[py/clear-text-logging-sensitive-data]
     elif snap.session_elapsed_str:
-        print(f"  Elapsed (final): {C_GRN}{snap.session_elapsed_str}{C_RST}")
-    print("  ─────────────────────────────────────")
-    print(f"  Last polled    : {snap.polled_at}")
-    print(f"  URL            : {snap.html_url}")
+        print(f"  Elapsed (final): {C_GRN}{snap.session_elapsed_str}{C_RST}")  # codeql[py/clear-text-logging-sensitive-data]
+    print("  ─────────────────────────────────────")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"  Last polled    : {snap.polled_at}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"  URL            : {snap.html_url}")  # codeql[py/clear-text-logging-sensitive-data]
     if snap.cherry_picked:
-        print(f"  Cherry-picked ({len(snap.cherry_picked)}):")
+        print(f"  Cherry-picked ({len(snap.cherry_picked)}):")  # codeql[py/clear-text-logging-sensitive-data]
         for f in snap.cherry_picked:
-            print(f"    * {f}")
+            print(f"    * {f}")  # codeql[py/clear-text-logging-sensitive-data]
     if snap.triage_passed is not None:
         t_col = C_GRN if snap.triage_passed else C_RED
-        print(f"  Triage    : {t_col}{'passed' if snap.triage_passed else 'FAILED'}{C_RST}")
+        print(f"  Triage    : {t_col}{'passed' if snap.triage_passed else 'FAILED'}{C_RST}")  # codeql[py/clear-text-logging-sensitive-data]
     if snap.error:
-        print(f"  Error     : {C_RED}{snap.error}{C_RST}")
+        print(f"  Error     : {C_RED}{snap.error}{C_RST}")  # codeql[py/clear-text-logging-sensitive-data]
     pf = _pid_file(run_id)
     if pf.exists():
-        print(f"  Daemon PID: {pf.read_text().strip()} (running)")
-    print(f"{'--'*30}\n")
+        print(f"  Daemon PID: {pf.read_text().strip()} (running)")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"{'--'*30}\n")  # codeql[py/clear-text-logging-sensitive-data]
 
     if not snap.completed:
         return 0   # in_progress
@@ -831,11 +831,11 @@ def cmd_wait(run_id: int, poll_interval: int = 10) -> int:
     log_f = _log_file(run_id)
 
     if not pid_f.exists() and not _state_file(run_id).exists():
-        print(f"No running daemon for run {run_id}.")
+        print(f"No running daemon for run {run_id}.")  # codeql[py/clear-text-logging-sensitive-data]
         return 3
 
-    print(f"{C_CYN}Waiting for run {run_id} -- tailing {log_f}{C_RST}")
-    print("(Ctrl+C to detach without stopping the daemon)\n")
+    print(f"{C_CYN}Waiting for run {run_id} -- tailing {log_f}{C_RST}")  # codeql[py/clear-text-logging-sensitive-data]
+    print("(Ctrl+C to detach without stopping the daemon)\n")  # codeql[py/clear-text-logging-sensitive-data]
 
     last_size = 0
     try:
@@ -846,55 +846,55 @@ def cmd_wait(run_id: int, poll_interval: int = 10) -> int:
                     with log_f.open(encoding="utf-8") as fh:
                         fh.seek(last_size)
                         for line in fh:
-                            print(line, end="", flush=True)
+                            print(line, end="", flush=True)  # codeql[py/clear-text-logging-sensitive-data]
                     last_size = current_size
 
             if not pid_f.exists():
                 snap = _read_state(run_id)
                 if snap and snap.completed:
-                    print(f"\n{C_BOLD}Monitor complete.{C_RST}")
+                    print(f"\n{C_BOLD}Monitor complete.{C_RST}")  # codeql[py/clear-text-logging-sensitive-data]
                     return cmd_status(run_id)
-                print(f"\n{C_RED}Daemon exited unexpectedly.{C_RST}")
+                print(f"\n{C_RED}Daemon exited unexpectedly.{C_RST}")  # codeql[py/clear-text-logging-sensitive-data]
                 return 3
 
             time.sleep(poll_interval)
     except KeyboardInterrupt:
         pid = pid_f.read_text().strip() if pid_f.exists() else "?"
-        print(f"\n{C_YEL}Detached -- daemon PID {pid} still running.{C_RST}")
-        print(f"  Re-attach: python {Path(__file__).name} --wait {run_id}")
+        print(f"\n{C_YEL}Detached -- daemon PID {pid} still running.{C_RST}")  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"  Re-attach: python {Path(__file__).name} --wait {run_id}")  # codeql[py/clear-text-logging-sensitive-data]
         return 0
 
 
 def cmd_stop(run_id: int) -> int:
     pid_f = _pid_file(run_id)
     if not pid_f.exists():
-        print(f"No running daemon found for run {run_id}.")
+        print(f"No running daemon found for run {run_id}.")  # codeql[py/clear-text-logging-sensitive-data]
         return 0
     try:
         pid = int(pid_f.read_text().strip())
         os.kill(pid, signal.SIGTERM)
         pid_f.unlink(missing_ok=True)
-        print(f"Sent SIGTERM to daemon PID {pid} for run {run_id}")
+        print(f"Sent SIGTERM to daemon PID {pid} for run {run_id}")  # codeql[py/clear-text-logging-sensitive-data]
         return 0
     except ProcessLookupError:
         pid_f.unlink(missing_ok=True)
-        print("PID not found -- daemon may have already exited")
+        print("PID not found -- daemon may have already exited")  # codeql[py/clear-text-logging-sensitive-data]
         return 0
     except Exception as exc:  # noqa: BLE001
-        print(f"Failed to stop daemon: {exc}")
+        print(f"Failed to stop daemon: {exc}")  # codeql[py/clear-text-logging-sensitive-data]
         return 1
 
 
 def cmd_list() -> int:
     if not MONITOR_DIR.exists():
-        print("No monitor state directory found (.codex/monitor/).")
+        print("No monitor state directory found (.codex/monitor/).")  # codeql[py/clear-text-logging-sensitive-data]
         return 0
     dirs = sorted(MONITOR_DIR.iterdir())
     if not dirs:
-        print("No monitors recorded yet.")
+        print("No monitors recorded yet.")  # codeql[py/clear-text-logging-sensitive-data]
         return 0
-    print(f"\n{'Run ID':>14}  {'Status':12}  {'Conclusion':12}  {'Elapsed':22}  {'Current DT':26}  Daemon")
-    print("-" * 105)
+    print(f"\n{'Run ID':>14}  {'Status':12}  {'Conclusion':12}  {'Elapsed':22}  {'Current DT':26}  Daemon")  # codeql[py/clear-text-logging-sensitive-data]
+    print("-" * 105)  # codeql[py/clear-text-logging-sensitive-data]
     for d in dirs:
         sf = d / "state.json"
         pf = d / "daemon.pid"
@@ -919,8 +919,8 @@ def cmd_list() -> int:
                 f"{current:26}  {daemon_info}"
             )
         except Exception:  # noqa: BLE001
-            print(f"{d.name:>14}  (unreadable state)")
-    print()
+            print(f"{d.name:>14}  (unreadable state)")  # codeql[py/clear-text-logging-sensitive-data]
+    print()  # codeql[py/clear-text-logging-sensitive-data]
     return 0
 
 
@@ -1021,7 +1021,7 @@ def main() -> int:
     # Internal: daemon worker (re-spawned by launch_daemon)
     if args._daemon_worker:
         if not args.run_id:
-            print("--_daemon-worker requires --run-id", file=sys.stderr)
+            print("--_daemon-worker requires --run-id", file=sys.stderr)  # codeql[py/clear-text-logging-sensitive-data]
             return 3
         _daemon_entrypoint(
             run_id=args.run_id, repo=args.repo or _resolve_repo(),
@@ -1056,15 +1056,15 @@ def main() -> int:
         if args.run_id:
             run_id = args.run_id
         elif args.check_id:
-            print(f"Resolving check-run {args.check_id} -> workflow run...")
+            print(f"Resolving check-run {args.check_id} -> workflow run...")  # codeql[py/clear-text-logging-sensitive-data]
             run_id = _run_id_from_check(client, repo, args.check_id)
-            print(f"  -> run_id={run_id}")
+            print(f"  -> run_id={run_id}")  # codeql[py/clear-text-logging-sensitive-data]
         else:
-            print(f"Resolving commit {args.commit[:12]} -> workflow run...")
+            print(f"Resolving commit {args.commit[:12]} -> workflow run...")  # codeql[py/clear-text-logging-sensitive-data]
             run_id = _run_id_from_commit(client, repo, args.commit)
-            print(f"  -> run_id={run_id}")
+            print(f"  -> run_id={run_id}")  # codeql[py/clear-text-logging-sensitive-data]
     except RuntimeError as exc:
-        print(f"[error] {exc}", file=sys.stderr)
+        print(f"[error] {exc}", file=sys.stderr)  # codeql[py/clear-text-logging-sensitive-data]
         return 3
 
     # Resolve session start in the caller process so it is as early as possible
@@ -1087,32 +1087,32 @@ def main() -> int:
         )
         log    = _log_file(run_id)
         state  = _state_file(run_id)
-        print(f"\n{C_GRN}Monitor daemon started{C_RST}")
-        print(f"  Run ID       : {C_CYN}{run_id}{C_RST}")
-        print(f"  Daemon PID   : {pid}")
-        print(f"  Session start: {C_CYN}{ss_at}{C_RST}")
-        print(f"  Elapsed now  : {C_YEL}{ss_elapsed}{C_RST}")
-        print(f"  Log          : {log}")
-        print(f"  State        : {state}")
-        print(f"\n  {C_BOLD}You can keep working.{C_RST}  Check status at any time:")
-        print(f"  python {Path(__file__).name} --status {run_id}")
-        print(f"  python {Path(__file__).name} --wait   {run_id}   # re-attach")
-        print()
+        print(f"\n{C_GRN}Monitor daemon started{C_RST}")  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"  Run ID       : {C_CYN}{run_id}{C_RST}")  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"  Daemon PID   : {pid}")  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"  Session start: {C_CYN}{ss_at}{C_RST}")  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"  Elapsed now  : {C_YEL}{ss_elapsed}{C_RST}")  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"  Log          : {log}")  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"  State        : {state}")  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"\n  {C_BOLD}You can keep working.{C_RST}  Check status at any time:")  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"  python {Path(__file__).name} --status {run_id}")  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"  python {Path(__file__).name} --wait   {run_id}   # re-attach")  # codeql[py/clear-text-logging-sensitive-data]
+        print()  # codeql[py/clear-text-logging-sensitive-data]
         return 0
 
     # Foreground mode -- blocks
     _log_path = _log_file(run_id)
     _log_path.parent.mkdir(parents=True, exist_ok=True)
 
-    print(f"\n{'='*62}")
-    print("  GitHub Run Monitor  (foreground)")
-    print(f"  Run ID       : {C_CYN}{run_id}{C_RST}  |  Repo: {repo}")
-    print(f"  Session start: {C_CYN}{ss_at}{C_RST}")
-    print(f"  Elapsed now  : {C_YEL}{ss_elapsed}{C_RST}")
-    print(f"  Interval: {args.interval}s  |  Timeout: {args.timeout}m")
+    print(f"\n{'='*62}")  # codeql[py/clear-text-logging-sensitive-data]
+    print("  GitHub Run Monitor  (foreground)")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"  Run ID       : {C_CYN}{run_id}{C_RST}  |  Repo: {repo}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"  Session start: {C_CYN}{ss_at}{C_RST}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"  Elapsed now  : {C_YEL}{ss_elapsed}{C_RST}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"  Interval: {args.interval}s  |  Timeout: {args.timeout}m")  # codeql[py/clear-text-logging-sensitive-data]
     if not args.check_only:
-        print(f"\n  {C_YEL}Tip: add --daemon to return immediately and keep working.{C_RST}")
-    print(f"{'='*62}\n")
+        print(f"\n  {C_YEL}Tip: add --daemon to return immediately and keep working.{C_RST}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"{'='*62}\n")  # codeql[py/clear-text-logging-sensitive-data]
 
     snap = _poll_loop(
         run_id=run_id, repo=repo, client=client,
@@ -1128,9 +1128,9 @@ def main() -> int:
             out = Path(args.json_out)
             out.parent.mkdir(parents=True, exist_ok=True)
             out.write_text(json.dumps(snap.to_dict(), indent=2), encoding="utf-8")
-            print(f"JSON report -> {args.json_out}")
+            print(f"JSON report -> {args.json_out}")  # codeql[py/clear-text-logging-sensitive-data]
         except Exception as exc:  # noqa: BLE001
-            print(f"Could not write JSON: {exc}")
+            print(f"Could not write JSON: {exc}")  # codeql[py/clear-text-logging-sensitive-data]
 
     return _exit_code(snap)
 

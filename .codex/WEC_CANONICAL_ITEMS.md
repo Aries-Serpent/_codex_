@@ -72,11 +72,11 @@ This document defines the **canonical list of all Workflow Execution Checklist (
 | Attribute | Value |
 |-----------|-------|
 | **Filename** | agent-auth-delegation.yml |
-| **Display Label** | Agent token delegation | <!-- pragma: allowlist secret -->
+| **Display Label** | Agent token delegation |
 | **Required for main** | ✅ YES (if agent-delegated PR) |
 | **Required for 0D_base_** | ✅ YES (if agent-delegated PR) |
-| **Auto-Approve Prerequisite** | Token delegation must complete BEFORE auto-approve | <!-- pragma: allowlist secret -->
-| **Purpose** | Validate agent auth tokens & inject delegated permissions | <!-- pragma: allowlist secret -->
+| **Auto-Approve Prerequisite** | Token delegation must complete BEFORE auto-approve |
+| **Purpose** | Validate agent auth tokens & inject delegated permissions |
 | **Failure Mode** | Blocks merge if delegation validation fails |
 | **Owner Agent** | cognitive-brain-cli-agent |
 | **Trigger Condition** | Only required for PRs with `copilot/` or `feature/` prefix |
@@ -229,7 +229,7 @@ Select workflows to execute for this PR. **REQUIRED items must be checked to mer
 | pre-merge-validation.yml | ✅ MUST | ✅ YES | Staging branch also requires validation |
 | comment-review-gate.yml | ✅ MUST | ✅ YES | Comment gate required |
 | deferral-language-gate.yml | ✅ MUST | ✅ YES | Policy enforcement |
-| agent-auth-delegation.yml | ✅ MUST (if agent PR) | ✅ YES | Token delegation if agent-delegated | <!-- pragma: allowlist secret -->
+| agent-auth-delegation.yml | ✅ MUST (if agent PR) | ✅ YES | Token delegation if agent-delegated |
 | workflow-execution-gate.yml | ✅ MUST | ✅ YES | WEC gate required |
 | Others | ❌ OPTIONAL | ❌ NO | Staging policy more lenient |
 

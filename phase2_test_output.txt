@@ -1,0 +1,30 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.1.1, pluggy-1.6.0
+rootdir: /home/runner/work/_codex_/_codex_
+configfile: pytest.ini
+plugins: anyio-4.14.1, cov-7.1.0
+collected 75 items
+
+tests/ml/test_model_validation.py ...................................... [ 50%]
+..                                                                       [ 53%]
+tests/ml/test_training_reproducibility.py .............................. [ 93%]
+.....                                                                    [100%]
+
+=============================== warnings summary ===============================
+../../../.local/lib/python3.12/site-packages/_pytest/config/__init__.py:1464
+  /home/runner/.local/lib/python3.12/site-packages/_pytest/config/__init__.py:1464: PytestConfigWarning: Unknown config option: asyncio_default_fixture_loop_scope
+  
+    self._warn_or_fail_if_strict(f"Unknown config option: {key}\n")
+
+../../../.local/lib/python3.12/site-packages/_pytest/config/__init__.py:1464
+  /home/runner/.local/lib/python3.12/site-packages/_pytest/config/__init__.py:1464: PytestConfigWarning: Unknown config option: asyncio_mode
+  
+    self._warn_or_fail_if_strict(f"Unknown config option: {key}\n")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================================ tests coverage ================================
+_______________ coverage: platform linux, python 3.12.3-final-0 ________________
+
+Coverage HTML written to dir htmlcov
+Coverage JSON written to file coverage.json
+======================= 75 passed, 2 warnings in 20.87s ========================

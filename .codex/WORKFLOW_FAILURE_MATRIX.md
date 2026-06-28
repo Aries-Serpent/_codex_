@@ -581,7 +581,7 @@ gh workflow run WORKFLOW_NAME.yml --repo Aries-Serpent/_codex_
 | WF-002 | REQ-5 missing | ✅ YES | ✅ YES | `phase-12-2-compliance-check.yml` | 🔴 CRITICAL |
 | WF-003 | WEC stripped | ⚠️ PARTIAL | ✅ YES | PR body missing WEC section | 🔴 CRITICAL |
 | WF-004 | WEC format invalid | ✅ YES | ✅ YES | `wec_enforcer.py --validate-body` | 🔴 CRITICAL |
-| WF-005 | Token insufficient | ❌ NO | ❌ NO | Auto-approval logs | 🟡 MEDIUM | <!-- pragma: allowlist secret -->
+| WF-005 | Token insufficient | ❌ NO | ❌ NO | Auto-approval logs | 🟡 MEDIUM |
 | WF-006 | REQUIRED unchecked | ⚠️ MANUAL | ✅ YES | `workflow-execution-gate.yml` | 🔴 CRITICAL |
 | WF-007 | Cost exceeded | ❌ NO | 🟡 CONDITIONAL | `cost-gate.yml` logs | 🟡 MEDIUM |
 | WF-008 | Rate limit | ✅ RETRY | ❌ NO | API response 429 | 🟢 LOW |

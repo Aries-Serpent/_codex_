@@ -21,7 +21,7 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 
 @dataclass
@@ -61,13 +61,13 @@ class SessionDB:
         """
         self.db_path = db_path
         self._lock = threading.RLock()
-        self._cache: Dict[str, CacheEntry] = {}
+        self._cache: dict[str, CacheEntry] = {}
         self._cache_ttl = 300  # 5 minutes
         self._ensure_schema()
         self._optimize_db()
 
     @contextmanager
-    def _get_connection(self):
+    def _get_connection(self) -> None:
         """
         Context manager for thread-safe database connections.
 
@@ -205,7 +205,7 @@ class SessionDB:
         with self._lock:
             self._cache.clear()
 
-    def insert_session(self, session: Dict[str, Any]) -> bool:
+    def insert_session(self, session: dict[str, Any]) -> bool:
         """
         Insert new session into database.
 
@@ -318,8 +318,8 @@ class SessionDB:
                 raise sqlite3.Error(f"Failed to insert session: {e}") from e
 
     def query_sessions(
-        self, filters: Optional[Dict[str, Any]] = None, limit: int = 100, offset: int = 0
-    ) -> List[Dict[str, Any]]:
+        self, filters: Optional[dict[str, Any]] = None, limit: int = 100, offset: int = 0
+    ) -> list[dict[str, Any]]:
         """
         Query sessions with optional filters.
 
@@ -403,7 +403,7 @@ class SessionDB:
 
     def query_by_date_range(
         self, start_dt: str, end_dt: str, limit: int = 1000
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """
         Query sessions within date range (ISO 8601 format).
 
@@ -423,7 +423,7 @@ class SessionDB:
             filters={"start_time": start_dt, "end_time": end_dt}, limit=limit
         )
 
-    def query_by_agent(self, agent_name: str, days: int = 7) -> List[Dict[str, Any]]:
+    def query_by_agent(self, agent_name: str, days: int = 7) -> list[dict[str, Any]]:
         """
         Query sessions for specific agent in last N days.
 
@@ -446,7 +446,7 @@ class SessionDB:
             limit=1000,
         )
 
-    def query_by_status(self, status: str, limit: int = 100) -> List[Dict[str, Any]]:
+    def query_by_status(self, status: str, limit: int = 100) -> list[dict[str, Any]]:
         """
         Query sessions by status.
 
@@ -463,7 +463,7 @@ class SessionDB:
 
         return self.query_sessions(filters={"status": status}, limit=limit)
 
-    def get_session(self, session_id: str) -> Optional[Dict[str, Any]]:
+    def get_session(self, session_id: str) -> Optional[dict[str, Any]]:
         """
         Get single session by ID.
 
@@ -495,7 +495,7 @@ class SessionDB:
 
         return result
 
-    def get_session_with_details(self, session_id: str) -> Optional[Dict[str, Any]]:
+    def get_session_with_details(self, session_id: str) -> Optional[dict[str, Any]]:
         """
         Get session with all related details (metadata, patterns, outcomes, events).
 
@@ -576,7 +576,7 @@ class SessionDB:
                 conn.commit()
                 return cursor.rowcount > 0
 
-    def get_stats(self, timeframe: str = "7d") -> Dict[str, Any]:
+    def get_stats(self, timeframe: str = "7d") -> dict[str, Any]:
         """
         Get aggregated statistics for sessions.
 
@@ -776,7 +776,7 @@ class SessionDB:
                 cursor.execute("PRAGMA optimize")
                 conn.commit()
 
-    def get_connection_info(self) -> Dict[str, Any]:
+    def get_connection_info(self) -> dict[str, Any]:
         """Get information about database connection and settings."""
         with self._get_connection() as conn:
             cursor = conn.cursor()

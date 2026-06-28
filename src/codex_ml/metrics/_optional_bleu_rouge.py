@@ -18,7 +18,7 @@ from typing import Optional
 logger = logging.getLogger(__name__)
 
 
-def _import_bleu_rouge():
+def _import_bleu_rouge() -> None:
     """
     Attempt to import BLEU/ROUGE dependencies.
 

@@ -4,7 +4,7 @@
 class ScopeValidator:
     """Comprehensive scope_validator implementation."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize ScopeValidator."""
         self._data = {}
         self._config = {}

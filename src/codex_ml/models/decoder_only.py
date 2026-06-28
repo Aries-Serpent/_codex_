@@ -195,7 +195,7 @@ class DecoderOnlyLM(nn.Module):
         *,
         use_cache: bool = True,
         labels: Optional[torch.Tensor] = None,
-    ) -> dict:
+    ) -> dict[str, Any]:
         _bsz, seq = input_ids.shape
         device = input_ids.device
         pos = torch.arange(seq, device=device)
@@ -213,7 +213,7 @@ class DecoderOnlyLM(nn.Module):
             past = past_key_values[i] if past_key_values is not None else None
             if self.gradient_checkpointing and self.training:
 
-                def fn(x):
+                def fn(x) -> None:
                     return block(x, mask, past, use_cache=use_cache, sin=sin, cos=cos)
 
                 x, pkv = torch.utils.checkpoint.checkpoint(fn, x)

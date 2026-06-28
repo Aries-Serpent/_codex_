@@ -1,7 +1,7 @@
 """Role management for authorization system."""
 
 from dataclasses import dataclass, field
-from typing import Dict, Optional, Set
+from typing import Optional
 
 
 @dataclass
@@ -10,7 +10,7 @@ class Role:
 
     name: str
     description: str = ""
-    permissions: Set[str] = field(default_factory=set)
+    permissions: set[str] = field(default_factory=set)
     created_at: float = 0.0
     updated_at: float = 0.0
 
@@ -18,13 +18,13 @@ class Role:
 class RoleManager:
     """Manages roles and their associations with permissions."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the role manager."""
-        self._roles: Dict[str, Role] = {}
-        self._user_roles: Dict[str, Set[str]] = {}
+        self._roles: dict[str, Role] = {}
+        self._user_roles: dict[str, set[str]] = {}
 
     def create_role(
-        self, name: str, description: str = "", permissions: Optional[Set[str]] = None
+        self, name: str, description: str = "", permissions: Optional[set[str]] = None
     ) -> Role:
         """Create a new role.
 
@@ -105,7 +105,7 @@ class RoleManager:
             return True
         return False
 
-    def get_user_roles(self, user_id: str) -> Set[str]:
+    def get_user_roles(self, user_id: str) -> set[str]:
         """Get all roles for a user.
 
         Args:
@@ -148,7 +148,7 @@ class RoleManager:
         self._roles[role_name].permissions.discard(permission)
         return True
 
-    def get_role_permissions(self, role_name: str) -> Optional[Set[str]]:
+    def get_role_permissions(self, role_name: str) -> Optional[set[str]]:
         """Get all permissions for a role.
 
         Args:

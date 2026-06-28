@@ -59,10 +59,10 @@ class TestTokenizationLoaderSmoke:
     """Smoke tests for tokenization loader module."""
 
     def test_import(self):
-        """Test src.tokenization.loader can be imported."""
+        """Test src.codex_ml.tokenization.api can be imported."""
         try:
-            from src.tokenization import loader
+            from src.codex_ml.tokenization import api
 
-            assert loader is not None, "loader must be initialized"
+            assert api is not None, "api must be initialized"
         except (ImportError, ModuleNotFoundError) as e:
-            pytest.skip(f"tokenization.loader requires optional dependencies: {e}")
+            pytest.skip(f"tokenization.api requires optional dependencies: {e}")

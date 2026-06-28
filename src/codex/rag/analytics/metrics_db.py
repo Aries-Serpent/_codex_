@@ -142,7 +142,7 @@ class MetricsDatabase:
 
             if index_name:
                 query += " AND index_name = ?"
-                params.append(index_name)
+                params.append(index_name)  # type: ignore[arg-type]
 
             cursor = conn.execute(query, params)
             row = cursor.fetchone()
@@ -180,7 +180,7 @@ class MetricsDatabase:
 
             if index_name:
                 query += " AND index_name = ?"
-                params.append(index_name)
+                params.append(index_name)  # type: ignore[arg-type]
 
             query += " ORDER BY latency_ms"
 

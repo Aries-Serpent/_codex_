@@ -39,31 +39,31 @@ else:  # pragma: no cover - exercised in minimal test envs
     _ERR = "sentencepiece is not installed"
 
     class SentencePieceProcessor:
-        def __init__(self, *args, **kwargs):
+        def __init__(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
-        def Load(self, *args, **kwargs):
+        def Load(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
-        def load(self, *args, **kwargs):
+        def load(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
-        def encode(self, *args, **kwargs):
+        def encode(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
-        def decode(self, *args, **kwargs):
+        def decode(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
-        def encode_as_ids(self, *args, **kwargs):
+        def encode_as_ids(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
-        def encode_as_pieces(self, *args, **kwargs):
+        def encode_as_pieces(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
-        def decode_ids(self, *args, **kwargs):
+        def decode_ids(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
-        def decode_pieces(self, *args, **kwargs):
+        def decode_pieces(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
         def get_piece_size(self) -> int:
@@ -72,19 +72,19 @@ else:  # pragma: no cover - exercised in minimal test envs
         def get_vocab_size(self) -> int:
             return 0
 
-        def piece_to_id(self, *args, **kwargs):
+        def piece_to_id(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
-        def id_to_piece(self, *args, **kwargs):
+        def id_to_piece(self, *args, **kwargs) -> None:
             raise ImportError(_ERR)
 
     class SentencePieceTrainer:
         @staticmethod
-        def train(*args, **kwargs):
+        def train(*args, **kwargs) -> None:
             raise ImportError(_ERR)
 
         @staticmethod
-        def Train(*args, **kwargs):
+        def Train(*args, **kwargs) -> None:
             raise ImportError(_ERR)
 
     __all__ = ["SentencePieceProcessor", "SentencePieceTrainer"]
@@ -92,8 +92,8 @@ else:  # pragma: no cover - exercised in minimal test envs
     IS_CODEX_STUB = True
     _MISSING_MSG = "sentencepiece is not installed in this environment. Install sentencepiece to enable these features."
 
-    def __getattr__(name: str):
+    def __getattr__(name: str) -> None:
         raise AttributeError(_MISSING_MSG)
 
-    def __dir__():  # pragma: no cover - simple stub helper
+    def __dir__() -> None:  # pragma: no cover - simple stub helper
         return []

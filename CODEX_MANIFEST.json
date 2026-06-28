@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-06-27T00:42:05Z",
+  "generated_at": "2026-06-28T00:14:51Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1207,7 +1207,7 @@
     },
     {
       "name": "code-quality-coverage-suite",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -1827,7 +1827,7 @@
     },
     {
       "name": "security-scanning-suite",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "PARTIAL",
       "has_concurrency": true
     },
     {
@@ -1847,7 +1847,7 @@
     },
     {
       "name": "semgrep_sarif",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -2380,5 +2380,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "966eb4d499a3e0e53f802b20cf14bc7355f6be7a2cc3752571eb5e9aeaca2b4c"
+  "integrity_sha256": "6d605e944dc7dce7faf27fb7d83552037b7333e336495ab407485bc508a75cbb"
 }

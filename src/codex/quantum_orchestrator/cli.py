@@ -162,7 +162,7 @@ def export_metrics_prometheus(state: OrchestratorState) -> str:
 
 @click.group()
 @click.version_option(version="0.3.0")
-def cli():
+def cli() -> None:
     """
     Quantum Orchestrator CLI.
 
@@ -182,7 +182,7 @@ def cli():
 @click.option("--dt", default=0.1, help="Time step size")
 @click.option("--output", type=click.Path(), help="Output file for results (JSON)")
 @click.option("--verbose", is_flag=True, help="Verbose output")
-def run(tasks: int, steps: int, dt: float, output: Optional[str], verbose: bool):
+def run(tasks: int, steps: int, dt: float, output: Optional[str], verbose: bool) -> None:
     """
     Run orchestration with test tasks.
 
@@ -271,7 +271,7 @@ def run(tasks: int, steps: int, dt: float, output: Optional[str], verbose: bool)
 @click.option("--tasks", default=10, help="Number of tasks to benchmark")
 @click.option("--iterations", default=100, help="Number of iterations")
 @click.option("--warmup", default=10, help="Warmup iterations")
-def benchmark(tasks: int, iterations: int, warmup: int):
+def benchmark(tasks: int, iterations: int, warmup: int) -> None:
     """
     Performance benchmark.
 
@@ -322,7 +322,7 @@ def benchmark(tasks: int, iterations: int, warmup: int):
 @cli.command()
 @click.argument("task_id")
 @click.option("--format", type=click.Choice(["text", "json"]), default="text")
-def inspect(task_id: str, format: str):
+def inspect(task_id: str, format: str) -> None:
     """
     Inspect quantum state of a task.
 
@@ -394,7 +394,7 @@ def inspect(task_id: str, format: str):
 @cli.command()
 @click.option("--tasks", default=5, help="Number of tasks")
 @click.option("--output", type=click.Path(), help="Output file for metrics")
-def metrics(tasks: int, output: Optional[str]):
+def metrics(tasks: int, output: Optional[str]) -> None:
     """
     Export Prometheus metrics.
 
@@ -426,7 +426,7 @@ def metrics(tasks: int, output: Optional[str]):
 
 
 @cli.group()
-def qft():
+def qft() -> None:
     """
     Quantum Field Theory operations.
 
@@ -442,7 +442,7 @@ def qft():
 @qft.command()
 @click.option("--count", default=3, help="Number of tasks to spawn")
 @click.option("--mode", default="default", help="Spawning mode")
-def spawn(count: int, mode: str):
+def spawn(count: int, mode: str) -> None:
     """
     Spawn tasks using creation operator.
 
@@ -498,7 +498,7 @@ def spawn(count: int, mode: str):
     default="phi_plus",
     help="Type of Bell state",
 )
-def entangle(task_a: str, task_b: str, bell_state: str):
+def entangle(task_a: str, task_b: str, bell_state: str) -> None:
     """
     Create Bell state entanglement between two tasks.
 
@@ -547,7 +547,7 @@ def entangle(task_a: str, task_b: str, bell_state: str):
 @click.option("--paths", default=100, help="Number of paths to sample")
 @click.option("--temperature", default=1.0, help="Annealing temperature")
 @click.option("--task-count", default=5, help="Number of tasks in system")
-def optimize(paths: int, temperature: float, task_count: int):
+def optimize(paths: int, temperature: float, task_count: int) -> None:
     """
     Find optimal execution path via path integral.
 

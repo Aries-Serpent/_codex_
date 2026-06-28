@@ -37,7 +37,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from codex.brain.checkpoint_manager import CheckpointManager
 from codex.brain.session_serializer import SessionSerializer
@@ -53,11 +53,11 @@ class ResumeResult:
     checkpoint_id: str
     agent_id: str
     session_id: str
-    state: Dict[str, Any]
+    state: dict[str, Any]
     error_message: Optional[str] = None
-    warnings: list[str] = None
+    warnings: list[str] = None  # type: ignore[assignment]
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.warnings is None:
             self.warnings = []
 
@@ -72,9 +72,9 @@ class RepositoryDivergence:
     current_commit: str
     checkpoint_commit: str
     uncommitted_changes: int
-    conflicts: list[str] = None
+    conflicts: list[str] = None  # type: ignore[assignment]
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.conflicts is None:
             self.conflicts = []
 
@@ -129,7 +129,7 @@ class SessionResume:
         logger.info(f"Checkpoint validation successful: {checkpoint_id}")
         return True
 
-    def load_checkpoint(self, checkpoint_id: str) -> Optional[Dict[str, Any]]:
+    def load_checkpoint(self, checkpoint_id: str) -> Optional[dict[str, Any]]:
         """Load checkpoint content.
 
         Args:
@@ -152,7 +152,7 @@ class SessionResume:
         return content
 
     def resume_session(
-        self, checkpoint_id: str, current_repository_state: Optional[Dict[str, Any]] = None
+        self, checkpoint_id: str, current_repository_state: Optional[dict[str, Any]] = None
     ) -> Optional[ResumeResult]:
         """Resume session from checkpoint.
 
@@ -235,7 +235,7 @@ class SessionResume:
         )
 
     def resume_latest_session(
-        self, current_repository_state: Optional[Dict[str, Any]] = None
+        self, current_repository_state: Optional[dict[str, Any]] = None
     ) -> Optional[ResumeResult]:
         """Resume from the most recent checkpoint.
 
@@ -253,7 +253,7 @@ class SessionResume:
         logger.info(f"Resuming from latest checkpoint: {latest_checkpoint}")
         return self.resume_session(latest_checkpoint, current_repository_state)
 
-    def get_progress_snapshot(self, checkpoint_id: str) -> Optional[Dict[str, Any]]:
+    def get_progress_snapshot(self, checkpoint_id: str) -> Optional[dict[str, Any]]:
         """Get execution progress from checkpoint.
 
         Args:
@@ -282,7 +282,7 @@ class SessionResume:
             ),
         }
 
-    def get_decision_history(self, checkpoint_id: str) -> Optional[list[Dict[str, Any]]]:
+    def get_decision_history(self, checkpoint_id: str) -> Optional[list[dict[str, Any]]]:
         """Get decision history from checkpoint.
 
         Args:
@@ -300,7 +300,7 @@ class SessionResume:
 
     # Private Methods
 
-    def _restore_agent_state(self, checkpoint_content: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    def _restore_agent_state(self, checkpoint_content: dict[str, Any]) -> Optional[dict[str, Any]]:
         """Restore agent state from checkpoint.
 
         Args:
@@ -331,7 +331,7 @@ class SessionResume:
             return None
 
     def _check_repository_divergence(
-        self, checkpoint_content: Dict[str, Any], current_repository_state: Dict[str, Any]
+        self, checkpoint_content: dict[str, Any], current_repository_state: dict[str, Any]
     ) -> RepositoryDivergence:
         """Check if repository state has diverged since checkpoint.
 
@@ -389,8 +389,8 @@ class SessionResume:
         return False
 
     def _apply_schema_migration(
-        self, state_dict: Dict[str, Any], from_version: int, to_version: int
-    ) -> Dict[str, Any]:
+        self, state_dict: dict[str, Any], from_version: int, to_version: int
+    ) -> dict[str, Any]:
         """Apply schema migrations if needed.
 
         Args:

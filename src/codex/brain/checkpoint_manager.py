@@ -38,7 +38,7 @@ import time
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -146,7 +146,7 @@ class CheckpointManager:
 
     def create_checkpoint(
         self,
-        session_state: Optional[Dict[str, Any]] = None,
+        session_state: Optional[dict[str, Any]] = None,
         session_id: str = "unknown",
         agent_id: str = "unknown",
         repository_commit: str = "unknown",
@@ -232,7 +232,7 @@ class CheckpointManager:
 
         return checkpoint_id
 
-    def list_checkpoints(self) -> List[Dict[str, Any]]:
+    def list_checkpoints(self) -> list[dict[str, Any]]:
         """List all available checkpoints.
 
         Returns:
@@ -311,7 +311,7 @@ class CheckpointManager:
             logger.error(f"Failed to verify checkpoint {checkpoint_id}: {e}")
             return False
 
-    def get_checkpoint_content(self, checkpoint_id: str) -> Optional[Dict[str, Any]]:
+    def get_checkpoint_content(self, checkpoint_id: str) -> Optional[dict[str, Any]]:
         """Load and decompress checkpoint content.
 
         Args:

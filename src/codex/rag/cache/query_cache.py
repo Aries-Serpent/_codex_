@@ -148,12 +148,12 @@ class QueryCache:
             f"ttl={self.config.default_ttl}s"
         )
 
-    def _acquire_lock(self):
+    def _acquire_lock(self) -> None:
         """Acquire lock if thread-safe mode is enabled."""
         if self._lock:
             self._lock.acquire()
 
-    def _release_lock(self):
+    def _release_lock(self) -> None:
         """Release lock if thread-safe mode is enabled."""
         if self._lock:
             self._lock.release()

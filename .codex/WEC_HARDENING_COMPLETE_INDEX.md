@@ -170,7 +170,7 @@
 1. Check error message for symptom (403, 429, timeout, etc.)
 2. Match to Scenario 1-4 in "Failure Scenarios" section
 3. Follow "Recovery" steps for that scenario
-4. Verify token scope: GH_TOKEN=$CODEX_MASTER_KEY gh auth status --show-token  # pragma: allowlist secret
+4. Verify token scope: GH_TOKEN=$CODEX_MASTER_KEY gh auth status --show-token
 5. If still failing: escalate with full logs
 ```
 
@@ -305,7 +305,7 @@ Task 4.1: Update auto-approve-workflows.yml
 - Log approval decisions
 
 Task 4.2: AUTO_APPROVE_PREREQUISITE_GUIDE.md (DONE)
-- Token configuration  # pragma: allowlist secret
+- Token configuration
 - Failure recovery documented
 
 Task 4.3: Add Approval Recovery Logic
@@ -356,7 +356,7 @@ Success Metrics (30-day evaluation):
 | Fixing WEC stripped from PR | WORKFLOW_FAILURE_MATRIX.md | WF-003 |
 | Fixing WEC format errors | WORKFLOW_FAILURE_MATRIX.md | WF-004 |
 | Approval workflows won't run | AUTO_APPROVE_PREREQUISITE_GUIDE.md | Failure Scenarios |
-| Token 403 errors | AUTO_APPROVE_PREREQUISITE_GUIDE.md | Token scope matrix | <!-- pragma: allowlist secret -->
+| Token 403 errors | AUTO_APPROVE_PREREQUISITE_GUIDE.md | Token scope matrix |
 | Health score dropped | MAIN_BRANCH_WORKFLOW_HEALTH.md | Alert thresholds & escalation |
 | Workflow keeps failing | WORKFLOW_FAILURE_MATRIX.md | Summary table |
 

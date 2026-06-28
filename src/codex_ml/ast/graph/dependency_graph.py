@@ -27,7 +27,7 @@ class DependencyGraph:
             print(order)  # ['module_c', 'module_b', 'module_a']
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize empty dependency graph."""
         self.nodes: dict[str, set[str]] = {}
         self.reverse_edges: dict[str, set[str]] = {}  # Track reverse dependencies

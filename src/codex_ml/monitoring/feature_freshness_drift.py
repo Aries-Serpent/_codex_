@@ -54,7 +54,7 @@ class FeatureFreshnessDriftDetector:
         self,
         feature_names: list[str],
         drift_scores: dict[str, float],
-    ) -> dict[str, dict]:
+    ) -> dict[str, dict[str, Any]]:
         """Generate drift report including freshness information.
 
         Args:

@@ -156,7 +156,7 @@ class TestTokenizerInspect:
         # Should complete without error
         assert result.exit_code == 0 or "inspect" not in str(, "Result must not be empty"
             app.registered_commands if hasattr(app, "registered_commands") else []
-        )
+        ), "Result must not be empty"
 
     @pytest.mark.skipif(not HAS_TYPER, reason="Requires Typer")
     @patch("tokenization.cli.build_tokenizer")

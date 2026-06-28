@@ -1,0 +1,196 @@
+# Multi-stage Dockerfile for Codex ML — Optimized for Build Cache
+# Provides separate cpu-runtime and gpu-runtime targets for deployment
+#
+# CACHE OPTIMIZATION STRATEGY:
+# Layer ordering: Stable → Semi-stable → Frequently changing
+#   1. Base image (stable — changes rarely)
+#   2. OS dependencies (stable — changes when tooling/versions updated)
+#   3. Dependency manifests (semi-stable — changes when deps updated)
+#   4. Python dependencies (semi-stable — changes per requirement version)
+#   5. Source code (frequently changing — changes on every commit)
+#   6. Package install (frequently changing — rebuilds on source change)
+#
+# Benefits:
+#   - Minimal cache invalidation when code changes
+#   - Docker BuildKit can parallelize independent stages
+#   - Supports --cache-from for CI reuse
+#   - Explicit cache mount points for pip
+
+# Build args for cache-friendly behavior
+ARG PYTHON_VERSION=3.12
+ARG PYTHON_DIGEST=sha256:090ba77e2958f6af52a5341f788b50b032dd4ca28377d2893dcf1ecbdfdfe203
+
+# ===== Stage 0: Base Dependencies (STABLE) =====
+# Pinned base image with system packages everyone needs
+FROM python:${PYTHON_VERSION}-slim@${PYTHON_DIGEST} AS base-deps
+
+LABEL org.opencontainers.image.source="https://github.com/Aries-Serpent/_codex_"
+LABEL org.opencontainers.image.description="Codex ML base environment"
+LABEL org.opencontainers.image.version="1.0.0"
+
+# Environment configuration
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_INPUT=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+# Install system dependencies (stable — changes rarely)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    gcc \
+    git \
+    curl \
+    ca-certificates \
+  && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
+
+# Create non-root user (stable)
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+
+WORKDIR /app
+
+# ===== Stage 1: Python Dependencies (SEMI-STABLE) =====
+# Install Python tooling + core dependencies
+# Cache key: hashFiles(requirements.txt, pyproject.toml)
+FROM base-deps AS python-deps
+
+# Copy only dependency manifests (semi-stable)
+COPY --chown=appuser:appuser requirements.txt requirements.txt
+COPY --chown=appuser:appuser pyproject.toml pyproject.toml
+COPY --chown=appuser:appuser README.md README.md
+
+# Upgrade pip and install wheel/setuptools (needed by all builds)
+RUN python -m pip install --upgrade pip setuptools wheel && \
+    pip cache purge
+
+# Install core Python dependencies
+# Using --no-cache-dir to avoid Docker layer size bloat, but pip still
+# uses host's ~/.cache/pip in GitHub Actions (Layer 1 of setup-python-cached)
+RUN pip install --no-cache-dir -e ".[core]"
+
+# ===== Stage 2: Full Build (Code + All Dependencies) (FREQUENTLY CHANGING) =====
+# Complete application with source code included
+FROM python-deps AS build
+
+LABEL org.opencontainers.image.description="Codex ML full build (with source)"
+
+# Copy source code last so code changes don't invalidate dependency layers
+COPY --chown=appuser:appuser src/ ./src/
+
+# Reinstall package with source (triggers on code changes)
+RUN pip install --no-cache-dir --no-deps -e .
+
+# ===== Stage 3: CPU Runtime =====
+FROM python-deps AS cpu-runtime
+
+LABEL org.opencontainers.image.description="Codex ML CPU runtime"
+
+# Install CPU-optimized PyTorch
+# This layer reuses python-deps cache, only adds torch
+RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu && \
+    pip cache purge
+
+# Copy source code for runtime
+COPY --chown=appuser:appuser src/ ./src/
+
+# Install package for runtime
+RUN pip install --no-cache-dir --no-deps -e .
+
+USER appuser
+
+ENTRYPOINT ["python", "-m", "codex_ml"]
+CMD ["--help"]
+
+# ===== Stage 4: GPU Runtime =====
+FROM nvidia/cuda:13.3.0-runtime-ubuntu22.04@sha256:aa89ba5b690e634093fee3bec549bf3f42a67a11616fc0541b582dbebd03a5b5 AS gpu-runtime
+
+LABEL org.opencontainers.image.description="Codex ML GPU runtime"
+LABEL org.opencontainers.image.source="https://github.com/Aries-Serpent/_codex_"
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    CUDA_VISIBLE_DEVICES=0
+
+# Install Python 3.12 and system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    software-properties-common \
+  && add-apt-repository ppa:deadsnakes/ppa \
+  && apt-get update \
+  && apt-get install -y --no-install-recommends \
+    python3.12 \
+    python3.12-venv \
+    python3.12-dev \
+    python3-pip \
+    build-essential \
+    gcc \
+    git \
+    curl \
+    ca-certificates \
+  && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
+
+# Set Python 3.12 as default
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 1
+
+WORKDIR /app
+
+# Copy dependency manifests
+COPY --chown=root:root requirements.txt requirements.txt
+COPY --chown=root:root pyproject.toml pyproject.toml
+COPY --chown=root:root README.md README.md
+
+# Install Python dependencies
+RUN python3 -m pip install --upgrade pip setuptools wheel && \
+    pip cache purge
+RUN pip install --no-cache-dir -e ".[core]"
+
+# Install GPU-enabled PyTorch
+RUN pip install --no-cache-dir torch torchvision torchaudio && \
+    pip cache purge
+
+# Copy source and install package
+COPY --chown=root:root src/ ./src/
+RUN pip install --no-cache-dir --no-deps -e .
+
+# Create non-root user
+RUN groupadd -r appuser && useradd -r -g appuser appuser && \
+    chown -R appuser:appuser /app
+
+USER appuser
+
+ENTRYPOINT ["python3", "-m", "codex_ml"]
+CMD ["--help"]
+
+# ===== Stage 5: Test Environment (DEFAULT TARGET) =====
+# Full test environment with all dev dependencies
+# Target: `docker build -t codex:test .`
+FROM python-deps AS test
+
+LABEL org.opencontainers.image.source="https://github.com/Aries-Serpent/_codex_"
+LABEL org.opencontainers.image.description="Codex ML test environment"
+LABEL org.opencontainers.image.version="1.0.0"
+
+ENV COVERAGE_DIR=/workspace/artifacts \
+    COVERAGE_THRESHOLD=90
+
+WORKDIR /workspace
+
+# Copy test requirements
+COPY --chown=appuser:appuser requirements-test.txt requirements-test.txt
+
+# Install test dependencies
+RUN pip install --no-cache-dir -r requirements-test.txt
+
+# Copy source code
+COPY --chown=appuser:appuser . /workspace
+
+# Install package for testing
+RUN pip install --no-cache-dir --no-deps -e .
+
+# Ensure artifacts directory exists
+RUN mkdir -p ${COVERAGE_DIR} && chown -R appuser:appuser ${COVERAGE_DIR}
+
+# Make test runner script executable
+RUN chmod +x /workspace/scripts/ci/docker_pytest.sh
+
+USER appuser
+
+CMD ["/workspace/scripts/ci/docker_pytest.sh"]

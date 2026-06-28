@@ -67,15 +67,15 @@ jobs:
       matrix:
         language: ['python', 'javascript']
     steps:
-      - uses: actions/checkout@v7 # v6.0.3
-      - uses: github/codeql-action/init@5e316336eb4f107009e477d4bfbfff13d7250fae # v4
+      - uses: actions/checkout@v5
+      - uses: github/codeql-action/init@v4
         with:
           languages: ${{ matrix.language }}
           queries: +security-extended,security-and-quality
-      - uses: github/codeql-action/autobuild@5e316336eb4f107009e477d4bfbfff13d7250fae # v4
+      - uses: github/codeql-action/autobuild@v4
       - name: Perform CodeQL Analysis
         id: codeql
-        uses: github/codeql-action/analyze@5e316336eb4f107009e477d4bfbfff13d7250fae # v4
+        uses: github/codeql-action/analyze@v4
         with:
           category: "/language:${{ matrix.language }}"
           # Persist SARIF locally so it can be packaged into the run artifact
@@ -129,6 +129,82 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
+  semgrep-scan:
+    name: Semgrep SAST Scanning
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: |
+      (github.event_name == 'push') ||
+      (github.event_name == 'pull_request') ||
+      (github.event_name == 'schedule') ||
+      (github.event_name == 'workflow_dispatch' && (inputs.scan-type == 'all' || inputs.scan-type == 'semgrep')) ||
+      github.event_name == 'workflow_call'
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Run Semgrep with SARIF output
+        uses: returntocorp/semgrep-action@713efdd345f3035192eaa63f56867b88e63e4e5d
+        with:
+          generateSarif: true
+          config: >-
+            p/security-audit
+            p/python
+            p/owasp-top-ten
+
+      - name: Upload SARIF to GitHub Security
+        uses: github/codeql-action/upload-sarif@9cea5827c668a1fe7165dbce6e80c3f9cf3f83ac
+        if: always() && hashFiles('semgrep.sarif') != ''
+        with:
+          sarif_file: semgrep.sarif
+          category: 'semgrep'
+
+      - name: Parse Semgrep results for enforcement
+        if: always()
+        id: parse
+        shell: bash
+        run: |
+          set -euo pipefail
+          
+          # Extract results from SARIF
+          if [ -f "semgrep.sarif" ]; then
+            # Count CRITICAL/HIGH findings using jq
+            CRITICAL_COUNT=$(jq '[.runs[0].results[] | select(.level == "error")] | length' semgrep.sarif 2>/dev/null || echo "0")
+            HIGH_COUNT=$(jq '[.runs[0].results[] | select(.level == "warning")] | length' semgrep.sarif 2>/dev/null || echo "0")
+            
+            echo "critical_findings=${CRITICAL_COUNT}" >> "$GITHUB_OUTPUT"
+            echo "high_findings=${HIGH_COUNT}" >> "$GITHUB_OUTPUT"
+            
+            # Always warn on HIGH/CRITICAL (not blocking on scheduled scans)
+            if [ "${CRITICAL_COUNT}" -gt 0 ]; then
+              echo "::warning::Semgrep found ${CRITICAL_COUNT} CRITICAL findings"
+            fi
+            if [ "${HIGH_COUNT}" -gt 0 ]; then
+              echo "::warning::Semgrep found ${HIGH_COUNT} HIGH findings"
+            fi
+          fi
+
+      - name: Upload Semgrep report
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: security-suite-semgrep
+          path: semgrep.sarif
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Semgrep Security Scan Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**CRITICAL Findings:** ${{ steps.parse.outputs.critical_findings || 0 }}" >> $GITHUB_STEP_SUMMARY
+          echo "**HIGH Findings:** ${{ steps.parse.outputs.high_findings || 0 }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "[View full results in GitHub Security tab]" >> $GITHUB_STEP_SUMMARY
+
   dependency-scan:
     name: Dependency Security Scan
     runs-on: ubuntu-latest
@@ -137,7 +213,7 @@ jobs:
       (github.event_name == 'schedule') ||
       (github.event_name == 'workflow_dispatch' && (inputs.scan-type == 'all' || inputs.scan-type == 'dependency'))
     steps:
-      - uses: actions/checkout@v7 # v6.0.3
+      - uses: actions/checkout@v5 # v6.0.3
       - uses: ./.github/actions/setup-python-cached
         with:
           python-version: ${{ env.PYTHON_VERSION }}
@@ -230,7 +306,7 @@ jobs:
     if: |
       (github.event_name == 'workflow_dispatch' && inputs.scan-type == 'all')
     steps:
-      - uses: actions/checkout@v7 # v6.0.3
+      - uses: actions/checkout@v5 # v6.0.3
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup-python-cached
@@ -316,7 +392,7 @@ jobs:
       (github.event_name == 'schedule' && github.event.schedule == '0 3 * * 0') ||
       (github.event_name == 'workflow_dispatch' && inputs.scan-type == 'all')
     steps:
-      - uses: actions/checkout@v7 # v6.0.3
+      - uses: actions/checkout@v5 # v6.0.3
       - uses: ./.github/actions/setup-python-cached
         with:
           python-version: ${{ env.PYTHON_VERSION }}
@@ -416,7 +492,7 @@ jobs:
       issues: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v7 # v6.0.3
+        uses: actions/checkout@v5 # v6.0.3
 
       - name: CacheManager health check
         continue-on-error: true
@@ -675,7 +751,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
+        uses: actions/checkout@v5 # v6.0.3
         with:
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           fetch-depth: 1

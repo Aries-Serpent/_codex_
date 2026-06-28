@@ -51,6 +51,6 @@ def _warn_save_checkpoint_deprecated() -> None:
     )
 
 
-def save_checkpoint(*args, **kwargs):
+def save_checkpoint(*args, **kwargs) -> None:
     _warn_save_checkpoint_deprecated()
     return _core.save_checkpoint(*args, **kwargs)

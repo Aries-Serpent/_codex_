@@ -9,7 +9,7 @@ Part of PS-05 Enhancement: Multi-Provider Support - Priority 4
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict
+from typing import Any
 
 from security.providers.base import (
     ProviderConfig,
@@ -85,7 +85,7 @@ class ProviderFactory:
             ) from e
 
     @staticmethod
-    def create_from_dict(config_dict: Dict[str, Any]) -> SecretProvider:
+    def create_from_dict(config_dict: dict[str, Any]) -> SecretProvider:
         """Create provider from dictionary configuration.
 
         Args:

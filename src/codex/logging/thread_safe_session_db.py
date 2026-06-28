@@ -16,7 +16,7 @@ import sqlite3
 import threading
 import time
 from contextlib import contextmanager
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from .concurrency import (
     DeadlockRecovery,
@@ -70,7 +70,7 @@ class ThreadSafeSessionDB:
         self._ensure_schema()
 
     @contextmanager
-    def _get_connection(self):
+    def _get_connection(self) -> None:
         """Get thread-local connection from pool."""
         conn = self._connection_pool.get_connection()
         try:
@@ -82,7 +82,7 @@ class ThreadSafeSessionDB:
             raise
 
     @contextmanager
-    def _write_operation(self):
+    def _write_operation(self) -> None:
         """Context manager for write operations with lock."""
         start_time = time.time()
         acquired = False
@@ -198,10 +198,10 @@ class ThreadSafeSessionDB:
             log_error(e, "schema_init", self.errors_path)
             raise
 
-    def insert_session(self, session: Dict[str, Any]) -> bool:
+    def insert_session(self, session: dict[str, Any]) -> bool:
         """Insert session with write lock and deadlock recovery."""
 
-        def _insert():
+        def _insert() -> None:
             with self._write_operation():
                 with self._get_connection() as conn:
                     cursor = conn.cursor()
@@ -233,10 +233,10 @@ class ThreadSafeSessionDB:
             log_error(e, "insert_session", self.errors_path)
             return False
 
-    def get_session(self, session_id: str) -> Optional[Dict[str, Any]]:
+    def get_session(self, session_id: str) -> Optional[dict[str, Any]]:
         """Get session by ID (thread-safe read)."""
 
-        def _get():
+        def _get() -> None:
             with self._get_connection() as conn:
                 cursor = conn.cursor()
                 cursor.execute("SELECT * FROM sessions WHERE session_id = ?", (session_id,))
@@ -257,10 +257,10 @@ class ThreadSafeSessionDB:
         agent_name: Optional[str] = None,
         days: int = 7,
         limit: int = 100,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Query sessions with optional filters (thread-safe read)."""
 
-        def _query():
+        def _query() -> None:
             with self._get_connection() as conn:
                 cursor = conn.cursor()
 
@@ -297,7 +297,7 @@ class ThreadSafeSessionDB:
     def update_session_status(self, session_id: str, new_status: str) -> bool:
         """Update session status (thread-safe write)."""
 
-        def _update():
+        def _update() -> None:
             with self._write_operation():
                 with self._get_connection() as conn:
                     cursor = conn.cursor()
@@ -316,10 +316,10 @@ class ThreadSafeSessionDB:
             log_error(e, "update_session_status", self.errors_path)
             return False
 
-    def search_sessions(self, query: str, limit: int = 50) -> List[Dict[str, Any]]:
+    def search_sessions(self, query: str, limit: int = 50) -> list[dict[str, Any]]:
         """Search sessions by query string (thread-safe read)."""
 
-        def _search():
+        def _search() -> None:
             with self._get_connection() as conn:
                 cursor = conn.cursor()
 
@@ -347,7 +347,7 @@ class ThreadSafeSessionDB:
     def archive_session(self, session_id: str, reason: str = "archive") -> bool:
         """Archive session (thread-safe write with exclusive lock)."""
 
-        def _archive():
+        def _archive() -> None:
             with self._write_operation():
                 with self._get_connection() as conn:
                     cursor = conn.cursor()
@@ -383,7 +383,7 @@ class ThreadSafeSessionDB:
             log_error(e, "archive_session", self.errors_path)
             return False
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get current lock metrics."""
         return self._metrics.to_dict()
 
@@ -395,7 +395,7 @@ class ThreadSafeSessionDB:
             "connection_pool": self._connection_pool.metrics.to_dict(),
             "write_lock": self._metrics.to_dict(),
         }
-        save_metrics(metrics_dict, self.metrics_path)
+        save_metrics(metrics_dict, self.metrics_path)  # type: ignore[arg-type]
 
     def cleanup(self) -> None:
         """Clean up connection pool."""
@@ -407,15 +407,15 @@ class ThreadSafeSessionDB:
             logger.error("Error during cleanup: <ERROR_TYPE>")
             log_error(e, "cleanup", self.errors_path)
 
-    def __enter__(self):
+    def __enter__(self) -> None:
         """Context manager entry."""
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         """Context manager exit."""
         self.cleanup()
 
-    def __del__(self):
+    def __del__(self) -> None:
         """Cleanup on deletion."""
         try:
             self.cleanup()

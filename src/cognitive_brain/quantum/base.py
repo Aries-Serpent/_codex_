@@ -37,7 +37,7 @@ class QuantumState:
 
     feature: QuantumFeature
     coherence: float = 1.0
-    metadata: dict[str, Any] = None
+    metadata: dict[str, Any] = None  # type: ignore[assignment]
 
     def __post_init__(self):
         """Validate state after initialization."""

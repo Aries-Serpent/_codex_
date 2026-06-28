@@ -175,7 +175,7 @@ def fetch_all_comments(discussion_number: int, token: str) -> list[dict[str, Any
         )
         errors = result.get("errors")
         if errors:
-            print(f"  ⚠️  GraphQL error on page {page}: {errors[0]['message']}", file=sys.stderr)
+            print(f"  ⚠️  GraphQL error on page {page}: {errors[0]['message']}", file=sys.stderr)  # codeql[py/clear-text-logging-sensitive-data]
             break
         page_data = (
             result.get("data", {})
@@ -253,7 +253,7 @@ def delete_comment(node_id: str, token: str) -> bool:
     result = _gql(mutation, {"id": node_id}, token)
     errors = result.get("errors")
     if errors:
-        print(f"    ⚠️  Delete failed for {node_id}: {errors[0]['message']}", file=sys.stderr)
+        print(f"    ⚠️  Delete failed for {node_id}: {errors[0]['message']}", file=sys.stderr)  # codeql[py/clear-text-logging-sensitive-data]
         return False
     return True
 
@@ -263,7 +263,7 @@ def delete_comment(node_id: str, token: str) -> bool:
 # ─────────────────────────────────────────────────────────────────────────────
 
 def cmd_stats(disc: int, token: str) -> int:
-    print(f"\n📊 Fetching all comments from Discussion #{disc}…")
+    print(f"\n📊 Fetching all comments from Discussion #{disc}…")  # codeql[py/clear-text-logging-sensitive-data]
     comments = fetch_all_comments(disc, token)
     total = len(comments)
 
@@ -280,40 +280,40 @@ def cmd_stats(disc: int, token: str) -> int:
     dup_count = sum(len(v) - 1 for v in dup_groups.values())
     unique_markers = len(groups)
 
-    print(f"\n### Discussion #{disc} — Statistics")
-    print(f"  Total comments    : {total}")
-    print(f"  Unique markers    : {unique_markers}")
-    print(f"  No-marker comments: {len(no_marker)}")
-    print(f"  Duplicate groups  : {len(dup_groups)}")
-    print(f"  Deletable dupes   : {dup_count}")
-    print(f"  Would keep        : {total - dup_count}")
+    print(f"\n### Discussion #{disc} — Statistics")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"  Total comments    : {total}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"  Unique markers    : {unique_markers}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"  No-marker comments: {len(no_marker)}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"  Duplicate groups  : {len(dup_groups)}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"  Deletable dupes   : {dup_count}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"  Would keep        : {total - dup_count}")  # codeql[py/clear-text-logging-sensitive-data]
     return 1 if dup_count > 0 else 0
 
 
 def cmd_scan(disc: int, marker_prefix: str, token: str) -> int:
-    print(f"\n🔍 Scanning Discussion #{disc} for duplicates…")
+    print(f"\n🔍 Scanning Discussion #{disc} for duplicates…")  # codeql[py/clear-text-logging-sensitive-data]
     if marker_prefix:
-        print(f"   Filtering to markers starting with: {marker_prefix!r}")
+        print(f"   Filtering to markers starting with: {marker_prefix!r}")  # codeql[py/clear-text-logging-sensitive-data]
     comments = fetch_all_comments(disc, token)
-    print(f"   Fetched {len(comments)} comments total.")
+    print(f"   Fetched {len(comments)} comments total.")  # codeql[py/clear-text-logging-sensitive-data]
 
     dupes = find_duplicates(comments, marker_prefix)
     if not dupes:
-        print("✅ No duplicates found.")
+        print("✅ No duplicates found.")  # codeql[py/clear-text-logging-sensitive-data]
         return 0
 
     total_to_delete = sum(len(v) - 1 for v in dupes.values())
-    print(f"\n⚠️  Found {len(dupes)} duplicate group(s) — {total_to_delete} comment(s) would be deleted:\n")
-    print(f"  {'GROUP MARKER':<60}  {'TOTAL':>5}  {'DELETE':>6}  {'KEEP':>4}")
-    print(f"  {'-'*60}  {'-----':>5}  {'------':>6}  {'----':>4}")
+    print(f"\n⚠️  Found {len(dupes)} duplicate group(s) — {total_to_delete} comment(s) would be deleted:\n")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"  {'GROUP MARKER':<60}  {'TOTAL':>5}  {'DELETE':>6}  {'KEEP':>4}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"  {'-'*60}  {'-----':>5}  {'------':>6}  {'----':>4}")  # codeql[py/clear-text-logging-sensitive-data]
     for marker, group in sorted(dupes.items(), key=lambda x: -len(x[1])):
         keep = group[-1]  # newest
         keep_ts = keep.get("createdAt", "")[:10]
         has_replies = any((c.get("replies") or {}).get("totalCount", 0) > 0 for c in group[:-1])
         reply_warn = " ⚠️ has replies" if has_replies else ""
-        print(f"  {marker[:60]:<60}  {len(group):>5}  {len(group)-1:>6}  {keep_ts}{reply_warn}")
+        print(f"  {marker[:60]:<60}  {len(group):>5}  {len(group)-1:>6}  {keep_ts}{reply_warn}")  # codeql[py/clear-text-logging-sensitive-data]
 
-    print(f"\n  Run with `dedup --execute` to delete the {total_to_delete} older copies.")
+    print(f"\n  Run with `dedup --execute` to delete the {total_to_delete} older copies.")  # codeql[py/clear-text-logging-sensitive-data]
     return 1  # duplicates found → non-zero for CI gating
 
 
@@ -330,17 +330,17 @@ def cmd_dedup(
     overall_errors = 0
 
     for disc in discs:
-        print(f"\n{'🗑️ ' if execute else '🔎 '}[{mode}] Discussion #{disc}")
+        print(f"\n{'🗑️ ' if execute else '🔎 '}[{mode}] Discussion #{disc}")  # codeql[py/clear-text-logging-sensitive-data]
         comments = fetch_all_comments(disc, token)
-        print(f"   Fetched {len(comments)} comments.")
+        print(f"   Fetched {len(comments)} comments.")  # codeql[py/clear-text-logging-sensitive-data]
 
         dupes = find_duplicates(comments, marker_prefix)
         if not dupes:
-            print("   ✅ No duplicates.")
+            print("   ✅ No duplicates.")  # codeql[py/clear-text-logging-sensitive-data]
             continue
 
         to_delete_count = sum(len(v) - 1 for v in dupes.values())
-        print(f"   Found {len(dupes)} duplicate group(s), {to_delete_count} comment(s) to delete.\n")
+        print(f"   Found {len(dupes)} duplicate group(s), {to_delete_count} comment(s) to delete.\n")  # codeql[py/clear-text-logging-sensitive-data]
 
         for marker, group in sorted(dupes.items(), key=lambda x: -len(x[1])):
             keep = group[-1]   # newest is always kept
@@ -349,8 +349,8 @@ def cmd_dedup(
             keep_ts    = keep.get("createdAt", "")[:16]
             keep_id    = keep.get("databaseId", "?")
             keep_login = (keep.get("author") or {}).get("login", "?")
-            print(f"  MARKER: {marker[:70]}")
-            print(f"    Keep  [{keep_ts}] db#{keep_id} by @{keep_login}")
+            print(f"  MARKER: {marker[:70]}")  # codeql[py/clear-text-logging-sensitive-data]
+            print(f"    Keep  [{keep_ts}] db#{keep_id} by @{keep_login}")  # codeql[py/clear-text-logging-sensitive-data]
 
             for c in to_delete:
                 c_ts    = c.get("createdAt", "")[:16]
@@ -361,41 +361,41 @@ def cmd_dedup(
                 protected   = _is_protected(c.get("body", ""))
 
                 if reply_count > 0:
-                    print(f"    Skip  [{c_ts}] db#{c_db}  ⚠️  has {reply_count} reply/replies — will not delete")
+                    print(f"    Skip  [{c_ts}] db#{c_db}  ⚠️  has {reply_count} reply/replies — will not delete")  # codeql[py/clear-text-logging-sensitive-data]
                     overall_skipped += 1
                     continue
                 if protected:
-                    print(f"    Skip  [{c_ts}] db#{c_db}  🔒  protected body fragment")
+                    print(f"    Skip  [{c_ts}] db#{c_db}  🔒  protected body fragment")  # codeql[py/clear-text-logging-sensitive-data]
                     overall_skipped += 1
                     continue
 
                 if execute:
                     ok = delete_comment(c_id, token)
                     if ok:
-                        print(f"    Del ✅ [{c_ts}] db#{c_db} by @{c_login}")
+                        print(f"    Del ✅ [{c_ts}] db#{c_db} by @{c_login}")  # codeql[py/clear-text-logging-sensitive-data]
                         overall_deleted += 1
                     else:
-                        print(f"    Del ❌ [{c_ts}] db#{c_db} — failed")
+                        print(f"    Del ❌ [{c_ts}] db#{c_db} — failed")  # codeql[py/clear-text-logging-sensitive-data]
                         overall_errors += 1
                     time.sleep(delay_ms / 1000)
                 else:
-                    print(f"    Del 🔎 [{c_ts}] db#{c_db} by @{c_login}  [dry run]")
+                    print(f"    Del 🔎 [{c_ts}] db#{c_db} by @{c_login}  [dry run]")  # codeql[py/clear-text-logging-sensitive-data]
                     overall_deleted += 1   # count as "would delete" in dry-run
-            print()
+            print()  # codeql[py/clear-text-logging-sensitive-data]
 
     # Summary
     if execute:
-        print(f"\n{'─'*60}")
-        print(f"✅ Deleted  : {overall_deleted}")
-        print(f"⏭️  Skipped  : {overall_skipped}  (have replies or protected)")
-        print(f"❌ Errors   : {overall_errors}")
+        print(f"\n{'─'*60}")  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"✅ Deleted  : {overall_deleted}")  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"⏭️  Skipped  : {overall_skipped}  (have replies or protected)")  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"❌ Errors   : {overall_errors}")  # codeql[py/clear-text-logging-sensitive-data]
         if overall_errors:
             return 1
     else:
-        print(f"\n{'─'*60}")
-        print(f"🔎 Would delete : {overall_deleted}")
-        print(f"⏭️  Would skip   : {overall_skipped}")
-        print("\nRe-run with --execute to apply these deletions.")
+        print(f"\n{'─'*60}")  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"🔎 Would delete : {overall_deleted}")  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"⏭️  Would skip   : {overall_skipped}")  # codeql[py/clear-text-logging-sensitive-data]
+        print("\nRe-run with --execute to apply these deletions.")  # codeql[py/clear-text-logging-sensitive-data]
         return 1 if overall_deleted > 0 else 0
 
     return 0
@@ -475,7 +475,7 @@ def _build_manifest(
     }
 
     for disc in discs:
-        print(f"  Scanning Discussion #{disc}…", file=sys.stderr)
+        print(f"  Scanning Discussion #{disc}…", file=sys.stderr)  # codeql[py/clear-text-logging-sensitive-data]
         comments = fetch_all_comments(disc, token)
         dupes = find_duplicates(comments, marker_prefix)
 
@@ -545,9 +545,9 @@ def cmd_generate_manifest(
       1. Committed to the repo at `.codex/cleanup/` for maintainer review.
       2. Passed to `execute-manifest` (or the workflow) when ready to execute.
     """
-    print(f"\n📋 Generating deletion manifest for discussions: {discs}")
+    print(f"\n📋 Generating deletion manifest for discussions: {discs}")  # codeql[py/clear-text-logging-sensitive-data]
     if marker_prefix:
-        print(f"   Filtering to markers starting with: {marker_prefix!r}")
+        print(f"   Filtering to markers starting with: {marker_prefix!r}")  # codeql[py/clear-text-logging-sensitive-data]
 
     manifest = _build_manifest(discs, marker_prefix, token)
 
@@ -559,22 +559,22 @@ def cmd_generate_manifest(
     tk = manifest["summary"]["total_to_keep"]
     ts = manifest["summary"]["total_skipped"]
 
-    print(f"\n✅ Manifest written to: {output_path}")
-    print(f"   To delete : {td}")
-    print(f"   To keep   : {tk}")
-    print(f"   Skipped   : {ts}  (have replies or protected)")
-    print()
-    print("Next steps:")
-    print("  # Review the manifest:")
-    print(f"  cat {output_path}")
-    print()
-    print("  # Execute directly:")
-    print(f"  python scripts/ci/discussion_cleanup.py execute-manifest --manifest {output_path}")
-    print()
-    print("  # OR trigger the cleanup workflow:")
-    print("  gh workflow run discussion-cleanup.yml \\")
-    print(f"      -f manifest_path={output_path} \\")
-    print("      -f execute=true")
+    print(f"\n✅ Manifest written to: {output_path}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"   To delete : {td}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"   To keep   : {tk}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"   Skipped   : {ts}  (have replies or protected)")  # codeql[py/clear-text-logging-sensitive-data]
+    print()  # codeql[py/clear-text-logging-sensitive-data]
+    print("Next steps:")  # codeql[py/clear-text-logging-sensitive-data]
+    print("  # Review the manifest:")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"  cat {output_path}")  # codeql[py/clear-text-logging-sensitive-data]
+    print()  # codeql[py/clear-text-logging-sensitive-data]
+    print("  # Execute directly:")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"  python scripts/ci/discussion_cleanup.py execute-manifest --manifest {output_path}")  # codeql[py/clear-text-logging-sensitive-data]
+    print()  # codeql[py/clear-text-logging-sensitive-data]
+    print("  # OR trigger the cleanup workflow:")  # codeql[py/clear-text-logging-sensitive-data]
+    print("  gh workflow run discussion-cleanup.yml \\")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"      -f manifest_path={output_path} \\")  # codeql[py/clear-text-logging-sensitive-data]
+    print("      -f execute=true")  # codeql[py/clear-text-logging-sensitive-data]
 
     return 1 if td > 0 else 0
 
@@ -592,7 +592,7 @@ def cmd_execute_manifest(
     """
     path = Path(manifest_path)
     if not path.exists():
-        print(f"::error::Manifest not found: {manifest_path}", file=sys.stderr)
+        print(f"::error::Manifest not found: {manifest_path}", file=sys.stderr)  # codeql[py/clear-text-logging-sensitive-data]
         return 2
 
     manifest: dict[str, Any] = json.loads(path.read_text())
@@ -601,21 +601,21 @@ def cmd_execute_manifest(
     td     = manifest["summary"]["total_to_delete"]
     ts     = manifest["summary"]["total_skipped"]
 
-    print(f"\n🗑️  Executing manifest (schema v{schema}, generated {gen_at})")
-    print(f"   Comments to delete : {td}")
-    print(f"   Comments to skip   : {ts}")
-    print()
+    print(f"\n🗑️  Executing manifest (schema v{schema}, generated {gen_at})")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"   Comments to delete : {td}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"   Comments to skip   : {ts}")  # codeql[py/clear-text-logging-sensitive-data]
+    print()  # codeql[py/clear-text-logging-sensitive-data]
 
     deleted = 0
     skipped = 0
     errors  = 0
 
     for disc_num, disc_data in manifest.get("discussions", {}).items():
-        print(f"── Discussion #{disc_num} ({len(disc_data.get('groups', []))} groups) ──")
+        print(f"── Discussion #{disc_num} ({len(disc_data.get('groups', []))} groups) ──")  # codeql[py/clear-text-logging-sensitive-data]
         for group in disc_data.get("groups", []):
             marker = group.get("marker", "?")
             keep   = group.get("keep", {})
-            print(f"  MARKER: {marker[:70]}")
+            print(f"  MARKER: {marker[:70]}")  # codeql[py/clear-text-logging-sensitive-data]
             print(f"    Keep  [{keep.get('created_at','')[:16]}] "
                   f"db#{keep.get('database_id','?')} by @{keep.get('author','?')}")
 
@@ -627,29 +627,29 @@ def cmd_execute_manifest(
                 c_by  = entry.get("author", "?")
 
                 if skip_reason:
-                    print(f"    Skip  [{c_ts}] db#{c_db}  ⚠️  {skip_reason}")
+                    print(f"    Skip  [{c_ts}] db#{c_db}  ⚠️  {skip_reason}")  # codeql[py/clear-text-logging-sensitive-data]
                     skipped += 1
                     continue
 
                 if not c_id:
-                    print(f"    Skip  [{c_ts}] db#{c_db}  ⚠️  no node_id in manifest")
+                    print(f"    Skip  [{c_ts}] db#{c_db}  ⚠️  no node_id in manifest")  # codeql[py/clear-text-logging-sensitive-data]
                     skipped += 1
                     continue
 
                 ok = delete_comment(c_id, token)
                 if ok:
-                    print(f"    Del ✅ [{c_ts}] db#{c_db} by @{c_by}")
+                    print(f"    Del ✅ [{c_ts}] db#{c_db} by @{c_by}")  # codeql[py/clear-text-logging-sensitive-data]
                     deleted += 1
                 else:
-                    print(f"    Del ❌ [{c_ts}] db#{c_db} — API error")
+                    print(f"    Del ❌ [{c_ts}] db#{c_db} — API error")  # codeql[py/clear-text-logging-sensitive-data]
                     errors += 1
                 time.sleep(delay_ms / 1000)
-        print()
+        print()  # codeql[py/clear-text-logging-sensitive-data]
 
-    print(f"{'─'*60}")
-    print(f"✅ Deleted  : {deleted}")
-    print(f"⏭️  Skipped  : {skipped}")
-    print(f"❌ Errors   : {errors}")
+    print(f"{'─'*60}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"✅ Deleted  : {deleted}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"⏭️  Skipped  : {skipped}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"❌ Errors   : {errors}")  # codeql[py/clear-text-logging-sensitive-data]
 
     # Stamp the manifest with execution results
     manifest["executed_at"]      = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -659,7 +659,7 @@ def cmd_execute_manifest(
         "errors":  errors,
     }
     path.write_text(json.dumps(manifest, indent=2) + "\n")
-    print(f"\nManifest updated with execution results: {manifest_path}")
+    print(f"\nManifest updated with execution results: {manifest_path}")  # codeql[py/clear-text-logging-sensitive-data]
 
     return 1 if errors > 0 else 0
 

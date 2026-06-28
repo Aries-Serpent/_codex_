@@ -49,7 +49,7 @@ class PluginMetadata:
     dependencies: list[str] | None = None
     min_codex_version: str = "0.1.0"
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.dependencies is None:
             self.dependencies = []
 
@@ -110,13 +110,13 @@ class PluginRegistry:
 
     _instance = None
 
-    def __new__(cls):
+    def __new__(cls) -> None:
         if cls._instance is None:
             cls._instance = super().__new__(cls)
             cls._instance._initialized = False
         return cls._instance
 
-    def __init__(self):
+    def __init__(self) -> None:
         if self._initialized:
             return
 

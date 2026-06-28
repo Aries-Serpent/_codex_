@@ -437,14 +437,16 @@ class TestActionExecutorDispatchTargets:
                     "target": "rerun_failed_jobs",
                     "payload": {"run_id": 123},
                 }
-            )
-            is True
+
+        ), "Condition must be true"
+            == True
         )
         assert (, "Condition must be true"
             ActionExecutor._dispatch_task(
                 {"agent": 1, "task": "rerun", "target": "rerun_failed_jobs", "payload": {}}
-            )
-            is False
+
+        ), "Condition must be true"
+            == False
         )
 
     def test_set_repo_variable_requires_name_and_value(self):
@@ -458,14 +460,16 @@ class TestActionExecutorDispatchTargets:
                     "target": "set_repo_variable",
                     "payload": {"name": "X", "value": "1"},
                 }
-            )
-            is True
+
+        ), "Condition must be true"
+            == True
         )
         assert (, "Condition must be true"
             ActionExecutor._dispatch_task(
                 {"agent": 1, "task": "set", "target": "set_repo_variable", "payload": {"name": "X"}}
-            )
-            is False
+
+        ), "Condition must be true"
+            == False
         )
 
     def test_cancel_run_requires_run_id(self):
@@ -474,14 +478,16 @@ class TestActionExecutorDispatchTargets:
         assert (, "Condition must be true"
             ActionExecutor._dispatch_task(
                 {"agent": 1, "task": "cancel", "target": "cancel_run", "payload": {"run_id": 99}}
-            )
-            is True
+
+        ), "Condition must be true"
+            == True
         )
         assert (, "Condition must be true"
             ActionExecutor._dispatch_task(
                 {"agent": 1, "task": "cancel", "target": "cancel_run", "payload": {}}
-            )
-            is False
+
+        ), "Condition must be true"
+            == False
         )
 
 

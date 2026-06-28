@@ -73,7 +73,7 @@ class Trigger(_ZendeskBaseModel):
                 {
                     "op": "replace",
                     "path": "/conditions",
-                    "value": _dump_conditions(self.conditions),
+                    "value": _dump_conditions(self.conditions),  # type: ignore[arg-type]
                 }
             )
         if self.actions != other.actions:

@@ -10,10 +10,10 @@ class DummyModel:
     def __init__(self, hidden_size: int = 8) -> None:
         self.hidden_size = hidden_size
 
-    def __call__(self, x):
+    def __call__(self, x) -> None:
         return x
 
 
-def build_model(config: dict) -> DummyModel:
+def build_model(config: dict[str, Any]) -> DummyModel:
     hidden = int(config.get("hidden_size", 8))
     return DummyModel(hidden_size=hidden)

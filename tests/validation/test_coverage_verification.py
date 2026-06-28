@@ -31,7 +31,8 @@ class TestCoverageConfiguration:
 
     def test_coverage_fail_under_threshold(self) -> None:
         """Test that fail_under threshold is appropriately set."""
-        pyproject = Path("pyproject.toml")
+        pyproject = Path("pyproject.toml"
+        ), "Condition must be true"
         if pyproject.exists():
             content = pyproject.read_text()
 
@@ -48,7 +49,8 @@ class TestCoverageConfiguration:
 
     def test_coverage_source_paths_valid(self) -> None:
         """Test that coverage source paths exist."""
-        pyproject = Path("pyproject.toml")
+        pyproject = Path("pyproject.toml"
+                ), "Condition must be true"
         if pyproject.exists():
             content = pyproject.read_text()
 
@@ -207,7 +209,8 @@ class TestCoverageThresholdEnforcement:
 
     def test_coverage_threshold_in_pyproject(self) -> None:
         """Test that coverage threshold is in pyproject.toml."""
-        pyproject = Path("pyproject.toml")
+        pyproject = Path("pyproject.toml"
+            ), "Condition must be true"
         assert pyproject.exists(), "pyproject.toml should exist"
 
         content = pyproject.read_text()

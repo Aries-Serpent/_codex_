@@ -35,10 +35,10 @@ except (ImportError, AttributeError):  # pragma: no cover - defensive placeholde
             raise RuntimeError("SentencePiece not available")
 
 else:
-    SentencePieceAdapter = _CanonicalSentencePieceAdapter
+    SentencePieceAdapter = _CanonicalSentencePieceAdapter  # type: ignore[misc]
     SentencePieceAdapter.__doc__ = getattr(_CanonicalSentencePieceAdapter, "__doc__", None)
 
-    def load_sentencepiece_model(
+    def load_sentencepiece_model(  # type: ignore[misc]
         model_path: str | Path,
     ) -> _CanonicalSentencePieceAdapter:
         adapter = _CanonicalSentencePieceAdapter(Path(model_path))

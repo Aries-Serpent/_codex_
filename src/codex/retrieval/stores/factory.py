@@ -41,7 +41,7 @@ class VectorStoreRegistry:
         return cls._stores.get(store_type)
 
     @classmethod
-    def list_types(cls) -> list:
+    def list_types(cls) -> list[Any]:
         """list all registered store types"""
         return list(cls._stores.keys())
 

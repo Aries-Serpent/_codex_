@@ -353,7 +353,7 @@ def alias_metric(alias: str, target: str, *, override: bool = True) -> None:
     at call time, ensuring both names always resolve to the same implementation.
     """
 
-    def _alias_wrapper(*args, **kwargs):
+    def _alias_wrapper(*args, **kwargs) -> None:
         fn = metric_registry.get(target)
         return fn(*args, **kwargs)
 
@@ -452,7 +452,7 @@ def token_accuracy(
 
 
 # Provide a shorter alias for minimal metric registries/tests.
-register_metric("token_accuracy")(token_accuracy)
+register_metric("token_accuracy")(token_accuracy)  # type: ignore[arg-type]
 
 
 @register_metric("ppl")

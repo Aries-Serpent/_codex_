@@ -28,7 +28,7 @@ try:
 
     _HAS_RESOURCE = True
 except ImportError:  # Windows — resource is POSIX-only
-    resource = None
+    resource = None  # type: ignore[assignment]
     _HAS_RESOURCE = False
 import subprocess  # nosec B404 - subprocess is required for sandboxing; see docs/security/Bandit_Fixes.md
 import tempfile
@@ -36,7 +36,7 @@ from pathlib import Path
 from typing import Optional
 
 
-def _scrub_env() -> dict:
+def _scrub_env() -> dict[str, Any]:
     return {
         "PATH": "/usr/bin:/bin",
         "LANG": "C.UTF-8",

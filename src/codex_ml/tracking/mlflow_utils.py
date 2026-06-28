@@ -422,7 +422,7 @@ def init_run(
     run_name: Optional[str] = None,
     config: Optional[Any] = None,
     **kwargs: Any,
-):
+) -> None:
     """Start an MLflow run and attach git/config provenance tags."""
 
     ml = _ensure_mlflow_available()

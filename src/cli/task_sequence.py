@@ -7,13 +7,13 @@ Note: This is a stub implementation created during CI auto-healing (Phase B Trac
 Full implementation should be restored from git history or rebuilt.
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 
 class TaskSequence:
     """Manages a sequence of tasks to be executed."""
 
-    def __init__(self, tasks: Optional[List[Dict[str, Any]]] = None):
+    def __init__(self, tasks: Optional[list[dict[str, Any]]] = None):
         """Initialize task sequence.
 
         Args:
@@ -21,11 +21,11 @@ class TaskSequence:
         """
         self.tasks = tasks or []
 
-    def add_task(self, task: Dict[str, Any]) -> None:
+    def add_task(self, task: dict[str, Any]) -> None:
         """Add a task to the sequence."""
         self.tasks.append(task)
 
-    def execute(self) -> List[Dict[str, Any]]:
+    def execute(self) -> list[dict[str, Any]]:
         """Execute the task sequence."""
         results = []
         for task in self.tasks:
@@ -33,7 +33,7 @@ class TaskSequence:
         return results
 
 
-def create_sequence(config: Dict[str, Any]) -> TaskSequence:
+def create_sequence(config: dict[str, Any]) -> TaskSequence:
     """Create a task sequence from configuration."""
     return TaskSequence(config.get("tasks", []))
 

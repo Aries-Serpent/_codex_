@@ -164,16 +164,16 @@ class Authenticator:
         # Step 2 — MFA check (only when a provider is configured)
         mfa_verified = False
         effective_totp_code = totp_code or mfa_code
-        if self._mfa is not None and self._mfa.is_mfa_enabled(user.user_id):
+        if self._mfa is not None and self._mfa.is_mfa_enabled(user.user_id):  # type: ignore[arg-type]
             if effective_totp_code is None:
                 raise MFARequiredError()
-            mfa_secret = self._mfa.get_secret(user.user_id)
+            mfa_secret = self._mfa.get_secret(user.user_id)  # type: ignore[arg-type]
             is_valid_mfa = False
             if mfa_secret is not None:
                 is_valid_mfa = self._mfa.verify_totp(
                     mfa_secret.secret,
                     effective_totp_code,
-                    user.user_id,
+                    user.user_id,  # type: ignore[arg-type]
                     algorithm=mfa_secret.algorithm,
                 )
                 if not is_valid_mfa and mfa_secret.algorithm != "SHA1":
@@ -181,7 +181,7 @@ class Authenticator:
                     is_valid_mfa = self._mfa.verify_totp(
                         mfa_secret.secret,
                         effective_totp_code,
-                        user.user_id,
+                        user.user_id,  # type: ignore[arg-type]
                         algorithm="SHA1",
                     )
             if not is_valid_mfa:
@@ -190,10 +190,10 @@ class Authenticator:
 
         # Step 3 — issue tokens
         scope = " ".join(user.roles)
-        access_token = self._tokens.generate_access_token(user.user_id, scope=scope)
-        refresh_token = self._tokens.generate_refresh_token(user.user_id)
+        access_token = self._tokens.generate_access_token(user.user_id, scope=scope)  # type: ignore[arg-type]
+        refresh_token = self._tokens.generate_refresh_token(user.user_id)  # type: ignore[arg-type]
         session_token, session_id = self._tokens.generate_session_token(
-            user_id=user.user_id,
+            user_id=user.user_id,  # type: ignore[arg-type]
             ip_address=ip_address,
             user_agent=user_agent,
             mfa_verified=mfa_verified,
@@ -206,7 +206,7 @@ class Authenticator:
         )
 
         return LoginResult(
-            user_id=user.user_id,
+            user_id=user.user_id,  # type: ignore[arg-type]
             username=user.username,
             access_token=access_token,
             refresh_token=refresh_token,

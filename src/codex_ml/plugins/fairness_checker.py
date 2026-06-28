@@ -56,7 +56,7 @@ class FairnessCheckerPlugin(Plugin):
         ... )
     """
 
-    def initialize(self):
+    def initialize(self) -> None:
         """Initialize fairness checker."""
         self.thresholds = {
             "demographic_parity": 0.90,

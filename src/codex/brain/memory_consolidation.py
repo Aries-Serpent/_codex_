@@ -16,7 +16,7 @@ import time
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timedelta, timezone
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -52,8 +52,8 @@ class PatternEntry:
     confidence: float = 0.0
     last_accessed: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
-    metadata: Dict[str, Any] = field(default_factory=dict)
-    tags: List[str] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
+    tags: list[str] = field(default_factory=list)
     policy: Optional[RetentionPolicy] = None
 
 
@@ -85,14 +85,14 @@ class MemoryConsolidationEngine:
     5. ANALYZE: Measure results and log
     """
 
-    def __init__(self, config: Optional[Dict[str, Any]] = None):
+    def __init__(self, config: Optional[dict[str, Any]] = None):
         """Initialize consolidation engine with configuration."""
         self.config = config or self._default_config()
         self.db_path = self.config.get("db_path", ":memory:")
-        self.metrics_log: List[ConsolidationMetrics] = []
+        self.metrics_log: list[ConsolidationMetrics] = []
 
     @staticmethod
-    def _default_config() -> Dict[str, Any]:
+    def _default_config() -> dict[str, Any]:
         """Return default configuration."""
         return {
             "db_path": ":memory:",
@@ -106,7 +106,7 @@ class MemoryConsolidationEngine:
             "cleanup_interval_seconds": 86400,
         }
 
-    def run(self, session_context: Optional[Dict[str, Any]] = None) -> ConsolidationMetrics:
+    def run(self, session_context: Optional[dict[str, Any]] = None) -> ConsolidationMetrics:
         """
         Execute full consolidation cycle.
 
@@ -144,7 +144,7 @@ class MemoryConsolidationEngine:
             logger.error(f"Consolidation cycle failed: {e}", exc_info=True)
             raise
 
-    def _observe(self) -> Dict[str, Any]:
+    def _observe(self) -> dict[str, Any]:
         """Phase 1: Observe current memory state."""
         try:
             conn = sqlite3.connect(self.db_path)
@@ -175,7 +175,7 @@ class MemoryConsolidationEngine:
                 "ltm_capacity": self.config["ltm_capacity"],
             }
 
-    def _orient(self, state: Dict[str, Any]) -> List[PatternEntry]:
+    def _orient(self, state: dict[str, Any]) -> list[PatternEntry]:
         """Phase 2: Identify hot entries for promotion."""
         fill_ratio = state["stm_count"] / state["stm_capacity"] if state["stm_capacity"] > 0 else 0
 
@@ -228,7 +228,7 @@ class MemoryConsolidationEngine:
             logger.error(f"Failed to identify hot entries: {e}")
             return []
 
-    def _find_cold_ltm_entries(self) -> List[Tuple[str, float]]:
+    def _find_cold_ltm_entries(self) -> list[tuple[str, float]]:
         """Find stale LTM entries eligible for pruning or archiving."""
         try:
             conn = sqlite3.connect(self.db_path)
@@ -258,8 +258,8 @@ class MemoryConsolidationEngine:
             return []
 
     def _decide(
-        self, hot_entries: List[PatternEntry], cold_entries: List[Tuple[str, float]]
-    ) -> Dict[str, Any]:
+        self, hot_entries: list[PatternEntry], cold_entries: list[tuple[str, float]]
+    ) -> dict[str, Any]:
         """Phase 3: Generate consolidation plan."""
         plan = {
             "promote": [],
@@ -283,7 +283,7 @@ class MemoryConsolidationEngine:
         # Add cold entries to prune
         plan["prune"] = [key for key, _ in cold_entries]
 
-        logger.info(f"Plan: promote {len(plan['promote'])}, prune {len(plan['prune'])}")
+        logger.info(f"Plan: promote {len(plan['promote'])}, prune {len(plan['prune'])}")  # type: ignore[arg-type]
         return plan
 
     def _calculate_pattern_score(self, entry: PatternEntry) -> float:
@@ -313,7 +313,7 @@ class MemoryConsolidationEngine:
         score = (frequency_norm * recency * importance) / age_decay
         return min(score, 1.0)
 
-    def _act(self, plan: Dict[str, Any]) -> Tuple[int, int]:
+    def _act(self, plan: dict[str, Any]) -> tuple[int, int]:
         """Phase 4: Execute consolidation plan."""
         promoted = 0
         pruned = 0
@@ -388,8 +388,8 @@ class MemoryConsolidationEngine:
 
     def _analyze(
         self,
-        state_before: Dict[str, Any],
-        state_after: Dict[str, Any],
+        state_before: dict[str, Any],
+        state_after: dict[str, Any],
         promoted: int,
         pruned: int,
         duration: float,
@@ -431,7 +431,7 @@ class MemoryConsolidationEngine:
 
         logger.info(f"Consolidation cycle: {json.dumps(log_entry)}")
 
-    def get_metrics_summary(self) -> Dict[str, Any]:
+    def get_metrics_summary(self) -> dict[str, Any]:
         """Get summary of all consolidation metrics."""
         if not self.metrics_log:
             return {}

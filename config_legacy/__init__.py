@@ -189,7 +189,7 @@ else:
         finally:
             _CONFIG_STACK.pop()
 
-    def compose(*, config_name: str, overrides: Sequence[str] | None = None):
+    def compose(*, config_name: str, overrides: Sequence[str] | None = None) -> None:
         if not _CONFIG_STACK:
             raise RuntimeError(
                 "initialize_config_dir must be used before compose in the Hydra stub"

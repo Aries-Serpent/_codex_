@@ -30,7 +30,7 @@ except ModuleNotFoundError as exc:  # pragma: no cover - optional dependency
     _YAML_IMPORT_ERROR = exc
 else:  # pragma: no cover - exercised when PyYAML installed
     _yaml_module = _yaml
-    _YAML_IMPORT_ERROR = None
+    _YAML_IMPORT_ERROR = None  # type: ignore[assignment]
 
 
 class MissingPyYAMLError(ModuleNotFoundError):
@@ -48,7 +48,7 @@ if _yaml_module is not None:  # pragma: no cover - executed when PyYAML present
     YAMLErrorType = _yaml_module.YAMLError
 else:  # pragma: no cover - avoids attribute errors when PyYAML missing
 
-    class YAMLErrorType(RuntimeError):
+    class YAMLErrorType(RuntimeError):  # type: ignore[no-redef]
         """Placeholder exception used when PyYAML is unavailable."""
 
 

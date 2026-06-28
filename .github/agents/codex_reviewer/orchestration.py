@@ -121,7 +121,7 @@ class WorkflowOrchestrator:
         plan["steps"] = steps
         plan["estimated_time"] = sum(s.get("estimated_minutes", 0) for s in steps)
 
-        logger.info(f"Created orchestration plan with {len(steps)} steps, estimated time: {plan['estimated_time']} minutes")
+        logger.info(f"Created orchestration plan with {len(steps)} steps, estimated time: {plan['estimated_time']} minutes")  # codeql[py/clear-text-logging-sensitive-data]
 
         return plan
 

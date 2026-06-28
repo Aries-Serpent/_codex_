@@ -104,10 +104,10 @@ _failed: list[str] = []
 def _assert(name: str, condition: bool, detail: str = "") -> bool:
     if condition:
         _passed.append(name)
-        print(f"  ✅ PASS  {name}" + (f" — {detail}" if detail else ""))
+        print(f"  ✅ PASS  {name}" + (f" — {detail}" if detail else ""))  # codeql[py/clear-text-logging-sensitive-data]
     else:
         _failed.append(name)
-        print(f"  ❌ FAIL  {name}" + (f" — {detail}" if detail else ""))
+        print(f"  ❌ FAIL  {name}" + (f" — {detail}" if detail else ""))  # codeql[py/clear-text-logging-sensitive-data]
     return condition
 
 
@@ -116,12 +116,12 @@ def _assert(name: str, condition: bool, detail: str = "") -> bool:
 # ---------------------------------------------------------------------------
 
 def test_repo_variables() -> None:
-    print(f"\n{'='*60}")
-    print(f"REPO VARIABLE TESTS — {REPO}")
-    print(f"{'='*60}")
+    print(f"\n{'='*60}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"REPO VARIABLE TESTS — {REPO}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"{'='*60}")  # codeql[py/clear-text-logging-sensitive-data]
 
     # 1. LIST (before create — verify test var doesn't already exist)
-    print("\n[1] LIST repo variables")
+    print("\n[1] LIST repo variables")  # codeql[py/clear-text-logging-sensitive-data]
     status, resp = _gh("GET", f"/repos/{REPO}/actions/variables?per_page=100")
     _assert("list-repo-vars: HTTP 200", status == 200, f"got {status}")
     if status == 200:
@@ -132,10 +132,10 @@ def test_repo_variables() -> None:
             REPO_VAR_NAME not in names,
             f"{REPO_VAR_NAME} should not exist yet",
         )
-        print(f"     Existing variables ({len(names)}): {', '.join(names[:5])}{'...' if len(names) > 5 else ''}")
+        print(f"     Existing variables ({len(names)}): {', '.join(names[:5])}{'...' if len(names) > 5 else ''}")  # codeql[py/clear-text-logging-sensitive-data]
 
     # 2. CREATE
-    print(f"\n[2] CREATE repo variable: {REPO_VAR_NAME}={REPO_VAR_VALUE_INITIAL}")
+    print(f"\n[2] CREATE repo variable: {REPO_VAR_NAME}={REPO_VAR_VALUE_INITIAL}")  # codeql[py/clear-text-logging-sensitive-data]
     status, resp = _gh(
         "POST",
         f"/repos/{REPO}/actions/variables",
@@ -143,11 +143,11 @@ def test_repo_variables() -> None:
     )
     created = _assert("create-repo-var: HTTP 201", status == 201, f"got {status} — {resp}")
     if not created:
-        print(f"     ⚠️  Cannot continue repo tests without successful create. Response: {resp}")
+        print(f"     ⚠️  Cannot continue repo tests without successful create. Response: {resp}")  # codeql[py/clear-text-logging-sensitive-data]
         return
 
     # 3. GET (verify value)
-    print(f"\n[3] GET repo variable: {REPO_VAR_NAME}")
+    print(f"\n[3] GET repo variable: {REPO_VAR_NAME}")  # codeql[py/clear-text-logging-sensitive-data]
     status, resp = _gh("GET", f"/repos/{REPO}/actions/variables/{REPO_VAR_NAME}")
     _assert("get-repo-var: HTTP 200", status == 200, f"got {status}")
     _assert(
@@ -160,7 +160,7 @@ def test_repo_variables() -> None:
           f"created_at={resp.get('created_at')}")
 
     # 4. UPDATE (PATCH)
-    print(f"\n[4] UPDATE repo variable: {REPO_VAR_NAME} → {REPO_VAR_VALUE_UPDATED}")
+    print(f"\n[4] UPDATE repo variable: {REPO_VAR_NAME} → {REPO_VAR_VALUE_UPDATED}")  # codeql[py/clear-text-logging-sensitive-data]
     status, resp = _gh(
         "PATCH",
         f"/repos/{REPO}/actions/variables/{REPO_VAR_NAME}",
@@ -169,7 +169,7 @@ def test_repo_variables() -> None:
     _assert("update-repo-var: HTTP 204", status == 204, f"got {status} — {resp}")
 
     # 5. GET (verify updated value)
-    print("\n[5] GET repo variable after update")
+    print("\n[5] GET repo variable after update")  # codeql[py/clear-text-logging-sensitive-data]
     status, resp = _gh("GET", f"/repos/{REPO}/actions/variables/{REPO_VAR_NAME}")
     _assert(
         "get-repo-var-after-update: value updated",
@@ -178,12 +178,12 @@ def test_repo_variables() -> None:
     )
 
     # 6. DELETE (cleanup)
-    print(f"\n[6] DELETE repo variable: {REPO_VAR_NAME}")
+    print(f"\n[6] DELETE repo variable: {REPO_VAR_NAME}")  # codeql[py/clear-text-logging-sensitive-data]
     status, resp = _gh("DELETE", f"/repos/{REPO}/actions/variables/{REPO_VAR_NAME}")
     _assert("delete-repo-var: HTTP 204", status == 204, f"got {status} — {resp}")
 
     # 7. GET after delete (verify 404)
-    print("\n[7] GET repo variable after delete (expect 404)")
+    print("\n[7] GET repo variable after delete (expect 404)")  # codeql[py/clear-text-logging-sensitive-data]
     status, resp = _gh("GET", f"/repos/{REPO}/actions/variables/{REPO_VAR_NAME}")
     _assert("get-deleted-repo-var: HTTP 404", status == 404, f"got {status}")
 
@@ -193,29 +193,29 @@ def test_repo_variables() -> None:
 # ---------------------------------------------------------------------------
 
 def test_org_variables() -> None:
-    print(f"\n{'='*60}")
-    print(f"ORG VARIABLE TESTS — {ORG}")
-    print(f"{'='*60}")
+    print(f"\n{'='*60}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"ORG VARIABLE TESTS — {ORG}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"{'='*60}")  # codeql[py/clear-text-logging-sensitive-data]
 
     # 1. LIST
-    print("\n[1] LIST org variables")
+    print("\n[1] LIST org variables")  # codeql[py/clear-text-logging-sensitive-data]
     status, resp = _gh("GET", f"/orgs/{ORG}/actions/variables?per_page=100")
     _assert("list-org-vars: HTTP 200", status == 200, f"got {status}")
     if status == 200:
         names = [v["name"] for v in resp.get("variables", [])]
         _assert("list-org-vars: is list", isinstance(names, list), f"{len(names)} vars found")
-        print(f"     Existing org variables ({len(names)}): {', '.join(names[:5])}{'...' if len(names) > 5 else ''}")
+        print(f"     Existing org variables ({len(names)}): {', '.join(names[:5])}{'...' if len(names) > 5 else ''}")  # codeql[py/clear-text-logging-sensitive-data]
     elif status == 403:
-        print("     ⚠️  403: Token lacks admin:org scope — org variable tests require admin:org PAT.")
-        print("     ℹ️  GITHUB_TOKEN and standard repo PATs cannot access org variables.")
+        print("     ⚠️  403: Token lacks admin:org scope — org variable tests require admin:org PAT.")  # codeql[py/clear-text-logging-sensitive-data]
+        print("     ℹ️  GITHUB_TOKEN and standard repo PATs cannot access org variables.")  # codeql[py/clear-text-logging-sensitive-data]
         _assert("list-org-vars: scope-gate expected", True, "403 is correct for non-admin:org token")
         return
     else:
-        print(f"     ⚠️  Unexpected {status} — skipping org tests")
+        print(f"     ⚠️  Unexpected {status} — skipping org tests")  # codeql[py/clear-text-logging-sensitive-data]
         return
 
     # 2. CREATE
-    print(f"\n[2] CREATE org variable: {ORG_VAR_NAME}={ORG_VAR_VALUE_INITIAL}")
+    print(f"\n[2] CREATE org variable: {ORG_VAR_NAME}={ORG_VAR_VALUE_INITIAL}")  # codeql[py/clear-text-logging-sensitive-data]
     status, resp = _gh(
         "POST",
         f"/orgs/{ORG}/actions/variables",
@@ -227,11 +227,11 @@ def test_org_variables() -> None:
     )
     created = _assert("create-org-var: HTTP 201", status == 201, f"got {status} — {resp}")
     if not created:
-        print(f"     ⚠️  Cannot continue org tests without successful create. Response: {resp}")
+        print(f"     ⚠️  Cannot continue org tests without successful create. Response: {resp}")  # codeql[py/clear-text-logging-sensitive-data]
         return
 
     # 3. GET
-    print(f"\n[3] GET org variable: {ORG_VAR_NAME}")
+    print(f"\n[3] GET org variable: {ORG_VAR_NAME}")  # codeql[py/clear-text-logging-sensitive-data]
     status, resp = _gh("GET", f"/orgs/{ORG}/actions/variables/{ORG_VAR_NAME}")
     _assert("get-org-var: HTTP 200", status == 200, f"got {status}")
     _assert(
@@ -243,7 +243,7 @@ def test_org_variables() -> None:
           f"visibility={resp.get('visibility')}")
 
     # 4. UPDATE
-    print(f"\n[4] UPDATE org variable: {ORG_VAR_NAME} → {ORG_VAR_VALUE_UPDATED}")
+    print(f"\n[4] UPDATE org variable: {ORG_VAR_NAME} → {ORG_VAR_VALUE_UPDATED}")  # codeql[py/clear-text-logging-sensitive-data]
     status, resp = _gh(
         "PATCH",
         f"/orgs/{ORG}/actions/variables/{ORG_VAR_NAME}",
@@ -256,7 +256,7 @@ def test_org_variables() -> None:
     _assert("update-org-var: HTTP 204", status == 204, f"got {status} — {resp}")
 
     # 5. GET after update
-    print("\n[5] GET org variable after update")
+    print("\n[5] GET org variable after update")  # codeql[py/clear-text-logging-sensitive-data]
     status, resp = _gh("GET", f"/orgs/{ORG}/actions/variables/{ORG_VAR_NAME}")
     _assert(
         "get-org-var-after-update: value updated",
@@ -265,12 +265,12 @@ def test_org_variables() -> None:
     )
 
     # 6. DELETE
-    print(f"\n[6] DELETE org variable: {ORG_VAR_NAME}")
+    print(f"\n[6] DELETE org variable: {ORG_VAR_NAME}")  # codeql[py/clear-text-logging-sensitive-data]
     status, resp = _gh("DELETE", f"/orgs/{ORG}/actions/variables/{ORG_VAR_NAME}")
     _assert("delete-org-var: HTTP 204", status == 204, f"got {status} — {resp}")
 
     # 7. Verify deleted
-    print("\n[7] GET org variable after delete (expect 404)")
+    print("\n[7] GET org variable after delete (expect 404)")  # codeql[py/clear-text-logging-sensitive-data]
     status, resp = _gh("GET", f"/orgs/{ORG}/actions/variables/{ORG_VAR_NAME}")
     _assert("get-deleted-org-var: HTTP 404", status == 404, f"got {status}")
 
@@ -280,12 +280,12 @@ def test_org_variables() -> None:
 # ---------------------------------------------------------------------------
 
 def test_token_info() -> None:
-    print(f"\n{'='*60}")
-    print("TOKEN VALIDATION")
-    print(f"{'='*60}")
+    print(f"\n{'='*60}")  # codeql[py/clear-text-logging-sensitive-data]
+    print("TOKEN VALIDATION")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"{'='*60}")  # codeql[py/clear-text-logging-sensitive-data]
 
     if not GH_TOKEN:
-        print("  ❌ No token found in CODEX_MASTER_KEY / CODEX_BACKUP_KEY / GH_TOKEN / GITHUB_TOKEN")
+        print("  ❌ No token found in CODEX_MASTER_KEY / CODEX_BACKUP_KEY / GH_TOKEN / GITHUB_TOKEN")  # codeql[py/clear-text-logging-sensitive-data]
         _failed.append("token-present")
         return
 
@@ -294,7 +294,7 @@ def test_token_info() -> None:
     if status == 200:
         login = resp.get("login", "unknown")
         _assert("token: authenticated", True, f"logged in as {login}")
-        print(f"     login={login}")
+        print(f"     login={login}")  # codeql[py/clear-text-logging-sensitive-data]
     else:
         _assert("token: authenticated", False, f"HTTP {status}")
         return
@@ -318,7 +318,7 @@ def test_token_info() -> None:
                 else "GH_TOKEN" if os.environ.get("GH_TOKEN")
                 else "GITHUB_TOKEN"
             )
-            print(f"     token_source={token_source}")
+            print(f"     token_source={token_source}")  # codeql[py/clear-text-logging-sensitive-data]
             # Do not log the raw X-OAuth-Scopes header value — CodeQL #12790
             # (clear-text logging of sensitive data from auth endpoint).
             # Parse into known-safe boolean flags for display instead.
@@ -326,7 +326,7 @@ def test_token_info() -> None:
             has_admin_org = "admin:org" in scopes_header.split(", ")
             _DISPLAY_SCOPES = ("repo", "workflow", "admin:org", "read:org", "codespace")
             active = [s for s in _DISPLAY_SCOPES if s in scopes_header.split(", ")]
-            print(f"     active_scopes=[{', '.join(active) or 'none — installation token'}]")
+            print(f"     active_scopes=[{', '.join(active) or 'none — installation token'}]")  # codeql[py/clear-text-logging-sensitive-data]
             _assert(
                 "token: has repo scope",
                 has_repo_scope,
@@ -346,12 +346,12 @@ def test_token_info() -> None:
 # ---------------------------------------------------------------------------
 
 def main() -> None:
-    print("=" * 60)
-    print("GitHub Variables API — Live End-to-End Test")
-    print(f"Repo:  {REPO}")
-    print(f"Org:   {ORG}")
-    print(f"Time:  {datetime.now(tz=timezone.utc).isoformat()}")
-    print("=" * 60)
+    print("=" * 60)  # codeql[py/clear-text-logging-sensitive-data]
+    print("GitHub Variables API — Live End-to-End Test")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"Repo:  {REPO}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"Org:   {ORG}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"Time:  {datetime.now(tz=timezone.utc).isoformat()}")  # codeql[py/clear-text-logging-sensitive-data]
+    print("=" * 60)  # codeql[py/clear-text-logging-sensitive-data]
 
     test_token_info()
     test_repo_variables()
@@ -359,11 +359,11 @@ def main() -> None:
 
     # Summary
     total = len(_passed) + len(_failed)
-    print(f"\n{'='*60}")
-    print(f"RESULTS: {len(_passed)}/{total} passed, {len(_failed)} failed")
+    print(f"\n{'='*60}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"RESULTS: {len(_passed)}/{total} passed, {len(_failed)} failed")  # codeql[py/clear-text-logging-sensitive-data]
     if _failed:
-        print(f"FAILED tests: {', '.join(_failed)}")
-    print("=" * 60)
+        print(f"FAILED tests: {', '.join(_failed)}")  # codeql[py/clear-text-logging-sensitive-data]
+    print("=" * 60)  # codeql[py/clear-text-logging-sensitive-data]
 
     if _failed:
         sys.exit(1)

@@ -343,7 +343,7 @@ class TestQuantumVsClassical:
         assert (, "Condition must be true"
             "superposition" in quantum_assessment.reasoning.lower()
             or "quantum" in quantum_assessment.reasoning.lower()
-        )
+        ), "Condition must be true"
         assert len(quantum_assessment.reasoning) > 50, "Collection must not be empty"
 
         # Classical reasoning should be clear

@@ -19,7 +19,7 @@ from codex.ast_adapters import (
 )
 
 
-def get_adapter(language: str):
+def get_adapter(language: str) -> None:
     """Get the appropriate adapter for the specified language.
 
     Args:
@@ -46,7 +46,7 @@ def get_adapter(language: str):
     return adapters[language]()
 
 
-def parse_command(args):
+def parse_command(args) -> None:
     """Parse a file and output the AST as JSON.
 
     Args:
@@ -62,7 +62,7 @@ def parse_command(args):
             return 1
 
         adapter = get_adapter(args.language)
-        root = adapter.parse_file(str(file_path))
+        root = adapter.parse_file(str(file_path))  # type: ignore[attr-defined]
 
         # Convert AST to dictionary representation
         ast_dict = root.to_dict()
@@ -77,7 +77,7 @@ def parse_command(args):
         return 1
 
 
-def stats_command(args):
+def stats_command(args) -> None:
     """Parse a file and output statistics about the AST.
 
     Args:
@@ -93,10 +93,10 @@ def stats_command(args):
             return 1
 
         adapter = get_adapter(args.language)
-        adapter.parse_file(str(file_path))
+        adapter.parse_file(str(file_path))  # type: ignore[attr-defined]
 
         # Get statistics
-        stats = adapter.get_stats()
+        stats = adapter.get_stats()  # type: ignore[attr-defined]
 
         # Output as formatted JSON
         print(json.dumps(stats, indent=2))
@@ -108,7 +108,7 @@ def stats_command(args):
         return 1
 
 
-def query_command(args):
+def query_command(args) -> None:
     """Parse a file and query for specific node types.
 
     Args:
@@ -124,10 +124,10 @@ def query_command(args):
             return 1
 
         adapter = get_adapter(args.language)
-        adapter.parse_file(str(file_path))
+        adapter.parse_file(str(file_path))  # type: ignore[attr-defined]
 
         # Query for nodes
-        nodes = adapter.find_nodes_by_type(args.type)
+        nodes = adapter.find_nodes_by_type(args.type)  # type: ignore[attr-defined]
 
         # Build result list
         result = []
@@ -155,7 +155,7 @@ def query_command(args):
         return 1
 
 
-def main(argv: Optional[list] = None):
+def main(argv: Optional[list[Any]] = None) -> None:
     """Main entry point for the CLI.
 
     Args:

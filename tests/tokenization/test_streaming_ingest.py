@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import pytest
 
-from src.tokenization import train_tokenizer as module
+from src.codex_ml.tokenization import train_tokenizer as module
 
 pytestmark = pytest.mark.skipif(
     module is None, reason="tokenizers not available — train_tokenizer module not loaded"

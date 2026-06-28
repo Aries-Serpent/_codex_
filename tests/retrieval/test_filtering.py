@@ -280,6 +280,7 @@ class TestCalculateFetchMultiplier:
         assert (, "Condition must be true"
             calculate_fetch_multiplier(
                 {"category": "tech", "score": {"$gte": 0.8}, "author": "alice"}
-            )
+            
+        ), "Condition must be true"
             == 10
         )

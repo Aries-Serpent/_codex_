@@ -21,6 +21,13 @@
 
 ## Evaluator run
 - Exit code: 0
+<details><summary>stderr</summary>
+
+```text
+[evaluator] Optional dependencies missing (soft-fail mode): typer (Module 'typer' not found)
+Install via: pip install typer
+```
+</details>
 <details><summary>stdout</summary>
 
 ```text

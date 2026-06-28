@@ -38,7 +38,7 @@ def assign_split(example_id: str) -> str:
     return "test"
 
 
-class SplitDistribution(dict):
+class SplitDistribution(dict[str, Any]):
     """Helper to summarise split distributions for diagnostics."""
 
     def __init__(self, counts: Mapping[str, int] | None = None) -> None:

@@ -75,7 +75,7 @@ class EvaluationCallback(Callback):
     Returned dictionaries are merged under ``metrics["eval"]``.
     """
 
-    def __init__(self, eval_fn):
+    def __init__(self, eval_fn) -> None:
         super().__init__(name="EvaluationCallback")
         self.eval_fn = eval_fn
 

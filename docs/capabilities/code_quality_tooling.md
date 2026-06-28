@@ -153,7 +153,7 @@ import nox
 @nox.session(python=["3.11", "3.12"])
 def tests(session):
     """Run the test suite with pytest."""
-    session.install("-e", ".[test]")
+    session.install("-e", ".[dev]")
     session.run("pytest", "-v", "--cov=agents", "--cov-report=term-missing")
 
 @nox.session

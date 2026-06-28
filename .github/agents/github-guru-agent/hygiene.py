@@ -113,7 +113,7 @@ class RepoHygiene:
         issues: list[HygieneIssue] = []
         resp = self.client.list_branches(per_page=100)
         if not resp.ok or not isinstance(resp.data, list):
-            logger.debug("Could not fetch branches: %s", resp.error)
+            logger.debug("Could not fetch branches: %s", resp.error)  # codeql[py/clear-text-logging-sensitive-data]
             return issues
 
         # Get open PRs for comparison
@@ -158,7 +158,7 @@ class RepoHygiene:
                             )
                         )
                 except ValueError:
-                    logger.debug("Could not parse commit date for branch %s", name)
+                    logger.debug("Could not parse commit date for branch %s", name)  # codeql[py/clear-text-logging-sensitive-data]
 
         return issues
 

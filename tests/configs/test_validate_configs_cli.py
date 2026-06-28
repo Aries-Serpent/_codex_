@@ -97,7 +97,8 @@ def test_malformed_config_is_rejected() -> None:
         or "required property" in result.stdout
         or "failed to load config" in result.stderr
         or "required property" in result.stderr
-    )
+
+    ), "Condition must be true"
 
 
 def test_log_file_is_written(tmp_path: Path) -> None:

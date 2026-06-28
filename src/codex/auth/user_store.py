@@ -160,7 +160,7 @@ class UserStore:
             KeyError: If the user does not exist.
         """
         with self._lock:
-            existing = self._repository.get_by_id(user.user_id)
+            existing = self._repository.get_by_id(user.user_id)  # type: ignore[arg-type]
             if existing is None:
                 raise KeyError(f"User '{user.user_id}' not found")
             user.updated_at = time.time()
@@ -292,7 +292,7 @@ class UserStore:
         user = self.find_by_username(username)
         if user is None:
             raise KeyError(f"User '{username}' not found")
-        self.delete_user(user.user_id)
+        self.delete_user(user.user_id)  # type: ignore[arg-type]
 
     def verify_password(self, user: User, password: str) -> bool:
         """Verify a password against a user's stored hash.

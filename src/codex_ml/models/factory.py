@@ -12,14 +12,14 @@ from typing import Any, Optional
 try:  # pragma: no cover - optional transformers dependency
     from transformers import BitsAndBytesConfig
 except (ImportError, AttributeError):  # pragma: no cover - transformers/quantization optional
-    BitsAndBytesConfig = None
+    BitsAndBytesConfig = None  # type: ignore[misc,assignment]
 
 from .peft_hooks import LoraBuildCfg, build_lora
 
 try:  # pragma: no cover - optional dependency
     import torch
 except (ImportError, AttributeError):  # pragma: no cover - torch optional in lightweight envs
-    torch = None
+    torch = None  # type: ignore[assignment]
 
 logger = logging.getLogger(__name__)
 
@@ -228,7 +228,7 @@ def create_model(
     device: Any = None,
     enable_peft: Optional[bool] = None,
     lora_cfg: Any = None,
-    quantization: Any = None,
+    quantization: Any | None = None,
 ) -> Any:
     """Instantiate a model and optionally apply dtype/device and PEFT adapters."""
 

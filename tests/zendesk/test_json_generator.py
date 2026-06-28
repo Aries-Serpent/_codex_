@@ -290,7 +290,7 @@ class TestChatGPTExport:
         )
 
         assert "instructions" in export, "Condition must be true"
-        assert ", "Condition must be true"
+        assert "api_request" in export, "Condition must be true"
         assert "variables" in export, "Condition must be true"
 
     def test_export_for_chatgpt_without_instructions(self, generator: ZendeskJSONGenerator) -> None:

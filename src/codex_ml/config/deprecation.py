@@ -40,7 +40,7 @@ def find_repo_root(start_path: Optional[Path] = None) -> Path:
     )
 
 
-def check_legacy_config_usage():
+def check_legacy_config_usage() -> None:
     """Warn if legacy config directories are being used."""
     try:
         repo_root = find_repo_root()

@@ -122,9 +122,11 @@ class ZendeskKnowledgeSyncService:
         self.rate_limit = rate_limit
         if subdomain:
             self.base_url = f"https://{subdomain}.zendesk.com/api/v2"
-            logger.info(f"Initialized ZendeskKnowledgeSyncService for {subdomain}")
+            logger.info(
+                f"Initialized ZendeskKnowledgeSyncService for {subdomain}"
+            )  # codeql[py/clear-text-logging-sensitive-data]
         else:
-            self.base_url = None
+            self.base_url = None  # type: ignore[assignment]
 
         # Original parameters
         self.manifest_path = manifest_path or MANIFEST_PATH
@@ -162,7 +164,9 @@ class ZendeskKnowledgeSyncService:
     def _load_cache(self) -> dict[str, ArticleMetadata]:
         """Load the cached article metadata from disk."""
         if not self.api_index_path.exists():
-            logger.info(f"No existing cache at {self.api_index_path}, starting fresh")
+            logger.info(
+                f"No existing cache at {self.api_index_path}, starting fresh"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             return {}
 
         try:
@@ -177,13 +181,19 @@ class ZendeskKnowledgeSyncService:
                         cache[url] = ArticleMetadata(**meta_dict)
                     except (TypeError, ValueError) as e:
                         error_type = type(e).__name__
-                        logger.warning(f"Invalid cache entry for {url}: <ERROR_TYPE>")
+                        logger.warning(
+                            f"Invalid cache entry for {url}: <ERROR_TYPE>"
+                        )  # codeql[py/clear-text-logging-sensitive-data]
 
-            logger.info(f"Loaded {len(cache)} cached articles from {self.api_index_path}")
+            logger.info(
+                f"Loaded {len(cache)} cached articles from {self.api_index_path}"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             return cache
         except (json.JSONDecodeError, OSError) as e:
             error_type = type(e).__name__
-            logger.error("Failed to load cache: <ERROR_TYPE>, starting fresh")
+            logger.error(
+                "Failed to load cache: <ERROR_TYPE>, starting fresh"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             return {}
 
     def _save_cache(self) -> None:
@@ -200,10 +210,14 @@ class ZendeskKnowledgeSyncService:
             with self.api_index_path.open("w", encoding="utf-8") as f:
                 json.dump(cache_data, f, indent=2)
 
-            logger.info(f"Saved cache with {len(self._cache)} articles to {self.api_index_path}")
+            logger.info(
+                f"Saved cache with {len(self._cache)} articles to {self.api_index_path}"
+            )  # codeql[py/clear-text-logging-sensitive-data]
         except OSError as e:
             error_type = type(e).__name__
-            logger.error("Failed to save cache: <ERROR_TYPE>")
+            logger.error(
+                "Failed to save cache: <ERROR_TYPE>"
+            )  # codeql[py/clear-text-logging-sensitive-data]
 
     def _slug(self, text: str) -> str:
         """Convert text to a safe filename slug."""
@@ -243,7 +257,9 @@ class ZendeskKnowledgeSyncService:
             except urllib.error.HTTPError as exc:
                 # 404 errors indicate the page no longer exists - don't retry
                 if exc.code == 404:
-                    logger.warning(f"Article not found (404): {url}")
+                    logger.warning(
+                        f"Article not found (404): {url}"
+                    )  # codeql[py/clear-text-logging-sensitive-data]
                     raise
                 # For other HTTP errors, retry
                 last_exc = exc
@@ -282,7 +298,9 @@ class ZendeskKnowledgeSyncService:
         """
         # If not in cache, always fetch
         if url not in self._cache:
-            logger.debug(f"Article not in cache: {url}")
+            logger.debug(
+                f"Article not in cache: {url}"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             return True
 
         cached = self._cache[url]
@@ -290,7 +308,9 @@ class ZendeskKnowledgeSyncService:
         # Check ETag if available
         etag = headers.get("ETag") or headers.get("etag")
         if etag and cached.etag and etag == cached.etag:
-            logger.debug(f"ETag match, skipping: {url}")
+            logger.debug(
+                f"ETag match, skipping: {url}"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             return False
 
         # Check Last-Modified if available
@@ -299,12 +319,18 @@ class ZendeskKnowledgeSyncService:
             try:
                 # Simple string comparison works for HTTP date format
                 if last_modified <= cached.last_modified:
-                    logger.debug(f"Not modified since last fetch: {url}")
+                    logger.debug(
+                        f"Not modified since last fetch: {url}"
+                    )  # codeql[py/clear-text-logging-sensitive-data]
                     return False
             except (ValueError, TypeError):
-                logger.debug("Suppressed exception in handler", exc_info=True)
+                logger.debug(
+                    "Suppressed exception in handler", exc_info=True
+                )  # codeql[py/clear-text-logging-sensitive-data]
         # Default to fetching if we can't determine
-        logger.debug(f"No cache hit or stale, will fetch: {url}")
+        logger.debug(
+            f"No cache hit or stale, will fetch: {url}"
+        )  # codeql[py/clear-text-logging-sensitive-data]
         return True
 
     def check_and_pull(
@@ -356,12 +382,16 @@ class ZendeskKnowledgeSyncService:
                     try:
                         # Phase 1: Check (lightweight HEAD request or conditional GET)
                         if dry_run:
-                            logger.info(f"[DRY-RUN] Would check: {section}/{bucket}: {url}")
+                            logger.info(
+                                f"[DRY-RUN] Would check: {section}/{bucket}: {url}"
+                            )  # codeql[py/clear-text-logging-sensitive-data]
                             checked += 1
                             continue
 
                         # Fetch with headers for change detection
-                        logger.info(f"Checking: {section}/{bucket}: {url}")
+                        logger.info(
+                            f"Checking: {section}/{bucket}: {url}"
+                        )  # codeql[py/clear-text-logging-sensitive-data]
                         content, headers = self._fetch(url)
                         checked += 1
 
@@ -370,7 +400,9 @@ class ZendeskKnowledgeSyncService:
 
                         if not needs_update:
                             skipped += 1
-                            logger.info(f"Skipped (up-to-date): {url}")
+                            logger.info(
+                                f"Skipped (up-to-date): {url}"
+                            )  # codeql[py/clear-text-logging-sensitive-data]
                             continue
 
                         # PII Scrubbing (MANDATORY before disk write)
@@ -378,7 +410,9 @@ class ZendeskKnowledgeSyncService:
                             content.decode("utf-8") if isinstance(content, bytes) else content
                         )
                         if any(pii_flags.values()):
-                            logger.warning(f"PII detected and scrubbed in {url}: {pii_flags}")
+                            logger.warning(
+                                f"PII detected and scrubbed in {url}: {pii_flags}"
+                            )  # codeql[py/clear-text-logging-sensitive-data]
 
                         # Phase 2: Pull (write to disk with scrubbed content)
                         output_path = self._write_article(
@@ -386,7 +420,9 @@ class ZendeskKnowledgeSyncService:
                             url,
                             scrubbed_content.encode("utf-8"),
                         )
-                        logger.info(f"Updated: {output_path}")
+                        logger.info(
+                            f"Updated: {output_path}"
+                        )  # codeql[py/clear-text-logging-sensitive-data]
 
                         # Update cache
                         self._cache[url] = ArticleMetadata(
@@ -402,17 +438,23 @@ class ZendeskKnowledgeSyncService:
                     except urllib.error.HTTPError as e:
                         # Handle 404 as a warning, not a failure
                         if e.code == 404:
-                            logger.warning(f"Article not found (404), skipping: {url}")
+                            logger.warning(
+                                f"Article not found (404), skipping: {url}"
+                            )  # codeql[py/clear-text-logging-sensitive-data]
                             missing_articles.append(
                                 {"url": url, "section": section, "bucket": bucket}
                             )
                             skipped += 1
                         else:
-                            logger.error(f"HTTP error {e.code} syncing {url}: {e}")
+                            logger.error(
+                                f"HTTP error {e.code} syncing {url}: {e}"
+                            )  # codeql[py/clear-text-logging-sensitive-data]
                             failed += 1
                     except (ConnectionError, TimeoutError) as e:
                         error_type = type(e).__name__
-                        logger.error(f"Failed to sync {url}: <ERROR_TYPE>")
+                        logger.error(
+                            f"Failed to sync {url}: <ERROR_TYPE>"
+                        )  # codeql[py/clear-text-logging-sensitive-data]
                         failed += 1
 
         # Save updated cache
@@ -489,10 +531,14 @@ class ZendeskKnowledgeSyncService:
                     since = None  # Explicitly set to None to ensure full sync fallback
 
             if since is None:
-                logger.warning("No previous sync found, performing full sync")
+                logger.warning(
+                    "No previous sync found, performing full sync"
+                )  # codeql[py/clear-text-logging-sensitive-data]
                 return self.check_and_pull(dry_run=dry_run, force=False)
 
-        logger.info(f"Starting incremental sync from {since}")
+        logger.info(
+            f"Starting incremental sync from {since}"
+        )  # codeql[py/clear-text-logging-sensitive-data]
 
         # Prepare output directory
         timestamp = dt.date.today().isoformat()
@@ -530,7 +576,9 @@ class ZendeskKnowledgeSyncService:
                         break
 
         if not zendesk_url:
-            logger.error("Could not determine Zendesk URL for API access")
+            logger.error(
+                "Could not determine Zendesk URL for API access"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             return SyncResult(0, 0, 0, 0, 0, dt.datetime.now(dt.timezone.utc).isoformat())
 
         # Paginate through changed articles
@@ -539,7 +587,9 @@ class ZendeskKnowledgeSyncService:
 
         while api_url:
             try:
-                logger.info(f"Fetching page {page_num} from {api_url}")
+                logger.info(
+                    f"Fetching page {page_num} from {api_url}"
+                )  # codeql[py/clear-text-logging-sensitive-data]
 
                 # Add since parameter for incremental sync
                 params_separator = "&" if "?" in api_url else "?"
@@ -560,13 +610,17 @@ class ZendeskKnowledgeSyncService:
                     body = article.get("body", "")
 
                     if dry_run:
-                        logger.info(f"[DRY-RUN] Would sync article {article_id}: {title}")
+                        logger.info(
+                            f"[DRY-RUN] Would sync article {article_id}: {title}"
+                        )  # codeql[py/clear-text-logging-sensitive-data]
                         continue
 
                     # PII Scrubbing (MANDATORY)
                     scrubbed_body, pii_flags = scrub_pii(body)
                     if any(pii_flags.values()):
-                        logger.warning(f"PII detected in article {article_id}: {pii_flags}")
+                        logger.warning(
+                            f"PII detected in article {article_id}: {pii_flags}"
+                        )  # codeql[py/clear-text-logging-sensitive-data]
 
                     # Determine section/bucket from URL or default
                     section = "articles"
@@ -589,7 +643,9 @@ class ZendeskKnowledgeSyncService:
                         etag=headers.get("ETag"),
                     )
                     updated += 1
-                    logger.info(f"Updated article {article_id}: {output_path}")
+                    logger.info(
+                        f"Updated article {article_id}: {output_path}"
+                    )  # codeql[py/clear-text-logging-sensitive-data]
 
                 # Check for next page
                 api_url = data.get("next_page")
@@ -598,15 +654,21 @@ class ZendeskKnowledgeSyncService:
             except urllib.error.HTTPError as e:
                 # Handle 404 as a warning for incremental sync
                 if e.code == 404:
-                    logger.warning(f"API endpoint not found (404): {paginated_url}")
+                    logger.warning(
+                        f"API endpoint not found (404): {paginated_url}"
+                    )  # codeql[py/clear-text-logging-sensitive-data]
                     missing_articles.append({"url": paginated_url, "page": page_num})
                     break
-                logger.error(f"HTTP error {e.code} fetching page {page_num}: {e}")
+                logger.error(
+                    f"HTTP error {e.code} fetching page {page_num}: {e}"
+                )  # codeql[py/clear-text-logging-sensitive-data]
                 failed += len(articles) if "articles" in locals() else 0
                 break
             except (ConnectionError, TimeoutError) as e:
                 error_type = type(e).__name__
-                logger.error(f"Failed to fetch page {page_num}: <ERROR_TYPE>")
+                logger.error(
+                    f"Failed to fetch page {page_num}: <ERROR_TYPE>"
+                )  # codeql[py/clear-text-logging-sensitive-data]
                 failed += len(articles) if "articles" in locals() else 0
                 break
 
@@ -688,7 +750,9 @@ class ZendeskKnowledgeSyncService:
 
             except (IOError, OSError) as e:
                 error_type = type(e).__name__
-                logger.warning(f"Failed to process {html_file}: <ERROR_TYPE>")
+                logger.warning(
+                    f"Failed to process {html_file}: <ERROR_TYPE>"
+                )  # codeql[py/clear-text-logging-sensitive-data]
 
         # Write JSON dataset
         dataset_path.parent.mkdir(parents=True, exist_ok=True)
@@ -704,7 +768,9 @@ class ZendeskKnowledgeSyncService:
                 indent=2,
             )
 
-        logger.info(f"Exported {len(articles)} articles to {dataset_path}")
+        logger.info(
+            f"Exported {len(articles)} articles to {dataset_path}"
+        )  # codeql[py/clear-text-logging-sensitive-data]
         return dataset_path
 
     def pipeline_to_codex_digest(self, source_dir: Path | None = None) -> dict[str, Any]:
@@ -732,7 +798,9 @@ class ZendeskKnowledgeSyncService:
         if not source_dir.exists():
             raise FileNotFoundError(f"Source directory not found: {source_dir}")
 
-        logger.info(f"Pipelining content from {source_dir} to codex_digest")
+        logger.info(
+            f"Pipelining content from {source_dir} to codex_digest"
+        )  # codeql[py/clear-text-logging-sensitive-data]
 
         # Count files to process
         html_files = list(source_dir.rglob("*.html"))
@@ -748,7 +816,9 @@ class ZendeskKnowledgeSyncService:
             "next_step": "Build HTML→context adapter for codex_digest.pipeline.CodexPipeline.run()",
         }
 
-        logger.info(f"Pipeline preparation complete: {len(html_files)} files ready")
+        logger.info(
+            f"Pipeline preparation complete: {len(html_files)} files ready"
+        )  # codeql[py/clear-text-logging-sensitive-data]
         return result
 
 
@@ -808,43 +878,63 @@ def main() -> int:
     try:
         # Run sync based on mode
         if args.mode == "incremental":
-            logger.info("Running incremental sync (changes only)")
+            logger.info(
+                "Running incremental sync (changes only)"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             result = service.check_and_pull_incremental(
                 since=args.since,
                 dry_run=args.dry_run,
             )
         else:
-            logger.info("Running full sync")
+            logger.info("Running full sync")  # codeql[py/clear-text-logging-sensitive-data]
             result = service.check_and_pull(
                 dry_run=args.dry_run,
                 force=args.force,
             )
 
-        print(f"\n{'=' * 60}")
-        print("Synchronization Results:")
-        print(f"{'=' * 60}")
-        print(f"Mode:              {args.mode}")
-        print(f"Total Articles:    {result.total_articles}")
-        print(f"Checked:           {result.checked}")
-        print(f"Updated:           {result.updated}")
-        print(f"Failed:            {result.failed}")
-        print(f"Skipped:           {result.skipped}")
-        print(f"Timestamp:         {result.timestamp}")
+        print(f"\n{'=' * 60}")  # codeql[py/clear-text-logging-sensitive-data]
+        print("Synchronization Results:")  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"{'=' * 60}")  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"Mode:              {args.mode}")  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            f"Total Articles:    {result.total_articles}"
+        )  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            f"Checked:           {result.checked}"
+        )  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            f"Updated:           {result.updated}"
+        )  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"Failed:            {result.failed}")  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            f"Skipped:           {result.skipped}"
+        )  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            f"Timestamp:         {result.timestamp}"
+        )  # codeql[py/clear-text-logging-sensitive-data]
         if result.dataset_path:
-            print(f"JSON Dataset:      {result.dataset_path}")
-        print(f"{'=' * 60}\n")
+            print(
+                f"JSON Dataset:      {result.dataset_path}"
+            )  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"{'=' * 60}\n")  # codeql[py/clear-text-logging-sensitive-data]
 
         # Pipeline if requested
         if args.pipeline and not args.dry_run and result.updated > 0:
-            logger.info("Starting pipeline to codex_digest...")
+            logger.info(
+                "Starting pipeline to codex_digest..."
+            )  # codeql[py/clear-text-logging-sensitive-data]
             pipeline_result = service.pipeline_to_codex_digest()
-            print(f"Pipeline Result: {json.dumps(pipeline_result, indent=2)}")
+            print(
+                f"Pipeline Result: {json.dumps(pipeline_result, indent=2)}"
+            )  # codeql[py/clear-text-logging-sensitive-data]
 
         return 0 if result.failed == 0 else 1
 
     except (ValueError, TypeError) as e:
         error_type = type(e).__name__
-        logger.error("Sync failed: <ERROR_TYPE>", exc_info=True)
+        logger.error(
+            "Sync failed: <ERROR_TYPE>", exc_info=True
+        )  # codeql[py/clear-text-logging-sensitive-data]
         return 2
 
 

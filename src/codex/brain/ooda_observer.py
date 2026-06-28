@@ -18,7 +18,7 @@ import time
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +36,7 @@ class RepositoryState:
     test_failures: int
     ci_status: str  # success, failure, pending
     last_commit_timestamp: datetime
-    recent_commits: List[Dict[str, Any]] = field(default_factory=list)
+    recent_commits: list[dict[str, Any]] = field(default_factory=list)
 
 
 @dataclass
@@ -61,7 +61,7 @@ class AgentEcosystemState:
     healthy_agents: int
     degraded_agents: int
     failing_agents: int
-    agents: List[AgentStatus] = field(default_factory=list)
+    agents: list[AgentStatus] = field(default_factory=list)
     total_queue_depth: int = 0
     avg_success_rate: float = 0.0
     avg_latency_ms: float = 0.0
@@ -76,7 +76,7 @@ class TaskInfo:
     status: str  # pending, active, completed, failed
     created_at: datetime
     age_seconds: int
-    dependencies: List[str] = field(default_factory=list)
+    dependencies: list[str] = field(default_factory=list)
     owner: Optional[str] = None
 
 
@@ -89,7 +89,7 @@ class TaskQueueState:
     completed_count: int
     failed_count: int
     oldest_pending_age_seconds: int
-    tasks: List[TaskInfo] = field(default_factory=list)
+    tasks: list[TaskInfo] = field(default_factory=list)
 
 
 @dataclass
@@ -112,7 +112,7 @@ class Event:
     event_type: str  # github_push, workflow_complete, alert, etc.
     source: str
     severity: str  # critical, warning, info
-    data: Dict[str, Any]
+    data: dict[str, Any]
 
 
 @dataclass
@@ -121,7 +121,7 @@ class ObservableMetadata:
 
     observation_latency_ms: float
     state_completeness: float  # 0-1, fraction of data sources collected
-    data_freshness_seconds: Dict[str, float]  # per data source
+    data_freshness_seconds: dict[str, float]  # per data source
     event_count: int
 
 
@@ -134,13 +134,13 @@ class Observable:
     agents: AgentEcosystemState
     tasks: TaskQueueState
     environment: EnvironmentMetrics
-    events: List[Event]
+    events: list[Event]
     metadata: ObservableMetadata
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for JSON serialization."""
 
-        def serialize(obj):
+        def serialize(obj) -> None:
             if isinstance(obj, datetime):
                 return obj.isoformat()
             if isinstance(
@@ -453,16 +453,16 @@ class EnvironmentObserver:
 class EventObserver:
     """Observes system events."""
 
-    def __init__(self):
-        self.events: List[Event] = []
+    def __init__(self) -> None:
+        self.events: list[Event] = []
 
-    def observe(self) -> List[Event]:
+    def observe(self) -> list[Event]:
         """Collect current events."""
         # In production, this would subscribe to event streams
         # For now, return empty list (events are event-driven)
         return self.events.copy()
 
-    def record_event(self, event_type: str, source: str, severity: str, data: Dict):
+    def record_event(self, event_type: str, source: str, severity: str, data: Dict) -> None:
         """Record a new event."""
         self.events.append(
             Event(

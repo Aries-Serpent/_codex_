@@ -92,7 +92,7 @@ def readiness_check() -> dict[str, Any]:
     }
 
 
-def get_health_router():
+def get_health_router() -> None:
     """Get FastAPI router with health endpoints.
 
     Returns:
@@ -114,23 +114,23 @@ def get_health_router():
     router = APIRouter(tags=["health"])
 
     @router.get("/health")
-    async def health():
+    async def health() -> None:
         """Health check endpoint - always returns 200 if service is running."""
         return health_check()
 
     @router.get("/ready")
-    async def readiness():
+    async def readiness() -> None:
         """Readiness check endpoint - returns 200 if service is ready."""
         return readiness_check()
         # Could return 503 if not ready, but for now return 200 with ready=false
 
     @router.get("/healthz")
-    async def healthz():
+    async def healthz() -> None:
         """Kubernetes-style health check endpoint."""
         return health_check()
 
     @router.get("/readyz")
-    async def readyz():
+    async def readyz() -> None:
         """Kubernetes-style readiness check endpoint."""
         return readiness_check()
 

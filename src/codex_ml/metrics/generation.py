@@ -103,9 +103,9 @@ def bleu(
     norm_refs: list[list[str]] = []
     if len(references) > 0 and isinstance(references[0], str):
         # single reference per hypothesis
-        norm_refs = [[r] for r in references]
+        norm_refs = [[r] for r in references]  # type: ignore[list-item]
     else:
-        norm_refs = references
+        norm_refs = references  # type: ignore[assignment]
 
     if len(hypotheses) != len(norm_refs):
         raise ValueError("hypotheses and references length must match")

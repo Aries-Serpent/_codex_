@@ -64,7 +64,7 @@ class ModelConfig:
     torch_dtype: str = "auto"
     low_cpu_mem_usage: bool = True
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Validate configuration"""
         # Validate device
         valid_devices = ["cpu", "cuda", "mps", "auto"]

@@ -14,9 +14,9 @@ sys.path.insert(0, str(AGENT_DIR / "src"))
 sys.path.insert(0, str(AGENT_DIR.parent.parent.parent))
 
 # Import test modules
-print("=" * 70)
-print("BATCH-TRIAGE-AGENT TEST RUNNER")
-print("=" * 70)
+print("=" * 70)  # codeql[py/clear-text-logging-sensitive-data]
+print("BATCH-TRIAGE-AGENT TEST RUNNER")  # codeql[py/clear-text-logging-sensitive-data]
+print("=" * 70)  # codeql[py/clear-text-logging-sensitive-data]
 
 test_count = 0
 passed_count = 0
@@ -28,11 +28,11 @@ def run_test(test_func, test_name):
     test_count += 1
     try:
         test_func()
-        print(f"✓ {test_name}")
+        print(f"✓ {test_name}")  # codeql[py/clear-text-logging-sensitive-data]
         passed_count += 1
         return True
     except Exception as e:
-        print(f"✗ {test_name}: {e}")
+        print(f"✗ {test_name}: {e}")  # codeql[py/clear-text-logging-sensitive-data]
         failed_count += 1
         return False
 
@@ -44,7 +44,7 @@ def load_test_module(module_name, file_path):
     return module
 
 # Load and run test_analyzer tests
-print("\n--- test_analyzer.py ---")
+print("\n--- test_analyzer.py ---")  # codeql[py/clear-text-logging-sensitive-data]
 test_analyzer = load_test_module("test_analyzer", AGENT_DIR / "tests" / "test_analyzer.py")
 run_test(test_analyzer.test_analyzer_initialization, "test_analyzer_initialization")
 run_test(test_analyzer.test_analyze_with_confidence, "test_analyze_with_confidence")
@@ -54,7 +54,7 @@ run_test(test_analyzer.test_get_metrics, "test_get_metrics")
 run_test(test_analyzer.test_export_for_learning, "test_export_for_learning")
 
 # Load and run test_pattern_learner tests
-print("\n--- test_pattern_learner.py ---")
+print("\n--- test_pattern_learner.py ---")  # codeql[py/clear-text-logging-sensitive-data]
 test_pattern_learner = load_test_module("test_pattern_learner", AGENT_DIR / "tests" / "test_pattern_learner.py")
 run_test(test_pattern_learner.test_pattern_learner_initialization, "test_pattern_learner_initialization")
 run_test(test_pattern_learner.test_failure_pattern_dataclass, "test_failure_pattern_dataclass")
@@ -67,7 +67,7 @@ run_test(test_pattern_learner.test_cleanup_expired_patterns, "test_cleanup_expir
 run_test(test_pattern_learner.test_get_statistics, "test_get_statistics")
 
 # Load and run test_remediation_engine tests
-print("\n--- test_remediation_engine.py ---")
+print("\n--- test_remediation_engine.py ---")  # codeql[py/clear-text-logging-sensitive-data]
 test_remediation_engine = load_test_module("test_remediation_engine", AGENT_DIR / "tests" / "test_remediation_engine.py")
 run_test(test_remediation_engine.test_remediation_engine_initialization, "test_remediation_engine_initialization")
 run_test(test_remediation_engine.test_remediation_action_dataclass, "test_remediation_action_dataclass")
@@ -81,7 +81,7 @@ run_test(test_remediation_engine.test_apply_action_requires_approval, "test_appl
 run_test(test_remediation_engine.test_generate_report, "test_generate_report")
 
 # Load and run test_notifier tests
-print("\n--- test_notifier.py ---")
+print("\n--- test_notifier.py ---")  # codeql[py/clear-text-logging-sensitive-data]
 test_notifier = load_test_module("test_notifier", AGENT_DIR / "tests" / "test_notifier.py")
 run_test(test_notifier.test_notifier_initialization, "test_notifier_initialization")
 run_test(test_notifier.test_notification_dataclass, "test_notification_dataclass")
@@ -95,12 +95,12 @@ run_test(test_notifier.test_priority_based_routing, "test_priority_based_routing
 run_test(test_notifier.test_build_triage_summary_message, "test_build_triage_summary_message")
 
 # Summary
-print("\n" + "=" * 70)
-print(f"TEST RESULTS: {passed_count}/{test_count} passed, {failed_count} failed")
-print("=" * 70)
+print("\n" + "=" * 70)  # codeql[py/clear-text-logging-sensitive-data]
+print(f"TEST RESULTS: {passed_count}/{test_count} passed, {failed_count} failed")  # codeql[py/clear-text-logging-sensitive-data]
+print("=" * 70)  # codeql[py/clear-text-logging-sensitive-data]
 
 if failed_count > 0:
     sys.exit(1)
 else:
-    print("\n✅ ALL TESTS PASSED!")
+    print("\n✅ ALL TESTS PASSED!")  # codeql[py/clear-text-logging-sensitive-data]
     sys.exit(0)

@@ -32,7 +32,7 @@ try:  # noqa: E402
     from codex_ml.monitoring.health import record_health_event
 except (IOError, OSError):  # pragma: no cover - optional monitoring dependency
 
-    def record_health_event(*_args, **_kwargs):
+    def record_health_event(*_args, **_kwargs) -> None:
         return None
 
 

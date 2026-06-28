@@ -67,7 +67,7 @@ else:
 try:  # pragma: no cover - optional
     import torch
 except (IOError, OSError):  # pragma: no cover - torch not installed
-    torch = None
+    torch = None  # type: ignore[assignment]
 
 SummaryWriter = None
 try:  # pragma: no cover - optional
@@ -291,7 +291,7 @@ def _emit_degradation_banner(loggers: CodexLoggers) -> CodexLoggers:
     return loggers
 
 
-def _get_safety_cfg():
+def _get_safety_cfg() -> None:
     """Return a cached SafetyConfig instance for log redaction."""
 
     global _LOG_SAFETY_CFG
@@ -305,7 +305,7 @@ def _get_safety_cfg():
     return _LOG_SAFETY_CFG
 
 
-def _get_safety_filters():
+def _get_safety_filters() -> None:
     """Return cached SafetyFilters instance when available."""
 
     global _LOG_SAFETY_FILTERS
@@ -591,7 +591,7 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
         return _emit_degradation_banner(loggers)
 
     # Fallback to argparse flags
-    component_statuses: list[TelemetryComponentStatus] = []
+    component_statuses: list[TelemetryComponentStatus] = []  # type: ignore[no-redef]
 
     logdir = getattr(args, "tb_logdir", "") or "./runs"
     tb_handle = None

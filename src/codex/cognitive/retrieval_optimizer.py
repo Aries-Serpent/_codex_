@@ -200,7 +200,7 @@ class TaskTypeDetector:
 class RelevanceScorer:
     """Score relevance of retrieved items."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize scorer."""
         self.task_detector = TaskTypeDetector()
 

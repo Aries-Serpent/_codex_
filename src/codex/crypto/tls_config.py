@@ -4,7 +4,7 @@
 class TLSConfig:
     """Comprehensive tls_config implementation."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize TLSConfig."""
         self._data = {}
         self._config = {}

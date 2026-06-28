@@ -44,7 +44,7 @@ class MLflowTracker:
         if self.enabled:
             self._init_mlflow()
 
-    def _init_mlflow(self):
+    def _init_mlflow(self) -> None:
         """Initialize MLflow if available."""
         try:
             import mlflow
@@ -250,7 +250,7 @@ class MLflowTracker:
             logger.debug("Exception: <ERROR_TYPE>")
             logger.debug("Failed to set tags: <ERROR_TYPE>")
 
-    def end_run(self):
+    def end_run(self) -> None:
         """End current run manually."""
         if self._active and self._mlflow is not None:
             try:

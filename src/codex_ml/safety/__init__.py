@@ -38,7 +38,7 @@ except (ImportError, AttributeError):  # pragma: no cover - fallback for non-POS
     def firejail_available() -> bool:
         return False
 
-    def run_in_sandbox(*args, **kwargs):
+    def run_in_sandbox(*args, **kwargs) -> None:  # type: ignore[misc]
         raise RuntimeError("Sandbox is not available on this platform; run_in_sandbox disabled")
 
 

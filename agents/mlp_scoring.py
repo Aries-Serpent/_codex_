@@ -38,7 +38,7 @@ class MLPScorer:
     hidden_dim: int = 4
     use_numpy: bool = True
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize deterministic weights."""
         # Deterministic initialization for reproducibility
         seed = 42

@@ -99,7 +99,7 @@ class QuantumMetricRepository:
     a full ORM framework like SQLAlchemy.
     """
 
-    def __init__(self, db_path: str | Path = None, connection=None):
+    def __init__(self, db_path: str | Path = None, connection=None):  # type: ignore[assignment]
         """
         Initialize repository.
 
@@ -494,7 +494,7 @@ class QuantumMetricRepository:
                 break
         else:
             metric_value = 0.0
-            metric_name = "value"
+            metric_name = "value"  # type: ignore[assignment]
 
         # Store the full kwargs dict in metadata for later retrieval
         metadata: dict[str, Any] = {k: v for k, v in kwargs.items() if k not in ("feature",)}

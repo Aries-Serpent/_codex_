@@ -64,16 +64,16 @@ try:  # pragma: no cover - optional dependency
 
     register_model("minilm")(MiniLM)
 except (ValueError, TypeError):  # pragma: no cover - dependency not installed
-    MiniLM = None
-    MiniLMConfig = None
+    MiniLM = None  # type: ignore[misc,assignment]
+    MiniLMConfig = None  # type: ignore[misc,assignment]
 
 try:  # pragma: no cover - optional dependency
     from .decoder_only import DecoderOnlyLM, ModelConfig
 
     register_model("decoder_only")(DecoderOnlyLM)
 except (ValueError, TypeError):  # pragma: no cover - dependency not installed
-    DecoderOnlyLM = None
-    ModelConfig = None
+    DecoderOnlyLM = None  # type: ignore[misc,assignment]
+    ModelConfig = None  # type: ignore[misc,assignment]
 
 try:  # pragma: no cover - optional dependency
     from .reasoning import (
@@ -83,10 +83,10 @@ try:  # pragma: no cover - optional dependency
         attach_reasoning_adapters,
     )
 except (ValueError, TypeError):  # pragma: no cover - dependency not installed
-    ReasoningHarness = None
-    ReasoningHead = None
-    ToolUseAdapter = None
-    attach_reasoning_adapters = None
+    ReasoningHarness = None  # type: ignore[misc,assignment]
+    ReasoningHead = None  # type: ignore[misc,assignment]
+    ToolUseAdapter = None  # type: ignore[misc,assignment]
+    attach_reasoning_adapters = None  # type: ignore[assignment]
 
 if TYPE_CHECKING:  # retain type information for type checkers
     from .decoder_only import DecoderOnlyLM, ModelConfig

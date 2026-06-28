@@ -22,7 +22,7 @@ try:  # Optional dependency for Prometheus integration
 
     _HAS_PROMETHEUS = True
 except (IOError, OSError):  # pragma: no cover - optional dependency path
-    CollectorRegistry = None
+    CollectorRegistry = None  # type: ignore[misc,assignment]
     REGISTRY = None
     generate_latest = None
     _HAS_PROMETHEUS = False

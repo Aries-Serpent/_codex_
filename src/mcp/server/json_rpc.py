@@ -192,7 +192,7 @@ class JsonRpcHandler:
         """
         handler = self._methods.get(request.method)
         if handler is None:
-            raise JsonRpcError(code=METHOD_NOT_FOUND, message=f"Method not found: {request.method}")
+            raise JsonRpcError(code=METHOD_NOT_FOUND, message=f"Method not found: {request.method}")  # type: ignore[misc]
 
         return await handler(request.params)
 
@@ -231,7 +231,7 @@ class JsonRpcHandler:
             result = await self._dispatch(request)
             return JsonRpcResponse(id=request.id, result=result).to_dict()
 
-        except JsonRpcError as e:
+        except JsonRpcError as e:  # type: ignore[misc]
             error_type = type(e).__name__
             logger.debug("JsonRpcError: <ERROR_TYPE>")
             logger.debug("Exception caught, returning", exc_info=True)
@@ -282,7 +282,7 @@ class JsonRpcHandler:
                     ).to_dict()
                 )
             elif result is not None:
-                responses.append(result)
+                responses.append(result)  # type: ignore[arg-type]
 
         return responses
 

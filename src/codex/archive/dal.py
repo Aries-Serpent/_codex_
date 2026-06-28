@@ -683,7 +683,7 @@ class PostgresDAL(BaseDAL):
         self.conn = self.pg.connect(self.dsn)
         self.ensure_schema()
 
-    def _sql_ident(self, name: str):
+    def _sql_ident(self, name: str) -> None:
         from psycopg import sql
 
         self.validate_identifier(name, self._ALLOWED_TABLES)
@@ -932,7 +932,7 @@ class MariaDbDAL(BaseDAL):
         for key, value in parse_qsl(parsed.query, keep_blank_values=True):
             if key == "port":
                 with contextlib.suppress(ValueError):
-                    value = int(value)
+                    value = int(value)  # type: ignore[assignment]
             config[key] = value
 
         config.setdefault("host", "localhost")

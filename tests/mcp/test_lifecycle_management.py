@@ -52,6 +52,10 @@ class TestStartupSequence:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_startup_success(self):
         """Test successful startup sequence."""
         manager = LifecycleManager()
@@ -73,6 +77,10 @@ class TestStartupSequence:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_startup_async_hook(self):
         """Test async startup hook execution."""
         manager = LifecycleManager()
@@ -90,6 +98,10 @@ class TestStartupSequence:
         assert manager.is_healthy(), "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -121,6 +133,10 @@ class TestStartupSequence:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_startup_failure_raises(self):
         """Test startup failure raises exception."""
         manager = LifecycleManager()
@@ -137,6 +153,10 @@ class TestStartupSequence:
         assert not manager.is_ready(), "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -158,6 +178,10 @@ class TestShutdownSequence:
     """Test shutdown sequence and cleanup."""
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -189,6 +213,10 @@ class TestShutdownSequence:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_shutdown_async_hook(self):
         """Test async shutdown hook execution."""
         manager = LifecycleManager()
@@ -206,6 +234,10 @@ class TestShutdownSequence:
         assert hook_called, "hook_called is not valid"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -235,6 +267,10 @@ class TestShutdownSequence:
         assert execution_order == [3, 2, 1]
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -278,6 +314,10 @@ class TestResourceManagement:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_cleanup_sync_close(self):
         """Test cleanup of resources with sync close method."""
         manager = LifecycleManager()
@@ -295,6 +335,10 @@ class TestResourceManagement:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_cleanup_async_close(self):
         """Test cleanup of resources with async close method."""
         manager = LifecycleManager()
@@ -308,6 +352,10 @@ class TestResourceManagement:
         resource.close.assert_called_once()
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -331,6 +379,10 @@ class TestResourceManagement:
         resource2.close.assert_called_once()
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -373,6 +425,10 @@ class TestHealthChecks:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_healthz_after_startup(self):
         """Test health check after successful startup."""
         manager = LifecycleManager()
@@ -384,6 +440,10 @@ class TestHealthChecks:
         assert health["ready"] is True, "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -420,6 +480,10 @@ class TestEdgeCases:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_empty_hooks(self):
         """Test lifecycle with no hooks registered."""
         manager = LifecycleManager()
@@ -431,6 +495,10 @@ class TestEdgeCases:
         assert not manager.is_healthy(), "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -460,6 +528,10 @@ class TestEdgeCases:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_shutdown_before_startup(self):
         """Test shutdown can be called before startup."""
         manager = LifecycleManager()
@@ -473,6 +545,10 @@ class TestAdditionalLifecycleScenarios:
     """Additional edge case and integration tests for lifecycle management."""
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -498,6 +574,10 @@ class TestAdditionalLifecycleScenarios:
         assert hook_call_count >= 1, "hook_call_count must be positive"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -534,6 +614,10 @@ class TestAdditionalLifecycleScenarios:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_health_check_timeout_protection(self):
         """Test that health check has timeout protection."""
         manager = LifecycleManager()
@@ -554,6 +638,10 @@ class TestAdditionalLifecycleScenarios:
         assert "status" in health, "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -580,6 +668,10 @@ class TestAdditionalLifecycleScenarios:
         assert not manager.is_healthy(), "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
