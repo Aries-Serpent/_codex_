@@ -1,15 +1,20 @@
-# Session Context — 2026-06-28T23:16:07Z
+# Session Context — 2026-06-28T23:25:01Z
 **Branch:** `copilot/fix-failing-checks`  **PR:** #5120  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4926` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `4748` (✅)
+- GraphQL remaining: `4982` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #5120 — Fix 4 critical CI failures: Semgrep SARIF, Auth tests, RAG tests, and mypy type-checking
+## 📋 PR #5120 — Fix 4 concurrent CI workflow failures (Semgrep SARIF, Auth tests, RAG tests, mypy)
 State: `open`  Draft: `True`  Branch: `copilot/fix-failing-checks` → `main`
+
+### ❌ 3 Failing CI Check(s)
+- `Governance Compliance` (failure)
+- `Validate WEC Template Integrity` (failure)
+- `🚦 Comment review gate` (failure)
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **.github/workflows/test-rag.yml** — `failure` on `copilot/fix-failing-checks` (2026-06-28)
@@ -19,14 +24,14 @@ State: `open`  Draft: `True`  Branch: `copilot/fix-failing-checks` → `main`
 - **.github/workflows/test-rag.yml** — `failure` on `copilot/fix-failing-checks` (2026-06-28)
 
 ## 📝 Recent Commits
+- `ce35a7c7` fix: Complete CI failure resolution - all 4 failures fixed — copilot-swe-agent[bot] (2026-06-28)
+- `57679d71` Fix Semgrep SARIF generation with enhanced diagnostics and fallback handling — copilot-swe-agent[bot] (2026-06-28)
+- `86292bb9` fix: auth-tests workflow security report generation — copilot-swe-agent[bot] (2026-06-28)
+- `639054da` WIP: Begin CI failure resolution campaign — copilot-swe-agent[bot] (2026-06-28)
 - `50ae4e25` fix(ci): auto-update 1 action version(s) to approved pins [skip ci] — copilot-swe-agent[bot] (2026-06-28)
 - `8b941424` Fix Semgrep SAST workflow SARIF generation - Final implementation — copilot-swe-agent[bot] (2026-06-28)
 - `358d48f9` Fix Semgrep SAST workflow SARIF generation — copilot-swe-agent[bot] (2026-06-28)
 - `ff3cfb32` Apply remaining changes — copilot-swe-agent[bot] (2026-06-28)
-- `25e8425f` Merge pull request #5118 from Aries-Serpent/copilot/explore-codebase-and-create- — Statix (2026-06-28)
-- `38b0013e` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-06-28)
-- `f157487e` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-06-28)
-- `4d5dbe26` Fix mypy baseline gate: set baseline to 64 (actual error count) — copilot-swe-agent[bot] (2026-06-28)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
