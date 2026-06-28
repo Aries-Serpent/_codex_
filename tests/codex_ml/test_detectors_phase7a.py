@@ -607,7 +607,7 @@ class TestEdgeCasesAndErrorHandling:
                     restricted_file.read_text()
             finally:
                 # Restore permissions for cleanup
-                os.chmod(restricted_file, 0o644)
+                os.chmod(restricted_file, 0o600)  # nosemgrep: semgrep.insecure-file-permissions - Test cleanup: restoring permissions on test file
 
     def test_large_file_handling(self):
         """Test handling large files gracefully."""

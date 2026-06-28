@@ -39,13 +39,13 @@ rules:
               "github.com" in $VAR
     paths:
       include:
-        - "fix_*.py"
-        - "scripts/**/*.py"
-        - "src/codex/cli/*.py"
-        - "src/codex/logging/*.py"
-        - "src/codex/analyze/static/*.py"
-        - "src/codex/rag/*.py"
-        - "src/codex_ml/**/*.py"
+        - "**/fix_*.py"
+        - "**/scripts/**/*.py"
+        - "**/src/codex/cli/*.py"
+        - "**/src/codex/logging/*.py"
+        - "**/src/codex/analyze/static/*.py"
+        - "**/src/codex/rag/*.py"
+        - "**/src/codex_ml/**/*.py"
 
   # Suppress for test fixtures and examples
   - id: suppress-url-checks-in-tests
@@ -71,4 +71,4 @@ rules:
               $VAR = "http://..."
     paths:
       include:
-        - "tests/**/*.py"
+        - "**/tests/**/*.py"

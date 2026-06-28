@@ -1,3 +1,5 @@
+from typing import Any
+
 """Security delegation_handler module."""
 
 
@@ -6,5 +8,5 @@ class DelegationHandler:
 
     def __init__(self) -> None:
         """Initialize DelegationHandler."""
-        self._data = {}
-        self._config = {}
+        self._data: dict[str, Any] = {}
+        self._config: dict[str, Any] = {}

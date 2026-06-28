@@ -1,3 +1,5 @@
+from typing import Any
+
 """Security rsa_cipher module."""
 
 
@@ -6,5 +8,5 @@ class RSACipher:
 
     def __init__(self) -> None:
         """Initialize RSACipher."""
-        self._data = {}
-        self._config = {}
+        self._data: dict[str, Any] = {}
+        self._config: dict[str, Any] = {}

@@ -45,7 +45,9 @@ if _HAS_HYDRA:  # pragma: no cover - optional dependency
             "falling back to config_legacy.utils.to_absolute_path",
             exc_info=True,
         )
-        from config_legacy.utils import to_absolute_path as _hydra_to_absolute_path
+        from config_legacy.utils import (
+            to_absolute_path as _hydra_to_absolute_path,
+        )
 
     from omegaconf import OmegaConf
 

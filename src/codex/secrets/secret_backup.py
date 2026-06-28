@@ -1,3 +1,5 @@
+from typing import Any
+
 """Security secret_backup module."""
 
 
@@ -6,5 +8,5 @@ class SecretBackup:
 
     def __init__(self) -> None:
         """Initialize SecretBackup."""
-        self._data = {}
-        self._config = {}
+        self._data: dict[str, Any] = {}
+        self._config: dict[str, Any] = {}

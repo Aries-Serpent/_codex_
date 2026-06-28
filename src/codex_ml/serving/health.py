@@ -114,23 +114,23 @@ def get_health_router() -> None:
     router = APIRouter(tags=["health"])
 
     @router.get("/health")
-    async def health() -> None:
+    async def health() -> dict[str, Any]:
         """Health check endpoint - always returns 200 if service is running."""
         return health_check()
 
     @router.get("/ready")
-    async def readiness() -> None:
+    async def readiness() -> dict[str, Any]:
         """Readiness check endpoint - returns 200 if service is ready."""
         return readiness_check()
         # Could return 503 if not ready, but for now return 200 with ready=false
 
     @router.get("/healthz")
-    async def healthz() -> None:
+    async def healthz() -> dict[str, Any]:
         """Kubernetes-style health check endpoint."""
         return health_check()
 
     @router.get("/readyz")
-    async def readyz() -> None:
+    async def readyz() -> dict[str, Any]:
         """Kubernetes-style readiness check endpoint."""
         return readiness_check()
 

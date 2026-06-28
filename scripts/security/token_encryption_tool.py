@@ -243,34 +243,34 @@ echo "=================================================="
         """Print all encryption results formatted for GitHub Secrets"""
         # SECURITY: Extract fingerprints and safe metadata first
         token_fingerprint = hashlib.sha256(self.token.encode()).hexdigest()[:16]
- 
+
         # Pre-compute safe metadata (lengths, hashes) outside logging context
         base64_len = len(self.results.get('BASE64_ENCODED', ''))
         base64_hash = hashlib.sha256(self.results.get('BASE64_ENCODED', '').encode()).hexdigest()[:8] if 'BASE64_ENCODED' in self.results else None
- 
+
         hex_len = len(self.results.get('HEX_ENCODED', ''))
         hex_hash = hashlib.sha256(self.results.get('HEX_ENCODED', '').encode()).hexdigest()[:8] if 'HEX_ENCODED' in self.results else None
- 
+
         aes_key_len = len(self.results.get('AES_KEY', ''))
         aes_key_hash = hashlib.sha256(self.results.get('AES_KEY', '').encode()).hexdigest()[:8] if 'AES_KEY' in self.results else None
- 
+
         aes_ct_len = len(self.results.get('AES_CIPHERTEXT', ''))
         aes_ct_hash = hashlib.sha256(self.results.get('AES_CIPHERTEXT', '').encode()).hexdigest()[:8] if 'AES_CIPHERTEXT' in self.results else None
- 
+
         aes_nonce_len = len(self.results.get('AES_NONCE', ''))
         aes_nonce_hash = hashlib.sha256(self.results.get('AES_NONCE', '').encode()).hexdigest()[:8] if 'AES_NONCE' in self.results else None
- 
+
         # Now log only the safe metadata
         print("\n" + "="*80)
         print("🔐 TOKEN ENCRYPTION RESULTS FOR _CODEX_ REPOSITORY")
         print("="*80)
         print(f"⚠️  Original Token Fingerprint: {token_fingerprint}... (actual token not shown)")
         print("="*80)
- 
+
         print("\n📋 COPY THESE VALUES TO GITHUB SECRETS:")
         print("\n🔗 URL: https://github.com/Aries-Serpent/_codex_/settings/secrets/actions")
         print("\n" + "─"*80)
- 
+
         # Recommended: Base64
         if 'BASE64_ENCODED' in self.results:
             print("\n🥇 RECOMMENDED - Base64 Encoding:")
@@ -278,7 +278,7 @@ echo "=================================================="
             # SECURITY: Only log safe metadata (length, hash fingerprint)
             print(f"   Secret Value Length: {base64_len} chars")
             print(f"   Secret Value Hash: {base64_hash}... (see saved script for actual value)")
- 
+
         # Alternative: Hex
         if 'HEX_ENCODED' in self.results:
             print("\n🥈 ALTERNATIVE - Hex Encoding:")
@@ -286,14 +286,14 @@ echo "=================================================="
             # SECURITY: Only log safe metadata (length, hash fingerprint)
             print(f"   Secret Value Length: {hex_len} chars")
             print(f"   Secret Value Hash: {hex_hash}... (see saved script for actual value)")
- 
+
         # Verification: SHA-256
         if 'SHA256_HASH' in self.results:
             print("\n🔍 VERIFICATION - SHA-256 Hash:")
             print("   Secret Name:  CODEX_GHP_TOKEN_SHA256")
             # SHA256_HASH is already a hash (non-reversible), safe to display for verification
             print(f"   Secret Value: {self.results['SHA256_HASH']}")
- 
+
         # Most Secure: AES-256-GCM
         if 'AES_KEY' in self.results:
             print("\n🔐 MOST SECURE - AES-256-GCM Encryption:")
@@ -301,11 +301,11 @@ echo "=================================================="
             # SECURITY: Only log safe metadata (length, hash fingerprint)
             print(f"   Secret Value Length: {aes_key_len} chars")
             print(f"   Secret Value Hash: {aes_key_hash}... (see saved script for actual value)")
- 
+
             print("\n   Secret Name:  CODEX_GHP_TOKEN_AES_CIPHERTEXT")
             print(f"   Secret Value Length: {aes_ct_len} chars")
             print(f"   Secret Value Hash: {aes_ct_hash}... (see saved script for actual value)")
- 
+
             print("\n   Secret Name:  CODEX_GHP_TOKEN_AES_NONCE")
             print(f"   Secret Value Length: {aes_nonce_len} chars")
             print(f"   Secret Value Hash: {aes_nonce_hash}... (see saved script for actual value)")

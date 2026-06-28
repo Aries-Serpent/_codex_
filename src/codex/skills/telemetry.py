@@ -380,7 +380,7 @@ def push_to_app(events: list[TelemetryEvent], endpoint: str) -> bool:
             headers={"Content-Type": "application/json"},
             method="POST",
         )
-        with urllib.request.urlopen(  # nosec B310 - endpoint from env/config  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- endpoint is validated by _validated_push_endpoint()
+        with urllib.request.urlopen(  # nosec B310 - endpoint from env/config  # nosemgrep: semgrep.urllib-urlopen-dynamic -- endpoint is validated by _validated_push_endpoint()
             req, timeout=30
         ):
             pass

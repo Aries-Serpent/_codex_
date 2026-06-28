@@ -19,7 +19,7 @@ import time
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Callable, Optional, TypeVar
+from typing import Any, Callable, Generator, Optional, TypeVar
 
 logger = logging.getLogger(__name__)
 
@@ -80,7 +80,7 @@ class ReadWriteLock:
         self.metrics = LockMetrics()
 
     @contextmanager
-    def read_lock(self) -> None:
+    def read_lock(self) -> Generator[None, None, None]:
         """Acquire read lock (allow concurrent readers)."""
         start_time = time.time()
         acquired = False
@@ -113,7 +113,7 @@ class ReadWriteLock:
                         self._read_ready.notify_all()
 
     @contextmanager
-    def write_lock(self) -> None:
+    def write_lock(self) -> Generator[None, None, None]:
         """Acquire write lock (exclusive, single writer)."""
         start_time = time.time()
         acquired = False
@@ -276,7 +276,7 @@ class ArchiveOperationLock:
             return self._session_locks[session_id]
 
     @contextmanager
-    def archive_lock(self, session_id: str) -> None:
+    def archive_lock(self, session_id: str) -> Generator[None, None, None]:
         """Acquire exclusive lock for archive operation."""
         lock = self.acquire_session_lock(session_id)
         start_time = time.time()

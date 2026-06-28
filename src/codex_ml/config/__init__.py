@@ -681,7 +681,7 @@ def load_app_config(
     overrides_cfg = override_dict(overrides)
     combined = _deep_update(combined, _to_plain(overrides_cfg))
 
-    def _build_section(section: str, cls: type, payload: Mapping[str, Any]) -> None:
+    def _build_section(section: str, cls: type, payload: Mapping[str, Any]) -> Any:
         try:
             instance = cls()
             for key, value in payload.items():

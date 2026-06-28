@@ -204,7 +204,7 @@ def init_json_logging(
     return logging.getLogger("codex")
 
 
-def log_event(logger: logging.Logger, event: str, **fields: Any) -> None:
+def log_event(logger: logging.Logger, event: str, **fields: Any) -> Any:
     rec = {"event.name": event}
     rec.update(fields)
     rec.setdefault("session.id", get_session_id())
@@ -300,11 +300,11 @@ class ArgparseJSONParser(argparse.ArgumentParser):
     Mirrors argparse semantics (stderr + exit 2 on invalid args).
     """
 
-    def __init__(self, *a, **k) -> None:
+    def __init__(self, *a, **k) -> Any:
         self._logger = logging.getLogger("codex")
         super().__init__(*a, **k)
 
-    def error(self, message: str) -> None:  # type: ignore[override]
+    def error(self, message: str) -> Any:
         usage = self.format_usage().strip()
         log_event(
             self._logger,
@@ -326,7 +326,7 @@ def configure_cli_logging(
     *,
     stream: Any | None = sys.stderr,
     quiet: bool = False,
-) -> None:
+) -> Any:
     """Configure a simple CLI logger (stderr by default)."""
 
     root = logging.getLogger()
@@ -349,10 +349,10 @@ class _CaptureExceptionsContext:
         self.logger = logger or logging.getLogger("codex")
         self.event = event
 
-    def __enter__(self) -> None:
+    def __enter__(self) -> Any:
         return self
 
-    def __exit__(self, etype, evalue, etb) -> None:
+    def __exit__(self, etype, evalue, etb) -> Any:
         if etype is None:
             return False
         if isinstance(evalue, SystemExit):

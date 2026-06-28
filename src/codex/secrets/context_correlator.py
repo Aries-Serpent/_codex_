@@ -1,3 +1,5 @@
+from typing import Any
+
 """Security context_correlator module."""
 
 
@@ -6,5 +8,5 @@ class ContextCorrelator:
 
     def __init__(self) -> None:
         """Initialize ContextCorrelator."""
-        self._data = {}
-        self._config = {}
+        self._data: dict[str, Any] = {}
+        self._config: dict[str, Any] = {}

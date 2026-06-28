@@ -32,7 +32,7 @@ try:  # pragma: no cover - optional
 
     SummaryWriter = _tb.SummaryWriter
 except (IOError, OSError):  # pragma: no cover - tensorboard not installed
-    SummaryWriter = None
+    SummaryWriter = None  # type: ignore[misc, assignment]
 
 try:  # pragma: no cover - optional
     import wandb
@@ -69,10 +69,10 @@ try:  # pragma: no cover - optional
 except (IOError, OSError):  # pragma: no cover - torch not installed
     torch = None  # type: ignore[assignment]
 
-SummaryWriter = None
+SummaryWriter = None  # type: ignore[misc, assignment]
 try:  # pragma: no cover - optional
     if torch is not None:
-        SummaryWriter = torch.utils.tensorboard.SummaryWriter
+        SummaryWriter = torch.utils.tensorboard.SummaryWriter  # type: ignore[misc]
 except (IOError, OSError):  # pragma: no cover - tensorboard not installed
     logger.debug("Suppressed exception in handler", exc_info=True)
 _ensure_local_mlflow_tracking_uri_default()
@@ -291,7 +291,7 @@ def _emit_degradation_banner(loggers: CodexLoggers) -> CodexLoggers:
     return loggers
 
 
-def _get_safety_cfg() -> None:
+def _get_safety_cfg() -> Any:
     """Return a cached SafetyConfig instance for log redaction."""
 
     global _LOG_SAFETY_CFG
@@ -305,7 +305,7 @@ def _get_safety_cfg() -> None:
     return _LOG_SAFETY_CFG
 
 
-def _get_safety_filters() -> None:
+def _get_safety_filters() -> Any:
     """Return cached SafetyFilters instance when available."""
 
     global _LOG_SAFETY_FILTERS

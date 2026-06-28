@@ -1189,11 +1189,11 @@ class MLflowRunManager:
         self.tags = tags or {}
         self._run = None
 
-    def start_run(self) -> None:
+    def start_run(self) -> "MLflowRunContext":
         """Context manager for MLflow run."""
         return self
 
-    def __enter__(self) -> None:
+    def __enter__(self) -> "MLflowRunContext":
         """Enter context manager."""
         if not MLFLOW_CLIENT_AVAILABLE or not self.metric_writer._initialized:
             return self

@@ -1,3 +1,5 @@
+from typing import Any
+
 """Security tls_config module."""
 
 
@@ -6,5 +8,5 @@ class TLSConfig:
 
     def __init__(self) -> None:
         """Initialize TLSConfig."""
-        self._data = {}
-        self._config = {}
+        self._data: dict[str, Any] = {}
+        self._config: dict[str, Any] = {}

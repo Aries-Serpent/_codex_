@@ -1,7 +1,7 @@
 """Permission validation for authorization system."""
 
 from dataclasses import dataclass
-from typing import Optional
+from typing import Any, Optional
 
 
 @dataclass

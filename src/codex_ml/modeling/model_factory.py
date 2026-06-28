@@ -5,6 +5,8 @@ Real implementations should handle dtype, device placement, and optional
 LoRA/PEFT hooks with guarded imports.
 """
 
+from typing import Any
+
 
 class DummyModel:
     def __init__(self, hidden_size: int = 8) -> None:

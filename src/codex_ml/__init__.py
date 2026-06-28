@@ -93,10 +93,10 @@ except (
     RecallScore = _MissingMetric("RecallScore")  # type: ignore[misc,assignment]
     BLEUScore = _MissingMetric("BLEUScore")  # type: ignore[misc,assignment]
     TokenAccuracy = _MissingMetric("TokenAccuracy")  # type: ignore[misc,assignment]
-    get_metric = _MissingMetric("get_metric")
-    register_metric = _MissingMetric("register_metric")
-    list_metrics = _MissingMetric("list_metrics")
-    summarize_ndjson_logs = _MissingMetric("summarize_ndjson_logs")
+    get_metric = _MissingMetric("get_metric")  # type: ignore[assignment]
+    register_metric = _MissingMetric("register_metric")  # type: ignore[assignment]
+    list_metrics = _MissingMetric("list_metrics")  # type: ignore[assignment]
+    summarize_ndjson_logs = _MissingMetric("summarize_ndjson_logs")  # type: ignore[assignment]
 
 if MetricRegistry.__class__.__name__ != "_MissingMetric":
     __all__ += [
@@ -144,7 +144,7 @@ except (
                 f"Optional dependency for '{self._name}' is missing; install codex-ml[symbolic]"
             )
 
-    run_codex_symbolic_pipeline = _MissingSymbolic("run_codex_symbolic_pipeline")
+    run_codex_symbolic_pipeline = _MissingSymbolic("run_codex_symbolic_pipeline")  # type: ignore[assignment]
     Weights = _MissingSymbolic("Weights")  # type: ignore[misc,assignment]
     PretrainCfg = _MissingSymbolic("PretrainCfg")  # type: ignore[misc,assignment]
     SFTCfg = _MissingSymbolic("SFTCfg")  # type: ignore[misc,assignment]
@@ -190,7 +190,7 @@ _EXPORT_MAP = {
 }
 
 
-def __getattr__(name: str) -> None:
+def __getattr__(name: str):
     """Lazily import heavy optional modules on first access."""
 
     if name not in _EXPORT_MAP:

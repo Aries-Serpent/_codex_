@@ -175,7 +175,7 @@ class BrainClient:
                 f"Blocked request to disallowed URL scheme '{scheme}://' "
                 f"(only http/https are permitted)"
             )
-        return urllib.request.urlopen(  # nosec B310  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- req.full_url is validated above
+        return urllib.request.urlopen(  # nosec B310  # nosemgrep: semgrep.urllib-urlopen-dynamic -- req.full_url is validated above
             req, timeout=timeout
         )
 

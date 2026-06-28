@@ -100,7 +100,7 @@ def analyze_duplication(
     def _format_paths(paths: list[Path]) -> list[str]:
         return [str(p.relative_to(base)) for p in paths]
 
-    def _format_duplicate_groups() -> None:
+    def _format_duplicate_groups() -> list[dict[str, Any]]:
         formatted: list[dict[str, Any]] = []
         for stem, paths in sorted(duplicate_groups.items(), key=lambda item: -len(item[1]))[:20]:
             formatted.append(
@@ -112,7 +112,7 @@ def analyze_duplication(
             )
         return formatted
 
-    def _format_content_duplicates() -> None:
+    def _format_content_duplicates() -> list[dict[str, Any]]:
         entries: list[dict[str, Any]] = []
         for digest, paths in content_hashes.items():
             if len(paths) > 1:

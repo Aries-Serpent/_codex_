@@ -138,7 +138,7 @@ class TestGenerateJWT:
         # Should only contain base64url characters
         assert all(, "Condition must be true"
             c in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_" for c in sig
-        )
+        ), "Condition must be true"
 
 
 # ---------------------------------------------------------------------------

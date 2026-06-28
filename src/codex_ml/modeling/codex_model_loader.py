@@ -50,7 +50,7 @@ def _get_registry_factory(name: str):
         return None
 
 
-def _maybe_import_peft() -> None:
+def _maybe_import_peft() -> tuple[Any, Any, Any]:
     try:  # optional dependency
         from peft import LoraConfig, PeftModel, get_peft_model
 

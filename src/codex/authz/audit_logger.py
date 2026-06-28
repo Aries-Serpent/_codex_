@@ -1,3 +1,5 @@
+from typing import Any
+
 """Security audit_logger module."""
 
 
@@ -6,5 +8,5 @@ class AuditLogger:
 
     def __init__(self) -> None:
         """Initialize AuditLogger."""
-        self._data = {}
-        self._config = {}
+        self._data: dict[str, Any] = {}
+        self._config: dict[str, Any] = {}
