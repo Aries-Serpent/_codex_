@@ -363,7 +363,7 @@ class CheckpointManager:
         try:
             if checkpoint_file.exists():
                 # Make file writable (was immutable after creation)
-                os.chmod(checkpoint_file, 0o644)  # nosemgrep: semgrep.insecure-file-permissions - Temp permission change before deletion
+                os.chmod(checkpoint_file, 0o600)  # nosemgrep: semgrep.insecure-file-permissions - Temp permission change before deletion
                 checkpoint_file.unlink()
                 logger.info(f"Checkpoint deleted: {checkpoint_id}")
                 return True
@@ -456,7 +456,7 @@ class CheckpointManager:
                 # Only delete if file exists
                 if cp_file.exists():
                     try:
-                        os.chmod(cp_file, 0o644)  # nosemgrep: semgrep.insecure-file-permissions - Temp permission change before deletion
+                        os.chmod(cp_file, 0o600)  # nosemgrep: semgrep.insecure-file-permissions - Temp permission change before deletion
                         cp_file.unlink()
                         logger.info(f"Cleaned up old checkpoint: {cp_id}")
                     except Exception as e:

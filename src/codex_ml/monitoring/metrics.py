@@ -186,7 +186,7 @@ def get_metrics_router() -> Any:
     get_metrics_collector()
 
     @router.get("/metrics")
-    async def metrics():  # type: ignore[no-untyped-def]
+    async def metrics() -> Response:
         """Prometheus metrics endpoint."""
         try:
             metrics_output = generate_latest()

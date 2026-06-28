@@ -2022,7 +2022,7 @@ def run_training(
                                 loader_iter = iter(train_loader)
                                 _batch = next(loader_iter)
                             else:
-                                raise
+                                raise RuntimeError("Training cannot proceed without a valid train_loader.")
                         finally:
                             load_duration = time.perf_counter() - load_start
                             if metrics_registry is not None:

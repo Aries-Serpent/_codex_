@@ -143,14 +143,15 @@ def _rng_snapshot() -> dict[str, Any]:
         try:
             # NumPy RNG state is a tuple: (name, array, pos, has_gauss, cached_gauss)
             # Convert to JSON-serializable format
-            numpy_state = np.random.get_state()
-            snap["numpy"] = {
-                "name": numpy_state[0],  # type: ignore[index]
-                "keys": numpy_state[1].tolist(),  # type: ignore[index]
-                "pos": int(numpy_state[2]),  # type: ignore[index]
-                "has_gauss": int(numpy_state[3]),  # type: ignore[index]
-                "cached_gauss": float(numpy_state[4]),  # type: ignore[index]
-            }
+            if np is not None:
+                numpy_state = np.random.get_state()
+                snap["numpy"] = {
+                    "name": numpy_state[0],  # type: ignore[index]
+                    "keys": numpy_state[1].tolist(),  # type: ignore[index]
+                    "pos": int(numpy_state[2]),  # type: ignore[index]
+                    "has_gauss": int(numpy_state[3]),  # type: ignore[index]
+                    "cached_gauss": float(numpy_state[4]),  # type: ignore[index]
+                }
         except (ValueError, TypeError, RuntimeError) as e:
             logger.debug("Exception: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
             logger.warning(

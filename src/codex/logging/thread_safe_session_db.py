@@ -278,10 +278,10 @@ class ThreadSafeSessionDB:
 
                 # Date filter
                 query += " AND datetime(created_at) > datetime('now', '-' || ? || ' days')"
-                params.append(str(days))
+                params.append(days)
 
                 query += " ORDER BY created_at DESC LIMIT ?"
-                params.append(str(limit))
+                params.append(limit)
 
                 cursor.execute(query, params)
                 return [dict(row) for row in cursor.fetchall()]

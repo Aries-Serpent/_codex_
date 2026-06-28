@@ -33,17 +33,14 @@ trainer.train()
 
 Run with:
 ```bash
-python -m torch.distributed.launch \
-    --nproc_per_node=4 \
-    examples/distributed_training_simple.py
+torchrun --nproc_per_node=4 examples/distributed_training_simple.py
 ```
 
 ### Multi-Node Training
 
 ```bash
 # On node 0
-python -m torch.distributed.launch \
-    --nproc_per_node=4 \
+torchrun --nproc_per_node=4 \
     --nnodes=2 \
     --node_rank=0 \
     --master_addr=<MASTER_IP> \
@@ -51,8 +48,7 @@ python -m torch.distributed.launch \
     examples/distributed_training_simple.py
 
 # On node 1
-python -m torch.distributed.launch \
-    --nproc_per_node=4 \
+torchrun --nproc_per_node=4 \
     --nnodes=2 \
     --node_rank=1 \
     --master_addr=<MASTER_IP> \

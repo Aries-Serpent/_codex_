@@ -597,13 +597,13 @@ async def get_metrics(request: Request):
 
 
 @app.exception_handler(404)
-async def not_found_handler(request: Request, exc: HTTPException):
+async def not_found_handler(request: Request, exc: HTTPException) -> JSONResponse:
     """Handle 404 errors."""
     return JSONResponse(status_code=404, content={"detail": str(exc.detail), "status": "not_found"})
 
 
 @app.exception_handler(500)
-async def internal_error_handler(request: Request, exc: HTTPException):
+async def internal_error_handler(request: Request, exc: HTTPException) -> JSONResponse:
     """Handle 500 errors."""
     return JSONResponse(status_code=500, content={"detail": str(exc.detail), "status": "error"})
 

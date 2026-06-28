@@ -589,7 +589,7 @@ def _compute_metrics(eval_pred) -> dict[str, float]:
     except (ValueError, TypeError, RuntimeError):
         logger.warning("Exception occurred", exc_info=True)
         loss = None
-    ppl = float("inf") if loss in (None, 0) else math.exp(cast(float, loss))
+    ppl = float("inf") if loss is None or loss == 0 else math.exp(loss)
     return {"token_accuracy": float(acc), "perplexity": ppl}
 
 
