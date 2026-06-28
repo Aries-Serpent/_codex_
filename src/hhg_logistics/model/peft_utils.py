@@ -99,8 +99,9 @@ def load_hf_llm(
             use_fast=use_fast,
             trust_remote_code=trust_remote_code,  # nosec B615
         )
-    if tokenizer.pad_token_id is None:  # type: ignore[attr-defined]
-        tokenizer.pad_token = tokenizer.eos_token  # type: ignore[attr-defined]
+    assert tokenizer is not None, f"Failed to load tokenizer {tok_name}"
+    if tokenizer.pad_token_id is None:
+        tokenizer.pad_token = tokenizer.eos_token
 
     torch_dtype = _resolve_dtype(dtype)
     model = AutoModelForCausalLM.from_pretrained(  # nosec B615        pretrained,
@@ -108,6 +109,7 @@ def load_hf_llm(
         low_cpu_mem_usage=low_cpu_mem_usage,
         trust_remote_code=trust_remote_code,  # nosec B615
     )
+    assert model is not None, f"Failed to load model {pretrained}"
     return HFModelBundle(model=model, tokenizer=tokenizer)
 
 

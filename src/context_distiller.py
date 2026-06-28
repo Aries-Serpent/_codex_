@@ -323,7 +323,7 @@ class ContextDistiller:
 
         if model_path and model_path.exists():
             sp = spm.SentencePieceProcessor(model_file=str(model_path))
-            tokens = sp.encode(content, out_type=str)
+            tokens = sp.encode(content, out_type=str)  # type: ignore[misc]
 
             # Reconstruct with token IDs for compression
             compressed = " ".join(tokens[: self.max_tokens])
