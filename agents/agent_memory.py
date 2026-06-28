@@ -388,8 +388,9 @@ class AgentMemory:
                 )
         elif isinstance(entry, dict):
             # Handle dict input
+            memory_id = entry.get("memory_id") or entry.get("key") or str(uuid.uuid4())
             entry = MemoryEntry(
-                memory_id=entry.get("memory_id", entry.get("key", str(uuid.uuid4()))),
+                memory_id=memory_id,
                 category=entry.get("category", "fact"),
                 content=entry.get("content", str(entry.get("value", ""))),
                 context=entry.get("context", {}),

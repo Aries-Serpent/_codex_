@@ -46,7 +46,7 @@ class ErrorResponse:
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for JSON serialization."""
-        result = {
+        result: Dict[str, Any] = {
             "status": self.status,
             "code": self.code,
             "message": self.message,
