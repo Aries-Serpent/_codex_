@@ -17,7 +17,7 @@ import json
 from abc import ABC
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Dict, Generic, Optional, Type, TypeVar
+from typing import Any, cast, Dict, Generic, Optional, Type, TypeVar
 
 import yaml
 
@@ -30,7 +30,7 @@ class BaseConfig(ABC):
     def to_dict(self) -> Dict[str, Any]:
         """Convert config to dictionary."""
         if hasattr(self, "__dataclass_fields__"):
-            return asdict(self)
+            return asdict(cast(Any, self))
         return self.__dict__
 
     def to_json(self, indent: int = 2) -> str:
@@ -45,7 +45,7 @@ class BaseConfig(ABC):
     def from_dict(cls: Type[T], data: Dict[str, Any]) -> T:
         """Create config from dictionary."""
         if hasattr(cls, "__dataclass_fields__"):
-            valid_fields = cls.__dataclass_fields__.keys()
+            valid_fields = cast(Any, cls).__dataclass_fields__.keys()
             filtered_data = {k: v for k, v in data.items() if k in valid_fields}
             return cls(**filtered_data)
         return cls(**data)
