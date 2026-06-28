@@ -166,7 +166,7 @@ def _operation_name(resource: str, entry: Mapping[str, Any], data: Mapping[str, 
     return ""
 
 
-def _find_existing(existing: list[Any], resource: str, name: str) -> None:
+def _find_existing(existing: list[Any], resource: str, name: str) -> Any:
     if not name:
         return None
     for item in existing:
