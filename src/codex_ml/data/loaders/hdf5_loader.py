@@ -82,7 +82,7 @@ class HDF5Loader:
             logger.debug("Exception: <ERROR_TYPE>")
             raise ValueError(f"Invalid HDF5 file: {e}") from e
 
-    def load(self) -> None:
+    def load(self) -> object:
         """
         Load HDF5 dataset into memory
 

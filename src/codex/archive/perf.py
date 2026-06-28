@@ -53,7 +53,7 @@ def measure_decompression(
     def decorator(func: Callable[..., T]) -> Callable[..., T]:
         metric_name = name or func.__name__
 
-        def wrapper(*args, **kwargs) -> None:
+        def wrapper(*args: object, **kwargs: object) -> T:
             with timer(metric_name) as metrics:
                 result = func(*args, **kwargs)
             wrapper.last_metrics = metrics  # type: ignore[attr-defined]
@@ -63,6 +63,6 @@ def measure_decompression(
         wrapper.__doc__ = func.__doc__
         wrapper.__module__ = func.__module__
         wrapper.last_metrics = None  # type: ignore[attr-defined]
-        return wrapper
+        return wrapper  # type: ignore[return-value]
 
     return decorator

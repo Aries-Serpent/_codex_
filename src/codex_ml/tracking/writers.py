@@ -1227,7 +1227,6 @@ class MLflowRunManager:
                 )  # codeql[py/clear-text-logging-sensitive-data]
             finally:
                 self._run = None
-        return False
 
     @property
     def run_id(self) -> Optional[str]:

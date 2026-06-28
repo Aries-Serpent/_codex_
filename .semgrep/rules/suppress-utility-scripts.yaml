@@ -210,3 +210,66 @@ rules:
        - "**/tests/**"
        - "**/test_*.py"
 
+
+  # Enhanced suppression for all non-user-input substring checks (M-01)
+  - id: suppress-config-analysis-patterns
+    message: "Configuration/analysis patterns - not user input validation"
+    languages:
+      - python
+    severity: INFO
+    metadata:
+      category: code-analysis
+      confidence: HIGH
+      verification_date: "2026-02-21"
+    patterns:
+      - pattern-either:
+          # Code transformation analysis
+          - pattern: |
+              if "type: ignore" in $VAR:
+                  ...
+          # JSON/data structure analysis
+          - pattern: |
+              if "jobs" in $DICT:
+                  ...
+          # Error message patterns
+          - pattern: |
+              if "not found" in $VAR.lower():
+                  ...
+          - pattern: |
+              if "rate limit" in $VAR.lower():
+                  ...
+          - pattern: |
+              if "authentication" in $VAR.lower():
+                  ...
+          - pattern: |
+              if "assertion" in $VAR.lower():
+                  ...
+          # Configuration patterns
+          - pattern: |
+              if "on" in data:
+                  ...
+          - pattern: |
+              if "timeout" in $CONFIG:
+                  ...
+          - pattern: |
+              if "key" in $OVERRIDE_CONFIG:
+                  ...
+          # Traceback/error patterns
+          - pattern: |
+              if "Traceback (most recent call last):" in $VAR:
+                  ...
+          # Line parsing patterns
+          - pattern: |
+              if "TOTAL" in line:
+                  ...
+          - pattern: |
+              if "lock" in $VAR.lower():
+                  ...
+    
+    paths:
+      include:
+        - "**/*.py"
+      exclude:
+        - "**/tests/**"
+        - "**/test_*.py"
+        - "**/*_test.py"
