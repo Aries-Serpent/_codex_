@@ -16,6 +16,10 @@ Addressed CI rescue comment from @mbaetiong (comment_id: 4824474818) and cogniti
 - ✅ **CodeQL Configuration Fix**: Added Go language configuration to .codeql/codeql-config.yml and .github/codeql-config.yml (commit 9fc79ac5)
   * Issue: "1 configuration not found" error due to missing Go configuration while Go files exist in tools/github-secrets-cli/
   * Fix: Added Go version 1.21 configuration to resolve CodeQL workflow
+- ✅ **Semgrep & CodeQL Action Pinning Fix**: Updated invalid commit hashes in semgrep_sarif.yml and security-scanning-suite.yml (commit 5f8f63fe)
+  * Issue: Workflow failed with "Unable to resolve action" due to invalid commit hashes (b7fbe226..., d7f12b4b...)
+  * Fix: Updated to valid commit hashes: returntocorp/semgrep-action@713efdd3, github/codeql-action/upload-sarif@9cea5827
+  * Status: Resolves Semgrep SAST (SARIF Upload) workflow failure
 - ✅ **REQ-4 Compliance**: Updated AGENT_ACCOUNTABILITY_REPORT.md in this commit
 - ✅ **REQ-5 Compliance**: Updated CHANGELOG.md in this commit
 - ✅ **CI Failure Resolution**: Fixed compliance check failures requiring REQ-4/REQ-5 in latest commit

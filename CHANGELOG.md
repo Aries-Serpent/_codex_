@@ -8,6 +8,7 @@
 - REQ-13: Addressed blocking comments from @mbaetiong with explicit commit SHAs (comment_id: 4824474818, 4824486504)
 - Fixed CodeQL "Illegal raise NoneType" alert: Verified proper exception handling in src/codex/consolidation/async_utils.py
 - Fixed CodeQL configuration "1 configuration not found" error: Added Go language configuration to .codeql/codeql-config.yml and .github/codeql-config.yml (commit 9fc79ac5)
+- Fixed Semgrep SAST workflow failure: Updated invalid commit hashes to valid ones in semgrep_sarif.yml and security-scanning-suite.yml (returntocorp/semgrep-action@713efdd3, github/codeql-action/upload-sarif@9cea5827) (commit 5f8f63fe)
 - Fixed 5 failing CI checks: Governance Compliance, Semgrep Security Analysis, Workflow Compliance Check, mypy Anti-Regression Gate, Run compliance check
 - Verified merge conflict resolution and 738 merged files from main → 0D_base_
 
