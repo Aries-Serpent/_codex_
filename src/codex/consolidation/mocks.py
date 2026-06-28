@@ -197,7 +197,9 @@ class StubDataFactory:
         return {key: f"stub_{key}" for key in keys}
 
     @staticmethod
-    def create_stub_list(item_factory: Optional[Callable[..., Any]] = None, count: int = 5) -> List[Any]:
+    def create_stub_list(
+        item_factory: Optional[Callable[..., Any]] = None, count: int = 5
+    ) -> List[Any]:
         """Create a stub list."""
         if item_factory is None:
             item_factory = lambda i: {"id": i, "value": f"item_{i}"}

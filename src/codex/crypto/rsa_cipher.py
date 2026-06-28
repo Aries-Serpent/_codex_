@@ -1,4 +1,5 @@
 from typing import Any
+
 """Security rsa_cipher module."""
 
 

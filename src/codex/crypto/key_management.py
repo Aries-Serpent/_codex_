@@ -1,4 +1,5 @@
 from typing import Any
+
 """Security key_management module."""
 
 

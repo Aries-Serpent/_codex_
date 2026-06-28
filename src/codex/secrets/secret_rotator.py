@@ -1,4 +1,5 @@
 from typing import Any
+
 """Security secret_rotator module."""
 
 

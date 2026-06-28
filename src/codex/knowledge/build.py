@@ -20,6 +20,7 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+from typing import Any
 
 from codex.archive.api import store
 from codex.archive.util import json_dumps_sorted, utcnow_iso
@@ -28,7 +29,6 @@ from codex.knowledge.dedup import dedup_records
 from codex.knowledge.normalize import normalize_file
 from codex.knowledge.pii import scrub
 from codex.knowledge.schema import validate_kb
-from typing import Any
 
 DOMAINS = ("zendesk", "d365", "relocation", "sla", "ops")
 INTENTS = ("admin", "consultant", "runtime", "devops")

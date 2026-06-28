@@ -16,7 +16,7 @@ import sqlite3
 import threading
 import time
 from contextlib import contextmanager
-from typing import Any, Optional, Generator
+from typing import Any, Generator, Optional
 
 from .concurrency import (
     DeadlockRecovery,

@@ -18,7 +18,7 @@ from __future__ import annotations
 import logging
 import warnings
 from collections.abc import Iterable, Sequence
-from typing import Optional, Any
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 

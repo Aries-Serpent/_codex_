@@ -1,4 +1,5 @@
 from typing import Any
+
 """Security aes_gcm_cipher module."""
 
 

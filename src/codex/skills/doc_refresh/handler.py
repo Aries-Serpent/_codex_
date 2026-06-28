@@ -8,9 +8,9 @@ from __future__ import annotations
 import hashlib
 import logging
 from pathlib import Path
+from typing import Any
 
 from codex.skills.aais import AAISScorer
-from typing import Any
 
 logger = logging.getLogger(__name__)
 

@@ -4,10 +4,10 @@ HTML visualization generator for AST analysis.
 
 import json
 from pathlib import Path
+from typing import Any
 
 from .graph import ASTGraph
 from .node import StandardizedASTNode
-from typing import Any
 
 
 class HTMLVisualizer:

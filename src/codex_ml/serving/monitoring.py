@@ -104,7 +104,9 @@ class PrometheusMetrics:
         self.model_load_count: DefaultDict[str, int] = defaultdict(int)  # {model_name: count}
         self.model_load_latency: dict[str, LatencyHistogram] = {}  # {model_name: LatencyHistogram}
         self.model_prediction_count: DefaultDict[str, int] = defaultdict(int)  # {model_name: count}
-        self.model_prediction_latency: dict[str, LatencyHistogram] = {}  # {model_name: LatencyHistogram}
+        self.model_prediction_latency: dict[
+            str, LatencyHistogram
+        ] = {}  # {model_name: LatencyHistogram}
         self.model_cache_hits: int = 0
         self.model_cache_misses: int = 0
 
@@ -116,14 +118,32 @@ class PrometheusMetrics:
 
         # Circuit breaker metrics
         self.circuit_breaker_state: dict[str, str] = {}  # {model_name: state}
-        self.circuit_breaker_failures: DefaultDict[str, int] = defaultdict(int)  # {model_name: count}
-        self.circuit_breaker_recoveries: DefaultDict[str, int] = defaultdict(int)  # {model_name: count}
+        self.circuit_breaker_failures: DefaultDict[str, int] = defaultdict(
+            int
+        )  # {model_name: count}
+        self.circuit_breaker_recoveries: DefaultDict[str, int] = defaultdict(
+            int
+        )  # {model_name: count}
 
         # Initialize histograms
-        standard_buckets: list[float] = [5.0, 10.0, 25.0, 50.0, 100.0, 250.0, 500.0, 1000.0, 2500.0, 5000.0, 10000.0]
+        standard_buckets: list[float] = [
+            5.0,
+            10.0,
+            25.0,
+            50.0,
+            100.0,
+            250.0,
+            500.0,
+            1000.0,
+            2500.0,
+            5000.0,
+            10000.0,
+        ]
         self.request_latency["inference"] = LatencyHistogram(buckets=standard_buckets)
         self.request_latency["batch_inference"] = LatencyHistogram(buckets=standard_buckets)
-        self.request_latency["health"] = LatencyHistogram(buckets=[1.0, 5.0, 10.0, 25.0, 50.0, 100.0])
+        self.request_latency["health"] = LatencyHistogram(
+            buckets=[1.0, 5.0, 10.0, 25.0, 50.0, 100.0]
+        )
 
         logger.info("PrometheusMetrics initialized")
 

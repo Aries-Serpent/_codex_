@@ -22,7 +22,7 @@ except (IOError, OSError):  # pragma: no cover - PyYAML is optional
     yaml = None
 
 
-def _load_typer():  # type: ignore[no-untyped-def]
+def _load_typer():
     spec = importlib.util.find_spec("typer")
     if spec is None:
         return None
@@ -526,7 +526,7 @@ else:
     # Module-level variable to cache functional training main for testing/mocking
     _functional_training_main = None
 
-    def _load_functional_training_main():  # type: ignore[no-untyped-def]
+    def _load_functional_training_main():
         """Load functional training entry point (cached at module level)."""
         global _functional_training_main
         if _functional_training_main is None:

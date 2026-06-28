@@ -1,4 +1,5 @@
 """Security vault_provider module."""
+
 from typing import Any
 
 

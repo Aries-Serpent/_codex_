@@ -22,8 +22,9 @@ from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
-import click  # noqa: E402
 from typing import Any
+
+import click  # noqa: E402
 
 
 def _count_function_lines(node: ast.FunctionDef | ast.AsyncFunctionDef) -> int:

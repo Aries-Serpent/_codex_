@@ -1,4 +1,5 @@
 from typing import Any
+
 """Security tls_config module."""
 
 

@@ -1,4 +1,5 @@
 from typing import Any
+
 """Security pkcs12_handler module."""
 
 

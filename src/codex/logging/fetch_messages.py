@@ -71,7 +71,7 @@ def _configure_connection(conn: sqlite3.Connection) -> None:
 
 
 @contextlib.contextmanager
-def get_conn(db_path: str, pooled: bool | None = None):  # type: ignore[no-untyped-def]
+def get_conn(db_path: str, pooled: bool | None = None):
     """Context-managed connection; pooled when enabled.
 
     Behavior:

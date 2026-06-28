@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import hashlib
 from collections.abc import Iterable, Mapping
+from typing import Any
 
 from .split import train_val_test_split as _train_val_test_split
-from typing import Any
 
 __all__ = [
     "SPLITS",

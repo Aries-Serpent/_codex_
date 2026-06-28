@@ -4,7 +4,7 @@ Authentication exceptions for Codex platform.
 Provides specific exception types for authentication and authorization errors.
 """
 
-from typing import Optional, Any
+from typing import Any, Optional
 
 
 class AuthError(Exception):

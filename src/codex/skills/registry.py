@@ -34,8 +34,9 @@ try:
 except (ImportError, AttributeError):  # pragma: no cover - optional but present in requirements
     yaml = None
 
-from .models import RegisteredSkill, SkillManifest
 from typing import Any
+
+from .models import RegisteredSkill, SkillManifest
 
 logger = logging.getLogger(__name__)
 
