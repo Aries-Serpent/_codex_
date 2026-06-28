@@ -175,7 +175,9 @@ async def run_async(payload: dict[str, Any]) -> dict[str, Any]:
         async with sem:
             return await loop.run_in_executor(None, _score_item, item, threshold, include_dims)
 
-    scores: list[dict[str, Any]] = list[Any](await asyncio.gather(*[_guarded(item) for item in items]))
+    scores: list[dict[str, Any]] = list[Any](
+        await asyncio.gather(*[_guarded(item) for item in items])
+    )
 
     return {
         "scores": scores,

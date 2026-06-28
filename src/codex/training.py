@@ -25,7 +25,7 @@ try:
     import torch
     import torch.nn.functional as F
 
-    clip_grad_norm_ = torch.nn.utils.clip_grad_norm_  # type: ignore[attr-defined]
+    clip_grad_norm_ = torch.nn.utils.clip_grad_norm_
 except (ImportError, AttributeError):  # keep imports resilient
     torch = None  # type: ignore[assignment]
     F = None  # type: ignore[assignment]

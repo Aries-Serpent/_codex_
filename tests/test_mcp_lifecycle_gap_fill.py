@@ -192,6 +192,7 @@ class TestStartupExecution:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_startup_with_sync_hooks(self):
         """Test startup with synchronous hooks."""
         manager = LifecycleManager()
@@ -215,6 +216,7 @@ class TestStartupExecution:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_startup_with_async_hooks(self):
         """Test startup with asynchronous hooks."""
         manager = LifecycleManager()
@@ -229,6 +231,7 @@ class TestStartupExecution:
         assert manager.is_healthy() is True, "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -260,6 +263,7 @@ class TestStartupExecution:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_startup_failure_triggers_rollback(self):
         """Test that startup failure triggers rollback."""
         manager = LifecycleManager()
@@ -282,6 +286,7 @@ class TestStartupExecution:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_startup_no_hooks(self):
         """Test startup with no hooks."""
         manager = LifecycleManager()
@@ -295,6 +300,7 @@ class TestShutdownExecution:
     """Test shutdown execution."""
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -327,6 +333,7 @@ class TestShutdownExecution:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_shutdown_with_async_hooks(self):
         """Test shutdown with asynchronous hooks."""
         manager = LifecycleManager()
@@ -343,6 +350,7 @@ class TestShutdownExecution:
         assert manager.is_ready() is False, "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -376,6 +384,7 @@ class TestShutdownExecution:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_shutdown_no_hooks(self):
         """Test shutdown with no hooks."""
         manager = LifecycleManager()
@@ -392,6 +401,7 @@ class TestResourceCleanup:
     """Test resource cleanup."""
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -420,6 +430,7 @@ class TestResourceCleanup:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_cleanup_with_async_cleanup_method(self):
         """Test cleanup with asynchronous cleanup method."""
         manager = LifecycleManager()
@@ -441,6 +452,7 @@ class TestResourceCleanup:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_cleanup_with_close_method(self):
         """Test cleanup with close method when cleanup not available."""
         manager = LifecycleManager()
@@ -455,6 +467,7 @@ class TestResourceCleanup:
         resource.close.assert_called_once()
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -579,6 +592,7 @@ class TestStatusMethods:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_status_after_startup(self):
         """Test status after successful startup."""
         manager = LifecycleManager()
@@ -588,6 +602,7 @@ class TestStatusMethods:
         assert manager.is_ready() is True, "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)

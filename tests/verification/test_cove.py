@@ -66,6 +66,7 @@ class TestCoVeEngine:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_verify_empty_response(self, engine):
         """Test verification of empty response."""
         result = await engine.verify_response("")
@@ -74,6 +75,7 @@ class TestCoVeEngine:
         assert result.overall_score == 0.0, "Result must not be empty"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -90,6 +92,7 @@ class TestCoVeEngine:
         assert len(result.verifications) == len(result.claims), "Collection must not be empty"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)

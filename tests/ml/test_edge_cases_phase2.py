@@ -5,9 +5,8 @@ and error handling paths. These tests expand coverage beyond Phase 1 basics.
 """
 
 import random
-import sys
 from threading import Thread
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 
@@ -41,21 +40,21 @@ class TestReproducibilityEdgeCases:
     def test_seed_reproducibility_with_multiple_threads(self):
         """Test that seeding works correctly with thread isolation."""
         results = []
-        
+
         def seeded_operation(seed, output_list):
             random.seed(seed)
             output_list.append([random.random() for _ in range(3)])
-        
+
         # Thread 1 with seed 42
         t1 = Thread(target=seeded_operation, args=(42, results))
         # Thread 2 with seed 42
         t2 = Thread(target=seeded_operation, args=(42, results))
-        
+
         t1.start()
         t2.start()
         t1.join()
         t2.join()
-        
+
         # Results should be reproducible per seed
         assert len(results) == 2, "Both threads must complete"
 
@@ -63,12 +62,12 @@ class TestReproducibilityEdgeCases:
         """Test seed state persists correctly after exception handling."""
         random.seed(42)
         first_value = random.random()
-        
+
         try:
             raise ValueError("Test exception")
         except ValueError:
             pass
-        
+
         # Reset to same seed and verify reproducibility
         random.seed(42)
         reset_value = random.random()
@@ -78,15 +77,15 @@ class TestReproducibilityEdgeCases:
         """Test nested seed operations maintain correct state."""
         random.seed(42)
         outer_val = random.random()
-        
+
         random.seed(43)
         inner_val = random.random()
-        
+
         # Restore outer seed
         random.seed(42)
         random.random()  # Skip one value
         restored_outer = random.random()
-        
+
         # Inner and restored should follow pattern
         assert isinstance(restored_outer, float), "Nested seed context failed"
         assert inner_val != outer_val, "Different seeds must produce different values"
@@ -101,10 +100,10 @@ class TestReproducibilityEdgeCases:
         """Test that entire sequence is deterministic with same seed."""
         random.seed(42)
         sequence1 = [random.random() for _ in range(100)]
-        
+
         random.seed(42)
         sequence2 = [random.random() for _ in range(100)]
-        
+
         assert sequence1 == sequence2, "Sequences with same seed must be identical"
         assert len(sequence1) == 100, "Sequence length must match"
 
@@ -112,10 +111,10 @@ class TestReproducibilityEdgeCases:
         """Test that seed affects randint generation."""
         random.seed(42)
         int1 = random.randint(1, 1000)
-        
+
         random.seed(42)
         int2 = random.randint(1, 1000)
-        
+
         assert int1 == int2, "Same seed must produce same randint"
         assert 1 <= int1 <= 1000, "Randint must be within bounds"
 
@@ -214,7 +213,7 @@ class TestErrorPathHandling:
         """Test reproducibility recovery after seeding error."""
         random.seed(42)
         value1 = random.random()
-        
+
         # Try invalid operation (caught and handled)
         try:
             # Force a reset
@@ -231,37 +230,37 @@ class TestConcurrencyAndThreading:
     def test_concurrent_model_validation(self):
         """Test that model validation works with concurrent access."""
         results = []
-        
+
         def validate_model(thread_id):
             mock_model = MagicMock()
             mock_model.id = thread_id
             mock_model.parameters = 1_000_000
             results.append(mock_model.parameters)
-        
+
         threads = [Thread(target=validate_model, args=(i,)) for i in range(5)]
         for t in threads:
             t.start()
         for t in threads:
             t.join()
-        
+
         assert len(results) == 5, "All threads should complete"
         assert all(r == 1_000_000 for r in results), "All threads should produce same result"
 
     def test_concurrent_seed_operations(self):
         """Test thread safety of seed operations."""
         results = []
-        
+
         def thread_seed_operation(seed_val):
             random.seed(seed_val)
             local_values = [random.random() for _ in range(5)]
             results.append(local_values)
-        
+
         threads = [Thread(target=thread_seed_operation, args=(i,)) for i in range(3)]
         for t in threads:
             t.start()
         for t in threads:
             t.join()
-        
+
         assert len(results) == 3, "All seed threads should complete"
 
 
@@ -273,7 +272,7 @@ class TestBoundaryConditions:
         min_vocab = 1
         typical_vocab = 50_000
         max_vocab = 1_000_000
-        
+
         for vocab_size in [min_vocab, typical_vocab, max_vocab]:
             assert vocab_size > 0, f"Vocab size {vocab_size} must be positive"
 
@@ -296,7 +295,7 @@ class TestBoundaryConditions:
         dims = [64, 128, 256, 512, 768, 1024, 2048, 4096]
         for dim in dims:
             assert dim > 0, f"Dimension {dim} must be positive"
-            assert dim % 64 == 0 or dim % 32 == 0, f"Common embedding dimensions"
+            assert dim % 64 == 0 or dim % 32 == 0, "Common embedding dimensions"
 
 
 class TestIntegrationScenarios:
@@ -307,7 +306,7 @@ class TestIntegrationScenarios:
         mock_model = MagicMock()
         mock_model.layers = [MagicMock() for _ in range(3)]
         mock_model.parameters = 125_000_000
-        
+
         # Validation phase
         assert len(mock_model.layers) >= 1, "Model must have layers"
         assert mock_model.parameters > 0, "Model must have parameters"
@@ -315,18 +314,18 @@ class TestIntegrationScenarios:
     def test_reproducibility_end_to_end(self):
         """Test reproducibility from seed to final output."""
         random.seed(42)
-        
+
         # Simulate training sequence
         random_values = []
         for _ in range(10):
             random_values.append(random.random())
-        
+
         # Reset and verify
         random.seed(42)
         repeat_values = []
         for _ in range(10):
             repeat_values.append(random.random())
-        
+
         assert random_values == repeat_values, "End-to-end reproducibility failed"
 
     def test_cross_module_validation_consistency(self):
@@ -335,12 +334,12 @@ class TestIntegrationScenarios:
         mock_model_a = MagicMock()
         mock_model_a.name = "module_a"
         mock_model_a.valid = True
-        
+
         # Module B
         mock_model_b = MagicMock()
         mock_model_b.name = "module_b"
         mock_model_b.valid = True
-        
+
         assert mock_model_a.valid and mock_model_b.valid, "Cross-module validation consistent"
 
     def test_full_validation_suite(self):
@@ -350,7 +349,7 @@ class TestIntegrationScenarios:
         mock_model.parameters_valid = True
         mock_model.dtype_valid = True
         mock_model.reproducible = True
-        
+
         all_valid = (
             mock_model.architecture_valid
             and mock_model.parameters_valid

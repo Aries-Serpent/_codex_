@@ -733,7 +733,7 @@ class Trainer:
         """Perform optimizer step with gradient clipping if configured."""
         if cfg.max_grad_norm is not None:
             self.scaler.unscale_(self.simple.optimizer)
-            torch.nn.utils.clip_grad_norm_(  # type: ignore[attr-defined]
+            torch.nn.utils.clip_grad_norm_(
                 self.simple.model.parameters(), cfg.max_grad_norm
             )
         self.scaler.step(self.simple.optimizer)

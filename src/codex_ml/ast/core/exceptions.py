@@ -88,6 +88,8 @@ class CycleDetectedError(ASTError):
     Raised when topological sort is attempted on a graph with cycles.
     """
 
-    def __init__(self, message: str = "Circular dependency detected", cycle: list[Any] | None = None):
+    def __init__(
+        self, message: str = "Circular dependency detected", cycle: list[Any] | None = None
+    ):
         super().__init__(message)
         self.cycle = cycle or []

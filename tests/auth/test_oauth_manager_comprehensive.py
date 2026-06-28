@@ -265,6 +265,7 @@ class TestTokenExchange:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_exchange_code_for_token(self, oauth_manager):
         with patch("httpx.AsyncClient.post") as mock_post:
             mock_response = Mock()
@@ -281,6 +282,7 @@ class TestTokenExchange:
             assert token.refresh_token == "refresh123", "refresh_token is not valid"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -309,6 +311,7 @@ class TestTokenExchange:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_exchange_code_missing_code(self, oauth_manager):
         with pytest.raises(ValueError):
             await oauth_manager.exchange_code_for_token("")
@@ -320,11 +323,13 @@ class TestTokenExchange:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_exchange_code_none_code(self, oauth_manager):
         with pytest.raises((ValueError, TypeError)):
             await oauth_manager.exchange_code_for_token(None)
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -357,6 +362,7 @@ class TestTokenRefresh:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_refresh_token(self, oauth_manager, valid_oauth_token):
         with patch("httpx.AsyncClient.post") as mock_post:
             mock_response = Mock()
@@ -379,6 +385,7 @@ class TestTokenRefresh:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_refresh_token_without_refresh_token(self, oauth_manager):
         token = OAuthToken(
             access_token="token123",
@@ -395,11 +402,13 @@ class TestTokenRefresh:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_refresh_token_none_token(self, oauth_manager):
         with pytest.raises((ValueError, TypeError)):
             await oauth_manager.refresh_token(None)
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -421,6 +430,7 @@ class TestTokenRefresh:
             assert new_token.created_at >= valid_oauth_token.created_at, "created_at must be greater than zero"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -584,6 +594,7 @@ class TestOAuthFlow:
         assert code_challenge, "code_challenge is not valid"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)

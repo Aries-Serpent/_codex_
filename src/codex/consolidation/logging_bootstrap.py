@@ -18,7 +18,7 @@ import logging.handlers
 import sys
 from enum import Enum
 from pathlib import Path
-from typing import Optional, Dict, Any
+from typing import Any, Dict, Optional
 
 
 class LogLevel(str, Enum):

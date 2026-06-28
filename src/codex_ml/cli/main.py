@@ -476,7 +476,7 @@ if typer is not None:
             app(args)
             return 0
         except SystemExit as e:
-            return e.code if e.code is not None else 0  # type: ignore[return-value]
+            return e.code if e.code is not None else 0
 
     cli = _typer_cli_wrapper
 
@@ -643,7 +643,7 @@ else:
                 "install it with `pip install hydra-core`."
             )
 
-    def cli(argv: Optional[list[str]] = None) -> int:  # type: ignore
+    def cli(argv: Optional[list[str]] = None) -> int:
         logger = init_json_logging()
         args = list(argv) if argv is not None else sys.argv[1:]
 

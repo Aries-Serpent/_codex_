@@ -158,7 +158,9 @@ def _clean_path(path: Path) -> None:
     path.unlink()
 
 
-def pack_release(manifest_path: Path, staging_dir: Path, bundle_path: Path) -> tuple[Path, dict[str, Any]]:
+def pack_release(
+    manifest_path: Path, staging_dir: Path, bundle_path: Path
+) -> tuple[Path, dict[str, Any]]:
     """
     Build a deterministic tar.gz bundle from a manifest referencing archive tombstones.
     Returns (bundle_path, locked_manifest_dict).

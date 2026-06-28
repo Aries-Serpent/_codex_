@@ -2018,7 +2018,7 @@ def run_training(
                         try:
                             _batch = next(loader_iter)
                         except StopIteration:
-                            loader_iter = iter(train_loader)  # type: ignore[arg-type]
+                            loader_iter = iter(train_loader)
                             _batch = next(loader_iter)
                         finally:
                             load_duration = time.perf_counter() - load_start

@@ -31,13 +31,9 @@ class FixtureFactory:
             yield Path(tmpdir)
 
     @staticmethod
-    def create_temp_file(
-        content: str = "", suffix: str = ".txt"
-    ) -> Generator[Path, None, None]:
+    def create_temp_file(content: str = "", suffix: str = ".txt") -> Generator[Path, None, None]:
         """Create a temporary file with optional content."""
-        with tempfile.NamedTemporaryFile(
-            mode="w", delete=False, suffix=suffix
-        ) as f:
+        with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=suffix) as f:
             if content:
                 f.write(content)
             temp_path = Path(f.name)
@@ -108,6 +104,7 @@ class AsyncFixture:
         enter_value: Any = None, exit_exception: Optional[Exception] = None
     ):
         """Create a reusable async context manager for testing."""
+
         class AsyncContextManager:
             async def __aenter__(self) -> None:
                 return enter_value

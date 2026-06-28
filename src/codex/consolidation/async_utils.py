@@ -13,13 +13,11 @@ Locations consolidated:
 LOC reduction: 380 lines
 """
 
-from abc import ABC, abstractmethod
-from contextlib import asynccontextmanager
-from typing import Any, AsyncGenerator, Optional, TypeVar, Generic
-
 import asyncio
 import logging
-
+from abc import ABC, abstractmethod
+from contextlib import asynccontextmanager
+from typing import Any, AsyncGenerator, Generic, Optional, TypeVar
 
 logger = logging.getLogger(__name__)
 
@@ -45,9 +43,7 @@ class AsyncContextBase(ABC, Generic[T]):
         pass
 
     @abstractmethod
-    async def teardown(
-        self, exc_type: Any, exc_val: Any, exc_tb: Any
-    ) -> None:
+    async def teardown(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
         """Cleanup operations for exiting context."""
         pass
 
@@ -186,9 +182,7 @@ class AsyncRetryManager(AsyncContextBase):
         """Cleanup after attempt."""
         pass
 
-    async def execute_with_retry(
-        self, coro_func: callable, *args, **kwargs
-    ) -> Any:
+    async def execute_with_retry(self, coro_func: callable, *args, **kwargs) -> Any:
         """Execute async function with retry logic."""
         last_exception = None
 
@@ -197,9 +191,7 @@ class AsyncRetryManager(AsyncContextBase):
                 self.attempt = attempt + 1
                 result = await coro_func(*args, **kwargs)
                 if attempt > 0:
-                    logger.info(
-                        f"'{self.operation_name}' succeeded on attempt {self.attempt}"
-                    )
+                    logger.info(f"'{self.operation_name}' succeeded on attempt {self.attempt}")
                 return result
             except Exception as e:
                 last_exception = e
@@ -234,9 +226,7 @@ async def async_managed_resource(
 
 
 @asynccontextmanager
-async def async_pool_connection(
-    pool: Any, timeout: float = 30.0
-) -> AsyncGenerator[Any, None]:
+async def async_pool_connection(pool: Any, timeout: float = 30.0) -> AsyncGenerator[Any, None]:
     """Context manager factory for async pool connections."""
     manager = AsyncPoolManager(pool, acquire_timeout=timeout)
     async with manager as conn:

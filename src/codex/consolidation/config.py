@@ -13,14 +13,13 @@ Locations consolidated:
 LOC reduction: 420 lines
 """
 
-from abc import ABC, abstractmethod
-from dataclasses import dataclass, field, asdict
+import json
+from abc import ABC
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Dict, Generic, Optional, Type, TypeVar
 
-import json
 import yaml
-
 
 T = TypeVar("T", bound="BaseConfig")
 
@@ -95,9 +94,7 @@ class ConfigValidator:
     """Validate configuration objects against constraints."""
 
     @staticmethod
-    def validate_required_fields(
-        config: BaseConfig, required_fields: list[str]
-    ) -> list[str]:
+    def validate_required_fields(config: BaseConfig, required_fields: list[str]) -> list[str]:
         """Validate that required fields are present and non-None."""
         missing = []
         for field in required_fields:
@@ -119,9 +116,7 @@ class ConfigValidator:
         return errors
 
     @staticmethod
-    def validate_choices(
-        config: BaseConfig, field_choices: Dict[str, list[Any]]
-    ) -> Dict[str, str]:
+    def validate_choices(config: BaseConfig, field_choices: Dict[str, list[Any]]) -> Dict[str, str]:
         """Validate fields against allowed choices."""
         errors = {}
         for field, choices in field_choices.items():

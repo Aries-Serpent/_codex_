@@ -219,6 +219,7 @@ class TestTokenExchange:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_exchange_code_for_token(self, github_app):
         with patch("httpx.AsyncClient.post") as mock_post:
             mock_response = Mock()
@@ -235,6 +236,7 @@ class TestTokenExchange:
             assert token["installation_id"] == "987654", "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -260,6 +262,7 @@ class TestTokenExchange:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_get_installation_token(self, github_app):
         with patch("httpx.AsyncClient.post") as mock_post:
             mock_response = Mock()
@@ -278,6 +281,7 @@ class TestTokenExchange:
             assert token["token"] == "ghs_123456789", "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -404,6 +408,7 @@ class TestIntegration:
             assert token["installation_id"] == "987654", "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)

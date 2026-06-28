@@ -46,7 +46,7 @@ from codex_ml.utils.hf_pinning import ensure_pinned_kwargs, load_from_pretrained
 
 logger = logging.getLogger(__name__)
 
-clip_grad_norm_ = torch.nn.utils.clip_grad_norm_  # type: ignore[attr-defined]
+clip_grad_norm_ = torch.nn.utils.clip_grad_norm_
 DataLoader = torch.utils.data.DataLoader
 
 # ruff: noqa: I001

@@ -238,6 +238,7 @@ class TestLifecycleManager:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_transition_to_valid(self):
         """Test valid state transition."""
         manager = LifecycleManager()
@@ -248,6 +249,7 @@ class TestLifecycleManager:
         assert manager.state == ServerState.READY, "state is not valid"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -290,6 +292,7 @@ class TestLifecycleManager:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_initialize(self):
         """Test server initialization."""
         manager = LifecycleManager()
@@ -302,6 +305,7 @@ class TestLifecycleManager:
         startup_hook.assert_called_once()
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -328,6 +332,7 @@ class TestLifecycleManager:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_start(self):
         """Test starting the server."""
         manager = LifecycleManager()
@@ -338,6 +343,7 @@ class TestLifecycleManager:
         assert manager.state == ServerState.RUNNING, "state is not valid"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -361,6 +367,7 @@ class TestLifecycleManager:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_get_health_when_unhealthy(self):
         """Test get_health when server is unhealthy."""
         manager = LifecycleManager()
@@ -373,6 +380,7 @@ class TestLifecycleManager:
         assert health.details["state"] == "error", "Error should be raised or set"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -406,6 +414,7 @@ class TestLifecycleManager:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_track_request_start(self):
         """Test tracking request start."""
         manager = LifecycleManager()
@@ -417,6 +426,7 @@ class TestLifecycleManager:
         assert manager._active_requests == 1, "_active_requests is not valid"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
@@ -442,6 +452,7 @@ class TestLifecycleManager:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_track_request_end(self):
         """Test tracking request end."""
         manager = LifecycleManager()
@@ -452,6 +463,7 @@ class TestLifecycleManager:
         assert manager._active_requests == 0, "_active_requests is not valid"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
