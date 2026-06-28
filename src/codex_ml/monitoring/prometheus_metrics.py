@@ -77,42 +77,42 @@ class CodexMetricsRegistry:
             self.active_sessions = _NoopMetric()
             return
 
-        self.training_steps = Counter(
+        self.training_steps = Counter(  # type: ignore[assignment]
             f"{namespace}_training_steps_total",
             "Total training steps completed",
             registry=self.registry,
         )
-        self.training_loss = Gauge(
+        self.training_loss = Gauge(  # type: ignore[assignment]
             f"{namespace}_training_loss",
             "Current training loss",
             registry=self.registry,
         )
-        self.training_duration_seconds = Histogram(
+        self.training_duration_seconds = Histogram(  # type: ignore[assignment]
             f"{namespace}_training_duration_seconds",
             "Training loop duration in seconds",
             buckets=(1, 5, 10, 30, 60, 300),
             registry=self.registry,
         )
-        self.inference_requests = Counter(
+        self.inference_requests = Counter(  # type: ignore[assignment]
             f"{namespace}_inference_requests_total",
             "Total inference requests",
             labelnames=["endpoint"],
             registry=self.registry,
         )
-        self.inference_latency_seconds = Histogram(
+        self.inference_latency_seconds = Histogram(  # type: ignore[assignment]
             f"{namespace}_inference_latency_seconds",
             "Inference request latency in seconds",
             labelnames=["endpoint"],
             buckets=(0.01, 0.05, 0.1, 0.5, 1.0, 5.0),
             registry=self.registry,
         )
-        self.data_loading_duration_seconds = Histogram(
+        self.data_loading_duration_seconds = Histogram(  # type: ignore[assignment]
             f"{namespace}_data_loading_duration_seconds",
             "Data loader iteration time in seconds",
             buckets=(0.1, 0.5, 1.0, 5.0, 10.0),
             registry=self.registry,
         )
-        self.active_sessions = Gauge(
+        self.active_sessions = Gauge(  # type: ignore[assignment]
             f"{namespace}_active_sessions",
             "Number of active training or inference sessions",
             registry=self.registry,

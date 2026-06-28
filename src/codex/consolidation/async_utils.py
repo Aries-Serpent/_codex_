@@ -27,7 +27,7 @@ T = TypeVar("T")
 class AsyncContextBase(ABC, Generic[T]):
     """Base class for async context managers."""
 
-    async def __aenter__(self) -> T:
+    async def __aenter__(self) -> Any:
         """Enter async context."""
         await self.setup()
         return self
@@ -101,7 +101,7 @@ class AsyncPoolManager(AsyncContextBase):
     async def setup(self) -> None:
         """Acquire resource from pool."""
         try:
-            self.connection = await asyncio.wait_for(
+            self.connection = await asyncio.wait_for(  # type: ignore[func-returns-value]
                 self.pool.acquire(), timeout=self.acquire_timeout
             )
             logger.debug("Acquired connection from pool")
@@ -135,7 +135,7 @@ class AsyncTimeout(AsyncContextBase):
     def __init__(self, timeout: float, operation_name: str = "operation"):
         self.timeout = timeout
         self.operation_name = operation_name
-        self.task = None
+        self.task: Any = None
 
     async def setup(self) -> None:
         """Setup timeout."""

@@ -129,7 +129,7 @@ def _safe_join_under_base(base_dir: Path, *segments: str) -> Path:
 # but add_exception_handler expects (Request, Exception) -> Response.
 # The wrapper below widens the signature to satisfy mypy without losing runtime behaviour.
 def _rate_limit_handler(request: Request, exc: Exception) -> Response:
-    return _rate_limit_exceeded_handler(request, exc)
+    return _rate_limit_exceeded_handler(request, exc)  # type: ignore[arg-type]
 
 
 # Add rate limiting
@@ -499,7 +499,7 @@ async def delete_index(
 
 @app.post("/rag/merge", response_model=MergeIndicesResponse, tags=["RAG"])
 @limiter.limit("5/minute")
-async def merge_indices(request: Request, merge_request: MergeIndicesRequest) -> None:
+async def merge_indices(request: Request, merge_request: MergeIndicesRequest):
     """Merge multiple indices."""
     try:
         from codex.rag import IndexOperation, manage_tenant_indices
@@ -529,7 +529,7 @@ async def merge_indices(request: Request, merge_request: MergeIndicesRequest) ->
 
 @app.get("/rag/stats/{index_name}", response_model=StatsResponse, tags=["RAG"])
 @limiter.limit("30/minute")
-async def get_stats(request: Request, index_name: str, tenant_id: str = "default") -> None:
+async def get_stats(request: Request, index_name: str, tenant_id: str = "default"):
     """Get statistics for an index."""
     try:
         from codex.rag import IndexOperation, load_index, manage_tenant_indices
@@ -577,7 +577,7 @@ async def get_stats(request: Request, index_name: str, tenant_id: str = "default
 
 @app.get("/rag/metrics", response_model=MetricsResponse, tags=["RAG"])
 @limiter.limit("30/minute")
-async def get_metrics(request: Request) -> None:
+async def get_metrics(request: Request):
     """Get RAG system metrics."""
     try:
         from codex.rag import get_metrics
@@ -597,13 +597,13 @@ async def get_metrics(request: Request) -> None:
 
 
 @app.exception_handler(404)
-async def not_found_handler(request: Request, exc: HTTPException) -> None:
+async def not_found_handler(request: Request, exc: HTTPException):
     """Handle 404 errors."""
     return JSONResponse(status_code=404, content={"detail": str(exc.detail), "status": "not_found"})
 
 
 @app.exception_handler(500)
-async def internal_error_handler(request: Request, exc: HTTPException) -> None:
+async def internal_error_handler(request: Request, exc: HTTPException):
     """Handle 500 errors."""
     return JSONResponse(status_code=500, content={"detail": str(exc.detail), "status": "error"})
 

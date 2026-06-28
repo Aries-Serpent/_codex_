@@ -138,7 +138,7 @@ def _tokenizer_cached() -> PreTrainedTokenizerBase:
 def _model_cached() -> AutoModelForCausalLM:
     tokenizer = _tokenizer_cached()
     if _DEFAULT_MODEL_NAME:
-        model = AutoModelForCausalLM.from_pretrained(  # nosec B615
+        model = AutoModelForCausalLM.from_pretrained(  # nosec B615  # type: ignore[assignment]
             _DEFAULT_MODEL_NAME,
             cache_dir=_DEFAULT_CACHE_DIR,
             local_files_only=not _ALLOW_REMOTE,
@@ -152,7 +152,7 @@ def _model_cached() -> AutoModelForCausalLM:
         )
         model = AutoModelForCausalLM.from_config(config)
     model.eval()  # type: ignore[attr-defined]
-    return model
+    return model  # type: ignore[return-value]
 
 
 def _denylist() -> DenylistEnforcer:
@@ -246,7 +246,7 @@ def predict(req: PredictRequest) -> PredictResponse:
 
     tokenizer = _tokenizer()
     model = _model()
-    encoded = tokenizer(
+    encoded = tokenizer(  # type: ignore[func-returns-value]
         req.prompt,
         return_tensors="pt",
         padding=True,
@@ -255,13 +255,13 @@ def predict(req: PredictRequest) -> PredictResponse:
     )
     pad_token_id = tokenizer.pad_token_id or tokenizer.eos_token_id
     with torch.no_grad():
-        generated = model.generate(
+        generated = model.generate(  # type: ignore[arg-type,func-returns-value]
             **encoded,
             max_new_tokens=_MAX_NEW_TOKENS,
             pad_token_id=pad_token_id,
             do_sample=False,
         )
-    output = tokenizer.batch_decode(generated, skip_special_tokens=True)[0]
+    output = tokenizer.batch_decode(generated, skip_special_tokens=True)[0]  # type: ignore[func-returns-value,index]
 
     # Gap 27: post-output moderation check (fail-closed)
     try:
