@@ -106,7 +106,7 @@ class LocalLRUCache(CacheBackend):
         self._misses = 0
         logger.info("LocalLRUCache cleared")
 
-    def get_stats(self) -> dict:
+    def get_stats(self) -> dict[str, Any]:
         """Get cache statistics."""
         total = self._hits + self._misses
         hit_rate = self._hits / total if total > 0 else 0.0

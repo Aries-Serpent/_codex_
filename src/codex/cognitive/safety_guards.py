@@ -202,7 +202,7 @@ class AuditLog:
         if log_path is None:
             log_path = Path(".codex/cognitive_brain/audit_log.json")
         self.log_path = log_path
-        self._events: list[dict] = []
+        self._events: list[dict[str, Any]] = []
         self._event_counter = 0
         self._load()
 

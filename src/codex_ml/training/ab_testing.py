@@ -34,7 +34,7 @@ class ModelVariant:
     traffic_percentage: float = 0.0
     results: list[dict[str, float]] = field(default_factory=list)
 
-    def record_result(self, metrics: dict[str, float]):
+    def record_result(self, metrics -> None: dict[str, float]):
         """Record a result for this variant.
 
         Args:
@@ -115,7 +115,7 @@ class ABTestManager:
         self.start_time = datetime.now(UTC).isoformat()
         logger.info(f"Started A/B test: {config.experiment_name}")
 
-    def record_result(self, variant_name: str, metrics: dict[str, float]):
+    def record_result(self, variant_name -> None: str, metrics: dict[str, float]):
         """Record a result for a variant.
 
         Args:
@@ -238,7 +238,7 @@ class ABTestManager:
 
         return report
 
-    def gradual_rollout(self, winner_variant: str, steps: int = 5):
+    def gradual_rollout(self, winner_variant -> None: str, steps: int = 5):
         """Gradually rollout winning variant.
 
         Args:
@@ -269,7 +269,7 @@ class ABTestManager:
 
         logger.info(f"Gradual rollout complete: {winner_variant} at 100%")
 
-    def save_results(self, output_path: Path | str):
+    def save_results(self, output_path -> None: Path | str):
         """Save experiment results to file.
 
         Args:

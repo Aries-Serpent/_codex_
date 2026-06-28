@@ -433,7 +433,7 @@ def info(
         raise typer.Exit(code=1) from e
 
 
-def main():
+def main() -> None:
     """Main entry point for feature store CLI."""
     app()
 

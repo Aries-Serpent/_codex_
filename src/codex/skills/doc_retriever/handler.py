@@ -46,7 +46,7 @@ def run(payload: dict[str, Any]) -> dict[str, Any]:
     terms = [re.escape(t) for t in query.split() if t]
     pattern = re.compile("|".join(terms), re.IGNORECASE) if terms else None
 
-    results: list[dict] = []
+    results: list[dict[str, Any]] = []
     for md_file in sorted(doc_root.glob(_DOCS_GLOB)):
         try:
             text = md_file.read_text(encoding="utf-8", errors="replace")

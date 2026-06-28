@@ -49,7 +49,7 @@ class PluginMetadata:
     dependencies: list[str] | None = None
     min_codex_version: str = "0.1.0"
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.dependencies is None:
             self.dependencies = []
 
@@ -110,13 +110,13 @@ class PluginRegistry:
 
     _instance = None
 
-    def __new__(cls):
+    def __new__(cls) -> None:
         if cls._instance is None:
             cls._instance = super().__new__(cls)
             cls._instance._initialized = False
         return cls._instance
 
-    def __init__(self):
+    def __init__(self) -> None:
         if self._initialized:
             return
 
@@ -140,7 +140,7 @@ class PluginRegistry:
         self._plugins[metadata.name] = plugin_class
         logger.info(f"Registered plugin: {metadata.name} v{metadata.version}")
 
-    def unregister(self, name: str):
+    def unregister(self, name -> None: str):
         """Unregister a plugin.
 
         Args:
@@ -185,7 +185,7 @@ class PluginRegistry:
         """
         return [plugin_class.get_metadata() for plugin_class in self._plugins.values()]
 
-    def discover_plugins(self, directory: str):
+    def discover_plugins(self, directory -> None: str):
         """Discover and load plugins from directory.
 
         Args:
@@ -215,7 +215,7 @@ class PluginRegistry:
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.error(f"Failed to load plugin {plugin_file}: <ERROR_TYPE>")
 
-    def reload_plugin(self, name: str):
+    def reload_plugin(self, name -> None: str):
         """Reload a plugin (for hot-reloading).
 
         Args:

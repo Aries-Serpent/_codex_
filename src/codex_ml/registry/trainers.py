@@ -38,7 +38,7 @@ def _load_functional_trainer() -> Callable[..., Any]:
     return train
 
 
-def register_trainer(name: str, obj: Callable[..., Any] | None = None, *, override: bool = False):
+def register_trainer(name -> None: str, obj: Callable[..., Any] | None = None, *, override: bool = False):
     return trainer_registry.register(name, obj, override=override)
 
 

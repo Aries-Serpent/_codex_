@@ -77,7 +77,7 @@ def _resolve_loader(loader_entry: Callable) -> Callable:
     return loader_entry
 
 
-def register_loader(extensions: list, loader_fn: Callable):
+def register_loader(extensions -> None: list[Any], loader_fn: Callable):
     """
     Register a loader function for file extensions
 
@@ -127,19 +127,19 @@ def load_dataset(file_path, **kwargs) -> Any:
 
 
 # Register built-in loaders
-def _lazy_load_parquet():
+def _lazy_load_parquet() -> None:
     from .parquet_loader import load_parquet
 
     return load_parquet
 
 
-def _lazy_load_arrow():
+def _lazy_load_arrow() -> None:
     from .arrow_loader import load_arrow
 
     return load_arrow
 
 
-def _lazy_load_hdf5():
+def _lazy_load_hdf5() -> None:
     from .hdf5_loader import load_hdf5
 
     return load_hdf5

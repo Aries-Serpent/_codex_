@@ -99,7 +99,7 @@ def scrub(
     enable_ssn: bool = True,
     enable_credit_card: bool = True,
     enable_aws_key: bool = True,
-) -> tuple[str, dict]:
+) -> tuple[str, dict[str, Any]]:
     """Scrub PII from text content.
 
     Args:

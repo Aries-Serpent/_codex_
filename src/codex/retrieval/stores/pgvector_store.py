@@ -345,7 +345,7 @@ class PGVectorStore:
     async def _insert_to_shard(
         self,
         shard_id: int,
-        documents: list[tuple],
+        documents: list[tuple[Any, ...]],
     ) -> None:
         """Insert documents to a single shard using pipeline."""
         if not self.pool:

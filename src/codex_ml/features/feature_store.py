@@ -53,7 +53,7 @@ class FeatureMetadata:
     updated_at: str
     tags: dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return asdict(self)
 
@@ -76,7 +76,7 @@ class FeatureVersion:
     storage_path: Optional[str] = None
     metadata: dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return asdict(self)
 
@@ -170,7 +170,7 @@ class FeatureStore:
 
         self._load_registry()
 
-    def _load_registry(self):
+    def _load_registry(self) -> None:
         """Load feature registry from disk."""
         registry_path = self.store_path / "registry.json"
         if registry_path.exists():
@@ -178,7 +178,7 @@ class FeatureStore:
                 data = json.load(f)
                 logger.info(f"Loaded {len(data)} feature groups from registry")
 
-    def _save_registry(self):
+    def _save_registry(self) -> None:
         """Save feature registry to disk."""
         registry_path = self.store_path / "registry.json"
         data = {
@@ -193,7 +193,7 @@ class FeatureStore:
             json.dump(data, f, indent=2)
         logger.info(f"Saved {len(data)} feature groups to registry")
 
-    def register_feature_group(self, group: FeatureGroup):
+    def register_feature_group(self, group -> None: FeatureGroup):
         """Register a feature group.
 
         Args:
@@ -309,7 +309,7 @@ class FeatureStore:
             features.extend([f.name for f in group.features])
         return features
 
-    def clear_cache(self):
+    def clear_cache(self) -> None:
         """Clear feature cache."""
         self.feature_cache.clear()
         logger.info("Feature cache cleared")

@@ -300,7 +300,7 @@ class ArgparseJSONParser(argparse.ArgumentParser):
     Mirrors argparse semantics (stderr + exit 2 on invalid args).
     """
 
-    def __init__(self, *a, **k):
+    def __init__(self, *a, **k) -> None:
         self._logger = logging.getLogger("codex")
         super().__init__(*a, **k)
 
@@ -349,10 +349,10 @@ class _CaptureExceptionsContext:
         self.logger = logger or logging.getLogger("codex")
         self.event = event
 
-    def __enter__(self):
+    def __enter__(self) -> None:
         return self
 
-    def __exit__(self, etype, evalue, etb):
+    def __exit__(self, etype, evalue, etb) -> None:
         if etype is None:
             return False
         if isinstance(evalue, SystemExit):
@@ -384,7 +384,7 @@ class _CaptureExceptionsContext:
         )
         return False
 
-    def __call__(self, target: Any):
+    def __call__(self, target -> None: Any):
         return capture_exceptions(target, logger=self.logger, event=self.event)
 
 

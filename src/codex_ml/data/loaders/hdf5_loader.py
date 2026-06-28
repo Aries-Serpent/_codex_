@@ -82,7 +82,7 @@ class HDF5Loader:
             logger.debug("Exception: <ERROR_TYPE>")
             raise ValueError(f"Invalid HDF5 file: {e}") from e
 
-    def load(self):
+    def load(self) -> None:
         """
         Load HDF5 dataset into memory
 
@@ -108,7 +108,7 @@ class HDF5Loader:
                 return data
             raise ValueError(f"Unknown HDF5 object type: {type(obj)}")
 
-    def load_chunked(self, chunk_size: int = 1000):
+    def load_chunked(self, chunk_size -> None: int = 1000):
         """
         Stream HDF5 dataset in chunks
 
@@ -167,7 +167,7 @@ class HDF5Loader:
         """
         paths = []
 
-        def visitor(name, obj):
+        def visitor(name, obj) -> None:
             if isinstance(obj, h5py.Dataset):
                 paths.append(name)
 
@@ -177,7 +177,7 @@ class HDF5Loader:
         return sorted(paths)
 
 
-def load_hdf5(file_path: Path, dataset_path: str = "/", chunk_size: Optional[int] = None):
+def load_hdf5(file_path -> None: Path, dataset_path: str = "/", chunk_size: Optional[int] = None):
     """
     Convenience function to load HDF5 dataset
 

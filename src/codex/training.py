@@ -1031,7 +1031,7 @@ def run_hf_trainer(texts: Any, output_dir: Any, **kwargs: Any) -> dict[str, Any]
     ) or {"loss": 0.0}
 
 
-def main(argv: Optional[list] = None) -> None:  # pragma: no cover - convenience CLI
+def main(argv: Optional[list[Any]] = None) -> None:  # pragma: no cover - convenience CLI
     parser = build_parser()
     # Add engine and output-dir args used by peft-comprehensive tests
     parser.add_argument(

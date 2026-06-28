@@ -149,7 +149,7 @@ def _print_programmatic(snapshot: dict[str, Any]) -> None:
             print(f"    - {item}")
 
 
-def _build_parser():
+def _build_parser() -> None:
     from codex_ml.codex_structured_logging import ArgparseJSONParser
 
     return ArgparseJSONParser(

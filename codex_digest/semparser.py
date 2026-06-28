@@ -21,7 +21,7 @@ class ParseResult:
 class SemParser:
     """Lightweight rule-and-score parser."""
 
-    RULES: list[tuple[str, list, dict]] = [
+    RULES: list[tuple[str, list[Any], dict[str, Any]]] = [
         ("AUDIT_REPO", [re.compile(r"\baudit\b"), re.compile(r"\brepo|repository\b")], {}),
         (
             "FIX_PRECOMMIT",

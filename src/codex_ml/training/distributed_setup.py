@@ -146,7 +146,7 @@ def is_main_process() -> bool:
     return get_rank() == 0
 
 
-def barrier():
+def barrier() -> None:
     """Synchronize all processes."""
     if is_distributed():
         dist.barrier()
@@ -249,7 +249,7 @@ def reduce_tensor(tensor: torch.Tensor, average: bool = True) -> torch.Tensor:
     return rt
 
 
-def gather_tensor(tensor: torch.Tensor, dst: int = 0):
+def gather_tensor(tensor -> None: torch.Tensor, dst: int = 0):
     """Gather tensor from all processes to destination rank.
 
     Args:
@@ -278,7 +278,7 @@ def gather_tensor(tensor: torch.Tensor, dst: int = 0):
     return None
 
 
-def print_once(message: str, rank: int = 0):
+def print_once(message -> None: str, rank: int = 0):
     """Print message only on specified rank.
 
     Args:
@@ -289,7 +289,7 @@ def print_once(message: str, rank: int = 0):
         print(message)
 
 
-def log_once(message: str, level: str = "info", rank: int = 0):
+def log_once(message -> None: str, level: str = "info", rank: int = 0):
     """Log message only on specified rank.
 
     Args:

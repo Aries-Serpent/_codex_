@@ -64,7 +64,7 @@ class ModelConfig:
     torch_dtype: str = "auto"
     low_cpu_mem_usage: bool = True
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Validate configuration"""
         # Validate device
         valid_devices = ["cpu", "cuda", "mps", "auto"]
@@ -326,7 +326,7 @@ class ModelLoader:
             "load_time": time.time(),
         }
 
-    def _get_torch_dtype(self, dtype_str: str):
+    def _get_torch_dtype(self, dtype_str -> None: str):
         """Convert dtype string to torch dtype
 
         Args:
@@ -354,7 +354,7 @@ class ModelLoader:
             logger.warning("torch not available, ignoring dtype specification")
             return None
 
-    def _apply_quantization(self, model, quant_type: str):
+    def _apply_quantization(self, model, quant_type -> None: str):
         """Apply quantization to model
 
         Args:

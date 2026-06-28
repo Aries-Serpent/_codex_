@@ -7,10 +7,20 @@ across the codebase, extracted during Phase 6 Wave 2 duplication consolidation c
 Pattern Groups:
   - Decorators: Validation, authorization, and error handling decorators
   - Errors: Centralized error handling and wrapping utilities
+  - Test Fixtures: Shared pytest fixtures and factory utilities
+  - Configuration: BaseConfig and ConfigParser utilities
+  - Mocks: Mock/stub object factories for testing
+  - Logging: Logger bootstrap and configuration utilities
+  - Async Utils: Async context managers and retry logic
 
 Modules:
   - decorators: @validate, @require_auth, @handle_errors decorators
   - errors: Error wrapping, exception handlers, error response builders
+  - test_fixtures: Test fixture factories and utilities (MRC-001)
+  - config: Configuration parsing and validation (MRC-002)
+  - mocks: Mock/stub factories (MRC-003)
+  - logging_bootstrap: Logger setup utilities (MRC-004)
+  - async_utils: Async context managers (MRC-005)
 """
 
 from src.codex.consolidation.decorators import (
@@ -29,6 +39,51 @@ from src.codex.consolidation.errors import (
     wrap_async_with_error_handling,
     wrap_with_error_handling,
 )
+from src.codex.consolidation.test_fixtures import (
+    AsyncFixture,
+    DatabaseFixture,
+    FixtureFactory,
+    MockFixture,
+    isolated_env,
+    mock_config,
+    mock_credentials,
+    temp_dir,
+    temp_file,
+    test_db_path,
+)
+from src.codex.consolidation.config import (
+    BaseConfig,
+    ConfigParser,
+    ConfigValidator,
+    DefaultConfig,
+)
+from src.codex.consolidation.mocks import (
+    AsyncFakeServiceFactory,
+    AsyncMockClientFactory,
+    FakeModel,
+    FakeRepositoryFactory,
+    FakeServiceFactory,
+    MockClientFactory,
+    ObjectFactory,
+    StubDataFactory,
+)
+from src.codex.consolidation.logging_bootstrap import (
+    ContextLogger,
+    LogFormats,
+    LogLevel,
+    LoggerBootstrap,
+    LoggingConfig,
+)
+from src.codex.consolidation.async_utils import (
+    AsyncContextBase,
+    AsyncPoolManager,
+    AsyncResourceManager,
+    AsyncRetryManager,
+    AsyncTimeout,
+    async_managed_resource,
+    async_pool_connection,
+    async_timeout_context,
+)
 
 __all__ = [
     # Decorators (LRC-002)
@@ -45,4 +100,44 @@ __all__ = [
     "wrap_with_error_handling",
     "wrap_async_with_error_handling",
     "AuthenticationError",
+    # Test fixtures (MRC-001)
+    "FixtureFactory",
+    "DatabaseFixture",
+    "MockFixture",
+    "AsyncFixture",
+    "temp_dir",
+    "temp_file",
+    "isolated_env",
+    "mock_config",
+    "mock_credentials",
+    "test_db_path",
+    # Configuration (MRC-002)
+    "BaseConfig",
+    "ConfigValidator",
+    "ConfigParser",
+    "DefaultConfig",
+    # Mocks (MRC-003)
+    "ObjectFactory",
+    "FakeModel",
+    "MockClientFactory",
+    "AsyncMockClientFactory",
+    "FakeRepositoryFactory",
+    "FakeServiceFactory",
+    "AsyncFakeServiceFactory",
+    "StubDataFactory",
+    # Logging (MRC-004)
+    "LogLevel",
+    "LogFormats",
+    "LoggerBootstrap",
+    "ContextLogger",
+    "LoggingConfig",
+    # Async utilities (MRC-005)
+    "AsyncContextBase",
+    "AsyncResourceManager",
+    "AsyncPoolManager",
+    "AsyncTimeout",
+    "AsyncRetryManager",
+    "async_managed_resource",
+    "async_pool_connection",
+    "async_timeout_context",
 ]

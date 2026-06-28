@@ -37,9 +37,9 @@ def _scan_smells(
     max_args: int = 5,
     max_file_lines: int = 500,
 ) -> dict[str, Any]:
-    long_functions: list[dict] = []
-    large_files: list[dict] = []
-    many_args: list[dict] = []
+    long_functions: list[dict[str, Any]] = []
+    large_files: list[dict[str, Any]] = []
+    many_args: list[dict[str, Any]] = []
 
     for path in src_root.rglob("*.py"):
         try:

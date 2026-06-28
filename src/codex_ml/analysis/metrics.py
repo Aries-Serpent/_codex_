@@ -41,7 +41,7 @@ def mccabe_minimal(ast_tree: ast.AST) -> int:
     return 1 + sum(1 for n in ast.walk(ast_tree) if isinstance(n, branches))
 
 
-def perplexity_from_mean_nll(mean_nll: float | None):
+def perplexity_from_mean_nll(mean_nll -> None: float | None):
     """Convert mean negative log-likelihood to perplexity."""
     try:
         return math.exp(float(mean_nll))  # type: ignore[arg-type]

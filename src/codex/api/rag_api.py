@@ -185,7 +185,7 @@ class QueryResult(BaseModel):
     text: str
     file: str
     score: float
-    metadata: Optional[dict] = None
+    metadata: Optional[dict[str, Any]] = None
 
 
 class QueryResponse(BaseModel):

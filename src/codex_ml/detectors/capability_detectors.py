@@ -1473,7 +1473,7 @@ def detector_dependency_mgmt() -> DetectorResult:
 # --- Aggregate Capability Scorecard ---
 
 
-def get_capability_detectors() -> list:
+def get_capability_detectors() -> list[Any]:
     """Get all capability detectors."""
     return [
         detector_configuration,

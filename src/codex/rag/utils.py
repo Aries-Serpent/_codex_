@@ -378,7 +378,7 @@ class ProvenanceMetadata:
     embedding_model: str
     retrieval_score: float
     char_range: Optional[tuple[int, int]] = None
-    metadata: Optional[dict] = None
+    metadata: Optional[dict[str, Any]] = None
 
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for serialization."""

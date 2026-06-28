@@ -815,7 +815,7 @@ def build_app_manifest(
 # ---------------------------------------------------------------------------
 
 
-def _resolve_github_token() -> list[tuple]:
+def _resolve_github_token() -> list[tuple[Any, ...]]:
     """
     Resolve GitHub PAT tokens from the environment in priority order.
 

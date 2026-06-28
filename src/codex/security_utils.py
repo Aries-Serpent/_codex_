@@ -96,8 +96,8 @@ def redact_secret_name(secret_name: str) -> str:
 
 def sanitize_log_message(
     message: str,
-    redact_patterns: Optional[list] = None,
-    whitelist_patterns: Optional[list] = None,
+    redact_patterns: Optional[list[Any]] = None,
+    whitelist_patterns: Optional[list[Any]] = None,
 ) -> str:
     """
     Sanitize a log message by redacting potential sensitive information.
@@ -248,7 +248,7 @@ def safe_secret_reference(name: str = "", operation: str = "") -> str:
     return f"secret: {name}"
 
 
-def redact_dict_with_secret_keys(data: Optional[dict]) -> dict[str, Any]:
+def redact_dict_with_secret_keys(data: Optional[dict[str, Any]]) -> dict[str, Any]:
     """
     Redact a dictionary that uses secret names as keys.
 

@@ -12,7 +12,7 @@ class Permission:
     resource: str
     action: str
     scope: str = "global"
-    constraints: Optional[dict] = None
+    constraints: Optional[dict[str, Any]] = None
 
 
 class PermissionValidator:

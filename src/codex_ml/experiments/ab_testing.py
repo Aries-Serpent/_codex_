@@ -346,7 +346,7 @@ class ABTestSuite:
     # Reporting
     # ------------------------------------------------------------------
 
-    def report(self) -> dict:
+    def report(self) -> dict[str, Any]:
         """Build a structured summary report.
 
         Calls :meth:`run_all` if results are not yet available.
@@ -362,7 +362,7 @@ class ABTestSuite:
         if not self._results:
             self.run_all()
 
-        tests_report: dict = {}
+        tests_report: dict[str, Any] = {}
         significant_count = 0
         inconclusive_count = 0
 

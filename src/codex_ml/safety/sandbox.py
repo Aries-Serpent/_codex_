@@ -36,7 +36,7 @@ from pathlib import Path
 from typing import Optional
 
 
-def _scrub_env() -> dict:
+def _scrub_env() -> dict[str, Any]:
     return {
         "PATH": "/usr/bin:/bin",
         "LANG": "C.UTF-8",

@@ -119,7 +119,7 @@ class ArrowLoader:
                     df = batch.to_pandas()
                     yield df.to_dict("records")
 
-    def get_schema(self):
+    def get_schema(self) -> None:
         """
         Get Arrow schema
 
@@ -146,7 +146,7 @@ class ArrowLoader:
                 }
 
 
-def load_arrow(file_path: Path, batch_size: Optional[int] = None):
+def load_arrow(file_path -> None: Path, batch_size: Optional[int] = None):
     """
     Convenience function to load Arrow IPC dataset
 

@@ -195,7 +195,7 @@ class RedisCache(CacheBackend):
         if self._local_cache:
             self._local_cache.clear()
 
-    def get_stats(self) -> dict:
+    def get_stats(self) -> dict[str, Any]:
         """Get cache statistics."""
         stats = dict(self._stats)
 

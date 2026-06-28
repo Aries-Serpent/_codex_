@@ -25,7 +25,7 @@ class LatencyHistogram:
     total_count: int = 0
     total_sum: float = 0.0
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize bucket counts"""
         if not hasattr(self, "counts") or self.counts is None:
             self.counts = {bucket: 0 for bucket in self.buckets}
@@ -91,7 +91,7 @@ class PrometheusMetrics:
     - Circuit breaker metrics (state, failures, recoveries)
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize metrics collector"""
         self.lock = Lock()
 
@@ -335,7 +335,7 @@ class PrometheusMetrics:
 
         return "\n".join(lines) + "\n"
 
-    def get_summary(self) -> dict:
+    def get_summary(self) -> dict[str, Any]:
         """Get summary of all metrics
 
         Returns:

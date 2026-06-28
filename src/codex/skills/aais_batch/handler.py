@@ -66,7 +66,7 @@ def _score_item(
     return entry
 
 
-def _build_summary(scores: list[dict], threshold: float) -> dict[str, Any]:
+def _build_summary(scores: list[dict[str, Any]], threshold: float) -> dict[str, Any]:
     passed = sum(1 for s in scores if s["pass"])
     total_score = sum(s["total"] for s in scores)
     avg = round(total_score / len(scores), 4) if scores else None
@@ -106,7 +106,7 @@ def run(payload: dict[str, Any]) -> dict[str, Any]:
         ``{"scores": [...], "summary": {...}}``.
         Each score entry has ``{id, total, pass, ...dimensions?}``.
     """
-    items: list[dict] = list[Any](payload.get("items", []))
+    items: list[dict[str, Any]] = list[Any](payload.get("items", []))
     if not items:
         return {
             "scores": [],
@@ -119,7 +119,7 @@ def run(payload: dict[str, Any]) -> dict[str, Any]:
 
     if max_concurrency > 0:
         # Process in sequential chunks to throttle peak memory on large batches.
-        scores: list[dict] = []
+        scores: list[dict[str, Any]] = []
         for start in range(0, len(items), max_concurrency):
             chunk = items[start : start + max_concurrency]
             scores.extend(_score_item(item, threshold, include_dims) for item in chunk)
@@ -156,7 +156,7 @@ async def run_async(payload: dict[str, Any]) -> dict[str, Any]:
     dict
         Same shape as :func:`run`.
     """
-    items: list[dict] = list[Any](payload.get("items", []))
+    items: list[dict[str, Any]] = list[Any](payload.get("items", []))
     if not items:
         return {
             "scores": [],
@@ -175,7 +175,7 @@ async def run_async(payload: dict[str, Any]) -> dict[str, Any]:
         async with sem:
             return await loop.run_in_executor(None, _score_item, item, threshold, include_dims)
 
-    scores: list[dict] = list[Any](await asyncio.gather(*[_guarded(item) for item in items]))
+    scores: list[dict[str, Any]] = list[Any](await asyncio.gather(*[_guarded(item) for item in items]))
 
     return {
         "scores": scores,

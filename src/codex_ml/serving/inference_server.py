@@ -307,7 +307,7 @@ class ModelServer:
             return self.circuit_breaker.call(self.predict, inputs)
         return self.predict(inputs)
 
-    def embed(self, texts: list[str]):
+    def embed(self, texts -> None: list[str]):
         if self.model is None:
             raise RuntimeError("Model not loaded")
         try:
@@ -475,7 +475,7 @@ if FASTAPI_AVAILABLE:
             auth_dependencies = [Security(verify_auth)]
 
         @app.get("/")
-        def root() -> dict:
+        def root() -> dict[str, Any]:
             return {
                 "service": "codex-inference",
                 "version": "0.2.0",
@@ -483,12 +483,12 @@ if FASTAPI_AVAILABLE:
             }
 
         @app.get("/health")
-        def health() -> dict:
+        def health() -> dict[str, Any]:
             """Health check with circuit breaker status"""
             return server.health_check()
 
         @app.get("/ready")
-        def readiness() -> dict:
+        def readiness() -> dict[str, Any]:
             """Readiness check"""
             health = server.health_check()
             return {
@@ -498,12 +498,12 @@ if FASTAPI_AVAILABLE:
             }
 
         @app.get("/live")
-        def liveness() -> dict:
+        def liveness() -> dict[str, Any]:
             """Liveness check - always returns 200 if server is running"""
             return {"status": "alive", "uptime": time.time() - start_time}
 
         @app.get("/metrics")
-        def metrics() -> dict:
+        def metrics() -> dict[str, Any]:
             """Metrics endpoint"""
             metrics_data = {
                 "request_count": server.total_requests,
@@ -519,7 +519,7 @@ if FASTAPI_AVAILABLE:
             response_model=PredictionResponse,
             dependencies=auth_dependencies,
         )
-        def predict(request: PredictionRequest, http_request: Request):
+        def predict(request -> None: PredictionRequest, http_request: Request):
             client_key = (
                 http_request.client.host if getattr(http_request, "client", None) else "global"  # type: ignore[union-attr]
             )
@@ -557,12 +557,12 @@ if FASTAPI_AVAILABLE:
             response_model=PredictionResponse,
             dependencies=auth_dependencies,
         )
-        def batch_infer(request: PredictionRequest, http_request: Request):
+        def batch_infer(request -> None: PredictionRequest, http_request: Request):
             """Batch inference endpoint (alias for /predict with same logic)"""
             return predict(request, http_request)
 
         @app.post("/infer", response_model=PredictionResponse, dependencies=auth_dependencies)
-        def infer(request: PredictionRequest, http_request: Request):
+        def infer(request -> None: PredictionRequest, http_request: Request):
             """Inference endpoint (alias for /predict with same logic)"""
             return predict(request, http_request)
 
@@ -571,7 +571,7 @@ if FASTAPI_AVAILABLE:
             response_model=EmbedResponse,
             dependencies=auth_dependencies,
         )
-        def embed(request: EmbedRequest, http_request: Request):
+        def embed(request -> None: EmbedRequest, http_request: Request):
             """Text embedding endpoint."""
             if server.model is None:
                 server.load_model()

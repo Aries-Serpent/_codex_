@@ -804,7 +804,7 @@ class GitHubMCPPoster:
           }
         }
         """
-        all_comments: list[dict] = []
+        all_comments: list[dict[str, Any]] = []
         cursor: str | None = None
         fetched = 0
         while fetched < max_comments:

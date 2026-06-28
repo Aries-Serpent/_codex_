@@ -40,7 +40,7 @@ else:  # pragma: no cover - optional dependency
 __all__ = ["load_model_with_optional_lora"]
 
 
-def _get_registry_factory(name: str):
+def _get_registry_factory(name -> None: str):
     try:
         from codex_ml.models.loader_registry import get_model
 
@@ -50,7 +50,7 @@ def _get_registry_factory(name: str):
         return None
 
 
-def _maybe_import_peft():
+def _maybe_import_peft() -> None:
     try:  # optional dependency
         from peft import LoraConfig, PeftModel, get_peft_model
 

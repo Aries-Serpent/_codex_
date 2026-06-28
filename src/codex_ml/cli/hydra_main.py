@@ -33,7 +33,7 @@ try:
     from codex_ml import distributed as _distributed  # type: ignore[attr-defined]
 except (ImportError, AttributeError):  # pragma: no cover - safe fallback
 
-    def init_distributed_if_needed(*_args, **_kwargs):
+    def init_distributed_if_needed(*_args, **_kwargs) -> None:
         return False
 
     def cleanup_distributed() -> None:

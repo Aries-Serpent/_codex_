@@ -201,7 +201,7 @@ try:
     from codex_ml.utils.retention import prune_checkpoints
 except (ImportError, AttributeError):
 
-    def prune_checkpoints(*args, **kwargs):
+    def prune_checkpoints(*args, **kwargs) -> None:
         return {"dry_run": True}
 
 
@@ -229,7 +229,7 @@ if _HAS_TORCH:
         def __len__(self) -> int:  # pragma: no cover - simple container
             return self._data.size(0)
 
-        def __getitem__(self, index: int):  # pragma: no cover - exercised indirectly
+        def __getitem__(self, index -> None: int):  # pragma: no cover - exercised indirectly
             return self._data[index]
 
 else:
@@ -238,7 +238,7 @@ else:
         def __len__(self) -> int:  # pragma: no cover - defensive
             return 0
 
-        def __getitem__(self, index: int):  # pragma: no cover - defensive
+        def __getitem__(self, index -> None: int):  # pragma: no cover - defensive
             raise IndexError("Torch is required to construct ToyDataset")
 
 
@@ -577,7 +577,7 @@ def record_metrics(
     return ndjson_path
 
 
-def _resolve_dtype(dtype: Optional[str]):
+def _resolve_dtype(dtype -> None: Optional[str]):
     if not _HAS_TORCH or dtype is None:
         return None
     mapping = {
@@ -593,7 +593,7 @@ def _resolve_dtype(dtype: Optional[str]):
     return mapping.get(dtype.lower())
 
 
-def _resolve_device(device: Optional[str]):
+def _resolve_device(device -> None: Optional[str]):
     if not _HAS_TORCH:
         return device or "cpu"
     if device is None:
@@ -679,7 +679,7 @@ def _assert_bf16_capability(
         raise RuntimeError("bf16 required but runtime cannot construct bfloat16 tensors") from exc
 
 
-def _attempt_resume(model, optimizer, scheduler, checkpoint_dir: str | Path):
+def _attempt_resume(model, optimizer, scheduler, checkpoint_dir -> None: str | Path):
     resume_meta: dict[str, Any] = {}
     if not checkpoint_dir:
         return 1, resume_meta
@@ -740,13 +740,13 @@ def _attempt_resume(model, optimizer, scheduler, checkpoint_dir: str | Path):
         return 1, resume_meta
 
 
-def _select_parameters_for_optimization(model):
+def _select_parameters_for_optimization(model) -> None:
     if model is None:
         return []
     return [p for p in model.parameters() if p.requires_grad]
 
 
-def _synthetic_step(model):
+def _synthetic_step(model) -> None:
     if model is None:
         return 0.0
     first_param = None
@@ -1030,13 +1030,13 @@ def _cast_batch_for_policy(
     return casted
 
 
-def _make_casting_collate(policy: str | None, desired: Any, device: Any, art_dir_path: Path | None):
+def _make_casting_collate(policy -> None: str | None, desired: Any, device: Any, art_dir_path: Path | None):
     """Return a DataLoader collate_fn that casts batch elements per policy.
 
     The collate keeps shapes and simply applies _cast_batch_for_policy element‑wise.
     """
 
-    def _collate(batch):
+    def _collate(batch) -> None:
         if policy is None:
             return batch
         try:
@@ -1047,7 +1047,7 @@ def _make_casting_collate(policy: str | None, desired: Any, device: Any, art_dir
     return _collate
 
 
-def _init_scheduler(scheduler_cfg: Optional[dict], optimizer, total_epochs: int):
+def _init_scheduler(scheduler_cfg -> None: Optional[dict[str, Any]], optimizer, total_epochs: int):
     if not scheduler_cfg or optimizer is None or not _HAS_TORCH:
         return None
     sched_type = scheduler_cfg.get("type")
@@ -1059,25 +1059,25 @@ def _init_scheduler(scheduler_cfg: Optional[dict], optimizer, total_epochs: int)
         final_lr_scale = float(scheduler_cfg.get("final_lr_scale", 0.0))
 
         class _LinearEpochScheduler:
-            def __init__(self, opt, total_epochs, final_scale, base_lrs):
+            def __init__(self, opt, total_epochs, final_scale, base_lrs) -> None:
                 self.opt = opt
                 self.total_epochs = max(total_epochs, 1)
                 self.final_scale = final_scale
                 self.base_lrs = base_lrs
                 self.last_epoch = 0
 
-            def get_lr(self):
+            def get_lr(self) -> None:
                 progress = min(self.last_epoch / self.total_epochs, 1.0)
                 scale = (1 - progress) + progress * self.final_scale
                 return [lr * scale for lr in self.base_lrs]
 
-            def step(self):
+            def step(self) -> None:
                 self.last_epoch += 1
                 new_lrs = self.get_lr()
                 for g, lr in zip(self.opt.param_groups, new_lrs, strict=False):
                     g["lr"] = lr
 
-            def state_dict(self):
+            def state_dict(self) -> None:
                 return {
                     "last_epoch": self.last_epoch,
                     "total_epochs": self.total_epochs,
@@ -1086,7 +1086,7 @@ def _init_scheduler(scheduler_cfg: Optional[dict], optimizer, total_epochs: int)
                     "type": "linear",
                 }
 
-            def load_state_dict(self, state):
+            def load_state_dict(self, state) -> None:
                 self.last_epoch = state.get("last_epoch", 0)
 
         return _LinearEpochScheduler(optimizer, total_epochs, final_lr_scale, base_lrs)
@@ -1104,7 +1104,7 @@ def _init_scheduler(scheduler_cfg: Optional[dict], optimizer, total_epochs: int)
     return None
 
 
-def _scheduler_current_lr(scheduler, optimizer):
+def _scheduler_current_lr(scheduler, optimizer) -> None:
     if scheduler is None or optimizer is None:
         return None
     try:
@@ -1159,7 +1159,7 @@ def run_training(
     model_name: str | None = None,
     model_cfg: Optional[dict[str, Any]] = None,
     lora: bool = False,
-    lora_cfg: dict | None = None,
+    lora_cfg: dict[str, Any] | None = None,
     device: str | None = None,
     dtype: str | None = None,
     amp: bool = False,
@@ -1170,8 +1170,8 @@ def run_training(
     resume: bool = False,
     steps_per_epoch: int = 4,
     return_state: bool = False,
-    scheduler_cfg: dict | None = None,
-    dp_config: DifferentialPrivacyConfig | dict | None = None,
+    scheduler_cfg: dict[str, Any] | None = None,
+    dp_config: DifferentialPrivacyConfig | dict[str, Any] | None = None,
     dataset_sources: Optional[list[str | Path]] = None,
     dataset_cache_dir: Optional[str | Path] = None,
     callbacks: Optional[list[Callback]] = None,

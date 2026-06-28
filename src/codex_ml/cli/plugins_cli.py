@@ -57,7 +57,7 @@ _GROUPS = {
 }
 
 
-def _get_registry(group: str, *, bad_param_exc):
+def _get_registry(group -> None: str, *, bad_param_exc):
     reg = _GROUPS.get(group)
     if not reg:
         raise bad_param_exc(f"unknown group: {group}")

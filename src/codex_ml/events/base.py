@@ -59,7 +59,7 @@ class Event:
     timestamp: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     metadata: dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         result = asdict(self)
         result["event_type"] = self.event_type.value
@@ -100,7 +100,7 @@ class EventSubscriber(ABC):
     """Abstract event subscriber."""
 
     @abstractmethod
-    def subscribe(self, event_type: EventType, callback: Callable[[Event], None]):
+    def subscribe(self, event_type -> None: EventType, callback: Callable[[Event], None]):
         """Subscribe to events.
 
         Args:
@@ -109,7 +109,7 @@ class EventSubscriber(ABC):
         """
 
     @abstractmethod
-    def unsubscribe(self, event_type: EventType):
+    def unsubscribe(self, event_type -> None: EventType):
         """Unsubscribe from events.
 
         Args:
@@ -120,7 +120,7 @@ class EventSubscriber(ABC):
 class EventBus(EventPublisher, EventSubscriber):
     """Local in-memory event bus for testing and development."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize event bus."""
         self.subscribers: dict[EventType, list[Callable]] = {}
         self.event_history: list[Event] = []
@@ -161,7 +161,7 @@ class EventBus(EventPublisher, EventSubscriber):
             self.publish(event)
         return True
 
-    def subscribe(self, event_type: EventType, callback: Callable[[Event], None]):
+    def subscribe(self, event_type -> None: EventType, callback: Callable[[Event], None]):
         """Subscribe to event type.
 
         Args:
@@ -173,7 +173,7 @@ class EventBus(EventPublisher, EventSubscriber):
         self.subscribers[event_type].append(callback)
         logger.info(f"Subscribed to {event_type.value}")
 
-    def unsubscribe(self, event_type: EventType):
+    def unsubscribe(self, event_type -> None: EventType):
         """Unsubscribe from event type.
 
         Args:
@@ -196,6 +196,6 @@ class EventBus(EventPublisher, EventSubscriber):
             return [e for e in self.event_history if e.event_type == event_type]
         return self.event_history
 
-    def clear_history(self):
+    def clear_history(self) -> None:
         """Clear event history."""
         self.event_history.clear()

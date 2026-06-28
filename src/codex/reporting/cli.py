@@ -11,9 +11,9 @@ logger = logging.getLogger(__name__)
 _METRICS_FILE = Path(".codex/metrics.ndjson")
 
 
-def _load_metrics(n: int = 10) -> list[dict]:
+def _load_metrics(n: int = 10) -> list[dict[str, Any]]:
     """Load last n entries from .codex/metrics.ndjson."""
-    entries: list[dict] = []
+    entries: list[dict[str, Any]] = []
     if _METRICS_FILE.exists():
         try:
             lines = _METRICS_FILE.read_text().splitlines()

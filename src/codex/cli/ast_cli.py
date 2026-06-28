@@ -155,7 +155,7 @@ def query_command(args) -> None:
         return 1
 
 
-def main(argv: Optional[list] = None) -> None:
+def main(argv: Optional[list[Any]] = None) -> None:
     """Main entry point for the CLI.
 
     Args:

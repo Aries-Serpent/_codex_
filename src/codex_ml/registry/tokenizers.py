@@ -140,7 +140,7 @@ def _resolve_tokenizer_target(
 
 
 @tokenizer_registry.register("hf")
-def _build_hf_tokenizer(**kwargs: Any):
+def _build_hf_tokenizer(**kwargs -> None: Any):
     from codex_ml.tokenization.hf_tokenizer import HFTokenizerAdapter
 
     name_or_path = kwargs.pop("name_or_path", None)
@@ -148,7 +148,7 @@ def _build_hf_tokenizer(**kwargs: Any):
 
 
 @tokenizer_registry.register("whitespace")
-def _build_whitespace_tokenizer(**kwargs: Any):
+def _build_whitespace_tokenizer(**kwargs -> None: Any):
     from codex_ml.tokenization.adapter import WhitespaceTokenizer
 
     if kwargs:
@@ -157,7 +157,7 @@ def _build_whitespace_tokenizer(**kwargs: Any):
 
 
 @tokenizer_registry.register("gpt2-offline")
-def _build_offline_gpt2_tokenizer(**kwargs: Any):
+def _build_offline_gpt2_tokenizer(**kwargs -> None: Any):
     from codex_ml.tokenization.hf_tokenizer import HFTokenizerAdapter
 
     resolved = _resolve_tokenizer_target(
@@ -173,7 +173,7 @@ def _build_offline_gpt2_tokenizer(**kwargs: Any):
 
 
 @tokenizer_registry.register("tiny-vocab")
-def _build_tiny_vocab_tokenizer(**kwargs: Any):
+def _build_tiny_vocab_tokenizer(**kwargs -> None: Any):
     from codex_ml.tokenization.offline_vocab import TinyVocabTokenizer
 
     vocab: Mapping[str, int] | None = kwargs.get("vocab")
@@ -187,7 +187,7 @@ def _build_tiny_vocab_tokenizer(**kwargs: Any):
 
 
 @tokenizer_registry.register("tinyllama-offline")
-def _build_offline_tinyllama_tokenizer(**kwargs: Any):
+def _build_offline_tinyllama_tokenizer(**kwargs -> None: Any):
     from codex_ml.tokenization.hf_tokenizer import HFTokenizerAdapter
 
     resolved = _resolve_tokenizer_target(
@@ -213,7 +213,7 @@ def register_tokenizer(
     return tokenizer_registry.register(name, obj, override=override)
 
 
-def get_tokenizer(name: str, **kwargs: Any):
+def get_tokenizer(name -> None: str, **kwargs: Any):
     """Instantiate a tokenizer using the registered factory."""
 
     _ensure_tokenizer_plugins_loaded()

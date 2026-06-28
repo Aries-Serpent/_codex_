@@ -248,7 +248,7 @@ class BridgeLock:
 
 
 @contextmanager
-def bridge_lock(lock_path: Path, timeout: int = 5):
+def bridge_lock(lock_path -> None: Path, timeout: int = 5):
     """
     Context manager for bridge locking.
 

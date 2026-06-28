@@ -55,7 +55,7 @@ def analyze_main(path: str, format: str, output: str, threshold: int) -> None:
         codex-analyze src/ --threshold 40
     """
     root = Path(path)
-    modules: list[dict] = []
+    modules: list[dict[str, Any]] = []
     for py_file in sorted(root.rglob("*.py")):
         modules.append(_analyze_module(py_file))
 

@@ -240,7 +240,7 @@ _DTYPE_ALIASES = {
 }
 
 
-def _resolve_torch_dtype(value: Optional[Any]):
+def _resolve_torch_dtype(value -> None: Optional[Any]):
     """Best-effort conversion of ``value`` to a ``torch.dtype``."""
 
     if not _HAS_TORCH:

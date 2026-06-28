@@ -77,7 +77,7 @@ class TrainConfig(BaseModel):
 
     @field_validator("data_path")
     @classmethod
-    def _path_exists_if_provided(cls, v):
+    def _path_exists_if_provided(cls, v) -> None:
         if v:
             p = Path(v)
             if not p.exists():
@@ -85,7 +85,7 @@ class TrainConfig(BaseModel):
         return v
 
 
-def load_yaml(path: str | Path) -> dict:
+def load_yaml(path: str | Path) -> dict[str, Any]:
     try:
         with open(path, encoding="utf-8") as f:
             return safe_load(f) or {}

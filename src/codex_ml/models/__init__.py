@@ -38,7 +38,7 @@ __all__ = [
 ]
 
 
-def register_model(name: str):
+def register_model(name -> None: str):
     """Register a model class under ``name``."""
 
     return _models_registry.register(name)

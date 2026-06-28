@@ -44,7 +44,7 @@ class HealthAlert:
     timestamp: str
     metric_value: Optional[float] = None
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "feature_name": self.feature_name,
@@ -105,7 +105,7 @@ class FeatureHealthMonitor:
         self.feature_updates: dict[str, datetime] = {}
         self.error_counts: dict[str, int] = {}
 
-    def record_feature_update(self, feature_name: str):
+    def record_feature_update(self, feature_name -> None: str):
         """Record feature update timestamp.
 
         Args:
@@ -114,7 +114,7 @@ class FeatureHealthMonitor:
         self.feature_updates[feature_name] = datetime.now(timezone.utc)
         logger.debug(f"Recorded update for feature: {feature_name}")
 
-    def record_feature_error(self, feature_name: str):
+    def record_feature_error(self, feature_name -> None: str):
         """Record feature error.
 
         Args:
@@ -236,7 +236,7 @@ class FeatureHealthMonitor:
 
         return stale_features
 
-    def reset_error_counts(self):
+    def reset_error_counts(self) -> None:
         """Reset error counts for all features."""
         self.error_counts.clear()
         logger.info("Reset error counts for all features")

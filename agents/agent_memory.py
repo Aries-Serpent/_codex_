@@ -139,7 +139,7 @@ class PatternLibrary:
     matched against new situations for guidance.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.patterns: dict[str, dict[str, Any]] = {}
         self.pattern_index: dict[str, list[str]] = {}  # tag -> pattern_ids
 
@@ -347,7 +347,7 @@ class AgentMemory:
 
             conn.commit()
 
-    def store_memory(self, entry: MemoryEntry | dict | None = None, **kwargs: Any) -> None:
+    def store_memory(self, entry: MemoryEntry | dict[str, Any] | None = None, **kwargs: Any) -> None:
         """
         Store a memory entry.
 
@@ -426,7 +426,7 @@ class AgentMemory:
             conn.commit()
 
     def add_memory(
-        self, entry: MemoryEntry | dict | None = None, **kwargs: Any
+        self, entry: MemoryEntry | dict[str, Any] | None = None, **kwargs: Any
     ) -> None:
         """
         Add a memory entry (alias for store_memory for API consistency).
@@ -588,7 +588,7 @@ class AgentMemory:
 
         return memories
 
-    def _row_to_memory(self, row: tuple) -> MemoryEntry:
+    def _row_to_memory(self, row: tuple[Any, ...]) -> MemoryEntry:
         """Convert database row to MemoryEntry."""
         return MemoryEntry(
             memory_id=row[0],

@@ -41,7 +41,7 @@ class MetricError(ValueError):
         self.metric = metric
 
 
-def _materialise(sequence: Iterable) -> list:
+def _materialise(sequence: Iterable) -> list[Any]:
     return list(sequence)
 
 

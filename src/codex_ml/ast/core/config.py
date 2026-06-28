@@ -53,7 +53,7 @@ class ASTConfig:
     # Storage configuration
     db_path: Optional[Path] = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Apply environment variable overrides."""
         # Parser backend
         if env_backend := os.getenv("AST_PARSER_BACKEND"):
@@ -114,7 +114,7 @@ class ASTConfig:
         if isinstance(self.db_path, str):
             self.db_path = Path(self.db_path)
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for serialization."""
         return {
             "parser_backend": self.parser_backend,
@@ -133,7 +133,7 @@ class ASTConfig:
         }
 
     @classmethod
-    def from_dict(cls, data: dict) -> "ASTConfig":
+    def from_dict(cls, data: dict[str, Any]) -> "ASTConfig":
         """Create from dictionary."""
         return cls(
             parser_backend=data.get("parser_backend", "libcst"),

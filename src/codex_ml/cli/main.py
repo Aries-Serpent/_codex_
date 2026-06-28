@@ -22,7 +22,7 @@ except (IOError, OSError):  # pragma: no cover - PyYAML is optional
     yaml = None
 
 
-def _load_typer():
+def _load_typer() -> None:
     spec = importlib.util.find_spec("typer")
     if spec is None:
         return None
@@ -38,7 +38,7 @@ try:  # pragma: no cover - evaluation is optional
     from codex_ml.eval.eval_runner import evaluate_datasets
 except (ImportError, AttributeError):  # pragma: no cover
 
-    def evaluate_datasets(*args, **kwargs):
+    def evaluate_datasets(*args, **kwargs) -> None:
         return None
 
 
@@ -480,7 +480,7 @@ if typer is not None:
 
     cli = _typer_cli_wrapper
 
-    def run_training(cfg, output_dir=None):
+    def run_training(cfg, output_dir=None) -> None:
         """Module-level stub for patching in tests (typer branch).
 
         The typer ``train`` command implements training directly; this stub
@@ -526,7 +526,7 @@ else:
     # Module-level variable to cache functional training main for testing/mocking
     _functional_training_main = None
 
-    def _load_functional_training_main():
+    def _load_functional_training_main() -> None:
         """Load functional training entry point (cached at module level)."""
         global _functional_training_main
         if _functional_training_main is None:

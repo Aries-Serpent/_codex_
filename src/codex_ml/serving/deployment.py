@@ -52,7 +52,7 @@ class TrafficSplitter:
         >>> target = splitter.route_request(request_id)
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.blue_weight = 100
         self.green_weight = 0
         self.blue_healthy = True
@@ -62,7 +62,7 @@ class TrafficSplitter:
         self.blue_requests = 0
         self.green_requests = 0
 
-    def set_weights(self, blue: int, green: int):
+    def set_weights(self, blue -> None: int, green: int):
         """
         set traffic weights for blue and green.
 
@@ -104,7 +104,7 @@ class TrafficSplitter:
         self.green_requests += 1
         return "green"
 
-    def record_error(self, deployment: str):
+    def record_error(self, deployment -> None: str):
         """Record error for deployment."""
         if deployment == "blue":
             self.blue_errors += 1
@@ -121,14 +121,14 @@ class TrafficSplitter:
             return 0.0
         return (self.green_errors / self.green_requests) * 100
 
-    def update_health(self, deployment: str, healthy: bool):
+    def update_health(self, deployment -> None: str, healthy: bool):
         """Update health status for deployment."""
         if deployment == "blue":
             self.blue_healthy = healthy
         else:
             self.green_healthy = healthy
 
-    def reset_stats(self):
+    def reset_stats(self) -> None:
         """Reset error and request counters."""
         self.blue_errors = 0
         self.green_errors = 0
@@ -167,7 +167,7 @@ class BlueGreenDeployment:
         self.current_blue_version = "v1"
         self.current_green_version: Optional[str] = None
 
-    def start_rollout(self, new_model_version: str):
+    def start_rollout(self, new_model_version -> None: str):
         """
         Start gradual rollout of new model version.
 
@@ -248,7 +248,7 @@ class BlueGreenDeployment:
             "green_error_rate": green_error_rate,
         }
 
-    def trigger_rollback(self, reason: str):
+    def trigger_rollback(self, reason -> None: str):
         """
         Trigger rollback to blue deployment.
 
@@ -261,7 +261,7 @@ class BlueGreenDeployment:
         self.rollback_triggered = True
         self.current_green_version = None
 
-    def complete_rollout(self):
+    def complete_rollout(self) -> None:
         """Complete rollout and promote green to blue."""
         print(f"Rollout complete: {self.current_green_version} promoted to blue")
         self.current_blue_version = self.current_green_version

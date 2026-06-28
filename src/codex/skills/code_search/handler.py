@@ -51,7 +51,7 @@ def run(payload: dict[str, Any]) -> dict[str, Any]:
     except re.error as exc:
         return {"matches": [], "error": f"Invalid regex pattern: {exc}"}
 
-    matches: list[dict] = []
+    matches: list[dict[str, Any]] = []
     for py_file in sorted(root.glob(glob_pattern)):
         if "__pycache__" in str(py_file):
             continue

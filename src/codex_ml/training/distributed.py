@@ -269,7 +269,7 @@ class DistributedManager:
 
 
 @contextmanager
-def distributed_context(config: Optional[DistributedConfig] = None):
+def distributed_context(config -> None: Optional[DistributedConfig] = None):
     """Context manager for distributed training.
 
     Usage:
@@ -288,7 +288,7 @@ def distributed_context(config: Optional[DistributedConfig] = None):
 def launch_distributed(
     fn: Callable,
     world_size: int,
-    args: tuple = (),
+    args: tuple[Any, ...] = (),
     kwargs: Optional[dict[str, Any]] = None,
     backend: str = "nccl",
 ) -> None:
@@ -305,7 +305,7 @@ def launch_distributed(
 
     kwargs = kwargs or {}
 
-    def _worker(rank: int):
+    def _worker(rank -> None: int):
         config = DistributedConfig(
             enabled=True,
             backend=backend,

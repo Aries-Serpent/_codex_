@@ -25,7 +25,7 @@ class SimpleCache:
         self.ttl, self.max = ttl_s, max_items
         self._d: dict[str, Any] = {}
 
-    def get(self, k):
+    def get(self, k) -> None:
         v = self._d.get(k)
         if not v:
             return None
@@ -35,7 +35,7 @@ class SimpleCache:
             return None
         return val
 
-    def set(self, k, val):
+    def set(self, k, val) -> None:
         # Guard against zero-capacity caches and eviction edge cases.
         if self.max is not None and self.max <= 0:
             return
