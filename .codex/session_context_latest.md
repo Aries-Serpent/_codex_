@@ -1,10 +1,10 @@
-# Session Context — 2026-06-28T05:15:45Z
+# Session Context — 2026-06-28T05:22:48Z
 **Branch:** `copilot/resolve-failing-checks`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4999` (✅)
-- GraphQL remaining: `4998` (✅)
+- REST remaining: `4997` (✅)
+- GraphQL remaining: `4993` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -16,14 +16,14 @@
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-28)
 
 ## 📝 Recent Commits
+- `e9e7ad0d` Fix blocking test syntax errors and broken documentation links (9 CI failures) — copilot-swe-agent[bot] (2026-06-28)
+- `cf98a474` Apply remaining changes — copilot-swe-agent[bot] (2026-06-28)
 - `5da6ca62` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-06-28)
 - `5676de10` Merge pull request #5113 from Aries-Serpent/0D_base_ — Statix (2026-06-28)
 - `dfe43c0c` fix(security): resolve CodeQL alerts - refactor logging and improve XSS regex — copilot-swe-agent[bot] (2026-06-28)
 - `815384e2` Initial analysis of PR #5113 CodeQL security alerts — copilot-swe-agent[bot] (2026-06-28)
 - `a9f14b0d` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-06-28)
 - `86c29a4d` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-06-28)
-- `23654e8c` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-06-28)
-- `200a74be` fix(ci): auto-fix CI issues on PR [skip ci] (Pattern 35/RP-007) — github-actions[bot] (2026-06-28)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
