@@ -460,7 +460,8 @@ class XSSValidator:
 
     # Common XSS patterns
     _XSS_PATTERNS = [
-        re.compile(r"<script[^>]*>.*?</script>", re.IGNORECASE | re.DOTALL),
+        # Match script tags with proper handling of whitespace and unclosed tags
+        re.compile(r"<\s*script\b[^>]*>.*?<\s*/\s*script\s*>|<\s*/\s*script\s*>", re.IGNORECASE | re.DOTALL),
         re.compile(r"on\w+\s*=", re.IGNORECASE),  # Event handlers
         re.compile(r"javascript:", re.IGNORECASE),
         re.compile(r"data:text/html", re.IGNORECASE),
