@@ -1188,7 +1188,7 @@ class MentalMappingModel:
         visited = set()
         result = []
 
-        def dfs_recursive(node_id -> None: str):
+        def dfs_recursive(node_id: str):
             if node_id in visited:
                 return
             visited.add(node_id)

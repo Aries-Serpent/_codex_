@@ -32,7 +32,7 @@ except (ImportError, AttributeError):
 _REGISTRY: dict[str, Callable] = {}
 
 
-def _register(name -> None: str):
+def _register(name: str):
     def deco(fn) -> None:
         _REGISTRY[name.lower()] = fn
         return fn
@@ -60,7 +60,7 @@ def swiglu() -> None:
     return nn.SiLU() if nn else (lambda x: x)
 
 
-def get_activation(name -> None: str):
+def get_activation(name: str):
     key = (name or "gelu").lower()
     if key not in _REGISTRY:
         raise KeyError(f"unknown activation: {name}")

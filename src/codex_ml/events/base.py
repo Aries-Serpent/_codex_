@@ -100,7 +100,7 @@ class EventSubscriber(ABC):
     """Abstract event subscriber."""
 
     @abstractmethod
-    def subscribe(self, event_type -> None: EventType, callback: Callable[[Event], None]):
+    def subscribe(self, event_type: EventType, callback: Callable[[Event], None]):
         """Subscribe to events.
 
         Args:
@@ -109,7 +109,7 @@ class EventSubscriber(ABC):
         """
 
     @abstractmethod
-    def unsubscribe(self, event_type -> None: EventType):
+    def unsubscribe(self, event_type: EventType):
         """Unsubscribe from events.
 
         Args:
@@ -161,7 +161,7 @@ class EventBus(EventPublisher, EventSubscriber):
             self.publish(event)
         return True
 
-    def subscribe(self, event_type -> None: EventType, callback: Callable[[Event], None]):
+    def subscribe(self, event_type: EventType, callback: Callable[[Event], None]):
         """Subscribe to event type.
 
         Args:
@@ -173,7 +173,7 @@ class EventBus(EventPublisher, EventSubscriber):
         self.subscribers[event_type].append(callback)
         logger.info(f"Subscribed to {event_type.value}")
 
-    def unsubscribe(self, event_type -> None: EventType):
+    def unsubscribe(self, event_type: EventType):
         """Unsubscribe from event type.
 
         Args:

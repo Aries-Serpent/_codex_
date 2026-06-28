@@ -768,7 +768,7 @@ class SafetyFilters:
         result = self.evaluate(text, stage=stage)
         return result.sanitized_text
 
-    def mask_logits(self, logits, banned_token_ids -> None: set[int]):
+    def mask_logits(self, logits, banned_token_ids: set[int]):
         """In-place mask for various logits containers (numpy, list, mapping-like)."""
         neg_inf = float("-inf")
         try:

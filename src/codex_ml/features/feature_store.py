@@ -193,7 +193,7 @@ class FeatureStore:
             json.dump(data, f, indent=2)
         logger.info(f"Saved {len(data)} feature groups to registry")
 
-    def register_feature_group(self, group -> None: FeatureGroup):
+    def register_feature_group(self, group: FeatureGroup):
         """Register a feature group.
 
         Args:

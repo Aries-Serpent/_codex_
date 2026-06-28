@@ -34,7 +34,7 @@ try:  # pragma: no cover - optional dependency
     )
     from datasets import load_dataset as _hf_load_dataset  # type: ignore[attr-defined]
 
-    def hf_load_dataset(*args -> None: Any, **kwargs: Any):
+    def hf_load_dataset(*args: Any, **kwargs: Any):
         global _LAST_HF_REVISION
         if args:
             identifier = args[0]
@@ -66,7 +66,7 @@ try:  # pragma: no cover - optional dependency
 except (ValueError, TypeError):  # pragma: no cover - handled gracefully
     DatasetDict = load_from_disk = None
 
-    def hf_load_dataset(*_args -> None: Any, **_kwargs: Any):
+    def hf_load_dataset(*_args: Any, **_kwargs: Any):
         raise RuntimeError("datasets library is required for hf:// URIs")
 
     HAS_DATASETS = False

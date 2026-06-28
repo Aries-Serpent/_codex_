@@ -84,7 +84,7 @@ class _FallbackGauge:
         )
 
 
-def maybe_export_metrics(app=None, port -> None: int = 9000, *, fallback_dir: Path | str | None = None):
+def maybe_export_metrics(app=None, port: int = 9000, *, fallback_dir: Path | str | None = None):
     """Start a Prometheus HTTP server or fall back to local NDJSON sinks."""
 
     global _FALLBACK_ACTIVE, _FALLBACK_PATH, _FALLBACK_REASON

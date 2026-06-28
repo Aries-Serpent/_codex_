@@ -160,7 +160,7 @@ class MemoryPool:
             self.in_use.add(id(buf))
             return buf
 
-    def return_buffer(self, buf -> None: bytearray):
+    def return_buffer(self, buf: bytearray):
         """Return buffer to pool."""
         with self.lock:
             buf_id = id(buf)
@@ -193,7 +193,7 @@ class ModelWarmer:
     def __init__(self, model: Any):
         self.model = model
 
-    def warmup(self, num_samples -> None: int = 10, input_shape: tuple[int, ...] = (1, 512)):
+    def warmup(self, num_samples: int = 10, input_shape: tuple[int, ...] = (1, 512)):
         """
         Warm up model with dummy predictions.
 
@@ -251,7 +251,7 @@ class DynamicBatchSizer:
         """Get current optimal batch size."""
         return self.current_size
 
-    def update(self, actual_latency_ms -> None: float):
+    def update(self, actual_latency_ms: float):
         """
         Update batch size based on observed latency.
 

@@ -307,7 +307,7 @@ class ModelServer:
             return self.circuit_breaker.call(self.predict, inputs)
         return self.predict(inputs)
 
-    def embed(self, texts -> None: list[str]):
+    def embed(self, texts: list[str]):
         if self.model is None:
             raise RuntimeError("Model not loaded")
         try:
@@ -519,7 +519,7 @@ if FASTAPI_AVAILABLE:
             response_model=PredictionResponse,
             dependencies=auth_dependencies,
         )
-        def predict(request -> None: PredictionRequest, http_request: Request):
+        def predict(request: PredictionRequest, http_request: Request):
             client_key = (
                 http_request.client.host if getattr(http_request, "client", None) else "global"  # type: ignore[union-attr]
             )
@@ -557,12 +557,12 @@ if FASTAPI_AVAILABLE:
             response_model=PredictionResponse,
             dependencies=auth_dependencies,
         )
-        def batch_infer(request -> None: PredictionRequest, http_request: Request):
+        def batch_infer(request: PredictionRequest, http_request: Request):
             """Batch inference endpoint (alias for /predict with same logic)"""
             return predict(request, http_request)
 
         @app.post("/infer", response_model=PredictionResponse, dependencies=auth_dependencies)
-        def infer(request -> None: PredictionRequest, http_request: Request):
+        def infer(request: PredictionRequest, http_request: Request):
             """Inference endpoint (alias for /predict with same logic)"""
             return predict(request, http_request)
 
@@ -571,7 +571,7 @@ if FASTAPI_AVAILABLE:
             response_model=EmbedResponse,
             dependencies=auth_dependencies,
         )
-        def embed(request -> None: EmbedRequest, http_request: Request):
+        def embed(request: EmbedRequest, http_request: Request):
             """Text embedding endpoint."""
             if server.model is None:
                 server.load_model()

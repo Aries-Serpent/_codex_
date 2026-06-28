@@ -40,7 +40,7 @@ else:  # pragma: no cover - optional dependency
 __all__ = ["load_model_with_optional_lora"]
 
 
-def _get_registry_factory(name -> None: str):
+def _get_registry_factory(name: str):
     try:
         from codex_ml.models.loader_registry import get_model
 

@@ -93,7 +93,7 @@ class DriftDetector:
             f"Use DataDriftDetector, ConfigDriftDetector, or ModelDriftDetector."
         )
 
-    def add_alert(self, alert -> None: DriftAlert):
+    def add_alert(self, alert: DriftAlert):
         """Add drift alert."""
         self.alerts.append(alert)
         logger.warning(f"Drift detected: {alert.message}")
@@ -353,7 +353,7 @@ class ComprehensiveDriftMonitor:
         self.config_detector.clear_alerts()
         self.model_detector.clear_alerts()
 
-    def save_alerts(self, path -> None: Path | str):
+    def save_alerts(self, path: Path | str):
         """Save alerts to JSON file.
 
         Args:

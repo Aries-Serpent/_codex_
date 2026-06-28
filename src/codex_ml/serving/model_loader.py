@@ -326,7 +326,7 @@ class ModelLoader:
             "load_time": time.time(),
         }
 
-    def _get_torch_dtype(self, dtype_str -> None: str):
+    def _get_torch_dtype(self, dtype_str: str):
         """Convert dtype string to torch dtype
 
         Args:
@@ -354,7 +354,7 @@ class ModelLoader:
             logger.warning("torch not available, ignoring dtype specification")
             return None
 
-    def _apply_quantization(self, model, quant_type -> None: str):
+    def _apply_quantization(self, model, quant_type: str):
         """Apply quantization to model
 
         Args:

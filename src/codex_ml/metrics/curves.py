@@ -22,7 +22,7 @@ import json
 from pathlib import Path
 
 
-def append_curve(path -> None: Path, metric: str, step: int, value: float):
+def append_curve(path: Path, metric: str, step: int, value: float):
     path.parent.mkdir(parents=True, exist_ok=True)
     f = path / f"{metric}.jsonl"
     with f.open("a", encoding="utf-8") as fh:

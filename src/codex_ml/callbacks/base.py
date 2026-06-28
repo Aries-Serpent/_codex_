@@ -79,7 +79,7 @@ class EvaluationCallback(Callback):
         super().__init__(name="EvaluationCallback")
         self.eval_fn = eval_fn
 
-    def on_epoch_end(self, epoch -> None: int, metrics: dict[str, Any], state: dict[str, Any]):
+    def on_epoch_end(self, epoch: int, metrics: dict[str, Any], state: dict[str, Any]):
         if self.eval_fn is None:
             return None
         try:
@@ -99,7 +99,7 @@ class LoggingCallback(Callback):
     def on_train_start(self, state: dict[str, Any]) -> None:
         state.setdefault("epoch_history", [])
 
-    def on_epoch_end(self, epoch -> None: int, metrics: dict[str, Any], state: dict[str, Any]):
+    def on_epoch_end(self, epoch: int, metrics: dict[str, Any], state: dict[str, Any]):
         history = state.get("epoch_history")
         if isinstance(history, list):
             entry = {"epoch": epoch}

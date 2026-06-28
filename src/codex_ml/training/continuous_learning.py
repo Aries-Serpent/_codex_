@@ -93,7 +93,7 @@ class ModelRegistry:
         data = {"versions": [v.to_dict() for v in self.versions]}
         self.registry_path.write_text(json.dumps(data, indent=2))
 
-    def register(self, version -> None: ModelVersion):
+    def register(self, version: ModelVersion):
         """Register a new model version.
 
         Args:
@@ -281,7 +281,7 @@ class ContinuousLearningPipeline:
         logger.info(f"Model comparison: {result}")
         return result
 
-    def deploy_model(self, version -> None: ModelVersion):
+    def deploy_model(self, version: ModelVersion):
         """Deploy a model version to production.
 
         Args:
@@ -296,7 +296,7 @@ class ContinuousLearningPipeline:
         logger.info(f"Deploying model {version.version} to production")
         # Placeholder for actual deployment logic
 
-    def rollback(self, to_version -> None: Optional[str] = None):
+    def rollback(self, to_version: Optional[str] = None):
         """Rollback to a previous model version.
 
         Args:

@@ -151,7 +151,7 @@ def _required_revision(repo_id: RepoId, explicit: Optional[str]) -> Optional[str
     )
 
 
-def _map_amp_dtype(dtype -> None: Optional[str]):
+def _map_amp_dtype(dtype: Optional[str]):
     """Translate user-friendly AMP dtype flags into ``torch.dtype`` values."""
 
     if torch is None or dtype is None:

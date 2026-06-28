@@ -72,7 +72,7 @@ class MLflowTracker:
             self.enabled = False
 
     @contextmanager
-    def start_run(self, run_name -> None: Optional[str] = None, nested: bool = False):
+    def start_run(self, run_name: Optional[str] = None, nested: bool = False):
         """Context manager for MLflow run.
 
         Args:
@@ -175,7 +175,7 @@ class MLflowTracker:
             logger.debug("Exception: <ERROR_TYPE>")
             logger.debug(f"Failed to log metric {key}: <ERROR_TYPE>")
 
-    def log_artifact(self, local_path -> None: str, artifact_path: Optional[str] = None):
+    def log_artifact(self, local_path: str, artifact_path: Optional[str] = None):
         """Log artifact file to current run.
 
         Args:
@@ -196,7 +196,7 @@ class MLflowTracker:
             logger.debug("Exception: <ERROR_TYPE>")
             logger.debug("Failed to log artifact: <ERROR_TYPE>")
 
-    def log_artifacts(self, local_dir -> None: str, artifact_path: Optional[str] = None):
+    def log_artifacts(self, local_dir: str, artifact_path: Optional[str] = None):
         """Log directory of artifacts.
 
         Args:
@@ -217,7 +217,7 @@ class MLflowTracker:
             logger.debug("Exception: <ERROR_TYPE>")
             logger.debug("Failed to log artifacts: <ERROR_TYPE>")
 
-    def set_tag(self, key -> None: str, value: Any):
+    def set_tag(self, key: str, value: Any):
         """set tag on current run.
 
         Args:
@@ -234,7 +234,7 @@ class MLflowTracker:
             logger.debug("Exception: <ERROR_TYPE>")
             logger.debug(f"Failed to set tag {key}: <ERROR_TYPE>")
 
-    def set_tags(self, tags -> None: dict[str, Any]):
+    def set_tags(self, tags: dict[str, Any]):
         """set multiple tags on current run.
 
         Args:

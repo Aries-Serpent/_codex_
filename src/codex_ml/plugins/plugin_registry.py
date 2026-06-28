@@ -140,7 +140,7 @@ class PluginRegistry:
         self._plugins[metadata.name] = plugin_class
         logger.info(f"Registered plugin: {metadata.name} v{metadata.version}")
 
-    def unregister(self, name -> None: str):
+    def unregister(self, name: str):
         """Unregister a plugin.
 
         Args:
@@ -185,7 +185,7 @@ class PluginRegistry:
         """
         return [plugin_class.get_metadata() for plugin_class in self._plugins.values()]
 
-    def discover_plugins(self, directory -> None: str):
+    def discover_plugins(self, directory: str):
         """Discover and load plugins from directory.
 
         Args:
@@ -215,7 +215,7 @@ class PluginRegistry:
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.error(f"Failed to load plugin {plugin_file}: <ERROR_TYPE>")
 
-    def reload_plugin(self, name -> None: str):
+    def reload_plugin(self, name: str):
         """Reload a plugin (for hot-reloading).
 
         Args:

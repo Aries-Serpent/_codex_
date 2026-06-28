@@ -67,7 +67,7 @@ class PluginHealth:
             self.status = PluginStatus.ENABLED
             self.quarantined_at = None
 
-    def record_failure(self, error -> None: str):
+    def record_failure(self, error: str):
         """Record failure.
 
         Args:
@@ -361,7 +361,7 @@ class PluginSandbox:
         """
         return self.health.copy()
 
-    def enable_plugin(self, plugin_name -> None: str):
+    def enable_plugin(self, plugin_name: str):
         """Manually enable a plugin.
 
         Args:
@@ -372,7 +372,7 @@ class PluginSandbox:
             self.health[plugin_name].failure_count = 0
             logger.info(f"Plugin {plugin_name} manually enabled")
 
-    def disable_plugin(self, plugin_name -> None: str):
+    def disable_plugin(self, plugin_name: str):
         """Manually disable a plugin.
 
         Args:

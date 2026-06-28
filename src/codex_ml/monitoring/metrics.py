@@ -111,7 +111,7 @@ class MetricsCollector:
             logger.debug("Exception: <ERROR_TYPE>")
             logger.debug("Failed to record latency metric: %s", e)
 
-    def record_error(self, error_type -> None: str, endpoint: str = "/"):
+    def record_error(self, error_type: str, endpoint: str = "/"):
         """Record an error.
 
         Args:

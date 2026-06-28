@@ -229,7 +229,7 @@ if _HAS_TORCH:
         def __len__(self) -> int:  # pragma: no cover - simple container
             return self._data.size(0)
 
-        def __getitem__(self, index -> None: int):  # pragma: no cover - exercised indirectly
+        def __getitem__(self, index: int):  # pragma: no cover - exercised indirectly
             return self._data[index]
 
 else:
@@ -238,7 +238,7 @@ else:
         def __len__(self) -> int:  # pragma: no cover - defensive
             return 0
 
-        def __getitem__(self, index -> None: int):  # pragma: no cover - defensive
+        def __getitem__(self, index: int):  # pragma: no cover - defensive
             raise IndexError("Torch is required to construct ToyDataset")
 
 
@@ -577,7 +577,7 @@ def record_metrics(
     return ndjson_path
 
 
-def _resolve_dtype(dtype -> None: Optional[str]):
+def _resolve_dtype(dtype: Optional[str]):
     if not _HAS_TORCH or dtype is None:
         return None
     mapping = {
@@ -593,7 +593,7 @@ def _resolve_dtype(dtype -> None: Optional[str]):
     return mapping.get(dtype.lower())
 
 
-def _resolve_device(device -> None: Optional[str]):
+def _resolve_device(device: Optional[str]):
     if not _HAS_TORCH:
         return device or "cpu"
     if device is None:
@@ -679,7 +679,7 @@ def _assert_bf16_capability(
         raise RuntimeError("bf16 required but runtime cannot construct bfloat16 tensors") from exc
 
 
-def _attempt_resume(model, optimizer, scheduler, checkpoint_dir -> None: str | Path):
+def _attempt_resume(model, optimizer, scheduler, checkpoint_dir: str | Path):
     resume_meta: dict[str, Any] = {}
     if not checkpoint_dir:
         return 1, resume_meta
@@ -1030,7 +1030,7 @@ def _cast_batch_for_policy(
     return casted
 
 
-def _make_casting_collate(policy -> None: str | None, desired: Any, device: Any, art_dir_path: Path | None):
+def _make_casting_collate(policy: str | None, desired: Any, device: Any, art_dir_path: Path | None):
     """Return a DataLoader collate_fn that casts batch elements per policy.
 
     The collate keeps shapes and simply applies _cast_batch_for_policy element‑wise.
@@ -1047,7 +1047,7 @@ def _make_casting_collate(policy -> None: str | None, desired: Any, device: Any,
     return _collate
 
 
-def _init_scheduler(scheduler_cfg -> None: Optional[dict[str, Any]], optimizer, total_epochs: int):
+def _init_scheduler(scheduler_cfg: Optional[dict[str, Any]], optimizer, total_epochs: int):
     if not scheduler_cfg or optimizer is None or not _HAS_TORCH:
         return None
     sched_type = scheduler_cfg.get("type")

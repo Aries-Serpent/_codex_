@@ -77,7 +77,7 @@ def _resolve_loader(loader_entry: Callable) -> Callable:
     return loader_entry
 
 
-def register_loader(extensions -> None: list[Any], loader_fn: Callable):
+def register_loader(extensions: list[Any], loader_fn: Callable):
     """
     Register a loader function for file extensions
 

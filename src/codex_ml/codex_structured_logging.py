@@ -384,7 +384,7 @@ class _CaptureExceptionsContext:
         )
         return False
 
-    def __call__(self, target -> None: Any):
+    def __call__(self, target: Any):
         return capture_exceptions(target, logger=self.logger, event=self.event)
 
 

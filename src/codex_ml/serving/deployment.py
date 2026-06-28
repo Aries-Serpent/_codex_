@@ -62,7 +62,7 @@ class TrafficSplitter:
         self.blue_requests = 0
         self.green_requests = 0
 
-    def set_weights(self, blue -> None: int, green: int):
+    def set_weights(self, blue: int, green: int):
         """
         set traffic weights for blue and green.
 
@@ -104,7 +104,7 @@ class TrafficSplitter:
         self.green_requests += 1
         return "green"
 
-    def record_error(self, deployment -> None: str):
+    def record_error(self, deployment: str):
         """Record error for deployment."""
         if deployment == "blue":
             self.blue_errors += 1
@@ -121,7 +121,7 @@ class TrafficSplitter:
             return 0.0
         return (self.green_errors / self.green_requests) * 100
 
-    def update_health(self, deployment -> None: str, healthy: bool):
+    def update_health(self, deployment: str, healthy: bool):
         """Update health status for deployment."""
         if deployment == "blue":
             self.blue_healthy = healthy
@@ -167,7 +167,7 @@ class BlueGreenDeployment:
         self.current_blue_version = "v1"
         self.current_green_version: Optional[str] = None
 
-    def start_rollout(self, new_model_version -> None: str):
+    def start_rollout(self, new_model_version: str):
         """
         Start gradual rollout of new model version.
 
@@ -248,7 +248,7 @@ class BlueGreenDeployment:
             "green_error_rate": green_error_rate,
         }
 
-    def trigger_rollback(self, reason -> None: str):
+    def trigger_rollback(self, reason: str):
         """
         Trigger rollback to blue deployment.
 
