@@ -20,7 +20,7 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, Generator
 
 from codex.archive.api import store
 from codex.archive.util import json_dumps_sorted, utcnow_iso
@@ -59,7 +59,7 @@ def infer_intent(path: str) -> str:
     return "admin"
 
 
-def iter_sources(root: Path) -> None:
+def iter_sources(root: Path) -> Generator[Path, None, None]:
     exclude = {".git", ".venv", ".codex", "artifacts", "dist", "__pycache__"}
     for p in root.rglob("*"):
         if p.is_dir():

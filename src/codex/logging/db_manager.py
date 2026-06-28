@@ -12,7 +12,7 @@ import sqlite3
 import threading
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Optional
+from typing import Generator, Optional
 
 try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
@@ -224,7 +224,7 @@ class DBManager:
             self._logger.debug("Error closing connection: <ERROR_TYPE>")
 
     @contextmanager
-    def connection(self, auto_init: bool = True) -> None:
+    def connection(self, auto_init: bool = True) -> Generator[sqlite3.Connection, None, None]:
         """Context manager for database connections.
 
         Args:

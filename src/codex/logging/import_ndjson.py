@@ -41,7 +41,7 @@ import sys  # noqa: E402
 from collections.abc import Iterable  # noqa: E402
 from datetime import datetime  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Any, Optional  # noqa: E402
+from typing import Any, Generator, Optional  # noqa: E402
 
 try:  # pragma: no cover - platform dependent
     import fcntl
@@ -119,7 +119,7 @@ def _parse_ts(ts: str | None) -> float | None:
 
 
 @contextlib.contextmanager
-def _open_locked(path: Path) -> None:
+def _open_locked(path: Path) -> Generator[Any, None, None]:
     """Open ``path`` and acquire a shared advisory lock while reading."""
     f = path.open(encoding="utf-8")
     try:
