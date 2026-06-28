@@ -33,7 +33,7 @@ _REGISTRY: dict[str, Callable] = {}
 
 
 def _register(name: str):
-    def deco(fn) -> None:
+    def deco(fn) -> object:
         _REGISTRY[name.lower()] = fn
         return fn
 
@@ -41,22 +41,22 @@ def _register(name: str):
 
 
 @_register("relu")
-def relu() -> None:
+def relu() -> object:
     return nn.ReLU() if nn else (lambda x: x)
 
 
 @_register("gelu")
-def gelu() -> None:
+def gelu() -> object:
     return nn.GELU() if nn else (lambda x: x)
 
 
 @_register("silu")
-def silu() -> None:
+def silu() -> object:
     return nn.SiLU() if nn else (lambda x: x)
 
 
 @_register("swiglu")
-def swiglu() -> None:
+def swiglu() -> object:
     return nn.SiLU() if nn else (lambda x: x)
 
 

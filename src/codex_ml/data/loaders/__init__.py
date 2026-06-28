@@ -127,19 +127,19 @@ def load_dataset(file_path, **kwargs) -> Any:
 
 
 # Register built-in loaders
-def _lazy_load_parquet() -> None:
+def _lazy_load_parquet() -> object:
     from .parquet_loader import load_parquet
 
     return load_parquet
 
 
-def _lazy_load_arrow() -> None:
+def _lazy_load_arrow() -> object:
     from .arrow_loader import load_arrow
 
     return load_arrow
 
 
-def _lazy_load_hdf5() -> None:
+def _lazy_load_hdf5() -> object:
     from .hdf5_loader import load_hdf5
 
     return load_hdf5

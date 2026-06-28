@@ -13,7 +13,7 @@ _ALIASES: dict[str, str] = {
 }
 
 
-def _get_api() -> None:
+def _get_api() -> object:
     return importlib.import_module("codex_ml.tokenization.api")
 
 

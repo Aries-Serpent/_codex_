@@ -79,7 +79,7 @@ def log_change(title: str, path: Path, rationale: str, body_snippet: str = "") -
 # ---------------- Optional imports with graceful fallback ----------------
 
 
-def try_import(module_name: str) -> None:
+def try_import(module_name: str) -> object:
     try:
         return __import__(module_name)
     except Exception:

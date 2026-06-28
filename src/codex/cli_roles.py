@@ -14,7 +14,7 @@ from codex.zendesk.model.role import Role as ZendeskRole
 app = typer.Typer(help="Role matrix and permission harmonization.")
 
 
-def _load_jsonl_or_json(path: Path) -> None:
+def _load_jsonl_or_json(path: Path) -> list[object] | object:
     if path.suffix.lower() == ".jsonl":
         with path.open("r", encoding="utf-8") as handle:
             return [json.loads(line) for line in handle if line.strip()]

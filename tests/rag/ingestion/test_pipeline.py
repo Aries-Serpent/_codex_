@@ -256,8 +256,7 @@ class TestIngestionPipeline:
 
         assert result1.is_success, "Result must not be empty"
         assert result2.status == IngestionStatus.SKIPPED, "Result must not be empty"
-        assert "duplicate" in result2.error_message.lower(, "Result must not be empty"
-        ), "Result must not be empty"
+        assert "duplicate" in result2.error_message.lower(), "Result must not be empty"
 
     def test_deduplication_disabled(self):
         """Test with deduplication disabled."""

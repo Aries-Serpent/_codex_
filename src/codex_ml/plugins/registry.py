@@ -36,7 +36,7 @@ _SIMPLE_IMPORT_RE = re.compile(r"^import\s+([A-Za-z_][A-Za-z0-9_.]*)\s*$")
 # Internal helpers
 
 
-def _iter_entry_points(group: str) -> None:
+def _iter_entry_points(group: str) -> tuple[Any, ...]:
     """Return iterable of entry points for ``group`` with fallbacks."""
 
     _invalidate_caches()
