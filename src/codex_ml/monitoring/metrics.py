@@ -101,7 +101,7 @@ class MetricsCollector:
             method: HTTP method
             endpoint: Request endpoint/path
         """
-        if not self._prometheus_available:
+        if not self._prometheus_available or self._latency_histogram is None:
             return
 
         try:
@@ -111,14 +111,14 @@ class MetricsCollector:
             logger.debug("Exception: <ERROR_TYPE>")
             logger.debug("Failed to record latency metric: %s", e)
 
-    def record_error(self, error_type: str, endpoint: str = "/"):
+    def record_error(self, error_type: str, endpoint: str = "/") -> None:
         """Record an error.
 
         Args:
             error_type: Type/category of error
             endpoint: Endpoint where error occurred
         """
-        if not self._prometheus_available:
+        if not self._prometheus_available or self._error_counter is None:
             return
 
         try:
@@ -186,7 +186,7 @@ def get_metrics_router() -> Any:
     get_metrics_collector()
 
     @router.get("/metrics")
-    async def metrics() -> None:
+    async def metrics() -> Response:
         """Prometheus metrics endpoint."""
         try:
             metrics_output = generate_latest()

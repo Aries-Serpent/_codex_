@@ -1,3 +1,5 @@
+from typing import Any
+
 """Security access_control module."""
 
 
@@ -6,5 +8,5 @@ class AccessControl:
 
     def __init__(self) -> None:
         """Initialize AccessControl."""
-        self._data = {}
-        self._config = {}
+        self._data: dict[str, Any] = {}
+        self._config: dict[str, Any] = {}

@@ -1,3 +1,5 @@
+from typing import Any
+
 """Security ecdsa_handler module."""
 
 
@@ -6,5 +8,5 @@ class ECDSAHandler:
 
     def __init__(self) -> None:
         """Initialize ECDSAHandler."""
-        self._data = {}
-        self._config = {}
+        self._data: dict[str, Any] = {}
+        self._config: dict[str, Any] = {}

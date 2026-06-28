@@ -1,3 +1,5 @@
+from typing import Any
+
 """Security secret_manager module."""
 
 
@@ -6,5 +8,5 @@ class SecretManager:
 
     def __init__(self) -> None:
         """Initialize SecretManager."""
-        self._data = {}
-        self._config = {}
+        self._data: dict[str, Any] = {}
+        self._config: dict[str, Any] = {}

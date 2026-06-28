@@ -497,7 +497,7 @@ class GitHubApp:
         )
 
         try:
-            with urllib.request.urlopen(  # nosec B310  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- URL is validated by _validated_api_url()
+            with urllib.request.urlopen(  # nosec B310  # nosemgrep: semgrep.urllib-urlopen-dynamic -- URL is validated by _validated_api_url()
                 req, timeout=30
             ) as resp:
                 response_body = json.loads(resp.read().decode("utf-8"))
@@ -570,7 +570,7 @@ class GitHubApp:
             },
         )
         try:
-            with urllib.request.urlopen(  # nosec B310  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- URL is validated by _validated_api_url()
+            with urllib.request.urlopen(  # nosec B310  # nosemgrep: semgrep.urllib-urlopen-dynamic -- URL is validated by _validated_api_url()
                 req, timeout=30
             ) as resp:
                 return json.loads(resp.read().decode("utf-8"))
@@ -621,7 +621,7 @@ class GitHubApp:
                 },
             )
             try:
-                with urllib.request.urlopen(  # nosec B310  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- URL is validated by _validated_api_url()
+                with urllib.request.urlopen(  # nosec B310  # nosemgrep: semgrep.urllib-urlopen-dynamic -- URL is validated by _validated_api_url()
                     req, timeout=30
                 ) as resp:
                     logger.debug("pat_api_get succeeded with %s: %s", token_name, url)

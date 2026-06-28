@@ -114,7 +114,7 @@ def _default_db_path() -> Path:
     return Path(os.getenv("CODEX_LOG_DB_PATH", str(DEFAULT_LOG_DB)))
 
 
-def init_db(db_path: Optional[Path] = None) -> None:
+def init_db(db_path: Optional[Path] = None) -> Path:
     """Initialize SQLite table for session events if absent."""
     p = Path(db_path or _default_db_path())
     key = str(p)

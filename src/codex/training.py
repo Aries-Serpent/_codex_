@@ -258,7 +258,7 @@ try:  # Attempt to import metrics; fall back to safe implementations
     from codex_ml.metrics import perplexity, token_accuracy
 except (ImportError, AttributeError):  # pragma: no cover - fallback if metrics module missing
 
-    def _fallback_perplexity(nll) -> None:
+    def _fallback_perplexity(nll) -> float:
         """Simple perplexity wrapper used when metrics module is unavailable."""
 
         return _safe_perplexity(nll if hasattr(nll, "__iter__") else [nll])
@@ -706,10 +706,10 @@ def _run_minilm_training(
     for epoch in range(3):
         logits = None
 
-        def _compute_loss(_) -> None:
+        def _compute_loss(_) -> Any:
             nonlocal logits
             logits = model(inputs)
-            return F.cross_entropy(logits.reshape(-1, cfg.vocab_size), targets.reshape(-1))
+            return F.cross_entropy(logits.reshape(-1, cfg.vocab_size), targets.reshape(-1))  # type: ignore[misc]
 
         loss_val = codex_train_step(
             model,
@@ -812,7 +812,7 @@ def _run_minilm_training(
         if val_inputs is not None:
             with torch.no_grad():
                 v_logits = model(val_inputs)
-                v_loss = F.cross_entropy(
+                v_loss = F.cross_entropy(  # type: ignore[misc]
                     v_logits.reshape(-1, cfg.vocab_size),
                     val_targets.reshape(-1),
                 )
@@ -1118,7 +1118,7 @@ def main(argv: Optional[list[Any]] = None) -> None:  # pragma: no cover - conven
         if tokenizer.pad_token is None:
             tokenizer.pad_token = tokenizer.eos_token
 
-        def _encode_with_labels(tok, txts) -> None:
+        def _encode_with_labels(tok, txts) -> Any:
             """Tokenize *txts* and create labels (padding → -100)."""
             enc = tok(txts, padding=True, return_tensors="pt")
             ids = enc["input_ids"]
@@ -1196,7 +1196,7 @@ def _codex_autodevice(cli_device: str | None = None) -> str:
         return cli_device or "cpu"
 
 
-def _codex_maybe_scheduler(optimizer, name: str | None, **kw) -> None:
+def _codex_maybe_scheduler(optimizer, name: str | None, **kw) -> Any:
     try:
         import torch.optim as optim
 
@@ -1240,7 +1240,7 @@ def _codex_write_metrics(run_dir: Path, record: dict[str, Any]) -> None:
         fh.write(json.dumps(record) + "\n")
 
 
-def _codex_apply_training_integration(args, train_loop_fn, config: dict[str, Any]) -> None:
+def _codex_apply_training_integration(args, train_loop_fn, config: dict[str, Any]) -> Any:
     if not getattr(args, "use_deeplearning", False):
         return train_loop_fn
     device = _codex_autodevice(getattr(args, "device", None))
@@ -1334,7 +1334,7 @@ def codex_train_step(
     accum_steps=1,
     precision="fp32",
     grad_clip=None,
-) -> None:
+) -> float:
     use_fp16 = (precision == "fp16") and _codex_amp_supported()
     scaler = torch.cuda.amp.GradScaler() if use_fp16 else None
     optimizer.zero_grad(set_to_none=True)
@@ -1348,7 +1348,10 @@ def codex_train_step(
             if use_fp16:
                 with torch.autocast(device_type="cuda", dtype=torch.float16):
                     loss = compute_loss(mb)
-                scaler.scale(loss / num_micro_batches).backward()
+                if scaler is not None:
+                    scaler.scale(loss / num_micro_batches).backward()
+                else:
+                    (loss / num_micro_batches).backward()
             else:
                 loss = compute_loss(mb)
                 (loss / num_micro_batches).backward()
@@ -1357,7 +1360,10 @@ def codex_train_step(
         if use_fp16:
             with torch.autocast(device_type="cuda", dtype=torch.float16):
                 loss = compute_loss(batch)
-            scaler.scale(loss / max(1, accum_steps)).backward()
+            if scaler is not None:
+                scaler.scale(loss / max(1, accum_steps)).backward()
+            else:
+                (loss / max(1, accum_steps)).backward()
         else:
             loss = compute_loss(batch)
             (loss / max(1, accum_steps)).backward()

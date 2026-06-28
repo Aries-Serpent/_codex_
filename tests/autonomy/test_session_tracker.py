@@ -259,12 +259,15 @@ class TestSessionMetrics:
 
         assert result["active"] >= 1, "Value must be greater than zero"
         assert result["archived"] >= 1, "Value must be greater than zero"
-        assert result["total"] == (, "Result must not be empty"
-            result["active"]
-            + result["completed"]
-            + result["error"]
-            + result["archived"]
-            + result["unknown"]
+        assert (, "Condition must be true"
+            result["total"]
+            == (
+                result["active"]
+                + result["completed"]
+                + result["error"]
+                + result["archived"]
+                + result["unknown"]
+            )
         ), "Total must equal sum of all categories"
 
     def test_metrics_tombstone_counted(self, tmp_path):

@@ -41,31 +41,31 @@ class PooledConnectionProxy:
         super().__setattr__("_conn", conn)
         super().__setattr__("_key", key)
 
-    def __getattr__(self, name) -> None:  # pragma: no cover - simple delegation
+    def __getattr__(self, name):  # pragma: no cover - simple delegation
         return getattr(self._conn, name)
 
-    def __setattr__(self, name, value) -> None:  # pragma: no cover - simple delegation
+    def __setattr__(self, name, value):  # pragma: no cover - simple delegation
         if name in {"_conn", "_key"}:
             super().__setattr__(name, value)
         else:
             setattr(self._conn, name, value)
 
-    def __delattr__(self, name) -> None:  # pragma: no cover - simple delegation
+    def __delattr__(self, name):  # pragma: no cover - simple delegation
         if name in {"_conn", "_key"}:
             super().__delattr__(name)
         else:
             delattr(self._conn, name)
 
-    def __enter__(self) -> None:  # pragma: no cover - simple delegation
+    def __enter__(self):  # pragma: no cover - simple delegation
         # Replicate sqlite3.Connection context manager semantics without closing
-        self._conn.__enter__()  # type: ignore[attr-defined]
+        self._conn.__enter__()
         return self
 
-    def __exit__(self, exc_type, exc, tb) -> None:  # pragma: no cover - simple delegation
+    def __exit__(self, exc_type, exc, tb):  # pragma: no cover - simple delegation
         # Mirror sqlite3 behaviour: commit on success, rollback on error.
         if exc_type is None:
             try:
-                self._conn.commit()  # type: ignore[attr-defined]
+                self._conn.commit()
             except (ValueError, TypeError, RuntimeError):
                 logger.warning("Exception occurred", exc_info=True)
                 # Mirror sqlite behaviour which would raise the exception; allow
@@ -73,7 +73,7 @@ class PooledConnectionProxy:
                 raise
         else:
             try:
-                self._conn.rollback()  # type: ignore[attr-defined]
+                self._conn.rollback()
             except (ValueError, TypeError, RuntimeError) as e:
                 error_type = type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
@@ -82,7 +82,7 @@ class PooledConnectionProxy:
         # sqlite3 context manager.
         return False
 
-    def close(self) -> None:  # pragma: no cover - exercised via tests
+    def close(self):  # pragma: no cover - exercised via tests
         """Remove the connection from the pool then close it."""
 
         with _POOL_LOCK:
@@ -100,7 +100,7 @@ class PooledConnectionProxy:
                     error_type = type(e).__name__
                     logger.debug("ValueError: <ERROR_TYPE>")
                     logger.warning("ValueError: <ERROR_TYPE>", exc_info=True)
-        return self._conn.close()  # type: ignore[attr-defined]
+        return self._conn.close()
 
 
 def _key(database: str) -> tuple[str, int, int, str]:
@@ -131,7 +131,7 @@ def _apply_pragmas(conn: sqlite3.Connection) -> None:
         logging.exception("sqlite PRAGMA failure: %s", e)
 
 
-def pooled_connect(database, *args, **kwargs) -> None:
+def pooled_connect(database, *args, **kwargs):
     # Fallback if pooling off
     if os.getenv(_POOL_ENABLED_ENV, "0") not in ("1", "true", "TRUE", "yes", "YES"):
         return _ORIG_CONNECT(database, *args, **kwargs)

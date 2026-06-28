@@ -106,10 +106,10 @@ class AsyncFixture:
         """Create a reusable async context manager for testing."""
 
         class AsyncContextManager:
-            async def __aenter__(self) -> None:
+            async def __aenter__(self):
                 return enter_value
 
-            async def __aexit__(self, exc_type, exc, tb) -> None:
+            async def __aexit__(self, exc_type, exc, tb) -> bool:
                 if exit_exception:
                     raise exit_exception
                 return False
@@ -118,37 +118,37 @@ class AsyncFixture:
 
 
 @pytest.fixture
-def temp_dir() -> None:
+def temp_dir() -> Generator[Path, None, None]:
     """Pytest fixture: Temporary directory."""
     yield from FixtureFactory.create_temp_dir()
 
 
 @pytest.fixture
-def temp_file() -> None:
+def temp_file() -> Generator[Path, None, None]:
     """Pytest fixture: Temporary file."""
     yield from FixtureFactory.create_temp_file()
 
 
 @pytest.fixture
-def isolated_env() -> None:
+def isolated_env() -> Generator[dict[str, str], None, None]:
     """Pytest fixture: Isolated environment."""
     yield FixtureFactory.create_isolated_env()
 
 
 @pytest.fixture
-def mock_config() -> None:
+def mock_config() -> Generator[dict[str, Any], None, None]:
     """Pytest fixture: Mock configuration."""
     yield MockFixture.create_mock_config()
 
 
 @pytest.fixture
-def mock_credentials() -> None:
+def mock_credentials() -> Generator[dict[str, Any], None, None]:
     """Pytest fixture: Mock credentials."""
     yield MockFixture.create_mock_credentials()
 
 
 @pytest.fixture
-def test_db_path() -> None:
+def test_db_path() -> Generator[Path, None, None]:
     """Pytest fixture: Test database path."""
     db_path = DatabaseFixture.create_test_db_path()
     yield db_path

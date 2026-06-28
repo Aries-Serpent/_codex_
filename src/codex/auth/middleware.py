@@ -481,9 +481,7 @@ class AuthMiddleware:
         )
 
 
-def require_auth(
-    scopes: Optional[list[str]] = None, methods: Optional[list[AuthMethod]] = None
-) -> None:
+def require_auth(scopes: Optional[list[str]] = None, methods: Optional[list[AuthMethod]] = None):
     """
     Decorator to require authentication on endpoint.
 
@@ -499,11 +497,11 @@ def require_auth(
     required_scopes = set(scopes or [])
     allowed_methods = set(methods or list(AuthMethod))
 
-    def decorator(func: Callable) -> None:
+    def decorator(func: Callable):
         @wraps(func)
-        async def wrapper(request, *args, **kwargs) -> None:
+        async def wrapper(request, *args, **kwargs):
             # Get auth result from request scope
-            auth_result = getattr(request.scope.get("auth"), None, None)
+            auth_result = request.scope.get("auth")
 
             if not auth_result or not auth_result.authenticated:
                 from fastapi import HTTPException

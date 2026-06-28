@@ -107,12 +107,10 @@ def safe_log(logger: logging.Logger, level: str, message: str, *args, **kwargs) 
 
     # Call the logger with the appropriate level
     log_func = getattr(logger, level, logger.info)
-    log_func(safe_message, *safe_args, **safe_kwargs)
+    log_func(safe_message, *safe_args, **safe_kwargs)  # type: ignore[arg-type]
 
 
-def redact_dict(
-    data: dict[str, Any][str, Any], exclude_keys: Optional[list[Any]] = None
-) -> dict[str, Any]:
+def redact_dict(data: dict[str, Any], exclude_keys: Optional[list[Any]] = None) -> dict[str, Any]:
     """
     Redact all values in a dictionary that might be sensitive.
 

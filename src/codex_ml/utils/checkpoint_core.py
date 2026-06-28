@@ -43,7 +43,7 @@ except (ImportError, AttributeError):  # pragma: no cover
 try:
     import numpy as np
 except (ImportError, AttributeError):  # pragma: no cover
-    np = None
+    np = None  # type: ignore[assignment]
 
 try:  # packaging is optional but preferred for version parsing
     from packaging.version import Version
@@ -143,14 +143,15 @@ def _rng_snapshot() -> dict[str, Any]:
         try:
             # NumPy RNG state is a tuple: (name, array, pos, has_gauss, cached_gauss)
             # Convert to JSON-serializable format
-            numpy_state = np.random.get_state()
-            snap["numpy"] = {
-                "name": numpy_state[0],
-                "keys": numpy_state[1].tolist(),  # Convert ndarray to list
-                "pos": int(numpy_state[2]),
-                "has_gauss": int(numpy_state[3]),
-                "cached_gauss": float(numpy_state[4]),
-            }
+            if np is not None:
+                numpy_state = np.random.get_state()
+                snap["numpy"] = {
+                    "name": numpy_state[0],  # type: ignore[index]
+                    "keys": numpy_state[1].tolist(),  # type: ignore[index]
+                    "pos": int(numpy_state[2]),  # type: ignore[index]
+                    "has_gauss": int(numpy_state[3]),  # type: ignore[index]
+                    "cached_gauss": float(numpy_state[4]),  # type: ignore[index]
+                }
         except (ValueError, TypeError, RuntimeError) as e:
             logger.debug("Exception: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
             logger.warning(
@@ -225,7 +226,7 @@ def _rng_restore(snap: Mapping[str, Any]) -> None:
                         numpy_state["has_gauss"],
                         numpy_state["cached_gauss"],
                     )
-                    np.random.set_state(state_tuple)
+                    np.random.set_state(state_tuple)  # type: ignore[arg-type]
                 else:
                     # Legacy format: convert from JSON-deserialized format
                     # If it's a tuple/list from JSON, ensure array element is converted
@@ -242,7 +243,7 @@ def _rng_restore(snap: Mapping[str, Any]) -> None:
                             numpy_state[3],
                             numpy_state[4],
                         )
-                        np.random.set_state(state_tuple)
+                        np.random.set_state(state_tuple)  # type: ignore[arg-type]
                     else:
                         # Direct tuple format (not from JSON)
                         np.random.set_state(numpy_state)

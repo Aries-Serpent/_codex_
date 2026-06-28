@@ -1,3 +1,5 @@
+from typing import Any
+
 """Security pkcs12_handler module."""
 
 
@@ -6,5 +8,5 @@ class PKCS12Handler:
 
     def __init__(self) -> None:
         """Initialize PKCS12Handler."""
-        self._data = {}
-        self._config = {}
+        self._data: dict[str, Any] = {}
+        self._config: dict[str, Any] = {}

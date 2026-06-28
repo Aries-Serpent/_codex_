@@ -60,7 +60,7 @@ class TestBudgetCap:
         # Use pytest.raises context manager for cleaner timeout detection
         exception_raised = False
         try:
-            with pytest.raises(Exception, timeout=1):
+            with pytest.raises(Exception):
                 slow()
             exception_raised = True
         except AssertionError:
@@ -68,7 +68,7 @@ class TestBudgetCap:
             # to account for system scheduling delays on slow CI runners
             time.sleep(0.1)
             try:
-                with pytest.raises(Exception, timeout=2):
+                with pytest.raises(Exception):
                     slow()
                 exception_raised = True
             except AssertionError as e:

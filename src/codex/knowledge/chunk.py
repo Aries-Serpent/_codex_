@@ -20,6 +20,7 @@ from __future__ import annotations
 import math
 import re
 import uuid
+from typing import Any
 
 _HDR = re.compile(r"^(#{1,6})\s+(.*)$", re.M)
 

@@ -142,7 +142,7 @@ class ThreadSafeSessionEmbeddings:
     ) -> bool:
         """Add session to index (exclusive write)."""
 
-        def _add() -> None:
+        def _add() -> bool:
             if not HAS_FAISS:
                 # Store only in metadata
                 self._metadata[session_id] = {
@@ -192,7 +192,7 @@ class ThreadSafeSessionEmbeddings:
     ) -> list[dict[str, Any]]:
         """Find similar sessions (concurrent read with read-write lock)."""
 
-        def _find() -> None:
+        def _find() -> list[dict[str, Any]]:
             if query_session_id not in self._metadata:
                 return []
 
@@ -250,15 +250,15 @@ class ThreadSafeSessionEmbeddings:
             log_error(e, "find_similar", self.errors_path)
             return []
 
-    def get_embedding(self, session_id: str) -> Optional[np.ndarray]:
+    def get_embedding(self, session_id: str) -> Optional[Any]:
         """Get embedding for session (concurrent read)."""
 
-        def _get() -> None:
+        def _get() -> Optional[Any]:
             if session_id not in self._metadata:
                 return None
 
             if not HAS_FAISS:
-                return np.random.rand(self.DIMENSION).astype(np.float32)
+                return np.random.rand(self.DIMENSION).astype(np.float32) if HAS_NUMPY else None
 
             meta = self._metadata[session_id]
             idx = meta.get("index_id")
@@ -324,7 +324,7 @@ class ThreadSafeSessionEmbeddings:
         }
         save_metrics(metrics_dict, self.metrics_path)  # type: ignore[arg-type]
 
-    def __enter__(self) -> None:
+    def __enter__(self) -> "ThreadSafeSessionEmbeddings":
         """Context manager entry."""
         return self
 

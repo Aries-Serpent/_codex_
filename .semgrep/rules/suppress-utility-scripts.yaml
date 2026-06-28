@@ -37,15 +37,21 @@ rules:
               $URL.startswith("https://")
           - pattern: |
               "github.com" in $VAR
+      # Exclude checkpoint_core.py to prevent false positives on dict key checking
+      - pattern-not-inside: |
+          if isinstance(numpy_state, ...):
+              ...
     paths:
       include:
-        - "fix_*.py"
-        - "scripts/**/*.py"
-        - "src/codex/cli/*.py"
-        - "src/codex/logging/*.py"
-        - "src/codex/analyze/static/*.py"
-        - "src/codex/rag/*.py"
-        - "src/codex_ml/**/*.py"
+        - "**/fix_*.py"
+        - "**/scripts/**/*.py"
+        - "**/src/codex/cli/*.py"
+        - "**/src/codex/logging/*.py"
+        - "**/src/codex/analyze/static/*.py"
+        - "**/src/codex/rag/*.py"
+        - "**/src/codex_ml/**/*.py"
+      exclude:
+        - "**/checkpoint_core.py"
 
   # Suppress for test fixtures and examples
   - id: suppress-url-checks-in-tests
@@ -71,4 +77,4 @@ rules:
               $VAR = "http://..."
     paths:
       include:
-        - "tests/**/*.py"
+        - "**/tests/**/*.py"

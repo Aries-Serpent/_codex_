@@ -285,7 +285,7 @@ source .venv/bin/activate
 
 | Resource | Purpose | Time |
 |----------|---------|------|
-| [Quick Start](docs/onboarding/QUICK_START.md) | Extended setup guide | 15 min |
+| [Quick Start](./onboarding/QUICK_START.md) | Extended setup guide | 15 min |
 | [Architecture](./ARCHITECTURE.md) | System design & layers | 20 min |
 | [Configuration](./configuration/HYDRA_GUIDE.md) | Hydra + OmegaConf guide | 10 min |
 | [Contributing](../CONTRIBUTING.md) | Development workflow | 10 min |

@@ -2,6 +2,27 @@
 
 ## [Unreleased]
 
+### Fixed (CI failure resolution — PR #5116, Session 2026-06-28T15:20Z)
+- Fixed auth test syntax error in `tests/auth/test_github_app.py:139` — invalid multi-line `all()` generator expression unblocking 1,100+ tests
+- Fixed semgrep pragma misplacement in `src/cache/redis_cache.py` — moved `nosemgrep` suppression from closing paren to code line
+- Fixed semgrep false positive finding in checkpoint_core.py — added pattern-not-inside exceptions to suppress overly broad rule matching on "numpy" strings
+- Resolved via commit 474bada5 leveraging ci-failure-resolution-agent for parallel diagnostic + fix workflow
+- Verified locally with syntax validation and mypy baseline checks
+- Replied to blocking comment #4826518847 from @mbaetiong with commit SHA and resolution details
+
+### Fixed (CI rescue — PR #5116, Session 2026-06-28T14:29Z)
+- REQ-4: Updated AGENT_ACCOUNTABILITY_REPORT.md with CI rescue and compliance session entry (2026-06-28T14:29Z)
+- REQ-5: Updated CHANGELOG.md with CI rescue documentation and compliance fix tracking
+- REQ-13: Prepared reply to blocking comment ID 4826379193 from @mbaetiong with session context
+- Fixed failing Comment Review Gate check by ensuring accountability documentation in latest commit
+- Fixed auto_fix compliance dimension by updating both REQ-4 and REQ-5 tracked files
+- Verified compliance check: python3 scripts/ci/session_wrapup_autofix.py --check --pr-number 5116
+
+### Fixed (CI rescue — PR #5115, Session 2026-06-28T06:52Z)
+- Fixed malformed checkpoint regression assertions and checksum calls in `tests/regression/test_checkpoint_roundtrip.py` that caused import/collection failures
+- Fixed missing `Any` import in `src/codex_ml/eval/metrics_original.py` for `list[Any]` annotation usage
+- Ran targeted syntax validation for changed files via `python -m compileall -q`
+
 ### Fixed (CI rescue — PR #5113, Session 2026-06-28T03:38Z)
 - REQ-4: Updated AGENT_ACCOUNTABILITY_REPORT.md with blocking comments resolution session entry (2026-06-28T03:38Z)
 - REQ-5: Updated CHANGELOG.md with CI rescue and compliance check resolution documentation

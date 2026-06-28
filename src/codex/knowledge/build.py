@@ -20,6 +20,7 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+from typing import Any
 
 from codex.archive.api import store
 from codex.archive.util import json_dumps_sorted, utcnow_iso

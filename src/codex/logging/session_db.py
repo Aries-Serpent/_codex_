@@ -21,7 +21,7 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Generator, Optional
 
 
 @dataclass
@@ -67,7 +67,7 @@ class SessionDB:
         self._optimize_db()
 
     @contextmanager
-    def _get_connection(self) -> None:
+    def _get_connection(self) -> Generator[sqlite3.Connection, None, None]:
         """
         Context manager for thread-safe database connections.
 

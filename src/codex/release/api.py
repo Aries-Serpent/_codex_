@@ -29,6 +29,7 @@ import os  # noqa: E402
 import shutil  # noqa: E402
 import tarfile  # noqa: E402
 from pathlib import Path  # noqa: E402
+from typing import Any
 
 from codex.archive.api import restore  # noqa: E402
 from codex.archive.dal import ArchiveDAL  # noqa: E402

@@ -16,7 +16,7 @@ from collections.abc import Callable  # noqa: E402
 from dataclasses import dataclass, field  # noqa: E402
 from enum import Enum  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Optional  # noqa: E402
+from typing import Any, Optional  # noqa: E402
 
 
 class SmellSeverity(Enum):

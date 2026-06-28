@@ -71,7 +71,7 @@ def _configure_connection(conn: sqlite3.Connection) -> None:
 
 
 @contextlib.contextmanager
-def get_conn(db_path: str, pooled: bool | None = None) -> None:
+def get_conn(db_path: str, pooled: bool | None = None):
     """Context-managed connection; pooled when enabled.
 
     Behavior:
@@ -93,7 +93,7 @@ def get_conn(db_path: str, pooled: bool | None = None) -> None:
     _codex_auto_enable_from_env()
 
     if pooled:
-        conn = _POOL.get(db_path)
+        conn: Any = _POOL.get(db_path)
         if conn is None:
             conn = sqlite3.connect(db_path, check_same_thread=False)
             _codex_auto_enable_from_env()
@@ -123,7 +123,7 @@ def _default_db_path() -> Path:
     return Path(os.getenv("CODEX_LOG_DB_PATH", str(DEFAULT_LOG_DB)))
 
 
-def fetch_messages(session_id: str, db_path: Optional[Path] = None) -> None:
+def fetch_messages(session_id: str, db_path: Optional[Path] = None) -> list[dict[str, Any]]:
     """Return logged messages for ``session_id``.
 
     The database is initialized if missing.  If ``session_events`` has no

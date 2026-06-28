@@ -16,7 +16,7 @@ import sqlite3
 import threading
 import time
 from contextlib import contextmanager
-from typing import Any, Optional
+from typing import Any, Generator, Optional
 
 from .concurrency import (
     DeadlockRecovery,
@@ -70,7 +70,7 @@ class ThreadSafeSessionDB:
         self._ensure_schema()
 
     @contextmanager
-    def _get_connection(self) -> None:
+    def _get_connection(self) -> Generator[sqlite3.Connection, None, None]:
         """Get thread-local connection from pool."""
         conn = self._connection_pool.get_connection()
         try:
@@ -82,7 +82,7 @@ class ThreadSafeSessionDB:
             raise
 
     @contextmanager
-    def _write_operation(self) -> None:
+    def _write_operation(self) -> Generator[None, None, None]:
         """Context manager for write operations with lock."""
         start_time = time.time()
         acquired = False
@@ -201,7 +201,7 @@ class ThreadSafeSessionDB:
     def insert_session(self, session: dict[str, Any]) -> bool:
         """Insert session with write lock and deadlock recovery."""
 
-        def _insert() -> None:
+        def _insert() -> bool:
             with self._write_operation():
                 with self._get_connection() as conn:
                     cursor = conn.cursor()
@@ -236,7 +236,7 @@ class ThreadSafeSessionDB:
     def get_session(self, session_id: str) -> Optional[dict[str, Any]]:
         """Get session by ID (thread-safe read)."""
 
-        def _get() -> None:
+        def _get() -> Optional[dict[str, Any]]:
             with self._get_connection() as conn:
                 cursor = conn.cursor()
                 cursor.execute("SELECT * FROM sessions WHERE session_id = ?", (session_id,))
@@ -260,13 +260,13 @@ class ThreadSafeSessionDB:
     ) -> list[dict[str, Any]]:
         """Query sessions with optional filters (thread-safe read)."""
 
-        def _query() -> None:
+        def _query() -> list[dict[str, Any]]:
             with self._get_connection() as conn:
                 cursor = conn.cursor()
 
                 # Build query
                 query = "SELECT * FROM sessions WHERE 1=1"
-                params = []
+                params: list[Any] = []
 
                 if status:
                     query += " AND status = ?"
@@ -297,7 +297,7 @@ class ThreadSafeSessionDB:
     def update_session_status(self, session_id: str, new_status: str) -> bool:
         """Update session status (thread-safe write)."""
 
-        def _update() -> None:
+        def _update() -> bool:
             with self._write_operation():
                 with self._get_connection() as conn:
                     cursor = conn.cursor()
@@ -319,7 +319,7 @@ class ThreadSafeSessionDB:
     def search_sessions(self, query: str, limit: int = 50) -> list[dict[str, Any]]:
         """Search sessions by query string (thread-safe read)."""
 
-        def _search() -> None:
+        def _search() -> list[dict[str, Any]]:
             with self._get_connection() as conn:
                 cursor = conn.cursor()
 
@@ -347,7 +347,7 @@ class ThreadSafeSessionDB:
     def archive_session(self, session_id: str, reason: str = "archive") -> bool:
         """Archive session (thread-safe write with exclusive lock)."""
 
-        def _archive() -> None:
+        def _archive() -> bool:
             with self._write_operation():
                 with self._get_connection() as conn:
                     cursor = conn.cursor()
@@ -407,7 +407,7 @@ class ThreadSafeSessionDB:
             logger.error("Error during cleanup: <ERROR_TYPE>")
             log_error(e, "cleanup", self.errors_path)
 
-    def __enter__(self) -> None:
+    def __enter__(self) -> "ThreadSafeSessionDB":
         """Context manager entry."""
         return self
 

@@ -34,7 +34,7 @@ import logging
 
 # Fast-forward helper (optional — only wired when scripts/ci is reachable)
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 import typer
 

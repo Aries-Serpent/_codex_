@@ -33,10 +33,10 @@ class PatternNode:
     created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     last_accessed: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
 
-    def __hash__(self) -> None:
+    def __hash__(self) -> int:
         return hash(self.id)
 
-    def __eq__(self, other) -> None:
+    def __eq__(self, other: Any) -> bool:
         if not isinstance(other, PatternNode):
             return False
         return self.id == other.id
