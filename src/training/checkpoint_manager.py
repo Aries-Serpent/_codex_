@@ -311,7 +311,7 @@ class CheckpointManager:  # type: ignore[no-redef]
             return self.save_now(step, payload, metrics, prefix, rng_state=rng_state)
         return None
 
-    def callback(self) -> None:
+    def callback(self) -> object:
         """Return a ``TrainerCallback`` that uses this manager."""
         if not self.save_steps:
             raise RuntimeError("save_steps must be set to use callback()")
