@@ -14,7 +14,7 @@ class DependencyGraph:
     def __init__(self) -> None:
         self.nodes: set[str] = set()
         self.edges: dict[str, set[str]] = defaultdict(set)
-        self.node_data: dict[str, Any][str, dict] = {}
+        self.node_data: dict[str, dict[str, Any]] = {}
 
     def add_node(
         self,

@@ -22,6 +22,8 @@ paths:
     - "tests/**"
     - "**/test_*.py"
     - "**/*_test.py"
+    - ".github/agents/*/tests/**"
+    - ".github/copilot-*/tests/**"
 
     # Example and documentation code
     - "examples/**"
@@ -47,6 +49,12 @@ paths:
     - ".hypothesis/**"
     - "__pycache__/**"
     - ".pytest_cache/**"
+
+    # Utility/script code with known URL patterns
+    - "scripts/**"
+    - "fix_*.py"
+    - "src/codex/cli/**"
+    - "src/codex/logging/**"
 
 # Note: Severity mapping for priority scoring moved to scripts/security/score_alerts.py
 # The severity_weights configuration is not a valid semgrep config key

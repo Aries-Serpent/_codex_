@@ -78,7 +78,38 @@ except (ImportError, AttributeError):  # pragma: no cover - fallback no-op
         return ""
 
 
-try:  # pragma: no cover - optional torch dependency
+import re
+
+
+def _matches_error_pattern(error_msg: str, patterns: list[str]) -> bool:
+    """
+    Safe error message pattern matching using regex word boundaries.
+    
+    Replaces substring checks with regex patterns to prevent bypass vulnerabilities
+    while maintaining compatibility with error message matching.
+    
+    Args:
+        error_msg: The error message string to check
+        patterns: List of exact phrases to match (e.g., ["issubclass() arg 2 must be a class"])
+    
+    Returns:
+        True if any pattern matches the error message, False otherwise
+    
+    Security Model:
+    - Uses regex word boundaries to match exact phrases
+    - Prevents bypass attacks from substring matching
+    - Safe for exception handling (untrusted error sources)
+    """
+    for pattern in patterns:
+        # Escape special regex characters and use word boundaries
+        escaped = re.escape(pattern)
+        # Match the pattern with word boundaries for safety
+        if re.search(rf'\b{escaped}\b', error_msg, re.IGNORECASE):
+            return True
+    return False
+
+
+
     import torch
 
     # Verify torch is actually functional (not just a stub)

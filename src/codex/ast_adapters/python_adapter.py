@@ -19,7 +19,9 @@ try:
 
     _LIBCST_AVAILABLE = True
 except ImportError:  # pragma: no cover
-    cst = None  # type: ignore[assignment]
+    cst = None
+
+
     _LIBCST_AVAILABLE = False
 
 from .base_adapter import BaseASTAdapter, StandardizedASTNode
@@ -109,7 +111,9 @@ class PythonASTAdapter(BaseASTAdapter):
         # Recursively process children for other compound statements
         if hasattr(cst_node, "body"):
             if isinstance(cst_node.body, cst.IndentedBlock):
-                for stmt in cst_node.body.body:  # type: ignore[assignment]
+                for stmt in cst_node.body.body:
+
+
                     self._process_node(stmt, parent)
             elif isinstance(cst_node.body, (list, tuple)):
                 for stmt in cst_node.body:
@@ -196,14 +200,18 @@ class PythonASTAdapter(BaseASTAdapter):
                         name=import_name,
                         file_path=self.file_path,
                         parent=parent,
-                        metadata={"alias": name.asname.name.value if name.asname else None},  # type: ignore[union-attr]
+                        metadata={"alias": name.asname.name.value if name.asname else None},
+
+
                     )
                     parent.children.append(import_node)
 
         elif isinstance(imp, cst.ImportFrom):
             # Handle dotted module names in from imports
             module = self._get_full_name(imp.module) if imp.module else ""
-            for name in imp.names:  # type: ignore[union-attr]
+            for name in imp.names:
+
+
                 if isinstance(name, cst.ImportAlias):
                     imported_name = (
                         name.name.value if isinstance(name.name, cst.Name) else str(name.name)
@@ -219,7 +227,9 @@ class PythonASTAdapter(BaseASTAdapter):
                         metadata={
                             "module": module,
                             "name": imported_name,
-                            "alias": name.asname.name.value if name.asname else None,  # type: ignore[union-attr]
+                            "alias": name.asname.name.value if name.asname else None,
+
+
                         },
                     )
                     parent.children.append(import_node)
@@ -258,7 +268,9 @@ class PythonASTAdapter(BaseASTAdapter):
             if isinstance(first_stmt, cst.SimpleStatementLine):
                 for node in first_stmt.body:
                     if isinstance(node, cst.Expr) and isinstance(node.value, cst.SimpleString):
-                        metadata["docstring"] = node.value.value.strip("\"\"\"'''")  # type: ignore[assignment]
+                        metadata["docstring"] = node.value.value.strip("\"\"\"'''")
+
+
                         break
 
         # Extract parameters
@@ -302,7 +314,9 @@ class PythonASTAdapter(BaseASTAdapter):
             if isinstance(first_stmt, cst.SimpleStatementLine):
                 for node in first_stmt.body:
                     if isinstance(node, cst.Expr) and isinstance(node.value, cst.SimpleString):
-                        metadata["docstring"] = node.value.value.strip("\"\"\"'''")  # type: ignore[assignment]
+                        metadata["docstring"] = node.value.value.strip("\"\"\"'''")
+
+
                         break
 
         return metadata

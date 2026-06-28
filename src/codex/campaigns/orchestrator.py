@@ -204,7 +204,7 @@ class CampaignOrchestrator:
         Returns:
             Dictionary mapping agent_id to execution result
         """
-        results: dict[str, Any][str, dict] = {}
+        results: dict[str, dict[str, Any]] = {}
         start_time = time.time()
 
         while len(results) < len(agent_ids):

@@ -129,7 +129,9 @@ def _safe_join_under_base(base_dir: Path, *segments: str) -> Path:
 # but add_exception_handler expects (Request, Exception) -> Response.
 # The wrapper below widens the signature to satisfy mypy without losing runtime behaviour.
 def _rate_limit_handler(request: Request, exc: Exception) -> Response:
-    return _rate_limit_exceeded_handler(request, exc)  # type: ignore[arg-type]
+    return _rate_limit_exceeded_handler(request, exc)
+
+
 
 
 # Add rate limiting
