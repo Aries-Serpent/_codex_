@@ -11,7 +11,7 @@ import secrets
 import time
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
-from typing import Optional
+from typing import Any, Optional
 from urllib.parse import urlencode
 
 import httpx

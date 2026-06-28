@@ -132,7 +132,7 @@ class SlackChannel(AlertChannel):
             )
 
             def _do_post() -> bool:
-                with urllib.request.urlopen(  # nosec B310  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- webhook URL is allowlisted by _validated_webhook_url()
+                with urllib.request.urlopen(  # nosec B310  # nosemgrep: semgrep.urllib-urlopen-dynamic -- webhook URL is allowlisted by _validated_webhook_url()
                     req, timeout=_TIMEOUT
                 ) as resp:
                     status = resp.getcode()

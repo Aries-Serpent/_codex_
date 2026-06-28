@@ -142,7 +142,7 @@ class TestCheckpointManager:
 
         # Corrupt the checkpoint file
         checkpoint_file = checkpoint_manager.checkpoint_dir / "v1" / f"{cp_id}.json.gz"
-        os.chmod(checkpoint_file, 0o644)  # Make writable
+        os.chmod(checkpoint_file, 0o644)  # nosemgrep: semgrep.insecure-file-permissions - Test: temporarily making test file writable for corruption
         checkpoint_file.write_bytes(b"corrupted data")
 
         # Verification should fail
@@ -473,7 +473,7 @@ class TestSessionResume:
         # Corrupt the checkpoint
         cp_file = checkpoint_manager.checkpoint_dir / "v1" / f"{cp_id}.json.gz"
         pass  # removed redundant `import os` (top-level import used)
-        os.chmod(cp_file, 0o644)
+        os.chmod(cp_file, 0o644)  # nosemgrep: semgrep.insecure-file-permissions - Test: temporarily making test file writable for corruption
         cp_file.write_bytes(b"corrupted")
 
         result = session_resume.resume_session(cp_id)

@@ -248,7 +248,7 @@ class ZendeskKnowledgeSyncService:
         last_exc: Exception | None = None
         for attempt in range(self.retries):
             try:
-                with urllib.request.urlopen(  # noqa: S310  # nosec: B310  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- URL is validated above for https/netloc/credentials
+                with urllib.request.urlopen(  # noqa: S310  # nosec: B310  # nosemgrep: semgrep.urllib-urlopen-dynamic -- URL is validated above for https/netloc/credentials
                     req
                 ) as response:
                     content = response.read()

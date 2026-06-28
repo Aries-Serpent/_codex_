@@ -93,7 +93,7 @@ class TestModelStatePickleRoundTrip:
 
         reloaded = pickle.loads(
             state_path.read_bytes()
-        )  # noqa: S301 — test uses trusted local file
+        )  # noqa: S301 — test uses trusted local file  # nosemgrep: semgrep.unsafe-pickle-loads
         assert (reloaded.name == pretrained_model.name, "name is not valid"
         ), f"name changed after pickle: {reloaded.name!r}"
         assert (reloaded.stage == pretrained_model.stage, "stage is not valid"
