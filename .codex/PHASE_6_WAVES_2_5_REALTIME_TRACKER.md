@@ -97,12 +97,12 @@
 ## 📈 Overall Campaign Metrics
 
 ### Wave Progress Summary
-| Wave | Status | Start Time | Est. Completion | Current Phase |
-|------|--------|-----------|-----------------|---------------|
-| 2 | 🟡 Active | 2026-06-28 | 2026-08-09 | Initialization |
-| 3 | 🟡 Active | 2026-06-28 | 2026-07-02 | Lane Setup |
-| 4 | 🟡 Active | 2026-06-28 | Continuous | Analysis |
-| 5 | 🟡 Active | 2026-06-28 | 2026-07-19 | Layer 1 |
+| Wave | Status | Start Time | Est. Completion | Current Phase | Progress |
+|------|--------|-----------|-----------------|---------------|----------|
+| 2 | 🟢 Active | 2026-06-28 | 2026-08-09 | Tier 1b (Week 2) | 3/15 patterns ✅ |
+| 3 | 🟡 Active | 2026-06-28 | 2026-07-02 | Lane Setup | Initializing |
+| 4 | 🟡 Active | 2026-06-28 | Continuous | Analysis | Initializing |
+| 5 | 🟡 Active | 2026-06-28 | 2026-07-19 | Layer 1 | Initializing |
 
 ### Campaign-Wide KPIs
 - **Total Agents Dispatched:** 4 (all active in parallel)
