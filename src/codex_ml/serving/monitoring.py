@@ -6,7 +6,7 @@ Provides Prometheus metrics, health checks, and distributed tracing.
 
 import logging
 from collections import defaultdict
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from threading import Lock
 from typing import Any, DefaultDict, Optional
 
@@ -21,7 +21,7 @@ class LatencyHistogram:
     """
 
     buckets: list[float]  # Bucket boundaries in milliseconds
-    counts: dict[float, int] | None = None  # Count per bucket
+    counts: dict[float, int] = field(default_factory=dict)  # Count per bucket
     total_count: int = 0
     total_sum: float = 0.0
 
@@ -157,8 +157,8 @@ class PrometheusMetrics:
                 self.model_load_count[model_name] += 1
 
                 if model_name not in self.model_load_latency:
-                    self.model_load_latency[model_name] = LatencyHistogram(  # type: ignore[call-arg]
-                        buckets=[100, 500, 1000, 2000, 5000, 10000, 30000]
+                    self.model_load_latency[model_name] = LatencyHistogram(
+                        buckets=[100.0, 500.0, 1000.0, 2000.0, 5000.0, 10000.0, 30000.0]
                     )
 
                 self.model_load_latency[model_name].observe(latency_ms)
@@ -179,8 +179,8 @@ class PrometheusMetrics:
             self.model_prediction_count[model_name] += num_samples
 
             if model_name not in self.model_prediction_latency:
-                self.model_prediction_latency[model_name] = LatencyHistogram(  # type: ignore[call-arg]
-                    buckets=[10, 25, 50, 100, 250, 500, 1000, 2500, 5000]
+                self.model_prediction_latency[model_name] = LatencyHistogram(
+                    buckets=[10.0, 25.0, 50.0, 100.0, 250.0, 500.0, 1000.0, 2500.0, 5000.0]
                 )
 
             self.model_prediction_latency[model_name].observe(latency_ms)

@@ -17,7 +17,7 @@ import hmac as _hmac
 import os
 import time
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import Any, Optional
 
 # PBKDF2 parameters — increasing ITERATIONS raises cost for attackers.
 _PBKDF2_HASH = "sha256"

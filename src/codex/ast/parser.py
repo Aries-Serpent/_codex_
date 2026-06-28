@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 import ast  # noqa: E402
 import hashlib  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Optional  # noqa: E402
+from typing import Any, Optional  # noqa: E402
 
 from .node import NodeType, SourceLocation, StandardizedASTNode  # noqa: E402
 
