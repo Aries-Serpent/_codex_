@@ -23,7 +23,7 @@ import numbers  # noqa: E402
 import os  # noqa: E402
 from collections.abc import Iterable, Sequence  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Optional  # noqa: E402
+from typing import Any, Optional  # noqa: E402
 
 spm = None
 
@@ -32,7 +32,6 @@ def _get_sentencepiece() -> Any:
     """Return the ``sentencepiece`` module or raise ``ImportError``."""
 
     import sys as _sys
-    from typing import Any
 
     global spm
     # Check sys.modules first — allows tests to inject a stub via
@@ -97,20 +96,20 @@ def _get_sentencepiece() -> Any:
                         logger.warning("Exception occurred", exc_info=True)
                         self.vocab = []
 
-            def encode(self, text: str, out_type=int) -> None:
+            def encode(self, text: str, out_type=int) -> list[int] | list[str]:
                 token_to_id = {tok: idx for idx, tok in enumerate(self.vocab)} or {"<unk>": 0}
                 ids = [token_to_id.get(tok, 0) for tok in text.split()]
                 return ids if out_type is int else [str(i) for i in ids]
 
-            def decode(self, ids) -> None:
+            def decode(self, ids) -> str:
                 id_to_token = {idx: tok for idx, tok in enumerate(self.vocab)} or {0: "<unk>"}
                 return " ".join(id_to_token.get(int(i), "<unk>") for i in ids)
 
-            def get_piece_size(self) -> None:
+            def get_piece_size(self) -> int:
                 return len(self.vocab) if self.vocab else 1
 
             # Compatibility shims
-            def __getattr__(self, name: str) -> None:  # pragma: no cover - compatibility
+            def __getattr__(self, name: str) -> Any:  # pragma: no cover - compatibility
                 """
                 Provide compatibility shims for certain attribute names.
 
@@ -121,7 +120,7 @@ def _get_sentencepiece() -> Any:
                     return self.get_piece_size
                 raise AttributeError(name)
 
-        spm = SimpleNamespace(
+        spm = SimpleNamespace(  # type: ignore[assignment]
             SentencePieceTrainer=_StubSentencePieceTrainer,
             SentencePieceProcessor=_StubSentencePieceProcessor,
         )
@@ -175,7 +174,7 @@ class SentencePieceAdapter:
         module = _get_sentencepiece()
         if self.model_path.exists():
             return self.load()
-        module.SentencePieceTrainer.train(  # type: ignore[attr-defined]
+        module.SentencePieceTrainer.train(
             input=str(input_path),
             model_prefix=str(self.model_prefix),
             vocab_size=vocab_size,
@@ -195,7 +194,7 @@ class SentencePieceAdapter:
             raise FileNotFoundError(f"Model file not found: {self.model_path}")
 
         module = _get_sentencepiece()
-        cls = module.SentencePieceProcessor  # type: ignore[attr-defined]
+        cls = module.SentencePieceProcessor
         try:
             proc = cls(model_file=str(self.model_path))
         except TypeError as e:
