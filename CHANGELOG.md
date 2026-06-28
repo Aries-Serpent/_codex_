@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Fixed (compliance — PR #5112, Session 2026-06-28T01:24Z)
+- REQ-4: Updated AGENT_ACCOUNTABILITY_REPORT.md with CI rescue session entry (2026-06-28T01:24Z)
+- REQ-5: Updated CHANGELOG.md with compliance gate resolution documentation
+- REQ-13: Addressed all blocking comments from @mbaetiong with explicit commit SHAs via reply_to_comment
+- Unblocked 10 failing CI checks: Comment review gate, workflow execution gate, and related compliance checks
+
 ### Added (PHASE 6 COMPLETION: Multi-wave Autonomous Execution — PR #5112, Session 2026-06-28T01:20Z)
 - **Phase 6 Campaign Execution Complete**: All 4 waves executed successfully with zero blockers
   - Wave 2: Duplication extraction — 8/15 TIER-1 patterns (1,798 LOC reduction), Tier 1b complete
