@@ -6,7 +6,7 @@ import importlib
 import importlib.util
 import logging
 from pathlib import Path
-from typing import cast, Optional
+from typing import Optional
 
 from . import AnalysisPlugin, ASTPlugin
 

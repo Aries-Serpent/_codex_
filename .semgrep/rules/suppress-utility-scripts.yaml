@@ -111,14 +111,13 @@ rules:
     
     paths:
      include:
-       - "**/*.py"
+       - "scripts/**/*.py"
+       - "tools/**/*.py"
+       - ".codex/**/*.py"
      exclude:
        - "**/tests/**"
        - "**/*_test.py"
        - "**/test_*.py"
-       - "**/checkpoint_core.py"
-       - ".github/agents/*/tests/**"
-       - ".github/copilot-*/tests/**"
 
   # Suppress for test fixtures and examples
   - id: suppress-url-checks-in-tests
