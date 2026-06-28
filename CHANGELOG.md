@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #5113)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5113 (SHA `e036d078`) at 2026-06-28T03:07Z [auto-generated]
+
 ### Fixed (compliance — PR #5112, Session 2026-06-28T02:23Z)
 - REQ-4: Updated AGENT_ACCOUNTABILITY_REPORT.md with mypy baseline session entry (2026-06-28T02:23Z)
 - REQ-5: Updated CHANGELOG.md with mypy anti-regression gate fix documentation
