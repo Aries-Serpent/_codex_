@@ -1,10 +1,10 @@
-# Session Context — 2026-06-29T03:06:33Z
+# Session Context — 2026-06-29T03:13:15Z
 **Branch:** `copilot/test-codex-master-key-usage`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4919` (✅)
-- GraphQL remaining: `4983` (✅)
+- REST remaining: `4639` (✅)
+- GraphQL remaining: `4976` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -16,6 +16,7 @@
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-29)
 
 ## 📝 Recent Commits
+- `5d27f484` Apply remaining changes — copilot-swe-agent[bot] (2026-06-29)
 - `c5e5b925` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-06-29)
 - `13d54a12` Merge pull request #5122 from Aries-Serpent/automated/repository-health-22 — Statix (2026-06-29)
 - `64a11829` fix(compliance+ruff): satisfy REQ-4/REQ-5 gates and fix 829 F841 violations — copilot-swe-agent[bot] (2026-06-29)
@@ -23,7 +24,6 @@
 - `2b8a6168` fix(compliance): update CHANGELOG.md for REQ-5 compliance gate — copilot-swe-agent[bot] (2026-06-29)
 - `c8e5ef5b` fix(tests): resolve syntax error in test_mypy_manager.py and update accountabili — copilot-swe-agent[bot] (2026-06-29)
 - `04ba7a84` fix(workflow): resolve actionlint compliance violations in test-rag.yml — copilot-swe-agent[bot] (2026-06-29)
-- `42fb1279` fix(ci): auto-fix CI issues on PR [skip ci] (Pattern 35/RP-007) — github-actions[bot] (2026-06-29)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
