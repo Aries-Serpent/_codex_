@@ -200,6 +200,7 @@ class TestProcess3RepositoryActionsSecrets:
 
         assert payload["encrypted_value"]
         assert payload["key_id"]
+        assert "actions/secrets" in endpoint
 
     def test_process3_create_secret_with_mock_encryption(
         self,
@@ -222,6 +223,7 @@ class TestProcess3RepositoryActionsSecrets:
 
         assert payload["name"] == test_secret_name_base
         assert payload["encrypted_value"]
+        assert "actions/secrets" in endpoint
 
     def test_process3_create_secret_with_visibility(
         self,
@@ -241,6 +243,7 @@ class TestProcess3RepositoryActionsSecrets:
         }
 
         assert payload.get("visibility") == "selected"
+        assert "actions/secrets" in endpoint
 
     def test_process3_update_actions_secret_success(
         self,
@@ -336,23 +339,13 @@ class TestProcess4OrganizationActionsSecrets:
     # Organization Secret CRUD
     # ───────────────────────────────────────────────────────────────────────
 
-    def test_process4_list_org_secrets_success(
+     def test_process4_list_org_secrets_success(
         self,
         gh_api_base: str,
         org_actions_secrets_endpoint: str,
     ):
         """Test: List organization Actions secrets."""
         endpoint = f"{gh_api_base}{org_actions_secrets_endpoint}"
-        expected_response = {
-            "total_count": 1,
-            "secrets": [
-                {
-                    "name": "ORG_SECRET",
-                    "created_at": "2024-01-01T00:00:00Z",
-                    "updated_at": "2024-01-01T00:00:00Z",
-                },
-            ],
-        }
 
         assert "actions/secrets" in endpoint
         assert "/orgs/" in endpoint
@@ -374,6 +367,7 @@ class TestProcess4OrganizationActionsSecrets:
         }
 
         assert payload["visibility"] in ["all", "private", "selected"]
+        assert "actions/secrets" in endpoint
 
     def test_process4_create_org_secret_visibility_selected(
         self,
@@ -394,6 +388,7 @@ class TestProcess4OrganizationActionsSecrets:
 
         assert payload["visibility"] == "selected"
         assert len(payload["selected_repository_ids"]) == 3
+        assert "/orgs/" in endpoint
 
     def test_process4_update_org_secret_success(
         self,
@@ -407,6 +402,7 @@ class TestProcess4OrganizationActionsSecrets:
         payload = {"encrypted_value": "new_base64_value", "key_id": "key_id"}
 
         assert payload["encrypted_value"]
+        assert test_secret_name_base in endpoint
 
     def test_process4_delete_org_secret_success(
         self,
@@ -471,10 +467,6 @@ class TestProcess5DependabotSecrets:
     ):
         """Test: List Dependabot secrets."""
         endpoint = f"{gh_api_base}{dependabot_secrets_endpoint}"
-        expected_response = {
-            "total_count": 0,
-            "secrets": [],
-        }
 
         assert "dependabot/secrets" in endpoint
 
@@ -495,6 +487,7 @@ class TestProcess5DependabotSecrets:
 
         assert payload["name"]
         assert payload["encrypted_value"]
+        assert "dependabot/secrets" in endpoint
 
     def test_process5_dependabot_secret_isolation(
         self,
@@ -525,6 +518,7 @@ class TestProcess5DependabotSecrets:
         payload = {"encrypted_value": "new_encrypted", "key_id": "key"}
 
         assert payload["encrypted_value"]
+        assert test_secret_name_base in endpoint
 
     def test_process5_delete_dependabot_secret_success(
         self,
