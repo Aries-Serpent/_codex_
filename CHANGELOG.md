@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+### Fixed (Emergency session continuation — PR #5122, Session 2026-06-29T02:20Z)
+- **actionlint compliance:** Fixed workflow compliance issues in `.github/workflows/test-rag.yml`:
+  - Line 476: Changed `grep ... | wc -l` to `grep -c` (SC2126 shellcheck violation)
+  - Line 589: Refactored exit code check from `if [ $? -ne 0 ]` to direct conditional `if ! COVERAGE=$(...)` (SC2181 shellcheck violation)
+- **Emergency context:** Previous session terminated with quota error (402); continued from CI failure investigation
+- **Main branch failures:** Validated that PR changes do not introduce auth-tests, test-rag, or mypy baseline failures observed on main branch (commit `49538fb`)
+- **Status:** actionlint violations resolved; PR ready for CI validation
+
 ### Fixed (CI rescue and compliance — PR #5122, Session 2026-06-29T01:23Z)
 - **REQ-5 Compliance:** Updated CHANGELOG.md to satisfy merge-readiness gate for PR #5122
 - **REQ-4 Compliance:** Updated AGENT_ACCOUNTABILITY_REPORT.md with today's session entry
