@@ -556,7 +556,7 @@ psutil==7.2.2
     #   peft
 py-spy==0.4.2
     # via ray
-pyarrow==23.0.1
+pyarrow==24.0.0
     # via
     #   datasets
     #   mlflow
