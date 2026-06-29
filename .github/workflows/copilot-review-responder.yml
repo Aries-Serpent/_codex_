@@ -1,278 +1,157 @@
-name: "🤖 Copilot Review Responder"
-# aais-cache: none  # Python referenced in template/doc strings only — no pip install
-
-# WHY TWO TRIGGERS:
-# copilot-pull-request-reviewer[bot] submits a pull_request_review event with an
-# EMPTY review body. The "## Pull request overview … generated N comments" summary
-# is posted separately as a PR issue comment AFTER the review is submitted.
-# Therefore we MUST listen on issue_comment:created to catch that summary comment.
-# The pull_request_review trigger still fires and reacts 👍 to the review itself.
-#
-# Workflow behaviour:
-#   pull_request_review (submitted):
-#     → reacts 👍 to the review and all existing bot review/issue comments.
-#   issue_comment (created) from a bot containing "generated N comments":
-#     → reacts 👍 to the comment
-#     → finds the most recent bot PR review (to build the review URL)
-#     → posts "@copilot apply changes based on the comments in this thread (<review URL>)"
-#
-# Bot actors targeted: copilot-pull-request-reviewer[bot], copilot[bot],
-#   github-copilot[bot], gemini-code-assist[bot], amazon-q[bot],
-#   copilot-swe-agent[bot]
-#
-# Security:
-#   - issue_comment trigger only fires for PR comments (checks pull_request.url).
-#   - Continuation comment only posted when bot says "generated N > 0 comments".
-#   - GROUNDED: no infinite loops — the continuation comment is @copilot apply
-#     (a coding agent task), not another @copilot review.
-
-on:
+name: 🤖 Copilot Review Responder
+true:
   pull_request_review:
-    types: [submitted]
+    types:
+    - submitted
   issue_comment:
-    types: [created]
-
-# Concurrency: use PR number (available in both events) with fallback to run ID.
-
+    types:
+    - created
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   pull-requests: write
   issues: write
-
 jobs:
   respond-to-review:
-    name: "Auto-respond to Copilot review"
+    name: Auto-respond to Copilot review
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    # Fire when:
-    #   A. pull_request_review submitted by a recognized bot  (body may be empty — see header)
-    #   B. issue_comment created by a recognized bot on a PR containing "generated N comments"
-    if: >-
-      (github.event_name == 'pull_request_review' &&
-       contains(fromJSON('["copilot-pull-request-reviewer[bot]","copilot[bot]","github-copilot[bot]","gemini-code-assist[bot]","copilot-swe-agent[bot]","amazon-q[bot]"]'), github.event.review.user.login))
-      ||
-      (github.event_name == 'issue_comment' &&
-       github.event.issue.pull_request.url != '' &&
-       contains(fromJSON('["copilot-pull-request-reviewer[bot]","copilot[bot]","github-copilot[bot]","gemini-code-assist[bot]","copilot-swe-agent[bot]","amazon-q[bot]"]'), github.event.comment.user.login) &&
-       contains(github.event.comment.body, 'generated') &&
-       contains(github.event.comment.body, 'comments'))
-
+    if: "(github.event_name == 'pull_request_review' &&\n contains(fromJSON('[\"copilot-pull-request-reviewer[bot]\"\
+      ,\"copilot[bot]\",\"github-copilot[bot]\",\"gemini-code-assist[bot]\",\"copilot-swe-agent[bot]\"\
+      ,\"amazon-q[bot]\"]'), github.event.review.user.login))\n|| (github.event_name\
+      \ == 'issue_comment' &&\n github.event.issue.pull_request.url != '' &&\n contains(fromJSON('[\"\
+      copilot-pull-request-reviewer[bot]\",\"copilot[bot]\",\"github-copilot[bot]\"\
+      ,\"gemini-code-assist[bot]\",\"copilot-swe-agent[bot]\",\"amazon-q[bot]\"]'),\
+      \ github.event.comment.user.login) &&\n contains(github.event.comment.body,\
+      \ 'generated') &&\n contains(github.event.comment.body, 'comments'))"
     steps:
-      - name: "👍 React to bot review and acknowledge bot comments"
-        uses: actions/github-script@v8 # v9
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const owner = context.repo.owner;
-            const repo  = context.repo.repo;
-            const eventName = context.eventName;
-
-            // Bot actors whose comments we acknowledge with 👍
-            const BOT_ACTORS = new Set([
-              'copilot-pull-request-reviewer[bot]',
-              'copilot[bot]',
-              'github-copilot[bot]',
-              'gemini-code-assist[bot]',
-              'copilot-swe-agent[bot]',
-              'amazon-q[bot]',
-            ]);
-
-            // Determine PR number for both event types
-            const pr = eventName === 'pull_request_review'
-              ? context.payload.pull_request.number
-              : context.payload.issue.number;
-
-            // ── 1. React 👍 to the PR review itself (pull_request_review only) ──
-            if (eventName === 'pull_request_review') {
-              const reviewId = context.payload.review.id;
-              try {
-                await github.rest.reactions.createForPullRequestReview({
-                  owner, repo, pull_number: pr, review_id: reviewId, content: '+1',
-                });
-                console.log(`👍 Reacted to review ${reviewId}`);
-              } catch (e) {
-                console.log(`Could not react to review ${reviewId}: ${e.message}`);
-              }
-            }
-
-            // ── 2. Fetch all PR review comments and react 👍 to bot ones ──────
-            let page = 1;
-            const acknowledged = [];
-            while (true) {
-              const { data: comments } = await github.rest.pulls.listReviewComments({
-                owner, repo, pull_number: pr, per_page: 100, page,
-              });
-              if (comments.length === 0) break;
-              for (const comment of comments) {
-                const actor = comment.user?.login ?? '';
-                if (!BOT_ACTORS.has(actor)) continue;
-                let alreadyReacted = false;
-                try {
-                  const { data: reactions } = await github.rest.reactions.listForPullRequestReviewComment({
-                    owner, repo, comment_id: comment.id,
-                  });
-                  alreadyReacted = reactions.some(
-                    r => r.content === '+1' && r.user?.login === 'github-actions[bot]'
-                  );
-                } catch (e) { /* ignore */ }
-                if (!alreadyReacted) {
-                  try {
-                    await github.rest.reactions.createForPullRequestReviewComment({
-                      owner, repo, comment_id: comment.id, content: '+1',
-                    });
-                    acknowledged.push(comment.id);
-                    console.log(`👍 Acknowledged review comment ${comment.id} by ${actor}`);
-                  } catch (e) {
-                    console.log(`Could not react to comment ${comment.id}: ${e.message}`);
-                  }
-                }
-              }
-              page++;
-            }
-
-            // ── 3. Also acknowledge regular PR issue comments from bots ───────
-            page = 1;
-            while (true) {
-              const { data: issueComments } = await github.rest.issues.listComments({
-                owner, repo, issue_number: pr, per_page: 100, page,
-              });
-              if (issueComments.length === 0) break;
-              for (const comment of issueComments) {
-                const actor = comment.user?.login ?? '';
-                if (!BOT_ACTORS.has(actor)) continue;
-                let alreadyReacted = false;
-                try {
-                  const { data: reactions } = await github.rest.reactions.listForIssueComment({
-                    owner, repo, comment_id: comment.id,
-                  });
-                  alreadyReacted = reactions.some(
-                    r => r.content === '+1' && r.user?.login === 'github-actions[bot]'
-                  );
-                } catch (e) { /* ignore */ }
-                if (!alreadyReacted) {
-                  try {
-                    await github.rest.reactions.createForIssueComment({
-                      owner, repo, comment_id: comment.id, content: '+1',
-                    });
-                    acknowledged.push(comment.id);
-                    console.log(`👍 Acknowledged issue comment ${comment.id} by ${actor}`);
-                  } catch (e) {
-                    console.log(`Could not react to issue comment ${comment.id}: ${e.message}`);
-                  }
-                }
-              }
-              page++;
-            }
-            console.log(`Total acknowledged: ${acknowledged.length} comment(s)`);
-
-      - name: "💬 Post @copilot apply changes (issue_comment trigger only)"
-        # This step only runs when triggered by the bot's overview issue comment
-        # (which contains "generated N comments"). The pull_request_review event
-        # has an empty review body, so we skip posting for that trigger.
-        if: github.event_name == 'issue_comment'
-        uses: actions/github-script@v8 # v9
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const owner       = context.repo.owner;
-            const repo        = context.repo.repo;
-            const pr          = context.payload.issue.number;
-            const commentBody = context.payload.comment.body ?? '';
-            const reviewer    = context.payload.comment.user.login;
-
-            // Extract the "generated N comments" count
-            const match = commentBody.match(/generated\s+(\d+)\s+comments?/i);
-            const count = match ? parseInt(match[1], 10) : null;
-
-            // Skip if the review explicitly generated 0 comments
-            if (count !== null && count === 0) {
-              console.log('Review generated 0 comments — skipping @copilot trigger.');
-              return;
-            }
-
-            // Find the most recent bot PR review to build the review URL.
-            // The review ID is not in the issue_comment payload, so we fetch it.
-            const BOT_ACTORS = new Set([
-              'copilot-pull-request-reviewer[bot]',
-              'copilot[bot]',
-              'github-copilot[bot]',
-              'gemini-code-assist[bot]',
-              'copilot-swe-agent[bot]',
-              'amazon-q[bot]',
-            ]);
-
-            let reviewId = null;
-            try {
-              const { data: reviews } = await github.rest.pulls.listReviews({
-                owner, repo, pull_number: pr,
-              });
-              // Sort descending by submitted_at to get the most recent bot review
-              const botReviews = reviews
-                .filter(r => BOT_ACTORS.has(r.user?.login ?? ''))
-                .sort((a, b) => new Date(b.submitted_at) - new Date(a.submitted_at));
-              if (botReviews.length > 0) {
-                reviewId = botReviews[0].id;
-                console.log(`Found most recent bot review: ${reviewId} by ${botReviews[0].user.login}`);
-              }
-            } catch (e) {
-              console.log(`Could not fetch PR reviews (non-fatal): ${e.message}`);
-            }
-
-            const countStr  = count !== null ? `${count}` : 'some';
-            const reviewUrl = reviewId
-              ? `https://github.com/${owner}/${repo}/pull/${pr}#pullrequestreview-${reviewId}`
-              : `https://github.com/${owner}/${repo}/pull/${pr}`;
-
-            const body = [
-              `@copilot+claude-haiku-4.5 /plan`,
-              ``,
-              `apply changes based on the comments in [this thread](${reviewUrl})`,
-              ``,
-              `> 🤖 **Auto-triggered** by \`${reviewer}\` review (${countStr} comment(s) generated).`,
-              `> All bot review comments have been acknowledged with 👍.`,
-              `> Please address all review comments and resolve any open threads.`,
-              `> **💡 Parallel execution:** Use the \`task\` tool to delegate independent fixes to Custom Agents (e.g. \`ci-auto-healer-agent\`, \`test-alignment-fixer\`) to work in parallel.`,
-              '',
-              '---',
-              `_[🔗 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,
-            ].join('\n');
-
-            await github.rest.issues.createComment({
-              owner, repo, issue_number: pr, body,
-            });
-            console.log(`@copilot apply posted for review ${reviewId ?? 'unknown'} (${countStr} comments).`);
-
-  # ── rescue comment — posted on PR whenever this workflow fails ──────────
+    - name: 👍 React to bot review and acknowledge bot comments
+      uses: actions/github-script@v8
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: "const owner = context.repo.owner;\nconst repo  = context.repo.repo;\n\
+          const eventName = context.eventName;\n\n// Bot actors whose comments we\
+          \ acknowledge with \U0001F44D\nconst BOT_ACTORS = new Set([\n  'copilot-pull-request-reviewer[bot]',\n\
+          \  'copilot[bot]',\n  'github-copilot[bot]',\n  'gemini-code-assist[bot]',\n\
+          \  'copilot-swe-agent[bot]',\n  'amazon-q[bot]',\n]);\n\n// Determine PR\
+          \ number for both event types\nconst pr = eventName === 'pull_request_review'\n\
+          \  ? context.payload.pull_request.number\n  : context.payload.issue.number;\n\
+          \n// ── 1. React \U0001F44D to the PR review itself (pull_request_review\
+          \ only) ──\nif (eventName === 'pull_request_review') {\n  const reviewId\
+          \ = context.payload.review.id;\n  try {\n    await github.rest.reactions.createForPullRequestReview({\n\
+          \      owner, repo, pull_number: pr, review_id: reviewId, content: '+1',\n\
+          \    });\n    console.log(`\U0001F44D Reacted to review ${reviewId}`);\n\
+          \  } catch (e) {\n    console.log(`Could not react to review ${reviewId}:\
+          \ ${e.message}`);\n  }\n}\n\n// ── 2. Fetch all PR review comments and react\
+          \ \U0001F44D to bot ones ──────\nlet page = 1;\nconst acknowledged = [];\n\
+          while (true) {\n  const { data: comments } = await github.rest.pulls.listReviewComments({\n\
+          \    owner, repo, pull_number: pr, per_page: 100, page,\n  });\n  if (comments.length\
+          \ === 0) break;\n  for (const comment of comments) {\n    const actor =\
+          \ comment.user?.login ?? '';\n    if (!BOT_ACTORS.has(actor)) continue;\n\
+          \    let alreadyReacted = false;\n    try {\n      const { data: reactions\
+          \ } = await github.rest.reactions.listForPullRequestReviewComment({\n  \
+          \      owner, repo, comment_id: comment.id,\n      });\n      alreadyReacted\
+          \ = reactions.some(\n        r => r.content === '+1' && r.user?.login ===\
+          \ 'github-actions[bot]'\n      );\n    } catch (e) { /* ignore */ }\n  \
+          \  if (!alreadyReacted) {\n      try {\n        await github.rest.reactions.createForPullRequestReviewComment({\n\
+          \          owner, repo, comment_id: comment.id, content: '+1',\n       \
+          \ });\n        acknowledged.push(comment.id);\n        console.log(`\U0001F44D\
+          \ Acknowledged review comment ${comment.id} by ${actor}`);\n      } catch\
+          \ (e) {\n        console.log(`Could not react to comment ${comment.id}:\
+          \ ${e.message}`);\n      }\n    }\n  }\n  page++;\n}\n\n// ── 3. Also acknowledge\
+          \ regular PR issue comments from bots ───────\npage = 1;\nwhile (true) {\n\
+          \  const { data: issueComments } = await github.rest.issues.listComments({\n\
+          \    owner, repo, issue_number: pr, per_page: 100, page,\n  });\n  if (issueComments.length\
+          \ === 0) break;\n  for (const comment of issueComments) {\n    const actor\
+          \ = comment.user?.login ?? '';\n    if (!BOT_ACTORS.has(actor)) continue;\n\
+          \    let alreadyReacted = false;\n    try {\n      const { data: reactions\
+          \ } = await github.rest.reactions.listForIssueComment({\n        owner,\
+          \ repo, comment_id: comment.id,\n      });\n      alreadyReacted = reactions.some(\n\
+          \        r => r.content === '+1' && r.user?.login === 'github-actions[bot]'\n\
+          \      );\n    } catch (e) { /* ignore */ }\n    if (!alreadyReacted) {\n\
+          \      try {\n        await github.rest.reactions.createForIssueComment({\n\
+          \          owner, repo, comment_id: comment.id, content: '+1',\n       \
+          \ });\n        acknowledged.push(comment.id);\n        console.log(`\U0001F44D\
+          \ Acknowledged issue comment ${comment.id} by ${actor}`);\n      } catch\
+          \ (e) {\n        console.log(`Could not react to issue comment ${comment.id}:\
+          \ ${e.message}`);\n      }\n    }\n  }\n  page++;\n}\nconsole.log(`Total\
+          \ acknowledged: ${acknowledged.length} comment(s)`);\n"
+    - name: 💬 Post @copilot apply changes (issue_comment trigger only)
+      if: github.event_name == 'issue_comment'
+      uses: actions/github-script@v8
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: "const owner       = context.repo.owner;\nconst repo        = context.repo.repo;\n\
+          const pr          = context.payload.issue.number;\nconst commentBody = context.payload.comment.body\
+          \ ?? '';\nconst reviewer    = context.payload.comment.user.login;\n\n//\
+          \ Extract the \"generated N comments\" count\nconst match = commentBody.match(/generated\\\
+          s+(\\d+)\\s+comments?/i);\nconst count = match ? parseInt(match[1], 10)\
+          \ : null;\n\n// Skip if the review explicitly generated 0 comments\nif (count\
+          \ !== null && count === 0) {\n  console.log('Review generated 0 comments\
+          \ — skipping @copilot trigger.');\n  return;\n}\n\n// Find the most recent\
+          \ bot PR review to build the review URL.\n// The review ID is not in the\
+          \ issue_comment payload, so we fetch it.\nconst BOT_ACTORS = new Set([\n\
+          \  'copilot-pull-request-reviewer[bot]',\n  'copilot[bot]',\n  'github-copilot[bot]',\n\
+          \  'gemini-code-assist[bot]',\n  'copilot-swe-agent[bot]',\n  'amazon-q[bot]',\n\
+          ]);\n\nlet reviewId = null;\ntry {\n  const { data: reviews } = await github.rest.pulls.listReviews({\n\
+          \    owner, repo, pull_number: pr,\n  });\n  // Sort descending by submitted_at\
+          \ to get the most recent bot review\n  const botReviews = reviews\n    .filter(r\
+          \ => BOT_ACTORS.has(r.user?.login ?? ''))\n    .sort((a, b) => new Date(b.submitted_at)\
+          \ - new Date(a.submitted_at));\n  if (botReviews.length > 0) {\n    reviewId\
+          \ = botReviews[0].id;\n    console.log(`Found most recent bot review: ${reviewId}\
+          \ by ${botReviews[0].user.login}`);\n  }\n} catch (e) {\n  console.log(`Could\
+          \ not fetch PR reviews (non-fatal): ${e.message}`);\n}\n\nconst countStr\
+          \  = count !== null ? `${count}` : 'some';\nconst reviewUrl = reviewId\n\
+          \  ? `https://github.com/${owner}/${repo}/pull/${pr}#pullrequestreview-${reviewId}`\n\
+          \  : `https://github.com/${owner}/${repo}/pull/${pr}`;\n\nconst body = [\n\
+          \  `@copilot+claude-haiku-4.5 /plan`,\n  ``,\n  `apply changes based on\
+          \ the comments in [this thread](${reviewUrl})`,\n  ``,\n  `> \U0001F916\
+          \ **Auto-triggered** by \\`${reviewer}\\` review (${countStr} comment(s)\
+          \ generated).`,\n  `> All bot review comments have been acknowledged with\
+          \ \U0001F44D.`,\n  `> Please address all review comments and resolve any\
+          \ open threads.`,\n  `> **\U0001F4A1 Parallel execution:** Use the \\`task\\\
+          ` tool to delegate independent fixes to Custom Agents (e.g. \\`ci-auto-healer-agent\\\
+          `, \\`test-alignment-fixer\\`) to work in parallel.`,\n  '',\n  '---',\n\
+          \  `_[\U0001F517 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,\n\
+          ].join('\\n');\n\nawait github.rest.issues.createComment({\n  owner, repo,\
+          \ issue_number: pr, body,\n});\nconsole.log(`@copilot apply posted for review\
+          \ ${reviewId ?? 'unknown'} (${countStr} comments).`);\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
     needs: respond-to-review
-    if: |
-      failure() &&
-      github.event_name == 'pull_request' &&
+    if: 'failure() &&
+
+      github.event_name == ''pull_request'' &&
+
       github.event.pull_request.head.repo.full_name == github.repository
+
+      '
     permissions:
       pull-requests: write
       issues: write
     timeout-minutes: 5
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          fetch-depth: 1
-
-      - name: Post or update rescue comment
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_NAME: "Copilot Review Responder"
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          BRANCH: ${{ github.head_ref }}
-        run: python scripts/ci/post_rescue_comment.py
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        fetch-depth: 1
+    - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: Copilot Review Responder
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+        BRANCH: ${{ github.head_ref }}
+      run: python scripts/ci/post_rescue_comment.py
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

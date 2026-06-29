@@ -1,5 +1,5 @@
 name: Progressive Validation Suite
-on:
+true:
   pull_request:
     types:
     - opened
@@ -23,6 +23,8 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   smoke-tests:
     needs: analyze
     runs-on: ubuntu-latest
@@ -54,10 +56,19 @@ jobs:
     - name: Run import validation
       id: imports
       continue-on-error: false
-      run: "echo \"Testing basic imports...\"\npython -c \"import sys; print(f'Python:\
-        \ {sys.version}')\"\n\n# Test core module imports\npython -c \"import pathlib;\
-        \ import json; import subprocess\" || exit 1\n\necho \"\u2713 Import validation\
-        \ passed\"\n"
+      run: 'echo "Testing basic imports..."
+
+        python -c "import sys; print(f''Python: {sys.version}'')"
+
+
+        # Test core module imports
+
+        python -c "import pathlib; import json; import subprocess" || exit 1
+
+
+        echo "✓ Import validation passed"
+
+        '
     - name: Run smoke tests
       run: "# Quick syntax and basic functionality tests\n# These should complete\
         \ in <2 minutes\npytest tests/ -k \"smoke or quick\" \\\n  --timeout=60 \\\
@@ -71,14 +82,14 @@ jobs:
         echo "**Duration:** < 10 minutes" >> $GITHUB_STEP_SUMMARY
 
         '
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   unit-tests:
     needs:
     - analyze
     - smoke-tests
-    if: 'needs.analyze.outputs.pr_size == ''small'' ||
-      needs.analyze.outputs.pr_size == ''medium'' ||
-      github.event.inputs.force_full == ''true''
-      '
+    if: 'needs.analyze.outputs.pr_size == ''small'' || needs.analyze.outputs.pr_size
+      == ''medium'' || github.event.inputs.force_full == ''true'' '
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -119,13 +130,14 @@ jobs:
         echo "**Status:** Layer 2 validation" >> $GITHUB_STEP_SUMMARY
 
         '
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   integration-tests:
     needs:
     - analyze
     - unit-tests
-    if: 'needs.analyze.outputs.pr_size == ''small'' ||
-      github.event.inputs.force_full == ''true''
-      '
+    if: 'needs.analyze.outputs.pr_size == ''small'' || github.event.inputs.force_full
+      == ''true'' '
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -157,13 +169,14 @@ jobs:
         echo "**Status:** Layer 3 validation" >> $GITHUB_STEP_SUMMARY
 
         '
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   slow-tests:
     needs:
     - analyze
     - integration-tests
-    if: 'github.event.inputs.force_full == ''true'' &&
-      needs.analyze.outputs.pr_size == ''small''
-      '
+    if: 'github.event.inputs.force_full == ''true'' && needs.analyze.outputs.pr_size
+      == ''small'' '
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -195,6 +208,8 @@ jobs:
         echo "**Status:** Layer 4 validation" >> $GITHUB_STEP_SUMMARY
 
         '
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   validation-summary:
     needs:
     - analyze
@@ -220,18 +235,18 @@ jobs:
           \ = {\n  smoke: '${{ needs.smoke-tests.result }}',\n  unit: '${{ needs.unit-tests.result\
           \ }}',\n  integration: '${{ needs.integration-tests.result }}',\n  slow:\
           \ '${{ needs.slow-tests.result }}'\n};\n\nconst statusEmoji = {\n  'success':\
-          \ '\u2705',\n  'failure': '\u274C',\n  'skipped': '\u23ED\uFE0F',\n  'cancelled':\
-          \ '\U0001F6AB'\n};\n\nconst anyFailed = Object.values(layerResults).some(r\
-          \ => r === 'failure');\nconst overallStatus = anyFailed ? 'failure' : 'success';\n\
-          \nconst summaryLine = `${prSize} PR \xB7 ${validationStrategy} \xB7 smoke=${layerResults.smoke}\
+          \ '✅',\n  'failure': '❌',\n  'skipped': '⏭️',\n  'cancelled': '\U0001F6AB\
+          '\n};\n\nconst anyFailed = Object.values(layerResults).some(r => r === 'failure');\n\
+          const overallStatus = anyFailed ? 'failure' : 'success';\n\nconst summaryLine\
+          \ = `${prSize} PR · ${validationStrategy} · smoke=${layerResults.smoke}\
           \ unit=${layerResults.unit}`;\nconst details = [\n  `| Layer | Status |\
           \ Notes |`,\n  `|-------|--------|-------|`,\n  `| \U0001F525 Smoke | ${statusEmoji[layerResults.smoke]\
-          \ || '\u2753'} ${layerResults.smoke} | Always runs |`,\n  `| \U0001F9EA\
-          \ Unit | ${statusEmoji[layerResults.unit] || '\u2753'} ${layerResults.unit}\
-          \ | Small/Medium PRs |`,\n  `| \U0001F517 Integration | ${statusEmoji[layerResults.integration]\
-          \ || '\u2753'} ${layerResults.integration} | Small PRs only |`,\n  `| \U0001F40C\
-          \ Slow | ${statusEmoji[layerResults.slow] || '\u2753'} ${layerResults.slow}\
-          \ | On-demand |`,\n].join('\\n');\n\ncore.setOutput('status', overallStatus);\n\
+          \ || '❓'} ${layerResults.smoke} | Always runs |`,\n  `| \U0001F9EA Unit\
+          \ | ${statusEmoji[layerResults.unit] || '❓'} ${layerResults.unit} | Small/Medium\
+          \ PRs |`,\n  `| \U0001F517 Integration | ${statusEmoji[layerResults.integration]\
+          \ || '❓'} ${layerResults.integration} | Small PRs only |`,\n  `| \U0001F40C\
+          \ Slow | ${statusEmoji[layerResults.slow] || '❓'} ${layerResults.slow} |\
+          \ On-demand |`,\n].join('\\n');\n\ncore.setOutput('status', overallStatus);\n\
           core.setOutput('summary-line', summaryLine);\ncore.setOutput('details',\
           \ details);\n"
     - name: Post to PR Status Dashboard
@@ -242,6 +257,8 @@ jobs:
         status: ${{ steps.gen-summary.outputs.status }}
         summary: ${{ steps.gen-summary.outputs.summary-line }}
         details: ${{ steps.gen-summary.outputs.details }}
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
@@ -276,3 +293,5 @@ jobs:
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

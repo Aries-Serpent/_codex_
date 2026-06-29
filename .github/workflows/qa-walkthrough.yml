@@ -1,28 +1,26 @@
 name: QA Walkthrough Agent
-
-on:
+true:
   pull_request:
-    types: [opened, synchronize, ready_for_review]
+    types:
+    - opened
+    - synchronize
+    - ready_for_review
   workflow_dispatch:
     inputs:
       batch:
-        description: 'Batch to run (1-5 or all)'
+        description: Batch to run (1-5 or all)
         required: false
-        default: 'all'
+        default: all
       mode:
         description: 'Mode: full|ci|heal'
         required: false
-        default: 'full'
-
+        default: full
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   pull-requests: write
-
-
 jobs:
   qa-walkthrough:
     name: QA Walkthrough (${{ github.event.inputs.batch || 'all' }})
@@ -32,232 +30,173 @@ jobs:
       contents: read
       pull-requests: write
       actions: read
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          fetch-depth: 0
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        fetch-depth: 0
+    - name: Set up Python (cached)
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+    - name: Install QA dependencies
+      run: 'PYTHON_BIN="${VENV_PYTHON:-.venv_ci/bin/python}"
 
-      - name: Set up Python (cached)
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12.13'
-          cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+        "$PYTHON_BIN" -m pip install --quiet ruff black isort pylint bandit safety
+        pip-audit 2>&1 || true
 
-      - name: Install QA dependencies
-        run: |
-          PYTHON_BIN="${VENV_PYTHON:-.venv_ci/bin/python}"
-          "$PYTHON_BIN" -m pip install --quiet ruff black isort pylint bandit safety pip-audit 2>&1 || true
-          echo "--- QA tool availability ---"
-          which ruff    && echo "ruff:     installed" || echo "ruff:     MISSING"
-          which bandit  && echo "bandit:   installed" || echo "bandit:   MISSING"
-          which pylint  && echo "pylint:   installed" || echo "pylint:   MISSING"
-          "$PYTHON_BIN" -c "import pip_audit" 2>/dev/null && echo "pip-audit: installed" || echo "pip-audit: MISSING"
+        echo "--- QA tool availability ---"
 
-      - name: Download recent CI artifacts
-        uses: actions/github-script@v8 # v9
-        id: artifacts
-        with:
-          script: |
-            let workflowRuns = [];
-            try {
-              const runs = await github.rest.actions.listWorkflowRunsForRepo({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                per_page: 5,
-                status: 'completed'
-              });
-              workflowRuns = runs.data.workflow_runs || [];
-            } catch (error) {
-              core.warning(`Unable to list workflow runs (${error.name || 'Error'}${error.status ? ` ${error.status}` : ''}): ${error.message}`);
-            }
+        which ruff    && echo "ruff:     installed" || echo "ruff:     MISSING"
 
-            const artifacts = [];
-            for (const run of workflowRuns) {
-              try {
-                const arts = await github.rest.actions.listWorkflowRunArtifacts({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  run_id: run.id
-                });
-                for (const a of arts.data.artifacts || []) {
-                  if (a.name.startsWith('validation-') || a.name.startsWith('test-results')) {
-                    artifacts.push({ run_id: run.id, name: a.name, url: a.archive_download_url });
-                  }
-                }
-              } catch (error) {
-                core.warning(`Unable to list artifacts for run ${run.id} (${error.name || 'Error'}${error.status ? ` ${error.status}` : ''}): ${error.message}`);
-              }
-            }
-            core.setOutput('artifact_count', artifacts.length);
-            core.setOutput('artifacts_json', JSON.stringify(artifacts.slice(0, 10)));
+        which bandit  && echo "bandit:   installed" || echo "bandit:   MISSING"
 
-      - name: Run code quality scan (Batch ${{ github.event.inputs.batch || 'all' }})
-        id: qa_scan
-        run: |
-          python3 - <<'EOF'
-          import ast, os, json, pathlib, sys
+        which pylint  && echo "pylint:   installed" || echo "pylint:   MISSING"
 
-          src_root = pathlib.Path("src")
-          issues = []
+        "$PYTHON_BIN" -c "import pip_audit" 2>/dev/null && echo "pip-audit: installed"
+        || echo "pip-audit: MISSING"
 
-          for py_file in sorted(src_root.rglob("*.py")):
-              try:
-                  source = py_file.read_text(encoding="utf-8")
-                  tree = ast.parse(source, filename=str(py_file))
-                  for node in ast.walk(tree):
-                      # Detect bare except
-                      if isinstance(node, ast.ExceptHandler) and node.type is None:
-                          issues.append({
-                              "file": str(py_file),
-                              "line": node.lineno,
-                              "severity": "warning",
-                              "category": "exception_handling",
-                              "description": "Bare except clause"
-                          })
-              except SyntaxError as e:
-                  issues.append({
-                      "file": str(py_file),
-                      "line": e.lineno or 0,
-                      "severity": "error",
-                      "category": "syntax",
-                      "description": f"SyntaxError: {e.msg}"
-                  })
+        '
+    - name: Download recent CI artifacts
+      uses: actions/github-script@v8
+      id: artifacts
+      with:
+        script: "let workflowRuns = [];\ntry {\n  const runs = await github.rest.actions.listWorkflowRunsForRepo({\n\
+          \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    per_page:\
+          \ 5,\n    status: 'completed'\n  });\n  workflowRuns = runs.data.workflow_runs\
+          \ || [];\n} catch (error) {\n  core.warning(`Unable to list workflow runs\
+          \ (${error.name || 'Error'}${error.status ? ` ${error.status}` : ''}): ${error.message}`);\n\
+          }\n\nconst artifacts = [];\nfor (const run of workflowRuns) {\n  try {\n\
+          \    const arts = await github.rest.actions.listWorkflowRunArtifacts({\n\
+          \      owner: context.repo.owner,\n      repo: context.repo.repo,\n    \
+          \  run_id: run.id\n    });\n    for (const a of arts.data.artifacts || [])\
+          \ {\n      if (a.name.startsWith('validation-') || a.name.startsWith('test-results'))\
+          \ {\n        artifacts.push({ run_id: run.id, name: a.name, url: a.archive_download_url\
+          \ });\n      }\n    }\n  } catch (error) {\n    core.warning(`Unable to\
+          \ list artifacts for run ${run.id} (${error.name || 'Error'}${error.status\
+          \ ? ` ${error.status}` : ''}): ${error.message}`);\n  }\n}\ncore.setOutput('artifact_count',\
+          \ artifacts.length);\ncore.setOutput('artifacts_json', JSON.stringify(artifacts.slice(0,\
+          \ 10)));\n"
+    - name: Run code quality scan (Batch ${{ github.event.inputs.batch || 'all' }})
+      id: qa_scan
+      run: "python3 - <<'EOF'\nimport ast, os, json, pathlib, sys\n\nsrc_root = pathlib.Path(\"\
+        src\")\nissues = []\n\nfor py_file in sorted(src_root.rglob(\"*.py\")):\n\
+        \    try:\n        source = py_file.read_text(encoding=\"utf-8\")\n      \
+        \  tree = ast.parse(source, filename=str(py_file))\n        for node in ast.walk(tree):\n\
+        \            # Detect bare except\n            if isinstance(node, ast.ExceptHandler)\
+        \ and node.type is None:\n                issues.append({\n              \
+        \      \"file\": str(py_file),\n                    \"line\": node.lineno,\n\
+        \                    \"severity\": \"warning\",\n                    \"category\"\
+        : \"exception_handling\",\n                    \"description\": \"Bare except\
+        \ clause\"\n                })\n    except SyntaxError as e:\n        issues.append({\n\
+        \            \"file\": str(py_file),\n            \"line\": e.lineno or 0,\n\
+        \            \"severity\": \"error\",\n            \"category\": \"syntax\"\
+        ,\n            \"description\": f\"SyntaxError: {e.msg}\"\n        })\n\n\
+        report = {\"total_files\": len(list(src_root.rglob(\"*.py\"))), \"issues\"\
+        : issues}\npathlib.Path(\"qa-report.json\").write_text(json.dumps(report,\
+        \ indent=2))\nprint(f\"Scanned {report['total_files']} files, found {len(issues)}\
+        \ issues\")\nEOF\n"
+    - name: Run ruff lint
+      run: "python3 -m ruff check src/ --select=F,W,I,E --extend-ignore=E501 \\\n\
+        \  --output-format=json \\\n  --output-file=ruff-report.json 2>ruff-stderr.log\
+        \ || true\nif [ -s ruff-stderr.log ]; then\n  echo \"Ruff stderr output:\"\
+        ; cat ruff-stderr.log\nfi\necho \"Ruff scan complete\"\n"
+    - name: Run bandit security scan
+      run: "python3 -m bandit -r src/ -f json -o bandit-report.json \\\n  --configfile\
+        \ .bandit --severity-level medium -q 2>/dev/null || true\necho \"Bandit scan\
+        \ complete\"\n"
+    - name: Generate QA summary
+      id: summary
+      uses: actions/github-script@v8
+      with:
+        script: "const fs = require('fs');\nlet qaIssues = 0, ruffIssues = 0, banditIssues\
+          \ = 0;\n\ntry {\n  const qa = JSON.parse(fs.readFileSync('qa-report.json',\
+          \ 'utf8'));\n  qaIssues = qa.issues.length;\n} catch(e) {}\n\ntry {\n  const\
+          \ ruff = JSON.parse(fs.readFileSync('ruff-report.json', 'utf8'));\n  ruffIssues\
+          \ = Array.isArray(ruff) ? ruff.length : 0;\n} catch(e) {}\n\ntry {\n  const\
+          \ bandit = JSON.parse(fs.readFileSync('bandit-report.json', 'utf8'));\n\
+          \  banditIssues = (bandit.results || []).length;\n} catch(e) {}\n\nconst\
+          \ artifactCount = '${{ steps.artifacts.outputs.artifact_count }}' || '0';\n\
+          const body = `## \U0001F50D QA Walkthrough Results\n\n| Tool | Issues Found\
+          \ |\n|------|-------------|\n| AST Analysis | ${qaIssues} |\n| Ruff Lint\
+          \ | ${ruffIssues} |\n| Bandit Security | ${banditIssues} |\n| CI Artifacts\
+          \ Sourced | ${artifactCount} |\n\n**Total Issues**: ${qaIssues + ruffIssues\
+          \ + banditIssues}\n\n> \U0001F4CE Detailed reports available in workflow\
+          \ artifacts\n> Run \\`@copilot run qa-walkthrough --heal\\` to auto-fix\
+          \ lint/style issues`;\n\nif (context.eventName === 'pull_request') {\n \
+          \ const totalIssues = qaIssues + ruffIssues + banditIssues;\n  const status\
+          \ = totalIssues > 0 ? 'warning' : 'success';\n  const summary = totalIssues\
+          \ > 0\n    ? `${totalIssues} issue(s): AST=${qaIssues}, Ruff=${ruffIssues},\
+          \ Bandit=${banditIssues}`\n    : 'All checks clean (0 issues)';\n  const\
+          \ details = [\n    '| Tool | Issues Found |',\n    '|------|-------------|',\n\
+          \    `| AST Analysis | ${qaIssues} |`,\n    `| Ruff Lint | ${ruffIssues}\
+          \ |`,\n    `| Bandit Security | ${banditIssues} |`,\n    `| CI Artifacts\
+          \ Sourced | ${artifactCount} |`,\n    '',\n    '> \U0001F4CE Detailed reports\
+          \ available in workflow artifacts',\n    '> Run `@copilot run qa-walkthrough\
+          \ --heal` to auto-fix lint/style issues',\n  ].join('\\n');\n\n  core.setOutput('total_issues',\
+          \ qaIssues + ruffIssues + banditIssues);\n  core.setOutput('summary', summary);\n\
+          \  core.setOutput('details', details);\n}\n"
+    - name: Upload QA reports
+      uses: actions/upload-artifact@v5
+      if: always()
+      with:
+        name: qa-walkthrough-reports-${{ github.run_id }}
+        path: 'qa-report.json
 
-          report = {"total_files": len(list(src_root.rglob("*.py"))), "issues": issues}
-          pathlib.Path("qa-report.json").write_text(json.dumps(report, indent=2))
-          print(f"Scanned {report['total_files']} files, found {len(issues)} issues")
-          EOF
+          ruff-report.json
 
-      - name: Run ruff lint
-        run: |
-          python3 -m ruff check src/ --select=F,W,I,E --extend-ignore=E501 \
-            --output-format=json \
-            --output-file=ruff-report.json 2>ruff-stderr.log || true
-          if [ -s ruff-stderr.log ]; then
-            echo "Ruff stderr output:"; cat ruff-stderr.log
-          fi
-          echo "Ruff scan complete"
+          bandit-report.json
 
-      - name: Run bandit security scan
-        run: |
-          python3 -m bandit -r src/ -f json -o bandit-report.json \
-            --configfile .bandit --severity-level medium -q 2>/dev/null || true
-          echo "Bandit scan complete"
-
-      - name: Generate QA summary
-        id: summary
-        uses: actions/github-script@v8 # v9
-        with:
-          script: |
-            const fs = require('fs');
-            let qaIssues = 0, ruffIssues = 0, banditIssues = 0;
-
-            try {
-              const qa = JSON.parse(fs.readFileSync('qa-report.json', 'utf8'));
-              qaIssues = qa.issues.length;
-            } catch(e) {}
-
-            try {
-              const ruff = JSON.parse(fs.readFileSync('ruff-report.json', 'utf8'));
-              ruffIssues = Array.isArray(ruff) ? ruff.length : 0;
-            } catch(e) {}
-
-            try {
-              const bandit = JSON.parse(fs.readFileSync('bandit-report.json', 'utf8'));
-              banditIssues = (bandit.results || []).length;
-            } catch(e) {}
-
-            const artifactCount = '${{ steps.artifacts.outputs.artifact_count }}' || '0';
-            const body = `## 🔍 QA Walkthrough Results
-
-            | Tool | Issues Found |
-            |------|-------------|
-            | AST Analysis | ${qaIssues} |
-            | Ruff Lint | ${ruffIssues} |
-            | Bandit Security | ${banditIssues} |
-            | CI Artifacts Sourced | ${artifactCount} |
-
-            **Total Issues**: ${qaIssues + ruffIssues + banditIssues}
-
-            > 📎 Detailed reports available in workflow artifacts
-            > Run \`@copilot run qa-walkthrough --heal\` to auto-fix lint/style issues`;
-
-            if (context.eventName === 'pull_request') {
-              const totalIssues = qaIssues + ruffIssues + banditIssues;
-              const status = totalIssues > 0 ? 'warning' : 'success';
-              const summary = totalIssues > 0
-                ? `${totalIssues} issue(s): AST=${qaIssues}, Ruff=${ruffIssues}, Bandit=${banditIssues}`
-                : 'All checks clean (0 issues)';
-              const details = [
-                '| Tool | Issues Found |',
-                '|------|-------------|',
-                `| AST Analysis | ${qaIssues} |`,
-                `| Ruff Lint | ${ruffIssues} |`,
-                `| Bandit Security | ${banditIssues} |`,
-                `| CI Artifacts Sourced | ${artifactCount} |`,
-                '',
-                '> 📎 Detailed reports available in workflow artifacts',
-                '> Run `@copilot run qa-walkthrough --heal` to auto-fix lint/style issues',
-              ].join('\n');
-
-              core.setOutput('total_issues', qaIssues + ruffIssues + banditIssues);
-              core.setOutput('summary', summary);
-              core.setOutput('details', details);
-            }
-
-      - name: Upload QA reports
-        uses: actions/upload-artifact@v5 # v7.0.1
-        if: always()
-        with:
-          name: qa-walkthrough-reports-${{ github.run_id }}
-          path: |
-            qa-report.json
-            ruff-report.json
-            bandit-report.json
-          retention-days: 30
-          if-no-files-found: warn
-
-      - name: Update consolidated PR dashboard
-        if: github.event_name == 'pull_request' && always()
-        uses: ./.github/actions/post-pr-summary
-        with:
-          workflow-name: 'QA Walkthrough'
-          status: ${{ steps.summary.outputs.total_issues != '0' && 'warning' || 'success' }}
-          summary: ${{ steps.summary.outputs.summary || 'QA checks complete' }}
-          details: ${{ steps.summary.outputs.details || '' }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
-  # ── rescue comment — posted on PR whenever this workflow fails ──────────
+          '
+        retention-days: 30
+        if-no-files-found: warn
+    - name: Update consolidated PR dashboard
+      if: github.event_name == 'pull_request' && always()
+      uses: ./.github/actions/post-pr-summary
+      with:
+        workflow-name: QA Walkthrough
+        status: ${{ steps.summary.outputs.total_issues != '0' && 'warning' || 'success'
+          }}
+        summary: ${{ steps.summary.outputs.summary || 'QA checks complete' }}
+        details: ${{ steps.summary.outputs.details || '' }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
     needs: qa-walkthrough
-    if: |
-      failure() &&
-      github.event_name == 'pull_request' &&
+    if: 'failure() &&
+
+      github.event_name == ''pull_request'' &&
+
       github.event.pull_request.head.repo.full_name == github.repository
+
+      '
     permissions:
       pull-requests: write
       issues: write
     timeout-minutes: 5
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          fetch-depth: 1
-
-      - name: Post or update rescue comment
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_NAME: "QA Walkthrough"
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          BRANCH: ${{ github.head_ref }}
-        run: python scripts/ci/post_rescue_comment.py
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        fetch-depth: 1
+    - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: QA Walkthrough
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+        BRANCH: ${{ github.head_ref }}
+      run: python scripts/ci/post_rescue_comment.py
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

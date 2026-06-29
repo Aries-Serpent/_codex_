@@ -1,189 +1,148 @@
 name: DependaBot Sheriff (Automated Consolidation)
-
-# This workflow automatically consolidates Dependabot PRs
-# Based on: https://github.com/kiba-d/dependabot-sheriff
-
-on:
+true:
   workflow_dispatch:
     inputs:
       base_branch:
-        description: 'Base branch to merge into'
+        description: Base branch to merge into
         required: false
-        default: 'main'
+        default: main
         type: string
       assignee:
-        description: 'GitHub username to assign the consolidated PR'
+        description: GitHub username to assign the consolidated PR
         required: false
-        default: 'mbaetiong'
+        default: mbaetiong
         type: string
       risk_level:
-        description: 'Risk level filter (all, low, medium, high)'
+        description: Risk level filter (all, low, medium, high)
         required: false
-        default: 'low'
+        default: low
         type: choice
         options:
-          - all
-          - low
-          - medium
-          - high
-
-  # Optional: Schedule weekly consolidation (commented out by default)
-  # schedule:
-  #   - cron: '0 10 * * 1'  # Every Monday at 10:00 UTC
-
-
+        - all
+        - low
+        - medium
+        - high
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   pull-requests: write
-
 jobs:
   consolidate-dependabot-prs:
     name: Consolidate Dependabot PRs
     runs-on: ubuntu-latest
     timeout-minutes: 60
-
     permissions:
       contents: write
       pull-requests: write
       issues: read
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+    - name: '🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)'
+      id: resolve-target
+      uses: ./.github/actions/resolve-push-target
+    - name: CacheManager health check
+      continue-on-error: true
+      run: 'python scripts/ci/generate_cache_keys.py --health --workflow dependabot-sheriff
+        2>/dev/null || echo "Cache health: check skipped"
 
-      - name: "🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)"
-        id: resolve-target
-        uses: ./.github/actions/resolve-push-target
+        '
+    - name: Configure Git
+      run: 'git config user.name "github-actions[bot]"
 
-      - name: CacheManager health check
-        continue-on-error: true
-        run: |
-          python scripts/ci/generate_cache_keys.py --health --workflow dependabot-sheriff 2>/dev/null || echo "Cache health: check skipped"
-      - name: Configure Git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Set up GitHub CLI
-        run: |
-          # GitHub CLI is pre-installed on GitHub Actions runners
-          gh --version
+        '
+    - name: Set up GitHub CLI
+      run: '# GitHub CLI is pre-installed on GitHub Actions runners
 
-          # Authenticate with GitHub token
-          echo "${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}" | gh auth login --with-token
+        gh --version
 
-      - name: Run DependaBot Sheriff
-        id: consolidate
-        env:
-          BASE_BRANCH: ${{ inputs.base_branch != 'main' && inputs.base_branch || steps.resolve-target.outputs.branch }}
-          DEPENDABOT_ASSIGNEE: ${{ inputs.assignee || 'mbaetiong' }}
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-        run: |
-          # Make script executable
-          chmod +x scripts/dependabot_sheriff.sh
 
-          # Run the consolidation script
-          ./scripts/dependabot_sheriff.sh
+        # Authenticate with GitHub token
 
-          # Capture exit code
-          exit_code=$?
-          echo "exit_code=$exit_code" >> $GITHUB_OUTPUT
+        echo "${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}" | gh auth
+        login --with-token
 
-          exit $exit_code
+        '
+    - name: Run DependaBot Sheriff
+      id: consolidate
+      env:
+        BASE_BRANCH: ${{ inputs.base_branch != 'main' && inputs.base_branch || steps.resolve-target.outputs.branch
+          }}
+        DEPENDABOT_ASSIGNEE: ${{ inputs.assignee || 'mbaetiong' }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      run: '# Make script executable
 
-      - name: Upload logs
-        if: always()
-        uses: actions/upload-artifact@v5 # v7.0.1
-        with:
-          name: dependabot-sheriff-logs
-          path: .codex/logs/dependabot_sheriff_*.log
-          retention-days: 30
+        chmod +x scripts/dependabot_sheriff.sh
 
-      - name: Upload summary
-        if: always()
-        uses: actions/upload-artifact@v5 # v7.0.1
-        with:
-          name: dependabot-sheriff-summary
-          path: .codex/logs/dependabot_sheriff_summary_*.md
-          retention-days: 30
 
-      - name: Comment on failure
-        if: failure()
-        uses: actions/github-script@v8 # v9
-        with:
-          script: |
-            const fs = require('fs');
+        # Run the consolidation script
 
-            // Find the latest log file
-            const logFiles = fs.readdirSync('.codex/logs').filter(f => f.startsWith('dependabot_sheriff_'));
+        ./scripts/dependabot_sheriff.sh
 
-            if (logFiles.length === 0) {
-              console.log('No log files found');
-              return;
-            }
 
-            const latestLog = logFiles.sort().reverse()[0];
-            const logPath = `.codex/logs/${latestLog}`;
+        # Capture exit code
 
-            // Read last 50 lines of log
-            const logContent = fs.readFileSync(logPath, 'utf8').split('\n').slice(-50).join('\n');
+        exit_code=$?
 
-            // Create issue comment
-            await github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: '🚨 DependaBot Sheriff Failed',
-              body: `## DependaBot Sheriff Consolidation Failed
+        echo "exit_code=$exit_code" >> $GITHUB_OUTPUT
 
-              **Workflow Run:** ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}
-              **Triggered by:** @${context.actor}
-              **Date:** ${new Date().toISOString()}
 
-              ### Error Log (last 50 lines)
+        exit $exit_code
 
-              \`\`\`
-              ${logContent}
-              \`\`\`
-
-              ### Next Steps
-
-              1. Review the full log in the workflow artifacts
-              2. Check for merge conflicts or failed CI checks
-              3. Run the script manually if needed: \`./scripts/dependabot_sheriff.sh\`
-              4. See troubleshooting guide: \`.codex/docs/DEPENDABOT_SHERIFF_GUIDE.md\`
-              `,
-              labels: ['dependabot', 'automation', 'bug']
-            });
-
-      - name: Post summary
-        if: success()
-        uses: actions/github-script@v8 # v9
-        with:
-          script: |
-            const fs = require('fs');
-
-            // Find the latest summary file
-            const summaryFiles = fs.readdirSync('.codex/logs').filter(f => f.startsWith('dependabot_sheriff_summary_'));
-
-            if (summaryFiles.length === 0) {
-              console.log('No summary files found');
-              return;
-            }
-
-            const latestSummary = summaryFiles.sort().reverse()[0];
-            const summaryPath = `.codex/logs/${latestSummary}`;
-            const summaryContent = fs.readFileSync(summaryPath, 'utf8');
-
-            // Post as job summary
-            await core.summary
-              .addRaw(summaryContent)
-              .write();
-
-            console.log('Summary posted successfully');
+        '
+    - name: Upload logs
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: dependabot-sheriff-logs
+        path: .codex/logs/dependabot_sheriff_*.log
+        retention-days: 30
+    - name: Upload summary
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: dependabot-sheriff-summary
+        path: .codex/logs/dependabot_sheriff_summary_*.md
+        retention-days: 30
+    - name: Comment on failure
+      if: failure()
+      uses: actions/github-script@v8
+      with:
+        script: "const fs = require('fs');\n\n// Find the latest log file\nconst logFiles\
+          \ = fs.readdirSync('.codex/logs').filter(f => f.startsWith('dependabot_sheriff_'));\n\
+          \nif (logFiles.length === 0) {\n  console.log('No log files found');\n \
+          \ return;\n}\n\nconst latestLog = logFiles.sort().reverse()[0];\nconst logPath\
+          \ = `.codex/logs/${latestLog}`;\n\n// Read last 50 lines of log\nconst logContent\
+          \ = fs.readFileSync(logPath, 'utf8').split('\\n').slice(-50).join('\\n');\n\
+          \n// Create issue comment\nawait github.rest.issues.create({\n  owner: context.repo.owner,\n\
+          \  repo: context.repo.repo,\n  title: '\U0001F6A8 DependaBot Sheriff Failed',\n\
+          \  body: `## DependaBot Sheriff Consolidation Failed\n\n  **Workflow Run:**\
+          \ ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}\n\
+          \  **Triggered by:** @${context.actor}\n  **Date:** ${new Date().toISOString()}\n\
+          \n  ### Error Log (last 50 lines)\n\n  \\`\\`\\`\n  ${logContent}\n  \\\
+          `\\`\\`\n\n  ### Next Steps\n\n  1. Review the full log in the workflow\
+          \ artifacts\n  2. Check for merge conflicts or failed CI checks\n  3. Run\
+          \ the script manually if needed: \\`./scripts/dependabot_sheriff.sh\\`\n\
+          \  4. See troubleshooting guide: \\`.codex/docs/DEPENDABOT_SHERIFF_GUIDE.md\\\
+          `\n  `,\n  labels: ['dependabot', 'automation', 'bug']\n});\n"
+    - name: Post summary
+      if: success()
+      uses: actions/github-script@v8
+      with:
+        script: "const fs = require('fs');\n\n// Find the latest summary file\nconst\
+          \ summaryFiles = fs.readdirSync('.codex/logs').filter(f => f.startsWith('dependabot_sheriff_summary_'));\n\
+          \nif (summaryFiles.length === 0) {\n  console.log('No summary files found');\n\
+          \  return;\n}\n\nconst latestSummary = summaryFiles.sort().reverse()[0];\n\
+          const summaryPath = `.codex/logs/${latestSummary}`;\nconst summaryContent\
+          \ = fs.readFileSync(summaryPath, 'utf8');\n\n// Post as job summary\nawait\
+          \ core.summary\n  .addRaw(summaryContent)\n  .write();\n\nconsole.log('Summary\
+          \ posted successfully');\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

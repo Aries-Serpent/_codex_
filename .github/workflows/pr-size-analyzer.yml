@@ -1,30 +1,27 @@
 name: PR Size Analyzer
-# aais-cache: none  # No pip install — Python script (post_rescue_comment.py) uses stdlib only; no pip cache needed
-
-on:
+true:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types:
+    - opened
+    - synchronize
+    - reopened
   workflow_call:
     outputs:
       pr_size:
-        description: 'PR size category (small, medium, large, refactor)'
+        description: PR size category (small, medium, large, refactor)
         value: ${{ jobs.analyze-size.outputs.pr_size }}
       changed_files_count:
-        description: 'Number of changed files'
+        description: Number of changed files
         value: ${{ jobs.analyze-size.outputs.changed_files_count }}
       validation_strategy:
-        description: 'Recommended validation strategy'
+        description: Recommended validation strategy
         value: ${{ jobs.analyze-size.outputs.validation_strategy }}
-
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   pull-requests: write
-
 jobs:
   analyze-size:
     runs-on: ubuntu-latest
@@ -36,115 +33,120 @@ jobs:
       pr_size: ${{ steps.analyze.outputs.pr_size }}
       changed_files_count: ${{ steps.analyze.outputs.changed_files_count }}
       validation_strategy: ${{ steps.analyze.outputs.validation_strategy }}
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          fetch-depth: 0
+    - name: Checkout code
+      uses: actions/checkout@v7
+      with:
+        fetch-depth: 0
+    - name: Analyze PR Size
+      id: analyze
+      run: "# Count changed files between base and head\n# Support both direct PR\
+        \ trigger and workflow_call\nif [ -n \"${{ github.event.pull_request.base.sha\
+        \ }}\" ]; then\n  BASE_SHA=\"${{ github.event.pull_request.base.sha }}\"\n\
+        else\n  # When called via workflow_call, fetch base from event\n  BASE_SHA=\"\
+        ${{ github.event.pull_request.base.sha || github.event.before || 'HEAD~1'\
+        \ }}\"\nfi\nHEAD_SHA=\"${{ github.sha }}\"\n\necho \"Comparing $BASE_SHA...$HEAD_SHA\"\
+        \n\n# Ensure we have the base ref\ngit fetch origin \"$BASE_SHA\" 2>/dev/null\
+        \ || true\n\nCHANGED_FILES=$(git diff --name-only \"$BASE_SHA\" \"$HEAD_SHA\"\
+        \ 2>/dev/null | wc -l)\n\n# If git diff failed, try alternative method\nif\
+        \ [ \"$CHANGED_FILES\" -eq 0 ]; then\n  CHANGED_FILES=$(git diff --name-only\
+        \ HEAD~1 HEAD | wc -l)\nfi\n\necho \"changed_files_count=$CHANGED_FILES\"\
+        \ >> $GITHUB_OUTPUT\n\n# Determine size tier and validation strategy\nif [\
+        \ \"$CHANGED_FILES\" -lt 20 ]; then\n  echo \"pr_size=small\" >> $GITHUB_OUTPUT\n\
+        \  echo \"validation_strategy=full_validation\" >> $GITHUB_OUTPUT\nelif [\
+        \ \"$CHANGED_FILES\" -lt 100 ]; then\n  echo \"pr_size=medium\" >> $GITHUB_OUTPUT\n\
+        \  echo \"validation_strategy=targeted_tests\" >> $GITHUB_OUTPUT\nelif [ \"\
+        $CHANGED_FILES\" -lt 500 ]; then\n  echo \"pr_size=large\" >> $GITHUB_OUTPUT\n\
+        \  echo \"validation_strategy=smoke_tests\" >> $GITHUB_OUTPUT\nelse\n  echo\
+        \ \"pr_size=refactor\" >> $GITHUB_OUTPUT\n  echo \"validation_strategy=import_validation\"\
+        \ >> $GITHUB_OUTPUT\nfi\n"
+    - name: Report PR Size
+      run: 'echo "### PR Size Analysis Results" >> $GITHUB_STEP_SUMMARY
 
-      - name: Analyze PR Size
-        id: analyze
-        run: |
-          # Count changed files between base and head
-          # Support both direct PR trigger and workflow_call
-          if [ -n "${{ github.event.pull_request.base.sha }}" ]; then
-            BASE_SHA="${{ github.event.pull_request.base.sha }}"
-          else
-            # When called via workflow_call, fetch base from event
-            BASE_SHA="${{ github.event.pull_request.base.sha || github.event.before || 'HEAD~1' }}"
-          fi
-          HEAD_SHA="${{ github.sha }}"
+        echo "" >> $GITHUB_STEP_SUMMARY
 
-          echo "Comparing $BASE_SHA...$HEAD_SHA"
+        echo "**PR Size:** ${{ steps.analyze.outputs.pr_size }}" >> $GITHUB_STEP_SUMMARY
 
-          # Ensure we have the base ref
-          git fetch origin "$BASE_SHA" 2>/dev/null || true
+        echo "**Changed Files:** ${{ steps.analyze.outputs.changed_files_count }}"
+        >> $GITHUB_STEP_SUMMARY
 
-          CHANGED_FILES=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" 2>/dev/null | wc -l)
+        echo "**Validation Strategy:** ${{ steps.analyze.outputs.validation_strategy
+        }}" >> $GITHUB_STEP_SUMMARY
 
-          # If git diff failed, try alternative method
-          if [ "$CHANGED_FILES" -eq 0 ]; then
-            CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD | wc -l)
-          fi
+        echo "" >> $GITHUB_STEP_SUMMARY
 
-          echo "changed_files_count=$CHANGED_FILES" >> $GITHUB_OUTPUT
 
-          # Determine size tier and validation strategy
-          if [ "$CHANGED_FILES" -lt 20 ]; then
-            echo "pr_size=small" >> $GITHUB_OUTPUT
-            echo "validation_strategy=full_validation" >> $GITHUB_OUTPUT
-          elif [ "$CHANGED_FILES" -lt 100 ]; then
-            echo "pr_size=medium" >> $GITHUB_OUTPUT
-            echo "validation_strategy=targeted_tests" >> $GITHUB_OUTPUT
-          elif [ "$CHANGED_FILES" -lt 500 ]; then
-            echo "pr_size=large" >> $GITHUB_OUTPUT
-            echo "validation_strategy=smoke_tests" >> $GITHUB_OUTPUT
-          else
-            echo "pr_size=refactor" >> $GITHUB_OUTPUT
-            echo "validation_strategy=import_validation" >> $GITHUB_OUTPUT
-          fi
+        # Also output to job log
 
-      - name: Report PR Size
-        run: |
-          echo "### PR Size Analysis Results" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**PR Size:** ${{ steps.analyze.outputs.pr_size }}" >> $GITHUB_STEP_SUMMARY
-          echo "**Changed Files:** ${{ steps.analyze.outputs.changed_files_count }}" >> $GITHUB_STEP_SUMMARY
-          echo "**Validation Strategy:** ${{ steps.analyze.outputs.validation_strategy }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
+        echo "================================"
 
-          # Also output to job log
-          echo "================================"
-          echo "PR Size: ${{ steps.analyze.outputs.pr_size }}"
-          echo "Changed Files: ${{ steps.analyze.outputs.changed_files_count }}"
-          echo "Strategy: ${{ steps.analyze.outputs.validation_strategy }}"
-          echo "================================"
+        echo "PR Size: ${{ steps.analyze.outputs.pr_size }}"
 
-      - name: Post to PR Status Dashboard
-        # Only post when triggered directly by PR, not via workflow_call
-        if: github.event_name == 'pull_request'
-        uses: ./.github/actions/post-pr-summary
-        with:
-          workflow-name: 'PR Size Analysis'
-          status: 'info'
-          summary: '${{ steps.analyze.outputs.pr_size }} PR — ${{ steps.analyze.outputs.changed_files_count }} files — strategy: ${{ steps.analyze.outputs.validation_strategy }}'
-          details: |
-            | Field | Value |
-            |-------|-------|
-            | Size Category | `${{ steps.analyze.outputs.pr_size }}` (${{ steps.analyze.outputs.changed_files_count }} files) |
-            | Validation Strategy | ${{ steps.analyze.outputs.validation_strategy }} |
+        echo "Changed Files: ${{ steps.analyze.outputs.changed_files_count }}"
 
-            **Size Thresholds:** Small (<20) → Full validation · Medium (20-99) → Targeted · Large (100-499) → Smoke · Refactor (500+) → Import only
+        echo "Strategy: ${{ steps.analyze.outputs.validation_strategy }}"
 
-  # ── rescue comment — posted on PR whenever this workflow fails ──────────
+        echo "================================"
+
+        '
+    - name: Post to PR Status Dashboard
+      if: github.event_name == 'pull_request'
+      uses: ./.github/actions/post-pr-summary
+      with:
+        workflow-name: PR Size Analysis
+        status: info
+        summary: '${{ steps.analyze.outputs.pr_size }} PR — ${{ steps.analyze.outputs.changed_files_count
+          }} files — strategy: ${{ steps.analyze.outputs.validation_strategy }}'
+        details: '| Field | Value |
+
+          |-------|-------|
+
+          | Size Category | `${{ steps.analyze.outputs.pr_size }}` (${{ steps.analyze.outputs.changed_files_count
+          }} files) |
+
+          | Validation Strategy | ${{ steps.analyze.outputs.validation_strategy }}
+          |
+
+
+          **Size Thresholds:** Small (<20) → Full validation · Medium (20-99) → Targeted
+          · Large (100-499) → Smoke · Refactor (500+) → Import only
+
+          '
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
     needs: analyze-size
-    if: |
-      failure() &&
-      github.event_name == 'pull_request' &&
+    if: 'failure() &&
+
+      github.event_name == ''pull_request'' &&
+
       github.event.pull_request.head.repo.full_name == github.repository
+
+      '
     permissions:
       pull-requests: write
       issues: write
     timeout-minutes: 5
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          fetch-depth: 1
-
-      - name: Post or update rescue comment
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_NAME: "PR Size Analyzer"
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          BRANCH: ${{ github.head_ref }}
-        run: python scripts/ci/post_rescue_comment.py
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        fetch-depth: 1
+    - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: PR Size Analyzer
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+        BRANCH: ${{ github.head_ref }}
+      run: python scripts/ci/post_rescue_comment.py
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

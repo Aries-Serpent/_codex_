@@ -1,25 +1,20 @@
 name: Phase 12.2 Compliance Check
-
-"on":
+'on':
   push:
     branches:
-      - "**"
+    - '**'
   pull_request:
     branches:
-      - "**"
+    - '**'
   schedule:
-    # Weekly: Monday 09:00 UTC
-    - cron: "0 9 * * 1"
-  workflow_dispatch:
-
+  - cron: 0 9 * * 1
+  workflow_dispatch: null
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   pull-requests: write
-
 jobs:
   detect-merge:
     name: Detect merge commit
@@ -28,128 +23,97 @@ jobs:
     outputs:
       is_merge: ${{ steps.check.outputs.is_merge }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 1
-
-      - name: Check if merge commit
-        id: check
-        run: |
-          # Check if HEAD has multiple parents (is a merge commit)
-          PARENT_COUNT=$(git rev-list --max-count=1 --pretty=%P HEAD | tail -1 | wc -w)
-          if [ "$PARENT_COUNT" -gt 1 ]; then
-            echo "is_merge=true" >> "$GITHUB_OUTPUT"
-            echo "Current commit is a merge commit (parents: $PARENT_COUNT)"
-          else
-            echo "is_merge=false" >> "$GITHUB_OUTPUT"
-            echo "Current commit is a regular commit (parents: $PARENT_COUNT)"
-          fi
-
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        fetch-depth: 1
+    - name: Check if merge commit
+      id: check
+      run: "# Check if HEAD has multiple parents (is a merge commit)\nPARENT_COUNT=$(git\
+        \ rev-list --max-count=1 --pretty=%P HEAD | tail -1 | wc -w)\nif [ \"$PARENT_COUNT\"\
+        \ -gt 1 ]; then\n  echo \"is_merge=true\" >> \"$GITHUB_OUTPUT\"\n  echo \"\
+        Current commit is a merge commit (parents: $PARENT_COUNT)\"\nelse\n  echo\
+        \ \"is_merge=false\" >> \"$GITHUB_OUTPUT\"\n  echo \"Current commit is a regular\
+        \ commit (parents: $PARENT_COUNT)\"\nfi\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   compliance-check:
     name: Governance & Compliance Gate
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs: detect-merge
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 50
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        fetch-depth: 50
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.12'
+    - name: Run compliance dashboard (check mode)
+      id: compliance
+      run: "python scripts/ci/phase_12_2_compliance_dashboard.py \\\n  --check \\\n\
+        \  --report \\\n  --json > compliance-output.json\n"
+      continue-on-error: true
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Capture compliance status
+      id: status
+      run: "if [ -f compliance-output.json ]; then\n  STATUS=$(python -c \"\nimport\
+        \ json, sys\nwith open('compliance-output.json') as f:\n    d = json.load(f)\n\
+        print(d.get('governance_status', 'UNKNOWN'))\n\")\n  SCORE=$(python -c \"\n\
+        import json\nwith open('compliance-output.json') as f:\n    d = json.load(f)\n\
+        print(f\\\"{d.get('compliance_score', 0) * 100:.0f}%\\\")\n\")\nelse\n  STATUS=\"\
+        UNKNOWN\"\n  SCORE=\"0%\"\nfi\necho \"status=${STATUS}\" >> \"$GITHUB_OUTPUT\"\
+        \necho \"score=${SCORE}\" >> \"$GITHUB_OUTPUT\"\necho \"Governance Status:\
+        \ ${STATUS} (score: ${SCORE})\"\n"
+    - name: Upload compliance report
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: governance-report
+        path: '.codex/PHASE_12_2_COMPLIANCE_REPORT.md
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.12"
+          compliance-output.json
 
-      - name: Run compliance dashboard (check mode)
-        id: compliance
-        run: |
-          python scripts/ci/phase_12_2_compliance_dashboard.py \
-            --check \
-            --report \
-            --json > compliance-output.json
-        continue-on-error: true
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          '
+        retention-days: 30
+    - name: Post PR comment
+      if: github.event_name == 'pull_request' && always()
+      uses: actions/github-script@v8
+      with:
+        script: "const fs = require('fs');\nconst status = '${{ steps.status.outputs.status\
+          \ }}';\nconst score = '${{ steps.status.outputs.score }}';\nconst statusEmoji\
+          \ = { APPROVED: '✅', WARN: '⚠️', BLOCK: '\U0001F6AB' }[status] || '❓';\n\
+          \nlet body = `## ${statusEmoji} Phase 12.2 Compliance: **${status}**\\n\\\
+          n`;\nbody += `**Score:** ${score}\\n\\n`;\n\nif (fs.existsSync('.codex/PHASE_12_2_COMPLIANCE_REPORT.md'))\
+          \ {\n  const report = fs.readFileSync('.codex/PHASE_12_2_COMPLIANCE_REPORT.md',\
+          \ 'utf8');\n  // Extract the requirements table section\n  const tableMatch\
+          \ = report.match(/## Requirement Status\\n\\n[\\s\\S]*?\\n\\n---/);\n  if\
+          \ (tableMatch) {\n    body += tableMatch[0].replace('\\n\\n---', '');\n\
+          \  }\n}\n\nbody += '\\n\\n*Generated by [Phase 12.2 Compliance Workflow](../actions)*';\n\
+          \ntry {\n  await github.rest.issues.createComment({\n    owner: context.repo.owner,\n\
+          \    repo: context.repo.repo,\n    issue_number: context.issue.number,\n\
+          \    body,\n  });\n} catch (error) {\n  core.warning(`Could not post Phase\
+          \ 12.2 compliance comment: ${error.message}`);\n}\n"
+    - name: Fail if compliance blocked (non-merge commits)
+      if: steps.compliance.outcome == 'failure' && needs.detect-merge.outputs.is_merge
+        == 'false'
+      run: 'echo "::error::Phase 12.2 compliance check FAILED. See governance-report
+        artifact for details."
 
-      - name: Capture compliance status
-        id: status
-        run: |
-          if [ -f compliance-output.json ]; then
-            STATUS=$(python -c "
-          import json, sys
-          with open('compliance-output.json') as f:
-              d = json.load(f)
-          print(d.get('governance_status', 'UNKNOWN'))
-          ")
-            SCORE=$(python -c "
-          import json
-          with open('compliance-output.json') as f:
-              d = json.load(f)
-          print(f\"{d.get('compliance_score', 0) * 100:.0f}%\")
-          ")
-          else
-            STATUS="UNKNOWN"
-            SCORE="0%"
-          fi
-          echo "status=${STATUS}" >> "$GITHUB_OUTPUT"
-          echo "score=${SCORE}" >> "$GITHUB_OUTPUT"
-          echo "Governance Status: ${STATUS} (score: ${SCORE})"
+        exit 1
 
-      - name: Upload compliance report
-        if: always()
-        uses: actions/upload-artifact@v5
-        with:
-          name: governance-report
-          path: |
-            .codex/PHASE_12_2_COMPLIANCE_REPORT.md
-            compliance-output.json
-          retention-days: 30
+        '
+    - name: Warn if compliance blocked (merge commits)
+      if: steps.compliance.outcome == 'failure' && needs.detect-merge.outputs.is_merge
+        == 'true'
+      run: 'echo "::warning::Phase 12.2 compliance check found issues on merge commit.
+        Review governance-report artifact."
 
-      - name: Post PR comment
-        if: github.event_name == 'pull_request' && always()
-        uses: actions/github-script@v8
-        with:
-          script: |
-            const fs = require('fs');
-            const status = '${{ steps.status.outputs.status }}';
-            const score = '${{ steps.status.outputs.score }}';
-            const statusEmoji = { APPROVED: '✅', WARN: '⚠️', BLOCK: '🚫' }[status] || '❓';
-
-            let body = `## ${statusEmoji} Phase 12.2 Compliance: **${status}**\n\n`;
-            body += `**Score:** ${score}\n\n`;
-
-            if (fs.existsSync('.codex/PHASE_12_2_COMPLIANCE_REPORT.md')) {
-              const report = fs.readFileSync('.codex/PHASE_12_2_COMPLIANCE_REPORT.md', 'utf8');
-              // Extract the requirements table section
-              const tableMatch = report.match(/## Requirement Status\n\n[\s\S]*?\n\n---/);
-              if (tableMatch) {
-                body += tableMatch[0].replace('\n\n---', '');
-              }
-            }
-
-            body += '\n\n*Generated by [Phase 12.2 Compliance Workflow](../actions)*';
-
-            try {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                body,
-              });
-            } catch (error) {
-              core.warning(`Could not post Phase 12.2 compliance comment: ${error.message}`);
-            }
-
-      - name: Fail if compliance blocked (non-merge commits)
-        if: steps.compliance.outcome == 'failure' && needs.detect-merge.outputs.is_merge == 'false'
-        run: |
-          echo "::error::Phase 12.2 compliance check FAILED. See governance-report artifact for details."
-          exit 1
-
-      - name: Warn if compliance blocked (merge commits)
-        if: steps.compliance.outcome == 'failure' && needs.detect-merge.outputs.is_merge == 'true'
-        run: |
-          echo "::warning::Phase 12.2 compliance check found issues on merge commit. Review governance-report artifact."
+        '
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

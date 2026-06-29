@@ -1,40 +1,35 @@
 name: Root Organization Validation
-
-on:
+true:
   pull_request:
     paths:
-      - '*.md'
-      - '*.py'
-      - '*.yml'
-      - '*.yaml'
-      - '*.json'
-      - '*.toml'
-      - '*.txt'
-      - 'scripts/root_org/**'
-      - '.codex/plans/**'
-      - '.codex/inventory.json'
+    - '*.md'
+    - '*.py'
+    - '*.yml'
+    - '*.yaml'
+    - '*.json'
+    - '*.toml'
+    - '*.txt'
+    - scripts/root_org/**
+    - .codex/plans/**
+    - .codex/inventory.json
   workflow_dispatch:
     inputs:
       file_to_validate:
-        description: 'File to validate (optional)'
+        description: File to validate (optional)
         required: false
         type: string
       dry_run:
-        description: 'Dry run mode'
+        description: Dry run mode
         required: false
         type: boolean
         default: true
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   pull-requests: write
   issues: write
-
-
 jobs:
   pre-validation:
     name: Pre-Move Validation
@@ -42,412 +37,373 @@ jobs:
     timeout-minutes: 60
     outputs:
       baseline_metrics: ${{ steps.baseline.outputs.metrics }}
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v7 # v6.0.3
+    - name: Checkout code
+      uses: actions/checkout@v7
+    - name: CacheManager health check
+      continue-on-error: true
+      run: 'python scripts/ci/generate_cache_keys.py --health --workflow root-org-validation
+        2>/dev/null || echo "Cache health: check skipped"
 
-      - name: CacheManager health check
-        continue-on-error: true
-        run: |
-          python scripts/ci/generate_cache_keys.py --health --workflow root-org-validation 2>/dev/null || echo "Cache health: check skipped"
-      - name: Set up Python 3.12 with tiered cache
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12.13'
-          cache-tier: common
+        '
+    - name: Set up Python 3.12 with tiered cache
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        cache-tier: common
+    - name: Install dependencies
+      run: '# Pin pytest plugins before package install (PR #3248 fix)
 
-      - name: Install dependencies
-        run: |
-          # Pin pytest plugins before package install (PR #3248 fix)
-          pip install pytest-xdist==3.8.0 pytest-timeout==2.4.0
+        pip install pytest-xdist==3.8.0 pytest-timeout==2.4.0
 
-          python -m pip install --upgrade pip
-          pip install -e ".[dev]"  # Includes pytest, ruff, mypy
-          # Install pytest-xdist for parallel execution and pytest-timeout
-          pip install pytest-xdist pytest-timeout
 
-      - name: Run link checker
-        id: link-check
-        continue-on-error: true
-        run: |
-          echo "Running link checker..."
-          # Install markdown-link-check if available
-          npm install -g markdown-link-check || echo "markdown-link-check not available"
+        python -m pip install --upgrade pip
 
-          # Check key markdown files
-          for file in README.md CONTRIBUTING.md docs/*.md; do
-            if [ -f "$file" ]; then
-              echo "Checking: $file"
-              markdown-link-check "$file" || true
-            fi
-          done
+        pip install -e ".[dev]"  # Includes pytest, ruff, mypy
 
-      - name: Run pytest (baseline - fast tests only)
-        id: pytest-baseline
-        continue-on-error: true
-        run: |
-          echo "Running pytest baseline (fast tests only)..."
-          # Timeout: 60s per test, fail fast after 20 failures, run in parallel with 4 workers
-          python -m pytest tests/ -v --tb=short -m "not slow" --timeout=60 --maxfail=20 -n 4 || echo "Some tests may fail - baseline recorded"
+        # Install pytest-xdist for parallel execution and pytest-timeout
 
-      - name: Run ruff linter
-        id: ruff-baseline
-        continue-on-error: true
-        run: |
-          echo "Running ruff linter..."
-          python -m ruff check . --select E,F,W --statistics || echo "Lint issues found - baseline recorded"
+        pip install pytest-xdist pytest-timeout
 
-      - name: Build MkDocs (if config exists)
-        id: mkdocs-baseline
-        continue-on-error: true
-        run: |
-          if [ -f "mkdocs.yml" ]; then
-            pip install mkdocs mkdocs-material mkdocs-mermaid2-plugin pymdown-extensions
-            echo "Building MkDocs..."
-            mkdocs build --strict || echo "MkDocs build warnings - baseline recorded"
-          fi
+        '
+    - name: Run link checker
+      id: link-check
+      continue-on-error: true
+      run: "echo \"Running link checker...\"\n# Install markdown-link-check if available\n\
+        npm install -g markdown-link-check || echo \"markdown-link-check not available\"\
+        \n\n# Check key markdown files\nfor file in README.md CONTRIBUTING.md docs/*.md;\
+        \ do\n  if [ -f \"$file\" ]; then\n    echo \"Checking: $file\"\n    markdown-link-check\
+        \ \"$file\" || true\n  fi\ndone\n"
+    - name: Run pytest (baseline - fast tests only)
+      id: pytest-baseline
+      continue-on-error: true
+      run: 'echo "Running pytest baseline (fast tests only)..."
 
-      - name: Record baseline metrics
-        id: baseline
-        run: |
-          echo "metrics={\"link_check\":\"${{ steps.link-check.outcome }}\",\"pytest\":\"${{ steps.pytest-baseline.outcome }}\",\"ruff\":\"${{ steps.ruff-baseline.outcome }}\",\"mkdocs\":\"${{ steps.mkdocs-baseline.outcome }}\"}" >> $GITHUB_OUTPUT
+        # Timeout: 60s per test, fail fast after 20 failures, run in parallel with
+        4 workers
 
-          # Save baseline to artifact
-          mkdir -p .codex/validation
-          echo "Baseline recorded at $(date)" > .codex/validation/baseline.txt
-          echo "Link Check: ${{ steps.link-check.outcome }}" >> .codex/validation/baseline.txt
-          echo "Pytest: ${{ steps.pytest-baseline.outcome }}" >> .codex/validation/baseline.txt
-          echo "Ruff: ${{ steps.ruff-baseline.outcome }}" >> .codex/validation/baseline.txt
-          echo "MkDocs: ${{ steps.mkdocs-baseline.outcome }}" >> .codex/validation/baseline.txt
+        python -m pytest tests/ -v --tb=short -m "not slow" --timeout=60 --maxfail=20
+        -n 4 || echo "Some tests may fail - baseline recorded"
 
-      - name: Upload baseline artifact
-        if: always()
-        uses: actions/upload-artifact@v5 # v7.0.1
-        with:
-          name: validation-baseline
-          path: .codex/validation/baseline.txt
-          retention-days: 7
-          if-no-files-found: warn
+        '
+    - name: Run ruff linter
+      id: ruff-baseline
+      continue-on-error: true
+      run: 'echo "Running ruff linter..."
 
+        python -m ruff check . --select E,F,W --statistics || echo "Lint issues found
+        - baseline recorded"
+
+        '
+    - name: Build MkDocs (if config exists)
+      id: mkdocs-baseline
+      continue-on-error: true
+      run: "if [ -f \"mkdocs.yml\" ]; then\n  pip install mkdocs mkdocs-material mkdocs-mermaid2-plugin\
+        \ pymdown-extensions\n  echo \"Building MkDocs...\"\n  mkdocs build --strict\
+        \ || echo \"MkDocs build warnings - baseline recorded\"\nfi\n"
+    - name: Record baseline metrics
+      id: baseline
+      run: 'echo "metrics={\"link_check\":\"${{ steps.link-check.outcome }}\",\"pytest\":\"${{
+        steps.pytest-baseline.outcome }}\",\"ruff\":\"${{ steps.ruff-baseline.outcome
+        }}\",\"mkdocs\":\"${{ steps.mkdocs-baseline.outcome }}\"}" >> $GITHUB_OUTPUT
+
+
+        # Save baseline to artifact
+
+        mkdir -p .codex/validation
+
+        echo "Baseline recorded at $(date)" > .codex/validation/baseline.txt
+
+        echo "Link Check: ${{ steps.link-check.outcome }}" >> .codex/validation/baseline.txt
+
+        echo "Pytest: ${{ steps.pytest-baseline.outcome }}" >> .codex/validation/baseline.txt
+
+        echo "Ruff: ${{ steps.ruff-baseline.outcome }}" >> .codex/validation/baseline.txt
+
+        echo "MkDocs: ${{ steps.mkdocs-baseline.outcome }}" >> .codex/validation/baseline.txt
+
+        '
+    - name: Upload baseline artifact
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: validation-baseline
+        path: .codex/validation/baseline.txt
+        retention-days: 7
+        if-no-files-found: warn
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   reference-check:
     name: Reference Validation
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: pre-validation
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v7 # v6.0.3
+    - name: Checkout code
+      uses: actions/checkout@v7
+    - name: Set up Python 3.12 with tiered cache
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        cache-tier: common
+    - name: Validate references (manual trigger)
+      if: github.event_name == 'workflow_dispatch' && github.event.inputs.file_to_validate
+        != ''
+      run: "echo \"Validating references for: ${{ github.event.inputs.file_to_validate\
+        \ }}\"\n\nif [ \"${{ github.event.inputs.dry_run }}\" == \"true\" ]; then\n\
+        \  python scripts/root_org/validate_references.py \"${{ github.event.inputs.file_to_validate\
+        \ }}\" --dry-run\nelse\n  python scripts/root_org/validate_references.py \"\
+        ${{ github.event.inputs.file_to_validate }}\"\nfi\n"
+    - name: Scan for broken references (PR trigger)
+      if: github.event_name == 'pull_request'
+      env:
+        BASE_REF: ${{ github.base_ref }}
+      run: "echo \"Scanning for broken references in changed files...\"\n\n# Get changed\
+        \ files (base ref may have been deleted for stale/merged branches)\ngit fetch\
+        \ origin \"${BASE_REF}\" || {\n  echo \"⚠️ Base ref '${BASE_REF}' not found\
+        \ on remote (branch may have been deleted). Skipping reference scan.\"\n \
+        \ exit 0\n}\nCHANGED_FILES=$(git diff --name-only \"origin/${BASE_REF}...HEAD\"\
+        \ | grep -E '\\.(md|py|yml|yaml)$' || echo \"\")\n\nif [ -z \"$CHANGED_FILES\"\
+        \ ]; then\n  echo \"No relevant files changed\"\n  exit 0\nfi\n\n# Check each\
+        \ changed file\necho \"$CHANGED_FILES\" | while read file; do\n  if [ -f \"\
+        $file\" ]; then\n    echo \"Checking references in: $file\"\n    python scripts/root_org/validate_references.py\
+        \ \"$file\" --dry-run || true\n  fi\ndone\n"
+    - name: Validate import paths (Python files)
+      run: "echo \"Validating Python import paths...\"\n\n# Find all Python files\n\
+        find . -name \"*.py\" -not -path \"./.venv/*\" -not -path \"./build/*\" |\
+        \ head -20 | while read file; do\n  echo \"Checking imports in: $file\"\n\
+        \  python -m py_compile \"$file\" || echo \"Warning: $file has import issues\"\
+        \ndone\n"
+    - name: Check workflow paths (GitHub Actions)
+      run: "echo \"Checking GitHub Actions workflow paths...\"\n\n# Validate workflow\
+        \ YAML syntax\nfind .github/workflows -name \"*.yml\" -o -name \"*.yaml\"\
+        \ | while read file; do\n  echo \"Validating: $file\"\n  python -c \"import\
+        \ yaml; yaml.safe_load(open('$file'))\" || echo \"Warning: $file has YAML\
+        \ issues\"\ndone\n"
+    - name: Generate reference report
+      run: 'mkdir -p .codex/reports
 
-      - name: Set up Python 3.12 with tiered cache
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12.13'
-          cache-tier: common
 
-      - name: Validate references (manual trigger)
-        if: github.event_name == 'workflow_dispatch' && github.event.inputs.file_to_validate != ''
-        run: |
-          echo "Validating references for: ${{ github.event.inputs.file_to_validate }}"
+        echo "# Reference Validation Report" > .codex/reports/reference_validation.md
 
-          if [ "${{ github.event.inputs.dry_run }}" == "true" ]; then
-            python scripts/root_org/validate_references.py "${{ github.event.inputs.file_to_validate }}" --dry-run
-          else
-            python scripts/root_org/validate_references.py "${{ github.event.inputs.file_to_validate }}"
-          fi
+        echo "**Date:** $(date)" >> .codex/reports/reference_validation.md
 
-      - name: Scan for broken references (PR trigger)
-        if: github.event_name == 'pull_request'
-        env:
-          BASE_REF: ${{ github.base_ref }}
-        run: |
-          echo "Scanning for broken references in changed files..."
+        echo "**Trigger:** ${{ github.event_name }}" >> .codex/reports/reference_validation.md
 
-          # Get changed files (base ref may have been deleted for stale/merged branches)
-          git fetch origin "${BASE_REF}" || {
-            echo "⚠️ Base ref '${BASE_REF}' not found on remote (branch may have been deleted). Skipping reference scan."
-            exit 0
-          }
-          CHANGED_FILES=$(git diff --name-only "origin/${BASE_REF}...HEAD" | grep -E '\.(md|py|yml|yaml)$' || echo "")
+        echo "" >> .codex/reports/reference_validation.md
 
-          if [ -z "$CHANGED_FILES" ]; then
-            echo "No relevant files changed"
-            exit 0
-          fi
+        echo "## Summary" >> .codex/reports/reference_validation.md
 
-          # Check each changed file
-          echo "$CHANGED_FILES" | while read file; do
-            if [ -f "$file" ]; then
-              echo "Checking references in: $file"
-              python scripts/root_org/validate_references.py "$file" --dry-run || true
-            fi
-          done
+        echo "- Workflow: ${{ github.workflow }}" >> .codex/reports/reference_validation.md
 
-      - name: Validate import paths (Python files)
-        run: |
-          echo "Validating Python import paths..."
+        echo "- Run: ${{ github.run_number }}" >> .codex/reports/reference_validation.md
 
-          # Find all Python files
-          find . -name "*.py" -not -path "./.venv/*" -not -path "./build/*" | head -20 | while read file; do
-            echo "Checking imports in: $file"
-            python -m py_compile "$file" || echo "Warning: $file has import issues"
-          done
+        echo "" >> .codex/reports/reference_validation.md
 
-      - name: Check workflow paths (GitHub Actions)
-        run: |
-          echo "Checking GitHub Actions workflow paths..."
+        echo "## Status" >> .codex/reports/reference_validation.md
 
-          # Validate workflow YAML syntax
-          find .github/workflows -name "*.yml" -o -name "*.yaml" | while read file; do
-            echo "Validating: $file"
-            python -c "import yaml; yaml.safe_load(open('$file'))" || echo "Warning: $file has YAML issues"
-          done
+        echo "✅ Reference validation complete" >> .codex/reports/reference_validation.md
 
-      - name: Generate reference report
-        run: |
-          mkdir -p .codex/reports
-
-          echo "# Reference Validation Report" > .codex/reports/reference_validation.md
-          echo "**Date:** $(date)" >> .codex/reports/reference_validation.md
-          echo "**Trigger:** ${{ github.event_name }}" >> .codex/reports/reference_validation.md
-          echo "" >> .codex/reports/reference_validation.md
-          echo "## Summary" >> .codex/reports/reference_validation.md
-          echo "- Workflow: ${{ github.workflow }}" >> .codex/reports/reference_validation.md
-          echo "- Run: ${{ github.run_number }}" >> .codex/reports/reference_validation.md
-          echo "" >> .codex/reports/reference_validation.md
-          echo "## Status" >> .codex/reports/reference_validation.md
-          echo "✅ Reference validation complete" >> .codex/reports/reference_validation.md
-
-      - name: Upload reference report
-        uses: actions/upload-artifact@v5 # v7.0.1
-        with:
-          name: reference-validation-report
-          path: .codex/reports/reference_validation.md
-          retention-days: 30
-
+        '
+    - name: Upload reference report
+      uses: actions/upload-artifact@v5
+      with:
+        name: reference-validation-report
+        path: .codex/reports/reference_validation.md
+        retention-days: 30
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   post-validation:
     name: Post-Move Validation
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    needs: [pre-validation, reference-check]
+    needs:
+    - pre-validation
+    - reference-check
     if: always()
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v7 # v6.0.3
+    - name: Checkout code
+      uses: actions/checkout@v7
+    - name: Set up Python 3.12 with tiered cache
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        cache-tier: common
+    - name: Download baseline
+      uses: actions/download-artifact@v5
+      continue-on-error: true
+      with:
+        name: validation-baseline
+        path: .codex/validation/
+    - name: Compare with baseline
+      run: "echo \"Comparing current state with baseline...\"\n\nif [ -f \".codex/validation/baseline.txt\"\
+        \ ]; then\n  echo \"✅ Baseline found:\"\n  cat .codex/validation/baseline.txt\n\
+        else\n  echo \"⚠️ No baseline found - skipping comparison\"\n  echo \"This\
+        \ may occur on first run or if pre-validation failed\"\n  mkdir -p .codex/validation\n\
+        fi\n\n# Record current state\necho \"Current validation at $(date)\" > .codex/validation/current.txt\n\
+        \n# Compare (simplified - would need more sophisticated diffing)\nif [ -f\
+        \ \".codex/validation/baseline.txt\" ]; then\n  echo \"Comparison: No regressions\
+        \ detected\" >> .codex/validation/current.txt\nelse\n  echo \"Comparison:\
+        \ Baseline unavailable - first run or pre-validation failure\" >> .codex/validation/current.txt\n\
+        fi\n"
+    - name: Generate final report
+      run: 'mkdir -p .codex/reports
 
-      - name: Set up Python 3.12 with tiered cache
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12.13'
-          cache-tier: common
 
-      - name: Download baseline
-        uses: actions/download-artifact@v5 # v8.0.1
-        continue-on-error: true
-        with:
-          name: validation-baseline
-          path: .codex/validation/
+        cat > .codex/reports/root_org_validation_${{ github.run_number }}.md << EOF
 
-      - name: Compare with baseline
-        run: |
-          echo "Comparing current state with baseline..."
+        # Root Organization Validation Report
 
-          if [ -f ".codex/validation/baseline.txt" ]; then
-            echo "✅ Baseline found:"
-            cat .codex/validation/baseline.txt
-          else
-            echo "⚠️ No baseline found - skipping comparison"
-            echo "This may occur on first run or if pre-validation failed"
-            mkdir -p .codex/validation
-          fi
 
-          # Record current state
-          echo "Current validation at $(date)" > .codex/validation/current.txt
+        **Run:** ${{ github.run_number }}
 
-          # Compare (simplified - would need more sophisticated diffing)
-          if [ -f ".codex/validation/baseline.txt" ]; then
-            echo "Comparison: No regressions detected" >> .codex/validation/current.txt
-          else
-            echo "Comparison: Baseline unavailable - first run or pre-validation failure" >> .codex/validation/current.txt
-          fi
+        **Date:** $(date)
 
-      - name: Generate final report
-        run: |
-          mkdir -p .codex/reports
+        **Trigger:** ${{ github.event_name }}
 
-          cat > .codex/reports/root_org_validation_${{ github.run_number }}.md << EOF
-          # Root Organization Validation Report
+        **Status:** ${{ job.status }}
 
-          **Run:** ${{ github.run_number }}
-          **Date:** $(date)
-          **Trigger:** ${{ github.event_name }}
-          **Status:** ${{ job.status }}
 
-          ## Pre-Validation Results
-          ${{ needs.pre-validation.outputs.baseline_metrics }}
+        ## Pre-Validation Results
 
-          ## Reference Check
-          ✅ Completed
+        ${{ needs.pre-validation.outputs.baseline_metrics }}
 
-          ## Post-Validation
-          ✅ No regressions detected
 
-          ## Recommendations
-          - Continue with root organization operations
-          - Monitor for any new issues
-          - Review artifact reports for details
+        ## Reference Check
 
-          ## Artifacts Generated
-          - validation-baseline
-          - reference-validation-report
-          - root-org-validation-report
-          EOF
+        ✅ Completed
 
-          echo "Final report generated"
-          cat .codex/reports/root_org_validation_${{ github.run_number }}.md
 
-      - name: Upload final report
-        uses: actions/upload-artifact@v5 # v7.0.1
-        with:
-          name: root-org-validation-report
-          path: .codex/reports/root_org_validation_${{ github.run_number }}.md
-          retention-days: 90
+        ## Post-Validation
 
-      - name: Comment on PR (if applicable)
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v8 # v9
-        with:
-          script: |
-            const fs = require('fs');
-            const MARKER = '<!-- root-org-validation-v1 -->';
-            const reportRaw = fs.readFileSync(
-              '.codex/reports/root_org_validation_${{ github.run_number }}.md', 'utf8'
-            );
+        ✅ No regressions detected
 
-            const bodyLines = [
-              MARKER,
-              '## 🔍 Root Organization Validation',
-              '',
-              `**Run:** ${{ github.run_number }} | **Trigger:** ${{ github.event_name }} | **Status:** ${{ (needs.pre-validation.result == 'success' && needs.reference-check.result == 'success') && '✅ passed' || '❌ failed' }}`,
-              '',
-              '<details>',
-              '<summary>📋 Full validation report (click to expand)</summary>',
-              '',
-              reportRaw,
-              '',
-              '</details>',
-              '',
-              `_Auto-posted by \`root-org-validation.yml\` · [🔗 Workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})_`,
-            ];
-            const body = bodyLines.join('\n');
 
-            // Upsert: update existing marker comment rather than creating a new one.
-            // Paginate through all comments to find the marker regardless of comment count.
-            let existing = null;
-            let page = 1;
-            while (!existing) {
-              const { data: batch } = await github.rest.issues.listComments({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                per_page: 100,
-                page,
-              });
-              existing = batch.find(c => c.body && c.body.includes(MARKER)) || null;
-              if (batch.length < 100) break;
-              page++;
-            }
-            if (existing) {
-              await github.rest.issues.updateComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: existing.id,
-                body,
-              });
-              console.log(`Updated root-org-validation comment #${existing.id}`);
-            } else {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                body,
-              });
-            }
+        ## Recommendations
 
-      - name: Set job status
-        run: |
-          # Check if any critical failures occurred
-          if [ "${{ needs.pre-validation.result }}" == "failure" ]; then
-            echo "Pre-validation failed"
-            exit 1
-          fi
+        - Continue with root organization operations
 
-          if [ "${{ needs.reference-check.result }}" == "failure" ]; then
-            echo "Reference check failed"
-            exit 1
-          fi
+        - Monitor for any new issues
 
-          echo "✅ All validations passed"
+        - Review artifact reports for details
 
+
+        ## Artifacts Generated
+
+        - validation-baseline
+
+        - reference-validation-report
+
+        - root-org-validation-report
+
+        EOF
+
+
+        echo "Final report generated"
+
+        cat .codex/reports/root_org_validation_${{ github.run_number }}.md
+
+        '
+    - name: Upload final report
+      uses: actions/upload-artifact@v5
+      with:
+        name: root-org-validation-report
+        path: .codex/reports/root_org_validation_${{ github.run_number }}.md
+        retention-days: 90
+    - name: Comment on PR (if applicable)
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v8
+      with:
+        script: "const fs = require('fs');\nconst MARKER = '<!-- root-org-validation-v1\
+          \ -->';\nconst reportRaw = fs.readFileSync(\n  '.codex/reports/root_org_validation_${{\
+          \ github.run_number }}.md', 'utf8'\n);\n\nconst bodyLines = [\n  MARKER,\n\
+          \  '## \U0001F50D Root Organization Validation',\n  '',\n  `**Run:** ${{\
+          \ github.run_number }} | **Trigger:** ${{ github.event_name }} | **Status:**\
+          \ ${{ (needs.pre-validation.result == 'success' && needs.reference-check.result\
+          \ == 'success') && '✅ passed' || '❌ failed' }}`,\n  '',\n  '<details>',\n\
+          \  '<summary>\U0001F4CB Full validation report (click to expand)</summary>',\n\
+          \  '',\n  reportRaw,\n  '',\n  '</details>',\n  '',\n  `_Auto-posted by\
+          \ \\`root-org-validation.yml\\` · [\U0001F517 Workflow run](${{ github.server_url\
+          \ }}/${{ github.repository }}/actions/runs/${{ github.run_id }})_`,\n];\n\
+          const body = bodyLines.join('\\n');\n\n// Upsert: update existing marker\
+          \ comment rather than creating a new one.\n// Paginate through all comments\
+          \ to find the marker regardless of comment count.\nlet existing = null;\n\
+          let page = 1;\nwhile (!existing) {\n  const { data: batch } = await github.rest.issues.listComments({\n\
+          \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    issue_number:\
+          \ context.issue.number,\n    per_page: 100,\n    page,\n  });\n  existing\
+          \ = batch.find(c => c.body && c.body.includes(MARKER)) || null;\n  if (batch.length\
+          \ < 100) break;\n  page++;\n}\nif (existing) {\n  await github.rest.issues.updateComment({\n\
+          \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    comment_id:\
+          \ existing.id,\n    body,\n  });\n  console.log(`Updated root-org-validation\
+          \ comment #${existing.id}`);\n} else {\n  await github.rest.issues.createComment({\n\
+          \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    issue_number:\
+          \ context.issue.number,\n    body,\n  });\n}\n"
+    - name: Set job status
+      run: "# Check if any critical failures occurred\nif [ \"${{ needs.pre-validation.result\
+        \ }}\" == \"failure\" ]; then\n  echo \"Pre-validation failed\"\n  exit 1\n\
+        fi\n\nif [ \"${{ needs.reference-check.result }}\" == \"failure\" ]; then\n\
+        \  echo \"Reference check failed\"\n  exit 1\nfi\n\necho \"✅ All validations\
+        \ passed\"\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   summary:
     name: Validation Summary
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    needs: [pre-validation, reference-check, post-validation]
+    needs:
+    - pre-validation
+    - reference-check
+    - post-validation
     if: always()
-
     steps:
-      - name: Generate summary
-        run: |
-          echo "# Root Organization Validation Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "## Job Results" >> $GITHUB_STEP_SUMMARY
-          echo "- Pre-Validation: ${{ needs.pre-validation.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Reference Check: ${{ needs.reference-check.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Post-Validation: ${{ needs.post-validation.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "## Artifacts" >> $GITHUB_STEP_SUMMARY
-          echo "- validation-baseline" >> $GITHUB_STEP_SUMMARY
-          echo "- reference-validation-report" >> $GITHUB_STEP_SUMMARY
-          echo "- root-org-validation-report" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-
-          if [ "${{ needs.post-validation.result }}" == "success" ]; then
-            echo "✅ **Status:** All validations passed" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "❌ **Status:** Some validations failed" >> $GITHUB_STEP_SUMMARY
-          fi
-
-  # ── rescue comment — posted on PR whenever this workflow fails ──────────
+    - name: Generate summary
+      run: "echo \"# Root Organization Validation Summary\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"\" >> $GITHUB_STEP_SUMMARY\necho \"## Job Results\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"- Pre-Validation: ${{ needs.pre-validation.result }}\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"- Reference Check: ${{ needs.reference-check.result }}\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"- Post-Validation: ${{ needs.post-validation.result }}\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"\" >> $GITHUB_STEP_SUMMARY\necho \"## Artifacts\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"- validation-baseline\" >> $GITHUB_STEP_SUMMARY\necho \"- reference-validation-report\"\
+        \ >> $GITHUB_STEP_SUMMARY\necho \"- root-org-validation-report\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"\" >> $GITHUB_STEP_SUMMARY\n\nif [ \"${{ needs.post-validation.result\
+        \ }}\" == \"success\" ]; then\n  echo \"✅ **Status:** All validations passed\"\
+        \ >> $GITHUB_STEP_SUMMARY\nelse\n  echo \"❌ **Status:** Some validations failed\"\
+        \ >> $GITHUB_STEP_SUMMARY\nfi\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
     needs: summary
-    if: |
-      failure() &&
-      github.event_name == 'pull_request' &&
+    if: 'failure() &&
+
+      github.event_name == ''pull_request'' &&
+
       github.event.pull_request.head.repo.full_name == github.repository
+
+      '
     permissions:
       pull-requests: write
       issues: write
     timeout-minutes: 5
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          fetch-depth: 1
-
-      - name: Post or update rescue comment
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_NAME: "Root Org Validation"
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          BRANCH: ${{ github.head_ref }}
-        run: python scripts/ci/post_rescue_comment.py
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        fetch-depth: 1
+    - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: Root Org Validation
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+        BRANCH: ${{ github.head_ref }}
+      run: python scripts/ci/post_rescue_comment.py
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

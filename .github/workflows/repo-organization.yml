@@ -1,38 +1,33 @@
 name: Repository Organization & Cleanup
-
-on:
+true:
   workflow_dispatch:
     inputs:
       action:
-        description: 'Action to perform'
+        description: Action to perform
         required: true
-        default: 'analyze'
+        default: analyze
         type: choice
         options:
-          - analyze
-          - organize
-          - archive
-          - full-cleanup
+        - analyze
+        - organize
+        - archive
+        - full-cleanup
       dry_run:
-        description: 'Dry run (no changes)'
+        description: Dry run (no changes)
         required: false
         default: 'true'
         type: boolean
       archive_older_than_days:
-        description: 'Archive files older than N days'
+        description: Archive files older than N days
         required: false
         default: '90'
         type: string
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: write
   pull-requests: write
-
-
 jobs:
   analyze-structure:
     name: Analyze Repository Structure
@@ -43,27 +38,38 @@ jobs:
       orphan_files: ${{ steps.analyze.outputs.orphan_files }}
       archive_candidates: ${{ steps.analyze.outputs.archive_candidates }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          fetch-depth: 0
+    - name: Checkout
+      uses: actions/checkout@v7
+      with:
+        fetch-depth: 0
+    - name: CacheManager health check
+      continue-on-error: true
+      run: 'python scripts/ci/generate_cache_keys.py --health --workflow repo-organization
+        2>/dev/null || echo "Cache health: check skipped"
 
-      - name: CacheManager health check
-        continue-on-error: true
-        run: |
-          python scripts/ci/generate_cache_keys.py --health --workflow repo-organization 2>/dev/null || echo "Cache health: check skipped"
-      - name: Set up Python
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12.13'
-          cache-tier: 'common'
+        '
+    - name: Set up Python
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        cache-tier: common
+    - name: Analyze repository structure
+      id: analyze
+      run: 'root_files=$(find . -maxdepth 1 -type f | wc -l)
 
-      - name: Analyze repository structure
-        id: analyze
-        run: |
-          root_files=$(find . -maxdepth 1 -type f | wc -l)
-          orphan_files=$(find . -maxdepth 2 -name "*.py" -not -path "./.venv*" | wc -l)
-          archive_candidates=$(find . -maxdepth 2 -name "*.bak" -o -name "*.old" 2>/dev/null | wc -l || echo "0")
-          echo "root_files=${root_files}" >> "$GITHUB_OUTPUT"
-          echo "orphan_files=${orphan_files}" >> "$GITHUB_OUTPUT"
-          echo "archive_candidates=${archive_candidates}" >> "$GITHUB_OUTPUT"
+        orphan_files=$(find . -maxdepth 2 -name "*.py" -not -path "./.venv*" | wc
+        -l)
+
+        archive_candidates=$(find . -maxdepth 2 -name "*.bak" -o -name "*.old" 2>/dev/null
+        | wc -l || echo "0")
+
+        echo "root_files=${root_files}" >> "$GITHUB_OUTPUT"
+
+        echo "orphan_files=${orphan_files}" >> "$GITHUB_OUTPUT"
+
+        echo "archive_candidates=${archive_candidates}" >> "$GITHUB_OUTPUT"
+
+        '
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

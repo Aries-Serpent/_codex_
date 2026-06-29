@@ -1,5 +1,5 @@
 name: Data Quality & Determinism Suite
-on:
+true:
   pull_request:
     types:
     - opened
@@ -45,7 +45,7 @@ env:
   CUBLAS_WORKSPACE_CONFIG: :4096:8
 jobs:
   cost-gate:
-    name: "\U0001F4B0 Cost Gate"
+    name: 💰 Cost Gate
     uses: ./.github/workflows/cost-gate.yml
     with:
       workflow_name: Data Quality & Determinism Suite
@@ -56,6 +56,8 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   data_validation:
     name: Data Validation (Manifest & Drift)
     runs-on: ubuntu-latest
@@ -95,19 +97,19 @@ jobs:
         '
     - name: Validate data manifests
       run: "# Use validate_dataset.py which exists in the repository\nif [ ! -f \"\
-        scripts/validate_dataset.py\" ]; then\n  echo \"\u274C Error: Dataset validation\
+        scripts/validate_dataset.py\" ]; then\n  echo \"❌ Error: Dataset validation\
         \ script not found at scripts/validate_dataset.py\"\n  exit 1\nfi\n# Find\
         \ and validate all dataset manifest files\nmanifests=$(find data/ -name '*manifest*.json'\
-        \ -type f 2>/dev/null || true)\nif [ -z \"$manifests\" ]; then\n  echo \"\u26A0\
-        \uFE0F  No dataset manifest files found in data/ \u2014 skipping validation\"\
-        \n  exit 0\nfi\nfail=0\nfor manifest in $manifests; do\n  echo \"Validating:\
-        \ $manifest\"\n  python scripts/validate_dataset.py \"$manifest\" --check-splits\
-        \ || fail=1\ndone\nexit $fail\n"
+        \ -type f 2>/dev/null || true)\nif [ -z \"$manifests\" ]; then\n  echo \"\
+        ⚠️  No dataset manifest files found in data/ — skipping validation\"\n  exit\
+        \ 0\nfi\nfail=0\nfor manifest in $manifests; do\n  echo \"Validating: $manifest\"\
+        \n  python scripts/validate_dataset.py \"$manifest\" --check-splits || fail=1\n\
+        done\nexit $fail\n"
     - name: Check for data drift
       run: "if [ -f \"scripts/check_data_drift.py\" ]; then\n  python scripts/check_data_drift.py\n\
-        else\n  echo \"\u26A0\uFE0F  Warning: Data drift check script not found -\
-        \ skipping drift analysis\"\n  echo \"This is expected if drift detection\
-        \ is not yet implemented\"\nfi\n"
+        else\n  echo \"⚠️  Warning: Data drift check script not found - skipping drift\
+        \ analysis\"\n  echo \"This is expected if drift detection is not yet implemented\"\
+        \nfi\n"
     - name: Upload validation results
       if: always()
       uses: actions/upload-artifact@v5
@@ -120,6 +122,8 @@ jobs:
           '
         if-no-files-found: ignore
         retention-days: 30
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   determinism_check:
     name: Determinism & Audit Validation
     runs-on: ubuntu-latest
@@ -175,9 +179,15 @@ jobs:
 
         '
     - name: Clear Python caches
-      run: "find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true\n\
-        find . -type f -name \"*.pyc\" -delete 2>/dev/null || true\nrm -rf .pytest_cache\n\
-        echo \"\u2705 Python caches cleared\"\n"
+      run: 'find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
+
+        find . -type f -name "*.pyc" -delete 2>/dev/null || true
+
+        rm -rf .pytest_cache
+
+        echo "✅ Python caches cleared"
+
+        '
     - name: Run determinism validation
       run: 'echo "=== Checking for deterministic behavior ==="
 
@@ -200,73 +210,91 @@ jobs:
         '
     - name: Run determinism tests (first pass)
       id: test_pass1
-      run: "set +e\npytest tests/ -v -m determinism --tb=short --timeout=300 > determinism_pass1.log\
-        \ 2>&1\necho \"$?\" > determinism_pass1_exit.txt\nset -e\necho \"\u2705 First\
-        \ pass complete (exit code: $(cat determinism_pass1_exit.txt))\"\n"
+      run: 'set +e
+
+        pytest tests/ -v -m determinism --tb=short --timeout=300 > determinism_pass1.log
+        2>&1
+
+        echo "$?" > determinism_pass1_exit.txt
+
+        set -e
+
+        echo "✅ First pass complete (exit code: $(cat determinism_pass1_exit.txt))"
+
+        '
     - name: Run determinism tests (second pass)
       id: test_pass2
-      run: "set +e\npytest tests/ -v -m determinism --tb=short --timeout=300 > determinism_pass2.log\
-        \ 2>&1\necho \"$?\" > determinism_pass2_exit.txt\nset -e\necho \"\u2705 Second\
-        \ pass complete (exit code: $(cat determinism_pass2_exit.txt))\"\n"
+      run: 'set +e
+
+        pytest tests/ -v -m determinism --tb=short --timeout=300 > determinism_pass2.log
+        2>&1
+
+        echo "$?" > determinism_pass2_exit.txt
+
+        set -e
+
+        echo "✅ Second pass complete (exit code: $(cat determinism_pass2_exit.txt))"
+
+        '
     - name: Compare results
       run: "EXIT1=$(cat determinism_pass1_exit.txt)\nEXIT2=$(cat determinism_pass2_exit.txt)\n\
         \n# Check if logs exist\nif [ ! -f \"determinism_pass1.log\" ] || [ ! -f \"\
-        determinism_pass2.log\" ]; then\n  echo \"\u274C Missing log files - determinism\
-        \ check failed\"\n  echo \"\" >> $GITHUB_STEP_SUMMARY\n  echo \"\u274C **Determinism\
+        determinism_pass2.log\" ]; then\n  echo \"❌ Missing log files - determinism\
+        \ check failed\"\n  echo \"\" >> $GITHUB_STEP_SUMMARY\n  echo \"❌ **Determinism\
         \ check failed** - Missing log files\" >> $GITHUB_STEP_SUMMARY\n  exit 1\n\
         fi\n\n# Compare exit codes\nif [ \"$EXIT1\" != \"$EXIT2\" ]; then\n  echo\
-        \ \"\u274C Exit codes differ - non-deterministic behavior\"\n  echo \"\" >>\
-        \ $GITHUB_STEP_SUMMARY\n  echo \"\u274C **Non-deterministic behavior** - Exit\
-        \ codes differ (pass1: $EXIT1, pass2: $EXIT2)\" >> $GITHUB_STEP_SUMMARY\n\
-        \  exit 1\nfi\n\n# Handle exit code 5 (no tests collected) as success\nif\
-        \ [ \"$EXIT1\" = \"5\" ] && [ \"$EXIT2\" = \"5\" ]; then\n  echo \"\u26A0\uFE0F\
-        \  No determinism tests found (exit code 5) - skipping validation\"\n  echo\
-        \ \"\" >> $GITHUB_STEP_SUMMARY\n  echo \"\u26A0\uFE0F  **No determinism tests\
-        \ found** - Tests are not yet implemented\" >> $GITHUB_STEP_SUMMARY\n  echo\
-        \ \"\" >> $GITHUB_STEP_SUMMARY\n  echo \"To implement determinism tests:\"\
-        \ >> $GITHUB_STEP_SUMMARY\n  echo \"- Add @pytest.mark.determinism to tests\
-        \ in tests/templates/test_ml_template.py\" >> $GITHUB_STEP_SUMMARY\n  echo\
-        \ \"- Remove @pytest.mark.skip decorators when tests are ready\" >> $GITHUB_STEP_SUMMARY\n\
-        \  exit 0\nfi\n\n# Handle exit code 2 (collection errors) when no tests with\
-        \ marker exist\n# Exit code 2 typically means internal error or collection\
-        \ failures\n# Check if the logs indicate \"no tests collected\" despite collection\
-        \ errors\nif [ \"$EXIT1\" = \"2\" ] && [ \"$EXIT2\" = \"2\" ]; then\n  # Check\
-        \ if both logs show \"0 selected\" (no tests matched the marker)\n  SELECTED1=$(grep\
-        \ -E \"0 selected\" determinism_pass1.log || echo \"\")\n  SELECTED2=$(grep\
-        \ -E \"0 selected\" determinism_pass2.log || echo \"\")\n\n  # If both runs\
-        \ had collection errors but 0 tests selected, treat as \"no tests\"\n  if\
-        \ [ -n \"$SELECTED1\" ] && [ -n \"$SELECTED2\" ]; then\n    echo \"\u26A0\uFE0F\
-        \  Collection errors but no determinism tests selected (exit code 2)\"\n \
-        \   echo \"\" >> $GITHUB_STEP_SUMMARY\n    echo \"\u26A0\uFE0F  **No determinism\
-        \ tests found** - Collection errors present but no tests selected\" >> $GITHUB_STEP_SUMMARY\n\
-        \    echo \"\" >> $GITHUB_STEP_SUMMARY\n    echo \"Details:\" >> $GITHUB_STEP_SUMMARY\n\
-        \    echo \"- pytest returned exit code 2 (collection errors) instead of 5\
-        \ (no tests collected)\" >> $GITHUB_STEP_SUMMARY\n    echo \"- This occurs\
-        \ when other test files have import errors during collection\" >> $GITHUB_STEP_SUMMARY\n\
-        \    echo \"- No tests with @pytest.mark.determinism were found or executed\"\
-        \ >> $GITHUB_STEP_SUMMARY\n    echo \"- Both test runs had identical results,\
-        \ so behavior is deterministic\" >> $GITHUB_STEP_SUMMARY\n    echo \"\" >>\
-        \ $GITHUB_STEP_SUMMARY\n    echo \"To implement determinism tests:\" >> $GITHUB_STEP_SUMMARY\n\
-        \    echo \"- Add @pytest.mark.determinism to relevant test functions\" >>\
-        \ $GITHUB_STEP_SUMMARY\n    exit 0\n  fi\n\n  # Otherwise, treat exit code\
-        \ 2 as a failure\n  echo \"\u274C Collection errors during test execution\
-        \ (exit code 2)\"\n  echo \"\" >> $GITHUB_STEP_SUMMARY\n  echo \"\u274C **Collection\
-        \ errors detected** - Both runs failed with exit code 2\" >> $GITHUB_STEP_SUMMARY\n\
-        \  echo \"Exit code 2 indicates pytest internal errors or collection failures\"\
-        \ >> $GITHUB_STEP_SUMMARY\n  exit 1\nfi\n\n# If both runs failed with a non-zero\
-        \ exit code (excluding 2 and 5), treat as error\nif [ \"$EXIT1\" != \"0\"\
-        \ ]; then\n  echo \"\u274C Both test runs failed with exit code $EXIT1\"\n\
-        \  echo \"\" >> $GITHUB_STEP_SUMMARY\n  echo \"\u274C **Test failures detected**\
-        \ - Both runs failed with exit code $EXIT1\" >> $GITHUB_STEP_SUMMARY\n  exit\
-        \ 1\nfi\n\n# Compare log outputs\nif diff -u determinism_pass1.log determinism_pass2.log\
-        \ > determinism_diff.log; then\n  echo \"\u2705 Deterministic behavior confirmed\
-        \ - results identical\"\n  echo \"\" >> $GITHUB_STEP_SUMMARY\n  echo \"\u2705\
-        \ **Determinism verified** - Test results are identical across runs\" >> $GITHUB_STEP_SUMMARY\n\
-        else\n  echo \"\u26A0\uFE0F  Non-deterministic behavior detected - results\
-        \ differ\"\n  echo \"\" >> $GITHUB_STEP_SUMMARY\n  echo \"\u26A0\uFE0F  **Warning**:\
-        \ Non-deterministic behavior detected\" >> $GITHUB_STEP_SUMMARY\n  echo '```diff'\
-        \ >> $GITHUB_STEP_SUMMARY\n  head -50 determinism_diff.log >> $GITHUB_STEP_SUMMARY\n\
-        \  echo '```' >> $GITHUB_STEP_SUMMARY\n  exit 1\nfi\n"
+        \ \"❌ Exit codes differ - non-deterministic behavior\"\n  echo \"\" >> $GITHUB_STEP_SUMMARY\n\
+        \  echo \"❌ **Non-deterministic behavior** - Exit codes differ (pass1: $EXIT1,\
+        \ pass2: $EXIT2)\" >> $GITHUB_STEP_SUMMARY\n  exit 1\nfi\n\n# Handle exit\
+        \ code 5 (no tests collected) as success\nif [ \"$EXIT1\" = \"5\" ] && [ \"\
+        $EXIT2\" = \"5\" ]; then\n  echo \"⚠️  No determinism tests found (exit code\
+        \ 5) - skipping validation\"\n  echo \"\" >> $GITHUB_STEP_SUMMARY\n  echo\
+        \ \"⚠️  **No determinism tests found** - Tests are not yet implemented\" >>\
+        \ $GITHUB_STEP_SUMMARY\n  echo \"\" >> $GITHUB_STEP_SUMMARY\n  echo \"To implement\
+        \ determinism tests:\" >> $GITHUB_STEP_SUMMARY\n  echo \"- Add @pytest.mark.determinism\
+        \ to tests in tests/templates/test_ml_template.py\" >> $GITHUB_STEP_SUMMARY\n\
+        \  echo \"- Remove @pytest.mark.skip decorators when tests are ready\" >>\
+        \ $GITHUB_STEP_SUMMARY\n  exit 0\nfi\n\n# Handle exit code 2 (collection errors)\
+        \ when no tests with marker exist\n# Exit code 2 typically means internal\
+        \ error or collection failures\n# Check if the logs indicate \"no tests collected\"\
+        \ despite collection errors\nif [ \"$EXIT1\" = \"2\" ] && [ \"$EXIT2\" = \"\
+        2\" ]; then\n  # Check if both logs show \"0 selected\" (no tests matched\
+        \ the marker)\n  SELECTED1=$(grep -E \"0 selected\" determinism_pass1.log\
+        \ || echo \"\")\n  SELECTED2=$(grep -E \"0 selected\" determinism_pass2.log\
+        \ || echo \"\")\n\n  # If both runs had collection errors but 0 tests selected,\
+        \ treat as \"no tests\"\n  if [ -n \"$SELECTED1\" ] && [ -n \"$SELECTED2\"\
+        \ ]; then\n    echo \"⚠️  Collection errors but no determinism tests selected\
+        \ (exit code 2)\"\n    echo \"\" >> $GITHUB_STEP_SUMMARY\n    echo \"⚠️  **No\
+        \ determinism tests found** - Collection errors present but no tests selected\"\
+        \ >> $GITHUB_STEP_SUMMARY\n    echo \"\" >> $GITHUB_STEP_SUMMARY\n    echo\
+        \ \"Details:\" >> $GITHUB_STEP_SUMMARY\n    echo \"- pytest returned exit\
+        \ code 2 (collection errors) instead of 5 (no tests collected)\" >> $GITHUB_STEP_SUMMARY\n\
+        \    echo \"- This occurs when other test files have import errors during\
+        \ collection\" >> $GITHUB_STEP_SUMMARY\n    echo \"- No tests with @pytest.mark.determinism\
+        \ were found or executed\" >> $GITHUB_STEP_SUMMARY\n    echo \"- Both test\
+        \ runs had identical results, so behavior is deterministic\" >> $GITHUB_STEP_SUMMARY\n\
+        \    echo \"\" >> $GITHUB_STEP_SUMMARY\n    echo \"To implement determinism\
+        \ tests:\" >> $GITHUB_STEP_SUMMARY\n    echo \"- Add @pytest.mark.determinism\
+        \ to relevant test functions\" >> $GITHUB_STEP_SUMMARY\n    exit 0\n  fi\n\
+        \n  # Otherwise, treat exit code 2 as a failure\n  echo \"❌ Collection errors\
+        \ during test execution (exit code 2)\"\n  echo \"\" >> $GITHUB_STEP_SUMMARY\n\
+        \  echo \"❌ **Collection errors detected** - Both runs failed with exit code\
+        \ 2\" >> $GITHUB_STEP_SUMMARY\n  echo \"Exit code 2 indicates pytest internal\
+        \ errors or collection failures\" >> $GITHUB_STEP_SUMMARY\n  exit 1\nfi\n\n\
+        # If both runs failed with a non-zero exit code (excluding 2 and 5), treat\
+        \ as error\nif [ \"$EXIT1\" != \"0\" ]; then\n  echo \"❌ Both test runs failed\
+        \ with exit code $EXIT1\"\n  echo \"\" >> $GITHUB_STEP_SUMMARY\n  echo \"\
+        ❌ **Test failures detected** - Both runs failed with exit code $EXIT1\" >>\
+        \ $GITHUB_STEP_SUMMARY\n  exit 1\nfi\n\n# Compare log outputs\nif diff -u\
+        \ determinism_pass1.log determinism_pass2.log > determinism_diff.log; then\n\
+        \  echo \"✅ Deterministic behavior confirmed - results identical\"\n  echo\
+        \ \"\" >> $GITHUB_STEP_SUMMARY\n  echo \"✅ **Determinism verified** - Test\
+        \ results are identical across runs\" >> $GITHUB_STEP_SUMMARY\nelse\n  echo\
+        \ \"⚠️  Non-deterministic behavior detected - results differ\"\n  echo \"\"\
+        \ >> $GITHUB_STEP_SUMMARY\n  echo \"⚠️  **Warning**: Non-deterministic behavior\
+        \ detected\" >> $GITHUB_STEP_SUMMARY\n  echo '```diff' >> $GITHUB_STEP_SUMMARY\n\
+        \  head -50 determinism_diff.log >> $GITHUB_STEP_SUMMARY\n  echo '```' >>\
+        \ $GITHUB_STEP_SUMMARY\n  exit 1\nfi\n"
     - name: Upload determinism reports
       if: always()
       uses: actions/upload-artifact@v5
@@ -281,6 +309,8 @@ jobs:
           '
         if-no-files-found: ignore
         retention-days: 30
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   dvc_pipeline:
     name: DVC Pipeline Reproducibility Check
     runs-on: ubuntu-latest
@@ -327,6 +357,8 @@ jobs:
         path: workbench/evidence/dvc_status.json
         if-no-files-found: ignore
         retention-days: 30
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   unified_summary:
     name: Generate Unified Summary
     runs-on: ubuntu-latest
@@ -338,18 +370,38 @@ jobs:
     if: always()
     steps:
     - name: Generate comprehensive summary
-      run: "echo \"## \U0001F52C Data Quality & Determinism Summary\" >> $GITHUB_STEP_SUMMARY\n\
-        echo \"\" >> $GITHUB_STEP_SUMMARY\necho \"**Mode:** ${{ inputs.mode || github.event_name\
-        \ }}\" >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\necho \"\
-        ### Job Status\" >> $GITHUB_STEP_SUMMARY\necho \"- Data Validation: ${{ needs.data_validation.result\
-        \ || 'skipped' }}\" >> $GITHUB_STEP_SUMMARY\necho \"- Determinism Check: ${{\
-        \ needs.determinism_check.result || 'skipped' }}\" >> $GITHUB_STEP_SUMMARY\n\
-        echo \"- DVC Pipeline Check: ${{ needs.dvc_pipeline.result || 'skipped' }}\"\
-        \ >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\necho \"### Validation\
-        \ Summary\" >> $GITHUB_STEP_SUMMARY\necho \"- Manifest validation completed\"\
-        \ >> $GITHUB_STEP_SUMMARY\necho \"- Data drift analysis completed\" >> $GITHUB_STEP_SUMMARY\n\
-        echo \"- Determinism tests run twice for comparison\" >> $GITHUB_STEP_SUMMARY\n\
-        echo \"- DVC pipeline reproducibility verified (dry-run)\" >> $GITHUB_STEP_SUMMARY\n"
+      run: 'echo "## 🔬 Data Quality & Determinism Summary" >> $GITHUB_STEP_SUMMARY
+
+        echo "" >> $GITHUB_STEP_SUMMARY
+
+        echo "**Mode:** ${{ inputs.mode || github.event_name }}" >> $GITHUB_STEP_SUMMARY
+
+        echo "" >> $GITHUB_STEP_SUMMARY
+
+        echo "### Job Status" >> $GITHUB_STEP_SUMMARY
+
+        echo "- Data Validation: ${{ needs.data_validation.result || ''skipped'' }}"
+        >> $GITHUB_STEP_SUMMARY
+
+        echo "- Determinism Check: ${{ needs.determinism_check.result || ''skipped''
+        }}" >> $GITHUB_STEP_SUMMARY
+
+        echo "- DVC Pipeline Check: ${{ needs.dvc_pipeline.result || ''skipped'' }}"
+        >> $GITHUB_STEP_SUMMARY
+
+        echo "" >> $GITHUB_STEP_SUMMARY
+
+        echo "### Validation Summary" >> $GITHUB_STEP_SUMMARY
+
+        echo "- Manifest validation completed" >> $GITHUB_STEP_SUMMARY
+
+        echo "- Data drift analysis completed" >> $GITHUB_STEP_SUMMARY
+
+        echo "- Determinism tests run twice for comparison" >> $GITHUB_STEP_SUMMARY
+
+        echo "- DVC pipeline reproducibility verified (dry-run)" >> $GITHUB_STEP_SUMMARY
+
+        '
     - name: Cache health report
       if: always()
       continue-on-error: true
@@ -357,6 +409,8 @@ jobs:
         --health 2>/dev/null || echo ''{"status": "cache health check skipped"}''
 
         '
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
@@ -391,3 +445,5 @@ jobs:
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

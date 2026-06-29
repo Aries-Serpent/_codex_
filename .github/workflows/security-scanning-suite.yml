@@ -1,63 +1,64 @@
 name: Security Scanning Suite
-
-"on":
+'on':
   push:
-    branches: [main, develop, copilot/**]
+    branches:
+    - main
+    - develop
+    - copilot/**
   pull_request:
-    branches: [main, develop]
+    branches:
+    - main
+    - develop
   schedule:
-    - cron: '0 2 * * *'  # Daily at 2 AM
-    - cron: '0 3 * * 0'  # Weekly on Sunday at 3 AM
+  - cron: 0 2 * * *
+  - cron: 0 3 * * 0
   workflow_dispatch:
     inputs:
       scan-type:
-        description: 'Security scan type'
+        description: Security scan type
         required: true
         type: choice
         options:
-          - 'all'
-          - 'codeql' # pragma: allowlist secret
-          - 'dependency'
-          - 'semgrep'
-        default: 'all'
+        - all
+        - codeql
+        - dependency
+        - semgrep
+        default: all
   workflow_call:
     inputs:
       scan-type:
-        description: 'Security scan type'
+        description: Security scan type
         required: false
         type: string
-        default: 'all'
-
+        default: all
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   security-events: write
   issues: write
-
 env:
   PYTHON_VERSION: '3.12'
-
-
 jobs:
   codeql-scan:
     name: CodeQL Analysis (${{ matrix.language }})
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    # javascript/typescript: repo has no standalone JS build; allow this matrix leg to fail
-    # without blocking the overall workflow (python must still pass).
-    # Mirrors the identical guard in codeql-analysis.yml.
-    # Dependabot PRs: make CodeQL advisory-only so dependency-update PRs are not
-    # blocked when default Code Scanning setup is enabled.
-    continue-on-error: ${{ matrix.language == 'javascript' || github.actor == 'dependabot[bot]' }}
-    if: |
-      (github.event_name == 'push') ||
-      (github.event_name == 'pull_request') ||
-      (github.event_name == 'schedule') ||
-      (github.event_name == 'workflow_dispatch' && (inputs.scan-type == 'all' || inputs.scan-type == 'codeql')) ||
-      github.event_name == 'workflow_call'
+    continue-on-error: ${{ matrix.language == 'javascript' || github.actor == 'dependabot[bot]'
+      }}
+    if: '(github.event_name == ''push'') ||
+
+      (github.event_name == ''pull_request'') ||
+
+      (github.event_name == ''schedule'') ||
+
+      (github.event_name == ''workflow_dispatch'' && (inputs.scan-type == ''all''
+      || inputs.scan-type == ''codeql'')) ||
+
+      github.event_name == ''workflow_call''
+
+      '
     permissions:
       actions: read
       contents: read
@@ -65,705 +66,658 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: ['python', 'javascript']
+        language:
+        - python
+        - javascript
     steps:
-      - uses: actions/checkout@v5
-      - uses: github/codeql-action/init@v4
-        with:
-          languages: ${{ matrix.language }}
-          queries: +security-extended,security-and-quality
-      - uses: github/codeql-action/autobuild@v4
-      - name: Perform CodeQL Analysis
-        id: codeql
-        uses: github/codeql-action/analyze@v4
-        with:
-          category: "/language:${{ matrix.language }}"
-          # Persist SARIF locally so it can be packaged into the run artifact
-          # below for off-platform triage. SARIF upload to GitHub Advanced Security
-          # is handled by GitHub's Default Code Scanning Setup.
-          # FIX (issue #4835): upload: false (boolean) does NOT suppress SARIF upload
-          # in CodeQL action v4.35.4+. The string value 'never' must be used instead.
-          # Using 'false' caused "CodeQL analyses from advanced configurations cannot
-          # be processed when the default setup is enabled" → JOB_STATUS_CONFIGURATION_ERROR.
-          output: codeql-sarif/${{ matrix.language }}
-          upload: 'never'
-      - name: Build CodeQL human-readable summary
-        if: always()
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p codeql-reports
-          SARIF_DIR="codeql-sarif/${{ matrix.language }}"
-          SUMMARY="codeql-reports/codeql-${{ matrix.language }}-summary.md"
-          {
-            echo "# CodeQL Report — ${{ matrix.language }}"
-            echo ""
-            echo "- **Repository:** \`${{ github.repository }}\`"
-            echo "- **Commit:** \`${{ github.sha }}\`"
-            echo "- **Run:** [${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
-            echo "- **Job status:** ${{ job.status }}"
-            echo "- **Analyze outcome:** ${{ steps.codeql.outcome }}"
-            echo ""
-            if compgen -G "$SARIF_DIR/*.sarif" > /dev/null; then
-              echo "## SARIF files produced"
-              echo ""
-              for f in "$SARIF_DIR"/*.sarif; do
-                size=$(wc -c < "$f")
-                counts=$(python -c "import json,sys;d=json.load(open(sys.argv[1]));runs=d.get('runs',[]);rules=sum(len(r.get('tool',{}).get('driver',{}).get('rules',[]) or []) for r in runs);results=sum(len(r.get('results',[]) or []) for r in runs);print(f'rules={rules}, results={results}')" "$f" 2>/dev/null || echo "rules=?, results=?")
-                echo "- \`$(basename "$f")\` (${size} bytes, ${counts})"
-              done
-            else
-              echo "_No SARIF files were produced for this language._"
-            fi
-          } > "$SUMMARY"
-          cat "$SUMMARY" >> "$GITHUB_STEP_SUMMARY"
-      - name: Upload CodeQL artifacts
-        if: always()
-        uses: actions/upload-artifact@v5 # v7.0.1
-        with:
-          # Stable, dropdown-friendly prefix per matrix language
-          name: security-suite-codeql-${{ matrix.language }}
-          path: |
-            codeql-sarif/${{ matrix.language }}/
-            codeql-reports/codeql-${{ matrix.language }}-summary.md
-          if-no-files-found: warn
-          retention-days: 30
+    - uses: actions/checkout@v5
+    - uses: github/codeql-action/init@v4
+      with:
+        languages: ${{ matrix.language }}
+        queries: +security-extended,security-and-quality
+    - uses: github/codeql-action/autobuild@v4
+    - name: Perform CodeQL Analysis
+      id: codeql
+      uses: github/codeql-action/analyze@v4
+      with:
+        category: /language:${{ matrix.language }}
+        output: codeql-sarif/${{ matrix.language }}
+        upload: never
+    - name: Build CodeQL human-readable summary
+      if: always()
+      shell: bash
+      run: "set -euo pipefail\nmkdir -p codeql-reports\nSARIF_DIR=\"codeql-sarif/${{\
+        \ matrix.language }}\"\nSUMMARY=\"codeql-reports/codeql-${{ matrix.language\
+        \ }}-summary.md\"\n{\n  echo \"# CodeQL Report — ${{ matrix.language }}\"\n\
+        \  echo \"\"\n  echo \"- **Repository:** \\`${{ github.repository }}\\`\"\n\
+        \  echo \"- **Commit:** \\`${{ github.sha }}\\`\"\n  echo \"- **Run:** [${{\
+        \ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{\
+        \ github.run_id }})\"\n  echo \"- **Job status:** ${{ job.status }}\"\n  echo\
+        \ \"- **Analyze outcome:** ${{ steps.codeql.outcome }}\"\n  echo \"\"\n  if\
+        \ compgen -G \"$SARIF_DIR/*.sarif\" > /dev/null; then\n    echo \"## SARIF\
+        \ files produced\"\n    echo \"\"\n    for f in \"$SARIF_DIR\"/*.sarif; do\n\
+        \      size=$(wc -c < \"$f\")\n      counts=$(python -c \"import json,sys;d=json.load(open(sys.argv[1]));runs=d.get('runs',[]);rules=sum(len(r.get('tool',{}).get('driver',{}).get('rules',[])\
+        \ or []) for r in runs);results=sum(len(r.get('results',[]) or []) for r in\
+        \ runs);print(f'rules={rules}, results={results}')\" \"$f\" 2>/dev/null ||\
+        \ echo \"rules=?, results=?\")\n      echo \"- \\`$(basename \"$f\")\\` (${size}\
+        \ bytes, ${counts})\"\n    done\n  else\n    echo \"_No SARIF files were produced\
+        \ for this language._\"\n  fi\n} > \"$SUMMARY\"\ncat \"$SUMMARY\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \n"
+    - name: Upload CodeQL artifacts
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: security-suite-codeql-${{ matrix.language }}
+        path: 'codeql-sarif/${{ matrix.language }}/
 
+          codeql-reports/codeql-${{ matrix.language }}-summary.md
+
+          '
+        if-no-files-found: warn
+        retention-days: 30
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   semgrep-scan:
     name: Semgrep SAST Scanning
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    if: |
-      (github.event_name == 'push') ||
-      (github.event_name == 'pull_request') ||
-      (github.event_name == 'schedule') ||
-      (github.event_name == 'workflow_dispatch' && (inputs.scan-type == 'all' || inputs.scan-type == 'semgrep')) ||
-      github.event_name == 'workflow_call'
+    if: '(github.event_name == ''push'') ||
+
+      (github.event_name == ''pull_request'') ||
+
+      (github.event_name == ''schedule'') ||
+
+      (github.event_name == ''workflow_dispatch'' && (inputs.scan-type == ''all''
+      || inputs.scan-type == ''semgrep'')) ||
+
+      github.event_name == ''workflow_call''
+
+      '
     permissions:
       contents: read
       security-events: write
     steps:
-      - uses: actions/checkout@v5
+    - uses: actions/checkout@v5
+    - name: Run Semgrep with SARIF output
+      uses: returntocorp/semgrep-action@713efdd345f3035192eaa63f56867b88e63e4e5d
+      with:
+        generateSarif: true
+        config: p/security-audit p/python p/owasp-top-ten
+    - name: Upload SARIF to GitHub Security
+      uses: github/codeql-action/upload-sarif@9cea5827c668a1fe7165dbce6e80c3f9cf3f83ac
+      if: always() && hashFiles('semgrep.sarif') != ''
+      with:
+        sarif_file: semgrep.sarif
+        category: semgrep
+    - name: Parse Semgrep results for enforcement
+      if: always()
+      id: parse
+      shell: bash
+      run: "set -euo pipefail\n\n# Extract results from SARIF\nif [ -f \"semgrep.sarif\"\
+        \ ]; then\n  # Count CRITICAL/HIGH findings using jq\n  CRITICAL_COUNT=$(jq\
+        \ '[.runs[0].results[] | select(.level == \"error\")] | length' semgrep.sarif\
+        \ 2>/dev/null || echo \"0\")\n  HIGH_COUNT=$(jq '[.runs[0].results[] | select(.level\
+        \ == \"warning\")] | length' semgrep.sarif 2>/dev/null || echo \"0\")\n  \n\
+        \  echo \"critical_findings=${CRITICAL_COUNT}\" >> \"$GITHUB_OUTPUT\"\n  echo\
+        \ \"high_findings=${HIGH_COUNT}\" >> \"$GITHUB_OUTPUT\"\n  \n  # Always warn\
+        \ on HIGH/CRITICAL (not blocking on scheduled scans)\n  if [ \"${CRITICAL_COUNT}\"\
+        \ -gt 0 ]; then\n    echo \"::warning::Semgrep found ${CRITICAL_COUNT} CRITICAL\
+        \ findings\"\n  fi\n  if [ \"${HIGH_COUNT}\" -gt 0 ]; then\n    echo \"::warning::Semgrep\
+        \ found ${HIGH_COUNT} HIGH findings\"\n  fi\nfi\n"
+    - name: Upload Semgrep report
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: security-suite-semgrep
+        path: semgrep.sarif
+        if-no-files-found: warn
+        retention-days: 30
+    - name: Summary
+      if: always()
+      run: 'echo "## Semgrep Security Scan Results" >> $GITHUB_STEP_SUMMARY
 
-      - name: Run Semgrep with SARIF output
-        uses: returntocorp/semgrep-action@713efdd345f3035192eaa63f56867b88e63e4e5d
-        with:
-          generateSarif: true
-          config: >-
-            p/security-audit
-            p/python
-            p/owasp-top-ten
+        echo "" >> $GITHUB_STEP_SUMMARY
 
-      - name: Upload SARIF to GitHub Security
-        uses: github/codeql-action/upload-sarif@9cea5827c668a1fe7165dbce6e80c3f9cf3f83ac
-        if: always() && hashFiles('semgrep.sarif') != ''
-        with:
-          sarif_file: semgrep.sarif
-          category: 'semgrep'
+        echo "**CRITICAL Findings:** ${{ steps.parse.outputs.critical_findings ||
+        0 }}" >> $GITHUB_STEP_SUMMARY
 
-      - name: Parse Semgrep results for enforcement
-        if: always()
-        id: parse
-        shell: bash
-        run: |
-          set -euo pipefail
-          
-          # Extract results from SARIF
-          if [ -f "semgrep.sarif" ]; then
-            # Count CRITICAL/HIGH findings using jq
-            CRITICAL_COUNT=$(jq '[.runs[0].results[] | select(.level == "error")] | length' semgrep.sarif 2>/dev/null || echo "0")
-            HIGH_COUNT=$(jq '[.runs[0].results[] | select(.level == "warning")] | length' semgrep.sarif 2>/dev/null || echo "0")
-            
-            echo "critical_findings=${CRITICAL_COUNT}" >> "$GITHUB_OUTPUT"
-            echo "high_findings=${HIGH_COUNT}" >> "$GITHUB_OUTPUT"
-            
-            # Always warn on HIGH/CRITICAL (not blocking on scheduled scans)
-            if [ "${CRITICAL_COUNT}" -gt 0 ]; then
-              echo "::warning::Semgrep found ${CRITICAL_COUNT} CRITICAL findings"
-            fi
-            if [ "${HIGH_COUNT}" -gt 0 ]; then
-              echo "::warning::Semgrep found ${HIGH_COUNT} HIGH findings"
-            fi
-          fi
+        echo "**HIGH Findings:** ${{ steps.parse.outputs.high_findings || 0 }}" >>
+        $GITHUB_STEP_SUMMARY
 
-      - name: Upload Semgrep report
-        if: always()
-        uses: actions/upload-artifact@v5
-        with:
-          name: security-suite-semgrep
-          path: semgrep.sarif
-          if-no-files-found: warn
-          retention-days: 30
+        echo "" >> $GITHUB_STEP_SUMMARY
 
-      - name: Summary
-        if: always()
-        run: |
-          echo "## Semgrep Security Scan Results" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**CRITICAL Findings:** ${{ steps.parse.outputs.critical_findings || 0 }}" >> $GITHUB_STEP_SUMMARY
-          echo "**HIGH Findings:** ${{ steps.parse.outputs.high_findings || 0 }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "[View full results in GitHub Security tab]" >> $GITHUB_STEP_SUMMARY
+        echo "[View full results in GitHub Security tab]" >> $GITHUB_STEP_SUMMARY
 
+        '
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   dependency-scan:
     name: Dependency Security Scan
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    if: |
-      (github.event_name == 'schedule') ||
-      (github.event_name == 'workflow_dispatch' && (inputs.scan-type == 'all' || inputs.scan-type == 'dependency'))
-    steps:
-      - uses: actions/checkout@v5 # v6.0.3
-      - uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache-tier: common
-      - name: Install security tools
-        run: |
-          pip install --upgrade pip
-          pip install safety pip-audit
-          pip freeze > installed-packages.txt
-      - name: Run pip-audit (JSON)
-        id: pip_audit_json
-        continue-on-error: true
-        run: |
-          pip-audit --format json --output pip-audit.json 2>&1 | tee pip-audit-json.log || true
-      - name: Run pip-audit (human-readable)
-        continue-on-error: true
-        run: |
-          pip-audit --desc 2>&1 | tee pip-audit-report.txt || echo "pip-audit reported vulnerabilities"
-      - name: Run pip-audit (CycloneDX)
-        continue-on-error: true
-        run: |
-          pip-audit --format cyclonedx-json --output pip-audit-cyclonedx.json 2>&1 | tee pip-audit-cyclonedx.log || true
-      - name: Run Safety (JSON)
-        continue-on-error: true
-        run: |
-          safety check --json --output safety.json 2>&1 | tee safety-json.log || true
-      - name: Run Safety (human-readable)
-        continue-on-error: true
-        run: |
-          safety check 2>&1 | tee safety-report.txt || echo "Safety reported vulnerabilities"
-      - name: Generate dependency scan summary
-        if: always()
-        shell: bash
-        run: |
-          set -euo pipefail
-          PIP_AUDIT_COUNT=0
-          SAFETY_COUNT=0
-          if [ -f pip-audit.json ]; then
-            PIP_AUDIT_COUNT=$(python -c "import json,sys;d=json.load(open('pip-audit.json'));print(sum(len(p.get('vulns',[])) for p in (d.get('dependencies') or [])))" 2>/dev/null || echo 0)
-          fi
-          if [ -f safety.json ]; then
-            SAFETY_COUNT=$(python -c "import json,sys;d=json.load(open('safety.json'));print(len(d.get('vulnerabilities',[])) if isinstance(d,dict) else len(d))" 2>/dev/null || echo 0)
-          fi
-          {
-            echo "# Dependency Scan Report"
-            echo ""
-            echo "- **pip-audit vulnerabilities:** ${PIP_AUDIT_COUNT}"
-            echo "- **Safety vulnerabilities:** ${SAFETY_COUNT}"
-            echo "- **Installed packages snapshot:** \`installed-packages.txt\`"
-            echo ""
-            echo "## Artifact contents"
-            echo "- \`pip-audit.json\` — machine-readable pip-audit output"
-            echo "- \`pip-audit-cyclonedx.json\` — CycloneDX-format pip-audit output"
-            echo "- \`pip-audit-report.txt\` — human-readable pip-audit output"
-            echo "- \`safety.json\` — machine-readable Safety output"
-            echo "- \`safety-report.txt\` — human-readable Safety output"
-            echo "- \`installed-packages.txt\` — \`pip freeze\` snapshot used for the scan"
-            echo "- \`*.log\` — raw stdout/stderr captured from each scanner"
-          } > dependency-scan-summary.md
-          cat dependency-scan-summary.md >> "$GITHUB_STEP_SUMMARY"
-      - name: Upload results
-        if: always()
-        uses: actions/upload-artifact@v5 # v7.0.1
-        with:
-          name: security-suite-dependency
-          path: |
-            pip-audit.json
-            pip-audit-cyclonedx.json
-            pip-audit-report.txt
-            safety.json
-            safety-report.txt
-            installed-packages.txt
-            dependency-scan-summary.md
-            pip-audit-json.log
-            pip-audit-cyclonedx.log
-            safety-json.log
-          if-no-files-found: warn
-          retention-days: 30
-      - name: Summary
-        if: always()
-        run: |
-          echo "## Dependency Scan" >> $GITHUB_STEP_SUMMARY
-          echo "**Artifact:** \`security-suite-dependency\`" >> $GITHUB_STEP_SUMMARY
-          echo "**Status:** Complete" >> $GITHUB_STEP_SUMMARY
+    if: '(github.event_name == ''schedule'') ||
 
+      (github.event_name == ''workflow_dispatch'' && (inputs.scan-type == ''all''
+      || inputs.scan-type == ''dependency''))
+
+      '
+    steps:
+    - uses: actions/checkout@v5
+    - uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        cache-tier: common
+    - name: Install security tools
+      run: 'pip install --upgrade pip
+
+        pip install safety pip-audit
+
+        pip freeze > installed-packages.txt
+
+        '
+    - name: Run pip-audit (JSON)
+      id: pip_audit_json
+      continue-on-error: true
+      run: 'pip-audit --format json --output pip-audit.json 2>&1 | tee pip-audit-json.log
+        || true
+
+        '
+    - name: Run pip-audit (human-readable)
+      continue-on-error: true
+      run: 'pip-audit --desc 2>&1 | tee pip-audit-report.txt || echo "pip-audit reported
+        vulnerabilities"
+
+        '
+    - name: Run pip-audit (CycloneDX)
+      continue-on-error: true
+      run: 'pip-audit --format cyclonedx-json --output pip-audit-cyclonedx.json 2>&1
+        | tee pip-audit-cyclonedx.log || true
+
+        '
+    - name: Run Safety (JSON)
+      continue-on-error: true
+      run: 'safety check --json --output safety.json 2>&1 | tee safety-json.log ||
+        true
+
+        '
+    - name: Run Safety (human-readable)
+      continue-on-error: true
+      run: 'safety check 2>&1 | tee safety-report.txt || echo "Safety reported vulnerabilities"
+
+        '
+    - name: Generate dependency scan summary
+      if: always()
+      shell: bash
+      run: "set -euo pipefail\nPIP_AUDIT_COUNT=0\nSAFETY_COUNT=0\nif [ -f pip-audit.json\
+        \ ]; then\n  PIP_AUDIT_COUNT=$(python -c \"import json,sys;d=json.load(open('pip-audit.json'));print(sum(len(p.get('vulns',[]))\
+        \ for p in (d.get('dependencies') or [])))\" 2>/dev/null || echo 0)\nfi\n\
+        if [ -f safety.json ]; then\n  SAFETY_COUNT=$(python -c \"import json,sys;d=json.load(open('safety.json'));print(len(d.get('vulnerabilities',[]))\
+        \ if isinstance(d,dict) else len(d))\" 2>/dev/null || echo 0)\nfi\n{\n  echo\
+        \ \"# Dependency Scan Report\"\n  echo \"\"\n  echo \"- **pip-audit vulnerabilities:**\
+        \ ${PIP_AUDIT_COUNT}\"\n  echo \"- **Safety vulnerabilities:** ${SAFETY_COUNT}\"\
+        \n  echo \"- **Installed packages snapshot:** \\`installed-packages.txt\\\
+        `\"\n  echo \"\"\n  echo \"## Artifact contents\"\n  echo \"- \\`pip-audit.json\\\
+        ` — machine-readable pip-audit output\"\n  echo \"- \\`pip-audit-cyclonedx.json\\\
+        ` — CycloneDX-format pip-audit output\"\n  echo \"- \\`pip-audit-report.txt\\\
+        ` — human-readable pip-audit output\"\n  echo \"- \\`safety.json\\` — machine-readable\
+        \ Safety output\"\n  echo \"- \\`safety-report.txt\\` — human-readable Safety\
+        \ output\"\n  echo \"- \\`installed-packages.txt\\` — \\`pip freeze\\` snapshot\
+        \ used for the scan\"\n  echo \"- \\`*.log\\` — raw stdout/stderr captured\
+        \ from each scanner\"\n} > dependency-scan-summary.md\ncat dependency-scan-summary.md\
+        \ >> \"$GITHUB_STEP_SUMMARY\"\n"
+    - name: Upload results
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: security-suite-dependency
+        path: 'pip-audit.json
+
+          pip-audit-cyclonedx.json
+
+          pip-audit-report.txt
+
+          safety.json
+
+          safety-report.txt
+
+          installed-packages.txt
+
+          dependency-scan-summary.md
+
+          pip-audit-json.log
+
+          pip-audit-cyclonedx.log
+
+          safety-json.log
+
+          '
+        if-no-files-found: warn
+        retention-days: 30
+    - name: Summary
+      if: always()
+      run: 'echo "## Dependency Scan" >> $GITHUB_STEP_SUMMARY
+
+        echo "**Artifact:** \`security-suite-dependency\`" >> $GITHUB_STEP_SUMMARY
+
+        echo "**Status:** Complete" >> $GITHUB_STEP_SUMMARY
+
+        '
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   secret-scan:
     name: Secret Scanning
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    if: |
-      (github.event_name == 'workflow_dispatch' && inputs.scan-type == 'all')
-    steps:
-      - uses: actions/checkout@v5 # v6.0.3
-        with:
-          fetch-depth: 0
-      - uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache-tier: ephemeral
-      - name: Install tools
-        run: |
-          pip install --upgrade pip
-          pip install detect-secrets
-      - name: Run detect-secrets
-        id: detect-secrets  # pragma: allowlist secret
-        continue-on-error: true
-        run: |
-          detect-secrets scan --all-files --force-use-all-plugins \
-            --exclude-files '\.codex/validation/' \
-            --exclude-files '\.venv_ci/' \
-            --exclude-files 'assets/manifest\.json' \
-            > .secrets.baseline 2> detect-secrets.log
-          SECRETS_COUNT=$(python -c "import json;print(sum(len(v or []) for v in ((json.load(open('.secrets.baseline')).get('results') or {}).values())))" 2>/dev/null || echo "0")
-          echo "secrets_found=$SECRETS_COUNT" >> "$GITHUB_OUTPUT"
-      - name: Generate secret-scan summary
-        if: always()
-        shell: bash
-        run: |  # pragma: allowlist secret
-          set -euo pipefail
-          python -c "
-          import json
-          out = {'results_by_file': {}, 'files_with_secrets': 0, 'total_secrets': 0, 'plugins': []}
-          try:
-              with open('.secrets.baseline') as fh:
-                  data = json.load(fh)
-              results = data.get('results', {}) or {}
-              out['plugins'] = [p.get('name') for p in (data.get('plugins_used') or [])]
-              out['files_with_secrets'] = len(results)
-              for fname, items in results.items():
-                  out['results_by_file'][fname] = len(items)
-                  out['total_secrets'] += len(items)
-          except Exception as exc:
-              out['error'] = str(exc)
-          json.dump(out, open('detect-secrets-summary.json','w'), indent=2, sort_keys=True)
-          " || echo '{"error":"summary generation failed"}' > detect-secrets-summary.json
-          FILES=$(python -c "import json;print(json.load(open('detect-secrets-summary.json')).get('files_with_secrets',0))" 2>/dev/null || echo 0)
-          TOTAL=$(python -c "import json;print(json.load(open('detect-secrets-summary.json')).get('total_secrets',0))" 2>/dev/null || echo 0)
-          PLUGINS=$(python -c "import json;print(', '.join(json.load(open('detect-secrets-summary.json')).get('plugins',[]) or []))" 2>/dev/null || echo n/a)
-          {
-            echo "# Secret Scan Report"
-            echo ""
-            echo "- **Files with potential secrets:** ${FILES}"
-            echo "- **Total potential secret occurrences:** ${TOTAL}"
-            echo "- **Plugins:** ${PLUGINS}"
-            echo ""
-            echo "## Artifact contents"
-            echo "- \`.secrets.baseline\` — detect-secrets baseline (machine-readable)"
-            echo "- \`detect-secrets-summary.json\` — parsed per-file occurrence counts"
-            echo "- \`detect-secrets.log\` — raw scanner stderr"
-          } > secret-scan-summary.md
-          cat secret-scan-summary.md >> "$GITHUB_STEP_SUMMARY"
-      - name: Upload secret-scan artifacts
-        if: always()
-        uses: actions/upload-artifact@v5 # v7.0.1
-        with:
-          name: security-suite-secrets
-          path: |
-            .secrets.baseline
-            detect-secrets-summary.json
-            detect-secrets.log
-            secret-scan-summary.md
-          if-no-files-found: warn
-          retention-days: 30
-      - name: Summary
-        if: always()
-        run: |
-          echo "## Secret Scan" >> $GITHUB_STEP_SUMMARY
-          echo "**Artifact:** \`security-suite-secrets\`" >> $GITHUB_STEP_SUMMARY
-          echo "**Secrets found:** ${{ steps.detect-secrets.outputs.secrets_found }}" >> $GITHUB_STEP_SUMMARY
+    if: '(github.event_name == ''workflow_dispatch'' && inputs.scan-type == ''all'')
 
+      '
+    steps:
+    - uses: actions/checkout@v5
+      with:
+        fetch-depth: 0
+    - uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        cache-tier: ephemeral
+    - name: Install tools
+      run: 'pip install --upgrade pip
+
+        pip install detect-secrets
+
+        '
+    - name: Run detect-secrets
+      id: detect-secrets
+      continue-on-error: true
+      run: "detect-secrets scan --all-files --force-use-all-plugins \\\n  --exclude-files\
+        \ '\\.codex/validation/' \\\n  --exclude-files '\\.venv_ci/' \\\n  --exclude-files\
+        \ 'assets/manifest\\.json' \\\n  > .secrets.baseline 2> detect-secrets.log\n\
+        SECRETS_COUNT=$(python -c \"import json;print(sum(len(v or []) for v in ((json.load(open('.secrets.baseline')).get('results')\
+        \ or {}).values())))\" 2>/dev/null || echo \"0\")\necho \"secrets_found=$SECRETS_COUNT\"\
+        \ >> \"$GITHUB_OUTPUT\"\n"
+    - name: Generate secret-scan summary
+      if: always()
+      shell: bash
+      run: "set -euo pipefail\npython -c \"\nimport json\nout = {'results_by_file':\
+        \ {}, 'files_with_secrets': 0, 'total_secrets': 0, 'plugins': []}\ntry:\n\
+        \    with open('.secrets.baseline') as fh:\n        data = json.load(fh)\n\
+        \    results = data.get('results', {}) or {}\n    out['plugins'] = [p.get('name')\
+        \ for p in (data.get('plugins_used') or [])]\n    out['files_with_secrets']\
+        \ = len(results)\n    for fname, items in results.items():\n        out['results_by_file'][fname]\
+        \ = len(items)\n        out['total_secrets'] += len(items)\nexcept Exception\
+        \ as exc:\n    out['error'] = str(exc)\njson.dump(out, open('detect-secrets-summary.json','w'),\
+        \ indent=2, sort_keys=True)\n\" || echo '{\"error\":\"summary generation failed\"\
+        }' > detect-secrets-summary.json\nFILES=$(python -c \"import json;print(json.load(open('detect-secrets-summary.json')).get('files_with_secrets',0))\"\
+        \ 2>/dev/null || echo 0)\nTOTAL=$(python -c \"import json;print(json.load(open('detect-secrets-summary.json')).get('total_secrets',0))\"\
+        \ 2>/dev/null || echo 0)\nPLUGINS=$(python -c \"import json;print(', '.join(json.load(open('detect-secrets-summary.json')).get('plugins',[])\
+        \ or []))\" 2>/dev/null || echo n/a)\n{\n  echo \"# Secret Scan Report\"\n\
+        \  echo \"\"\n  echo \"- **Files with potential secrets:** ${FILES}\"\n  echo\
+        \ \"- **Total potential secret occurrences:** ${TOTAL}\"\n  echo \"- **Plugins:**\
+        \ ${PLUGINS}\"\n  echo \"\"\n  echo \"## Artifact contents\"\n  echo \"- \\\
+        `.secrets.baseline\\` — detect-secrets baseline (machine-readable)\"\n  echo\
+        \ \"- \\`detect-secrets-summary.json\\` — parsed per-file occurrence counts\"\
+        \n  echo \"- \\`detect-secrets.log\\` — raw scanner stderr\"\n} > secret-scan-summary.md\n\
+        cat secret-scan-summary.md >> \"$GITHUB_STEP_SUMMARY\"\n"
+    - name: Upload secret-scan artifacts
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: security-suite-secrets
+        path: '.secrets.baseline
+
+          detect-secrets-summary.json
+
+          detect-secrets.log
+
+          secret-scan-summary.md
+
+          '
+        if-no-files-found: warn
+        retention-days: 30
+    - name: Summary
+      if: always()
+      run: 'echo "## Secret Scan" >> $GITHUB_STEP_SUMMARY
+
+        echo "**Artifact:** \`security-suite-secrets\`" >> $GITHUB_STEP_SUMMARY
+
+        echo "**Secrets found:** ${{ steps.detect-secrets.outputs.secrets_found }}"
+        >> $GITHUB_STEP_SUMMARY
+
+        '
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   sbom-generation:
     name: SBOM Generation
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    if: |
-      (github.event_name == 'schedule' && github.event.schedule == '0 3 * * 0') ||
-      (github.event_name == 'workflow_dispatch' && inputs.scan-type == 'all')
-    steps:
-      - uses: actions/checkout@v5 # v6.0.3
-      - uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache-tier: common
-      - name: Install tools
-        run: |
-          pip install --upgrade pip
-          pip install cyclonedx-bom
-          cyclonedx-py --version > sbom-tool-versions.txt 2>&1 || true
-          python --version >> sbom-tool-versions.txt
-          pip --version >> sbom-tool-versions.txt
-      - name: Generate SBOM
-        run: |
-          set -euo pipefail
-          # cyclonedx-bom v7.x changed the CLI: --format → --of, --outfile → -o
-          cyclonedx-py environment --of JSON -o sbom.json 2>&1 | tee sbom-json.log
-          cyclonedx-py environment --of XML  -o sbom.xml  2>&1 | tee sbom-xml.log
-      - name: Generate SBOM summary
-        if: always()
-        shell: bash
-        run: |
-          set -euo pipefail
-          COMPONENT_COUNT=0
-          BOM_FORMAT=""
-          SPEC_VERSION=""
-          if [ -f sbom.json ]; then
-            COMPONENT_COUNT=$(python -c "import json;d=json.load(open('sbom.json'));print(len(d.get('components',[]) or []))" 2>/dev/null || echo 0)
-            BOM_FORMAT=$(python -c "import json;print(json.load(open('sbom.json')).get('bomFormat',''))" 2>/dev/null || echo "")
-            SPEC_VERSION=$(python -c "import json;print(json.load(open('sbom.json')).get('specVersion',''))" 2>/dev/null || echo "")
-          fi
-          python -c "
-          import json, datetime
-          json.dump({
-              'generated_at': datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
-              'repository': '${{ github.repository }}',
-              'commit': '${{ github.sha }}',
-              'run_id': '${{ github.run_id }}',
-              'component_count': ${COMPONENT_COUNT},
-              'bom_format': '${BOM_FORMAT}',
-              'spec_version': '${SPEC_VERSION}',
-              'formats': ['CycloneDX JSON (sbom.json)', 'CycloneDX XML (sbom.xml)'],
-          }, open('sbom-metadata.json', 'w'), indent=2, sort_keys=True)
-          "
-          {
-            echo "# SBOM Report"
-            echo ""
-            echo "- **BOM format:** ${BOM_FORMAT:-unknown} ${SPEC_VERSION}"
-            echo "- **Components:** ${COMPONENT_COUNT}"
-            echo ""
-            echo "## Artifact contents"
-            echo "- \`sbom.json\` — CycloneDX SBOM (JSON)"
-            echo "- \`sbom.xml\` — CycloneDX SBOM (XML)"
-            echo "- \`sbom-metadata.json\` — generation metadata (commit, counts, formats)"
-            echo "- \`sbom-tool-versions.txt\` — generator/tool versions"
-            echo "- \`sbom-*.log\` — generator stdout/stderr"
-          } > sbom-summary.md
-          cat sbom-summary.md >> "$GITHUB_STEP_SUMMARY"
-      - name: Upload SBOM
-        if: always()
-        uses: actions/upload-artifact@v5 # v7.0.1
-        with:
-          name: security-suite-sbom
-          path: |
-            sbom.json
-            sbom.xml
-            sbom-metadata.json
-            sbom-tool-versions.txt
-            sbom-summary.md
-            sbom-json.log
-            sbom-xml.log
-          if-no-files-found: warn
-          retention-days: 90
-      - name: Summary
-        if: always()
-        run: |
-          echo "## SBOM Generation" >> $GITHUB_STEP_SUMMARY
-          echo "**Artifact:** \`security-suite-sbom\`" >> $GITHUB_STEP_SUMMARY
-          echo "**Status:** Complete" >> $GITHUB_STEP_SUMMARY
+    if: '(github.event_name == ''schedule'' && github.event.schedule == ''0 3 * *
+      0'') ||
 
-  # ── Semgrep SAST ─────────────────────────────────────────────────────────
-  # Consolidated from semgrep_sarif.yml (Phase 3.1, 2026-05-21).
-  # The standalone semgrep_sarif.yml is archived to .github/workflow-archive/disabled/.
+      (github.event_name == ''workflow_dispatch'' && inputs.scan-type == ''all'')
+
+      '
+    steps:
+    - uses: actions/checkout@v5
+    - uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        cache-tier: common
+    - name: Install tools
+      run: 'pip install --upgrade pip
+
+        pip install cyclonedx-bom
+
+        cyclonedx-py --version > sbom-tool-versions.txt 2>&1 || true
+
+        python --version >> sbom-tool-versions.txt
+
+        pip --version >> sbom-tool-versions.txt
+
+        '
+    - name: Generate SBOM
+      run: 'set -euo pipefail
+
+        # cyclonedx-bom v7.x changed the CLI: --format → --of, --outfile → -o
+
+        cyclonedx-py environment --of JSON -o sbom.json 2>&1 | tee sbom-json.log
+
+        cyclonedx-py environment --of XML  -o sbom.xml  2>&1 | tee sbom-xml.log
+
+        '
+    - name: Generate SBOM summary
+      if: always()
+      shell: bash
+      run: "set -euo pipefail\nCOMPONENT_COUNT=0\nBOM_FORMAT=\"\"\nSPEC_VERSION=\"\
+        \"\nif [ -f sbom.json ]; then\n  COMPONENT_COUNT=$(python -c \"import json;d=json.load(open('sbom.json'));print(len(d.get('components',[])\
+        \ or []))\" 2>/dev/null || echo 0)\n  BOM_FORMAT=$(python -c \"import json;print(json.load(open('sbom.json')).get('bomFormat',''))\"\
+        \ 2>/dev/null || echo \"\")\n  SPEC_VERSION=$(python -c \"import json;print(json.load(open('sbom.json')).get('specVersion',''))\"\
+        \ 2>/dev/null || echo \"\")\nfi\npython -c \"\nimport json, datetime\njson.dump({\n\
+        \    'generated_at': datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),\n\
+        \    'repository': '${{ github.repository }}',\n    'commit': '${{ github.sha\
+        \ }}',\n    'run_id': '${{ github.run_id }}',\n    'component_count': ${COMPONENT_COUNT},\n\
+        \    'bom_format': '${BOM_FORMAT}',\n    'spec_version': '${SPEC_VERSION}',\n\
+        \    'formats': ['CycloneDX JSON (sbom.json)', 'CycloneDX XML (sbom.xml)'],\n\
+        }, open('sbom-metadata.json', 'w'), indent=2, sort_keys=True)\n\"\n{\n  echo\
+        \ \"# SBOM Report\"\n  echo \"\"\n  echo \"- **BOM format:** ${BOM_FORMAT:-unknown}\
+        \ ${SPEC_VERSION}\"\n  echo \"- **Components:** ${COMPONENT_COUNT}\"\n  echo\
+        \ \"\"\n  echo \"## Artifact contents\"\n  echo \"- \\`sbom.json\\` — CycloneDX\
+        \ SBOM (JSON)\"\n  echo \"- \\`sbom.xml\\` — CycloneDX SBOM (XML)\"\n  echo\
+        \ \"- \\`sbom-metadata.json\\` — generation metadata (commit, counts, formats)\"\
+        \n  echo \"- \\`sbom-tool-versions.txt\\` — generator/tool versions\"\n  echo\
+        \ \"- \\`sbom-*.log\\` — generator stdout/stderr\"\n} > sbom-summary.md\n\
+        cat sbom-summary.md >> \"$GITHUB_STEP_SUMMARY\"\n"
+    - name: Upload SBOM
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: security-suite-sbom
+        path: 'sbom.json
+
+          sbom.xml
+
+          sbom-metadata.json
+
+          sbom-tool-versions.txt
+
+          sbom-summary.md
+
+          sbom-json.log
+
+          sbom-xml.log
+
+          '
+        if-no-files-found: warn
+        retention-days: 90
+    - name: Summary
+      if: always()
+      run: 'echo "## SBOM Generation" >> $GITHUB_STEP_SUMMARY
+
+        echo "**Artifact:** \`security-suite-sbom\`" >> $GITHUB_STEP_SUMMARY
+
+        echo "**Status:** Complete" >> $GITHUB_STEP_SUMMARY
+
+        '
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   semgrep:
     name: Semgrep SAST (SARIF Upload)
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    if: |
-      (github.event_name == 'push') ||
-      (github.event_name == 'pull_request') ||
-      (github.event_name == 'schedule') ||
-      (github.event_name == 'workflow_dispatch' && (inputs.scan-type == 'all' || inputs.scan-type == 'semgrep')) ||
-      (github.event_name == 'workflow_call' && (inputs.scan-type == '' || inputs.scan-type == 'all' || inputs.scan-type == 'semgrep'))
+    if: '(github.event_name == ''push'') ||
+
+      (github.event_name == ''pull_request'') ||
+
+      (github.event_name == ''schedule'') ||
+
+      (github.event_name == ''workflow_dispatch'' && (inputs.scan-type == ''all''
+      || inputs.scan-type == ''semgrep'')) ||
+
+      (github.event_name == ''workflow_call'' && (inputs.scan-type == '''' || inputs.scan-type
+      == ''all'' || inputs.scan-type == ''semgrep''))
+
+      '
     permissions:
       contents: read
       security-events: write
       pull-requests: write
       issues: write
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5 # v6.0.3
+    - name: Checkout
+      uses: actions/checkout@v5
+    - name: CacheManager health check
+      continue-on-error: true
+      run: 'python scripts/ci/generate_cache_keys.py --health --workflow security-scanning-suite
+        2>/dev/null || echo "Cache health: check skipped"
 
-      - name: CacheManager health check
-        continue-on-error: true
-        run: |
-          python scripts/ci/generate_cache_keys.py --health --workflow security-scanning-suite 2>/dev/null || echo "Cache health: check skipped"
+        '
+    - name: Set up Python
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        cache-tier: live
+    - name: Install Semgrep
+      run: pip install semgrep
+    - name: Run Semgrep scan
+      id: semgrep
+      continue-on-error: true
+      run: "set -o pipefail\n# Semgrep registry: ``p/sqlalchemy`` was removed/renamed\
+        \ (returns HTTP\n# 404 — confirmed in run 26266128402 logs).  The CodeQL Python\
+        \ suite\n# already covers most SQLAlchemy patterns via security-extended.\n\
+        semgrep scan \\\n  --config=p/security-audit \\\n  --config=p/python \\\n\
+        \  --config=p/flask \\\n  --sarif \\\n  --output=semgrep-results.sarif \\\n\
+        \  2>&1 | tee semgrep-scan.log || {\n    echo \"Primary configs failed, falling\
+        \ back to auto...\"\n    set -o pipefail\n    semgrep scan \\\n      --config=auto\
+        \ \\\n      --sarif \\\n      --output=semgrep-results.sarif \\\n      2>&1\
+        \ | tee semgrep-scan-fallback.log\n  }\nEXIT_CODE=$?\nexit ${EXIT_CODE:-0}\n"
+    - name: Run Semgrep scan (JSON)
+      continue-on-error: true
+      run: "set -o pipefail\nsemgrep scan \\\n  --config=p/security-audit \\\n  --config=p/python\
+        \ \\\n  --config=p/flask \\\n  --json \\\n  --output=semgrep-results.json\
+        \ \\\n  2>&1 | tee semgrep-scan-json.log || {\n    echo \"Primary configs\
+        \ failed for JSON output, falling back to auto...\"\n    semgrep scan --config=auto\
+        \ --json --output=semgrep-results.json \\\n      2>&1 | tee semgrep-scan-json-fallback.log\n\
+        \  }\n"
+    - name: Chunk SARIF results
+      if: always() && hashFiles('semgrep-results.sarif') != ''
+      run: "python scripts/chunk_sarif.py \\\n  semgrep-results.sarif \\\n  sarif-chunks/\
+        \ \\\n  --chunk-size 4999 \\\n  --base-name semgrep \\\n  --verbose\n"
+    - name: Upload chunked SARIF to GitHub Security
+      if: always() && hashFiles('sarif-chunks/*.sarif') != ''
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      run: "CHUNKS=(sarif-chunks/*.sarif)\nCHUNK_COUNT=${#CHUNKS[@]}\necho \"Uploading\
+        \ $CHUNK_COUNT SARIF chunk(s)...\"\nfor i in \"${!CHUNKS[@]}\"; do\n  sarif_file=\"\
+        ${CHUNKS[$i]}\"\n  chunk_num=$((i + 1))\n  chunk_suffix=$(basename \"$sarif_file\"\
+        \ .sarif | sed 's/semgrep-chunk-//')\n  gh api \\\n    --method POST \\\n\
+        \    -H \"Accept: application/vnd.github+json\" \\\n    -H \"X-GitHub-Api-Version:\
+        \ 2022-11-28\" \\\n    \"/repos/${{ github.repository }}/code-scanning/sarifs\"\
+        \ \\\n    -F \"sarif=@$sarif_file\" \\\n    -F \"commit_sha=${{ github.sha\
+        \ }}\" \\\n    -F \"ref=${{ github.ref }}\" \\\n    -F \"started_at=$(date\
+        \ -u +%Y-%m-%dT%H:%M:%SZ)\" \\\n    -F \"tool_name=Semgrep\" \\\n    -F \"\
+        category=semgrep-chunk-$chunk_suffix\" \\\n    && echo \"✅ Chunk $chunk_num\
+        \ uploaded\" \\\n    || echo \"❌ Chunk $chunk_num failed\"\ndone\n"
+    - name: Generate Semgrep summary
+      if: always()
+      shell: bash
+      run: "set -euo pipefail\nRESULTS=0\nERRORS=0\nif [ -f semgrep-results.json ];\
+        \ then\n  RESULTS=$(python -c \"import json;d=json.load(open('semgrep-results.json'));print(len(d.get('results',[])\
+        \ or []))\" 2>/dev/null || echo 0)\n  ERRORS=$(python -c \"import json;d=json.load(open('semgrep-results.json'));print(len(d.get('errors',[])\
+        \ or []))\" 2>/dev/null || echo 0)\nfi\nCHUNK_COUNT=$(ls sarif-chunks/*.sarif\
+        \ 2>/dev/null | wc -l | tr -d ' ')\n{\n  echo \"# Semgrep SAST Report\"\n\
+        \  echo \"\"\n  echo \"- **Findings (results):** ${RESULTS}\"\n  echo \"-\
+        \ **Scanner errors:** ${ERRORS}\"\n  echo \"- **SARIF chunks uploaded to GHAS:**\
+        \ ${CHUNK_COUNT}\"\n  echo \"- **Scan outcome:** ${{ steps.semgrep.outcome\
+        \ }}\"\n  echo \"\"\n  echo \"## Artifact contents\"\n  echo \"- \\`semgrep-results.sarif\\\
+        ` — full SARIF report\"\n  echo \"- \\`semgrep-results.json\\` — full Semgrep\
+        \ JSON output\"\n  echo \"- \\`sarif-chunks/\\` — split SARIF chunks (uploaded\
+        \ individually to GHAS)\"\n  echo \"- \\`semgrep-scan*.log\\` — scanner stdout/stderr\"\
+        \n} > semgrep-summary.md\ncat semgrep-summary.md >> \"$GITHUB_STEP_SUMMARY\"\
+        \n"
+    - name: Upload Semgrep results as artifact
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: security-suite-semgrep
+        path: 'semgrep-results.sarif
 
-      - name: Set up Python
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache-tier: live
+          semgrep-results.json
 
-      - name: Install Semgrep
-        run: pip install semgrep
+          sarif-chunks/
 
-      - name: Run Semgrep scan
-        id: semgrep
-        continue-on-error: true
-        run: |
-          set -o pipefail
-          # Semgrep registry: ``p/sqlalchemy`` was removed/renamed (returns HTTP
-          # 404 — confirmed in run 26266128402 logs).  The CodeQL Python suite
-          # already covers most SQLAlchemy patterns via security-extended.
-          semgrep scan \
-            --config=p/security-audit \
-            --config=p/python \
-            --config=p/flask \
-            --sarif \
-            --output=semgrep-results.sarif \
-            2>&1 | tee semgrep-scan.log || {
-              echo "Primary configs failed, falling back to auto..."
-              set -o pipefail
-              semgrep scan \
-                --config=auto \
-                --sarif \
-                --output=semgrep-results.sarif \
-                2>&1 | tee semgrep-scan-fallback.log
-            }
-          EXIT_CODE=$?
-          exit ${EXIT_CODE:-0}
+          semgrep-scan.log
 
-      - name: Run Semgrep scan (JSON)
-        continue-on-error: true
-        run: |
-          set -o pipefail
-          semgrep scan \
-            --config=p/security-audit \
-            --config=p/python \
-            --config=p/flask \
-            --json \
-            --output=semgrep-results.json \
-            2>&1 | tee semgrep-scan-json.log || {
-              echo "Primary configs failed for JSON output, falling back to auto..."
-              semgrep scan --config=auto --json --output=semgrep-results.json \
-                2>&1 | tee semgrep-scan-json-fallback.log
-            }
+          semgrep-scan-fallback.log
 
-      - name: Chunk SARIF results
-        if: always() && hashFiles('semgrep-results.sarif') != ''
-        run: |
-          python scripts/chunk_sarif.py \
-            semgrep-results.sarif \
-            sarif-chunks/ \
-            --chunk-size 4999 \
-            --base-name semgrep \
-            --verbose
+          semgrep-scan-json.log
 
-      - name: Upload chunked SARIF to GitHub Security
-        if: always() && hashFiles('sarif-chunks/*.sarif') != ''
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-        run: |
-          CHUNKS=(sarif-chunks/*.sarif)
-          CHUNK_COUNT=${#CHUNKS[@]}
-          echo "Uploading $CHUNK_COUNT SARIF chunk(s)..."
-          for i in "${!CHUNKS[@]}"; do
-            sarif_file="${CHUNKS[$i]}"
-            chunk_num=$((i + 1))
-            chunk_suffix=$(basename "$sarif_file" .sarif | sed 's/semgrep-chunk-//')
-            gh api \
-              --method POST \
-              -H "Accept: application/vnd.github+json" \
-              -H "X-GitHub-Api-Version: 2022-11-28" \
-              "/repos/${{ github.repository }}/code-scanning/sarifs" \
-              -F "sarif=@$sarif_file" \
-              -F "commit_sha=${{ github.sha }}" \
-              -F "ref=${{ github.ref }}" \
-              -F "started_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-              -F "tool_name=Semgrep" \
-              -F "category=semgrep-chunk-$chunk_suffix" \
-              && echo "✅ Chunk $chunk_num uploaded" \
-              || echo "❌ Chunk $chunk_num failed"
-          done
+          semgrep-scan-json-fallback.log
 
-      - name: Generate Semgrep summary
-        if: always()
-        shell: bash
-        run: |
-          set -euo pipefail
-          RESULTS=0
-          ERRORS=0
-          if [ -f semgrep-results.json ]; then
-            RESULTS=$(python -c "import json;d=json.load(open('semgrep-results.json'));print(len(d.get('results',[]) or []))" 2>/dev/null || echo 0)
-            ERRORS=$(python -c "import json;d=json.load(open('semgrep-results.json'));print(len(d.get('errors',[]) or []))" 2>/dev/null || echo 0)
-          fi
-          CHUNK_COUNT=$(ls sarif-chunks/*.sarif 2>/dev/null | wc -l | tr -d ' ')
-          {
-            echo "# Semgrep SAST Report"
-            echo ""
-            echo "- **Findings (results):** ${RESULTS}"
-            echo "- **Scanner errors:** ${ERRORS}"
-            echo "- **SARIF chunks uploaded to GHAS:** ${CHUNK_COUNT}"
-            echo "- **Scan outcome:** ${{ steps.semgrep.outcome }}"
-            echo ""
-            echo "## Artifact contents"
-            echo "- \`semgrep-results.sarif\` — full SARIF report"
-            echo "- \`semgrep-results.json\` — full Semgrep JSON output"
-            echo "- \`sarif-chunks/\` — split SARIF chunks (uploaded individually to GHAS)"
-            echo "- \`semgrep-scan*.log\` — scanner stdout/stderr"
-          } > semgrep-summary.md
-          cat semgrep-summary.md >> "$GITHUB_STEP_SUMMARY"
+          semgrep-summary.md
 
-      - name: Upload Semgrep results as artifact
-        if: always()
-        uses: actions/upload-artifact@v5 # v7.0.1
-        with:
-          name: security-suite-semgrep
-          path: |
-            semgrep-results.sarif
-            semgrep-results.json
-            sarif-chunks/
-            semgrep-scan.log
-            semgrep-scan-fallback.log
-            semgrep-scan-json.log
-            semgrep-scan-json-fallback.log
-            semgrep-summary.md
-          if-no-files-found: warn
-          retention-days: 30
+          '
+        if-no-files-found: warn
+        retention-days: 30
+    - name: Summary
+      if: always()
+      run: 'echo "## Semgrep SAST" >> $GITHUB_STEP_SUMMARY
 
-      - name: Summary
-        if: always()
-        run: |
-          echo "## Semgrep SAST" >> $GITHUB_STEP_SUMMARY
-          echo "**Artifact:** \`security-suite-semgrep\`" >> $GITHUB_STEP_SUMMARY
-          echo "**Status:** ${{ steps.semgrep.outcome }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Artifact:** \`security-suite-semgrep\`" >> $GITHUB_STEP_SUMMARY
 
+        echo "**Status:** ${{ steps.semgrep.outcome }}" >> $GITHUB_STEP_SUMMARY
+
+        '
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   security-suite-summary:
     name: Security Suite Summary
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    needs: [codeql-scan, dependency-scan, secret-scan, sbom-generation, semgrep]
+    needs:
+    - codeql-scan
+    - dependency-scan
+    - secret-scan
+    - sbom-generation
+    - semgrep
     if: always()
     steps:
-      - name: Download all security-suite artifacts
-        uses: actions/download-artifact@v5 # v4
-        with:
-          path: security-suite-artifacts/
-          pattern: security-suite-*
-          merge-multiple: false
-        continue-on-error: true
+    - name: Download all security-suite artifacts
+      uses: actions/download-artifact@v5
+      with:
+        path: security-suite-artifacts/
+        pattern: security-suite-*
+        merge-multiple: false
+      continue-on-error: true
+    - name: Build consolidated security-suite summary
+      if: always()
+      shell: bash
+      run: "set -euo pipefail\nRUN_URL=\"${{ github.server_url }}/${{ github.repository\
+        \ }}/actions/runs/${{ github.run_id }}\"\nARTIFACTS_URL=\"${RUN_URL}#artifacts\"\
+        \nSECURITY_URL=\"${{ github.server_url }}/${{ github.repository }}/security/code-scanning\"\
+        \n\nmkdir -p security-suite-summary\nOUT=\"security-suite-summary/security-suite-summary.md\"\
+        \n\n{\n  echo \"# \U0001F512 Security Scanning Suite Summary\"\n  echo \"\"\
+        \n  echo \"- **Repository:** \\`${{ github.repository }}\\`\"\n  echo \"-\
+        \ **Commit:** \\`${{ github.sha }}\\`\"\n  echo \"- **Workflow run:** [#${{\
+        \ github.run_number }}](${RUN_URL})\"\n  echo \"- **Artifacts:** [open dropdown](${ARTIFACTS_URL})\"\
+        \n  echo \"- **GHAS code-scanning alerts:** [open](${SECURITY_URL})\"\n  echo\
+        \ \"\"\n  echo \"## Job results\"\n  echo \"\"\n  echo \"| Scan | Result |\
+        \ Artifact prefix | Notes |\"\n  echo \"|------|--------|-----------------|-------|\"\
+        \n  echo \"| CodeQL          | ${{ needs.codeql-scan.result }}      | \\`security-suite-codeql-<language>\\\
+        ` | SARIF uploaded to GHAS + packaged in artifact |\"\n  echo \"| Dependency\
+        \      | ${{ needs.dependency-scan.result }}  | \\`security-suite-dependency\\\
+        `        | pip-audit + Safety (JSON, text, CycloneDX) |\"\n  echo \"| Secrets\
+        \         | ${{ needs.secret-scan.result }}      | \\`security-suite-secrets\\\
+        `           | detect-secrets baseline + parsed summary |\"\n  echo \"| SBOM\
+        \            | ${{ needs.sbom-generation.result }}  | \\`security-suite-sbom\\\
+        `              | CycloneDX JSON + XML + metadata |\"\n  echo \"| Semgrep \
+        \        | ${{ needs.semgrep.result }}          | \\`security-suite-semgrep\\\
+        `           | SARIF + JSON + chunked GHAS uploads |\"\n  echo \"\"\n  echo\
+        \ \"## Artifacts in this run\"\n  echo \"\"\n  if [ -d security-suite-artifacts\
+        \ ] && [ \"$(ls -A security-suite-artifacts 2>/dev/null)\" ]; then\n    echo\
+        \ \"| Artifact | Files | Total size |\"\n    echo \"|----------|-------|------------|\"\
+        \n    for d in security-suite-artifacts/*/; do\n      name=$(basename \"$d\"\
+        )\n      files=$(find \"$d\" -type f | wc -l | tr -d ' ')\n      size=$(du\
+        \ -sh \"$d\" 2>/dev/null | awk '{print $1}')\n      echo \"| \\`$name\\` |\
+        \ $files | $size |\"\n    done\n    echo \"\"\n    echo \"## Per-artifact\
+        \ file listing\"\n    echo \"\"\n    for d in security-suite-artifacts/*/;\
+        \ do\n      name=$(basename \"$d\")\n      echo \"<details><summary><code>$name</code></summary>\"\
+        \n      echo \"\"\n      echo '```'\n      (cd \"$d\" && find . -type f |\
+        \ sed 's|^\\./||' | sort)\n      echo '```'\n      echo \"\"\n      echo \"\
+        </details>\"\n      echo \"\"\n    done\n  else\n    echo \"_No security-suite-*\
+        \ artifacts were produced by this run._\"\n  fi\n  echo \"\"\n  echo \"##\
+        \ Where to look next\"\n  echo \"- \U0001F4E6 **Artifacts dropdown:** [run\
+        \ page → Artifacts](${ARTIFACTS_URL})\"\n  echo \"- \U0001F6E1️ **SARIF findings:**\
+        \ [Security → Code scanning](${SECURITY_URL})\"\n  echo \"- \U0001F4DD **Per-scan\
+        \ markdown reports:** \\`*-summary.md\\` inside each artifact\"\n} > \"$OUT\"\
+        \ncat \"$OUT\" >> \"$GITHUB_STEP_SUMMARY\"\n"
+    - name: Upload consolidated summary
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: security-suite-summary
+        path: security-suite-summary/
+        if-no-files-found: warn
+        retention-days: 30
+    - name: Cache health report
+      if: always()
+      continue-on-error: true
+      run: 'python scripts/ci/generate_cache_keys.py --type pip --workflow security-scanning-suite
+        --health 2>/dev/null || echo ''{"status": "cache health check skipped"}''
 
-      - name: Build consolidated security-suite summary
-        if: always()
-        shell: bash
-        run: |
-          set -euo pipefail
-          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          ARTIFACTS_URL="${RUN_URL}#artifacts"
-          SECURITY_URL="${{ github.server_url }}/${{ github.repository }}/security/code-scanning"
-
-          mkdir -p security-suite-summary
-          OUT="security-suite-summary/security-suite-summary.md"
-
-          {
-            echo "# 🔒 Security Scanning Suite Summary"
-            echo ""
-            echo "- **Repository:** \`${{ github.repository }}\`"
-            echo "- **Commit:** \`${{ github.sha }}\`"
-            echo "- **Workflow run:** [#${{ github.run_number }}](${RUN_URL})"
-            echo "- **Artifacts:** [open dropdown](${ARTIFACTS_URL})"
-            echo "- **GHAS code-scanning alerts:** [open](${SECURITY_URL})"
-            echo ""
-            echo "## Job results"
-            echo ""
-            echo "| Scan | Result | Artifact prefix | Notes |"
-            echo "|------|--------|-----------------|-------|"
-            echo "| CodeQL          | ${{ needs.codeql-scan.result }}      | \`security-suite-codeql-<language>\` | SARIF uploaded to GHAS + packaged in artifact |"
-            echo "| Dependency      | ${{ needs.dependency-scan.result }}  | \`security-suite-dependency\`        | pip-audit + Safety (JSON, text, CycloneDX) |"
-            echo "| Secrets         | ${{ needs.secret-scan.result }}      | \`security-suite-secrets\`           | detect-secrets baseline + parsed summary |"
-            echo "| SBOM            | ${{ needs.sbom-generation.result }}  | \`security-suite-sbom\`              | CycloneDX JSON + XML + metadata |"
-            echo "| Semgrep         | ${{ needs.semgrep.result }}          | \`security-suite-semgrep\`           | SARIF + JSON + chunked GHAS uploads |"
-            echo ""
-            echo "## Artifacts in this run"
-            echo ""
-            if [ -d security-suite-artifacts ] && [ "$(ls -A security-suite-artifacts 2>/dev/null)" ]; then
-              echo "| Artifact | Files | Total size |"
-              echo "|----------|-------|------------|"
-              for d in security-suite-artifacts/*/; do
-                name=$(basename "$d")
-                files=$(find "$d" -type f | wc -l | tr -d ' ')
-                size=$(du -sh "$d" 2>/dev/null | awk '{print $1}')
-                echo "| \`$name\` | $files | $size |"
-              done
-              echo ""
-              echo "## Per-artifact file listing"
-              echo ""
-              for d in security-suite-artifacts/*/; do
-                name=$(basename "$d")
-                echo "<details><summary><code>$name</code></summary>"
-                echo ""
-                echo '```'
-                (cd "$d" && find . -type f | sed 's|^\./||' | sort)
-                echo '```'
-                echo ""
-                echo "</details>"
-                echo ""
-              done
-            else
-              echo "_No security-suite-* artifacts were produced by this run._"
-            fi
-            echo ""
-            echo "## Where to look next"
-            echo "- 📦 **Artifacts dropdown:** [run page → Artifacts](${ARTIFACTS_URL})"
-            echo "- 🛡️ **SARIF findings:** [Security → Code scanning](${SECURITY_URL})"
-            echo "- 📝 **Per-scan markdown reports:** \`*-summary.md\` inside each artifact"
-          } > "$OUT"
-          cat "$OUT" >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Upload consolidated summary
-        if: always()
-        uses: actions/upload-artifact@v5 # v7.0.1
-        with:
-          name: security-suite-summary
-          path: security-suite-summary/
-          if-no-files-found: warn
-          retention-days: 30
-
-      - name: Cache health report
-        if: always()
-        continue-on-error: true
-        run: |
-          python scripts/ci/generate_cache_keys.py --type pip --workflow security-scanning-suite --health 2>/dev/null || echo '{"status": "cache health check skipped"}'
-
-  # ── rescue comment — posted on PR whenever this workflow fails ──────────
+        '
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
     needs: security-suite-summary
-    if: |
-      failure() &&
-      github.event_name == 'pull_request' &&
+    if: 'failure() &&
+
+      github.event_name == ''pull_request'' &&
+
       github.event.pull_request.head.repo.full_name == github.repository
+
+      '
     permissions:
       pull-requests: write
       issues: write
     timeout-minutes: 5
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5 # v6.0.3
-        with:
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          fetch-depth: 1
-
-      - name: Post or update rescue comment
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_NAME: "Security Scanning Suite"
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          BRANCH: ${{ github.head_ref }}
-        run: python scripts/ci/post_rescue_comment.py
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        fetch-depth: 1
+    - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: Security Scanning Suite
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+        BRANCH: ${{ github.head_ref }}
+      run: python scripts/ci/post_rescue_comment.py
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

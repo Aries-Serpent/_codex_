@@ -1,397 +1,241 @@
 name: CI Rescue — Auto-Fix & @copilot RCA
-
-# Fires after any monitored workflow completes with a failure.
-#
-# What it does:
-#   1. Retrieves failed-job logs via the GitHub API (no code checkout)
-#   2. Matches log text against a pattern library of known fixes
-#   3. Posts a structured @copilot RCA comment on the PR with:
-#      - Which fix pattern matched
-#      - The exact fix command to run locally or via the auto-fix workflow
-#      - Raw log snippets for unrecognised failures
-#
-# Security model: This workflow NEVER checks out PR/fork code.
-# It operates entirely via authenticated GitHub API calls, eliminating
-# the untrusted-checkout risk (CodeQL: actions/untrusted-checkout).
-# Code execution (auto-fixes) is delegated back to the @copilot agent or
-# the existing "Auto-Fix Common CI Issues" workflow which is triggered
-# by direct pushes (not workflow_run) and thus runs in a trusted context.
-
-on:
+true:
   workflow_run:
     workflows:
-      # Core CI gates that block PR merges
-      - "Auto-Fix Common CI Issues"
-      - "PR Auto-Fix Check"
-      - "Validation Pipeline"
-      - "mypy Baseline (Type-Check Anti-Regression)"
-      - "Workflow Compliance Audit (actionlint)"
-      - "Pre-Merge Validation"
-      - "Iterative Self-Healing CI"
-      - "RAG Module Tests"
-      - "Security Scan"
-      - "PR Comment Review Gate"
-      # Extended coverage — sharded quick tests + slow validation
-      - "Resilient Validation Suite"
-      # Dependency graph / security supply-chain
-      # NOTE: GitHub-managed "Automatic Dependency Submission (Python)" is
-      # transient-infra-prone and handled outside rescue escalation.
-      - "Resilient Dependency Submission"
-    types: [completed]
-  # Manual trigger (for testing or ad-hoc rescue of a specific run)
+    - Auto-Fix Common CI Issues
+    - PR Auto-Fix Check
+    - Validation Pipeline
+    - mypy Baseline (Type-Check Anti-Regression)
+    - Workflow Compliance Audit (actionlint)
+    - Pre-Merge Validation
+    - Iterative Self-Healing CI
+    - RAG Module Tests
+    - Security Scan
+    - PR Comment Review Gate
+    - Resilient Validation Suite
+    - Resilient Dependency Submission
+    types:
+    - completed
   workflow_dispatch:
     inputs:
       run_id:
-        description: "Workflow run ID to rescue"
+        description: Workflow run ID to rescue
         required: true
         type: string
       pr_number:
-        description: "PR number (optional — auto-detected if omitted)"
+        description: PR number (optional — auto-detected if omitted)
         required: false
         type: string
       dry_run:
-        description: "Dry run (print actions, do not post comments)"
+        description: Dry run (print actions, do not post comments)
         required: false
         type: boolean
         default: false
-
-
-# Read-only by default; the rescue job only needs to post comments.
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
-
 jobs:
-  # ──────────────────────────────────────────────────────────────────────────
-  # SINGLE JOB: Triage → RCA comment (no code checkout)
-  # ──────────────────────────────────────────────────────────────────────────
   rescue:
     name: Rescue — analyse and post RCA
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    # Only process failures from this repo (skip forks for security).
-    # COPILOT_AGENT_AUTH_ENABLED is now informational only — rescue always
-    # runs when a failure occurs so that the PR thread is never silently skipped.
-    if: |
-      github.event_name == 'workflow_dispatch' ||
-      (
-        github.event.workflow_run.conclusion == 'failure' &&
-        github.event.workflow_run.head_repository.full_name == github.repository
-      )
+    if: "github.event_name == 'workflow_dispatch' ||\n(\n  github.event.workflow_run.conclusion\
+      \ == 'failure' &&\n  github.event.workflow_run.head_repository.full_name ==\
+      \ github.repository\n)\n"
     permissions:
-      pull-requests: write   # post RCA comment on PR
-      issues: write          # post RCA on issue when no PR exists
-      actions: read          # read workflow run logs
-
+      pull-requests: write
+      issues: write
+      actions: read
     steps:
-      # ── Visibility: log delegation status and trigger context ─────────────
-      - name: Log rescue trigger context
-        env:
-          GH_EVENT_NAME: ${{ github.event_name }}
-          GH_WF_RUN_NAME: ${{ github.event.workflow_run.name }}
-          GH_WF_RUN_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
-          GH_HEAD_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
-          GH_HEAD_BRANCH: ${{ github.event.workflow_run.head_branch || github.ref_name }}
-          GH_AUTH_ENABLED: ${{ vars.COPILOT_AGENT_AUTH_ENABLED || 'not set (rescue runs unconditionally)' }}
-        run: |
-          echo "=== CI Rescue Trigger ==="
-          echo "Event:          ${GH_EVENT_NAME}"
-          echo "Workflow run:   ${GH_WF_RUN_NAME} (${GH_WF_RUN_CONCLUSION})"
-          echo "Head SHA:       ${GH_HEAD_SHA}"
-          echo "Head branch:    ${GH_HEAD_BRANCH}"
-          echo "Token delegation (COPILOT_AGENT_AUTH_ENABLED): ${GH_AUTH_ENABLED}"
+    - name: Log rescue trigger context
+      env:
+        GH_EVENT_NAME: ${{ github.event_name }}
+        GH_WF_RUN_NAME: ${{ github.event.workflow_run.name }}
+        GH_WF_RUN_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+        GH_HEAD_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+        GH_HEAD_BRANCH: ${{ github.event.workflow_run.head_branch || github.ref_name
+          }}
+        GH_AUTH_ENABLED: ${{ vars.COPILOT_AGENT_AUTH_ENABLED || 'not set (rescue runs
+          unconditionally)' }}
+      run: 'echo "=== CI Rescue Trigger ==="
 
-      # ── Set up Python (uses the runner's built-in Python; no checkout) ───
-      - name: Set up Python
-        uses: actions/setup-python@v6 # v6
-        with:
-          cache: pip
-          python-version: "3.12.13"
+        echo "Event:          ${GH_EVENT_NAME}"
 
-      # ── Load Copilot test environment ─────────────────────────────────────
-      # Installs the full test-tool suite so the rescue engine can:
-      #  (a) run ruff/detect-secrets analysis against fetched file content
-      #  (b) embed the exact pip install commands in the @copilot escalation
-      #      comment so the agent can reproduce failures with one copy-paste.
-      # No checkout is performed — tools only.
-      - name: Load Copilot test environment
-        id: env_setup
-        run: |
-          python -m pip install --quiet --upgrade pip
-          python -m pip install --quiet \
-            requests \
-            "detect-secrets==1.4.0" \
-            "ruff>=0.6.2" \
-            "pytest>=8.2.0" \
-            "pytest-timeout>=2.3" \
-            "pytest-xdist>=3.5.0" \
-            "pytest-rerunfailures>=14.0" \
-            "pre-commit>=3" \
-            pyyaml
-          echo "PYTHON_VERSION=$(python3 --version)" >> "$GITHUB_ENV"
-          echo "SETUP_TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_ENV"
-          echo "✅ Copilot test environment loaded"
-          # Emit environment spec for embedding in escalation comments
-          cat << 'EOF' > /tmp/copilot_env_manifest.txt
-          # Copilot CI Test Environment — copy-paste to reproduce failures locally
-          python -m pip install -e ".[dev]" --quiet
-          pip install -r requirements/dev.txt --quiet
-          pip install "detect-secrets==1.4.0" --quiet
-          EOF
-          echo "env_manifest_ready=true" >> "$GITHUB_OUTPUT"
+        echo "Workflow run:   ${GH_WF_RUN_NAME} (${GH_WF_RUN_CONCLUSION})"
 
-      # ── Download rescue script — try PR head SHA first, then default branch ──
-      # The PR branch (head_sha) contains the latest ci_rescue.py even before
-      # the PR is merged. We try that ref first so fixes in the PR are used
-      # immediately, then fall back to HEAD (default branch) for reliability.
-      - name: Fetch rescue engine
-        env:
-          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          HEAD_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
-        run: |
-          REFS="${HEAD_SHA} HEAD"
-          for REF in $REFS; do
-            curl -sS -L \
-              -H "Authorization: Bearer ${GITHUB_TOKEN}" \
-              -H "Accept: application/vnd.github.raw+json" \
-              "https://api.github.com/repos/${{ github.repository }}/contents/scripts/ci/ci_rescue.py?ref=${REF}" \
-              -o /tmp/ci_rescue.py 2>/dev/null
-            if [ -s /tmp/ci_rescue.py ] && python3 -c "import ast; ast.parse(open('/tmp/ci_rescue.py').read())" 2>/dev/null; then
-              echo "✅ Downloaded ci_rescue.py from ref=${REF} ($(wc -c < /tmp/ci_rescue.py) bytes)"
-              break
-            else
-              echo "⚠️  ci_rescue.py not found or invalid at ref=${REF} — trying next"
-              rm -f /tmp/ci_rescue.py
-            fi
-          done
-          if [ ! -s /tmp/ci_rescue.py ]; then
-            echo "::warning::ci_rescue.py not available from any ref — rescue engine unavailable"
-            echo "RESCUE_UNAVAILABLE=true" >> "$GITHUB_ENV"
-          fi
+        echo "Head SHA:       ${GH_HEAD_SHA}"
 
-      # ── Run rescue engine (API-only, no file modifications) ──────────────
-      - name: Lookup CI Failure Triage Report issue URL
-        id: triage-url
-        env:
-          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-        run: |
-          # Find the open "📊 CI Failure Triage Report" issue created by batch-ci-triage.yml
-          # and expose its URL so the rescue engine can link to it in RCA comments.
-          # Response is stored to a temp file so the JSON parser receives clean input.
-          curl -sS \
-            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${{ github.repository }}/issues?labels=ci-triage&state=open&per_page=1" \
-            -o /tmp/triage_issues.json 2>/dev/null || echo "[]" > /tmp/triage_issues.json
-          TRIAGE_URL=$(python3 - /tmp/triage_issues.json 2>/dev/null << 'PYEOF'
-          import json, sys
-          try:
-              with open(sys.argv[1]) as fh:
-                  issues = json.load(fh)
-              print(issues[0]['html_url'] if isinstance(issues, list) and issues else '', end='')
-          except Exception:
-              print('', end='')
-          PYEOF
-          )
-          if [ -n "${TRIAGE_URL}" ]; then
-            echo "✅ Found CI Failure Triage Report: ${TRIAGE_URL}"
-            echo "url=${TRIAGE_URL}" >> "$GITHUB_OUTPUT"
-          else
-            echo "⚠️  No open ci-triage issue found — triage URL will be omitted from RCA"
-            echo "url=" >> "$GITHUB_OUTPUT"
-          fi
+        echo "Head branch:    ${GH_HEAD_BRANCH}"
 
-      - name: Run CI rescue engine
-        id: rescue
-        env:
-          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          TRIAGE_ISSUE_URL: ${{ steps.triage-url.outputs.url }}
-          GH_HEAD_BRANCH: ${{ github.event.workflow_run.head_branch || github.ref_name }}
-          GH_REPOSITORY: ${{ github.repository }}
-        run: |
-          RUN_ID="${{ github.event.workflow_run.id || inputs.run_id }}"
-          COMMIT_SHA="${{ github.event.workflow_run.head_sha || github.sha }}"
-          PR_NUMBER="${{ inputs.pr_number }}"
-          WORKFLOW_NAME="${{ github.event.workflow_run.name || 'unknown' }}"
-          DRY_FLAG=""
-          if [ "${{ inputs.dry_run }}" = "true" ]; then
-            DRY_FLAG="--dry-run"
-          fi
-          PR_FLAG=""
-          if [ "${PR_NUMBER}" != "" ]; then
-            PR_FLAG="--pr ${PR_NUMBER}"
-          fi
-          SHA_FLAG=""
-          if [ "${COMMIT_SHA}" != "" ]; then
-            SHA_FLAG="--commit-sha ${COMMIT_SHA}"
-          fi
-          TRIAGE_FLAG=""
-          if [ -n "${TRIAGE_ISSUE_URL}" ]; then
-            TRIAGE_FLAG="--triage-issue-url ${TRIAGE_ISSUE_URL}"
-          fi
+        echo "Token delegation (COPILOT_AGENT_AUTH_ENABLED): ${GH_AUTH_ENABLED}"
 
-          if [ "${RESCUE_UNAVAILABLE}" = "true" ]; then
-            # ci_rescue.py not available — post a minimal inline rescue comment
-            echo "⚠️  Falling back to inline rescue comment (ci_rescue.py unavailable)"
-            python3 - <<PYEOF
-          import json, os, sys, urllib.request, urllib.error, datetime
-
-          token      = os.environ["GITHUB_TOKEN"]
-          repo       = "${{ github.repository }}"
-          run_id     = "${RUN_ID}"
-          commit_sha = "${COMMIT_SHA}"
-          workflow   = "${WORKFLOW_NAME}"
-          run_url    = "${{ github.server_url }}/${{ github.repository }}/actions/runs/${RUN_ID}"
-          sha_short  = commit_sha[:12]
-          now        = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
-          API        = "https://api.github.com"
-          HDRS       = {
-              "Authorization": f"Bearer {token}",
-              "Accept": "application/vnd.github+json",
-              "X-GitHub-Api-Version": "2022-11-28",
-              "Content-Type": "application/json",
-          }
-
-          def gh(method, path, body=None):
-              url  = f"{API}{path}"
-              data = json.dumps(body).encode() if body else None
-              req  = urllib.request.Request(url, data=data, headers=HDRS, method=method)
-              try:
-                  with urllib.request.urlopen(req, timeout=20) as r:
-                      return r.status, json.loads(r.read())
-              except urllib.error.HTTPError as e:
-                  return e.code, {}
-
-          # Find the PR number for this commit.
-          # When multiple PRs share the same head branch (e.g. two open PRs on
-          # 0D_base_), all of them appear in the run's pull_requests list with the
-          # same head SHA.  Taking the first entry posts rescue comments on the
-          # wrong (older) PR.  Instead, prefer the PR with the highest number —
-          # the most recently opened one is the most likely active context.
-          _, runs_data = gh("GET", f"/repos/{repo}/actions/runs/{run_id}")
-          pr_number = None
-          sha_matches = [
-              pr["number"]
-              for pr in runs_data.get("pull_requests", [])
-              if pr.get("head", {}).get("sha") == commit_sha
-          ]
-          if sha_matches:
-              pr_number = max(sha_matches)
-          if not pr_number:
-              _, prs = gh("GET", f"/repos/{repo}/pulls?state=open&per_page=50")
-              all_matches = [
-                  pr["number"]
-                  for pr in (prs if isinstance(prs, list) else [])
-                  if pr.get("head", {}).get("sha") == commit_sha
-              ]
-              if all_matches:
-                  pr_number = max(all_matches)
-
-          if not pr_number:
-              print(f"⚠️  No PR found for commit {sha_short} — skipping rescue comment")
-              sys.exit(0)
-
-          # Build the SHA-scoped dedup marker: all failing workflows for the SAME
-          # commit share ONE comment thread. A new push (different commit SHA)
-          # always creates a new comment, enabling per-push comparison.
-          MARKER = f"<!-- ci-rescue-rca:{pr_number}:sha-{sha_short} -->"
-
-          body = (
-              f"## 🚨 CI Rescue — Root Cause Analysis\n\n"
-              f"**Workflow:** \`{workflow}\`\n"
-              f"**Run:** [{run_id}]({run_url})\n"
-              f"**Commit:** \`{commit_sha}\`\n"
-              f"**Time:** {now}\n\n"
-              f"@copilot the **{workflow}** check is failing on commit \`{sha_short}\`.\n\n"
-              "Please investigate the failure logs, apply the minimal fix, and push.\n\n"
-              f"> **Note:** This comment captures ALL failing workflows for commit '{sha_short}'. "
-              "Each new push (different commit) creates a new comment. "
-              "Additional failures on the same commit are appended below.\n\n"
-              "_Posted by: ci-rescue.yml → inline fallback (ci_rescue.py unavailable)_\n\n---\n"
-              f"_[🔗 Workflow run]({run_url})_"
-          )
-
-          # Paginate through all PR comments to find existing rescue marker for THIS run.
-          # A single ?per_page=100 fetch misses markers on page 2+ (S232 fix).
-          existing_id, existing_body = None, ""
-          page = 1
-          while not existing_id:
-              _, page_comments = gh("GET", f"/repos/{repo}/issues/{pr_number}/comments?per_page=100&page={page}")
-              if not isinstance(page_comments, list) or not page_comments:
-                  break
-              for c in page_comments:
-                  if MARKER in (c.get("body") or ""):
-                      existing_id, existing_body = c["id"], c.get("body", "")
-                      break
-              if existing_id or len(page_comments) < 100:
-                  break
-              page += 1
-
-          if existing_id:
-              append_section = (
-                  f"\n\n---\n\n### 🔄 Additional Failure — {now}\n\n"
-                  f"**Run:** [{run_id}]({run_url})\n\n"
-                  f"@copilot \`{workflow}\` also failed in the same run. "
-                  f"See [run #{run_id}]({run_url}) for details."
-              )
-              updated = (existing_body.rstrip() + append_section)[:65536]
-              status, _ = gh("PATCH", f"/repos/{repo}/issues/comments/{existing_id}", {"body": updated})
-              print(f"{'✅' if status in (200,201) else '❌'} Appended rescue update to run-{run_id} comment (HTTP {status})")
-          else:
-              status, resp = gh("POST", f"/repos/{repo}/issues/{pr_number}/comments",
-                                {"body": f"{MARKER}\n{body}"})
-              print(f"{'✅' if status in (200,201) else '❌'} Posted new rescue comment for run {run_id} (HTTP {status}): {resp.get('html_url','')}")
-          PYEOF
-            echo "rescue_exit=$?" >> "$GITHUB_OUTPUT"
-          else
-            BRANCH="${GH_HEAD_BRANCH}"
-            python3 /tmp/ci_rescue.py \
-              --run-id        "${RUN_ID}" \
-              --repo          "${GH_REPOSITORY}" \
-              --workflow-name "${WORKFLOW_NAME}" \
-              --branch        "${BRANCH}" \
-              ${PR_FLAG} \
-              ${SHA_FLAG} \
-              ${DRY_FLAG} \
-              ${TRIAGE_FLAG} \
-              2>&1 | tee /tmp/rescue_output.txt
-            echo "rescue_exit=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
-
-            # ── Deep rescue: historical analysis when COPILOT_AGENT_AUTH_ENABLED ─
-            # When the token-delegation flag is set, run a second pass that fetches
-            # logs from the last 5 runs of the same workflow on the same branch,
-            # builds a recurring-vs-sporadic failure map, and posts a comprehensive
-            # @copilot escalation comment with RP-013..RP-020 pattern matches.
-            if [ "${{ vars.COPILOT_AGENT_AUTH_ENABLED }}" = "true" ]; then
-              echo "🔍 COPILOT_AGENT_AUTH_ENABLED=true — running deep historical analysis for '${WORKFLOW_NAME}' on '${BRANCH}'…"
-              python3 /tmp/ci_rescue.py \
-                --run-id         "${RUN_ID}" \
-                --repo           "${GH_REPOSITORY}" \
-                --workflow-name  "${WORKFLOW_NAME}" \
-                --branch         "${BRANCH}" \
-                ${PR_FLAG} \
-                ${SHA_FLAG} \
-                ${DRY_FLAG} \
-                ${TRIAGE_FLAG} \
-                --deep \
-                2>&1 | tee /tmp/deep_rescue_output.txt || true
-              echo "deep_rescue_exit=$?" >> "$GITHUB_OUTPUT"
-            fi
-          fi
-
-      # ── Print summary ────────────────────────────────────────────────────
-      - name: Print rescue summary
-        if: always()
-        run: |
-          echo "=== CI Rescue Summary ==="
-          cat /tmp/rescue_output.txt 2>/dev/null || echo "(no output captured)"
-          echo "Rescue exit: ${{ steps.rescue.outputs.rescue_exit }}"
-          if [ -s /tmp/deep_rescue_output.txt ]; then
-            echo ""
-            echo "=== Deep Rescue Summary (COPILOT_AGENT_AUTH_ENABLED) ==="
-            cat /tmp/deep_rescue_output.txt
-            echo "Deep rescue exit: ${{ steps.rescue.outputs.deep_rescue_exit }}"
-          fi
+        '
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        cache: pip
+        python-version: 3.12.13
+    - name: Load Copilot test environment
+      id: env_setup
+      run: "python -m pip install --quiet --upgrade pip\npython -m pip install --quiet\
+        \ \\\n  requests \\\n  \"detect-secrets==1.4.0\" \\\n  \"ruff>=0.6.2\" \\\n\
+        \  \"pytest>=8.2.0\" \\\n  \"pytest-timeout>=2.3\" \\\n  \"pytest-xdist>=3.5.0\"\
+        \ \\\n  \"pytest-rerunfailures>=14.0\" \\\n  \"pre-commit>=3\" \\\n  pyyaml\n\
+        echo \"PYTHON_VERSION=$(python3 --version)\" >> \"$GITHUB_ENV\"\necho \"SETUP_TIMESTAMP=$(date\
+        \ -u +%Y-%m-%dT%H:%M:%SZ)\" >> \"$GITHUB_ENV\"\necho \"✅ Copilot test environment\
+        \ loaded\"\n# Emit environment spec for embedding in escalation comments\n\
+        cat << 'EOF' > /tmp/copilot_env_manifest.txt\n# Copilot CI Test Environment\
+        \ — copy-paste to reproduce failures locally\npython -m pip install -e \"\
+        .[dev]\" --quiet\npip install -r requirements/dev.txt --quiet\npip install\
+        \ \"detect-secrets==1.4.0\" --quiet\nEOF\necho \"env_manifest_ready=true\"\
+        \ >> \"$GITHUB_OUTPUT\"\n"
+    - name: Fetch rescue engine
+      env:
+        GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
+          github.token }}
+        HEAD_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+      run: "REFS=\"${HEAD_SHA} HEAD\"\nfor REF in $REFS; do\n  curl -sS -L \\\n  \
+        \  -H \"Authorization: Bearer ${GITHUB_TOKEN}\" \\\n    -H \"Accept: application/vnd.github.raw+json\"\
+        \ \\\n    \"https://api.github.com/repos/${{ github.repository }}/contents/scripts/ci/ci_rescue.py?ref=${REF}\"\
+        \ \\\n    -o /tmp/ci_rescue.py 2>/dev/null\n  if [ -s /tmp/ci_rescue.py ]\
+        \ && python3 -c \"import ast; ast.parse(open('/tmp/ci_rescue.py').read())\"\
+        \ 2>/dev/null; then\n    echo \"✅ Downloaded ci_rescue.py from ref=${REF}\
+        \ ($(wc -c < /tmp/ci_rescue.py) bytes)\"\n    break\n  else\n    echo \"⚠️\
+        \  ci_rescue.py not found or invalid at ref=${REF} — trying next\"\n    rm\
+        \ -f /tmp/ci_rescue.py\n  fi\ndone\nif [ ! -s /tmp/ci_rescue.py ]; then\n\
+        \  echo \"::warning::ci_rescue.py not available from any ref — rescue engine\
+        \ unavailable\"\n  echo \"RESCUE_UNAVAILABLE=true\" >> \"$GITHUB_ENV\"\nfi\n"
+    - name: Lookup CI Failure Triage Report issue URL
+      id: triage-url
+      env:
+        GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
+          github.token }}
+      run: "# Find the open \"\U0001F4CA CI Failure Triage Report\" issue created\
+        \ by batch-ci-triage.yml\n# and expose its URL so the rescue engine can link\
+        \ to it in RCA comments.\n# Response is stored to a temp file so the JSON\
+        \ parser receives clean input.\ncurl -sS \\\n  -H \"Authorization: Bearer\
+        \ ${GITHUB_TOKEN}\" \\\n  -H \"Accept: application/vnd.github+json\" \\\n\
+        \  \"https://api.github.com/repos/${{ github.repository }}/issues?labels=ci-triage&state=open&per_page=1\"\
+        \ \\\n  -o /tmp/triage_issues.json 2>/dev/null || echo \"[]\" > /tmp/triage_issues.json\n\
+        TRIAGE_URL=$(python3 - /tmp/triage_issues.json 2>/dev/null << 'PYEOF'\nimport\
+        \ json, sys\ntry:\n    with open(sys.argv[1]) as fh:\n        issues = json.load(fh)\n\
+        \    print(issues[0]['html_url'] if isinstance(issues, list) and issues else\
+        \ '', end='')\nexcept Exception:\n    print('', end='')\nPYEOF\n)\nif [ -n\
+        \ \"${TRIAGE_URL}\" ]; then\n  echo \"✅ Found CI Failure Triage Report: ${TRIAGE_URL}\"\
+        \n  echo \"url=${TRIAGE_URL}\" >> \"$GITHUB_OUTPUT\"\nelse\n  echo \"⚠️  No\
+        \ open ci-triage issue found — triage URL will be omitted from RCA\"\n  echo\
+        \ \"url=\" >> \"$GITHUB_OUTPUT\"\nfi\n"
+    - name: Run CI rescue engine
+      id: rescue
+      env:
+        GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
+          github.token }}
+        TRIAGE_ISSUE_URL: ${{ steps.triage-url.outputs.url }}
+        GH_HEAD_BRANCH: ${{ github.event.workflow_run.head_branch || github.ref_name
+          }}
+        GH_REPOSITORY: ${{ github.repository }}
+      run: "RUN_ID=\"${{ github.event.workflow_run.id || inputs.run_id }}\"\nCOMMIT_SHA=\"\
+        ${{ github.event.workflow_run.head_sha || github.sha }}\"\nPR_NUMBER=\"${{\
+        \ inputs.pr_number }}\"\nWORKFLOW_NAME=\"${{ github.event.workflow_run.name\
+        \ || 'unknown' }}\"\nDRY_FLAG=\"\"\nif [ \"${{ inputs.dry_run }}\" = \"true\"\
+        \ ]; then\n  DRY_FLAG=\"--dry-run\"\nfi\nPR_FLAG=\"\"\nif [ \"${PR_NUMBER}\"\
+        \ != \"\" ]; then\n  PR_FLAG=\"--pr ${PR_NUMBER}\"\nfi\nSHA_FLAG=\"\"\nif\
+        \ [ \"${COMMIT_SHA}\" != \"\" ]; then\n  SHA_FLAG=\"--commit-sha ${COMMIT_SHA}\"\
+        \nfi\nTRIAGE_FLAG=\"\"\nif [ -n \"${TRIAGE_ISSUE_URL}\" ]; then\n  TRIAGE_FLAG=\"\
+        --triage-issue-url ${TRIAGE_ISSUE_URL}\"\nfi\n\nif [ \"${RESCUE_UNAVAILABLE}\"\
+        \ = \"true\" ]; then\n  # ci_rescue.py not available — post a minimal inline\
+        \ rescue comment\n  echo \"⚠️  Falling back to inline rescue comment (ci_rescue.py\
+        \ unavailable)\"\n  python3 - <<PYEOF\nimport json, os, sys, urllib.request,\
+        \ urllib.error, datetime\n\ntoken      = os.environ[\"GITHUB_TOKEN\"]\nrepo\
+        \       = \"${{ github.repository }}\"\nrun_id     = \"${RUN_ID}\"\ncommit_sha\
+        \ = \"${COMMIT_SHA}\"\nworkflow   = \"${WORKFLOW_NAME}\"\nrun_url    = \"\
+        ${{ github.server_url }}/${{ github.repository }}/actions/runs/${RUN_ID}\"\
+        \nsha_short  = commit_sha[:12]\nnow        = datetime.datetime.utcnow().strftime(\"\
+        %Y-%m-%dT%H:%M:%SZ\")\nAPI        = \"https://api.github.com\"\nHDRS     \
+        \  = {\n    \"Authorization\": f\"Bearer {token}\",\n    \"Accept\": \"application/vnd.github+json\"\
+        ,\n    \"X-GitHub-Api-Version\": \"2022-11-28\",\n    \"Content-Type\": \"\
+        application/json\",\n}\n\ndef gh(method, path, body=None):\n    url  = f\"\
+        {API}{path}\"\n    data = json.dumps(body).encode() if body else None\n  \
+        \  req  = urllib.request.Request(url, data=data, headers=HDRS, method=method)\n\
+        \    try:\n        with urllib.request.urlopen(req, timeout=20) as r:\n  \
+        \          return r.status, json.loads(r.read())\n    except urllib.error.HTTPError\
+        \ as e:\n        return e.code, {}\n\n# Find the PR number for this commit.\n\
+        # When multiple PRs share the same head branch (e.g. two open PRs on\n# 0D_base_),\
+        \ all of them appear in the run's pull_requests list with the\n# same head\
+        \ SHA.  Taking the first entry posts rescue comments on the\n# wrong (older)\
+        \ PR.  Instead, prefer the PR with the highest number —\n# the most recently\
+        \ opened one is the most likely active context.\n_, runs_data = gh(\"GET\"\
+        , f\"/repos/{repo}/actions/runs/{run_id}\")\npr_number = None\nsha_matches\
+        \ = [\n    pr[\"number\"]\n    for pr in runs_data.get(\"pull_requests\",\
+        \ [])\n    if pr.get(\"head\", {}).get(\"sha\") == commit_sha\n]\nif sha_matches:\n\
+        \    pr_number = max(sha_matches)\nif not pr_number:\n    _, prs = gh(\"GET\"\
+        , f\"/repos/{repo}/pulls?state=open&per_page=50\")\n    all_matches = [\n\
+        \        pr[\"number\"]\n        for pr in (prs if isinstance(prs, list) else\
+        \ [])\n        if pr.get(\"head\", {}).get(\"sha\") == commit_sha\n    ]\n\
+        \    if all_matches:\n        pr_number = max(all_matches)\n\nif not pr_number:\n\
+        \    print(f\"⚠️  No PR found for commit {sha_short} — skipping rescue comment\"\
+        )\n    sys.exit(0)\n\n# Build the SHA-scoped dedup marker: all failing workflows\
+        \ for the SAME\n# commit share ONE comment thread. A new push (different commit\
+        \ SHA)\n# always creates a new comment, enabling per-push comparison.\nMARKER\
+        \ = f\"<!-- ci-rescue-rca:{pr_number}:sha-{sha_short} -->\"\n\nbody = (\n\
+        \    f\"## \U0001F6A8 CI Rescue — Root Cause Analysis\\n\\n\"\n    f\"**Workflow:**\
+        \ \\`{workflow}\\`\\n\"\n    f\"**Run:** [{run_id}]({run_url})\\n\"\n    f\"\
+        **Commit:** \\`{commit_sha}\\`\\n\"\n    f\"**Time:** {now}\\n\\n\"\n    f\"\
+        @copilot the **{workflow}** check is failing on commit \\`{sha_short}\\`.\\\
+        n\\n\"\n    \"Please investigate the failure logs, apply the minimal fix,\
+        \ and push.\\n\\n\"\n    f\"> **Note:** This comment captures ALL failing\
+        \ workflows for commit '{sha_short}'. \"\n    \"Each new push (different commit)\
+        \ creates a new comment. \"\n    \"Additional failures on the same commit\
+        \ are appended below.\\n\\n\"\n    \"_Posted by: ci-rescue.yml → inline fallback\
+        \ (ci_rescue.py unavailable)_\\n\\n---\\n\"\n    f\"_[\U0001F517 Workflow\
+        \ run]({run_url})_\"\n)\n\n# Paginate through all PR comments to find existing\
+        \ rescue marker for THIS run.\n# A single ?per_page=100 fetch misses markers\
+        \ on page 2+ (S232 fix).\nexisting_id, existing_body = None, \"\"\npage =\
+        \ 1\nwhile not existing_id:\n    _, page_comments = gh(\"GET\", f\"/repos/{repo}/issues/{pr_number}/comments?per_page=100&page={page}\"\
+        )\n    if not isinstance(page_comments, list) or not page_comments:\n    \
+        \    break\n    for c in page_comments:\n        if MARKER in (c.get(\"body\"\
+        ) or \"\"):\n            existing_id, existing_body = c[\"id\"], c.get(\"\
+        body\", \"\")\n            break\n    if existing_id or len(page_comments)\
+        \ < 100:\n        break\n    page += 1\n\nif existing_id:\n    append_section\
+        \ = (\n        f\"\\n\\n---\\n\\n### \U0001F504 Additional Failure — {now}\\\
+        n\\n\"\n        f\"**Run:** [{run_id}]({run_url})\\n\\n\"\n        f\"@copilot\
+        \ \\`{workflow}\\` also failed in the same run. \"\n        f\"See [run #{run_id}]({run_url})\
+        \ for details.\"\n    )\n    updated = (existing_body.rstrip() + append_section)[:65536]\n\
+        \    status, _ = gh(\"PATCH\", f\"/repos/{repo}/issues/comments/{existing_id}\"\
+        , {\"body\": updated})\n    print(f\"{'✅' if status in (200,201) else '❌'}\
+        \ Appended rescue update to run-{run_id} comment (HTTP {status})\")\nelse:\n\
+        \    status, resp = gh(\"POST\", f\"/repos/{repo}/issues/{pr_number}/comments\"\
+        ,\n                      {\"body\": f\"{MARKER}\\n{body}\"})\n    print(f\"\
+        {'✅' if status in (200,201) else '❌'} Posted new rescue comment for run {run_id}\
+        \ (HTTP {status}): {resp.get('html_url','')}\")\nPYEOF\n  echo \"rescue_exit=$?\"\
+        \ >> \"$GITHUB_OUTPUT\"\nelse\n  BRANCH=\"${GH_HEAD_BRANCH}\"\n  python3 /tmp/ci_rescue.py\
+        \ \\\n    --run-id        \"${RUN_ID}\" \\\n    --repo          \"${GH_REPOSITORY}\"\
+        \ \\\n    --workflow-name \"${WORKFLOW_NAME}\" \\\n    --branch        \"\
+        ${BRANCH}\" \\\n    ${PR_FLAG} \\\n    ${SHA_FLAG} \\\n    ${DRY_FLAG} \\\n\
+        \    ${TRIAGE_FLAG} \\\n    2>&1 | tee /tmp/rescue_output.txt\n  echo \"rescue_exit=${PIPESTATUS[0]}\"\
+        \ >> \"$GITHUB_OUTPUT\"\n\n  # ── Deep rescue: historical analysis when COPILOT_AGENT_AUTH_ENABLED\
+        \ ─\n  # When the token-delegation flag is set, run a second pass that fetches\n\
+        \  # logs from the last 5 runs of the same workflow on the same branch,\n\
+        \  # builds a recurring-vs-sporadic failure map, and posts a comprehensive\n\
+        \  # @copilot escalation comment with RP-013..RP-020 pattern matches.\n  if\
+        \ [ \"${{ vars.COPILOT_AGENT_AUTH_ENABLED }}\" = \"true\" ]; then\n    echo\
+        \ \"\U0001F50D COPILOT_AGENT_AUTH_ENABLED=true — running deep historical analysis\
+        \ for '${WORKFLOW_NAME}' on '${BRANCH}'…\"\n    python3 /tmp/ci_rescue.py\
+        \ \\\n      --run-id         \"${RUN_ID}\" \\\n      --repo           \"${GH_REPOSITORY}\"\
+        \ \\\n      --workflow-name  \"${WORKFLOW_NAME}\" \\\n      --branch     \
+        \    \"${BRANCH}\" \\\n      ${PR_FLAG} \\\n      ${SHA_FLAG} \\\n      ${DRY_FLAG}\
+        \ \\\n      ${TRIAGE_FLAG} \\\n      --deep \\\n      2>&1 | tee /tmp/deep_rescue_output.txt\
+        \ || true\n    echo \"deep_rescue_exit=$?\" >> \"$GITHUB_OUTPUT\"\n  fi\n\
+        fi\n"
+    - name: Print rescue summary
+      if: always()
+      run: "echo \"=== CI Rescue Summary ===\"\ncat /tmp/rescue_output.txt 2>/dev/null\
+        \ || echo \"(no output captured)\"\necho \"Rescue exit: ${{ steps.rescue.outputs.rescue_exit\
+        \ }}\"\nif [ -s /tmp/deep_rescue_output.txt ]; then\n  echo \"\"\n  echo \"\
+        === Deep Rescue Summary (COPILOT_AGENT_AUTH_ENABLED) ===\"\n  cat /tmp/deep_rescue_output.txt\n\
+        \  echo \"Deep rescue exit: ${{ steps.rescue.outputs.deep_rescue_exit }}\"\
+        \nfi\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

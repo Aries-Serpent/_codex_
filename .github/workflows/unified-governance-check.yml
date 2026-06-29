@@ -1,19 +1,18 @@
 name: Unified Governance Check
-
-"on":
+'on':
   pull_request:
-    types: [opened, synchronize, reopened]
-
+    types:
+    - opened
+    - synchronize
+    - reopened
 concurrency:
   group: unified-governance-check-${{ github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   issues: write
   pull-requests: write
   checks: write
-
 jobs:
   compliance-check:
     name: Run compliance check
@@ -24,187 +23,100 @@ jobs:
       issues: write
       pull-requests: read
       checks: write
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
+    - name: Checkout
+      uses: actions/checkout@v5
+      with:
+        fetch-depth: 0
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.12'
+    - name: Install dependencies
+      run: 'python -m pip install --quiet --upgrade pip
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.12'
+        python -m pip install --quiet pydantic requests
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --quiet --upgrade pip
-          python -m pip install --quiet pydantic requests
-
-      - name: Run unified compliance check
-        id: compliance
-        run: |
-          mkdir -p .codex/compliance
-          python scripts/ci/unified_compliance_check.py \
-            --pr ${{ github.event.pull_request.number }} \
-            --json \
-            --output .codex/compliance/report.json \
-            --timeout 60
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Parse compliance report
-        id: parse
-        if: always()
-        run: |
-          import json
-          import os
-          import sys
-
-          try:
-              with open('.codex/compliance/report.json') as f:
-                  report = json.load(f)
-
-              status = report.get('status', 'UNKNOWN')
-              score = report.get('overall_score', 0)
-
-              print(f"status={status}")
-              print(f"score={score}")
-              with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
-                  output.write(f"status={status}\n")
-                  output.write(f"score={score}\n")
-
-              # Create summary
-              summary = f"## Compliance Report\n\n"
-              summary += f"**Status:** {status}\n"
-              summary += f"**Score:** {score:.1f}/100\n\n"
-
-              summary += "### Validators\n"
-              for validator in report.get('validators', []):
-                  icon = "✅" if validator['status'] == "pass" else ("⚠️" if validator['status'] == "warn" else "❌")
-                  summary += f"- {icon} **{validator['requirement_id']}:** {validator['reason']}\n"
-
-              if report.get('next_steps'):
-                  summary += "\n### Next Steps\n"
-                  for step in report['next_steps']:
-                      summary += f"- {step}\n"
-
-              with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as f:
-                  f.write(summary)
-
-          except Exception as e:
-              print(
-                  f"Error parsing compliance report from .codex/compliance/report.json: {e}",
-                  file=sys.stderr,
-              )
-              sys.exit(1)
-        shell: python
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Comment on PR
-        if: always()
-        uses: actions/github-script@v8
-        with:
-          script: |
-            const fs = require('fs');
-            let report = {};
-            try {
-              report = JSON.parse(fs.readFileSync('.codex/compliance/report.json', 'utf8'));
-            } catch (e) {
-              console.error('Failed to parse report:', e);
-              return;
-            }
-
-            const status = report.status || 'UNKNOWN';
-            const score = report.overall_score || 0;
-            const rationale = report.decision_rationale || '';
-
-            let comment = `## 📋 Governance Compliance Check\n\n`;
-            comment += `**Status:** ${status === 'APPROVE' ? '✅' : status === 'WARN' ? '⚠️' : '❌'} ${status}\n`;
-            comment += `**Score:** ${score.toFixed(1)}/100\n`;
-            comment += `**Rationale:** ${rationale}\n\n`;
-
-            comment += `### Requirement Status\n`;
-            for (const validator of report.validators || []) {
-              const icon = validator.status === 'pass' ? '✅' : validator.status === 'warn' ? '⚠️' : '❌';
-              comment += `- ${icon} **${validator.requirement_id}**: ${validator.reason}\n`;
-              if (validator.remediation && validator.remediation.length > 0) {
-                comment += `  - *Remediation:* ${validator.remediation.slice(0, 2).join(', ')}\n`;
-              }
-            }
-
-            if (report.next_steps && report.next_steps.length > 0) {
-              comment += `\n### Recommended Next Steps\n`;
-              report.next_steps.forEach((step, i) => {
-                comment += `${i + 1}. ${step}\n`;
-              });
-            }
-
-            // Try to find existing comment
-            try {
-              const { data: comments } = await github.rest.issues.listComments({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-              });
-
-              const existingComment = comments.find(c =>
-                c.user.type === 'Bot' && c.body.includes('Governance Compliance Check')
-              );
-
-              if (existingComment) {
-                await github.rest.issues.updateComment({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  comment_id: existingComment.id,
-                  body: comment,
-                });
-              } else {
-                await github.rest.issues.createComment({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: context.issue.number,
-                  body: comment,
-                });
-              }
-            } catch (error) {
-              core.warning(`Could not post governance comment: ${error.message}`);
-            }
-
-      - name: Set PR status
-        if: always()
-        uses: actions/github-script@v8
-        with:
-          script: |
-            const fs = require('fs');
-            let report = {};
-            try {
-              report = JSON.parse(fs.readFileSync('.codex/compliance/report.json', 'utf8'));
-            } catch (e) {
-              console.log('Warning: Could not parse compliance report');
-              return;
-            }
-
-            const status = report.status || 'UNKNOWN';
-
-            // Set check run status
-            const state = status === 'BLOCK' ? 'failure' : status === 'WARN' ? 'neutral' : 'success';
-
-            await github.rest.checks.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              name: 'Governance Compliance',
-              head_sha: context.payload.pull_request.head.sha,
-              status: 'completed',
-              conclusion: state === 'failure' ? 'failure' : state === 'neutral' ? 'neutral' : 'success',
-              output: {
-                title: `Governance Compliance: ${status}`,
-                summary: `Score: ${report.overall_score}/100\n\n${report.decision_rationale}`,
-              },
-            });
-
-            // Block merge if BLOCK status
-            if (status === 'BLOCK') {
-              core.setFailed('Governance compliance check failed - merge blocked');
-            }
+        '
+    - name: Run unified compliance check
+      id: compliance
+      run: "mkdir -p .codex/compliance\npython scripts/ci/unified_compliance_check.py\
+        \ \\\n  --pr ${{ github.event.pull_request.number }} \\\n  --json \\\n  --output\
+        \ .codex/compliance/report.json \\\n  --timeout 60\n"
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Parse compliance report
+      id: parse
+      if: always()
+      run: "import json\nimport os\nimport sys\n\ntry:\n    with open('.codex/compliance/report.json')\
+        \ as f:\n        report = json.load(f)\n\n    status = report.get('status',\
+        \ 'UNKNOWN')\n    score = report.get('overall_score', 0)\n\n    print(f\"\
+        status={status}\")\n    print(f\"score={score}\")\n    with open(os.environ[\"\
+        GITHUB_OUTPUT\"], \"a\", encoding=\"utf-8\") as output:\n        output.write(f\"\
+        status={status}\\n\")\n        output.write(f\"score={score}\\n\")\n\n   \
+        \ # Create summary\n    summary = f\"## Compliance Report\\n\\n\"\n    summary\
+        \ += f\"**Status:** {status}\\n\"\n    summary += f\"**Score:** {score:.1f}/100\\\
+        n\\n\"\n\n    summary += \"### Validators\\n\"\n    for validator in report.get('validators',\
+        \ []):\n        icon = \"✅\" if validator['status'] == \"pass\" else (\"⚠️\"\
+        \ if validator['status'] == \"warn\" else \"❌\")\n        summary += f\"-\
+        \ {icon} **{validator['requirement_id']}:** {validator['reason']}\\n\"\n\n\
+        \    if report.get('next_steps'):\n        summary += \"\\n### Next Steps\\\
+        n\"\n        for step in report['next_steps']:\n            summary += f\"\
+        - {step}\\n\"\n\n    with open(os.environ[\"GITHUB_STEP_SUMMARY\"], \"a\"\
+        , encoding=\"utf-8\") as f:\n        f.write(summary)\n\nexcept Exception\
+        \ as e:\n    print(\n        f\"Error parsing compliance report from .codex/compliance/report.json:\
+        \ {e}\",\n        file=sys.stderr,\n    )\n    sys.exit(1)\n"
+      shell: python
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Comment on PR
+      if: always()
+      uses: actions/github-script@v8
+      with:
+        script: "const fs = require('fs');\nlet report = {};\ntry {\n  report = JSON.parse(fs.readFileSync('.codex/compliance/report.json',\
+          \ 'utf8'));\n} catch (e) {\n  console.error('Failed to parse report:', e);\n\
+          \  return;\n}\n\nconst status = report.status || 'UNKNOWN';\nconst score\
+          \ = report.overall_score || 0;\nconst rationale = report.decision_rationale\
+          \ || '';\n\nlet comment = `## \U0001F4CB Governance Compliance Check\\n\\\
+          n`;\ncomment += `**Status:** ${status === 'APPROVE' ? '✅' : status === 'WARN'\
+          \ ? '⚠️' : '❌'} ${status}\\n`;\ncomment += `**Score:** ${score.toFixed(1)}/100\\\
+          n`;\ncomment += `**Rationale:** ${rationale}\\n\\n`;\n\ncomment += `###\
+          \ Requirement Status\\n`;\nfor (const validator of report.validators ||\
+          \ []) {\n  const icon = validator.status === 'pass' ? '✅' : validator.status\
+          \ === 'warn' ? '⚠️' : '❌';\n  comment += `- ${icon} **${validator.requirement_id}**:\
+          \ ${validator.reason}\\n`;\n  if (validator.remediation && validator.remediation.length\
+          \ > 0) {\n    comment += `  - *Remediation:* ${validator.remediation.slice(0,\
+          \ 2).join(', ')}\\n`;\n  }\n}\n\nif (report.next_steps && report.next_steps.length\
+          \ > 0) {\n  comment += `\\n### Recommended Next Steps\\n`;\n  report.next_steps.forEach((step,\
+          \ i) => {\n    comment += `${i + 1}. ${step}\\n`;\n  });\n}\n\n// Try to\
+          \ find existing comment\ntry {\n  const { data: comments } = await github.rest.issues.listComments({\n\
+          \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    issue_number:\
+          \ context.issue.number,\n  });\n\n  const existingComment = comments.find(c\
+          \ =>\n    c.user.type === 'Bot' && c.body.includes('Governance Compliance\
+          \ Check')\n  );\n\n  if (existingComment) {\n    await github.rest.issues.updateComment({\n\
+          \      owner: context.repo.owner,\n      repo: context.repo.repo,\n    \
+          \  comment_id: existingComment.id,\n      body: comment,\n    });\n  } else\
+          \ {\n    await github.rest.issues.createComment({\n      owner: context.repo.owner,\n\
+          \      repo: context.repo.repo,\n      issue_number: context.issue.number,\n\
+          \      body: comment,\n    });\n  }\n} catch (error) {\n  core.warning(`Could\
+          \ not post governance comment: ${error.message}`);\n}\n"
+    - name: Set PR status
+      if: always()
+      uses: actions/github-script@v8
+      with:
+        script: "const fs = require('fs');\nlet report = {};\ntry {\n  report = JSON.parse(fs.readFileSync('.codex/compliance/report.json',\
+          \ 'utf8'));\n} catch (e) {\n  console.log('Warning: Could not parse compliance\
+          \ report');\n  return;\n}\n\nconst status = report.status || 'UNKNOWN';\n\
+          \n// Set check run status\nconst state = status === 'BLOCK' ? 'failure'\
+          \ : status === 'WARN' ? 'neutral' : 'success';\n\nawait github.rest.checks.create({\n\
+          \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  name: 'Governance\
+          \ Compliance',\n  head_sha: context.payload.pull_request.head.sha,\n  status:\
+          \ 'completed',\n  conclusion: state === 'failure' ? 'failure' : state ===\
+          \ 'neutral' ? 'neutral' : 'success',\n  output: {\n    title: `Governance\
+          \ Compliance: ${status}`,\n    summary: `Score: ${report.overall_score}/100\\\
+          n\\n${report.decision_rationale}`,\n  },\n});\n\n// Block merge if BLOCK\
+          \ status\nif (status === 'BLOCK') {\n  core.setFailed('Governance compliance\
+          \ check failed - merge blocked');\n}\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

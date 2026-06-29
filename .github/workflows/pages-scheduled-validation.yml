@@ -1,386 +1,232 @@
-# GitHub Pages Scheduled Validation Workflow
-#
-# Runs comprehensive validation on schedule:
-# - Daily validation of all documentation
-# - Auto-creates issues for problems found
-# - Can auto-create PRs with fixes (if auto-fix enabled)
-#
-# Schedule:
-# - Daily at 00:00 UTC
-#
-# Manual trigger available via workflow_dispatch
-
 name: Pages Scheduled Validation
-
-on:
+true:
   schedule:
-    # Daily at 00:00 UTC
-    - cron: '0 0 * * *'
-
+  - cron: 0 0 * * *
   workflow_dispatch:
     inputs:
       validation_type:
-        description: 'Validation type'
+        description: Validation type
         required: true
-        default: 'quick'
+        default: quick
         type: choice
         options:
-          - quick
-          - deep
+        - quick
+        - deep
       auto_fix:
-        description: 'Auto-fix broken links'
+        description: Auto-fix broken links
         required: false
         default: false
         type: boolean
       create_pr:
-        description: 'Create PR with fixes'
+        description: Create PR with fixes
         required: false
         default: false
         type: boolean
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: write
   issues: write
   pull-requests: write
-
-
 jobs:
   validate:
     name: Scheduled Documentation Validation
     runs-on: ubuntu-latest
     timeout-minutes: 60
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          fetch-depth: 0
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        fetch-depth: 0
+    - name: CacheManager health check
+      continue-on-error: true
+      run: 'python scripts/ci/generate_cache_keys.py --health --workflow pages-scheduled-validation
+        2>/dev/null || echo "Cache health: check skipped"
 
-      - name: CacheManager health check
-        continue-on-error: true
-        run: |
-          python scripts/ci/generate_cache_keys.py --health --workflow pages-scheduled-validation 2>/dev/null || echo "Cache health: check skipped"
-      - name: Set up Python 3.12
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12.13'
-          cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+        '
+    - name: Set up Python 3.12
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+    - name: Install dependencies
+      run: 'python -m pip install --upgrade pip
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install mkdocs-material pymdown-extensions pyyaml mkdocs-mermaid2-plugin
+        pip install mkdocs-material pymdown-extensions pyyaml mkdocs-mermaid2-plugin
 
-      - name: Determine validation type
-        id: config
-        run: |
-          # Determine if this is deep validation
-          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            VALIDATION_TYPE="${{ inputs.validation_type }}"
-            AUTO_FIX="${{ inputs.auto_fix }}"
-            CREATE_PR="${{ inputs.create_pr }}"
-          elif [ "$(date +%u)" == "1" ]; then
-            # Monday - deep validation
-            VALIDATION_TYPE="deep"
-            AUTO_FIX="false"
-            CREATE_PR="false"
-          else
-            # Other days - quick validation
-            VALIDATION_TYPE="quick"
-            AUTO_FIX="false"
-            CREATE_PR="false"
-          fi
+        '
+    - name: Determine validation type
+      id: config
+      run: "# Determine if this is deep validation\nif [ \"${{ github.event_name }}\"\
+        \ == \"workflow_dispatch\" ]; then\n  VALIDATION_TYPE=\"${{ inputs.validation_type\
+        \ }}\"\n  AUTO_FIX=\"${{ inputs.auto_fix }}\"\n  CREATE_PR=\"${{ inputs.create_pr\
+        \ }}\"\nelif [ \"$(date +%u)\" == \"1\" ]; then\n  # Monday - deep validation\n\
+        \  VALIDATION_TYPE=\"deep\"\n  AUTO_FIX=\"false\"\n  CREATE_PR=\"false\"\n\
+        else\n  # Other days - quick validation\n  VALIDATION_TYPE=\"quick\"\n  AUTO_FIX=\"\
+        false\"\n  CREATE_PR=\"false\"\nfi\n\necho \"validation_type=$VALIDATION_TYPE\"\
+        \ >> $GITHUB_OUTPUT\necho \"auto_fix=$AUTO_FIX\" >> $GITHUB_OUTPUT\necho \"\
+        create_pr=$CREATE_PR\" >> $GITHUB_OUTPUT\necho \"timestamp=$(date -u +%Y-%m-%dT%H-%M-%SZ)\"\
+        \ >> $GITHUB_OUTPUT\n"
+    - name: Run link validation
+      id: link_validation
+      continue-on-error: true
+      run: "ARGS=\"\"\nif [ \"${{ steps.config.outputs.validation_type }}\" == \"\
+        deep\" ]; then\n  ARGS=\"$ARGS --external\"\nfi\nif [ \"${{ steps.config.outputs.auto_fix\
+        \ }}\" == \"true\" ]; then\n  ARGS=\"$ARGS --fix\"\nfi\n\npython scripts/validate_docs_links.py\
+        \ $ARGS > validation_report.txt 2>&1\nEXIT_CODE=$?\n\necho \"exit_code=$EXIT_CODE\"\
+        \ >> $GITHUB_OUTPUT\ncat validation_report.txt\n\n# Extract error count\n\
+        ERROR_COUNT=$(grep -oP \"(?<=Summary: )\\d+\" validation_report.txt | head\
+        \ -1 || echo \"0\")\nWARNING_COUNT=$(grep -oP \"(?<=errors, )\\d+\" validation_report.txt\
+        \ | head -1 || echo \"0\")\n\necho \"error_count=$ERROR_COUNT\" >> $GITHUB_OUTPUT\n\
+        echo \"warning_count=$WARNING_COUNT\" >> $GITHUB_OUTPUT\n"
+    - name: Test MkDocs build
+      id: mkdocs_build
+      continue-on-error: true
+      run: 'mkdocs build 2>&1 | tee build_report.txt
 
-          echo "validation_type=$VALIDATION_TYPE" >> $GITHUB_OUTPUT
-          echo "auto_fix=$AUTO_FIX" >> $GITHUB_OUTPUT
-          echo "create_pr=$CREATE_PR" >> $GITHUB_OUTPUT
-          echo "timestamp=$(date -u +%Y-%m-%dT%H-%M-%SZ)" >> $GITHUB_OUTPUT
+        EXIT_CODE=${PIPESTATUS[0]}
 
-      - name: Run link validation
-        id: link_validation
-        continue-on-error: true
-        run: |
-          ARGS=""
-          if [ "${{ steps.config.outputs.validation_type }}" == "deep" ]; then
-            ARGS="$ARGS --external"
-          fi
-          if [ "${{ steps.config.outputs.auto_fix }}" == "true" ]; then
-            ARGS="$ARGS --fix"
-          fi
+        echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
 
-          python scripts/validate_docs_links.py $ARGS > validation_report.txt 2>&1
-          EXIT_CODE=$?
 
-          echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
-          cat validation_report.txt
+        # Extract warning count
 
-          # Extract error count
-          ERROR_COUNT=$(grep -oP "(?<=Summary: )\d+" validation_report.txt | head -1 || echo "0")
-          WARNING_COUNT=$(grep -oP "(?<=errors, )\d+" validation_report.txt | head -1 || echo "0")
+        WARNING_COUNT=$(grep -c "WARNING" build_report.txt || echo "0")
 
-          echo "error_count=$ERROR_COUNT" >> $GITHUB_OUTPUT
-          echo "warning_count=$WARNING_COUNT" >> $GITHUB_OUTPUT
+        echo "warning_count=$WARNING_COUNT" >> $GITHUB_OUTPUT
 
-      - name: Test MkDocs build
-        id: mkdocs_build
-        continue-on-error: true
-        run: |
-          mkdocs build 2>&1 | tee build_report.txt
-          EXIT_CODE=${PIPESTATUS[0]}
-          echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
+        '
+    - name: Validate cognitive_app
+      id: cognitive_app
+      continue-on-error: true
+      run: "echo \"## Cognitive App Validation\" > cognitive_app_report.txt\necho\
+        \ \"**Timestamp:** $(date -u)\" >> cognitive_app_report.txt\necho \"\" >>\
+        \ cognitive_app_report.txt\n\nERRORS=0\n\n# Check documentation\nif [ -f \"\
+        docs/cognitive_app.md\" ]; then\n  echo \"✅ cognitive_app.md found\" >> cognitive_app_report.txt\n\
+        \n  # Check if it's in navigation\n  if grep -q \"cognitive_app\" mkdocs.yml;\
+        \ then\n    echo \"✅ cognitive_app in mkdocs.yml navigation\" >> cognitive_app_report.txt\n\
+        \  else\n    echo \"❌ cognitive_app missing from mkdocs.yml navigation\" >>\
+        \ cognitive_app_report.txt\n    ERRORS=$((ERRORS + 1))\n  fi\nelse\n  echo\
+        \ \"❌ cognitive_app.md missing\" >> cognitive_app_report.txt\n  ERRORS=$((ERRORS\
+        \ + 1))\nfi\n\n# Check source directory\nif [ -d \"cognitive_app\" ]; then\n\
+        \  echo \"✅ cognitive_app/ directory found\" >> cognitive_app_report.txt\n\
+        \n  # Check key files\n  KEY_FILES=\"package.json index.html src/main.tsx\
+        \ vite.config.ts\"\n  for file in $KEY_FILES; do\n    if [ -f \"cognitive_app/$file\"\
+        \ ]; then\n      echo \"  ✅ $file\" >> cognitive_app_report.txt\n    else\n\
+        \      echo \"  ⚠️  $file missing\" >> cognitive_app_report.txt\n    fi\n\
+        \  done\nelse\n  echo \"❌ cognitive_app/ directory missing\" >> cognitive_app_report.txt\n\
+        \  ERRORS=$((ERRORS + 1))\nfi\n\ncat cognitive_app_report.txt\necho \"error_count=$ERRORS\"\
+        \ >> $GITHUB_OUTPUT\n\nif [ $ERRORS -gt 0 ]; then\n  exit 1\nfi\n"
+    - name: Create issue if problems found
+      if: "always() &&\n(steps.link_validation.outputs.error_count > 0 ||\n steps.mkdocs_build.outputs.exit_code\
+        \ != '0' ||\n steps.cognitive_app.outputs.error_count > 0)\n"
+      uses: actions/github-script@v8
+      with:
+        script: "const timestamp = '${{ steps.config.outputs.timestamp }}';\nconst\
+          \ validationType = '${{ steps.config.outputs.validation_type }}';\n\nconst\
+          \ linkErrors = parseInt('${{ steps.link_validation.outputs.error_count }}')\
+          \ || 0;\nconst linkWarnings = parseInt('${{ steps.link_validation.outputs.warning_count\
+          \ }}') || 0;\nconst mkdocsExit = '${{ steps.mkdocs_build.outputs.exit_code\
+          \ }}';\nconst mkdocsWarnings = parseInt('${{ steps.mkdocs_build.outputs.warning_count\
+          \ }}') || 0;\nconst cognitiveErrors = parseInt('${{ steps.cognitive_app.outputs.error_count\
+          \ }}') || 0;\n\nconst title = `\U0001F50D GitHub Pages Validation Issues\
+          \ - ${timestamp}`;\n\nlet body = `## GitHub Pages Validation Report\n\n\
+          **Validation Type:** ${validationType === 'deep' ? '\U0001F52C Deep' : '⚡\
+          \ Quick'}\n**Timestamp:** ${timestamp}\n**Workflow Run:** [View Details](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})\n\
+          \n### Issues Summary\n\n| Category | Status | Details |\n|----------|--------|---------|\n\
+          | **Link Validation** | ${linkErrors > 0 ? '❌ Failed' : linkWarnings > 0\
+          \ ? '⚠️ Warnings' : '✅ Passed'} | ${linkErrors} errors, ${linkWarnings}\
+          \ warnings |\n| **MkDocs Build** | ${mkdocsExit !== '0' ? '❌ Failed' : mkdocsWarnings\
+          \ > 0 ? '⚠️ Warnings' : '✅ Passed'} | ${mkdocsWarnings} warnings |\n| **cognitive_app**\
+          \ | ${cognitiveErrors > 0 ? '❌ Failed' : '✅ Passed'} | ${cognitiveErrors}\
+          \ errors |\n\n### Recommended Actions\n\n**Priority 1 - Critical:**\n`;\n\
+          \nif (linkErrors > 0) {\n  body += `\\n- [ ] Fix ${linkErrors} broken links\
+          \ in documentation\\n`;\n}\nif (mkdocsExit !== '0') {\n  body += `\\n- [\
+          \ ] Fix MkDocs build errors\\n`;\n}\nif (cognitiveErrors > 0) {\n  body\
+          \ += `\\n- [ ] Fix cognitive_app accessibility issues\\n`;\n}\n\nbody +=\
+          \ `\\n**Priority 2 - Improvements:**\\n`;\n\nif (linkWarnings > 0) {\n \
+          \ body += `\\n- [ ] Review ${linkWarnings} link warnings\\n`;\n}\nif (mkdocsWarnings\
+          \ > 0) {\n  body += `\\n- [ ] Review ${mkdocsWarnings} MkDocs warnings\\\
+          n`;\n}\n\nbody += `\\n### GitHub Pages Manager Commands\n\nUse the GitHub\
+          \ Pages Manager agent to address these issues:\n\n\\`\\`\\`bash\n# Fix broken\
+          \ links\n@copilot Use github-pages-manager to find and fix broken links\n\
+          \n# Validate documentation sync\n@copilot Use github-pages-manager to validate\
+          \ documentation sync\n\n# Check cognitive_app\n@copilot Use github-pages-manager\
+          \ to validate cognitive_app accessibility\n\n# Update dashboard\n@copilot\
+          \ Use github-pages-manager to update status dashboard\n\\`\\`\\`\n\n###\
+          \ Artifacts\n\n- [Validation Report](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})\n\
+          - Download: \\`validation_report.txt\\`, \\`build_report.txt\\`, \\`cognitive_app_report.txt\\\
+          `\n\n---\n\n**Auto-generated by:** GitHub Pages Scheduled Validation\n**Next\
+          \ validation:** ${validationType === 'deep' ? 'Next Monday' : 'Tomorrow'}\
+          \ at 00:00 UTC\n`;\n\n// Check if issue already exists\nconst issues = await\
+          \ github.rest.issues.listForRepo({\n  owner: context.repo.owner,\n  repo:\
+          \ context.repo.repo,\n  state: 'open',\n  labels: 'documentation,pages-validation',\n\
+          \  per_page: 10\n});\n\nconst existingIssue = issues.data.find(issue =>\n\
+          \  issue.title.includes('GitHub Pages Validation Issues')\n);\n\nif (existingIssue)\
+          \ {\n  // Update existing issue\n  await github.rest.issues.createComment({\n\
+          \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    issue_number:\
+          \ existingIssue.number,\n    body: `## Update: ${timestamp}\\n\\n${body}\\\
+          n\\n---\\n_[\U0001F517 Workflow run](${runUrl})_`\n  });\n\n  console.log(`Updated\
+          \ existing issue #${existingIssue.number}`);\n} else {\n  // Create new\
+          \ issue\n  const newIssue = await github.rest.issues.create({\n    owner:\
+          \ context.repo.owner,\n    repo: context.repo.repo,\n    title: title,\n\
+          \    body: body,\n    labels: ['documentation', 'pages-validation', 'automated']\n\
+          \  });\n\n  console.log(`Created new issue #${newIssue.data.number}`);\n\
+          }\n"
+    - name: Upload validation artifacts
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: scheduled-validation-${{ steps.config.outputs.timestamp }}
+        path: 'validation_report.txt
 
-          # Extract warning count
-          WARNING_COUNT=$(grep -c "WARNING" build_report.txt || echo "0")
-          echo "warning_count=$WARNING_COUNT" >> $GITHUB_OUTPUT
+          build_report.txt
 
-      - name: Validate cognitive_app
-        id: cognitive_app
-        continue-on-error: true
-        run: |
-          echo "## Cognitive App Validation" > cognitive_app_report.txt
-          echo "**Timestamp:** $(date -u)" >> cognitive_app_report.txt
-          echo "" >> cognitive_app_report.txt
+          cognitive_app_report.txt
 
-          ERRORS=0
-
-          # Check documentation
-          if [ -f "docs/cognitive_app.md" ]; then
-            echo "✅ cognitive_app.md found" >> cognitive_app_report.txt
-
-            # Check if it's in navigation
-            if grep -q "cognitive_app" mkdocs.yml; then
-              echo "✅ cognitive_app in mkdocs.yml navigation" >> cognitive_app_report.txt
-            else
-              echo "❌ cognitive_app missing from mkdocs.yml navigation" >> cognitive_app_report.txt
-              ERRORS=$((ERRORS + 1))
-            fi
-          else
-            echo "❌ cognitive_app.md missing" >> cognitive_app_report.txt
-            ERRORS=$((ERRORS + 1))
-          fi
-
-          # Check source directory
-          if [ -d "cognitive_app" ]; then
-            echo "✅ cognitive_app/ directory found" >> cognitive_app_report.txt
-
-            # Check key files
-            KEY_FILES="package.json index.html src/main.tsx vite.config.ts"
-            for file in $KEY_FILES; do
-              if [ -f "cognitive_app/$file" ]; then
-                echo "  ✅ $file" >> cognitive_app_report.txt
-              else
-                echo "  ⚠️  $file missing" >> cognitive_app_report.txt
-              fi
-            done
-          else
-            echo "❌ cognitive_app/ directory missing" >> cognitive_app_report.txt
-            ERRORS=$((ERRORS + 1))
-          fi
-
-          cat cognitive_app_report.txt
-          echo "error_count=$ERRORS" >> $GITHUB_OUTPUT
-
-          if [ $ERRORS -gt 0 ]; then
-            exit 1
-          fi
-
-      - name: Create issue if problems found
-        if: |
-          always() &&
-          (steps.link_validation.outputs.error_count > 0 ||
-           steps.mkdocs_build.outputs.exit_code != '0' ||
-           steps.cognitive_app.outputs.error_count > 0)
-        uses: actions/github-script@v8 # v9
-        with:
-          script: |
-            const timestamp = '${{ steps.config.outputs.timestamp }}';
-            const validationType = '${{ steps.config.outputs.validation_type }}';
-
-            const linkErrors = parseInt('${{ steps.link_validation.outputs.error_count }}') || 0;
-            const linkWarnings = parseInt('${{ steps.link_validation.outputs.warning_count }}') || 0;
-            const mkdocsExit = '${{ steps.mkdocs_build.outputs.exit_code }}';
-            const mkdocsWarnings = parseInt('${{ steps.mkdocs_build.outputs.warning_count }}') || 0;
-            const cognitiveErrors = parseInt('${{ steps.cognitive_app.outputs.error_count }}') || 0;
-
-            const title = `🔍 GitHub Pages Validation Issues - ${timestamp}`;
-
-            let body = `## GitHub Pages Validation Report
-
-            **Validation Type:** ${validationType === 'deep' ? '🔬 Deep' : '⚡ Quick'}
-            **Timestamp:** ${timestamp}
-            **Workflow Run:** [View Details](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
-
-            ### Issues Summary
-
-            | Category | Status | Details |
-            |----------|--------|---------|
-            | **Link Validation** | ${linkErrors > 0 ? '❌ Failed' : linkWarnings > 0 ? '⚠️ Warnings' : '✅ Passed'} | ${linkErrors} errors, ${linkWarnings} warnings |
-            | **MkDocs Build** | ${mkdocsExit !== '0' ? '❌ Failed' : mkdocsWarnings > 0 ? '⚠️ Warnings' : '✅ Passed'} | ${mkdocsWarnings} warnings |
-            | **cognitive_app** | ${cognitiveErrors > 0 ? '❌ Failed' : '✅ Passed'} | ${cognitiveErrors} errors |
-
-            ### Recommended Actions
-
-            **Priority 1 - Critical:**
-            `;
-
-            if (linkErrors > 0) {
-              body += `\n- [ ] Fix ${linkErrors} broken links in documentation\n`;
-            }
-            if (mkdocsExit !== '0') {
-              body += `\n- [ ] Fix MkDocs build errors\n`;
-            }
-            if (cognitiveErrors > 0) {
-              body += `\n- [ ] Fix cognitive_app accessibility issues\n`;
-            }
-
-            body += `\n**Priority 2 - Improvements:**\n`;
-
-            if (linkWarnings > 0) {
-              body += `\n- [ ] Review ${linkWarnings} link warnings\n`;
-            }
-            if (mkdocsWarnings > 0) {
-              body += `\n- [ ] Review ${mkdocsWarnings} MkDocs warnings\n`;
-            }
-
-            body += `\n### GitHub Pages Manager Commands
-
-            Use the GitHub Pages Manager agent to address these issues:
-
-            \`\`\`bash
-            # Fix broken links
-            @copilot Use github-pages-manager to find and fix broken links
-
-            # Validate documentation sync
-            @copilot Use github-pages-manager to validate documentation sync
-
-            # Check cognitive_app
-            @copilot Use github-pages-manager to validate cognitive_app accessibility
-
-            # Update dashboard
-            @copilot Use github-pages-manager to update status dashboard
-            \`\`\`
-
-            ### Artifacts
-
-            - [Validation Report](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
-            - Download: \`validation_report.txt\`, \`build_report.txt\`, \`cognitive_app_report.txt\`
-
-            ---
-
-            **Auto-generated by:** GitHub Pages Scheduled Validation
-            **Next validation:** ${validationType === 'deep' ? 'Next Monday' : 'Tomorrow'} at 00:00 UTC
-            `;
-
-            // Check if issue already exists
-            const issues = await github.rest.issues.listForRepo({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              state: 'open',
-              labels: 'documentation,pages-validation',
-              per_page: 10
-            });
-
-            const existingIssue = issues.data.find(issue =>
-              issue.title.includes('GitHub Pages Validation Issues')
-            );
-
-            if (existingIssue) {
-              // Update existing issue
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: existingIssue.number,
-                body: `## Update: ${timestamp}\n\n${body}\n\n---\n_[🔗 Workflow run](${runUrl})_`
-              });
-
-              console.log(`Updated existing issue #${existingIssue.number}`);
-            } else {
-              // Create new issue
-              const newIssue = await github.rest.issues.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                title: title,
-                body: body,
-                labels: ['documentation', 'pages-validation', 'automated']
-              });
-
-              console.log(`Created new issue #${newIssue.data.number}`);
-            }
-
-      - name: Upload validation artifacts
-        if: always()
-        uses: actions/upload-artifact@v5 # v7.0.1
-        with:
-          name: scheduled-validation-${{ steps.config.outputs.timestamp }}
-          path: |
-            validation_report.txt
-            build_report.txt
-            cognitive_app_report.txt
-          retention-days: 90
-
-      - name: Update status dashboard
-        if: always()
-        run: |
-          # Update the status dashboard with latest results
-          DASHBOARD="docs/status/GITHUB_PAGES_STATUS.md"
-
-          if [ -f "$DASHBOARD" ]; then
-            # Create backup
-            cp "$DASHBOARD" "${DASHBOARD}.bak"
-
-            # Update timestamp (match the actual markdown format with bold)
-            sed -i "s/^> \*\*Last Updated\*\*:.*$/> **Last Updated**: $(date -u +%Y-%m-%dT%H:%M:%SZ)/" "$DASHBOARD"
-
-            echo "✅ Dashboard timestamp updated"
-          else
-            echo "⚠️  Dashboard not found at $DASHBOARD"
-          fi
-
-      - name: Commit dashboard updates and create PR
-        if: always() && steps.config.outputs.create_pr == 'true'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          if [ -f "docs/status/GITHUB_PAGES_STATUS.md" ]; then
-            git add docs/status/GITHUB_PAGES_STATUS.md
-
-            if git diff --staged --quiet; then
-              echo "No changes to commit"
-            else
-              BRANCH="pages-validation-auto/${{ steps.config.outputs.timestamp }}"
-              git checkout -b "${BRANCH}"
-              git commit -m "chore: Update GitHub Pages status dashboard [${{ steps.config.outputs.validation_type }}] ${{ steps.config.outputs.timestamp }}"
-
-              git push origin "${BRANCH}"
-
-              # Create PR using gh CLI with JSON-safe body written to isolated temp file.
-              # Use printf line-by-line to avoid multi-line string YAML parse errors.
-              PR_BODY_FILE="${RUNNER_TEMP}/pr_body_$$.txt"
-              printf '## Automated GitHub Pages Status Dashboard Update\n' > "${PR_BODY_FILE}"
-              printf '\n' >> "${PR_BODY_FILE}"
-              printf '**Triggered by:** Scheduled validation workflow\n' >> "${PR_BODY_FILE}"
-              printf '**Validation type:** %s\n' "${{ steps.config.outputs.validation_type }}" >> "${PR_BODY_FILE}"
-              printf '**Timestamp:** %s\n' "${{ steps.config.outputs.timestamp }}" >> "${PR_BODY_FILE}"
-              printf '\n' >> "${PR_BODY_FILE}"
-              printf 'This PR was auto-generated by the `pages-scheduled-validation` workflow.\n' >> "${PR_BODY_FILE}"
-              printf 'Review the dashboard update and merge if the status looks correct.\n' >> "${PR_BODY_FILE}"
-
-              gh pr create \
-                --title "chore: automated Pages status dashboard update (${{ steps.config.outputs.timestamp }})" \
-                --body-file "${PR_BODY_FILE}" \
-                --base "${{ github.event.repository.default_branch || 'main' }}" \
-                --head "${BRANCH}" \
-                --label "automated,documentation" || \
-              echo "⚠️  gh pr create failed — check GH_TOKEN permissions"
-
-              echo "✅ Changes committed and PR created on branch ${BRANCH}"
-            fi
-          fi
+          '
+        retention-days: 90
+    - name: Update status dashboard
+      if: always()
+      run: "# Update the status dashboard with latest results\nDASHBOARD=\"docs/status/GITHUB_PAGES_STATUS.md\"\
+        \n\nif [ -f \"$DASHBOARD\" ]; then\n  # Create backup\n  cp \"$DASHBOARD\"\
+        \ \"${DASHBOARD}.bak\"\n\n  # Update timestamp (match the actual markdown\
+        \ format with bold)\n  sed -i \"s/^> \\*\\*Last Updated\\*\\*:.*$/> **Last\
+        \ Updated**: $(date -u +%Y-%m-%dT%H:%M:%SZ)/\" \"$DASHBOARD\"\n\n  echo \"\
+        ✅ Dashboard timestamp updated\"\nelse\n  echo \"⚠️  Dashboard not found at\
+        \ $DASHBOARD\"\nfi\n"
+    - name: Commit dashboard updates and create PR
+      if: always() && steps.config.outputs.create_pr == 'true'
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: "git config user.name \"github-actions[bot]\"\ngit config user.email \"\
+        github-actions[bot]@users.noreply.github.com\"\n\nif [ -f \"docs/status/GITHUB_PAGES_STATUS.md\"\
+        \ ]; then\n  git add docs/status/GITHUB_PAGES_STATUS.md\n\n  if git diff --staged\
+        \ --quiet; then\n    echo \"No changes to commit\"\n  else\n    BRANCH=\"\
+        pages-validation-auto/${{ steps.config.outputs.timestamp }}\"\n    git checkout\
+        \ -b \"${BRANCH}\"\n    git commit -m \"chore: Update GitHub Pages status\
+        \ dashboard [${{ steps.config.outputs.validation_type }}] ${{ steps.config.outputs.timestamp\
+        \ }}\"\n\n    git push origin \"${BRANCH}\"\n\n    # Create PR using gh CLI\
+        \ with JSON-safe body written to isolated temp file.\n    # Use printf line-by-line\
+        \ to avoid multi-line string YAML parse errors.\n    PR_BODY_FILE=\"${RUNNER_TEMP}/pr_body_$$.txt\"\
+        \n    printf '## Automated GitHub Pages Status Dashboard Update\\n' > \"${PR_BODY_FILE}\"\
+        \n    printf '\\n' >> \"${PR_BODY_FILE}\"\n    printf '**Triggered by:** Scheduled\
+        \ validation workflow\\n' >> \"${PR_BODY_FILE}\"\n    printf '**Validation\
+        \ type:** %s\\n' \"${{ steps.config.outputs.validation_type }}\" >> \"${PR_BODY_FILE}\"\
+        \n    printf '**Timestamp:** %s\\n' \"${{ steps.config.outputs.timestamp }}\"\
+        \ >> \"${PR_BODY_FILE}\"\n    printf '\\n' >> \"${PR_BODY_FILE}\"\n    printf\
+        \ 'This PR was auto-generated by the `pages-scheduled-validation` workflow.\\\
+        n' >> \"${PR_BODY_FILE}\"\n    printf 'Review the dashboard update and merge\
+        \ if the status looks correct.\\n' >> \"${PR_BODY_FILE}\"\n\n    gh pr create\
+        \ \\\n      --title \"chore: automated Pages status dashboard update (${{\
+        \ steps.config.outputs.timestamp }})\" \\\n      --body-file \"${PR_BODY_FILE}\"\
+        \ \\\n      --base \"${{ github.event.repository.default_branch || 'main'\
+        \ }}\" \\\n      --head \"${BRANCH}\" \\\n      --label \"automated,documentation\"\
+        \ || \\\n    echo \"⚠️  gh pr create failed — check GH_TOKEN permissions\"\
+        \n\n    echo \"✅ Changes committed and PR created on branch ${BRANCH}\"\n\
+        \  fi\nfi\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

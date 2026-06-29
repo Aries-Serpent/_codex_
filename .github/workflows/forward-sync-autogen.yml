@@ -1,184 +1,116 @@
-name: "Forward-Sync Auto-Generated Files → staging chain (Safety Net)"
-
-# SAFETY NET — all primary auto-gen workflows now walk the staging chain
-# (sub-PR → 0D_base_ → main) and commit to the deepest active branch.
-# This workflow catches any remaining cases where a commit slips onto main:
-#   - A new workflow is added without the chain-routing logic
-#   - A manual workflow_dispatch on main bypasses the branch check
-#   - Race conditions where a push reaches main despite a staging branch being active
-#   - Dependabot bumps that Dependabot merges directly to main
-#
-# Files forwarded (written by scheduled workflows or Dependabot):
-#   .codex/agent_context.json                      (repo-var-sync-schedule.yml)
-#   .codex/cognitive_brain/metadata.json            (cognitive-analysis-feed.yml)
-#   .codex/cognitive_brain/workflow_patterns.jsonl  (cognitive-analysis-feed.yml)
-#   .codex/embeddings/codex_index_meta.json         (embedding-index-rebuild.yml)
-#   docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md     (vars-guide-sync.yml)
-#   docs/admin/variable_audit_latest.md             (vars-guide-sync.yml)
-#   requirements/lock.txt                           (dependabot)
-#   requirements/base.txt                           (dependabot)
-
-on:
+name: Forward-Sync Auto-Generated Files → staging chain (Safety Net)
+true:
   push:
-    branches: [main]
+    branches:
+    - main
     paths:
-      - ".codex/agent_context.json"
-      - ".codex/cognitive_brain/metadata.json"
-      - ".codex/cognitive_brain/workflow_patterns.jsonl"
-      - ".codex/embeddings/codex_index_meta.json"
-      - "docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md"
-      - "docs/admin/variable_audit_latest.md"
-      - "requirements/lock.txt"
-      - "requirements/base.txt"
-
-
+    - .codex/agent_context.json
+    - .codex/cognitive_brain/metadata.json
+    - .codex/cognitive_brain/workflow_patterns.jsonl
+    - .codex/embeddings/codex_index_meta.json
+    - docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md
+    - docs/admin/variable_audit_latest.md
+    - requirements/lock.txt
+    - requirements/base.txt
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: write
-
 jobs:
   forward-sync:
-    name: "📤 Forward files main → staging chain tip"
+    name: 📤 Forward files main → staging chain tip
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
     steps:
-      - name: Checkout main
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          ref: main
-          fetch-depth: 1
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-
-      - name: "🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)"
-        id: resolve-target
-        uses: ./.github/actions/resolve-push-target
-
-      - name: "🚦 Skip if target is main (no staging branch active)"
-        id: check-target
-        run: |
-          TARGET="${{ steps.resolve-target.outputs.branch }}"
-          if [ "$TARGET" = "main" ]; then
-            echo "skip=true" >> "$GITHUB_OUTPUT"
-            echo "ℹ️  No staging branch active — nothing to forward"
-          else
-            echo "skip=false" >> "$GITHUB_OUTPUT"
-            echo "✅ Staging branch detected: $TARGET"
-          fi
-
-      - name: "📥 Checkout chain tip (${{ steps.resolve-target.outputs.branch }})"
-        if: steps.check-target.outputs.skip != 'true'
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          persist-credentials: false
-          ref: ${{ steps.resolve-target.outputs.branch }}
-          fetch-depth: 1
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-
-      - name: "🔄 Fetch changed files from main and apply to chain tip"
-        id: sync
-        if: steps.check-target.outputs.skip != 'true'
-        run: |
-          git fetch origin main --depth=1
-
-          CHANGED=0
-          FILES=(
-            ".codex/agent_context.json"
-            ".codex/cognitive_brain/metadata.json"
-            ".codex/cognitive_brain/workflow_patterns.jsonl"
-            ".codex/embeddings/codex_index_meta.json"
-            "docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md"
-            "docs/admin/variable_audit_latest.md"
-            "requirements/lock.txt"
-            "requirements/base.txt"
-          )
-          for f in "${FILES[@]}"; do
-            if git show origin/main:"$f" > /tmp/autogen_forward 2>/dev/null; then
-              if ! cmp -s /tmp/autogen_forward "$f" 2>/dev/null; then
-                mkdir -p "$(dirname "$f")"
-                cp /tmp/autogen_forward "$f"
-                git add "$f"
-                echo "Updated: $f"
-                CHANGED=1
-              fi
-            fi
-          done
-          echo "changed=$CHANGED" >> "$GITHUB_OUTPUT"
-
-      - name: "🛡️ Active-PR guard — skip push when any open/draft PR targets the chain tip"
-        id: pr_guard
-        if: steps.check-target.outputs.skip != 'true' && steps.sync.outputs.changed == '1'
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          REPO: ${{ github.repository }}
-          TARGET: ${{ steps.resolve-target.outputs.branch }}
-        run: |
-          if [ "$TARGET" = "main" ] || [ "$TARGET" = "0D_base_" ]; then
-            PR_COUNT=$(gh api "repos/${REPO}/pulls?base=${TARGET}&state=open&per_page=1" \
-              --jq 'length' 2>/dev/null || echo "0")
-            if [ "${PR_COUNT}" -gt "0" ]; then
-              echo "pr_skip=true" >> "$GITHUB_OUTPUT"
-              echo "⛔ ${PR_COUNT} open/draft PR(s) targeting \`${TARGET}\` — forward-sync push deferred." >> "$GITHUB_STEP_SUMMARY"
-            else
-              echo "pr_skip=false" >> "$GITHUB_OUTPUT"
-            fi
-          else
-            echo "pr_skip=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: "💾 Commit and push forwarded files to chain tip"
-        if: steps.check-target.outputs.skip != 'true' && steps.sync.outputs.changed == '1' && steps.pr_guard.outputs.pr_skip != 'true'
-        env:
-          TARGET: ${{ steps.resolve-target.outputs.branch }}
-        run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "chore(autosync): forward files from main → ${TARGET} [skip ci]
-
-          Triggered by push ${{ github.sha }} on main.
-          Reason: ${{ steps.resolve-target.outputs.reason }}
-          Files: agent_context.json, metadata.json, workflow_patterns.jsonl,
-                 codex_index_meta.json, GITHUB_VARIABLES_MASTER_GUIDE.md,
-                 variable_audit_latest.md, requirements/lock.txt, requirements/base.txt"
-
-          # Rebase guard: pull any commits that landed on the target since checkout
-          # to prevent non-fast-forward rejection on push.
-          git pull --rebase --autostash origin "${TARGET}" || {
-            echo "⚠️  Rebase failed — re-applying files on top of latest ${TARGET}"
-            git rebase --abort 2>/dev/null || true
-            git fetch origin "${TARGET}" --depth=5
-            git reset --hard origin/"${TARGET}"
-            FILES=(
-              ".codex/agent_context.json"
-              ".codex/cognitive_brain/metadata.json"
-              ".codex/cognitive_brain/workflow_patterns.jsonl"
-              ".codex/embeddings/codex_index_meta.json"
-              "docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md"
-              "docs/admin/variable_audit_latest.md"
-              "requirements/lock.txt"
-              "requirements/base.txt"
-            )
-            for f in "${FILES[@]}"; do
-              if git show origin/main:"$f" > /tmp/autogen_reapply 2>/dev/null; then
-                if ! cmp -s /tmp/autogen_reapply "$f" 2>/dev/null; then
-                  mkdir -p "$(dirname "$f")"
-                  cp /tmp/autogen_reapply "$f"
-                  git add "$f"
-                fi
-              fi
-            done
-            git diff --cached --quiet && { echo "ℹ️  No changes remain after rebase — skipping push"; exit 0; }
-            git commit -m "chore(autosync): forward files from main → ${TARGET} [skip ci]
-
-          Triggered by push ${{ github.sha }} on main (post-rebase retry)."
-          }
-
-          git push origin "HEAD:${TARGET}"
-          echo "✅ Files forwarded to ${TARGET}"
-
-      - name: No-op summary
-        if: steps.check-target.outputs.skip == 'true' || steps.sync.outputs.changed != '1'
-        run: echo "ℹ️  No file changes to forward (target=${{ steps.resolve-target.outputs.branch }}, reason=${{ steps.resolve-target.outputs.reason }})"
+    - name: Checkout main
+      uses: actions/checkout@v7
+      with:
+        ref: main
+        fetch-depth: 1
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+    - name: '🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)'
+      id: resolve-target
+      uses: ./.github/actions/resolve-push-target
+    - name: 🚦 Skip if target is main (no staging branch active)
+      id: check-target
+      run: "TARGET=\"${{ steps.resolve-target.outputs.branch }}\"\nif [ \"$TARGET\"\
+        \ = \"main\" ]; then\n  echo \"skip=true\" >> \"$GITHUB_OUTPUT\"\n  echo \"\
+        ℹ️  No staging branch active — nothing to forward\"\nelse\n  echo \"skip=false\"\
+        \ >> \"$GITHUB_OUTPUT\"\n  echo \"✅ Staging branch detected: $TARGET\"\nfi\n"
+    - name: 📥 Checkout chain tip (${{ steps.resolve-target.outputs.branch }})
+      if: steps.check-target.outputs.skip != 'true'
+      uses: actions/checkout@v7
+      with:
+        persist-credentials: false
+        ref: ${{ steps.resolve-target.outputs.branch }}
+        fetch-depth: 1
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+    - name: 🔄 Fetch changed files from main and apply to chain tip
+      id: sync
+      if: steps.check-target.outputs.skip != 'true'
+      run: "git fetch origin main --depth=1\n\nCHANGED=0\nFILES=(\n  \".codex/agent_context.json\"\
+        \n  \".codex/cognitive_brain/metadata.json\"\n  \".codex/cognitive_brain/workflow_patterns.jsonl\"\
+        \n  \".codex/embeddings/codex_index_meta.json\"\n  \"docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md\"\
+        \n  \"docs/admin/variable_audit_latest.md\"\n  \"requirements/lock.txt\"\n\
+        \  \"requirements/base.txt\"\n)\nfor f in \"${FILES[@]}\"; do\n  if git show\
+        \ origin/main:\"$f\" > /tmp/autogen_forward 2>/dev/null; then\n    if ! cmp\
+        \ -s /tmp/autogen_forward \"$f\" 2>/dev/null; then\n      mkdir -p \"$(dirname\
+        \ \"$f\")\"\n      cp /tmp/autogen_forward \"$f\"\n      git add \"$f\"\n\
+        \      echo \"Updated: $f\"\n      CHANGED=1\n    fi\n  fi\ndone\necho \"\
+        changed=$CHANGED\" >> \"$GITHUB_OUTPUT\"\n"
+    - name: 🛡️ Active-PR guard — skip push when any open/draft PR targets the chain
+        tip
+      id: pr_guard
+      if: steps.check-target.outputs.skip != 'true' && steps.sync.outputs.changed
+        == '1'
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        REPO: ${{ github.repository }}
+        TARGET: ${{ steps.resolve-target.outputs.branch }}
+      run: "if [ \"$TARGET\" = \"main\" ] || [ \"$TARGET\" = \"0D_base_\" ]; then\n\
+        \  PR_COUNT=$(gh api \"repos/${REPO}/pulls?base=${TARGET}&state=open&per_page=1\"\
+        \ \\\n    --jq 'length' 2>/dev/null || echo \"0\")\n  if [ \"${PR_COUNT}\"\
+        \ -gt \"0\" ]; then\n    echo \"pr_skip=true\" >> \"$GITHUB_OUTPUT\"\n   \
+        \ echo \"⛔ ${PR_COUNT} open/draft PR(s) targeting \\`${TARGET}\\` — forward-sync\
+        \ push deferred.\" >> \"$GITHUB_STEP_SUMMARY\"\n  else\n    echo \"pr_skip=false\"\
+        \ >> \"$GITHUB_OUTPUT\"\n  fi\nelse\n  echo \"pr_skip=false\" >> \"$GITHUB_OUTPUT\"\
+        \nfi\n"
+    - name: 💾 Commit and push forwarded files to chain tip
+      if: steps.check-target.outputs.skip != 'true' && steps.sync.outputs.changed
+        == '1' && steps.pr_guard.outputs.pr_skip != 'true'
+      env:
+        TARGET: ${{ steps.resolve-target.outputs.branch }}
+      run: "git config user.name  \"github-actions[bot]\"\ngit config user.email \"\
+        41898282+github-actions[bot]@users.noreply.github.com\"\ngit commit -m \"\
+        chore(autosync): forward files from main → ${TARGET} [skip ci]\n\nTriggered\
+        \ by push ${{ github.sha }} on main.\nReason: ${{ steps.resolve-target.outputs.reason\
+        \ }}\nFiles: agent_context.json, metadata.json, workflow_patterns.jsonl,\n\
+        \       codex_index_meta.json, GITHUB_VARIABLES_MASTER_GUIDE.md,\n       variable_audit_latest.md,\
+        \ requirements/lock.txt, requirements/base.txt\"\n\n# Rebase guard: pull any\
+        \ commits that landed on the target since checkout\n# to prevent non-fast-forward\
+        \ rejection on push.\ngit pull --rebase --autostash origin \"${TARGET}\" ||\
+        \ {\n  echo \"⚠️  Rebase failed — re-applying files on top of latest ${TARGET}\"\
+        \n  git rebase --abort 2>/dev/null || true\n  git fetch origin \"${TARGET}\"\
+        \ --depth=5\n  git reset --hard origin/\"${TARGET}\"\n  FILES=(\n    \".codex/agent_context.json\"\
+        \n    \".codex/cognitive_brain/metadata.json\"\n    \".codex/cognitive_brain/workflow_patterns.jsonl\"\
+        \n    \".codex/embeddings/codex_index_meta.json\"\n    \"docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md\"\
+        \n    \"docs/admin/variable_audit_latest.md\"\n    \"requirements/lock.txt\"\
+        \n    \"requirements/base.txt\"\n  )\n  for f in \"${FILES[@]}\"; do\n   \
+        \ if git show origin/main:\"$f\" > /tmp/autogen_reapply 2>/dev/null; then\n\
+        \      if ! cmp -s /tmp/autogen_reapply \"$f\" 2>/dev/null; then\n       \
+        \ mkdir -p \"$(dirname \"$f\")\"\n        cp /tmp/autogen_reapply \"$f\"\n\
+        \        git add \"$f\"\n      fi\n    fi\n  done\n  git diff --cached --quiet\
+        \ && { echo \"ℹ️  No changes remain after rebase — skipping push\"; exit 0;\
+        \ }\n  git commit -m \"chore(autosync): forward files from main → ${TARGET}\
+        \ [skip ci]\n\nTriggered by push ${{ github.sha }} on main (post-rebase retry).\"\
+        \n}\n\ngit push origin \"HEAD:${TARGET}\"\necho \"✅ Files forwarded to ${TARGET}\"\
+        \n"
+    - name: No-op summary
+      if: steps.check-target.outputs.skip == 'true' || steps.sync.outputs.changed
+        != '1'
+      run: echo "ℹ️  No file changes to forward (target=${{ steps.resolve-target.outputs.branch
+        }}, reason=${{ steps.resolve-target.outputs.reason }})"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

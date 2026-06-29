@@ -1,212 +1,135 @@
-name: "📈 OTel Coherence Snapshot"
-
-# Runs weekly on Monday morning, computes the current AAIS coherence score,
-# and posts a summary to the latest open PR (or to the workflow step summary).
-#
-# This is the hardened weekly enforcement of the AAIS ≥ 99.7 requirement
-# introduced in S141.  If the composite AAIS score falls below MIN_PASSING_SCORE
-# the job exits non-zero so the weekly cadence surfaces the regression.
-
-on:
+name: 📈 OTel Coherence Snapshot
+true:
   schedule:
-    - cron: "0 8 * * 1"   # Every Monday at 08:00 UTC
+  - cron: 0 8 * * 1
   workflow_dispatch:
     inputs:
       pr_number:
-        description: "PR number to post the coherence snapshot to (optional)"
+        description: PR number to post the coherence snapshot to (optional)
         required: false
-        default: ""
+        default: ''
         type: string
-
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   pull-requests: write
-
 jobs:
   coherence-snapshot:
-    name: "OTel Coherence Snapshot"
+    name: OTel Coherence Snapshot
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v7 # v6.0.3
+    - name: Checkout
+      uses: actions/checkout@v7
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        cache: pip
+        python-version: 3.12.13
+    - name: Install minimal dependencies
+      run: 'python -m pip install --quiet --upgrade pip
 
-      - name: Set up Python
-        uses: actions/setup-python@v6 # v6
-        with:
-          cache: pip
-          python-version: "3.12.13"
+        # Install only the packages required by the monitoring module
 
-      - name: Install minimal dependencies
-        run: |
-          python -m pip install --quiet --upgrade pip
-          # Install only the packages required by the monitoring module
-          pip install --quiet opentelemetry-api 2>/dev/null || true
+        pip install --quiet opentelemetry-api 2>/dev/null || true
 
-      - name: Run AAIS scorer + emit coherence observation
-        id: aais
-        run: |
-          python scripts/ci/aais_v4_scorer.py --json --output /tmp/aais_result.json --ci
-          SCORE=$(python -c "import json; d=json.load(open('/tmp/aais_result.json')); print(d['composite'])")
-          GRADE=$(python -c "import json; d=json.load(open('/tmp/aais_result.json')); print(d['grade'])")
-          echo "score=${SCORE}" >> "$GITHUB_OUTPUT"
-          echo "grade=${GRADE}" >> "$GITHUB_OUTPUT"
-          echo "AAIS composite: ${SCORE}/100 (${GRADE})"
+        '
+    - name: Run AAIS scorer + emit coherence observation
+      id: aais
+      run: 'python scripts/ci/aais_v4_scorer.py --json --output /tmp/aais_result.json
+        --ci
 
-      - name: Compute coherence score from AAIS sub-dimensions
-        id: coherence
-        run: |
-          python - <<'EOF'
-          import json, sys
+        SCORE=$(python -c "import json; d=json.load(open(''/tmp/aais_result.json''));
+        print(d[''composite''])")
 
-          sys.path.insert(0, "src")
-          try:
-              from codex.monitoring.otel_metrics import compute_coherence, workflow_coherence_score
-              otel_available = True
-          except Exception as e:
-              print(f"OTel import skipped: {e}")
-              otel_available = False
+        GRADE=$(python -c "import json; d=json.load(open(''/tmp/aais_result.json''));
+        print(d[''grade''])")
 
-          data = json.load(open("/tmp/aais_result.json"))
+        echo "score=${SCORE}" >> "$GITHUB_OUTPUT"
 
-          actual   = {}
-          expected = {}
-          for pillar in data.get("pillars", []):
-              for sd in pillar.get("sub_dimensions", []):
-                  key = sd["name"]
-                  actual[key]   = "pass" if sd["score"] >= 80.0 else "fail"
-                  expected[key] = "pass"
+        echo "grade=${GRADE}" >> "$GITHUB_OUTPUT"
 
-          if otel_available:
-              coherence = compute_coherence(actual, expected)
-              workflow_coherence_score.observe(coherence)
-              print(f"Coherence score: {coherence:.3f}")
-              with open("/tmp/coherence.txt", "w") as f:
-                  f.write(str(coherence))
-          else:
-              passing  = sum(1 for v in actual.values() if v == "pass")
-              total    = len(actual) or 1
-              coherence = passing / total
-              print(f"Coherence score (computed locally): {coherence:.3f}")
-              with open("/tmp/coherence.txt", "w") as f:
-                  f.write(str(coherence))
-          EOF
-          COHERENCE=$(cat /tmp/coherence.txt)
-          echo "coherence=${COHERENCE}" >> "$GITHUB_OUTPUT"
+        echo "AAIS composite: ${SCORE}/100 (${GRADE})"
 
-      - name: Build snapshot markdown
-        id: snapshot
-        run: |
-          python - <<'EOF'
-          import json, datetime, os
-
-          data      = json.load(open("/tmp/aais_result.json"))
-          score     = data["composite"]
-          grade     = data["grade"]
-          coherence = float(open("/tmp/coherence.txt").read().strip())
-          ts        = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
-
-          color = "🟢" if score >= 99.7 else ("🟡" if score >= 80 else "🔴")
-          c_color = "🟢" if coherence >= 0.9 else ("🟡" if coherence >= 0.7 else "🔴")
-
-          lines = [
-              f"## 📈 OTel Coherence Snapshot — {ts}",
-              "",
-              f"| Metric | Value | Status |",
-              f"|--------|-------|--------|",
-              f"| AAIS Composite | **{score:.1f} / 100** ({grade}) | {color} {'≥ 99.7 ✅' if score >= 99.7 else '< 99.7 ⚠️'} |",
-              f"| Coherence Score | **{coherence:.3f}** | {c_color} {'≥ 0.9 ✅' if coherence >= 0.9 else '< 0.9 ⚠️'} |",
-              "",
-              "<details>",
-              "<summary>📊 Sub-dimension breakdown</summary>",
-              "",
-              "| Sub-dimension | Score | Policy |",
-              "|---------------|------:|--------|",
-          ]
-          for pillar in data.get("pillars", []):
-              for sd in pillar.get("sub_dimensions", []):
-                  ok = "✅" if sd["score"] >= 80.0 else "❌"
-                  lines.append(f"| {sd['name']} | {sd['score']:.1f} | {ok} |")
-          lines += ["", "</details>", ""]
-
-          if score < 99.7:
-              lines += [
-                  "> ⚠️ **AAIS regression detected** — score fell below 99.7 threshold.",
-                  "> Review the sub-dimension breakdown above and apply targeted fixes.",
-                  "",
-              ]
-
-          md = "\n".join(lines)
-          with open("/tmp/snapshot.md", "w") as f:
-              f.write(md)
-          print(md)
-          EOF
-
-      - name: Write to step summary
-        run: cat /tmp/snapshot.md >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Post to PR dashboard (if PR number provided)
-        if: github.event.inputs.pr_number != '' || github.event_name == 'schedule'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-        run: |
-          PR_NUMBER="${{ github.event.inputs.pr_number }}"
-
-          # For scheduled runs find the most recently updated open PR
-          if [ -z "${PR_NUMBER}" ]; then
-            PR_NUMBER=$(python - <<'EOF'
-          import json, urllib.request, os
-
-          token = os.environ.get("GITHUB_TOKEN", "")
-          repo  = os.environ.get("GITHUB_REPOSITORY", "Aries-Serpent/_codex_")
-          req   = urllib.request.Request(
-              f"https://api.github.com/repos/{repo}/pulls?state=open&sort=updated&direction=desc&per_page=1",
-              headers={"Authorization": f"Bearer {token}", "Accept": "application/vnd.github+json",
-                       "X-GitHub-Api-Version": "2022-11-28"},
-          )
-          import urllib.error
-          try:
-              with urllib.request.urlopen(req, timeout=10) as r:
-                  prs = json.loads(r.read())
-                  print(prs[0]["number"] if prs else "")
-          except Exception:
-              print("")
-          EOF
-            )
-          fi
-
-          if [ -z "${PR_NUMBER}" ]; then
-            echo "No open PR found — skipping dashboard post (results written to step summary)"
-            exit 0
-          fi
-
-          DETAILS=$(cat /tmp/snapshot.md)
-          python scripts/ci/pr_comment_consolidator.py \
-            --pr-number  "${PR_NUMBER}" \
-            --workflow   "OTel Coherence Snapshot" \
-            --status     "$(awk -v s='${{ steps.aais.outputs.score }}' 'BEGIN{print (s+0 >= 80.0) ? "success" : "warning"}')" \
-            --summary    "AAIS ${{ steps.aais.outputs.score }}/100 (${{ steps.aais.outputs.grade }}) · Coherence ${{ steps.coherence.outputs.coherence }}" \
-            --details    "${DETAILS}" \
-            --run-url    "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-
-      - name: Enforce AAIS ≥ MIN_PASSING_SCORE threshold
-        run: |
-          SCORE="${{ steps.aais.outputs.score }}"
-          python - <<EOF
-          import sys
-          sys.path.insert(0, "scripts/ci")
-          from aais_v4_scorer import MIN_PASSING_SCORE as threshold
-          score = float("${SCORE}")
-          if score < threshold:
-              print(f"❌ AAIS regression: {score:.1f} < {threshold} — weekly enforcement FAILED")
-              sys.exit(1)
-          else:
-              print(f"✅ AAIS {score:.1f}/100 ≥ {threshold} — weekly enforcement PASSED")
-          EOF
+        '
+    - name: Compute coherence score from AAIS sub-dimensions
+      id: coherence
+      run: "python - <<'EOF'\nimport json, sys\n\nsys.path.insert(0, \"src\")\ntry:\n\
+        \    from codex.monitoring.otel_metrics import compute_coherence, workflow_coherence_score\n\
+        \    otel_available = True\nexcept Exception as e:\n    print(f\"OTel import\
+        \ skipped: {e}\")\n    otel_available = False\n\ndata = json.load(open(\"\
+        /tmp/aais_result.json\"))\n\nactual   = {}\nexpected = {}\nfor pillar in data.get(\"\
+        pillars\", []):\n    for sd in pillar.get(\"sub_dimensions\", []):\n     \
+        \   key = sd[\"name\"]\n        actual[key]   = \"pass\" if sd[\"score\"]\
+        \ >= 80.0 else \"fail\"\n        expected[key] = \"pass\"\n\nif otel_available:\n\
+        \    coherence = compute_coherence(actual, expected)\n    workflow_coherence_score.observe(coherence)\n\
+        \    print(f\"Coherence score: {coherence:.3f}\")\n    with open(\"/tmp/coherence.txt\"\
+        , \"w\") as f:\n        f.write(str(coherence))\nelse:\n    passing  = sum(1\
+        \ for v in actual.values() if v == \"pass\")\n    total    = len(actual) or\
+        \ 1\n    coherence = passing / total\n    print(f\"Coherence score (computed\
+        \ locally): {coherence:.3f}\")\n    with open(\"/tmp/coherence.txt\", \"w\"\
+        ) as f:\n        f.write(str(coherence))\nEOF\nCOHERENCE=$(cat /tmp/coherence.txt)\n\
+        echo \"coherence=${COHERENCE}\" >> \"$GITHUB_OUTPUT\"\n"
+    - name: Build snapshot markdown
+      id: snapshot
+      run: "python - <<'EOF'\nimport json, datetime, os\n\ndata      = json.load(open(\"\
+        /tmp/aais_result.json\"))\nscore     = data[\"composite\"]\ngrade     = data[\"\
+        grade\"]\ncoherence = float(open(\"/tmp/coherence.txt\").read().strip())\n\
+        ts        = datetime.datetime.now(datetime.timezone.utc).strftime(\"%Y-%m-%d\
+        \ %H:%M UTC\")\n\ncolor = \"\U0001F7E2\" if score >= 99.7 else (\"\U0001F7E1\
+        \" if score >= 80 else \"\U0001F534\")\nc_color = \"\U0001F7E2\" if coherence\
+        \ >= 0.9 else (\"\U0001F7E1\" if coherence >= 0.7 else \"\U0001F534\")\n\n\
+        lines = [\n    f\"## \U0001F4C8 OTel Coherence Snapshot — {ts}\",\n    \"\"\
+        ,\n    f\"| Metric | Value | Status |\",\n    f\"|--------|-------|--------|\"\
+        ,\n    f\"| AAIS Composite | **{score:.1f} / 100** ({grade}) | {color} {'≥\
+        \ 99.7 ✅' if score >= 99.7 else '< 99.7 ⚠️'} |\",\n    f\"| Coherence Score\
+        \ | **{coherence:.3f}** | {c_color} {'≥ 0.9 ✅' if coherence >= 0.9 else '<\
+        \ 0.9 ⚠️'} |\",\n    \"\",\n    \"<details>\",\n    \"<summary>\U0001F4CA\
+        \ Sub-dimension breakdown</summary>\",\n    \"\",\n    \"| Sub-dimension |\
+        \ Score | Policy |\",\n    \"|---------------|------:|--------|\",\n]\nfor\
+        \ pillar in data.get(\"pillars\", []):\n    for sd in pillar.get(\"sub_dimensions\"\
+        , []):\n        ok = \"✅\" if sd[\"score\"] >= 80.0 else \"❌\"\n        lines.append(f\"\
+        | {sd['name']} | {sd['score']:.1f} | {ok} |\")\nlines += [\"\", \"</details>\"\
+        , \"\"]\n\nif score < 99.7:\n    lines += [\n        \"> ⚠️ **AAIS regression\
+        \ detected** — score fell below 99.7 threshold.\",\n        \"> Review the\
+        \ sub-dimension breakdown above and apply targeted fixes.\",\n        \"\"\
+        ,\n    ]\n\nmd = \"\\n\".join(lines)\nwith open(\"/tmp/snapshot.md\", \"w\"\
+        ) as f:\n    f.write(md)\nprint(md)\nEOF\n"
+    - name: Write to step summary
+      run: cat /tmp/snapshot.md >> "$GITHUB_STEP_SUMMARY"
+    - name: Post to PR dashboard (if PR number provided)
+      if: github.event.inputs.pr_number != '' || github.event_name == 'schedule'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+      run: "PR_NUMBER=\"${{ github.event.inputs.pr_number }}\"\n\n# For scheduled\
+        \ runs find the most recently updated open PR\nif [ -z \"${PR_NUMBER}\" ];\
+        \ then\n  PR_NUMBER=$(python - <<'EOF'\nimport json, urllib.request, os\n\n\
+        token = os.environ.get(\"GITHUB_TOKEN\", \"\")\nrepo  = os.environ.get(\"\
+        GITHUB_REPOSITORY\", \"Aries-Serpent/_codex_\")\nreq   = urllib.request.Request(\n\
+        \    f\"https://api.github.com/repos/{repo}/pulls?state=open&sort=updated&direction=desc&per_page=1\"\
+        ,\n    headers={\"Authorization\": f\"Bearer {token}\", \"Accept\": \"application/vnd.github+json\"\
+        ,\n             \"X-GitHub-Api-Version\": \"2022-11-28\"},\n)\nimport urllib.error\n\
+        try:\n    with urllib.request.urlopen(req, timeout=10) as r:\n        prs\
+        \ = json.loads(r.read())\n        print(prs[0][\"number\"] if prs else \"\"\
+        )\nexcept Exception:\n    print(\"\")\nEOF\n  )\nfi\n\nif [ -z \"${PR_NUMBER}\"\
+        \ ]; then\n  echo \"No open PR found — skipping dashboard post (results written\
+        \ to step summary)\"\n  exit 0\nfi\n\nDETAILS=$(cat /tmp/snapshot.md)\npython\
+        \ scripts/ci/pr_comment_consolidator.py \\\n  --pr-number  \"${PR_NUMBER}\"\
+        \ \\\n  --workflow   \"OTel Coherence Snapshot\" \\\n  --status     \"$(awk\
+        \ -v s='${{ steps.aais.outputs.score }}' 'BEGIN{print (s+0 >= 80.0) ? \"success\"\
+        \ : \"warning\"}')\" \\\n  --summary    \"AAIS ${{ steps.aais.outputs.score\
+        \ }}/100 (${{ steps.aais.outputs.grade }}) · Coherence ${{ steps.coherence.outputs.coherence\
+        \ }}\" \\\n  --details    \"${DETAILS}\" \\\n  --run-url    \"${{ github.server_url\
+        \ }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"\n"
+    - name: Enforce AAIS ≥ MIN_PASSING_SCORE threshold
+      run: "SCORE=\"${{ steps.aais.outputs.score }}\"\npython - <<EOF\nimport sys\n\
+        sys.path.insert(0, \"scripts/ci\")\nfrom aais_v4_scorer import MIN_PASSING_SCORE\
+        \ as threshold\nscore = float(\"${SCORE}\")\nif score < threshold:\n    print(f\"\
+        ❌ AAIS regression: {score:.1f} < {threshold} — weekly enforcement FAILED\"\
+        )\n    sys.exit(1)\nelse:\n    print(f\"✅ AAIS {score:.1f}/100 ≥ {threshold}\
+        \ — weekly enforcement PASSED\")\nEOF\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

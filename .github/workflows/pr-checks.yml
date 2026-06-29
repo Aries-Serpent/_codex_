@@ -1,111 +1,119 @@
 name: PR Checks (Isolated Cache)
-
-on:
+true:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types:
+    - opened
+    - synchronize
+    - reopened
     paths:
-      - 'src/**'
-      - 'tests/**'
-      - 'pyproject.toml'
-      - 'requirements*.txt'
-      - '.github/workflows/pr-checks.yml'
-
+    - src/**
+    - tests/**
+    - pyproject.toml
+    - requirements*.txt
+    - .github/workflows/pr-checks.yml
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   pull-requests: write
-
-
 jobs:
   pr-test:
     name: PR Tests
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v7 # v6.0.3
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
+    - uses: actions/checkout@v7
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+    - name: Setup Python
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+    - name: Restore cache from main (read-only)
+      uses: actions/cache/restore@v5
+      with:
+        path: /tmp/uv-cache
+        key: uv-${{ runner.os }}-py3.11-test-${{ hashFiles('**/requirements*.txt',
+          'pyproject.toml') }}
+        restore-keys: 'uv-${{ runner.os }}-py3.11-test-
 
-      - name: Setup Python
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12.13'
+          uv-${{ runner.os }}-py3.11-
 
-      # SECURITY: Read-only cache from main branch
-      - name: Restore cache from main (read-only)
-        uses: actions/cache/restore@v5  # v5
-        with:
-          path: /tmp/uv-cache
-          key: uv-${{ runner.os }}-py3.11-test-${{ hashFiles('**/requirements*.txt', 'pyproject.toml') }}
-          restore-keys: |
-            uv-${{ runner.os }}-py3.11-test-
-            uv-${{ runner.os }}-py3.11-
-        # NOTE: No cache/save for PRs - prevents cache poisoning
+          '
+    - name: Install UV
+      run: curl -LsSf https://astral.sh/uv/install.sh | sh
+    - name: Install dependencies
+      env:
+        UV_CACHE_DIR: /tmp/uv-cache
+      run: 'pip install pytest-timeout==2.4.0
 
-      - name: Install UV
-        run: curl -LsSf https://astral.sh/uv/install.sh | sh
 
-      - name: Install dependencies
-        env:
-          UV_CACHE_DIR: /tmp/uv-cache
-        run: |
-          pip install pytest-timeout==2.4.0
+        export PATH="$HOME/.cargo/bin:$PATH"
 
-          export PATH="$HOME/.cargo/bin:$PATH"
-          # Install package with dev dependencies (includes all test requirements)
-          uv pip install --system -e .[dev]
+        # Install package with dev dependencies (includes all test requirements)
 
-      - name: Run tests
-        run: python -m pytest tests/ -x --tb=short --timeout=300
+        uv pip install --system -e .[dev]
 
-      - name: Cache health report
-        if: always()
-        continue-on-error: true
-        run: |
-          python scripts/ci/generate_cache_keys.py --type pip --workflow pr-checks --health 2>/dev/null || echo '{"status": "cache health check skipped"}'
+        '
+    - name: Run tests
+      run: python -m pytest tests/ -x --tb=short --timeout=300
+    - name: Cache health report
+      if: always()
+      continue-on-error: true
+      run: 'python scripts/ci/generate_cache_keys.py --type pip --workflow pr-checks
+        --health 2>/dev/null || echo ''{"status": "cache health check skipped"}''
 
-      - name: Generate CacheManager keys
-        id: cache-keys
-        continue-on-error: true
-        run: |
-          python scripts/ci/generate_cache_keys.py --type pip --workflow pr-checks --github-output "$GITHUB_OUTPUT" 2>/dev/null || echo "cache_key=fallback-${{ github.sha }}" >> "$GITHUB_OUTPUT"
+        '
+    - name: Generate CacheManager keys
+      id: cache-keys
+      continue-on-error: true
+      run: 'python scripts/ci/generate_cache_keys.py --type pip --workflow pr-checks
+        --github-output "$GITHUB_OUTPUT" 2>/dev/null || echo "cache_key=fallback-${{
+        github.sha }}" >> "$GITHUB_OUTPUT"
 
-      - name: Run linting
-        run: |
-          pip install ruff
-          ruff check . --output-format=github
+        '
+    - name: Run linting
+      run: 'pip install ruff
 
-  # ── rescue comment — posted on PR whenever this workflow fails ──────────
+        ruff check . --output-format=github
+
+        '
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
     needs: pr-test
-    if: |
-      failure() &&
-      github.event_name == 'pull_request' &&
+    if: 'failure() &&
+
+      github.event_name == ''pull_request'' &&
+
       github.event.pull_request.head.repo.full_name == github.repository
+
+      '
     permissions:
       pull-requests: write
       issues: write
     timeout-minutes: 5
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          fetch-depth: 1
-
-      - name: Post or update rescue comment
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_NAME: "PR Checks"
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          BRANCH: ${{ github.head_ref }}
-        run: python scripts/ci/post_rescue_comment.py
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        fetch-depth: 1
+    - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: PR Checks
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+        BRANCH: ${{ github.head_ref }}
+      run: python scripts/ci/post_rescue_comment.py
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

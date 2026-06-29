@@ -1,5 +1,5 @@
 name: Scheduled Archival
-on:
+true:
   schedule:
   - cron: 0 2 * * 0
   workflow_dispatch:
@@ -18,7 +18,7 @@ permissions:
   issues: write
 jobs:
   cost-gate:
-    name: "\U0001F4B0 Cost Gate"
+    name: 💰 Cost Gate
     uses: ./.github/workflows/cost-gate.yml
     with:
       workflow_name: Scheduled Archival
@@ -29,6 +29,9 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   identify-candidates:
     name: Identify Archival Candidates
     runs-on: ubuntu-latest
@@ -65,6 +68,9 @@ jobs:
         \n    fi\n  done\nfi\n\n# Output for GitHub Actions\n{\n  echo \"count=$COUNT\"\
         \n  echo \"candidates<<EOF\"\n  echo \"$CANDIDATES\"\n  echo \"EOF\"\n} >>\
         \ $GITHUB_OUTPUT\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   create-proposal:
     name: Create Archival Proposal
     runs-on: ubuntu-latest
@@ -109,6 +115,9 @@ jobs:
         echo "${{ needs.identify-candidates.outputs.candidates }}"
 
         '
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   compress-large-files:
     name: Compress Large Historical Files
     runs-on: ubuntu-latest
@@ -127,3 +136,6 @@ jobs:
         \ -f \"$file\" ]; then\n      SIZE=$(du -h \"$file\" | cut -f1)\n      echo\
         \ \"- $file ($SIZE)\"\n    fi\n  done\nelse\n  echo \"No large files found\
         \ for compression\"\nfi\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

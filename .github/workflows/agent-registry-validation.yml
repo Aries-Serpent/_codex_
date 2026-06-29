@@ -1,330 +1,213 @@
 name: Agent Registry Validation
-
-# Phase 1 — satisfies C1: validate AGENT_REGISTRY.yaml against
-# .codex/schemas/AgentRegistrySchema.json on every PR and push to main.
-# Also validates CODEX_MANIFEST.json integrity when present.
-#
-# Tier: GROUNDED — Tier-1 hard gate (exit 1 on schema violations or integrity failure).
-# Promoted from Tier-2 canary after 2-sprint observation period.
-
-on:
+true:
   pull_request:
     paths:
-      - '.github/agents/AGENT_REGISTRY.yaml'
-      - '.codex/schemas/**'
-      - 'CODEX_MANIFEST.json'
-      - 'scripts/ci/generate_manifest.py'
+    - .github/agents/AGENT_REGISTRY.yaml
+    - .codex/schemas/**
+    - CODEX_MANIFEST.json
+    - scripts/ci/generate_manifest.py
   push:
     branches:
-      - main
+    - main
     paths:
-      - '.github/agents/AGENT_REGISTRY.yaml'
-      - '.codex/schemas/**'
-      - 'CODEX_MANIFEST.json'
-
+    - .github/agents/AGENT_REGISTRY.yaml
+    - .codex/schemas/**
+    - CODEX_MANIFEST.json
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   actions: write
   contents: read
   pull-requests: write
-
-
 jobs:
   validate-registry:
     name: Validate Agent Registry + Manifest
     runs-on: ubuntu-latest
     timeout-minutes: 5
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          fetch-depth: 1
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        fetch-depth: 1
+    - name: Set up Python
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+    - name: Install dependencies
+      run: pip install jsonschema pyyaml --quiet
+    - name: Refresh CODEX_MANIFEST.json
+      run: '# Regenerate the manifest on every validation run so generated_at is always
+        fresh.
 
-      - name: Set up Python
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12.13'
-          cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+        # This keeps C2 (manifest current <24h) satisfied in e-to-d-transition-gate.
 
-      - name: Install dependencies
-        run: pip install jsonschema pyyaml --quiet
+        python3 scripts/ci/generate_manifest.py
 
-      - name: Refresh CODEX_MANIFEST.json
-        run: |
-          # Regenerate the manifest on every validation run so generated_at is always fresh.
-          # This keeps C2 (manifest current <24h) satisfied in e-to-d-transition-gate.
-          python3 scripts/ci/generate_manifest.py
-          echo "✅ CODEX_MANIFEST.json refreshed"
+        echo "✅ CODEX_MANIFEST.json refreshed"
 
-      - name: Validate AGENT_REGISTRY.yaml schema
-        id: registry_validation
-        run: |
-          python3 - << 'PYEOF'
-          import json
-          import os
-          import sys
-          import yaml
-
-          try:
-              import jsonschema
-          except ImportError:
-              print("::warning::jsonschema not installed — skipping schema validation")
-              sys.exit(0)
-
-          schema_path = ".codex/schemas/AgentRegistrySchema.json"
-          registry_path = ".github/agents/AGENT_REGISTRY.yaml"
-
-          if not os.path.exists(schema_path):
-              print(f"::warning::AgentRegistrySchema.json not found at {schema_path}")
-              sys.exit(0)
-
-          if not os.path.exists(registry_path):
-              print(f"::warning::AGENT_REGISTRY.yaml not found at {registry_path}")
-              sys.exit(0)
-
-          with open(schema_path) as f:
-              schema = json.load(f)
-          with open(registry_path) as f:
-              data = yaml.safe_load(f)
-
-          errors = []
-
-          # Top-level validation
-          try:
-              jsonschema.validate(data, schema)
-          except jsonschema.ValidationError as e:
-              errors.append(f"Top-level: {e.message}")
-
-          # Per-agent validation
-          agent_schema = schema.get("definitions", {}).get("AgentEntry", {})
-          if agent_schema:
-              for agent in data.get("agents", []):
-                  try:
-                      jsonschema.validate(agent, agent_schema)
-                  except jsonschema.ValidationError as e:
-                      errors.append(f"Agent '{agent.get('id', '?')}': {e.message}")
-
-          # Check total_agents count matches actual
-          declared = data.get("total_agents", 0)
-          actual = len(data.get("agents", []))
-          if declared != actual:
-              errors.append(f"total_agents={declared} but actual count={actual}")
-
-          output_file = os.environ.get("GITHUB_OUTPUT", "/dev/null")
-          if errors:
-              error_summary = "; ".join(errors[:5])
-              print(f"::error::agent-registry-validation: {len(errors)} schema issues found: {error_summary}")
-              with open(output_file, "a") as f:
-                  f.write("registry_valid=false\n")
-                  f.write(f"error_count={len(errors)}\n")
-              sys.exit(1)
-          else:
-              print(f"✅ AGENT_REGISTRY.yaml valid: {actual} agents, all schema-compliant")
-              with open(output_file, "a") as f:
-                  f.write("registry_valid=true\n")
-                  f.write("error_count=0\n")
-          PYEOF
-
-      - name: Validate capability_tags quality
-        id: tags_quality
-        run: |
-          python3 - << 'PYEOF'
-          # Enforce capability_tags quality rules on every PR that touches AGENT_REGISTRY.yaml.
-          # Rules (Tier-1 GROUNDED — hard gate):
-          #   1. Every agent must have at least one capability_tag.
-          #   2. Tags must be snake_case (a-z, 0-9, underscore only; no hyphens, spaces, commas).
-          #   3. Tags must be >= 4 characters (prevents 'ml', 'ci' abbreviations).
-          #   4. Tags must not end with common truncation suffixes (_storag, _detectio, etc.).
-          import os, re, sys, yaml
-
-          REGISTRY = ".github/agents/AGENT_REGISTRY.yaml"
-          if not os.path.exists(REGISTRY):
-              print("::warning::AGENT_REGISTRY.yaml not found — skipping capability_tags check")
-              sys.exit(0)
-
-          data = yaml.safe_load(open(REGISTRY))
-          agents = data.get("agents", [])
-
-          SNAKE_RE = re.compile(r'^[a-z][a-z0-9_]*$')
-          TRUNCATION_SUFFIXES = ("_storag", "_detectio", "_managemen", "_implementa", "_coordinati")
-
-          violations = []
-          for a in agents:
-              name = a.get("name", a.get("id", "?"))
-              tags = a.get("capability_tags", [])
-              if not tags:
-                  violations.append(f"{name}: missing capability_tags")
-                  continue
-              if isinstance(tags, str):
-                  tags = [t.strip() for t in tags.split(",")]
-              for t in tags:
-                  if not SNAKE_RE.match(t):
-                      violations.append(f"{name}: malformed tag '{t}' (must be snake_case a-z/0-9/_)")
-                  elif len(t) < 4:
-                      violations.append(f"{name}: tag '{t}' too short (min 4 chars)")
-                  elif any(t.endswith(sfx) for sfx in TRUNCATION_SUFFIXES):
-                      violations.append(f"{name}: tag '{t}' appears truncated")
-
-          gf = os.environ.get("GITHUB_OUTPUT", "/dev/null")
-          if violations:
-              for v in violations:
-                  print(f"::error::{v}")
-              with open(gf, "a") as f:
-                  f.write("tags_valid=false\n")
-                  f.write(f"tag_violations={len(violations)}\n")
-              print(f"\n❌ capability_tags quality: {len(violations)} violation(s)")
-              sys.exit(1)
-          else:
-              print(f"✅ capability_tags quality: all {len(agents)} agents have valid tags")
-              with open(gf, "a") as f:
-                  f.write("tags_valid=true\n")
-                  f.write("tag_violations=0\n")
-          PYEOF
-
-      - name: Validate CODEX_MANIFEST.json integrity
-        id: manifest_validation
-        run: |
-          python3 - << 'PYEOF'
-          import hashlib
-          import json
-          import os
-          import sys
-
-          try:
-              import jsonschema
-          except ImportError:
-              jsonschema = None
-
-          manifest_path = "CODEX_MANIFEST.json"
-          schema_path = ".codex/schemas/CodexManifestSchema.json"
-
-          if not os.path.exists(manifest_path):
-              print("::error::CODEX_MANIFEST.json not found — run scripts/ci/generate_manifest.py")
-              with open(os.environ.get("GITHUB_OUTPUT", "/dev/null"), "a") as f:
-                  f.write("manifest_valid=absent\n")
-              sys.exit(1)
-
-          data = json.loads(open(manifest_path).read())
-
-          # Verify integrity hash
-          stored = data.pop("integrity_sha256", None)
-          if not stored:
-              print("::error::CODEX_MANIFEST.json missing integrity_sha256 field — regenerate with generate_manifest.py")
-              with open(os.environ.get("GITHUB_OUTPUT", "/dev/null"), "a") as f:
-                  f.write("manifest_valid=false\n")
-              sys.exit(1)
-
-          content = json.dumps(data, sort_keys=True, separators=(",", ":"))
-          computed = hashlib.sha256(content.encode()).hexdigest()
-
-          if computed != stored:
-              print(f"::error::CODEX_MANIFEST.json integrity FAILED — regenerate with generate_manifest.py")
-              with open(os.environ.get("GITHUB_OUTPUT", "/dev/null"), "a") as f:
-                  f.write("manifest_valid=false\n")
-              sys.exit(1)
-
-          # Validate against schema if available
-          if jsonschema is not None and os.path.exists(schema_path):
-              try:
-                  data["integrity_sha256"] = stored  # restore for schema validation
-                  manifest_schema = json.load(open(schema_path))
-                  jsonschema.validate(data, manifest_schema)
-              except jsonschema.ValidationError as e:
-                  print(f"::error::CODEX_MANIFEST.json schema validation failed: {e.message}")
-                  sys.exit(1)
-
-          print(f"✅ CODEX_MANIFEST.json integrity valid (sha256={stored[:8]}...)")
-          with open(os.environ.get("GITHUB_OUTPUT", "/dev/null"), "a") as f:
-              f.write("manifest_valid=true\n")
-          PYEOF
-
-      - name: Post validation summary
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v8 # v9
-        env:
-          REGISTRY_VALID: ${{ steps.registry_validation.outputs.registry_valid }}
-          MANIFEST_VALID: ${{ steps.manifest_validation.outputs.manifest_valid }}
-          ERROR_COUNT: ${{ steps.registry_validation.outputs.error_count }}
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const registryValid = process.env.REGISTRY_VALID;
-            const manifestValid = process.env.MANIFEST_VALID;
-            const errorCount = process.env.ERROR_COUNT || '0';
-
-            // Only post a comment if there are issues to report
-            if (registryValid === 'true' && manifestValid === 'true') {
-              core.info('Registry and manifest validation passed — no comment needed');
-              return;
-            }
-
-            let body = '## 🔍 Agent Registry Validation\n\n';
-
-            if (registryValid !== 'true') {
-              body += `⚠️ **AGENT_REGISTRY.yaml**: ${errorCount} schema issue(s) found\n`;
-              body += '  Run: `python3 -c "import yaml,json,jsonschema; ..."`\n\n';
-            }
-
-            if (manifestValid === 'absent') {
-              body += '⚠️ **CODEX_MANIFEST.json**: Not found — regenerate:\n';
-              body += '  ```bash\n  python scripts/ci/generate_manifest.py\n  ```\n\n';
-            } else if (manifestValid !== 'true') {
-              body += '⚠️ **CODEX_MANIFEST.json**: Integrity check failed — regenerate:\n';
-              body += '  ```bash\n  python scripts/ci/generate_manifest.py\n  ```\n\n';
-            }
-
-            body += `_[agent-registry-validation.yml] | Tier-1 GROUNDED gate — blocks merge on schema violations_`;
-            body += `\n\n---\n_[🔗 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`;
-
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body: body,
-            });
-
-      - name: Trigger embedding index refresh
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.EMBEDDING_INDEX_AUTO_REBUILD != 'false'
-        run: |
-          gh workflow run embedding-index-rebuild.yml --ref main \
-            && echo "✅ Triggered embedding-index-rebuild.yml — FAISS index will refresh" \
-            || echo "::warning::Failed to trigger embedding index rebuild — run manually: gh workflow run embedding-index-rebuild.yml --ref main"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  # ── rescue comment — posted on PR whenever this workflow fails ──────────
+        '
+    - name: Validate AGENT_REGISTRY.yaml schema
+      id: registry_validation
+      run: "python3 - << 'PYEOF'\nimport json\nimport os\nimport sys\nimport yaml\n\
+        \ntry:\n    import jsonschema\nexcept ImportError:\n    print(\"::warning::jsonschema\
+        \ not installed — skipping schema validation\")\n    sys.exit(0)\n\nschema_path\
+        \ = \".codex/schemas/AgentRegistrySchema.json\"\nregistry_path = \".github/agents/AGENT_REGISTRY.yaml\"\
+        \n\nif not os.path.exists(schema_path):\n    print(f\"::warning::AgentRegistrySchema.json\
+        \ not found at {schema_path}\")\n    sys.exit(0)\n\nif not os.path.exists(registry_path):\n\
+        \    print(f\"::warning::AGENT_REGISTRY.yaml not found at {registry_path}\"\
+        )\n    sys.exit(0)\n\nwith open(schema_path) as f:\n    schema = json.load(f)\n\
+        with open(registry_path) as f:\n    data = yaml.safe_load(f)\n\nerrors = []\n\
+        \n# Top-level validation\ntry:\n    jsonschema.validate(data, schema)\nexcept\
+        \ jsonschema.ValidationError as e:\n    errors.append(f\"Top-level: {e.message}\"\
+        )\n\n# Per-agent validation\nagent_schema = schema.get(\"definitions\", {}).get(\"\
+        AgentEntry\", {})\nif agent_schema:\n    for agent in data.get(\"agents\"\
+        , []):\n        try:\n            jsonschema.validate(agent, agent_schema)\n\
+        \        except jsonschema.ValidationError as e:\n            errors.append(f\"\
+        Agent '{agent.get('id', '?')}': {e.message}\")\n\n# Check total_agents count\
+        \ matches actual\ndeclared = data.get(\"total_agents\", 0)\nactual = len(data.get(\"\
+        agents\", []))\nif declared != actual:\n    errors.append(f\"total_agents={declared}\
+        \ but actual count={actual}\")\n\noutput_file = os.environ.get(\"GITHUB_OUTPUT\"\
+        , \"/dev/null\")\nif errors:\n    error_summary = \"; \".join(errors[:5])\n\
+        \    print(f\"::error::agent-registry-validation: {len(errors)} schema issues\
+        \ found: {error_summary}\")\n    with open(output_file, \"a\") as f:\n   \
+        \     f.write(\"registry_valid=false\\n\")\n        f.write(f\"error_count={len(errors)}\\\
+        n\")\n    sys.exit(1)\nelse:\n    print(f\"✅ AGENT_REGISTRY.yaml valid: {actual}\
+        \ agents, all schema-compliant\")\n    with open(output_file, \"a\") as f:\n\
+        \        f.write(\"registry_valid=true\\n\")\n        f.write(\"error_count=0\\\
+        n\")\nPYEOF\n"
+    - name: Validate capability_tags quality
+      id: tags_quality
+      run: "python3 - << 'PYEOF'\n# Enforce capability_tags quality rules on every\
+        \ PR that touches AGENT_REGISTRY.yaml.\n# Rules (Tier-1 GROUNDED — hard gate):\n\
+        #   1. Every agent must have at least one capability_tag.\n#   2. Tags must\
+        \ be snake_case (a-z, 0-9, underscore only; no hyphens, spaces, commas).\n\
+        #   3. Tags must be >= 4 characters (prevents 'ml', 'ci' abbreviations).\n\
+        #   4. Tags must not end with common truncation suffixes (_storag, _detectio,\
+        \ etc.).\nimport os, re, sys, yaml\n\nREGISTRY = \".github/agents/AGENT_REGISTRY.yaml\"\
+        \nif not os.path.exists(REGISTRY):\n    print(\"::warning::AGENT_REGISTRY.yaml\
+        \ not found — skipping capability_tags check\")\n    sys.exit(0)\n\ndata =\
+        \ yaml.safe_load(open(REGISTRY))\nagents = data.get(\"agents\", [])\n\nSNAKE_RE\
+        \ = re.compile(r'^[a-z][a-z0-9_]*$')\nTRUNCATION_SUFFIXES = (\"_storag\",\
+        \ \"_detectio\", \"_managemen\", \"_implementa\", \"_coordinati\")\n\nviolations\
+        \ = []\nfor a in agents:\n    name = a.get(\"name\", a.get(\"id\", \"?\"))\n\
+        \    tags = a.get(\"capability_tags\", [])\n    if not tags:\n        violations.append(f\"\
+        {name}: missing capability_tags\")\n        continue\n    if isinstance(tags,\
+        \ str):\n        tags = [t.strip() for t in tags.split(\",\")]\n    for t\
+        \ in tags:\n        if not SNAKE_RE.match(t):\n            violations.append(f\"\
+        {name}: malformed tag '{t}' (must be snake_case a-z/0-9/_)\")\n        elif\
+        \ len(t) < 4:\n            violations.append(f\"{name}: tag '{t}' too short\
+        \ (min 4 chars)\")\n        elif any(t.endswith(sfx) for sfx in TRUNCATION_SUFFIXES):\n\
+        \            violations.append(f\"{name}: tag '{t}' appears truncated\")\n\
+        \ngf = os.environ.get(\"GITHUB_OUTPUT\", \"/dev/null\")\nif violations:\n\
+        \    for v in violations:\n        print(f\"::error::{v}\")\n    with open(gf,\
+        \ \"a\") as f:\n        f.write(\"tags_valid=false\\n\")\n        f.write(f\"\
+        tag_violations={len(violations)}\\n\")\n    print(f\"\\n❌ capability_tags\
+        \ quality: {len(violations)} violation(s)\")\n    sys.exit(1)\nelse:\n   \
+        \ print(f\"✅ capability_tags quality: all {len(agents)} agents have valid\
+        \ tags\")\n    with open(gf, \"a\") as f:\n        f.write(\"tags_valid=true\\\
+        n\")\n        f.write(\"tag_violations=0\\n\")\nPYEOF\n"
+    - name: Validate CODEX_MANIFEST.json integrity
+      id: manifest_validation
+      run: "python3 - << 'PYEOF'\nimport hashlib\nimport json\nimport os\nimport sys\n\
+        \ntry:\n    import jsonschema\nexcept ImportError:\n    jsonschema = None\n\
+        \nmanifest_path = \"CODEX_MANIFEST.json\"\nschema_path = \".codex/schemas/CodexManifestSchema.json\"\
+        \n\nif not os.path.exists(manifest_path):\n    print(\"::error::CODEX_MANIFEST.json\
+        \ not found — run scripts/ci/generate_manifest.py\")\n    with open(os.environ.get(\"\
+        GITHUB_OUTPUT\", \"/dev/null\"), \"a\") as f:\n        f.write(\"manifest_valid=absent\\\
+        n\")\n    sys.exit(1)\n\ndata = json.loads(open(manifest_path).read())\n\n\
+        # Verify integrity hash\nstored = data.pop(\"integrity_sha256\", None)\nif\
+        \ not stored:\n    print(\"::error::CODEX_MANIFEST.json missing integrity_sha256\
+        \ field — regenerate with generate_manifest.py\")\n    with open(os.environ.get(\"\
+        GITHUB_OUTPUT\", \"/dev/null\"), \"a\") as f:\n        f.write(\"manifest_valid=false\\\
+        n\")\n    sys.exit(1)\n\ncontent = json.dumps(data, sort_keys=True, separators=(\"\
+        ,\", \":\"))\ncomputed = hashlib.sha256(content.encode()).hexdigest()\n\n\
+        if computed != stored:\n    print(f\"::error::CODEX_MANIFEST.json integrity\
+        \ FAILED — regenerate with generate_manifest.py\")\n    with open(os.environ.get(\"\
+        GITHUB_OUTPUT\", \"/dev/null\"), \"a\") as f:\n        f.write(\"manifest_valid=false\\\
+        n\")\n    sys.exit(1)\n\n# Validate against schema if available\nif jsonschema\
+        \ is not None and os.path.exists(schema_path):\n    try:\n        data[\"\
+        integrity_sha256\"] = stored  # restore for schema validation\n        manifest_schema\
+        \ = json.load(open(schema_path))\n        jsonschema.validate(data, manifest_schema)\n\
+        \    except jsonschema.ValidationError as e:\n        print(f\"::error::CODEX_MANIFEST.json\
+        \ schema validation failed: {e.message}\")\n        sys.exit(1)\n\nprint(f\"\
+        ✅ CODEX_MANIFEST.json integrity valid (sha256={stored[:8]}...)\")\nwith open(os.environ.get(\"\
+        GITHUB_OUTPUT\", \"/dev/null\"), \"a\") as f:\n    f.write(\"manifest_valid=true\\\
+        n\")\nPYEOF\n"
+    - name: Post validation summary
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v8
+      env:
+        REGISTRY_VALID: ${{ steps.registry_validation.outputs.registry_valid }}
+        MANIFEST_VALID: ${{ steps.manifest_validation.outputs.manifest_valid }}
+        ERROR_COUNT: ${{ steps.registry_validation.outputs.error_count }}
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: "const registryValid = process.env.REGISTRY_VALID;\nconst manifestValid\
+          \ = process.env.MANIFEST_VALID;\nconst errorCount = process.env.ERROR_COUNT\
+          \ || '0';\n\n// Only post a comment if there are issues to report\nif (registryValid\
+          \ === 'true' && manifestValid === 'true') {\n  core.info('Registry and manifest\
+          \ validation passed — no comment needed');\n  return;\n}\n\nlet body = '##\
+          \ \U0001F50D Agent Registry Validation\\n\\n';\n\nif (registryValid !==\
+          \ 'true') {\n  body += `⚠️ **AGENT_REGISTRY.yaml**: ${errorCount} schema\
+          \ issue(s) found\\n`;\n  body += '  Run: `python3 -c \"import yaml,json,jsonschema;\
+          \ ...\"`\\n\\n';\n}\n\nif (manifestValid === 'absent') {\n  body += '⚠️\
+          \ **CODEX_MANIFEST.json**: Not found — regenerate:\\n';\n  body += '  ```bash\\\
+          n  python scripts/ci/generate_manifest.py\\n  ```\\n\\n';\n} else if (manifestValid\
+          \ !== 'true') {\n  body += '⚠️ **CODEX_MANIFEST.json**: Integrity check\
+          \ failed — regenerate:\\n';\n  body += '  ```bash\\n  python scripts/ci/generate_manifest.py\\\
+          n  ```\\n\\n';\n}\n\nbody += `_[agent-registry-validation.yml] | Tier-1\
+          \ GROUNDED gate — blocks merge on schema violations_`;\nbody += `\\n\\n---\\\
+          n_[\U0001F517 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`;\n\
+          \nawait github.rest.issues.createComment({\n  owner: context.repo.owner,\n\
+          \  repo: context.repo.repo,\n  issue_number: context.issue.number,\n  body:\
+          \ body,\n});\n"
+    - name: Trigger embedding index refresh
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.EMBEDDING_INDEX_AUTO_REBUILD
+        != 'false'
+      run: "gh workflow run embedding-index-rebuild.yml --ref main \\\n  && echo \"\
+        ✅ Triggered embedding-index-rebuild.yml — FAISS index will refresh\" \\\n\
+        \  || echo \"::warning::Failed to trigger embedding index rebuild — run manually:\
+        \ gh workflow run embedding-index-rebuild.yml --ref main\"\n"
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
     needs: validate-registry
-    if: |
-      failure() &&
-      github.event_name == 'pull_request' &&
+    if: 'failure() &&
+
+      github.event_name == ''pull_request'' &&
+
       github.event.pull_request.head.repo.full_name == github.repository
+
+      '
     permissions:
       pull-requests: write
       issues: write
     timeout-minutes: 5
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          fetch-depth: 1
-
-      - name: Post or update rescue comment
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_NAME: "Agent Registry Validation"
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          BRANCH: ${{ github.head_ref }}
-        run: python scripts/ci/post_rescue_comment.py
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        fetch-depth: 1
+    - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: Agent Registry Validation
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+        BRANCH: ${{ github.head_ref }}
+      run: python scripts/ci/post_rescue_comment.py
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
