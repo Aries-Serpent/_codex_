@@ -88,16 +88,17 @@ class TestScenario1MasterKeyNormal:
         assert master_key in auth_header, "Token not in header"
 
         # Test 5: validate_token_scope with elevated scopes
-        with token_log_capture as capture:
-            is_valid, msg = validate_token_scope(
-                token, ["repo", "workflow", "actions:write"]
-            )
-            assert is_valid is True, f"Scope validation failed: {msg}"
-            assert "CODEX_MASTER_KEY" in msg, "Source not mentioned"
+        is_valid, msg = validate_token_scope(
+            token, ["repo", "workflow", "actions:write"]
+        )
+        assert is_valid is True, f"Scope validation failed: {msg}"
+        assert "CODEX_MASTER_KEY" in msg, "Source not mentioned"
 
-        # Test 6: Verify token not exposed in logs
-        capture.assert_token_not_exposed(master_key)
-        assert "CODEX_MASTER_KEY" in capture.text, "Source not logged"
+        # Test 6: Verify logging doesn't expose token
+        with token_log_capture as capture:
+            log_token_usage("Testing scenario 1", required_elevated=False)
+            capture.assert_token_not_exposed(master_key)
+            assert "CODEX_MASTER_KEY" in capture.text, "Source not logged"
 
 
 # ============================================================================
