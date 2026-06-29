@@ -42,9 +42,12 @@ def validate_test_files():
         "tests/github/test_audit_log_access.py",
     ]
     
+    # Derive repo root from __file__
+    repo_root = Path(__file__).resolve().parent.parent.parent
+    
     all_exist = True
     for test_file in test_files:
-        path = Path("/home/runner/work/_codex_/_codex_") / test_file
+        path = repo_root / test_file
         if path.exists():
             size_kb = path.stat().st_size / 1024
             print(f"✅ {test_file:50} ({size_kb:6.1f} KB)")

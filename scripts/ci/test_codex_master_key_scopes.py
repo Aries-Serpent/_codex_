@@ -38,7 +38,6 @@ import logging
 import os
 import sys
 import urllib.error
-import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
 from typing import Any
@@ -108,7 +107,7 @@ def get_scopes_from_header(token: str) -> set[str]:
     url = f"{GH_API}/user"
     headers = {
         "Accept": "application/vnd.github+json",
-        "Authorization": f"******",
+        "Authorization": f"token {token}",
         "X-GitHub-Api-Version": API_VERSION,
     }
     
@@ -155,40 +154,40 @@ def infer_scopes_from_api_tests(token: str) -> set[str]:
     try:
         url = f"{GH_API}/repos/Aries-Serpent/_codex_"
         headers = {
-            "Authorization": f"******",
+            "Authorization": f"token {token}",
             "X-GitHub-Api-Version": API_VERSION,
         }
         req = urllib.request.Request(url, headers=headers)
         with urllib.request.urlopen(req) as response:
             scopes.add("repo")
-    except:
-        pass
+    except (urllib.error.HTTPError, urllib.error.URLError):
+        log.debug("Could not infer 'repo' scope from API test")
     
     # Test for 'admin:org' scope
     try:
         url = f"{GH_API}/orgs/Aries-Serpent"
         headers = {
-            "Authorization": f"******",
+            "Authorization": f"token {token}",
             "X-GitHub-Api-Version": API_VERSION,
         }
         req = urllib.request.Request(url, headers=headers)
         with urllib.request.urlopen(req) as response:
             scopes.add("admin:org")
-    except:
-        pass
+    except (urllib.error.HTTPError, urllib.error.URLError):
+        log.debug("Could not infer 'admin:org' scope from API test")
     
     # Test for 'workflow' scope
     try:
         url = f"{GH_API}/repos/Aries-Serpent/_codex_/actions/workflows"
         headers = {
-            "Authorization": f"******",
+            "Authorization": f"token {token}",
             "X-GitHub-Api-Version": API_VERSION,
         }
         req = urllib.request.Request(url, headers=headers)
         with urllib.request.urlopen(req) as response:
             scopes.add("workflow")
-    except:
-        pass
+    except (urllib.error.HTTPError, urllib.error.URLError):
+        log.debug("Could not infer 'workflow' scope from API test")
     
     return scopes
 

@@ -3,9 +3,9 @@ name: Authentication Tests
 on:
   push:
     branches:
-    - main
-    - develop
-    - copilot/**
+      - main
+      - develop
+      - copilot/**
     paths:
     - src/codex/auth/**
     - tests/auth/**

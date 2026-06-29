@@ -12,11 +12,8 @@ Tests skip gracefully if CODEX_MASTER_KEY is unavailable.
 
 from __future__ import annotations
 
-import json
-import time
 from datetime import datetime, timezone
 from typing import Any, Optional
-from unittest import mock
 
 import pytest
 
@@ -299,13 +296,13 @@ class TestProcess7WorkflowOperations:
                     "id": 1,
                     "name": "test-results",
                     "size_in_bytes": 1024,
-                    "created_at": datetime.now(tz=timezone.utc).isoformat() + "Z",
+                    "created_at": datetime.now(tz=timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
                 },
                 {
                     "id": 2,
                     "name": "coverage-report",
                     "size_in_bytes": 2048,
-                    "created_at": datetime.now(tz=timezone.utc).isoformat() + "Z",
+                    "created_at": datetime.now(tz=timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
                 },
             ],
         }
@@ -318,7 +315,7 @@ class TestProcess7WorkflowOperations:
 
     def test_process7_workflow_run_timing(self):
         """Test: Workflow run includes timing information."""
-        now = datetime.now(tz=timezone.utc).isoformat() + "Z"
+        now = datetime.now(tz=timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
         response = {
             "created_at": now,
             "updated_at": now,

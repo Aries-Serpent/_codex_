@@ -12,7 +12,6 @@ Tests skip gracefully if CODEX_MASTER_KEY is unavailable.
 
 from __future__ import annotations
 
-import json
 from datetime import datetime, timedelta, timezone
 from typing import Any, Optional
 from unittest import mock
@@ -47,7 +46,7 @@ def mock_audit_log_entry():
         timestamp: Optional[str] = None,
     ) -> dict[str, Any]:
         if timestamp is None:
-            timestamp = datetime.now(tz=timezone.utc).isoformat() + "Z"
+            timestamp = datetime.now(tz=timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
 
         return {
             "timestamp": timestamp,

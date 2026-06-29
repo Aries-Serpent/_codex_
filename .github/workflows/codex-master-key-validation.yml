@@ -64,7 +64,7 @@ jobs:
             import json
             with open('scope_report.json') as f:
               data = json.load(f)
-              if data.get('passed') == False:
+              if data.get('all_processes_covered') == False:
                 print('⚠️  Scope validation identified missing scopes')
                 print('Missing scopes:', data.get('missing_scopes', []))
               else:

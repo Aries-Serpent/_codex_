@@ -13,12 +13,7 @@ All tests skip gracefully if CODEX_MASTER_KEY is unavailable.
 
 from __future__ import annotations
 
-import json
-import time
-import urllib.error
-import urllib.request
 from typing import Any, Optional
-from unittest import mock
 
 import pytest
 

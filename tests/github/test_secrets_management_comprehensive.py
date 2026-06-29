@@ -15,9 +15,7 @@ All tests skip gracefully if CODEX_MASTER_KEY is unavailable or libsodium unavai
 from __future__ import annotations
 
 import base64
-import json
 from typing import Any, Optional
-from unittest import mock
 
 import pytest
 

@@ -16,7 +16,6 @@ import hashlib
 import hmac
 import json
 from typing import Any, Optional
-from unittest import mock
 
 import pytest
 
@@ -619,7 +618,7 @@ class TestWebhookSignatureValidation:
         raw_body = b'{"action":"opened","number":1}'
 
         # Parsed and re-serialized (different formatting)
-        parsed_body = json.loads(raw_body).encode()
+        parsed_body = json.dumps(json.loads(raw_body)).encode()
 
         sig_raw = "sha256=" + hmac.new(
             test_webhook_secret.encode(),
