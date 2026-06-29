@@ -154,14 +154,14 @@
    on:
      push:
        paths:
-         - 'config/pyproject.toml'  # Update from 'pyproject.toml'
+         - 'pyproject.toml'         # Repository root location
          - '.github/workflows/**'   # Keep as-is
          - 'tests/**'               # Keep as-is
    ```
 
 2. **Update configuration references:**
    - Search for `pyproject.toml` in run commands
-   - Update paths if explicitly referenced
+   - Maintain references to root location
    - Most tools auto-discover from cwd (no change needed)
 
 3. **Update setup steps:**
