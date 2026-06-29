@@ -52,7 +52,8 @@ jobs:
         \nelse\n  echo \"approved=false\" >> $GITHUB_OUTPUT\n  echo \"⚠️ Owner approval\
         \ not found - workflow will skip execution\"\nfi\n"
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   autonomous-agent:
     name: Autonomous Agent Execution
     needs: owner-guard
@@ -97,4 +98,5 @@ jobs:
 
         '
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

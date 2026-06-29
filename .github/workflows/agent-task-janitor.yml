@@ -218,4 +218,5 @@ jobs:
         \  )\nif execute and failures:\n    raise SystemExit(\"One or more cleanup\
         \ operations failed. Review workflow summary for API details.\")\nPY\n"
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

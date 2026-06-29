@@ -206,5 +206,4 @@ jobs:
         \ ]; then\n  echo \"❌ Validation failed — merge blocked\"\n  exit 1\nelse\n\
         \  echo \"✅ Validation passed — merge allowed\"\n  exit 0\nfi\n"
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

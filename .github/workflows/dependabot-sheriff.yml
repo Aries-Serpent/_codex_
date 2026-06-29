@@ -145,4 +145,5 @@ jobs:
           \ core.summary\n  .addRaw(summaryContent)\n  .write();\n\nconsole.log('Summary\
           \ posted successfully');\n"
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

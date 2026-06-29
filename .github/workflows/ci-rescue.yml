@@ -238,4 +238,5 @@ jobs:
         \  echo \"Deep rescue exit: ${{ steps.rescue.outputs.deep_rescue_exit }}\"\
         \nfi\n"
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

@@ -46,4 +46,5 @@ jobs:
         \ ] || [ \"${DRY_RUN}\" != \"true\" ]; then\n  ARGS=\"${ARGS} --execute\"\n\
         fi\n\npython scripts/ci/cleanup_stale_branches.py ${ARGS}\n"
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

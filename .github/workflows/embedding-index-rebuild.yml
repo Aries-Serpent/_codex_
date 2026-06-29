@@ -22,7 +22,8 @@ jobs:
       contents: read
       pull-requests: write
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   rebuild:
     name: Rebuild FAISS Embedding Index
     runs-on: ubuntu-latest
@@ -136,4 +137,5 @@ jobs:
         \ }}) |\" >> \"$GITHUB_STEP_SUMMARY\"\nelse\n  echo \"Index metadata not found\
         \ — build may have failed.\" >> \"$GITHUB_STEP_SUMMARY\"\nfi\n"
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

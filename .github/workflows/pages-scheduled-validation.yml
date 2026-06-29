@@ -228,5 +228,4 @@ jobs:
         \n\n    echo \"✅ Changes committed and PR created on branch ${BRANCH}\"\n\
         \  fi\nfi\n"
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

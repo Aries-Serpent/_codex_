@@ -206,4 +206,5 @@ jobs:
         \ has_failure:\n    raise SystemExit(\"One or more requested actions failed.\
         \ Check the workflow summary for detailed error information.\")\nPY\n"
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

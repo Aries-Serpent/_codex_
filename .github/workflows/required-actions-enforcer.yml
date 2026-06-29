@@ -113,4 +113,5 @@ jobs:
           \ github.rest.issues.createComment({\n  owner: context.repo.owner,\n  repo:\
           \ context.repo.repo,\n  issue_number: context.issue.number,\n  body,\n});\n"
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

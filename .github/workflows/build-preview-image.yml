@@ -46,7 +46,8 @@ jobs:
       contents: read
       pull-requests: write
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   lint-dockerfile:
     name: Lint Dockerfile.preview
     runs-on: ubuntu-latest
@@ -61,7 +62,8 @@ jobs:
         failure-threshold: error
         ignore: DL3008,DL3013
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   build:
     name: Build preview image (${{ matrix.target }})
     runs-on: ubuntu-latest-m
@@ -145,7 +147,8 @@ jobs:
         \ \"Attempt $i/12 — not ready yet\"\ndone\ndocker logs codex-preview-smoke\n\
         docker stop codex-preview-smoke\necho \"❌ Health check timed out\"\nexit 1\n"
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   summary:
     name: Image build summary
     runs-on: ubuntu-latest
@@ -176,7 +179,8 @@ jobs:
 
         '
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
@@ -212,4 +216,5 @@ jobs:
         BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

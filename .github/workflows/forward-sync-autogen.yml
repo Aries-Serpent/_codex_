@@ -113,4 +113,5 @@ jobs:
       run: echo "ℹ️  No file changes to forward (target=${{ steps.resolve-target.outputs.branch
         }}, reason=${{ steps.resolve-target.outputs.reason }})"
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
