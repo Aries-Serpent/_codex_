@@ -587,6 +587,7 @@ class TestProcess6CodespacesSecrets:
         }
 
         assert payload["name"]
+        assert "codespaces/secrets" in endpoint
 
     def test_process6_codespaces_vs_user_secrets(
         self,
@@ -616,6 +617,7 @@ class TestProcess6CodespacesSecrets:
         payload = {"encrypted_value": "new_value", "key_id": "key"}
 
         assert payload["encrypted_value"]
+        assert test_secret_name_base in endpoint
 
     def test_process6_delete_codespaces_secret_success(
         self,
@@ -704,6 +706,8 @@ class TestSecretsBatchOperations:
 
             assert payload["name"]
 
+        assert "actions/secrets" in endpoint
+
     def test_batch_update_secrets(
         self,
         gh_api_base: str,
@@ -717,6 +721,7 @@ class TestSecretsBatchOperations:
             payload = {"encrypted_value": f"new_value_{i}", "key_id": "key"}
 
             assert payload["encrypted_value"]
+            assert secret_name in endpoint
 
     def test_batch_delete_secrets(
         self,

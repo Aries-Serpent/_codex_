@@ -67,6 +67,7 @@ class TestProcess1RepositoryScopeVariables:
 
         assert expected_response["total_count"] == 0
         assert len(expected_response["variables"]) == 0
+        assert "actions/variables" in endpoint
 
     def test_process1_list_variables_with_pagination(
         self,
@@ -105,6 +106,7 @@ class TestProcess1RepositoryScopeVariables:
         error = api_errors.resource_not_found()
 
         assert error.code == 404
+        assert var_name in endpoint
 
     def test_process1_create_variable_success(
         self,
@@ -141,6 +143,7 @@ class TestProcess1RepositoryScopeVariables:
         }
 
         assert len(payload["value"]) == 1000
+        assert "actions/variables" in endpoint
 
         # Over limit should trigger 422
         oversized_value = "x" * 1001
@@ -190,6 +193,7 @@ class TestProcess1RepositoryScopeVariables:
 
         # Multiple updates with same payload should not fail
         assert payload["value"] == "same_value"
+        assert test_var_name_base in endpoint
 
     def test_process1_delete_variable_success(
         self,
@@ -280,6 +284,8 @@ class TestProcess1RepositoryScopeVariables:
             assert payload["name"]
             assert payload["value"]
 
+        assert "actions/variables" in endpoint
+
     def test_process1_batch_delete_variables(
         self,
         gh_api_base: str,
@@ -325,6 +331,7 @@ class TestProcess2OrganizationScopeVariables:
 
         assert "actions/variables" in endpoint
         assert "/orgs/" in endpoint
+        assert expected_response["total_count"] == 1
 
     def test_process2_list_org_variables_pagination(
         self,
@@ -352,6 +359,7 @@ class TestProcess2OrganizationScopeVariables:
         assert payload["name"]
         assert payload["value"]
         assert payload["visibility"] in ["all", "private", "selected"]
+        assert "/orgs/" in endpoint
 
     def test_process2_create_org_variable_with_visibility(
         self,
@@ -374,6 +382,8 @@ class TestProcess2OrganizationScopeVariables:
 
             assert payload["visibility"] == visibility
 
+        assert "actions/variables" in endpoint
+
     def test_process2_update_org_variable_success(
         self,
         gh_api_base: str,
@@ -385,6 +395,7 @@ class TestProcess2OrganizationScopeVariables:
         payload = {"value": "updated_org_value"}
 
         assert payload["value"] == "updated_org_value"
+        assert test_var_name_org in endpoint
 
     def test_process2_delete_org_variable_success(
         self,
@@ -430,6 +441,7 @@ class TestProcess2OrganizationScopeVariables:
         }
 
         assert payload["visibility"] == "all"
+        assert "/orgs/" in endpoint
 
     def test_process2_org_variable_visibility_selected(
         self,
@@ -445,6 +457,10 @@ class TestProcess2OrganizationScopeVariables:
             "visibility": "selected",
             "selected_repository_ids": [12345, 67890],
         }
+
+        assert payload["visibility"] == "selected"
+        assert len(payload["selected_repository_ids"]) > 0
+        assert "/orgs/" in endpoint
 
         assert payload["visibility"] == "selected"
         assert len(payload["selected_repository_ids"]) == 2
@@ -498,6 +514,7 @@ class TestProcess2OrganizationScopeVariables:
             payload = {"value": f"updated_value_{i}"}
 
             assert payload["value"] == f"updated_value_{i}"
+            assert var_name in endpoint
 
 
 # ─────────────────────────────────────────────────────────────────────────────
