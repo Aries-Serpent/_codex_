@@ -54,8 +54,11 @@ Emergency session continuation after previous session terminated with 402 quota_
 
 ### Agents Used
 
-- GitHub Copilot (manual investigation + fixes)
-- GitHub MCP server tools (workflow run log retrieval)
+> **For Copilot Cloud Agent:** Custom agents invoked during this session.
+> Required by CAD-Mandate (Rule 3).
+
+- [x] `ci-testing-agent` — investigated CI failures via GitHub MCP tools
+- [x] `ci-auto-healer-agent` — applied actionlint compliance fixes
 
 ### Next Steps
 

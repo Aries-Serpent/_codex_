@@ -215,8 +215,8 @@ class TestFixFunctions:
     def test_fix_optional_import_fallback_adds_ignore(self):
         src = "    Console = None\n"
         new_src, changed = _fix_optional_import_fallback(src, 1)
-        assert changed, "changed is not valid"
-        assert ", "Condition must be true"
+        assert changed, "Condition must be true"
+        assert "# type: ignore[assignment]" in new_src, "type ignore comment should be added"
 
     def test_fix_optional_import_fallback_skips_existing(self):
         src = "    Console = None  # type: ignore[assignment]\n"
