@@ -14,8 +14,10 @@ import os
 import sys
 from collections.abc import Iterable
 from pathlib import Path
+from types import ModuleType
 from typing import Annotated, Any, Optional
 
+yaml: ModuleType | None
 try:  # Optional dependency used for loading curriculum presets
     import yaml
 except (IOError, OSError):  # pragma: no cover - PyYAML is optional

@@ -22,12 +22,14 @@ import os
 import time
 from collections.abc import Mapping, MutableMapping
 from pathlib import Path
+from types import ModuleType
 from urllib.parse import urlparse
 
 import requests
 
 logger = logging.getLogger(__name__)
 
+jwt: ModuleType | None
 try:  # pragma: no cover - optional dependency for JWT minting
     import jwt  # pyjwt
 except (ConnectionError, TimeoutError):  # pragma: no cover - defer error until minting

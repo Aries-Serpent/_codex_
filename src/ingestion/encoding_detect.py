@@ -18,23 +18,26 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 # Optional backends
 
 logger = logging.getLogger(__name__)
 
+_chardet: Any
 try:
     import chardet as _chardet  # preferred if available
 except (ImportError, AttributeError):  # pragma: no cover - optional dependency
     _chardet = None
 
 # charset-normalizer provides multiple helpers depending on installed version
+_cn_from_bytes: Any
 try:
     from charset_normalizer import from_bytes as _cn_from_bytes
 except (IOError, OSError):  # pragma: no cover - optional dependency
     _cn_from_bytes = None
 
+_cn_from_path: Any
 try:
     from charset_normalizer import from_path as _cn_from_path
 except (IOError, OSError):  # pragma: no cover - optional dependency

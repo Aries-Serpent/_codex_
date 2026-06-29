@@ -25,8 +25,10 @@ logger = logging.getLogger(__name__)
 import re
 from collections.abc import Mapping, Sequence
 from pathlib import Path
+from types import ModuleType
 from typing import Any, Optional
 
+yaml: ModuleType | None
 try:  # pragma: no cover - optional dependency path
     import yaml
 except (IOError, OSError):  # pragma: no cover - PyYAML not installed in minimal envs

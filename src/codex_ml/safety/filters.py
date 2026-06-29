@@ -36,11 +36,13 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from functools import lru_cache
 from pathlib import Path
+from types import ModuleType
 from typing import (
     Any,
     Optional,
 )
 
+yaml: ModuleType | None
 try:  # pragma: no cover - optional dependency
     import yaml
 except ModuleNotFoundError:  # pragma: no cover - optional dependency

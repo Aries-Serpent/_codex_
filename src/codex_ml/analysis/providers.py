@@ -27,12 +27,14 @@ import os  # noqa: E402
 from abc import ABC, abstractmethod  # noqa: E402
 from collections.abc import Callable, Iterable  # noqa: E402
 from pathlib import Path  # noqa: E402
+from types import ModuleType
 from typing import Any, Optional  # noqa: E402
 from urllib.parse import urlparse  # noqa: E402
 
+requests: ModuleType | None
 try:  # pragma: no cover - optional dependency
-    import requests
-except (ValueError, TypeError):  # pragma: no cover - requests missing or broken
+    import requests  # noqa: E402
+except ImportError:  # pragma: no cover - requests missing or broken
     requests = None
 
 

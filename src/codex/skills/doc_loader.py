@@ -22,12 +22,14 @@ from __future__ import annotations
 import logging
 import re
 from pathlib import Path
+from types import ModuleType
 from typing import Any, Literal
 
 from .models import BudgetConfig, DocMeta, PolicyConfig, RegisteredSkill, SkillManifest
 
 logger = logging.getLogger(__name__)
 
+yaml: ModuleType | None
 try:
     import yaml
 except (IOError, OSError):  # pragma: no cover

@@ -23,12 +23,14 @@ import importlib.metadata
 import logging
 import threading
 from pathlib import Path
+from types import ModuleType
 
 try:
     from packaging.version import Version as _PkgVersion
 except ImportError:  # pragma: no cover - optional but present in dev requirements
     _PkgVersion = None  # type: ignore[misc,assignment]
 
+yaml: ModuleType | None
 try:
     import yaml
 except (ImportError, AttributeError):  # pragma: no cover - optional but present in requirements
