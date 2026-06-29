@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Fixed (Test syntax and REQ-14 compliance — PR #5122, Session 2026-06-29T02:28Z)
+- **Test syntax error:** Fixed unterminated string literal in `tests/skills/test_mypy_manager.py:219` (test_fix_optional_import_fallback_adds_ignore)
+- **REQ-14 compliance:** Updated Agents Used section in AGENT_ACCOUNTABILITY_REPORT.md with valid registered agent identifiers from AGENT_REGISTRY.yaml
+- **Impact:** Unblocked resilient validation suite test collection failure
+- **Status:** Syntax validation passing; REQ-14 gate satisfied
+
 ### Fixed (Emergency session continuation — PR #5122, Session 2026-06-29T02:20Z)
 - **actionlint compliance:** Fixed workflow compliance issues in `.github/workflows/test-rag.yml`:
   - Line 476: Changed `grep ... | wc -l` to `grep -c` (SC2126 shellcheck violation)
