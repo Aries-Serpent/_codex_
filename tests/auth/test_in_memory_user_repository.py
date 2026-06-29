@@ -246,9 +246,13 @@ class TestInMemoryUserRepository:
             created_at=datetime.now(),
         )
 
-        with pytest.raises((ValueError, Exception)):
+        with pytest.raises((ValueError, Exception)) as exc_info:
             repository.create(user)
-
+        
+        # Verify the error message is descriptive
+        error_msg = str(exc_info.value).lower()
+        assert "username" in error_msg or "empty" in error_msg, "Error should mention username or empty"
+        
     def test_empty_email_validation(self, repository):
         """Test creating user with empty email."""
         user = User(
@@ -259,8 +263,24 @@ class TestInMemoryUserRepository:
             created_at=datetime.now(),
         )
 
-        with pytest.raises((ValueError, Exception)):
+        with pytest.raises((ValueError, Exception)) as exc_info:
             repository.create(user)
+        
+        # Verify the error message is descriptive
+        error_msg = str(exc_info.value).lower()
+        assert "email" in error_msg or "empty" in error_msg, "Error should mention email or empty"
+        
+        # Also test with whitespace-only email
+        user_whitespace = User(
+            user_id=str(uuid4()),
+            username="testuser2",
+            email="   ",
+            password_hash="hash",
+            created_at=datetime.now(),
+        )
+        
+        with pytest.raises((ValueError, Exception)):
+            repository.create(user_whitespace)
 
     def test_empty_password_hash_validation(self, repository):
         """Test creating user with empty password hash."""

@@ -271,9 +271,19 @@ class TestStateTransitions:
         # Add role
         auth_system.user_store.add_role(user.user_id, "admin")
 
-        # Verify
+        # Verify role was added
         retrieved = auth_system.user_store.get_by_user_id(user.user_id)
         assert "admin" in retrieved.roles, "Condition must be true"
+        assert "user" in retrieved.roles, "Default user role must persist"
+        assert len(retrieved.roles) == 2, "Should have exactly 2 roles after adding admin"
+        
+        # Add another role
+        auth_system.user_store.add_role(user.user_id, "moderator")
+        retrieved = auth_system.user_store.get_by_user_id(user.user_id)
+        assert "admin" in retrieved.roles, "Admin role must persist"
+        assert "moderator" in retrieved.roles, "New moderator role must be added"
+        assert "user" in retrieved.roles, "Default user role must persist"
+        assert len(retrieved.roles) == 3, "Should have exactly 3 roles"
 
     def test_token_state_consistency(self, auth_system):
         auth_system.register("paul", "paul@example.com", "Str0ngPass!")

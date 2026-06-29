@@ -109,7 +109,10 @@ class TestLogin:
         auth = _make_auth()
         auth.register("hank", "hank@example.com", "Str0ngPass!", roles=["admin", "user"])
         result = auth.login("hank", "Str0ngPass!")
-        assert "admin" in result.roles, "Result must not be empty"
+        assert "admin" in result.roles, "Result must contain admin role"
+        assert "user" in result.roles, "Result must contain user role"
+        assert len(result.roles) == 2, "Result must contain exactly 2 roles"
+        assert isinstance(result.roles, list), "Roles must be a list"
 
     def test_login_tokens_are_valid(self):
         auth = _make_auth()
