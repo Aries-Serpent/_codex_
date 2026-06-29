@@ -9,10 +9,9 @@ markdown_extensions:
 - pymdownx.inlinehilite
 - pymdownx.snippets
 - pymdownx.superfences:
-    custom_fences:
-      - name: mermaid
-        class: mermaid
-        format: !!python/name:mermaid2.fence_mermaid_custom
+    custom_fences: []
+      # Mermaid support disabled - would require mermaid2 plugin
+
 - pymdownx.tabbed:
     alternate_style: true
 - pymdownx.tasklist:
@@ -22,8 +21,9 @@ markdown_extensions:
 
 plugins:
   - search
-  - mermaid2:
-      version: "10.4.0"
+  # - mermaid2:
+  #     version: "10.4.0"
+  # (mermaid2 plugin temporarily disabled for this build)
 
 exclude_docs: |
   README.md
@@ -56,6 +56,15 @@ nav:
   - LFS Policy: guides/lfs_policy.md
   - Asset Instruction Playbook: guides/asset_instruction_playbook.md
   - Logging (Stdlib): guides/LOGGING.md
+- 🔐 Token Management:
+  - Overview: tokens/INDEX.md
+  - Token Hierarchy Guide: tokens/TOKEN_HIERARCHY_GUIDE.md
+  - Token Regeneration Guide: tokens/TOKEN_REGENERATION_GUIDE.md
+  - Token Usage Audit: tokens/TOKEN_USAGE_AUDIT.md
+  - Human Admin Setup: tokens/HUMAN_ADMIN_SETUP.md
+  - CI/CD Troubleshooting: tokens/CI_CD_TROUBLESHOOTING.md
+  - Custom Agent Guidance: tokens/CUSTOM_AGENT_GUIDANCE.md
+  - Quick Reference: tokens/QUICK_REFERENCE.md
 - Architecture:
   - Overview: architecture.md
   - Codex Pipeline: architecture/codex_pipeline.md
