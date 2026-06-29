@@ -34,7 +34,7 @@ from urllib.parse import urlparse  # noqa: E402
 requests: ModuleType | None
 try:  # pragma: no cover - optional dependency
     import requests  # noqa: E402
-except (ValueError, TypeError):  # pragma: no cover - requests missing or broken
+except ImportError:  # pragma: no cover - requests missing or broken
     requests = None
 
 
