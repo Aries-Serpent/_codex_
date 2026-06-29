@@ -38,7 +38,7 @@ class TrainingEventEmitter:
                 logger.info("Using Azure Event Grid publisher")
                 return AzureEventPublisher()
             except ImportError as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("ImportError: <ERROR_TYPE>")
                 logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
                 logger.warning("Azure Event Grid configured but package not installed")
@@ -51,7 +51,7 @@ class TrainingEventEmitter:
                 logger.info("Using AWS EventBridge publisher")
                 return AWSEventPublisher()
             except ImportError as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("ImportError: <ERROR_TYPE>")
                 logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
                 logger.warning("AWS EventBridge configured but package not installed")

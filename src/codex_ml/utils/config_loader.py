@@ -46,28 +46,19 @@ try:  # pragma: no cover - optional dependency
         logger.debug("ImportError: <ERROR_TYPE>")
         logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
         from config_legacy import compose, initialize_config_dir
-
-
         from config_legacy.errors import MissingConfigException
 
     _HYDRA_AVAILABLE = True
 except (ImportError, AttributeError):  # pragma: no cover - import guard
     try:
         from hydra_core import compose, initialize_config_dir
-
-
         from hydra_core.errors import MissingConfigException
-
-
 
         _HYDRA_AVAILABLE = True
     except (IOError, OSError):  # pragma: no cover - import guard
         compose = None
 
-
         initialize_config_dir = None
-
-
 
         class MissingConfigException(RuntimeError):  # type: ignore[no-redef]
             """Fallback error used when Hydra is unavailable."""
@@ -212,7 +203,7 @@ def _read_yaml_mapping(path: Path) -> dict[str, Any]:
         try:
             data = safe_load(fh) or {}
         except MissingPyYAMLError as exc:
-            error_type = type(exc).__name__
+            type(exc).__name__
             logger.debug("MissingPyYAMLError: <ERROR_TYPE>")
             raise RuntimeError(
                 'PyYAML is required to parse configuration files. Install it via ``pip install "PyYAML>=6.0"`` '  # noqa: E501
@@ -234,7 +225,7 @@ def _apply_overrides_to_mapping(
         try:
             parsed = safe_load(value)
         except MissingPyYAMLError as exc:
-            error_type = type(exc).__name__
+            type(exc).__name__
             logger.debug("MissingPyYAMLError: <ERROR_TYPE>")
             raise RuntimeError(
                 'YAML overrides require PyYAML. Install it via ``pip install "PyYAML>=6.0"`` '
@@ -337,7 +328,7 @@ def load_config(*, config_path: str) -> DictConfig:
         try:
             data = safe_load(fh) or {}
         except MissingPyYAMLError as exc:
-            error_type = type(exc).__name__
+            type(exc).__name__
             logger.debug("MissingPyYAMLError: <ERROR_TYPE>")
             raise RuntimeError(
                 'PyYAML is required to parse configuration files. Install it via ``pip install "PyYAML>=6.0"`` '  # noqa: E501

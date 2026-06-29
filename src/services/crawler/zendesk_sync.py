@@ -180,7 +180,7 @@ class ZendeskKnowledgeSyncService:
                     try:
                         cache[url] = ArticleMetadata(**meta_dict)
                     except (TypeError, ValueError) as e:
-                        error_type = type(e).__name__
+                        type(e).__name__
                         logger.warning(
                             f"Invalid cache entry for {url}: <ERROR_TYPE>"
                         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -190,7 +190,7 @@ class ZendeskKnowledgeSyncService:
             )  # codeql[py/clear-text-logging-sensitive-data]
             return cache
         except (json.JSONDecodeError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.error(
                 "Failed to load cache: <ERROR_TYPE>, starting fresh"
             )  # codeql[py/clear-text-logging-sensitive-data]
@@ -214,7 +214,7 @@ class ZendeskKnowledgeSyncService:
                 f"Saved cache with {len(self._cache)} articles to {self.api_index_path}"
             )  # codeql[py/clear-text-logging-sensitive-data]
         except OSError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.error(
                 "Failed to save cache: <ERROR_TYPE>"
             )  # codeql[py/clear-text-logging-sensitive-data]
@@ -451,7 +451,7 @@ class ZendeskKnowledgeSyncService:
                             )  # codeql[py/clear-text-logging-sensitive-data]
                             failed += 1
                     except (ConnectionError, TimeoutError) as e:
-                        error_type = type(e).__name__
+                        type(e).__name__
                         logger.error(
                             f"Failed to sync {url}: <ERROR_TYPE>"
                         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -749,7 +749,7 @@ class ZendeskKnowledgeSyncService:
                 articles.append(article_data)
 
             except (IOError, OSError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.warning(
                     f"Failed to process {html_file}: <ERROR_TYPE>"
                 )  # codeql[py/clear-text-logging-sensitive-data]
@@ -931,7 +931,7 @@ def main() -> int:
         return 0 if result.failed == 0 else 1
 
     except (ValueError, TypeError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.error(
             "Sync failed: <ERROR_TYPE>", exc_info=True
         )  # codeql[py/clear-text-logging-sensitive-data]

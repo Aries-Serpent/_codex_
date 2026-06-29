@@ -79,12 +79,25 @@ LOCK_FILE_NAMES = {
     "Cargo.lock",
 }
 
+# Essential repository files in the root that should never be offloaded
+ESSENTIAL_ROOT_FILES = {
+    "CHANGELOG.md",
+    "README.md",
+    "CONTRIBUTING.md",
+    "LICENSE",
+    "LICENSE.md",
+    "CODE_OF_CONDUCT.md",
+    "SECURITY.md",
+}
+
 
 def _exclude_from_large_file_check(rel_path: Path) -> bool:
     """Exclude essential lock/docs files from large-file offload heuristics.
 
     Lock files (e.g. `uv.lock`) are required for deterministic dependency
     resolution, and documentation under `docs/` is intentionally maintained in-repo.
+    Essential root markdown files (CHANGELOG.md, README.md, etc.) are core
+    repository documents and should never be flagged as offload candidates.
     These should never be suggested as offload candidates purely due to file size.
     """
     rel_str = str(rel_path)
@@ -92,6 +105,8 @@ def _exclude_from_large_file_check(rel_path: Path) -> bool:
         rel_path.name in LOCK_FILE_NAMES
         or rel_path.suffix == ".lock"
         or rel_str.startswith("docs/")
+        or rel_path.name in ESSENTIAL_ROOT_FILES
+        or (rel_path.parent == Path(".") and rel_path.name in ESSENTIAL_ROOT_FILES)
     )
 
 

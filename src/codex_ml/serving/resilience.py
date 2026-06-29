@@ -158,7 +158,7 @@ class CircuitBreaker:
                         logger.warning("Health probe failed, keeping circuit open")
                         raise Exception("Health probe failed")
                 except (IOError, OSError) as e:
-                    error_type = type(e).__name__
+                    type(e).__name__
                     logger.debug("Exception: <ERROR_TYPE>")
                     logger.warning("Health probe error: <ERROR_TYPE>")
                     self._on_failure()
@@ -361,7 +361,7 @@ class CircuitBreaker:
 
             logger.debug(f"Circuit breaker state saved to {state_file}")
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.warning("Failed to save circuit breaker state: <ERROR_TYPE>")
 
@@ -395,7 +395,7 @@ class CircuitBreaker:
                 f"Circuit breaker state loaded: {self.state.value}, failures={self.failure_count}"
             )
         except (ValueError, TypeError, RuntimeError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.warning("Failed to load circuit breaker state: <ERROR_TYPE>, starting fresh")
 
@@ -506,7 +506,7 @@ class FallbackHandler:
         try:
             return func(*args, **kwargs)
         except (ValueError, TypeError, RuntimeError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.warning("Primary function failed: <ERROR_TYPE>, attempting fallback")
 

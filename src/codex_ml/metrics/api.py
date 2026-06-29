@@ -360,7 +360,7 @@ def summarize_ndjson_to_sqlite(
     try:
         import sqlite3
     except ImportError as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("ImportError: <ERROR_TYPE>")
         raise ImportError("sqlite3 is required for SQLite export") from exc
 

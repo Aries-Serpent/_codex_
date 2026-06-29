@@ -206,7 +206,7 @@ def _listify_texts(value: Any) -> list[str]:
     try:
         return [str(item) for item in list(value)]
     except TypeError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("TypeError: <ERROR_TYPE>")
         logger.warning("TypeError: <ERROR_TYPE>", exc_info=True)
         return [str(value)]
@@ -523,7 +523,7 @@ def _stop_system_metrics_logger(logger: Any) -> None:
         try:
             stopper()
         except (ValueError, TypeError, RuntimeError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 
@@ -889,7 +889,7 @@ def run_functional_training(
                         sanitized_text, stage=stage, bypass=safety_cfg.bypass
                     )
                 except SafetyViolation as exc:
-                    error_type = type(exc).__name__
+                    type(exc).__name__
                     logger.debug("SafetyViolation: <ERROR_TYPE>")
                     match_ids: list[str] = []
                     for match in exc.decision.matches:
@@ -912,7 +912,7 @@ def run_functional_training(
                 try:
                     moderation_decision = moderation_adapter.enforce(sanitized_text, stage=stage)
                 except ModerationRejection as exc:
-                    error_type = type(exc).__name__
+                    type(exc).__name__
                     logger.debug("ModerationRejection: <ERROR_TYPE>")
                     context = json.dumps(
                         {
@@ -1648,7 +1648,7 @@ def _evaluate_model(
         try:
             result["val_perplexity"] = float(math.exp(result["val_loss"]))
         except OverflowError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("OverflowError: <ERROR_TYPE>")
             logger.warning("OverflowError: <ERROR_TYPE>", exc_info=True)
             result["val_perplexity"] = float("inf")
@@ -1662,7 +1662,7 @@ def _evaluate_model(
     try:
         result.setdefault("num_batches", float(len(loader)))
     except TypeError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("TypeError: <ERROR_TYPE>")
         logger.warning("TypeError: <ERROR_TYPE>", exc_info=True)
 

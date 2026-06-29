@@ -347,7 +347,7 @@ class AgentBrainInterface:
                     self._patterns = data.get("patterns", {})
                     logger.debug(f"Loaded {len(self._patterns)} patterns")
             except (OSError, json.JSONDecodeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.warning("Failed to load patterns: <ERROR_TYPE>")
                 self._patterns = {}
         else:
@@ -376,7 +376,7 @@ class AgentBrainInterface:
                         self._session_state["phase"] = line.split("**")[-1].strip()
 
             except OSError as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.warning("Failed to load session state: <ERROR_TYPE>")
                 self._session_state = {}
         else:
@@ -407,7 +407,7 @@ class AgentBrainInterface:
                         in_objectives = False
 
             except OSError as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.warning("Failed to load objectives: <ERROR_TYPE>")
                 self._objectives = []
         else:
@@ -640,7 +640,7 @@ class AgentBrainInterface:
 
             logger.debug("Patterns saved successfully")
         except OSError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.error("Failed to save patterns: <ERROR_TYPE>")
 
     # =========================================================================

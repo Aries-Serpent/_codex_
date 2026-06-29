@@ -206,7 +206,7 @@ def parse_iso(value: Optional[str]) -> Optional[str]:
     try:
         return datetime.fromisoformat(value).isoformat(sep=" ", timespec="seconds")
     except ValueError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("ValueError: <ERROR_TYPE>")
         logger.warning("ValueError: <ERROR_TYPE>", exc_info=True)
         return value
@@ -287,7 +287,7 @@ def main(argv: Optional[list[str]] = None) -> int:
                 print(f"{ts} {prefix}{msg}")
         return 0
     except (IOError, OSError) as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         print("ERROR: <ERROR_TYPE>", file=sys.stderr)
         return 1

@@ -626,11 +626,11 @@ def load_app_config(
     try:
         file_cfg = OmegaConf.load(str(config_path))
     except FileNotFoundError as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("FileNotFoundError: <ERROR_TYPE>")
         raise ConfigError("config", f"configuration file not found: {config_path}") from exc
     except (IOError, OSError) as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         raise ConfigError("config", f"failed to load configuration: {exc}") from exc
 
@@ -714,7 +714,7 @@ def load_app_config(
                             if isinstance(current, float):
                                 return float(text)
                         except (ValueError, TypeError, RuntimeError) as e:
-                            error_type = type(e).__name__
+                            type(e).__name__
                             logger.debug("Exception: <ERROR_TYPE>")
                             logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
                     return new_value
@@ -723,12 +723,12 @@ def load_app_config(
                 setattr(instance, key, coerced)
             return instance
         except ConfigError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("ConfigError: <ERROR_TYPE>")
             logger.warning("ConfigError: <ERROR_TYPE>", exc_info=True)
             raise
         except ValueError as exc:
-            error_type = type(exc).__name__
+            type(exc).__name__
             logger.debug("ValueError: <ERROR_TYPE>")
             parts: list[str] = []
             for chunk in str(exc).split(";"):
@@ -858,7 +858,7 @@ def get_config(
     try:
         import hydra
     except ImportError as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("ImportError: <ERROR_TYPE>")
         raise ImportError(
             "hydra-core is required for unified config loading. "

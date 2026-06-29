@@ -367,7 +367,7 @@ def _initialize_reasoning_runtime(
     try:
         reasoning_cfg = _coerce_reasoning_config(raw_cfg)
     except ConfigError as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("ConfigError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         logger.warning(
             "Invalid reasoning configuration: %s", exc
@@ -601,7 +601,7 @@ def _resolve_device(device: Optional[str]):
     try:
         return torch.device(device)
     except (TypeError, ValueError, RuntimeError) as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         logger.warning(
             "Invalid device '%s': %s. Falling back to CPU.", device, exc

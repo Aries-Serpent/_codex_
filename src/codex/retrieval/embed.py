@@ -44,7 +44,7 @@ class EmbeddingModel:
             )
             logger.info("Embedding model loaded successfully")
         except ImportError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("ImportError: <ERROR_TYPE>")
             logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
             logger.error(
@@ -52,7 +52,7 @@ class EmbeddingModel:
             )
             raise
         except (ValueError, TypeError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.error("Error loading embedding model: <ERROR_TYPE>")
             raise
@@ -106,7 +106,7 @@ class KnowledgeBaseLoader:
                     doc = json.loads(line)
                     documents.append(doc)
                 except json.JSONDecodeError as e:
-                    error_type = type(e).__name__
+                    type(e).__name__
                     logger.warning(f"Error parsing line {line_num} in {file_path}: <ERROR_TYPE>")
 
         logger.info(f"Loaded {len(documents)} documents from {file_path}")

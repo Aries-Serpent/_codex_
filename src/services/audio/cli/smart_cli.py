@@ -195,7 +195,7 @@ def main() -> int:
         parser.print_help()
         return 1
     except (ValueError, TypeError) as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         print("❌ Error: <ERROR_TYPE>")
         return 1
 

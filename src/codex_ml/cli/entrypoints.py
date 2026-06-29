@@ -108,7 +108,7 @@ def _load_main(module_path: str, failures: list[str]) -> Optional[int]:
     except SystemExit:
         raise
     except (IOError, OSError) as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         failures.append(f"{module_path}.main() raised {exc!r}")
         return None
@@ -116,7 +116,7 @@ def _load_main(module_path: str, failures: list[str]) -> Optional[int]:
     try:
         return int(result)
     except (IOError, OSError) as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         failures.append(f"{module_path}.main() returned non-int value ({exc})")
         return None
@@ -131,7 +131,7 @@ def _run_module(module_path: str, failures: list[str]) -> bool:
     except SystemExit:
         raise
     except (IOError, OSError) as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         failures.append(f"{module_path}: execution failed ({exc})")
         return False
@@ -270,7 +270,7 @@ def eval_main() -> int:
                 )
                 return rc
             except (IOError, OSError) as exc:
-                error_type = type(exc).__name__
+                type(exc).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 sys.stderr.write(f"[codex-eval] env override failed ({override}): {exc}\n")
                 override_failed = True
@@ -278,7 +278,7 @@ def eval_main() -> int:
         try:
             rc = _eval_dispatch(namespace)
         except SystemExit as exc:
-            error_type = type(exc).__name__
+            type(exc).__name__
             logger.debug("SystemExit: <ERROR_TYPE>")
             rc = int(getattr(exc, "code", 0) or 0)
             payload = {

@@ -156,7 +156,7 @@ def run_worker(
                     seen.add(compute_checksum(it))
                 save_checkpoint(checkpoint_path, seen)
         except (IOError, OSError) as exc:
-            error_type = type(exc).__name__
+            type(exc).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             increment("worker_batch_failures")
             logger.exception("Failed to upsert batch: %s", exc)

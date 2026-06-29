@@ -137,7 +137,7 @@ if _USE_TYPER:
                         elif stripped:
                             break
             except OSError as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("OSError: <ERROR_TYPE>")
                 logger.warning("OSError: <ERROR_TYPE>", exc_info=True)
                 description = "Reasoning template"
@@ -154,7 +154,7 @@ if _USE_TYPER:
             with path.open("r", encoding="utf-8") as handle:
                 data = yaml.safe_load(handle) or {}
         except (IOError, OSError) as exc:
-            error_type = type(exc).__name__
+            type(exc).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             echo(f"Failed to load {path}: {exc}")
             raise Exit(code=1) from exc
@@ -178,7 +178,7 @@ if _USE_TYPER:
             try:
                 relative = path.relative_to(Path.cwd())
             except ValueError as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("ValueError: <ERROR_TYPE>")
                 logger.warning("ValueError: <ERROR_TYPE>", exc_info=True)
                 relative = path
@@ -303,7 +303,7 @@ else:  # pragma: no cover - click fallback
                         elif stripped:
                             break
             except OSError as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("OSError: <ERROR_TYPE>")
                 logger.warning("OSError: <ERROR_TYPE>", exc_info=True)
                 description = "Reasoning template"
@@ -320,7 +320,7 @@ else:  # pragma: no cover - click fallback
             with path.open("r", encoding="utf-8") as handle:
                 data = yaml.safe_load(handle) or {}
         except (IOError, OSError) as exc:
-            error_type = type(exc).__name__
+            type(exc).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             echo(f"Failed to load {path}: {exc}")
             raise Exit(code=1) from exc
@@ -346,7 +346,6 @@ else:  # pragma: no cover - click fallback
         help="Local mlruns dir",
     )
     def track_smoke(dir_: Optional[Path] = None) -> None:
-
 
         _track_smoke_impl(dir_)
 
@@ -376,14 +375,10 @@ else:  # pragma: no cover - click fallback
     # Modern sub-apps pattern: define group separately, then register via add_command.
     # This mirrors the Typer branch's app.add_typer(reasoning_templates, ...) pattern.
     reasoning_templates = _click.Group(
-
-
         name="reasoning-templates",
         help="Surface reasoning training presets and curricula metadata.",
     )
     app.add_command(reasoning_templates, name="reasoning-templates")
-
-
 
     @reasoning_templates.command("list")
     def list_reasoning_templates() -> None:
@@ -395,7 +390,7 @@ else:  # pragma: no cover - click fallback
             try:
                 relative = path.relative_to(Path.cwd())
             except ValueError as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("ValueError: <ERROR_TYPE>")
                 logger.warning("ValueError: <ERROR_TYPE>", exc_info=True)
                 relative = path
@@ -460,7 +455,6 @@ else:  # pragma: no cover - click fallback
         help="Only include specified categories (can be repeated).",
     )
     def repo_map(reasoning: bool, includes: tuple[str, ...] = ()) -> None:
-
 
         from codex_ml.cli.repo_map import render_repo_map
 

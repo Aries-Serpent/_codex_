@@ -199,6 +199,6 @@ def validate_tls_config(
         create_client_context(client_cert, client_key, ca_cert)
         return True
     except TLSConfigError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.error("TLS configuration validation failed: <ERROR_TYPE>")
         return False

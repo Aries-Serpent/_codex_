@@ -78,7 +78,7 @@ class HDF5Loader:
                 if dataset_path != "/" and dataset_path not in f:
                     raise KeyError(f"Dataset path not found: {dataset_path}")
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             raise ValueError(f"Invalid HDF5 file: {e}") from e
 

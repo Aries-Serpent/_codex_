@@ -131,7 +131,7 @@ def embed_chunks(
         model = safe_load_sentence_transformer(model_name, cache_dir)
 
     except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.error(
             "Failed to load embedding model: <ERROR_TYPE>"
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -173,7 +173,7 @@ def embed_chunks(
         )
         return embeddings
     except IndexError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.error(
             "IndexError during encoding: <ERROR_TYPE>"
         )  # codeql[py/clear-text-logging-sensitive-data]

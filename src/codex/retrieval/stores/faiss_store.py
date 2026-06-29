@@ -74,7 +74,7 @@ class FAISSStore(VectorStore):
             version = getattr(faiss, "__version__", "unknown")
             logger.info(f"FAISS version: {version}")
         except ImportError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("ImportError: <ERROR_TYPE>")
             logger.error("faiss-cpu not installed. Install with: pip install faiss-cpu")
             raise
@@ -319,7 +319,7 @@ class FAISSStore(VectorStore):
                             self.vector_ids.append(vid)
                             self.documents.append(doc)
                         except json.JSONDecodeError as e:
-                            error_type = type(e).__name__
+                            type(e).__name__
                             logger.error(
                                 f"Failed to parse document at line {line_no}: <ERROR_TYPE>"
                             )

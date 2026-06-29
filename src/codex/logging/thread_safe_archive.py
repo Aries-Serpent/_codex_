@@ -62,13 +62,13 @@ class ThreadSafeArchive:
                 yield
 
         except TimeoutError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.error(f"Archive timeout for {session_id}: <ERROR_TYPE>")
             log_error(e, f"archive_timeout_{session_id}", self.errors_path)
             raise
 
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.error(f"Archive error for {session_id}: <ERROR_TYPE>")
             log_error(e, f"archive_error_{session_id}", self.errors_path)
             raise
@@ -81,13 +81,13 @@ class ThreadSafeArchive:
                 yield
 
         except TimeoutError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.error(f"Retrieve timeout for {session_id}: <ERROR_TYPE>")
             log_error(e, f"retrieve_timeout_{session_id}", self.errors_path)
             raise
 
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.error(f"Retrieve error for {session_id}: <ERROR_TYPE>")
             log_error(e, f"retrieve_error_{session_id}", self.errors_path)
             raise
@@ -157,7 +157,7 @@ class ArchiveSessionGuard:
             return None
 
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.error(f"Archive operation failed for {session_id}: <ERROR_TYPE>")
             log_error(e, f"archive_guard_error_{session_id}", self.archive.errors_path)
             return None
@@ -179,7 +179,7 @@ class ArchiveSessionGuard:
             return None
 
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.error(f"Retrieve operation failed for {session_id}: <ERROR_TYPE>")
             log_error(e, f"retrieve_guard_error_{session_id}", self.archive.errors_path)
             return None
@@ -200,7 +200,7 @@ class ArchiveSessionGuard:
                 result = self.archive_with_lock(sid, archive_func)
                 return sid, result is not None
             except (IOError, OSError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.error(f"Parallel archive failed for {sid}: <ERROR_TYPE>")
                 return sid, False
 
@@ -212,7 +212,7 @@ class ArchiveSessionGuard:
                     sid, success = future.result()
                     results[sid] = success
                 except (ValueError, TypeError, RuntimeError) as e:
-                    error_type = type(e).__name__
+                    type(e).__name__
                     logger.error("Parallel archive exception: <ERROR_TYPE>")
                     results[futures[future]] = False
 

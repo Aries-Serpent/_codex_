@@ -45,7 +45,7 @@ def _error_capture(step_no: str, step_desc: str, err_msg: str, ctx: str) -> None
         with ERRORS_PATH.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(record) + "\n")
     except (IOError, OSError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
     sys.stderr.write(

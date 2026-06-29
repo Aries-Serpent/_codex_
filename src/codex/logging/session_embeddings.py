@@ -97,7 +97,7 @@ class SessionEmbeddings:
                 self._model = SentenceTransformer(self.MODEL_NAME)
                 logger.info(f"Loaded model: {self.MODEL_NAME}")
             except (ValueError, TypeError, RuntimeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.warning("Failed to load model: <ERROR_TYPE>; using mock embeddings")
                 self._model = None
         else:
@@ -142,7 +142,7 @@ class SessionEmbeddings:
             try:
                 embedding = self._model.encode(text, convert_to_numpy=True)
             except (ValueError, TypeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.error(f"Embedding failed for '{text[:50]}': <ERROR_TYPE>")
                 raise
 
@@ -169,7 +169,7 @@ class SessionEmbeddings:
                 try:
                     self._load_from_disk()
                 except (IOError, OSError) as e:
-                    error_type = type(e).__name__
+                    type(e).__name__
                     logger.warning("Failed to load index: <ERROR_TYPE>; creating new index")
                     self._create_index()
                     self._metadata = {}
@@ -299,7 +299,7 @@ class SessionEmbeddings:
                 return True
 
             except (ValueError, TypeError, RuntimeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.error(f"Failed to add session {session_id}: <ERROR_TYPE>")
                 return False
 
@@ -344,7 +344,7 @@ class SessionEmbeddings:
                 embedding = self._generate_embedding(query_text)
                 return self._search(embedding, k)
             except (ValueError, TypeError, RuntimeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.error("Failed to search: <ERROR_TYPE>")
                 return []
 
@@ -449,7 +449,7 @@ class SessionEmbeddings:
                 return True
 
             except (ValueError, TypeError, RuntimeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.error("Rebuild failed: <ERROR_TYPE>")
                 self._metadata = old_metadata
                 return False

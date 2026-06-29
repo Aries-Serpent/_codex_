@@ -17,7 +17,7 @@ import json
 from abc import ABC
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, cast, Dict, Generic, Optional, Type, TypeVar
+from typing import Any, Dict, Generic, Optional, Type, TypeVar, cast
 
 import yaml
 

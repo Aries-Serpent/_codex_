@@ -263,7 +263,7 @@ class TokenBudgetEnforcer:
                         block.token_count = summary_tokens
                         continue
                 except (ValueError, TypeError, RuntimeError) as e:
-                    error_type = type(e).__name__
+                    type(e).__name__
                     logger.debug("Exception: <ERROR_TYPE>")
                     logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 
@@ -293,6 +293,6 @@ class TokenBudgetEnforcer:
                         self.budget.current_usage -= saved
                         block.token_count = new_tokens
                 except (ValueError, TypeError, RuntimeError) as e:
-                    error_type = type(e).__name__
+                    type(e).__name__
                     logger.debug("Exception: <ERROR_TYPE>")
                     logger.warning("Exception: <ERROR_TYPE>", exc_info=True)

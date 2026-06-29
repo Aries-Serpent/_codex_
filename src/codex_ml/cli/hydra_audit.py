@@ -105,7 +105,7 @@ def _load_yaml(path: Path) -> dict[str, Any]:
     try:
         text = path.read_text(encoding="utf-8")
     except OSError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("OSError: <ERROR_TYPE>")
         logger.warning("OSError: <ERROR_TYPE>", exc_info=True)
         return {}
@@ -327,7 +327,7 @@ def _audit_file(path: Path, root: Path) -> FileAudit:
     try:
         rel_file = str(path.relative_to(root))
     except ValueError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("ValueError: <ERROR_TYPE>")
         logger.warning("ValueError: <ERROR_TYPE>", exc_info=True)
         rel_file = str(path)

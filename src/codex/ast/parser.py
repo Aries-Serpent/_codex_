@@ -87,7 +87,7 @@ class UniversalParser:
             code = file_path.read_text(encoding="utf-8", errors="ignore")
             return self.parse_string(code, file_path)
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             if self.strict:
                 raise ParseError(str(e), file_path) from e
@@ -139,7 +139,7 @@ class UniversalParser:
             return root
 
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             if self.strict:
                 raise ParseError(str(e), file_path) from e
@@ -172,7 +172,7 @@ class UniversalParser:
             return root
 
         except SyntaxError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("SyntaxError: <ERROR_TYPE>")
             if self.strict:
                 raise ParseError(str(e), file_path, e.lineno or 0) from e

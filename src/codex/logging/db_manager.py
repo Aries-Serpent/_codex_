@@ -220,7 +220,7 @@ class DBManager:
         try:
             conn.close()
         except sqlite3.Error as exc:
-            error_type = type(exc).__name__
+            type(exc).__name__
             self._logger.debug("Error closing connection: <ERROR_TYPE>")
 
     @contextmanager
@@ -276,7 +276,7 @@ class DBManager:
                     try:
                         conn.close()
                     except sqlite3.Error as exc:
-                        error_type = type(exc).__name__
+                        type(exc).__name__
                         cls._logger.debug("Error closing pooled connection: <ERROR_TYPE>")
             cls._CONNECTION_POOL.clear()
 

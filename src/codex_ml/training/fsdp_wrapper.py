@@ -58,27 +58,19 @@ try:
     checkpoint_wrapper = _ckpt_wrap.checkpoint_wrapper
     BackwardPrefetch = _fsdp.BackwardPrefetch
 
-
     CPUOffload = _fsdp.CPUOffload
-
 
     FullStateDictConfig = _fsdp.FullStateDictConfig
 
-
     MixedPrecision = _fsdp.MixedPrecision
-
 
     ShardedStateDictConfig = _fsdp.ShardedStateDictConfig
 
-
     ShardingStrategy = _fsdp.ShardingStrategy
-
 
     StateDictType = _fsdp.StateDictType
 
-
     FSDP = _fsdp.FullyShardedDataParallel
-
 
     size_based_auto_wrap_policy = _fsdp_wrap.size_based_auto_wrap_policy
     transformer_auto_wrap_policy = _fsdp_wrap.transformer_auto_wrap_policy
@@ -94,10 +86,7 @@ except (ImportError, AttributeError) as e:
     # Define mock classes for offline/testing
     FSDP = None
 
-
     ShardingStrategy = None
-
-
 
 
 class FSDPShardingStrategy(Enum):

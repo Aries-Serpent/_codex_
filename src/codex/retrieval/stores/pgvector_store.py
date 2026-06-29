@@ -298,7 +298,9 @@ class PGVectorStore:
             raise RuntimeError("Call initialize() first")
 
         # Group documents by shard
-        shard_groups: dict[int, list[tuple[str, list[float]]]] = {i: [] for i in range(self.num_shards)}
+        shard_groups: dict[int, list[tuple[str, list[float]]]] = {
+            i: [] for i in range(self.num_shards)
+        }
 
         for doc, emb in zip(documents, embeddings, strict=False):
             if shard_mapper:

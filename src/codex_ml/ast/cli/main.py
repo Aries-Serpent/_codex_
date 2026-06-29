@@ -172,7 +172,7 @@ def cmd_stats(args: argparse.Namespace) -> int:
         return 0
 
     except (IOError, OSError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         print(
             "Error getting statistics: <ERROR_TYPE>", file=sys.stderr
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -253,7 +253,7 @@ def cmd_export(args: argparse.Namespace) -> int:
         return 0
 
     except (IOError, OSError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         print(
             "Error exporting: <ERROR_TYPE>", file=sys.stderr
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -293,7 +293,7 @@ def cmd_list(args: argparse.Namespace) -> int:
         return 0
 
     except (IOError, OSError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         print(
             "Error listing analyses: <ERROR_TYPE>", file=sys.stderr
         )  # codeql[py/clear-text-logging-sensitive-data]

@@ -58,7 +58,7 @@ def apply_lora_if_available(
         try:
             selected_task_type = TaskType[selected_task_type]
         except KeyError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("KeyError: <ERROR_TYPE>")
             logger.warning("KeyError: <ERROR_TYPE>", exc_info=True)
             selected_task_type = TaskType(selected_task_type)

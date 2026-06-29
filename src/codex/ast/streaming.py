@@ -64,7 +64,7 @@ class StreamingParser:
                     yield child
 
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.error(f"Failed to parse {file_path}: <ERROR_TYPE>")
             raise
 
@@ -89,6 +89,6 @@ class StreamingParser:
                     for node in self.parse_file(str(file_path)):
                         yield (str(file_path), node)
                 except (IOError, OSError) as e:
-                    error_type = type(e).__name__
+                    type(e).__name__
                     logger.warning(f"Failed to parse {file_path}: <ERROR_TYPE>")
                     continue

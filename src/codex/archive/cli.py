@@ -525,7 +525,7 @@ def show_standardization_status() -> None:
             click.echo(f"  {status_icon} {standard.upper()}")
         click.echo()
     except ImportError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("ImportError: <ERROR_TYPE>")
         logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
         click.echo("❌ Standardization module not available", err=True)
@@ -558,7 +558,7 @@ def validate_standardization(
         from .evidence_schema import EvidenceSchemaValidator
         from .standardization import StandardizationManager
     except ImportError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("ImportError: <ERROR_TYPE>")
         logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
         click.echo("❌ Standardization module not available", err=True)
@@ -604,7 +604,7 @@ def validate_standardization(
                 validator.validate(record, version=version)
                 valid_records += 1
             except (ValueError, TypeError, RuntimeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 if repair and version == "1.0":
                     try:
@@ -628,7 +628,7 @@ def validate_standardization(
                     if not sig_valid["valid"]:
                         warnings.append(f"Line {line_no}: Signature verification failed")
                 except (ValueError, TypeError, RuntimeError) as e:
-                    error_type = type(e).__name__
+                    type(e).__name__
                     logger.debug("Exception: <ERROR_TYPE>")
                     warnings.append(f"Line {line_no}: Could not verify signature: {e}")
 
@@ -666,7 +666,7 @@ def migrate_evidence_to_v2() -> None:
     try:
         from .evidence_schema import EvidenceSchemaValidator
     except ImportError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("ImportError: <ERROR_TYPE>")
         logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
         click.echo("❌ Standardization module not available", err=True)
@@ -698,7 +698,7 @@ def migrate_evidence_to_v2() -> None:
             else:
                 migrated_records.append(record)  # Already v2
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             errors.append(f"Line {line_no}: {e}")
 

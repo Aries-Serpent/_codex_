@@ -34,8 +34,6 @@ except ModuleNotFoundError:  # pragma: no cover - fallback for minimal envs
     BaseSettings = BaseModel
 
     def SettingsConfigDict(**config: Any) -> ConfigDict:
-
-
         """Return a ``ConfigDict`` compatible with Pydantic's configuration API.
         Ignores unsupported keys like 'env_file' when pydantic_settings is unavailable.
         """
@@ -45,7 +43,7 @@ except ModuleNotFoundError:  # pragma: no cover - fallback for minimal envs
         try:
             return ConfigDict(**config)  # type: ignore[typeddict-item]
         except TypeError as exc:
-            error_type = type(exc).__name__
+            type(exc).__name__
             logger.debug("TypeError: <ERROR_TYPE>")
             # If ConfigDict rejects unknown keys, filter to known parameters
             valid_keys = {"extra", "arbitrary_types_allowed", "validate_assignment"}

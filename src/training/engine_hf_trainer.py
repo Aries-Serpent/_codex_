@@ -48,7 +48,7 @@ def _install_accelerate_compat() -> None:
             getattr(accelerate, "utils", object()), "DataLoaderConfiguration", None
         )
     except (ValueError, TypeError) as e:  # pragma: no cover
-        error_type = type(e).__name__
+        type(e).__name__
         print("[codex][accelerate] failed to inspect accelerate: <ERROR_TYPE>")
         return
 
@@ -133,7 +133,6 @@ try:  # pragma: no cover - numpy optional in offline environments
     import numpy as np
 except (IOError, OSError):  # pragma: no cover - numpy missing
     np = None
-
 
 
 try:  # pragma: no cover - optional datasets dependency
@@ -376,7 +375,7 @@ def _log_mlflow_metrics(
                 if isinstance(value, (int, float)):
                     mlflow_module.log_metric(key, float(value))
     except (IOError, OSError) as exc:  # pragma: no cover - defensive logging
-        error_type = type(exc).__name__
+        type(exc).__name__
         print("[codex][mlflow] skipped logging: <ERROR_TYPE>")
 
 
@@ -389,7 +388,7 @@ def _looks_like_local_source(identifier: os.PathLike[str] | str | None) -> bool:
     try:
         return Path(norm).expanduser().exists()
     except OSError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("OSError: <ERROR_TYPE>")
         logger.warning("OSError: <ERROR_TYPE>", exc_info=True)
         return False
@@ -417,7 +416,7 @@ def get_hf_revision(identifier: os.PathLike[str] | str) -> str:
     try:
         revision, _ = ensure_pinned_kwargs(norm, overrides)
     except ValueError as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("ValueError: <ERROR_TYPE>")
         if env_revision:
             raise RuntimeError("HF_REVISION must be set to an immutable commit hash") from exc
@@ -489,7 +488,7 @@ def build_trainer(
                 try:
                     training_steps = args.num_train_epochs * (len(train_ds) // batch_size + 1)
                 except TypeError as e:
-                    error_type = type(e).__name__
+                    type(e).__name__
                     logger.debug("TypeError: <ERROR_TYPE>")
                     logger.warning("TypeError: <ERROR_TYPE>", exc_info=True)
                     training_steps = num_steps
@@ -679,7 +678,7 @@ class NDJSONMetricsWriter:
         try:
             self.close()
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.warning(
                 f"Exception: {e}", exc_info=True
@@ -1056,14 +1055,14 @@ def run_hf_trainer(
         try:
             cfg = safe_load(config_path.read_text()) or {}
         except MissingPyYAMLError as exc:
-            error_type = type(exc).__name__
+            type(exc).__name__
             logger.debug("MissingPyYAMLError: <ERROR_TYPE>")
             raise RuntimeError(
                 "PyYAML is required to parse training configs passed to EngineHfTrainer. "
                 'Install it via ``pip install "PyYAML>=6.0"`` before retrying.'
             ) from exc
         except YAMLError as exc:
-            error_type = type(exc).__name__
+            type(exc).__name__
             logger.debug("YAMLError: <ERROR_TYPE>")
             raise RuntimeError(f"Failed to parse training config {config_path}: {exc}") from exc
         except (IOError, OSError):
@@ -1194,7 +1193,7 @@ def run_hf_trainer(
                 cfg["task_type"] = str(lora_task_type)
             model = apply_lora(model, cfg)
         except (ValueError, TypeError, RuntimeError) as exc:
-            error_type = type(exc).__name__
+            type(exc).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             log_error("lora_import", str(exc), "peft")
 
@@ -1249,7 +1248,7 @@ def run_hf_trainer(
 
             callbacks = [_CheckpointCallback()]
         except (ConnectionError, TimeoutError) as exc:
-            error_type = type(exc).__name__
+            type(exc).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             log_error("checkpoint_init", str(exc), str(checkpoint_dir))
 
@@ -1265,7 +1264,7 @@ def run_hf_trainer(
             try:
                 loggers = _codex_logging_bootstrap(log_args)
             except (IOError, OSError) as exc:  # pragma: no cover - bootstrap is best-effort
-                error_type = type(exc).__name__
+                type(exc).__name__
                 print("[telemetry] bootstrap skipped: <ERROR_TYPE>")
 
     # If this code path needs an Accelerator (e.g., for non-Trainer ops), construct it via the shim.
@@ -1304,7 +1303,7 @@ def run_hf_trainer(
             if m:
                 trainer.state.global_step = int(m.group(1))
         except (ValueError, TypeError) as exc:  # pragma: no cover - resume best effort
-            error_type = type(exc).__name__
+            type(exc).__name__
             print(f"Failed to load checkpoint {custom_resume}: <ERROR_TYPE>")
         resume_ckpt = None
 
@@ -1329,7 +1328,7 @@ def run_hf_trainer(
             }
             _codex_log_all(int(metrics.get("global_step", 0)), log_vals, loggers)
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.warning(
                 f"Exception: {e}", exc_info=True
@@ -1345,7 +1344,7 @@ def run_hf_trainer(
             writer.flush()
             writer.close()
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.warning(
                 f"Exception: {e}", exc_info=True

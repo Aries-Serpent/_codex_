@@ -35,7 +35,6 @@ except (IOError, OSError):  # pragma: no cover - tensorboard not installed
     SummaryWriter = None
 
 
-
 try:  # pragma: no cover - optional
     import wandb
 except (IOError, OSError):  # pragma: no cover - wandb not installed
@@ -570,7 +569,7 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
                 try:
                     mlflow.set_tracking_uri(tracking_uri)
                 except (ValueError, TypeError, RuntimeError) as e:
-                    error_type = type(e).__name__
+                    type(e).__name__
                     logger.debug("Exception: <ERROR_TYPE>")
                     logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
             mlflow_active, mlflow_detail = _start_mlflow_offline(
@@ -581,7 +580,7 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
                 try:
                     mlflow.set_tracking_uri(tracking_uri)
                 except (ValueError, TypeError, RuntimeError) as e:
-                    error_type = type(e).__name__
+                    type(e).__name__
                     logger.debug("Exception: <ERROR_TYPE>")
                     logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
         component_statuses.append(TelemetryComponentStatus("mlflow", mlflow_active, mlflow_detail))
@@ -648,7 +647,7 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
             try:
                 mlflow.set_tracking_uri(tracking_uri)
             except (ValueError, TypeError, RuntimeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
         mlflow_active, mlflow_detail = _start_mlflow_offline(
@@ -659,7 +658,7 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
             try:
                 mlflow.set_tracking_uri(getattr(args, "mlflow_tracking_uri", ""))
             except (ValueError, TypeError, RuntimeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
         component_statuses.append(TelemetryComponentStatus("mlflow", mlflow_active, mlflow_detail))
@@ -708,7 +707,7 @@ def _codex_sample_system() -> dict[str, Any]:
             metrics["cpu_percent"] = float(psutil.cpu_percent(interval=0.0))
             metrics["ram_percent"] = float(psutil.virtual_memory().percent)
         except (ValueError, TypeError, RuntimeError) as exc:
-            error_type = type(exc).__name__
+            type(exc).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.debug("psutil metrics unavailable", exc_info=exc)
     elif _PSUTIL_WARN_KEY not in _LOGGER_WARNING_CONTEXTS:
@@ -745,7 +744,7 @@ def _codex_sample_system() -> dict[str, Any]:
             pynvml.nvmlShutdown()
             gpu_done = True
         except (ValueError, TypeError, RuntimeError) as exc:
-            error_type = type(exc).__name__
+            type(exc).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.debug("NVML sampling failed", exc_info=exc)
             gpu_done = False
@@ -763,7 +762,7 @@ def _codex_sample_system() -> dict[str, Any]:
                     try:
                         util = float(torch.cuda.utilization(i))
                     except (ValueError, TypeError, RuntimeError) as exc:
-                        error_type = type(exc).__name__
+                        type(exc).__name__
                         logger.debug("Exception: <ERROR_TYPE>")
                         logger.debug("torch CUDA utilization unavailable", exc_info=exc)
                         util = None
@@ -781,7 +780,7 @@ def _codex_sample_system() -> dict[str, Any]:
                 metrics["gpus"] = gpus
                 metrics["gpu_util_mean"] = util_sum / max(1, len(gpus))
         except (ValueError, TypeError, RuntimeError) as exc:
-            error_type = type(exc).__name__
+            type(exc).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.debug("torch CUDA sampling failed", exc_info=exc)
 
@@ -813,7 +812,7 @@ def _codex_log_all(step: int, scalars: dict[str, Any], loggers: CodexLoggers) ->
             for k, v in values.items():
                 loggers.tb.add_scalar(k, v, step)
         except (ValueError, TypeError, RuntimeError) as exc:
-            error_type = type(exc).__name__
+            type(exc).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.debug("tensorboard add_scalar failed", exc_info=exc)
 
@@ -821,7 +820,7 @@ def _codex_log_all(step: int, scalars: dict[str, Any], loggers: CodexLoggers) ->
         try:  # pragma: no cover - wandb optional
             loggers.wb.log({**values, "step": step})
         except (ValueError, TypeError, RuntimeError) as exc:
-            error_type = type(exc).__name__
+            type(exc).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.debug("wandb log failed", exc_info=exc)
 
@@ -829,7 +828,7 @@ def _codex_log_all(step: int, scalars: dict[str, Any], loggers: CodexLoggers) ->
         try:  # pragma: no cover - mlflow optional
             mlflow.log_metrics(values, step=step)
         except (IOError, OSError) as exc:
-            error_type = type(exc).__name__
+            type(exc).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.debug("mlflow log_metrics failed", exc_info=exc)
 

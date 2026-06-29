@@ -531,7 +531,7 @@ def resume(
     try:
         cfg_obj, raw_cfg = load_app_config(config_path, tuple())
     except ConfigError as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("ConfigError: <ERROR_TYPE>")
         raise click.ClickException(str(exc)) from exc
 
@@ -594,7 +594,7 @@ def repo_map(reasoning: bool) -> None:
     try:
         click.echo(render_repo_map(reasoning=reasoning))
     except TypeError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("TypeError: <ERROR_TYPE>")
         logger.warning("TypeError: <ERROR_TYPE>", exc_info=True)
         # Back-compat with older render_repo_map signatures lacking the flag.
@@ -639,7 +639,7 @@ def deploy(config: Path, dry_run: bool, run_metadata_dir: Path) -> None:
             run_metadata_dir=run_metadata_dir,
         )
     except RuntimeError as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("RuntimeError: <ERROR_TYPE>")
         click.secho(f"DEPLOYMENT BLOCKED: {exc}", err=True)
         raise SystemExit(1) from exc

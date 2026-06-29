@@ -103,7 +103,7 @@ def is_gpu_available() -> bool:
 
         return bool(torch.cuda.is_available())
     except (ImportError, AttributeError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("ImportError: <ERROR_TYPE>")
         return False
 
@@ -214,7 +214,7 @@ def safe_accelerate_init(
         return result
 
     except (ValueError, TypeError, RuntimeError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         error_msg = f"{type(e).__name__}: {e}"
 

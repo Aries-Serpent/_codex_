@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "scan_time": "2026-06-01T01:23:26.945042+00:00",
+    "scan_time": "2026-06-29T01:44:38.394979+00:00",
     "repo_root": "/home/runner/work/_codex_/_codex_",
     "criteria": {
       "temp_files_age_days": 90,
@@ -10,25 +10,166 @@
     }
   },
   "summary": {
-    "total_candidates": 1,
+    "total_candidates": 15,
     "by_reason": {
-      "large": 1
+      "large": 15
     },
     "by_category": {
-      "unknown": 1
+      "unknown": 14,
+      "reports": 1
     },
-    "total_size_mb": 9.44
+    "total_size_mb": 96.6
   },
   "candidates": [
+    {
+      "path": "semgrep-full.json",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 5.47,
+      "reasons": [
+        "large_file_5.47mb"
+      ],
+      "recommendation": "compress_or_offload"
+    },
     {
       "path": "coverage.json",
       "category": "unknown",
       "age_days": 0,
-      "size_mb": 9.44,
+      "size_mb": 3.37,
       "reasons": [
-        "large_file_9.44mb"
+        "large_file_3.37mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "semgrep-verify.json",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 5.46,
+      "reasons": [
+        "large_file_5.46mb"
       ],
       "recommendation": "compress_or_offload"
+    },
+    {
+      "path": "semgrep-m01-check-v2.json",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 3.79,
+      "reasons": [
+        "large_file_3.79mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "semgrep-m01-report.sarif",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 3.2,
+      "reasons": [
+        "large_file_3.20mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "semgrep-final.json",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 5.46,
+      "reasons": [
+        "large_file_5.46mb"
+      ],
+      "recommendation": "compress_or_offload"
+    },
+    {
+      "path": "semgrep-m01-check.json",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 3.77,
+      "reasons": [
+        "large_file_3.77mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "semgrep-m01-final.json",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 3.21,
+      "reasons": [
+        "large_file_3.21mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "semgrep-v2.json",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 5.46,
+      "reasons": [
+        "large_file_5.46mb"
+      ],
+      "recommendation": "compress_or_offload"
+    },
+    {
+      "path": "coverage_reports/coverage.json",
+      "category": "reports",
+      "age_days": 0,
+      "size_mb": 3.4,
+      "reasons": [
+        "large_file_3.40mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": ".codex/archive/OLD_ACCOUNTABILITY_REPORT_66K.md.bak",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 4.05,
+      "reasons": [
+        "large_file_4.05mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": ".codex/sbom/sbom_base-phase2-build.json",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 20.08,
+      "reasons": [
+        "large_file_20.08mb"
+      ],
+      "recommendation": "compress_or_offload"
+    },
+    {
+      "path": ".codex/sbom/sbom_local-codex-env-phase2-build.json",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 16.67,
+      "reasons": [
+        "large_file_16.67mb"
+      ],
+      "recommendation": "compress_or_offload"
+    },
+    {
+      "path": ".codex/sbom/sbom_ci-phase2-build.json",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 10.29,
+      "reasons": [
+        "large_file_10.29mb"
+      ],
+      "recommendation": "compress_or_offload"
+    },
+    {
+      "path": ".codex/sbom/sbom_embedding-phase2-build.json",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 2.91,
+      "reasons": [
+        "large_file_2.91mb"
+      ],
+      "recommendation": "review_manually"
     }
   ]
 }

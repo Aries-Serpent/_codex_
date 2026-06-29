@@ -39,8 +39,6 @@ except (ImportError, AttributeError) as e:
     try:
         import config_legacy as hydra
 
-
-
         to_absolute_path = hydra.utils.to_absolute_path
     except (ImportError, ModuleNotFoundError, AttributeError):
 

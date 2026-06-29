@@ -230,7 +230,7 @@ class ExternalWebSearch(SearchProvider):
             status_code = getattr(response, "status_code", None)
             response.raise_for_status()
         except (ValueError, TypeError, RuntimeError) as exc:
-            error_type = type(exc).__name__
+            type(exc).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             result["status"] = "error"
             if status_code is not None:
@@ -252,7 +252,7 @@ class ExternalWebSearch(SearchProvider):
             try:
                 payload = response.json()
             except (ValueError, TypeError) as exc:
-                error_type = type(exc).__name__
+                type(exc).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 result["status"] = "error"
                 result["error"] = f"invalid-json: {exc}"
@@ -268,7 +268,7 @@ class ExternalWebSearch(SearchProvider):
         try:
             raw_text = path.read_text(encoding="utf-8")
         except FileNotFoundError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("FileNotFoundError: <ERROR_TYPE>")
             logger.warning("FileNotFoundError: <ERROR_TYPE>", exc_info=True)
             result["status"] = "error"
@@ -276,7 +276,7 @@ class ExternalWebSearch(SearchProvider):
             result["error"] = f"offline index not found: {path}"
             return result
         except OSError as exc:
-            error_type = type(exc).__name__
+            type(exc).__name__
             logger.debug("OSError: <ERROR_TYPE>")
             result["status"] = "error"
             result["reason"] = "offline-unreadable"
@@ -290,7 +290,7 @@ class ExternalWebSearch(SearchProvider):
             try:
                 payload = json.loads(raw_text)
             except (ValueError, TypeError) as exc:
-                error_type = type(exc).__name__
+                type(exc).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 result["status"] = "error"
                 result["reason"] = "offline-invalid"

@@ -63,7 +63,7 @@ class MetricsCollector:
 
             logger.info("Prometheus metrics collector initialized")
         except ImportError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("ImportError: <ERROR_TYPE>")
             logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
             logger.warning(
@@ -89,7 +89,7 @@ class MetricsCollector:
         try:
             self._request_counter.labels(method=method, endpoint=endpoint, status=str(status)).inc()
         except (ConnectionError, TimeoutError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.debug("Failed to record request metric: %s", e)
 
@@ -107,7 +107,7 @@ class MetricsCollector:
         try:
             self._latency_histogram.labels(method=method, endpoint=endpoint).observe(duration)
         except (ValueError, TypeError, RuntimeError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.debug("Failed to record latency metric: %s", e)
 
@@ -172,7 +172,7 @@ def get_metrics_router() -> Any:
         from fastapi import APIRouter, Response
         from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
     except ImportError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("ImportError: <ERROR_TYPE>")
         logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
         raise ImportError(
@@ -192,7 +192,7 @@ def get_metrics_router() -> Any:
             metrics_output = generate_latest()
             return Response(content=metrics_output, media_type=CONTENT_TYPE_LATEST)
         except (ValueError, TypeError, RuntimeError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             # Security: Don't expose internal error details to clients
             logger.error("Failed to generate metrics: %s", e, exc_info=True)

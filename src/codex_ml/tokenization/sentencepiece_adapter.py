@@ -198,7 +198,7 @@ class SentencePieceAdapter:
         try:
             proc = cls(model_file=str(self.model_path))
         except TypeError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("TypeError: <ERROR_TYPE>")
             logger.warning("TypeError: <ERROR_TYPE>", exc_info=True)
             proc = cls()

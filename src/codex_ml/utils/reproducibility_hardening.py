@@ -61,7 +61,7 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
         status["python_random"] = True
         logger.debug("✓ Python random seeded")  # codeql[py/clear-text-logging-sensitive-data]
     except (ValueError, TypeError, RuntimeError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         status["python_random"] = False
         logger.warning(
@@ -74,7 +74,7 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
         status["python_hash_seed"] = True
         logger.debug("✓ PYTHONHASHSEED set")  # codeql[py/clear-text-logging-sensitive-data]
     except (ImportError, AttributeError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         status["python_hash_seed"] = False
         logger.warning(
@@ -89,14 +89,14 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
         status["numpy"] = True
         logger.debug("✓ NumPy seeded")  # codeql[py/clear-text-logging-sensitive-data]
     except ImportError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("ImportError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         status["numpy"] = None  # Not installed
         logger.debug(
             "NumPy not available (skipped)"
         )  # codeql[py/clear-text-logging-sensitive-data]
     except AttributeError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         status["numpy"] = False
         logger.warning(
@@ -146,7 +146,7 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
                     "✓ PyTorch deterministic algorithms enabled (strict mode)"
                 )  # codeql[py/clear-text-logging-sensitive-data]
             except (ValueError, TypeError, RuntimeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug(
                     "Exception: <ERROR_TYPE>"
                 )  # codeql[py/clear-text-logging-sensitive-data]
@@ -158,7 +158,7 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
             status["torch_deterministic_algorithms"] = None  # Not enabled in non-strict mode
 
     except ImportError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("ImportError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         status["torch"] = None  # Not installed
         status["torch_cuda"] = None
@@ -169,7 +169,7 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
             "PyTorch not available (skipped)"
         )  # codeql[py/clear-text-logging-sensitive-data]
     except AttributeError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         status["torch"] = False
         logger.warning(
@@ -196,7 +196,7 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
             status["tensorflow_deterministic"] = None
 
     except ImportError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("ImportError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         status["tensorflow"] = None  # Not installed
         status["tensorflow_deterministic"] = None
@@ -204,7 +204,7 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
             "TensorFlow not available (skipped)"
         )  # codeql[py/clear-text-logging-sensitive-data]
     except (ValueError, TypeError, RuntimeError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         status["tensorflow"] = False
         logger.warning(
@@ -292,7 +292,7 @@ def save_env_snapshot(output_path: Path | str, include_pip_freeze: bool = True) 
         snapshot["git_dirty"] = bool(git_status)
 
     except (ValueError, TypeError, RuntimeError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         snapshot["git_commit"] = None
         snapshot["git_dirty"] = None
@@ -308,7 +308,7 @@ def save_env_snapshot(output_path: Path | str, include_pip_freeze: bool = True) 
             )
             snapshot["pip_freeze"] = pip_freeze.strip().split("\n")
         except (ValueError, TypeError, RuntimeError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
             snapshot["pip_freeze"] = []
             logger.warning(
@@ -342,7 +342,7 @@ def save_env_snapshot(output_path: Path | str, include_pip_freeze: bool = True) 
             snapshot["gpu_devices"] = []
 
     except ImportError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("ImportError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         snapshot["cuda_available"] = None
         snapshot["cuda_version"] = None
@@ -350,7 +350,7 @@ def save_env_snapshot(output_path: Path | str, include_pip_freeze: bool = True) 
         snapshot["gpu_count"] = None
         snapshot["gpu_devices"] = None
     except (ValueError, TypeError, RuntimeError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         logger.warning(
             "Failed to capture GPU information: <ERROR_TYPE>"

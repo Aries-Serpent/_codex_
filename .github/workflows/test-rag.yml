@@ -473,7 +473,7 @@ jobs:
            
           # Analyze test output for patterns
           if grep -q "FAILED" /tmp/test_output.log; then
-            FAILED_COUNT=$(grep "^FAILED" /tmp/test_output.log | wc -l)
+            FAILED_COUNT=$(grep -c "^FAILED" /tmp/test_output.log)
             echo "[TEST-RUN] Failed tests: $FAILED_COUNT"
           fi
            
@@ -562,7 +562,7 @@ jobs:
            
           # Parse coverage from XML report with detailed error reporting
           echo "[COVERAGE-CHECK] Extracting coverage percentage from XML..."
-          COVERAGE=$("$PYTHON_BIN" << 'COVERAGE_PARSER'
+          if ! COVERAGE=$("$PYTHON_BIN" << 'COVERAGE_PARSER'
           import xml.etree.ElementTree as ET
           import sys
            
@@ -584,9 +584,7 @@ jobs:
               print('0.00')
               sys.exit(1)
           COVERAGE_PARSER
-          )
-           
-          if [ $? -ne 0 ]; then
+          ); then
             echo "[COVERAGE-CHECK] ❌ Failed to parse coverage.xml"
             echo "[COVERAGE-CHECK] First 30 lines of coverage.xml:"
             head -30 coverage.xml

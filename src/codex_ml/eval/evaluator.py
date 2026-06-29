@@ -238,7 +238,7 @@ def evaluate_dataloader(
                         if not name.startswith("_") and not callable(value)
                     }
                 except TypeError as e:
-                    error_type = type(e).__name__
+                    type(e).__name__
                     logger.debug("TypeError: <ERROR_TYPE>")
                     logger.warning("TypeError: <ERROR_TYPE>", exc_info=True)
                     # vars() raises TypeError for objects without __dict__ (e.g., some namedtuples, classes with __slots__)  # noqa: E501

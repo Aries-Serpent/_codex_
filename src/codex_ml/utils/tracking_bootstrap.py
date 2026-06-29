@@ -43,7 +43,7 @@ def init_mlflow_offline(tracking_uri: Optional[str] = None) -> dict[str, str]:
     try:
         mlflow.set_tracking_uri(resolved["MLFLOW_TRACKING_URI"])
     except (IOError, OSError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
     return resolved
@@ -78,7 +78,7 @@ def init_wandb_offline(project: Optional[str] = None) -> dict[str, str]:
             try:
                 run.finish()
             except (ValueError, TypeError, RuntimeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
     return resolved

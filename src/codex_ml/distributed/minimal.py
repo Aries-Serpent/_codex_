@@ -35,7 +35,6 @@ except (ImportError, AttributeError):  # pragma: no cover - execution environmen
     dist = None
 
 
-
 _OPT_IN_VALUES = {"1", "true", "TRUE", "True", "YES", "yes", "on", "ON"}
 _FALLBACK_ENV_FLAGS = ("CODEX_DDP_ENABLE",)
 
@@ -161,7 +160,7 @@ def init_distributed_if_needed(backend: str = "nccl", env_flag: str = "CODEX_DDP
         dist.init_process_group(backend=chosen_backend, **init_kwargs)
         return True
     except (ValueError, TypeError, RuntimeError) as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         _warn_failed_init(chosen_backend, flag_used or env_flag, exc)
         return False

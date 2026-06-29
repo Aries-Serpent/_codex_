@@ -138,7 +138,7 @@ def _activate_lora_adapter(model: Any, adapter_path: str) -> None:
                     set_active(adapter_name)
                     return
                 except (IOError, OSError) as e:
-                    error_type = type(e).__name__
+                    type(e).__name__
                     logger.debug("Exception: <ERROR_TYPE>")
                     logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
     try:
@@ -315,7 +315,7 @@ def get_model(
             try:
                 model = model.to(dtype=torch_dtype)
             except (ValueError, TypeError, RuntimeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
     normalised_device = _normalise_device(device)
@@ -323,7 +323,7 @@ def get_model(
         try:
             model = model.to(device=normalised_device)
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 

@@ -51,12 +51,9 @@ except ImportError:
     logger.debug("Hydra not available, using fallback")
     compose = None
 
-
     initialize_config_dir = None
 
-
     HydraMissingConfigException = FileNotFoundError
-
 
     _HYDRA_AVAILABLE = False
 
@@ -141,7 +138,7 @@ class ConfigLoader:
             logger.warning("PyYAML not available, using default error config")
             self.error_config = self._get_default_error_config()
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.warning("Failed to load error config: <ERROR_TYPE>")
             self.error_config = self._get_default_error_config()
 
@@ -284,7 +281,7 @@ class ConfigLoader:
                     return cfg
                 return cfg
             except (IOError, OSError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.warning("Hydra compose failed: <ERROR_TYPE>")
                 if not allow_fallback:
                     raise
@@ -309,7 +306,7 @@ class ConfigLoader:
                 if not allow_fallback:
                     raise
             except (ValueError, TypeError, RuntimeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.error("Failed to load config: <ERROR_TYPE>")
                 if not allow_fallback:
                     raise

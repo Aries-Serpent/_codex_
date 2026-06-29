@@ -209,7 +209,7 @@ def _coerce_token_sequence(record: dict[str, Any], key: str, index: int) -> list
     try:
         coerced = [int(token) for token in tokens]
     except (TypeError, ValueError) as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         raise EvaluationError(f"Record {index} has invalid '{key}' values: {exc}") from exc
     return coerced
@@ -290,12 +290,12 @@ def _invoke_registry_metric(
         try:
             return attempt()
         except TypeError as exc:
-            error_type = type(exc).__name__
+            type(exc).__name__
             logger.debug("TypeError: <ERROR_TYPE>")
             last_type_error = exc
             continue
         except (ValueError, RuntimeError) as exc:
-            error_type = type(exc).__name__
+            type(exc).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             append_error_entry(
                 "metric.execute",
@@ -334,7 +334,7 @@ def _compute_metrics(
                     get_registered_metric(registered_name),
                 )
             except (ValueError, TypeError, RuntimeError) as exc:
-                error_type = type(exc).__name__
+                type(exc).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 append_error_entry(
                     "metric-registry.load",
@@ -343,7 +343,7 @@ def _compute_metrics(
                     "Should this registry metric be reviewed or disabled?",
                 )
     except (ValueError, TypeError, RuntimeError) as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         append_error_entry(
             "metric-registry.enumerate",
@@ -594,13 +594,13 @@ def run_evaluation(
                 # Dataset path (absolute)
                 mlflow.log_param("dataset_path", str(dataset_path.resolve()))
             except (IOError, OSError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.warning(
                     f"Exception: {e}", exc_info=True
                 )  # Silently ignore param logging errors
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.warning(
                 "Exception: <ERROR_TYPE>", exc_info=True
@@ -646,7 +646,7 @@ def run_evaluation(
                 fieldnames=fieldnames if sink_kind == "csv" else None,
             )
     except (ImportError, AttributeError) as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         sink_stack.close()
         raise EvaluationError(f"Failed to initialise metrics sink: {exc}") from exc
@@ -685,7 +685,7 @@ def run_evaluation(
     try:
         run_int = int(run_id, 16)
     except ValueError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("ValueError: <ERROR_TYPE>")
         logger.warning("ValueError: <ERROR_TYPE>", exc_info=True)
         # Fall back to hashing for non-hexadecimal run_ids

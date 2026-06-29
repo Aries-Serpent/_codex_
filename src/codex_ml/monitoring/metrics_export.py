@@ -24,7 +24,6 @@ try:  # Optional dependency for Prometheus integration
 except (IOError, OSError):  # pragma: no cover - optional dependency path
     CollectorRegistry = None
 
-
     REGISTRY = None
     generate_latest = None
     _HAS_PROMETHEUS = False

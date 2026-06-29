@@ -179,7 +179,7 @@ def _looks_like_local_source(identifier: os.PathLike[str] | str | None) -> bool:
     try:
         return Path(norm).expanduser().exists()
     except OSError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("OSError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         logger.warning(
             "OSError: <ERROR_TYPE>", exc_info=True
@@ -262,7 +262,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                         Path("artifacts/data_manifest.jsonl"),
                     )
                 except (IOError, OSError) as e:
-                    error_type = type(e).__name__
+                    type(e).__name__
                     logger.debug(
                         "Exception: <ERROR_TYPE>"
                     )  # codeql[py/clear-text-logging-sensitive-data]
@@ -503,7 +503,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
             )
             model = get_peft_model(model, lcfg)
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
             logger.warning(
                 f"Exception: {e}", exc_info=True
@@ -540,7 +540,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
         try:
             metrics_path.unlink()
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
             logger.warning(
                 f"Exception: {e}", exc_info=True
@@ -644,7 +644,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
             if rng := extra.get("rng_state"):
                 load_rng_state(rng)
         except (ValueError, TypeError, RuntimeError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
             logger.warning(
                 f"Exception: {e}", exc_info=True
@@ -722,7 +722,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
                     }
                     mlf.log_params(_as_flat_params(params))
                 except (ValueError, TypeError, RuntimeError) as e:
-                    error_type = type(e).__name__
+                    type(e).__name__
                     logger.debug(
                         "Exception: <ERROR_TYPE>"
                     )  # codeql[py/clear-text-logging-sensitive-data]
@@ -816,7 +816,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
                             try:
                                 mlf.log_metrics({"train/loss": loss_val}, step=global_step)
                             except (ValueError, TypeError, RuntimeError) as e:
-                                error_type = type(e).__name__
+                                type(e).__name__
                                 logger.debug(
                                     "Exception: <ERROR_TYPE>"
                                 )  # codeql[py/clear-text-logging-sensitive-data]
@@ -865,7 +865,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
                             try:
                                 _codex_log_all(global_step, numeric_metrics, loggers)
                             except (ValueError, TypeError, RuntimeError) as e:
-                                error_type = type(e).__name__
+                                type(e).__name__
                                 logger.debug(
                                     "Exception: <ERROR_TYPE>"
                                 )  # codeql[py/clear-text-logging-sensitive-data]
@@ -879,7 +879,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
                                     step=global_step,
                                 )
                             except (ValueError, TypeError, RuntimeError) as e:
-                                error_type = type(e).__name__
+                                type(e).__name__
                                 logger.debug(
                                     "Exception: <ERROR_TYPE>"
                                 )  # codeql[py/clear-text-logging-sensitive-data]
@@ -927,7 +927,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
                                     step=global_step,
                                 )
                             except (ValueError, TypeError, RuntimeError) as e:
-                                error_type = type(e).__name__
+                                type(e).__name__
                                 logger.debug(
                                     "Exception: <ERROR_TYPE>"
                                 )  # codeql[py/clear-text-logging-sensitive-data]
@@ -943,7 +943,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
                                 }
                             )
                     except (ValueError, TypeError, RuntimeError) as e:
-                        error_type = type(e).__name__
+                        type(e).__name__
                         logger.debug(
                             "Exception: <ERROR_TYPE>"
                         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -955,7 +955,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
                 try:
                     system_logger.stop()  # codeql[py/clear-text-logging-sensitive-data]
                 except (ValueError, TypeError, RuntimeError) as e:
-                    error_type = type(e).__name__
+                    type(e).__name__
                     logger.debug(
                         "Exception: <ERROR_TYPE>"
                     )  # codeql[py/clear-text-logging-sensitive-data]
@@ -996,7 +996,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
                         )  # codeql[py/clear-text-logging-sensitive-data]
                         continue  # Artifact logging failed; try next artifact
             except (ValueError, TypeError, RuntimeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug(
                     "Exception: <ERROR_TYPE>"
                 )  # codeql[py/clear-text-logging-sensitive-data]

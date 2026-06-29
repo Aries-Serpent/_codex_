@@ -55,7 +55,7 @@ def log_error(step: str, err: str, ctx: str) -> None:
         with ERROR_PATH.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(entry) + "\n")
     except (IOError, OSError) as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         LOGGER.exception("Failed to persist sanitized error log: %s", exc)
 
@@ -71,7 +71,7 @@ def log(msg: str, path: Path = Path("error.log")) -> None:
                 rotated = path.with_name(path.name + f".{int(mtime)}")
                 path.rename(rotated)
         except (IOError, OSError) as exc:
-            error_type = type(exc).__name__
+            type(exc).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             LOGGER.warning("Failed to rotate log %s: %s", path, exc)
     path.parent.mkdir(parents=True, exist_ok=True)

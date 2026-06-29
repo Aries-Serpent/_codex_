@@ -144,7 +144,7 @@ def _load_policy_file(path: Path) -> Optional[Mapping[str, Any]]:
     try:
         text = path.read_text(encoding="utf-8")
     except FileNotFoundError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("FileNotFoundError: <ERROR_TYPE>")
         logger.warning("FileNotFoundError: <ERROR_TYPE>", exc_info=True)
         return None
@@ -309,13 +309,13 @@ def _parse_scalar(value: str) -> Any:
     try:
         return int(value)
     except ValueError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("ValueError: <ERROR_TYPE>")
         logger.warning("ValueError: <ERROR_TYPE>", exc_info=True)
         try:
             return float(value)
         except ValueError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("ValueError: <ERROR_TYPE>")
             logger.warning("ValueError: <ERROR_TYPE>", exc_info=True)
     try:

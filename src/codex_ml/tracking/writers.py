@@ -196,7 +196,7 @@ class _SummaryRotator:
                 try:
                     size = self.path.stat().st_size
                 except FileNotFoundError as e:
-                    error_type = type(e).__name__
+                    type(e).__name__
                     logger.debug(
                         "FileNotFoundError: <ERROR_TYPE>"
                     )  # codeql[py/clear-text-logging-sensitive-data]
@@ -211,7 +211,7 @@ class _SummaryRotator:
         try:
             size = self.path.stat().st_size
         except FileNotFoundError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug(
                 "FileNotFoundError: <ERROR_TYPE>"
             )  # codeql[py/clear-text-logging-sensitive-data]
@@ -874,7 +874,7 @@ class MLflowMetricWriter:
                 f"MLflow initialized: {self.tracking_uri}"
             )  # codeql[py/clear-text-logging-sensitive-data]
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
             logger.error(
                 "Failed to initialize MLflow: <ERROR_TYPE>"
@@ -907,7 +907,7 @@ class MLflowMetricWriter:
             mlflow.log_metrics(metrics, step=step)
             return True
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
             logger.warning(
                 "Failed to log metrics to MLflow: <ERROR_TYPE>"
@@ -963,7 +963,7 @@ class MLflowParamWriter:
             mlflow.log_params(str_params)
             return True
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
             logger.warning(
                 "Failed to log params: <ERROR_TYPE>"
@@ -1036,7 +1036,7 @@ class MLflowArtifactWriter:
             mlflow.log_artifact(str(local_path), artifact_path)
             return True
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
             logger.warning(
                 "Failed to log artifact: <ERROR_TYPE>"
@@ -1064,7 +1064,7 @@ class MLflowArtifactWriter:
             mlflow.log_dict(data, filename)
             return True
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
             logger.warning(
                 "Failed to log dict artifact: <ERROR_TYPE>"
@@ -1116,7 +1116,7 @@ class MLflowArtifactWriter:
 
                     mlflow.pytorch.log_model(model, artifact_path)
                 except ImportError as e:
-                    error_type = type(e).__name__
+                    type(e).__name__
                     logger.debug(
                         "ImportError: <ERROR_TYPE>"
                     )  # codeql[py/clear-text-logging-sensitive-data]
@@ -1132,7 +1132,7 @@ class MLflowArtifactWriter:
 
                     is_sklearn = isinstance(model, BaseEstimator)
                 except ImportError as e:
-                    error_type = type(e).__name__
+                    type(e).__name__
                     logger.debug(
                         "ImportError: <ERROR_TYPE>"
                     )  # codeql[py/clear-text-logging-sensitive-data]
@@ -1149,7 +1149,7 @@ class MLflowArtifactWriter:
 
                         mlflow.sklearn.log_model(model, artifact_path)
                     except ImportError as e:
-                        error_type = type(e).__name__
+                        type(e).__name__
                         logger.debug(
                             "ImportError: <ERROR_TYPE>"
                         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -1164,7 +1164,7 @@ class MLflowArtifactWriter:
                     return False
             return True
         except (ValueError, TypeError, RuntimeError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
             logger.warning(
                 "Failed to log model: <ERROR_TYPE>"
@@ -1204,7 +1204,7 @@ class MLflowRunManager:
             self._run = mlflow.start_run(run_name=self.run_name, tags=self.tags)
             self._run.__enter__()  # type: ignore[attr-defined]
         except (ImportError, AttributeError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
             logger.warning(
                 "Failed to start MLflow run: <ERROR_TYPE>"
@@ -1218,7 +1218,7 @@ class MLflowRunManager:
             try:
                 self._run.__exit__(exc_type, exc_val, exc_tb)
             except (ValueError, TypeError, RuntimeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug(
                     "Exception: <ERROR_TYPE>"
                 )  # codeql[py/clear-text-logging-sensitive-data]

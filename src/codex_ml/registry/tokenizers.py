@@ -288,7 +288,7 @@ def _call_tokenizer(
     try:
         encoding = tokenizer(text, **kwargs)
     except TypeError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("TypeError: <ERROR_TYPE>")
         logger.warning("TypeError: <ERROR_TYPE>", exc_info=True)
         encode_plus = getattr(tokenizer, "encode_plus", None)

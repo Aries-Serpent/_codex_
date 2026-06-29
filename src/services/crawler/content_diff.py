@@ -516,7 +516,7 @@ class SemanticDiffer:
             return float(similarity)
 
         except (ValueError, TypeError, RuntimeError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.error("Semantic similarity computation failed: <ERROR_TYPE>")
             # Fallback to basic similarity
             return self._basic_similarity(text1, text2)

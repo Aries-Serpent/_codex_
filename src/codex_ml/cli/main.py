@@ -177,7 +177,7 @@ if typer is not None:
                     try:
                         root = cli_path.parents[depth]
                     except IndexError as e:
-                        error_type = type(e).__name__
+                        type(e).__name__
                         logger.debug("IndexError: <ERROR_TYPE>")
                         logger.warning("IndexError: <ERROR_TYPE>", exc_info=True)
                         continue
@@ -407,7 +407,7 @@ if typer is not None:
             if not isinstance(meta_payload, dict):
                 raise ValueError("metadata must decode to a JSON object")
         except (IOError, OSError) as exc:
-            error_type = type(exc).__name__
+            type(exc).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             raise typer.BadParameter(str(exc)) from exc
 

@@ -67,7 +67,7 @@ def enable_peft(model: Any, peft_cfg: Any, adapter_name: str = "lora") -> Any:
     try:  # pragma: no cover - optional diagnostics
         adapted.print_trainable_parameters()
     except (IOError, OSError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
     return adapted

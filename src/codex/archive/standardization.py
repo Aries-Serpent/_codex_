@@ -137,7 +137,7 @@ class StandardizationManager:
             self.schema_validator.validate(record, version=schema_version)
             result["verification_details"]["schema_valid"] = True
         except (ValueError, TypeError, RuntimeError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             result["verification_details"]["schema_error"] = str(e)
             # For v1 records, schema validation might fail gracefully

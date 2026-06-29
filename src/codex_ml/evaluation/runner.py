@@ -163,7 +163,7 @@ class EvaluationRunner:
                         return result
                     return {self.name: float(result)}
                 except (ValueError, TypeError, RuntimeError) as e:
-                    error_type = type(e).__name__
+                    type(e).__name__
                     logger.debug("Exception: <ERROR_TYPE>")
                     logger.debug("Exception caught, returning", exc_info=True)
                     return {f"{self.name}_error": str(e)}  # type: ignore[dict-item]
@@ -272,7 +272,7 @@ class EvaluationRunner:
                 computed = metric.compute()
                 metric_results.update(computed)
             except (ValueError, TypeError, RuntimeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 print(f"Warning: Metric {metric.name} failed: <ERROR_TYPE>")
                 metric_results[f"{metric.name}_error"] = str(e)  # type: ignore[assignment]
@@ -366,7 +366,7 @@ class EvaluationRunner:
 
             print("Logged results to tracking writer")
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             print("Warning: Failed to log to tracking writer: <ERROR_TYPE>")
 

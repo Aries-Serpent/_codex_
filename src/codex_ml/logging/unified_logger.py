@@ -44,7 +44,7 @@ class MLflowBackend(LoggerBackend):
             if tracking_uri:
                 mlflow.set_tracking_uri(tracking_uri)
         except ImportError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("ImportError: <ERROR_TYPE>")
             logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
             raise ImportError("MLflow not installed. Install: pip install mlflow") from e
@@ -72,7 +72,7 @@ class TensorBoardBackend(LoggerBackend):
 
             self.writer = SummaryWriter(log_dir)
         except ImportError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("ImportError: <ERROR_TYPE>")
             logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
             raise ImportError("TensorBoard not installed. Install: pip install tensorboard") from e
@@ -103,7 +103,7 @@ class WandBBackend(LoggerBackend):
             self.project = project
             self.entity = entity
         except ImportError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("ImportError: <ERROR_TYPE>")
             logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
             raise ImportError("Weights & Biases not installed. Install: pip install wandb") from e
@@ -136,7 +136,7 @@ class LoggerRegistry:
             try:
                 backend.start_run(run_name)
             except (ValueError, TypeError, RuntimeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.error(f"Failed start on {name}: <ERROR_TYPE>")
 
@@ -145,7 +145,7 @@ class LoggerRegistry:
             try:
                 backend.end_run()
             except (ValueError, TypeError, RuntimeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.error("Failed end: <ERROR_TYPE>")
 
@@ -154,7 +154,7 @@ class LoggerRegistry:
             try:
                 backend.log_metrics(metrics, step)
             except (ValueError, TypeError, RuntimeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.error("Failed log: <ERROR_TYPE>")
 
@@ -163,7 +163,7 @@ class LoggerRegistry:
             try:
                 backend.log_params(params)
             except (ValueError, TypeError, RuntimeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.error("Failed params: <ERROR_TYPE>")
 

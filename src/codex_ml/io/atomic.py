@@ -79,7 +79,7 @@ def atomic_write_text(path: Path | str, data: str, encoding: str = "utf-8") -> N
         try:
             _fsync_dir(path.parent)
         except OSError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("OSError: <ERROR_TYPE>")
             logger.warning("OSError: <ERROR_TYPE>", exc_info=True)
             # Best-effort: some filesystems or platforms may not support directory fsync.
@@ -88,7 +88,7 @@ def atomic_write_text(path: Path | str, data: str, encoding: str = "utf-8") -> N
             try:
                 tmp_path.unlink()
             except OSError as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("OSError: <ERROR_TYPE>")
                 logger.warning("OSError: <ERROR_TYPE>", exc_info=True)
 

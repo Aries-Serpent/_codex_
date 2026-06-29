@@ -136,7 +136,7 @@ def has_meta_tensors(model: Any) -> Optional[bool]:
 
         return False
     except (ValueError, TypeError, RuntimeError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.warning("Error checking for meta tensors: <ERROR_TYPE>")
         return None
 
@@ -210,7 +210,7 @@ def safe_model_to_device(
                             module.reset_parameters()
                             logger.debug(f"Reset parameters for {module.__class__.__name__}")
                         except (ImportError, AttributeError) as e:
-                            error_type = type(e).__name__
+                            type(e).__name__
                             logger.debug(f"Could not reset parameters for {module}: <ERROR_TYPE>")
             else:
                 logger.debug("Model doesn't support modules(), skipping parameter reset")
@@ -274,7 +274,7 @@ def safe_model_to_device(
         logger.warning("Model does not support device transfer: <ERROR_TYPE>")
         return model
     except (ValueError, TypeError, RuntimeError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.error(f"Error moving model to device {device}: <ERROR_TYPE>")
         raise RuntimeError(f"Failed to move model to {device}: {e}") from e
 

@@ -96,7 +96,7 @@ class LocalSentenceTransformerProvider:
             )
             raise
         except (ValueError, TypeError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.error(
                 "Error loading local embedding model: <ERROR_TYPE>"
             )  # codeql[py/clear-text-logging-sensitive-data]
@@ -210,7 +210,7 @@ class OpenAIEmbeddingProvider:
                 embeddings.extend(batch_embeddings)
 
             except (ValueError, TypeError, RuntimeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.error(
                     f"Error encoding batch {i}-{i + len(batch)}: <ERROR_TYPE>"
                 )  # codeql[py/clear-text-logging-sensitive-data]
@@ -373,7 +373,7 @@ class CachedEmbeddingProvider:
             return True
 
         except (ValueError, TypeError, RuntimeError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.warning(
                 "Error validating cache: <ERROR_TYPE>"
             )  # codeql[py/clear-text-logging-sensitive-data]
@@ -713,7 +713,7 @@ class TfidfEmbeddingProvider:
                     f"TF-IDF vectorizer fitted. Vocabulary size: {len(self.vectorizer.vocabulary_)}"
                 )
             except (ValueError, TypeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.error(
                     "Error fitting TF-IDF vectorizer: <ERROR_TYPE>"
                 )  # codeql[py/clear-text-logging-sensitive-data]
@@ -727,7 +727,7 @@ class TfidfEmbeddingProvider:
             )  # codeql[py/clear-text-logging-sensitive-data]
             return embeddings
         except (ValueError, TypeError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.error(
                 "Error transforming texts with TF-IDF: <ERROR_TYPE>"
             )  # codeql[py/clear-text-logging-sensitive-data]

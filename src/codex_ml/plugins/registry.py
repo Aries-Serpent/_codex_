@@ -60,7 +60,7 @@ def _iter_entry_points(group: str) -> tuple[Any, ...]:
                 if getattr(ep, "group", None) == group:
                     collected.append(ep)
     except (ValueError, TypeError, RuntimeError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
     unique: dict[tuple[str, str], Any] = {}
     for ep in collected:

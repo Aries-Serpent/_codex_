@@ -273,7 +273,7 @@ def emit_solution_xml(config: SolutionManifestConfig) -> str:
     try:
         safe_xml_fromstring(xml)
     except (ValueError, TypeError) as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.error("XML validation failed: <ERROR_TYPE>")
         raise ValueError(f"Generated XML failed validation: {exc}") from exc
 

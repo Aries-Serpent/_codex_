@@ -124,7 +124,7 @@ def _decode_bytes(
     try:
         return raw.decode(encoding)
     except UnicodeDecodeError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("UnicodeDecodeError: <ERROR_TYPE>")
         logger.warning("UnicodeDecodeError: <ERROR_TYPE>", exc_info=True)
         if validate_utf8:
@@ -237,7 +237,7 @@ def _cache_key(path: Path, **params: Any) -> str:
         stat = path.stat()
         h.update(str(stat.st_mtime_ns).encode("utf-8"))
     except FileNotFoundError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("FileNotFoundError: <ERROR_TYPE>")
         logger.warning("FileNotFoundError: <ERROR_TYPE>", exc_info=True)
     return h.hexdigest()
@@ -385,7 +385,7 @@ def load_dataset(
             try:
                 cache_file.unlink()
             except FileNotFoundError as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("FileNotFoundError: <ERROR_TYPE>")
                 logger.warning("FileNotFoundError: <ERROR_TYPE>", exc_info=True)
 

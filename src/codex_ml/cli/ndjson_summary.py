@@ -91,7 +91,7 @@ def _load_rows(run_dir: Path, *, pattern: Optional[str] = None) -> list[dict[str
                     if isinstance(payload, dict):
                         rows.append(payload)
         except FileNotFoundError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("FileNotFoundError: <ERROR_TYPE>")
             logger.warning("FileNotFoundError: <ERROR_TYPE>", exc_info=True)
             continue
@@ -352,7 +352,7 @@ def _handle_summarize_cli(args: argparse.Namespace) -> int:
     try:
         rows = _load_rows(inp, pattern=pattern if inp.is_dir() else None)
     except FileNotFoundError as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("FileNotFoundError: <ERROR_TYPE>")
         raise SystemExit(str(exc)) from exc
     summary_rows = _summarise_rows(rows)

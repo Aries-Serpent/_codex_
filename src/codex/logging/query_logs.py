@@ -313,12 +313,12 @@ def main(argv: Optional[list[str]] = None) -> int:
                 _print_rich(rows, mapcol, args.show_meta)
         return 0
     except (ValueError, SystemExit) as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         print(str(exc), file=sys.stderr)
         return 2
     except (IOError, OSError) as exc:  # pragma: no cover - top-level guard
-        error_type = type(exc).__name__
+        type(exc).__name__
         print("Unexpected error: <ERROR_TYPE>", file=sys.stderr)
         return 1
 

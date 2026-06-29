@@ -51,7 +51,7 @@ def _init_determinism_from_env() -> dict[str, Any]:
 
         np.random.seed(seed)
     except ImportError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("ImportError: <ERROR_TYPE>")
         logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
 
@@ -88,7 +88,7 @@ def _init_determinism_from_env() -> dict[str, Any]:
         tf.config.threading.set_intra_op_parallelism_threads(num_threads)
         tf.config.threading.set_inter_op_parallelism_threads(num_threads)
     except ImportError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("ImportError: <ERROR_TYPE>")
         logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
 

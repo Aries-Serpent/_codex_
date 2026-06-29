@@ -132,7 +132,7 @@ class SessionLogger:
                 path.unlink()
                 removed.append(path)
             except OSError as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("OSError: <ERROR_TYPE>")
                 logger.warning("OSError: <ERROR_TYPE>", exc_info=True)
                 continue

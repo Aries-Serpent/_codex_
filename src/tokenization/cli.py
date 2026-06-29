@@ -164,7 +164,7 @@ def _append_error_block(
     try:
         log_path.parent.mkdir(parents=True, exist_ok=True)
     except (IOError, OSError) as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         typer.echo(f"Failed to ensure error log directory {log_path.parent}: {exc}", err=True)
         return
@@ -173,7 +173,7 @@ def _append_error_block(
         with log_path.open("a", encoding="utf-8") as handle:
             handle.write(block + "\n")
     except (IOError, OSError) as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         typer.echo(f"Failed to append error log to {log_path}: {exc}", err=True)
 
@@ -197,7 +197,7 @@ def _load_tokenizer(tokenizer_path: Path, *, step: str) -> object:
     try:
         return build_tokenizer(tokenizer_path)
     except FileNotFoundError as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("FileNotFoundError: <ERROR_TYPE>")
         _fail(
             step,
@@ -206,7 +206,7 @@ def _load_tokenizer(tokenizer_path: Path, *, step: str) -> object:
             "Could you confirm the tokenizer path or share how to generate it?",
         )
     except (IOError, OSError) as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         _fail(
             step,
@@ -492,7 +492,7 @@ def decode(
     try:
         id_list = [int(item.strip()) for item in ids.split(",") if item.strip()]
     except ValueError as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("ValueError: <ERROR_TYPE>")
         _fail(
             "decode",
@@ -518,7 +518,7 @@ def decode(
     try:
         decoded = decode_fn(id_list, **kwargs)
     except TypeError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("TypeError: <ERROR_TYPE>")
         logger.warning("TypeError: <ERROR_TYPE>", exc_info=True)
         try:
@@ -535,7 +535,7 @@ def decode(
                 "What changes are needed so decoding succeeds?",
             )
     except (IOError, OSError) as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         _fail(
             "decode",
@@ -559,7 +559,7 @@ def export(src: Path, dst: Path) -> None:
     try:
         dst.mkdir(parents=True, exist_ok=True)
     except (IOError, OSError) as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         _fail(
             "export",
@@ -576,7 +576,7 @@ def export(src: Path, dst: Path) -> None:
             try:
                 shutil.copy2(candidate, target)
             except (ValueError, TypeError, RuntimeError) as exc:
-                error_type = type(exc).__name__
+                type(exc).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 _append_error_block(
                     "export",
@@ -600,7 +600,7 @@ def export(src: Path, dst: Path) -> None:
     try:
         readme_path.write_text(readme_contents, encoding="utf-8")
     except (IOError, OSError) as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         _append_error_block(
             "export",

@@ -200,7 +200,7 @@ def _register_metric_from_plugin(
             source="entry_point",
         )
     except RegistryConflictError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.warning("RegistryConflictError: <ERROR_TYPE>", exc_info=True)
         if fn is None:
             append_error_entry(
@@ -611,7 +611,7 @@ def chrf(preds: Sequence[str], targets: Sequence[str]) -> Optional[float]:
         scorer = CHRF()
         return float(scorer.corpus_score(preds, [targets]).score)
     except (ImportError, AttributeError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
     # Fallback to nltk
     try:  # pragma: no cover - optional dependency

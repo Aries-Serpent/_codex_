@@ -41,7 +41,7 @@ def list_models_command(args: argparse.Namespace) -> int:
 
         return 0
     except (IOError, OSError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         print(
             "Error: <ERROR_TYPE>", file=sys.stderr
@@ -80,7 +80,7 @@ def list_versions_command(args: argparse.Namespace) -> int:
 
         return 0
     except (IOError, OSError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         print(
             "Error: <ERROR_TYPE>", file=sys.stderr
@@ -112,7 +112,7 @@ def promote_model_command(args: argparse.Namespace) -> int:
 
         return 0
     except (IOError, OSError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         print(
             "Error: <ERROR_TYPE>", file=sys.stderr
@@ -152,7 +152,7 @@ def compare_models_command(args: argparse.Namespace) -> int:
 
         return 0
     except (IOError, OSError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         print(
             "Error: <ERROR_TYPE>", file=sys.stderr
@@ -174,7 +174,7 @@ def export_model_command(args: argparse.Namespace) -> int:
         )  # codeql[py/clear-text-logging-sensitive-data]
         return 0
     except (IOError, OSError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         print(
             "Error: <ERROR_TYPE>", file=sys.stderr
@@ -223,7 +223,7 @@ def get_lineage_command(args: argparse.Namespace) -> int:
 
         return 0
     except (IOError, OSError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         print(
             "Error: <ERROR_TYPE>", file=sys.stderr

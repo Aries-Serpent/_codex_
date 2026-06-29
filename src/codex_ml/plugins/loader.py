@@ -26,7 +26,7 @@ def _iter_entry_points(group: str) -> Iterable[Any]:
     try:
         return metadata.entry_points(group=group)
     except TypeError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("TypeError: <ERROR_TYPE>")
         logger.warning("TypeError: <ERROR_TYPE>", exc_info=True)
         # Python <3.10 compatibility: entry_points() returns dict-like object
@@ -81,7 +81,7 @@ def _register_direct(register: Optional[RegisterFn], name: str, target: Any) -> 
         register(name, target)
         return True
     except TypeError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("TypeError: <ERROR_TYPE>")
         logger.warning("TypeError: <ERROR_TYPE>", exc_info=True)
         try:
