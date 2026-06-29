@@ -50,7 +50,15 @@ class MFASecret:
         """Normalize the stored TOTP hash algorithm."""
         self.algorithm = _normalize_totp_algorithm(self.algorithm)
 
-    def get_provisioning_uri(self, account_name: str) -> str:
+    def __len__(self) -> int:
+        """Support len() calls - returns length of the secret string."""
+        return len(self.secret)
+
+    def __getitem__(self, index: int | slice) -> str:
+        """Support indexing and slicing - delegates to the secret string."""
+        return self.secret[index]
+
+     def get_provisioning_uri(self, account_name: str) -> str:
         """
         Generate provisioning URI for QR code.
 

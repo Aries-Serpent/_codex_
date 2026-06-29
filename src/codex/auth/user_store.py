@@ -247,6 +247,10 @@ class UserStore:
         """Return the :class:`User` with *email*, or ``None``."""
         return self._repository.get_by_email(email)
 
+    def get_by_email(self, email: str) -> Optional[User]:
+        """Backward-compatible alias for :meth:`find_by_email`."""
+        return self.find_by_email(email)
+
     def list_users(self, include_inactive: bool = False) -> list[User]:
         """
         Return all users.
@@ -316,6 +320,17 @@ class UserStore:
                 user.roles.append(role)
                 user.updated_at = time.time()
                 self._repository.update(user)
+
+    def remove_role(self, user_id: str, role: str) -> None:
+       """Remove a role from a user if present."""
+       with self._lock:
+           user = self._repository.get_by_id(user_id)
+           if user is None:
+               raise UserNotFoundError(f"User '{user_id}' not found")
+           if role in user.roles:
+               user.roles.remove(role)
+               user.updated_at = time.time()
+               self._repository.update(user)
 
     # ------------------------------------------------------------------ #
     # Authentication helper                                                #
