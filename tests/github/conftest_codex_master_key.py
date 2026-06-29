@@ -46,7 +46,7 @@ def github_token() -> str:
 def api_headers(github_token: str) -> dict[str, str]:
     """Return standard GitHub API headers with token."""
     return {
-        "Authorization": f"******",
+        "Authorization": f"token {github_token}",
         "Accept": "application/vnd.github+json",
         "X-GitHub-Api-Version": "2022-11-28",
         "Content-Type": "application/json",
