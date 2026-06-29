@@ -391,6 +391,7 @@ class TestProcess9OrganizationWebhooks:
         endpoint = f"{gh_api_base}{org_webhooks_endpoint}/{hook_id}"
         response = mock_webhook_response(hook_id=hook_id)
 
+        assert str(hook_id) in endpoint
         assert response["id"] == hook_id
 
     def test_process9_create_org_webhook_success(
@@ -412,6 +413,7 @@ class TestProcess9OrganizationWebhooks:
             },
         }
 
+        assert "/orgs/" in endpoint or "/repos/" in endpoint
         assert payload["name"]
 
     def test_process9_create_org_webhook_with_secret(
@@ -435,6 +437,7 @@ class TestProcess9OrganizationWebhooks:
             },
         }
 
+        assert "/orgs/" in endpoint or "/repos/" in endpoint
         assert payload["config"]["secret"]
 
     def test_process9_update_org_webhook_success(
@@ -454,6 +457,7 @@ class TestProcess9OrganizationWebhooks:
             },
         }
 
+        assert str(hook_id) in endpoint
         assert payload["active"]
 
     def test_process9_delete_org_webhook_success(
@@ -721,4 +725,5 @@ class TestWebhookBatchOperations:
                 "events": ["push", "pull_request", "issues"],
             }
 
+            assert str(hook_id) in endpoint
             assert len(payload["events"]) == 3
