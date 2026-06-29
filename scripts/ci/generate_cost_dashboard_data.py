@@ -29,6 +29,8 @@ import urllib.request
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
+from scripts.ci._token_resolver import get_token
+
 
 # ── Cost-tier constants (kept in sync with cost_estimator.py) ────────────────
 MONTHLY_MINUTES_BUDGET = 3_000
@@ -291,7 +293,7 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
+    token = os.environ.get("GITHUB_TOKEN") or get_token(required_elevated=False)[0]
     if not token:
         print(
             "⚠️  No GITHUB_TOKEN found — API requests will be rate-limited (60/hr)",

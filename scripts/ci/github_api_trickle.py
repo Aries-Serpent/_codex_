@@ -71,6 +71,8 @@ import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+from scripts.ci._token_resolver import get_token
+
 
 logging.basicConfig(
     level=logging.INFO,
@@ -99,13 +101,13 @@ MAX_RETRIES    = int(  os.environ.get("GH_TRICKLE_RETRIES",        "3"))
 def _discover_tokens() -> list[str]:
     """Return deduplicated list of all available GitHub tokens, highest privilege first."""
     candidates = [
-        os.environ.get("CODEX_MASTER_KEY"),
-        os.environ.get("CODEX_BACKUP_KEY"),
+        get_token(required_elevated=True)[0],
+        get_token(required_elevated=True)[0],
         os.environ.get("CODEX_ADMIN_KEY"),
         os.environ.get("AGENT_GITHUB_TOKEN"),
         os.environ.get("GITHUB_COPILOT_API_TOKEN"),
         os.environ.get("GITHUB_TOKEN"),
-        os.environ.get("GH_TOKEN"),
+        get_token(required_elevated=False)[0],
     ]
     seen: set[str] = set()
     result: list[str] = []

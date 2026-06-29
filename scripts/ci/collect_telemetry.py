@@ -16,6 +16,8 @@ import sys
 from datetime import datetime, timedelta, timezone
 
 import requests
+from scripts.ci._token_resolver import get_token
+
 
 
 class TelemetryCollector:
@@ -553,8 +555,8 @@ def main():
     token = (
         args.token
         or os.getenv("GITHUB_TOKEN")
-        or os.getenv("CODEX_MASTER_KEY")
-        or os.getenv("CODEX_BACKUP_KEY")
+        or get_token(required_elevated=True)[0]
+        or get_token(required_elevated=True)[0]
     )
     if not token:
         print(

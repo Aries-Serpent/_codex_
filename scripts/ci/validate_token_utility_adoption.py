@@ -30,6 +30,8 @@ import sys
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
+from scripts.ci._token_resolver import get_token
+
 
 # Configure logging
 logging.basicConfig(
@@ -115,12 +117,12 @@ class TokenAdoptionValidator:
 
     # Anti-patterns to detect
     INLINE_TOKEN_PATTERNS = [
-        'os.environ.get("CODEX_MASTER_KEY")',
-        'os.environ.get("CODEX_BACKUP_KEY")',
-        'os.environ["CODEX_MASTER_KEY"]',
-        'os.environ["CODEX_BACKUP_KEY"]',
-        'os.getenv("CODEX_MASTER_KEY")',
-        'os.getenv("CODEX_BACKUP_KEY")',
+        'get_token(required_elevated=True)[0]',
+        'get_token(required_elevated=True)[0]',
+        'get_token(required_elevated=True)[0]',
+        'get_token(required_elevated=True)[0]',
+        'get_token(required_elevated=True)[0]',
+        'get_token(required_elevated=True)[0]',
         'CODEX_MASTER_KEY',
         "CODEX_MASTER_KEY",
     ]

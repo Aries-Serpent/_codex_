@@ -28,6 +28,8 @@ import pytest
 
 # Import the token resolver module
 from scripts.ci._token_resolver import (
+from scripts.ci._token_resolver import get_token
+
     CANONICAL_HIERARCHY,
     TOKEN_SCOPES,
     TokenResolutionError,
@@ -66,7 +68,7 @@ class TestScenario1MasterKeyNormal:
         - All required scopes are available
         - Token never exposed in logs
         """
-        master_key = os.environ.get("CODEX_MASTER_KEY")
+        master_key = get_token(required_elevated=True)[0]
         assert master_key is not None, "Master key not set"
 
         # Test 1: get_token retrieves the correct token
@@ -125,11 +127,11 @@ class TestScenario2BackupKeyFallback:
         - Backup key has repo + workflow scopes
         - Token never exposed in logs
         """
-        backup_key = os.environ.get("CODEX_BACKUP_KEY")
+        backup_key = get_token(required_elevated=True)[0]
         assert backup_key is not None, "Backup key not set"
 
         # Verify CODEX_MASTER_KEY is not set
-        assert os.environ.get("CODEX_MASTER_KEY") is None, "Master key should be unset"
+        assert get_token(required_elevated=True)[0] is None, "Master key should be unset"
 
         # Test 1: get_token retrieves backup key
         token, source = get_token(required_elevated=False)
@@ -180,12 +182,12 @@ class TestScenario3GHTokenFallback:
         - GH_TOKEN has repo scope
         - Token never exposed in logs
         """
-        gh_token = os.environ.get("GH_TOKEN")
+        gh_token = get_token(required_elevated=False)[0]
         assert gh_token is not None, "GH_TOKEN not set"
 
         # Verify CODEX_* keys are not set
-        assert os.environ.get("CODEX_MASTER_KEY") is None, "Master key should be unset"
-        assert os.environ.get("CODEX_BACKUP_KEY") is None, "Backup key should be unset"
+        assert get_token(required_elevated=True)[0] is None, "Master key should be unset"
+        assert get_token(required_elevated=True)[0] is None, "Backup key should be unset"
 
         # Test 1: get_token retrieves GH_TOKEN
         token, source = get_token(required_elevated=False)
@@ -291,7 +293,7 @@ class TestScenario5ElevatedDeny:
         - Correct error message is provided
         - get_token(required_elevated=True) succeeds with appropriate token
         """
-        gh_token = os.environ.get("GH_TOKEN")
+        gh_token = get_token(required_elevated=False)[0]
         assert gh_token is not None, "GH_TOKEN not set"
 
         # Test 1: get_token(required_elevated=True) should fail
@@ -329,7 +331,7 @@ class TestScenario5ElevatedDeny:
         - get_token(required_elevated=True) succeeds with CODEX_BACKUP_KEY
         - Elevated operations can use backup key
         """
-        backup_key = os.environ.get("CODEX_BACKUP_KEY")
+        backup_key = get_token(required_elevated=True)[0]
         assert backup_key is not None, "Backup key not set"
 
         # Test: get_token(required_elevated=True) should succeed
@@ -358,7 +360,7 @@ class TestScenario6ScopeValidation:
         - CODEX_MASTER_KEY has repo + workflow + actions:write + security_events
         - scope_validation passes for all master key scopes
         """
-        master_key = os.environ.get("CODEX_MASTER_KEY")
+        master_key = get_token(required_elevated=True)[0]
         assert master_key is not None, "Master key not set"
 
         # Test all master key scopes
@@ -380,7 +382,7 @@ class TestScenario6ScopeValidation:
         - CODEX_BACKUP_KEY has repo + workflow
         - CODEX_BACKUP_KEY missing actions:write and security_events
         """
-        backup_key = os.environ.get("CODEX_BACKUP_KEY")
+        backup_key = get_token(required_elevated=True)[0]
         assert backup_key is not None, "Backup key not set"
 
         # Test backup key has repo + workflow
@@ -403,7 +405,7 @@ class TestScenario6ScopeValidation:
         - GH_TOKEN has repo scope
         - GH_TOKEN missing workflow and actions:write
         """
-        gh_token = os.environ.get("GH_TOKEN")
+        gh_token = get_token(required_elevated=False)[0]
         assert gh_token is not None, "GH_TOKEN not set"
 
         # Test GH_TOKEN has repo
@@ -438,7 +440,7 @@ class TestScenario7AuditLogging:
         - Actual token value is never exposed
         - Context message is preserved
         """
-        master_key = os.environ.get("CODEX_MASTER_KEY")
+        master_key = get_token(required_elevated=True)[0]
         assert master_key is not None, "Master key not set"
 
         with token_log_capture as capture:
@@ -464,7 +466,7 @@ class TestScenario7AuditLogging:
         - Scope is logged (standard)
         - Token value is not exposed
         """
-        backup_key = os.environ.get("CODEX_BACKUP_KEY")
+        backup_key = get_token(required_elevated=True)[0]
         assert backup_key is not None, "Backup key not set"
 
         with token_log_capture as capture:
@@ -521,7 +523,7 @@ class TestScenario8Base64RoundTrip:
         - Token never exposed in logs
         - Cleanup removes test variable
         """
-        master_key = os.environ.get("CODEX_MASTER_KEY")
+        master_key = get_token(required_elevated=True)[0]
         assert master_key is not None, "Master key not set"
 
         # Step 1: Encode Python content
@@ -576,7 +578,7 @@ class TestScenario8Base64RoundTrip:
         - Backup key also succeeds with elevated operations
         - Round-trip works with backup key
         """
-        backup_key = os.environ.get("CODEX_BACKUP_KEY")
+        backup_key = get_token(required_elevated=True)[0]
         assert backup_key is not None, "Backup key not set"
 
         # Encode, write, retrieve, decode
@@ -656,8 +658,8 @@ class TestPhase5TokenIntegration:
         master = token_factory.create_token("master")
         backup = token_factory.create_token("backup")
 
-        os.environ["CODEX_MASTER_KEY"] = master
-        os.environ["CODEX_BACKUP_KEY"] = backup
+        get_token(required_elevated=True)[0] = master
+        get_token(required_elevated=True)[0] = backup
 
         token, source = get_token(required_elevated=False)
         assert token == master, "Master key should have priority"

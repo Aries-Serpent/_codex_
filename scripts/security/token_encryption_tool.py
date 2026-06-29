@@ -37,6 +37,8 @@ import secrets
 import sys
 from datetime import datetime
 from pathlib import Path
+from scripts.ci._token_resolver import get_token
+
 
 try:
     from cryptography.hazmat.backends import default_backend
@@ -404,7 +406,7 @@ def main():
     # Get token from args or environment
     token = args.token
     if not token:
-        token = os.getenv('GITHUB_TOKEN') or os.getenv('GH_TOKEN')
+        token = os.getenv('GITHUB_TOKEN') or get_token(required_elevated=False)[0]
 
     if not token:
         token = input("\nEnter GitHub token (or Ctrl+C to cancel): ").strip()

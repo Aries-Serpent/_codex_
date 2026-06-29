@@ -35,6 +35,8 @@ import os
 import sys
 from datetime import UTC, datetime
 from typing import Optional
+from scripts.ci._token_resolver import get_token
+
 
 # Configure logging (token values are NEVER logged)
 logging.basicConfig(
@@ -87,7 +89,7 @@ class TokenScopeVerifier:
             token: GitHub token (defaults to GITHUB_TOKEN env var)
                    Token is NEVER logged or decoded
         """
-        self.token = token or os.getenv("GITHUB_TOKEN") or os.getenv("GH_TOKEN")
+        self.token = token or os.getenv("GITHUB_TOKEN") or get_token(required_elevated=False)[0]
         self.verification_results: Optional[dict] = None
 
         if not self.token:
@@ -289,7 +291,7 @@ def main():
     print("="*60)
 
     # Check for token in environment
-    token = os.getenv("GITHUB_TOKEN") or os.getenv("GH_TOKEN")
+    token = os.getenv("GITHUB_TOKEN") or get_token(required_elevated=False)[0]
     if not token:
         print("❌ No GitHub token found in environment")
         print("\nSet GITHUB_TOKEN or GH_TOKEN environment variable:")

@@ -33,6 +33,8 @@ Last Updated: 2026-01-16
 import os
 import subprocess
 import sys
+from scripts.ci._token_resolver import get_token
+
 
 # WARNING: Do NOT log secret names or values in clear text.
 # Use redaction for any sensitive information.
@@ -43,7 +45,7 @@ def check_environment():
     print("=" * 60)  # codeql[py/clear-text-logging-sensitive-data]
 
     # Check for GitHub token
-    token = os.getenv("GITHUB_TOKEN") or os.getenv("GH_TOKEN")
+    token = os.getenv("GITHUB_TOKEN") or get_token(required_elevated=False)[0]
     if token:
         print(f"✅ GitHub token found (length: {len(token)})")  # codeql[py/clear-text-logging-sensitive-data]
     else:

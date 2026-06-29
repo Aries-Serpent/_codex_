@@ -23,6 +23,8 @@ from typing import Optional
 from unittest import mock
 
 import pytest
+from scripts.ci._token_resolver import get_token
+
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -110,9 +112,9 @@ class TestTokenPresence:
     def test_token_env_variable_exists(self):
         """Test that CODEX_MASTER_KEY is available."""
         token = (
-            os.environ.get("CODEX_MASTER_KEY")
-            or os.environ.get("CODEX_BACKUP_KEY")
-            or os.environ.get("GH_TOKEN")
+            get_token(required_elevated=True)[0]
+            or get_token(required_elevated=True)[0]
+            or get_token(required_elevated=False)[0]
         )
         if token is None:
             pytest.skip("No GitHub token available for testing")
@@ -149,9 +151,9 @@ class TestTokenFallbackHierarchy:
             },
         ):
             token = (
-                os.environ.get("CODEX_MASTER_KEY")
-                or os.environ.get("CODEX_BACKUP_KEY")
-                or os.environ.get("GH_TOKEN")
+                get_token(required_elevated=True)[0]
+                or get_token(required_elevated=True)[0]
+                or get_token(required_elevated=False)[0]
                 or os.environ.get("GITHUB_TOKEN")
             )
             assert token == "master", "CODEX_MASTER_KEY should be preferred"
@@ -168,7 +170,7 @@ class TestTokenFallbackHierarchy:
             clear=False,
         ):
             token = (
-                os.environ.get("CODEX_MASTER_KEY") or os.environ.get("CODEX_BACKUP_KEY")
+                get_token(required_elevated=True)[0] or get_token(required_elevated=True)[0]
             )
             if token:
                 assert token == "backup", "CODEX_BACKUP_KEY should be fallback"
@@ -185,9 +187,9 @@ class TestTokenFallbackHierarchy:
             clear=False,
         ):
             token = (
-                os.environ.get("CODEX_MASTER_KEY")
-                or os.environ.get("CODEX_BACKUP_KEY")
-                or os.environ.get("GH_TOKEN")
+                get_token(required_elevated=True)[0]
+                or get_token(required_elevated=True)[0]
+                or get_token(required_elevated=False)[0]
             )
             if token:
                 assert token == "gh", "GH_TOKEN should be tertiary fallback"

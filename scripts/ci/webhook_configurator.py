@@ -63,6 +63,8 @@ import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlparse
+from scripts.ci._token_resolver import get_token
+
 
 # ── Constants ────────────────────────────────────────────────────────────────
 
@@ -94,7 +96,7 @@ AGENTIC_EVENTS: list[str] = [
 def _token() -> str:
     t = (
         os.environ.get("CODEX_ADMIN_KEY")
-        or os.environ.get("CODEX_MASTER_KEY")
+        or get_token(required_elevated=True)[0]
         or os.environ.get("CODEX_BACKUP_KEY", "")
     )
     if not t:

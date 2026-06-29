@@ -46,16 +46,18 @@ import urllib.error
 import urllib.request
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from scripts.ci._token_resolver import get_token
+
 
 # ── Constants ──────────────────────────────────────────────────────────────────
 
 CHECKPOINT_FILE = Path(".codex/rate_limit_checkpoint.json")
 REPO = os.environ.get("GITHUB_REPOSITORY", "")
 GH_TOKEN = (
-    os.environ.get("CODEX_MASTER_KEY")
-    or os.environ.get("CODEX_BACKUP_KEY")
+    get_token(required_elevated=True)[0]
+    or get_token(required_elevated=True)[0]
     or os.environ.get("GITHUB_TOKEN")
-    or os.environ.get("GH_TOKEN")
+    or get_token(required_elevated=False)[0]
     or ""
 )
 

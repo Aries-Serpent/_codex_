@@ -18,6 +18,8 @@ import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+from scripts.ci._token_resolver import get_token
+
 
 logger = logging.getLogger(__name__)
 
@@ -119,7 +121,7 @@ class EnvironmentValidator:
 
             # Check environment tokens
             result["github_token_set"] = bool(os.getenv("GITHUB_TOKEN"))
-            result["gh_token_set"] = bool(os.getenv("GH_TOKEN"))
+            result["gh_token_set"] = bool(get_token(required_elevated=False)[0])
 
             # Check GitHub Actions context
             result["actions_context"] = bool(os.getenv("GITHUB_ACTIONS"))

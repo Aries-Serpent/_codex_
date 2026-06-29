@@ -36,6 +36,8 @@ import os
 import subprocess
 import sys
 from typing import Optional
+from scripts.ci._token_resolver import get_token
+
 
 logging.basicConfig(
     level=logging.INFO,
@@ -81,7 +83,7 @@ class GitHubSecretsManager:
         """
         self.owner = owner
         self.repo = repo
-        self.token = token or os.getenv("GITHUB_TOKEN") or os.getenv("GH_TOKEN")
+        self.token = token or os.getenv("GITHUB_TOKEN") or get_token(required_elevated=False)[0]
         # nosemgrep: url-substring-check - trusted GitHub API base for automation
         self.api_base = "https://api.github.com"
 

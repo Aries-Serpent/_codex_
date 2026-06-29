@@ -37,6 +37,8 @@ import subprocess  # nosec B404 — used only for PTY shell (ws_cli); Popen call
 from pathlib import Path
 from urllib.parse import urlparse as _urlparse
 from urllib.parse import urlunparse as _urlunparse
+from scripts.ci._token_resolver import get_token
+
 
 # Safe JSON parser for external/untrusted inputs (sanitises C0 control chars).
 try:
@@ -328,7 +330,7 @@ def _require_memory_auth(
     """Require a valid Bearer token (CODEX_MASTER_KEY or CODEX_BACKUP_KEY) on
     memory endpoints to prevent unauthorised access to potentially sensitive
     STM/LTM data."""
-    expected = os.environ.get("CODEX_MASTER_KEY") or os.environ.get("CODEX_BACKUP_KEY") or ""
+    expected = get_token(required_elevated=True)[0] or get_token(required_elevated=True)[0] or ""
     if not expected:
         raise HTTPException(status_code=503, detail="Memory auth not configured on server")
     if creds is None or not secrets.compare_digest(creds.credentials, expected):
@@ -1408,8 +1410,8 @@ async def api_proxy(req: ApiProxyRequest):
     # P4.3: Auto-inject GitHub auth header when target is api.github.com
     # Token priority: CODEX_MASTER_KEY > CODEX_BACKUP_KEY > AGENT_GITHUB_TOKEN > GITHUB_TOKEN
     if safe_url.startswith("https://api.github.com/") and "Authorization" not in headers:
-        master_key   = os.environ.get("CODEX_MASTER_KEY") or ""
-        backup_key   = os.environ.get("CODEX_BACKUP_KEY") or ""
+        master_key   = get_token(required_elevated=True)[0] or ""
+        backup_key   = get_token(required_elevated=True)[0] or ""
         agent_token  = os.environ.get("AGENT_GITHUB_TOKEN") or ""
         github_token = os.environ.get("GITHUB_TOKEN") or ""
         token = master_key or backup_key or agent_token or github_token

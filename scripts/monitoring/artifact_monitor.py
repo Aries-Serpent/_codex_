@@ -28,6 +28,8 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
+from scripts.ci._token_resolver import get_token
+
 
 try:
     import yaml
@@ -117,7 +119,7 @@ class ArtifactMonitor:
         self.dry_run = dry_run
 
         # Initialize GitHub client
-        token = os.getenv('GITHUB_TOKEN') or os.getenv('CODEX_MASTER_KEY')
+        token = os.getenv('GITHUB_TOKEN') or get_token(required_elevated=True)[0]
         if not token:
             raise ValueError("GitHub token not found in GITHUB_TOKEN or CODEX_MASTER_KEY")
 

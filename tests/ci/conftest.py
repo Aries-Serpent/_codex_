@@ -18,6 +18,8 @@ from typing import Any, Dict, Generator, List, Optional, Tuple
 from unittest.mock import MagicMock, Mock, patch
 
 import pytest
+from scripts.ci._token_resolver import get_token
+
 
 
 # ============================================================================
@@ -59,14 +61,14 @@ def isolated_env() -> Generator[Dict[str, str], None, None]:
 @pytest.fixture
 def env_with_master_key(isolated_env: Dict[str, str]) -> Generator[Dict[str, str], None, None]:
     """Fixture that sets only CODEX_MASTER_KEY in isolated environment."""
-    os.environ["CODEX_MASTER_KEY"] = f"ghp_test_master_{uuid.uuid4().hex[:16]}"
+    get_token(required_elevated=True)[0] = f"ghp_test_master_{uuid.uuid4().hex[:16]}"
     yield os.environ
 
 
 @pytest.fixture
 def env_with_backup_key(isolated_env: Dict[str, str]) -> Generator[Dict[str, str], None, None]:
     """Fixture that sets only CODEX_BACKUP_KEY in isolated environment."""
-    os.environ["CODEX_BACKUP_KEY"] = f"ghp_test_backup_{uuid.uuid4().hex[:16]}"
+    get_token(required_elevated=True)[0] = f"ghp_test_backup_{uuid.uuid4().hex[:16]}"
     yield os.environ
 
 

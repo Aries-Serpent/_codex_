@@ -35,6 +35,8 @@ import sys
 from datetime import datetime, timezone
 from typing import Any
 from urllib import error, request
+from scripts.ci._token_resolver import get_token
+
 
 logger = logging.getLogger(__name__)
 
@@ -776,7 +778,7 @@ def main() -> int:
                         help="Print checklist body without posting")
     args = parser.parse_args()
 
-    token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN", "")
+    token = get_token(required_elevated=False)[0] or os.environ.get("GITHUB_TOKEN", "")
     if not token:
         print("ERROR: GH_TOKEN or GITHUB_TOKEN environment variable required", file=sys.stderr)
         return 3

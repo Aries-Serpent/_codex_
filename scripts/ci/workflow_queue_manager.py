@@ -153,6 +153,8 @@ import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+from scripts.ci._token_resolver import get_token
+
 
 # ── Logging ───────────────────────────────────────────────────────────────────
 logging.basicConfig(
@@ -323,11 +325,11 @@ def _state_file_for_branch(branch: str) -> Path:
 def _discover_tokens() -> list[str]:
     """Return deduplicated list of available GitHub tokens, highest privilege first."""
     candidates = [
-        os.environ.get("CODEX_MASTER_KEY"),
-        os.environ.get("CODEX_BACKUP_KEY"),
+        get_token(required_elevated=True)[0],
+        get_token(required_elevated=True)[0],
         os.environ.get("CODEX_ADMIN_KEY"),
         os.environ.get("AGENT_GITHUB_TOKEN"),
-        os.environ.get("GH_TOKEN"),
+        get_token(required_elevated=False)[0],
         os.environ.get("GITHUB_TOKEN"),
     ]
     seen: set[str] = set()

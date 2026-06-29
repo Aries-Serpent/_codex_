@@ -60,6 +60,8 @@ import urllib.error
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
+from scripts.ci._token_resolver import get_token
+
 
 # ── Constants ────────────────────────────────────────────────────────────────
 
@@ -105,7 +107,7 @@ APP_MANIFEST = {
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
 def _backup_token() -> str:
-    t = os.environ.get("CODEX_BACKUP_KEY") or os.environ.get("CODEX_ADMIN_KEY", "")
+    t = get_token(required_elevated=True)[0] or os.environ.get("CODEX_ADMIN_KEY", "")
     if not t:
         print("ERROR: Set CODEX_BACKUP_KEY (needs admin:org_hook + read:org scopes).", file=sys.stderr)
         sys.exit(1)

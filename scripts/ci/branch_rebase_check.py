@@ -70,6 +70,8 @@ import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
 from typing import Any, Optional
+from scripts.ci._token_resolver import get_token
+
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -944,7 +946,7 @@ def main() -> int:
                         ))
     args = parser.parse_args()
 
-    token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN") or ""
+    token = os.environ.get("GITHUB_TOKEN") or get_token(required_elevated=False)[0] or ""
     run_url = os.environ.get("GITHUB_SERVER_URL", "https://github.com") + \
               "/" + os.environ.get("GITHUB_REPOSITORY", "") + \
               "/actions/runs/" + os.environ.get("GITHUB_RUN_ID", "")

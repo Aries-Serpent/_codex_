@@ -7,6 +7,8 @@ import re
 from pathlib import Path
 from collections import defaultdict
 from typing import Dict, List, Set, Tuple
+from scripts.ci._token_resolver import get_token
+
 
 def find_all_python_scripts(root: str, exclude_dirs: Set[str] = None) -> List[Path]:
     """Find all Python scripts in the repository."""
@@ -283,7 +285,7 @@ This phase refactors all Python scripts in the Codex repository to use the centr
 **Transformation**:
 ```python
 # BEFORE
-token = os.getenv('GITHUB_TOKEN') or os.getenv('GH_TOKEN') or ''
+token = os.getenv('GITHUB_TOKEN') or get_token(required_elevated=False)[0] or ''
 
 # AFTER
 from scripts.ci._token_resolver import get_token
@@ -302,7 +304,7 @@ token, source = get_token()
 **Transformation**:
 ```python
 # BEFORE
-token = os.getenv('CODEX_MASTER_KEY')
+token = get_token(required_elevated=True)[0]
 if not token:
     raise ValueError("Need elevated permissions")
 
@@ -326,7 +328,7 @@ if not is_valid:
 **Transformation**:
 ```python
 # BEFORE
-token = os.environ.get('CODEX_MASTER_KEY') or os.environ.get('CODEX_BACKUP_KEY') or os.environ.get('GH_TOKEN')
+token = get_token(required_elevated=True)[0] or get_token(required_elevated=True)[0] or get_token(required_elevated=False)[0]
 
 # AFTER
 from scripts.ci._token_resolver import get_token

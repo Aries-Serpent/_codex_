@@ -24,6 +24,8 @@ from __future__ import annotations
 
 import os
 import sys
+from scripts.ci._token_resolver import get_token
+
 
 
 def _list_action_required_runs(repo: str, sha: str, token: str) -> list[dict]:
@@ -144,8 +146,8 @@ def main() -> int:
     repo    = os.environ.get("REPO") or os.environ.get("GITHUB_REPOSITORY", "")
     sha     = os.environ.get("HEAD_SHA", "").strip()
     token   = (
-        os.environ.get("GH_TOKEN")
-        or os.environ.get("CODEX_MASTER_KEY")
+        get_token(required_elevated=False)[0]
+        or get_token(required_elevated=True)[0]
         or os.environ.get("CODEX_BACKUP_KEY", "")
     )
     dry_run  = os.environ.get("DRY_RUN", "false").lower() == "true"

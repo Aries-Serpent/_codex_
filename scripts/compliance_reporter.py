@@ -36,6 +36,8 @@ import os
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from scripts.ci._token_resolver import get_token
+
 
 # Add src directory to path for development mode (if package not installed)
 # Proper usage: Install package with 'pip install -e .' to avoid this workaround
@@ -89,7 +91,7 @@ class ComplianceReporter:
         """
         self.github = Github(os.getenv('GITHUB_TOKEN'))
         self.mfa = MFAProvider()
-        master_key = os.getenv('CODEX_MASTER_KEY')
+        master_key = get_token(required_elevated=True)[0]
         if not master_key:
             raise RuntimeError(
                 "CODEX_MASTER_KEY environment variable must be set for token management operations"
