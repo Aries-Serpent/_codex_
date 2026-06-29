@@ -56,14 +56,14 @@ class TestPasswordHasher:
     def test_verify_correct_password(self, password_hasher):
         password = "Str0ngPass!"
         hashed = password_hasher.hash_password(password)
-        is_valid = password_hasher.verify_password(password, hashed)
+        is_valid = password_hasher.verify(password, hashed)
         assert is_valid, "is_valid is not valid"
 
     def test_verify_incorrect_password(self, password_hasher):
         password = "Str0ngPass!"
         wrong_password = "WrongPass!"
         hashed = password_hasher.hash_password(password)
-        is_valid = password_hasher.verify_password(wrong_password, hashed)
+        is_valid = password_hasher.verify(wrong_password, hashed)
         assert not is_valid, "not is not valid"
 
     def test_hashes_are_different(self, password_hasher):
@@ -90,25 +90,25 @@ class TestPasswordHasher:
     def test_very_long_password(self, password_hasher):
         password = "P" + "a" * 1000 + "!"
         hashed = password_hasher.hash_password(password)
-        assert password_hasher.verify_password(password, hashed)
+        assert password_hasher.verify(password, hashed)
 
     def test_unicode_password(self, password_hasher):
         password = "Str0ng🔐Pass!"
         hashed = password_hasher.hash_password(password)
-        assert password_hasher.verify_password(password, hashed)
+        assert password_hasher.verify(password, hashed)
 
     def test_special_chars_password(self, password_hasher):
         password = "P@$$w0rd!#%^&*()"
         hashed = password_hasher.hash_password(password)
-        assert password_hasher.verify_password(password, hashed)
+        assert password_hasher.verify(password, hashed)
 
     def test_timing_safe_comparison(self, password_hasher):
         password = "Str0ngPass!"
         hashed = password_hasher.hash_password(password)
 
         # Both should complete without timing differences
-        is_valid1 = password_hasher.verify_password(password, hashed)
-        is_valid2 = password_hasher.verify_password("Wrong!!!!!!!!", hashed)
+        is_valid1 = password_hasher.verify(password, hashed)
+        is_valid2 = password_hasher.verify("Wrong!!!!!!!!", hashed)
 
         assert is_valid1, "is_valid1 is not valid"
         assert not is_valid2, "not is not valid"

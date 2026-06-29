@@ -128,26 +128,26 @@ class TestPasswordHasherExtended:
         assert hash1 != hash2, "hash1 is not valid"
 
         # But both should verify the same password
-        assert hasher1.verify_password(password, hash1)
-        assert hasher2.verify_password(password, hash2)
+        assert hasher1.verify(password, hash1)
+        assert hasher2.verify(password, hash2)
 
     def test_password_with_newlines(self):
         hasher = PasswordHasher()
         password = "Pass\n\nword123!"
         hashed = hasher.hash_password(password)
-        assert hasher.verify_password(password, hashed)
+        assert hasher.verify(password, hashed)
 
     def test_password_with_tabs(self):
         hasher = PasswordHasher()
         password = "Pass\t\tword123!"
         hashed = hasher.hash_password(password)
-        assert hasher.verify_password(password, hashed)
+        assert hasher.verify(password, hashed)
 
     def test_password_with_mixed_unicode(self):
         hasher = PasswordHasher()
         password = "Pässwörd123!中文"
         hashed = hasher.hash_password(password)
-        assert hasher.verify_password(password, hashed)
+        assert hasher.verify(password, hashed)
 
     def test_similar_passwords_different_hashes(self):
         hasher = PasswordHasher()
@@ -158,8 +158,8 @@ class TestPasswordHasherExtended:
         hash2 = hasher.hash_password(password2)
 
         # Hashes should be completely different
-        assert not hasher.verify_password(password2, hash1)
-        assert not hasher.verify_password(password1, hash2)
+        assert not hasher.verify(password2, hash1)
+        assert not hasher.verify(password1, hash2)
 
 
 # ============================================================================

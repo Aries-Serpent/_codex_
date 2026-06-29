@@ -1,32 +1,29 @@
-# Session Context — 2026-06-29T19:41:35Z
-**Branch:** `copilot/fix-authentication-module-tests`  **PR:** #5140  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-06-29T20:15:08Z
+**Branch:** `copilot/fix-authentication-module-issues`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4954` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `4845` (✅)
+- GraphQL remaining: `4995` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #5140 — Fix authentication module API contract violations and mock configuration (185 test failures)
-State: `open`  Draft: `False`  Branch: `copilot/fix-authentication-module-tests` → `main`
-
 ## 🚨 Recent CI Failures (last 5 runs)
-- **Phase 8.2 Issue Triage** — `failure` on `main` (2026-06-29)
-- **.github/workflows/repo-var-sync-schedule.yml** — `failure` on `copilot/fix-authentication-module-tests` (2026-06-29)
-- **.github/workflows/coherence-snapshot.yml** — `failure` on `copilot/fix-authentication-module-tests` (2026-06-29)
-- **.github/workflows/proactive-ci-monitor.yml** — `failure` on `copilot/fix-authentication-module-tests` (2026-06-29)
-- **.github/workflows/build-preview-image.yml** — `failure` on `copilot/fix-authentication-module-tests` (2026-06-29)
+- **.github/workflows/dependabot-sheriff.yml** — `failure` on `main` (2026-06-29)
+- **.github/workflows/promote-integration-branch.yml** — `failure` on `main` (2026-06-29)
+- **.github/workflows/secrets-false-positive-healer.yml** — `failure` on `main` (2026-06-29)
+- **.github/workflows/auto-fix-pr-check.yml** — `failure` on `main` (2026-06-29)
+- **.github/workflows/dependabot-preflight.yml** — `failure` on `main` (2026-06-29)
 
 ## 📝 Recent Commits
+- `5166cf60` Merge pull request #5140 from Aries-Serpent/copilot/fix-authentication-module-te — Statix (2026-06-29)
+- `693c55ab` Fix indentation and OAuthToken assertions in auth module tests and user_store — copilot-swe-agent[bot] (2026-06-29)
 - `0998e07d` Document comprehensive auth tests fix implementation — copilot-swe-agent[bot] (2026-06-29)
 - `65b6b980` Fix indentation and complete implementation of auth module fixes — copilot-swe-agent[bot] (2026-06-29)
 - `47ae2740` Implement Phase 1-4: Fix UserStore, MFASecret, InMemoryUserRepository, OAuth moc — copilot-swe-agent[bot] (2026-06-29)
 - `1ec552b5` Plan: Fix authentication module tests and bandit security scan — copilot-swe-agent[bot] (2026-06-29)
 - `f872a677` Merge pull request #5139 from Aries-Serpent/copilot/fix-authentication-module-fa — Statix (2026-06-29)
 - `ef508dd0` Fix syntax error in test_jwt_signature_is_base64url assertion - remove malformed — copilot-swe-agent[bot] (2026-06-29)
-- `34810418` Fix syntax error in test_jwt_signature_is_base64url assertion — copilot-swe-agent[bot] (2026-06-29)
-- `5eef5a4e` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-06-29)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
