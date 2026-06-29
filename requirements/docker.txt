@@ -1,6 +1,6 @@
 # Minimal runtime pins for container (conservative)
 # If the project already pins these via pyproject / requirements.txt, you may remove this file.
-fastapi>=0.95
+fastapi>=0.138.1
 uvicorn[standard]>=0.22
-pydantic>=1.10
+pydantic>=2.13.4
 requests>=2.31
