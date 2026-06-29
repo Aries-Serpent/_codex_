@@ -36,7 +36,7 @@ class AuthMethod(Enum):
     """Supported authentication methods."""
 
     JWT = "jwt"
-    API_KEY = "api_key"
+    API_KEY = "api_key"  # pragma: allowlist secret
     OAUTH = "oauth"
     NONE = "none"
 

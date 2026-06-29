@@ -67,7 +67,7 @@ class ResourceType(str, Enum):
 
     AGENTS = "agents"
     WORKFLOWS = "workflows"
-    SECRETS = "secrets"
+    SECRETS = "secrets"  # pragma: allowlist secret
     DOCS = "docs"
     CODE = "code"
     REPORTS = "reports"
