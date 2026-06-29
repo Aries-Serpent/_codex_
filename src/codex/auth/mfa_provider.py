@@ -58,7 +58,7 @@ class MFASecret:
         """Support indexing and slicing - delegates to the secret string."""
         return self.secret[index]
 
-     def get_provisioning_uri(self, account_name: str) -> str:
+    def get_provisioning_uri(self, account_name: str) -> str:
         """
         Generate provisioning URI for QR code.
 
