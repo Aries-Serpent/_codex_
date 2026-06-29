@@ -140,6 +140,7 @@ class TestProcess7WorkflowOperations:
         payload = {"ref": test_workflow_ref}
 
         assert workflow_id in endpoint
+        assert payload["ref"] == test_workflow_ref
 
     def test_process7_dispatch_workflow_invalid_ref(
         self,
@@ -211,6 +212,7 @@ class TestProcess7WorkflowOperations:
         endpoint = f"{gh_api_base}{workflow_runs_endpoint}/{run_id}"
         response = mock_workflow_run_response(run_id=run_id, status="completed", conclusion="success")
 
+        assert str(run_id) in endpoint
         assert response["id"] == run_id
         assert response["status"] == "completed"
         assert response["conclusion"] == "success"
@@ -227,6 +229,7 @@ class TestProcess7WorkflowOperations:
         # Simulate polling: first in_progress, then completed
         statuses = ["in_progress", "in_progress", "completed"]
 
+        assert str(run_id) in endpoint
         for i, status in enumerate(statuses):
             # Poll loop implementation would go here
             assert status in ["in_progress", "completed", "queued"]
@@ -310,6 +313,7 @@ class TestProcess7WorkflowOperations:
             ],
         }
 
+        assert "/artifacts" in endpoint
         assert expected_response["total_count"] == 2
 
     # ───────────────────────────────────────────────────────────────────────
@@ -441,6 +445,7 @@ class TestWorkflowBatchOperations:
             endpoint = f"{gh_api_base}{workflows_endpoint}/{workflow}/dispatches"
             payload = {"ref": "main"}
 
+            assert "/dispatches" in endpoint
             assert payload["ref"]
 
     def test_batch_cancel_workflow_runs(
