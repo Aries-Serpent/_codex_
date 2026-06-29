@@ -1,5 +1,5 @@
 name: "\U0001F504 Auto-Post @copilot review After Agent Session"
-on:
+true:
   workflow_run:
     workflows:
     - Copilot coding agent
@@ -29,7 +29,6 @@ jobs:
     outputs:
       autofix_ran: ${{ steps.autofix.outputs.autofix_ran }}
     steps:
-    # codeql[actions/untrusted-checkout/critical] trusted scripts are restored from origin/main before execution
     - name: Checkout PR branch
       uses: actions/checkout@v7
       with:
@@ -44,7 +43,6 @@ jobs:
         \  scripts/ci/sync_tracked_files.py \\\n  2>/dev/null || echo \"\u26A0\uFE0F\
         \ Some scripts not on origin/main \u2014 using checkout versions\"\necho \"\
         \u2705 Trusted scripts overlaid from origin/main\"\n"
-    # codeql[actions/untrusted-checkout/high] this step executes only trusted scripts overlaid from origin/main
     - name: "Auto-fix pre-flight REQ-4/5 when \U0001F504 Auto-Post checkbox is checked"
       id: autofix
       env:
@@ -107,6 +105,8 @@ jobs:
         \ origin HEAD:refs/heads/\"${TARGET_BRANCH}\"\n  echo \"\u2705 Pre-flight\
         \ auto-fix committed and pushed to ${TARGET_BRANCH}.\"\n  echo \"autofix_ran=true\"\
         \ >> \"$GITHUB_OUTPUT\"\nfi\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   post-review-trigger:
     name: Post @copilot review after agent session
     runs-on: ubuntu-latest
@@ -114,6 +114,7 @@ jobs:
     needs: preflight-autofix
     env:
       GH_TRICKLE_POLITE_SLEEP: '0.5'
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
     if: 'always() &&
 
       github.event.workflow_run.pull_requests != null &&
@@ -209,14 +210,16 @@ jobs:
           \u2500\u2500\u2500\u2500\n  // Post a targeted @copilot continue comment\
           \ that references the rescue\n  // comment so the new session picks it up\
           \ immediately.\n  const rescueUrl = `https://github.com/${owner}/${repo}/pull/${pr}#issuecomment-${pendingRescueComment.databaseId}`;\n\
-          \  const retriggerBody = [\n    `@copilot+claude-haiku-4.5 /plan`,\n\
-          \    ``,\n    `<!-- session-done-retrigger -->`,\n    `A previous agent\
-          \ session pushed new commits after the CI rescue comment below`,\n    `was\
-          \ posted, which caused GitHub to silently drop the queued rescue session.`,\n\
-          \    ``,\n    `**Please address the rescue comment immediately:**`,\n  \
-          \  `${rescueUrl}`,\n    ``,\n    `> **💡 Parallel execution:** Use the \\`task\\` tool to delegate independent subtasks to Custom Agents (e.g. \\`ci-auto-healer-agent\\`, \\`ci-testing-agent\\`, \\`unified-coverage-agent\\`) to work in parallel.`,\n    ``,\n    `> _Auto-posted by \\`copilot-agent-session-done.yml\\\
-          ` (session-done retrigger path)_`,\n  '',\n  '---',\n  `_[\U0001F517 Workflow\
-          \ run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,\n\
+          \  const retriggerBody = [\n    `@copilot+claude-haiku-4.5 /plan`,\n   \
+          \ ``,\n    `<!-- session-done-retrigger -->`,\n    `A previous agent session\
+          \ pushed new commits after the CI rescue comment below`,\n    `was posted,\
+          \ which caused GitHub to silently drop the queued rescue session.`,\n  \
+          \  ``,\n    `**Please address the rescue comment immediately:**`,\n    `${rescueUrl}`,\n\
+          \    ``,\n    `> **\U0001F4A1 Parallel execution:** Use the \\`task\\` tool\
+          \ to delegate independent subtasks to Custom Agents (e.g. \\`ci-auto-healer-agent\\\
+          `, \\`ci-testing-agent\\`, \\`unified-coverage-agent\\`) to work in parallel.`,\n\
+          \    ``,\n    `> _Auto-posted by \\`copilot-agent-session-done.yml\\` (session-done\
+          \ retrigger path)_`,\n  '',\n  '---',\n  `_[\U0001F517 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,\n\
           \  ].join('\\n');\n\n  // Guard: don't re-post if we already re-triggered\
           \ this rescue comment\n  const alreadyRetriggered = allNodes.some(c => {\n\
           \    const body = c.body || '';\n    return body.includes('<!-- session-done-retrigger\
@@ -230,24 +233,25 @@ jobs:
           // \u2500\u2500 PATH B: No pending rescue \u2014 post \"@copilot review\"\
           \ as usual \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n// Guard 1:\
           \ do not post if the most recent comment is already a review trigger\nconst\
-          \ reviewTriggers = new Set([\n  '@copilot review',\n  '@copilot+claude-haiku-4.5 /plan',\n  '@copilot+claude-haiku-4.5\
-          \ review',\n]);\nconst recentTriggerCount = allNodes.slice(-10).filter(c\
-          \ => {\n  const body = (c.body || '').trim();\n  return reviewTriggers.has(body);\n\
-          }).length;\n\n// Guard 2: review-loop detection \u2014 if 3+ of the last\
-          \ 10 comments are\n// @copilot review triggers with no meaningful work in\
-          \ between, break the\n// loop by posting a diagnostic comment instead of\
-          \ another review trigger.\nif (recentTriggerCount >= 3) {\n  const loopBreaker\
-          \ = [\n    `@copilot+claude-haiku-4.5 /plan`,\n    ``,\n    `<!-- session-done-loop-break\
-          \ -->`,\n    `\u26A0\uFE0F **Review-loop detected**: ${recentTriggerCount}\
-          \ consecutive \\`@copilot review\\` triggers`,\n    `were posted without\
-          \ a resolved rescue or meaningful commit in between.`,\n    ``,\n    `**Possible\
-          \ causes:**`,\n    `1. A CI failure is blocking the session from completing\
-          \ work`,\n    `2. The agent is not receiving the review trigger (token issue)`,\n\
-          \    `3. The rescue comment chain is exhausted without a fix`,\n    ``,\n\
-          \    `**Requested action:** Please check the latest CI failure and address\
-          \ it directly.`,\n    `Check \\`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\\\
-          ` for patterns.`,\n    ``,\n    `> _Auto-posted by \\`copilot-agent-session-done.yml\\\
-          ` (loop-break guard)_`,\n  '',\n  '---',\n  `_[\U0001F517 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,\n\
+          \ reviewTriggers = new Set([\n  '@copilot review',\n  '@copilot+claude-haiku-4.5\
+          \ /plan',\n  '@copilot+claude-haiku-4.5 review',\n]);\nconst recentTriggerCount\
+          \ = allNodes.slice(-10).filter(c => {\n  const body = (c.body || '').trim();\n\
+          \  return reviewTriggers.has(body);\n}).length;\n\n// Guard 2: review-loop\
+          \ detection \u2014 if 3+ of the last 10 comments are\n// @copilot review\
+          \ triggers with no meaningful work in between, break the\n// loop by posting\
+          \ a diagnostic comment instead of another review trigger.\nif (recentTriggerCount\
+          \ >= 3) {\n  const loopBreaker = [\n    `@copilot+claude-haiku-4.5 /plan`,\n\
+          \    ``,\n    `<!-- session-done-loop-break -->`,\n    `\u26A0\uFE0F **Review-loop\
+          \ detected**: ${recentTriggerCount} consecutive \\`@copilot review\\` triggers`,\n\
+          \    `were posted without a resolved rescue or meaningful commit in between.`,\n\
+          \    ``,\n    `**Possible causes:**`,\n    `1. A CI failure is blocking\
+          \ the session from completing work`,\n    `2. The agent is not receiving\
+          \ the review trigger (token issue)`,\n    `3. The rescue comment chain is\
+          \ exhausted without a fix`,\n    ``,\n    `**Requested action:** Please\
+          \ check the latest CI failure and address it directly.`,\n    `Check \\\
+          `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\\` for patterns.`,\n\
+          \    ``,\n    `> _Auto-posted by \\`copilot-agent-session-done.yml\\` (loop-break\
+          \ guard)_`,\n  '',\n  '---',\n  `_[\U0001F517 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,\n\
           \  ].join('\\n');\n\n  // Only post loop-breaker once per review-loop cycle\n\
           \  const alreadyBroke = allNodes.slice(-5).some(c => {\n    return (c.body\
           \ || '').includes('<!-- session-done-loop-break -->');\n  });\n  if (!alreadyBroke)\
@@ -278,8 +282,9 @@ jobs:
           \ = allNodes.some(c =>\n    (c.body || '').includes(SESSION_DONE_MARKER)\n\
           \  );\n  if (alreadyTriggeredForSha) {\n    console.log(`Session-done trigger\
           \ already posted for SHA ${sessionDoneSha} \u2014 skipping duplicate.`);\n\
-          \    return;\n  }\n}\n\nconst reviewBody = SESSION_DONE_MARKER\n  ? `@copilot+claude-haiku-4.5 /plan\\n\\nreview\\n\\n${SESSION_DONE_MARKER}`\n  : '@copilot+claude-haiku-4.5 /plan';\n\
-          \nawait github.rest.issues.createComment({\n  owner, repo, issue_number:\
+          \    return;\n  }\n}\n\nconst reviewBody = SESSION_DONE_MARKER\n  ? `@copilot+claude-haiku-4.5\
+          \ /plan\\n\\nreview\\n\\n${SESSION_DONE_MARKER}`\n  : '@copilot+claude-haiku-4.5\
+          \ /plan';\n\nawait github.rest.issues.createComment({\n  owner, repo, issue_number:\
           \ pr,\n  body: reviewBody,\n});\nconsole.log(`@copilot review posted to\
           \ PR #${pr}${sessionDoneSha ? ` (SHA ${sessionDoneSha})` : ''}.`);\n"
   auto-approve-pending-runs:
@@ -343,6 +348,8 @@ jobs:
         \ pending workflow run(s) for PR #${PR_NUMBER}.\"\nfi\nif [ \"$FAILED\" -gt\
         \ 0 ]; then\n  echo \"\u26A0\uFE0F  ${FAILED} run(s) could not be approved\
         \ \u2014 owner approval may be required.\"\nfi\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   compile-bot-feedback:
     name: "Compile bot feedback \u2192 @copilot continue thread"
     runs-on: ubuntu-latest
@@ -485,6 +492,8 @@ jobs:
           \ prNumber, body: `${compiledBody}\\n${RUN_MARKER}`,\n});\nconsole.log(`Compiled\
           \ ${findings.length} bot finding(s) into @copilot continue comment on PR\
           \ #${prNumber}.`);\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   append-code-quality-to-rescue:
     name: Append code-quality findings to rescue comment
     runs-on: ubuntu-latest

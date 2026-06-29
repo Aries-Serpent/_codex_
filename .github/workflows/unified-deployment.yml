@@ -1,5 +1,5 @@
 name: Unified Deployment Suite
-on:
+true:
   push:
     branches:
     - main
@@ -83,6 +83,9 @@ jobs:
       if: inputs.version != ''
       run: "if ! echo \"${{ inputs.version }}\" | grep -E '^[0-9]+\\.[0-9]+\\.[0-9]+$';\
         \ then\n  echo \"Invalid version format. Expected: X.Y.Z\"\n  exit 1\nfi\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   build_cognitive_app:
     name: "Build Cognitive App (artifact only \u2014 no Pages deploy)"
     runs-on: ubuntu-latest
@@ -169,6 +172,9 @@ jobs:
       run: "gh release create \"v${{ inputs.version }}\" \\\n  --title \"Pre-Release\
         \ v${{ inputs.version }}\" \\\n  --notes \"Pre-release version ${{ inputs.version\
         \ }}\" \\\n  --prerelease \\\n  dist/*\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   deployment_summary:
     name: Generate Deployment Summary
     runs-on: ubuntu-latest

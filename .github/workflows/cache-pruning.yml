@@ -1,123 +1,71 @@
 name: Cache Pruning
-
-on:
+true:
   schedule:
-    - cron: '0 4 * * 0'  # Weekly, Sunday 04:00 UTC
+  - cron: 0 4 * * 0
   workflow_dispatch:
     inputs:
       max_age_days:
-        description: 'Delete caches last accessed more than N days ago'
+        description: Delete caches last accessed more than N days ago
         required: false
         default: '7'
         type: string
       dry_run:
-        description: 'Dry run — list caches to delete without deleting them'
+        description: "Dry run \u2014 list caches to delete without deleting them"
         required: false
         default: 'false'
         type: boolean
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   actions: write
   contents: read
-
-
 jobs:
   prune-caches:
     name: Prune stale GitHub Actions caches
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
-      GH_TRICKLE_POLITE_SLEEP: "0.3"   # weekly scheduled — moderate sleep between pages
-
+      GH_TRICKLE_POLITE_SLEEP: '0.3'
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
     steps:
-      - name: Prune caches older than ${{ inputs.max_age_days || 7 }} days
-        uses: actions/github-script@v8 # v9
-        with:
-          script: |
-            const owner = context.repo.owner;
-            const repo  = context.repo.repo;
-            const maxAgeDays  = parseInt('${{ inputs.max_age_days || 7 }}', 10);
-            const dryRun      = ('${{ inputs.dry_run }}' === 'true');
-            const maxAgeMs    = maxAgeDays * 24 * 60 * 60 * 1000;
-            const now         = Date.now();
-
-            console.log(`Pruning caches last accessed > ${maxAgeDays} days ago`);
-            console.log(`Dry run: ${dryRun}`);
-
-            let page       = 1;
-            let totalBytes = 0;
-            let deleted    = 0;
-            let kept       = 0;
-            const toDelete = [];
-
-            // Collect all caches (paginate with rate-limit guard)
-            while (true) {
-              // Circuit-break if REST rate limit is low
-              try {
-                const rl = await github.rest.rateLimit.get();
-                const remaining = rl.data?.resources?.core?.remaining ?? 999;
-                if (remaining < 20) {
-                  core.warning(`Rate limit low (${remaining} remaining) — stopping cache pagination at page ${page}`);
-                  break;
-                }
-              } catch (_) { /* non-fatal — proceed */ }
-
-              const resp = await github.rest.actions.getActionsCacheList({
-                owner, repo, per_page: 100, page
-              });
-              const caches = resp.data.actions_caches;
-              if (!caches || caches.length === 0) break;
-
-              for (const cache of caches) {
-                const ageMs = now - new Date(cache.last_accessed_at).getTime();
-                if (ageMs > maxAgeMs) {
-                  toDelete.push(cache);
-                  totalBytes += cache.size_in_bytes || 0;
-                } else {
-                  kept++;
-                }
-              }
-              if (caches.length < 100) break;
-              page++;
-            }
-
-            console.log(`\nFound ${toDelete.length} cache(s) to delete, ${kept} to keep.`);
-            const freedMB = (totalBytes / 1024 / 1024).toFixed(1);
-
-            if (!dryRun) {
-              for (const cache of toDelete) {
-                console.log(`  Deleting: ${cache.key} (id=${cache.id}, last_accessed=${cache.last_accessed_at})`);
-                try {
-                  await github.rest.actions.deleteActionsCacheById({ owner, repo, cache_id: cache.id });
-                  deleted++;
-                } catch (err) {
-                  console.warn(`  ⚠️  Failed to delete cache ${cache.id}: ${err.message}`);
-                }
-              }
-              console.log(`\n✅ Deleted ${deleted} cache(s), freed ~${freedMB} MB`);
-            } else {
-              for (const cache of toDelete) {
-                console.log(`  [DRY RUN] Would delete: ${cache.key} (id=${cache.id})`);
-              }
-              console.log(`\n[DRY RUN] Would free ~${freedMB} MB across ${toDelete.length} cache(s)`);
-            }
-
-            // Post job summary
-            const action  = dryRun ? 'Would delete' : 'Deleted';
-            const summary = [
-              `## 🗑️ Cache Pruning Summary`,
-              ``,
-              `| Metric | Value |`,
-              `|--------|-------|`,
-              `| Max cache age | ${maxAgeDays} days |`,
-              `| Dry run | ${dryRun} |`,
-              `| Caches examined | ${toDelete.length + kept} |`,
-              `| ${action} | ${dryRun ? toDelete.length : deleted} |`,
-              `| Kept | ${kept} |`,
-              `| Space freed | ~${freedMB} MB |`,
-            ].join('\n');
-            await core.summary.addRaw(summary).write();
+    - name: Prune caches older than ${{ inputs.max_age_days || 7 }} days
+      uses: actions/github-script@v8
+      with:
+        script: "const owner = context.repo.owner;\nconst repo  = context.repo.repo;\n\
+          const maxAgeDays  = parseInt('${{ inputs.max_age_days || 7 }}', 10);\nconst\
+          \ dryRun      = ('${{ inputs.dry_run }}' === 'true');\nconst maxAgeMs  \
+          \  = maxAgeDays * 24 * 60 * 60 * 1000;\nconst now         = Date.now();\n\
+          \nconsole.log(`Pruning caches last accessed > ${maxAgeDays} days ago`);\n\
+          console.log(`Dry run: ${dryRun}`);\n\nlet page       = 1;\nlet totalBytes\
+          \ = 0;\nlet deleted    = 0;\nlet kept       = 0;\nconst toDelete = [];\n\
+          \n// Collect all caches (paginate with rate-limit guard)\nwhile (true) {\n\
+          \  // Circuit-break if REST rate limit is low\n  try {\n    const rl = await\
+          \ github.rest.rateLimit.get();\n    const remaining = rl.data?.resources?.core?.remaining\
+          \ ?? 999;\n    if (remaining < 20) {\n      core.warning(`Rate limit low\
+          \ (${remaining} remaining) \u2014 stopping cache pagination at page ${page}`);\n\
+          \      break;\n    }\n  } catch (_) { /* non-fatal \u2014 proceed */ }\n\
+          \n  const resp = await github.rest.actions.getActionsCacheList({\n    owner,\
+          \ repo, per_page: 100, page\n  });\n  const caches = resp.data.actions_caches;\n\
+          \  if (!caches || caches.length === 0) break;\n\n  for (const cache of caches)\
+          \ {\n    const ageMs = now - new Date(cache.last_accessed_at).getTime();\n\
+          \    if (ageMs > maxAgeMs) {\n      toDelete.push(cache);\n      totalBytes\
+          \ += cache.size_in_bytes || 0;\n    } else {\n      kept++;\n    }\n  }\n\
+          \  if (caches.length < 100) break;\n  page++;\n}\n\nconsole.log(`\\nFound\
+          \ ${toDelete.length} cache(s) to delete, ${kept} to keep.`);\nconst freedMB\
+          \ = (totalBytes / 1024 / 1024).toFixed(1);\n\nif (!dryRun) {\n  for (const\
+          \ cache of toDelete) {\n    console.log(`  Deleting: ${cache.key} (id=${cache.id},\
+          \ last_accessed=${cache.last_accessed_at})`);\n    try {\n      await github.rest.actions.deleteActionsCacheById({\
+          \ owner, repo, cache_id: cache.id });\n      deleted++;\n    } catch (err)\
+          \ {\n      console.warn(`  \u26A0\uFE0F  Failed to delete cache ${cache.id}:\
+          \ ${err.message}`);\n    }\n  }\n  console.log(`\\n\u2705 Deleted ${deleted}\
+          \ cache(s), freed ~${freedMB} MB`);\n} else {\n  for (const cache of toDelete)\
+          \ {\n    console.log(`  [DRY RUN] Would delete: ${cache.key} (id=${cache.id})`);\n\
+          \  }\n  console.log(`\\n[DRY RUN] Would free ~${freedMB} MB across ${toDelete.length}\
+          \ cache(s)`);\n}\n\n// Post job summary\nconst action  = dryRun ? 'Would\
+          \ delete' : 'Deleted';\nconst summary = [\n  `## \U0001F5D1\uFE0F Cache\
+          \ Pruning Summary`,\n  ``,\n  `| Metric | Value |`,\n  `|--------|-------|`,\n\
+          \  `| Max cache age | ${maxAgeDays} days |`,\n  `| Dry run | ${dryRun} |`,\n\
+          \  `| Caches examined | ${toDelete.length + kept} |`,\n  `| ${action} |\
+          \ ${dryRun ? toDelete.length : deleted} |`,\n  `| Kept | ${kept} |`,\n \
+          \ `| Space freed | ~${freedMB} MB |`,\n].join('\\n');\nawait core.summary.addRaw(summary).write();\n"

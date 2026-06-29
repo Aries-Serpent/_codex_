@@ -1,169 +1,104 @@
 name: Token Expiry Monitor
-# aais-cache: none  # No pip install — Python uses stdlib only (datetime, os, sys)
-
-# Daily check that CODEX_MASTER_KEY and CODEX_BACKUP_KEY are not near or past expiry.
-# - Warns via job summary 14 days before expiry date
-# - Fails with a GitHub Issue creation if expired or within 7 days of expiry
-#
-# Expiry dates are stored in repo variables:
-#   CODEX_MASTER_KEY_EXPIRY_DATE  (format: YYYY-MM-DD)
-#   CODEX_BACKUP_KEY_EXPIRY_DATE  (format: YYYY-MM-DD)
-#
-# Reference: docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md §11 (T-02 gap closure)
-
-on:
+true:
   schedule:
-    - cron: '0 9 * * *'   # 09:00 UTC daily
+  - cron: 0 9 * * *
   workflow_dispatch:
     inputs:
       dry_run:
-        description: 'Dry run — report but do not create issues'
+        description: "Dry run \u2014 report but do not create issues"
         type: boolean
         default: false
-
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   issues: write
-
 jobs:
   check-token-expiry:
-    name: "Check PAT Expiry Dates"
+    name: Check PAT Expiry Dates
     runs-on: ubuntu-latest
     timeout-minutes: 5
-
     steps:
-      - name: Check expiry dates
-        id: check
-        env:
-          MASTER_KEY_EXPIRY: ${{ vars.CODEX_MASTER_KEY_EXPIRY_DATE }}
-          BACKUP_KEY_EXPIRY: ${{ vars.CODEX_BACKUP_KEY_EXPIRY_DATE }}
-          DRY_RUN: ${{ inputs.dry_run || 'false' }}
-        run: |
-          python3 - << 'PYEOF'
-          import datetime, os, sys
+    - name: Check expiry dates
+      id: check
+      env:
+        MASTER_KEY_EXPIRY: ${{ vars.CODEX_MASTER_KEY_EXPIRY_DATE }}
+        BACKUP_KEY_EXPIRY: ${{ vars.CODEX_BACKUP_KEY_EXPIRY_DATE }}
+        DRY_RUN: ${{ inputs.dry_run || 'false' }}
+      run: "python3 - << 'PYEOF'\nimport datetime, os, sys\n\nWARN_DAYS  = 14   #\
+        \ warn this many days before expiry\nURGENT_DAYS = 7  # fail/create issue\
+        \ if within this many days\n\ntoday = datetime.date.today()\ndry_run = os.environ.get(\"\
+        DRY_RUN\", \"false\").lower() == \"true\"\n\ntokens = {\n    \"CODEX_MASTER_KEY\"\
+        : os.environ.get(\"MASTER_KEY_EXPIRY\", \"\"),\n    \"CODEX_BACKUP_KEY\":\
+        \ os.environ.get(\"BACKUP_KEY_EXPIRY\", \"\"),\n}\n\nissues = []   # list\
+        \ of (name, expiry_date, days_left)\nwarnings = [] # list of (name, expiry_date,\
+        \ days_left)\n\nfor name, expiry_str in tokens.items():\n    if not expiry_str\
+        \ or expiry_str in (\"\", \"never\", \"unknown\"):\n        print(f\"\u26A0\
+        \uFE0F  {name}: EXPIRY DATE NOT SET \u2014 add {name.replace('MASTER','MASTER_KEY').replace('BACKUP','BACKUP_KEY')}_EXPIRY_DATE\
+        \ repo variable\")\n        continue\n\n    try:\n        expiry = datetime.date.fromisoformat(expiry_str)\n\
+        \    except ValueError:\n        print(f\"\u26A0\uFE0F  {name}: invalid expiry\
+        \ date format '{expiry_str}' (expected YYYY-MM-DD)\")\n        continue\n\n\
+        \    days_left = (expiry - today).days\n\n    if days_left < 0:\n        print(f\"\
+        \U0001F6A8 {name}: EXPIRED {abs(days_left)} days ago ({expiry_str})\")\n \
+        \       issues.append((name, expiry_str, days_left))\n    elif days_left <=\
+        \ URGENT_DAYS:\n        print(f\"\U0001F6A8 {name}: expires in {days_left}\
+        \ day(s) on {expiry_str} \u2014 URGENT ROTATION REQUIRED\")\n        issues.append((name,\
+        \ expiry_str, days_left))\n    elif days_left <= WARN_DAYS:\n        print(f\"\
+        \u26A0\uFE0F  {name}: expires in {days_left} day(s) on {expiry_str} \u2014\
+        \ rotation recommended\")\n        warnings.append((name, expiry_str, days_left))\n\
+        \    else:\n        print(f\"\u2705 {name}: valid \u2014 expires {expiry_str}\
+        \ ({days_left} days remaining)\")\n\n# Write outputs for subsequent steps\n\
+        env_file = os.environ.get(\"GITHUB_ENV\", \"\")\nif env_file:\n    with open(env_file,\
+        \ \"a\") as f:\n        f.write(f\"HAS_URGENT_ISSUES={'true' if issues else\
+        \ 'false'}\\n\")\n        f.write(f\"HAS_WARNINGS={'true' if warnings else\
+        \ 'false'}\\n\")\n        if issues:\n            detail = \"; \".join(f\"\
+        {n}={d}\" for n,_,d in issues)\n            f.write(f\"URGENT_DETAILS={detail}\\\
+        n\")\n        if warnings:\n            detail = \"; \".join(f\"{n} expires\
+        \ in {d}d\" for n,_,d in warnings)\n            f.write(f\"WARNING_DETAILS={detail}\\\
+        n\")\n\n# Build job summary\nsummary = os.environ.get(\"GITHUB_STEP_SUMMARY\"\
+        , \"\")\nif summary:\n    with open(summary, \"a\") as f:\n        f.write(\"\
+        ## \U0001F510 Token Expiry Status\\n\\n\")\n        f.write(f\"_Checked: {today.isoformat()}_\\\
+        n\\n\")\n        if not issues and not warnings:\n            f.write(\"\u2705\
+        \ All tokens are healthy and not near expiry.\\n\")\n        for name, expiry_str,\
+        \ days_left in issues:\n            msg = \"EXPIRED\" if days_left < 0 else\
+        \ f\"expires in {days_left}d\"\n            f.write(f\"- \U0001F6A8 **{name}**\
+        \ \u2014 {msg} ({expiry_str})\\n\")\n        for name, expiry_str, days_left\
+        \ in warnings:\n            f.write(f\"- \u26A0\uFE0F  **{name}** \u2014 expires\
+        \ in {days_left} days ({expiry_str})\\n\")\n        f.write(\"\\n**Rotation\
+        \ guide:** `docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md` \xA79\\n\"\
+        )\n\nif issues and not dry_run:\n    sys.exit(2)   # signal to create issue\n\
+        elif issues:\n    print(\"DRY RUN \u2014 would create issue but skipping\"\
+        )\n    sys.exit(0)\nsys.exit(0)\nPYEOF\nEXIT=$?\nif [ \"$EXIT\" -eq 2 ]; then\n\
+        \  echo \"CREATE_ISSUE=true\" >> \"$GITHUB_ENV\"\n  exit 0  # don't fail here\
+        \ \u2014 let the issue-creation step handle it\nfi\n"
+    - name: Create / update expiry-warning issue
+      if: env.HAS_URGENT_ISSUES == 'true' && inputs.dry_run != 'true'
+      env:
+        GH_TOKEN: ${{ github.token }}
+        REPO: ${{ github.repository }}
+        URGENT_DETAILS: ${{ env.URGENT_DETAILS }}
+      run: "TITLE=\"\U0001F6A8 PAT Expiry Alert \u2014 Token rotation required\"\n\
+        python3 scripts/ci/build_expiry_issue_body.py > \"${RUNNER_TEMP}/expiry_issue_body.txt\"\
+        \n\nEXISTING=$(gh issue list \\\n  --repo \"$REPO\" \\\n  --state open \\\n\
+        \  --label \"security,token-rotation\" \\\n  --json number \\\n  --jq '.[0].number'\
+        \ 2>/dev/null || echo \"\")\n\nif [ -n \"$EXISTING\" ]; then\n  echo \"\u2139\
+        \uFE0F  Updating existing issue #${EXISTING}\"\n  gh issue comment \"$EXISTING\"\
+        \ --repo \"$REPO\" --body-file ${RUNNER_TEMP}/expiry_issue_body.txt\nelse\n\
+        \  echo \"\U0001F195 Creating new expiry-warning issue\"\n  gh issue create\
+        \ \\\n    --repo \"$REPO\" \\\n    --title \"$TITLE\" \\\n    --body-file\
+        \ ${RUNNER_TEMP}/expiry_issue_body.txt \\\n    --label \"security\" \\\n \
+        \   --assignee mbaetiong || \\\n  gh issue create \\\n    --repo \"$REPO\"\
+        \ \\\n    --title \"$TITLE\" \\\n    --body-file ${RUNNER_TEMP}/expiry_issue_body.txt\
+        \ \\\n    --label \"security\"\nfi\n"
+    - name: Fail if urgent issues exist (non-dry-run)
+      if: env.HAS_URGENT_ISSUES == 'true' && inputs.dry_run != 'true'
+      run: 'echo "::error::One or more PATs are expired or expiring within 7 days.
+        See job summary for details."
 
-          WARN_DAYS  = 14   # warn this many days before expiry
-          URGENT_DAYS = 7  # fail/create issue if within this many days
+        exit 1
 
-          today = datetime.date.today()
-          dry_run = os.environ.get("DRY_RUN", "false").lower() == "true"
-
-          tokens = {
-              "CODEX_MASTER_KEY": os.environ.get("MASTER_KEY_EXPIRY", ""),
-              "CODEX_BACKUP_KEY": os.environ.get("BACKUP_KEY_EXPIRY", ""),
-          }
-
-          issues = []   # list of (name, expiry_date, days_left)
-          warnings = [] # list of (name, expiry_date, days_left)
-
-          for name, expiry_str in tokens.items():
-              if not expiry_str or expiry_str in ("", "never", "unknown"):
-                  print(f"⚠️  {name}: EXPIRY DATE NOT SET — add {name.replace('MASTER','MASTER_KEY').replace('BACKUP','BACKUP_KEY')}_EXPIRY_DATE repo variable")
-                  continue
-
-              try:
-                  expiry = datetime.date.fromisoformat(expiry_str)
-              except ValueError:
-                  print(f"⚠️  {name}: invalid expiry date format '{expiry_str}' (expected YYYY-MM-DD)")
-                  continue
-
-              days_left = (expiry - today).days
-
-              if days_left < 0:
-                  print(f"🚨 {name}: EXPIRED {abs(days_left)} days ago ({expiry_str})")
-                  issues.append((name, expiry_str, days_left))
-              elif days_left <= URGENT_DAYS:
-                  print(f"🚨 {name}: expires in {days_left} day(s) on {expiry_str} — URGENT ROTATION REQUIRED")
-                  issues.append((name, expiry_str, days_left))
-              elif days_left <= WARN_DAYS:
-                  print(f"⚠️  {name}: expires in {days_left} day(s) on {expiry_str} — rotation recommended")
-                  warnings.append((name, expiry_str, days_left))
-              else:
-                  print(f"✅ {name}: valid — expires {expiry_str} ({days_left} days remaining)")
-
-          # Write outputs for subsequent steps
-          env_file = os.environ.get("GITHUB_ENV", "")
-          if env_file:
-              with open(env_file, "a") as f:
-                  f.write(f"HAS_URGENT_ISSUES={'true' if issues else 'false'}\n")
-                  f.write(f"HAS_WARNINGS={'true' if warnings else 'false'}\n")
-                  if issues:
-                      detail = "; ".join(f"{n}={d}" for n,_,d in issues)
-                      f.write(f"URGENT_DETAILS={detail}\n")
-                  if warnings:
-                      detail = "; ".join(f"{n} expires in {d}d" for n,_,d in warnings)
-                      f.write(f"WARNING_DETAILS={detail}\n")
-
-          # Build job summary
-          summary = os.environ.get("GITHUB_STEP_SUMMARY", "")
-          if summary:
-              with open(summary, "a") as f:
-                  f.write("## 🔐 Token Expiry Status\n\n")
-                  f.write(f"_Checked: {today.isoformat()}_\n\n")
-                  if not issues and not warnings:
-                      f.write("✅ All tokens are healthy and not near expiry.\n")
-                  for name, expiry_str, days_left in issues:
-                      msg = "EXPIRED" if days_left < 0 else f"expires in {days_left}d"
-                      f.write(f"- 🚨 **{name}** — {msg} ({expiry_str})\n")
-                  for name, expiry_str, days_left in warnings:
-                      f.write(f"- ⚠️  **{name}** — expires in {days_left} days ({expiry_str})\n")
-                  f.write("\n**Rotation guide:** `docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md` §9\n")
-
-          if issues and not dry_run:
-              sys.exit(2)   # signal to create issue
-          elif issues:
-              print("DRY RUN — would create issue but skipping")
-              sys.exit(0)
-          sys.exit(0)
-          PYEOF
-          EXIT=$?
-          if [ "$EXIT" -eq 2 ]; then
-            echo "CREATE_ISSUE=true" >> "$GITHUB_ENV"
-            exit 0  # don't fail here — let the issue-creation step handle it
-          fi
-
-      - name: Create / update expiry-warning issue
-        if: env.HAS_URGENT_ISSUES == 'true' && inputs.dry_run != 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-          REPO: ${{ github.repository }}
-          URGENT_DETAILS: ${{ env.URGENT_DETAILS }}
-        run: |
-          TITLE="🚨 PAT Expiry Alert — Token rotation required"
-          python3 scripts/ci/build_expiry_issue_body.py > "${RUNNER_TEMP}/expiry_issue_body.txt"
-
-          EXISTING=$(gh issue list \
-            --repo "$REPO" \
-            --state open \
-            --label "security,token-rotation" \
-            --json number \
-            --jq '.[0].number' 2>/dev/null || echo "")
-
-          if [ -n "$EXISTING" ]; then
-            echo "ℹ️  Updating existing issue #${EXISTING}"
-            gh issue comment "$EXISTING" --repo "$REPO" --body-file ${RUNNER_TEMP}/expiry_issue_body.txt
-          else
-            echo "🆕 Creating new expiry-warning issue"
-            gh issue create \
-              --repo "$REPO" \
-              --title "$TITLE" \
-              --body-file ${RUNNER_TEMP}/expiry_issue_body.txt \
-              --label "security" \
-              --assignee mbaetiong || \
-            gh issue create \
-              --repo "$REPO" \
-              --title "$TITLE" \
-              --body-file ${RUNNER_TEMP}/expiry_issue_body.txt \
-              --label "security"
-          fi
-
-      - name: Fail if urgent issues exist (non-dry-run)
-        if: env.HAS_URGENT_ISSUES == 'true' && inputs.dry_run != 'true'
-        run: |
-          echo "::error::One or more PATs are expired or expiring within 7 days. See job summary for details."
-          exit 1
+        '
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

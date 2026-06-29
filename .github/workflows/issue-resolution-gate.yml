@@ -1,196 +1,122 @@
-name: "🔍 Issue Resolution Gate"
-
-# Verifies that all GitHub issues/PRs referenced in the PR body are resolved
-# before a Copilot agent session ends or a PR is merged.
-#
-# How it works:
-#   1. Parses the PR body for issue/PR references (closes #N, fixes #N, resolves #N,
-#      or bare "#N" / GitHub issue/PR URLs).
-#   2. Calls scripts/ci/verify_issue_resolution.py for each referenced item.
-#   3. Writes a resolution table to the GitHub Step Summary.
-#   4. Exits 0 only when ALL referenced items are resolved (or the PR itself is
-#      the fix — which counts as resolved).
-#
-# Manual trigger:
-#   gh workflow run issue-resolution-gate.yml \
-#     --ref <branch> \
-#     -f pr_number=3951 \
-#     -f issue_numbers="3951 3953"
-#
-# Copilot agent in-session invocation:
-#   python scripts/ci/verify_issue_resolution.py --issues 3951 3953 --step-summary
-#
-# OR via session_wrapup_autofix.py:
-#   python scripts/ci/session_wrapup_autofix.py --verify-issues 3951 3953
-
-on:
+name: "\U0001F50D Issue Resolution Gate"
+true:
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
-
+    types:
+    - opened
+    - synchronize
+    - reopened
+    - ready_for_review
   workflow_dispatch:
     inputs:
       pr_number:
-        description: "PR number whose body should be scanned for issue references"
+        description: PR number whose body should be scanned for issue references
         required: false
-        default: ""
+        default: ''
       issue_numbers:
-        description: "Space-separated issue/PR numbers to verify directly (overrides auto-scan)"
+        description: Space-separated issue/PR numbers to verify directly (overrides
+          auto-scan)
         required: false
-        default: ""
+        default: ''
       allow_in_progress:
-        description: "Treat IN_PROGRESS as resolved (do not block on pending checks)"
+        description: Treat IN_PROGRESS as resolved (do not block on pending checks)
         type: boolean
         default: false
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   pull-requests: read
   issues: read
   checks: read
   statuses: read
-
-
 jobs:
   verify:
-    name: "Verify referenced issues are resolved"
+    name: Verify referenced issues are resolved
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          fetch-depth: 1
-
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v6 # v6
-        with:
-          cache: pip
-          python-version: "3.12.13"
-
-      # ── Determine which issues/PRs to check ────────────────────────────────
-      - name: Extract issue references from PR body
-        id: extract
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr_number }}
-          ISSUE_OVERRIDE: ${{ inputs.issue_numbers }}
-        run: |
-          set -euo pipefail
-
-          # If explicit list provided, use it directly
-          if [[ -n "${ISSUE_OVERRIDE:-}" ]]; then
-            echo "issues=${ISSUE_OVERRIDE}" >> "$GITHUB_OUTPUT"
-            echo "source=manual-override" >> "$GITHUB_OUTPUT"
-            echo "ℹ️  Using manual issue override: ${ISSUE_OVERRIDE}"
-            exit 0
-          fi
-
-          if [[ -z "${PR_NUMBER:-}" ]]; then
-            echo "issues=" >> "$GITHUB_OUTPUT"
-            echo "source=none" >> "$GITHUB_OUTPUT"
-            echo "ℹ️  No PR number — skipping issue extraction"
-            exit 0
-          fi
-
-          # Fetch PR body and extract issue references
-          # Use || true so a transient API rate-limit or network error does not
-          # fail the gate — in that case we simply find no issue references and
-          # exit 0 (non-blocking).
-          PR_BODY=$(gh api "repos/${{ github.repository }}/pulls/${PR_NUMBER}" \
-            --jq '.body // ""' 2>/dev/null) || {
-            echo "⚠️  Could not fetch PR body (API error / rate limit) — skipping issue extraction"
-            echo "issues=" >> "$GITHUB_OUTPUT"
-            echo "source=api-error" >> "$GITHUB_OUTPUT"
-            exit 0
-          }
-
-          # Only extract issues explicitly targeted for closure (matches GitHub
-          # auto-close semantics).  Bare "#N" references are informational and
-          # should NOT trigger the resolution gate — they are cross-references,
-          # not closure directives.
-          RAW_NUMBERS=$(echo "${PR_BODY}" | \
-            grep -oP '(?i)(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\s+#\K\d+' | \
-            sort -u | tr '\n' ' ' | xargs || true)
-
-          # Exclude the current PR number to avoid circular dependency:
-          # the gate checking its own PR → BLOCKED (because this gate is
-          # failing) → exit 1 → gate stays failed forever.
-          ISSUE_NUMBERS=""
-          for n in ${RAW_NUMBERS}; do
-            if [[ "$n" != "${PR_NUMBER}" ]]; then
-              ISSUE_NUMBERS="${ISSUE_NUMBERS} ${n}"
-            else
-              echo "ℹ️  Excluding self-reference #${n} (this PR)"
-            fi
-          done
-          ISSUE_NUMBERS=$(echo "${ISSUE_NUMBERS}" | xargs || true)
-
-          echo "issues=${ISSUE_NUMBERS}" >> "$GITHUB_OUTPUT"
-          echo "source=pr-body" >> "$GITHUB_OUTPUT"
-          if [[ -n "${ISSUE_NUMBERS}" ]]; then
-            echo "ℹ️  Found issue references in PR #${PR_NUMBER}: ${ISSUE_NUMBERS}"
-          else
-            echo "ℹ️  No issue references found in PR body"
-          fi
-
-      # ── Run the verifier ───────────────────────────────────────────────────
-      - name: Run issue resolution verifier
-        id: verify
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          ISSUES: ${{ steps.extract.outputs.issues }}
-        run: |
-          set -euo pipefail
-
-          if [[ -z "${ISSUES:-}" ]]; then
-            echo "✅ No issue references found — nothing to verify"
-            echo '## 🔍 Issue Resolution Gate' >> "$GITHUB_STEP_SUMMARY"
-            echo '' >> "$GITHUB_STEP_SUMMARY"
-            echo '> ℹ️ No issue/PR references found in PR body — gate skipped.' >> "$GITHUB_STEP_SUMMARY"
-            exit 0
-          fi
-
-          ALLOW_FLAG=""
-          if [[ "${{ inputs.allow_in_progress }}" == "true" ]]; then
-            ALLOW_FLAG="--allow-in-progress"
-          fi
-
-          # Convert space-separated numbers to --issues args
-          # shellcheck disable=SC2086
-          python scripts/ci/verify_issue_resolution.py \
-            --issues ${ISSUES} \
-            --repo "${{ github.repository }}" \
-            --step-summary \
-            ${ALLOW_FLAG}
-
-      # ── Upload JSON report as artifact ─────────────────────────────────────
-      - name: Generate JSON report artifact
-        if: always()
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          ISSUES: ${{ steps.extract.outputs.issues }}
-        run: |
-          mkdir -p /tmp/issue-resolution-reports
-          if [[ -n "${ISSUES:-}" ]]; then
-            # shellcheck disable=SC2086
-            python scripts/ci/verify_issue_resolution.py \
-              --issues ${ISSUES} \
-              --repo "${{ github.repository }}" \
-              --output-json /tmp/issue-resolution-reports/report.json \
-              --allow-in-progress || true   # don't fail artifact generation
-          else
-            echo '[]' > /tmp/issue-resolution-reports/report.json
-          fi
-
-      - name: Upload resolution report
-        if: always()
-        uses: actions/upload-artifact@v5 # v7.0.1
-        with:
-          name: issue-resolution-report
-          path: /tmp/issue-resolution-reports/
-          retention-days: 30
+    - name: Checkout
+      uses: actions/checkout@v7
+      with:
+        fetch-depth: 1
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v6
+      with:
+        cache: pip
+        python-version: 3.12.13
+    - name: Extract issue references from PR body
+      id: extract
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr_number }}
+        ISSUE_OVERRIDE: ${{ inputs.issue_numbers }}
+      run: "set -euo pipefail\n\n# If explicit list provided, use it directly\nif\
+        \ [[ -n \"${ISSUE_OVERRIDE:-}\" ]]; then\n  echo \"issues=${ISSUE_OVERRIDE}\"\
+        \ >> \"$GITHUB_OUTPUT\"\n  echo \"source=manual-override\" >> \"$GITHUB_OUTPUT\"\
+        \n  echo \"\u2139\uFE0F  Using manual issue override: ${ISSUE_OVERRIDE}\"\n\
+        \  exit 0\nfi\n\nif [[ -z \"${PR_NUMBER:-}\" ]]; then\n  echo \"issues=\"\
+        \ >> \"$GITHUB_OUTPUT\"\n  echo \"source=none\" >> \"$GITHUB_OUTPUT\"\n  echo\
+        \ \"\u2139\uFE0F  No PR number \u2014 skipping issue extraction\"\n  exit\
+        \ 0\nfi\n\n# Fetch PR body and extract issue references\n# Use || true so\
+        \ a transient API rate-limit or network error does not\n# fail the gate \u2014\
+        \ in that case we simply find no issue references and\n# exit 0 (non-blocking).\n\
+        PR_BODY=$(gh api \"repos/${{ github.repository }}/pulls/${PR_NUMBER}\" \\\n\
+        \  --jq '.body // \"\"' 2>/dev/null) || {\n  echo \"\u26A0\uFE0F  Could not\
+        \ fetch PR body (API error / rate limit) \u2014 skipping issue extraction\"\
+        \n  echo \"issues=\" >> \"$GITHUB_OUTPUT\"\n  echo \"source=api-error\" >>\
+        \ \"$GITHUB_OUTPUT\"\n  exit 0\n}\n\n# Only extract issues explicitly targeted\
+        \ for closure (matches GitHub\n# auto-close semantics).  Bare \"#N\" references\
+        \ are informational and\n# should NOT trigger the resolution gate \u2014 they\
+        \ are cross-references,\n# not closure directives.\nRAW_NUMBERS=$(echo \"\
+        ${PR_BODY}\" | \\\n  grep -oP '(?i)(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\\\
+        s+#\\K\\d+' | \\\n  sort -u | tr '\\n' ' ' | xargs || true)\n\n# Exclude the\
+        \ current PR number to avoid circular dependency:\n# the gate checking its\
+        \ own PR \u2192 BLOCKED (because this gate is\n# failing) \u2192 exit 1 \u2192\
+        \ gate stays failed forever.\nISSUE_NUMBERS=\"\"\nfor n in ${RAW_NUMBERS};\
+        \ do\n  if [[ \"$n\" != \"${PR_NUMBER}\" ]]; then\n    ISSUE_NUMBERS=\"${ISSUE_NUMBERS}\
+        \ ${n}\"\n  else\n    echo \"\u2139\uFE0F  Excluding self-reference #${n}\
+        \ (this PR)\"\n  fi\ndone\nISSUE_NUMBERS=$(echo \"${ISSUE_NUMBERS}\" | xargs\
+        \ || true)\n\necho \"issues=${ISSUE_NUMBERS}\" >> \"$GITHUB_OUTPUT\"\necho\
+        \ \"source=pr-body\" >> \"$GITHUB_OUTPUT\"\nif [[ -n \"${ISSUE_NUMBERS}\"\
+        \ ]]; then\n  echo \"\u2139\uFE0F  Found issue references in PR #${PR_NUMBER}:\
+        \ ${ISSUE_NUMBERS}\"\nelse\n  echo \"\u2139\uFE0F  No issue references found\
+        \ in PR body\"\nfi\n"
+    - name: Run issue resolution verifier
+      id: verify
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        ISSUES: ${{ steps.extract.outputs.issues }}
+      run: "set -euo pipefail\n\nif [[ -z \"${ISSUES:-}\" ]]; then\n  echo \"\u2705\
+        \ No issue references found \u2014 nothing to verify\"\n  echo '## \U0001F50D\
+        \ Issue Resolution Gate' >> \"$GITHUB_STEP_SUMMARY\"\n  echo '' >> \"$GITHUB_STEP_SUMMARY\"\
+        \n  echo '> \u2139\uFE0F No issue/PR references found in PR body \u2014 gate\
+        \ skipped.' >> \"$GITHUB_STEP_SUMMARY\"\n  exit 0\nfi\n\nALLOW_FLAG=\"\"\n\
+        if [[ \"${{ inputs.allow_in_progress }}\" == \"true\" ]]; then\n  ALLOW_FLAG=\"\
+        --allow-in-progress\"\nfi\n\n# Convert space-separated numbers to --issues\
+        \ args\n# shellcheck disable=SC2086\npython scripts/ci/verify_issue_resolution.py\
+        \ \\\n  --issues ${ISSUES} \\\n  --repo \"${{ github.repository }}\" \\\n\
+        \  --step-summary \\\n  ${ALLOW_FLAG}\n"
+    - name: Generate JSON report artifact
+      if: always()
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        ISSUES: ${{ steps.extract.outputs.issues }}
+      run: "mkdir -p /tmp/issue-resolution-reports\nif [[ -n \"${ISSUES:-}\" ]]; then\n\
+        \  # shellcheck disable=SC2086\n  python scripts/ci/verify_issue_resolution.py\
+        \ \\\n    --issues ${ISSUES} \\\n    --repo \"${{ github.repository }}\" \\\
+        \n    --output-json /tmp/issue-resolution-reports/report.json \\\n    --allow-in-progress\
+        \ || true   # don't fail artifact generation\nelse\n  echo '[]' > /tmp/issue-resolution-reports/report.json\n\
+        fi\n"
+    - name: Upload resolution report
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: issue-resolution-report
+        path: /tmp/issue-resolution-reports/
+        retention-days: 30
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

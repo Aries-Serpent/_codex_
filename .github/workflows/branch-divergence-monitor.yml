@@ -1,52 +1,7 @@
-name: "🔀 Branch Divergence Monitor — 0D_base_ ↔ main"
-# aais-cache: none  # Python referenced in template/doc strings only — no pip install
-
-# Autonomous detection and self-correction of branch divergence between
-# the staging integration branch (0D_base_) and the default branch (main).
-#
-# ─── WHY THIS EXISTS ────────────────────────────────────────────────────────
-# Scheduled auto-gen workflows (cognitive-analysis-feed, embedding-index-rebuild,
-# repo-var-sync-schedule, vars-guide-sync) always execute on the DEFAULT BRANCH
-# (main). They contain routing logic to commit to 0D_base_ when that branch
-# exists — but that routing fix lives ON 0D_base_, not yet on main (it arrives
-# only when the 0D_base_ → main PR merges). Until that merge, scheduled runs
-# on main use main's OLD workflow files and push auto-gen commits directly to
-# main, bypassing 0D_base_.
-#
-# The forward-sync-autogen.yml safety net catches these leaks on individual
-# file pushes, but has a window of failure when 0D_base_ is already ahead and
-# the push is rejected as non-fast-forward.
-#
-# This workflow closes that gap by:
-#   1. Running on a schedule to detect any accumulated divergence.
-#   2. Classifying main-only commits as pipeline-merge / auto-gen / agent-commit / code-leak.
-#   3. Auto-correcting self-healable drift (forward-sync or fast-forward/merge).
-#   4. Opening or updating a tracking issue with divergence status.
-#   5. Posting a @copilot escalation comment only when true unabsorbed code leaked to main.
-#
-# ─── DIVERGENCE TAXONOMY ────────────────────────────────────────────────────
-#   EXPECTED   — 0D_base_ AHEAD of main: staged agent sessions waiting to merge.
-#   PIPELINE-MERGE — main AHEAD via "Merge pull request #N from Aries-Serpent/0D_base_".
-#                    Self-correctable: fast-forward or merge main back into 0D_base_.
-#   AUTO-GEN      — main AHEAD via github-actions[bot] auto-gen commits only.
-#                    Self-correctable: trigger forward-sync-autogen.
-#   AGENT-COMMIT  — main AHEAD via Copilot bot commits or empty commits.
-#                    Self-correctable: absorbed by the pipeline-merge fast-forward/merge.
-#   CODE-LEAK     — main AHEAD via human/code commits that bypassed 0D_base_.
-#                    Requires @copilot session only when no absorber is present.
-#
-# Healthy does NOT require ahead_count=0. It is normal for 0D_base_ to remain ahead
-# of main while reviewed staged work waits for the promotion PR.
-#
-# ─── REFERENCES ─────────────────────────────────────────────────────────────
-#   .codex/docs/BRANCH_DIVERGENCE_PREVENTION.md  — full runbook
-#   .github/workflows/forward-sync-autogen.yml   — safety net (file-level sync)
-#   .github/workflows/branch-rebase-gate.yml     — REQ-10 (sub-PR rebase gate)
-
-on:
+name: "\U0001F500 Branch Divergence Monitor \u2014 0D_base_ \u2194 main"
+true:
   schedule:
-    # Run every 6 hours — frequent enough to catch leaks before they accumulate
-    - cron: '0 */6 * * *'
+  - cron: 0 */6 * * *
   workflow_dispatch:
     inputs:
       dry_run:
@@ -55,27 +10,22 @@ on:
         type: boolean
         default: false
       force_forward_sync:
-        description: 'Force forward-sync even if divergence is within threshold'
+        description: Force forward-sync even if divergence is within threshold
         required: false
         type: boolean
         default: false
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: write
   issues: write
   pull-requests: write
-
-
 jobs:
   detect:
-    name: "🔍 Detect divergence"
+    name: "\U0001F50D Detect divergence"
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
     outputs:
       base_exists: ${{ steps.measure.outputs.base_exists }}
       behind_count: ${{ steps.measure.outputs.behind_count }}
@@ -88,641 +38,432 @@ jobs:
       needs_correction: ${{ steps.measure.outputs.needs_correction }}
       severity: ${{ steps.measure.outputs.severity }}
       summary_json: ${{ steps.measure.outputs.summary_json }}
-
     steps:
-      - name: Check out repository (shallow)
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-
-      - name: Measure divergence
-        id: measure
-        env:
-          DRY_RUN: ${{ inputs.dry_run || 'false' }}
-        run: |
-          # ── Does 0D_base_ exist? ────────────────────────────────────────────
-          if ! git ls-remote --exit-code --heads origin 0D_base_ > /dev/null 2>&1; then
-            echo "ℹ️  0D_base_ branch does not exist — nothing to monitor"
-            echo "base_exists=false"           >> "$GITHUB_OUTPUT"
-            echo "behind_count=0"              >> "$GITHUB_OUTPUT"
-            echo "ahead_count=0"               >> "$GITHUB_OUTPUT"
-            echo "autogen_count=0"             >> "$GITHUB_OUTPUT"
-            echo "pipeline_merge_count=0"      >> "$GITHUB_OUTPUT"
-            echo "agent_commit_count=0"        >> "$GITHUB_OUTPUT"
-            echo "codeleak_count=0"            >> "$GITHUB_OUTPUT"
-            echo "needs_correction=false"      >> "$GITHUB_OUTPUT"
-            echo "severity=none"               >> "$GITHUB_OUTPUT"
-            echo "summary_json={}"             >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          echo "base_exists=true" >> "$GITHUB_OUTPUT"
-
-          git fetch origin main 0D_base_ --no-tags
-
-          MERGE_BASE=$(git merge-base origin/main origin/0D_base_)
-          echo "merge_base_sha=$MERGE_BASE" >> "$GITHUB_OUTPUT"
-
-          # ── Commits main has that 0D_base_ lacks (potential leaks) ─────────
-          MAIN_ONLY=$(git log --oneline origin/0D_base_..origin/main)
-          # S237 fix: `grep -c . || echo 0` produces "0\n0" when input is empty
-          # (grep outputs "0" AND exits 1, triggering || echo 0 → double output).
-          # Use `|| true` — grep -c already emits "0" on no-match; we just suppress exit 1.
-          BEHIND_COUNT=$(echo "$MAIN_ONLY" | grep -c . || true)
-
-          # ── Commits 0D_base_ has that main lacks (expected staged work) ────
-          AHEAD_COUNT=$(git log --oneline origin/main..origin/0D_base_ | grep -c . || true)
-
-          echo "behind_count=$BEHIND_COUNT" >> "$GITHUB_OUTPUT"
-          echo "ahead_count=$AHEAD_COUNT"   >> "$GITHUB_OUTPUT"
-
-          # ── Classify each leaked commit ────────────────────────────────────
-          # Four categories (S146 taxonomy — two sessions of refinement):
-          #
-          #   AUTO-GEN        — authored by github-actions[bot] + known subject
-          #                     patterns. Self-correctable via forward-sync.
-          #
-          #   PIPELINE-MERGE  — "Merge pull request #N from Aries-Serpent/0D_base_"
-          #                     The EXPECTED result of the staging-gate PR flow.
-          #                     Triggers auto-correct fast-forward of 0D_base_.
-          #
-          #   AGENT-COMMIT    — authored by copilot-swe-agent[bot] or
-          #                     github-copilot[bot]. These are reviewed PR commits
-          #                     made by the Copilot coding agent — NOT true code-leaks.
-          #                     They arrive on main via the normal PR merge path and
-          #                     are absorbed by the pipeline-merge fast-forward.
-          #                     Classifying them as CODE-LEAK caused cascading
-          #                     false-alarm rescue sessions (S146 post-mortem lesson).
-          #
-          #   CODE-LEAK       — Human-authored commits (excluding merge commits) that
-          #                     bypassed 0D_base_ staging entirely. Requires @copilot
-          #                     investigation.
-          AUTOGEN_COUNT=0
-          PIPELINE_MERGE_COUNT=0
-          AGENT_COMMIT_COUNT=0
-          CODELEAK_COUNT=0
-          AUTOGEN_SHAS=""
-          PIPELINE_MERGE_SHAS=""
-          AGENT_COMMIT_SHAS=""
-          CODELEAK_SHAS=""
-
-          # Known agent bot identities that produce reviewed PR commits (not leaks)
-          AGENT_BOT_AUTHORS="copilot-swe-agent[bot] github-copilot[bot] copilot[bot]"
-
-          while IFS= read -r line; do
-            [ -z "$line" ] && continue
-            SHA=$(echo "$line" | awk '{print $1}')
-            AUTHOR=$(git log -1 --format="%an" "$SHA")
-            SUBJECT=$(git log -1 --format="%s" "$SHA")
-            CHANGES_OUTPUT=$(git diff-tree --no-commit-id -r --name-only "$SHA" 2>/dev/null) || CHANGES_OUTPUT=""
-            if [ -n "$CHANGES_OUTPUT" ]; then
-              TREE_CHANGES=$(printf '%s\n' "$CHANGES_OUTPUT" | wc -l)
-            else
-              TREE_CHANGES=0
-            fi
-
-            IS_AUTOGEN=false
-            IS_PIPELINE_MERGE=false
-            IS_AGENT_COMMIT=false
-
-            # Tier 1 — Pipeline-merge: staging-gate merge commit (0D_base_ → main)
-            # Anchored to Aries-Serpent org to prevent fork false positives.
-            if echo "$SUBJECT" | grep -qE '^Merge pull request #[0-9]+ from Aries-Serpent/0D_base_$'; then
-              IS_PIPELINE_MERGE=true
-            fi
-
-            # Tier 2 — Auto-gen: github-actions[bot] + known auto-gen subject patterns
-            if [ "$IS_PIPELINE_MERGE" = "false" ]; then
-              if [ "$AUTHOR" = "github-actions[bot]" ]; then
-                case "$SUBJECT" in
-                  *"[skip ci]"*|*"[automated]"*|*"chore(vars)"*|\
-                  *"chore(phase-3)"*|*"chore(autosync)"*|*"🧠 Update"*)
-                    IS_AUTOGEN=true ;;
-                esac
-              fi
-            fi
-
-            # Tier 3 — Agent-commit: Copilot coding agent PR commits (reviewed, not leaks)
-            # Empty commits (no file changes) are always agent-commit regardless of author —
-            # they are placeholder/plan commits that carry no code risk.
-            if [ "$IS_PIPELINE_MERGE" = "false" ] && [ "$IS_AUTOGEN" = "false" ]; then
-              for BOT in $AGENT_BOT_AUTHORS; do
-                [ "$AUTHOR" = "$BOT" ] && IS_AGENT_COMMIT=true && break
-              done
-              # Empty commits (0 file-tree changes) are always agent-commit regardless
-              # of author — they are placeholder/plan commits with no code risk.
-              [ "$TREE_CHANGES" -eq 0 ] && IS_AGENT_COMMIT=true
-            fi
-
-            if [ "$IS_PIPELINE_MERGE" = "true" ]; then
-              PIPELINE_MERGE_COUNT=$((PIPELINE_MERGE_COUNT + 1))
-              PIPELINE_MERGE_SHAS="$PIPELINE_MERGE_SHAS $SHA"
-            elif [ "$IS_AUTOGEN" = "true" ]; then
-              AUTOGEN_COUNT=$((AUTOGEN_COUNT + 1))
-              AUTOGEN_SHAS="$AUTOGEN_SHAS $SHA"
-            elif [ "$IS_AGENT_COMMIT" = "true" ]; then
-              AGENT_COMMIT_COUNT=$((AGENT_COMMIT_COUNT + 1))
-              AGENT_COMMIT_SHAS="$AGENT_COMMIT_SHAS $SHA"
-            else
-              CODELEAK_COUNT=$((CODELEAK_COUNT + 1))
-              CODELEAK_SHAS="$CODELEAK_SHAS $SHA"
-            fi
-          done <<< "$MAIN_ONLY"
-
-          echo "autogen_count=$AUTOGEN_COUNT"                 >> "$GITHUB_OUTPUT"
-          echo "pipeline_merge_count=$PIPELINE_MERGE_COUNT"   >> "$GITHUB_OUTPUT"
-          echo "agent_commit_count=$AGENT_COMMIT_COUNT"       >> "$GITHUB_OUTPUT"
-          echo "codeleak_count=$CODELEAK_COUNT"               >> "$GITHUB_OUTPUT"
-
-          # ── Severity ────────────────────────────────────────────────────────
-          # CODE-LEAK (no PIPELINE-MERGE, no AGENT-COMMIT) → critical: true bypass
-          # CODE-LEAK + PIPELINE-MERGE or AGENT-COMMIT → low: auto-correct absorbs
-          # PIPELINE-MERGE or AGENT-COMMIT only → low: normal agent/staging-gate flow
-          # AUTO-GEN > 5 → high; AUTO-GEN 1–5 → low; none → healthy
-          ABSORBER_COUNT=$((PIPELINE_MERGE_COUNT + AGENT_COMMIT_COUNT))
-          if   [ "$CODELEAK_COUNT" -gt 0 ] && [ "$ABSORBER_COUNT" -eq 0 ]; then
-            SEVERITY="critical"
-          elif [ "$CODELEAK_COUNT" -gt 0 ] && [ "$ABSORBER_COUNT" -gt 0 ]; then
-            SEVERITY="low"   # pipeline-merge/agent-commit auto-correct absorbs code-leaks
-          elif [ "$ABSORBER_COUNT" -gt 0 ]; then SEVERITY="low"
-          elif [ "$AUTOGEN_COUNT"  -gt 5 ]; then SEVERITY="high"
-          elif [ "$AUTOGEN_COUNT"  -gt 0 ]; then SEVERITY="low"
-          else                                    SEVERITY="healthy"
-          fi
-          echo "severity=$SEVERITY" >> "$GITHUB_OUTPUT"
-
-          NEEDS_CORRECTION=false
-          if [ "$AUTOGEN_COUNT" -gt 0 ] || [ "$CODELEAK_COUNT" -gt 0 ] || \
-             [ "$PIPELINE_MERGE_COUNT" -gt 0 ] || [ "$AGENT_COMMIT_COUNT" -gt 0 ]; then
-            NEEDS_CORRECTION=true
-          fi
-          echo "needs_correction=$NEEDS_CORRECTION" >> "$GITHUB_OUTPUT"
-
-          # ── Compact summary JSON (no newlines — safe for GITHUB_OUTPUT) ────
-          # S237: int("$VAR".strip() or "0") casts guard against RC-1 multi-line
-          # variable expansion reaching the Python heredoc. YAML block indentation
-          # (10 spaces) is stripped by GitHub Actions before bash receives the script,
-          # so PYEOF is seen at column 1 by bash and the Python code is unindented.
-          # OBJ-002-J: guard only the Python serialisation step with || true so that a
-          # JSON failure does not prevent the rescue-comment-push job from firing while
-          # still failing the job if the measurement itself (bash logic above) fails.
-          SUMMARY=$(python3 - <<PYEOF 2>/dev/null || true
-          import json, sys
-          d = {
-            "merge_base": "$MERGE_BASE",
-            "behind_count": int("$BEHIND_COUNT".strip() or "0"),
-            "ahead_count": int("$AHEAD_COUNT".strip() or "0"),
-            "autogen_count": int("$AUTOGEN_COUNT".strip() or "0"),
-            "pipeline_merge_count": int("$PIPELINE_MERGE_COUNT".strip() or "0"),
-            "agent_commit_count": int("$AGENT_COMMIT_COUNT".strip() or "0"),
-            "codeleak_count": int("$CODELEAK_COUNT".strip() or "0"),
-            "severity": "$SEVERITY",
-            "autogen_shas": [s for s in "$AUTOGEN_SHAS".split() if s],
-            "pipeline_merge_shas": [s for s in "$PIPELINE_MERGE_SHAS".split() if s],
-            "agent_commit_shas": [s for s in "$AGENT_COMMIT_SHAS".split() if s],
-            "codeleak_shas": [s for s in "$CODELEAK_SHAS".split() if s],
-          }
-          print(json.dumps(d, separators=(",", ":")))
-          PYEOF
-          )
-          echo "summary_json=$SUMMARY" >> "$GITHUB_OUTPUT"
-
-          # ── Step summary ────────────────────────────────────────────────────
-          {
-            echo "## 🔀 Branch Divergence Report"
-            echo "| Metric | Value |"
-            echo "|--------|-------|"
-            echo "| Merge base | \`$MERGE_BASE\` |"
-            echo "| **0D_base_ AHEAD** (staged work) | **$AHEAD_COUNT** commits |"
-            echo "| **main AHEAD** (potential leaks) | **$BEHIND_COUNT** commits |"
-            echo "| → Auto-gen (self-correctable) | $AUTOGEN_COUNT |"
-            echo "| → Pipeline-merge (auto-fwd to 0D_base_) | $PIPELINE_MERGE_COUNT |"
-            echo "| → Agent-commit (Copilot PR work, auto-absorbed) | $AGENT_COMMIT_COUNT |"
-            echo "| → Code leak (needs @copilot) | $CODELEAK_COUNT |"
-            echo "| Severity | **$SEVERITY** |"
-            echo ""
-            if [ "$BEHIND_COUNT" -gt 0 ]; then
-              echo "### Commits on main not in 0D_base_"
-              echo '```'
-              git log --format="%h %an: %s" origin/0D_base_..origin/main
-              echo '```'
-            fi
-          } >> "$GITHUB_STEP_SUMMARY"
-
+    - name: Check out repository (shallow)
+      uses: actions/checkout@v7
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+    - name: Measure divergence
+      id: measure
+      env:
+        DRY_RUN: ${{ inputs.dry_run || 'false' }}
+      run: "# \u2500\u2500 Does 0D_base_ exist? \u2500\u2500\u2500\u2500\u2500\u2500\
+        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n\
+        if ! git ls-remote --exit-code --heads origin 0D_base_ > /dev/null 2>&1; then\n\
+        \  echo \"\u2139\uFE0F  0D_base_ branch does not exist \u2014 nothing to monitor\"\
+        \n  echo \"base_exists=false\"           >> \"$GITHUB_OUTPUT\"\n  echo \"\
+        behind_count=0\"              >> \"$GITHUB_OUTPUT\"\n  echo \"ahead_count=0\"\
+        \               >> \"$GITHUB_OUTPUT\"\n  echo \"autogen_count=0\"        \
+        \     >> \"$GITHUB_OUTPUT\"\n  echo \"pipeline_merge_count=0\"      >> \"\
+        $GITHUB_OUTPUT\"\n  echo \"agent_commit_count=0\"        >> \"$GITHUB_OUTPUT\"\
+        \n  echo \"codeleak_count=0\"            >> \"$GITHUB_OUTPUT\"\n  echo \"\
+        needs_correction=false\"      >> \"$GITHUB_OUTPUT\"\n  echo \"severity=none\"\
+        \               >> \"$GITHUB_OUTPUT\"\n  echo \"summary_json={}\"        \
+        \     >> \"$GITHUB_OUTPUT\"\n  exit 0\nfi\necho \"base_exists=true\" >> \"\
+        $GITHUB_OUTPUT\"\n\ngit fetch origin main 0D_base_ --no-tags\n\nMERGE_BASE=$(git\
+        \ merge-base origin/main origin/0D_base_)\necho \"merge_base_sha=$MERGE_BASE\"\
+        \ >> \"$GITHUB_OUTPUT\"\n\n# \u2500\u2500 Commits main has that 0D_base_ lacks\
+        \ (potential leaks) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+        \nMAIN_ONLY=$(git log --oneline origin/0D_base_..origin/main)\n# S237 fix:\
+        \ `grep -c . || echo 0` produces \"0\\n0\" when input is empty\n# (grep outputs\
+        \ \"0\" AND exits 1, triggering || echo 0 \u2192 double output).\n# Use `||\
+        \ true` \u2014 grep -c already emits \"0\" on no-match; we just suppress exit\
+        \ 1.\nBEHIND_COUNT=$(echo \"$MAIN_ONLY\" | grep -c . || true)\n\n# \u2500\u2500\
+        \ Commits 0D_base_ has that main lacks (expected staged work) \u2500\u2500\
+        \u2500\u2500\nAHEAD_COUNT=$(git log --oneline origin/main..origin/0D_base_\
+        \ | grep -c . || true)\n\necho \"behind_count=$BEHIND_COUNT\" >> \"$GITHUB_OUTPUT\"\
+        \necho \"ahead_count=$AHEAD_COUNT\"   >> \"$GITHUB_OUTPUT\"\n\n# \u2500\u2500\
+        \ Classify each leaked commit \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+        \u2500\u2500\n# Four categories (S146 taxonomy \u2014 two sessions of refinement):\n\
+        #\n#   AUTO-GEN        \u2014 authored by github-actions[bot] + known subject\n\
+        #                     patterns. Self-correctable via forward-sync.\n#\n# \
+        \  PIPELINE-MERGE  \u2014 \"Merge pull request #N from Aries-Serpent/0D_base_\"\
+        \n#                     The EXPECTED result of the staging-gate PR flow.\n\
+        #                     Triggers auto-correct fast-forward of 0D_base_.\n#\n\
+        #   AGENT-COMMIT    \u2014 authored by copilot-swe-agent[bot] or\n#      \
+        \               github-copilot[bot]. These are reviewed PR commits\n#    \
+        \                 made by the Copilot coding agent \u2014 NOT true code-leaks.\n\
+        #                     They arrive on main via the normal PR merge path and\n\
+        #                     are absorbed by the pipeline-merge fast-forward.\n#\
+        \                     Classifying them as CODE-LEAK caused cascading\n#  \
+        \                   false-alarm rescue sessions (S146 post-mortem lesson).\n\
+        #\n#   CODE-LEAK       \u2014 Human-authored commits (excluding merge commits)\
+        \ that\n#                     bypassed 0D_base_ staging entirely. Requires\
+        \ @copilot\n#                     investigation.\nAUTOGEN_COUNT=0\nPIPELINE_MERGE_COUNT=0\n\
+        AGENT_COMMIT_COUNT=0\nCODELEAK_COUNT=0\nAUTOGEN_SHAS=\"\"\nPIPELINE_MERGE_SHAS=\"\
+        \"\nAGENT_COMMIT_SHAS=\"\"\nCODELEAK_SHAS=\"\"\n\n# Known agent bot identities\
+        \ that produce reviewed PR commits (not leaks)\nAGENT_BOT_AUTHORS=\"copilot-swe-agent[bot]\
+        \ github-copilot[bot] copilot[bot]\"\n\nwhile IFS= read -r line; do\n  [ -z\
+        \ \"$line\" ] && continue\n  SHA=$(echo \"$line\" | awk '{print $1}')\n  AUTHOR=$(git\
+        \ log -1 --format=\"%an\" \"$SHA\")\n  SUBJECT=$(git log -1 --format=\"%s\"\
+        \ \"$SHA\")\n  CHANGES_OUTPUT=$(git diff-tree --no-commit-id -r --name-only\
+        \ \"$SHA\" 2>/dev/null) || CHANGES_OUTPUT=\"\"\n  if [ -n \"$CHANGES_OUTPUT\"\
+        \ ]; then\n    TREE_CHANGES=$(printf '%s\\n' \"$CHANGES_OUTPUT\" | wc -l)\n\
+        \  else\n    TREE_CHANGES=0\n  fi\n\n  IS_AUTOGEN=false\n  IS_PIPELINE_MERGE=false\n\
+        \  IS_AGENT_COMMIT=false\n\n  # Tier 1 \u2014 Pipeline-merge: staging-gate\
+        \ merge commit (0D_base_ \u2192 main)\n  # Anchored to Aries-Serpent org to\
+        \ prevent fork false positives.\n  if echo \"$SUBJECT\" | grep -qE '^Merge\
+        \ pull request #[0-9]+ from Aries-Serpent/0D_base_$'; then\n    IS_PIPELINE_MERGE=true\n\
+        \  fi\n\n  # Tier 2 \u2014 Auto-gen: github-actions[bot] + known auto-gen\
+        \ subject patterns\n  if [ \"$IS_PIPELINE_MERGE\" = \"false\" ]; then\n  \
+        \  if [ \"$AUTHOR\" = \"github-actions[bot]\" ]; then\n      case \"$SUBJECT\"\
+        \ in\n        *\"[skip ci]\"*|*\"[automated]\"*|*\"chore(vars)\"*|\\\n   \
+        \     *\"chore(phase-3)\"*|*\"chore(autosync)\"*|*\"\U0001F9E0 Update\"*)\n\
+        \          IS_AUTOGEN=true ;;\n      esac\n    fi\n  fi\n\n  # Tier 3 \u2014\
+        \ Agent-commit: Copilot coding agent PR commits (reviewed, not leaks)\n  #\
+        \ Empty commits (no file changes) are always agent-commit regardless of author\
+        \ \u2014\n  # they are placeholder/plan commits that carry no code risk.\n\
+        \  if [ \"$IS_PIPELINE_MERGE\" = \"false\" ] && [ \"$IS_AUTOGEN\" = \"false\"\
+        \ ]; then\n    for BOT in $AGENT_BOT_AUTHORS; do\n      [ \"$AUTHOR\" = \"\
+        $BOT\" ] && IS_AGENT_COMMIT=true && break\n    done\n    # Empty commits (0\
+        \ file-tree changes) are always agent-commit regardless\n    # of author \u2014\
+        \ they are placeholder/plan commits with no code risk.\n    [ \"$TREE_CHANGES\"\
+        \ -eq 0 ] && IS_AGENT_COMMIT=true\n  fi\n\n  if [ \"$IS_PIPELINE_MERGE\" =\
+        \ \"true\" ]; then\n    PIPELINE_MERGE_COUNT=$((PIPELINE_MERGE_COUNT + 1))\n\
+        \    PIPELINE_MERGE_SHAS=\"$PIPELINE_MERGE_SHAS $SHA\"\n  elif [ \"$IS_AUTOGEN\"\
+        \ = \"true\" ]; then\n    AUTOGEN_COUNT=$((AUTOGEN_COUNT + 1))\n    AUTOGEN_SHAS=\"\
+        $AUTOGEN_SHAS $SHA\"\n  elif [ \"$IS_AGENT_COMMIT\" = \"true\" ]; then\n \
+        \   AGENT_COMMIT_COUNT=$((AGENT_COMMIT_COUNT + 1))\n    AGENT_COMMIT_SHAS=\"\
+        $AGENT_COMMIT_SHAS $SHA\"\n  else\n    CODELEAK_COUNT=$((CODELEAK_COUNT +\
+        \ 1))\n    CODELEAK_SHAS=\"$CODELEAK_SHAS $SHA\"\n  fi\ndone <<< \"$MAIN_ONLY\"\
+        \n\necho \"autogen_count=$AUTOGEN_COUNT\"                 >> \"$GITHUB_OUTPUT\"\
+        \necho \"pipeline_merge_count=$PIPELINE_MERGE_COUNT\"   >> \"$GITHUB_OUTPUT\"\
+        \necho \"agent_commit_count=$AGENT_COMMIT_COUNT\"       >> \"$GITHUB_OUTPUT\"\
+        \necho \"codeleak_count=$CODELEAK_COUNT\"               >> \"$GITHUB_OUTPUT\"\
+        \n\n# \u2500\u2500 Severity \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n# CODE-LEAK (no PIPELINE-MERGE,\
+        \ no AGENT-COMMIT) \u2192 critical: true bypass\n# CODE-LEAK + PIPELINE-MERGE\
+        \ or AGENT-COMMIT \u2192 low: auto-correct absorbs\n# PIPELINE-MERGE or AGENT-COMMIT\
+        \ only \u2192 low: normal agent/staging-gate flow\n# AUTO-GEN > 5 \u2192 high;\
+        \ AUTO-GEN 1\u20135 \u2192 low; none \u2192 healthy\nABSORBER_COUNT=$((PIPELINE_MERGE_COUNT\
+        \ + AGENT_COMMIT_COUNT))\nif   [ \"$CODELEAK_COUNT\" -gt 0 ] && [ \"$ABSORBER_COUNT\"\
+        \ -eq 0 ]; then\n  SEVERITY=\"critical\"\nelif [ \"$CODELEAK_COUNT\" -gt 0\
+        \ ] && [ \"$ABSORBER_COUNT\" -gt 0 ]; then\n  SEVERITY=\"low\"   # pipeline-merge/agent-commit\
+        \ auto-correct absorbs code-leaks\nelif [ \"$ABSORBER_COUNT\" -gt 0 ]; then\
+        \ SEVERITY=\"low\"\nelif [ \"$AUTOGEN_COUNT\"  -gt 5 ]; then SEVERITY=\"high\"\
+        \nelif [ \"$AUTOGEN_COUNT\"  -gt 0 ]; then SEVERITY=\"low\"\nelse        \
+        \                            SEVERITY=\"healthy\"\nfi\necho \"severity=$SEVERITY\"\
+        \ >> \"$GITHUB_OUTPUT\"\n\nNEEDS_CORRECTION=false\nif [ \"$AUTOGEN_COUNT\"\
+        \ -gt 0 ] || [ \"$CODELEAK_COUNT\" -gt 0 ] || \\\n   [ \"$PIPELINE_MERGE_COUNT\"\
+        \ -gt 0 ] || [ \"$AGENT_COMMIT_COUNT\" -gt 0 ]; then\n  NEEDS_CORRECTION=true\n\
+        fi\necho \"needs_correction=$NEEDS_CORRECTION\" >> \"$GITHUB_OUTPUT\"\n\n\
+        # \u2500\u2500 Compact summary JSON (no newlines \u2014 safe for GITHUB_OUTPUT)\
+        \ \u2500\u2500\u2500\u2500\n# S237: int(\"$VAR\".strip() or \"0\") casts guard\
+        \ against RC-1 multi-line\n# variable expansion reaching the Python heredoc.\
+        \ YAML block indentation\n# (10 spaces) is stripped by GitHub Actions before\
+        \ bash receives the script,\n# so PYEOF is seen at column 1 by bash and the\
+        \ Python code is unindented.\n# OBJ-002-J: guard only the Python serialisation\
+        \ step with || true so that a\n# JSON failure does not prevent the rescue-comment-push\
+        \ job from firing while\n# still failing the job if the measurement itself\
+        \ (bash logic above) fails.\nSUMMARY=$(python3 - <<PYEOF 2>/dev/null || true\n\
+        import json, sys\nd = {\n  \"merge_base\": \"$MERGE_BASE\",\n  \"behind_count\"\
+        : int(\"$BEHIND_COUNT\".strip() or \"0\"),\n  \"ahead_count\": int(\"$AHEAD_COUNT\"\
+        .strip() or \"0\"),\n  \"autogen_count\": int(\"$AUTOGEN_COUNT\".strip() or\
+        \ \"0\"),\n  \"pipeline_merge_count\": int(\"$PIPELINE_MERGE_COUNT\".strip()\
+        \ or \"0\"),\n  \"agent_commit_count\": int(\"$AGENT_COMMIT_COUNT\".strip()\
+        \ or \"0\"),\n  \"codeleak_count\": int(\"$CODELEAK_COUNT\".strip() or \"\
+        0\"),\n  \"severity\": \"$SEVERITY\",\n  \"autogen_shas\": [s for s in \"\
+        $AUTOGEN_SHAS\".split() if s],\n  \"pipeline_merge_shas\": [s for s in \"\
+        $PIPELINE_MERGE_SHAS\".split() if s],\n  \"agent_commit_shas\": [s for s in\
+        \ \"$AGENT_COMMIT_SHAS\".split() if s],\n  \"codeleak_shas\": [s for s in\
+        \ \"$CODELEAK_SHAS\".split() if s],\n}\nprint(json.dumps(d, separators=(\"\
+        ,\", \":\")))\nPYEOF\n)\necho \"summary_json=$SUMMARY\" >> \"$GITHUB_OUTPUT\"\
+        \n\n# \u2500\u2500 Step summary \u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+        \u2500\u2500\u2500\u2500\u2500\u2500\n{\n  echo \"## \U0001F500 Branch Divergence\
+        \ Report\"\n  echo \"| Metric | Value |\"\n  echo \"|--------|-------|\"\n\
+        \  echo \"| Merge base | \\`$MERGE_BASE\\` |\"\n  echo \"| **0D_base_ AHEAD**\
+        \ (staged work) | **$AHEAD_COUNT** commits |\"\n  echo \"| **main AHEAD**\
+        \ (potential leaks) | **$BEHIND_COUNT** commits |\"\n  echo \"| \u2192 Auto-gen\
+        \ (self-correctable) | $AUTOGEN_COUNT |\"\n  echo \"| \u2192 Pipeline-merge\
+        \ (auto-fwd to 0D_base_) | $PIPELINE_MERGE_COUNT |\"\n  echo \"| \u2192 Agent-commit\
+        \ (Copilot PR work, auto-absorbed) | $AGENT_COMMIT_COUNT |\"\n  echo \"| \u2192\
+        \ Code leak (needs @copilot) | $CODELEAK_COUNT |\"\n  echo \"| Severity |\
+        \ **$SEVERITY** |\"\n  echo \"\"\n  if [ \"$BEHIND_COUNT\" -gt 0 ]; then\n\
+        \    echo \"### Commits on main not in 0D_base_\"\n    echo '```'\n    git\
+        \ log --format=\"%h %an: %s\" origin/0D_base_..origin/main\n    echo '```'\n\
+        \  fi\n} >> \"$GITHUB_STEP_SUMMARY\"\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   auto-correct:
-    name: "🔧 Auto-correct auto-gen leaks"
+    name: "\U0001F527 Auto-correct auto-gen leaks"
     needs: detect
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    if: |
-      needs.detect.outputs.base_exists == 'true' &&
-      (needs.detect.outputs.autogen_count != '0' || needs.detect.outputs.pipeline_merge_count != '0' || needs.detect.outputs.agent_commit_count != '0') &&
-      inputs.dry_run != 'true'
+    if: 'needs.detect.outputs.base_exists == ''true'' &&
 
+      (needs.detect.outputs.autogen_count != ''0'' || needs.detect.outputs.pipeline_merge_count
+      != ''0'' || needs.detect.outputs.agent_commit_count != ''0'') &&
+
+      inputs.dry_run != ''true''
+
+      '
     steps:
-      - name: Checkout 0D_base_
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          ref: 0D_base_
-          fetch-depth: 5
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-
-      - name: Forward auto-gen file versions from main → 0D_base_
-        id: forward
-        # Only run when there are actual auto-gen commits to sync; skip when the
-        # job triggered solely due to pipeline-merge or agent-commit absorbers —
-        # those cases go straight to the fast-forward step below without touching
-        # auto-gen files (which could otherwise overwrite newer versions on 0D_base_).
-        # Guard against both empty string and '0' to avoid unintended execution
-        # when the detect job output is missing or malformed.
-        if: (needs.detect.outputs.autogen_count != '' && needs.detect.outputs.autogen_count != '0') || inputs.force_forward_sync == 'true'
-        run: |
-          git fetch origin main --depth=1
-
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          # ── All auto-generated files that scheduled workflows write ─────────
-          FILES=(
-            ".codex/agent_context.json"
-            ".codex/cognitive_brain/metadata.json"
-            ".codex/cognitive_brain/workflow_patterns.jsonl"
-            ".codex/embeddings/codex_index_meta.json"
-            "docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md"
-            "docs/admin/variable_audit_latest.md"
-          )
-
-          CHANGED=0
-          CHANGED_NAMES=""
-          for f in "${FILES[@]}"; do
-            if git show origin/main:"$f" > /tmp/fwd_file 2>/dev/null; then
-              if ! cmp -s /tmp/fwd_file "$f" 2>/dev/null; then
-
-                # Special rule: codex_index_meta.json must stay SLIM (no chunks)
-                # per scripts/ci/build_embeddings.py — git-tracked header only.
-                if [[ "$f" == *"codex_index_meta.json" ]]; then
-                  python3 - <<PYEOF
-          import json, sys
-          try:
-              d = json.loads(open('/tmp/fwd_file').read())
-              slim = {k: v for k, v in d.items() if k != 'chunks'}
-              open('/tmp/fwd_file', 'w').write(json.dumps(slim, indent=2) + '\n')
-          except Exception as e:
-              sys.exit(f"Failed to slim codex_index_meta.json: {e}")
-          PYEOF
-                fi
-
-                mkdir -p "$(dirname "$f")"
-                cp /tmp/fwd_file "$f"
-                git add "$f"
-                echo "  ✅ Forwarded: $f"
-                CHANGED=1
-                CHANGED_NAMES="$CHANGED_NAMES $f"
-              else
-                echo "  ⏭️  Unchanged: $f"
-              fi
-            else
-              echo "  ⚠️  Not found on main: $f"
-            fi
-          done
-
-          if [ "$CHANGED" -eq 0 ]; then
-            echo "ℹ️  All auto-gen files already in sync — no commit needed"
-            echo "committed=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          git commit -m "chore(divergence-fix): forward auto-gen files from main → 0D_base_ [skip ci]
-
-          Divergence monitor detected ${{ needs.detect.outputs.autogen_count }} auto-gen
-          commit(s) on main that were not present on 0D_base_. This commit forwards
-          the affected file content to bring 0D_base_ back in sync.
-
-          Files updated:$CHANGED_NAMES
-
-          Triggered by: branch-divergence-monitor.yml (scheduled)
-          Merge base:   ${{ needs.detect.outputs.merge_base_sha }}"
-
-          # Rebase guard: pull any commits that landed after our checkout
-          git pull --rebase --autostash origin 0D_base_ || {
-            echo "⚠️  Rebase conflict — re-applying on top of latest 0D_base_"
-            git rebase --abort 2>/dev/null || true
-            git fetch origin 0D_base_ --depth=5
-            git reset --hard origin/0D_base_
-            for f in "${FILES[@]}"; do
-              if git show origin/main:"$f" > /tmp/fwd_retry 2>/dev/null; then
-                if ! cmp -s /tmp/fwd_retry "$f" 2>/dev/null; then
-                  if [[ "$f" == *"codex_index_meta.json" ]]; then
-                    python3 -c "
-          import json; d=json.loads(open('/tmp/fwd_retry').read())
-          open('/tmp/fwd_retry','w').write(json.dumps({k:v for k,v in d.items() if k!='chunks'},indent=2)+'\n')"
-                  fi
-                  mkdir -p "$(dirname "$f")"
-                  cp /tmp/fwd_retry "$f"
-                  git add "$f"
-                fi
-              fi
-            done
-            git diff --cached --quiet && { echo "ℹ️  No diff after rebase — skipping"; exit 0; }
-            git commit -m "chore(divergence-fix): forward auto-gen files (post-rebase retry) [skip ci]"
-          }
-
-          git push origin HEAD:0D_base_
-          echo "✅ Auto-gen files forwarded to 0D_base_ successfully"
-          echo "committed=true" >> "$GITHUB_OUTPUT"
-          echo "changed_files=$CHANGED_NAMES" >> "$GITHUB_OUTPUT"
-
-      - name: Fast-forward 0D_base_ to absorb pipeline-merge and agent-commit divergence
-        # S146: When main has "Merge pull request #N from .../0D_base_" or
-        # copilot-agent commits that are not yet in 0D_base_, merge main into
-        # 0D_base_ so the monitor finds 0 code-leaks on the next run.
-        if: needs.detect.outputs.pipeline_merge_count != '0' || needs.detect.outputs.agent_commit_count != '0'
-        run: |
-          git fetch origin main --depth=20 || { echo "::warning::fetch origin main failed"; exit 0; }
-          git fetch origin 0D_base_ --depth=20 || { echo "::warning::fetch origin 0D_base_ failed"; exit 0; }
-
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          # Bring local 0D_base_ up to date
-          git checkout 0D_base_
-          git pull --rebase --autostash origin 0D_base_ || { echo "::warning::rebase pull failed; continuing with local state"; }
-
-          # `git merge-base --is-ancestor A B` returns 0 (true) if A is an ancestor of B.
-          # Here: `is origin/main an ancestor of HEAD (0D_base_)?`
-          # If YES → every commit on main is already reachable from HEAD → no merge needed.
-          if git merge-base --is-ancestor origin/main HEAD; then
-            echo "ℹ️  0D_base_ already contains all main commits — no merge needed"
-            exit 0
-          fi
-
-          # Try fast-forward first (cleanest — only possible if 0D_base_ has no
-          # extra commits since the merge base)
-          if git merge --ff-only origin/main 2>&1; then
-            echo "✅ Fast-forwarded 0D_base_ to absorb pipeline-merge/agent-commit divergence"
-          else
-            # Diverged: 0D_base_ has commits main doesn't. Use a true merge commit
-            # to unite the histories while preserving 0D_base_'s staged work.
-            MERGE_OUTPUT=$(git merge --no-ff origin/main \
-              -m "chore(sync): merge main into 0D_base_ to include staging-gate commit(s) [skip ci]
-
-          Staging-gate merge commit(s) detected on main that were not in 0D_base_.
-          This merge commit unites the two histories so the divergence monitor
-          reports severity=healthy on the next scheduled run.
-
-          Pipeline-merge count: ${{ needs.detect.outputs.pipeline_merge_count }}
-          Triggered by: branch-divergence-monitor.yml (scheduled)
-          Merge base:   ${{ needs.detect.outputs.merge_base_sha }}" \
-              --no-edit 2>&1) || {
-                MERGE_EXIT=$?
-                echo "::warning::Merge conflict (exit $MERGE_EXIT) — skipping pipeline-merge sync"
-                echo "Merge output: $MERGE_OUTPUT"
-                echo "Manual resolution required: merge or cherry-pick staging-gate commits onto 0D_base_"
-                git merge --abort 2>/dev/null || true
-                exit 0
-              }
-          fi
-
-          git push origin HEAD:0D_base_
-          echo "✅ 0D_base_ fast-forwarded to include pipeline-merge commit(s)"
-
+    - name: Checkout 0D_base_
+      uses: actions/checkout@v7
+      with:
+        ref: 0D_base_
+        fetch-depth: 5
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+    - name: "Forward auto-gen file versions from main \u2192 0D_base_"
+      id: forward
+      if: (needs.detect.outputs.autogen_count != '' && needs.detect.outputs.autogen_count
+        != '0') || inputs.force_forward_sync == 'true'
+      run: "git fetch origin main --depth=1\n\ngit config user.name  \"github-actions[bot]\"\
+        \ngit config user.email \"41898282+github-actions[bot]@users.noreply.github.com\"\
+        \n\n# \u2500\u2500 All auto-generated files that scheduled workflows write\
+        \ \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nFILES=(\n  \".codex/agent_context.json\"\
+        \n  \".codex/cognitive_brain/metadata.json\"\n  \".codex/cognitive_brain/workflow_patterns.jsonl\"\
+        \n  \".codex/embeddings/codex_index_meta.json\"\n  \"docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md\"\
+        \n  \"docs/admin/variable_audit_latest.md\"\n)\n\nCHANGED=0\nCHANGED_NAMES=\"\
+        \"\nfor f in \"${FILES[@]}\"; do\n  if git show origin/main:\"$f\" > /tmp/fwd_file\
+        \ 2>/dev/null; then\n    if ! cmp -s /tmp/fwd_file \"$f\" 2>/dev/null; then\n\
+        \n      # Special rule: codex_index_meta.json must stay SLIM (no chunks)\n\
+        \      # per scripts/ci/build_embeddings.py \u2014 git-tracked header only.\n\
+        \      if [[ \"$f\" == *\"codex_index_meta.json\" ]]; then\n        python3\
+        \ - <<PYEOF\nimport json, sys\ntry:\n    d = json.loads(open('/tmp/fwd_file').read())\n\
+        \    slim = {k: v for k, v in d.items() if k != 'chunks'}\n    open('/tmp/fwd_file',\
+        \ 'w').write(json.dumps(slim, indent=2) + '\\n')\nexcept Exception as e:\n\
+        \    sys.exit(f\"Failed to slim codex_index_meta.json: {e}\")\nPYEOF\n   \
+        \   fi\n\n      mkdir -p \"$(dirname \"$f\")\"\n      cp /tmp/fwd_file \"\
+        $f\"\n      git add \"$f\"\n      echo \"  \u2705 Forwarded: $f\"\n      CHANGED=1\n\
+        \      CHANGED_NAMES=\"$CHANGED_NAMES $f\"\n    else\n      echo \"  \u23ED\
+        \uFE0F  Unchanged: $f\"\n    fi\n  else\n    echo \"  \u26A0\uFE0F  Not found\
+        \ on main: $f\"\n  fi\ndone\n\nif [ \"$CHANGED\" -eq 0 ]; then\n  echo \"\u2139\
+        \uFE0F  All auto-gen files already in sync \u2014 no commit needed\"\n  echo\
+        \ \"committed=false\" >> \"$GITHUB_OUTPUT\"\n  exit 0\nfi\n\ngit commit -m\
+        \ \"chore(divergence-fix): forward auto-gen files from main \u2192 0D_base_\
+        \ [skip ci]\n\nDivergence monitor detected ${{ needs.detect.outputs.autogen_count\
+        \ }} auto-gen\ncommit(s) on main that were not present on 0D_base_. This commit\
+        \ forwards\nthe affected file content to bring 0D_base_ back in sync.\n\n\
+        Files updated:$CHANGED_NAMES\n\nTriggered by: branch-divergence-monitor.yml\
+        \ (scheduled)\nMerge base:   ${{ needs.detect.outputs.merge_base_sha }}\"\n\
+        \n# Rebase guard: pull any commits that landed after our checkout\ngit pull\
+        \ --rebase --autostash origin 0D_base_ || {\n  echo \"\u26A0\uFE0F  Rebase\
+        \ conflict \u2014 re-applying on top of latest 0D_base_\"\n  git rebase --abort\
+        \ 2>/dev/null || true\n  git fetch origin 0D_base_ --depth=5\n  git reset\
+        \ --hard origin/0D_base_\n  for f in \"${FILES[@]}\"; do\n    if git show\
+        \ origin/main:\"$f\" > /tmp/fwd_retry 2>/dev/null; then\n      if ! cmp -s\
+        \ /tmp/fwd_retry \"$f\" 2>/dev/null; then\n        if [[ \"$f\" == *\"codex_index_meta.json\"\
+        \ ]]; then\n          python3 -c \"\nimport json; d=json.loads(open('/tmp/fwd_retry').read())\n\
+        open('/tmp/fwd_retry','w').write(json.dumps({k:v for k,v in d.items() if k!='chunks'},indent=2)+'\\\
+        n')\"\n        fi\n        mkdir -p \"$(dirname \"$f\")\"\n        cp /tmp/fwd_retry\
+        \ \"$f\"\n        git add \"$f\"\n      fi\n    fi\n  done\n  git diff --cached\
+        \ --quiet && { echo \"\u2139\uFE0F  No diff after rebase \u2014 skipping\"\
+        ; exit 0; }\n  git commit -m \"chore(divergence-fix): forward auto-gen files\
+        \ (post-rebase retry) [skip ci]\"\n}\n\ngit push origin HEAD:0D_base_\necho\
+        \ \"\u2705 Auto-gen files forwarded to 0D_base_ successfully\"\necho \"committed=true\"\
+        \ >> \"$GITHUB_OUTPUT\"\necho \"changed_files=$CHANGED_NAMES\" >> \"$GITHUB_OUTPUT\"\
+        \n"
+    - name: Fast-forward 0D_base_ to absorb pipeline-merge and agent-commit divergence
+      if: needs.detect.outputs.pipeline_merge_count != '0' || needs.detect.outputs.agent_commit_count
+        != '0'
+      run: "git fetch origin main --depth=20 || { echo \"::warning::fetch origin main\
+        \ failed\"; exit 0; }\ngit fetch origin 0D_base_ --depth=20 || { echo \"::warning::fetch\
+        \ origin 0D_base_ failed\"; exit 0; }\n\ngit config user.name  \"github-actions[bot]\"\
+        \ngit config user.email \"41898282+github-actions[bot]@users.noreply.github.com\"\
+        \n\n# Bring local 0D_base_ up to date\ngit checkout 0D_base_\ngit pull --rebase\
+        \ --autostash origin 0D_base_ || { echo \"::warning::rebase pull failed; continuing\
+        \ with local state\"; }\n\n# `git merge-base --is-ancestor A B` returns 0\
+        \ (true) if A is an ancestor of B.\n# Here: `is origin/main an ancestor of\
+        \ HEAD (0D_base_)?`\n# If YES \u2192 every commit on main is already reachable\
+        \ from HEAD \u2192 no merge needed.\nif git merge-base --is-ancestor origin/main\
+        \ HEAD; then\n  echo \"\u2139\uFE0F  0D_base_ already contains all main commits\
+        \ \u2014 no merge needed\"\n  exit 0\nfi\n\n# Try fast-forward first (cleanest\
+        \ \u2014 only possible if 0D_base_ has no\n# extra commits since the merge\
+        \ base)\nif git merge --ff-only origin/main 2>&1; then\n  echo \"\u2705 Fast-forwarded\
+        \ 0D_base_ to absorb pipeline-merge/agent-commit divergence\"\nelse\n  # Diverged:\
+        \ 0D_base_ has commits main doesn't. Use a true merge commit\n  # to unite\
+        \ the histories while preserving 0D_base_'s staged work.\n  MERGE_OUTPUT=$(git\
+        \ merge --no-ff origin/main \\\n    -m \"chore(sync): merge main into 0D_base_\
+        \ to include staging-gate commit(s) [skip ci]\n\nStaging-gate merge commit(s)\
+        \ detected on main that were not in 0D_base_.\nThis merge commit unites the\
+        \ two histories so the divergence monitor\nreports severity=healthy on the\
+        \ next scheduled run.\n\nPipeline-merge count: ${{ needs.detect.outputs.pipeline_merge_count\
+        \ }}\nTriggered by: branch-divergence-monitor.yml (scheduled)\nMerge base:\
+        \   ${{ needs.detect.outputs.merge_base_sha }}\" \\\n    --no-edit 2>&1) ||\
+        \ {\n      MERGE_EXIT=$?\n      echo \"::warning::Merge conflict (exit $MERGE_EXIT)\
+        \ \u2014 skipping pipeline-merge sync\"\n      echo \"Merge output: $MERGE_OUTPUT\"\
+        \n      echo \"Manual resolution required: merge or cherry-pick staging-gate\
+        \ commits onto 0D_base_\"\n      git merge --abort 2>/dev/null || true\n \
+        \     exit 0\n    }\nfi\n\ngit push origin HEAD:0D_base_\necho \"\u2705 0D_base_\
+        \ fast-forwarded to include pipeline-merge commit(s)\"\n"
   report:
-    name: "📣 Update tracking issue"
-    needs: [detect, auto-correct]
+    name: "\U0001F4E3 Update tracking issue"
+    needs:
+    - detect
+    - auto-correct
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    if: |
-      always() &&
-      needs.detect.outputs.base_exists == 'true' &&
-      needs.detect.outputs.needs_correction == 'true'
+    if: 'always() &&
 
+      needs.detect.outputs.base_exists == ''true'' &&
+
+      needs.detect.outputs.needs_correction == ''true''
+
+      '
     steps:
-      - name: Checkout (sparse — scripts only)
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          sparse-checkout: .github
-          sparse-checkout-cone-mode: false
-
-      - name: Ensure required labels exist
-        uses: actions/github-script@v8 # v9
-        with:
-          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          script: |
-            const required = [
-              { name: 'branch-divergence', color: 'e4e669', description: 'Branch divergence tracking between 0D_base_ and main' },
-              { name: 'automated',         color: '0075ca', description: 'Automated by GitHub Actions'                           },
-              { name: 'ci-triage',         color: 'd93f0b', description: 'CI / pipeline triage required'                        },
-            ];
-            for (const label of required) {
-              try {
-                await github.rest.issues.getLabel({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  name: label.name,
-                });
-              } catch (err) {
-                if (err.status === 404) {
-                  await github.rest.issues.createLabel({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    name: label.name,
-                    color: label.color,
-                    description: label.description,
-                  });
-                  console.log(`Created label: ${label.name}`);
-                } else {
-                  throw err;
-                }
-              }
-            }
-
-      - name: Build and upsert divergence tracking issue
-        uses: actions/github-script@v8 # v9
-        env:
-          SUMMARY_JSON: ${{ needs.detect.outputs.summary_json }}
-          BEHIND_COUNT: ${{ needs.detect.outputs.behind_count }}
-          AHEAD_COUNT: ${{ needs.detect.outputs.ahead_count }}
-          AUTOGEN_COUNT: ${{ needs.detect.outputs.autogen_count }}
-          PIPELINE_MERGE_COUNT: ${{ needs.detect.outputs.pipeline_merge_count }}
-          AGENT_COMMIT_COUNT: ${{ needs.detect.outputs.agent_commit_count }}
-          CODELEAK_COUNT: ${{ needs.detect.outputs.codeleak_count }}
-          SEVERITY: ${{ needs.detect.outputs.severity }}
-          MERGE_BASE: ${{ needs.detect.outputs.merge_base_sha }}
-          AUTO_CORRECT_RESULT: ${{ needs.auto-correct.result }}
-          DRY_RUN: ${{ inputs.dry_run || 'false' }}
-        with:
-          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          script: |
-            const behind        = parseInt(process.env.BEHIND_COUNT)         || 0;
-            const ahead         = parseInt(process.env.AHEAD_COUNT)          || 0;
-            const autogen       = parseInt(process.env.AUTOGEN_COUNT)        || 0;
-            const pipelineMerge = parseInt(process.env.PIPELINE_MERGE_COUNT) || 0;
-            const agentCommit   = parseInt(process.env.AGENT_COMMIT_COUNT)   || 0;
-            const absorbers     = pipelineMerge + agentCommit;
-            const codeleak      = parseInt(process.env.CODELEAK_COUNT)       || 0;
-            const severity      = process.env.SEVERITY;
-            const mergeBase     = process.env.MERGE_BASE;
-            const acResult      = process.env.AUTO_CORRECT_RESULT;
-            const dryRun        = process.env.DRY_RUN === 'true';
-            const now           = new Date().toISOString();
-
-            const MARKER = '<!-- branch-divergence-monitor -->';
-
-            const severityEmoji = {
-              healthy: '✅', low: '🟡', high: '🔴', critical: '🚨'
-            }[severity] || '⚠️';
-
-            // Status of auto-correction
-            let correctionStatus = '';
-            if (dryRun) {
-              correctionStatus = '> ⚠️ **Dry-run mode** — auto-correction was skipped.\n';
-            } else if (autogen > 0 || pipelineMerge > 0 || agentCommit > 0) {
-              if (acResult === 'success') {
-                correctionStatus = '> ✅ **Auto-correction applied** — auto-gen files forwarded to `0D_base_`';
-                if (pipelineMerge > 0) correctionStatus += ' + pipeline-merge commit(s) fast-forwarded';
-                if (agentCommit > 0)   correctionStatus += ` + ${agentCommit} agent-commit(s) absorbed`;
-                correctionStatus += '.\n';
-              } else {
-                correctionStatus = '> ❌ **Auto-correction FAILED** — see [workflow run](' +
-                  `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}) for details.\n`;
-              }
-            }
-
-            // Copilot escalation for code leaks
-            // When PIPELINE-MERGE or AGENT-COMMIT is also present, auto-correct absorbs
-            // the code-leaks by fast-forwarding 0D_base_ to all of main — no @copilot needed.
-            let copilotSection = '';
-            if (codeleak > 0 && absorbers === 0) {
-              copilotSection = `
-            ## 🚨 Human/Code commits detected on \`main\` — @copilot intervention required
-
-            ${codeleak} commit(s) on \`main\` were authored by a human or contain code changes
-            that were NOT routed through \`0D_base_\`. These cannot be auto-corrected and require
-            a Copilot agent session to investigate and resolve.
-
-            **Resolution steps:**
-            1. Identify which PR/branch the commit(s) came from
-            2. Cherry-pick or re-apply those changes onto \`0D_base_\`
-            3. If the commit should be reverted from \`main\`, do so in a new sub-PR
-
-            @copilot Investigate the branch divergence between \`main\` and \`0D_base_\`.
-            \`main\` has ${codeleak} non-auto-gen commit(s) that are not in \`0D_base_\`.
-            Merge base: \`${mergeBase}\`. Run \`branch-divergence-monitor.yml\` with
-            \`dry_run=true\` to see the full list, then propose a resolution plan.
-
-            > **⚠️ GitHub Copilot no-auto-PR policy:** Sessions no longer create pull requests
-            > by default. After implementing the fix, **explicitly open a pull request targeting
-            > \`0D_base_\`** with your changes (use \`gh pr create --base 0D_base_ --title "..."\`).
-            > Do NOT leave changes on a branch without a PR.
-            `;
-            }
-
-            const body = `${MARKER}
-            # ${severityEmoji} Branch Divergence Report — \`0D_base_\` ↔ \`main\`
-
-            **Updated:** ${now}
-            **Run:** [#${context.runId}](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
-
-            ${correctionStatus}
-            ## Summary
-
-            | Metric | Value |
-            |--------|-------|
-            | Merge base | \`${mergeBase.slice(0,12)}\` |
-            | **0D_base_ AHEAD** (staged work) | ${ahead} commit(s) — ✅ expected |
-            | **main AHEAD** (potential leaks) | ${behind} commit(s) |
-            | → Auto-gen leaks (self-corrected) | ${autogen} |
-            | → Pipeline-merge (auto-fwd to 0D_base_) | ${pipelineMerge} |
-            | → Agent-commits (Copilot PR work, auto-absorbed) | ${agentCommit} |
-            | → Code leaks (need @copilot) | ${codeleak} |
-            | Severity | **${severity.toUpperCase()}** ${severityEmoji} |
-
-            ## What to do
-
-            | Situation | Corrective Action |
-            |-----------|------------------|
-            | Only auto-gen leaks | Re-run \`branch-divergence-monitor.yml\` or \`forward-sync-autogen.yml\` |
-            | Only pipeline-merge leaks | Re-run \`branch-divergence-monitor.yml\` — auto-correct fast-forwards 0D_base_ |
-            | Only agent-commits | Re-run \`branch-divergence-monitor.yml\` — auto-correct absorbs via fast-forward |
-            | Code leaks on \`main\` (no absorbers) | Open a @copilot session on the \`0D_base_\` → \`main\` PR |
-            | Behind > 10 for >24 h | Accelerate staging-gate merge (PR #3630 or equivalent) |
-
-            ${copilotSection}
-            ${absorbers > 0 && codeleak > 0 ? `
-            ## ℹ️ Pipeline-merge / Agent-commits + Code commits — auto-correct will absorb
-
-            A staging-gate merge commit or Copilot agent commit was detected alongside
-            ${codeleak} code commit(s). The **auto-correct job** will fast-forward
-            \`0D_base_\` to include **all** of \`main\`'s history, effectively absorbing
-            the code commits. No @copilot session is needed — the next scheduled run
-            should show \`severity=healthy\`.
-            ` : ''}
-
-            ---
-            *Auto-generated by [branch-divergence-monitor.yml](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/blob/main/.github/workflows/branch-divergence-monitor.yml)*
-            *See runbook: [BRANCH_DIVERGENCE_PREVENTION.md](.codex/docs/BRANCH_DIVERGENCE_PREVENTION.md)*
-            `;
-
-            // Upsert: find open issue with our marker, update it, or create new
-            const issues = await github.rest.issues.listForRepo({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              state: 'open',
-              labels: 'branch-divergence',
-            });
-
-            const existing = issues.data.find(i => i.body && i.body.includes(MARKER));
-
-            const title = `${severityEmoji} Branch Divergence: 0D_base_ ${ahead}↑ ${behind}↓ main — ${severity.toUpperCase()}`;
-
-            if (existing) {
-              await github.rest.issues.update({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: existing.number,
-                title,
-                body,
-              });
-              console.log(`Updated divergence issue #${existing.number}`);
-            } else {
-              const created = await github.rest.issues.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                title,
-                body,
-                labels: ['branch-divergence', 'automated', 'ci-triage'],
-              });
-              console.log(`Created divergence issue #${created.data.number}`);
-            }
-
-
-  # OBJ-002-I (S242, PR #3770): Post a @copilot rescue comment to the most recent
-  # open PR on 0D_base_ when this workflow fails.  Scheduled workflows have no PR
-  # context, so the job discovers the target PR via the GitHub API.
+    - name: "Checkout (sparse \u2014 scripts only)"
+      uses: actions/checkout@v7
+      with:
+        sparse-checkout: .github
+        sparse-checkout-cone-mode: false
+    - name: Ensure required labels exist
+      uses: actions/github-script@v8
+      with:
+        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        script: "const required = [\n  { name: 'branch-divergence', color: 'e4e669',\
+          \ description: 'Branch divergence tracking between 0D_base_ and main' },\n\
+          \  { name: 'automated',         color: '0075ca', description: 'Automated\
+          \ by GitHub Actions'                           },\n  { name: 'ci-triage',\
+          \         color: 'd93f0b', description: 'CI / pipeline triage required'\
+          \                        },\n];\nfor (const label of required) {\n  try\
+          \ {\n    await github.rest.issues.getLabel({\n      owner: context.repo.owner,\n\
+          \      repo: context.repo.repo,\n      name: label.name,\n    });\n  } catch\
+          \ (err) {\n    if (err.status === 404) {\n      await github.rest.issues.createLabel({\n\
+          \        owner: context.repo.owner,\n        repo: context.repo.repo,\n\
+          \        name: label.name,\n        color: label.color,\n        description:\
+          \ label.description,\n      });\n      console.log(`Created label: ${label.name}`);\n\
+          \    } else {\n      throw err;\n    }\n  }\n}\n"
+    - name: Build and upsert divergence tracking issue
+      uses: actions/github-script@v8
+      env:
+        SUMMARY_JSON: ${{ needs.detect.outputs.summary_json }}
+        BEHIND_COUNT: ${{ needs.detect.outputs.behind_count }}
+        AHEAD_COUNT: ${{ needs.detect.outputs.ahead_count }}
+        AUTOGEN_COUNT: ${{ needs.detect.outputs.autogen_count }}
+        PIPELINE_MERGE_COUNT: ${{ needs.detect.outputs.pipeline_merge_count }}
+        AGENT_COMMIT_COUNT: ${{ needs.detect.outputs.agent_commit_count }}
+        CODELEAK_COUNT: ${{ needs.detect.outputs.codeleak_count }}
+        SEVERITY: ${{ needs.detect.outputs.severity }}
+        MERGE_BASE: ${{ needs.detect.outputs.merge_base_sha }}
+        AUTO_CORRECT_RESULT: ${{ needs.auto-correct.result }}
+        DRY_RUN: ${{ inputs.dry_run || 'false' }}
+      with:
+        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        script: "const behind        = parseInt(process.env.BEHIND_COUNT)        \
+          \ || 0;\nconst ahead         = parseInt(process.env.AHEAD_COUNT)       \
+          \   || 0;\nconst autogen       = parseInt(process.env.AUTOGEN_COUNT)   \
+          \     || 0;\nconst pipelineMerge = parseInt(process.env.PIPELINE_MERGE_COUNT)\
+          \ || 0;\nconst agentCommit   = parseInt(process.env.AGENT_COMMIT_COUNT)\
+          \   || 0;\nconst absorbers     = pipelineMerge + agentCommit;\nconst codeleak\
+          \      = parseInt(process.env.CODELEAK_COUNT)       || 0;\nconst severity\
+          \      = process.env.SEVERITY;\nconst mergeBase     = process.env.MERGE_BASE;\n\
+          const acResult      = process.env.AUTO_CORRECT_RESULT;\nconst dryRun   \
+          \     = process.env.DRY_RUN === 'true';\nconst now           = new Date().toISOString();\n\
+          \nconst MARKER = '<!-- branch-divergence-monitor -->';\n\nconst severityEmoji\
+          \ = {\n  healthy: '\u2705', low: '\U0001F7E1', high: '\U0001F534', critical:\
+          \ '\U0001F6A8'\n}[severity] || '\u26A0\uFE0F';\n\n// Status of auto-correction\n\
+          let correctionStatus = '';\nif (dryRun) {\n  correctionStatus = '> \u26A0\
+          \uFE0F **Dry-run mode** \u2014 auto-correction was skipped.\\n';\n} else\
+          \ if (autogen > 0 || pipelineMerge > 0 || agentCommit > 0) {\n  if (acResult\
+          \ === 'success') {\n    correctionStatus = '> \u2705 **Auto-correction applied**\
+          \ \u2014 auto-gen files forwarded to `0D_base_`';\n    if (pipelineMerge\
+          \ > 0) correctionStatus += ' + pipeline-merge commit(s) fast-forwarded';\n\
+          \    if (agentCommit > 0)   correctionStatus += ` + ${agentCommit} agent-commit(s)\
+          \ absorbed`;\n    correctionStatus += '.\\n';\n  } else {\n    correctionStatus\
+          \ = '> \u274C **Auto-correction FAILED** \u2014 see [workflow run](' +\n\
+          \      `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})\
+          \ for details.\\n`;\n  }\n}\n\n// Copilot escalation for code leaks\n//\
+          \ When PIPELINE-MERGE or AGENT-COMMIT is also present, auto-correct absorbs\n\
+          // the code-leaks by fast-forwarding 0D_base_ to all of main \u2014 no @copilot\
+          \ needed.\nlet copilotSection = '';\nif (codeleak > 0 && absorbers === 0)\
+          \ {\n  copilotSection = `\n## \U0001F6A8 Human/Code commits detected on\
+          \ \\`main\\` \u2014 @copilot intervention required\n\n${codeleak} commit(s)\
+          \ on \\`main\\` were authored by a human or contain code changes\nthat were\
+          \ NOT routed through \\`0D_base_\\`. These cannot be auto-corrected and\
+          \ require\na Copilot agent session to investigate and resolve.\n\n**Resolution\
+          \ steps:**\n1. Identify which PR/branch the commit(s) came from\n2. Cherry-pick\
+          \ or re-apply those changes onto \\`0D_base_\\`\n3. If the commit should\
+          \ be reverted from \\`main\\`, do so in a new sub-PR\n\n@copilot Investigate\
+          \ the branch divergence between \\`main\\` and \\`0D_base_\\`.\n\\`main\\\
+          ` has ${codeleak} non-auto-gen commit(s) that are not in \\`0D_base_\\`.\n\
+          Merge base: \\`${mergeBase}\\`. Run \\`branch-divergence-monitor.yml\\`\
+          \ with\n\\`dry_run=true\\` to see the full list, then propose a resolution\
+          \ plan.\n\n> **\u26A0\uFE0F GitHub Copilot no-auto-PR policy:** Sessions\
+          \ no longer create pull requests\n> by default. After implementing the fix,\
+          \ **explicitly open a pull request targeting\n> \\`0D_base_\\`** with your\
+          \ changes (use \\`gh pr create --base 0D_base_ --title \"...\"\\`).\n> Do\
+          \ NOT leave changes on a branch without a PR.\n`;\n}\n\nconst body = `${MARKER}\n\
+          # ${severityEmoji} Branch Divergence Report \u2014 \\`0D_base_\\` \u2194\
+          \ \\`main\\`\n\n**Updated:** ${now}\n**Run:** [#${context.runId}](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})\n\
+          \n${correctionStatus}\n## Summary\n\n| Metric | Value |\n|--------|-------|\n\
+          | Merge base | \\`${mergeBase.slice(0,12)}\\` |\n| **0D_base_ AHEAD** (staged\
+          \ work) | ${ahead} commit(s) \u2014 \u2705 expected |\n| **main AHEAD**\
+          \ (potential leaks) | ${behind} commit(s) |\n| \u2192 Auto-gen leaks (self-corrected)\
+          \ | ${autogen} |\n| \u2192 Pipeline-merge (auto-fwd to 0D_base_) | ${pipelineMerge}\
+          \ |\n| \u2192 Agent-commits (Copilot PR work, auto-absorbed) | ${agentCommit}\
+          \ |\n| \u2192 Code leaks (need @copilot) | ${codeleak} |\n| Severity | **${severity.toUpperCase()}**\
+          \ ${severityEmoji} |\n\n## What to do\n\n| Situation | Corrective Action\
+          \ |\n|-----------|------------------|\n| Only auto-gen leaks | Re-run \\\
+          `branch-divergence-monitor.yml\\` or \\`forward-sync-autogen.yml\\` |\n\
+          | Only pipeline-merge leaks | Re-run \\`branch-divergence-monitor.yml\\\
+          ` \u2014 auto-correct fast-forwards 0D_base_ |\n| Only agent-commits | Re-run\
+          \ \\`branch-divergence-monitor.yml\\` \u2014 auto-correct absorbs via fast-forward\
+          \ |\n| Code leaks on \\`main\\` (no absorbers) | Open a @copilot session\
+          \ on the \\`0D_base_\\` \u2192 \\`main\\` PR |\n| Behind > 10 for >24 h\
+          \ | Accelerate staging-gate merge (PR #3630 or equivalent) |\n\n${copilotSection}\n\
+          ${absorbers > 0 && codeleak > 0 ? `\n## \u2139\uFE0F Pipeline-merge / Agent-commits\
+          \ + Code commits \u2014 auto-correct will absorb\n\nA staging-gate merge\
+          \ commit or Copilot agent commit was detected alongside\n${codeleak} code\
+          \ commit(s). The **auto-correct job** will fast-forward\n\\`0D_base_\\`\
+          \ to include **all** of \\`main\\`'s history, effectively absorbing\nthe\
+          \ code commits. No @copilot session is needed \u2014 the next scheduled\
+          \ run\nshould show \\`severity=healthy\\`.\n` : ''}\n\n---\n*Auto-generated\
+          \ by [branch-divergence-monitor.yml](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/blob/main/.github/workflows/branch-divergence-monitor.yml)*\n\
+          *See runbook: [BRANCH_DIVERGENCE_PREVENTION.md](.codex/docs/BRANCH_DIVERGENCE_PREVENTION.md)*\n\
+          `;\n\n// Upsert: find open issue with our marker, update it, or create new\n\
+          const issues = await github.rest.issues.listForRepo({\n  owner: context.repo.owner,\n\
+          \  repo: context.repo.repo,\n  state: 'open',\n  labels: 'branch-divergence',\n\
+          });\n\nconst existing = issues.data.find(i => i.body && i.body.includes(MARKER));\n\
+          \nconst title = `${severityEmoji} Branch Divergence: 0D_base_ ${ahead}\u2191\
+          \ ${behind}\u2193 main \u2014 ${severity.toUpperCase()}`;\n\nif (existing)\
+          \ {\n  await github.rest.issues.update({\n    owner: context.repo.owner,\n\
+          \    repo: context.repo.repo,\n    issue_number: existing.number,\n    title,\n\
+          \    body,\n  });\n  console.log(`Updated divergence issue #${existing.number}`);\n\
+          } else {\n  const created = await github.rest.issues.create({\n    owner:\
+          \ context.repo.owner,\n    repo: context.repo.repo,\n    title,\n    body,\n\
+          \    labels: ['branch-divergence', 'automated', 'ci-triage'],\n  });\n \
+          \ console.log(`Created divergence issue #${created.data.number}`);\n}\n"
   rescue-comment-push:
-    name: "🚨 Post rescue comment on failure"
-    needs: [detect, auto-correct, report]
+    name: "\U0001F6A8 Post rescue comment on failure"
+    needs:
+    - detect
+    - auto-correct
+    - report
     runs-on: ubuntu-latest
     timeout-minutes: 5
     if: failure()
     permissions:
       pull-requests: write
       issues: write
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          fetch-depth: 1
-
-      - name: Post or update rescue comment
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          REPO: ${{ github.repository }}
-          COMMIT_SHA: ${{ github.sha }}
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_NAME: "Branch Divergence Monitor"
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          BRANCH: ${{ github.ref_name }}
-        run: python scripts/ci/post_rescue_comment.py
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        fetch-depth: 1
+    - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: Branch Divergence Monitor
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+        BRANCH: ${{ github.ref_name }}
+      run: python scripts/ci/post_rescue_comment.py
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

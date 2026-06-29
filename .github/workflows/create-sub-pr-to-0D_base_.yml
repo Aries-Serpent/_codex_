@@ -1,196 +1,143 @@
-name: "🔀 Create Sub-PR: Session Branch → 0D_base_"
-
-# Creates a pull request from the specified session branch into 0D_base_.
-# Per CODEBASE_AGENCY_POLICY.md §0b, agent sessions must merge via sub-PRs
-# into 0D_base_, not directly into main.
-#
-# Usage (after this workflow is on main):
-#   gh workflow run create-sub-pr-to-0D_base_.yml \
-#     --ref main \
-#     -f session_branch=copilot/update-ci-failure-rate-and-confirm-transition
-#
-# Or via Actions UI: Actions → "🔀 Create Sub-PR" → Run workflow
-#
-# Requires: CODEX_MASTER_KEY secret (pull-requests:write scope)
-# See: .codex/docs/INTEGRATION_BRANCH_MODEL.md
-
-on:
+name: "\U0001F500 Create Sub-PR: Session Branch \u2192 0D_base_"
+true:
   workflow_dispatch:
     inputs:
       session_branch:
-        description: "Session branch to create PR from (head)"
+        description: Session branch to create PR from (head)
         required: true
-        default: "copilot/update-ci-failure-rate-and-confirm-transition"
+        default: copilot/update-ci-failure-rate-and-confirm-transition
       pr_title:
-        description: "PR title"
+        description: PR title
         required: false
-        default: ""
+        default: ''
       pr_body_extra:
-        description: "Extra content to append to PR body"
+        description: Extra content to append to PR body
         required: false
-        default: ""
+        default: ''
       draft:
-        description: "Open as draft PR"
+        description: Open as draft PR
         required: false
         default: false
         type: boolean
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   pull-requests: write
-
-
 jobs:
   create-sub-pr:
-    name: "Create PR: ${{ inputs.session_branch }} → 0D_base_"
+    name: "Create PR: ${{ inputs.session_branch }} \u2192 0D_base_"
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          fetch-depth: 1
-          ref: ${{ inputs.session_branch }}
-          token: ${{ secrets.CODEX_MASTER_KEY }}
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        fetch-depth: 1
+        ref: ${{ inputs.session_branch }}
+        token: ${{ secrets.CODEX_MASTER_KEY }}
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        cache: pip
+        python-version: 3.12.13
+    - name: Install package
+      run: pip install -e . --quiet
+    - name: Verify 0D_base_ exists
+      id: verify_base
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+      run: "if ! gh api \"repos/${{ github.repository }}/git/ref/heads/0D_base_\"\
+        \ > /dev/null 2>&1; then\n  echo \"\u274C 0D_base_ does not exist on GitHub.\"\
+        \n  echo \"   Run: gh workflow run promote-integration-branch.yml to create\
+        \ it.\"\n  exit 1\nfi\nSHA=$(gh api \"repos/${{ github.repository }}/git/ref/heads/0D_base_\"\
+        \ --jq '.object.sha')\necho \"\u2705 0D_base_ exists @ ${SHA:0:8}\"\necho\
+        \ \"base_sha=${SHA}\" >> \"$GITHUB_OUTPUT\"\n"
+    - name: Check for existing sub-PR
+      id: check_existing
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+      run: "EXISTING=$(gh pr list \\\n  --repo \"${{ github.repository }}\" \\\n \
+        \ --head \"${{ inputs.session_branch }}\" \\\n  --base \"0D_base_\" \\\n \
+        \ --state open \\\n  --json number \\\n  --jq '.[0].number' 2>/dev/null ||\
+        \ echo \"\")\necho \"existing_pr=${EXISTING}\" >> \"$GITHUB_OUTPUT\"\nif [\
+        \ -n \"${EXISTING}\" ]; then\n  echo \"\u2139\uFE0F  PR #${EXISTING} already\
+        \ exists for ${{ inputs.session_branch }} \u2192 0D_base_\"\nfi\n"
+    - name: Get latest commit info
+      id: commit_info
+      run: 'SHA=$(git rev-parse HEAD)
 
-      - name: Set up Python
-        uses: actions/setup-python@v6 # v6
-        with:
-          cache: pip
-          python-version: "3.12.13"
+        MSG=$(git log -1 --format=''%s'')
 
-      - name: Install package
-        run: pip install -e . --quiet
+        echo "sha=${SHA}" >> "$GITHUB_OUTPUT"
 
-      - name: Verify 0D_base_ exists
-        id: verify_base
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
-        run: |
-          if ! gh api "repos/${{ github.repository }}/git/ref/heads/0D_base_" > /dev/null 2>&1; then
-            echo "❌ 0D_base_ does not exist on GitHub."
-            echo "   Run: gh workflow run promote-integration-branch.yml to create it."
-            exit 1
-          fi
-          SHA=$(gh api "repos/${{ github.repository }}/git/ref/heads/0D_base_" --jq '.object.sha')
-          echo "✅ 0D_base_ exists @ ${SHA:0:8}"
-          echo "base_sha=${SHA}" >> "$GITHUB_OUTPUT"
+        echo "msg=${MSG}" >> "$GITHUB_OUTPUT"
 
-      - name: Check for existing sub-PR
-        id: check_existing
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
-        run: |
-          EXISTING=$(gh pr list \
-            --repo "${{ github.repository }}" \
-            --head "${{ inputs.session_branch }}" \
-            --base "0D_base_" \
-            --state open \
-            --json number \
-            --jq '.[0].number' 2>/dev/null || echo "")
-          echo "existing_pr=${EXISTING}" >> "$GITHUB_OUTPUT"
-          if [ -n "${EXISTING}" ]; then
-            echo "ℹ️  PR #${EXISTING} already exists for ${{ inputs.session_branch }} → 0D_base_"
-          fi
-
-      - name: Get latest commit info
-        id: commit_info
-        run: |
-          SHA=$(git rev-parse HEAD)
-          MSG=$(git log -1 --format='%s')
-          echo "sha=${SHA}" >> "$GITHUB_OUTPUT"
-          echo "msg=${MSG}" >> "$GITHUB_OUTPUT"
-
-      - name: Build PR title
-        id: build_title
-        env:
-          INPUT_TITLE: ${{ inputs.pr_title }}
-          SESSION_BRANCH: ${{ inputs.session_branch }}
-        run: |
-          if [ -n "${INPUT_TITLE}" ]; then
-            echo "title=${INPUT_TITLE}" >> "$GITHUB_OUTPUT"
-          else
-            # Auto-generate from branch name
-            SLUG=$(echo "${SESSION_BRANCH}" | sed 's|copilot/||')
-            echo "title=feat(session): ${SLUG} → 0D_base_" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Create sub-PR
-        if: steps.check_existing.outputs.existing_pr == ''
-        id: create_pr
-        env:
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
-          SESSION_BRANCH: ${{ inputs.session_branch }}
-          PR_TITLE: ${{ steps.build_title.outputs.title }}
-          SHA: ${{ steps.commit_info.outputs.sha }}
-          EXTRA: ${{ inputs.pr_body_extra }}
-        run: |
-          # Build PR body using variable concatenation to avoid shellcheck SC2215
-          # (printf multi-arg form with lines starting '-' is mis-flagged as a flag).
-          PR_BODY="## 🔀 Session Branch Sub-PR: \`${SESSION_BRANCH}\` → \`0D_base_\`"$'\n'
-          PR_BODY+=""$'\n'
-          PR_BODY+="This PR merges a completed agent session branch into the staging integration"$'\n'
-          PR_BODY+="branch \`0D_base_\` per **CODEBASE_AGENCY_POLICY.md §0b**."$'\n'
-          PR_BODY+=""$'\n'
-          PR_BODY+="### Branch"$'\n'
-          PR_BODY+="- **Head:** \`${SESSION_BRANCH}\`"$'\n'
-          PR_BODY+="- **Base:** \`0D_base_\` (staging integration branch)"$'\n'
-          PR_BODY+="- **Latest commit:** \`${SHA:0:8}\`"$'\n'
-          PR_BODY+=""$'\n'
-          PR_BODY+="### Architecture"$'\n'
-          PR_BODY+="\`\`\`"$'\n'
-          PR_BODY+="${SESSION_BRANCH}  ──►  0D_base_  ──►  main"$'\n'
-          PR_BODY+="  (this PR)              (staging)   (promotion PR)"$'\n'
-          PR_BODY+="\`\`\`"$'\n'
-          PR_BODY+=""$'\n'
-          PR_BODY+="### Checklist"$'\n'
-          PR_BODY+="- [ ] All CI checks pass on head branch"$'\n'
-          PR_BODY+="- [ ] Cross-reference gate: 0 broken refs"$'\n'
-          PR_BODY+="- [ ] AGENT_REGISTRY count matches actual entries"$'\n'
-          PR_BODY+="- [ ] Agent file size gate: all .md files ≤ 30,000 chars"$'\n'
-          PR_BODY+="- [ ] CHANGELOG.md updated"$'\n'
-          PR_BODY+="- [ ] AGENT_ACCOUNTABILITY_REPORT.md updated"$'\n'
-          PR_BODY+="- [ ] No deferral language in commits or PR body"$'\n'
-          PR_BODY+=""$'\n'
-          PR_BODY+="${EXTRA}"$'\n'
-          PR_BODY+=""$'\n'
-          PR_BODY+="---"$'\n'
-          PR_BODY+="_Created by \`create-sub-pr-to-0D_base_.yml\` workflow — $(date -u +'%Y-%m-%dT%H:%M:%SZ')_"$'\n'
-          PR_BODY+=""$'\n'
-          PR_BODY+="---"$'\n'
-          PR_BODY+=""$'\n'
-          PR_BODY+="**🔄 Workflow Execution Checklist**:"$'\n'
-          PR_BODY+=""$'\n'
-          PR_BODY+="🔐 Agent Token Delegation"$'\n'
-          PR_BODY+="- [x] 🔐 Enable Agent Token Delegation (\`COPILOT_AGENT_AUTH_ENABLED\`)"$'\n'
-          PR_BODY+="- [ ] 💰 Cost Proposal Approved"$'\n'
-          PR_BODY+="- [ ] 🔄 Auto-Post @copilot review After Agent Session"$'\n'
-
-          GH_TOKEN="${{ secrets.CODEX_MASTER_KEY }}" gh pr create \
-            --repo "${{ github.repository }}" \
-            --title "${PR_TITLE}" \
-            --body "${PR_BODY}" \
-            --head "${SESSION_BRANCH}" \
-            --base "0D_base_" \
-            $(if [ "${{ inputs.draft }}" = "true" ]; then echo "--draft"; fi)
-
-      - name: Summary
-        if: always()
-        run: |
-          echo "## 🔀 Sub-PR Creation Result" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Field | Value |" >> "$GITHUB_STEP_SUMMARY"
-          echo "|-------|-------|" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Session branch | \`${{ inputs.session_branch }}\` |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Base | \`0D_base_\` |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Existing PR | \`${{ steps.check_existing.outputs.existing_pr || 'none' }}\` |" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "### Next Steps" >> "$GITHUB_STEP_SUMMARY"
-          echo "1. Review the sub-PR and ensure all CI checks pass" >> "$GITHUB_STEP_SUMMARY"
-          echo "2. Approve and merge the sub-PR into \`0D_base_\`" >> "$GITHUB_STEP_SUMMARY"
-          echo "3. Trigger \`promote-integration-branch.yml\` to promote \`0D_base_\` → \`main\`" >> "$GITHUB_STEP_SUMMARY"
+        '
+    - name: Build PR title
+      id: build_title
+      env:
+        INPUT_TITLE: ${{ inputs.pr_title }}
+        SESSION_BRANCH: ${{ inputs.session_branch }}
+      run: "if [ -n \"${INPUT_TITLE}\" ]; then\n  echo \"title=${INPUT_TITLE}\" >>\
+        \ \"$GITHUB_OUTPUT\"\nelse\n  # Auto-generate from branch name\n  SLUG=$(echo\
+        \ \"${SESSION_BRANCH}\" | sed 's|copilot/||')\n  echo \"title=feat(session):\
+        \ ${SLUG} \u2192 0D_base_\" >> \"$GITHUB_OUTPUT\"\nfi\n"
+    - name: Create sub-PR
+      if: steps.check_existing.outputs.existing_pr == ''
+      id: create_pr
+      env:
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        SESSION_BRANCH: ${{ inputs.session_branch }}
+        PR_TITLE: ${{ steps.build_title.outputs.title }}
+        SHA: ${{ steps.commit_info.outputs.sha }}
+        EXTRA: ${{ inputs.pr_body_extra }}
+      run: "# Build PR body using variable concatenation to avoid shellcheck SC2215\n\
+        # (printf multi-arg form with lines starting '-' is mis-flagged as a flag).\n\
+        PR_BODY=\"## \U0001F500 Session Branch Sub-PR: \\`${SESSION_BRANCH}\\` \u2192\
+        \ \\`0D_base_\\`\"$'\\n'\nPR_BODY+=\"\"$'\\n'\nPR_BODY+=\"This PR merges a\
+        \ completed agent session branch into the staging integration\"$'\\n'\nPR_BODY+=\"\
+        branch \\`0D_base_\\` per **CODEBASE_AGENCY_POLICY.md \xA70b**.\"$'\\n'\n\
+        PR_BODY+=\"\"$'\\n'\nPR_BODY+=\"### Branch\"$'\\n'\nPR_BODY+=\"- **Head:**\
+        \ \\`${SESSION_BRANCH}\\`\"$'\\n'\nPR_BODY+=\"- **Base:** \\`0D_base_\\` (staging\
+        \ integration branch)\"$'\\n'\nPR_BODY+=\"- **Latest commit:** \\`${SHA:0:8}\\\
+        `\"$'\\n'\nPR_BODY+=\"\"$'\\n'\nPR_BODY+=\"### Architecture\"$'\\n'\nPR_BODY+=\"\
+        \\`\\`\\`\"$'\\n'\nPR_BODY+=\"${SESSION_BRANCH}  \u2500\u2500\u25BA  0D_base_\
+        \  \u2500\u2500\u25BA  main\"$'\\n'\nPR_BODY+=\"  (this PR)              (staging)\
+        \   (promotion PR)\"$'\\n'\nPR_BODY+=\"\\`\\`\\`\"$'\\n'\nPR_BODY+=\"\"$'\\\
+        n'\nPR_BODY+=\"### Checklist\"$'\\n'\nPR_BODY+=\"- [ ] All CI checks pass\
+        \ on head branch\"$'\\n'\nPR_BODY+=\"- [ ] Cross-reference gate: 0 broken\
+        \ refs\"$'\\n'\nPR_BODY+=\"- [ ] AGENT_REGISTRY count matches actual entries\"\
+        $'\\n'\nPR_BODY+=\"- [ ] Agent file size gate: all .md files \u2264 30,000\
+        \ chars\"$'\\n'\nPR_BODY+=\"- [ ] CHANGELOG.md updated\"$'\\n'\nPR_BODY+=\"\
+        - [ ] AGENT_ACCOUNTABILITY_REPORT.md updated\"$'\\n'\nPR_BODY+=\"- [ ] No\
+        \ deferral language in commits or PR body\"$'\\n'\nPR_BODY+=\"\"$'\\n'\nPR_BODY+=\"\
+        ${EXTRA}\"$'\\n'\nPR_BODY+=\"\"$'\\n'\nPR_BODY+=\"---\"$'\\n'\nPR_BODY+=\"\
+        _Created by \\`create-sub-pr-to-0D_base_.yml\\` workflow \u2014 $(date -u\
+        \ +'%Y-%m-%dT%H:%M:%SZ')_\"$'\\n'\nPR_BODY+=\"\"$'\\n'\nPR_BODY+=\"---\"$'\\\
+        n'\nPR_BODY+=\"\"$'\\n'\nPR_BODY+=\"**\U0001F504 Workflow Execution Checklist**:\"\
+        $'\\n'\nPR_BODY+=\"\"$'\\n'\nPR_BODY+=\"\U0001F510 Agent Token Delegation\"\
+        $'\\n'\nPR_BODY+=\"- [x] \U0001F510 Enable Agent Token Delegation (\\`COPILOT_AGENT_AUTH_ENABLED\\\
+        `)\"$'\\n'\nPR_BODY+=\"- [ ] \U0001F4B0 Cost Proposal Approved\"$'\\n'\nPR_BODY+=\"\
+        - [ ] \U0001F504 Auto-Post @copilot review After Agent Session\"$'\\n'\n\n\
+        GH_TOKEN=\"${{ secrets.CODEX_MASTER_KEY }}\" gh pr create \\\n  --repo \"\
+        ${{ github.repository }}\" \\\n  --title \"${PR_TITLE}\" \\\n  --body \"${PR_BODY}\"\
+        \ \\\n  --head \"${SESSION_BRANCH}\" \\\n  --base \"0D_base_\" \\\n  $(if\
+        \ [ \"${{ inputs.draft }}\" = \"true\" ]; then echo \"--draft\"; fi)\n"
+    - name: Summary
+      if: always()
+      run: "echo \"## \U0001F500 Sub-PR Creation Result\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"| Field | Value |\" >> \"\
+        $GITHUB_STEP_SUMMARY\"\necho \"|-------|-------|\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \necho \"| Session branch | \\`${{ inputs.session_branch }}\\` |\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \necho \"| Base | \\`0D_base_\\` |\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"\
+        | Existing PR | \\`${{ steps.check_existing.outputs.existing_pr || 'none'\
+        \ }}\\` |\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \necho \"### Next Steps\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"1. Review the\
+        \ sub-PR and ensure all CI checks pass\" >> \"$GITHUB_STEP_SUMMARY\"\necho\
+        \ \"2. Approve and merge the sub-PR into \\`0D_base_\\`\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \necho \"3. Trigger \\`promote-integration-branch.yml\\` to promote \\`0D_base_\\\
+        ` \u2192 \\`main\\`\" >> \"$GITHUB_STEP_SUMMARY\"\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

@@ -1,292 +1,205 @@
-name: "🚀 Promote Commit SHA to Target Branch"
-
-# Creates or recreates a target branch from a given source SHA, then optionally
-# opens/updates a PR from that target branch to a configured base branch.
-#
-# Update behaviour: when an existing open PR is found, its title and body are
-# patched via `gh pr edit` so the description stays current after each push.
-#
-# Uses GitHubMCPPoster.create_ref() + create_pull_request() from
-# src/codex/github/mcp_poster.py (IMP-001 / IMP-010, S174).
-#
-# Requires: CODEX_MASTER_KEY secret (contents:write + pull-requests:write)
-#
-# Default architecture:
-#   copilot/session-*  ──►  0D_base_  ──►  main
-#   (agent sessions)         (staging)    (production)
-#   Each session sub-PR                   This promotion PR
-#
-# See: .codex/docs/INTEGRATION_BRANCH_MODEL.md
-
-on:
+name: "\U0001F680 Promote Commit SHA to Target Branch"
+true:
   workflow_dispatch:
     inputs:
       source_sha:
-        description: "Commit SHA to push to the target branch (default: resolve from source_branch)"
+        description: 'Commit SHA to push to the target branch (default: resolve from
+          source_branch)'
         required: false
-        default: ""
+        default: ''
       source_branch:
-        description: "Source branch used to resolve SHA when source_sha is empty"
+        description: Source branch used to resolve SHA when source_sha is empty
         required: false
-        default: "copilot/update-ci-failure-rate-and-confirm-transition"
+        default: copilot/update-ci-failure-rate-and-confirm-transition
       target_branch:
-        description: "Branch to create/update from source SHA"
+        description: Branch to create/update from source SHA
         required: false
-        default: "0D_base_"
+        default: 0D_base_
       pr_base_branch:
-        description: "Base branch for optional PR creation/update"
+        description: Base branch for optional PR creation/update
         required: false
-        default: "main"
+        default: main
       pr_title:
-        description: "PR title (used when create_or_update_pr=true)"
+        description: PR title (used when create_or_update_pr=true)
         required: false
-        default: "promote(S174): 0D_base_ → main — S174 consolidation + Agent Token Delegation"
+        default: "promote(S174): 0D_base_ \u2192 main \u2014 S174 consolidation +\
+          \ Agent Token Delegation"
       session_label:
-        description: "Session label for PR body (e.g. 'S174', 'S137'). Defaults to 'S174' for backward compatibility."
+        description: Session label for PR body (e.g. 'S174', 'S137'). Defaults to
+          'S174' for backward compatibility.
         required: false
-        default: "S174"
+        default: S174
       create_or_update_pr:
-        description: "Create or update a PR from target_branch to pr_base_branch"
+        description: Create or update a PR from target_branch to pr_base_branch
         required: false
         default: true
         type: boolean
       force_recreate:
-        description: "Delete and recreate target_branch if it already exists"
+        description: Delete and recreate target_branch if it already exists
         required: false
         default: false
         type: boolean
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: write
   pull-requests: write
-
-
 jobs:
   promote:
-    name: "Create/update target branch and optional PR"
+    name: Create/update target branch and optional PR
     runs-on: ubuntu-latest
     timeout-minutes: 15
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          fetch-depth: 1
-          token: ${{ secrets.CODEX_MASTER_KEY }}
-
-      - name: Set up Python
-        uses: actions/setup-python@v6 # v6
-        with:
-          cache: pip
-          python-version: "3.12.13"
-
-      - name: Install package (for mcp_poster CLI)
-        run: pip install -e . --quiet
-
-      - name: Resolve source SHA
-        id: resolve_sha
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
-          SOURCE_SHA: ${{ inputs.source_sha }}
-          SOURCE_BRANCH: ${{ inputs.source_branch }}
-        run: |
-          if [ -n "${SOURCE_SHA}" ]; then
-            echo "sha=${SOURCE_SHA}" >> "$GITHUB_OUTPUT"
-            echo "✅ Using provided SHA: ${SOURCE_SHA}"
-          else
-            # Resolve SHA from branch name
-            SHA=$(gh api "repos/${{ github.repository }}/git/ref/heads/${SOURCE_BRANCH}" \
-              --jq '.object.sha' 2>/dev/null || true)
-            if [ -z "${SHA}" ]; then
-              echo "❌ Could not resolve SHA for branch '${SOURCE_BRANCH}'" >&2
-              exit 1
-            fi
-            echo "sha=${SHA}" >> "$GITHUB_OUTPUT"
-            echo "✅ Resolved ${SOURCE_BRANCH} → ${SHA}"
-          fi
-
-      - name: Delete existing target branch (force recreate)
-        if: inputs.force_recreate
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
-        run: |
-          TARGET_BRANCH="${{ inputs.target_branch }}"
-          if gh api "repos/${{ github.repository }}/git/ref/heads/${TARGET_BRANCH}" > /dev/null 2>&1; then
-            gh api "repos/${{ github.repository }}/git/refs/heads/${TARGET_BRANCH}" \
-              --method DELETE && echo "✅ Deleted existing ${TARGET_BRANCH}"
-          else
-            echo "ℹ️  ${TARGET_BRANCH} does not exist — nothing to delete"
-          fi
-
-      - name: Create or update target branch
-        id: create_branch
-        env:
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
-          SHA: ${{ steps.resolve_sha.outputs.sha }}
-        run: |
-          # Pattern C: retry with exponential backoff for PATCH ref updates
-          _api_with_retry() {
-            local attempt=0
-            local max_attempts=3
-            while [ $attempt -lt $max_attempts ]; do
-              if "$@"; then
-                return 0
-              fi
-              attempt=$(( attempt + 1 ))
-              local backoff=$(( 2 ** attempt * 5 ))   # attempt 1→10s, attempt 2→20s (3 total attempts: 0,1,2)
-              echo "::warning::API call failed (attempt $attempt/$max_attempts) — retrying in ${backoff}s"
-              sleep "$backoff"
-            done
-            echo "::error::API call failed after $max_attempts attempts"
-            return 1
-          }
-
-          TARGET_BRANCH="${{ inputs.target_branch }}"
-          # Try to create the branch; if it already exists, update it via PATCH
-          python -m codex.github.mcp_poster create-branch \
-            --repo "${{ github.repository }}" \
-            --ref "refs/heads/${TARGET_BRANCH}" \
-            --sha "${SHA}" 2>&1 || {
-            EXIT=$?
-            echo "create-branch returned $EXIT — branch may already exist"
-            # Fall back to force-update via gh api PATCH (with retry)
-            if [ "$EXIT" -ne 0 ]; then
-              if _api_with_retry gh api "repos/${{ github.repository }}/git/refs/heads/${TARGET_BRANCH}" \
-                --method PATCH \
-                -H "Accept: application/vnd.github+json" \
-                -f sha="${SHA}" \
-                -f force=true; then
-                echo "✅ Force-updated ${TARGET_BRANCH} → ${SHA}"
-              else
-                echo "❌ Failed to create or update ${TARGET_BRANCH} after retries" >&2
-                exit 1
-              fi
-            fi
-          }
-          echo "branch_sha=${SHA}" >> "$GITHUB_OUTPUT"
-
-      - name: Check for existing PR
-        id: check_pr
-        if: inputs.create_or_update_pr
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
-        run: |
-          TARGET_BRANCH="${{ inputs.target_branch }}"
-          BASE_BRANCH="${{ inputs.pr_base_branch }}"
-          EXISTING=$(gh pr list \
-            --repo "${{ github.repository }}" \
-            --head "${TARGET_BRANCH}" \
-            --base "${BASE_BRANCH}" \
-            --state open \
-            --json number \
-            --jq '.[0].number' 2>/dev/null || echo "")
-          echo "existing_pr=${EXISTING}" >> "$GITHUB_OUTPUT"
-          if [ -n "${EXISTING}" ]; then
-            echo "ℹ️  Existing promotion PR #${EXISTING} found"
-          else
-            echo "ℹ️  No existing promotion PR — will create one"
-          fi
-
-      - name: Open promotion PR
-        if: inputs.create_or_update_pr && steps.check_pr.outputs.existing_pr == ''
-        id: create_pr
-        env:
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
-          SHA: ${{ steps.resolve_sha.outputs.sha }}
-          PR_TITLE: ${{ inputs.pr_title }}
-          SESSION_LABEL: ${{ inputs.session_label }}
-        run: |
-          # Build PR body with variable concatenation to avoid shellcheck SC2215
-          # (printf multi-arg form with lines starting '-' is mis-flagged as a flag).
-          TARGET_BRANCH="${{ inputs.target_branch }}"
-          BASE_BRANCH="${{ inputs.pr_base_branch }}"
-          PR_BODY="## 🚀 ${SESSION_LABEL} Promotion: \`${TARGET_BRANCH}\` → \`${BASE_BRANCH}\`"$'\n'
-          PR_BODY+=""$'\n'
-          PR_BODY+="This PR promotes the **${SESSION_LABEL} integration branch** (\`${TARGET_BRANCH}\`) into \`${BASE_BRANCH}\`."$'\n'
-          PR_BODY+=""$'\n'
-          PR_BODY+="### Contents"$'\n'
-          PR_BODY+="- See PR title and session notes for ${SESSION_LABEL} contents"$'\n'
-          PR_BODY+=""$'\n'
-          PR_BODY+="### Branch created from"$'\n'
-          PR_BODY+="\`${SHA}\` (\`${{ inputs.source_branch }}\` @ ${SESSION_LABEL})"$'\n'
-          PR_BODY+=""$'\n'
-          PR_BODY+="### Architecture"$'\n'
-          PR_BODY+="\`\`\`"$'\n'
-          PR_BODY+="${{ inputs.source_branch }}  ──►  ${TARGET_BRANCH}  ──►  ${BASE_BRANCH}"$'\n'
-          PR_BODY+="              (${SESSION_LABEL} session)            (this PR)"$'\n'
-          PR_BODY+="\`\`\`"$'\n'
-          PR_BODY+=""$'\n'
-          PR_BODY+="---"$'\n'
-          PR_BODY+="_Auto-created by \`promote-integration-branch.yml\` workflow_"$'\n'
-          PR_BODY+="_Source: \`mcp_poster create-branch\` + \`create-pr\` (${SESSION_LABEL})_"$'\n'
-          PR_BODY+=""$'\n'
-          PR_BODY+="---"$'\n'
-          PR_BODY+=""$'\n'
-          PR_BODY+="**🔄 Workflow Execution Checklist**:"$'\n'
-          PR_BODY+=""$'\n'
-          PR_BODY+="🔐 Agent Token Delegation"$'\n'
-          PR_BODY+="- [x] 🔐 Enable Agent Token Delegation (\`COPILOT_AGENT_AUTH_ENABLED\`)"$'\n'
-          PR_BODY+="- [ ] 💰 Cost Proposal Approved"$'\n'
-          PR_BODY+="- [ ] 🔄 Auto-Post @copilot review After Agent Session"$'\n'
-
-          GH_TOKEN="${CODEX_MASTER_KEY}" gh pr create \
-            --repo "${{ github.repository }}" \
-            --title "${PR_TITLE}" \
-            --body "${PR_BODY}" \
-            --head "${TARGET_BRANCH}" \
-            --base "${BASE_BRANCH}"
-
-      - name: Update existing promotion PR (title + body)
-        if: inputs.create_or_update_pr && steps.check_pr.outputs.existing_pr != ''
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
-          SHA: ${{ steps.resolve_sha.outputs.sha }}
-          PR_TITLE: ${{ inputs.pr_title }}
-          SESSION_LABEL: ${{ inputs.session_label }}
-        run: |
-          PR_NUM="${{ steps.check_pr.outputs.existing_pr }}"
-          TARGET_BRANCH="${{ inputs.target_branch }}"
-          BASE_BRANCH="${{ inputs.pr_base_branch }}"
-          # Build PR body with variable concatenation to avoid shellcheck SC2215.
-          PR_BODY="## 🚀 ${SESSION_LABEL} Promotion (updated): \`${TARGET_BRANCH}\` → \`${BASE_BRANCH}\`"$'\n'
-          PR_BODY+=""$'\n'
-          PR_BODY+="This PR promotes the **${SESSION_LABEL} integration branch** (\`${TARGET_BRANCH}\`) into \`${BASE_BRANCH}\`."$'\n'
-          PR_BODY+="PR updated automatically — latest ${TARGET_BRANCH} SHA: \`${SHA}\`."$'\n'
-          PR_BODY+=""$'\n'
-          PR_BODY+="---"$'\n'
-          PR_BODY+=""$'\n'
-          PR_BODY+="**🔄 Workflow Execution Checklist**:"$'\n'
-          PR_BODY+=""$'\n'
-          PR_BODY+="🔐 Agent Token Delegation"$'\n'
-          PR_BODY+="- [x] 🔐 Enable Agent Token Delegation (\`COPILOT_AGENT_AUTH_ENABLED\`)"$'\n'
-          PR_BODY+="- [x] 💰 Cost Proposal Approved"$'\n'
-          PR_BODY+="- [ ] 🔄 Auto-Post @copilot review After Agent Session"$'\n'
-
-          gh pr edit "${PR_NUM}" \
-            --repo "${{ github.repository }}" \
-            --title "${PR_TITLE}" \
-            --body "${PR_BODY}"
-          echo "✅ Updated existing PR #${PR_NUM} title and body"
-
-      - name: Summary
-        if: always()
-        run: |
-          echo "## 🚀 Commit SHA Branch Promotion" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Item | Value |" >> "$GITHUB_STEP_SUMMARY"
-          echo "|------|-------|" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Target branch | \`${{ inputs.target_branch }}\` |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Target SHA | \`${{ steps.resolve_sha.outputs.sha }}\` |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Base branch | \`${{ inputs.pr_base_branch }}\` |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Source branch | \`${{ inputs.source_branch }}\` |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Existing PR | \`${{ steps.check_pr.outputs.existing_pr || 'none' }}\` |" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "### Next Steps" >> "$GITHUB_STEP_SUMMARY"
-          echo "1. Confirm target branch update result" >> "$GITHUB_STEP_SUMMARY"
-          echo "2. If PR mode enabled, review and merge \`${{ inputs.target_branch }}\` → \`${{ inputs.pr_base_branch }}\`" >> "$GITHUB_STEP_SUMMARY"
-          echo "3. Agent Token Delegation activates automatically after PR description triggers \`agent-auth-delegation.yml\`" >> "$GITHUB_STEP_SUMMARY"
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        fetch-depth: 1
+        token: ${{ secrets.CODEX_MASTER_KEY }}
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        cache: pip
+        python-version: 3.12.13
+    - name: Install package (for mcp_poster CLI)
+      run: pip install -e . --quiet
+    - name: Resolve source SHA
+      id: resolve_sha
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+        SOURCE_SHA: ${{ inputs.source_sha }}
+        SOURCE_BRANCH: ${{ inputs.source_branch }}
+      run: "if [ -n \"${SOURCE_SHA}\" ]; then\n  echo \"sha=${SOURCE_SHA}\" >> \"\
+        $GITHUB_OUTPUT\"\n  echo \"\u2705 Using provided SHA: ${SOURCE_SHA}\"\nelse\n\
+        \  # Resolve SHA from branch name\n  SHA=$(gh api \"repos/${{ github.repository\
+        \ }}/git/ref/heads/${SOURCE_BRANCH}\" \\\n    --jq '.object.sha' 2>/dev/null\
+        \ || true)\n  if [ -z \"${SHA}\" ]; then\n    echo \"\u274C Could not resolve\
+        \ SHA for branch '${SOURCE_BRANCH}'\" >&2\n    exit 1\n  fi\n  echo \"sha=${SHA}\"\
+        \ >> \"$GITHUB_OUTPUT\"\n  echo \"\u2705 Resolved ${SOURCE_BRANCH} \u2192\
+        \ ${SHA}\"\nfi\n"
+    - name: Delete existing target branch (force recreate)
+      if: inputs.force_recreate
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+      run: "TARGET_BRANCH=\"${{ inputs.target_branch }}\"\nif gh api \"repos/${{ github.repository\
+        \ }}/git/ref/heads/${TARGET_BRANCH}\" > /dev/null 2>&1; then\n  gh api \"\
+        repos/${{ github.repository }}/git/refs/heads/${TARGET_BRANCH}\" \\\n    --method\
+        \ DELETE && echo \"\u2705 Deleted existing ${TARGET_BRANCH}\"\nelse\n  echo\
+        \ \"\u2139\uFE0F  ${TARGET_BRANCH} does not exist \u2014 nothing to delete\"\
+        \nfi\n"
+    - name: Create or update target branch
+      id: create_branch
+      env:
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+        SHA: ${{ steps.resolve_sha.outputs.sha }}
+      run: "# Pattern C: retry with exponential backoff for PATCH ref updates\n_api_with_retry()\
+        \ {\n  local attempt=0\n  local max_attempts=3\n  while [ $attempt -lt $max_attempts\
+        \ ]; do\n    if \"$@\"; then\n      return 0\n    fi\n    attempt=$(( attempt\
+        \ + 1 ))\n    local backoff=$(( 2 ** attempt * 5 ))   # attempt 1\u219210s,\
+        \ attempt 2\u219220s (3 total attempts: 0,1,2)\n    echo \"::warning::API\
+        \ call failed (attempt $attempt/$max_attempts) \u2014 retrying in ${backoff}s\"\
+        \n    sleep \"$backoff\"\n  done\n  echo \"::error::API call failed after\
+        \ $max_attempts attempts\"\n  return 1\n}\n\nTARGET_BRANCH=\"${{ inputs.target_branch\
+        \ }}\"\n# Try to create the branch; if it already exists, update it via PATCH\n\
+        python -m codex.github.mcp_poster create-branch \\\n  --repo \"${{ github.repository\
+        \ }}\" \\\n  --ref \"refs/heads/${TARGET_BRANCH}\" \\\n  --sha \"${SHA}\"\
+        \ 2>&1 || {\n  EXIT=$?\n  echo \"create-branch returned $EXIT \u2014 branch\
+        \ may already exist\"\n  # Fall back to force-update via gh api PATCH (with\
+        \ retry)\n  if [ \"$EXIT\" -ne 0 ]; then\n    if _api_with_retry gh api \"\
+        repos/${{ github.repository }}/git/refs/heads/${TARGET_BRANCH}\" \\\n    \
+        \  --method PATCH \\\n      -H \"Accept: application/vnd.github+json\" \\\n\
+        \      -f sha=\"${SHA}\" \\\n      -f force=true; then\n      echo \"\u2705\
+        \ Force-updated ${TARGET_BRANCH} \u2192 ${SHA}\"\n    else\n      echo \"\u274C\
+        \ Failed to create or update ${TARGET_BRANCH} after retries\" >&2\n      exit\
+        \ 1\n    fi\n  fi\n}\necho \"branch_sha=${SHA}\" >> \"$GITHUB_OUTPUT\"\n"
+    - name: Check for existing PR
+      id: check_pr
+      if: inputs.create_or_update_pr
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+      run: "TARGET_BRANCH=\"${{ inputs.target_branch }}\"\nBASE_BRANCH=\"${{ inputs.pr_base_branch\
+        \ }}\"\nEXISTING=$(gh pr list \\\n  --repo \"${{ github.repository }}\" \\\
+        \n  --head \"${TARGET_BRANCH}\" \\\n  --base \"${BASE_BRANCH}\" \\\n  --state\
+        \ open \\\n  --json number \\\n  --jq '.[0].number' 2>/dev/null || echo \"\
+        \")\necho \"existing_pr=${EXISTING}\" >> \"$GITHUB_OUTPUT\"\nif [ -n \"${EXISTING}\"\
+        \ ]; then\n  echo \"\u2139\uFE0F  Existing promotion PR #${EXISTING} found\"\
+        \nelse\n  echo \"\u2139\uFE0F  No existing promotion PR \u2014 will create\
+        \ one\"\nfi\n"
+    - name: Open promotion PR
+      if: inputs.create_or_update_pr && steps.check_pr.outputs.existing_pr == ''
+      id: create_pr
+      env:
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        SHA: ${{ steps.resolve_sha.outputs.sha }}
+        PR_TITLE: ${{ inputs.pr_title }}
+        SESSION_LABEL: ${{ inputs.session_label }}
+      run: "# Build PR body with variable concatenation to avoid shellcheck SC2215\n\
+        # (printf multi-arg form with lines starting '-' is mis-flagged as a flag).\n\
+        TARGET_BRANCH=\"${{ inputs.target_branch }}\"\nBASE_BRANCH=\"${{ inputs.pr_base_branch\
+        \ }}\"\nPR_BODY=\"## \U0001F680 ${SESSION_LABEL} Promotion: \\`${TARGET_BRANCH}\\\
+        ` \u2192 \\`${BASE_BRANCH}\\`\"$'\\n'\nPR_BODY+=\"\"$'\\n'\nPR_BODY+=\"This\
+        \ PR promotes the **${SESSION_LABEL} integration branch** (\\`${TARGET_BRANCH}\\\
+        `) into \\`${BASE_BRANCH}\\`.\"$'\\n'\nPR_BODY+=\"\"$'\\n'\nPR_BODY+=\"###\
+        \ Contents\"$'\\n'\nPR_BODY+=\"- See PR title and session notes for ${SESSION_LABEL}\
+        \ contents\"$'\\n'\nPR_BODY+=\"\"$'\\n'\nPR_BODY+=\"### Branch created from\"\
+        $'\\n'\nPR_BODY+=\"\\`${SHA}\\` (\\`${{ inputs.source_branch }}\\` @ ${SESSION_LABEL})\"\
+        $'\\n'\nPR_BODY+=\"\"$'\\n'\nPR_BODY+=\"### Architecture\"$'\\n'\nPR_BODY+=\"\
+        \\`\\`\\`\"$'\\n'\nPR_BODY+=\"${{ inputs.source_branch }}  \u2500\u2500\u25BA\
+        \  ${TARGET_BRANCH}  \u2500\u2500\u25BA  ${BASE_BRANCH}\"$'\\n'\nPR_BODY+=\"\
+        \              (${SESSION_LABEL} session)            (this PR)\"$'\\n'\nPR_BODY+=\"\
+        \\`\\`\\`\"$'\\n'\nPR_BODY+=\"\"$'\\n'\nPR_BODY+=\"---\"$'\\n'\nPR_BODY+=\"\
+        _Auto-created by \\`promote-integration-branch.yml\\` workflow_\"$'\\n'\n\
+        PR_BODY+=\"_Source: \\`mcp_poster create-branch\\` + \\`create-pr\\` (${SESSION_LABEL})_\"\
+        $'\\n'\nPR_BODY+=\"\"$'\\n'\nPR_BODY+=\"---\"$'\\n'\nPR_BODY+=\"\"$'\\n'\n\
+        PR_BODY+=\"**\U0001F504 Workflow Execution Checklist**:\"$'\\n'\nPR_BODY+=\"\
+        \"$'\\n'\nPR_BODY+=\"\U0001F510 Agent Token Delegation\"$'\\n'\nPR_BODY+=\"\
+        - [x] \U0001F510 Enable Agent Token Delegation (\\`COPILOT_AGENT_AUTH_ENABLED\\\
+        `)\"$'\\n'\nPR_BODY+=\"- [ ] \U0001F4B0 Cost Proposal Approved\"$'\\n'\nPR_BODY+=\"\
+        - [ ] \U0001F504 Auto-Post @copilot review After Agent Session\"$'\\n'\n\n\
+        GH_TOKEN=\"${CODEX_MASTER_KEY}\" gh pr create \\\n  --repo \"${{ github.repository\
+        \ }}\" \\\n  --title \"${PR_TITLE}\" \\\n  --body \"${PR_BODY}\" \\\n  --head\
+        \ \"${TARGET_BRANCH}\" \\\n  --base \"${BASE_BRANCH}\"\n"
+    - name: Update existing promotion PR (title + body)
+      if: inputs.create_or_update_pr && steps.check_pr.outputs.existing_pr != ''
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+        SHA: ${{ steps.resolve_sha.outputs.sha }}
+        PR_TITLE: ${{ inputs.pr_title }}
+        SESSION_LABEL: ${{ inputs.session_label }}
+      run: "PR_NUM=\"${{ steps.check_pr.outputs.existing_pr }}\"\nTARGET_BRANCH=\"\
+        ${{ inputs.target_branch }}\"\nBASE_BRANCH=\"${{ inputs.pr_base_branch }}\"\
+        \n# Build PR body with variable concatenation to avoid shellcheck SC2215.\n\
+        PR_BODY=\"## \U0001F680 ${SESSION_LABEL} Promotion (updated): \\`${TARGET_BRANCH}\\\
+        ` \u2192 \\`${BASE_BRANCH}\\`\"$'\\n'\nPR_BODY+=\"\"$'\\n'\nPR_BODY+=\"This\
+        \ PR promotes the **${SESSION_LABEL} integration branch** (\\`${TARGET_BRANCH}\\\
+        `) into \\`${BASE_BRANCH}\\`.\"$'\\n'\nPR_BODY+=\"PR updated automatically\
+        \ \u2014 latest ${TARGET_BRANCH} SHA: \\`${SHA}\\`.\"$'\\n'\nPR_BODY+=\"\"\
+        $'\\n'\nPR_BODY+=\"---\"$'\\n'\nPR_BODY+=\"\"$'\\n'\nPR_BODY+=\"**\U0001F504\
+        \ Workflow Execution Checklist**:\"$'\\n'\nPR_BODY+=\"\"$'\\n'\nPR_BODY+=\"\
+        \U0001F510 Agent Token Delegation\"$'\\n'\nPR_BODY+=\"- [x] \U0001F510 Enable\
+        \ Agent Token Delegation (\\`COPILOT_AGENT_AUTH_ENABLED\\`)\"$'\\n'\nPR_BODY+=\"\
+        - [x] \U0001F4B0 Cost Proposal Approved\"$'\\n'\nPR_BODY+=\"- [ ] \U0001F504\
+        \ Auto-Post @copilot review After Agent Session\"$'\\n'\n\ngh pr edit \"${PR_NUM}\"\
+        \ \\\n  --repo \"${{ github.repository }}\" \\\n  --title \"${PR_TITLE}\"\
+        \ \\\n  --body \"${PR_BODY}\"\necho \"\u2705 Updated existing PR #${PR_NUM}\
+        \ title and body\"\n"
+    - name: Summary
+      if: always()
+      run: "echo \"## \U0001F680 Commit SHA Branch Promotion\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"| Item | Value |\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \necho \"|------|-------|\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"| Target branch\
+        \ | \\`${{ inputs.target_branch }}\\` |\" >> \"$GITHUB_STEP_SUMMARY\"\necho\
+        \ \"| Target SHA | \\`${{ steps.resolve_sha.outputs.sha }}\\` |\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \necho \"| Base branch | \\`${{ inputs.pr_base_branch }}\\` |\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \necho \"| Source branch | \\`${{ inputs.source_branch }}\\` |\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \necho \"| Existing PR | \\`${{ steps.check_pr.outputs.existing_pr || 'none'\
+        \ }}\\` |\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \necho \"### Next Steps\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"1. Confirm target\
+        \ branch update result\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"2. If PR mode\
+        \ enabled, review and merge \\`${{ inputs.target_branch }}\\` \u2192 \\`${{\
+        \ inputs.pr_base_branch }}\\`\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"3. Agent\
+        \ Token Delegation activates automatically after PR description triggers \\\
+        `agent-auth-delegation.yml\\`\" >> \"$GITHUB_STEP_SUMMARY\"\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

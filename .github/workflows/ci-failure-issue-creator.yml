@@ -1,77 +1,44 @@
-name: "🚨 CI Failure Issue Creator"
-
-# Automatically opens a GitHub Issue (and, for critical failures, a fix PR with
-# an @copilot command) whenever a monitored CI workflow fails on `main` AND no
-# existing tracker already covers the failure.
-#
-# ── Single-branch guarantee (R3) ────────────────────────────────────────────
-# The concurrency group below is GLOBAL across all workflow names.  This means
-# every invocation of this workflow is serialised — only one instance runs at a
-# time.  Because the triage job queries branch existence while holding the lock,
-# the check-then-create sequence is race-free: a second concurrent failure
-# cannot sneak a second branch in between the check and the push.
-#
-# Outcome when a fix branch already exists:
-#   • A new issue is still opened (labelled "queued").
-#   • NO second branch or PR is created.
-#   • The dashboard section shows the queue state so the team always sees the
-#     backlog in the PR Status Dashboard.
-#
-# See docs/ci/CI_FAILURE_AUTO_RESPONSE.md for the full process map.
-
-on:
+name: "\U0001F6A8 CI Failure Issue Creator"
+true:
   workflow_run:
     workflows:
-      - "CI"
-      - "Code Quality & Coverage Suite"
-      - "CodeQL Analysis"
-      - "Docker Build & Push"
-      - "Data Quality Suite"
-      - "Auth Tests"
-      - "RAG Module Tests"
-      - "Rust-Python Hybrid Swarm CI/CD"
-      - "OTel Coherence Snapshot"
-      - "📈 OTel Coherence Snapshot"
-      - "Semgrep SARIF"
-      - "Pre-Merge Validation"
-      - "CI Health Monitor"
-      - "Deferral Language Gate"
-      - "Cost Gate"
-      - "Branch Rebase Gate"
-      - "Root Org Validation"
-    types: [completed]
-    branches: [main]
-
+    - CI
+    - Code Quality & Coverage Suite
+    - CodeQL Analysis
+    - Docker Build & Push
+    - Data Quality Suite
+    - Auth Tests
+    - RAG Module Tests
+    - Rust-Python Hybrid Swarm CI/CD
+    - OTel Coherence Snapshot
+    - "\U0001F4C8 OTel Coherence Snapshot"
+    - Semgrep SARIF
+    - Pre-Merge Validation
+    - CI Health Monitor
+    - Deferral Language Gate
+    - Cost Gate
+    - Branch Rebase Gate
+    - Root Org Validation
+    types:
+    - completed
+    branches:
+    - main
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
-  issues: write          # For creating and labeling CI failure issues
-  pull-requests: write   # For creating PRs and posting comments
-  contents: write        # For creating fix branches
-  actions: read          # For reading workflow run status
-
-# ── Global serialisation lock ─────────────────────────────────────────────────
-# One instance at a time across ALL workflow names — enforces the single-branch
-# rule without any external state store.  cancel-in-progress: false queues
-# subsequent failures rather than dropping them.
-
+  issues: write
+  pull-requests: write
+  contents: write
+  actions: read
 jobs:
-
-  # ══════════════════════════════════════════════════════════════════════════
-  # JOB 1 ── triage
-  # Classify severity, deduplicate, decide action.
-  # Runs while holding the global lock so branch check + create is atomic.
-  # ══════════════════════════════════════════════════════════════════════════
   triage:
-    name: "Triage"
+    name: Triage
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    # Process failures AND successes (success → close-on-fix path)
-    if: >
-      github.event.workflow_run.head_branch == 'main'
+    if: 'github.event.workflow_run.head_branch == ''main''
 
+      '
     outputs:
       conclusion: ${{ github.event.workflow_run.conclusion }}
       action: ${{ steps.dedup.outputs.action }}
@@ -85,601 +52,381 @@ jobs:
       first_job_url: ${{ steps.jobs.outputs.first_job_url }}
       first_job_name: ${{ steps.jobs.outputs.first_job_name }}
       failed_job_count: ${{ steps.jobs.outputs.failed_job_count }}
-
     steps:
-      - name: Checkout (consolidator + OTel)
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          sparse-checkout: |
-            scripts/ci/pr_comment_consolidator.py
-            src/codex/monitoring/
-          sparse-checkout-cone-mode: false
+    - name: Checkout (consolidator + OTel)
+      uses: actions/checkout@v7
+      with:
+        sparse-checkout: 'scripts/ci/pr_comment_consolidator.py
 
-      # ── Classify severity ──────────────────────────────────────────────────
-      - name: Classify severity and labels
-        id: classify
-        uses: actions/github-script@v8 # v9
-        with:
-          script: |
-            const wfName = context.payload.workflow_run.name;
-            const wfSlug = wfName.toLowerCase()
-                             .replace(/[^a-z0-9]+/g, '-')
-                             .replace(/^-+|-+$/g, '');
+          src/codex/monitoring/
 
-            // Critical patterns — first match wins
-            const CRITICAL = [
-              { re: /security|codeql|semgrep|vuln/i,
-                extra: ['security-risk'],   badge: '🔐 Security Risk'   },
-              { re: /build|docker|deploy|publish|release/i,
-                extra: ['build-break'],     badge: '🏗️ Build Break'     },
-              { re: /test|pytest|auth|critical.path/i,
-                extra: ['test-regression'], badge: '🧪 Test Regression' },
-            ];
-
-            let severity = 'normal', extraLabels = [], badge = '';
-            for (const p of CRITICAL) {
-              if (p.re.test(wfName)) {
-                severity   = 'critical';
-                extraLabels = p.extra;
-                badge       = p.badge;
-                break;
-              }
-            }
-
-            const baseLabels = severity === 'critical'
-              ? ['ci-failure', 'priority-critical', ...extraLabels]
-              : ['ci-failure', 'priority-medium', 'needs-investigation'];
-
-            core.setOutput('severity',    severity);
-            core.setOutput('labels_json', JSON.stringify(baseLabels));
-            core.setOutput('wf_slug',     wfSlug);
-            core.setOutput('badge',       badge);
-            core.info(`"${wfName}" → severity=${severity} labels=${JSON.stringify(baseLabels)}`);
-
-      # ── Fetch failed job details (only needed for failure path) ───────────
-      - name: Fetch failed job details
-        id: jobs
-        if: github.event.workflow_run.conclusion == 'failure'
-        uses: actions/github-script@v8 # v9
-        with:
-          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          script: |
-            const { data } = await github.rest.actions.listJobsForWorkflowRun({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              run_id: context.payload.workflow_run.id,
-              filter: 'latest',
-            });
-            const failed = data.jobs.filter(j => j.conclusion === 'failure');
-            const md = failed.length
-              ? failed.map(j => {
-                  const steps = (j.steps || [])
-                    .filter(s => s.conclusion === 'failure')
-                    .map(s => `  - Step \`${s.name}\``).join('\n');
-                  return `**❌ ${j.name}**\n${steps || '  _(no step-level detail)_'}`;
-                }).join('\n\n')
-              : '_No individual job failures found — see run for details._';
-            const first = failed[0];
-            core.setOutput('failed_jobs_md',  md);
-            core.setOutput('failed_job_count', failed.length.toString());
-            core.setOutput('first_job_url',   first?.html_url || '');
-            core.setOutput('first_job_name',  first?.name     || '');
-
-      # ── Deduplicate (runs while holding global lock) ──────────────────────
-      - name: Deduplicate — issue + single-branch check
-        id: dedup
-        if: github.event.workflow_run.conclusion == 'failure'
-        uses: actions/github-script@v8 # v9
-        with:
-          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          script: |
-            const wfSlug = '${{ steps.classify.outputs.wf_slug }}';
-            const owner  = context.repo.owner;
-            const repo   = context.repo.repo;
-
-            // L1 — open issue already tracking this workflow slug
-            const { data: openIssues } = await github.rest.issues.listForRepo({
-              owner, repo, state: 'open', labels: 'ci-failure', per_page: 50,
-            });
-            const existingIssue = openIssues.find(i =>
-              i.title.toLowerCase().includes(wfSlug.replace(/-/g, ' ')) ||
-              i.title.toLowerCase().includes(wfSlug) ||
-              (i.body || '').includes(`<!-- CI_FAILURE_TRACKER:${wfSlug.substring(0,60)} -->`)
-            );
-            if (existingIssue) {
-              core.info(`L1: issue #${existingIssue.number} already tracks "${wfSlug}" — skip`);
-              core.setOutput('action',         'skip');
-              core.setOutput('existing_issue', existingIssue.number.toString());
-              return;
-            }
-
-            // L2 — scan ALL branches for ANY active fix branch.
-            // Because this job holds the global concurrency lock the scan is
-            // race-free: no other instance of this workflow can create a branch
-            // between this check and our own branch creation.
-            const FIX_PREFIXES = ['fix/ci-', 'copilot/fix-ci-', 'hotfix/ci-', 'fix/main-ci-'];
-            let activeBranch = '', activePR = '';
-            let page = 1;
-            while (!activeBranch) {
-              const { data: branches } = await github.rest.repos.listBranches({
-                owner, repo, per_page: 100, page,
-              });
-              for (const b of branches) {
-                if (FIX_PREFIXES.some(p => b.name.toLowerCase().startsWith(p))) {
-                  activeBranch = b.name;
-                  break;
-                }
-              }
-              if (branches.length < 100 || activeBranch) break;
-              page++;
-            }
-
-            if (activeBranch) {
-              const { data: prs } = await github.rest.pulls.list({
-                owner, repo, state: 'open',
-                head: `${owner}:${activeBranch}`, per_page: 5,
-              });
-              activePR = prs[0]?.html_url || '';
-              core.info(`L2: fix branch "${activeBranch}" active — queue new failure`);
-              core.setOutput('action',            'queue');
-              core.setOutput('active_fix_branch', activeBranch);
-              core.setOutput('active_fix_pr',     activePR);
-              return;
-            }
-
-            core.info(`No existing tracker — will create issue`);
-            core.setOutput('action', 'new_issue');
-
-  # ══════════════════════════════════════════════════════════════════════════
-  # JOB 2 ── create-issue
-  # Opens a labelled GitHub Issue for every untracked failure (new or queued).
-  # ══════════════════════════════════════════════════════════════════════════
+          '
+        sparse-checkout-cone-mode: false
+    - name: Classify severity and labels
+      id: classify
+      uses: actions/github-script@v8
+      with:
+        script: "const wfName = context.payload.workflow_run.name;\nconst wfSlug =\
+          \ wfName.toLowerCase()\n                 .replace(/[^a-z0-9]+/g, '-')\n\
+          \                 .replace(/^-+|-+$/g, '');\n\n// Critical patterns \u2014\
+          \ first match wins\nconst CRITICAL = [\n  { re: /security|codeql|semgrep|vuln/i,\n\
+          \    extra: ['security-risk'],   badge: '\U0001F510 Security Risk'   },\n\
+          \  { re: /build|docker|deploy|publish|release/i,\n    extra: ['build-break'],\
+          \     badge: '\U0001F3D7\uFE0F Build Break'     },\n  { re: /test|pytest|auth|critical.path/i,\n\
+          \    extra: ['test-regression'], badge: '\U0001F9EA Test Regression' },\n\
+          ];\n\nlet severity = 'normal', extraLabels = [], badge = '';\nfor (const\
+          \ p of CRITICAL) {\n  if (p.re.test(wfName)) {\n    severity   = 'critical';\n\
+          \    extraLabels = p.extra;\n    badge       = p.badge;\n    break;\n  }\n\
+          }\n\nconst baseLabels = severity === 'critical'\n  ? ['ci-failure', 'priority-critical',\
+          \ ...extraLabels]\n  : ['ci-failure', 'priority-medium', 'needs-investigation'];\n\
+          \ncore.setOutput('severity',    severity);\ncore.setOutput('labels_json',\
+          \ JSON.stringify(baseLabels));\ncore.setOutput('wf_slug',     wfSlug);\n\
+          core.setOutput('badge',       badge);\ncore.info(`\"${wfName}\" \u2192 severity=${severity}\
+          \ labels=${JSON.stringify(baseLabels)}`);\n"
+    - name: Fetch failed job details
+      id: jobs
+      if: github.event.workflow_run.conclusion == 'failure'
+      uses: actions/github-script@v8
+      with:
+        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        script: "const { data } = await github.rest.actions.listJobsForWorkflowRun({\n\
+          \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  run_id: context.payload.workflow_run.id,\n\
+          \  filter: 'latest',\n});\nconst failed = data.jobs.filter(j => j.conclusion\
+          \ === 'failure');\nconst md = failed.length\n  ? failed.map(j => {\n   \
+          \   const steps = (j.steps || [])\n        .filter(s => s.conclusion ===\
+          \ 'failure')\n        .map(s => `  - Step \\`${s.name}\\``).join('\\n');\n\
+          \      return `**\u274C ${j.name}**\\n${steps || '  _(no step-level detail)_'}`;\n\
+          \    }).join('\\n\\n')\n  : '_No individual job failures found \u2014 see\
+          \ run for details._';\nconst first = failed[0];\ncore.setOutput('failed_jobs_md',\
+          \  md);\ncore.setOutput('failed_job_count', failed.length.toString());\n\
+          core.setOutput('first_job_url',   first?.html_url || '');\ncore.setOutput('first_job_name',\
+          \  first?.name     || '');\n"
+    - name: "Deduplicate \u2014 issue + single-branch check"
+      id: dedup
+      if: github.event.workflow_run.conclusion == 'failure'
+      uses: actions/github-script@v8
+      with:
+        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        script: "const wfSlug = '${{ steps.classify.outputs.wf_slug }}';\nconst owner\
+          \  = context.repo.owner;\nconst repo   = context.repo.repo;\n\n// L1 \u2014\
+          \ open issue already tracking this workflow slug\nconst { data: openIssues\
+          \ } = await github.rest.issues.listForRepo({\n  owner, repo, state: 'open',\
+          \ labels: 'ci-failure', per_page: 50,\n});\nconst existingIssue = openIssues.find(i\
+          \ =>\n  i.title.toLowerCase().includes(wfSlug.replace(/-/g, ' ')) ||\n \
+          \ i.title.toLowerCase().includes(wfSlug) ||\n  (i.body || '').includes(`<!--\
+          \ CI_FAILURE_TRACKER:${wfSlug.substring(0,60)} -->`)\n);\nif (existingIssue)\
+          \ {\n  core.info(`L1: issue #${existingIssue.number} already tracks \"${wfSlug}\"\
+          \ \u2014 skip`);\n  core.setOutput('action',         'skip');\n  core.setOutput('existing_issue',\
+          \ existingIssue.number.toString());\n  return;\n}\n\n// L2 \u2014 scan ALL\
+          \ branches for ANY active fix branch.\n// Because this job holds the global\
+          \ concurrency lock the scan is\n// race-free: no other instance of this\
+          \ workflow can create a branch\n// between this check and our own branch\
+          \ creation.\nconst FIX_PREFIXES = ['fix/ci-', 'copilot/fix-ci-', 'hotfix/ci-',\
+          \ 'fix/main-ci-'];\nlet activeBranch = '', activePR = '';\nlet page = 1;\n\
+          while (!activeBranch) {\n  const { data: branches } = await github.rest.repos.listBranches({\n\
+          \    owner, repo, per_page: 100, page,\n  });\n  for (const b of branches)\
+          \ {\n    if (FIX_PREFIXES.some(p => b.name.toLowerCase().startsWith(p)))\
+          \ {\n      activeBranch = b.name;\n      break;\n    }\n  }\n  if (branches.length\
+          \ < 100 || activeBranch) break;\n  page++;\n}\n\nif (activeBranch) {\n \
+          \ const { data: prs } = await github.rest.pulls.list({\n    owner, repo,\
+          \ state: 'open',\n    head: `${owner}:${activeBranch}`, per_page: 5,\n \
+          \ });\n  activePR = prs[0]?.html_url || '';\n  core.info(`L2: fix branch\
+          \ \"${activeBranch}\" active \u2014 queue new failure`);\n  core.setOutput('action',\
+          \            'queue');\n  core.setOutput('active_fix_branch', activeBranch);\n\
+          \  core.setOutput('active_fix_pr',     activePR);\n  return;\n}\n\ncore.info(`No\
+          \ existing tracker \u2014 will create issue`);\ncore.setOutput('action',\
+          \ 'new_issue');\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   create-issue:
-    name: "Open Issue"
+    name: Open Issue
     needs: triage
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    if: >
-      needs.triage.outputs.conclusion == 'failure' &&
-      (needs.triage.outputs.action == 'new_issue' ||
-       needs.triage.outputs.action == 'queue')
-
+    if: "needs.triage.outputs.conclusion == 'failure' && (needs.triage.outputs.action\
+      \ == 'new_issue' ||\n needs.triage.outputs.action == 'queue')\n"
     outputs:
       issue_number: ${{ steps.issue.outputs.issue_number }}
       issue_url: ${{ steps.issue.outputs.issue_url }}
-
     steps:
-      - name: Create GitHub Issue
-        id: issue
-        uses: actions/github-script@v8 # v9
-        env:
-          FAILED_JOBS_MD: ${{ needs.triage.outputs.failed_jobs_md }}
-        with:
-          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          script: |
-            const run          = context.payload.workflow_run;
-            const wfName       = run.name;
-            const wfSlug       = '${{ needs.triage.outputs.wf_slug }}';
-            const severity     = '${{ needs.triage.outputs.severity }}';
-            const labels       = JSON.parse('${{ needs.triage.outputs.labels_json }}');
-            const action       = '${{ needs.triage.outputs.action }}';
-            const activeBranch = '${{ needs.triage.outputs.active_fix_branch }}';
-            const activePR     = '${{ needs.triage.outputs.active_fix_pr }}';
-            const shortSha     = run.head_sha.substring(0, 7);
-            const ts           = new Date().toISOString();
-            const failedMd     = process.env.FAILED_JOBS_MD || '';
-            const jobCount     = '${{ needs.triage.outputs.failed_job_count }}';
-            const firstJobUrl  = '${{ needs.triage.outputs.first_job_url }}';
-            const firstJobName = '${{ needs.triage.outputs.first_job_name }}';
-
-            const priorityLine = severity === 'critical'
-              ? '🔴 **P0 — Critical** (automated fix PR will be opened)'
-              : '🟡 **P2 — Medium** (manual fix required)';
-
-            const queueBlock = action === 'queue' ? [
-              '',
-              '> ⏳ **Status: QUEUED** — single-branch rule is active.',
-              `> Fix branch [\`${activeBranch}\`](${activePR || '#'}) is already open.`,
-              '> This failure will be addressed after the active fix merges into `main`.',
-              '> See [CI Failure Auto-Response docs](docs/ci/CI_FAILURE_AUTO_RESPONSE.md).',
-              '',
-            ] : [];
-
-            const body = [
-              `<!-- CI_FAILURE_TRACKER:${wfSlug.substring(0, 60)} -->`,
-              `## 🚨 CI Failure on \`main\` — \`${wfName}\``,
-              '',
-              '| Field | Value |',
-              '|-------|-------|',
-              `| **Workflow** | \`${wfName}\` |`,
-              `| **Branch** | \`main\` |`,
-              `| **Commit** | [\`${shortSha}\`](https://github.com/${context.repo.owner}/${context.repo.repo}/commit/${run.head_sha}) |`,
-              `| **Triggered by** | @${run.triggering_actor?.login || 'unknown'} |`,
-              `| **Run** | [View run ↗](${run.html_url}) |`,
-              `| **Failed jobs** | ${jobCount} |`,
-              `| **Priority** | ${priorityLine} |`,
-              `| **Detected** | ${ts} |`,
-              '',
-              ...queueBlock,
-              '---',
-              '',
-              '## Failed Job Details',
-              '',
-              failedMd,
-              firstJobUrl ? `\n[View first failing job ↗ ${firstJobName}](${firstJobUrl})` : '',
-              '',
-              '---',
-              '',
-              '## Next Steps',
-              '',
-              `1. Open the [workflow run](${run.html_url}) and review the logs.`,
-              `2. ${action === 'queue' ? `Wait for [\`${activeBranch}\`](${activePR || '#'}) to merge, then create \`fix/ci-${wfSlug.substring(0,30)}\`.` : `Create branch \`fix/ci-${wfSlug.substring(0,30)}\` and implement the fix.`}`,
-              '3. This issue closes automatically when the workflow passes on `main`.',
-              '',
-              '---',
-              '',
-              `> 🤖 _Auto-generated by [CI Failure Issue Creator](.github/workflows/ci-failure-issue-creator.yml) · ${ts}_`,
-            ].join('\n');
-
-            const { data: issue } = await github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: `🚨 CI Failure on main: ${wfName} [${shortSha}]`,
-              body,
-              labels,
-            });
-            core.info(`Created issue #${issue.number}: ${issue.html_url}`);
-            core.setOutput('issue_number', issue.number.toString());
-            core.setOutput('issue_url',    issue.html_url);
-
-  # ══════════════════════════════════════════════════════════════════════════
-  # JOB 3 ── create-fix-pr
-  # CRITICAL failures only AND no active fix branch (action == new_issue).
-  # Creates exactly ONE fix branch + PR + @copilot instruction.
-  # The global concurrency lock (Job 1 already ran) guarantees no concurrent
-  # branch creation slips through.
-  # ══════════════════════════════════════════════════════════════════════════
+    - name: Create GitHub Issue
+      id: issue
+      uses: actions/github-script@v8
+      env:
+        FAILED_JOBS_MD: ${{ needs.triage.outputs.failed_jobs_md }}
+      with:
+        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        script: "const run          = context.payload.workflow_run;\nconst wfName\
+          \       = run.name;\nconst wfSlug       = '${{ needs.triage.outputs.wf_slug\
+          \ }}';\nconst severity     = '${{ needs.triage.outputs.severity }}';\nconst\
+          \ labels       = JSON.parse('${{ needs.triage.outputs.labels_json }}');\n\
+          const action       = '${{ needs.triage.outputs.action }}';\nconst activeBranch\
+          \ = '${{ needs.triage.outputs.active_fix_branch }}';\nconst activePR   \
+          \  = '${{ needs.triage.outputs.active_fix_pr }}';\nconst shortSha     =\
+          \ run.head_sha.substring(0, 7);\nconst ts           = new Date().toISOString();\n\
+          const failedMd     = process.env.FAILED_JOBS_MD || '';\nconst jobCount \
+          \    = '${{ needs.triage.outputs.failed_job_count }}';\nconst firstJobUrl\
+          \  = '${{ needs.triage.outputs.first_job_url }}';\nconst firstJobName =\
+          \ '${{ needs.triage.outputs.first_job_name }}';\n\nconst priorityLine =\
+          \ severity === 'critical'\n  ? '\U0001F534 **P0 \u2014 Critical** (automated\
+          \ fix PR will be opened)'\n  : '\U0001F7E1 **P2 \u2014 Medium** (manual\
+          \ fix required)';\n\nconst queueBlock = action === 'queue' ? [\n  '',\n\
+          \  '> \u23F3 **Status: QUEUED** \u2014 single-branch rule is active.',\n\
+          \  `> Fix branch [\\`${activeBranch}\\`](${activePR || '#'}) is already\
+          \ open.`,\n  '> This failure will be addressed after the active fix merges\
+          \ into `main`.',\n  '> See [CI Failure Auto-Response docs](docs/ci/CI_FAILURE_AUTO_RESPONSE.md).',\n\
+          \  '',\n] : [];\n\nconst body = [\n  `<!-- CI_FAILURE_TRACKER:${wfSlug.substring(0,\
+          \ 60)} -->`,\n  `## \U0001F6A8 CI Failure on \\`main\\` \u2014 \\`${wfName}\\\
+          ``,\n  '',\n  '| Field | Value |',\n  '|-------|-------|',\n  `| **Workflow**\
+          \ | \\`${wfName}\\` |`,\n  `| **Branch** | \\`main\\` |`,\n  `| **Commit**\
+          \ | [\\`${shortSha}\\`](https://github.com/${context.repo.owner}/${context.repo.repo}/commit/${run.head_sha})\
+          \ |`,\n  `| **Triggered by** | @${run.triggering_actor?.login || 'unknown'}\
+          \ |`,\n  `| **Run** | [View run \u2197](${run.html_url}) |`,\n  `| **Failed\
+          \ jobs** | ${jobCount} |`,\n  `| **Priority** | ${priorityLine} |`,\n  `|\
+          \ **Detected** | ${ts} |`,\n  '',\n  ...queueBlock,\n  '---',\n  '',\n \
+          \ '## Failed Job Details',\n  '',\n  failedMd,\n  firstJobUrl ? `\\n[View\
+          \ first failing job \u2197 ${firstJobName}](${firstJobUrl})` : '',\n  '',\n\
+          \  '---',\n  '',\n  '## Next Steps',\n  '',\n  `1. Open the [workflow run](${run.html_url})\
+          \ and review the logs.`,\n  `2. ${action === 'queue' ? `Wait for [\\`${activeBranch}\\\
+          `](${activePR || '#'}) to merge, then create \\`fix/ci-${wfSlug.substring(0,30)}\\\
+          `.` : `Create branch \\`fix/ci-${wfSlug.substring(0,30)}\\` and implement\
+          \ the fix.`}`,\n  '3. This issue closes automatically when the workflow\
+          \ passes on `main`.',\n  '',\n  '---',\n  '',\n  `> \U0001F916 _Auto-generated\
+          \ by [CI Failure Issue Creator](.github/workflows/ci-failure-issue-creator.yml)\
+          \ \xB7 ${ts}_`,\n].join('\\n');\n\nconst { data: issue } = await github.rest.issues.create({\n\
+          \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  title: `\U0001F6A8\
+          \ CI Failure on main: ${wfName} [${shortSha}]`,\n  body,\n  labels,\n});\n\
+          core.info(`Created issue #${issue.number}: ${issue.html_url}`);\ncore.setOutput('issue_number',\
+          \ issue.number.toString());\ncore.setOutput('issue_url',    issue.html_url);\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   create-fix-pr:
-    name: "Open Critical Fix PR"
-    needs: [triage, create-issue]
+    name: Open Critical Fix PR
+    needs:
+    - triage
+    - create-issue
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    if: >
-      needs.triage.outputs.conclusion == 'failure' &&
-      needs.triage.outputs.severity   == 'critical' &&
-      needs.triage.outputs.action     == 'new_issue'
+    if: 'needs.triage.outputs.conclusion == ''failure'' && needs.triage.outputs.severity   ==
+      ''critical'' && needs.triage.outputs.action     == ''new_issue''
 
+      '
     outputs:
       fix_branch: ${{ steps.branch.outputs.fix_branch }}
       pr_url: ${{ steps.pr.outputs.pr_url }}
       pr_number: ${{ steps.pr.outputs.pr_number }}
-
     steps:
-      - name: Checkout main
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          ref: main
-          fetch-depth: 1
-
-      - name: Create fix branch + tracking stub
-        id: branch
-        env:
-          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-        run: |
-          WF_SLUG="${{ needs.triage.outputs.wf_slug }}"
-          SHORT_SLUG="${WF_SLUG:0:30}"
-          BRANCH="fix/ci-${SHORT_SLUG}-$(date +%Y%m%d%H%M%S)"
-          echo "fix_branch=${BRANCH}" >> "$GITHUB_OUTPUT"
-
-          git config user.name  "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout -b "${BRANCH}"
-
-          mkdir -p .codex/ci-fixes
-          cat > ".codex/ci-fixes/${SHORT_SLUG}.md" << STUB
-          # CI Fix Tracking: ${{ github.event.workflow_run.name }}
-
-          **Status**: 🔄 In Progress
-          **Opened**: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
-          **Workflow**: ${{ github.event.workflow_run.name }}
-          **Run**: ${{ github.event.workflow_run.html_url }}
-          **Issue**: #${{ needs.create-issue.outputs.issue_number }}
-
-          This stub was created by the CI Failure Issue Creator.
-          @copilot will implement the fix in this branch.
-          STUB
-
-          git add ".codex/ci-fixes/${SHORT_SLUG}.md"
-          git commit -m "fix(ci): tracking stub for ${{ github.event.workflow_run.name }} [skip ci]"
-          git push origin "${BRANCH}"
-          echo "✅ Pushed: ${BRANCH}"
-
-      - name: Open fix PR with @copilot command
-        id: pr
-        uses: actions/github-script@v8 # v9
-        env:
-          FAILED_JOBS_MD: ${{ needs.triage.outputs.failed_jobs_md }}
-        with:
-          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          script: |
-            const run         = context.payload.workflow_run;
-            const wfName      = run.name;
-            const wfSlug      = '${{ needs.triage.outputs.wf_slug }}';
-            const fixBranch   = '${{ steps.branch.outputs.fix_branch }}';
-            const issueNum    = '${{ needs.create-issue.outputs.issue_number }}';
-            const issueUrl    = '${{ needs.create-issue.outputs.issue_url }}';
-            const shortSha    = run.head_sha.substring(0, 7);
-            const ts          = new Date().toISOString();
-            const failedMd    = process.env.FAILED_JOBS_MD || '';
-            const firstJobUrl = '${{ needs.triage.outputs.first_job_url }}';
-
-            const body = [
-              `## 🔧 Critical CI Fix — \`${wfName}\``,
-              '',
-              `> **Linked issue**: ${issueUrl}`,
-              `> **Failed run**: [\`${shortSha}\`](${run.html_url})`,
-              `> **Fix branch**: \`${fixBranch}\``,
-              '',
-              '---',
-              '',
-              '## Failed Job Details',
-              '',
-              failedMd,
-              firstJobUrl ? `\n[View first failing job ↗](${firstJobUrl})` : '',
-              '',
-              '---',
-              '',
-              '## @copilot Fix Instructions',
-              '',
-              `@copilot Please investigate and fix the CI failure in the \`${wfName}\` workflow.`,
-              '',
-              '> **⚠️ GitHub Copilot no-auto-PR policy:** Sessions no longer create pull requests',
-              '> by default. This PR is pre-created for you — **commit all changes to this PR branch**',
-              '> and push here. Do NOT create a new branch or PR.',
-              '',
-              '**Context:**',
-              `- Workflow: \`${wfName}\``,
-              `- Failed run: [View logs](${run.html_url})`,
-              `- Linked issue: ${issueUrl}`,
-              '',
-              '**Required steps:**',
-              `1. Diagnose the root cause of the \`${wfName}\` failure from the run logs.`,
-              '2. Implement the minimal targeted fix on **this branch** (do not create a new branch).',
-              '3. Verify CI passes on this branch before requesting merge.',
-              '4. Update `CHANGELOG.md` and `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`.',
-              '',
-              '---',
-              '',
-              `> 🤖 _Auto-generated by [CI Failure Issue Creator](.github/workflows/ci-failure-issue-creator.yml) · ${ts}_`,
-            ].join('\n');
-
-            const { data: pr } = await github.rest.pulls.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: `fix(ci): 🔧 Critical — ${wfName} [${shortSha}]`,
-              head: fixBranch,
-              base: 'main',
-              body,
-              draft: false,
-            });
-
-            await github.rest.issues.addLabels({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: pr.number,
-              labels: JSON.parse('${{ needs.triage.outputs.labels_json }}'),
-            });
-
-            // Cross-link issue → PR
-            await github.rest.issues.createComment({
-              owner: context.repo.owner, repo: context.repo.repo,
-              issue_number: parseInt(issueNum, 10),
-              body: `🔧 **Automated fix PR opened**: ${pr.html_url}\n\n@copilot has been instructed to diagnose and fix the root cause.\n\n---\n_[🔗 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,
-            });
-
-            core.info(`Fix PR #${pr.number}: ${pr.html_url}`);
-            core.setOutput('pr_url',    pr.html_url);
-            core.setOutput('pr_number', pr.number.toString());
-
-  # ══════════════════════════════════════════════════════════════════════════
-  # JOB 4 ── post-dashboard
-  # Updates the PR Status Dashboard with the outcome of all above jobs.
-  # Uses pr_comment_consolidator.py — one section per event, never a new comment.
-  # ══════════════════════════════════════════════════════════════════════════
+    - name: Checkout main
+      uses: actions/checkout@v7
+      with:
+        ref: main
+        fetch-depth: 1
+    - name: Create fix branch + tracking stub
+      id: branch
+      env:
+        GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+      run: "WF_SLUG=\"${{ needs.triage.outputs.wf_slug }}\"\nSHORT_SLUG=\"${WF_SLUG:0:30}\"\
+        \nBRANCH=\"fix/ci-${SHORT_SLUG}-$(date +%Y%m%d%H%M%S)\"\necho \"fix_branch=${BRANCH}\"\
+        \ >> \"$GITHUB_OUTPUT\"\n\ngit config user.name  \"github-actions[bot]\"\n\
+        git config user.email \"github-actions[bot]@users.noreply.github.com\"\ngit\
+        \ checkout -b \"${BRANCH}\"\n\nmkdir -p .codex/ci-fixes\ncat > \".codex/ci-fixes/${SHORT_SLUG}.md\"\
+        \ << STUB\n# CI Fix Tracking: ${{ github.event.workflow_run.name }}\n\n**Status**:\
+        \ \U0001F504 In Progress\n**Opened**: $(date -u +\"%Y-%m-%dT%H:%M:%SZ\")\n\
+        **Workflow**: ${{ github.event.workflow_run.name }}\n**Run**: ${{ github.event.workflow_run.html_url\
+        \ }}\n**Issue**: #${{ needs.create-issue.outputs.issue_number }}\n\nThis stub\
+        \ was created by the CI Failure Issue Creator.\n@copilot will implement the\
+        \ fix in this branch.\nSTUB\n\ngit add \".codex/ci-fixes/${SHORT_SLUG}.md\"\
+        \ngit commit -m \"fix(ci): tracking stub for ${{ github.event.workflow_run.name\
+        \ }} [skip ci]\"\ngit push origin \"${BRANCH}\"\necho \"\u2705 Pushed: ${BRANCH}\"\
+        \n"
+    - name: Open fix PR with @copilot command
+      id: pr
+      uses: actions/github-script@v8
+      env:
+        FAILED_JOBS_MD: ${{ needs.triage.outputs.failed_jobs_md }}
+      with:
+        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        script: "const run         = context.payload.workflow_run;\nconst wfName \
+          \     = run.name;\nconst wfSlug      = '${{ needs.triage.outputs.wf_slug\
+          \ }}';\nconst fixBranch   = '${{ steps.branch.outputs.fix_branch }}';\n\
+          const issueNum    = '${{ needs.create-issue.outputs.issue_number }}';\n\
+          const issueUrl    = '${{ needs.create-issue.outputs.issue_url }}';\nconst\
+          \ shortSha    = run.head_sha.substring(0, 7);\nconst ts          = new Date().toISOString();\n\
+          const failedMd    = process.env.FAILED_JOBS_MD || '';\nconst firstJobUrl\
+          \ = '${{ needs.triage.outputs.first_job_url }}';\n\nconst body = [\n  `##\
+          \ \U0001F527 Critical CI Fix \u2014 \\`${wfName}\\``,\n  '',\n  `> **Linked\
+          \ issue**: ${issueUrl}`,\n  `> **Failed run**: [\\`${shortSha}\\`](${run.html_url})`,\n\
+          \  `> **Fix branch**: \\`${fixBranch}\\``,\n  '',\n  '---',\n  '',\n  '##\
+          \ Failed Job Details',\n  '',\n  failedMd,\n  firstJobUrl ? `\\n[View first\
+          \ failing job \u2197](${firstJobUrl})` : '',\n  '',\n  '---',\n  '',\n \
+          \ '## @copilot Fix Instructions',\n  '',\n  `@copilot Please investigate\
+          \ and fix the CI failure in the \\`${wfName}\\` workflow.`,\n  '',\n  '>\
+          \ **\u26A0\uFE0F GitHub Copilot no-auto-PR policy:** Sessions no longer\
+          \ create pull requests',\n  '> by default. This PR is pre-created for you\
+          \ \u2014 **commit all changes to this PR branch**',\n  '> and push here.\
+          \ Do NOT create a new branch or PR.',\n  '',\n  '**Context:**',\n  `- Workflow:\
+          \ \\`${wfName}\\``,\n  `- Failed run: [View logs](${run.html_url})`,\n \
+          \ `- Linked issue: ${issueUrl}`,\n  '',\n  '**Required steps:**',\n  `1.\
+          \ Diagnose the root cause of the \\`${wfName}\\` failure from the run logs.`,\n\
+          \  '2. Implement the minimal targeted fix on **this branch** (do not create\
+          \ a new branch).',\n  '3. Verify CI passes on this branch before requesting\
+          \ merge.',\n  '4. Update `CHANGELOG.md` and `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`.',\n\
+          \  '',\n  '---',\n  '',\n  `> \U0001F916 _Auto-generated by [CI Failure\
+          \ Issue Creator](.github/workflows/ci-failure-issue-creator.yml) \xB7 ${ts}_`,\n\
+          ].join('\\n');\n\nconst { data: pr } = await github.rest.pulls.create({\n\
+          \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  title: `fix(ci):\
+          \ \U0001F527 Critical \u2014 ${wfName} [${shortSha}]`,\n  head: fixBranch,\n\
+          \  base: 'main',\n  body,\n  draft: false,\n});\n\nawait github.rest.issues.addLabels({\n\
+          \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  issue_number:\
+          \ pr.number,\n  labels: JSON.parse('${{ needs.triage.outputs.labels_json\
+          \ }}'),\n});\n\n// Cross-link issue \u2192 PR\nawait github.rest.issues.createComment({\n\
+          \  owner: context.repo.owner, repo: context.repo.repo,\n  issue_number:\
+          \ parseInt(issueNum, 10),\n  body: `\U0001F527 **Automated fix PR opened**:\
+          \ ${pr.html_url}\\n\\n@copilot has been instructed to diagnose and fix the\
+          \ root cause.\\n\\n---\\n_[\U0001F517 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,\n\
+          });\n\ncore.info(`Fix PR #${pr.number}: ${pr.html_url}`);\ncore.setOutput('pr_url',\
+          \    pr.html_url);\ncore.setOutput('pr_number', pr.number.toString());\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   post-dashboard:
-    name: "Update Dashboard"
-    needs: [triage, create-issue, create-fix-pr]
+    name: Update Dashboard
+    needs:
+    - triage
+    - create-issue
+    - create-fix-pr
     runs-on: ubuntu-latest
     timeout-minutes: 10
     if: always() && github.event.workflow_run.head_branch == 'main'
-
     steps:
-      - name: Checkout (consolidator)
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          sparse-checkout: |
-            scripts/ci/pr_comment_consolidator.py
-            src/codex/monitoring/
-          sparse-checkout-cone-mode: false
+    - name: Checkout (consolidator)
+      uses: actions/checkout@v7
+      with:
+        sparse-checkout: 'scripts/ci/pr_comment_consolidator.py
 
-      - name: Set up Python
-        uses: actions/setup-python@v6 # v6
-        with:
-          python-version: "3.12.13"
-        # No pip cache — sparse-checkout job; no packages installed via pip
+          src/codex/monitoring/
 
-      - name: Find target PR for dashboard post
-        id: find-pr
-        uses: actions/github-script@v8 # v9
-        with:
-          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          script: |
-            // Priority: new fix PR > active branch PR > most-recently-updated open PR
-            const newPrNum  = '${{ needs.create-fix-pr.outputs.pr_number }}';
-            if (newPrNum)   { core.setOutput('pr_number', newPrNum); return; }
-
-            const activePR = '${{ needs.triage.outputs.active_fix_pr }}';
-            if (activePR)  {
-              const m = activePR.match(/\/pull\/(\d+)/);
-              if (m)        { core.setOutput('pr_number', m[1]); return; }
-            }
-
-            const { data: prs } = await github.rest.pulls.list({
-              owner: context.repo.owner, repo: context.repo.repo,
-              state: 'open', sort: 'updated', direction: 'desc', per_page: 1,
-            });
-            core.setOutput('pr_number', prs[0]?.number?.toString() || '');
-
-      - name: Build dashboard section
-        id: section
-        env:
-          CONCLUSION: ${{ github.event.workflow_run.conclusion }}
-          WF_NAME: ${{ github.event.workflow_run.name }}
-          WF_RUN_URL: ${{ github.event.workflow_run.html_url }}
-          ACTION: ${{ needs.triage.outputs.action }}
-          SEVERITY: ${{ needs.triage.outputs.severity }}
-          ISSUE_URL: ${{ needs.create-issue.outputs.issue_url }}
-          ISSUE_NUM: ${{ needs.create-issue.outputs.issue_number }}
-          FIX_BRANCH: ${{ needs.create-fix-pr.outputs.fix_branch }}
-          FIX_PR_URL: ${{ needs.create-fix-pr.outputs.pr_url }}
-          ACTIVE_BRANCH: ${{ needs.triage.outputs.active_fix_branch }}
-          ACTIVE_PR: ${{ needs.triage.outputs.active_fix_pr }}
-        run: |
-          python3 - <<'PYEOF'
-          import os
-
-          conclusion   = os.environ.get("CONCLUSION", "")
-          wf_name      = os.environ["WF_NAME"]
-          wf_run_url   = os.environ["WF_RUN_URL"]
-          action       = os.environ.get("ACTION", "")
-          severity     = os.environ.get("SEVERITY", "normal")
-          issue_url    = os.environ.get("ISSUE_URL", "")
-          issue_num    = os.environ.get("ISSUE_NUM", "")
-          fix_branch   = os.environ.get("FIX_BRANCH", "")
-          fix_pr_url   = os.environ.get("FIX_PR_URL", "")
-          active_branch= os.environ.get("ACTIVE_BRANCH", "")
-          active_pr    = os.environ.get("ACTIVE_PR", "")
-
-          sev = "🔴" if severity == "critical" else "🟡"
-
-          if conclusion == "success":
-              status  = "success"
-              summary = f"✅ `{wf_name}` — passing on `main`"
-              details = f"Workflow passed on `main`. Any linked ci-failure issues have been auto-closed. [Run]({wf_run_url})"
-
-          elif action == "skip":
-              status  = "warning"
-              summary = f"{sev} `{wf_name}` failed — existing tracker covers this"
-              details = f"Workflow failed but an open issue already tracks this failure. [Run]({wf_run_url})"
-
-          elif action == "queue":
-              status  = "warning"
-              summary = f"{sev} `{wf_name}` failed — **queued** (single-branch rule active)"
-              details = "\n".join([
-                  "| Field | Value |", "|-------|-------|",
-                  f"| Workflow | [`{wf_name}`]({wf_run_url}) |",
-                  f"| Severity | {sev} {severity.capitalize()} |",
-                  f"| Status | ⏳ **Queued** — single-branch rule active |",
-                  f"| Active fix branch | `{active_branch}` |",
-                  f"| Active fix PR | {active_pr or '_none_'} |",
-                  f"| New issue | {f'[#{issue_num}]({issue_url})' if issue_num else '_creating_'} |",
-                  "", "> Only one fix branch is active at a time.",
-                  "> This failure is queued and will be addressed after the active fix merges.",
-              ])
-
-          elif action == "new_issue" and severity == "critical":
-              status  = "failure"
-              summary = f"🔴 CRITICAL `{wf_name}` failed — fix PR opened, @copilot assigned"
-              details = "\n".join([
-                  "| Field | Value |", "|-------|-------|",
-                  f"| Workflow | [`{wf_name}`]({wf_run_url}) |",
-                  f"| Severity | 🔴 Critical |",
-                  f"| Issue | {f'[#{issue_num}]({issue_url})' if issue_num else '_creating_'} |",
-                  f"| Fix branch | `{fix_branch}` |",
-                  f"| Fix PR | {fix_pr_url or '_creating_'} |",
-                  "| @copilot | Instructed to diagnose and fix |",
-              ])
-
-          else:
-              status  = "failure"
-              summary = f"{sev} `{wf_name}` failed — issue opened, manual fix required"
-              details = "\n".join([
-                  "| Field | Value |", "|-------|-------|",
-                  f"| Workflow | [`{wf_name}`]({wf_run_url}) |",
-                  f"| Severity | {sev} {severity.capitalize()} |",
-                  f"| Issue | {f'[#{issue_num}]({issue_url})' if issue_num else '_creating_'} |",
-                  "| Next step | Create `fix/ci-*` branch to begin fix |",
-              ])
-
-          out = os.environ.get("GITHUB_OUTPUT", "")
-          if out:
-              with open(out, "a") as f:
-                  f.write(f"status={status}\n")
-                  f.write("summary<<__EOF__\n" + summary + "\n__EOF__\n")
-                  f.write("details<<__EOF__\n" + details + "\n__EOF__\n")
-          PYEOF
-
-      - name: Post to PR Status Dashboard
-        if: steps.find-pr.outputs.pr_number != ''
-        env:
-          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-        run: |
-          python scripts/ci/pr_comment_consolidator.py \
-            --pr-number  "${{ steps.find-pr.outputs.pr_number }}" \
-            --workflow   "CI Monitor: ${{ github.event.workflow_run.name }}" \
-            --status     "${{ steps.section.outputs.status }}" \
-            --summary    "${{ steps.section.outputs.summary }}" \
-            --details    "${{ steps.section.outputs.details }}" \
-            --run-url    "${{ github.event.workflow_run.html_url }}"
-
-  # ══════════════════════════════════════════════════════════════════════════
-  # JOB 5 ── close-on-fix
-  # Auto-closes matching ci-failure issues when the workflow passes on main.
-  # ══════════════════════════════════════════════════════════════════════════
+          '
+        sparse-checkout-cone-mode: false
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: 3.12.13
+    - name: Find target PR for dashboard post
+      id: find-pr
+      uses: actions/github-script@v8
+      with:
+        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        script: "// Priority: new fix PR > active branch PR > most-recently-updated\
+          \ open PR\nconst newPrNum  = '${{ needs.create-fix-pr.outputs.pr_number\
+          \ }}';\nif (newPrNum)   { core.setOutput('pr_number', newPrNum); return;\
+          \ }\n\nconst activePR = '${{ needs.triage.outputs.active_fix_pr }}';\nif\
+          \ (activePR)  {\n  const m = activePR.match(/\\/pull\\/(\\d+)/);\n  if (m)\
+          \        { core.setOutput('pr_number', m[1]); return; }\n}\n\nconst { data:\
+          \ prs } = await github.rest.pulls.list({\n  owner: context.repo.owner, repo:\
+          \ context.repo.repo,\n  state: 'open', sort: 'updated', direction: 'desc',\
+          \ per_page: 1,\n});\ncore.setOutput('pr_number', prs[0]?.number?.toString()\
+          \ || '');\n"
+    - name: Build dashboard section
+      id: section
+      env:
+        CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+        WF_NAME: ${{ github.event.workflow_run.name }}
+        WF_RUN_URL: ${{ github.event.workflow_run.html_url }}
+        ACTION: ${{ needs.triage.outputs.action }}
+        SEVERITY: ${{ needs.triage.outputs.severity }}
+        ISSUE_URL: ${{ needs.create-issue.outputs.issue_url }}
+        ISSUE_NUM: ${{ needs.create-issue.outputs.issue_number }}
+        FIX_BRANCH: ${{ needs.create-fix-pr.outputs.fix_branch }}
+        FIX_PR_URL: ${{ needs.create-fix-pr.outputs.pr_url }}
+        ACTIVE_BRANCH: ${{ needs.triage.outputs.active_fix_branch }}
+        ACTIVE_PR: ${{ needs.triage.outputs.active_fix_pr }}
+      run: "python3 - <<'PYEOF'\nimport os\n\nconclusion   = os.environ.get(\"CONCLUSION\"\
+        , \"\")\nwf_name      = os.environ[\"WF_NAME\"]\nwf_run_url   = os.environ[\"\
+        WF_RUN_URL\"]\naction       = os.environ.get(\"ACTION\", \"\")\nseverity \
+        \    = os.environ.get(\"SEVERITY\", \"normal\")\nissue_url    = os.environ.get(\"\
+        ISSUE_URL\", \"\")\nissue_num    = os.environ.get(\"ISSUE_NUM\", \"\")\nfix_branch\
+        \   = os.environ.get(\"FIX_BRANCH\", \"\")\nfix_pr_url   = os.environ.get(\"\
+        FIX_PR_URL\", \"\")\nactive_branch= os.environ.get(\"ACTIVE_BRANCH\", \"\"\
+        )\nactive_pr    = os.environ.get(\"ACTIVE_PR\", \"\")\n\nsev = \"\U0001F534\
+        \" if severity == \"critical\" else \"\U0001F7E1\"\n\nif conclusion == \"\
+        success\":\n    status  = \"success\"\n    summary = f\"\u2705 `{wf_name}`\
+        \ \u2014 passing on `main`\"\n    details = f\"Workflow passed on `main`.\
+        \ Any linked ci-failure issues have been auto-closed. [Run]({wf_run_url})\"\
+        \n\nelif action == \"skip\":\n    status  = \"warning\"\n    summary = f\"\
+        {sev} `{wf_name}` failed \u2014 existing tracker covers this\"\n    details\
+        \ = f\"Workflow failed but an open issue already tracks this failure. [Run]({wf_run_url})\"\
+        \n\nelif action == \"queue\":\n    status  = \"warning\"\n    summary = f\"\
+        {sev} `{wf_name}` failed \u2014 **queued** (single-branch rule active)\"\n\
+        \    details = \"\\n\".join([\n        \"| Field | Value |\", \"|-------|-------|\"\
+        ,\n        f\"| Workflow | [`{wf_name}`]({wf_run_url}) |\",\n        f\"|\
+        \ Severity | {sev} {severity.capitalize()} |\",\n        f\"| Status | \u23F3\
+        \ **Queued** \u2014 single-branch rule active |\",\n        f\"| Active fix\
+        \ branch | `{active_branch}` |\",\n        f\"| Active fix PR | {active_pr\
+        \ or '_none_'} |\",\n        f\"| New issue | {f'[#{issue_num}]({issue_url})'\
+        \ if issue_num else '_creating_'} |\",\n        \"\", \"> Only one fix branch\
+        \ is active at a time.\",\n        \"> This failure is queued and will be\
+        \ addressed after the active fix merges.\",\n    ])\n\nelif action == \"new_issue\"\
+        \ and severity == \"critical\":\n    status  = \"failure\"\n    summary =\
+        \ f\"\U0001F534 CRITICAL `{wf_name}` failed \u2014 fix PR opened, @copilot\
+        \ assigned\"\n    details = \"\\n\".join([\n        \"| Field | Value |\"\
+        , \"|-------|-------|\",\n        f\"| Workflow | [`{wf_name}`]({wf_run_url})\
+        \ |\",\n        f\"| Severity | \U0001F534 Critical |\",\n        f\"| Issue\
+        \ | {f'[#{issue_num}]({issue_url})' if issue_num else '_creating_'} |\",\n\
+        \        f\"| Fix branch | `{fix_branch}` |\",\n        f\"| Fix PR | {fix_pr_url\
+        \ or '_creating_'} |\",\n        \"| @copilot | Instructed to diagnose and\
+        \ fix |\",\n    ])\n\nelse:\n    status  = \"failure\"\n    summary = f\"\
+        {sev} `{wf_name}` failed \u2014 issue opened, manual fix required\"\n    details\
+        \ = \"\\n\".join([\n        \"| Field | Value |\", \"|-------|-------|\",\n\
+        \        f\"| Workflow | [`{wf_name}`]({wf_run_url}) |\",\n        f\"| Severity\
+        \ | {sev} {severity.capitalize()} |\",\n        f\"| Issue | {f'[#{issue_num}]({issue_url})'\
+        \ if issue_num else '_creating_'} |\",\n        \"| Next step | Create `fix/ci-*`\
+        \ branch to begin fix |\",\n    ])\n\nout = os.environ.get(\"GITHUB_OUTPUT\"\
+        , \"\")\nif out:\n    with open(out, \"a\") as f:\n        f.write(f\"status={status}\\\
+        n\")\n        f.write(\"summary<<__EOF__\\n\" + summary + \"\\n__EOF__\\n\"\
+        )\n        f.write(\"details<<__EOF__\\n\" + details + \"\\n__EOF__\\n\")\n\
+        PYEOF\n"
+    - name: Post to PR Status Dashboard
+      if: steps.find-pr.outputs.pr_number != ''
+      env:
+        GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+      run: "python scripts/ci/pr_comment_consolidator.py \\\n  --pr-number  \"${{\
+        \ steps.find-pr.outputs.pr_number }}\" \\\n  --workflow   \"CI Monitor: ${{\
+        \ github.event.workflow_run.name }}\" \\\n  --status     \"${{ steps.section.outputs.status\
+        \ }}\" \\\n  --summary    \"${{ steps.section.outputs.summary }}\" \\\n  --details\
+        \    \"${{ steps.section.outputs.details }}\" \\\n  --run-url    \"${{ github.event.workflow_run.html_url\
+        \ }}\"\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   close-on-fix:
-    name: "Auto-close Resolved Issues"
+    name: Auto-close Resolved Issues
     needs: triage
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    if: >
-      needs.triage.outputs.conclusion == 'success' ||
-      github.event.workflow_run.conclusion == 'success'
+    if: 'needs.triage.outputs.conclusion == ''success'' || github.event.workflow_run.conclusion
+      == ''success''
 
+      '
     steps:
-      - name: Close matching open ci-failure issues
-        uses: actions/github-script@v8 # v9
-        with:
-          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          script: |
-            const wfName = context.payload.workflow_run.name;
-            const wfSlug = wfName.toLowerCase()
-                             .replace(/[^a-z0-9]+/g, '-')
-                             .replace(/^-+|-+$/g, '');
-            const owner  = context.repo.owner;
-            const repo   = context.repo.repo;
-
-            const { data: issues } = await github.rest.issues.listForRepo({
-              owner, repo, state: 'open', labels: 'ci-failure', per_page: 50,
-            });
-            const matching = issues.filter(i =>
-              i.title.toLowerCase().includes(wfSlug.replace(/-/g, ' ')) ||
-              i.title.toLowerCase().includes(wfSlug) ||
-              (i.body || '').includes(`<!-- CI_FAILURE_TRACKER:${wfSlug.substring(0,60)} -->`)
-            );
-
-            const sha    = context.payload.workflow_run.head_sha.substring(0, 7);
-            const runUrl = context.payload.workflow_run.html_url;
-
-            for (const issue of matching) {
-              await github.rest.issues.createComment({
-                owner, repo, issue_number: issue.number,
-                body: `✅ **Auto-closed** — \`${wfName}\` passed on \`main\` at [\`${sha}\`](${runUrl}). The CI failure tracked by this issue has been resolved.\n\n---\n_[🔗 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,
-              });
-              await github.rest.issues.update({
-                owner, repo, issue_number: issue.number,
-                state: 'closed', state_reason: 'completed',
-              });
-              core.info(`Closed issue #${issue.number}`);
-            }
-            if (!matching.length) core.info(`No open issues found for "${wfName}"`);
+    - name: Close matching open ci-failure issues
+      uses: actions/github-script@v8
+      with:
+        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        script: "const wfName = context.payload.workflow_run.name;\nconst wfSlug =\
+          \ wfName.toLowerCase()\n                 .replace(/[^a-z0-9]+/g, '-')\n\
+          \                 .replace(/^-+|-+$/g, '');\nconst owner  = context.repo.owner;\n\
+          const repo   = context.repo.repo;\n\nconst { data: issues } = await github.rest.issues.listForRepo({\n\
+          \  owner, repo, state: 'open', labels: 'ci-failure', per_page: 50,\n});\n\
+          const matching = issues.filter(i =>\n  i.title.toLowerCase().includes(wfSlug.replace(/-/g,\
+          \ ' ')) ||\n  i.title.toLowerCase().includes(wfSlug) ||\n  (i.body || '').includes(`<!--\
+          \ CI_FAILURE_TRACKER:${wfSlug.substring(0,60)} -->`)\n);\n\nconst sha  \
+          \  = context.payload.workflow_run.head_sha.substring(0, 7);\nconst runUrl\
+          \ = context.payload.workflow_run.html_url;\n\nfor (const issue of matching)\
+          \ {\n  await github.rest.issues.createComment({\n    owner, repo, issue_number:\
+          \ issue.number,\n    body: `\u2705 **Auto-closed** \u2014 \\`${wfName}\\\
+          ` passed on \\`main\\` at [\\`${sha}\\`](${runUrl}). The CI failure tracked\
+          \ by this issue has been resolved.\\n\\n---\\n_[\U0001F517 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,\n\
+          \  });\n  await github.rest.issues.update({\n    owner, repo, issue_number:\
+          \ issue.number,\n    state: 'closed', state_reason: 'completed',\n  });\n\
+          \  core.info(`Closed issue #${issue.number}`);\n}\nif (!matching.length)\
+          \ core.info(`No open issues found for \"${wfName}\"`);\n"

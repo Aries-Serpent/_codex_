@@ -1,505 +1,347 @@
-name: Chat-Ops — @copilot Webhook Trigger
-
-# Webhook-driven agentic automation.
-# Listens for `issue_comment` events (which fire on both issue AND pull request comments).
-#
-# Supported slash commands (comment body starts with one of these):
-#   /copilot continue <prompt-file>   — post "@copilot continue `<prompt-file>`"
-#   /copilot run <prompt-file>        — alias for /copilot continue
-#   /copilot fix <issue-number>       — ask @copilot to fix a specific GitHub issue
-#   /copilot review                   — request an in-depth code review on the current PR
-#   /copilot coverage <module>        — request targeted test coverage improvement
-#   /copilot security                 — trigger security scan and post summary
-#   /copilot status                   — post current session + AAIS status summary
-#   /copilot verify                   — trigger admin_setup_verification workflow
-#   /copilot tier-check               — run enforcement tier scan (dry-run) and post results
-#   /copilot tier-promote             — generate tier promotion stubs and post as artifact
-#   /copilot help                     — post usage guide as a comment
-#
-# Security: only actors in COGNITIVE_BRAIN_ALLOWED_ACTORS (or org owners) may activate commands.
-# HMAC signature validation is handled automatically by GitHub — workflow only fires for
-# authenticated events on this repository.
-#
-# Sources:
-#   https://github.blog/ai-and-ml/automate-repository-tasks-with-github-agentic-workflows/
-#   https://docs.github.com/en/webhooks/webhook-events-and-payloads#issue_comment
-#   https://inventivehq.com/blog/github-webhooks-guide
-
-on:
+name: "Chat-Ops \u2014 @copilot Webhook Trigger"
+true:
   issue_comment:
-    types: [created]
-
+    types:
+    - created
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   issues: write
   pull-requests: write
-
-
 jobs:
   dispatch:
     name: Parse slash command and dispatch
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    # Only process comments that start with /copilot
     if: startsWith(github.event.comment.body, '/copilot')
-
     steps:
-      - uses: actions/checkout@v7 # v6.0.3
+    - uses: actions/checkout@v7
+    - name: Cache pip downloads
+      uses: actions/cache@v5
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-chatops-${{ hashFiles('pyproject.toml') }}
+        restore-keys: ${{ runner.os }}-pip-chatops-
+    - name: Autonomy Registry gate check
+      continue-on-error: true
+      env:
+        ACTOR: ${{ github.event.comment.user.login }}
+      run: "python scripts/ci/autonomy_gate_check.py \\\n  --surface AUT-007 \\\n\
+        \  --class ADVISORY_WRITE \\\n  --actor \"${ACTOR}\" || true\n"
+    - name: Parse command and actor
+      id: parse
+      env:
+        COMMENT_BODY: ${{ github.event.comment.body }}
+        ACTOR: ${{ github.event.comment.user.login }}
+        ALLOWED_ACTORS: ${{ vars.COGNITIVE_BRAIN_ALLOWED_ACTORS }}
+        PR_NUMBER: ${{ github.event.issue.number }}
+        REPO: ${{ github.repository }}
+      run: "# Normalize command\nCMD=$(echo \"$COMMENT_BODY\" | head -1 | xargs)\n\
+        echo \"FULL_CMD=${CMD}\" >> $GITHUB_OUTPUT\n\n# Extract subcommand: /copilot\
+        \ <subcommand> [args...]\nSUBCMD=$(echo \"$CMD\" | awk '{print $2}')\nARGS=$(echo\
+        \ \"$CMD\" | cut -d' ' -f3-)\necho \"SUBCMD=${SUBCMD}\" >> $GITHUB_OUTPUT\n\
+        echo \"ARGS=${ARGS}\" >> $GITHUB_OUTPUT\necho \"PR_NUMBER=${PR_NUMBER}\" >>\
+        \ $GITHUB_OUTPUT\n\n# Actor authorization \u2014 check against COGNITIVE_BRAIN_ALLOWED_ACTORS\
+        \ variable\nALLOWED=\"${ALLOWED_ACTORS:-mbaetiong,github-actions[bot],copilot-swe-agent[bot],github-copilot[bot]}\"\
+        \nAUTHORIZED=\"false\"\nIFS=',' read -ra ACTORS <<< \"$ALLOWED\"\nfor a in\
+        \ \"${ACTORS[@]}\"; do\n  trimmed=$(echo \"$a\" | xargs)\n  if [ \"$trimmed\"\
+        \ = \"$ACTOR\" ]; then\n    AUTHORIZED=\"true\"\n    break\n  fi\ndone\necho\
+        \ \"AUTHORIZED=${AUTHORIZED}\" >> $GITHUB_OUTPUT\necho \"ACTOR=${ACTOR}\"\
+        \ >> $GITHUB_OUTPUT\n"
+    - name: Reject unauthorized actor
+      if: steps.parse.outputs.AUTHORIZED != 'true'
+      env:
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+        REPO: ${{ github.repository }}
+        PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
+        ACTOR: ${{ steps.parse.outputs.ACTOR }}
+      run: "TOKEN=\"${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}\"\ncurl -s -X POST \\\n\
+        \  -H \"Authorization: Bearer ${TOKEN}\" \\\n  -H \"Accept: application/vnd.github+json\"\
+        \ \\\n  \"https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments\"\
+        \ \\\n  -d \"{\\\"body\\\":\\\"\u26D4 **Chat-Ops:** Actor \\`${ACTOR}\\` is\
+        \ not in \\`COGNITIVE_BRAIN_ALLOWED_ACTORS\\`. Command ignored.\\\"}\" \\\n\
+        \  > /dev/null\necho \"Rejected unauthorized actor: ${ACTOR}\"\nexit 0\n"
+    - name: Session summary gate
+      id: summary_gate
+      if: 'steps.parse.outputs.AUTHORIZED == ''true'' &&
 
-      - name: Cache pip downloads
-        uses: actions/cache@v5 # v5
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-chatops-${{ hashFiles('pyproject.toml') }}
-          restore-keys: ${{ runner.os }}-pip-chatops-
+        (steps.parse.outputs.SUBCMD == ''continue'' || steps.parse.outputs.SUBCMD
+        == ''run'')
 
-      # ── Autonomy Registry gate check (Phase 1 wiring) ──────────────────────
-      # Consults .codex/autonomy_registry.yaml before allowing command dispatch.
-      # continue-on-error: the gate is advisory until mode = ELEVATED_AUTO enforces hard denial.
-      - name: Autonomy Registry gate check
-        continue-on-error: true
-        env:
-          ACTOR: ${{ github.event.comment.user.login }}
-        run: |
-          python scripts/ci/autonomy_gate_check.py \
-            --surface AUT-007 \
-            --class ADVISORY_WRITE \
-            --actor "${ACTOR}" || true
+        '
+      uses: actions/github-script@v8
+      with:
+        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        script: "const prNumber = parseInt(process.env.PR_NUMBER, 10);\nconst EXPIRED_MARKER\
+          \ = 'SESSION_TIMEBOX_EXPIRED';\nconst SUMMARY_MARKER = '## \U0001F9E0 Session\
+          \ Summary';\n\nconst { data: comments } = await github.rest.issues.listComments({\n\
+          \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  issue_number:\
+          \ prNumber,\n  per_page: 100,\n});\n\n// Find most recent SESSION_TIMEBOX_EXPIRED\
+          \ comment\nconst expiredComment = comments\n  .filter(c => c.body.includes(EXPIRED_MARKER))\n\
+          \  .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];\n\
+          \nif (!expiredComment) {\n  core.setOutput('blocked', 'false');\n  return;\n\
+          }\n\nconst expiredAt = new Date(expiredComment.created_at);\n\n// Check\
+          \ for Session Summary posted AFTER the expiry\nconst summaryAfterExpiry\
+          \ = comments.find(c =>\n  c.body.includes(SUMMARY_MARKER) &&\n  new Date(c.created_at)\
+          \ > expiredAt\n);\n\nif (summaryAfterExpiry) {\n  core.setOutput('blocked',\
+          \ 'false');\n} else {\n  core.setOutput('blocked', 'true');\n  // Post rejection\
+          \ comment\n  await github.rest.issues.createComment({\n    owner: context.repo.owner,\n\
+          \    repo: context.repo.repo,\n    issue_number: prNumber,\n    body: [\n\
+          \      '\u26D4 **Chat-Ops: Session Summary Required**',\n      '',\n   \
+          \   `\\`SESSION_TIMEBOX_EXPIRED\\` was posted at ${expiredComment.created_at}\
+          \ but no \\`## \U0001F9E0 Session Summary\\` has been posted since.`,\n\
+          \      '',\n      '**Action required:** Post a PR comment containing `##\
+          \ \U0001F9E0 Session Summary` with:',\n      '- Topics covered and key findings',\n\
+          \      '- Suggested follow-up `@copilot` prompt for the next session',\n\
+          \      '',\n      'Once posted, re-run `/copilot continue`.',\n      '',\n\
+          \      '_chatops session-summary gate | Tier-1 enforcement | [GROUNDED_VS_SOFT_ENFORCEMENT.md](.codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md)_',\n\
+          \      '',\n      '---',\n      `_[\U0001F517 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,\n\
+          \    ].join('\\n'),\n  });\n}\n"
+      env:
+        PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
+    - name: Execute /copilot continue
+      if: 'steps.parse.outputs.AUTHORIZED == ''true'' &&
 
-      - name: Parse command and actor
-        id: parse
-        env:
-          COMMENT_BODY: ${{ github.event.comment.body }}
-          ACTOR: ${{ github.event.comment.user.login }}
-          ALLOWED_ACTORS: ${{ vars.COGNITIVE_BRAIN_ALLOWED_ACTORS }}
-          PR_NUMBER: ${{ github.event.issue.number }}
-          REPO: ${{ github.repository }}
-        run: |
-          # Normalize command
-          CMD=$(echo "$COMMENT_BODY" | head -1 | xargs)
-          echo "FULL_CMD=${CMD}" >> $GITHUB_OUTPUT
+        (steps.parse.outputs.SUBCMD == ''continue'' || steps.parse.outputs.SUBCMD
+        == ''run'') &&
 
-          # Extract subcommand: /copilot <subcommand> [args...]
-          SUBCMD=$(echo "$CMD" | awk '{print $2}')
-          ARGS=$(echo "$CMD" | cut -d' ' -f3-)
-          echo "SUBCMD=${SUBCMD}" >> $GITHUB_OUTPUT
-          echo "ARGS=${ARGS}" >> $GITHUB_OUTPUT
-          echo "PR_NUMBER=${PR_NUMBER}" >> $GITHUB_OUTPUT
+        steps.summary_gate.outputs.blocked != ''true''
 
-          # Actor authorization — check against COGNITIVE_BRAIN_ALLOWED_ACTORS variable
-          ALLOWED="${ALLOWED_ACTORS:-mbaetiong,github-actions[bot],copilot-swe-agent[bot],github-copilot[bot]}"
-          AUTHORIZED="false"
-          IFS=',' read -ra ACTORS <<< "$ALLOWED"
-          for a in "${ACTORS[@]}"; do
-            trimmed=$(echo "$a" | xargs)
-            if [ "$trimmed" = "$ACTOR" ]; then
-              AUTHORIZED="true"
-              break
-            fi
-          done
-          echo "AUTHORIZED=${AUTHORIZED}" >> $GITHUB_OUTPUT
-          echo "ACTOR=${ACTOR}" >> $GITHUB_OUTPUT
+        '
+      env:
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+        REPO: ${{ github.repository }}
+        PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
+        PROMPT_ARG: ${{ steps.parse.outputs.ARGS }}
+        ACTOR: ${{ steps.parse.outputs.ACTOR }}
+      run: "TOKEN=\"${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}\"\n\n# Resolve prompt file:\
+        \ use arg if given, else latest followup prompt\nPROMPT=\"${PROMPT_ARG}\"\n\
+        if [ -z \"$PROMPT\" ]; then\n  PROMPT=$(ls -t .github/copilot-prompts/active/*-followup.md\
+        \ 2>/dev/null | head -1 || true)\nfi\nif [ -z \"$PROMPT\" ]; then\n  curl\
+        \ -s -X POST \\\n    -H \"Authorization: Bearer ${TOKEN}\" \\\n    -H \"Accept:\
+        \ application/vnd.github+json\" \\\n    \"https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments\"\
+        \ \\\n    -d '{\"body\":\"\u26A0\uFE0F **Chat-Ops:** No prompt file found.\
+        \ Use `/copilot continue .github/copilot-prompts/active/PR-NNNN-followup.md`\"\
+        }' \\\n    > /dev/null\n  exit 0\nfi\n\n# Idempotency: skip if already posted\n\
+        EXISTING=$(curl -s \\\n  -H \"Authorization: Bearer ${TOKEN}\" \\\n  -H \"\
+        Accept: application/vnd.github+json\" \\\n  \"https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments?per_page=100\"\
+        \ \\\n  | python3 -c \"import json,os,sys; cs=json.load(sys.stdin); p=os.environ.get('PROMPT','');\
+        \ print('found' if isinstance(cs,list) and any('@copilot continue' in c.get('body','')\
+        \ and p in c.get('body','') for c in cs if isinstance(c,dict)) else '')\"\
+        \ \\\n  2>/dev/null || true)\n\nif [ \"$EXISTING\" = \"found\" ]; then\n \
+        \ curl -s -X POST \\\n    -H \"Authorization: Bearer ${TOKEN}\" \\\n    -H\
+        \ \"Accept: application/vnd.github+json\" \\\n    \"https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments\"\
+        \ \\\n    -d \"{\\\"body\\\":\\\"\u2139\uFE0F **Chat-Ops:** \\`@copilot continue\\\
+        ` for \\`${PROMPT}\\` was already posted. Skipping (idempotent).\\\"}\" \\\
+        \n    > /dev/null\n  exit 0\nfi\n\ncurl -s -X POST \\\n  -H \"Authorization:\
+        \ Bearer ${TOKEN}\" \\\n  -H \"Accept: application/vnd.github+json\" \\\n\
+        \  \"https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments\" \\\
+        \n  -d \"{\\\"body\\\":\\\"@copilot continue \\`${PROMPT}\\`\\n\\n> Dispatched\
+        \ via chat-ops by @${ACTOR}\\\"}\" \\\n  > /dev/null\necho \"\u2705 Posted\
+        \ @copilot continue for ${PROMPT} on PR #${PR_NUMBER}\"\n"
+    - name: Execute /copilot status
+      if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD ==
+        'status'
+      env:
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+        REPO: ${{ github.repository }}
+        PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
+        SESSION_NUMBER: ${{ vars.COGNITIVE_BRAIN_SESSION_NUMBER }}
+        AUTONOMOUS_ENABLED: ${{ vars.AUTONOMOUS_ACTIONS_ENABLED }}
+      run: "TOKEN=\"${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}\"\nPROMPT_COUNT=$(ls .github/copilot-prompts/active/*.md\
+        \ 2>/dev/null | wc -l | xargs)\nAGENT_COUNT=$(ls .github/agents/*.md .github/agents/*.yml\
+        \ 2>/dev/null | wc -l | xargs)\nRUFF_STATUS=$(python3 -m ruff check . --quiet\
+        \ 2>&1 | tail -1 || echo \"ruff not installed\")\nexport RUFF_STATUS PROMPT_COUNT\
+        \ AGENT_COUNT SESSION_NUMBER AUTONOMOUS_ENABLED\npython3 - <<'PY' > /tmp/status_body.json\n\
+        import json, os\nbody = \"\\n\".join([\n    \"## \\U0001f916 Cognitive Brain\
+        \ Status\\n\",\n    \"| Metric | Value |\",\n    \"|--------|-------|\",\n\
+        \    f\"| Session | S{os.environ.get('SESSION_NUMBER','???')} |\",\n    f\"\
+        | Autonomous Actions | `{os.environ.get('AUTONOMOUS_ENABLED','false')}` |\"\
+        ,\n    f\"| Ruff | `{os.environ.get('RUFF_STATUS','unknown')}` |\",\n    f\"\
+        | Active Prompts | {os.environ.get('PROMPT_COUNT','0')} files |\",\n    f\"\
+        | Agents | {os.environ.get('AGENT_COUNT','0')} defined |\",\n    \"\\n_Generated\
+        \ by chat-ops /copilot status_\",\n    \"\",\n    \"---\",\n    f\"_[\U0001F517\
+        \ Workflow run](https://github.com/{os.environ.get('GITHUB_REPOSITORY','')}/actions/runs/{os.environ.get('GITHUB_RUN_ID','')})_\"\
+        ,\n])\nprint(json.dumps({\"body\": body}))\nPY\ncurl -s -X POST \\\n  -H \"\
+        Authorization: Bearer ${TOKEN}\" \\\n  -H \"Accept: application/vnd.github+json\"\
+        \ \\\n  \"https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments\"\
+        \ \\\n  -d @/tmp/status_body.json \\\n  > /dev/null\n"
+    - name: Execute /copilot verify
+      if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD ==
+        'verify'
+      env:
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        REPO: ${{ github.repository }}
+        PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
+      run: "# Trigger admin_setup_verification via repository_dispatch\nDISPATCH_STATUS=$(curl\
+        \ -s -o /tmp/dispatch.json -w \"%{http_code}\" \\\n  -X POST \\\n  -H \"Authorization:\
+        \ Bearer ${CODEX_MASTER_KEY}\" \\\n  -H \"Accept: application/vnd.github+json\"\
+        \ \\\n  \"https://api.github.com/repos/${REPO}/dispatches\" \\\n  -d \"{\\\
+        \"event_type\\\":\\\"run-admin-verification\\\",\\\"client_payload\\\":{\\\
+        \"pr_number\\\":\\\"${PR_NUMBER}\\\"}}\")\n\nif [ \"$DISPATCH_STATUS\" = \"\
+        204\" ]; then\n  MSG=\"\u2705 Admin Setup Verification triggered via \\`repository_dispatch\\\
+        `. Check [Actions](https://github.com/${REPO}/actions) for results.\"\nelse\n\
+        \  MSG=\"\u26A0\uFE0F Failed to trigger verification (HTTP ${DISPATCH_STATUS}).\
+        \ Ensure \\`CODEX_MASTER_KEY\\` has \\`workflow\\` scope.\"\nfi\n\ncurl -s\
+        \ -X POST \\\n  -H \"Authorization: Bearer ${CODEX_MASTER_KEY}\" \\\n  -H\
+        \ \"Accept: application/vnd.github+json\" \\\n  \"https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments\"\
+        \ \\\n  -d \"{\\\"body\\\":\\\"${MSG}\\\"}\" > /dev/null\n"
+    - name: Execute /copilot tier-check or tier-promote
+      if: 'steps.parse.outputs.AUTHORIZED == ''true'' &&
 
-      - name: Reject unauthorized actor
-        if: steps.parse.outputs.AUTHORIZED != 'true'
-        env:
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
-          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
-          REPO: ${{ github.repository }}
-          PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
-          ACTOR: ${{ steps.parse.outputs.ACTOR }}
-        run: |
-          TOKEN="${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}"
-          curl -s -X POST \
-            -H "Authorization: Bearer ${TOKEN}" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments" \
-            -d "{\"body\":\"⛔ **Chat-Ops:** Actor \`${ACTOR}\` is not in \`COGNITIVE_BRAIN_ALLOWED_ACTORS\`. Command ignored.\"}" \
-            > /dev/null
-          echo "Rejected unauthorized actor: ${ACTOR}"
-          exit 0
+        (steps.parse.outputs.SUBCMD == ''tier-check'' || steps.parse.outputs.SUBCMD
+        == ''tier-promote'')
 
-      # ── Session summary gate (Tier-1 hard block) ───────────────────────────
-      # If SESSION_TIMEBOX_EXPIRED exists on this PR and no "## 🧠 Session Summary"
-      # was posted after it, block the /copilot continue dispatch.
-      # Promotes "Session summary on close" from Soft → Tier-1.
-      # See: .codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md
-      - name: Session summary gate
-        id: summary_gate
-        if: |
-          steps.parse.outputs.AUTHORIZED == 'true' &&
-          (steps.parse.outputs.SUBCMD == 'continue' || steps.parse.outputs.SUBCMD == 'run')
-        uses: actions/github-script@v8 # v9
-        with:
-          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-          script: |
-            const prNumber = parseInt(process.env.PR_NUMBER, 10);
-            const EXPIRED_MARKER = 'SESSION_TIMEBOX_EXPIRED';
-            const SUMMARY_MARKER = '## 🧠 Session Summary';
-
-            const { data: comments } = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: prNumber,
-              per_page: 100,
-            });
-
-            // Find most recent SESSION_TIMEBOX_EXPIRED comment
-            const expiredComment = comments
-              .filter(c => c.body.includes(EXPIRED_MARKER))
-              .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];
-
-            if (!expiredComment) {
-              core.setOutput('blocked', 'false');
-              return;
-            }
-
-            const expiredAt = new Date(expiredComment.created_at);
-
-            // Check for Session Summary posted AFTER the expiry
-            const summaryAfterExpiry = comments.find(c =>
-              c.body.includes(SUMMARY_MARKER) &&
-              new Date(c.created_at) > expiredAt
-            );
-
-            if (summaryAfterExpiry) {
-              core.setOutput('blocked', 'false');
-            } else {
-              core.setOutput('blocked', 'true');
-              // Post rejection comment
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: prNumber,
-                body: [
-                  '⛔ **Chat-Ops: Session Summary Required**',
-                  '',
-                  `\`SESSION_TIMEBOX_EXPIRED\` was posted at ${expiredComment.created_at} but no \`## 🧠 Session Summary\` has been posted since.`,
-                  '',
-                  '**Action required:** Post a PR comment containing `## 🧠 Session Summary` with:',
-                  '- Topics covered and key findings',
-                  '- Suggested follow-up `@copilot` prompt for the next session',
-                  '',
-                  'Once posted, re-run `/copilot continue`.',
-                  '',
-                  '_chatops session-summary gate | Tier-1 enforcement | [GROUNDED_VS_SOFT_ENFORCEMENT.md](.codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md)_',
-                  '',
-                  '---',
-                  `_[🔗 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,
-                ].join('\n'),
-              });
-            }
-        env:
-          PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
-
-      # ── /copilot continue <prompt-file> ─────────────────────────────────────
-      - name: Execute /copilot continue
-        if: |
-          steps.parse.outputs.AUTHORIZED == 'true' &&
-          (steps.parse.outputs.SUBCMD == 'continue' || steps.parse.outputs.SUBCMD == 'run') &&
-          steps.summary_gate.outputs.blocked != 'true'
-        env:
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
-          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
-          REPO: ${{ github.repository }}
-          PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
-          PROMPT_ARG: ${{ steps.parse.outputs.ARGS }}
-          ACTOR: ${{ steps.parse.outputs.ACTOR }}
-        run: |
-          TOKEN="${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}"
-
-          # Resolve prompt file: use arg if given, else latest followup prompt
-          PROMPT="${PROMPT_ARG}"
-          if [ -z "$PROMPT" ]; then
-            PROMPT=$(ls -t .github/copilot-prompts/active/*-followup.md 2>/dev/null | head -1 || true)
-          fi
-          if [ -z "$PROMPT" ]; then
-            curl -s -X POST \
-              -H "Authorization: Bearer ${TOKEN}" \
-              -H "Accept: application/vnd.github+json" \
-              "https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments" \
-              -d '{"body":"⚠️ **Chat-Ops:** No prompt file found. Use `/copilot continue .github/copilot-prompts/active/PR-NNNN-followup.md`"}' \
-              > /dev/null
-            exit 0
-          fi
-
-          # Idempotency: skip if already posted
-          EXISTING=$(curl -s \
-            -H "Authorization: Bearer ${TOKEN}" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments?per_page=100" \
-            | python3 -c "import json,os,sys; cs=json.load(sys.stdin); p=os.environ.get('PROMPT',''); print('found' if isinstance(cs,list) and any('@copilot continue' in c.get('body','') and p in c.get('body','') for c in cs if isinstance(c,dict)) else '')" \
-            2>/dev/null || true)
-
-          if [ "$EXISTING" = "found" ]; then
-            curl -s -X POST \
-              -H "Authorization: Bearer ${TOKEN}" \
-              -H "Accept: application/vnd.github+json" \
-              "https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments" \
-              -d "{\"body\":\"ℹ️ **Chat-Ops:** \`@copilot continue\` for \`${PROMPT}\` was already posted. Skipping (idempotent).\"}" \
-              > /dev/null
-            exit 0
-          fi
-
-          curl -s -X POST \
-            -H "Authorization: Bearer ${TOKEN}" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments" \
-            -d "{\"body\":\"@copilot continue \`${PROMPT}\`\n\n> Dispatched via chat-ops by @${ACTOR}\"}" \
-            > /dev/null
-          echo "✅ Posted @copilot continue for ${PROMPT} on PR #${PR_NUMBER}"
-
-      # ── /copilot status ──────────────────────────────────────────────────────
-      - name: Execute /copilot status
-        if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD == 'status'
-        env:
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
-          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
-          REPO: ${{ github.repository }}
-          PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
-          SESSION_NUMBER: ${{ vars.COGNITIVE_BRAIN_SESSION_NUMBER }}
-          AUTONOMOUS_ENABLED: ${{ vars.AUTONOMOUS_ACTIONS_ENABLED }}
-        run: |
-          TOKEN="${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}"
-          PROMPT_COUNT=$(ls .github/copilot-prompts/active/*.md 2>/dev/null | wc -l | xargs)
-          AGENT_COUNT=$(ls .github/agents/*.md .github/agents/*.yml 2>/dev/null | wc -l | xargs)
-          RUFF_STATUS=$(python3 -m ruff check . --quiet 2>&1 | tail -1 || echo "ruff not installed")
-          export RUFF_STATUS PROMPT_COUNT AGENT_COUNT SESSION_NUMBER AUTONOMOUS_ENABLED
-          python3 - <<'PY' > /tmp/status_body.json
-          import json, os
-          body = "\n".join([
-              "## \U0001f916 Cognitive Brain Status\n",
-              "| Metric | Value |",
-              "|--------|-------|",
-              f"| Session | S{os.environ.get('SESSION_NUMBER','???')} |",
-              f"| Autonomous Actions | `{os.environ.get('AUTONOMOUS_ENABLED','false')}` |",
-              f"| Ruff | `{os.environ.get('RUFF_STATUS','unknown')}` |",
-              f"| Active Prompts | {os.environ.get('PROMPT_COUNT','0')} files |",
-              f"| Agents | {os.environ.get('AGENT_COUNT','0')} defined |",
-              "\n_Generated by chat-ops /copilot status_",
-              "",
-              "---",
-              f"_[🔗 Workflow run](https://github.com/{os.environ.get('GITHUB_REPOSITORY','')}/actions/runs/{os.environ.get('GITHUB_RUN_ID','')})_",
-          ])
-          print(json.dumps({"body": body}))
-          PY
-          curl -s -X POST \
-            -H "Authorization: Bearer ${TOKEN}" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments" \
-            -d @/tmp/status_body.json \
-            > /dev/null
-
-      # ── /copilot verify ──────────────────────────────────────────────────────
-      - name: Execute /copilot verify
-        if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD == 'verify'
-        env:
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
-          REPO: ${{ github.repository }}
-          PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
-        run: |
-          # Trigger admin_setup_verification via repository_dispatch
-          DISPATCH_STATUS=$(curl -s -o /tmp/dispatch.json -w "%{http_code}" \
-            -X POST \
-            -H "Authorization: Bearer ${CODEX_MASTER_KEY}" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${REPO}/dispatches" \
-            -d "{\"event_type\":\"run-admin-verification\",\"client_payload\":{\"pr_number\":\"${PR_NUMBER}\"}}")
-
-          if [ "$DISPATCH_STATUS" = "204" ]; then
-            MSG="✅ Admin Setup Verification triggered via \`repository_dispatch\`. Check [Actions](https://github.com/${REPO}/actions) for results."
-          else
-            MSG="⚠️ Failed to trigger verification (HTTP ${DISPATCH_STATUS}). Ensure \`CODEX_MASTER_KEY\` has \`workflow\` scope."
-          fi
-
-          curl -s -X POST \
-            -H "Authorization: Bearer ${CODEX_MASTER_KEY}" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments" \
-            -d "{\"body\":\"${MSG}\"}" > /dev/null
-
-      # ── /copilot tier-check | tier-promote ─────────────────────────────────
-      - name: Execute /copilot tier-check or tier-promote
-        if: |
-          steps.parse.outputs.AUTHORIZED == 'true' &&
-          (steps.parse.outputs.SUBCMD == 'tier-check' || steps.parse.outputs.SUBCMD == 'tier-promote')
-        env:
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
-          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
-          REPO: ${{ github.repository }}
-          PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
-          SUBCMD: ${{ steps.parse.outputs.SUBCMD }}
-        run: |
-          TOKEN="${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}"
-          pip install pyyaml --quiet 2>/dev/null
-
-          if [ "$SUBCMD" = "tier-check" ]; then
-            python scripts/ci/auto_promote_tier.py --check-only > /tmp/tier_report.txt 2>&1 || true
-            TITLE="🔰 Tier Enforcement Scan"
-            FOOTER="_[auto_promote_tier.py --check-only | dry-run only]_"
-          else
-            python scripts/ci/auto_promote_tier.py > /tmp/tier_report.txt 2>&1 || true
-            TITLE="🔰 Tier Promotion Stubs (Dry-Run)"
-            FOOTER="_[auto_promote_tier.py | dry-run stub generator | Domain 8]_"
-          fi
-
-          REPORT=$(cat /tmp/tier_report.txt | head -200)
-          export TITLE FOOTER REPORT
-          python3 - <<'PY' > /tmp/tier_body.json
-          import json, os
-          title = os.environ['TITLE']
-          footer = os.environ['FOOTER']
-          report = os.environ.get('REPORT', '')
-          run_url = f"https://github.com/{os.environ.get('GITHUB_REPOSITORY','')}/actions/runs/{os.environ.get('GITHUB_RUN_ID','')}"
-          body = f"## {title}\n\n```\n{report}\n```\n\n{footer}\n\n---\n_[🔗 Workflow run]({run_url})_"
-          print(json.dumps({"body": body}))
-          PY
-
-          curl -s -X POST \
-            -H "Authorization: Bearer ${TOKEN}" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments" \
-            -d @/tmp/tier_body.json \
-            > /dev/null
-          echo "✅ Posted tier report on PR #${PR_NUMBER}"
-
-      # ── /copilot help ────────────────────────────────────────────────────────
-      - name: Execute /copilot help
-        if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD == 'help'
-        env:
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
-          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
-          REPO: ${{ github.repository }}
-          PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
-        run: |
-          TOKEN="${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}"
-          curl -s -X POST \
-            -H "Authorization: Bearer ${TOKEN}" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments" \
-            -d '{"body":"## 🤖 Chat-Ops Commands\n\n| Command | Description |\n|---------|-------------|\n| `/copilot continue [prompt-file]` | Post `@copilot continue` with the given or latest prompt file |\n| `/copilot run [prompt-file]` | Alias for `continue` |\n| `/copilot fix <issue>` | Request @copilot to fix a specific GitHub issue number |\n| `/copilot review` | Trigger a code review on the current PR |\n| `/copilot coverage <module>` | Improve test coverage for a specific module |\n| `/copilot security` | Trigger security scan and post results |\n| `/copilot status` | Show current session + cognitive brain status |\n| `/copilot verify` | Trigger admin setup verification workflow |\n| `/copilot tier-check` | Run enforcement tier scan (dry-run) and post results |\n| `/copilot tier-promote` | Generate tier promotion stubs (dry-run only, Domain 8) |\n| `/copilot help` | Show this message |\n\nOnly actors in `COGNITIVE_BRAIN_ALLOWED_ACTORS` may use these commands.\n\n_Powered by `.github/workflows/chatops_copilot_trigger.yml`_"}' \
-            > /dev/null
-
-      # ── /copilot fix <issue-number> ─────────────────────────────────────────
-      # GAP-042: new command — ask @copilot to fix a specific issue
-      - name: Execute /copilot fix
-        if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD == 'fix'
-        env:
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
-          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
-          REPO: ${{ github.repository }}
-          PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
-          ARGS: ${{ steps.parse.outputs.ARGS }}
-          ACTOR: ${{ steps.parse.outputs.ACTOR }}
-        run: |
-          TOKEN="${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}"
-          ISSUE_REF="${ARGS:-<issue-number>}"
-          printf '@copilot Fix issue #%s -- analyse the issue description, identify the root cause in the codebase, and open a PR with a targeted fix. Follow CODEBASE_AGENCY_POLICY.md.\n\n> Dispatched via chat-ops `/copilot fix` by @%s' \
-            "${ISSUE_REF}" "${ACTOR}" \
-            | python3 -c 'import json,sys; print(json.dumps({"body": sys.stdin.read()}))' \
-            | curl -s -X POST \
-              -H "Authorization: Bearer ${TOKEN}" \
-              -H "Accept: application/vnd.github+json" \
-              "https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments" \
-              -d @- > /dev/null
-          echo "✅ Posted /copilot fix for issue #${ISSUE_REF} on PR #${PR_NUMBER}"
-
-      # ── /copilot review ──────────────────────────────────────────────────────
-      # GAP-042: new command — request an in-depth code review on the current PR
-      - name: Execute /copilot review
-        if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD == 'review'
-        env:
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
-          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
-          REPO: ${{ github.repository }}
-          PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
-          ACTOR: ${{ steps.parse.outputs.ACTOR }}
-        run: |
-          TOKEN="${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}"
-          printf '@copilot Review this pull request thoroughly:\n1. Check for correctness, security issues, and test coverage gaps\n2. Verify compliance with CODEBASE_AGENCY_POLICY.md\n3. Identify any Mermaid diagrams or documentation that need updating\n4. Post a structured review comment with LGTM / REQUEST_CHANGES rating\n\n> Dispatched via chat-ops `/copilot review` by @%s' \
-            "${ACTOR}" \
-            | python3 -c 'import json,sys; print(json.dumps({"body": sys.stdin.read()}))' \
-            | curl -s -X POST \
-              -H "Authorization: Bearer ${TOKEN}" \
-              -H "Accept: application/vnd.github+json" \
-              "https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments" \
-              -d @- > /dev/null
-          echo "✅ Posted /copilot review on PR #${PR_NUMBER}"
-
-      # ── /copilot coverage <module> ───────────────────────────────────────────
-      # GAP-042: new command — request targeted test coverage improvement
-      - name: Execute /copilot coverage
-        if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD == 'coverage'
-        env:
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
-          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
-          REPO: ${{ github.repository }}
-          PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
-          ARGS: ${{ steps.parse.outputs.ARGS }}
-          ACTOR: ${{ steps.parse.outputs.ACTOR }}
-        run: |
-          TOKEN="${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}"
-          MODULE="${ARGS:-src/codex}"
-          printf '@copilot Improve test coverage for `%s`:\n1. Identify untested functions and branches\n2. Write targeted tests in `tests/`\n3. Ensure new tests pass\n4. Coverage increase should be measurable in the coverage report\n\n> Dispatched via chat-ops `/copilot coverage` by @%s' \
-            "${MODULE}" "${ACTOR}" \
-            | python3 -c 'import json,sys; print(json.dumps({"body": sys.stdin.read()}))' \
-            | curl -s -X POST \
-              -H "Authorization: Bearer ${TOKEN}" \
-              -H "Accept: application/vnd.github+json" \
-              "https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments" \
-              -d @- > /dev/null
-          echo "✅ Posted /copilot coverage for ${MODULE} on PR #${PR_NUMBER}"
-
-      # ── /copilot security ────────────────────────────────────────────────────
-      # GAP-042: new command — trigger security scan and post summary
-      - name: Execute /copilot security
-        if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD == 'security'
-        env:
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
-          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
-          REPO: ${{ github.repository }}
-          PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
-          ACTOR: ${{ steps.parse.outputs.ACTOR }}
-        run: |
-          TOKEN="${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}"
-          printf '@copilot Run a security audit on this PR:\n1. Check all changed files for injection, path traversal, credential exposure, and supply-chain risks\n2. Review any new dependencies against the GitHub Advisory Database\n3. Verify CodeQL alerts introduced by this PR are addressed\n4. Post a Security Summary with findings and PASS/FAIL verdict\n\n> Dispatched via chat-ops `/copilot security` by @%s' \
-            "${ACTOR}" \
-            | python3 -c 'import json,sys; print(json.dumps({"body": sys.stdin.read()}))' \
-            | curl -s -X POST \
-              -H "Authorization: Bearer ${TOKEN}" \
-              -H "Accept: application/vnd.github+json" \
-              "https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments" \
-              -d @- > /dev/null
-          echo "✅ Posted /copilot security on PR #${PR_NUMBER}"
-
-      # ── Group D: COGNITIVE_BRAIN_SESSION_NUMBER auto-increment ───────────────
-      # Runs after every successfully authorized /copilot command.
-      # Increments the session counter so each agent invocation carries a unique,
-      # monotonically increasing session number used by the Cognitive Brain.
-      # Requires CODEX_MASTER_KEY with variables:write scope.
-      - name: Increment COGNITIVE_BRAIN_SESSION_NUMBER
-        if: steps.parse.outputs.AUTHORIZED == 'true'
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
-        run: |
-          CURRENT="${{ vars.COGNITIVE_BRAIN_SESSION_NUMBER }}"
-          if [ -z "${GH_TOKEN}" ]; then
-            echo "⚠️ CODEX_MASTER_KEY not available — session number increment skipped"
-            exit 0
-          fi
-          NEXT=$((CURRENT + 1))
-          if ! gh api \
-            --method PATCH \
-            -H "Accept: application/vnd.github+json" \
-            /repos/${{ github.repository }}/actions/variables/COGNITIVE_BRAIN_SESSION_NUMBER \
-            -f name='COGNITIVE_BRAIN_SESSION_NUMBER' \
-            -f value="${NEXT}" \
-            > /dev/null 2>&1; then
-            echo "⚠️ Failed to increment COGNITIVE_BRAIN_SESSION_NUMBER (${CURRENT} → ${NEXT}). Check GH_TOKEN has variables:write scope."
-          else
-            echo "✅ Session number incremented: ${CURRENT} → ${NEXT}"
-          fi
+        '
+      env:
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+        REPO: ${{ github.repository }}
+        PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
+        SUBCMD: ${{ steps.parse.outputs.SUBCMD }}
+      run: "TOKEN=\"${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}\"\npip install pyyaml --quiet\
+        \ 2>/dev/null\n\nif [ \"$SUBCMD\" = \"tier-check\" ]; then\n  python scripts/ci/auto_promote_tier.py\
+        \ --check-only > /tmp/tier_report.txt 2>&1 || true\n  TITLE=\"\U0001F530 Tier\
+        \ Enforcement Scan\"\n  FOOTER=\"_[auto_promote_tier.py --check-only | dry-run\
+        \ only]_\"\nelse\n  python scripts/ci/auto_promote_tier.py > /tmp/tier_report.txt\
+        \ 2>&1 || true\n  TITLE=\"\U0001F530 Tier Promotion Stubs (Dry-Run)\"\n  FOOTER=\"\
+        _[auto_promote_tier.py | dry-run stub generator | Domain 8]_\"\nfi\n\nREPORT=$(cat\
+        \ /tmp/tier_report.txt | head -200)\nexport TITLE FOOTER REPORT\npython3 -\
+        \ <<'PY' > /tmp/tier_body.json\nimport json, os\ntitle = os.environ['TITLE']\n\
+        footer = os.environ['FOOTER']\nreport = os.environ.get('REPORT', '')\nrun_url\
+        \ = f\"https://github.com/{os.environ.get('GITHUB_REPOSITORY','')}/actions/runs/{os.environ.get('GITHUB_RUN_ID','')}\"\
+        \nbody = f\"## {title}\\n\\n```\\n{report}\\n```\\n\\n{footer}\\n\\n---\\\
+        n_[\U0001F517 Workflow run]({run_url})_\"\nprint(json.dumps({\"body\": body}))\n\
+        PY\n\ncurl -s -X POST \\\n  -H \"Authorization: Bearer ${TOKEN}\" \\\n  -H\
+        \ \"Accept: application/vnd.github+json\" \\\n  \"https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments\"\
+        \ \\\n  -d @/tmp/tier_body.json \\\n  > /dev/null\necho \"\u2705 Posted tier\
+        \ report on PR #${PR_NUMBER}\"\n"
+    - name: Execute /copilot help
+      if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD ==
+        'help'
+      env:
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+        REPO: ${{ github.repository }}
+        PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
+      run: "TOKEN=\"${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}\"\ncurl -s -X POST \\\n\
+        \  -H \"Authorization: Bearer ${TOKEN}\" \\\n  -H \"Accept: application/vnd.github+json\"\
+        \ \\\n  \"https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments\"\
+        \ \\\n  -d '{\"body\":\"## \U0001F916 Chat-Ops Commands\\n\\n| Command | Description\
+        \ |\\n|---------|-------------|\\n| `/copilot continue [prompt-file]` | Post\
+        \ `@copilot continue` with the given or latest prompt file |\\n| `/copilot\
+        \ run [prompt-file]` | Alias for `continue` |\\n| `/copilot fix <issue>` |\
+        \ Request @copilot to fix a specific GitHub issue number |\\n| `/copilot review`\
+        \ | Trigger a code review on the current PR |\\n| `/copilot coverage <module>`\
+        \ | Improve test coverage for a specific module |\\n| `/copilot security`\
+        \ | Trigger security scan and post results |\\n| `/copilot status` | Show\
+        \ current session + cognitive brain status |\\n| `/copilot verify` | Trigger\
+        \ admin setup verification workflow |\\n| `/copilot tier-check` | Run enforcement\
+        \ tier scan (dry-run) and post results |\\n| `/copilot tier-promote` | Generate\
+        \ tier promotion stubs (dry-run only, Domain 8) |\\n| `/copilot help` | Show\
+        \ this message |\\n\\nOnly actors in `COGNITIVE_BRAIN_ALLOWED_ACTORS` may\
+        \ use these commands.\\n\\n_Powered by `.github/workflows/chatops_copilot_trigger.yml`_\"\
+        }' \\\n  > /dev/null\n"
+    - name: Execute /copilot fix
+      if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD ==
+        'fix'
+      env:
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+        REPO: ${{ github.repository }}
+        PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
+        ARGS: ${{ steps.parse.outputs.ARGS }}
+        ACTOR: ${{ steps.parse.outputs.ACTOR }}
+      run: "TOKEN=\"${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}\"\nISSUE_REF=\"${ARGS:-<issue-number>}\"\
+        \nprintf '@copilot Fix issue #%s -- analyse the issue description, identify\
+        \ the root cause in the codebase, and open a PR with a targeted fix. Follow\
+        \ CODEBASE_AGENCY_POLICY.md.\\n\\n> Dispatched via chat-ops `/copilot fix`\
+        \ by @%s' \\\n  \"${ISSUE_REF}\" \"${ACTOR}\" \\\n  | python3 -c 'import json,sys;\
+        \ print(json.dumps({\"body\": sys.stdin.read()}))' \\\n  | curl -s -X POST\
+        \ \\\n    -H \"Authorization: Bearer ${TOKEN}\" \\\n    -H \"Accept: application/vnd.github+json\"\
+        \ \\\n    \"https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments\"\
+        \ \\\n    -d @- > /dev/null\necho \"\u2705 Posted /copilot fix for issue #${ISSUE_REF}\
+        \ on PR #${PR_NUMBER}\"\n"
+    - name: Execute /copilot review
+      if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD ==
+        'review'
+      env:
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+        REPO: ${{ github.repository }}
+        PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
+        ACTOR: ${{ steps.parse.outputs.ACTOR }}
+      run: "TOKEN=\"${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}\"\nprintf '@copilot Review\
+        \ this pull request thoroughly:\\n1. Check for correctness, security issues,\
+        \ and test coverage gaps\\n2. Verify compliance with CODEBASE_AGENCY_POLICY.md\\\
+        n3. Identify any Mermaid diagrams or documentation that need updating\\n4.\
+        \ Post a structured review comment with LGTM / REQUEST_CHANGES rating\\n\\\
+        n> Dispatched via chat-ops `/copilot review` by @%s' \\\n  \"${ACTOR}\" \\\
+        \n  | python3 -c 'import json,sys; print(json.dumps({\"body\": sys.stdin.read()}))'\
+        \ \\\n  | curl -s -X POST \\\n    -H \"Authorization: Bearer ${TOKEN}\" \\\
+        \n    -H \"Accept: application/vnd.github+json\" \\\n    \"https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments\"\
+        \ \\\n    -d @- > /dev/null\necho \"\u2705 Posted /copilot review on PR #${PR_NUMBER}\"\
+        \n"
+    - name: Execute /copilot coverage
+      if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD ==
+        'coverage'
+      env:
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+        REPO: ${{ github.repository }}
+        PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
+        ARGS: ${{ steps.parse.outputs.ARGS }}
+        ACTOR: ${{ steps.parse.outputs.ACTOR }}
+      run: "TOKEN=\"${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}\"\nMODULE=\"${ARGS:-src/codex}\"\
+        \nprintf '@copilot Improve test coverage for `%s`:\\n1. Identify untested\
+        \ functions and branches\\n2. Write targeted tests in `tests/`\\n3. Ensure\
+        \ new tests pass\\n4. Coverage increase should be measurable in the coverage\
+        \ report\\n\\n> Dispatched via chat-ops `/copilot coverage` by @%s' \\\n \
+        \ \"${MODULE}\" \"${ACTOR}\" \\\n  | python3 -c 'import json,sys; print(json.dumps({\"\
+        body\": sys.stdin.read()}))' \\\n  | curl -s -X POST \\\n    -H \"Authorization:\
+        \ Bearer ${TOKEN}\" \\\n    -H \"Accept: application/vnd.github+json\" \\\n\
+        \    \"https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments\"\
+        \ \\\n    -d @- > /dev/null\necho \"\u2705 Posted /copilot coverage for ${MODULE}\
+        \ on PR #${PR_NUMBER}\"\n"
+    - name: Execute /copilot security
+      if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD ==
+        'security'
+      env:
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+        REPO: ${{ github.repository }}
+        PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
+        ACTOR: ${{ steps.parse.outputs.ACTOR }}
+      run: "TOKEN=\"${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}\"\nprintf '@copilot Run\
+        \ a security audit on this PR:\\n1. Check all changed files for injection,\
+        \ path traversal, credential exposure, and supply-chain risks\\n2. Review\
+        \ any new dependencies against the GitHub Advisory Database\\n3. Verify CodeQL\
+        \ alerts introduced by this PR are addressed\\n4. Post a Security Summary\
+        \ with findings and PASS/FAIL verdict\\n\\n> Dispatched via chat-ops `/copilot\
+        \ security` by @%s' \\\n  \"${ACTOR}\" \\\n  | python3 -c 'import json,sys;\
+        \ print(json.dumps({\"body\": sys.stdin.read()}))' \\\n  | curl -s -X POST\
+        \ \\\n    -H \"Authorization: Bearer ${TOKEN}\" \\\n    -H \"Accept: application/vnd.github+json\"\
+        \ \\\n    \"https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments\"\
+        \ \\\n    -d @- > /dev/null\necho \"\u2705 Posted /copilot security on PR\
+        \ #${PR_NUMBER}\"\n"
+    - name: Increment COGNITIVE_BRAIN_SESSION_NUMBER
+      if: steps.parse.outputs.AUTHORIZED == 'true'
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+      run: "CURRENT=\"${{ vars.COGNITIVE_BRAIN_SESSION_NUMBER }}\"\nif [ -z \"${GH_TOKEN}\"\
+        \ ]; then\n  echo \"\u26A0\uFE0F CODEX_MASTER_KEY not available \u2014 session\
+        \ number increment skipped\"\n  exit 0\nfi\nNEXT=$((CURRENT + 1))\nif ! gh\
+        \ api \\\n  --method PATCH \\\n  -H \"Accept: application/vnd.github+json\"\
+        \ \\\n  /repos/${{ github.repository }}/actions/variables/COGNITIVE_BRAIN_SESSION_NUMBER\
+        \ \\\n  -f name='COGNITIVE_BRAIN_SESSION_NUMBER' \\\n  -f value=\"${NEXT}\"\
+        \ \\\n  > /dev/null 2>&1; then\n  echo \"\u26A0\uFE0F Failed to increment\
+        \ COGNITIVE_BRAIN_SESSION_NUMBER (${CURRENT} \u2192 ${NEXT}). Check GH_TOKEN\
+        \ has variables:write scope.\"\nelse\n  echo \"\u2705 Session number incremented:\
+        \ ${CURRENT} \u2192 ${NEXT}\"\nfi\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

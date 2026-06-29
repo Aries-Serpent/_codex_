@@ -1,266 +1,221 @@
 name: Pre-Merge Validation
-
-on:
+true:
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
-  # Also run when PR is approved
+    types:
+    - opened
+    - synchronize
+    - reopened
+    - ready_for_review
   pull_request_review:
-    types: [submitted]
-  # Allow manual re-trigger for missed runs (e.g. after approval on new HEAD)
-  workflow_dispatch:
-
+    types:
+    - submitted
+  workflow_dispatch: null
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   pull-requests: write
   checks: write
-
-
 jobs:
   final-validation:
     name: Final Pre-Merge Checks
     runs-on: ubuntu-latest
     timeout-minutes: 60
     if: github.event.pull_request.draft == false
-
     permissions:
       contents: read
       pull-requests: write
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          fetch-depth: 2
+    - name: Checkout
+      uses: actions/checkout@v7
+      with:
+        fetch-depth: 2
+    - name: Set up Python with shared cache
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        extras: dev
+    - name: Run auto-fix check
+      id: autofix
+      run: 'python scripts/ci/auto_fix_common_issues.py --check-only --json-output
+        /tmp/autofix_report.json
 
-      - name: Set up Python with shared cache
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12.13'
-          extras: 'dev'
+        '
+      continue-on-error: true
+    - name: CI pattern pipeline (strict gate)
+      id: pattern_pipeline
+      run: "# Run the full detect\u2192record\u2192report pipeline in strict mode.\n\
+        # Exits 1 if any auto-fixable issues remain or high-recurrence patterns\n\
+        # exceed the threshold \u2014 blocks merge until fixed.\npython scripts/ci/ci_pattern_pipeline.py\
+        \ \\\n  --check-only \\\n  --strict \\\n  --artefact /tmp/pattern_pipeline_report.json\n"
+      continue-on-error: true
+    - name: Verify agent batch-scan protocol coverage
+      id: batch_scan_protocol
+      run: "python scripts/ci/inject_batch_scan_protocol.py --dry-run\n# Fails (non-zero)\
+        \ if any applicable agent is missing the \u26A1 section,\n# preventing new\
+        \ agents from being added without the protocol.\n"
+      continue-on-error: true
+    - name: Mermaid diagram drift check
+      id: mermaid_check
+      run: 'python scripts/ci/generate_mermaid.py --check
 
-      - name: Run auto-fix check
-        id: autofix
-        run: |
-          python scripts/ci/auto_fix_common_issues.py --check-only --json-output /tmp/autofix_report.json
-        continue-on-error: true
+        '
+      continue-on-error: true
+    - name: Run quick tests
+      id: tests
+      timeout-minutes: 5
+      run: "# Run CI capability tests only \u2014 these are fast (~30s) and exercise\n\
+        # the key infrastructure without running the full 1500-test suite.\n# The\
+        \ full suite runs in Resilient Validation Suite / Art_Validation Pipeline.\n\
+        pytest tests/capabilities/ci_test/ -q --tb=short --timeout=60\n"
+      continue-on-error: true
+    - name: Check code quality
+      id: quality
+      run: 'python -m ruff check src/ tests/ --output-format=github || true
 
-      - name: CI pattern pipeline (strict gate)
-        id: pattern_pipeline
-        run: |
-          # Run the full detect→record→report pipeline in strict mode.
-          # Exits 1 if any auto-fixable issues remain or high-recurrence patterns
-          # exceed the threshold — blocks merge until fixed.
-          python scripts/ci/ci_pattern_pipeline.py \
-            --check-only \
-            --strict \
-            --artefact /tmp/pattern_pipeline_report.json
-        continue-on-error: true
+        '
+      continue-on-error: true
+    - name: Session wrapup check
+      id: session_wrapup
+      run: "# Verify accountability report and CHANGELOG were updated this session\n\
+        # (REQ-4 / REQ-5 cognitive pre-flight gate \u2014 check-only, no writes).\n\
+        python scripts/ci/session_wrapup_autofix.py \\\n  --pr-number \"${{ github.event.pull_request.number\
+        \ }}\" \\\n  --sha \"${{ github.sha }}\" \\\n  --run-url \"${{ github.server_url\
+        \ }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\" \\\n  --check\n"
+    - name: WEC compliance check (Phase 3.3)
+      id: wec_compliance
+      run: "# (Phase 3.3) Validate WEC compliance against merge target requirements.\n\
+        # Ensures all required workflows are present and checked, REQ-4 and REQ-5\n\
+        # are satisfied.  This is the CI gate for Phase 3.1 enhanced function.\nMERGE_TARGET=\"\
+        ${{ github.base_ref }}\"\nif [ \"$MERGE_TARGET\" != \"main\" ] && [ \"$MERGE_TARGET\"\
+        \ != \"0D_base_\" ]; then\n  MERGE_TARGET=\"main\"\nfi\npython scripts/ci/session_wrapup_autofix.py\
+        \ \\\n  --pr-number \"${{ github.event.pull_request.number }}\" \\\n  --check-wec-compliance\
+        \ \\\n  --merge-target \"$MERGE_TARGET\"\n"
+      continue-on-error: true
+    - name: Upload validation reports
+      if: always()
+      continue-on-error: true
+      uses: actions/upload-artifact@v5
+      with:
+        name: pre-merge-validation-reports-${{ github.run_id }}
+        path: '/tmp/autofix_report.json
 
-      - name: Verify agent batch-scan protocol coverage
-        id: batch_scan_protocol
-        run: |
-          python scripts/ci/inject_batch_scan_protocol.py --dry-run
-          # Fails (non-zero) if any applicable agent is missing the ⚡ section,
-          # preventing new agents from being added without the protocol.
-        continue-on-error: true
+          /tmp/pattern_pipeline_report.json
 
-      - name: Mermaid diagram drift check
-        id: mermaid_check
-        run: |
-          python scripts/ci/generate_mermaid.py --check
-        continue-on-error: true
+          '
+        if-no-files-found: ignore
+        retention-days: 7
+    - name: Post validation summary
+      if: always()
+      continue-on-error: true
+      uses: actions/github-script@v8
+      with:
+        script: "const checks = {\n  autofix: '${{ steps.autofix.outcome }}',\n  pattern_pipeline:\
+          \ '${{ steps.pattern_pipeline.outcome }}',\n  batch_scan_protocol: '${{\
+          \ steps.batch_scan_protocol.outcome }}',\n  mermaid_check: '${{ steps.mermaid_check.outcome\
+          \ }}',\n  tests: '${{ steps.tests.outcome }}',\n  quality: '${{ steps.quality.outcome\
+          \ }}',\n  session_wrapup: '${{ steps.session_wrapup.outcome }}',\n  wec_compliance:\
+          \ '${{ steps.wec_compliance.outcome }}',\n};\n\n// Only these three block\
+          \ the merge; the rest are informational warnings.\nconst critical = ['autofix',\
+          \ 'pattern_pipeline', 'batch_scan_protocol', 'session_wrapup', 'wec_compliance'];\n\
+          const passed = critical.every(k => checks[k] === 'success');\nconst emoji\
+          \ = passed ? '\u2705' : '\u274C';\n\nconst MARKER = '<!-- pre-merge-validation-summary\
+          \ -->';\nconst summary = `${MARKER}\\n## ${emoji} Pre-Merge Validation Summary\n\
+          \n| Check | Status |\n|-------|--------|\n| Auto-Fix Issues | ${checks.autofix\
+          \ === 'success' ? '\u2705 Pass' : '\u274C Fail'} |\n| CI Pattern Pipeline\
+          \ (strict) | ${checks.pattern_pipeline === 'success' ? '\u2705 Pass' : '\u274C\
+          \ Fail'} |\n| Agent Batch-Scan Protocol | ${checks.batch_scan_protocol ===\
+          \ 'success' ? '\u2705 Pass' : '\u274C Fail'} |\n| Mermaid Diagram Drift\
+          \ | ${checks.mermaid_check === 'success' ? '\u2705 Pass' : '\u26A0\uFE0F\
+          \ Drift detected'} |\n| Quick Tests | ${checks.tests === 'success' ? '\u2705\
+          \ Pass' : '\u26A0\uFE0F Warning'} |\n| Code Quality | ${checks.quality ===\
+          \ 'success' ? '\u2705 Pass' : '\u26A0\uFE0F Warning'} |\n| Session Wrapup\
+          \ (REQ-4/5) | ${checks.session_wrapup === 'success' ? '\u2705 Pass' : '\u274C\
+          \ Fail'} |\n| WEC Compliance (Phase 3.3) | ${checks.wec_compliance === 'success'\
+          \ ? '\u2705 Pass' : '\u274C Fail'} |\n\n${passed ? '\u2705 **All required\
+          \ checks passed! Ready to merge.**' : '\u274C **Some checks failed. Please\
+          \ review and fix.**'}\n\n---\n\n**Note**: This is a quick pre-merge validation.\
+          \ Full test suite runs in other workflows.\n\n_Generated by Pre-Merge Validation\
+          \ workflow_`;\n\ntry {\n  const { data: comments } = await github.rest.issues.listComments({\n\
+          \    owner: context.repo.owner, repo: context.repo.repo,\n    issue_number:\
+          \ context.issue.number, per_page: 100,\n  });\n  const existing = comments.find(c\
+          \ => c.body && c.body.includes(MARKER));\n  if (existing) {\n    await github.rest.issues.updateComment({\n\
+          \      owner: context.repo.owner, repo: context.repo.repo,\n      comment_id:\
+          \ existing.id, body: summary,\n    });\n  } else {\n    await github.rest.issues.createComment({\n\
+          \      issue_number: context.issue.number,\n      owner: context.repo.owner,\
+          \ repo: context.repo.repo,\n      body: summary,\n    });\n  }\n} catch\
+          \ (err) {\n  core.warning(`Could not post validation summary comment (${err.status\
+          \ || err.message}). Continuing.`);\n}\n"
+    - name: Fail if critical checks failed
+      if: steps.autofix.outcome != 'success' || steps.pattern_pipeline.outcome !=
+        'success' || steps.batch_scan_protocol.outcome != 'success' || steps.session_wrapup.outcome
+        != 'success' || steps.wec_compliance.outcome != 'success'
+      run: "echo \"::error::Pre-merge validation failed\"\nif [ \"${{ steps.autofix.outcome\
+        \ }}\" != \"success\" ]; then\n  echo \"::error::Auto-fixable issues detected\"\
+        \n  if [ -f /tmp/autofix_report.json ]; then\n    python3 scripts/ci/print_autofix_issues.py\n\
+        \  fi\n  echo \"Fix with: python scripts/ci/auto_fix_common_issues.py\"\n\
+        fi\nif [ \"${{ steps.pattern_pipeline.outcome }}\" != \"success\" ]; then\n\
+        \  echo \"::error::CI pattern pipeline (strict) failed \u2014 high-recurrence\
+        \ patterns or unfixed auto-fixable issues\"\n  if [ -f /tmp/pattern_pipeline_report.json\
+        \ ]; then\n    python3 -c \"import json,sys; r=json.load(open('/tmp/pattern_pipeline_report.json'));\
+        \ print(json.dumps(r.get('summary',{}), indent=2))\"\n  fi\n  echo \"Fix with:\
+        \ python scripts/ci/auto_fix_common_issues.py && python scripts/ci/ci_pattern_pipeline.py\
+        \ --strict\"\nfi\nif [ \"${{ steps.batch_scan_protocol.outcome }}\" != \"\
+        success\" ]; then\n  echo \"::error::Agent batch-scan protocol check failed\
+        \ \u2014 one or more agent files are missing the \u26A1 Parallel Batch Scanning\
+        \ Protocol section\"\n  echo \"Fix with: python scripts/ci/inject_batch_scan_protocol.py\"\
+        \nfi\nif [ \"${{ steps.session_wrapup.outcome }}\" != \"success\" ]; then\n\
+        \  echo \"::error::Session wrapup check failed \u2014 REQ-4/REQ-5 files are\
+        \ not fresh for latest commit\"\n  echo \"Fix with: python3 scripts/ci/session_wrapup_autofix.py\
+        \ --check --pr-number ${{ github.event.pull_request.number }}\"\nfi\nif [\
+        \ \"${{ steps.wec_compliance.outcome }}\" != \"success\" ]; then\n  echo \"\
+        ::error::WEC compliance check failed \u2014 required workflows not properly\
+        \ configured in WEC block\"\n  echo \"Fix with: python3 scripts/ci/session_wrapup_autofix.py\
+        \ --check-wec-compliance --pr-number ${{ github.event.pull_request.number\
+        \ }}\"\nfi\nexit 1\n"
+    - name: Cache health report
+      if: always()
+      continue-on-error: true
+      run: 'python scripts/ci/generate_cache_keys.py --health --workflow pre-merge-validation
+        2>/dev/null || echo "Cache health: check skipped"
 
-      - name: Run quick tests
-        id: tests
-        timeout-minutes: 5
-        run: |
-          # Run CI capability tests only — these are fast (~30s) and exercise
-          # the key infrastructure without running the full 1500-test suite.
-          # The full suite runs in Resilient Validation Suite / Art_Validation Pipeline.
-          pytest tests/capabilities/ci_test/ -q --tb=short --timeout=60
-        continue-on-error: true
-
-      - name: Check code quality
-        id: quality
-        run: |
-          python -m ruff check src/ tests/ --output-format=github || true
-        continue-on-error: true
-
-      - name: Session wrapup check
-        id: session_wrapup
-        run: |
-          # Verify accountability report and CHANGELOG were updated this session
-          # (REQ-4 / REQ-5 cognitive pre-flight gate — check-only, no writes).
-          python scripts/ci/session_wrapup_autofix.py \
-            --pr-number "${{ github.event.pull_request.number }}" \
-            --sha "${{ github.sha }}" \
-            --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
-            --check
-
-      - name: WEC compliance check (Phase 3.3)
-        id: wec_compliance
-        run: |
-          # (Phase 3.3) Validate WEC compliance against merge target requirements.
-          # Ensures all required workflows are present and checked, REQ-4 and REQ-5
-          # are satisfied.  This is the CI gate for Phase 3.1 enhanced function.
-          MERGE_TARGET="${{ github.base_ref }}"
-          if [ "$MERGE_TARGET" != "main" ] && [ "$MERGE_TARGET" != "0D_base_" ]; then
-            MERGE_TARGET="main"
-          fi
-          python scripts/ci/session_wrapup_autofix.py \
-            --pr-number "${{ github.event.pull_request.number }}" \
-            --check-wec-compliance \
-            --merge-target "$MERGE_TARGET"
-        continue-on-error: true
-
-      - name: Upload validation reports
-        if: always()
-        continue-on-error: true
-        uses: actions/upload-artifact@v5 # v7.0.1
-        with:
-          name: pre-merge-validation-reports-${{ github.run_id }}
-          path: |
-            /tmp/autofix_report.json
-            /tmp/pattern_pipeline_report.json
-          if-no-files-found: ignore
-          retention-days: 7
-
-      - name: Post validation summary
-        if: always()
-        continue-on-error: true
-        uses: actions/github-script@v8 # v9
-        with:
-          script: |
-            const checks = {
-              autofix: '${{ steps.autofix.outcome }}',
-              pattern_pipeline: '${{ steps.pattern_pipeline.outcome }}',
-              batch_scan_protocol: '${{ steps.batch_scan_protocol.outcome }}',
-              mermaid_check: '${{ steps.mermaid_check.outcome }}',
-              tests: '${{ steps.tests.outcome }}',
-              quality: '${{ steps.quality.outcome }}',
-              session_wrapup: '${{ steps.session_wrapup.outcome }}',
-              wec_compliance: '${{ steps.wec_compliance.outcome }}',
-            };
-
-            // Only these three block the merge; the rest are informational warnings.
-            const critical = ['autofix', 'pattern_pipeline', 'batch_scan_protocol', 'session_wrapup', 'wec_compliance'];
-            const passed = critical.every(k => checks[k] === 'success');
-            const emoji = passed ? '✅' : '❌';
-
-            const MARKER = '<!-- pre-merge-validation-summary -->';
-            const summary = `${MARKER}\n## ${emoji} Pre-Merge Validation Summary
-
-            | Check | Status |
-            |-------|--------|
-            | Auto-Fix Issues | ${checks.autofix === 'success' ? '✅ Pass' : '❌ Fail'} |
-            | CI Pattern Pipeline (strict) | ${checks.pattern_pipeline === 'success' ? '✅ Pass' : '❌ Fail'} |
-            | Agent Batch-Scan Protocol | ${checks.batch_scan_protocol === 'success' ? '✅ Pass' : '❌ Fail'} |
-            | Mermaid Diagram Drift | ${checks.mermaid_check === 'success' ? '✅ Pass' : '⚠️ Drift detected'} |
-            | Quick Tests | ${checks.tests === 'success' ? '✅ Pass' : '⚠️ Warning'} |
-            | Code Quality | ${checks.quality === 'success' ? '✅ Pass' : '⚠️ Warning'} |
-            | Session Wrapup (REQ-4/5) | ${checks.session_wrapup === 'success' ? '✅ Pass' : '❌ Fail'} |
-            | WEC Compliance (Phase 3.3) | ${checks.wec_compliance === 'success' ? '✅ Pass' : '❌ Fail'} |
-
-            ${passed ? '✅ **All required checks passed! Ready to merge.**' : '❌ **Some checks failed. Please review and fix.**'}
-
-            ---
-
-            **Note**: This is a quick pre-merge validation. Full test suite runs in other workflows.
-
-            _Generated by Pre-Merge Validation workflow_`;
-
-            try {
-              const { data: comments } = await github.rest.issues.listComments({
-                owner: context.repo.owner, repo: context.repo.repo,
-                issue_number: context.issue.number, per_page: 100,
-              });
-              const existing = comments.find(c => c.body && c.body.includes(MARKER));
-              if (existing) {
-                await github.rest.issues.updateComment({
-                  owner: context.repo.owner, repo: context.repo.repo,
-                  comment_id: existing.id, body: summary,
-                });
-              } else {
-                await github.rest.issues.createComment({
-                  issue_number: context.issue.number,
-                  owner: context.repo.owner, repo: context.repo.repo,
-                  body: summary,
-                });
-              }
-            } catch (err) {
-              core.warning(`Could not post validation summary comment (${err.status || err.message}). Continuing.`);
-            }
-
-      - name: Fail if critical checks failed
-        if: steps.autofix.outcome != 'success' || steps.pattern_pipeline.outcome != 'success' || steps.batch_scan_protocol.outcome != 'success' || steps.session_wrapup.outcome != 'success' || steps.wec_compliance.outcome != 'success'
-        run: |
-          echo "::error::Pre-merge validation failed"
-          if [ "${{ steps.autofix.outcome }}" != "success" ]; then
-            echo "::error::Auto-fixable issues detected"
-            if [ -f /tmp/autofix_report.json ]; then
-              python3 scripts/ci/print_autofix_issues.py
-            fi
-            echo "Fix with: python scripts/ci/auto_fix_common_issues.py"
-          fi
-          if [ "${{ steps.pattern_pipeline.outcome }}" != "success" ]; then
-            echo "::error::CI pattern pipeline (strict) failed — high-recurrence patterns or unfixed auto-fixable issues"
-            if [ -f /tmp/pattern_pipeline_report.json ]; then
-              python3 -c "import json,sys; r=json.load(open('/tmp/pattern_pipeline_report.json')); print(json.dumps(r.get('summary',{}), indent=2))"
-            fi
-            echo "Fix with: python scripts/ci/auto_fix_common_issues.py && python scripts/ci/ci_pattern_pipeline.py --strict"
-          fi
-          if [ "${{ steps.batch_scan_protocol.outcome }}" != "success" ]; then
-            echo "::error::Agent batch-scan protocol check failed — one or more agent files are missing the ⚡ Parallel Batch Scanning Protocol section"
-            echo "Fix with: python scripts/ci/inject_batch_scan_protocol.py"
-          fi
-          if [ "${{ steps.session_wrapup.outcome }}" != "success" ]; then
-            echo "::error::Session wrapup check failed — REQ-4/REQ-5 files are not fresh for latest commit"
-            echo "Fix with: python3 scripts/ci/session_wrapup_autofix.py --check --pr-number ${{ github.event.pull_request.number }}"
-          fi
-          if [ "${{ steps.wec_compliance.outcome }}" != "success" ]; then
-            echo "::error::WEC compliance check failed — required workflows not properly configured in WEC block"
-            echo "Fix with: python3 scripts/ci/session_wrapup_autofix.py --check-wec-compliance --pr-number ${{ github.event.pull_request.number }}"
-          fi
-          exit 1
-
-      - name: Cache health report
-        if: always()
-        continue-on-error: true
-        run: |
-          python scripts/ci/generate_cache_keys.py --health --workflow pre-merge-validation 2>/dev/null || echo "Cache health: check skipped"
-
-  # ── rescue comment — posted on PR whenever pre-merge validation fails ────────
+        '
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   rescue-comment:
     name: Post rescue comment on pre-merge failure
     runs-on: ubuntu-latest
     needs: final-validation
-    if: |
-      failure() &&
-      github.event_name == 'pull_request' &&
+    if: 'failure() &&
+
+      github.event_name == ''pull_request'' &&
+
       github.event.pull_request.head.repo.full_name == github.repository
+
+      '
     permissions:
       pull-requests: write
       issues: write
     timeout-minutes: 5
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          fetch-depth: 1
-
-      - name: Post or update rescue comment
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_NAME: "Pre-Merge Validation"
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          BRANCH: ${{ github.head_ref }}
-        run: python scripts/ci/post_rescue_comment.py
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        fetch-depth: 1
+    - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: Pre-Merge Validation
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+        BRANCH: ${{ github.head_ref }}
+      run: python scripts/ci/post_rescue_comment.py
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

@@ -1,249 +1,171 @@
-name: "📦 Dependabot Auto-Absorb"
-# aais-cache: none  # Python referenced in template/doc strings only — no pip install
-
-# Automatically cherry-picks single-file Dependabot bump PRs into the
-# currently active Copilot coding-agent branch, eliminating the need for
-# a separate session just to absorb trivial version bumps (e.g. Dockerfile
-# base-image upgrades, single-action pin updates).
-#
-# Trigger:  pull_request event from dependabot[bot] with exactly 1 changed file
-# Safety:   Dry-run mode can be activated via the workflow_dispatch input.
-#
-# Policy: .codex/CODEBASE_AGENCY_POLICY.md §2 (absorb ALL codebase issues)
-
-on:
+name: "\U0001F4E6 Dependabot Auto-Absorb"
+true:
   pull_request:
-    types: [opened, synchronize, reopened]
-
-  # Allow manual triggering for testing / replaying missed events.
+    types:
+    - opened
+    - synchronize
+    - reopened
   workflow_dispatch:
     inputs:
       pr_number:
-        description: "Dependabot PR number to absorb"
+        description: Dependabot PR number to absorb
         required: true
         type: string
       target_branch:
-        description: "Branch to cherry-pick into (default: current default branch)"
+        description: 'Branch to cherry-pick into (default: current default branch)'
         required: false
-        default: ""
+        default: ''
         type: string
       dry_run:
-        description: "Dry run (no commit)"
+        description: Dry run (no commit)
         required: false
-        default: "false"
+        default: 'false'
         type: choice
-        options: ["false", "true"]
-
-
+        options:
+        - 'false'
+        - 'true'
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: write
   pull-requests: read
-
 jobs:
   absorb:
-    name: "📦 Cherry-pick single-file Dependabot bump"
+    name: "\U0001F4E6 Cherry-pick single-file Dependabot bump"
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    if: 'github.event_name == ''workflow_dispatch'' || github.actor == ''dependabot[bot]''
 
-    # Only run for Dependabot PRs (pull_request trigger) or manual dispatch.
-    if: >
-      github.event_name == 'workflow_dispatch' ||
-      github.actor == 'dependabot[bot]'
-
+      '
     steps:
-      - name: "📥 Checkout"
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          # Fetch full history so we can cherry-pick cleanly.
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
-          # Always check out the PR base (main) initially; the chain-routing
-          # step below will switch to the correct staging branch before the
-          # cherry-pick so commits never land directly on main when a deeper
-          # staging layer is active.
-          ref: ${{ inputs.target_branch || github.base_ref }}
-
-      - name: "🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)"
-        id: resolve-target
-        # Only resolve when no explicit target was given; explicit inputs are honoured as-is.
-        if: ${{ inputs.target_branch == '' }}
-        uses: ./.github/actions/resolve-push-target
-
-      - name: "🔍 Verify single-file change"
-        id: check
-        uses: actions/github-script@v8 # v9
-        with:
-          script: |
-            const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-            async function callWithRateLimitRetry(fn, label) {
-              const maxAttempts = 3;
-              const MIN_WAIT_SECONDS = 5;
-              const MAX_WAIT_SECONDS = 120;
-              const FALLBACK_WAIT_SECONDS = 60;
-              const RESET_BUFFER_SECONDS = 5;
-              for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-                try {
-                  return await fn();
-                } catch (error) {
-                  const remainingHeader = error?.response?.headers?.['x-ratelimit-remaining'];
-                  const resetHeader = error?.response?.headers?.['x-ratelimit-reset'];
-                  const remaining = Number.parseInt(String(remainingHeader ?? '-1'), 10);
-                  const reset = Number.parseInt(String(resetHeader ?? ''), 10);
-                  const isRateLimited = error?.status === 403 && remaining === 0;
-                  if (!isRateLimited || attempt === maxAttempts) {
-                    throw error;
-                  }
-                  const nowSeconds = Date.now() / 1000;
-                  const resetDelay = Number.isFinite(reset) && reset > nowSeconds
-                    ? Math.ceil(reset - nowSeconds) + RESET_BUFFER_SECONDS
-                    : FALLBACK_WAIT_SECONDS;
-                  const waitSeconds = Math.max(MIN_WAIT_SECONDS, Math.min(MAX_WAIT_SECONDS, resetDelay));
-                  core.warning(`Rate limited while calling ${label}; retrying in ${waitSeconds}s (attempt ${attempt}/${maxAttempts})`);
-                  await sleep(waitSeconds * 1000);
-                }
-              }
-            }
-
-            let prNumber;
-            if (context.eventName === 'workflow_dispatch') {
-              prNumber = parseInt(core.getInput('pr_number') || '${{ inputs.pr_number }}');
-            } else {
-              prNumber = context.payload.pull_request.number;
-            }
-
-            const { data: files } = await callWithRateLimitRetry(
-              () => github.rest.pulls.listFiles({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: prNumber,
-                per_page: 10,
-              }),
-              'pulls.listFiles',
-            );
-
-            core.setOutput('pr_number', prNumber);
-            core.setOutput('file_count', files.length);
-            core.setOutput('is_single_file', files.length === 1 ? 'true' : 'false');
-            core.setOutput('changed_file', files.length === 1 ? files[0].filename : '');
-
-            if (files.length === 1) {
-              console.log(`✅ Single-file bump detected: ${files[0].filename}`);
-            } else {
-              console.log(`ℹ️  ${files.length} files changed — skipping auto-absorb (not a single-file bump)`);
-            }
-
-            // Fetch head SHA for the PR
-            const { data: pr } = await callWithRateLimitRetry(
-              () => github.rest.pulls.get({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: prNumber,
-              }),
-              'pulls.get',
-            );
-            core.setOutput('head_sha', pr.head.sha);
-            core.setOutput('pr_title', pr.title);
-
-      - name: "🍒 Cherry-pick into active branch"
-        if: steps.check.outputs.is_single_file == 'true'
-        env:
-          DRY_RUN: ${{ inputs.dry_run || 'false' }}
-          HEAD_SHA: ${{ steps.check.outputs.head_sha }}
-          CHANGED_FILE: ${{ steps.check.outputs.changed_file }}
-          PR_NUMBER: ${{ steps.check.outputs.pr_number }}
-          PR_TITLE: ${{ steps.check.outputs.pr_title }}
-          # Chain routing: explicit input → resolved chain tip → PR base branch.
-          # The composite action walks: latest sub-PR → 0D_base_ → main.
-          TARGET_BRANCH: ${{ inputs.target_branch || steps.resolve-target.outputs.branch || github.base_ref }}
-        run: |
-          set -euo pipefail
-
-          git config user.name  "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          # Switch the working tree to the chain-resolved target BEFORE cherry-picking
-          # so the commit lands on the correct staging branch, not on main.
-          # The initial checkout used fetch-depth=0 so HEAD_SHA is already present.
-          git fetch origin "${TARGET_BRANCH}" --depth=1
-          git checkout -B _dep_absorb_ origin/"${TARGET_BRANCH}"
-          # Ensure the source commit is reachable after the branch switch.
-          git fetch origin "${HEAD_SHA}" 2>/dev/null || true
-
-          echo "Cherry-picking ${HEAD_SHA} (${CHANGED_FILE}) from PR #${PR_NUMBER} into ${TARGET_BRANCH}…"
-
-          if [ "${DRY_RUN}" = "true" ]; then
-            echo "🔍 DRY RUN — would cherry-pick ${HEAD_SHA}"
-            git cherry-pick --no-commit "${HEAD_SHA}" || true
-            echo "Diff preview:"
-            git diff --cached --stat || true
-            git cherry-pick --abort 2>/dev/null || true
-            echo "✅ Dry run complete — no commit made."
-            exit 0
-          fi
-
-          # Attempt cherry-pick; abort cleanly on conflict.
-          if git cherry-pick "${HEAD_SHA}"; then
-            echo "✅ Cherry-pick succeeded: ${CHANGED_FILE}"
-            # Push the cherry-picked commit back to the target branch.
-            git push origin "HEAD:refs/heads/${TARGET_BRANCH}"
-          else
-            echo "⚠️  Cherry-pick conflict — aborting auto-absorb for PR #${PR_NUMBER}"
-            git cherry-pick --abort
-            exit 0  # Non-fatal: let the human merge manually.
-          fi
-
-      - name: "📝 Annotate job summary"
-        if: always()
-        env:
-          IS_SINGLE: ${{ steps.check.outputs.is_single_file }}
-          CHANGED_FILE: ${{ steps.check.outputs.changed_file }}
-          PR_NUMBER: ${{ steps.check.outputs.pr_number }}
-          PR_TITLE: ${{ steps.check.outputs.pr_title }}
-        run: |
-          {
-            echo "## 📦 Dependabot Auto-Absorb"
-            echo ""
-            if [ "${IS_SINGLE}" = "true" ]; then
-              echo "✅ **Absorbed:** \`${CHANGED_FILE}\` from [PR #${PR_NUMBER}](https://github.com/${{ github.repository }}/pull/${PR_NUMBER})"
-              echo ""
-              echo "> ${PR_TITLE}"
-            else
-              echo "ℹ️  **Skipped:** PR #${PR_NUMBER} has ${{ steps.check.outputs.file_count }} changed files (not a single-file bump)."
-            fi
-          } >> "${GITHUB_STEP_SUMMARY}"
-
-  # ── rescue comment — posted on PR whenever this workflow fails ──────────
+    - name: "\U0001F4E5 Checkout"
+      uses: actions/checkout@v7
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
+        ref: ${{ inputs.target_branch || github.base_ref }}
+    - name: "\U0001F500 Resolve push target (chain: sub-PR \u2192 0D_base_ \u2192\
+        \ main)"
+      id: resolve-target
+      if: ${{ inputs.target_branch == '' }}
+      uses: ./.github/actions/resolve-push-target
+    - name: "\U0001F50D Verify single-file change"
+      id: check
+      uses: actions/github-script@v8
+      with:
+        script: "const sleep = (ms) => new Promise((resolve) => setTimeout(resolve,\
+          \ ms));\nasync function callWithRateLimitRetry(fn, label) {\n  const maxAttempts\
+          \ = 3;\n  const MIN_WAIT_SECONDS = 5;\n  const MAX_WAIT_SECONDS = 120;\n\
+          \  const FALLBACK_WAIT_SECONDS = 60;\n  const RESET_BUFFER_SECONDS = 5;\n\
+          \  for (let attempt = 1; attempt <= maxAttempts; attempt++) {\n    try {\n\
+          \      return await fn();\n    } catch (error) {\n      const remainingHeader\
+          \ = error?.response?.headers?.['x-ratelimit-remaining'];\n      const resetHeader\
+          \ = error?.response?.headers?.['x-ratelimit-reset'];\n      const remaining\
+          \ = Number.parseInt(String(remainingHeader ?? '-1'), 10);\n      const reset\
+          \ = Number.parseInt(String(resetHeader ?? ''), 10);\n      const isRateLimited\
+          \ = error?.status === 403 && remaining === 0;\n      if (!isRateLimited\
+          \ || attempt === maxAttempts) {\n        throw error;\n      }\n      const\
+          \ nowSeconds = Date.now() / 1000;\n      const resetDelay = Number.isFinite(reset)\
+          \ && reset > nowSeconds\n        ? Math.ceil(reset - nowSeconds) + RESET_BUFFER_SECONDS\n\
+          \        : FALLBACK_WAIT_SECONDS;\n      const waitSeconds = Math.max(MIN_WAIT_SECONDS,\
+          \ Math.min(MAX_WAIT_SECONDS, resetDelay));\n      core.warning(`Rate limited\
+          \ while calling ${label}; retrying in ${waitSeconds}s (attempt ${attempt}/${maxAttempts})`);\n\
+          \      await sleep(waitSeconds * 1000);\n    }\n  }\n}\n\nlet prNumber;\n\
+          if (context.eventName === 'workflow_dispatch') {\n  prNumber = parseInt(core.getInput('pr_number')\
+          \ || '${{ inputs.pr_number }}');\n} else {\n  prNumber = context.payload.pull_request.number;\n\
+          }\n\nconst { data: files } = await callWithRateLimitRetry(\n  () => github.rest.pulls.listFiles({\n\
+          \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    pull_number:\
+          \ prNumber,\n    per_page: 10,\n  }),\n  'pulls.listFiles',\n);\n\ncore.setOutput('pr_number',\
+          \ prNumber);\ncore.setOutput('file_count', files.length);\ncore.setOutput('is_single_file',\
+          \ files.length === 1 ? 'true' : 'false');\ncore.setOutput('changed_file',\
+          \ files.length === 1 ? files[0].filename : '');\n\nif (files.length ===\
+          \ 1) {\n  console.log(`\u2705 Single-file bump detected: ${files[0].filename}`);\n\
+          } else {\n  console.log(`\u2139\uFE0F  ${files.length} files changed \u2014\
+          \ skipping auto-absorb (not a single-file bump)`);\n}\n\n// Fetch head SHA\
+          \ for the PR\nconst { data: pr } = await callWithRateLimitRetry(\n  () =>\
+          \ github.rest.pulls.get({\n    owner: context.repo.owner,\n    repo: context.repo.repo,\n\
+          \    pull_number: prNumber,\n  }),\n  'pulls.get',\n);\ncore.setOutput('head_sha',\
+          \ pr.head.sha);\ncore.setOutput('pr_title', pr.title);\n"
+    - name: "\U0001F352 Cherry-pick into active branch"
+      if: steps.check.outputs.is_single_file == 'true'
+      env:
+        DRY_RUN: ${{ inputs.dry_run || 'false' }}
+        HEAD_SHA: ${{ steps.check.outputs.head_sha }}
+        CHANGED_FILE: ${{ steps.check.outputs.changed_file }}
+        PR_NUMBER: ${{ steps.check.outputs.pr_number }}
+        PR_TITLE: ${{ steps.check.outputs.pr_title }}
+        TARGET_BRANCH: ${{ inputs.target_branch || steps.resolve-target.outputs.branch
+          || github.base_ref }}
+      run: "set -euo pipefail\n\ngit config user.name  \"github-actions[bot]\"\ngit\
+        \ config user.email \"github-actions[bot]@users.noreply.github.com\"\n\n#\
+        \ Switch the working tree to the chain-resolved target BEFORE cherry-picking\n\
+        # so the commit lands on the correct staging branch, not on main.\n# The initial\
+        \ checkout used fetch-depth=0 so HEAD_SHA is already present.\ngit fetch origin\
+        \ \"${TARGET_BRANCH}\" --depth=1\ngit checkout -B _dep_absorb_ origin/\"${TARGET_BRANCH}\"\
+        \n# Ensure the source commit is reachable after the branch switch.\ngit fetch\
+        \ origin \"${HEAD_SHA}\" 2>/dev/null || true\n\necho \"Cherry-picking ${HEAD_SHA}\
+        \ (${CHANGED_FILE}) from PR #${PR_NUMBER} into ${TARGET_BRANCH}\u2026\"\n\n\
+        if [ \"${DRY_RUN}\" = \"true\" ]; then\n  echo \"\U0001F50D DRY RUN \u2014\
+        \ would cherry-pick ${HEAD_SHA}\"\n  git cherry-pick --no-commit \"${HEAD_SHA}\"\
+        \ || true\n  echo \"Diff preview:\"\n  git diff --cached --stat || true\n\
+        \  git cherry-pick --abort 2>/dev/null || true\n  echo \"\u2705 Dry run complete\
+        \ \u2014 no commit made.\"\n  exit 0\nfi\n\n# Attempt cherry-pick; abort cleanly\
+        \ on conflict.\nif git cherry-pick \"${HEAD_SHA}\"; then\n  echo \"\u2705\
+        \ Cherry-pick succeeded: ${CHANGED_FILE}\"\n  # Push the cherry-picked commit\
+        \ back to the target branch.\n  git push origin \"HEAD:refs/heads/${TARGET_BRANCH}\"\
+        \nelse\n  echo \"\u26A0\uFE0F  Cherry-pick conflict \u2014 aborting auto-absorb\
+        \ for PR #${PR_NUMBER}\"\n  git cherry-pick --abort\n  exit 0  # Non-fatal:\
+        \ let the human merge manually.\nfi\n"
+    - name: "\U0001F4DD Annotate job summary"
+      if: always()
+      env:
+        IS_SINGLE: ${{ steps.check.outputs.is_single_file }}
+        CHANGED_FILE: ${{ steps.check.outputs.changed_file }}
+        PR_NUMBER: ${{ steps.check.outputs.pr_number }}
+        PR_TITLE: ${{ steps.check.outputs.pr_title }}
+      run: "{\n  echo \"## \U0001F4E6 Dependabot Auto-Absorb\"\n  echo \"\"\n  if\
+        \ [ \"${IS_SINGLE}\" = \"true\" ]; then\n    echo \"\u2705 **Absorbed:** \\\
+        `${CHANGED_FILE}\\` from [PR #${PR_NUMBER}](https://github.com/${{ github.repository\
+        \ }}/pull/${PR_NUMBER})\"\n    echo \"\"\n    echo \"> ${PR_TITLE}\"\n  else\n\
+        \    echo \"\u2139\uFE0F  **Skipped:** PR #${PR_NUMBER} has ${{ steps.check.outputs.file_count\
+        \ }} changed files (not a single-file bump).\"\n  fi\n} >> \"${GITHUB_STEP_SUMMARY}\"\
+        \n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
     needs: absorb
-    if: |
-      failure() &&
-      github.event_name == 'pull_request' &&
+    if: 'failure() &&
+
+      github.event_name == ''pull_request'' &&
+
       github.event.pull_request.head.repo.full_name == github.repository
+
+      '
     permissions:
       pull-requests: write
       issues: write
     timeout-minutes: 5
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          fetch-depth: 1
-
-      - name: Post or update rescue comment
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_NAME: "Dependabot Auto-Absorb"
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          BRANCH: ${{ github.head_ref }}
-        run: python scripts/ci/post_rescue_comment.py
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        fetch-depth: 1
+    - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: Dependabot Auto-Absorb
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+        BRANCH: ${{ github.head_ref }}
+      run: python scripts/ci/post_rescue_comment.py
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

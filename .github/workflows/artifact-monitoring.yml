@@ -1,194 +1,142 @@
 name: Artifact Monitoring
-
-on:
-  # Scheduled execution every 3-6 hours
+true:
   schedule:
-    - cron: '0 */3 * * *'  # Every 3 hours at minute 0
-
-  # Manual trigger for testing and on-demand execution
+  - cron: 0 */3 * * *
   workflow_dispatch:
     inputs:
       dry_run:
-        description: 'Run in dry-run mode (no issues created)'
+        description: Run in dry-run mode (no issues created)
         required: false
         default: 'false'
         type: choice
         options:
-          - 'true'
-          - 'false'
+        - 'true'
+        - 'false'
       workflow_filter:
-        description: 'Check specific workflow only (optional)'
+        description: Check specific workflow only (optional)
         required: false
         type: string
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   issues: write
   actions: read
-
-
 env:
-  # RL-3b: Rate-limit dashboard guard
-  GH_TRICKLE_POLITE_SLEEP: "0.5"
-  GH_TRICKLE_MIN_REMAINING: "50"
-
+  GH_TRICKLE_POLITE_SLEEP: '0.5'
+  GH_TRICKLE_MIN_REMAINING: '50'
 jobs:
   monitor-workflows:
     name: Monitor Workflows & Create Issues
     runs-on: ubuntu-latest
     timeout-minutes: 60
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
+    - name: Checkout repository
+      uses: actions/checkout@v7
+    - name: "RL-3b \u2014 Rate-limit pre-check"
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+      run: "REMAINING=$(gh api rate_limit --jq '.resources.core.remaining' 2>/dev/null\
+        \ || echo \"0\")\necho \"GitHub API rate-limit remaining: $REMAINING\"\nif\
+        \ [ \"$REMAINING\" -lt \"${GH_TRICKLE_MIN_REMAINING}\" ]; then\n  echo \"\u26A0\
+        \uFE0F  Rate limit low ($REMAINING remaining < ${GH_TRICKLE_MIN_REMAINING}\
+        \ threshold) \u2014 skipping artifact monitoring to protect CI\"\n  echo \"\
+        RATE_LIMIT_OK=false\" >> \"$GITHUB_ENV\"\nelse\n  echo \"RATE_LIMIT_OK=true\"\
+        \ >> \"$GITHUB_ENV\"\nfi\n"
+    - name: CacheManager health check
+      if: env.RATE_LIMIT_OK != 'false'
+      continue-on-error: true
+      run: 'python scripts/ci/generate_cache_keys.py --health --workflow artifact-monitoring
+        2>/dev/null || echo "Cache health: check skipped"
 
-      - name: RL-3b — Rate-limit pre-check
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-        run: |
-          REMAINING=$(gh api rate_limit --jq '.resources.core.remaining' 2>/dev/null || echo "0")
-          echo "GitHub API rate-limit remaining: $REMAINING"
-          if [ "$REMAINING" -lt "${GH_TRICKLE_MIN_REMAINING}" ]; then
-            echo "⚠️  Rate limit low ($REMAINING remaining < ${GH_TRICKLE_MIN_REMAINING} threshold) — skipping artifact monitoring to protect CI"
-            echo "RATE_LIMIT_OK=false" >> "$GITHUB_ENV"
-          else
-            echo "RATE_LIMIT_OK=true" >> "$GITHUB_ENV"
-          fi
+        '
+    - name: Set up Python 3.12 with tiered cache
+      if: env.RATE_LIMIT_OK != 'false'
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        cache-tier: common
+    - name: Install dependencies
+      if: env.RATE_LIMIT_OK != 'false'
+      run: 'python -m pip install --upgrade pip
 
-      - name: CacheManager health check
-        if: env.RATE_LIMIT_OK != 'false'
-        continue-on-error: true
-        run: |
-          python scripts/ci/generate_cache_keys.py --health --workflow artifact-monitoring 2>/dev/null || echo "Cache health: check skipped"
-      - name: Set up Python 3.12 with tiered cache
-        if: env.RATE_LIMIT_OK != 'false'
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12.13'
-          cache-tier: common
+        pip install -e ".[github]"
 
-      - name: Install dependencies
-        if: env.RATE_LIMIT_OK != 'false'
-        run: |
-          python -m pip install --upgrade pip
-          pip install -e ".[github]"
-
-      - name: Download previous state
-        if: env.RATE_LIMIT_OK != 'false'
-        id: download_state
-        uses: actions/download-artifact@v5 # v8.0.1
-        with:
-          name: monitor-state
-          path: .codex/monitoring/state/
-        continue-on-error: true
-
-      - name: Run monitoring check
-        if: env.RATE_LIMIT_OK != 'false'
-        id: monitor
-        env:
-          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-          DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
-          WORKFLOW_FILTER: ${{ github.event.inputs.workflow_filter || '' }}
-        run: |
-          # Determine dry-run flag
-          DRY_RUN_FLAG=""
-          if [ "$DRY_RUN" = "true" ]; then
-            DRY_RUN_FLAG="--dry-run"
-            echo "🔍 Running in DRY-RUN mode"
-          fi
-
-          # Determine workflow filter
-          WORKFLOW_FLAG=""
-          if [ -n "$WORKFLOW_FILTER" ]; then
-            WORKFLOW_FLAG="--workflow $WORKFLOW_FILTER"
-            echo "🎯 Filtering to workflow: $WORKFLOW_FILTER"
-          fi
-
-          # Run monitoring
-          echo "🚀 Starting artifact monitoring..."
-          python scripts/monitoring/artifact_monitor.py \
-            --config .codex/config/monitoring.yaml \
-            --state .codex/monitoring/state/monitor_state.json \
-            $DRY_RUN_FLAG \
-            $WORKFLOW_FLAG \
-            --verbose
-
-          echo "✅ Monitoring check complete"
-
-      - name: Upload monitoring state
-        if: always()
-        uses: actions/upload-artifact@v5 # v7.0.1
-        with:
-          name: monitor-state
-          path: .codex/monitoring/state/
-          retention-days: 90
-
-      - name: Generate monitoring report
-        if: always()
-        run: |
-          echo "## 📊 Monitoring Report" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-
-          if [ -f .codex/monitoring/state/monitor_state.json ]; then
-            echo "### State Summary" >> $GITHUB_STEP_SUMMARY
-            python -c "
-          import json
-          with open('.codex/monitoring/state/monitor_state.json', 'r') as f:
-              state = json.load(f)
-              stats = state.get('stats', {})
-              print(f\"- **Total Runs Checked**: {stats.get('total_runs_checked', 0)}\")
-              print(f\"- **Failures Detected**: {stats.get('failures_detected', 0)}\")
-              print(f\"- **Issues Created**: {stats.get('issues_created', 0)}\")
-              print(f\"- **Issues Closed**: {stats.get('issues_closed', 0)}\")
-              print(f\"- **Last Check**: {state.get('last_check_timestamp', 'Never')}\")
-          " >> $GITHUB_STEP_SUMMARY
-          else
-            echo "_No state file found_" >> $GITHUB_STEP_SUMMARY
-          fi
-
-      - name: Check rate limit
-        if: always()
-        env:
-          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-        run: |
-          echo "## 🔍 GitHub API Rate Limit" >> $GITHUB_STEP_SUMMARY
-          gh api rate_limit | jq -r '.resources.core | "- **Remaining**: \(.remaining)/\(.limit)\n- **Reset**: \(.reset | strflocaltime("%Y-%m-%d %H:%M:%S UTC"))"' >> $GITHUB_STEP_SUMMARY || true
-
-      - name: Notify on failure
-        if: failure()
-        uses: actions/github-script@v8 # v9
-        with:
-          script: |
-            const issue_body = `## ⚠️ Artifact Monitoring Workflow Failed
-
-            The automated artifact monitoring workflow has failed.
-
-            **Run**: [#${context.runId}](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
-            **Workflow**: ${context.workflow}
-            **Event**: ${context.eventName}
-            **Time**: ${new Date().toISOString()}
-
-            This is a meta-failure - the monitoring system itself has encountered an error.
-            Please review the workflow logs and resolve the issue to restore monitoring.
-
-            ---
-
-            **Auto-generated by Artifact Monitoring Workflow**
-            `;
-
-            // Only create issue if not in dry-run mode
-            const isDryRun = '${{ github.event.inputs.dry_run }}' === 'true';
-            if (!isDryRun) {
-              await github.rest.issues.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                title: '[META-MONITOR] Artifact Monitoring Workflow Failed',
-                body: issue_body,
-                labels: ['automated', 'monitoring-failure', 'critical']
-              });
-            }
+        '
+    - name: Download previous state
+      if: env.RATE_LIMIT_OK != 'false'
+      id: download_state
+      uses: actions/download-artifact@v5
+      with:
+        name: monitor-state
+        path: .codex/monitoring/state/
+      continue-on-error: true
+    - name: Run monitoring check
+      if: env.RATE_LIMIT_OK != 'false'
+      id: monitor
+      env:
+        GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_MASTER_KEY
+          || secrets.CODEX_BACKUP_KEY }}
+        DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+        WORKFLOW_FILTER: ${{ github.event.inputs.workflow_filter || '' }}
+      run: "# Determine dry-run flag\nDRY_RUN_FLAG=\"\"\nif [ \"$DRY_RUN\" = \"true\"\
+        \ ]; then\n  DRY_RUN_FLAG=\"--dry-run\"\n  echo \"\U0001F50D Running in DRY-RUN\
+        \ mode\"\nfi\n\n# Determine workflow filter\nWORKFLOW_FLAG=\"\"\nif [ -n \"\
+        $WORKFLOW_FILTER\" ]; then\n  WORKFLOW_FLAG=\"--workflow $WORKFLOW_FILTER\"\
+        \n  echo \"\U0001F3AF Filtering to workflow: $WORKFLOW_FILTER\"\nfi\n\n# Run\
+        \ monitoring\necho \"\U0001F680 Starting artifact monitoring...\"\npython\
+        \ scripts/monitoring/artifact_monitor.py \\\n  --config .codex/config/monitoring.yaml\
+        \ \\\n  --state .codex/monitoring/state/monitor_state.json \\\n  $DRY_RUN_FLAG\
+        \ \\\n  $WORKFLOW_FLAG \\\n  --verbose\n\necho \"\u2705 Monitoring check complete\"\
+        \n"
+    - name: Upload monitoring state
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: monitor-state
+        path: .codex/monitoring/state/
+        retention-days: 90
+    - name: Generate monitoring report
+      if: always()
+      run: "echo \"## \U0001F4CA Monitoring Report\" >> $GITHUB_STEP_SUMMARY\necho\
+        \ \"\" >> $GITHUB_STEP_SUMMARY\n\nif [ -f .codex/monitoring/state/monitor_state.json\
+        \ ]; then\n  echo \"### State Summary\" >> $GITHUB_STEP_SUMMARY\n  python\
+        \ -c \"\nimport json\nwith open('.codex/monitoring/state/monitor_state.json',\
+        \ 'r') as f:\n    state = json.load(f)\n    stats = state.get('stats', {})\n\
+        \    print(f\\\"- **Total Runs Checked**: {stats.get('total_runs_checked',\
+        \ 0)}\\\")\n    print(f\\\"- **Failures Detected**: {stats.get('failures_detected',\
+        \ 0)}\\\")\n    print(f\\\"- **Issues Created**: {stats.get('issues_created',\
+        \ 0)}\\\")\n    print(f\\\"- **Issues Closed**: {stats.get('issues_closed',\
+        \ 0)}\\\")\n    print(f\\\"- **Last Check**: {state.get('last_check_timestamp',\
+        \ 'Never')}\\\")\n\" >> $GITHUB_STEP_SUMMARY\nelse\n  echo \"_No state file\
+        \ found_\" >> $GITHUB_STEP_SUMMARY\nfi\n"
+    - name: Check rate limit
+      if: always()
+      env:
+        GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      run: "echo \"## \U0001F50D GitHub API Rate Limit\" >> $GITHUB_STEP_SUMMARY\n\
+        gh api rate_limit | jq -r '.resources.core | \"- **Remaining**: \\(.remaining)/\\\
+        (.limit)\\n- **Reset**: \\(.reset | strflocaltime(\"%Y-%m-%d %H:%M:%S UTC\"\
+        ))\"' >> $GITHUB_STEP_SUMMARY || true\n"
+    - name: Notify on failure
+      if: failure()
+      uses: actions/github-script@v8
+      with:
+        script: "const issue_body = `## \u26A0\uFE0F Artifact Monitoring Workflow\
+          \ Failed\n\nThe automated artifact monitoring workflow has failed.\n\n**Run**:\
+          \ [#${context.runId}](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})\n\
+          **Workflow**: ${context.workflow}\n**Event**: ${context.eventName}\n**Time**:\
+          \ ${new Date().toISOString()}\n\nThis is a meta-failure - the monitoring\
+          \ system itself has encountered an error.\nPlease review the workflow logs\
+          \ and resolve the issue to restore monitoring.\n\n---\n\n**Auto-generated\
+          \ by Artifact Monitoring Workflow**\n`;\n\n// Only create issue if not in\
+          \ dry-run mode\nconst isDryRun = '${{ github.event.inputs.dry_run }}' ===\
+          \ 'true';\nif (!isDryRun) {\n  await github.rest.issues.create({\n    owner:\
+          \ context.repo.owner,\n    repo: context.repo.repo,\n    title: '[META-MONITOR]\
+          \ Artifact Monitoring Workflow Failed',\n    body: issue_body,\n    labels:\
+          \ ['automated', 'monitoring-failure', 'critical']\n  });\n}\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

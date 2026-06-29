@@ -1,284 +1,180 @@
 name: Validate Token Health
-
-on:
-  workflow_dispatch:
+true:
+  workflow_dispatch: null
   schedule:
-    # Daily at 9 AM UTC
-    - cron: '0 9 * * *'
-
+  - cron: 0 9 * * *
 permissions:
   contents: read
   actions: read
   checks: write
   issues: write
-
 concurrency:
   group: validate-token-health-${{ github.ref }}
   cancel-in-progress: false
-
 env:
   CODEX_REPO_ID: '1040037790'
-  GITHUB_REPOSITORY: 'Aries-Serpent/_codex_'
-
+  GITHUB_REPOSITORY: Aries-Serpent/_codex_
 jobs:
   validate-token-setup:
     name: Validate CODEX Token Setup
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
     permissions:
       contents: read
       actions: read
       checks: write
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 1
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        fetch-depth: 1
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.11'
+        cache: pip
+    - name: Install gh CLI
+      run: 'which gh || sudo apt-get update && sudo apt-get install -y gh
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.11'
-          cache: 'pip'
+        gh --version
 
-      - name: Install gh CLI
-        run: |
-          which gh || sudo apt-get update && sudo apt-get install -y gh
-          gh --version
+        '
+    - name: Validate CODEX_MASTER_KEY
+      id: master-validation
+      continue-on-error: true
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+      run: "echo \"Testing CODEX_MASTER_KEY...\"\n\n# Test 1: Check token format\n\
+        if [[ -z \"$GH_TOKEN\" ]]; then\n  echo \"\u274C CODEX_MASTER_KEY not found\
+        \ in secrets\"\n  exit 1\nfi\n\nif [[ ! \"$GH_TOKEN\" =~ ^github_pat_ ]];\
+        \ then\n  echo \"\u274C CODEX_MASTER_KEY has invalid format (should start\
+        \ with github_pat_)\"\n  exit 1\nfi\n\necho \"\u2705 CODEX_MASTER_KEY format\
+        \ validated\"\n\n# Test 2: Authenticate with token\ngh auth status > /dev/null\
+        \ 2>&1 || {\n  echo \"\u274C Failed to authenticate with CODEX_MASTER_KEY\"\
+        \n  exit 1\n}\n\necho \"\u2705 CODEX_MASTER_KEY authentication successful\"\
+        \n\n# Test 3: Test basic API operations\necho \"Testing API operations...\"\
+        \n\n# Get authenticated user\ngh api user > /dev/null 2>&1 || {\n  echo \"\
+        \u274C Failed to read user profile\"\n  exit 1\n}\necho \"  \u2705 User read:\
+        \ PASS\"\n\n# Get repository\ngh api repos/${{ env.GITHUB_REPOSITORY }} >\
+        \ /dev/null 2>&1 || {\n  echo \"\u274C Failed to read repository\"\n  exit\
+        \ 1\n}\necho \"  \u2705 Repository read: PASS\"\n\n# List repository variables\n\
+        gh api repos/${{ env.GITHUB_REPOSITORY }}/actions/variables > /dev/null 2>&1\
+        \ || {\n  echo \"\u274C Failed to read repository variables\"\n  exit 1\n\
+        }\necho \"  \u2705 Variables read: PASS\"\n\n# List workflows\ngh api repos/${{\
+        \ env.GITHUB_REPOSITORY }}/actions/workflows > /dev/null 2>&1 || {\n  echo\
+        \ \"\u274C Failed to list workflows\"\n  exit 1\n}\necho \"  \u2705 Workflows\
+        \ list: PASS\"\n\necho \"master_key_valid=true\" >> $GITHUB_OUTPUT\n"
+    - name: Validate CODEX_BACKUP_KEY
+      id: backup-validation
+      continue-on-error: true
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_BACKUP_KEY }}
+      run: "echo \"Testing CODEX_BACKUP_KEY...\"\n\n# Test 1: Check token format\n\
+        if [[ -z \"$GH_TOKEN\" ]]; then\n  echo \"\u26A0\uFE0F CODEX_BACKUP_KEY not\
+        \ found (optional, but recommended)\"\n  echo \"backup_key_valid=unknown\"\
+        \ >> $GITHUB_OUTPUT\n  exit 0\nfi\n\nif [[ ! \"$GH_TOKEN\" =~ ^github_pat_\
+        \ ]]; then\n  echo \"\u274C CODEX_BACKUP_KEY has invalid format\"\n  exit\
+        \ 1\nfi\n\necho \"\u2705 CODEX_BACKUP_KEY format validated\"\n\n# Test 2:\
+        \ Authenticate with token\ngh auth status > /dev/null 2>&1 || {\n  echo \"\
+        \u274C Failed to authenticate with CODEX_BACKUP_KEY\"\n  exit 1\n}\n\necho\
+        \ \"\u2705 CODEX_BACKUP_KEY authentication successful\"\n\n# Test 3: Test\
+        \ basic API operations (same as master key)\necho \"Testing API operations...\"\
+        \n\ngh api user > /dev/null 2>&1 || exit 1\necho \"  \u2705 User read: PASS\"\
+        \n\ngh api repos/${{ env.GITHUB_REPOSITORY }} > /dev/null 2>&1 || exit 1\n\
+        echo \"  \u2705 Repository read: PASS\"\n\ngh api repos/${{ env.GITHUB_REPOSITORY\
+        \ }}/actions/variables > /dev/null 2>&1 || exit 1\necho \"  \u2705 Variables\
+        \ read: PASS\"\n\ngh api repos/${{ env.GITHUB_REPOSITORY }}/actions/workflows\
+        \ > /dev/null 2>&1 || exit 1\necho \"  \u2705 Workflows list: PASS\"\n\necho\
+        \ \"backup_key_valid=true\" >> $GITHUB_OUTPUT\n"
+    - name: Run Python validation script
+      id: script-validation
+      continue-on-error: true
+      env:
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: "echo \"Running comprehensive validation script...\"\npython scripts/ci/validate_token_setup.py\
+        \ \\\n  --json-output .codex/token_validation_report.json \\\n  --verbose\
+        \ || {\n  echo \"script_validation_failed=true\" >> $GITHUB_OUTPUT\n  exit\
+        \ 0  # Continue to next steps even if validation fails\n}\n\nif [[ -f .codex/token_validation_report.json\
+        \ ]]; then\n  echo \"\u2705 JSON report generated\"\n  cat .codex/token_validation_report.json\
+        \ | head -50\nfi\n"
+    - name: Archive validation report
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: token-validation-report
+        path: .codex/token_validation_report.json
+        retention-days: 30
+        if-no-files-found: ignore
+    - name: Generate status check
+      id: status-check
+      if: always()
+      run: "MASTER_VALID=\"${{ steps.master-validation.outputs.master_key_valid }}\"\
+        \nBACKUP_VALID=\"${{ steps.backup-validation.outputs.backup_key_valid }}\"\
+        \n\nif [[ \"$MASTER_VALID\" == \"true\" ]]; then\n  MASTER_STATUS=\"\u2705\
+        \ VALID\"\nelse\n  MASTER_STATUS=\"\u274C INVALID\"\nfi\n\nif [[ \"$BACKUP_VALID\"\
+        \ == \"true\" ]]; then\n  BACKUP_STATUS=\"\u2705 VALID\"\nelif [[ \"$BACKUP_VALID\"\
+        \ == \"unknown\" ]]; then\n  BACKUP_STATUS=\"\u26A0\uFE0F NOT CONFIGURED\"\
+        \nelse\n  BACKUP_STATUS=\"\u274C INVALID\"\nfi\n\necho \"## Token Validation\
+        \ Report\" >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\necho\
+        \ \"| Token | Status |\" >> $GITHUB_STEP_SUMMARY\necho \"|-------|--------|\"\
+        \ >> $GITHUB_STEP_SUMMARY\necho \"| CODEX_MASTER_KEY | $MASTER_STATUS |\"\
+        \ >> $GITHUB_STEP_SUMMARY\necho \"| CODEX_BACKUP_KEY | $BACKUP_STATUS |\"\
+        \ >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\n\n# Determine\
+        \ overall status\nif [[ \"$MASTER_VALID\" == \"true\" ]]; then\n  echo \"\
+        **Result:** \u2705 All tests passed - Token setup is healthy\" >> $GITHUB_STEP_SUMMARY\n\
+        \  echo \"overall_status=PASSED\" >> $GITHUB_OUTPUT\nelif [[ \"$MASTER_VALID\"\
+        \ == \"true\" || \"$BACKUP_VALID\" == \"true\" ]]; then\n  echo \"**Result:**\
+        \ \u26A0\uFE0F Partial validation - At least one token is valid\" >> $GITHUB_STEP_SUMMARY\n\
+        \  echo \"overall_status=PARTIAL\" >> $GITHUB_OUTPUT\nelse\n  echo \"**Result:**\
+        \ \u274C Validation failed - Token setup requires attention\" >> $GITHUB_STEP_SUMMARY\n\
+        \  echo \"overall_status=FAILED\" >> $GITHUB_OUTPUT\nfi\n"
+    - name: Log token health to audit trail
+      if: always()
+      env:
+        MASTER_VALID: ${{ steps.master-validation.outputs.master_key_valid }}
+        BACKUP_VALID: ${{ steps.backup-validation.outputs.backup_key_valid }}
+        OVERALL_STATUS: ${{ steps.status-check.outputs.overall_status }}
+      run: "# Create audit log entry\nmkdir -p .codex/audit\n\ncat >> .codex/audit/token_health_check.jsonl\
+        \ << EOF\n{\"timestamp\": \"$(date -u +'%Y-%m-%dT%H:%M:%SZ')\", \"workflow_run_id\"\
+        : \"${{ github.run_id }}\", \"master_key_valid\": \"$MASTER_VALID\", \"backup_key_valid\"\
+        : \"$BACKUP_VALID\", \"overall_status\": \"$OVERALL_STATUS\", \"actor\": \"\
+        ${{ github.actor }}\"}\nEOF\n\necho \"\u2705 Audit log updated\"\n"
+    - name: Fail if validation critical path fails
+      if: 'always() &&
 
-      - name: Validate CODEX_MASTER_KEY
-        id: master-validation
-        continue-on-error: true
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
-        run: |
-          echo "Testing CODEX_MASTER_KEY..."
+        steps.master-validation.outcome == ''failure''
 
-          # Test 1: Check token format
-          if [[ -z "$GH_TOKEN" ]]; then
-            echo "❌ CODEX_MASTER_KEY not found in secrets"
-            exit 1
-          fi
+        '
+      run: "echo \"\u274C CRITICAL: CODEX_MASTER_KEY validation failed\"\necho \"\
+        This indicates the primary token is not functioning correctly.\"\necho \"\
+        Immediate action required: Check GitHub Actions secrets and token status.\"\
+        \nexit 1\n"
+    - name: Create issue if backup key invalid
+      if: 'always() &&
 
-          if [[ ! "$GH_TOKEN" =~ ^github_pat_ ]]; then
-            echo "❌ CODEX_MASTER_KEY has invalid format (should start with github_pat_)"
-            exit 1
-          fi
+        steps.backup-validation.outcome == ''failure'' &&
 
-          echo "✅ CODEX_MASTER_KEY format validated"
+        github.event_name == ''schedule''
 
-          # Test 2: Authenticate with token
-          gh auth status > /dev/null 2>&1 || {
-            echo "❌ Failed to authenticate with CODEX_MASTER_KEY"
-            exit 1
-          }
-
-          echo "✅ CODEX_MASTER_KEY authentication successful"
-
-          # Test 3: Test basic API operations
-          echo "Testing API operations..."
-
-          # Get authenticated user
-          gh api user > /dev/null 2>&1 || {
-            echo "❌ Failed to read user profile"
-            exit 1
-          }
-          echo "  ✅ User read: PASS"
-
-          # Get repository
-          gh api repos/${{ env.GITHUB_REPOSITORY }} > /dev/null 2>&1 || {
-            echo "❌ Failed to read repository"
-            exit 1
-          }
-          echo "  ✅ Repository read: PASS"
-
-          # List repository variables
-          gh api repos/${{ env.GITHUB_REPOSITORY }}/actions/variables > /dev/null 2>&1 || {
-            echo "❌ Failed to read repository variables"
-            exit 1
-          }
-          echo "  ✅ Variables read: PASS"
-
-          # List workflows
-          gh api repos/${{ env.GITHUB_REPOSITORY }}/actions/workflows > /dev/null 2>&1 || {
-            echo "❌ Failed to list workflows"
-            exit 1
-          }
-          echo "  ✅ Workflows list: PASS"
-
-          echo "master_key_valid=true" >> $GITHUB_OUTPUT
-
-      - name: Validate CODEX_BACKUP_KEY
-        id: backup-validation
-        continue-on-error: true
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_BACKUP_KEY }}
-        run: |
-          echo "Testing CODEX_BACKUP_KEY..."
-
-          # Test 1: Check token format
-          if [[ -z "$GH_TOKEN" ]]; then
-            echo "⚠️ CODEX_BACKUP_KEY not found (optional, but recommended)"
-            echo "backup_key_valid=unknown" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-
-          if [[ ! "$GH_TOKEN" =~ ^github_pat_ ]]; then
-            echo "❌ CODEX_BACKUP_KEY has invalid format"
-            exit 1
-          fi
-
-          echo "✅ CODEX_BACKUP_KEY format validated"
-
-          # Test 2: Authenticate with token
-          gh auth status > /dev/null 2>&1 || {
-            echo "❌ Failed to authenticate with CODEX_BACKUP_KEY"
-            exit 1
-          }
-
-          echo "✅ CODEX_BACKUP_KEY authentication successful"
-
-          # Test 3: Test basic API operations (same as master key)
-          echo "Testing API operations..."
-
-          gh api user > /dev/null 2>&1 || exit 1
-          echo "  ✅ User read: PASS"
-
-          gh api repos/${{ env.GITHUB_REPOSITORY }} > /dev/null 2>&1 || exit 1
-          echo "  ✅ Repository read: PASS"
-
-          gh api repos/${{ env.GITHUB_REPOSITORY }}/actions/variables > /dev/null 2>&1 || exit 1
-          echo "  ✅ Variables read: PASS"
-
-          gh api repos/${{ env.GITHUB_REPOSITORY }}/actions/workflows > /dev/null 2>&1 || exit 1
-          echo "  ✅ Workflows list: PASS"
-
-          echo "backup_key_valid=true" >> $GITHUB_OUTPUT
-
-      - name: Run Python validation script
-        id: script-validation
-        continue-on-error: true
-        env:
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
-          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "Running comprehensive validation script..."
-          python scripts/ci/validate_token_setup.py \
-            --json-output .codex/token_validation_report.json \
-            --verbose || {
-            echo "script_validation_failed=true" >> $GITHUB_OUTPUT
-            exit 0  # Continue to next steps even if validation fails
-          }
-
-          if [[ -f .codex/token_validation_report.json ]]; then
-            echo "✅ JSON report generated"
-            cat .codex/token_validation_report.json | head -50
-          fi
-
-      - name: Archive validation report
-        if: always()
-        uses: actions/upload-artifact@v5
-        with:
-          name: token-validation-report
-          path: .codex/token_validation_report.json
-          retention-days: 30
-          if-no-files-found: ignore
-
-      - name: Generate status check
-        id: status-check
-        if: always()
-        run: |
-          MASTER_VALID="${{ steps.master-validation.outputs.master_key_valid }}"
-          BACKUP_VALID="${{ steps.backup-validation.outputs.backup_key_valid }}"
-
-          if [[ "$MASTER_VALID" == "true" ]]; then
-            MASTER_STATUS="✅ VALID"
-          else
-            MASTER_STATUS="❌ INVALID"
-          fi
-
-          if [[ "$BACKUP_VALID" == "true" ]]; then
-            BACKUP_STATUS="✅ VALID"
-          elif [[ "$BACKUP_VALID" == "unknown" ]]; then
-            BACKUP_STATUS="⚠️ NOT CONFIGURED"
-          else
-            BACKUP_STATUS="❌ INVALID"
-          fi
-
-          echo "## Token Validation Report" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Token | Status |" >> $GITHUB_STEP_SUMMARY
-          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
-          echo "| CODEX_MASTER_KEY | $MASTER_STATUS |" >> $GITHUB_STEP_SUMMARY
-          echo "| CODEX_BACKUP_KEY | $BACKUP_STATUS |" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-
-          # Determine overall status
-          if [[ "$MASTER_VALID" == "true" ]]; then
-            echo "**Result:** ✅ All tests passed - Token setup is healthy" >> $GITHUB_STEP_SUMMARY
-            echo "overall_status=PASSED" >> $GITHUB_OUTPUT
-          elif [[ "$MASTER_VALID" == "true" || "$BACKUP_VALID" == "true" ]]; then
-            echo "**Result:** ⚠️ Partial validation - At least one token is valid" >> $GITHUB_STEP_SUMMARY
-            echo "overall_status=PARTIAL" >> $GITHUB_OUTPUT
-          else
-            echo "**Result:** ❌ Validation failed - Token setup requires attention" >> $GITHUB_STEP_SUMMARY
-            echo "overall_status=FAILED" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Log token health to audit trail
-        if: always()
-        env:
-          MASTER_VALID: ${{ steps.master-validation.outputs.master_key_valid }}
-          BACKUP_VALID: ${{ steps.backup-validation.outputs.backup_key_valid }}
-          OVERALL_STATUS: ${{ steps.status-check.outputs.overall_status }}
-        run: |
-          # Create audit log entry
-          mkdir -p .codex/audit
-
-          cat >> .codex/audit/token_health_check.jsonl << EOF
-          {"timestamp": "$(date -u +'%Y-%m-%dT%H:%M:%SZ')", "workflow_run_id": "${{ github.run_id }}", "master_key_valid": "$MASTER_VALID", "backup_key_valid": "$BACKUP_VALID", "overall_status": "$OVERALL_STATUS", "actor": "${{ github.actor }}"}
-          EOF
-
-          echo "✅ Audit log updated"
-
-      - name: Fail if validation critical path fails
-        if: |
-          always() &&
-          steps.master-validation.outcome == 'failure'
-        run: |
-          echo "❌ CRITICAL: CODEX_MASTER_KEY validation failed"
-          echo "This indicates the primary token is not functioning correctly."
-          echo "Immediate action required: Check GitHub Actions secrets and token status."
-          exit 1
-
-      - name: Create issue if backup key invalid
-        if: |
-          always() &&
-          steps.backup-validation.outcome == 'failure' &&
-          github.event_name == 'schedule'
-        uses: actions/github-script@v8
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: '⚠️ CODEX_BACKUP_KEY validation failed',
-              body: `The CODEX_BACKUP_KEY token validation failed during scheduled health check.
-
-              **Impact:** Backup authentication may be unavailable if CODEX_MASTER_KEY fails.
-
-              **Action Required:**
-              1. Check the failing workflow run: [link](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
-              2. Review token secrets in Settings
-              3. Follow Phase 2.1.2 in .codex/PHASE_2_1_SECRET_INJECTION_DESIGN.md to refresh the backup key
-
-              **Related Documentation:**
-              - Design: .codex/PHASE_2_1_SECRET_INJECTION_DESIGN.md
-              - Emergency Procedures: .codex/PHASE_2_1_SECRET_INJECTION_DESIGN.md#emergency-procedures
-              `,
-              labels: ['❌ critical', '🔐 security', '🤖 automation']
-            })
+        '
+      uses: actions/github-script@v8
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: "github.rest.issues.create({\n  owner: context.repo.owner,\n  repo:\
+          \ context.repo.repo,\n  title: '\u26A0\uFE0F CODEX_BACKUP_KEY validation\
+          \ failed',\n  body: `The CODEX_BACKUP_KEY token validation failed during\
+          \ scheduled health check.\n\n  **Impact:** Backup authentication may be\
+          \ unavailable if CODEX_MASTER_KEY fails.\n\n  **Action Required:**\n  1.\
+          \ Check the failing workflow run: [link](${{ github.server_url }}/${{ github.repository\
+          \ }}/actions/runs/${{ github.run_id }})\n  2. Review token secrets in Settings\n\
+          \  3. Follow Phase 2.1.2 in .codex/PHASE_2_1_SECRET_INJECTION_DESIGN.md\
+          \ to refresh the backup key\n\n  **Related Documentation:**\n  - Design:\
+          \ .codex/PHASE_2_1_SECRET_INJECTION_DESIGN.md\n  - Emergency Procedures:\
+          \ .codex/PHASE_2_1_SECRET_INJECTION_DESIGN.md#emergency-procedures\n  `,\n\
+          \  labels: ['\u274C critical', '\U0001F510 security', '\U0001F916 automation']\n\
+          })\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

@@ -1,31 +1,25 @@
 name: Phase 8.1 - Health Monitor
-
-on:
+true:
   schedule:
-    # Run every hour for continuous monitoring
-    - cron: '0 * * * *'
+  - cron: 0 * * * *
   workflow_dispatch:
     inputs:
       debug_mode:
-        description: 'Enable debug output'
+        description: Enable debug output
         required: false
         default: 'false'
-
 permissions:
   contents: read
   actions: read
   checks: read
   issues: write
   pull-requests: read
-
 concurrency:
   group: phase-8-1-health-monitor-${{ github.ref }}
   cancel-in-progress: false
-
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   COPILOT_MASTER_KEY: ${{ secrets.COPILOT_MASTER_KEY }}
-
 jobs:
   collect-metrics:
     name: Collect CI/CD Metrics
@@ -35,42 +29,41 @@ jobs:
       contents: read
       actions: read
       checks: read
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 1
+    - name: Checkout code
+      uses: actions/checkout@v5
+      with:
+        fetch-depth: 1
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.11'
+        cache: pip
+    - name: Install dependencies
+      run: 'python -m pip install --upgrade pip
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.11'
-          cache: 'pip'
+        pip install requests pyyaml
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install requests pyyaml
+        '
+    - name: Create metrics directory
+      run: mkdir -p .codex/metrics
+    - name: Collect metrics
+      run: 'python scripts/ci/phase_8_1_metrics_collector.py
 
-      - name: Create metrics directory
-        run: mkdir -p .codex/metrics
-
-      - name: Collect metrics
-        run: |
-          python scripts/ci/phase_8_1_metrics_collector.py
-        env:
-          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-
-      - name: Upload metrics artifact
-        uses: actions/upload-artifact@v5
-        if: always()
-        with:
-          name: ci-metrics
-          path: .codex/metrics/latest.json
-          retention-days: 30
-
+        '
+      env:
+        GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+    - name: Upload metrics artifact
+      uses: actions/upload-artifact@v5
+      if: always()
+      with:
+        name: ci-metrics
+        path: .codex/metrics/latest.json
+        retention-days: 30
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   generate-dashboard:
     name: Generate Health Dashboard
     needs: collect-metrics
@@ -78,38 +71,28 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: read
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 1
+    - name: Checkout code
+      uses: actions/checkout@v5
+      with:
+        fetch-depth: 1
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.11'
+    - name: Download metrics
+      uses: actions/download-artifact@v5
+      with:
+        name: ci-metrics
+        path: .codex/metrics
+    - name: Generate dashboard
+      run: 'python scripts/ci/phase_8_1_dashboard_generator.py
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.11'
-
-      - name: Download metrics
-        uses: actions/download-artifact@v5
-        with:
-          name: ci-metrics
-          path: .codex/metrics
-
-      - name: Generate dashboard
-        run: |
-          python scripts/ci/phase_8_1_dashboard_generator.py
-
-      - name: Verify dashboard
-        run: |
-          if [ -f ".codex/PHASE_8_1_HEALTH_DASHBOARD.md" ]; then
-            echo "✓ Dashboard generated successfully"
-            wc -l ".codex/PHASE_8_1_HEALTH_DASHBOARD.md"
-          else
-            echo "✗ Dashboard file not found"
-            exit 1
-          fi
-
+        '
+    - name: Verify dashboard
+      run: "if [ -f \".codex/PHASE_8_1_HEALTH_DASHBOARD.md\" ]; then\n  echo \"\u2713\
+        \ Dashboard generated successfully\"\n  wc -l \".codex/PHASE_8_1_HEALTH_DASHBOARD.md\"\
+        \nelse\n  echo \"\u2717 Dashboard file not found\"\n  exit 1\nfi\n"
   classify-incidents:
     name: Classify Incidents
     needs: collect-metrics
@@ -118,156 +101,117 @@ jobs:
     permissions:
       contents: read
       issues: write
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 1
+    - name: Checkout code
+      uses: actions/checkout@v5
+      with:
+        fetch-depth: 1
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.11'
+    - name: Download metrics
+      uses: actions/download-artifact@v5
+      with:
+        name: ci-metrics
+        path: .codex/metrics
+    - name: Run incident classifier
+      run: 'python scripts/ci/phase_8_1_incident_classifier.py
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.11'
-
-      - name: Download metrics
-        uses: actions/download-artifact@v5
-        with:
-          name: ci-metrics
-          path: .codex/metrics
-
-      - name: Run incident classifier
-        run: |
-          python scripts/ci/phase_8_1_incident_classifier.py
-
-      - name: Check for critical incidents
-        run: |
-          # This step checks if any P0/P1 incidents were detected
-          # and escalates them accordingly
-          echo "✓ Incident classification completed"
-
+        '
+    - name: Check for critical incidents
+      run: "# This step checks if any P0/P1 incidents were detected\n# and escalates\
+        \ them accordingly\necho \"\u2713 Incident classification completed\"\n"
   generate-report:
     name: Generate Daily Report
-    needs: [collect-metrics, generate-dashboard]
+    needs:
+    - collect-metrics
+    - generate-dashboard
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
       contents: read
       discussions: write
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 1
-
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.11'
-
-      - name: Download metrics
-        uses: actions/download-artifact@v5
-        with:
-          name: ci-metrics
-          path: .codex/metrics
-
-      - name: Generate daily report
-        run: |
-          python << 'EOF'
-          from datetime import datetime
-          import json
-
-          # Load metrics
-          with open(".codex/metrics/latest.json") as f:
-              metrics = json.load(f)
-
-          agg = metrics.get("aggregated", {})
-          timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
-
-          report = "\n".join([
-              f"# Daily Health Report - {timestamp}",
-              "",
-              "## Summary",
-              f"- **Overall Health:** {agg.get('aggregated_success_rate', 0):.1f}%",
-              f"- **Workflows:** {agg.get('total_workflows', 0)} total",
-              f"- **24h Runs:** {agg.get('total_runs_24h', 0)}",
-              f"- **Failure Rate:** {agg.get('aggregated_failure_rate', 0):.1f}%",
-              f"- **Avg Duration:** {agg.get('avg_workflow_duration_seconds', 0)}s",
-              "",
-              "## Status",
-              f"- **Passing:** {agg.get('workflows_passing', 0)}",
-              f"- **Failing:** {agg.get('workflows_failing', 0)}",
-              f"- **In Progress:** {agg.get('workflows_in_progress', 0)}",
-              "",
-              "## Recommendations",
-              "No immediate action required. System is operating normally.",
-              "",
-              "---",
-              "*Report generated by Phase 8.1 Health Monitor*",
-              "",
-          ])
-
-          # Save report
-          with open(".codex/PHASE_8_1_DAILY_REPORT.md", "w") as f:
-              f.write(report)
-
-          print("✓ Daily report generated")
-          EOF
-
-      - name: Upload report
-        uses: actions/upload-artifact@v5
-        if: always()
-        with:
-          name: daily-report
-          path: .codex/PHASE_8_1_DAILY_REPORT.md
-          retention-days: 30
-
+    - name: Checkout code
+      uses: actions/checkout@v5
+      with:
+        fetch-depth: 1
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.11'
+    - name: Download metrics
+      uses: actions/download-artifact@v5
+      with:
+        name: ci-metrics
+        path: .codex/metrics
+    - name: Generate daily report
+      run: "python << 'EOF'\nfrom datetime import datetime\nimport json\n\n# Load\
+        \ metrics\nwith open(\".codex/metrics/latest.json\") as f:\n    metrics =\
+        \ json.load(f)\n\nagg = metrics.get(\"aggregated\", {})\ntimestamp = datetime.utcnow().strftime(\"\
+        %Y-%m-%d %H:%M UTC\")\n\nreport = \"\\n\".join([\n    f\"# Daily Health Report\
+        \ - {timestamp}\",\n    \"\",\n    \"## Summary\",\n    f\"- **Overall Health:**\
+        \ {agg.get('aggregated_success_rate', 0):.1f}%\",\n    f\"- **Workflows:**\
+        \ {agg.get('total_workflows', 0)} total\",\n    f\"- **24h Runs:** {agg.get('total_runs_24h',\
+        \ 0)}\",\n    f\"- **Failure Rate:** {agg.get('aggregated_failure_rate', 0):.1f}%\"\
+        ,\n    f\"- **Avg Duration:** {agg.get('avg_workflow_duration_seconds', 0)}s\"\
+        ,\n    \"\",\n    \"## Status\",\n    f\"- **Passing:** {agg.get('workflows_passing',\
+        \ 0)}\",\n    f\"- **Failing:** {agg.get('workflows_failing', 0)}\",\n   \
+        \ f\"- **In Progress:** {agg.get('workflows_in_progress', 0)}\",\n    \"\"\
+        ,\n    \"## Recommendations\",\n    \"No immediate action required. System\
+        \ is operating normally.\",\n    \"\",\n    \"---\",\n    \"*Report generated\
+        \ by Phase 8.1 Health Monitor*\",\n    \"\",\n])\n\n# Save report\nwith open(\"\
+        .codex/PHASE_8_1_DAILY_REPORT.md\", \"w\") as f:\n    f.write(report)\n\n\
+        print(\"\u2713 Daily report generated\")\nEOF\n"
+    - name: Upload report
+      uses: actions/upload-artifact@v5
+      if: always()
+      with:
+        name: daily-report
+        path: .codex/PHASE_8_1_DAILY_REPORT.md
+        retention-days: 30
   notify:
     name: Send Notifications
-    needs: [collect-metrics, generate-dashboard, classify-incidents]
+    needs:
+    - collect-metrics
+    - generate-dashboard
+    - classify-incidents
     runs-on: ubuntu-latest
     timeout-minutes: 5
     if: always()
     permissions:
       contents: read
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 1
+    - name: Checkout code
+      uses: actions/checkout@v5
+      with:
+        fetch-depth: 1
+    - name: Check monitoring health
+      run: "echo \"\u2713 Health monitoring cycle completed\"\necho \"  - Metrics\
+        \ collected\"\necho \"  - Dashboard generated\"\necho \"  - Incidents classified\"\
+        \necho \"  - Next check: 1 hour\"\n"
+    - name: Report status
+      run: '# Log workflow execution status
 
-      - name: Check monitoring health
-        run: |
-          echo "✓ Health monitoring cycle completed"
-          echo "  - Metrics collected"
-          echo "  - Dashboard generated"
-          echo "  - Incidents classified"
-          echo "  - Next check: 1 hour"
+        echo "Monitoring Status: HEALTHY"
 
-      - name: Report status
-        run: |
-          # Log workflow execution status
-          echo "Monitoring Status: HEALTHY"
-          echo "Timestamp: $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
-          echo "Workflow: phase-8-1-health-monitor.yml"
+        echo "Timestamp: $(date -u +''%Y-%m-%dT%H:%M:%SZ'')"
 
+        echo "Workflow: phase-8-1-health-monitor.yml"
+
+        '
   finalize:
     name: Finalize Monitoring Cycle
-    needs: [notify]
+    needs:
+    - notify
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
       contents: read
-
     steps:
-      - name: Mark cycle complete
-        run: |
-          echo "✓ Phase 8.1 Monitoring Cycle Complete"
-          echo "  - All metrics collected"
-          echo "  - All dashboards updated"
-          echo "  - All incidents classified"
-          echo "  - All reports generated"
-          echo ""
-          echo "Next execution: 1 hour"
+    - name: Mark cycle complete
+      run: "echo \"\u2713 Phase 8.1 Monitoring Cycle Complete\"\necho \"  - All metrics\
+        \ collected\"\necho \"  - All dashboards updated\"\necho \"  - All incidents\
+        \ classified\"\necho \"  - All reports generated\"\necho \"\"\necho \"Next\
+        \ execution: 1 hour\"\n"

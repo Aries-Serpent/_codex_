@@ -1,68 +1,47 @@
-# Cost Gate — Reusable Workflow
-#
-# Every high-cost job in this repository MUST call this workflow as a
-# `needs:` dependency before running expensive steps.
-#
-# Cost tiers (GitHub Team plan: 3,000 Linux-equivalent minutes/month):
-#   GREEN  (<30 eff-min, no GHCR push) — auto-approved, job proceeds immediately
-#   YELLOW (30–90 eff-min)             — warning posted, proceeds after 5-min window
-#   RED    (>90 eff-min OR GHCR push)  — BLOCKED until PR checkbox is ticked
-#
-# Stakeholder approval mechanism:
-#   In the PR description, tick:  - [x] 💰 Cost Proposal Approved
-#   The cost-gate job polls the PR body every 60 s for up to 10 min.
-#   On workflow_dispatch, the gate is bypassed (owner already approved).
-
-name: 💰 Cost Gate
-
-on:
+name: "\U0001F4B0 Cost Gate"
+true:
   workflow_call:
     inputs:
       workflow_name:
-        description: "Human-readable name of the calling workflow"
+        description: Human-readable name of the calling workflow
         required: true
         type: string
       runner:
-        description: "Runner type used by the expensive job"
+        description: Runner type used by the expensive job
         required: false
-        default: "ubuntu-latest"
+        default: ubuntu-latest
         type: string
       timeout_minutes:
-        description: "timeout-minutes of the expensive job"
+        description: timeout-minutes of the expensive job
         required: false
         default: 30
         type: number
       matrix_count:
-        description: "Number of parallel matrix jobs"
+        description: Number of parallel matrix jobs
         required: false
         default: 1
         type: number
       pushes_to_ghcr:
-        description: "Whether the job pushes an image to GHCR"
+        description: Whether the job pushes an image to GHCR
         required: false
         default: false
         type: boolean
     outputs:
       tier:
-        description: "GREEN | YELLOW | RED"
+        description: GREEN | YELLOW | RED
         value: ${{ jobs.estimate.outputs.tier }}
       approved:
-        description: "true if job may proceed"
+        description: true if job may proceed
         value: ${{ jobs.gate.outputs.approved }}
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   pull-requests: write
-
-
 jobs:
-  # ── Step 1: Estimate cost ──────────────────────────────────────────────────
   estimate:
-    name: "💰 Estimate cost (${{ inputs.workflow_name }})"
+    name: "\U0001F4B0 Estimate cost (${{ inputs.workflow_name }})"
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
@@ -70,369 +49,234 @@ jobs:
       effective_minutes: ${{ steps.estimate.outputs.effective_minutes }}
       reason: ${{ steps.estimate.outputs.reason }}
       proposal_md: ${{ steps.proposal.outputs.proposal_md }}
-
     steps:
-      - uses: actions/checkout@v7 # v6.0.3
-
-      - name: Set up Python
-        uses: actions/setup-python@v6 # v6
-        with:
-          python-version: "3.12.13"
-          # No pip cache: cost_estimator.py uses stdlib only; no packages are
-          # installed, so ~/.cache/pip is never created.  Enabling cache: 'pip'
-          # causes the post-step to fail with "Cache folder doesn't exist on disk".
-
-      - name: Estimate cost
-        id: estimate
-        run: |
-          GHCR_FLAG=""
-          if [ "${{ inputs.pushes_to_ghcr }}" = "true" ]; then
-            GHCR_FLAG="--pushes-to-ghcr"
-          fi
-          python scripts/ci/cost_estimator.py \
-            --runner       "${{ inputs.runner }}" \
-            --timeout      "${{ inputs.timeout_minutes }}" \
-            --matrix-count "${{ inputs.matrix_count }}" \
-            --workflow     "${{ inputs.workflow_name }}" \
-            --github-output \
-            $GHCR_FLAG \
-            2>/dev/null || true
-          # cost_estimator exits 0/1/2 — we capture via GITHUB_OUTPUT, not exit code
-
-      # T-004: Log this estimate to NDJSON for monthly budget tracking
-      - name: Log usage (T-004)
-        id: usage_log
-        continue-on-error: true
-        env:
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          GITHUB_REF_NAME: ${{ github.ref_name }}
-          GITHUB_SHA: ${{ github.sha }}
-        run: |
-          python scripts/ci/usage_logger.py \
-            --workflow     "${{ inputs.workflow_name }}" \
-            --runner       "${{ inputs.runner }}" \
-            --effective-minutes "${{ steps.estimate.outputs.effective_minutes || '0' }}" \
-            --tier         "${{ steps.estimate.outputs.tier || 'GREEN' }}" \
-            --pr-number    "${PR_NUMBER}" \
-            --branch       "${GITHUB_REF_NAME}" \
-            --sha          "${GITHUB_SHA}" \
-            2>/dev/null || true
-
-      - name: Build proposal markdown
-        id: proposal
-        run: |
-          GHCR_FLAG=""
-          if [ "${{ inputs.pushes_to_ghcr }}" = "true" ]; then
-            GHCR_FLAG="--pushes-to-ghcr"
-          fi
-          PROPOSAL=$(python scripts/ci/cost_estimator.py \
-            --runner       "${{ inputs.runner }}" \
-            --timeout      "${{ inputs.timeout_minutes }}" \
-            --matrix-count "${{ inputs.matrix_count }}" \
-            --workflow     "${{ inputs.workflow_name }}" \
-            $GHCR_FLAG 2>/dev/null || true)
-
-          # Write multiline output safely
-          EOF_MARKER=$(openssl rand -hex 8)
-          echo "proposal_md<<${EOF_MARKER}" >> "$GITHUB_OUTPUT"
-          echo "${PROPOSAL}" >> "$GITHUB_OUTPUT"
-          echo "${EOF_MARKER}" >> "$GITHUB_OUTPUT"
-
-      - name: Post cost proposal to PR (grouped)
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v8 # v9
-        env:
-          PROPOSAL_MD: ${{ steps.proposal.outputs.proposal_md }}
-          WORKFLOW_NAME: ${{ inputs.workflow_name }}
-          EFFECTIVE_MIN: ${{ steps.estimate.outputs.effective_minutes }}
-        with:
-          script: |
-            const tier         = '${{ steps.estimate.outputs.tier }}';
-            const proposal     = (process.env.PROPOSAL_MD   || '').trim();
-            const workflowName = (process.env.WORKFLOW_NAME || '').trim();
-            const effMin       = parseFloat(process.env.EFFECTIVE_MIN || '0').toFixed(0);
-            const tierEmoji    = tier === 'GREEN' ? '✅' : tier === 'YELLOW' ? '⚠️' : '🔴';
-
-            // Single master marker — ONE comment per PR, all workflows grouped here.
-            const MASTER = '<!-- cost-gate-proposals-v2 -->';
-
-            // Per-workflow sub-markers derived from a stable slug.
-            const slug  = workflowName.replace(/[^a-z0-9]+/gi, '-').toLowerCase().replace(/^-|-$/, '');
-            const START = `<!-- cp-start:${slug} -->`;
-            const END   = `<!-- cp-end:${slug} -->`;
-
-            // Helper: escape regex special chars.
-            function esc(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
-
-            // Build the <details> block for this workflow.
-            const summaryLine = `${tierEmoji} <strong>${workflowName}</strong> &mdash; ${tier} &nbsp;·&nbsp; ${effMin} eff-min`;
-            const section = [
-              START,
-              `<details>`,
-              `<summary>${summaryLine}</summary>`,
-              ``,
-              proposal,
-              ``,
-              `</details>`,
-              END,
-            ].join('\n');
-
-            // Rebuild the summary list by scanning all cp-start sections in a body string.
-            function buildSummary(body) {
-              const re = /<!-- cp-start:[^\s>]+ -->\s*<details>\s*<summary>([\s\S]*?)<\/summary>/g;
-              const rows = [];
-              let m;
-              while ((m = re.exec(body)) !== null) {
-                rows.push(`| ${m[1].replace(/<[^>]*>/g, '')} |`);
-              }
-              if (!rows.length) return '';
-              return [
-                '| Workflow — Tier · Eff-min |',
-                '|---------------------------|',
-                ...rows,
-              ].join('\n');
-            }
-
-            // Retry loop: handles transient conflicts when multiple workflows
-            // call cost-gate simultaneously and race to update the same comment.
-            for (let attempt = 0; attempt <= 3; attempt++) {
-              try {
-                const { data: allComments } = await github.rest.issues.listComments({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: context.issue.number,
-                  per_page: 100,
-                });
-
-                const master = allComments.find(c => c.body && c.body.includes(MASTER));
-                let body;
-
-                if (master) {
-                  body = master.body;
-                  if (body.includes(START)) {
-                    // Replace the existing section for this workflow.
-                    body = body.replace(
-                      new RegExp(esc(START) + '[\\s\\S]*?' + esc(END)),
-                      section
-                    );
-                  } else {
-                    // Append a new section for this workflow.
-                    body = body.trimEnd() + '\n\n' + section + '\n';
-                  }
-                } else {
-                  // First proposal — create master comment.
-                  body = [
-                    MASTER,
-                    '## 💰 Cost Proposals',
-                    '',
-                    '_One entry per workflow. Expand a row to see the full cost estimate._',
-                    '',
-                    section,
-                    '',
-                    '---',
-                    `_[🔗 Last updated by workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,
-                  ].join('\n');
-                }
-
-                // Inject/refresh summary table right after the header line.
-                const summaryTable = buildSummary(body);
-                if (summaryTable) {
-                  body = body.replace(
-                    /(_One entry per workflow[^\n]*_\n)([\s\S]*?)(\n<!-- cp-start:)/,
-                    `$1\n${summaryTable}\n$3`
-                  );
-                }
-
-                if (master) {
-                  await github.rest.issues.updateComment({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    comment_id: master.id,
-                    body,
-                  });
-                } else {
-                  await github.rest.issues.createComment({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    issue_number: context.issue.number,
-                    body,
-                  });
-                }
-                break; // success — exit retry loop
-              } catch (e) {
-                if (attempt === 3) throw e;
-                // Back off before retrying (2 s, 4 s, 6 s).
-                await new Promise(r => setTimeout(r, Math.random() * Math.pow(2, attempt) * 1000 + 500));
-              }
-            }
-
-  # ── Step 2: Gate ─────────────────────────────────────────────────────────
+    - uses: actions/checkout@v7
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: 3.12.13
+    - name: Estimate cost
+      id: estimate
+      run: "GHCR_FLAG=\"\"\nif [ \"${{ inputs.pushes_to_ghcr }}\" = \"true\" ]; then\n\
+        \  GHCR_FLAG=\"--pushes-to-ghcr\"\nfi\npython scripts/ci/cost_estimator.py\
+        \ \\\n  --runner       \"${{ inputs.runner }}\" \\\n  --timeout      \"${{\
+        \ inputs.timeout_minutes }}\" \\\n  --matrix-count \"${{ inputs.matrix_count\
+        \ }}\" \\\n  --workflow     \"${{ inputs.workflow_name }}\" \\\n  --github-output\
+        \ \\\n  $GHCR_FLAG \\\n  2>/dev/null || true\n# cost_estimator exits 0/1/2\
+        \ \u2014 we capture via GITHUB_OUTPUT, not exit code\n"
+    - name: Log usage (T-004)
+      id: usage_log
+      continue-on-error: true
+      env:
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        GITHUB_REF_NAME: ${{ github.ref_name }}
+        GITHUB_SHA: ${{ github.sha }}
+      run: "python scripts/ci/usage_logger.py \\\n  --workflow     \"${{ inputs.workflow_name\
+        \ }}\" \\\n  --runner       \"${{ inputs.runner }}\" \\\n  --effective-minutes\
+        \ \"${{ steps.estimate.outputs.effective_minutes || '0' }}\" \\\n  --tier\
+        \         \"${{ steps.estimate.outputs.tier || 'GREEN' }}\" \\\n  --pr-number\
+        \    \"${PR_NUMBER}\" \\\n  --branch       \"${GITHUB_REF_NAME}\" \\\n  --sha\
+        \          \"${GITHUB_SHA}\" \\\n  2>/dev/null || true\n"
+    - name: Build proposal markdown
+      id: proposal
+      run: "GHCR_FLAG=\"\"\nif [ \"${{ inputs.pushes_to_ghcr }}\" = \"true\" ]; then\n\
+        \  GHCR_FLAG=\"--pushes-to-ghcr\"\nfi\nPROPOSAL=$(python scripts/ci/cost_estimator.py\
+        \ \\\n  --runner       \"${{ inputs.runner }}\" \\\n  --timeout      \"${{\
+        \ inputs.timeout_minutes }}\" \\\n  --matrix-count \"${{ inputs.matrix_count\
+        \ }}\" \\\n  --workflow     \"${{ inputs.workflow_name }}\" \\\n  $GHCR_FLAG\
+        \ 2>/dev/null || true)\n\n# Write multiline output safely\nEOF_MARKER=$(openssl\
+        \ rand -hex 8)\necho \"proposal_md<<${EOF_MARKER}\" >> \"$GITHUB_OUTPUT\"\n\
+        echo \"${PROPOSAL}\" >> \"$GITHUB_OUTPUT\"\necho \"${EOF_MARKER}\" >> \"$GITHUB_OUTPUT\"\
+        \n"
+    - name: Post cost proposal to PR (grouped)
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v8
+      env:
+        PROPOSAL_MD: ${{ steps.proposal.outputs.proposal_md }}
+        WORKFLOW_NAME: ${{ inputs.workflow_name }}
+        EFFECTIVE_MIN: ${{ steps.estimate.outputs.effective_minutes }}
+      with:
+        script: "const tier         = '${{ steps.estimate.outputs.tier }}';\nconst\
+          \ proposal     = (process.env.PROPOSAL_MD   || '').trim();\nconst workflowName\
+          \ = (process.env.WORKFLOW_NAME || '').trim();\nconst effMin       = parseFloat(process.env.EFFECTIVE_MIN\
+          \ || '0').toFixed(0);\nconst tierEmoji    = tier === 'GREEN' ? '\u2705'\
+          \ : tier === 'YELLOW' ? '\u26A0\uFE0F' : '\U0001F534';\n\n// Single master\
+          \ marker \u2014 ONE comment per PR, all workflows grouped here.\nconst MASTER\
+          \ = '<!-- cost-gate-proposals-v2 -->';\n\n// Per-workflow sub-markers derived\
+          \ from a stable slug.\nconst slug  = workflowName.replace(/[^a-z0-9]+/gi,\
+          \ '-').toLowerCase().replace(/^-|-$/, '');\nconst START = `<!-- cp-start:${slug}\
+          \ -->`;\nconst END   = `<!-- cp-end:${slug} -->`;\n\n// Helper: escape regex\
+          \ special chars.\nfunction esc(s) { return s.replace(/[.*+?^${}()|[\\]\\\
+          \\]/g, '\\\\$&'); }\n\n// Build the <details> block for this workflow.\n\
+          const summaryLine = `${tierEmoji} <strong>${workflowName}</strong> &mdash;\
+          \ ${tier} &nbsp;\xB7&nbsp; ${effMin} eff-min`;\nconst section = [\n  START,\n\
+          \  `<details>`,\n  `<summary>${summaryLine}</summary>`,\n  ``,\n  proposal,\n\
+          \  ``,\n  `</details>`,\n  END,\n].join('\\n');\n\n// Rebuild the summary\
+          \ list by scanning all cp-start sections in a body string.\nfunction buildSummary(body)\
+          \ {\n  const re = /<!-- cp-start:[^\\s>]+ -->\\s*<details>\\s*<summary>([\\\
+          s\\S]*?)<\\/summary>/g;\n  const rows = [];\n  let m;\n  while ((m = re.exec(body))\
+          \ !== null) {\n    rows.push(`| ${m[1].replace(/<[^>]*>/g, '')} |`);\n \
+          \ }\n  if (!rows.length) return '';\n  return [\n    '| Workflow \u2014\
+          \ Tier \xB7 Eff-min |',\n    '|---------------------------|',\n    ...rows,\n\
+          \  ].join('\\n');\n}\n\n// Retry loop: handles transient conflicts when\
+          \ multiple workflows\n// call cost-gate simultaneously and race to update\
+          \ the same comment.\nfor (let attempt = 0; attempt <= 3; attempt++) {\n\
+          \  try {\n    const { data: allComments } = await github.rest.issues.listComments({\n\
+          \      owner: context.repo.owner,\n      repo: context.repo.repo,\n    \
+          \  issue_number: context.issue.number,\n      per_page: 100,\n    });\n\n\
+          \    const master = allComments.find(c => c.body && c.body.includes(MASTER));\n\
+          \    let body;\n\n    if (master) {\n      body = master.body;\n      if\
+          \ (body.includes(START)) {\n        // Replace the existing section for\
+          \ this workflow.\n        body = body.replace(\n          new RegExp(esc(START)\
+          \ + '[\\\\s\\\\S]*?' + esc(END)),\n          section\n        );\n     \
+          \ } else {\n        // Append a new section for this workflow.\n       \
+          \ body = body.trimEnd() + '\\n\\n' + section + '\\n';\n      }\n    } else\
+          \ {\n      // First proposal \u2014 create master comment.\n      body =\
+          \ [\n        MASTER,\n        '## \U0001F4B0 Cost Proposals',\n        '',\n\
+          \        '_One entry per workflow. Expand a row to see the full cost estimate._',\n\
+          \        '',\n        section,\n        '',\n        '---',\n        `_[\U0001F517\
+          \ Last updated by workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,\n\
+          \      ].join('\\n');\n    }\n\n    // Inject/refresh summary table right\
+          \ after the header line.\n    const summaryTable = buildSummary(body);\n\
+          \    if (summaryTable) {\n      body = body.replace(\n        /(_One entry\
+          \ per workflow[^\\n]*_\\n)([\\s\\S]*?)(\\n<!-- cp-start:)/,\n        `$1\\\
+          n${summaryTable}\\n$3`\n      );\n    }\n\n    if (master) {\n      await\
+          \ github.rest.issues.updateComment({\n        owner: context.repo.owner,\n\
+          \        repo: context.repo.repo,\n        comment_id: master.id,\n    \
+          \    body,\n      });\n    } else {\n      await github.rest.issues.createComment({\n\
+          \        owner: context.repo.owner,\n        repo: context.repo.repo,\n\
+          \        issue_number: context.issue.number,\n        body,\n      });\n\
+          \    }\n    break; // success \u2014 exit retry loop\n  } catch (e) {\n\
+          \    if (attempt === 3) throw e;\n    // Back off before retrying (2 s,\
+          \ 4 s, 6 s).\n    await new Promise(r => setTimeout(r, Math.random() * Math.pow(2,\
+          \ attempt) * 1000 + 500));\n  }\n}\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   gate:
-    name: "🚦 Cost gate (${{ needs.estimate.outputs.tier }})"
+    name: "\U0001F6A6 Cost gate (${{ needs.estimate.outputs.tier }})"
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: estimate
     outputs:
       approved: ${{ steps.decision.outputs.approved }}
-
     steps:
-      - name: Auto-approve GREEN tier
-        id: green
-        if: needs.estimate.outputs.tier == 'GREEN'
-        run: |
-          echo "✅ GREEN tier — auto-approved (effective minutes: ${{ needs.estimate.outputs.effective_minutes }})"
-          echo "approved=true" >> "$GITHUB_OUTPUT"
-
-      - name: Auto-approve on workflow_dispatch (owner override)
-        id: dispatch
-        if: github.event_name == 'workflow_dispatch'
-        run: |
-          echo "✅ workflow_dispatch — owner-approved bypass"
-          echo "approved=true" >> "$GITHUB_OUTPUT"
-
-      - name: Auto-approve on push to main (post-merge)
-        id: main_push
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: |
-          echo "✅ push to main — post-merge auto-approved"
-          echo "approved=true" >> "$GITHUB_OUTPUT"
-
-      - name: Auto-approve on feature branch push (non-main)
-        id: feature_push
-        if: github.event_name == 'push' && github.ref != 'refs/heads/main'
-        run: |
-          echo "✅ feature branch push — auto-approved (cost enforcement is at PR merge time via pr-cost-check)"
-          echo "approved=true" >> "$GITHUB_OUTPUT"
-
-      - name: YELLOW — warn and proceed after window
-        id: yellow
-        if: needs.estimate.outputs.tier == 'YELLOW' && github.event_name == 'pull_request'
-        run: |
-          echo "⚠️  YELLOW tier — warning posted. Auto-proceeding in 60s."
-          echo "Reason: ${{ needs.estimate.outputs.reason }}"
-          sleep 60
-          echo "approved=true" >> "$GITHUB_OUTPUT"
-
-      - name: RED — poll PR for stakeholder checkbox approval
-        id: red_poll
-        if: needs.estimate.outputs.tier == 'RED' && github.event_name == 'pull_request'
-        uses: actions/github-script@v8 # v9
-        with:
-          script: |
-            // Guard: ensure we have a valid PR number before polling.
-            // context.issue.number is undefined on push events; cost-gate already
-            // short-circuits those via feature_push/main_push steps, but guard
-            // here too in case of unexpected workflow_call re-use.
-            const prNumber = context.issue.number;
-            if (!prNumber) {
-              console.log('ℹ️  No PR number available — auto-approving (non-PR context).');
-              core.setOutput('approved', 'true');
-              return;
-            }
-
-            // Reduced from 10×60s (10 min) → 3×30s (90 sec) to keep CI fast.
-            // If approval is not in place within 90 s, fail immediately with
-            // actionable instructions rather than blocking the runner for 10 min.
-            const maxAttempts = 3;   // 3 × 30s = 90 seconds
-            const pollInterval = 30; // seconds
-
-            // Helper: check a body string for the approval marker in any accepted format.
-            function hasApproval(text) {
-              const norm = (text || '').replace(/\*\*/g, '').replace(/__/g, '');
-              return (
-                norm.includes('- [x] 💰 Cost Proposal Approved') ||
-                norm.includes('- [X] 💰 Cost Proposal Approved') ||
-                norm.includes('[x] Cost Proposal Approved') ||
-                norm.includes('[X] Cost Proposal Approved')
-              );
-            }
-
-            for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-              const pr = await github.rest.pulls.get({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: prNumber,
-              });
-
-              // Primary: check PR body (normalise bold/italic so "**💰 Cost Proposal Approved**"
-              // matches the same as the plain variant).
-              if (hasApproval(pr.data.body)) {
-                console.log(`✅ Stakeholder approval detected in PR body on attempt ${attempt}`);
-                core.setOutput('approved', 'true');
-                return;
-              }
-
-              // Fallback: also scan PR comments. Automated agents sometimes overwrite
-              // the PR body with a session checklist, erasing the approval marker.
-              // Accepting a comment avoids re-approval after every body rewrite.
-              const { data: comments } = await github.rest.issues.listComments({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: prNumber,
-                per_page: 100,
-              });
-              const approvalComment = comments.find(c => hasApproval(c.body));
-              if (approvalComment) {
-                console.log(`✅ Stakeholder approval detected in PR comment #${approvalComment.id} on attempt ${attempt}`);
-                core.setOutput('approved', 'true');
-                return;
-              }
-
-              if (attempt < maxAttempts) {
-                console.log(`⏳ Attempt ${attempt}/${maxAttempts}: waiting ${pollInterval}s for stakeholder to tick the checkbox...`);
-                await new Promise(r => setTimeout(r, pollInterval * 1000));
-              }
-            }
-
-            // Timeout — fail the gate
-            core.setFailed(
-              '🔴 Cost gate: stakeholder approval not detected within 90 seconds.\n' +
-              'Approval can be given in either:\n' +
-              '  1. PR description: - [x] 💰 Cost Proposal Approved\n' +
-              '  2. A PR comment:   - [x] 💰 Cost Proposal Approved\n' +
-              'Or trigger via workflow_dispatch to bypass.\n' +
-              'Re-run this job after approving.'
-            );
-
-      - name: Resolve final approval
-        id: decision
-        run: |
-          APPROVED="${{ steps.green.outputs.approved || steps.dispatch.outputs.approved || steps.main_push.outputs.approved || steps.feature_push.outputs.approved || steps.yellow.outputs.approved || steps.red_poll.outputs.approved }}"
-          echo "approved=${APPROVED:-false}" >> "$GITHUB_OUTPUT"
-          if [ "${APPROVED:-false}" != "true" ]; then
-            echo "::error::Cost gate not approved"
-            exit 1
-          fi
-          echo "✅ Cost gate passed — job may proceed."
-
-  # ── rescue comment — posted on PR whenever this workflow fails ──────────
+    - name: Auto-approve GREEN tier
+      id: green
+      if: needs.estimate.outputs.tier == 'GREEN'
+      run: "echo \"\u2705 GREEN tier \u2014 auto-approved (effective minutes: ${{\
+        \ needs.estimate.outputs.effective_minutes }})\"\necho \"approved=true\" >>\
+        \ \"$GITHUB_OUTPUT\"\n"
+    - name: Auto-approve on workflow_dispatch (owner override)
+      id: dispatch
+      if: github.event_name == 'workflow_dispatch'
+      run: "echo \"\u2705 workflow_dispatch \u2014 owner-approved bypass\"\necho \"\
+        approved=true\" >> \"$GITHUB_OUTPUT\"\n"
+    - name: Auto-approve on push to main (post-merge)
+      id: main_push
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      run: "echo \"\u2705 push to main \u2014 post-merge auto-approved\"\necho \"\
+        approved=true\" >> \"$GITHUB_OUTPUT\"\n"
+    - name: Auto-approve on feature branch push (non-main)
+      id: feature_push
+      if: github.event_name == 'push' && github.ref != 'refs/heads/main'
+      run: "echo \"\u2705 feature branch push \u2014 auto-approved (cost enforcement\
+        \ is at PR merge time via pr-cost-check)\"\necho \"approved=true\" >> \"$GITHUB_OUTPUT\"\
+        \n"
+    - name: "YELLOW \u2014 warn and proceed after window"
+      id: yellow
+      if: needs.estimate.outputs.tier == 'YELLOW' && github.event_name == 'pull_request'
+      run: "echo \"\u26A0\uFE0F  YELLOW tier \u2014 warning posted. Auto-proceeding\
+        \ in 60s.\"\necho \"Reason: ${{ needs.estimate.outputs.reason }}\"\nsleep\
+        \ 60\necho \"approved=true\" >> \"$GITHUB_OUTPUT\"\n"
+    - name: "RED \u2014 poll PR for stakeholder checkbox approval"
+      id: red_poll
+      if: needs.estimate.outputs.tier == 'RED' && github.event_name == 'pull_request'
+      uses: actions/github-script@v8
+      with:
+        script: "// Guard: ensure we have a valid PR number before polling.\n// context.issue.number\
+          \ is undefined on push events; cost-gate already\n// short-circuits those\
+          \ via feature_push/main_push steps, but guard\n// here too in case of unexpected\
+          \ workflow_call re-use.\nconst prNumber = context.issue.number;\nif (!prNumber)\
+          \ {\n  console.log('\u2139\uFE0F  No PR number available \u2014 auto-approving\
+          \ (non-PR context).');\n  core.setOutput('approved', 'true');\n  return;\n\
+          }\n\n// Reduced from 10\xD760s (10 min) \u2192 3\xD730s (90 sec) to keep\
+          \ CI fast.\n// If approval is not in place within 90 s, fail immediately\
+          \ with\n// actionable instructions rather than blocking the runner for 10\
+          \ min.\nconst maxAttempts = 3;   // 3 \xD7 30s = 90 seconds\nconst pollInterval\
+          \ = 30; // seconds\n\n// Helper: check a body string for the approval marker\
+          \ in any accepted format.\nfunction hasApproval(text) {\n  const norm =\
+          \ (text || '').replace(/\\*\\*/g, '').replace(/__/g, '');\n  return (\n\
+          \    norm.includes('- [x] \U0001F4B0 Cost Proposal Approved') ||\n    norm.includes('-\
+          \ [X] \U0001F4B0 Cost Proposal Approved') ||\n    norm.includes('[x] Cost\
+          \ Proposal Approved') ||\n    norm.includes('[X] Cost Proposal Approved')\n\
+          \  );\n}\n\nfor (let attempt = 1; attempt <= maxAttempts; attempt++) {\n\
+          \  const pr = await github.rest.pulls.get({\n    owner: context.repo.owner,\n\
+          \    repo: context.repo.repo,\n    pull_number: prNumber,\n  });\n\n  //\
+          \ Primary: check PR body (normalise bold/italic so \"**\U0001F4B0 Cost Proposal\
+          \ Approved**\"\n  // matches the same as the plain variant).\n  if (hasApproval(pr.data.body))\
+          \ {\n    console.log(`\u2705 Stakeholder approval detected in PR body on\
+          \ attempt ${attempt}`);\n    core.setOutput('approved', 'true');\n    return;\n\
+          \  }\n\n  // Fallback: also scan PR comments. Automated agents sometimes\
+          \ overwrite\n  // the PR body with a session checklist, erasing the approval\
+          \ marker.\n  // Accepting a comment avoids re-approval after every body\
+          \ rewrite.\n  const { data: comments } = await github.rest.issues.listComments({\n\
+          \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    issue_number:\
+          \ prNumber,\n    per_page: 100,\n  });\n  const approvalComment = comments.find(c\
+          \ => hasApproval(c.body));\n  if (approvalComment) {\n    console.log(`\u2705\
+          \ Stakeholder approval detected in PR comment #${approvalComment.id} on\
+          \ attempt ${attempt}`);\n    core.setOutput('approved', 'true');\n    return;\n\
+          \  }\n\n  if (attempt < maxAttempts) {\n    console.log(`\u23F3 Attempt\
+          \ ${attempt}/${maxAttempts}: waiting ${pollInterval}s for stakeholder to\
+          \ tick the checkbox...`);\n    await new Promise(r => setTimeout(r, pollInterval\
+          \ * 1000));\n  }\n}\n\n// Timeout \u2014 fail the gate\ncore.setFailed(\n\
+          \  '\U0001F534 Cost gate: stakeholder approval not detected within 90 seconds.\\\
+          n' +\n  'Approval can be given in either:\\n' +\n  '  1. PR description:\
+          \ - [x] \U0001F4B0 Cost Proposal Approved\\n' +\n  '  2. A PR comment: \
+          \  - [x] \U0001F4B0 Cost Proposal Approved\\n' +\n  'Or trigger via workflow_dispatch\
+          \ to bypass.\\n' +\n  'Re-run this job after approving.'\n);\n"
+    - name: Resolve final approval
+      id: decision
+      run: "APPROVED=\"${{ steps.green.outputs.approved || steps.dispatch.outputs.approved\
+        \ || steps.main_push.outputs.approved || steps.feature_push.outputs.approved\
+        \ || steps.yellow.outputs.approved || steps.red_poll.outputs.approved }}\"\
+        \necho \"approved=${APPROVED:-false}\" >> \"$GITHUB_OUTPUT\"\nif [ \"${APPROVED:-false}\"\
+        \ != \"true\" ]; then\n  echo \"::error::Cost gate not approved\"\n  exit\
+        \ 1\nfi\necho \"\u2705 Cost gate passed \u2014 job may proceed.\"\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
     needs: gate
-    if: |
-      failure() &&
-      github.event_name == 'pull_request' &&
+    if: 'failure() &&
+
+      github.event_name == ''pull_request'' &&
+
       github.event.pull_request.head.repo.full_name == github.repository
+
+      '
     permissions:
       pull-requests: write
       issues: write
     timeout-minutes: 5
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          fetch-depth: 1
-
-      - name: Post or update rescue comment
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_NAME: "${{ inputs.workflow_name }}"
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          BRANCH: ${{ github.head_ref }}
-        run: python scripts/ci/post_rescue_comment.py
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        fetch-depth: 1
+    - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: ${{ inputs.workflow_name }}
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+        BRANCH: ${{ github.head_ref }}
+      run: python scripts/ci/post_rescue_comment.py
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
