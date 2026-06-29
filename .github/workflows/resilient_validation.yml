@@ -132,7 +132,7 @@ jobs:
         \ --maxfail=5 --tb=short\n    ;;\nesac\n"
     - name: Post coverage to PR
       if: matrix.test-group == 'quick' && github.event_name == 'pull_request'
-      uses: MishaKav/pytest-coverage-comment@a01708271d42c5703d489b13eb503ba47c01e82a
+      uses: MishaKav/pytest-coverage-comment@e48ae95fa406cefacc7fbdd79949122795569961
       with:
         pytest-coverage-path: coverage.xml
         title: "\U0001F4CA Coverage Report (quick tests)"
