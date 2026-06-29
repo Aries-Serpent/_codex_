@@ -14,6 +14,7 @@ All tests skip gracefully if CODEX_MASTER_KEY is unavailable.
 from __future__ import annotations
 
 from typing import Any, Optional
+from urllib.parse import urlparse
 
 import pytest
 
@@ -121,7 +122,10 @@ class TestProcess1RepositoryScopeVariables:
 
         assert payload["name"]
         assert payload["value"]
-        assert endpoint.startswith("https://api.github.com")
+        # Validate URL structure: scheme should be https and netloc should be api.github.com
+        parsed_url = urlparse(endpoint)
+        assert parsed_url.scheme == "https"
+        assert parsed_url.netloc == "api.github.com"
 
     def test_process1_create_variable_size_limit(
         self,

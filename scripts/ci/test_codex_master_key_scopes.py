@@ -120,7 +120,7 @@ def get_scopes_from_header(token: str) -> set[str]:
             if scopes_header:
                 # Parse comma-separated scopes
                 scopes = {s.strip() for s in scopes_header.split(",") if s.strip()}
-                log.info("Detected scopes from X-OAuth-Scopes: %s", scopes)
+                log.info("Detected scopes from X-OAuth-Scopes header")
                 return scopes
             
             log.warning("X-OAuth-Scopes header not found in response")
@@ -242,10 +242,10 @@ def print_report(report: dict[str, Any]) -> None:
     print("=" * 80)
     
     print(f"\nTimestamp: {report['timestamp']}")
-    print(f"\nPresent Scopes: {', '.join(report['present_scopes']) or '(none)'}")
+    print(f"\nPresent Scopes: {len(report['present_scopes'])} scope(s)")
     
     if report["missing_scopes"]:
-        print(f"\n⚠️  Missing Scopes: {', '.join(report['missing_scopes'])}")
+        print(f"\n⚠️  Missing Scopes: {len(report['missing_scopes'])} scope(s) not configured")
     else:
         print("\n✅ All required scopes present!")
     
@@ -255,13 +255,13 @@ def print_report(report: dict[str, Any]) -> None:
     for process_name, coverage in report["coverage"].items():
         status = "✅" if coverage["satisfied"] else "❌"
         print(f"\n{status} {process_name}")
-        print(f"   Required: {', '.join(coverage['required'])}")
+        print(f"   Required: {len(coverage['required'])} scope(s)")
         
         if coverage["present"]:
-            print(f"   Present:  {', '.join(coverage['present'])}")
+            print(f"   Present:  {len(coverage['present'])} scope(s)")
         
         if coverage["missing"]:
-            print(f"   Missing:  {', '.join(coverage['missing'])}")
+            print(f"   Missing:  {len(coverage['missing'])} scope(s)")
     
     print("\n" + "=" * 80)
     
