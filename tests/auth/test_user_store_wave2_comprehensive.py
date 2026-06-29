@@ -172,9 +172,10 @@ class TestPasswordVerification:
         password = "CorrectPassword123!"
         user_store.create_user("alice", "alice@example.com", password)
 
-        # Verify with user_store method
-        verified_user = user_store.get_user_by_username("alice")
+        # Verify with authenticate method
+        verified_user = user_store.authenticate("alice", password)
         assert verified_user is not None, "verified_user must be initialized"
+        assert verified_user.username == "alice", "Username must match"
 
     def test_verify_incorrect_password(self, user_store):
         """Test that incorrect password fails verification."""
@@ -182,14 +183,14 @@ class TestPasswordVerification:
 
         # Try to authenticate with wrong password
         with pytest.raises(InvalidCredentialsError):
-            user_store.verify_password("bob", "WrongPassword123!")
+            user_store.authenticate("bob", "WrongPassword123!")
 
     def test_verify_null_password_fails(self, user_store):
         """Test that None password fails verification."""
         user_store.create_user("charlie", "charlie@example.com", "Pass123!")
 
-        with pytest.raises(Exception):
-            user_store.verify_password("charlie", None)
+        with pytest.raises((ValueError, TypeError)):
+            user_store.authenticate("charlie", None)
 
     def test_password_case_sensitivity(self, user_store):
         """Test that passwords are case-sensitive."""
@@ -198,7 +199,7 @@ class TestPasswordVerification:
 
         # Wrong case should fail
         with pytest.raises(InvalidCredentialsError):
-            user_store.verify_password("dave", "securepass123!")
+            user_store.authenticate("dave", "securepass123!")
 
 
 # ============================================================================
@@ -307,7 +308,7 @@ class TestPasswordHashing:
         password = "TestPassword123!"
         hashed = hasher.hash_password(password)
 
-        assert hasher.verify_password(password, hashed)
+        assert hasher.verify(password, hashed)
 
     def test_verify_password_failure(self):
         """Test password verification with incorrect password."""
@@ -315,7 +316,7 @@ class TestPasswordHashing:
         password = "TestPassword123!"
         hashed = hasher.hash_password(password)
 
-        assert not hasher.verify_password("WrongPassword123!", hashed)
+        assert not hasher.verify("WrongPassword123!", hashed)
 
     def test_verify_password_case_sensitive(self):
         """Test that password verification is case-sensitive."""
@@ -323,7 +324,7 @@ class TestPasswordHashing:
         password = "TestPassword123!"
         hashed = hasher.hash_password(password)
 
-        assert not hasher.verify_password("testpassword123!", hashed)
+        assert not hasher.verify("testpassword123!", hashed)
 
 
 # ============================================================================
