@@ -15,7 +15,7 @@ import os
 import tempfile
 import unittest
 from datetime import datetime
-from pathlib import Path
+from pathlib import Path # pragma: allowlist secret
 from unittest.mock import MagicMock, patch
 
 import sys

@@ -15,7 +15,7 @@
 - **Compliance Coverage:** 100.0%
 - **Conflicts Found:** 0
 - **Documented Operations:** 9/9 (100%)
-
+ # pragma: allowlist secret
 ### Compliance Breakdown
 
 | Category | Count | Status |

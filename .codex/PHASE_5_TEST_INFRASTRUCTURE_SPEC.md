@@ -15,7 +15,7 @@ This document specifies the technical infrastructure required to implement Phase
 ---
 
 ## 1. Mock GitHub API Endpoints
-
+ # pragma: allowlist secret
 ### Endpoint Strategy
 
 Phase 5 tests must avoid making real GitHub API calls. Use `unittest.mock` to intercept HTTP requests.

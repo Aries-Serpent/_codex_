@@ -15,7 +15,7 @@ class TestRepositoryWebhooks:
 
     def test_create_webhook(self, repo_owner: str, repo_name: str):
         """Test creating repository webhook."""
-        endpoint = f"/repos/{repo_owner}/{repo_name}/hooks"
+        endpoint = f"/repos/{repo_owner}/{repo_name}/hooks" # pragma: allowlist secret
         payload = {
             "name": "web",
             "config": {
