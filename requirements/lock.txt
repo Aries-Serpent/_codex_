@@ -56,7 +56,7 @@ cachetools==7.0.5
     # via
     #   mlflow-skinny
     #   mlflow-tracing
-certifi==2026.1.4
+certifi==2026.6.17
     # via
     #   codex-ml (pyproject.toml)
     #   evidently
@@ -406,7 +406,7 @@ nvidia-curand==10.4.0.35
     # via cuda-toolkit
 nvidia-cusolver==12.0.4.66
     # via cuda-toolkit
-nvidia-cusparse==12.6.3.3
+nvidia-cusparse==12.8.1.7
     # via
     #   cuda-toolkit
     #   nvidia-cusolver
@@ -556,7 +556,7 @@ psutil==7.2.2
     #   peft
 py-spy==0.4.2
     # via ray
-pyarrow==23.0.1
+pyarrow==24.0.0
     # via
     #   datasets
     #   mlflow
@@ -665,7 +665,7 @@ referencing==0.37.0
     # via
     #   jsonschema
     #   jsonschema-specifications
-regex==2026.1.15
+regex==2026.6.28
     # via
     #   nltk
     #   transformers
