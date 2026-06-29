@@ -129,7 +129,6 @@ def main(argv=None) -> int:
             logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
             import config_legacy as hydra
 
-
         from omegaconf import DictConfig, OmegaConf
     except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)

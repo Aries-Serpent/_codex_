@@ -46,28 +46,19 @@ try:  # pragma: no cover - optional dependency
         logger.debug("ImportError: <ERROR_TYPE>")
         logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
         from config_legacy import compose, initialize_config_dir
-
-
         from config_legacy.errors import MissingConfigException
 
     _HYDRA_AVAILABLE = True
 except (ImportError, AttributeError):  # pragma: no cover - import guard
     try:
         from hydra_core import compose, initialize_config_dir
-
-
         from hydra_core.errors import MissingConfigException
-
-
 
         _HYDRA_AVAILABLE = True
     except (IOError, OSError):  # pragma: no cover - import guard
         compose = None
 
-
         initialize_config_dir = None
-
-
 
         class MissingConfigException(RuntimeError):  # type: ignore[no-redef]
             """Fallback error used when Hydra is unavailable."""

@@ -46,7 +46,6 @@ except (ImportError, AttributeError):  # pragma: no cover
     np = None
 
 
-
 try:  # packaging is optional but preferred for version parsing
     from packaging.version import Version
 except (ImportError, AttributeError):  # pragma: no cover - treated as unavailable
@@ -149,20 +148,10 @@ def _rng_snapshot() -> dict[str, Any]:
                 numpy_state = np.random.get_state()
                 snap["numpy"] = {
                     "name": numpy_state[0],
-
-
                     "keys": numpy_state[1].tolist(),
-
-
                     "pos": int(numpy_state[2]),
-
-
                     "has_gauss": int(numpy_state[3]),
-
-
                     "cached_gauss": float(numpy_state[4]),
-
-
                 }
         except (ValueError, TypeError, RuntimeError) as e:
             logger.debug("Exception: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
@@ -240,7 +229,6 @@ def _rng_restore(snap: Mapping[str, Any]) -> None:
                     )
                     np.random.set_state(state_tuple)
 
-
                 else:
                     # Legacy format: convert from JSON-deserialized format
                     # If it's a tuple/list from JSON, ensure array element is converted
@@ -258,7 +246,6 @@ def _rng_restore(snap: Mapping[str, Any]) -> None:
                             numpy_state[4],
                         )
                         np.random.set_state(state_tuple)
-
 
                     else:
                         # Direct tuple format (not from JSON)

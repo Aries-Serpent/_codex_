@@ -51,12 +51,9 @@ except ImportError:
     logger.debug("Hydra not available, using fallback")
     compose = None
 
-
     initialize_config_dir = None
 
-
     HydraMissingConfigException = FileNotFoundError
-
 
     _HYDRA_AVAILABLE = False
 

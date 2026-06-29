@@ -84,17 +84,17 @@ import re
 def _matches_error_pattern(error_msg: str, patterns: list[str]) -> bool:
     """
     Safe error message pattern matching using regex word boundaries.
-    
+
     Replaces substring checks with regex patterns to prevent bypass vulnerabilities
     while maintaining compatibility with error message matching.
-    
+
     Args:
         error_msg: The error message string to check
         patterns: List of exact phrases to match (e.g., ["issubclass() arg 2 must be a class"])
-    
+
     Returns:
         True if any pattern matches the error message, False otherwise
-    
+
     Security Model:
     - Uses regex word boundaries to match exact phrases
     - Prevents bypass attacks from substring matching
@@ -104,7 +104,7 @@ def _matches_error_pattern(error_msg: str, patterns: list[str]) -> bool:
         # Escape special regex characters and use word boundaries
         escaped = re.escape(pattern)
         # Match the pattern with word boundaries for safety
-        if re.search(rf'\b{escaped}\b', error_msg, re.IGNORECASE):
+        if re.search(rf"\b{escaped}\b", error_msg, re.IGNORECASE):
             return True
     return False
 
@@ -338,7 +338,9 @@ def _pickle_dump(path: Path, payload: Mapping[str, Any]) -> None:
     try:
         safe_pickle_dump(dict(payload), str(path))
     except TypeError as e:
-        if _matches_error_pattern(str(e), ["issubclass() arg 2 must be a class", "isinstance() arg 2 must be a type"]):
+        if _matches_error_pattern(
+            str(e), ["issubclass() arg 2 must be a class", "isinstance() arg 2 must be a type"]
+        ):
             # Use protocol 2 for compatibility with older Python versions.
             safe_pickle_dump(dict(payload), str(path), protocol=2)
         else:
@@ -362,7 +364,10 @@ def _torch_dump(path: Path, payload: Mapping[str, Any]) -> None:
         torch.save(dict(payload), path, **save_kwargs)
     except (TypeError, RuntimeError) as e:
         _msg = str(e)
-        if _matches_error_pattern(_msg, ["issubclass() arg 2 must be a class", "isinstance() arg 2 must be a type", "profiler"]):
+        if _matches_error_pattern(
+            _msg,
+            ["issubclass() arg 2 must be a class", "isinstance() arg 2 must be a type", "profiler"],
+        ):
             logger.warning(
                 "torch.save compat error (PyTorch 2.x + Python 3.12), retrying without extra parameters: %s",  # noqa: E501
                 e,
@@ -989,7 +994,14 @@ def build_payload_bytes(
         torch.save(state, buf)
     except (TypeError, RuntimeError) as e:
         _msg = str(e)
-        if _matches_error_pattern(_msg, ["issubclass() arg 2 must be a class", "isinstance() arg 2 must be a type", "FloatStorage"]):
+        if _matches_error_pattern(
+            _msg,
+            [
+                "issubclass() arg 2 must be a class",
+                "isinstance() arg 2 must be a type",
+                "FloatStorage",
+            ],
+        ):
             logger.warning(
                 "torch.save compat error, retrying without extra parameters: %s", e
             )  # codeql[py/clear-text-logging-sensitive-data]
@@ -1249,7 +1261,9 @@ def save_ckpt(state: dict[str, Any], path: str) -> None:
         torch.save(state, p)
     except (TypeError, RuntimeError) as e:
         _msg = str(e)
-        if _matches_error_pattern(_msg, ["issubclass() arg 2 must be a class", "isinstance() arg 2 must be a type"]):
+        if _matches_error_pattern(
+            _msg, ["issubclass() arg 2 must be a class", "isinstance() arg 2 must be a type"]
+        ):
             logger.warning(
                 "torch.save compat error, retrying without extra parameters: %s", e
             )  # codeql[py/clear-text-logging-sensitive-data]
@@ -1330,7 +1344,10 @@ class CheckpointManager:
                 torch.save(state, ep_dir / "state.pt")
             except (TypeError, RuntimeError) as e:
                 _msg = str(e)
-                if _matches_error_pattern(_msg, ["issubclass() arg 2 must be a class", "isinstance() arg 2 must be a type"]):
+                if _matches_error_pattern(
+                    _msg,
+                    ["issubclass() arg 2 must be a class", "isinstance() arg 2 must be a type"],
+                ):
                     logger.warning(
                         "torch.save compat error, retrying without extra parameters: %s",
                         e,

@@ -135,7 +135,6 @@ except (IOError, OSError):  # pragma: no cover - numpy missing
     np = None
 
 
-
 try:  # pragma: no cover - optional datasets dependency
     from datasets import Dataset  # type: ignore[attr-defined]
 except (ImportError, AttributeError):  # pragma: no cover - datasets missing

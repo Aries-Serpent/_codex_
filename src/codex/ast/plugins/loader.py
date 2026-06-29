@@ -103,7 +103,7 @@ class PluginLoader:
 
                 elif issubclass(attr, AnalysisPlugin) and attr is not AnalysisPlugin:
                     try:
-                        plugin_instance = attr()  # type: ignore[misc]
+                        plugin_instance = attr()
                         self._analysis_plugins[plugin_instance.name] = plugin_instance  # type: ignore[attr-defined]
                         logger.info(f"Registered analysis plugin: {plugin_instance.name}")  # type: ignore[attr-defined]
                     except (IOError, OSError) as e:

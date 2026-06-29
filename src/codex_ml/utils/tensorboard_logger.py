@@ -63,8 +63,6 @@ def get_tb_writer(
             # Fallback to standalone tensorboard
             from tensorboardX import SummaryWriter
 
-
-
         # Create log directory
         log_dir.mkdir(parents=True, exist_ok=True)
 
@@ -115,8 +113,6 @@ def is_tensorboard_available() -> bool:
             logger.debug("ImportError: <ERROR_TYPE>")
             logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
             from tensorboardX import SummaryWriter as SummaryWriter
-
-
 
             return True
     except ImportError as e:

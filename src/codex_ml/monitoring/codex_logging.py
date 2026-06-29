@@ -35,7 +35,6 @@ except (IOError, OSError):  # pragma: no cover - tensorboard not installed
     SummaryWriter = None
 
 
-
 try:  # pragma: no cover - optional
     import wandb
 except (IOError, OSError):  # pragma: no cover - wandb not installed

@@ -29,9 +29,7 @@ try:  # Optional dependency: prometheus-client
 except (IOError, OSError):  # pragma: no cover - optional dependency path
     CollectorRegistry = None
 
-
     Counter = Gauge = Histogram = None
-
 
     _HAS_PROMETHEUS = False
 
@@ -82,38 +80,28 @@ class CodexMetricsRegistry:
             return
 
         self.training_steps = Counter(
-
-
             f"{namespace}_training_steps_total",
             "Total training steps completed",
             registry=self.registry,
         )
         self.training_loss = Gauge(
-
-
             f"{namespace}_training_loss",
             "Current training loss",
             registry=self.registry,
         )
         self.training_duration_seconds = Histogram(
-
-
             f"{namespace}_training_duration_seconds",
             "Training loop duration in seconds",
             buckets=(1, 5, 10, 30, 60, 300),
             registry=self.registry,
         )
         self.inference_requests = Counter(
-
-
             f"{namespace}_inference_requests_total",
             "Total inference requests",
             labelnames=["endpoint"],
             registry=self.registry,
         )
         self.inference_latency_seconds = Histogram(
-
-
             f"{namespace}_inference_latency_seconds",
             "Inference request latency in seconds",
             labelnames=["endpoint"],
@@ -121,16 +109,12 @@ class CodexMetricsRegistry:
             registry=self.registry,
         )
         self.data_loading_duration_seconds = Histogram(
-
-
             f"{namespace}_data_loading_duration_seconds",
             "Data loader iteration time in seconds",
             buckets=(0.1, 0.5, 1.0, 5.0, 10.0),
             registry=self.registry,
         )
         self.active_sessions = Gauge(
-
-
             f"{namespace}_active_sessions",
             "Number of active training or inference sessions",
             registry=self.registry,

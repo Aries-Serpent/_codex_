@@ -347,7 +347,6 @@ else:  # pragma: no cover - click fallback
     )
     def track_smoke(dir_: Optional[Path] = None) -> None:
 
-
         _track_smoke_impl(dir_)
 
     @app.command("split-smoke")
@@ -376,14 +375,10 @@ else:  # pragma: no cover - click fallback
     # Modern sub-apps pattern: define group separately, then register via add_command.
     # This mirrors the Typer branch's app.add_typer(reasoning_templates, ...) pattern.
     reasoning_templates = _click.Group(
-
-
         name="reasoning-templates",
         help="Surface reasoning training presets and curricula metadata.",
     )
     app.add_command(reasoning_templates, name="reasoning-templates")
-
-
 
     @reasoning_templates.command("list")
     def list_reasoning_templates() -> None:
@@ -460,7 +455,6 @@ else:  # pragma: no cover - click fallback
         help="Only include specified categories (can be repeated).",
     )
     def repo_map(reasoning: bool, includes: tuple[str, ...] = ()) -> None:
-
 
         from codex_ml.cli.repo_map import render_repo_map
 

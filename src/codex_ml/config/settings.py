@@ -34,8 +34,6 @@ except ModuleNotFoundError:  # pragma: no cover - fallback for minimal envs
     BaseSettings = BaseModel
 
     def SettingsConfigDict(**config: Any) -> ConfigDict:
-
-
         """Return a ``ConfigDict`` compatible with Pydantic's configuration API.
         Ignores unsupported keys like 'env_file' when pydantic_settings is unavailable.
         """

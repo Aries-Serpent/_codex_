@@ -41,7 +41,6 @@ try:  # pragma: no cover - optional dependency
         logger.debug("hydra not available: <ERROR_TYPE>")
         import config_legacy as hydra
 
-
     from omegaconf import MISSING
 except (ImportError, AttributeError):  # pragma: no cover - optional dependency
     hydra = None

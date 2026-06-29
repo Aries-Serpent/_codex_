@@ -132,8 +132,6 @@ def _rate_limit_handler(request: Request, exc: Exception) -> Response:
     return _rate_limit_exceeded_handler(request, exc)
 
 
-
-
 # Add rate limiting
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_handler)
