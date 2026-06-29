@@ -141,7 +141,7 @@ class TestTOTPGeneration:
     """TOTP code generation."""
 
     def test_totp_code_generation(self, mfa_provider, mfa_secret):
-        code = mfa_provider.generate_totp_code(mfa_secret)
+        code = mfa_provider.generate_totp_code(mfa_secret.secret, digits=mfa_secret.digits)
         assert isinstance(code, str)
         assert len(code) == mfa_secret.digits, "Code must not be empty"
         assert code.isdigit(), "Condition must be true"
@@ -163,20 +163,20 @@ class TestTOTPGeneration:
             digits=8,
         )
         provider = MFAProvider()
-        code = provider.generate_totp_code(secret)
+        code = provider.generate_totp_code(secret.secret, digits=secret.digits)
         assert len(code) == 8, "Code must not be empty"
 
     def test_totp_code_all_digits(self, mfa_provider, mfa_secret):
         for _ in range(10):
-            code = mfa_provider.generate_totp_code(mfa_secret)
+            code = mfa_provider.generate_totp_code(mfa_secret.secret, digits=mfa_secret.digits)
             assert code.isdigit(), "Condition must be true"
 
     def test_totp_code_changes_over_time(self, mfa_provider, mfa_secret):
-        mfa_provider.generate_totp_code(mfa_secret)
+        mfa_provider.generate_totp_code(mfa_secret.secret, digits=mfa_secret.digits)
         # Wait for time window to change (TOTP has 30-second window)
         with patch("time.time") as mock_time:
             mock_time.return_value = time.time() + 31
-            mfa_provider.generate_totp_code(mfa_secret)
+            mfa_provider.generate_totp_code(mfa_secret.secret, digits=mfa_secret.digits)
         # Codes should be different in different time windows
         # (Though not guaranteed, very likely)
 
@@ -185,13 +185,13 @@ class TestTOTPValidation:
     """TOTP code validation."""
 
     def test_validate_correct_totp_code(self, mfa_provider, mfa_secret):
-        code = mfa_provider.generate_totp_code(mfa_secret)
-        is_valid = mfa_provider.verify_totp_code(mfa_secret, code)
+        code = mfa_provider.generate_totp_code(mfa_secret.secret, digits=mfa_secret.digits)
+        is_valid = mfa_provider.verify_totp_code(mfa_secret.secret, code, mfa_secret.user_id)
         assert is_valid, "is_valid is not valid"
 
     def test_validate_incorrect_totp_code(self, mfa_provider, mfa_secret):
         wrong_code = "000000"
-        is_valid = mfa_provider.verify_totp_code(mfa_secret, wrong_code)
+        is_valid = mfa_provider.verify_totp_code(mfa_secret.secret, wrong_code, mfa_secret.user_id)
         assert not is_valid, "not is not valid"
 
     def test_validate_empty_code(self, mfa_provider, mfa_secret):
