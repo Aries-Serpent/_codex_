@@ -280,7 +280,7 @@ class TestSQLiteUserRepository:
         )
         repo.update(updated_user)
 
-        retrieved = repo.get_by_user_id("sql_user2")
+        retrieved = repo.get_by_id("sql_user2")
         assert retrieved.email == "sql_bob.new@example.com", "email is not valid"
 
     def test_delete_user(self, repo):
