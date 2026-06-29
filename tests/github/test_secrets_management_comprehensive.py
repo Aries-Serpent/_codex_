@@ -173,8 +173,8 @@ class TestProcess3RepositoryActionsSecrets:
         endpoint = f"{gh_api_base}{actions_secrets_endpoint}"
         expected_response = {"total_count": 0, "secrets": []}
 
-       assert "actions/secrets" in endpoint
-       assert expected_response["total_count"] == 0
+        assert "actions/secrets" in endpoint
+        assert expected_response["total_count"] == 0
 
     def test_process3_create_actions_secret_success(
         self,
