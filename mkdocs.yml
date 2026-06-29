@@ -10,7 +10,6 @@ markdown_extensions:
 - pymdownx.snippets
 - pymdownx.superfences:
     custom_fences: []
-      # Mermaid support disabled - would require mermaid2 plugin
 
 - pymdownx.tabbed:
     alternate_style: true
@@ -21,9 +20,8 @@ markdown_extensions:
 
 plugins:
   - search
-  # - mermaid2:
-  #     version: "10.4.0"
-  # (mermaid2 plugin temporarily disabled for this build)
+  - mermaid2:
+      version: "10.4.0"
 
 exclude_docs: |
   README.md

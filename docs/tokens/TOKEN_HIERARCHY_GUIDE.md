@@ -233,18 +233,16 @@ def read_organization_variables():
     """Read org variables with proper token selection."""
     
     # Get appropriate token for org read operation
-    # Falls back: CODEX_MASTER_KEY → CODEX_BACKUP_TOKEN → GITHUB_TOKEN
-    token = get_token(
-        operation="read_org_variables",
-        required_level="elevated"  # Level 2+ needed
-    )
+    # Falls back: CODEX_MASTER_KEY → CODEX_BACKUP_KEY → GH_TOKEN → GITHUB_TOKEN
+    token, source = get_token(required_elevated=True)
     
     if not token:
         raise Exception("No suitable token available for org variable read")
     
     # Validate token has required scope
-    if not validate_token_scope(token, ['admin:org_hook']):
-        raise Exception("Token lacks required 'admin:org_hook' scope")
+    is_valid, msg = validate_token_scope(token, ['admin:org_hook'])
+    if not is_valid:
+        raise Exception(f"Token validation failed: {msg}")
     
     # Perform operation with selected token
     import requests

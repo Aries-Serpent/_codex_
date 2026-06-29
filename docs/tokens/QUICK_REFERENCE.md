@@ -1,7 +1,7 @@
 # Quick Reference: Token Configuration Status
 
 > ⚠️ **SUPERSEDED** — This document is preserved for historical reference only.  
-> **The current unified reference is: [`docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md`](../docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md)**
+> **The current unified reference is: [`docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md`](../admin/GITHUB_VARIABLES_MASTER_GUIDE.md)**
 
 ## Current Status: ⚠️ TOKENS NOT YET CONFIGURED
 

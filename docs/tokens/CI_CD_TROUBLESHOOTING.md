@@ -77,12 +77,12 @@ echo "Conclusion: GITHUB_TOKEN has insufficient scopes"
 # ❌ WRONG: Using GITHUB_TOKEN for org variable read
 token = os.environ['GITHUB_TOKEN']  # Level 1 - insufficient
 
-# ✅ CORRECT: Use CODEX_BACKUP_TOKEN or CODEX_MASTER_KEY
-token = os.environ.get('CODEX_BACKUP_TOKEN') or os.environ.get('CODEX_MASTER_KEY')
-
-# Or use token resolver
+# ✅ CORRECT: Use CODEX_BACKUP_KEY or CODEX_MASTER_KEY
 from scripts.ci._token_resolver import get_token
-token = get_token(required_level='elevated')  # Level 2+
+
+token, source = get_token(required_elevated=True)
+if not token:
+    raise Exception("No elevated token available")
 ```
 
 **Prevention**:

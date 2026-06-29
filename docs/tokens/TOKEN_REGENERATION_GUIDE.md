@@ -109,15 +109,21 @@ gh secret set CODEX_MASTER_KEY \
 gh secret list --repo Aries-Serpent/_codex_ | grep CODEX_MASTER_KEY
 ```
 
-### Method 3: Using Script
+### Method 3: Using GitHub CLI (Recommended)
+
+For full automation without hardcoded paths, use the `gh` CLI with your repository:
 
 ```bash
-# Use the repository's secret rotation script
-cd /home/runner/work/_codex_/_codex_
-python scripts/rotate_github_token.py \
-  --token "$NEW_TOKEN" \
-  --secret-name CODEX_MASTER_KEY \
-  --verify
+# Verify gh CLI is authenticated
+gh auth status
+
+# Update repository secret
+gh secret set CODEX_MASTER_KEY \
+  --repo Aries-Serpent/_codex_ \
+  --body "$NEW_TOKEN"
+
+# Verify the update succeeded
+gh secret list --repo Aries-Serpent/_codex_ | grep CODEX_MASTER_KEY
 ```
 
 ---

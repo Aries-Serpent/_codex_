@@ -114,7 +114,7 @@ class AutonomousTestHealerAgent:
     def __init__(self):
         from scripts.ci._token_resolver import get_token
         
-        self.token = get_token(required_level="elevated")
+        self.token, self.source = get_token(required_elevated=True)
     
     def detect_flaky_tests(self):
         """Detect flaky tests marked with @pytest.mark.flaky."""
