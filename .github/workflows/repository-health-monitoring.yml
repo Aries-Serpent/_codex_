@@ -46,12 +46,14 @@ jobs:
             --output .codex/repository_health/offload_candidates.json \
             --log-actions
 
-          # Extract summary for PR comment
-          CANDIDATE_COUNT=$(jq '.summary.total_candidates' .codex/repository_health/offload_candidates.json)
-          TOTAL_SIZE=$(jq '.summary.total_size_mb' .codex/repository_health/offload_candidates.json)
+          # Extract summary for PR comment (including scan_time for consistency)
+          CANDIDATE_COUNT=$(jq -r '.summary.total_candidates' .codex/repository_health/offload_candidates.json)
+          TOTAL_SIZE=$(jq -r '.summary.total_size_mb' .codex/repository_health/offload_candidates.json)
+          SCAN_TIME=$(jq -r '.metadata.scan_time' .codex/repository_health/offload_candidates.json)
 
           echo "candidate_count=$CANDIDATE_COUNT" >> $GITHUB_OUTPUT
           echo "total_size_mb=$TOTAL_SIZE" >> $GITHUB_OUTPUT
+          echo "scan_time=$SCAN_TIME" >> $GITHUB_OUTPUT
 
       - name: Generate repository health dashboard
         run: |
@@ -91,7 +93,7 @@ jobs:
           body: |
             ## Repository Health Monitoring Report
 
-            **Scan Date**: ${{ github.event.repository.updated_at }}
+            **Scan Date**: ${{ steps.scan.outputs.scan_time }}
             **Triggered by**: ${{ github.event_name }}
 
             ### Summary

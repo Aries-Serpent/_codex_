@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "scan_time": "2026-06-29T01:19:29.672742+00:00",
+    "scan_time": "2026-06-29T01:44:38.394979+00:00",
     "repo_root": "/home/runner/work/_codex_/_codex_",
     "criteria": {
       "temp_files_age_days": 90,
@@ -10,15 +10,15 @@
     }
   },
   "summary": {
-    "total_candidates": 16,
+    "total_candidates": 15,
     "by_reason": {
-      "large": 16
+      "large": 15
     },
     "by_category": {
-      "unknown": 15,
+      "unknown": 14,
       "reports": 1
     },
-    "total_size_mb": 97.72
+    "total_size_mb": 96.6
   },
   "candidates": [
     {
@@ -50,16 +50,6 @@
         "large_file_5.46mb"
       ],
       "recommendation": "compress_or_offload"
-    },
-    {
-      "path": "CHANGELOG.md",
-      "category": "unknown",
-      "age_days": 0,
-      "size_mb": 1.12,
-      "reasons": [
-        "large_file_1.12mb"
-      ],
-      "recommendation": "review_manually"
     },
     {
       "path": "semgrep-m01-check-v2.json",
