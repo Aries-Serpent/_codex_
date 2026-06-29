@@ -166,7 +166,8 @@ class TestTokenExchange:
 
                 result = oauth_manager.exchange_code_for_token("auth_code")
                 if result:
-                    assert "access_token" in result or result is not None, "result must be initialized"
+                    assert result.access_token == "test_token"
+                    assert result.token_type == "Bearer"
 
     def test_token_includes_access_token(self, oauth_manager):
         """Test that token response includes access token."""
@@ -297,7 +298,7 @@ class TestTokenRefresh:
     def test_refresh_token(self, oauth_manager):
         """Test refreshing an access token."""
         if hasattr(oauth_manager, "refresh_token"):
-            with patch("requests.post") as mock_post:
+            with patch("httpx.Client.post") as mock_post:
                 mock_post.return_value.status_code = 200
                 mock_post.return_value.json.return_value = {
                     "access_token": "new_token",
@@ -307,12 +308,13 @@ class TestTokenRefresh:
 
                 result = oauth_manager.refresh_token("refresh_token_value")
                 if result:
-                    assert "access_token" in result or result is not None, "result must be initialized"
+                    assert result.access_token == "new_token"
+                    assert result.token_type == "bearer"
 
     def test_refresh_token_expiration(self, oauth_manager):
         """Test that refreshed token has expiration."""
         if hasattr(oauth_manager, "refresh_token"):
-            with patch("requests.post") as mock_post:
+            with patch("httpx.Client.post") as mock_post:
                 mock_post.return_value.status_code = 200
                 mock_post.return_value.json.return_value = {
                     "access_token": "new_token",
@@ -320,8 +322,8 @@ class TestTokenRefresh:
                 }
 
                 result = oauth_manager.refresh_token("refresh_token")
-                if result and "expires_in" in result:
-                    assert result["expires_in"] > 0, "Value must be greater than zero"
+                if result and result.expires_in > 0:
+                    assert result.expires_in > 0, "Value must be greater than zero"
 
 
 # ============================================================================
