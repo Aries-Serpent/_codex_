@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-06-28T18:25:34Z",
+  "generated_at": "2026-06-29T00:44:24Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1057,7 +1057,7 @@
     },
     {
       "name": "auth-tests",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -2380,5 +2380,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "b5003fa4984e6beafc5032c6a5ade369730931a28616f44902ec3bffb3600508"
+  "integrity_sha256": "b95b658ae1cec276fc5ec3c8084ac5cbbbaf855da1efc40c0b42328faf77fa1a"
 }
