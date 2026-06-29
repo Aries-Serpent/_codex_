@@ -665,7 +665,7 @@ referencing==0.37.0
     # via
     #   jsonschema
     #   jsonschema-specifications
-regex==2026.1.15
+regex==2026.6.28
     # via
     #   nltk
     #   transformers
