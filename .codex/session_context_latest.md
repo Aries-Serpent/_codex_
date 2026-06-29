@@ -1,21 +1,22 @@
-# Session Context — 2026-06-29T09:41:33Z
+# Session Context — 2026-06-29T09:45:47Z
 **Branch:** `copilot/explore-codebase-for-testing`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4450` (✅)
-- GraphQL remaining: `4999` (✅)
+- REST remaining: `4999` (✅)
+- GraphQL remaining: `4994` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **.github/workflows/copilot-agent-checkin.yml** — `failure` on `main` (2026-06-29)
-- **.github/workflows/session-incremental-summary-reminder.yml** — `failure` on `main` (2026-06-29)
-- **.github/workflows/mcp-health.yml** — `failure` on `main` (2026-06-29)
-- **.github/workflows/process-variable-intents.yml** — `failure` on `main` (2026-06-29)
-- **.github/workflows/cache-pruning.yml** — `failure` on `main` (2026-06-29)
+- **.github/workflows/container-scan.yml** — `failure` on `copilot/explore-codebase-for-testing` (2026-06-29)
+- **.github/workflows/pages-health-guard.yml** — `failure` on `copilot/explore-codebase-for-testing` (2026-06-29)
+- **.github/workflows/copilot-agent-session-done.yml** — `failure` on `copilot/explore-codebase-for-testing` (2026-06-29)
+- **.github/workflows/autonomous-agent.yml** — `failure` on `copilot/explore-codebase-for-testing` (2026-06-29)
+- **.github/workflows/promote-integration-branch.yml** — `failure` on `copilot/explore-codebase-for-testing` (2026-06-29)
 
 ## 📝 Recent Commits
+- `d213ba32` Apply remaining changes — copilot-swe-agent[bot] (2026-06-29)
 - `b7aee811` Merge pull request #5128 from Aries-Serpent/copilot/execute-phase-6-post-merge-i — Statix (2026-06-29)
 - `338b6632` Fix variable naming consistency in token documentation — copilot-swe-agent[bot] (2026-06-29)
 - `95c52896` Integrate 5 newly added Dependabot PRs into current branch — copilot-swe-agent[bot] (2026-06-29)
@@ -23,7 +24,6 @@
 - `1264961f` Initial plan: Address 6 review comments in PR #5128 — copilot-swe-agent[bot] (2026-06-29)
 - `e98847b0` Apply remaining changes — copilot-swe-agent[bot] (2026-06-29)
 - `940883cc` Apply remaining changes — copilot-swe-agent[bot] (2026-06-29)
-- `1caf2b33` Document: Phase 6 Campaign Final Summary - All objectives complete, production r — copilot-swe-agent[bot] (2026-06-29)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
