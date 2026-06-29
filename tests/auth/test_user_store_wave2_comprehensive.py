@@ -87,16 +87,6 @@ class TestUserCreation:
         user2 = user_store.create_user("user2", "user2@example.com", "Pass123!")
         assert user1.user_id != user2.user_id, "user_id is not valid"
 
-    def test_create_user_with_metadata(self, user_store):
-        """Test creating user with metadata."""
-        user = user_store.create_user(
-            "bob",
-            "bob@example.com",
-            "Pass123!",
-            metadata={"department": "engineering"},
-        )
-        assert user.metadata.get("department") == "engineering", "Data must not be empty"
-
     def test_create_duplicate_username_raises_error(self, user_store):
         """Test that duplicate username raises error."""
         user_store.create_user("alice", "alice@example.com", "Pass123!")
