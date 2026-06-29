@@ -1,103 +1,72 @@
 name: Mutation Testing
-
-on:
-  workflow_dispatch:
+true:
+  workflow_dispatch: null
   schedule:
-    - cron: "0 2 * * 0"   # 02:00 UTC every Sunday
-
+  - cron: 0 2 * * 0
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   actions: write
-
-
 jobs:
   mutation-score:
-    name: Mutation score on critical-path modules (D7 #4)
+    name: Mutation score on critical-path modules (D7
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-python@v6
-        with:
-          python-version: "3.12.13"
-          cache: pip
-      - name: Install dependencies
-        run: |
-          pip install -q -r requirements-dev.txt
-          pip install -q pytest==8.4.2 pytest-xdist==3.8.0 pytest-timeout==2.4.0
-          pip install -q mutmut
+    - uses: actions/checkout@v7
+    - uses: actions/setup-python@v6
+      with:
+        python-version: 3.12.13
+        cache: pip
+    - name: Install dependencies
+      run: 'pip install -q -r requirements-dev.txt
 
-      - name: Run mutation tests on critical modules
-        id: mutmut
-        run: |
-          # Critical-path modules for D7 mutation gate
-          python3 - <<'PYEOF'
-          import subprocess, json, os, sys
-          from datetime import datetime, timezone
+        pip install -q pytest==8.4.2 pytest-xdist==3.8.0 pytest-timeout==2.4.0
 
-          modules = [
-              "src/codex_ml/utils/checkpointing.py",
-              "src/codex/rag/retriever.py",
-              "src/codex/rag/embeddings.py",
-              "src/training/checkpoint_manager.py",
-          ]
+        pip install -q mutmut
 
-          results = {}
-          executed_modules = 0
-          for mod in modules:
-              from pathlib import Path
-              if not Path(mod).exists():
-                  results[mod] = {"status": "skip", "reason": "file not found"}
-                  continue
-              executed_modules += 1
-              r = subprocess.run(
-                  ["python", "-m", "mutmut", "run", "--paths-to-mutate", mod,
-                   "--runner", "python -m pytest tests/ -x -q --timeout=30"],
-                  capture_output=True, text=True, timeout=300
-              )
-              out = subprocess.run(["python", "-m", "mutmut", "results"],
-                                   capture_output=True, text=True)
-              results[mod] = {
-                  "status": "pass" if r.returncode == 0 else "fail",
-                  "return_code": r.returncode,
-                  "run_stdout_tail": r.stdout[-500:] if r.stdout else "",
-                  "run_stderr_tail": r.stderr[-500:] if r.stderr else "",
-                  "results_stdout_tail": out.stdout[-500:] if out.stdout else "",
-              }
-
-          passed_modules = sum(1 for v in results.values() if v.get("status") == "pass")
-          mutation_score = round((passed_modules / executed_modules) * 100, 1) if executed_modules else 0.0
-
-          report = {
-              "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-              "modules": results,
-              "executed_modules": executed_modules,
-              "passed_modules": passed_modules,
-              "mutation_score_pct": mutation_score,
-              "threshold_pct": 60.0,
-              "passed": executed_modules > 0 and mutation_score >= 60.0,
-              "note": "Score is module pass-rate from mutmut execution return codes (not per-mutant kill ratio)",
-          }
-          os.makedirs("reports/mutation", exist_ok=True)
-          with open("reports/mutation/mutation_score_latest.json", "w") as f:
-              json.dump(report, f, indent=2)
-          print(json.dumps(report, indent=2))
-          print("::notice::Mutation report written to reports/mutation/mutation_score_latest.json")
-          if not report["passed"]:
-              print(
-                  f"::error::Mutation score gate failed: {mutation_score}% < {report['threshold_pct']}%",
-                  file=sys.stderr,
-              )
-              sys.exit(1)
-          PYEOF
-
-      - name: Upload mutation report
-        uses: actions/upload-artifact@v7.0.1
-        if: always()
-        with:
-          name: mutation-report-${{ github.run_id }}
-          path: reports/mutation/
+        '
+    - name: Run mutation tests on critical modules
+      id: mutmut
+      run: "# Critical-path modules for D7 mutation gate\npython3 - <<'PYEOF'\nimport\
+        \ subprocess, json, os, sys\nfrom datetime import datetime, timezone\n\nmodules\
+        \ = [\n    \"src/codex_ml/utils/checkpointing.py\",\n    \"src/codex/rag/retriever.py\"\
+        ,\n    \"src/codex/rag/embeddings.py\",\n    \"src/training/checkpoint_manager.py\"\
+        ,\n]\n\nresults = {}\nexecuted_modules = 0\nfor mod in modules:\n    from\
+        \ pathlib import Path\n    if not Path(mod).exists():\n        results[mod]\
+        \ = {\"status\": \"skip\", \"reason\": \"file not found\"}\n        continue\n\
+        \    executed_modules += 1\n    r = subprocess.run(\n        [\"python\",\
+        \ \"-m\", \"mutmut\", \"run\", \"--paths-to-mutate\", mod,\n         \"--runner\"\
+        , \"python -m pytest tests/ -x -q --timeout=30\"],\n        capture_output=True,\
+        \ text=True, timeout=300\n    )\n    out = subprocess.run([\"python\", \"\
+        -m\", \"mutmut\", \"results\"],\n                         capture_output=True,\
+        \ text=True)\n    results[mod] = {\n        \"status\": \"pass\" if r.returncode\
+        \ == 0 else \"fail\",\n        \"return_code\": r.returncode,\n        \"\
+        run_stdout_tail\": r.stdout[-500:] if r.stdout else \"\",\n        \"run_stderr_tail\"\
+        : r.stderr[-500:] if r.stderr else \"\",\n        \"results_stdout_tail\"\
+        : out.stdout[-500:] if out.stdout else \"\",\n    }\n\npassed_modules = sum(1\
+        \ for v in results.values() if v.get(\"status\") == \"pass\")\nmutation_score\
+        \ = round((passed_modules / executed_modules) * 100, 1) if executed_modules\
+        \ else 0.0\n\nreport = {\n    \"generated_at\": datetime.now(timezone.utc).strftime(\"\
+        %Y-%m-%dT%H:%M:%SZ\"),\n    \"modules\": results,\n    \"executed_modules\"\
+        : executed_modules,\n    \"passed_modules\": passed_modules,\n    \"mutation_score_pct\"\
+        : mutation_score,\n    \"threshold_pct\": 60.0,\n    \"passed\": executed_modules\
+        \ > 0 and mutation_score >= 60.0,\n    \"note\": \"Score is module pass-rate\
+        \ from mutmut execution return codes (not per-mutant kill ratio)\",\n}\nos.makedirs(\"\
+        reports/mutation\", exist_ok=True)\nwith open(\"reports/mutation/mutation_score_latest.json\"\
+        , \"w\") as f:\n    json.dump(report, f, indent=2)\nprint(json.dumps(report,\
+        \ indent=2))\nprint(\"::notice::Mutation report written to reports/mutation/mutation_score_latest.json\"\
+        )\nif not report[\"passed\"]:\n    print(\n        f\"::error::Mutation score\
+        \ gate failed: {mutation_score}% < {report['threshold_pct']}%\",\n       \
+        \ file=sys.stderr,\n    )\n    sys.exit(1)\nPYEOF\n"
+    - name: Upload mutation report
+      uses: actions/upload-artifact@v7.0.1
+      if: always()
+      with:
+        name: mutation-report-${{ github.run_id }}
+        path: reports/mutation/
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

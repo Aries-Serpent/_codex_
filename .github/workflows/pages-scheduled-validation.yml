@@ -200,7 +200,7 @@ jobs:
     - name: Commit dashboard updates and create PR
       if: always() && steps.config.outputs.create_pr == 'true'
       env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ github.token }}
       run: "git config user.name \"github-actions[bot]\"\ngit config user.email \"\
         github-actions[bot]@users.noreply.github.com\"\n\nif [ -f \"docs/status/GITHUB_PAGES_STATUS.md\"\
         \ ]; then\n  git add docs/status/GITHUB_PAGES_STATUS.md\n\n  if git diff --staged\

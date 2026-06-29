@@ -99,7 +99,7 @@ jobs:
 
         '
       env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ github.token }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
       run: "printf '%s\\n' \\\n  \"## ⚙️ Workflow Compliance Violations\" \\\n  \"\
         \" \\\n  \"One or more workflow files in \\`.github/workflows/\\` violate\

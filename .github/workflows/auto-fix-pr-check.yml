@@ -161,7 +161,7 @@ jobs:
           == 'failure' && 'CI issues detected — see details' || 'No CI issues detected')
           }}
         details: ${{ steps.gen_comment.outputs.comment_body || '' }}
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ github.token }}
     - name: Apply and push fixes on PR (Detect→Heal→Commit)
       id: pr_heal
       if: 'steps.diagnostic.outcome == ''failure'' &&
@@ -225,7 +225,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v7
       with:
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.CODEX_MASTER_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment
       env:

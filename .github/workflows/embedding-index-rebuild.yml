@@ -110,7 +110,7 @@ jobs:
     - name: Commit updated index metadata
       if: steps.pr_guard.outputs.pr_skip != 'true'
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ github.token }}
         PUSH_TARGET: ${{ steps.resolve-target.outputs.branch }}
       run: "# Walk the staging chain: sub-PR → 0D_base_ → main  (resolved above)\n\
         _TARGET=\"${PUSH_TARGET}\"\necho \"\U0001F500 Push target: $_TARGET (reason:\

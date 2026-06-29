@@ -188,7 +188,7 @@ jobs:
       uses: actions/checkout@v5
     - name: Store registry variables
       env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ github.token }}
       run: 'echo "Storing registry metadata in repository variables..."
 
 

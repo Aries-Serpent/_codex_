@@ -233,7 +233,7 @@ jobs:
 
         '
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ github.token }}
         GITHUB_REPOSITORY: ${{ github.repository }}
         CRITICAL_ISSUES: ${{ steps.qa.outputs.critical_issues || '0' }}
         ISSUES_FOUND: ${{ steps.qa.outputs.issues_found || '0' }}
@@ -400,7 +400,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v7
       with:
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.CODEX_MASTER_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment
       env:

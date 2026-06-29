@@ -143,7 +143,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v7
       with:
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.CODEX_MASTER_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment
       env:
@@ -228,7 +228,7 @@ jobs:
       if: always() && github.event_name == 'pull_request' && hashFiles('coverage.xml')
         != ''
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || github.token }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
         GITHUB_REPOSITORY: ${{ github.repository }}
         HEAD_MAP: ${{ runner.temp }}/head_coverage_map.json

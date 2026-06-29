@@ -19,7 +19,7 @@ concurrency:
   group: perf-monitoring
   cancel-in-progress: false
 env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GITHUB_TOKEN: ${{ github.token }}
 jobs:
   collect-metrics:
     name: Collect Performance Metrics

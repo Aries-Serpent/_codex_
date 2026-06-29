@@ -39,7 +39,7 @@ jobs:
       uses: actions/checkout@v7
       with:
         fetch-depth: 1
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.CODEX_MASTER_KEY || github.token }}
     - name: '🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)'
       id: resolve-target
       uses: ./.github/actions/resolve-push-target
@@ -151,7 +151,7 @@ jobs:
       if: steps.audit.outputs.absent_required != '0' && github.event_name == 'schedule'
       uses: actions/github-script@v8
       with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        github-token: ${{ secrets.CODEX_MASTER_KEY || github.token }}
         script: "const absent = parseInt('${{ steps.audit.outputs.absent_required\
           \ }}', 10);\nif (isNaN(absent) || absent === 0) return;\n\n// Check for\
           \ existing open blocker issue\nconst { data: issues } = await github.rest.issues.listForRepo({\n\

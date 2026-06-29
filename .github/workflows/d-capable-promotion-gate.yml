@@ -55,7 +55,7 @@ jobs:
         \ steps.promotion.outputs.eligible_count }} agent(s) to D_CAPABLE [skip ci]\"\
         \ngit push\n"
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ github.token }}
     - name: Post promotion summary
       if: always()
       run: "{\n  echo \"## \U0001F680 D_CAPABLE Promotion Gate\"\n  echo \"\"\n  echo\
@@ -96,7 +96,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v7
       with:
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.CODEX_MASTER_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment
       env:

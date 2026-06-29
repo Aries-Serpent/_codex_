@@ -76,7 +76,7 @@ jobs:
     - name: Classify files (dry run)
       id: classify
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ github.token }}
         GITHUB_REPOSITORY: ${{ github.repository }}
         FF_DRY_RUN: '1'
       run: "# Parse optional files list\nFILES_ARG=\"\"\nif [ -n \"${{ inputs.files\
@@ -139,7 +139,7 @@ jobs:
     - name: Execute promotion
       id: promote
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ github.token }}
         GITHUB_REPOSITORY: ${{ github.repository }}
       run: "# Parse optional files list\nFILES_ARG=()\nif [ -n \"${{ inputs.files\
         \ }}\" ]; then\n  IFS=',' read -ra _FILES <<< \"${{ inputs.files }}\"\n  FILES_ARG=(--files\

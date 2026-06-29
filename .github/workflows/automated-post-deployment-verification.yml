@@ -1,38 +1,33 @@
 name: Automated Post-Deployment Verification
-
-on:
+true:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Target environment for verification'
+        description: Target environment for verification
         required: true
         type: choice
         options:
-          - development
-          - staging
-          - production
+        - development
+        - staging
+        - production
       service_url:
-        description: 'Service URL to verify (e.g., http://api.example.com)'
+        description: Service URL to verify (e.g., http://api.example.com)
         required: true
         type: string
       notify_slack:
-        description: 'Send Slack notification with results'
+        description: Send Slack notification with results
         required: false
         type: boolean
         default: true
-
 permissions:
   contents: read
   actions: write
   pull-requests: read
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 env:
   VERIFICATION_DIR: .codex/verification-results
-
 jobs:
   setup:
     runs-on: ubuntu-latest
@@ -42,73 +37,43 @@ jobs:
       service_url: ${{ steps.setup.outputs.service_url }}
       checklist_file: ${{ steps.setup.outputs.checklist_file }}
     steps:
-      - name: Validate Inputs
-        id: setup
-        run: |
-          ENVIRONMENT="${{ github.event.inputs.environment }}"
-          SERVICE_URL="${{ github.event.inputs.service_url }}"
-
-          # Validate environment
-          if [[ ! "$ENVIRONMENT" =~ ^(development|staging|production)$ ]]; then
-            echo "Invalid environment: $ENVIRONMENT"
-            exit 1
-          fi
-
-          # Validate URL format
-          if ! [[ "$SERVICE_URL" =~ ^https?:// ]]; then
-            echo "Invalid service URL format: $SERVICE_URL"
-            exit 1
-          fi
-
-          # Select checklist based on environment
-          case $ENVIRONMENT in
-            development)
-              CHECKLIST=".codex/verification-checklists/VERIFICATION_CHECKLIST_DEV.md"
-              ;;
-            staging)
-              CHECKLIST=".codex/verification-checklists/VERIFICATION_CHECKLIST_STAGING.md"
-              ;;
-            production)
-              CHECKLIST=".codex/verification-checklists/VERIFICATION_CHECKLIST_PRODUCTION.md"
-              ;;
-          esac
-
-          echo "environment=$ENVIRONMENT" >> $GITHUB_OUTPUT
-          echo "service_url=$SERVICE_URL" >> $GITHUB_OUTPUT
-          echo "checklist_file=$CHECKLIST" >> $GITHUB_OUTPUT
-          echo "✓ Inputs validated successfully"
-
+    - name: Validate Inputs
+      id: setup
+      run: "ENVIRONMENT=\"${{ github.event.inputs.environment }}\"\nSERVICE_URL=\"\
+        ${{ github.event.inputs.service_url }}\"\n\n# Validate environment\nif [[\
+        \ ! \"$ENVIRONMENT\" =~ ^(development|staging|production)$ ]]; then\n  echo\
+        \ \"Invalid environment: $ENVIRONMENT\"\n  exit 1\nfi\n\n# Validate URL format\n\
+        if ! [[ \"$SERVICE_URL\" =~ ^https?:// ]]; then\n  echo \"Invalid service\
+        \ URL format: $SERVICE_URL\"\n  exit 1\nfi\n\n# Select checklist based on\
+        \ environment\ncase $ENVIRONMENT in\n  development)\n    CHECKLIST=\".codex/verification-checklists/VERIFICATION_CHECKLIST_DEV.md\"\
+        \n    ;;\n  staging)\n    CHECKLIST=\".codex/verification-checklists/VERIFICATION_CHECKLIST_STAGING.md\"\
+        \n    ;;\n  production)\n    CHECKLIST=\".codex/verification-checklists/VERIFICATION_CHECKLIST_PRODUCTION.md\"\
+        \n    ;;\nesac\n\necho \"environment=$ENVIRONMENT\" >> $GITHUB_OUTPUT\necho\
+        \ \"service_url=$SERVICE_URL\" >> $GITHUB_OUTPUT\necho \"checklist_file=$CHECKLIST\"\
+        \ >> $GITHUB_OUTPUT\necho \"✓ Inputs validated successfully\"\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   verify-service-startup:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: setup
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-
-      - name: Check Service Accessibility
-        id: accessibility
-        run: |
-          SERVICE_URL="${{ needs.setup.outputs.service_url }}"
-          MAX_RETRIES=5
-          RETRY_DELAY=10
-
-          echo "Checking service accessibility at $SERVICE_URL..."
-
-          for i in $(seq 1 $MAX_RETRIES); do
-            if curl -s -o /dev/null -w "%{http_code}" "$SERVICE_URL" | grep -q "200\|301\|302"; then
-              echo "✓ Service is accessible"
-              echo "accessible=true" >> $GITHUB_OUTPUT
-              exit 0
-            fi
-            echo "Attempt $i/$MAX_RETRIES failed, retrying in ${RETRY_DELAY}s..."
-            sleep $RETRY_DELAY
-          done
-
-          echo "✗ Service is not accessible after $MAX_RETRIES attempts"
-          echo "accessible=false" >> $GITHUB_OUTPUT
-          exit 1
-
+    - name: Checkout
+      uses: actions/checkout@v5
+    - name: Check Service Accessibility
+      id: accessibility
+      run: "SERVICE_URL=\"${{ needs.setup.outputs.service_url }}\"\nMAX_RETRIES=5\n\
+        RETRY_DELAY=10\n\necho \"Checking service accessibility at $SERVICE_URL...\"\
+        \n\nfor i in $(seq 1 $MAX_RETRIES); do\n  if curl -s -o /dev/null -w \"%{http_code}\"\
+        \ \"$SERVICE_URL\" | grep -q \"200\\|301\\|302\"; then\n    echo \"✓ Service\
+        \ is accessible\"\n    echo \"accessible=true\" >> $GITHUB_OUTPUT\n    exit\
+        \ 0\n  fi\n  echo \"Attempt $i/$MAX_RETRIES failed, retrying in ${RETRY_DELAY}s...\"\
+        \n  sleep $RETRY_DELAY\ndone\n\necho \"✗ Service is not accessible after $MAX_RETRIES\
+        \ attempts\"\necho \"accessible=false\" >> $GITHUB_OUTPUT\nexit 1\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   health-checks:
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -116,45 +81,34 @@ jobs:
     outputs:
       health_status: ${{ steps.health.outputs.health_status }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.12'
-
-      - name: Run Health Checks
-        id: health
-        run: |
-          mkdir -p ${{ env.VERIFICATION_DIR }}
-
-          SERVICE_URL="${{ needs.setup.outputs.service_url }}"
-          OUTPUT_DIR="${{ env.VERIFICATION_DIR }}"
-
-          # Run health check runner (mock implementation for now)
-          python scripts/deployment/health_check_runner.py \
-            --host $(echo $SERVICE_URL | cut -d/ -f3 | cut -d: -f1) \
-            --port $(echo $SERVICE_URL | cut -d: -f3) \
-            --output "$OUTPUT_DIR" || true
-
-          # Parse health results
-          if [ -f "$OUTPUT_DIR/health_latest.json" ]; then
-            OVERALL=$(python3 -c "import json; d=json.load(open('$OUTPUT_DIR/health_latest.json')); print(d.get('overall_status', 'unknown'))")
-            echo "health_status=$OVERALL" >> $GITHUB_OUTPUT
-            echo "✓ Health checks completed: $OVERALL"
-          else
-            echo "health_status=unknown" >> $GITHUB_OUTPUT
-            echo "⚠ Health check results not available"
-          fi
-
-      - name: Upload Health Report
-        uses: actions/upload-artifact@v5
-        with:
-          name: health-check-report
-          path: ${{ env.VERIFICATION_DIR }}/health-reports/
-          retention-days: 30
-
+    - name: Checkout
+      uses: actions/checkout@v5
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.12'
+    - name: Run Health Checks
+      id: health
+      run: "mkdir -p ${{ env.VERIFICATION_DIR }}\n\nSERVICE_URL=\"${{ needs.setup.outputs.service_url\
+        \ }}\"\nOUTPUT_DIR=\"${{ env.VERIFICATION_DIR }}\"\n\n# Run health check runner\
+        \ (mock implementation for now)\npython scripts/deployment/health_check_runner.py\
+        \ \\\n  --host $(echo $SERVICE_URL | cut -d/ -f3 | cut -d: -f1) \\\n  --port\
+        \ $(echo $SERVICE_URL | cut -d: -f3) \\\n  --output \"$OUTPUT_DIR\" || true\n\
+        \n# Parse health results\nif [ -f \"$OUTPUT_DIR/health_latest.json\" ]; then\n\
+        \  OVERALL=$(python3 -c \"import json; d=json.load(open('$OUTPUT_DIR/health_latest.json'));\
+        \ print(d.get('overall_status', 'unknown'))\")\n  echo \"health_status=$OVERALL\"\
+        \ >> $GITHUB_OUTPUT\n  echo \"✓ Health checks completed: $OVERALL\"\nelse\n\
+        \  echo \"health_status=unknown\" >> $GITHUB_OUTPUT\n  echo \"⚠ Health check\
+        \ results not available\"\nfi\n"
+    - name: Upload Health Report
+      uses: actions/upload-artifact@v5
+      with:
+        name: health-check-report
+        path: ${{ env.VERIFICATION_DIR }}/health-reports/
+        retention-days: 30
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   smoke-tests:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -162,41 +116,34 @@ jobs:
     outputs:
       smoke_status: ${{ steps.smoke.outputs.smoke_status }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.12'
-
-      - name: Run Smoke Tests
-        id: smoke
-        continue-on-error: true
-        run: |
-          mkdir -p ${{ env.VERIFICATION_DIR }}
-
-          # Install test dependencies if available
-          pip install pytest pytest-json-report 2>/dev/null || true
-
-          # Run smoke tests (will use test framework if available)
-          python -m pytest tests/e2e/smoke_tests.py \
-            --json-report \
-            --json-report-file=${{ env.VERIFICATION_DIR }}/smoke_tests_report.json \
-            -v --tb=short 2>/dev/null || echo "Pytest not available, using direct invocation"
-
-          # Always generate a basic report
-          echo "{\"status\": \"passed\", \"tests_count\": 15, \"passed\": 15, \"failed\": 0}" > ${{ env.VERIFICATION_DIR }}/smoke_summary.json
-          echo "✓ Smoke tests completed"
-          echo "smoke_status=passed" >> $GITHUB_OUTPUT
-
-      - name: Upload Smoke Test Results
-        uses: actions/upload-artifact@v5
-        with:
-          name: smoke-test-results
-          path: ${{ env.VERIFICATION_DIR }}/
-          retention-days: 30
-
+    - name: Checkout
+      uses: actions/checkout@v5
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.12'
+    - name: Run Smoke Tests
+      id: smoke
+      continue-on-error: true
+      run: "mkdir -p ${{ env.VERIFICATION_DIR }}\n\n# Install test dependencies if\
+        \ available\npip install pytest pytest-json-report 2>/dev/null || true\n\n\
+        # Run smoke tests (will use test framework if available)\npython -m pytest\
+        \ tests/e2e/smoke_tests.py \\\n  --json-report \\\n  --json-report-file=${{\
+        \ env.VERIFICATION_DIR }}/smoke_tests_report.json \\\n  -v --tb=short 2>/dev/null\
+        \ || echo \"Pytest not available, using direct invocation\"\n\n# Always generate\
+        \ a basic report\necho \"{\\\"status\\\": \\\"passed\\\", \\\"tests_count\\\
+        \": 15, \\\"passed\\\": 15, \\\"failed\\\": 0}\" > ${{ env.VERIFICATION_DIR\
+        \ }}/smoke_summary.json\necho \"✓ Smoke tests completed\"\necho \"smoke_status=passed\"\
+        \ >> $GITHUB_OUTPUT\n"
+    - name: Upload Smoke Test Results
+      uses: actions/upload-artifact@v5
+      with:
+        name: smoke-test-results
+        path: ${{ env.VERIFICATION_DIR }}/
+        retention-days: 30
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   critical-path-tests:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -204,211 +151,139 @@ jobs:
     outputs:
       critical_status: ${{ steps.critical.outputs.critical_status }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.12'
-
-      - name: Run Critical Path Tests
-        id: critical
-        continue-on-error: true
-        run: |
-          mkdir -p ${{ env.VERIFICATION_DIR }}
-
-          # Run critical path tests
-          python -m pytest tests/e2e/critical_path_tests.py \
-            -v --tb=short 2>/dev/null || echo "Pytest not available"
-
-          # Generate report
-          echo "{\"status\": \"passed\", \"paths_tested\": 6, \"all_passed\": true}" > ${{ env.VERIFICATION_DIR }}/critical_paths_report.json
-          echo "✓ Critical path tests completed"
-          echo "critical_status=passed" >> $GITHUB_OUTPUT
-
-      - name: Upload Critical Path Results
-        uses: actions/upload-artifact@v5
-        with:
-          name: critical-path-results
-          path: ${{ env.VERIFICATION_DIR }}/
-          retention-days: 30
-
+    - name: Checkout
+      uses: actions/checkout@v5
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.12'
+    - name: Run Critical Path Tests
+      id: critical
+      continue-on-error: true
+      run: "mkdir -p ${{ env.VERIFICATION_DIR }}\n\n# Run critical path tests\npython\
+        \ -m pytest tests/e2e/critical_path_tests.py \\\n  -v --tb=short 2>/dev/null\
+        \ || echo \"Pytest not available\"\n\n# Generate report\necho \"{\\\"status\\\
+        \": \\\"passed\\\", \\\"paths_tested\\\": 6, \\\"all_passed\\\": true}\" >\
+        \ ${{ env.VERIFICATION_DIR }}/critical_paths_report.json\necho \"✓ Critical\
+        \ path tests completed\"\necho \"critical_status=passed\" >> $GITHUB_OUTPUT\n"
+    - name: Upload Critical Path Results
+      uses: actions/upload-artifact@v5
+      with:
+        name: critical-path-results
+        path: ${{ env.VERIFICATION_DIR }}/
+        retention-days: 30
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   generate-report:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    needs: [setup, health-checks, smoke-tests, critical-path-tests]
+    needs:
+    - setup
+    - health-checks
+    - smoke-tests
+    - critical-path-tests
     if: always()
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-
-      - name: Download Artifacts
-        uses: actions/download-artifact@v5
-        with:
-          path: ${{ env.VERIFICATION_DIR }}/artifacts
-
-      - name: Generate Summary Report
-        id: report
-        run: |
-          mkdir -p ${{ env.VERIFICATION_DIR }}
-
-          REPORT_FILE="${{ env.VERIFICATION_DIR }}/verification_report.md"
-
-          cat > "$REPORT_FILE" <<'EOF'
-          # Post-Deployment Verification Report
-
-          **Generated:** $(date -u +'%Y-%m-%dT%H:%M:%SZ')
-          **Environment:** ${{ needs.setup.outputs.environment }}
-          **Service URL:** ${{ needs.setup.outputs.service_url }}
-
-          ## Summary
-
-          | Check | Status |
-          |-------|--------|
-          | Service Accessibility | ✅ |
-          | Health Checks | ${{ needs.health-checks.outputs.health_status }} |
-          | Smoke Tests | ${{ needs.smoke-tests.outputs.smoke_status }} |
-          | Critical Paths | ${{ needs.critical-path-tests.outputs.critical_status }} |
-
-          ## Environment-Specific Checklist
-
-          - Verification checklist: ${{ needs.setup.outputs.checklist_file }}
-
-          ## Recommendations
-
-          EOF
-
-          # Add recommendations based on environment
-          case "${{ needs.setup.outputs.environment }}" in
-            development)
-              echo "- Use this report for local debugging" >> "$REPORT_FILE"
-              echo "- Address any warnings before submitting PR" >> "$REPORT_FILE"
-              ;;
-            staging)
-              echo "- Review all test results before production promotion" >> "$REPORT_FILE"
-              echo "- Verify performance metrics are acceptable" >> "$REPORT_FILE"
-              ;;
-            production)
-              echo "- All checks must pass before production deployment" >> "$REPORT_FILE"
-              echo "- Security review required before merge" >> "$REPORT_FILE"
-              echo "- On-call team must be briefed" >> "$REPORT_FILE"
-              ;;
-          esac
-
-          echo "✓ Report generated: $REPORT_FILE"
-          echo "report_file=$REPORT_FILE" >> $GITHUB_OUTPUT
-
-      - name: Upload Verification Report
-        uses: actions/upload-artifact@v5
-        with:
-          name: verification-report
-          path: ${{ env.VERIFICATION_DIR }}/
-          retention-days: 30
-
-      - name: Comment on PR
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v8
-        with:
-          script: |
-            const fs = require('fs');
-            const reportFile = '${{ steps.report.outputs.report_file }}';
-
-            if (fs.existsSync(reportFile)) {
-              const report = fs.readFileSync(reportFile, 'utf8');
-              github.rest.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: report
-              });
-            }
-
-      - name: Determine Go/No-Go Decision
-        id: decision
-        run: |
-          DECISION="GO"
-
-          # Check all critical components
-          if [[ "${{ needs.health-checks.outputs.health_status }}" != "healthy" ]]; then
-            DECISION="NO-GO"
-          fi
-
-          if [[ "${{ needs.smoke-tests.outputs.smoke_status }}" != "passed" ]]; then
-            DECISION="NO-GO"
-          fi
-
-          if [[ "${{ needs.critical-path-tests.outputs.critical_status }}" != "passed" ]]; then
-            DECISION="NO-GO"
-          fi
-
-          echo "decision=$DECISION" >> $GITHUB_OUTPUT
-
-          if [[ "$DECISION" == "GO" ]]; then
-            echo "✅ DECISION: GO - All verifications passed"
-          else
-            echo "❌ DECISION: NO-GO - Review failures above"
-          fi
-
+    - name: Checkout
+      uses: actions/checkout@v5
+    - name: Download Artifacts
+      uses: actions/download-artifact@v5
+      with:
+        path: ${{ env.VERIFICATION_DIR }}/artifacts
+    - name: Generate Summary Report
+      id: report
+      run: "mkdir -p ${{ env.VERIFICATION_DIR }}\n\nREPORT_FILE=\"${{ env.VERIFICATION_DIR\
+        \ }}/verification_report.md\"\n\ncat > \"$REPORT_FILE\" <<'EOF'\n# Post-Deployment\
+        \ Verification Report\n\n**Generated:** $(date -u +'%Y-%m-%dT%H:%M:%SZ')\n\
+        **Environment:** ${{ needs.setup.outputs.environment }}\n**Service URL:**\
+        \ ${{ needs.setup.outputs.service_url }}\n\n## Summary\n\n| Check | Status\
+        \ |\n|-------|--------|\n| Service Accessibility | ✅ |\n| Health Checks |\
+        \ ${{ needs.health-checks.outputs.health_status }} |\n| Smoke Tests | ${{\
+        \ needs.smoke-tests.outputs.smoke_status }} |\n| Critical Paths | ${{ needs.critical-path-tests.outputs.critical_status\
+        \ }} |\n\n## Environment-Specific Checklist\n\n- Verification checklist: ${{\
+        \ needs.setup.outputs.checklist_file }}\n\n## Recommendations\n\nEOF\n\n#\
+        \ Add recommendations based on environment\ncase \"${{ needs.setup.outputs.environment\
+        \ }}\" in\n  development)\n    echo \"- Use this report for local debugging\"\
+        \ >> \"$REPORT_FILE\"\n    echo \"- Address any warnings before submitting\
+        \ PR\" >> \"$REPORT_FILE\"\n    ;;\n  staging)\n    echo \"- Review all test\
+        \ results before production promotion\" >> \"$REPORT_FILE\"\n    echo \"-\
+        \ Verify performance metrics are acceptable\" >> \"$REPORT_FILE\"\n    ;;\n\
+        \  production)\n    echo \"- All checks must pass before production deployment\"\
+        \ >> \"$REPORT_FILE\"\n    echo \"- Security review required before merge\"\
+        \ >> \"$REPORT_FILE\"\n    echo \"- On-call team must be briefed\" >> \"$REPORT_FILE\"\
+        \n    ;;\nesac\n\necho \"✓ Report generated: $REPORT_FILE\"\necho \"report_file=$REPORT_FILE\"\
+        \ >> $GITHUB_OUTPUT\n"
+    - name: Upload Verification Report
+      uses: actions/upload-artifact@v5
+      with:
+        name: verification-report
+        path: ${{ env.VERIFICATION_DIR }}/
+        retention-days: 30
+    - name: Comment on PR
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v8
+      with:
+        script: "const fs = require('fs');\nconst reportFile = '${{ steps.report.outputs.report_file\
+          \ }}';\n\nif (fs.existsSync(reportFile)) {\n  const report = fs.readFileSync(reportFile,\
+          \ 'utf8');\n  github.rest.issues.createComment({\n    issue_number: context.issue.number,\n\
+          \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    body:\
+          \ report\n  });\n}\n"
+    - name: Determine Go/No-Go Decision
+      id: decision
+      run: "DECISION=\"GO\"\n\n# Check all critical components\nif [[ \"${{ needs.health-checks.outputs.health_status\
+        \ }}\" != \"healthy\" ]]; then\n  DECISION=\"NO-GO\"\nfi\n\nif [[ \"${{ needs.smoke-tests.outputs.smoke_status\
+        \ }}\" != \"passed\" ]]; then\n  DECISION=\"NO-GO\"\nfi\n\nif [[ \"${{ needs.critical-path-tests.outputs.critical_status\
+        \ }}\" != \"passed\" ]]; then\n  DECISION=\"NO-GO\"\nfi\n\necho \"decision=$DECISION\"\
+        \ >> $GITHUB_OUTPUT\n\nif [[ \"$DECISION\" == \"GO\" ]]; then\n  echo \"✅\
+        \ DECISION: GO - All verifications passed\"\nelse\n  echo \"❌ DECISION: NO-GO\
+        \ - Review failures above\"\nfi\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   slack-notification:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: [setup, generate-report]
+    needs:
+    - setup
+    - generate-report
     if: github.event.inputs.notify_slack == 'true' && always()
     steps:
-      - name: Send Slack Notification
-        uses: slackapi/slack-github-action@v1.24.0
-        with:
-          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
-          payload: |
-            {
-              "text": "Post-Deployment Verification Results",
-              "blocks": [
-                {
-                  "type": "header",
-                  "text": {
-                    "type": "plain_text",
-                    "text": "Deployment Verification - ${{ needs.setup.outputs.environment }}"
-                  }
-                },
-                {
-                  "type": "section",
-                  "fields": [
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Environment:*\n${{ needs.setup.outputs.environment }}"
-                    },
-                    {
-                      "type": "mrkdwn",
-                      "text": "*URL:*\n${{ needs.setup.outputs.service_url }}"
-                    }
-                  ]
-                },
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "*Artifacts:*\nCheck Actions tab for detailed reports"
-                  }
-                }
-              ]
-            }
-        if: always()
-
+    - name: Send Slack Notification
+      uses: slackapi/slack-github-action@v1.24.0
+      with:
+        webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+        payload: "{\n  \"text\": \"Post-Deployment Verification Results\",\n  \"blocks\"\
+          : [\n    {\n      \"type\": \"header\",\n      \"text\": {\n        \"type\"\
+          : \"plain_text\",\n        \"text\": \"Deployment Verification - ${{ needs.setup.outputs.environment\
+          \ }}\"\n      }\n    },\n    {\n      \"type\": \"section\",\n      \"fields\"\
+          : [\n        {\n          \"type\": \"mrkdwn\",\n          \"text\": \"\
+          *Environment:*\\n${{ needs.setup.outputs.environment }}\"\n        },\n\
+          \        {\n          \"type\": \"mrkdwn\",\n          \"text\": \"*URL:*\\\
+          n${{ needs.setup.outputs.service_url }}\"\n        }\n      ]\n    },\n\
+          \    {\n      \"type\": \"section\",\n      \"text\": {\n        \"type\"\
+          : \"mrkdwn\",\n        \"text\": \"*Artifacts:*\\nCheck Actions tab for\
+          \ detailed reports\"\n      }\n    }\n  ]\n}\n"
+      if: always()
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   create-issue-on-failure:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: [generate-report]
+    needs:
+    - generate-report
     if: failure()
     steps:
-      - name: Create Issue
-        uses: actions/github-script@v8
-        with:
-          script: |
-            github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: 'Deployment Verification Failed - ${{ github.event.inputs.environment }}',
-              body: 'Post-deployment verification failed. Check workflow run for details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}',
-              labels: ['deployment', 'verification-failed']
-            });
+    - name: Create Issue
+      uses: actions/github-script@v8
+      with:
+        script: "github.rest.issues.create({\n  owner: context.repo.owner,\n  repo:\
+          \ context.repo.repo,\n  title: 'Deployment Verification Failed - ${{ github.event.inputs.environment\
+          \ }}',\n  body: 'Post-deployment verification failed. Check workflow run\
+          \ for details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{\
+          \ github.run_id }}',\n  labels: ['deployment', 'verification-failed']\n\
+          });\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

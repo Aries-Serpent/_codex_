@@ -42,7 +42,7 @@ jobs:
     - name: 🔍 Check rebase status
       id: check
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ github.token }}
         GITHUB_REPOSITORY: ${{ github.repository }}
       run: "python scripts/ci/branch_rebase_check.py \\\n  --repo \"${{ github.repository\
         \ }}\" \\\n  --pr  \"${{ github.event.pull_request.number }}\" \\\n  --post-comment\
@@ -95,7 +95,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v7
       with:
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.CODEX_MASTER_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment
       env:

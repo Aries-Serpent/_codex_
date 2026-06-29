@@ -38,7 +38,7 @@ jobs:
       with:
         scanDirectory: .
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ github.token }}
     - name: Handle submission failure (infrastructure failure — allow workflow to
         pass)
       if: steps.submit_component.outcome == 'failure'
@@ -101,7 +101,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v7
       with:
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.CODEX_MASTER_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment
       env:

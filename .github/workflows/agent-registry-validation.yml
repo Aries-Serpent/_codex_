@@ -144,7 +144,7 @@ jobs:
         MANIFEST_VALID: ${{ steps.manifest_validation.outputs.manifest_valid }}
         ERROR_COUNT: ${{ steps.registry_validation.outputs.error_count }}
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ github.token }}
         script: "const registryValid = process.env.REGISTRY_VALID;\nconst manifestValid\
           \ = process.env.MANIFEST_VALID;\nconst errorCount = process.env.ERROR_COUNT\
           \ || '0';\n\n// Only post a comment if there are issues to report\nif (registryValid\
@@ -172,7 +172,7 @@ jobs:
         \  || echo \"::warning::Failed to trigger embedding index rebuild — run manually:\
         \ gh workflow run embedding-index-rebuild.yml --ref main\"\n"
       env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ github.token }}
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
@@ -195,7 +195,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v7
       with:
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.CODEX_MASTER_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment
       env:

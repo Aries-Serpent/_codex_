@@ -29,7 +29,7 @@ jobs:
     - name: 👍 React to bot review and acknowledge bot comments
       uses: actions/github-script@v8
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ github.token }}
         script: "const owner = context.repo.owner;\nconst repo  = context.repo.repo;\n\
           const eventName = context.eventName;\n\n// Bot actors whose comments we\
           \ acknowledge with \U0001F44D\nconst BOT_ACTORS = new Set([\n  'copilot-pull-request-reviewer[bot]',\n\
@@ -81,7 +81,7 @@ jobs:
       if: github.event_name == 'issue_comment'
       uses: actions/github-script@v8
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ github.token }}
         script: "const owner       = context.repo.owner;\nconst repo        = context.repo.repo;\n\
           const pr          = context.payload.issue.number;\nconst commentBody = context.payload.comment.body\
           \ ?? '';\nconst reviewer    = context.payload.comment.user.login;\n\n//\
@@ -139,7 +139,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v7
       with:
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.CODEX_MASTER_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment
       env:

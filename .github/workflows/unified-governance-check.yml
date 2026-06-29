@@ -44,7 +44,7 @@ jobs:
         \ \\\n  --pr ${{ github.event.pull_request.number }} \\\n  --json \\\n  --output\
         \ .codex/compliance/report.json \\\n  --timeout 60\n"
       env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ github.token }}
     - name: Parse compliance report
       id: parse
       if: always()
@@ -68,7 +68,7 @@ jobs:
         \ {e}\",\n        file=sys.stderr,\n    )\n    sys.exit(1)\n"
       shell: python
       env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ github.token }}
     - name: Comment on PR
       if: always()
       uses: actions/github-script@v8

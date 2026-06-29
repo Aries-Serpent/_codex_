@@ -58,7 +58,7 @@ jobs:
         \  --report \\\n  --json > compliance-output.json\n"
       continue-on-error: true
       env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ github.token }}
     - name: Capture compliance status
       id: status
       run: "if [ -f compliance-output.json ]; then\n  STATUS=$(python -c \"\nimport\

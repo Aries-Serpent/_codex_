@@ -108,7 +108,7 @@ jobs:
         TIER1_GATES_COUNT: ${{ steps.validate.outputs.tier1_gates_count }}
         SCHEMA_ERRORS: ${{ steps.validate.outputs.schema_errors }}
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ github.token }}
         script: "const status = process.env.VALIDATION_STATUS;\nconst delegating =\
           \ process.env.DELEGATING_AGENT || 'unknown';\nconst receiving = process.env.RECEIVING_AGENT\
           \ || 'unknown';\nconst taskId = process.env.TASK_ID || 'unknown';\nconst\
@@ -160,7 +160,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v7
       with:
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.CODEX_MASTER_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment
       env:

@@ -33,7 +33,7 @@ jobs:
     - name: Estimate aggregate PR cost
       id: estimate
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ github.token }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
         PR_BODY: ${{ github.event.pull_request.body }}
       run: "set -euo pipefail\n\n# Run the cost estimator in summary mode (all gated\
@@ -96,7 +96,7 @@ jobs:
         COST_STATUS: ${{ steps.estimate.outputs.status }}
         COST_RED_COUNT: ${{ steps.estimate.outputs.red_count }}
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ github.token }}
         script: "const summary  = process.env.COST_SUMMARY  || '';\nconst status \
           \  = process.env.COST_STATUS   || 'green';\nconst redCount = parseInt(process.env.COST_RED_COUNT\
           \ || '0');\n\nconst MARKER = '<!-- cost-check-bot -->';\nconst body = `${MARKER}\\\
@@ -125,7 +125,7 @@ jobs:
       id: comment_approval
       uses: actions/github-script@v8
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ github.token }}
         script: "function hasApproval(body) {\n  if (!body) return false;\n  const\
           \ norm = body.replace(/\\*\\*/g, '').replace(/__/g, '');\n  return (\n \
           \   norm.includes('- [x] \\u{1F4B0} Cost Proposal Approved') ||\n    norm.includes('-\
@@ -179,7 +179,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v7
       with:
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.CODEX_MASTER_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment
       env:

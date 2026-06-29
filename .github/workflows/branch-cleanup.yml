@@ -68,7 +68,7 @@ jobs:
       id: cleanup
       env:
         GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
-          secrets.GITHUB_TOKEN }}
+          github.token }}
         GITHUB_REPOSITORY: ${{ github.repository }}
         INPUT_PREFIXES: ${{ inputs.prefixes }}
         INPUT_STALE_DAYS: ${{ inputs.stale_days || 30 }}
@@ -90,7 +90,7 @@ jobs:
 
         '
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
       run: "if [ ! -f /tmp/branch_cleanup_report.json ]; then\n  echo \"No report\
         \ file found — skipping issue creation\"\n  exit 0\nfi\n\n# Build issue body\

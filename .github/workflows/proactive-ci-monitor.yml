@@ -70,7 +70,7 @@ jobs:
     - name: Run proactive CI monitor
       id: monitor
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ github.token }}
         GITHUB_REPOSITORY: ${{ github.repository }}
       run: "python scripts/ci/proactive_ci_monitor.py \\\n  --repo \"$GITHUB_REPOSITORY\"\
         \ \\\n  --token \"$GITHUB_TOKEN\" \\\n  --output /tmp/proactive_report.json\

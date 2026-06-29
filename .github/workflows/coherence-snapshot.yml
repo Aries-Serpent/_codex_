@@ -102,7 +102,7 @@ jobs:
     - name: Post to PR dashboard (if PR number provided)
       if: github.event.inputs.pr_number != '' || github.event_name == 'schedule'
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ github.token }}
         GITHUB_REPOSITORY: ${{ github.repository }}
       run: "PR_NUMBER=\"${{ github.event.inputs.pr_number }}\"\n\n# For scheduled\
         \ runs find the most recently updated open PR\nif [ -z \"${PR_NUMBER}\" ];\
