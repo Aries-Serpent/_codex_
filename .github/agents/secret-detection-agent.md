@@ -19,6 +19,177 @@ superseded_by: unified-security-scanner.md (v1.0.0-m01, 2026-02-21)
 
 # Secret Detection Agent v2.0 (ENTROPY-PATTERN-EXPAND)
 
+## 🔐 Token Hierarchy Requirements
+
+**Token Requirement Level**: Level 2 (CODEX_BACKUP_TOKEN)
+
+This agent performs operations requiring elevated repository or organization-level access. Specific capabilities include:
+
+- Scan repository for exposed secrets
+- Read secret scanning alerts
+- Create remediation commits or PRs
+- Update rotated secrets in configurations
+
+**Rationale**: Secret detection requires security event access and ability to write remediation changes
+
+**Token Scopes Required**:
+```
+repo, security_events, contents:write
+```
+
+**Token Fallback Pattern**: **Safe Fallback**: This agent can fallback to GITHUB_TOKEN with reduced capabilities
+
+```python
+from scripts.ci._token_resolver import get_token
+
+# Try Level 2 first, fallback to Level 1 if needed
+token = get_token(required_elevated=True)
+if not token:
+    logger.warning("Elevated token unavailable, using standard token")
+    token = get_token(required_elevated=False)
+```
+
+---
+## 🛠️ Implementation Pattern
+
+Standard implementation pattern for token management in this agent:
+
+```python
+from scripts.ci._token_resolver import get_token, validate_scope
+import requests
+import logging
+
+class SecretDetectionAgent:
+    def __init__(self):
+        """Initialize with token validation."""
+        # Get elevated token
+        self.token = get_token(required_elevated=True)
+        if not self.token:
+            raise RuntimeError("Agent requires elevated token")
+        
+        # Validate required scopes
+        required_scopes = ['repo', 'security_events', 'contents:write']
+        validate_scope(self.token, required_scopes)
+        
+        self.logger = logging.getLogger(__name__)
+    
+    def detect_and_remediate_secrets(self, repo, **kwargs):
+        """
+        Core operation requiring elevated token access.
+        
+        Args:
+            repo: Repository in 'owner/repo' format
+            **kwargs: Operation-specific parameters
+        
+        Returns:
+            Result dict with status and details
+        """
+        url = f"https://api.github.com/repos/{repo}/..."
+        
+        headers = {
+            "Authorization": f"token {self.token}",
+            "Accept": "application/vnd.github.v3+json"
+        }
+        
+        try:
+            response = requests.post(url, headers=headers, timeout=30)
+            response.raise_for_status()
+            
+            # Log operation metadata (NOT token)
+            self.logger.info(
+                "detect_and_remediate_secrets",
+                extra={"repo": repo, "status": "success"}
+            )
+            
+            return {"status": "success", "message": "Operation completed"}
+        
+        except requests.HTTPError as e:
+            if e.response.status_code == 403:
+                self.logger.error("Insufficient scope or permission denied")
+                raise RuntimeError("Token insufficient scope")
+            raise
+```
+
+---
+## 🔒 Security Constraints
+
+**Critical Constraints** for elevated-privilege agents:
+
+1. **Scope Validation Mandatory**: All operations require explicit scope validation
+   ```python
+   validate_scope(token, required_scopes)
+   ```
+
+2. **Safe Logging Practices** (Never expose token values)
+   ```python
+   # ✓ CORRECT: Log operation metadata
+   logger.info("operation", extra={"repo": repo, "status": "success"})
+   
+   # ✗ WRONG: Never log token values
+   # logger.info(f"Using token: {token[:10]}...")
+   ```
+
+3. **Error Handling for Scope Violations**
+   - **403 Forbidden** → Insufficient scope: Escalate immediately
+   - **401 Unauthorized** → Token invalid: Escalate to operator
+   - **429 Too Many Requests** → Rate limit: Implement backoff
+
+4. **Security Audit Trail Requirements**
+   - Emit telemetry event for each elevated operation
+   - Include: repo, operation, timestamp, result
+   - Store in audit log (never token values)
+   - Record in `.codex/audit/operations.jsonl`
+
+5. **Token Rotation Awareness**
+   - Do NOT cache token values across operations
+   - Re-retrieve token for each session
+   - Validate token expiration if applicable
+
+---
+## 🔗 Integration with Hidden Scripts
+
+This agent can leverage hidden scripts for storing security-sensitive operational patterns:
+
+**Use Case**: Store complex remediation or detection patterns as hidden scripts to prevent exposure in logs or CI artifacts.
+
+```python
+from scripts.ci._hidden_scripts import execute_hidden_script, retrieve_hidden_script
+
+def execute_stored_pattern(repo, pattern_type):
+    """Execute stored operational pattern."""
+    
+    # Retrieve pattern (stored securely, checksum validated)
+    pattern = retrieve_hidden_script(
+        script_id=f"pattern_{pattern_type}",
+        version="latest"
+    )
+    
+    # Execute in sandbox with audit logging
+    result = execute_hidden_script(
+        script_id=pattern.id,
+        environment={"GITHUB_TOKEN": self.token, "REPO": repo},
+        timeout_ms=60000,
+        audit_log=True
+    )
+    
+    return result
+```
+
+**Architecture Reference**: See `HIDDEN_SCRIPTS_SECURITY.md` for:
+- Storage and encryption of patterns
+- Checksum validation for integrity
+- Sandbox execution environment
+- Audit trail requirements
+- Recovery procedures
+
+**Common Patterns Stored as Hidden Scripts**:
+- Complex detection algorithms
+- Multi-step remediation workflows
+- Emergency procedure scripts
+- Security configuration templates
+
+---
+
 > **E-09 upgrade**: Adds multi-variant entropy patterns for 12 new secret classes,
 > covering environment-variable injection, split-assignment obfuscation, and
 > base64-encoded credential patterns.

@@ -24,6 +24,8 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+from scripts.ci._token_resolver import get_token
+
 
 # Configure logging
 logging.basicConfig(
@@ -111,8 +113,8 @@ class TokenValidator:
     def __init__(self, dry_run: bool = False, verbose: bool = False):
         self.dry_run = dry_run
         self.verbose = verbose
-        self.master_key = os.getenv("CODEX_MASTER_KEY")
-        self.backup_key = os.getenv("CODEX_BACKUP_KEY")
+        self.master_key = get_token(required_elevated=True)[0]
+        self.backup_key = get_token(required_elevated=True)[0]
         self.github_token = os.getenv("GITHUB_TOKEN")
 
     def log(self, message: str, level: str = "INFO"):

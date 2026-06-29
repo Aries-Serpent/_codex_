@@ -1,31 +1,25 @@
 name: Autonomous Codebase Management
-
-on:
+true:
   schedule:
-    # Run every 6 hours
-    - cron: '0 */6 * * *'
+  - cron: 0 */6 * * *
   workflow_dispatch:
     inputs:
       mode:
-        description: 'Execution mode'
+        description: Execution mode
         required: true
-        default: 'monitor'
+        default: monitor
         type: choice
         options:
-          - monitor
-          - execute
-          - report
-
+        - monitor
+        - execute
+        - report
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: write
   pull-requests: write
   issues: write
-
-
 jobs:
   owner-guard:
     name: Owner Approval Guard
@@ -34,79 +28,75 @@ jobs:
     outputs:
       approved: ${{ steps.guard.outputs.approved }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          sparse-checkout: |
-            .github
-            scripts/ci
+    - name: Checkout code
+      uses: actions/checkout@v7
+      with:
+        sparse-checkout: '.github
 
-      - name: CacheManager health check
-        continue-on-error: true
-        run: |
-          python scripts/ci/generate_cache_keys.py --health --workflow autonomous-agent 2>/dev/null || echo "Cache health: check skipped"
-      - name: Check Owner Approval
-        id: guard
-        env:
-          TOOL_KEY: autonomous-agent
-          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-        run: |
-          if bash scripts/ci/owner_approval_guard.sh; then
-            echo "approved=true" >> $GITHUB_OUTPUT
-            echo "✅ Owner approval valid for autonomous operations"
-          else
-            echo "approved=false" >> $GITHUB_OUTPUT
-            echo "⚠️ Owner approval not found - workflow will skip execution"
-          fi
+          scripts/ci
 
+          '
+    - name: CacheManager health check
+      continue-on-error: true
+      run: 'python scripts/ci/generate_cache_keys.py --health --workflow autonomous-agent
+        2>/dev/null || echo "Cache health: check skipped"
+
+        '
+    - name: Check Owner Approval
+      id: guard
+      env:
+        TOOL_KEY: autonomous-agent
+        GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      run: "if bash scripts/ci/owner_approval_guard.sh; then\n  echo \"approved=true\"\
+        \ >> $GITHUB_OUTPUT\n  echo \"✅ Owner approval valid for autonomous operations\"\
+        \nelse\n  echo \"approved=false\" >> $GITHUB_OUTPUT\n  echo \"⚠️ Owner approval\
+        \ not found - workflow will skip execution\"\nfi\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   autonomous-agent:
     name: Autonomous Agent Execution
     needs: owner-guard
-    if: needs.owner-guard.outputs.approved == 'true' || github.event.inputs.mode == 'monitor'
+    if: needs.owner-guard.outputs.approved == 'true' || github.event.inputs.mode ==
+      'monitor'
     runs-on: ubuntu-latest
     timeout-minutes: 60
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+    - name: Checkout code
+      uses: actions/checkout@v7
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+    - name: Set up Python 3.12 with tiered cache
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        cache-tier: live
+    - name: Install dependencies
+      run: 'python -m pip install --upgrade pip
 
-      - name: Set up Python 3.12 with tiered cache
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12.13'
-          cache-tier: live  # Autonomous agent is critical - use live tier
+        pip install -e ".[dev]" || pip install -e .
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -e ".[dev]" || pip install -e .
+        '
+    - name: Run Autonomous Agent
+      env:
+        MODE: ${{ github.event.inputs.mode || 'monitor' }}
+        GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      run: "echo \"Running in mode: $MODE\"\ncase \"$MODE\" in\n  monitor)\n    echo\
+        \ \"\U0001F4CA Monitoring mode - collecting metrics only\"\n    python -c\
+        \ \"print('Monitoring complete')\"\n    ;;\n  execute)\n    echo \"⚡ Execute\
+        \ mode - performing autonomous operations\"\n    python -c \"print('Execution\
+        \ complete')\"\n    ;;\n  report)\n    echo \"\U0001F4DD Report mode - generating\
+        \ status report\"\n    python -c \"print('Report complete')\"\n    ;;\nesac\n"
+    - name: Audit Log
+      if: always()
+      run: 'mkdir -p .codex/evidence
 
-      - name: Run Autonomous Agent
-        env:
-          MODE: ${{ github.event.inputs.mode || 'monitor' }}
-          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-        run: |
-          echo "Running in mode: $MODE"
-          case "$MODE" in
-            monitor)
-              echo "📊 Monitoring mode - collecting metrics only"
-              python -c "print('Monitoring complete')"
-              ;;
-            execute)
-              echo "⚡ Execute mode - performing autonomous operations"
-              python -c "print('Execution complete')"
-              ;;
-            report)
-              echo "📝 Report mode - generating status report"
-              python -c "print('Report complete')"
-              ;;
-          esac
+        echo "{\"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\", \"workflow\": \"autonomous-agent\",
+        \"mode\": \"${{ github.event.inputs.mode || ''monitor'' }}\", \"status\":
+        \"${{ job.status }}\"}" >> .codex/evidence/autonomous_runs.jsonl
 
-      - name: Audit Log
-        if: always()
-        run: |
-          mkdir -p .codex/evidence
-          echo "{\"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\", \"workflow\": \"autonomous-agent\", \"mode\": \"${{ github.event.inputs.mode || 'monitor' }}\", \"status\": \"${{ job.status }}\"}" >> .codex/evidence/autonomous_runs.jsonl
+        '
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

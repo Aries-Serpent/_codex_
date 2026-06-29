@@ -1,216 +1,124 @@
-# process-variable-intents.yml
-#
-# Mailbox-pattern worker: processes GitHub Actions variable write intents
-# queued by the Copilot agent via scripts/tools/variable_intent_writer.py.
-#
-# WHY THIS EXISTS
-# ───────────────
-# The Copilot coding agent sandbox only receives GITHUB_TOKEN (scoped
-# installation token) which cannot access the Actions Variables API (HTTP 403).
-# CODEX_MASTER_KEY — a classic PAT with `repo` scope — is required.
-#
-# This workflow runs inside a normal GitHub Actions job that has CODEX_MASTER_KEY
-# available as an org secret, so it can process the queued intents on behalf of
-# the agent.
-#
-# FLOW
-# ────
-# 1. Agent writes .codex/pending_ops/variable_set_*.json via variable_intent_writer.py
-# 2. Agent calls report_progress → commit + push → this workflow triggers
-# 3. Workflow reads each intent file, calls `gh variable set/delete`
-# 4. Workflow commits back a removal of processed intent files (self-cleaning)
-# 5. Variable exists in the repository ✅
-#
-# SECURITY
-# ────────
-# • Intent files contain variable NAMES and VALUES — only queue non-sensitive
-#   variable values (config, flags, URLs).  Never queue secret token values.
-# • Only org members who can push to this repo can create intent files.
-# • The workflow validates intent schema before processing.
-
 name: Process Variable Intents
-
-on:
+true:
   push:
     paths:
-      - '.codex/pending_ops/variable_*.json'
+    - .codex/pending_ops/variable_*.json
     branches:
-      - 'main'
-      - 'copilot/**'
-      - 'feature/**'
-      - '0D_base_'
+    - main
+    - copilot/**
+    - feature/**
+    - 0D_base_
   workflow_dispatch:
     inputs:
       dry_run:
-        description: "Dry run — log intents without applying them"
+        description: "Dry run \u2014 log intents without applying them"
         required: false
-        default: "false"
+        default: 'false'
         type: boolean
-
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
-  contents: write   # needed to commit the cleanup of processed intent files
+  contents: write
   pull-requests: write
-
 jobs:
   process:
-    name: "Process queued variable intents"
+    name: Process queued variable intents
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          fetch-depth: 1
-          token: ${{ secrets.CODEX_MASTER_KEY || github.token }}
+    - name: Checkout
+      uses: actions/checkout@v7
+      with:
+        fetch-depth: 1
+        token: ${{ secrets.CODEX_MASTER_KEY || github.token }}
+    - name: Generate Cognitive Brain App token
+      id: app-token
+      uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1
+      continue-on-error: true
+      with:
+        app-id: ${{ secrets._GITHUB_APP_ID }}
+        private-key: ${{ secrets._GITHUB_APP_PRIVATE_KEY }}
+    - name: Resolve write token
+      id: token
+      run: "if [ -n \"${{ steps.app-token.outputs.token }}\" ]; then\n  echo \"source=cognitive-brain-app\"\
+        \ >> \"$GITHUB_OUTPUT\"\n  echo \"token=${{ steps.app-token.outputs.token\
+        \ }}\" >> \"$GITHUB_OUTPUT\"\nelif [ -n \"${{ secrets.CODEX_MASTER_KEY }}\"\
+        \ ]; then\n  echo \"source=CODEX_MASTER_KEY\" >> \"$GITHUB_OUTPUT\"\n  echo\
+        \ \"token=${{ secrets.CODEX_MASTER_KEY }}\" >> \"$GITHUB_OUTPUT\"\nelif [\
+        \ -n \"${{ secrets.CODEX_BACKUP_KEY }}\" ]; then\n  echo \"source=CODEX_BACKUP_KEY\"\
+        \ >> \"$GITHUB_OUTPUT\"\n  echo \"token=${{ secrets.CODEX_BACKUP_KEY }}\"\
+        \ >> \"$GITHUB_OUTPUT\"\nelse\n  echo \"source=github.token\" >> \"$GITHUB_OUTPUT\"\
+        \n  echo \"token=${{ github.token }}\" >> \"$GITHUB_OUTPUT\"\nfi\necho \"\u2705\
+        \ Write token resolved from: $(cat $GITHUB_OUTPUT | grep source= | cut -d=\
+        \ -f2)\"\n"
+    - name: Process intents
+      id: process
+      env:
+        GH_TOKEN: ${{ steps.token.outputs.token }}
+        DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+      run: "set -euo pipefail\nPENDING_DIR=\".codex/pending_ops\"\nPROCESSED=0\nFAILED=0\n\
+        CLEANED=()\n\nshopt -s nullglob\nfor intent_file in \"${PENDING_DIR}\"/variable_*.json;\
+        \ do\n  echo \"\u2500\u2500 Processing: ${intent_file}\"\n\n  # Validate required\
+        \ fields\n  op=$(jq -r '.operation // empty' \"$intent_file\")\n  name=$(jq\
+        \ -r '.name // empty' \"$intent_file\")\n  scope=$(jq -r '.scope // \"repo\"\
+        ' \"$intent_file\")\n  owner=$(jq -r '.owner // \"Aries-Serpent\"' \"$intent_file\"\
+        )\n  repo=$(jq -r '.repo // \"_codex_\"' \"$intent_file\")\n  value=$(jq -r\
+        \ '.value // empty' \"$intent_file\")\n\n  if [[ -z \"$op\" || -z \"$name\"\
+        \ ]]; then\n    echo \"  \u26A0\uFE0F  Skipping malformed intent (missing\
+        \ operation or name)\"\n    continue\n  fi\n\n  echo \"  op=${op} name=${name}\
+        \ scope=${scope} owner=${owner}/${repo}\"\n\n  if [[ \"$DRY_RUN\" == \"true\"\
+        \ ]]; then\n    echo \"  [DRY RUN] Would execute: gh variable ${op} ${name}\"\
+        \n    PROCESSED=$((PROCESSED + 1))\n    CLEANED+=(\"$intent_file\")\n    continue\n\
+        \  fi\n\n  # Execute the variable operation\n  if [[ \"$op\" == \"set\" ]];\
+        \ then\n    if [[ -z \"$value\" ]]; then\n      echo \"  \u274C 'set' intent\
+        \ missing value \u2014 skipping ${name}\"\n      FAILED=$((FAILED + 1))\n\
+        \      continue\n    fi\n    if [[ \"$scope\" == \"org\" ]]; then\n      if\
+        \ gh variable set \"$name\" --body \"$value\" --org \"$owner\" 2>&1; then\n\
+        \        echo \"  \u2705 Org variable ${name} set\"\n      else\n        echo\
+        \ \"  \u274C Failed to set org variable ${name}\"\n        FAILED=$((FAILED\
+        \ + 1))\n        continue\n      fi\n    else\n      if gh variable set \"\
+        $name\" --body \"$value\" --repo \"${owner}/${repo}\" 2>&1; then\n       \
+        \ echo \"  \u2705 Repo variable ${name} set\"\n      else\n        echo \"\
+        \  \u274C Failed to set repo variable ${name}\"\n        FAILED=$((FAILED\
+        \ + 1))\n        continue\n      fi\n    fi\n\n  elif [[ \"$op\" == \"delete\"\
+        \ ]]; then\n    if [[ \"$scope\" == \"org\" ]]; then\n      gh variable delete\
+        \ \"$name\" --org \"$owner\" 2>&1 || true\n    else\n      gh variable delete\
+        \ \"$name\" --repo \"${owner}/${repo}\" 2>&1 || true\n    fi\n    echo \"\
+        \  \u2705 Variable ${name} deleted (or was already absent)\"\n  else\n   \
+        \ echo \"  \u26A0\uFE0F  Unknown operation '${op}' \u2014 skipping\"\n   \
+        \ continue\n  fi\n\n  PROCESSED=$((PROCESSED + 1))\n  CLEANED+=(\"$intent_file\"\
+        )\ndone\n\necho \"\u2500\u2500 Summary: processed=${PROCESSED} failed=${FAILED}\"\
+        \necho \"processed=${PROCESSED}\" >> \"$GITHUB_OUTPUT\"\necho \"failed=${FAILED}\"\
+        \       >> \"$GITHUB_OUTPUT\"\n\n# Remove successfully processed intent files\n\
+        if [[ ${#CLEANED[@]} -gt 0 && \"$DRY_RUN\" != \"true\" ]]; then\n  for f in\
+        \ \"${CLEANED[@]}\"; do\n    rm -f \"$f\"\n    echo \"  \U0001F5D1  Removed:\
+        \ ${f}\"\n  done\nfi\n"
+    - name: Commit cleanup
+      if: steps.process.outputs.processed != '0'
+      env:
+        GH_TOKEN: ${{ steps.token.outputs.token }}
+      run: "git config user.name  \"github-actions[bot]\"\ngit config user.email \"\
+        41898282+github-actions[bot]@users.noreply.github.com\"\ngit add .codex/pending_ops/\n\
+        if git diff --cached --quiet; then\n  echo \"Nothing to commit (dry-run or\
+        \ already clean)\"\nelse\n  git commit -m \"chore: remove ${{ steps.process.outputs.processed\
+        \ }} processed variable intent(s) [skip ci]\"\n  git push\nfi\n"
+    - name: Summary
+      run: 'echo "## Variable Intent Processing" >> "$GITHUB_STEP_SUMMARY"
 
-      # ── Generate Cognitive Brain App installation token ───────────────────
-      # The App has explicit read+write on 'actions variables' — preferred over
-      # CODEX_MASTER_KEY for variable operations.
-      - name: Generate Cognitive Brain App token
-        id: app-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
-        continue-on-error: true          # fall through to PAT if App creds absent
-        with:
-          app-id: ${{ secrets._GITHUB_APP_ID }}
-          private-key: ${{ secrets._GITHUB_APP_PRIVATE_KEY }}
+        echo "" >> "$GITHUB_STEP_SUMMARY"
 
-      # Token priority: CB App → CODEX_MASTER_KEY → CODEX_BACKUP_KEY → github.token
-      - name: Resolve write token
-        id: token
-        run: |
-          if [ -n "${{ steps.app-token.outputs.token }}" ]; then
-            echo "source=cognitive-brain-app" >> "$GITHUB_OUTPUT"
-            echo "token=${{ steps.app-token.outputs.token }}" >> "$GITHUB_OUTPUT"
-          elif [ -n "${{ secrets.CODEX_MASTER_KEY }}" ]; then
-            echo "source=CODEX_MASTER_KEY" >> "$GITHUB_OUTPUT"
-            echo "token=${{ secrets.CODEX_MASTER_KEY }}" >> "$GITHUB_OUTPUT"
-          elif [ -n "${{ secrets.CODEX_BACKUP_KEY }}" ]; then
-            echo "source=CODEX_BACKUP_KEY" >> "$GITHUB_OUTPUT"
-            echo "token=${{ secrets.CODEX_BACKUP_KEY }}" >> "$GITHUB_OUTPUT"
-          else
-            echo "source=github.token" >> "$GITHUB_OUTPUT"
-            echo "token=${{ github.token }}" >> "$GITHUB_OUTPUT"
-          fi
-          echo "✅ Write token resolved from: $(cat $GITHUB_OUTPUT | grep source= | cut -d= -f2)"
+        echo "| Metric | Value |" >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Process intents
-        id: process
-        env:
-          GH_TOKEN: ${{ steps.token.outputs.token }}
-          DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
-        run: |
-          set -euo pipefail
-          PENDING_DIR=".codex/pending_ops"
-          PROCESSED=0
-          FAILED=0
-          CLEANED=()
+        echo "|--------|-------|" >> "$GITHUB_STEP_SUMMARY"
 
-          shopt -s nullglob
-          for intent_file in "${PENDING_DIR}"/variable_*.json; do
-            echo "── Processing: ${intent_file}"
+        echo "| Processed | ${{ steps.process.outputs.processed }} |" >> "$GITHUB_STEP_SUMMARY"
 
-            # Validate required fields
-            op=$(jq -r '.operation // empty' "$intent_file")
-            name=$(jq -r '.name // empty' "$intent_file")
-            scope=$(jq -r '.scope // "repo"' "$intent_file")
-            owner=$(jq -r '.owner // "Aries-Serpent"' "$intent_file")
-            repo=$(jq -r '.repo // "_codex_"' "$intent_file")
-            value=$(jq -r '.value // empty' "$intent_file")
+        echo "| Failed | ${{ steps.process.outputs.failed }} |" >> "$GITHUB_STEP_SUMMARY"
 
-            if [[ -z "$op" || -z "$name" ]]; then
-              echo "  ⚠️  Skipping malformed intent (missing operation or name)"
-              continue
-            fi
+        echo "| Dry Run | ${{ github.event.inputs.dry_run || ''false'' }} |" >> "$GITHUB_STEP_SUMMARY"
 
-            echo "  op=${op} name=${name} scope=${scope} owner=${owner}/${repo}"
-
-            if [[ "$DRY_RUN" == "true" ]]; then
-              echo "  [DRY RUN] Would execute: gh variable ${op} ${name}"
-              PROCESSED=$((PROCESSED + 1))
-              CLEANED+=("$intent_file")
-              continue
-            fi
-
-            # Execute the variable operation
-            if [[ "$op" == "set" ]]; then
-              if [[ -z "$value" ]]; then
-                echo "  ❌ 'set' intent missing value — skipping ${name}"
-                FAILED=$((FAILED + 1))
-                continue
-              fi
-              if [[ "$scope" == "org" ]]; then
-                if gh variable set "$name" --body "$value" --org "$owner" 2>&1; then
-                  echo "  ✅ Org variable ${name} set"
-                else
-                  echo "  ❌ Failed to set org variable ${name}"
-                  FAILED=$((FAILED + 1))
-                  continue
-                fi
-              else
-                if gh variable set "$name" --body "$value" --repo "${owner}/${repo}" 2>&1; then
-                  echo "  ✅ Repo variable ${name} set"
-                else
-                  echo "  ❌ Failed to set repo variable ${name}"
-                  FAILED=$((FAILED + 1))
-                  continue
-                fi
-              fi
-
-            elif [[ "$op" == "delete" ]]; then
-              if [[ "$scope" == "org" ]]; then
-                gh variable delete "$name" --org "$owner" 2>&1 || true
-              else
-                gh variable delete "$name" --repo "${owner}/${repo}" 2>&1 || true
-              fi
-              echo "  ✅ Variable ${name} deleted (or was already absent)"
-            else
-              echo "  ⚠️  Unknown operation '${op}' — skipping"
-              continue
-            fi
-
-            PROCESSED=$((PROCESSED + 1))
-            CLEANED+=("$intent_file")
-          done
-
-          echo "── Summary: processed=${PROCESSED} failed=${FAILED}"
-          echo "processed=${PROCESSED}" >> "$GITHUB_OUTPUT"
-          echo "failed=${FAILED}"       >> "$GITHUB_OUTPUT"
-
-          # Remove successfully processed intent files
-          if [[ ${#CLEANED[@]} -gt 0 && "$DRY_RUN" != "true" ]]; then
-            for f in "${CLEANED[@]}"; do
-              rm -f "$f"
-              echo "  🗑  Removed: ${f}"
-            done
-          fi
-
-      - name: Commit cleanup
-        if: steps.process.outputs.processed != '0'
-        env:
-          GH_TOKEN: ${{ steps.token.outputs.token }}
-        run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .codex/pending_ops/
-          if git diff --cached --quiet; then
-            echo "Nothing to commit (dry-run or already clean)"
-          else
-            git commit -m "chore: remove ${{ steps.process.outputs.processed }} processed variable intent(s) [skip ci]"
-            git push
-          fi
-
-      - name: Summary
-        run: |
-          echo "## Variable Intent Processing" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Metric | Value |" >> "$GITHUB_STEP_SUMMARY"
-          echo "|--------|-------|" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Processed | ${{ steps.process.outputs.processed }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Failed | ${{ steps.process.outputs.failed }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Dry Run | ${{ github.event.inputs.dry_run || 'false' }} |" >> "$GITHUB_STEP_SUMMARY"
+        '
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

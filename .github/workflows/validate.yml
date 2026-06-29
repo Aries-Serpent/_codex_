@@ -1,329 +1,280 @@
 name: Validation Pipeline
-# Runs two jobs:
-#   fast   — every pull request (lightweight: pre-commit + smoke tests)
-#   full   — daily schedule or manual dispatch (full suite + coverage)
-#
-# Usage notes:
-#   * Fast job completes in ≈ 3 min; full job in ≈ 15–20 min.
-#   * Both jobs upload structured artifacts for later inspection.
-#   * Override behaviour via workflow_dispatch inputs (see below).
-
-on:
+true:
   pull_request:
-    branches: ["main", "0D_base_"]
-    types: [opened, synchronize, reopened]
-  # Re-run Fast Validation when a PR is approved (catches stale missed runs)
+    branches:
+    - main
+    - 0D_base_
+    types:
+    - opened
+    - synchronize
+    - reopened
   pull_request_review:
-    types: [submitted]
+    types:
+    - submitted
   schedule:
-    - cron: "0 3 * * *"  # daily at 03:00 UTC
+  - cron: 0 3 * * *
   workflow_dispatch:
     inputs:
       mode:
-        description: "Validation mode (fast or full)"
+        description: Validation mode (fast or full)
         required: false
-        default: "fast"
+        default: fast
         type: choice
         options:
-          - fast
-          - full
+        - fast
+        - full
       pytest_opts:
-        description: "Extra pytest options (e.g. -k 'smoke')"
+        description: Extra pytest options (e.g. -k 'smoke')
         required: false
-        default: ""
-
+        default: ''
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   checks: write
-
-
 defaults:
   run:
     shell: bash
-
 jobs:
-  # ── fast validation ──────────────────────────────────────────────────────────
   fast-validation:
     name: Fast Validation
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    if: |
-      github.event_name == 'pull_request' ||
-      github.event_name == 'pull_request_review' ||
-      (github.event_name == 'workflow_dispatch' && inputs.mode == 'fast') ||
-      github.event_name == 'push'
+    if: 'github.event_name == ''pull_request'' ||
+
+      github.event_name == ''pull_request_review'' ||
+
+      (github.event_name == ''workflow_dispatch'' && inputs.mode == ''fast'') ||
+
+      github.event_name == ''push''
+
+      '
     timeout-minutes: 15
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          fetch-depth: 0
-
-      - name: Set up Python with shared cache
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12.13'
-          extras: 'dev'
-
-      - name: "🛡️ Guard: validate copilot-setup-steps.yml (canonical baseline 12f7a861)"
-        run: bash scripts/ci/validate_setup_steps_yaml.sh
-
-      - name: Run yamllint on changed workflow YAML
-        env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha || '' }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
-        run: |
-          set -euo pipefail
-          if [ -z "${BASE_SHA}" ]; then
-            BASE_SHA="$(git rev-parse HEAD~1 2>/dev/null || true)"
-          fi
-          CHANGED_YAML="$(git diff --name-only "${BASE_SHA}" "${HEAD_SHA}" -- \
-            ':(glob).github/workflows/*.yml' ':(glob).github/workflows/*.yaml' \
-            ':(glob).github/misc/*.yml' ':(glob).github/misc/*.yaml' || true)"
-          if [ -z "${CHANGED_YAML}" ]; then
-            echo "No changed workflow YAML files to lint."
-            exit 0
-          fi
-          echo "Linting changed workflow YAML files:"
-          echo "${CHANGED_YAML}"
-          yamllint --no-warnings -c .yamllint.yml ${CHANGED_YAML}
-
-      - name: Run fast validation
-        env:
-          VALIDATE_BASE_REF: ${{ github.base_ref || '' }}
-          PYTEST_OPTS: ${{ github.event.inputs.pytest_opts || '' }}
-        run: |
-          chmod +x scripts/run_validation.sh
-          python tools/validate.py \
-            --mode fast \
-            --output validation_summary.json
-
-      - name: Emit pre-commit failure details to step summary
-        if: failure()
-        shell: bash
-        # S236/OBJ-001: Single shared script — no logic duplication between fast/full jobs.
-        run: bash scripts/ci/emit_precommit_summary.sh validation.log "validation-log-fast-${{ github.run_id }}"
-
-      - name: Upload hook failures JSON (OBJ-001-F)
-        uses: actions/upload-artifact@v5 # v7.0.1
-        if: failure()
-        with:
-          name: hook-failures-fast-${{ github.run_id }}
-          path: hook_failures.json
-          retention-days: 14
-          if-no-files-found: warn
-
-      - name: Upload validation log (fast)
-        uses: actions/upload-artifact@v5 # v7.0.1
-        if: always()
-        with:
-          name: validation-log-fast-${{ github.run_id }}
-          path: validation.log
-          retention-days: 14
-          if-no-files-found: warn
-
-      - name: Upload JUnit XML
-        uses: actions/upload-artifact@v5 # v7.0.1
-        if: always()
-        with:
-          name: validation-junit-fast-${{ github.run_id }}
-          path: validation-junit.xml
-          retention-days: 14
-          if-no-files-found: warn
-
-      - name: Upload JSON summary
-        uses: actions/upload-artifact@v5 # v7.0.1
-        if: always()
-        with:
-          name: validation-summary-fast-${{ github.run_id }}
-          path: validation_summary.json
-          retention-days: 14
-          if-no-files-found: warn
-
-  # ── rescue comment — posted on PR whenever fast-validation fails ────────────
-  # S290 hardened: SHA-scoped marker (one thread per commit SHA, not per PR),
-  # PDA Loop logging, detailed failure context, and explicit @copilot trigger.
-  # The workflow_run-triggered rescue workflows (ci-rescue.yml,
-  # iterative-self-healing-ci.yml) require human approval (action_required).
-  # This job is the primary reliable rescue mechanism — it fires on pull_request
-  # events which do not require approval.
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        fetch-depth: 0
+    - name: Set up Python with shared cache
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        extras: dev
+    - name: '🛡️ Guard: validate copilot-setup-steps.yml (canonical baseline 12f7a861)'
+      run: bash scripts/ci/validate_setup_steps_yaml.sh
+    - name: Run yamllint on changed workflow YAML
+      env:
+        BASE_SHA: ${{ github.event.pull_request.base.sha || '' }}
+        HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+      run: "set -euo pipefail\nif [ -z \"${BASE_SHA}\" ]; then\n  BASE_SHA=\"$(git\
+        \ rev-parse HEAD~1 2>/dev/null || true)\"\nfi\nCHANGED_YAML=\"$(git diff --name-only\
+        \ \"${BASE_SHA}\" \"${HEAD_SHA}\" -- \\\n  ':(glob).github/workflows/*.yml'\
+        \ ':(glob).github/workflows/*.yaml' \\\n  ':(glob).github/misc/*.yml' ':(glob).github/misc/*.yaml'\
+        \ || true)\"\nif [ -z \"${CHANGED_YAML}\" ]; then\n  echo \"No changed workflow\
+        \ YAML files to lint.\"\n  exit 0\nfi\necho \"Linting changed workflow YAML\
+        \ files:\"\necho \"${CHANGED_YAML}\"\nyamllint --no-warnings -c .yamllint.yml\
+        \ ${CHANGED_YAML}\n"
+    - name: Run fast validation
+      env:
+        VALIDATE_BASE_REF: ${{ github.base_ref || '' }}
+        PYTEST_OPTS: ${{ github.event.inputs.pytest_opts || '' }}
+      run: "chmod +x scripts/run_validation.sh\npython tools/validate.py \\\n  --mode\
+        \ fast \\\n  --output validation_summary.json\n"
+    - name: Emit pre-commit failure details to step summary
+      if: failure()
+      shell: bash
+      run: bash scripts/ci/emit_precommit_summary.sh validation.log "validation-log-fast-${{
+        github.run_id }}"
+    - name: Upload hook failures JSON (OBJ-001-F)
+      uses: actions/upload-artifact@v5
+      if: failure()
+      with:
+        name: hook-failures-fast-${{ github.run_id }}
+        path: hook_failures.json
+        retention-days: 14
+        if-no-files-found: warn
+    - name: Upload validation log (fast)
+      uses: actions/upload-artifact@v5
+      if: always()
+      with:
+        name: validation-log-fast-${{ github.run_id }}
+        path: validation.log
+        retention-days: 14
+        if-no-files-found: warn
+    - name: Upload JUnit XML
+      uses: actions/upload-artifact@v5
+      if: always()
+      with:
+        name: validation-junit-fast-${{ github.run_id }}
+        path: validation-junit.xml
+        retention-days: 14
+        if-no-files-found: warn
+    - name: Upload JSON summary
+      uses: actions/upload-artifact@v5
+      if: always()
+      with:
+        name: validation-summary-fast-${{ github.run_id }}
+        path: validation_summary.json
+        retention-days: 14
+        if-no-files-found: warn
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
     needs: fast-validation
-    if: |
-      failure() &&
-      (github.event_name == 'pull_request' || github.event_name == 'pull_request_review') &&
+    if: 'failure() &&
+
+      (github.event_name == ''pull_request'' || github.event_name == ''pull_request_review'')
+      &&
+
       github.event.pull_request.head.repo.full_name == github.repository
+
+      '
     permissions:
       contents: write
       pull-requests: write
       issues: write
     timeout-minutes: 5
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          fetch-depth: 1
-
-      - name: Post or update rescue comment
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_NAME: "Validation Pipeline / Fast Validation"
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          BRANCH: ${{ github.head_ref }}
-        run: python scripts/ci/post_rescue_comment.py
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        token: ${{ secrets.CODEX_MASTER_KEY || github.token }}
+        fetch-depth: 1
+    - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: Validation Pipeline / Fast Validation
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+        BRANCH: ${{ github.head_ref }}
+      run: python scripts/ci/post_rescue_comment.py
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   full-validation:
     name: Full Validation (Daily)
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    if: |
-      github.event_name == 'schedule' ||
-      (github.event_name == 'workflow_dispatch' && inputs.mode == 'full')
+    if: 'github.event_name == ''schedule'' ||
+
+      (github.event_name == ''workflow_dispatch'' && inputs.mode == ''full'')
+
+      '
     timeout-minutes: 60
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          fetch-depth: 0
-
-      - name: Set up Python with shared cache
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12.13'
-          extras: 'dev'
-
-      - name: Run full validation
-        env:
-          PYTEST_OPTS: ${{ github.event.inputs.pytest_opts || '' }}
-        run: |
-          chmod +x scripts/run_validation.sh
-          python tools/validate.py \
-            --mode full \
-            --output validation_summary.json
-
-      - name: Emit pre-commit failure details to step summary
-        if: failure()
-        shell: bash
-        # S236/OBJ-001: Single shared script — no logic duplication between fast/full jobs.
-        run: bash scripts/ci/emit_precommit_summary.sh validation.log "validation-log-full-${{ github.run_id }}"
-
-      - name: Upload hook failures JSON (OBJ-001-F)
-        uses: actions/upload-artifact@v5 # v7.0.1
-        if: failure()
-        with:
-          name: hook-failures-full-${{ github.run_id }}
-          path: hook_failures.json
-          retention-days: 30
-          if-no-files-found: warn
-
-      - name: Upload validation log (full)
-        uses: actions/upload-artifact@v5 # v7.0.1
-        if: always()
-        with:
-          name: validation-log-full-${{ github.run_id }}
-          path: validation.log
-          retention-days: 30
-          if-no-files-found: warn
-
-      - name: Upload JUnit XML
-        uses: actions/upload-artifact@v5 # v7.0.1
-        if: always()
-        with:
-          name: validation-junit-full-${{ github.run_id }}
-          path: validation-junit.xml
-          retention-days: 30
-          if-no-files-found: warn
-
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v5 # v7.0.1
-        if: always()
-        with:
-          name: validation-coverage-${{ github.run_id }}
-          path: coverage.xml
-          retention-days: 30
-          if-no-files-found: warn
-
-      - name: Generate coverage map and PR delta comment (P2B)
-        if: always() && github.event_name == 'pull_request' && hashFiles('coverage.xml') != ''
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          HEAD_MAP: ${{ runner.temp }}/head_coverage_map.json
-        run: |
-          set -euo pipefail
-          mkdir -p .codex/coverage
-          # Generate head coverage map from freshly produced coverage.xml
-          python scripts/ci/generate_coverage_map.py coverage.xml \
-            --output "${HEAD_MAP}" 2>/dev/null || true
-          if [ ! -f "${HEAD_MAP}" ]; then
-            echo "Coverage map generation skipped (no coverage.xml or script unavailable)"
-            exit 0
-          fi
-          # Update tracked location for future baseline comparisons
-          cp "${HEAD_MAP}" .codex/coverage/coverage_map.json
-          # If a committed base map already existed, generate delta against it;
-          # otherwise report this as the first run.
-          BASE_MAP_COMMITTED=".codex/coverage/coverage_map_base.json"
-          if [ -f "${BASE_MAP_COMMITTED}" ]; then
-            DELTA=$(python scripts/ci/generate_coverage_map.py \
-              --pr-delta "${BASE_MAP_COMMITTED}" "${HEAD_MAP}" 2>/dev/null || echo "")
-          else
-            DELTA="_(No base map available for delta comparison — first run.)_"
-          fi
-          # Post delta as PR comment if PR context is available
-          if [ -n "${PR_NUMBER}" ] && [ -n "${GH_TOKEN}" ]; then
-            MARKER="<!-- coverage-delta-pr-${PR_NUMBER} -->"
-            BODY_FILE="${RUNNER_TEMP}/coverage_delta_${PR_NUMBER}.txt"
-            printf '%s\n' \
-              "${MARKER}" \
-              "## 📊 PR Coverage Delta" \
-              "${DELTA:-_No delta data available._}" \
-              "_Generated by \`generate_coverage_map.py --pr-delta\` — [view run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})_" \
-              > "${BODY_FILE}"
-            EXISTING_ID=$(gh api \
-              "/repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments?per_page=100" \
-              --jq ".[] | select(.body | startswith(\"${MARKER}\")) | .id" 2>/dev/null | head -1 || echo "")
-            if [ -n "${EXISTING_ID}" ]; then
-              gh api --method PATCH \
-                "/repos/${GITHUB_REPOSITORY}/issues/comments/${EXISTING_ID}" \
-                --field "body=@${BODY_FILE}" 2>/dev/null || echo "⚠ Could not update coverage delta comment"
-            else
-              gh pr comment "${PR_NUMBER}" \
-                --repo "${GITHUB_REPOSITORY}" --body-file "${BODY_FILE}" 2>/dev/null || echo "⚠ Could not post coverage delta comment"
-            fi
-          fi
-
-      - name: Upload JSON summary
-        uses: actions/upload-artifact@v5 # v7.0.1
-        if: always()
-        with:
-          name: validation-summary-full-${{ github.run_id }}
-          path: validation_summary.json
-          retention-days: 30
-          if-no-files-found: warn
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354
-        if: always()
-        continue-on-error: true   # CODECOV_TOKEN not required on non-protected branches; avoid blocking CI
-        with:
-          files: ./coverage.xml
-          flags: full-validation
-          name: full-validation-coverage
-          fail_ci_if_error: false
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        fetch-depth: 0
+    - name: Set up Python with shared cache
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        extras: dev
+    - name: Run full validation
+      env:
+        PYTEST_OPTS: ${{ github.event.inputs.pytest_opts || '' }}
+      run: "chmod +x scripts/run_validation.sh\npython tools/validate.py \\\n  --mode\
+        \ full \\\n  --output validation_summary.json\n"
+    - name: Emit pre-commit failure details to step summary
+      if: failure()
+      shell: bash
+      run: bash scripts/ci/emit_precommit_summary.sh validation.log "validation-log-full-${{
+        github.run_id }}"
+    - name: Upload hook failures JSON (OBJ-001-F)
+      uses: actions/upload-artifact@v5
+      if: failure()
+      with:
+        name: hook-failures-full-${{ github.run_id }}
+        path: hook_failures.json
+        retention-days: 30
+        if-no-files-found: warn
+    - name: Upload validation log (full)
+      uses: actions/upload-artifact@v5
+      if: always()
+      with:
+        name: validation-log-full-${{ github.run_id }}
+        path: validation.log
+        retention-days: 30
+        if-no-files-found: warn
+    - name: Upload JUnit XML
+      uses: actions/upload-artifact@v5
+      if: always()
+      with:
+        name: validation-junit-full-${{ github.run_id }}
+        path: validation-junit.xml
+        retention-days: 30
+        if-no-files-found: warn
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v5
+      if: always()
+      with:
+        name: validation-coverage-${{ github.run_id }}
+        path: coverage.xml
+        retention-days: 30
+        if-no-files-found: warn
+    - name: Generate coverage map and PR delta comment (P2B)
+      if: always() && github.event_name == 'pull_request' && hashFiles('coverage.xml')
+        != ''
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || github.token }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        HEAD_MAP: ${{ runner.temp }}/head_coverage_map.json
+      run: "set -euo pipefail\nmkdir -p .codex/coverage\n# Generate head coverage\
+        \ map from freshly produced coverage.xml\npython scripts/ci/generate_coverage_map.py\
+        \ coverage.xml \\\n  --output \"${HEAD_MAP}\" 2>/dev/null || true\nif [ !\
+        \ -f \"${HEAD_MAP}\" ]; then\n  echo \"Coverage map generation skipped (no\
+        \ coverage.xml or script unavailable)\"\n  exit 0\nfi\n# Update tracked location\
+        \ for future baseline comparisons\ncp \"${HEAD_MAP}\" .codex/coverage/coverage_map.json\n\
+        # If a committed base map already existed, generate delta against it;\n# otherwise\
+        \ report this as the first run.\nBASE_MAP_COMMITTED=\".codex/coverage/coverage_map_base.json\"\
+        \nif [ -f \"${BASE_MAP_COMMITTED}\" ]; then\n  DELTA=$(python scripts/ci/generate_coverage_map.py\
+        \ \\\n    --pr-delta \"${BASE_MAP_COMMITTED}\" \"${HEAD_MAP}\" 2>/dev/null\
+        \ || echo \"\")\nelse\n  DELTA=\"_(No base map available for delta comparison\
+        \ — first run.)_\"\nfi\n# Post delta as PR comment if PR context is available\n\
+        if [ -n \"${PR_NUMBER}\" ] && [ -n \"${GH_TOKEN}\" ]; then\n  MARKER=\"<!--\
+        \ coverage-delta-pr-${PR_NUMBER} -->\"\n  BODY_FILE=\"${RUNNER_TEMP}/coverage_delta_${PR_NUMBER}.txt\"\
+        \n  printf '%s\\n' \\\n    \"${MARKER}\" \\\n    \"## \U0001F4CA PR Coverage\
+        \ Delta\" \\\n    \"${DELTA:-_No delta data available._}\" \\\n    \"_Generated\
+        \ by \\`generate_coverage_map.py --pr-delta\\` — [view run](${{ github.server_url\
+        \ }}/${{ github.repository }}/actions/runs/${{ github.run_id }})_\" \\\n \
+        \   > \"${BODY_FILE}\"\n  EXISTING_ID=$(gh api \\\n    \"/repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments?per_page=100\"\
+        \ \\\n    --jq \".[] | select(.body | startswith(\\\"${MARKER}\\\")) | .id\"\
+        \ 2>/dev/null | head -1 || echo \"\")\n  if [ -n \"${EXISTING_ID}\" ]; then\n\
+        \    gh api --method PATCH \\\n      \"/repos/${GITHUB_REPOSITORY}/issues/comments/${EXISTING_ID}\"\
+        \ \\\n      --field \"body=@${BODY_FILE}\" 2>/dev/null || echo \"⚠ Could not\
+        \ update coverage delta comment\"\n  else\n    gh pr comment \"${PR_NUMBER}\"\
+        \ \\\n      --repo \"${GITHUB_REPOSITORY}\" --body-file \"${BODY_FILE}\" 2>/dev/null\
+        \ || echo \"⚠ Could not post coverage delta comment\"\n  fi\nfi\n"
+    - name: Upload JSON summary
+      uses: actions/upload-artifact@v5
+      if: always()
+      with:
+        name: validation-summary-full-${{ github.run_id }}
+        path: validation_summary.json
+        retention-days: 30
+        if-no-files-found: warn
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354
+      if: always()
+      continue-on-error: true
+      with:
+        files: ./coverage.xml
+        flags: full-validation
+        name: full-validation-coverage
+        fail_ci_if_error: false
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

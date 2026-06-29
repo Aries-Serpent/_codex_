@@ -1,125 +1,121 @@
-name: "Resilient Dependency Submission"
-
-# Resilient replacement for GitHub's `dynamic/dependency-graph/auto-submission`.
-# The GitHub-managed workflow fails with "An error occurred while processing your
-# request. Please try again later." (HTTP 503) when the dependency graph API is
-# temporarily unavailable (classified: infrastructure failure, 21% of CI failures).
-#
-# This workflow wraps advanced-security/component-detection-dependency-submission-action
-# with retry logic and continue-on-error so transient API errors don't block PRs.
-#
-# Root cause: GitHub dependency graph API intermittency — not a code defect.
-# Classified as: security-scan / dependency-submission pattern in collect_telemetry.py
-# Fixed in: S154 (PR #3628) — 2026-03-18
-# See: .codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md, ci-auto-healer-agent.md
-
-on:
+name: Resilient Dependency Submission
+true:
   push:
-    branches: [main, 'copilot/**', 'dependabot/**']
+    branches:
+    - main
+    - copilot/**
+    - dependabot/**
   pull_request:
-    # Include 0D_base_ so this workflow also runs on staging PRs (where
-    # CI/workflow changes land before promotion to main).
-    branches: [main, '0D_base_']
-  workflow_dispatch:
-
-
+    branches:
+    - main
+    - 0D_base_
+  workflow_dispatch: null
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
-  # Dependency snapshot submission only requires contents: read for checkout and
-  # the submission API call; no write access to repository contents is needed.
   contents: read
   security-events: write
-
 jobs:
   submit-dependencies:
-    name: "Submit dependency snapshot"
+    name: Submit dependency snapshot
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          fetch-depth: 1
+    - name: Checkout
+      uses: actions/checkout@v7
+      with:
+        fetch-depth: 1
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        cache: pip
+        python-version: 3.12.13
+    - name: Submit via component-detection (attempt 1, with retry)
+      id: submit_component
+      continue-on-error: true
+      uses: advanced-security/component-detection-dependency-submission-action@b876b8cc341a53970394b33ea0ca4e86c25542de
+      with:
+        scanDirectory: .
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+    - name: Handle submission failure (infrastructure failure — allow workflow to
+        pass)
+      if: steps.submit_component.outcome == 'failure'
+      run: 'echo "⚠️ Dependency submission failed (likely transient GitHub API error)."
 
-      - name: Set up Python
-        uses: actions/setup-python@v6 # v6
-        with:
-          cache: pip
-          python-version: '3.12.13'
+        echo "This is classified as a GitHub infrastructure failure (21% of CI failures)."
 
-      - name: Submit via component-detection (attempt 1, with retry)
-        # Pin to a specific release SHA for supply-chain safety.
-        # To update: check https://github.com/advanced-security/component-detection-dependency-submission-action/releases
-        id: submit_component
-        continue-on-error: true
-        uses: advanced-security/component-detection-dependency-submission-action@b876b8cc341a53970394b33ea0ca4e86c25542de  # v0.1.3
-        with:
-          scanDirectory: '.'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        echo "The failure does NOT indicate a code defect in this repository."
 
-      - name: Handle submission failure (infrastructure failure — allow workflow to pass)
-        # This step does NOT retry; it logs a structured explanation and exits 0.
-        # Retrying here would not help: the GitHub dependency graph API returns HTTP 503
-        # intermittently due to backend capacity issues unrelated to this repository.
-        # The component-detection action's own internal retry logic already handles
-        # transient network-level failures. If it exits non-zero, the error is an
-        # infrastructure issue — we surface it in the step summary and continue.
-        if: steps.submit_component.outcome == 'failure'
-        run: |
-          echo "⚠️ Dependency submission failed (likely transient GitHub API error)."
-          echo "This is classified as a GitHub infrastructure failure (21% of CI failures)."
-          echo "The failure does NOT indicate a code defect in this repository."
-          echo ""
-          echo "Root cause: GitHub dependency graph API returns HTTP 503 intermittently."
-          echo "Classified: security-scan / dependency-submission pattern"
-          echo "Resolution: The next scheduled run or push will re-attempt submission."
-          echo ""
-          echo "### ⚠️ Dependency Submission" >> "$GITHUB_STEP_SUMMARY"
-          echo "Submission attempt failed — likely transient GitHub API error." >> "$GITHUB_STEP_SUMMARY"
-          echo "This does NOT indicate a code defect. See [GitHub Status](https://githubstatus.com)." >> "$GITHUB_STEP_SUMMARY"
-          # Exit 0: infrastructure intermittency should not block the PR
-          exit 0
+        echo ""
 
-      - name: Report success
-        if: steps.submit_component.outcome == 'success'
-        run: |
-          echo "✅ Dependency snapshot submitted successfully."
-          echo "### ✅ Dependency Submission" >> "$GITHUB_STEP_SUMMARY"
-          echo "Snapshot submitted to GitHub dependency graph." >> "$GITHUB_STEP_SUMMARY"
+        echo "Root cause: GitHub dependency graph API returns HTTP 503 intermittently."
 
-  # ── rescue comment — posted on PR whenever this workflow fails ──────────
+        echo "Classified: security-scan / dependency-submission pattern"
+
+        echo "Resolution: The next scheduled run or push will re-attempt submission."
+
+        echo ""
+
+        echo "### ⚠️ Dependency Submission" >> "$GITHUB_STEP_SUMMARY"
+
+        echo "Submission attempt failed — likely transient GitHub API error." >> "$GITHUB_STEP_SUMMARY"
+
+        echo "This does NOT indicate a code defect. See [GitHub Status](https://githubstatus.com)."
+        >> "$GITHUB_STEP_SUMMARY"
+
+        # Exit 0: infrastructure intermittency should not block the PR
+
+        exit 0
+
+        '
+    - name: Report success
+      if: steps.submit_component.outcome == 'success'
+      run: 'echo "✅ Dependency snapshot submitted successfully."
+
+        echo "### ✅ Dependency Submission" >> "$GITHUB_STEP_SUMMARY"
+
+        echo "Snapshot submitted to GitHub dependency graph." >> "$GITHUB_STEP_SUMMARY"
+
+        '
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
     needs: submit-dependencies
-    if: |
-      failure() &&
-      github.event_name == 'pull_request' &&
+    if: 'failure() &&
+
+      github.event_name == ''pull_request'' &&
+
       github.event.pull_request.head.repo.full_name == github.repository
+
+      '
     permissions:
       pull-requests: write
       issues: write
     timeout-minutes: 5
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          fetch-depth: 1
-
-      - name: Post or update rescue comment
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_NAME: "Dependency Submission"
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          BRANCH: ${{ github.head_ref }}
-        run: python scripts/ci/post_rescue_comment.py
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        token: ${{ secrets.CODEX_MASTER_KEY || github.token }}
+        fetch-depth: 1
+    - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: Dependency Submission
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+        BRANCH: ${{ github.head_ref }}
+      run: python scripts/ci/post_rescue_comment.py
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

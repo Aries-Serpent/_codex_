@@ -1,240 +1,185 @@
-# CodeQL Analysis Workflow
-# This is the organization-recommended default configuration
-
-name: "CodeQL"
-
-on:
+name: CodeQL
+true:
   push:
-    branches: [main, develop, '0D_base_', 'copilot/**']
+    branches:
+    - main
+    - develop
+    - 0D_base_
+    - copilot/**
   pull_request:
-    branches: [main, develop, '0D_base_', 'copilot/**']
+    branches:
+    - main
+    - develop
+    - 0D_base_
+    - copilot/**
   schedule:
-    # Thursday 03:00 UTC — staggered from codeql.yml (Monday 03:00) to
-    # avoid concurrent GHAS upload contention (RL-2c rate-limit hardening).
-    - cron: '0 3 * * 4'
-  workflow_dispatch:
-
-
+  - cron: 0 3 * * 4
+  workflow_dispatch: null
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   security-events: write
   actions: read
-
 jobs:
   analyze:
     name: Analyze
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    # javascript/typescript: repo has no JS source; allow this matrix leg to fail without
-    # blocking the overall workflow (python and go must still pass).
-    # Dependabot PRs: make CodeQL advisory-only so dependency-update PRs are not blocked
-    # when default Code Scanning setup is enabled on the repository.
-    continue-on-error: ${{ matrix.language == 'javascript' || github.actor == 'dependabot[bot]' }}
-
+    continue-on-error: ${{ matrix.language == 'javascript' || github.actor == 'dependabot[bot]'
+      }}
     permissions:
       actions: read
       contents: read
       security-events: write
-
     strategy:
       fail-fast: false
       matrix:
-        # CodeQL treats TypeScript as part of 'javascript' — no separate 'typescript' entry needed
-        # Go code exists in tools/github-secrets-cli/ — DRQ-S105-002: add go to resolve
-        # "N configurations not found" GHAS check (research: github.com/orgs/community/discussions/121836)
-        language: ['python', 'javascript', 'go']
-
+        language:
+        - python
+        - javascript
+        - go
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
+    - name: Checkout repository
+      uses: actions/checkout@v7
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@5e316336eb4f107009e477d4bfbfff13d7250fae
+      with:
+        languages: ${{ matrix.language }}
+        queries: +security-extended
+        config-file: .codeql/codeql-config.yml
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@5e316336eb4f107009e477d4bfbfff13d7250fae
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@5e316336eb4f107009e477d4bfbfff13d7250fae
+      with:
+        category: /language:${{ matrix.language }}
+        upload: never
+        output: codeql-sarif/${{ matrix.language }}
+    - name: Upload CodeQL SARIF artifact
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: codeql-sarif-${{ matrix.language }}
+        path: codeql-sarif/${{ matrix.language }}
+        if-no-files-found: warn
+    - name: Cache health report
+      if: always()
+      continue-on-error: true
+      run: 'python scripts/ci/generate_cache_keys.py --type pip --workflow codeql-analysis
+        --health 2>/dev/null || echo ''{"status": "cache health check skipped"}''
 
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@5e316336eb4f107009e477d4bfbfff13d7250fae # v4
-        with:
-          languages: ${{ matrix.language }}
-          # Use default queries plus security-extended
-          queries: +security-extended
-          config-file: .codeql/codeql-config.yml
-
-      # Autobuild for compiled languages
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@5e316336eb4f107009e477d4bfbfff13d7250fae # v4
-
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@5e316336eb4f107009e477d4bfbfff13d7250fae # v4
-        with:
-          category: "/language:${{ matrix.language }}"
-          # FIX (issue #4835): upload: false (boolean) does NOT suppress SARIF upload
-          # in CodeQL action v4.35.4+. The string value 'never' must be used instead.
-          # Using 'false' caused "CodeQL analyses from advanced configurations cannot
-          # be processed when the default setup is enabled" → JOB_STATUS_CONFIGURATION_ERROR.
-          upload: 'never'
-          output: "codeql-sarif/${{ matrix.language }}"
-
-      - name: Upload CodeQL SARIF artifact
-        if: always()
-        uses: actions/upload-artifact@v5 # v4.3.3
-        with:
-          name: codeql-sarif-${{ matrix.language }}
-          path: codeql-sarif/${{ matrix.language }}
-          if-no-files-found: warn
-
-      - name: Cache health report
-        if: always()
-        continue-on-error: true
-        run: |
-          python scripts/ci/generate_cache_keys.py --type pip --workflow codeql-analysis --health 2>/dev/null || echo '{"status": "cache health check skipped"}'
-
-  # ── post-codeql auto-approve ────────────────────────────────────────────────
-  # WHY THIS JOB EXISTS (S269):
-  #   `workflow_run` event listeners always execute from the DEFAULT BRANCH (main).
-  #   Therefore, S268 changes to copilot-agent-session-done.yml (which add "CodeQL"
-  #   to its workflow_run trigger list) are INACTIVE until that PR merges to main.
-  #
-  #   In the interim, this job provides the same effect from the PR branch:
-  #   When CodeQL completes, any pending workflow runs (including copilot-agent-session-done.yml
-  #   runs stuck in `action_required` state) are automatically approved — provided the
-  #   WEC checkbox `- [x] copilot-agent-session-done.yml` or `- [x] auto-approve-workflows`
-  #   is checked, constituting maintainer pre-approval.
-  #
-  #   This breaks the circular "awaiting approval from a maintainer" loop without
-  #   requiring human intervention after every Copilot agent push.
+        '
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   post-codeql-auto-approve:
-    name: "⚡ Auto-approve pending runs after CodeQL (WEC pre-approval)"
+    name: "\u26A1 Auto-approve pending runs after CodeQL (WEC pre-approval)"
     runs-on: ubuntu-latest
     needs: analyze
-    # Run after CodeQL regardless of success/failure, but only on PRs in this repo.
-    if: |
-      always() &&
-      github.event_name == 'pull_request' &&
+    if: 'always() &&
+
+      github.event_name == ''pull_request'' &&
+
       github.event.pull_request.head.repo.full_name == github.repository
+
+      '
     permissions:
       actions: write
       pull-requests: read
     timeout-minutes: 5
     steps:
-      - name: "Approve pending runs when WEC copilot-agent-session-done OR auto-approve-workflows is checked"
-        env:
-          # CODEX_MASTER_KEY / CODEX_BACKUP_KEY carry the `actions: write` scope needed to
-          # approve workflow runs via POST /repos/{owner}/{repo}/actions/runs/{run_id}/approve.
-          # github.token is listed last as a no-op fallback (it lacks actions:write in most
-          # configurations). If both secrets are absent the step logs a warning and exits 0
-          # so a missing secret never blocks the CodeQL job result.
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-        run: |
-          set -euo pipefail
-
-          if [ -z "${PR_NUMBER}" ]; then
-            echo "No PR number — skipping post-CodeQL auto-approve."
-            exit 0
-          fi
-
-          # Validate that the token has the actions:write scope by attempting a
-          # lightweight API call.  If it fails (e.g. only github.token available with
-          # no actions permission), warn and exit cleanly — never fail the CodeQL result.
-          if ! gh api "repos/${REPO}/actions/runs?per_page=1" --silent 2>/dev/null; then
-            echo "⚠️  GH_TOKEN lacks actions:read/write — cannot approve pending runs. Ensure CODEX_MASTER_KEY or CODEX_BACKUP_KEY is set."
-            exit 0
-          fi
-
-          # Check WEC checkboxes for pre-approval signal.
-          # Either `- [x] copilot-agent-session-done.yml` (WEC pre-approval) or
-          # `- [x] auto-approve-workflows` (explicit approval) authorises auto-approve.
-          PR_BODY=$(gh pr view "${PR_NUMBER}" \
-            --repo "${REPO}" \
-            --json body -q '.body // ""' 2>/dev/null || echo "")
-
-          SESSION_DONE_CHECKED=0
-          AUTO_APPROVE_CHECKED=0
-          printf '%s' "$PR_BODY" | grep -qiE '^\-\s*\[x\]\s*copilot-agent-session-done\.yml' \
-            && SESSION_DONE_CHECKED=1 || true
-          printf '%s' "$PR_BODY" | grep -qiE '^\-\s*\[x\]\s*auto-approve-workflows' \
-            && AUTO_APPROVE_CHECKED=1 || true
-
-          if [ "$SESSION_DONE_CHECKED" = "0" ] && [ "$AUTO_APPROVE_CHECKED" = "0" ]; then
-            echo "Neither WEC checkbox is checked — skipping post-CodeQL auto-approve."
-            exit 0
-          fi
-
-          echo "⚡ WEC pre-approval detected — approving action_required runs for SHA ${HEAD_SHA:0:12}..."
-
-          # ── Query 1: direct push/PR runs matching this PR's head SHA ──────────
-          PENDING_BY_SHA=$(gh api \
-            "repos/${REPO}/actions/runs?head_sha=${HEAD_SHA}&status=action_required&per_page=100" \
-            --jq '.workflow_runs[].id' 2>/dev/null || echo "")
-
-          # ── Query 2: workflow_run-triggered runs (CI rescue, session-done) ────
-          # These run from the DEFAULT BRANCH (main), so their head_sha is the
-          # main branch SHA — not the PR head SHA. They cannot be found by Query 1.
-          # Per user requirement: head_sha is used as identifier; when Run ID does
-          # not align with the PR head SHA, fall back to event=workflow_run query.
-          # Filter to runs created in the last 60 minutes to cover high-load queue delays.
-          PENDING_BY_WFR=$(gh api \
-            "repos/${REPO}/actions/runs?event=workflow_run&status=action_required&per_page=100" \
-            --jq '.workflow_runs[] | select(.created_at | fromdateiso8601 > (now - 3600)) | .id' \
-            2>/dev/null || echo "")
-
-          # Combine both sets, deduplicate, remove blank/whitespace-only lines
-          PENDING_RUNS=$(printf "%s\n%s\n" "$PENDING_BY_SHA" "$PENDING_BY_WFR" \
-            | sort -u | grep -v '^[[:space:]]*$' || echo "")
-
-          if [ -z "$PENDING_RUNS" ]; then
-            echo "✅ No pending workflow runs requiring approval (SHA ${HEAD_SHA:0:12} + workflow_run event)."
-            exit 0
-          fi
-
-          APPROVED=0
-          while IFS= read -r RUN_ID; do
-            [ -z "$RUN_ID" ] && continue
-            RUN_INFO=$(gh api "repos/${REPO}/actions/runs/${RUN_ID}" \
-              --jq '"\(.name // "unknown") (head_sha: \(.head_sha[:12]))"' \
-              2>/dev/null || echo "error: failed to fetch run info")
-            if gh api --method POST "repos/${REPO}/actions/runs/${RUN_ID}/approve" \
-              --silent 2>/dev/null; then
-              echo "  ✅ Approved run #${RUN_ID} — ${RUN_INFO}"
-              APPROVED=$((APPROVED + 1))
-            else
-              echo "  ⚠️  Could not approve run #${RUN_ID} — ${RUN_INFO} (may already be approved)"
-            fi
-          done <<< "$PENDING_RUNS"
-
-          echo "✅ post-CodeQL auto-approve: approved ${APPROVED} pending run(s) (PR SHA ${HEAD_SHA:0:12} + workflow_run fallback)."
-
-  # ── rescue comment — posted on PR whenever CodeQL analysis fails ────────────
+    - name: Approve pending runs when WEC copilot-agent-session-done OR auto-approve-workflows
+        is checked
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+      run: "set -euo pipefail\n\nif [ -z \"${PR_NUMBER}\" ]; then\n  echo \"No PR\
+        \ number \u2014 skipping post-CodeQL auto-approve.\"\n  exit 0\nfi\n\n# Validate\
+        \ that the token has the actions:write scope by attempting a\n# lightweight\
+        \ API call.  If it fails (e.g. only github.token available with\n# no actions\
+        \ permission), warn and exit cleanly \u2014 never fail the CodeQL result.\n\
+        if ! gh api \"repos/${REPO}/actions/runs?per_page=1\" --silent 2>/dev/null;\
+        \ then\n  echo \"\u26A0\uFE0F  GH_TOKEN lacks actions:read/write \u2014 cannot\
+        \ approve pending runs. Ensure CODEX_MASTER_KEY or CODEX_BACKUP_KEY is set.\"\
+        \n  exit 0\nfi\n\n# Check WEC checkboxes for pre-approval signal.\n# Either\
+        \ `- [x] copilot-agent-session-done.yml` (WEC pre-approval) or\n# `- [x] auto-approve-workflows`\
+        \ (explicit approval) authorises auto-approve.\nPR_BODY=$(gh pr view \"${PR_NUMBER}\"\
+        \ \\\n  --repo \"${REPO}\" \\\n  --json body -q '.body // \"\"' 2>/dev/null\
+        \ || echo \"\")\n\nSESSION_DONE_CHECKED=0\nAUTO_APPROVE_CHECKED=0\nprintf\
+        \ '%s' \"$PR_BODY\" | grep -qiE '^\\-\\s*\\[x\\]\\s*copilot-agent-session-done\\\
+        .yml' \\\n  && SESSION_DONE_CHECKED=1 || true\nprintf '%s' \"$PR_BODY\" |\
+        \ grep -qiE '^\\-\\s*\\[x\\]\\s*auto-approve-workflows' \\\n  && AUTO_APPROVE_CHECKED=1\
+        \ || true\n\nif [ \"$SESSION_DONE_CHECKED\" = \"0\" ] && [ \"$AUTO_APPROVE_CHECKED\"\
+        \ = \"0\" ]; then\n  echo \"Neither WEC checkbox is checked \u2014 skipping\
+        \ post-CodeQL auto-approve.\"\n  exit 0\nfi\n\necho \"\u26A1 WEC pre-approval\
+        \ detected \u2014 approving action_required runs for SHA ${HEAD_SHA:0:12}...\"\
+        \n\n# \u2500\u2500 Query 1: direct push/PR runs matching this PR's head SHA\
+        \ \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nPENDING_BY_SHA=$(gh\
+        \ api \\\n  \"repos/${REPO}/actions/runs?head_sha=${HEAD_SHA}&status=action_required&per_page=100\"\
+        \ \\\n  --jq '.workflow_runs[].id' 2>/dev/null || echo \"\")\n\n# \u2500\u2500\
+        \ Query 2: workflow_run-triggered runs (CI rescue, session-done) \u2500\u2500\
+        \u2500\u2500\n# These run from the DEFAULT BRANCH (main), so their head_sha\
+        \ is the\n# main branch SHA \u2014 not the PR head SHA. They cannot be found\
+        \ by Query 1.\n# Per user requirement: head_sha is used as identifier; when\
+        \ Run ID does\n# not align with the PR head SHA, fall back to event=workflow_run\
+        \ query.\n# Filter to runs created in the last 60 minutes to cover high-load\
+        \ queue delays.\nPENDING_BY_WFR=$(gh api \\\n  \"repos/${REPO}/actions/runs?event=workflow_run&status=action_required&per_page=100\"\
+        \ \\\n  --jq '.workflow_runs[] | select(.created_at | fromdateiso8601 > (now\
+        \ - 3600)) | .id' \\\n  2>/dev/null || echo \"\")\n\n# Combine both sets,\
+        \ deduplicate, remove blank/whitespace-only lines\nPENDING_RUNS=$(printf \"\
+        %s\\n%s\\n\" \"$PENDING_BY_SHA\" \"$PENDING_BY_WFR\" \\\n  | sort -u | grep\
+        \ -v '^[[:space:]]*$' || echo \"\")\n\nif [ -z \"$PENDING_RUNS\" ]; then\n\
+        \  echo \"\u2705 No pending workflow runs requiring approval (SHA ${HEAD_SHA:0:12}\
+        \ + workflow_run event).\"\n  exit 0\nfi\n\nAPPROVED=0\nwhile IFS= read -r\
+        \ RUN_ID; do\n  [ -z \"$RUN_ID\" ] && continue\n  RUN_INFO=$(gh api \"repos/${REPO}/actions/runs/${RUN_ID}\"\
+        \ \\\n    --jq '\"\\(.name // \"unknown\") (head_sha: \\(.head_sha[:12]))\"\
+        ' \\\n    2>/dev/null || echo \"error: failed to fetch run info\")\n  if gh\
+        \ api --method POST \"repos/${REPO}/actions/runs/${RUN_ID}/approve\" \\\n\
+        \    --silent 2>/dev/null; then\n    echo \"  \u2705 Approved run #${RUN_ID}\
+        \ \u2014 ${RUN_INFO}\"\n    APPROVED=$((APPROVED + 1))\n  else\n    echo \"\
+        \  \u26A0\uFE0F  Could not approve run #${RUN_ID} \u2014 ${RUN_INFO} (may\
+        \ already be approved)\"\n  fi\ndone <<< \"$PENDING_RUNS\"\n\necho \"\u2705\
+        \ post-CodeQL auto-approve: approved ${APPROVED} pending run(s) (PR SHA ${HEAD_SHA:0:12}\
+        \ + workflow_run fallback).\"\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   rescue-comment:
     name: Post rescue comment on CodeQL failure
     runs-on: ubuntu-latest
     needs: analyze
-    if: |
-      failure() &&
-      github.event_name == 'pull_request' &&
+    if: 'failure() &&
+
+      github.event_name == ''pull_request'' &&
+
       github.event.pull_request.head.repo.full_name == github.repository
+
+      '
     permissions:
       pull-requests: write
       issues: write
     timeout-minutes: 5
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          fetch-depth: 1
-
-      - name: Post or update rescue comment
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_NAME: "CodeQL"
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          BRANCH: ${{ github.head_ref }}
-        run: python scripts/ci/post_rescue_comment.py
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        fetch-depth: 1
+    - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: CodeQL
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+        BRANCH: ${{ github.head_ref }}
+      run: python scripts/ci/post_rescue_comment.py
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

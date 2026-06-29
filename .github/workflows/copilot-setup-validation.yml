@@ -1,357 +1,209 @@
 name: Copilot Setup Steps Validation
-
-on:
+true:
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
+    types:
+    - opened
+    - synchronize
+    - reopened
+    - ready_for_review
     paths:
-      - '.github/workflows/copilot-setup-steps.yml'
+    - .github/workflows/copilot-setup-steps.yml
   push:
     branches:
-      - main
+    - main
     paths:
-      - '.github/workflows/copilot-setup-steps.yml'
-  workflow_dispatch:
-
+    - .github/workflows/copilot-setup-steps.yml
+  workflow_dispatch: null
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   pull-requests: write
   checks: write
-
 jobs:
   validate-copilot-setup:
     name: Copilot Setup Validation
     runs-on: ubuntu-latest
     timeout-minutes: 15
-
     permissions:
       contents: read
       pull-requests: write
       checks: write
-
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
+    - name: Checkout Repository
+      uses: actions/checkout@v7
+      with:
+        fetch-depth: 0
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: 3.12.13
+    - name: Install dependencies
+      run: 'python -m pip install --upgrade pip
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.12.13'
+        pip install pyyaml yamllint
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pyyaml yamllint
+        '
+    - name: Run Core Validation Tests
+      id: core_validation
+      run: "echo \"Running core validation tests...\"\npython scripts/ci/validate_copilot_setup_steps.py\
+        \ \\\n  --json-output /tmp/core_validation.json \\\n  --repo-root .\n"
+      continue-on-error: true
+    - name: Run Integration Tests
+      id: integration_tests
+      run: "echo \"Running integration dependency tests...\"\npython scripts/ci/validate_copilot_dependencies.py\
+        \ \\\n  --json-output /tmp/integration_tests.json \\\n  --repo-root .\n"
+      continue-on-error: true
+    - name: Run Security Tests
+      id: security_tests
+      run: "echo \"Running security and secrets validation...\"\npython scripts/ci/validate_copilot_security.py\
+        \ \\\n  --json-output /tmp/security_tests.json \\\n  --repo-root .\n"
+      continue-on-error: true
+    - name: Run Legacy Shell Validation
+      id: legacy_shell_validation
+      run: 'echo "Running legacy shell-based validation..."
 
-      - name: Run Core Validation Tests
-        id: core_validation
-        run: |
-          echo "Running core validation tests..."
-          python scripts/ci/validate_copilot_setup_steps.py \
-            --json-output /tmp/core_validation.json \
-            --repo-root .
-        continue-on-error: true
+        bash scripts/ci/validate_setup_steps_yaml.sh
 
-      - name: Run Integration Tests
-        id: integration_tests
-        run: |
-          echo "Running integration dependency tests..."
-          python scripts/ci/validate_copilot_dependencies.py \
-            --json-output /tmp/integration_tests.json \
-            --repo-root .
-        continue-on-error: true
+        '
+      continue-on-error: true
+    - name: Aggregate Results
+      id: aggregate
+      run: "echo \"Aggregating validation results...\"\n\n# Load test results\nif\
+        \ [ -f /tmp/core_validation.json ]; then\n  CORE_PASSED=$(jq -r '.passed'\
+        \ /tmp/core_validation.json)\n  CORE_TOTAL=$(jq -r '.total' /tmp/core_validation.json)\n\
+        \  CORE_FAILED=$(jq -r '.failed' /tmp/core_validation.json)\nelse\n  CORE_PASSED=0\n\
+        \  CORE_TOTAL=0\n  CORE_FAILED=0\nfi\n\nif [ -f /tmp/integration_tests.json\
+        \ ]; then\n  INT_PASSED=$(jq -r '.passed' /tmp/integration_tests.json)\n \
+        \ INT_TOTAL=$(jq -r '.total' /tmp/integration_tests.json)\n  INT_FAILED=$(jq\
+        \ -r '.failed' /tmp/integration_tests.json)\nelse\n  INT_PASSED=0\n  INT_TOTAL=0\n\
+        \  INT_FAILED=0\nfi\n\nif [ -f /tmp/security_tests.json ]; then\n  SEC_PASSED=$(jq\
+        \ -r '.passed' /tmp/security_tests.json)\n  SEC_TOTAL=$(jq -r '.total' /tmp/security_tests.json)\n\
+        \  SEC_FAILED=$(jq -r '.failed' /tmp/security_tests.json)\nelse\n  SEC_PASSED=0\n\
+        \  SEC_TOTAL=0\n  SEC_FAILED=0\nfi\n\nTOTAL_PASSED=$((CORE_PASSED + INT_PASSED\
+        \ + SEC_PASSED))\nTOTAL_TESTS=$((CORE_TOTAL + INT_TOTAL + SEC_TOTAL))\nTOTAL_FAILED=$((CORE_FAILED\
+        \ + INT_FAILED + SEC_FAILED))\n\necho \"TOTAL_PASSED=$TOTAL_PASSED\" >> \"\
+        $GITHUB_ENV\"\necho \"TOTAL_TESTS=$TOTAL_TESTS\" >> \"$GITHUB_ENV\"\necho\
+        \ \"TOTAL_FAILED=$TOTAL_FAILED\" >> \"$GITHUB_ENV\"\n\nif [ \"$TOTAL_FAILED\"\
+        \ -gt 0 ]; then\n  echo \"validation_status=failed\" >> \"$GITHUB_OUTPUT\"\
+        \n  exit 1\nelse\n  echo \"validation_status=passed\" >> \"$GITHUB_OUTPUT\"\
+        \n  exit 0\nfi\n"
+      continue-on-error: true
+    - name: Create Check Run (Core Validation)
+      if: always()
+      uses: actions/github-script@v8
+      with:
+        script: "const fs = require('fs');\n\nlet annotation_level = 'notice';\nlet\
+          \ title = '✅ Core Validation Passed';\nlet summary = 'All core validation\
+          \ tests passed.';\n\nif (fs.existsSync('/tmp/core_validation.json')) {\n\
+          \  const results = JSON.parse(fs.readFileSync('/tmp/core_validation.json',\
+          \ 'utf8'));\n  if (results.failed > 0) {\n    annotation_level = 'failure';\n\
+          \    title = '❌ Core Validation Failed';\n  }\n  summary = `${results.passed}/${results.total}\
+          \ tests passed`;\n\n  // Add annotations for failed tests\n  if (results.failed\
+          \ > 0) {\n    results.results\n      .filter(r => !r.passed && r.severity\
+          \ === 'error')\n      .slice(0, 10)\n      .forEach(r => {\n        core.setFailed(`Core\
+          \ Validation: ${r.name} — ${r.message}`);\n      });\n  }\n}\n\nconsole.log(`${title}:\
+          \ ${summary}`);\n"
+    - name: Create Check Run (Integration Tests)
+      if: always()
+      uses: actions/github-script@v8
+      with:
+        script: "const fs = require('fs');\n\nlet annotation_level = 'notice';\nlet\
+          \ title = '✅ Integration Tests Passed';\nlet summary = 'All integration\
+          \ tests passed.';\n\nif (fs.existsSync('/tmp/integration_tests.json')) {\n\
+          \  const results = JSON.parse(fs.readFileSync('/tmp/integration_tests.json',\
+          \ 'utf8'));\n  if (results.failed > 0) {\n    annotation_level = 'failure';\n\
+          \    title = '❌ Integration Tests Failed';\n  }\n  summary = `${results.passed}/${results.total}\
+          \ tests passed`;\n\n  // Add annotations for failed tests\n  if (results.failed\
+          \ > 0) {\n    results.results\n      .filter(r => !r.passed && r.severity\
+          \ === 'error')\n      .slice(0, 10)\n      .forEach(r => {\n        core.setFailed(`Integration:\
+          \ ${r.name} — ${r.message}`);\n      });\n  }\n}\n\nconsole.log(`${title}:\
+          \ ${summary}`);\n"
+    - name: Create Check Run (Security Tests)
+      if: always()
+      uses: actions/github-script@v8
+      with:
+        script: "const fs = require('fs');\n\nlet annotation_level = 'notice';\nlet\
+          \ title = '✅ Security Tests Passed';\nlet summary = 'All security tests\
+          \ passed.';\n\nif (fs.existsSync('/tmp/security_tests.json')) {\n  const\
+          \ results = JSON.parse(fs.readFileSync('/tmp/security_tests.json', 'utf8'));\n\
+          \  if (results.failed > 0) {\n    annotation_level = 'failure';\n    title\
+          \ = '❌ Security Tests Failed';\n  }\n  summary = `${results.passed}/${results.total}\
+          \ tests passed`;\n\n  // Add annotations for failed tests\n  if (results.failed\
+          \ > 0) {\n    results.results\n      .filter(r => !r.passed && r.severity\
+          \ === 'error')\n      .slice(0, 10)\n      .forEach(r => {\n        core.setFailed(`Security:\
+          \ ${r.name} — ${r.message}`);\n      });\n  }\n}\n\nconsole.log(`${title}:\
+          \ ${summary}`);\n"
+    - name: Post Summary Comment (if PR)
+      if: always() && github.event_name == 'pull_request'
+      uses: actions/github-script@v8
+      with:
+        github-token: ${{ github.token }}
+        script: "const fs = require('fs');\n\nlet markdown = '## \U0001F916 Copilot\
+          \ Setup Steps Validation\\n\\n';\nmarkdown += '### Test Results\\n\\n';\n\
+          \nlet totalPassed = 0, totalTests = 0, totalFailed = 0;\n\n// Core validation\n\
+          if (fs.existsSync('/tmp/core_validation.json')) {\n  const results = JSON.parse(fs.readFileSync('/tmp/core_validation.json',\
+          \ 'utf8'));\n  const status = results.failed === 0 ? '✅' : '❌';\n  markdown\
+          \ += `| Phase | Status | Result |\\n`;\n  markdown += `|-------|--------|--------|\\\
+          n`;\n  markdown += `| Core Validation | ${status} | ${results.passed}/${results.total}\
+          \ passed |\\n`;\n  totalPassed += results.passed;\n  totalTests += results.total;\n\
+          \  totalFailed += results.failed;\n}\n\n// Integration tests\nif (fs.existsSync('/tmp/integration_tests.json'))\
+          \ {\n  const results = JSON.parse(fs.readFileSync('/tmp/integration_tests.json',\
+          \ 'utf8'));\n  const status = results.failed === 0 ? '✅' : '❌';\n  markdown\
+          \ += `| Integration | ${status} | ${results.passed}/${results.total} passed\
+          \ |\\n`;\n  totalPassed += results.passed;\n  totalTests += results.total;\n\
+          \  totalFailed += results.failed;\n}\n\n// Security tests\nif (fs.existsSync('/tmp/security_tests.json'))\
+          \ {\n  const results = JSON.parse(fs.readFileSync('/tmp/security_tests.json',\
+          \ 'utf8'));\n  const status = results.failed === 0 ? '✅' : '❌';\n  markdown\
+          \ += `| Security | ${status} | ${results.passed}/${results.total} passed\
+          \ |\\n`;\n  totalPassed += results.passed;\n  totalTests += results.total;\n\
+          \  totalFailed += results.failed;\n}\n\nmarkdown += `\\n### Summary\\n`;\n\
+          markdown += `**Total: ${totalPassed}/${totalTests} tests passed**\\n`;\n\
+          \nif (totalFailed > 0) {\n  markdown += `\\n⚠️ **${totalFailed} test(s)\
+          \ failed** — see details above.\\n`;\n} else {\n  markdown += `\\n✅ **All\
+          \ validation tests passed!**\\n`;\n}\n\nmarkdown += `\\n### Merge Gates\\\
+          n`;\nmarkdown += `- ${totalFailed === 0 ? '✅' : '❌'} All automated tests\
+          \ pass\\n`;\nmarkdown += `- ⏳ All 3 CCA variables present (validated by\
+          \ tests)\\n`;\nmarkdown += `- ⏳ All 5 dependent workflows validate (validated\
+          \ by tests)\\n`;\nmarkdown += `- ${totalFailed === 0 ? '✅' : '❌'} Security/secrets\
+          \ tests pass\\n`;\nmarkdown += `- ⏳ File size within acceptable range (validated\
+          \ by tests)\\n`;\nmarkdown += `- ⏳ At least 1 human reviewer approval\\\
+          n`;\n\n// Post or update comment\nconst { data: comments } = await github.rest.issues.listComments({\n\
+          \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  issue_number:\
+          \ context.issue.number,\n});\n\nconst botComment = comments.find(comment\
+          \ =>\n  comment.user.type === 'Bot' && comment.body.includes('Copilot Setup\
+          \ Steps Validation')\n);\n\nif (botComment) {\n  await github.rest.issues.updateComment({\n\
+          \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    comment_id:\
+          \ botComment.id,\n    body: markdown\n  });\n} else {\n  await github.rest.issues.createComment({\n\
+          \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    issue_number:\
+          \ context.issue.number,\n    body: markdown\n  });\n}\n"
+    - name: Block Merge on Failures
+      if: failure() && github.event_name == 'pull_request'
+      uses: actions/github-script@v8
+      with:
+        script: "// Request changes if critical tests failed\nawait github.rest.pulls.createReview({\n\
+          \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  pull_number:\
+          \ context.issue.number,\n  event: 'REQUEST_CHANGES',\n  body: '❌ Copilot\
+          \ Setup Steps validation failed. Please review the test results and fix\
+          \ the issues before requesting review.'\n});\n"
+    - name: Upload Test Results
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: validation-results
+        path: 'core_validation.json
 
-      - name: Run Security Tests
-        id: security_tests
-        run: |
-          echo "Running security and secrets validation..."
-          python scripts/ci/validate_copilot_security.py \
-            --json-output /tmp/security_tests.json \
-            --repo-root .
-        continue-on-error: true
+          integration_tests.json
 
-      - name: Run Legacy Shell Validation
-        id: legacy_shell_validation
-        run: |
-          echo "Running legacy shell-based validation..."
-          bash scripts/ci/validate_setup_steps_yaml.sh
-        continue-on-error: true
+          security_tests.json
 
-      - name: Aggregate Results
-        id: aggregate
-        run: |
-          echo "Aggregating validation results..."
-
-          # Load test results
-          if [ -f /tmp/core_validation.json ]; then
-            CORE_PASSED=$(jq -r '.passed' /tmp/core_validation.json)
-            CORE_TOTAL=$(jq -r '.total' /tmp/core_validation.json)
-            CORE_FAILED=$(jq -r '.failed' /tmp/core_validation.json)
-          else
-            CORE_PASSED=0
-            CORE_TOTAL=0
-            CORE_FAILED=0
-          fi
-
-          if [ -f /tmp/integration_tests.json ]; then
-            INT_PASSED=$(jq -r '.passed' /tmp/integration_tests.json)
-            INT_TOTAL=$(jq -r '.total' /tmp/integration_tests.json)
-            INT_FAILED=$(jq -r '.failed' /tmp/integration_tests.json)
-          else
-            INT_PASSED=0
-            INT_TOTAL=0
-            INT_FAILED=0
-          fi
-
-          if [ -f /tmp/security_tests.json ]; then
-            SEC_PASSED=$(jq -r '.passed' /tmp/security_tests.json)
-            SEC_TOTAL=$(jq -r '.total' /tmp/security_tests.json)
-            SEC_FAILED=$(jq -r '.failed' /tmp/security_tests.json)
-          else
-            SEC_PASSED=0
-            SEC_TOTAL=0
-            SEC_FAILED=0
-          fi
-
-          TOTAL_PASSED=$((CORE_PASSED + INT_PASSED + SEC_PASSED))
-          TOTAL_TESTS=$((CORE_TOTAL + INT_TOTAL + SEC_TOTAL))
-          TOTAL_FAILED=$((CORE_FAILED + INT_FAILED + SEC_FAILED))
-
-          echo "TOTAL_PASSED=$TOTAL_PASSED" >> "$GITHUB_ENV"
-          echo "TOTAL_TESTS=$TOTAL_TESTS" >> "$GITHUB_ENV"
-          echo "TOTAL_FAILED=$TOTAL_FAILED" >> "$GITHUB_ENV"
-
-          if [ "$TOTAL_FAILED" -gt 0 ]; then
-            echo "validation_status=failed" >> "$GITHUB_OUTPUT"
-            exit 1
-          else
-            echo "validation_status=passed" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-        continue-on-error: true
-
-      - name: Create Check Run (Core Validation)
-        if: always()
-        uses: actions/github-script@v8
-        with:
-          script: |
-            const fs = require('fs');
-
-            let annotation_level = 'notice';
-            let title = '✅ Core Validation Passed';
-            let summary = 'All core validation tests passed.';
-
-            if (fs.existsSync('/tmp/core_validation.json')) {
-              const results = JSON.parse(fs.readFileSync('/tmp/core_validation.json', 'utf8'));
-              if (results.failed > 0) {
-                annotation_level = 'failure';
-                title = '❌ Core Validation Failed';
-              }
-              summary = `${results.passed}/${results.total} tests passed`;
-
-              // Add annotations for failed tests
-              if (results.failed > 0) {
-                results.results
-                  .filter(r => !r.passed && r.severity === 'error')
-                  .slice(0, 10)
-                  .forEach(r => {
-                    core.setFailed(`Core Validation: ${r.name} — ${r.message}`);
-                  });
-              }
-            }
-
-            console.log(`${title}: ${summary}`);
-
-      - name: Create Check Run (Integration Tests)
-        if: always()
-        uses: actions/github-script@v8
-        with:
-          script: |
-            const fs = require('fs');
-
-            let annotation_level = 'notice';
-            let title = '✅ Integration Tests Passed';
-            let summary = 'All integration tests passed.';
-
-            if (fs.existsSync('/tmp/integration_tests.json')) {
-              const results = JSON.parse(fs.readFileSync('/tmp/integration_tests.json', 'utf8'));
-              if (results.failed > 0) {
-                annotation_level = 'failure';
-                title = '❌ Integration Tests Failed';
-              }
-              summary = `${results.passed}/${results.total} tests passed`;
-
-              // Add annotations for failed tests
-              if (results.failed > 0) {
-                results.results
-                  .filter(r => !r.passed && r.severity === 'error')
-                  .slice(0, 10)
-                  .forEach(r => {
-                    core.setFailed(`Integration: ${r.name} — ${r.message}`);
-                  });
-              }
-            }
-
-            console.log(`${title}: ${summary}`);
-
-      - name: Create Check Run (Security Tests)
-        if: always()
-        uses: actions/github-script@v8
-        with:
-          script: |
-            const fs = require('fs');
-
-            let annotation_level = 'notice';
-            let title = '✅ Security Tests Passed';
-            let summary = 'All security tests passed.';
-
-            if (fs.existsSync('/tmp/security_tests.json')) {
-              const results = JSON.parse(fs.readFileSync('/tmp/security_tests.json', 'utf8'));
-              if (results.failed > 0) {
-                annotation_level = 'failure';
-                title = '❌ Security Tests Failed';
-              }
-              summary = `${results.passed}/${results.total} tests passed`;
-
-              // Add annotations for failed tests
-              if (results.failed > 0) {
-                results.results
-                  .filter(r => !r.passed && r.severity === 'error')
-                  .slice(0, 10)
-                  .forEach(r => {
-                    core.setFailed(`Security: ${r.name} — ${r.message}`);
-                  });
-              }
-            }
-
-            console.log(`${title}: ${summary}`);
-
-      - name: Post Summary Comment (if PR)
-        if: always() && github.event_name == 'pull_request'
-        uses: actions/github-script@v8
-        with:
-          github-token: ${{ github.token }}
-          script: |
-            const fs = require('fs');
-
-            let markdown = '## 🤖 Copilot Setup Steps Validation\n\n';
-            markdown += '### Test Results\n\n';
-
-            let totalPassed = 0, totalTests = 0, totalFailed = 0;
-
-            // Core validation
-            if (fs.existsSync('/tmp/core_validation.json')) {
-              const results = JSON.parse(fs.readFileSync('/tmp/core_validation.json', 'utf8'));
-              const status = results.failed === 0 ? '✅' : '❌';
-              markdown += `| Phase | Status | Result |\n`;
-              markdown += `|-------|--------|--------|\n`;
-              markdown += `| Core Validation | ${status} | ${results.passed}/${results.total} passed |\n`;
-              totalPassed += results.passed;
-              totalTests += results.total;
-              totalFailed += results.failed;
-            }
-
-            // Integration tests
-            if (fs.existsSync('/tmp/integration_tests.json')) {
-              const results = JSON.parse(fs.readFileSync('/tmp/integration_tests.json', 'utf8'));
-              const status = results.failed === 0 ? '✅' : '❌';
-              markdown += `| Integration | ${status} | ${results.passed}/${results.total} passed |\n`;
-              totalPassed += results.passed;
-              totalTests += results.total;
-              totalFailed += results.failed;
-            }
-
-            // Security tests
-            if (fs.existsSync('/tmp/security_tests.json')) {
-              const results = JSON.parse(fs.readFileSync('/tmp/security_tests.json', 'utf8'));
-              const status = results.failed === 0 ? '✅' : '❌';
-              markdown += `| Security | ${status} | ${results.passed}/${results.total} passed |\n`;
-              totalPassed += results.passed;
-              totalTests += results.total;
-              totalFailed += results.failed;
-            }
-
-            markdown += `\n### Summary\n`;
-            markdown += `**Total: ${totalPassed}/${totalTests} tests passed**\n`;
-
-            if (totalFailed > 0) {
-              markdown += `\n⚠️ **${totalFailed} test(s) failed** — see details above.\n`;
-            } else {
-              markdown += `\n✅ **All validation tests passed!**\n`;
-            }
-
-            markdown += `\n### Merge Gates\n`;
-            markdown += `- ${totalFailed === 0 ? '✅' : '❌'} All automated tests pass\n`;
-            markdown += `- ⏳ All 3 CCA variables present (validated by tests)\n`;
-            markdown += `- ⏳ All 5 dependent workflows validate (validated by tests)\n`;
-            markdown += `- ${totalFailed === 0 ? '✅' : '❌'} Security/secrets tests pass\n`;
-            markdown += `- ⏳ File size within acceptable range (validated by tests)\n`;
-            markdown += `- ⏳ At least 1 human reviewer approval\n`;
-
-            // Post or update comment
-            const { data: comments } = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-            });
-
-            const botComment = comments.find(comment =>
-              comment.user.type === 'Bot' && comment.body.includes('Copilot Setup Steps Validation')
-            );
-
-            if (botComment) {
-              await github.rest.issues.updateComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: botComment.id,
-                body: markdown
-              });
-            } else {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                body: markdown
-              });
-            }
-
-      - name: Block Merge on Failures
-        if: failure() && github.event_name == 'pull_request'
-        uses: actions/github-script@v8
-        with:
-          script: |
-            // Request changes if critical tests failed
-            await github.rest.pulls.createReview({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.issue.number,
-              event: 'REQUEST_CHANGES',
-              body: '❌ Copilot Setup Steps validation failed. Please review the test results and fix the issues before requesting review.'
-            });
-
-      - name: Upload Test Results
-        if: always()
-        uses: actions/upload-artifact@v5
-        with:
-          name: validation-results
-          path: |
-            core_validation.json
-            integration_tests.json
-            security_tests.json
-          retention-days: 30
-
-      - name: Set Final Status
-        if: always()
-        run: |
-          if [ "${{ steps.aggregate.outputs.validation_status }}" = "failed" ]; then
-            echo "❌ Validation failed — merge blocked"
-            exit 1
-          else
-            echo "✅ Validation passed — merge allowed"
-            exit 0
-          fi
+          '
+        retention-days: 30
+    - name: Set Final Status
+      if: always()
+      run: "if [ \"${{ steps.aggregate.outputs.validation_status }}\" = \"failed\"\
+        \ ]; then\n  echo \"❌ Validation failed — merge blocked\"\n  exit 1\nelse\n\
+        \  echo \"✅ Validation passed — merge allowed\"\n  exit 0\nfi\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

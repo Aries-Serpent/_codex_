@@ -1,305 +1,275 @@
 name: Copilot Evolution & Review (Unified)
-
-on:
-  # Self-evolution pipeline every 4 hours
+true:
   schedule:
-    - cron: '0 */4 * * *'
-
-  # Cascade review on PRs — opened/reopened only (not every push)
-  # synchronize REMOVED (S155): fires on every commit push, triggering auto-commits
-  # that conflict with agent report_progress pushes. The 4h schedule covers freshness.
+  - cron: 0 */4 * * *
   pull_request:
-    types: [opened, reopened]
-
-  # Manual triggers for specific tasks
+    types:
+    - opened
+    - reopened
   issue_comment:
-    types: [created]
-
+    types:
+    - created
   workflow_dispatch:
     inputs:
       mode:
-        description: 'Execution mode'
+        description: Execution mode
         required: true
         type: choice
         options:
-          - evolution-only
-          - review-only
-          - full-suite
-        default: 'full-suite'
+        - evolution-only
+        - review-only
+        - full-suite
+        default: full-suite
       evolution_mode:
-        description: 'Evolution mode (for evolution runs)'
+        description: Evolution mode (for evolution runs)
         required: false
-        default: 'adaptive'
+        default: adaptive
         type: choice
         options:
-          - adaptive
-          - aggressive
-          - conservative
-          - quantum_leap
+        - adaptive
+        - aggressive
+        - conservative
+        - quantum_leap
       test_only:
-        description: 'Run tests only (no evolution)'
+        description: Run tests only (no evolution)
         required: false
         default: false
         type: boolean
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: write
   issues: write
   pull-requests: write
-
-
 jobs:
   cascade_review:
     name: Cascade PR Review
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    if: |
-      github.event_name == 'pull_request' ||
-      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@cascade-review')) ||
-      (github.event_name == 'workflow_dispatch' && (inputs.mode == 'review-only' || inputs.mode == 'full-suite'))
+    if: 'github.event_name == ''pull_request'' ||
 
+      (github.event_name == ''issue_comment'' && contains(github.event.comment.body,
+      ''@cascade-review'')) ||
+
+      (github.event_name == ''workflow_dispatch'' && (inputs.mode == ''review-only''
+      || inputs.mode == ''full-suite''))
+
+      '
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          fetch-depth: 0
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        fetch-depth: 0
+    - name: '🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)'
+      id: resolve-target
+      uses: ./.github/actions/resolve-push-target
+    - name: Setup Node.js 22
+      uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
+      with:
+        node-version: '22'
+        cache: npm
+    - name: Install Copilot CLI (if available)
+      continue-on-error: true
+      run: 'npm install -g @github/copilot@prerelease || echo "CLI installation skipped"
 
-      - name: "🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)"
-        id: resolve-target
-        uses: ./.github/actions/resolve-push-target
+        copilot --version || echo "CLI not available - will use fallback mode"
 
-      - name: Setup Node.js 22
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e  # v6
-        with:
-          node-version: '22'
-          cache: 'npm'
+        '
+    - name: Setup Python
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        cache-tier: common
+    - name: Get PR information
+      if: github.event_name == 'pull_request'
+      id: pr
+      env:
+        PR_TITLE: ${{ github.event.pull_request.title }}
+      run: "echo \"pr_number=${{ github.event.pull_request.number }}\" >> $GITHUB_OUTPUT\n\
+        {\n  echo 'pr_title<<EOF'\n  echo \"${PR_TITLE}\"\n  echo 'EOF'\n} >> \"$GITHUB_OUTPUT\"\
+        \necho \"pr_author=${{ github.event.pull_request.user.login }}\" >> $GITHUB_OUTPUT\n"
+    - name: Run cascade review
+      env:
+        GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      run: "if [ -f \"scripts/copilot/cascade_review.py\" ]; then\n  python scripts/copilot/cascade_review.py\
+        \ \\\n    --pr-number \"${{ steps.pr.outputs.pr_number || github.event.issue.number\
+        \ }}\"\nelse\n  echo \"Cascade review script not found - using fallback\"\n\
+        \  echo \"## \U0001F916 Copilot Cascade Review\" >> $GITHUB_STEP_SUMMARY\n\
+        \  echo \"Review mode: Cascade PR analysis\" >> $GITHUB_STEP_SUMMARY\nfi\n"
+    - name: Upload review results
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: cascade-review-${{ github.run_number }}
+        path: '.codex/reviews/*.json
 
-      - name: Install Copilot CLI (if available)
-        continue-on-error: true
-        run: |
-          npm install -g @github/copilot@prerelease || echo "CLI installation skipped"
-          copilot --version || echo "CLI not available - will use fallback mode"
+          .codex/reviews/*.md
 
-      - name: Setup Python
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12.13'
-          cache-tier: 'common'
-
-      - name: Get PR information
-        if: github.event_name == 'pull_request'
-        id: pr
-        env:
-          PR_TITLE: ${{ github.event.pull_request.title }}
-        run: |
-          echo "pr_number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
-          {
-            echo 'pr_title<<EOF'
-            echo "${PR_TITLE}"
-            echo 'EOF'
-          } >> "$GITHUB_OUTPUT"
-          echo "pr_author=${{ github.event.pull_request.user.login }}" >> $GITHUB_OUTPUT
-
-      - name: Run cascade review
-        env:
-          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-        run: |
-          if [ -f "scripts/copilot/cascade_review.py" ]; then
-            python scripts/copilot/cascade_review.py \
-              --pr-number "${{ steps.pr.outputs.pr_number || github.event.issue.number }}"
-          else
-            echo "Cascade review script not found - using fallback"
-            echo "## 🤖 Copilot Cascade Review" >> $GITHUB_STEP_SUMMARY
-            echo "Review mode: Cascade PR analysis" >> $GITHUB_STEP_SUMMARY
-          fi
-
-      - name: Upload review results
-        if: always()
-        uses: actions/upload-artifact@v5 # v7.0.1
-        with:
-          name: cascade-review-${{ github.run_number }}
-          path: |
-            .codex/reviews/*.json
-            .codex/reviews/*.md
-          if-no-files-found: ignore
-          retention-days: 30
-
+          '
+        if-no-files-found: ignore
+        retention-days: 30
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   self_evolution:
     name: Self-Evolution Pipeline
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    if: |
-      github.event_name == 'schedule' ||
-      (github.event_name == 'workflow_dispatch' && (inputs.mode == 'evolution-only' || inputs.mode == 'full-suite'))
+    if: 'github.event_name == ''schedule'' ||
+
+      (github.event_name == ''workflow_dispatch'' && (inputs.mode == ''evolution-only''
+      || inputs.mode == ''full-suite''))
+
+      '
     outputs:
       evolution_performed: ${{ steps.evolve.outputs.performed }}
       test_results: ${{ steps.test.outputs.results }}
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          fetch-depth: 0
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        fetch-depth: 0
+    - name: '🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)'
+      id: resolve-target
+      uses: ./.github/actions/resolve-push-target
+    - name: Set up Python
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        cache-tier: common
+    - name: Install evolution dependencies
+      run: '# Pin pytest plugins (PR #3248)
 
-      - name: "🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)"
-        id: resolve-target
-        uses: ./.github/actions/resolve-push-target
+        # Pin pytest plugins before package install (PR #3248 stability fix)
 
-      - name: Set up Python
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12.13'
-          cache-tier: 'common'
-
-      - name: Install evolution dependencies
-        run: |
-          # Pin pytest plugins (PR #3248)
-          # Pin pytest plugins before package install (PR #3248 stability fix)
-          pip install pytest==8.4.2 pytest-xdist==3.8.0 pytest-timeout==2.4.0 pytest-cov==5.0.0 pytest-asyncio==1.3.0
+        pip install pytest==8.4.2 pytest-xdist==3.8.0 pytest-timeout==2.4.0 pytest-cov==5.0.0
+        pytest-asyncio==1.3.0
 
 
-          pip install numpy scipy pyyaml pytest
 
-      - name: Test integrated system
-        id: test
-        run: |
-          if [ -f "tests/copilot/test_evolution_system.py" ]; then
-            pytest tests/copilot/test_evolution_system.py -v --tb=short --timeout=300
-            echo "results=passed" >> $GITHUB_OUTPUT
-          else
-            echo "Evolution tests not found"
-            echo "results=skipped" >> $GITHUB_OUTPUT
-          fi
+        pip install numpy scipy pyyaml pytest
 
-      - name: Run evolution pipeline
-        id: evolve
-        if: inputs.test_only != 'true' && steps.test.outputs.results == 'passed'
-        env:
-          EVOLUTION_MODE: ${{ inputs.evolution_mode || 'adaptive' }}
-        run: |
-          if [ -f "scripts/copilot/evolution_pipeline.py" ]; then
-            python scripts/copilot/evolution_pipeline.py \
-              --mode "$EVOLUTION_MODE" \
-              --test-first
-            echo "performed=true" >> $GITHUB_OUTPUT
-          else
-            echo "Evolution pipeline script not found"
-            echo "performed=false" >> $GITHUB_OUTPUT
-          fi
+        '
+    - name: Test integrated system
+      id: test
+      run: "if [ -f \"tests/copilot/test_evolution_system.py\" ]; then\n  pytest tests/copilot/test_evolution_system.py\
+        \ -v --tb=short --timeout=300\n  echo \"results=passed\" >> $GITHUB_OUTPUT\n\
+        else\n  echo \"Evolution tests not found\"\n  echo \"results=skipped\" >>\
+        \ $GITHUB_OUTPUT\nfi\n"
+    - name: Run evolution pipeline
+      id: evolve
+      if: inputs.test_only != 'true' && steps.test.outputs.results == 'passed'
+      env:
+        EVOLUTION_MODE: ${{ inputs.evolution_mode || 'adaptive' }}
+      run: "if [ -f \"scripts/copilot/evolution_pipeline.py\" ]; then\n  python scripts/copilot/evolution_pipeline.py\
+        \ \\\n    --mode \"$EVOLUTION_MODE\" \\\n    --test-first\n  echo \"performed=true\"\
+        \ >> $GITHUB_OUTPUT\nelse\n  echo \"Evolution pipeline script not found\"\n\
+        \  echo \"performed=false\" >> $GITHUB_OUTPUT\nfi\n"
+    - name: Collect evolution metrics
+      if: steps.evolve.outputs.performed == 'true'
+      run: "if [ -f \".github/copilot-evolution/data/metrics.json\" ]; then\n  echo\
+        \ \"## \U0001F4CA Evolution Metrics\" >> $GITHUB_STEP_SUMMARY\n  cat .github/copilot-evolution/data/metrics.json\
+        \ >> $GITHUB_STEP_SUMMARY\nfi\n"
+    - name: Upload evolution artifacts
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: evolution-artifacts-${{ github.run_number }}
+        path: '.github/copilot-evolution/data/*.json
 
-      - name: Collect evolution metrics
-        if: steps.evolve.outputs.performed == 'true'
-        run: |
-          if [ -f ".github/copilot-evolution/data/metrics.json" ]; then
-            echo "## 📊 Evolution Metrics" >> $GITHUB_STEP_SUMMARY
-            cat .github/copilot-evolution/data/metrics.json >> $GITHUB_STEP_SUMMARY
-          fi
+          .github/copilot-evolution/logs/*.log
 
-      - name: Upload evolution artifacts
-        if: always()
-        uses: actions/upload-artifact@v5 # v7.0.1
-        with:
-          name: evolution-artifacts-${{ github.run_number }}
-          path: |
-            .github/copilot-evolution/data/*.json
-            .github/copilot-evolution/logs/*.log
-            .codex/evolution/*.json
-          if-no-files-found: ignore
-          retention-days: 90
+          .codex/evolution/*.json
 
-      - name: Commit evolution updates
-        if: steps.evolve.outputs.performed == 'true'
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-
-          if [[ -n $(git status --porcelain .github/copilot-evolution/) ]]; then
-            git add .github/copilot-evolution/
-            git commit -m "🧬 Copilot self-evolution update [automated]
-
-            - Evolution mode: ${{ inputs.evolution_mode || 'adaptive' }}
-            - Triggered by: ${{ github.event_name }}
-            - Timestamp: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
-
-            # Walk the staging chain: sub-PR → 0D_base_ → main  (resolved above)
-            if [ "${{ github.event_name }}" = "schedule" ] || [ "${{ github.ref_name }}" = "main" ]; then
-              TARGET_REF="${{ steps.resolve-target.outputs.branch }}"
-              echo "🔀 Push target: ${TARGET_REF} (reason: ${{ steps.resolve-target.outputs.reason }})"
-            else
-              TARGET_REF="${{ github.ref_name }}"
-            fi
-            echo "🔄 Syncing local evolution commit onto origin/${TARGET_REF} before push"
-            git fetch origin "${TARGET_REF}"
-            git rebase "origin/${TARGET_REF}"
-            git push origin HEAD:${TARGET_REF}
-            echo "✅ Evolution updates committed"
-          else
-            echo "ℹ️  No evolution updates to commit"
-          fi
-
+          '
+        if-no-files-found: ignore
+        retention-days: 90
+    - name: Commit evolution updates
+      if: steps.evolve.outputs.performed == 'true'
+      run: "git config --local user.email \"github-actions[bot]@users.noreply.github.com\"\
+        \ngit config --local user.name \"github-actions[bot]\"\n\nif [[ -n $(git status\
+        \ --porcelain .github/copilot-evolution/) ]]; then\n  git add .github/copilot-evolution/\n\
+        \  git commit -m \"\U0001F9EC Copilot self-evolution update [automated]\n\n\
+        \  - Evolution mode: ${{ inputs.evolution_mode || 'adaptive' }}\n  - Triggered\
+        \ by: ${{ github.event_name }}\n  - Timestamp: $(date -u +\"%Y-%m-%dT%H:%M:%SZ\"\
+        )\"\n\n  # Walk the staging chain: sub-PR → 0D_base_ → main  (resolved above)\n\
+        \  if [ \"${{ github.event_name }}\" = \"schedule\" ] || [ \"${{ github.ref_name\
+        \ }}\" = \"main\" ]; then\n    TARGET_REF=\"${{ steps.resolve-target.outputs.branch\
+        \ }}\"\n    echo \"\U0001F500 Push target: ${TARGET_REF} (reason: ${{ steps.resolve-target.outputs.reason\
+        \ }})\"\n  else\n    TARGET_REF=\"${{ github.ref_name }}\"\n  fi\n  echo \"\
+        \U0001F504 Syncing local evolution commit onto origin/${TARGET_REF} before\
+        \ push\"\n  git fetch origin \"${TARGET_REF}\"\n  git rebase \"origin/${TARGET_REF}\"\
+        \n  git push origin HEAD:${TARGET_REF}\n  echo \"✅ Evolution updates committed\"\
+        \nelse\n  echo \"ℹ️  No evolution updates to commit\"\nfi\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   unified_summary:
     name: Generate Unified Summary
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    needs: [cascade_review, self_evolution]
+    needs:
+    - cascade_review
+    - self_evolution
     if: always()
-
     steps:
-      - name: Generate comprehensive summary
-        run: |
-          echo "## 🤖 Copilot Evolution & Review Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Mode:** ${{ inputs.mode || github.event_name }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Job Status" >> $GITHUB_STEP_SUMMARY
-          echo "- Cascade Review: ${{ needs.cascade_review.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Self-Evolution: ${{ needs.self_evolution.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          if [ "${{ needs.self_evolution.outputs.evolution_performed }}" == "true" ]; then
-            echo "✅ Evolution pipeline executed successfully" >> $GITHUB_STEP_SUMMARY
-          fi
-          if [ "${{ github.event_name }}" == "pull_request" ]; then
-            echo "📝 Cascade review completed for PR #${{ github.event.pull_request.number }}" >> $GITHUB_STEP_SUMMARY
-          fi
+    - name: Generate comprehensive summary
+      run: "echo \"## \U0001F916 Copilot Evolution & Review Summary\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"\" >> $GITHUB_STEP_SUMMARY\necho \"**Mode:** ${{ inputs.mode || github.event_name\
+        \ }}\" >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\necho \"\
+        ### Job Status\" >> $GITHUB_STEP_SUMMARY\necho \"- Cascade Review: ${{ needs.cascade_review.result\
+        \ }}\" >> $GITHUB_STEP_SUMMARY\necho \"- Self-Evolution: ${{ needs.self_evolution.result\
+        \ }}\" >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\nif [ \"\
+        ${{ needs.self_evolution.outputs.evolution_performed }}\" == \"true\" ]; then\n\
+        \  echo \"✅ Evolution pipeline executed successfully\" >> $GITHUB_STEP_SUMMARY\n\
+        fi\nif [ \"${{ github.event_name }}\" == \"pull_request\" ]; then\n  echo\
+        \ \"\U0001F4DD Cascade review completed for PR #${{ github.event.pull_request.number\
+        \ }}\" >> $GITHUB_STEP_SUMMARY\nfi\n"
+    - name: Cache health report
+      if: always()
+      continue-on-error: true
+      run: 'python scripts/ci/generate_cache_keys.py --type pip --workflow copilot-evolution-suite
+        --health 2>/dev/null || echo ''{"status": "cache health check skipped"}''
 
-      - name: Cache health report
-        if: always()
-        continue-on-error: true
-        run: |
-          python scripts/ci/generate_cache_keys.py --type pip --workflow copilot-evolution-suite --health 2>/dev/null || echo '{"status": "cache health check skipped"}'
-
-  # ── rescue comment — posted on PR whenever this workflow fails ──────────
+        '
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
     needs: unified_summary
-    if: |
-      failure() &&
-      github.event_name == 'pull_request' &&
+    if: 'failure() &&
+
+      github.event_name == ''pull_request'' &&
+
       github.event.pull_request.head.repo.full_name == github.repository
+
+      '
     permissions:
       pull-requests: write
       issues: write
     timeout-minutes: 5
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          fetch-depth: 1
-
-      - name: Post or update rescue comment
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_NAME: "Copilot Evolution Suite"
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          BRANCH: ${{ github.head_ref }}
-        run: python scripts/ci/post_rescue_comment.py
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        token: ${{ secrets.CODEX_MASTER_KEY || github.token }}
+        fetch-depth: 1
+    - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: Copilot Evolution Suite
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+        BRANCH: ${{ github.head_ref }}
+      run: python scripts/ci/post_rescue_comment.py
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

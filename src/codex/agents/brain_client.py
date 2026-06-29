@@ -20,6 +20,8 @@ Cognitive Brain CLI API Client — Copilot Agent API Request Tool
 Quick start (every session)
 ----------------------------
     from codex.agents.brain_client import BrainClient
+from scripts.ci._token_resolver import get_token
+
 
     brain = BrainClient()             # auto-discovers URL from env / defaults
     brain.is_available()              # True when server is up → proceed
@@ -193,8 +195,8 @@ class BrainClient:
         See ``docs/agent/COPILOT_TOKEN_GUIDE.md`` for the full reference.
         """
         token = (
-            os.environ.get("CODEX_MASTER_KEY")
-            or os.environ.get("CODEX_BACKUP_KEY")
+            get_token(required_elevated=True)[0]
+            or get_token(required_elevated=True)[0]
             or os.environ.get("AGENT_GITHUB_TOKEN")
             or os.environ.get("GITHUB_TOKEN")
             or ""

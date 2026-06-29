@@ -1,179 +1,141 @@
 name: Generate SBOM
-
-on:
-  workflow_call:
-  workflow_dispatch:
+true:
+  workflow_call: null
+  workflow_dispatch: null
   push:
     branches:
-      - 0D_base_
-      - main
-      - develop
-      - work
+    - 0D_base_
+    - main
+    - develop
+    - work
   pull_request:
     branches:
-      - 0D_base_
-      - main
+    - 0D_base_
+    - main
   release:
-    types: [published]
-
+    types:
+    - published
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   actions: write
-
-
 jobs:
   sbom:
     name: Generate Software Bill of Materials
     runs-on: ubuntu-latest
     timeout-minutes: 60
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          fetch-depth: 0
+    - name: Checkout
+      uses: actions/checkout@v7
+      with:
+        fetch-depth: 0
+    - name: Set up Python
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        cache-tier: common
+    - name: Install SBOM tools
+      run: 'pip install cyclonedx-bom pip-licenses --quiet
 
-      - name: Set up Python
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12.13'
-          cache-tier: 'common'
+        echo "cyclonedx-bom $(cyclonedx-py --version 2>/dev/null || python -m cyclonedx.cli
+        --version 2>/dev/null || echo ''installed'')"
 
-      - name: Install SBOM tools
-        run: |
-          pip install cyclonedx-bom pip-licenses --quiet
-          echo "cyclonedx-bom $(cyclonedx-py --version 2>/dev/null || python -m cyclonedx.cli --version 2>/dev/null || echo 'installed')"
-          echo "pip-licenses $(pip-licenses --version 2>/dev/null || echo 'installed')"
+        echo "pip-licenses $(pip-licenses --version 2>/dev/null || echo ''installed'')"
 
-      - name: Generate CycloneDX SBOM (JSON)
-        run: |
-          # Generate CycloneDX SBOM from installed Python packages
-          python -m cyclonedx_py env \
-            --output-format json \
-            --outfile sbom-cyclonedx.json \
-            2>/dev/null || \
-          python -m cyclonedx.cli env \
-            --output-format=json \
-            --outfile sbom-cyclonedx.json \
-            2>/dev/null || \
-          pip-licenses \
-            --format=json \
-            --with-authors \
-            --with-urls \
-            --output-file pip-licenses.json
-          echo "SBOM generation complete"
-          ls -la sbom-cyclonedx.json pip-licenses.json 2>/dev/null || true
+        '
+    - name: Generate CycloneDX SBOM (JSON)
+      run: "# Generate CycloneDX SBOM from installed Python packages\npython -m cyclonedx_py\
+        \ env \\\n  --output-format json \\\n  --outfile sbom-cyclonedx.json \\\n\
+        \  2>/dev/null || \\\npython -m cyclonedx.cli env \\\n  --output-format=json\
+        \ \\\n  --outfile sbom-cyclonedx.json \\\n  2>/dev/null || \\\npip-licenses\
+        \ \\\n  --format=json \\\n  --with-authors \\\n  --with-urls \\\n  --output-file\
+        \ pip-licenses.json\necho \"SBOM generation complete\"\nls -la sbom-cyclonedx.json\
+        \ pip-licenses.json 2>/dev/null || true\n"
+    - name: Generate pip-licenses CSV report
+      run: "pip-licenses \\\n  --format=csv \\\n  --with-authors \\\n  --with-urls\
+        \ \\\n  --output-file sbom-licenses.csv || \\\npip list --format=columns >\
+        \ sbom-licenses.csv\necho \"License report:\"\nhead -20 sbom-licenses.csv\n"
+    - name: Validate SBOM exists and is non-empty
+      run: "SBOM_FILE=\"\"\nif [ -f sbom-cyclonedx.json ]; then\n  SBOM_FILE=\"sbom-cyclonedx.json\"\
+        \nelif [ -f pip-licenses.json ]; then\n  SBOM_FILE=\"pip-licenses.json\"\n\
+        fi\nif [ -z \"$SBOM_FILE\" ]; then\n  echo \"⚠️ Warning: No SBOM JSON generated\
+        \ (tool may not support this env); CSV fallback active\"\n  exit 0\nfi\nSIZE=$(wc\
+        \ -c < \"$SBOM_FILE\")\necho \"SBOM size: ${SIZE} bytes\"\nif [ \"$SIZE\"\
+        \ -lt 100 ]; then\n  echo \"❌ SBOM too small — generation may have failed\"\
+        \n  exit 1\nfi\necho \"✅ SBOM validated: $SBOM_FILE (${SIZE} bytes)\"\n"
+    - name: Validate CycloneDX JSON structure (P2-03)
+      run: "if [ ! -f sbom-cyclonedx.json ]; then\n  echo \"ℹ️ No CycloneDX JSON found\
+        \ — skipping schema validation\"\n  exit 0\nfi\npython3 << 'PY'\nimport json\n\
+        import sys\n\nwith open(\"sbom-cyclonedx.json\", \"r\", encoding=\"utf-8\"\
+        ) as f:\n    sbom = json.load(f)\n\n# CycloneDX minimal required fields\n\
+        required_top_keys = {\"bomFormat\", \"specVersion\", \"version\"}\nmissing\
+        \ = required_top_keys - set(sbom.keys())\nif missing:\n    print(f\"❌ CycloneDX\
+        \ SBOM missing required top-level keys: {missing}\", file=sys.stderr)\n  \
+        \  sys.exit(1)\n\nif sbom.get(\"bomFormat\") != \"CycloneDX\":\n    print(f\"\
+        ❌ bomFormat is not 'CycloneDX': {sbom.get('bomFormat')}\", file=sys.stderr)\n\
+        \    sys.exit(1)\n\ncomponents = sbom.get(\"components\", [])\nprint(f\"✅\
+        \ CycloneDX SBOM valid — specVersion={sbom['specVersion']!r}, \"\n      f\"\
+        {len(components)} component(s) listed\")\nPY\n"
+    - name: Upload SBOM artifacts
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: sbom-${{ github.run_id }}
+        path: 'sbom-cyclonedx.json
 
-      - name: Generate pip-licenses CSV report
-        run: |
-          pip-licenses \
-            --format=csv \
-            --with-authors \
-            --with-urls \
-            --output-file sbom-licenses.csv || \
-          pip list --format=columns > sbom-licenses.csv
-          echo "License report:"
-          head -20 sbom-licenses.csv
+          pip-licenses.json
 
-      - name: Validate SBOM exists and is non-empty
-        run: |
-          SBOM_FILE=""
-          if [ -f sbom-cyclonedx.json ]; then
-            SBOM_FILE="sbom-cyclonedx.json"
-          elif [ -f pip-licenses.json ]; then
-            SBOM_FILE="pip-licenses.json"
-          fi
-          if [ -z "$SBOM_FILE" ]; then
-            echo "⚠️ Warning: No SBOM JSON generated (tool may not support this env); CSV fallback active"
-            exit 0
-          fi
-          SIZE=$(wc -c < "$SBOM_FILE")
-          echo "SBOM size: ${SIZE} bytes"
-          if [ "$SIZE" -lt 100 ]; then
-            echo "❌ SBOM too small — generation may have failed"
-            exit 1
-          fi
-          echo "✅ SBOM validated: $SBOM_FILE (${SIZE} bytes)"
+          sbom-licenses.csv
 
-      - name: Validate CycloneDX JSON structure (P2-03)
-        run: |
-          if [ ! -f sbom-cyclonedx.json ]; then
-            echo "ℹ️ No CycloneDX JSON found — skipping schema validation"
-            exit 0
-          fi
-          python3 << 'PY'
-          import json
-          import sys
+          '
+        if-no-files-found: warn
+        retention-days: 90
+    - name: Cache health report
+      if: always()
+      continue-on-error: true
+      run: 'python scripts/ci/generate_cache_keys.py --health --workflow sbom 2>/dev/null
+        || echo "Cache health: check skipped"
 
-          with open("sbom-cyclonedx.json", "r", encoding="utf-8") as f:
-              sbom = json.load(f)
-
-          # CycloneDX minimal required fields
-          required_top_keys = {"bomFormat", "specVersion", "version"}
-          missing = required_top_keys - set(sbom.keys())
-          if missing:
-              print(f"❌ CycloneDX SBOM missing required top-level keys: {missing}", file=sys.stderr)
-              sys.exit(1)
-
-          if sbom.get("bomFormat") != "CycloneDX":
-              print(f"❌ bomFormat is not 'CycloneDX': {sbom.get('bomFormat')}", file=sys.stderr)
-              sys.exit(1)
-
-          components = sbom.get("components", [])
-          print(f"✅ CycloneDX SBOM valid — specVersion={sbom['specVersion']!r}, "
-                f"{len(components)} component(s) listed")
-          PY
-
-      - name: Upload SBOM artifacts
-        if: always()
-        uses: actions/upload-artifact@v5 # v7.0.1
-        with:
-          name: sbom-${{ github.run_id }}
-          path: |
-            sbom-cyclonedx.json
-            pip-licenses.json
-            sbom-licenses.csv
-          if-no-files-found: warn
-          retention-days: 90
-
-      - name: Cache health report
-        if: always()
-        continue-on-error: true
-        run: |
-          python scripts/ci/generate_cache_keys.py --health --workflow sbom 2>/dev/null || echo "Cache health: check skipped"
-
-  # ── rescue comment — posted on PR whenever this workflow fails ──────────
+        '
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
     needs: sbom
-    if: |
-      failure() &&
-      github.event_name == 'pull_request' &&
+    if: 'failure() &&
+
+      github.event_name == ''pull_request'' &&
+
       github.event.pull_request.head.repo.full_name == github.repository
+
+      '
     permissions:
       pull-requests: write
       issues: write
     timeout-minutes: 5
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          fetch-depth: 1
-
-      - name: Post or update rescue comment
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_NAME: "SBOM Generation"
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          BRANCH: ${{ github.head_ref }}
-        run: python scripts/ci/post_rescue_comment.py
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        token: ${{ secrets.CODEX_MASTER_KEY || github.token }}
+        fetch-depth: 1
+    - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: SBOM Generation
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+        BRANCH: ${{ github.head_ref }}
+      run: python scripts/ci/post_rescue_comment.py
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

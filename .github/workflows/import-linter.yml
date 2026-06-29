@@ -1,50 +1,45 @@
 name: Import Linter
-
-# D1 — Architecture layer boundary enforcement.
-# Runs import-linter against the .importlinter contract definitions to ensure
-# no cross-layer imports have been introduced.
-
-on:
+true:
   pull_request:
-    branches: [main, develop, "0D_base_"]
+    branches:
+    - main
+    - develop
+    - 0D_base_
     paths:
-      - "src/**/*.py"
-      - ".importlinter"
+    - src/**/*.py
+    - .importlinter
   push:
-    branches: [main]
+    branches:
+    - main
     paths:
-      - "src/**/*.py"
-      - ".importlinter"
-  workflow_dispatch:
-
+    - src/**/*.py
+    - .importlinter
+  workflow_dispatch: null
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   pull-requests: write
-
-
 jobs:
   lint-imports:
-    name: "🔗 Import Layer Boundary Check"
+    name: 🔗 Import Layer Boundary Check
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v7 # v6.0.3
+    - name: Checkout
+      uses: actions/checkout@v7
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: 3.12.13
+        cache: pip
+    - name: Install import-linter
+      run: 'pip install import-linter --quiet
 
-      - name: Set up Python
-        uses: actions/setup-python@v6 # v6
-        with:
-          python-version: "3.12.13"
-          cache: pip
-
-      - name: Install import-linter
-        run: |
-          pip install import-linter --quiet
-
-      - name: Run import-linter
-        run: lint-imports
+        '
+    - name: Run import-linter
+      run: lint-imports
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

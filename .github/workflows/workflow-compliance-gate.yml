@@ -1,218 +1,119 @@
 name: Workflow Compliance Gate
-
-# Validates that all workflow files in .github/workflows/ comply with
-# repository standards: required fields, concurrency, timeout, permissions.
-# Blocks PRs when new/modified workflows violate compliance rules.
-#
-# Compliance rules (from COMPLETION_GOVERNANCE.md Phase 2.1):
-#   - All jobs must have `timeout-minutes`
-#   - All workflows must have `concurrency` (except manually-dispatched stubs)
-#   - All workflows must have a `permissions:` block
-#   - Disabled stubs must use `on: workflow_dispatch:` + `permissions: {}`
-#
-# Domain: D6 · CI/CD Health & Workflow Governance (completion rubric v1)
-# Evidence: compliance gate blocks non-compliant PRs → score 4 evidence
-
-on:
+true:
   pull_request:
-    branches: [main, develop, "0D_base_"]
+    branches:
+    - main
+    - develop
+    - 0D_base_
     paths:
-      - ".github/workflows/**"
-  workflow_dispatch:
-
+    - .github/workflows/**
+  workflow_dispatch: null
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   pull-requests: write
-
-
 jobs:
   compliance-check:
-    name: "⚙️ Workflow Compliance Check"
+    name: ⚙️ Workflow Compliance Check
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          fetch-depth: 0
+    - name: Checkout
+      uses: actions/checkout@v7
+      with:
+        fetch-depth: 0
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: 3.12.13
+        cache: pip
+    - name: Install PyYAML
+      run: pip install PyYAML --quiet
+    - name: Run compliance check
+      id: check
+      run: "set +e\npython3 - <<'PYEOF'\nimport sys\nimport yaml\nimport subprocess\n\
+        from pathlib import Path\n\nWORKFLOW_DIR = Path(\".github/workflows\")\nviolations\
+        \ = []\nwarnings = []\n\n# Files managed by GitHub Copilot / external tooling\
+        \ that use shell\n# brace syntax valid for GitHub Actions' Go YAML parser\
+        \ but rejected\n# by PyYAML's strict parser.  Skip compliance checks for these\
+        \ files.\nSKIP_FILES = {\"copilot-setup-steps.yml\"}\n\ndef all_workflow_files():\n\
+        \    files = list(WORKFLOW_DIR.glob(\"*.yml\")) + list(WORKFLOW_DIR.glob(\"\
+        *.yaml\"))\n    return sorted(set(files))\n\ndef is_stub(data):\n    \"\"\"\
+        Stubs: only workflow_dispatch trigger + no real jobs.\"\"\"\n    triggers\
+        \ = data.get(\"on\", {}) or {}\n    if isinstance(triggers, str):\n      \
+        \  return False\n    has_only_dispatch = set(triggers.keys()) <= {\"workflow_dispatch\"\
+        }\n    jobs = data.get(\"jobs\", {}) or {}\n    is_noop = all(\n        any(\n\
+        \            s.get(\"run\", \"\").strip().startswith(\"echo\")\n         \
+        \   for s in j.get(\"steps\", [])\n        )\n        for j in jobs.values()\n\
+        \    )\n    return has_only_dispatch and is_noop\n\ndef changed_workflow_files():\n\
+        \    if \"${{ github.event_name }}\" != \"pull_request\":\n        return\
+        \ all_workflow_files()\n    try:\n        result = subprocess.run(\n     \
+        \       [\n                \"git\",\n                \"diff\",\n         \
+        \       \"--name-only\",\n                \"${{ github.event.pull_request.base.sha\
+        \ }}\",\n                \"${{ github.event.pull_request.head.sha }}\",\n\
+        \                \"--\",\n                \".github/workflows/\",\n      \
+        \      ],\n            capture_output=True,\n            check=True,\n   \
+        \         text=True,\n        )\n        out = result.stdout\n    except subprocess.CalledProcessError\
+        \ as exc:\n        print(\n            \"WARN: git diff failed \"\n      \
+        \      f\"(exit {exc.returncode}): {exc.stderr.strip()}; \"\n            \"\
+        falling back to full scan\"\n        )\n        return all_workflow_files()\n\
+        \    files = []\n    for rel in out.splitlines():\n        rel = rel.strip()\n\
+        \        if not rel:\n            continue\n        if not (rel.endswith(\"\
+        .yml\") or rel.endswith(\".yaml\")):\n            continue\n        wf_file\
+        \ = Path(rel)\n        if wf_file.exists():\n            files.append(wf_file)\n\
+        \    if files:\n        return sorted(files)\n    print(\"WARN: no changed\
+        \ workflow files detected from git diff; falling back to full scan\")\n  \
+        \  return all_workflow_files()\n\nfiles_to_check = changed_workflow_files()\n\
+        \nfor wf_file in files_to_check:\n    if wf_file.name in SKIP_FILES:\n   \
+        \     continue\n    try:\n        data = yaml.safe_load(wf_file.read_text())\n\
+        \    except yaml.YAMLError as e:\n        violations.append(f\"{wf_file.name}:\
+        \ YAML parse error — {e}\")\n        continue\n\n    if not isinstance(data,\
+        \ dict):\n        continue\n\n    stub = is_stub(data)\n    name = wf_file.name\n\
+        \n    # Rule 1: permissions block required\n    if \"permissions\" not in\
+        \ data:\n        violations.append(f\"{name}: missing top-level `permissions:`\
+        \ block\")\n\n    # Rule 2: concurrency required (skip stubs)\n    if not\
+        \ stub and \"concurrency\" not in data:\n        violations.append(f\"{name}:\
+        \ missing `concurrency:` block\")\n\n    # Rule 3: all non-stub jobs must\
+        \ have timeout-minutes\n    # Exception: reusable-workflow caller jobs (uses:)\
+        \ do not support\n    # timeout-minutes at the caller level — skip them.\n\
+        \    jobs = data.get(\"jobs\", {}) or {}\n    for job_id, job in jobs.items():\n\
+        \        if not isinstance(job, dict):\n            continue\n        if job_id\
+        \ == \"noop\":\n            continue\n        if \"uses\" in job:\n      \
+        \      continue  # reusable workflow call — timeout not supported\n      \
+        \  if \"timeout-minutes\" not in job:\n            violations.append(\n  \
+        \              f\"{name}: job `{job_id}` missing `timeout-minutes`\"\n   \
+        \         )\n\nif violations:\n    print(f\"FAIL: {len(violations)} compliance\
+        \ violation(s) found:\\n\")\n    for v in violations:\n        print(f\" \
+        \ ❌ {v}\")\n    sys.exit(1)\nelse:\n    all_files = len(files_to_check)\n\
+        \    skipped = len(SKIP_FILES)\n    checked = all_files - skipped\n    print(\n\
+        \        f\"PASS: {checked}/{all_files} workflow files checked and compliant\
+        \ \"\n        f\"({skipped} skipped: {', '.join(sorted(SKIP_FILES))}).\"\n\
+        \    )\nPYEOF\nexit_code=$?\necho \"exit_code=$exit_code\" >> \"$GITHUB_OUTPUT\"\
+        \nexit 0\n"
+      continue-on-error: true
+    - name: Post PR comment on violations
+      if: 'github.event_name == ''pull_request'' && steps.check.outputs.exit_code
+        != ''0''
 
-      - name: Set up Python
-        uses: actions/setup-python@v6 # v6
-        with:
-          python-version: "3.12.13"
-          cache: pip
-
-      - name: Install PyYAML
-        run: pip install PyYAML --quiet
-
-      - name: Run compliance check
-        id: check
-        run: |
-          set +e
-          python3 - <<'PYEOF'
-          import sys
-          import yaml
-          import subprocess
-          from pathlib import Path
-
-          WORKFLOW_DIR = Path(".github/workflows")
-          violations = []
-          warnings = []
-
-          # Files managed by GitHub Copilot / external tooling that use shell
-          # brace syntax valid for GitHub Actions' Go YAML parser but rejected
-          # by PyYAML's strict parser.  Skip compliance checks for these files.
-          SKIP_FILES = {"copilot-setup-steps.yml"}
-
-          def all_workflow_files():
-              files = list(WORKFLOW_DIR.glob("*.yml")) + list(WORKFLOW_DIR.glob("*.yaml"))
-              return sorted(set(files))
-
-          def is_stub(data):
-              """Stubs: only workflow_dispatch trigger + no real jobs."""
-              triggers = data.get("on", {}) or {}
-              if isinstance(triggers, str):
-                  return False
-              has_only_dispatch = set(triggers.keys()) <= {"workflow_dispatch"}
-              jobs = data.get("jobs", {}) or {}
-              is_noop = all(
-                  any(
-                      s.get("run", "").strip().startswith("echo")
-                      for s in j.get("steps", [])
-                  )
-                  for j in jobs.values()
-              )
-              return has_only_dispatch and is_noop
-
-          def changed_workflow_files():
-              if "${{ github.event_name }}" != "pull_request":
-                  return all_workflow_files()
-              try:
-                  result = subprocess.run(
-                      [
-                          "git",
-                          "diff",
-                          "--name-only",
-                          "${{ github.event.pull_request.base.sha }}",
-                          "${{ github.event.pull_request.head.sha }}",
-                          "--",
-                          ".github/workflows/",
-                      ],
-                      capture_output=True,
-                      check=True,
-                      text=True,
-                  )
-                  out = result.stdout
-              except subprocess.CalledProcessError as exc:
-                  print(
-                      "WARN: git diff failed "
-                      f"(exit {exc.returncode}): {exc.stderr.strip()}; "
-                      "falling back to full scan"
-                  )
-                  return all_workflow_files()
-              files = []
-              for rel in out.splitlines():
-                  rel = rel.strip()
-                  if not rel:
-                      continue
-                  if not (rel.endswith(".yml") or rel.endswith(".yaml")):
-                      continue
-                  wf_file = Path(rel)
-                  if wf_file.exists():
-                      files.append(wf_file)
-              if files:
-                  return sorted(files)
-              print("WARN: no changed workflow files detected from git diff; falling back to full scan")
-              return all_workflow_files()
-
-          files_to_check = changed_workflow_files()
-
-          for wf_file in files_to_check:
-              if wf_file.name in SKIP_FILES:
-                  continue
-              try:
-                  data = yaml.safe_load(wf_file.read_text())
-              except yaml.YAMLError as e:
-                  violations.append(f"{wf_file.name}: YAML parse error — {e}")
-                  continue
-
-              if not isinstance(data, dict):
-                  continue
-
-              stub = is_stub(data)
-              name = wf_file.name
-
-              # Rule 1: permissions block required
-              if "permissions" not in data:
-                  violations.append(f"{name}: missing top-level `permissions:` block")
-
-              # Rule 2: concurrency required (skip stubs)
-              if not stub and "concurrency" not in data:
-                  violations.append(f"{name}: missing `concurrency:` block")
-
-              # Rule 3: all non-stub jobs must have timeout-minutes
-              # Exception: reusable-workflow caller jobs (uses:) do not support
-              # timeout-minutes at the caller level — skip them.
-              jobs = data.get("jobs", {}) or {}
-              for job_id, job in jobs.items():
-                  if not isinstance(job, dict):
-                      continue
-                  if job_id == "noop":
-                      continue
-                  if "uses" in job:
-                      continue  # reusable workflow call — timeout not supported
-                  if "timeout-minutes" not in job:
-                      violations.append(
-                          f"{name}: job `{job_id}` missing `timeout-minutes`"
-                      )
-
-          if violations:
-              print(f"FAIL: {len(violations)} compliance violation(s) found:\n")
-              for v in violations:
-                  print(f"  ❌ {v}")
-              sys.exit(1)
-          else:
-              all_files = len(files_to_check)
-              skipped = len(SKIP_FILES)
-              checked = all_files - skipped
-              print(
-                  f"PASS: {checked}/{all_files} workflow files checked and compliant "
-                  f"({skipped} skipped: {', '.join(sorted(SKIP_FILES))})."
-              )
-          PYEOF
-          exit_code=$?
-          echo "exit_code=$exit_code" >> "$GITHUB_OUTPUT"
-          exit 0
-        continue-on-error: true
-
-      - name: Post PR comment on violations
-        if: >
-          github.event_name == 'pull_request' &&
-          steps.check.outputs.exit_code != '0'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: |
-          printf '%s\n' \
-            "## ⚙️ Workflow Compliance Violations" \
-            "" \
-            "One or more workflow files in \`.github/workflows/\` violate the" \
-            "repository compliance standards.  Please fix before merging." \
-            "" \
-            "**Common fixes**:" \
-            "- Add \`permissions: {}\` or specific scopes to the workflow level" \
-            "- Add \`concurrency:\` block to prevent duplicate runs" \
-            "- Add \`timeout-minutes:\` to each job" \
-            "" \
-            "See \`docs/workflows/CONSOLIDATION_GUIDE.md\` for guidance." \
-            > "$RUNNER_TEMP/compliance_body.txt"
-          gh pr comment "$PR_NUMBER" --body-file "$RUNNER_TEMP/compliance_body.txt" 2>/dev/null || true
-
-      - name: Fail on violations
-        if: steps.check.outputs.exit_code != '0'
-        run: exit 1
+        '
+      env:
+        GH_TOKEN: ${{ github.token }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+      run: "printf '%s\\n' \\\n  \"## ⚙️ Workflow Compliance Violations\" \\\n  \"\
+        \" \\\n  \"One or more workflow files in \\`.github/workflows/\\` violate\
+        \ the\" \\\n  \"repository compliance standards.  Please fix before merging.\"\
+        \ \\\n  \"\" \\\n  \"**Common fixes**:\" \\\n  \"- Add \\`permissions: {}\\\
+        ` or specific scopes to the workflow level\" \\\n  \"- Add \\`concurrency:\\\
+        ` block to prevent duplicate runs\" \\\n  \"- Add \\`timeout-minutes:\\` to\
+        \ each job\" \\\n  \"\" \\\n  \"See \\`docs/workflows/CONSOLIDATION_GUIDE.md\\\
+        ` for guidance.\" \\\n  > \"$RUNNER_TEMP/compliance_body.txt\"\ngh pr comment\
+        \ \"$PR_NUMBER\" --body-file \"$RUNNER_TEMP/compliance_body.txt\" 2>/dev/null\
+        \ || true\n"
+    - name: Fail on violations
+      if: steps.check.outputs.exit_code != '0'
+      run: exit 1
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

@@ -1,151 +1,123 @@
 name: mypy Baseline (Type-Check Anti-Regression)
-
-# Runs mypy against src/ and enforces that the error count never exceeds the
-# stored .mypy_baseline.  This is a ratchet gate: once errors are fixed and the
-# baseline is lowered, it cannot go back up.
-#
-# Priority 2 deliverable (AAIS 95→100): adds mypy coverage to CI (+2 AAIS pts).
-# Baseline: 1152 errors (established 2026-03-14, Session 41, PR #3580).
-
-on:
+true:
   pull_request:
     paths:
-      - 'src/**'
-      - '.mypy_baseline'
-      - 'mypy.ini'
-      - 'pyproject.toml'
-      - 'scripts/ci/mypy_baseline.py'
-      - '.github/workflows/mypy-baseline.yml'
+    - src/**
+    - .mypy_baseline
+    - mypy.ini
+    - pyproject.toml
+    - scripts/ci/mypy_baseline.py
+    - .github/workflows/mypy-baseline.yml
   push:
     branches:
-      - main
+    - main
     paths:
-      - 'src/**'
-      - '.mypy_baseline'
-  workflow_dispatch:
-
+    - src/**
+    - .mypy_baseline
+  workflow_dispatch: null
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
-
-
 jobs:
   mypy-baseline:
-    name: "🔎 mypy Anti-Regression Gate"
+    name: 🔎 mypy Anti-Regression Gate
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          fetch-depth: 1
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        fetch-depth: 1
+    - name: 🔍 SHA drift diagnostic
+      run: "echo \"### SHA Drift Diagnostic\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"\
+        \" >> \"$GITHUB_STEP_SUMMARY\"\necho \"| Source | SHA |\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \necho \"|--------|-----|\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"| \\`github.sha\\\
+        ` (trigger) | \\`${{ github.sha }}\\` |\" >> \"$GITHUB_STEP_SUMMARY\"\necho\
+        \ \"| \\`git log -1\\` (checked out) | \\`$(git log -1 --format=%H)\\` |\"\
+        \ >> \"$GITHUB_STEP_SUMMARY\"\necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\nTRIGGER=\"\
+        ${{ github.sha }}\"\nCHECKEDOUT=\"$(git log -1 --format=%H)\"\nif [ \"$TRIGGER\"\
+        \ != \"$CHECKEDOUT\" ]; then\n  echo \"⚠️  **SHA drift detected** — CI is\
+        \ running on a GitHub merge-preview\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo\
+        \ \"commit (\\`${CHECKEDOUT:0:12}\\`), not the PR branch HEAD (\\`${TRIGGER:0:12}\\\
+        `).\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"mypy error counts may differ from\
+        \ local runs on the PR branch.\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"\"\n\
+        \  echo \"⚠️  SHA drift: trigger=$TRIGGER checkedout=$CHECKEDOUT\"\n  echo\
+        \ \"   (CI is on merge-preview commit — mypy count may differ from local run)\"\
+        \nelse\n  echo \"✅  No SHA drift: trigger and checked-out SHA match.\"\nfi\n"
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v6
+      with:
+        python-version: 3.12.13
+    - name: Install mypy and stubs in isolated venv
+      run: 'python -m venv /tmp/mypy-venv --clear
 
-      # ── SHA-drift diagnostic ────────────────────────────────────────────
-      # GitHub Actions creates an internal *merge commit* for pull-request
-      # runs (the hypothetical result of merging the PR branch into the base
-      # branch).  git log -1 therefore returns a SHA that does NOT exist in
-      # the PR branch history.  This step surfaces the discrepancy so that
-      # any unexpected mypy count change can be traced back to the merge
-      # commit rather than confusing it with a real regression.
-      - name: 🔍 SHA drift diagnostic
-        run: |
-          echo "### SHA Drift Diagnostic" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Source | SHA |" >> "$GITHUB_STEP_SUMMARY"
-          echo "|--------|-----|" >> "$GITHUB_STEP_SUMMARY"
-          echo "| \`github.sha\` (trigger) | \`${{ github.sha }}\` |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| \`git log -1\` (checked out) | \`$(git log -1 --format=%H)\` |" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          TRIGGER="${{ github.sha }}"
-          CHECKEDOUT="$(git log -1 --format=%H)"
-          if [ "$TRIGGER" != "$CHECKEDOUT" ]; then
-            echo "⚠️  **SHA drift detected** — CI is running on a GitHub merge-preview" >> "$GITHUB_STEP_SUMMARY"
-            echo "commit (\`${CHECKEDOUT:0:12}\`), not the PR branch HEAD (\`${TRIGGER:0:12}\`)." >> "$GITHUB_STEP_SUMMARY"
-            echo "mypy error counts may differ from local runs on the PR branch." >> "$GITHUB_STEP_SUMMARY"
-            echo ""
-            echo "⚠️  SHA drift: trigger=$TRIGGER checkedout=$CHECKEDOUT"
-            echo "   (CI is on merge-preview commit — mypy count may differ from local run)"
-          else
-            echo "✅  No SHA drift: trigger and checked-out SHA match."
-          fi
+        /tmp/mypy-venv/bin/pip install --quiet "mypy>=1.8.0" types-PyYAML types-requests
 
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v6 # v6
-        with:
-          python-version: '3.12.13'
-          # NOTE: no cache: pip here — intentional.  The mypy gate must run in a
-          # clean, reproducible environment so the error count is stable across
-          # runners.  Any cached site-packages from other jobs (torch, pydantic,
-          # etc.) cause phantom type errors that inflate the count by ~160,
-          # making the baseline gate unreliable.  We use an explicit venv below.
+        '
+    - name: Run mypy baseline gate
+      id: mypy_gate
+      run: '/tmp/mypy-venv/bin/python scripts/ci/mypy_baseline.py --require-baseline
+        2>&1 | tee /tmp/mypy_output.txt
 
-      - name: Install mypy and stubs in isolated venv
-        run: |
-          python -m venv /tmp/mypy-venv --clear
-          /tmp/mypy-venv/bin/pip install --quiet "mypy>=1.8.0" types-PyYAML types-requests
+        echo "exit_code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
 
-      - name: Run mypy baseline gate
-        id: mypy_gate
-        run: |
-          /tmp/mypy-venv/bin/python scripts/ci/mypy_baseline.py --require-baseline 2>&1 | tee /tmp/mypy_output.txt
-          echo "exit_code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+        '
+    - name: Post mypy summary
+      if: always()
+      run: "{\n  echo \"## \U0001F50E mypy Anti-Regression Gate\"\n  echo \"\"\n \
+        \ if [ -f /tmp/mypy_output.txt ]; then\n    echo '```'\n    cat /tmp/mypy_output.txt\n\
+        \    echo '```'\n  fi\n  BASELINE=$(cat .mypy_baseline 2>/dev/null || echo\
+        \ \"unknown\")\n  echo \"\"\n  echo \"**Baseline:** \\`${BASELINE}\\` errors\
+        \ (stored in \\`.mypy_baseline\\`)\"\n  echo \"\"\n  echo \"_To lower the\
+        \ baseline after fixing errors: \\`python scripts/ci/mypy_baseline.py --update\\\
+        `_\"\n} >> \"$GITHUB_STEP_SUMMARY\"\n"
+    - name: Fail if regression detected
+      if: steps.mypy_gate.outputs.exit_code != '0'
+      run: 'echo "::error::mypy type-error count exceeds baseline. See summary for
+        details."
 
-      - name: Post mypy summary
-        if: always()
-        run: |
-          {
-            echo "## 🔎 mypy Anti-Regression Gate"
-            echo ""
-            if [ -f /tmp/mypy_output.txt ]; then
-              echo '```'
-              cat /tmp/mypy_output.txt
-              echo '```'
-            fi
-            BASELINE=$(cat .mypy_baseline 2>/dev/null || echo "unknown")
-            echo ""
-            echo "**Baseline:** \`${BASELINE}\` errors (stored in \`.mypy_baseline\`)"
-            echo ""
-            echo "_To lower the baseline after fixing errors: \`python scripts/ci/mypy_baseline.py --update\`_"
-          } >> "$GITHUB_STEP_SUMMARY"
+        exit 1
 
-      - name: Fail if regression detected
-        if: steps.mypy_gate.outputs.exit_code != '0'
-        run: |
-          echo "::error::mypy type-error count exceeds baseline. See summary for details."
-          exit 1
-
-  # ── rescue comment — posted on PR whenever mypy baseline regression fails ─
+        '
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   rescue-comment:
     name: Post rescue comment on mypy failure
     runs-on: ubuntu-latest
     needs: mypy-baseline
-    if: |
-      failure() &&
-      github.event_name == 'pull_request' &&
+    if: 'failure() &&
+
+      github.event_name == ''pull_request'' &&
+
       github.event.pull_request.head.repo.full_name == github.repository
+
+      '
     permissions:
       pull-requests: write
       issues: write
     timeout-minutes: 5
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          fetch-depth: 1
-
-      - name: Post or update rescue comment
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_NAME: "mypy Baseline Gate"
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          BRANCH: ${{ github.head_ref }}
-        run: python scripts/ci/post_rescue_comment.py
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        token: ${{ secrets.CODEX_MASTER_KEY || github.token }}
+        fetch-depth: 1
+    - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: mypy Baseline Gate
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+        BRANCH: ${{ github.head_ref }}
+      run: python scripts/ci/post_rescue_comment.py
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

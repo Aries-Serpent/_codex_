@@ -17,6 +17,8 @@ import sys
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Optional
+from scripts.ci._token_resolver import get_token
+
 
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
@@ -90,7 +92,7 @@ class AdminAutomationAgent:
             credentials_path: Path to credentials JSON file
             config_path: Path to agent.yml config
         """
-        self.github_token = github_token or os.getenv("GITHUB_TOKEN") or os.getenv("GH_TOKEN")
+        self.github_token = github_token or os.getenv("GITHUB_TOKEN") or get_token(required_elevated=False)[0]
         self.credentials_path = credentials_path
         self.config_path = config_path or Path(__file__).parent.parent / "config" / "agent.yml"
 

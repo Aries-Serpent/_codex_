@@ -1,209 +1,146 @@
-# GitHub Pages Deployment Workflow (MkDocs)
-#
-# Builds and deploys documentation to GitHub Pages using MkDocs.
-# Requires GitHub Pages to be enabled in repository settings with source: "GitHub Actions"
-#
-# Detection Report:
-# - Found: mkdocs.yml (MkDocs configuration)
-# - Found: docs/ directory with markdown files
-# - Build type: MkDocs with Material theme
-#
-# Enhanced with:
-# - Multi-tier caching (plugins, themes, built site)
-# - API documentation auto-generation
-# - OpenAPI spec generation
-# - Link validation
-
 name: Deploy Pages (MkDocs)
-
-on:
+true:
   push:
     branches:
-      - main
+    - main
     paths:
-      - 'docs/**'
-      - 'mkdocs.yml'
-      - 'src/codex/api/**'
-      - 'src/codex/**/*.py'
-      - '.github/workflows/pages-mkdocs.yml'
+    - docs/**
+    - mkdocs.yml
+    - src/codex/api/**
+    - src/codex/**/*.py
+    - .github/workflows/pages-mkdocs.yml
   workflow_dispatch:
     inputs:
       reason:
-        description: 'Reason for manual trigger (e.g. post-manifest-refresh-pages-heal)'
+        description: Reason for manual trigger (e.g. post-manifest-refresh-pages-heal)
         required: false
-        default: 'manual'
-
+        default: manual
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   pages: write
   id-token: write
-
-
 jobs:
   build:
     name: Build Documentation
     runs-on: ubuntu-latest
     timeout-minutes: 60
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          fetch-depth: 0  # For git-revision-date plugin if used
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        fetch-depth: 0
+    - name: Set up Python 3.12 with tiered cache
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        cache-tier: common
+    - name: Cache MkDocs plugins
+      uses: actions/cache@v5
+      with:
+        path: '~/.cache/pip
 
-      - name: Set up Python 3.12 with tiered cache
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12.13'
-          cache-tier: common
+          .cache/plugin
 
-      # Cache MkDocs plugins and Material theme assets
-      - name: Cache MkDocs plugins
-        uses: actions/cache@v5 # v5
-        with:
-          path: |
-            ~/.cache/pip
-            .cache/plugin
-          key: ${{ runner.os }}-mkdocs-${{ hashFiles('**/mkdocs.yml', '**/requirements-docs.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-mkdocs-
+          '
+        key: ${{ runner.os }}-mkdocs-${{ hashFiles('**/mkdocs.yml', '**/requirements-docs.txt')
+          }}
+        restore-keys: '${{ runner.os }}-mkdocs-
 
-      # Cache built site for incremental builds
-      - name: Cache built site
-        uses: actions/cache@v5 # v5
-        with:
-          path: site/
-          key: ${{ runner.os }}-site-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-site-
+          '
+    - name: Cache built site
+      uses: actions/cache@v5
+      with:
+        path: site/
+        key: ${{ runner.os }}-site-${{ github.sha }}
+        restore-keys: '${{ runner.os }}-site-
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install mkdocs-material mkdocs-git-revision-date-localized-plugin
-          pip install mkdocstrings[python] mkdocs-mermaid2-plugin
-          pip install -e ".[docs]" || pip install -e .
+          '
+    - name: Install dependencies
+      run: 'python -m pip install --upgrade pip
 
-      # Generate API documentation from Python docstrings
-      - name: Generate API documentation
-        run: |
-          python -c "
-          import os
-          import importlib.util
-          from pathlib import Path
+        pip install mkdocs-material mkdocs-git-revision-date-localized-plugin
 
-          # Auto-generate API docs from src/codex modules
-          api_doc_path = Path('docs/api')
-          api_doc_path.mkdir(parents=True, exist_ok=True)
+        pip install mkdocstrings[python] mkdocs-mermaid2-plugin
 
-          # Create API index
-          with open(api_doc_path / 'index.md', 'w') as f:
-              f.write('# API Reference\n\n')
-              f.write('Auto-generated API documentation from Python docstrings.\n\n')
-              f.write('## Modules\n\n')
-              f.write('- [RAG Pipeline](rag.md)\n')
-              f.write('- [CLI](cli.md)\n')
-              f.write('- [API Endpoints](api_endpoints.md)\n')
+        pip install -e ".[docs]" || pip install -e .
 
-          print('✅ API documentation structure created')
-          "
+        '
+    - name: Generate API documentation
+      run: "python -c \"\nimport os\nimport importlib.util\nfrom pathlib import Path\n\
+        \n# Auto-generate API docs from src/codex modules\napi_doc_path = Path('docs/api')\n\
+        api_doc_path.mkdir(parents=True, exist_ok=True)\n\n# Create API index\nwith\
+        \ open(api_doc_path / 'index.md', 'w') as f:\n    f.write('# API Reference\\\
+        n\\n')\n    f.write('Auto-generated API documentation from Python docstrings.\\\
+        n\\n')\n    f.write('## Modules\\n\\n')\n    f.write('- [RAG Pipeline](rag.md)\\\
+        n')\n    f.write('- [CLI](cli.md)\\n')\n    f.write('- [API Endpoints](api_endpoints.md)\\\
+        n')\n\nprint('✅ API documentation structure created')\n\"\n"
+    - name: Generate OpenAPI specification
+      continue-on-error: true
+      run: "python -c \"\ntry:\n    from codex.api.rag_api import app\n    import\
+        \ json\n\n    openapi_spec = app.openapi()\n    with open('docs/openapi.json',\
+        \ 'w') as f:\n        json.dump(openapi_spec, f, indent=2)\n    print('✅ OpenAPI\
+        \ spec generated')\nexcept Exception as e:\n    print(f'⚠️ Could not generate\
+        \ OpenAPI spec: {e}')\n\"\n"
+    - name: Validate documentation links
+      continue-on-error: true
+      run: 'pip install linkchecker || true
 
-      # Generate OpenAPI spec from FastAPI if available
-      - name: Generate OpenAPI specification
-        continue-on-error: true
-        run: |
-          python -c "
-          try:
-              from codex.api.rag_api import app
-              import json
+        # Check for broken links in markdown files
 
-              openapi_spec = app.openapi()
-              with open('docs/openapi.json', 'w') as f:
-                  json.dump(openapi_spec, f, indent=2)
-              print('✅ OpenAPI spec generated')
-          except Exception as e:
-              print(f'⚠️ Could not generate OpenAPI spec: {e}')
-          "
+        find docs/ -name "*.md" -exec grep -H "\[.*\](.*)" {} \; > links.txt || true
 
-      # Validate internal links before building
-      - name: Validate documentation links
-        continue-on-error: true
-        run: |
-          pip install linkchecker || true
-          # Check for broken links in markdown files
-          find docs/ -name "*.md" -exec grep -H "\[.*\](.*)" {} \; > links.txt || true
-          echo "✅ Link validation complete"
+        echo "✅ Link validation complete"
 
-      # Generate cost-estimator dashboard data (OBJ-001 / T-002)
-      # Queries GitHub API → docs/ops/cost-data.json (served as static asset)
-      - name: Generate cost dashboard data
-        continue-on-error: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          python scripts/ci/generate_cost_dashboard_data.py \
-            --owner Aries-Serpent \
-            --repo _codex_ \
-            --out docs/ops/cost-data.json || \
-          echo '{"generated_at":"'"$(date -u +%Y-%m-%dT%H:%M:%SZ)"'","month":"'"$(date -u +%Y-%m)"'","budget":{"total_minutes":3000,"used_minutes":0,"remaining_minutes":3000,"pct_used":0,"tier_thresholds":{"green_max":30,"yellow_max":90}},"tier_counts":{"GREEN":0,"YELLOW":0,"RED":0},"trend":[],"gated_workflows":[],"recent_runs":[]}' \
-            > docs/ops/cost-data.json
-          echo "✅ cost-data.json written"
+        '
+    - name: Generate cost dashboard data
+      continue-on-error: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: "python scripts/ci/generate_cost_dashboard_data.py \\\n  --owner Aries-Serpent\
+        \ \\\n  --repo _codex_ \\\n  --out docs/ops/cost-data.json || \\\necho '{\"\
+        generated_at\":\"'\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"'\",\"month\":\"'\"$(date\
+        \ -u +%Y-%m)\"'\",\"budget\":{\"total_minutes\":3000,\"used_minutes\":0,\"\
+        remaining_minutes\":3000,\"pct_used\":0,\"tier_thresholds\":{\"green_max\"\
+        :30,\"yellow_max\":90}},\"tier_counts\":{\"GREEN\":0,\"YELLOW\":0,\"RED\"\
+        :0},\"trend\":[],\"gated_workflows\":[],\"recent_runs\":[]}' \\\n  > docs/ops/cost-data.json\n\
+        echo \"✅ cost-data.json written\"\n"
+    - name: Build MkDocs site
+      run: '# Phase 13: Strict mode temporarily disabled to identify warnings
 
-      - name: Build MkDocs site
-        run: |
-          # Phase 13: Strict mode temporarily disabled to identify warnings
-          mkdocs build --verbose
+        mkdocs build --verbose
 
-      # Build cognitive_app dashboard and merge into site
-      - name: Build cognitive_app dashboard
-        continue-on-error: true
-        env:
-          # GitHub Pages deployment: the CLI server is not running at Pages time.
-          # VITE_API_MODE=github tells the app to skip the localhost probe and use
-          # GitHub Public API for live repo data (workflow runs, stats, branches).
-          # The CLI terminal (WebSocket /ws/cli) will show an offline message until
-          # a live server URL is configured via COGNITIVE_APP_API_URL repo variable.
-          # See: .codex/docs/COGNITIVE_APP_AGENT_INTEGRATION.md
-          VITE_API_MODE: ${{ vars.COGNITIVE_APP_API_MODE || 'github' }}
-          VITE_CLI_API_URL: ${{ vars.COGNITIVE_APP_API_URL || '' }}
-          # SECURITY NOTE: Do NOT add VITE_GITHUB_TOKEN here.
-          # Any VITE_* variable is compiled into the static client bundle and
-          # would be publicly readable from GitHub Pages.  GitHub data the app
-          # needs must come through unauthenticated public API calls or a
-          # server-side proxy configured via COGNITIVE_APP_API_URL.
-        run: |
-          if [ -f cognitive_app/package.json ]; then
-            cd cognitive_app
-            npm ci --ignore-scripts 2>/dev/null || npm install --ignore-scripts 2>/dev/null || true
-            npm run build 2>/dev/null || true
-            if [ -d dist ]; then
-              mkdir -p ../site/cognitive_app
-              cp -r dist/* ../site/cognitive_app/
-              echo "✅ cognitive_app built and merged into site/cognitive_app/"
-              echo "   API mode: ${VITE_API_MODE} | CLI URL: ${VITE_CLI_API_URL:-<not set>}"
-            else
-              echo "⚠️ cognitive_app build did not produce dist/ directory"
-            fi
-            cd ..
-          else
-            echo "⚠️ cognitive_app/package.json not found — skipping"
-          fi
+        '
+    - name: Build cognitive_app dashboard
+      continue-on-error: true
+      env:
+        VITE_API_MODE: ${{ vars.COGNITIVE_APP_API_MODE || 'github' }}
+        VITE_CLI_API_URL: ${{ vars.COGNITIVE_APP_API_URL || '' }}
+      run: "if [ -f cognitive_app/package.json ]; then\n  cd cognitive_app\n  npm\
+        \ ci --ignore-scripts 2>/dev/null || npm install --ignore-scripts 2>/dev/null\
+        \ || true\n  npm run build 2>/dev/null || true\n  if [ -d dist ]; then\n \
+        \   mkdir -p ../site/cognitive_app\n    cp -r dist/* ../site/cognitive_app/\n\
+        \    echo \"✅ cognitive_app built and merged into site/cognitive_app/\"\n\
+        \    echo \"   API mode: ${VITE_API_MODE} | CLI URL: ${VITE_CLI_API_URL:-<not\
+        \ set>}\"\n  else\n    echo \"⚠️ cognitive_app build did not produce dist/\
+        \ directory\"\n  fi\n  cd ..\nelse\n  echo \"⚠️ cognitive_app/package.json\
+        \ not found — skipping\"\nfi\n"
+    - name: Cache health report
+      if: always()
+      continue-on-error: true
+      run: 'python scripts/ci/generate_cache_keys.py --type pip --workflow pages-mkdocs
+        --health 2>/dev/null || echo ''{"status": "cache health check skipped"}''
 
-      - name: Cache health report
-        if: always()
-        continue-on-error: true
-        run: |
-          python scripts/ci/generate_cache_keys.py --type pip --workflow pages-mkdocs --health 2>/dev/null || echo '{"status": "cache health check skipped"}'
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9  # v5.0.0
-        with:
-          path: site/
-
+        '
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9
+      with:
+        path: site/
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   deploy:
     name: Deploy to GitHub Pages
     environment:
@@ -212,73 +149,63 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     needs: build
-
     steps:
-      - name: Wait for previous deployments to complete
-        id: wait-deployment
-        timeout-minutes: 15
-        continue-on-error: true
-        run: |
-          # Check for in-progress GitHub Pages deployments and wait for completion
-          echo "🔍 Checking for in-progress deployments..."
-          
-          for i in {1..30}; do
-            DEPLOYMENTS=$(gh api repos/${{ github.repository }}/deployments \
-              --jq '.[] | select(.environment=="github-pages") | select(.state=="in_progress")' 2>/dev/null | wc -l)
-            
-            if [ "$DEPLOYMENTS" -eq 0 ]; then
-              echo "✅ No in-progress deployments found"
-              exit 0
-            fi
-            
-            echo "⏳ In-progress deployments detected. Waiting... (attempt $i/30)"
-            sleep 30
-          done
-          
-          echo "⚠️ Previous deployments still in progress after 15 minutes"
-          echo "Proceeding with deployment (will retry if needed)"
-          exit 0
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Wait for previous deployments to complete
+      id: wait-deployment
+      timeout-minutes: 15
+      continue-on-error: true
+      run: "# Check for in-progress GitHub Pages deployments and wait for completion\n\
+        echo \"\U0001F50D Checking for in-progress deployments...\"\n\nfor i in {1..30};\
+        \ do\n  DEPLOYMENTS=$(gh api repos/${{ github.repository }}/deployments \\\
+        \n    --jq '.[] | select(.environment==\"github-pages\") | select(.state==\"\
+        in_progress\")' 2>/dev/null | wc -l)\n  \n  if [ \"$DEPLOYMENTS\" -eq 0 ];\
+        \ then\n    echo \"✅ No in-progress deployments found\"\n    exit 0\n  fi\n\
+        \  \n  echo \"⏳ In-progress deployments detected. Waiting... (attempt $i/30)\"\
+        \n  sleep 30\ndone\n\necho \"⚠️ Previous deployments still in progress after\
+        \ 15 minutes\"\necho \"Proceeding with deployment (will retry if needed)\"\
+        \nexit 0\n"
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128
+    - name: Verify deployed site (health check)
+      id: health_check
+      continue-on-error: true
+      run: "PAGE_URL=\"${{ steps.deployment.outputs.page_url }}\"\nif [ -z \"${PAGE_URL}\"\
+        \ ]; then\n  echo \"⚠️  No page_url output — skipping health check\"\n  exit\
+        \ 0\nfi\necho \"\U0001F50D Checking deployed site: ${PAGE_URL}\"\n# Wait up\
+        \ to 60s for CDN propagation\nfor i in 1 2 3 4 5 6; do\n  HTTP_CODE=$(curl\
+        \ -sS -o /dev/null -w \"%{http_code}\" --max-time 15 \"${PAGE_URL}\" 2>/dev/null\
+        \ || echo \"000\")\n  echo \"  Attempt ${i}: HTTP ${HTTP_CODE}\"\n  if [ \"\
+        ${HTTP_CODE}\" = \"200\" ]; then\n    echo \"✅ Site is healthy (HTTP 200)\"\
+        \ >> \"$GITHUB_STEP_SUMMARY\"\n    echo \"health_status=ok\" >> \"$GITHUB_OUTPUT\"\
+        \n    exit 0\n  fi\n  sleep 10\ndone\necho \"❌ Site returned HTTP ${HTTP_CODE}\
+        \ after 60s — possible 404 deployment\"\necho \"health_status=degraded:${HTTP_CODE}\"\
+        \ >> \"$GITHUB_OUTPUT\"\necho \"## ⚠️ Pages Health Check FAILED\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \necho \"Site at \\`${PAGE_URL}\\` returned HTTP **${HTTP_CODE}**.\" >> \"\
+        $GITHUB_STEP_SUMMARY\"\necho \"The pages-health-guard.yml workflow will attempt\
+        \ automatic recovery.\" >> \"$GITHUB_STEP_SUMMARY\"\n"
+    - name: Summary
+      run: 'echo "## Documentation Deployed" >> $GITHUB_STEP_SUMMARY
 
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128  # v5
+        echo "" >> $GITHUB_STEP_SUMMARY
 
-      - name: Verify deployed site (health check)
-        id: health_check
-        continue-on-error: true
-        run: |
-          PAGE_URL="${{ steps.deployment.outputs.page_url }}"
-          if [ -z "${PAGE_URL}" ]; then
-            echo "⚠️  No page_url output — skipping health check"
-            exit 0
-          fi
-          echo "🔍 Checking deployed site: ${PAGE_URL}"
-          # Wait up to 60s for CDN propagation
-          for i in 1 2 3 4 5 6; do
-            HTTP_CODE=$(curl -sS -o /dev/null -w "%{http_code}" --max-time 15 "${PAGE_URL}" 2>/dev/null || echo "000")
-            echo "  Attempt ${i}: HTTP ${HTTP_CODE}"
-            if [ "${HTTP_CODE}" = "200" ]; then
-              echo "✅ Site is healthy (HTTP 200)" >> "$GITHUB_STEP_SUMMARY"
-              echo "health_status=ok" >> "$GITHUB_OUTPUT"
-              exit 0
-            fi
-            sleep 10
-          done
-          echo "❌ Site returned HTTP ${HTTP_CODE} after 60s — possible 404 deployment"
-          echo "health_status=degraded:${HTTP_CODE}" >> "$GITHUB_OUTPUT"
-          echo "## ⚠️ Pages Health Check FAILED" >> "$GITHUB_STEP_SUMMARY"
-          echo "Site at \`${PAGE_URL}\` returned HTTP **${HTTP_CODE}**." >> "$GITHUB_STEP_SUMMARY"
-          echo "The pages-health-guard.yml workflow will attempt automatic recovery." >> "$GITHUB_STEP_SUMMARY"
+        echo "- URL: ${{ steps.deployment.outputs.page_url }}" >> $GITHUB_STEP_SUMMARY
 
-      - name: Summary
-        run: |
-          echo "## Documentation Deployed" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- URL: ${{ steps.deployment.outputs.page_url }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Build time: $(date -u)" >> $GITHUB_STEP_SUMMARY
-          echo "- Trigger: ${{ github.event_name }}${{ github.event.inputs.reason && format(' ({0})', github.event.inputs.reason) || '' }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Caching: Enabled for plugins and built site" >> $GITHUB_STEP_SUMMARY
-          echo "- API docs: Auto-generated from docstrings" >> $GITHUB_STEP_SUMMARY
-          echo "- Health check: ${{ steps.health_check.outputs.health_status || 'skipped' }}" >> $GITHUB_STEP_SUMMARY
+        echo "- Build time: $(date -u)" >> $GITHUB_STEP_SUMMARY
+
+        echo "- Trigger: ${{ github.event_name }}${{ github.event.inputs.reason &&
+        format('' ({0})'', github.event.inputs.reason) || '''' }}" >> $GITHUB_STEP_SUMMARY
+
+        echo "- Caching: Enabled for plugins and built site" >> $GITHUB_STEP_SUMMARY
+
+        echo "- API docs: Auto-generated from docstrings" >> $GITHUB_STEP_SUMMARY
+
+        echo "- Health check: ${{ steps.health_check.outputs.health_status || ''skipped''
+        }}" >> $GITHUB_STEP_SUMMARY
+
+        '
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

@@ -39,6 +39,8 @@ import secrets
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from scripts.ci._token_resolver import get_token
+
 
 try:
     from github import Github
@@ -66,7 +68,7 @@ class GitHubSecretsManager:
 
     def __init__(self):
         self.github_token = os.getenv('GITHUB_TOKEN')
-        self.master_key = os.getenv('CODEX_MASTER_KEY')
+        self.master_key = get_token(required_elevated=True)[0]
         self.repo_name = os.getenv('GITHUB_REPOSITORY', '')
 
         if not self.github_token:

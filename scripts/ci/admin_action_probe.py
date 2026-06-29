@@ -62,13 +62,15 @@ import urllib.error
 import urllib.request
 from datetime import datetime, timezone
 from typing import Optional
+from scripts.ci._token_resolver import get_token
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # GitHub API helpers
 # ─────────────────────────────────────────────────────────────────────────────
 
 def _gh_token() -> str:
-    token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN", "")
+    token = get_token(required_elevated=False)[0] or os.environ.get("GITHUB_TOKEN", "")
     if not token:
         print("❌  GH_TOKEN / GITHUB_TOKEN is not set", file=sys.stderr)
         sys.exit(3)

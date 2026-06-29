@@ -1,30 +1,30 @@
 name: RAG Module Tests
-
-"on":
+'on':
   push:
-    branches: [main, develop, copilot/**]
+    branches:
+    - main
+    - develop
+    - copilot/**
     paths:
-      - '.github/actions/setup-python-cached/**'
-      - '.github/workflows/test-rag.yml'
-      - 'src/codex/rag/**'
-      - 'tests/test_rag_**'
-      - 'pyproject.toml'
+    - .github/actions/setup-python-cached/**
+    - .github/workflows/test-rag.yml
+    - src/codex/rag/**
+    - tests/test_rag_**
+    - pyproject.toml
   pull_request:
-    branches: [main, develop]
+    branches:
+    - main
+    - develop
     paths:
-      - '.github/actions/setup-python-cached/**'
-      - '.github/workflows/test-rag.yml'
-      - 'src/codex/rag/**'
-      - 'tests/test_rag_**'
-      - 'pyproject.toml'
-
-
+    - .github/actions/setup-python-cached/**
+    - .github/workflows/test-rag.yml
+    - src/codex/rag/**
+    - tests/test_rag_**
+    - pyproject.toml
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions: {}
-
 jobs:
   test-rag:
     runs-on: ubuntu-latest
@@ -33,734 +33,438 @@ jobs:
     timeout-minutes: 60
     strategy:
       matrix:
-        python-version: ['3.12.13']
-
+        python-version:
+        - 3.12.13
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v7 # v6.0.3
+    - name: Checkout code
+      uses: actions/checkout@v7
+    - name: Initialize with repository variables
+      env:
+        CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+        CODEX_TEST_TIMEOUT_MINUTES: ${{ vars.CODEX_TEST_TIMEOUT_MINUTES || '60' }}
+        CODEX_LOG_LEVEL: ${{ vars.CODEX_LOG_LEVEL || 'INFO' }}
+      run: 'echo "=== RAG Module Test Initialization ==="
 
-      - name: Initialize with repository variables
-        env:
-          CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
-          CODEX_TEST_TIMEOUT_MINUTES: ${{ vars.CODEX_TEST_TIMEOUT_MINUTES || '60' }}
-          CODEX_LOG_LEVEL: ${{ vars.CODEX_LOG_LEVEL || 'INFO' }}
-        run: |
-          echo "=== RAG Module Test Initialization ==="
-          echo "[SETUP] Repository variables initialized:"
-          echo "  CODEX_CACHE_VERSION=$CODEX_CACHE_VERSION"
-          echo "  CODEX_TEST_TIMEOUT_MINUTES=$CODEX_TEST_TIMEOUT_MINUTES"
-          echo "  CODEX_LOG_LEVEL=$CODEX_LOG_LEVEL"
-          echo "  Python version: ${{ matrix.python-version }}"
-          echo ""
-          echo "[SETUP] Timestamp: $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
-          echo "[SETUP] System info:"
-          echo "  OS: $(uname -s)"
-          echo "  Arch: $(uname -m)"
-          echo "  Total CPU cores: $(nproc)"
+        echo "[SETUP] Repository variables initialized:"
 
-      - name: Set up Python (cached)
-        id: setup-python
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: ${{ matrix.python-version }}
-          cache-tier: pytorch
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
-      
-      - name: Verify Python setup
-        run: |
-          echo "[SETUP] Python setup completed"
-          echo "  Cache hit: ${{ steps.setup-python.outputs.cache-hit }}"
-          echo "  venv-python: ${{ steps.setup-python.outputs.venv-python }}"
-          export VENV_PYTHON="${{ steps.setup-python.outputs.venv-python }}"
-          echo "VENV_PYTHON=${VENV_PYTHON}" >> "$GITHUB_ENV"
-          echo "[SETUP] Timestamp: $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
-          "$VENV_PYTHON" --version
-          "$VENV_PYTHON" -m pip --version
-           
-          # Verify venv directory exists
-          if [ ! -d "$(dirname "$VENV_PYTHON")" ]; then
-            echo "[SETUP] ❌ CRITICAL: venv directory not found at $(dirname "$VENV_PYTHON")"
-            exit 1
-          fi
-          echo "[SETUP] ✓ venv directory verified at $(dirname "$VENV_PYTHON")"
+        echo "  CODEX_CACHE_VERSION=$CODEX_CACHE_VERSION"
 
-      # Cache sentence-transformers models (small, ~400MB, high value)
-      # This significantly reduces test time by avoiding model re-downloads
-      - name: Cache sentence-transformers models
-        uses: actions/cache@v5 # v5
-        with:
-          path: ~/.cache/torch/sentence_transformers
-          key: ${{ runner.os }}-sentence-transformers-py${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-sentence-transformers-py${{ matrix.python-version }}-
-            ${{ runner.os }}-sentence-transformers-
+        echo "  CODEX_TEST_TIMEOUT_MINUTES=$CODEX_TEST_TIMEOUT_MINUTES"
 
-      # Note: pip cache remains disabled due to disk space constraints with large ML dependencies
-      # Caching pip packages consumes significant disk space (~3-5GB) when restoring
-      # and compounds with build artifacts, causing "No space left on device" errors
-      # during installation of torch, transformers, and other RAG dependencies.
-      # Keep AGENT_TOOLSDIRECTORY intact because the cached venv interpreter
-      # may still symlink into the hosted Python toolcache.
+        echo "  CODEX_LOG_LEVEL=$CODEX_LOG_LEVEL"
 
-      - name: Free disk space
-        run: |
-          echo "[DISK-CLEANUP] Starting disk cleanup..."
-          echo ""
-          echo "[DISK-CLEANUP] Disk space BEFORE cleanup:"
-          df -h / | tail -1 | awk '{print "  Available: " $4 ", Used: " $3 ", Size: " $2}'
-          echo ""
-           
-          # CRITICAL: These steps must NOT affect the venv or build tools
-          echo "[DISK-CLEANUP] Removing large system packages that don't affect test runs..."
-           
-          # Remove dotnet (safe — Python/pytest don't depend on it)
-          if [ -d /usr/share/dotnet ]; then
-            echo "[DISK-CLEANUP] Removing /usr/share/dotnet..."
-            sudo rm -rf /usr/share/dotnet 2>&1 | grep -v "Permission denied" || true
-          fi
-           
-          # Remove GHC (safe — Python/pytest don't depend on it)
-          if [ -d /opt/ghc ]; then
-            echo "[DISK-CLEANUP] Removing /opt/ghc..."
-            sudo rm -rf /opt/ghc 2>&1 | grep -v "Permission denied" || true
-          fi
-           
-          # Remove boost (safe — Python/pytest don't depend on it)
-          if [ -d /usr/local/share/boost ]; then
-            echo "[DISK-CLEANUP] Removing /usr/local/share/boost..."
-            sudo rm -rf /usr/local/share/boost 2>&1 | grep -v "Permission denied" || true
-          fi
-           
-          # Remove Android NDK (safe — not needed for Python)
-          if [ -d /usr/local/lib/android ]; then
-            echo "[DISK-CLEANUP] Removing /usr/local/lib/android..."
-            sudo rm -rf /usr/local/lib/android 2>&1 | grep -v "Permission denied" || true
-          fi
-           
-          # Remove large developer tools
-          if [ -d /opt/hostedtoolcache/CodeQL ]; then
-            echo "[DISK-CLEANUP] Removing /opt/hostedtoolcache/CodeQL..."
-            sudo rm -rf /opt/hostedtoolcache/CodeQL 2>&1 | grep -v "Permission denied" || true
-          fi
-           
-          # Perform safe apt cleanup
-          echo "[DISK-CLEANUP] Running apt-get cleanup (safe, doesn't remove test deps)..."
-          sudo apt-get clean 2>&1 | grep -v "Permission denied" || true
-          sudo apt-get autoclean 2>&1 | grep -v "Permission denied" || true
-           
-          # Docker cleanup (safe — only removes dangling images/volumes)
-          echo "[DISK-CLEANUP] Docker cleanup (images, containers, dangling volumes)..."
-          # CRITICAL: Use --volumes=false to preserve named volumes (avoid breaking cache)
-          # Only remove dangling volumes, not all volumes
-          sudo docker system prune --all --force --volumes=false 2>/dev/null || true
-           
-          echo ""
-          echo "[DISK-CLEANUP] Disk space AFTER cleanup:"
-          df -h / | tail -1 | awk '{print "  Available: " $4 ", Used: " $3 ", Size: " $2}'
-           
-          # Verify we have enough disk space (need ~5GB for torch/transformers)
-          AVAILABLE=$(df / | tail -1 | awk '{print int($4 / 1024 / 1024)}')  # in GB
-          if [ "$AVAILABLE" -lt 5 ]; then
-            echo "[DISK-CLEANUP] ⚠️  WARNING: Only ${AVAILABLE}GB disk space available (need ≥5GB)"
-            echo "[DISK-CLEANUP] This may cause PyTorch/transformers installation to fail"
-          else
-            echo "[DISK-CLEANUP] ✓ Sufficient disk space: ${AVAILABLE}GB available"
-          fi
-           
-          # Verify AGENT_TOOLSDIRECTORY is intact (preserve hosted Python cache)
-          if [ -d "$AGENT_TOOLSDIRECTORY" ]; then
-            echo "[DISK-CLEANUP] ✓ AGENT_TOOLSDIRECTORY is intact: $AGENT_TOOLSDIRECTORY"
-          else
-            echo "[DISK-CLEANUP] ⚠️  AGENT_TOOLSDIRECTORY not found: $AGENT_TOOLSDIRECTORY"
-          fi
+        echo "  Python version: ${{ matrix.python-version }}"
 
-      - name: Install dependencies
-        run: |
-          PYTHON_BIN="${VENV_PYTHON:-python3}"
-          echo "[INSTALL] Using Python: $PYTHON_BIN"
-          "$PYTHON_BIN" --version
-           
-          echo ""
-          echo "[INSTALL] Step 1: Upgrade pip, wheel, setuptools..."
-          if ! "$PYTHON_BIN" -m pip install --upgrade pip wheel 2>&1 | tail -5; then
-            echo "[INSTALL] ❌ FAILED: pip upgrade failed"
-            exit 1
-          fi
-          echo "[INSTALL] ✓ pip/wheel upgraded"
-           
-          echo ""
-          echo "[INSTALL] Step 2: Install setuptools <82 (torch requirement)..."
-          if ! "$PYTHON_BIN" -m pip install 'setuptools<82' 2>&1 | tail -5; then
-            echo "[INSTALL] ❌ FAILED: setuptools installation failed"
-            exit 1
-          fi
-          echo "[INSTALL] ✓ setuptools installed"
-           
-          echo ""
-          echo "[INSTALL] Step 3: Upgrade cryptography and pyOpenSSL (Python 3.12 fix)..."
-          if ! "$PYTHON_BIN" -m pip install --upgrade cryptography pyOpenSSL 2>&1 | tail -5; then
-            echo "[INSTALL] ❌ FAILED: cryptography/pyOpenSSL upgrade failed"
-            exit 1
-          fi
-          echo "[INSTALL] ✓ cryptography/pyOpenSSL upgraded"
-           
-          echo ""
-          echo "[INSTALL] Step 4: Installing main package with extras: [rag,test]..."
-          echo "         (This will install: sentence-transformers, chromadb, faiss-cpu, pytest, torch, transformers)"
-          echo "         This may take 5-15 minutes depending on cache status..."
-           
-          # Monitor disk space during installation
-          INSTALL_START=$(date +%s)
-          if ! timeout 900 "$PYTHON_BIN" -m pip install --no-cache-dir -e ".[rag,test]" 2>&1 | tee /tmp/install_main.log; then
-            INSTALL_EXIT=$?
-            INSTALL_END=$(date +%s)
-            INSTALL_DURATION=$((INSTALL_END - INSTALL_START))
-             
-            echo "[INSTALL] ❌ FAILED: Main package installation failed (exit: $INSTALL_EXIT, duration: ${INSTALL_DURATION}s)"
-            echo "[INSTALL] Disk space during failure:"
-            df -h / | tail -1 | awk '{print "  Available: " $4 ", Used: " $3 ", Size: " $2}'
-            echo "[INSTALL] Last 50 lines of install log:"
-            tail -50 /tmp/install_main.log
-             
-            # Check for specific failure patterns
-            if grep -q "No space left on device" /tmp/install_main.log; then
-              echo "[INSTALL] ❌ ROOT CAUSE: Disk space exhausted during installation"
-            elif grep -q "timeout" /tmp/install_main.log; then
-              echo "[INSTALL] ❌ ROOT CAUSE: Installation timed out (>15 min)"
-            elif grep -q "Connection refused\|Unable to connect" /tmp/install_main.log; then
-              echo "[INSTALL] ❌ ROOT CAUSE: Network connection failure"
-            fi
-            exit 1
-          fi
-           
-          INSTALL_END=$(date +%s)
-          INSTALL_DURATION=$((INSTALL_END - INSTALL_START))
-          echo "[INSTALL] ✓ Main package installation successful (${INSTALL_DURATION}s)"
-           
-          echo ""
-          echo "[INSTALL] Step 5: Force-reinstall pytest plugins with pinned versions..."
-          PYTEST_PLUGINS=(
-            "pytest==9.0.2"
-            "pytest-cov==7.0.0"
-            "pytest-xdist==3.8.0"
-            "pytest-timeout==2.3.1"
-            "pytest-rerunfailures==14.0"
-            "pytest-randomly==3.16.0"
-            "coverage>=7.10.6,<8"
-          )
-          for plugin in "${PYTEST_PLUGINS[@]}"; do
-            echo "  Installing: $plugin"
-          done
-          if ! "$PYTHON_BIN" -m pip install --no-cache-dir --force-reinstall "${PYTEST_PLUGINS[@]}" 2>&1 | tail -10; then
-            echo "[INSTALL] ❌ FAILED: pytest plugins installation failed"
-            exit 1
-          fi
-          echo "[INSTALL] ✓ pytest plugins installation successful"
-           
-          echo ""
-          echo "[INSTALL] Step 6: Verify all plugins are importable..."
-          if ! "$PYTHON_BIN" scripts/ci/verify_pytest_plugins.py; then
-            echo "[INSTALL] ❌ FAILED: Plugin verification failed"
-            exit 1
-          fi
-          echo "[INSTALL] ✓ All plugins verified as importable"
-           
-          echo ""
-          echo "[INSTALL] Step 7: Verify pytest and dependencies..."
-          "$PYTHON_BIN" -m pytest --version
-           
-          # List installed key packages for debugging
-          echo ""
-          echo "[INSTALL] Step 8: Verify key packages installed..."
-          for pkg in pytest sentence-transformers torch transformers chromadb faiss-cpu; do
-            if "$PYTHON_BIN" -c "import ${pkg/./-}; print(f'  ✓ {pkg}'); __import__('${pkg/./-}').__version__ and print(f'    Version: ' + __import__(\"${pkg/./-}\").__version__)" 2>/dev/null; then
-              :
-            else
-              echo "  ❌ Missing: $pkg"
-              exit 1
-            fi
-          done
-           
-          echo ""
-          echo "[INSTALL] ✅ All dependencies installed successfully"
-          echo "[INSTALL] Final disk space:"
-          df -h / | tail -1 | awk '{print "  Available: " $4 ", Used: " $3 ", Size: " $2}'
+        echo ""
 
-      - name: Pre-download embedding models
-        id: model-cache
-        continue-on-error: true
-        env:
-         HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: |
-          PYTHON_BIN="${VENV_PYTHON:-python3}"
-          CACHE_DIR="$HOME/.cache/torch/sentence_transformers"
-           
-          echo "[MODEL-CACHE] Starting sentence-transformers model pre-download..."
-          echo "[MODEL-CACHE] Cache directory: $CACHE_DIR"
-          echo ""
-           
-          mkdir -p "$CACHE_DIR"
-          echo "[MODEL-CACHE] ✓ Cache directory created/verified"
-           
-          echo "[MODEL-CACHE] Disk space before model download:"
-          df -h / | tail -1 | awk '{print "  Available: " $4 ", Used: " $3 ", Size: " $2}'
-           
-          CACHE_START=$(date +%s)
-          echo "[MODEL-CACHE] Downloading all-MiniLM-L6-v2 model (this may take 2-5 minutes)..."
-          "$PYTHON_BIN" << 'PYTHON_SCRIPT'
-          from sentence_transformers import SentenceTransformer
-          import os
-          import sys
-          import time
-           
-          try:
-              cache_dir = os.path.expanduser('~/.cache/torch/sentence_transformers')
-              os.makedirs(cache_dir, exist_ok=True)
-               
-              print(f"[MODEL-CACHE] Pre-downloading sentence-transformers model...")
-              hf_token = os.getenv('HF_TOKEN') or None
-               
-              if hf_token and hf_token.strip():
-                  print(f"[MODEL-CACHE] Using HF_TOKEN (first 10 chars): {hf_token[:10]}...")
-              else:
-                  print("[MODEL-CACHE] No HF_TOKEN provided (using public access)")
-                  hf_token = None
-               
-              start_time = time.time()
-               
-              model = SentenceTransformer(
-                  'sentence-transformers/all-MiniLM-L6-v2',
-                  cache_folder=cache_dir,
-                  token=hf_token
-              )
-               
-              load_time = time.time() - start_time
-               
-              # Verify the model is functional
-              print("[MODEL-CACHE] Testing model functionality...")
-              test_sentences = ["test sentence 1", "test sentence 2"]
-              embeddings = model.encode(test_sentences)
-              print(f"[MODEL-CACHE] ✓ Model cached successfully to {cache_dir}")
-              print(f"[MODEL-CACHE] ✓ Embedding dimension verified: {embeddings.shape}")
-              print(f"[MODEL-CACHE] ✓ Model load time: {load_time:.2f}s")
-               
-          except Exception as e:
-              print(f"[MODEL-CACHE] ⚠️  Warning: Failed to pre-download model: {e}")
-              print("[MODEL-CACHE] Tests will download model on-demand (may add 2-5 min to first test)")
-              import traceback
-              traceback.print_exc()
-              sys.exit(0)  # Don't fail workflow - model will be downloaded during tests
-          PYTHON_SCRIPT
-           
-          CACHE_END=$(date +%s)
-          CACHE_DURATION=$((CACHE_END - CACHE_START))
-           
-          echo ""
-          echo "[MODEL-CACHE] Disk space after model download:"
-          df -h / | tail -1 | awk '{print "  Available: " $4 ", Used: " $3 ", Size: " $2}'
-           
-          echo ""
-          echo "[MODEL-CACHE] Model cache contents:"
-          ls -lh "$CACHE_DIR" 2>/dev/null | head -10 || echo "[MODEL-CACHE] Cache directory is empty (will download during tests)"
-           
-          echo "[MODEL-CACHE] Model pre-download completed in ${CACHE_DURATION}s (or skipped with warning)"
+        echo "[SETUP] Timestamp: $(date -u +''%Y-%m-%d %H:%M:%S UTC'')"
 
-      - name: Run RAG tests with coverage
-        id: run-tests
-        env:
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
-          HUGGING_FACE_HUB_TOKEN: ${{ secrets.HF_TOKEN }}
-          RAG_OPENAI_KEY: ${{ secrets.RAG_OPENAI_KEY }}
-        run: |
-          PYTHON_BIN="${VENV_PYTHON:-python3}"
-          echo "[TEST-RUN] Using Python: $PYTHON_BIN"
-          "$PYTHON_BIN" --version
-          echo "[TEST-RUN] pytest version:"
-          "$PYTHON_BIN" -m pytest --version
-           
-          # Ensure plugins are loaded before running tests
-          export PYTHONPATH="${PYTHONPATH}:$(pwd)/src"
-          echo "[TEST-RUN] PYTHONPATH: $PYTHONPATH"
-          echo ""
-           
-          # Pre-test environment checks
-          echo "[TEST-RUN] ========== Pre-Test Environment Check =========="
-          echo "[TEST-RUN] Disk space:"
-          df -h / | tail -1 | awk '{print "  Available: " $4 ", Used: " $3 ", Size: " $2}'
-           
-          echo "[TEST-RUN] Memory info:"
-          free -h | head -2 | tail -1 | awk '{print "  Total: " $2 ", Used: " $3 ", Available: " $7}'
-           
-          echo "[TEST-RUN] System info:"
-          echo "  CPU cores: $(nproc)"
-          echo "  Uptime: $(uptime -p)"
-          echo ""
-           
-          echo "[TEST-RUN] Verifying test files exist..."
-          TEST_FILES=(
-            "tests/test_rag_*.py"
-            "tests/rag/"
-          )
-          TOTAL_TEST_FILES=0
-          for pattern in "${TEST_FILES[@]}"; do
-            count=$(find $pattern -type f -name "*.py" 2>/dev/null | wc -l)
-            if [ "$count" -gt 0 ]; then
-              echo "[TEST-RUN] ✓ Found $count test files matching $pattern"
-              TOTAL_TEST_FILES=$((TOTAL_TEST_FILES + count))
-            fi
-          done
-           
-          if [ "$TOTAL_TEST_FILES" -eq 0 ]; then
-            echo "[TEST-RUN] ❌ ERROR: No test files found!"
-            exit 1
-          fi
-          echo "[TEST-RUN] Total test files: $TOTAL_TEST_FILES"
-          echo ""
-           
-          echo "[TEST-RUN] ========== Test Execution Configuration =========="
-          echo "[TEST-RUN] Module: src/codex/rag"
-          echo "[TEST-RUN] Coverage config: tests/rag/.coveragerc"
-          echo "[TEST-RUN] Individual test timeout: 300s (5 min)"
-          echo "[TEST-RUN] Workflow timeout: 60 minutes"
-          echo "[TEST-RUN] Parallel execution: Disabled (serial mode)"
-          echo ""
-           
-          # Run RAG tests serially to avoid xdist worker plugin-discovery failures
-          # (workers crash when pytest-cov/timeout aren't auto-discoverable in the worker env)
-          #
-          # --cov-config=tests/rag/.coveragerc scopes coverage to src/codex/rag only,
-          # preventing the global .coveragerc `source=src` from diluting the line-rate.
-          # (S235 fix: on main branch `--cov=src` was measuring all of src/ with only
-          # RAG tests running → 5 % line-rate; this config isolates the RAG module.)
-           
-          echo "[TEST-RUN] ========== Starting Test Execution =========="
-          TEST_START=$(date +%s)
-          TEST_START_ISO=$(date -u +'%Y-%m-%d %H:%M:%S UTC')
-          echo "[TEST-RUN] Start time: $TEST_START_ISO"
-          echo ""
-           
-          # Run tests with comprehensive output
-          if timeout 3300 "$PYTHON_BIN" -m pytest tests/test_rag_*.py tests/rag/ \
-            -v \
-            --tb=short \
-            --timeout=300 \
-            --timeout-method=signal \
-            --cov=src/codex/rag \
-            --cov-config=tests/rag/.coveragerc \
-            --cov-report=xml \
-            --cov-report=html \
-            --cov-report=term-missing 2>&1 | tee /tmp/test_output.log; then
-            TEST_EXIT=0
-            TEST_STATUS="PASSED"
-            echo "[TEST-RUN] ✅ Tests PASSED"
-          else
-            TEST_EXIT=$?
-            TEST_STATUS="FAILED"
-            echo "[TEST-RUN] ❌ Tests FAILED with exit code $TEST_EXIT"
-          fi
-          TEST_END=$(date +%s)
-          TEST_END_ISO=$(date -u +'%Y-%m-%d %H:%M:%S UTC')
-          TEST_DURATION=$((TEST_END - TEST_START))
-          TEST_DURATION_MIN=$((TEST_DURATION / 60))
-          TEST_DURATION_SEC=$((TEST_DURATION % 60))
-           
-          echo ""
-          echo "[TEST-RUN] ========== Test Execution Summary =========="
-          echo "[TEST-RUN] End time: $TEST_END_ISO"
-          echo "[TEST-RUN] Duration: ${TEST_DURATION_MIN}m ${TEST_DURATION_SEC}s"
-          echo "[TEST-RUN] Status: $TEST_STATUS"
-          echo ""
-           
-          # Analyze test output for patterns
-          if grep -q "FAILED" /tmp/test_output.log; then
-            FAILED_COUNT=$(grep -c "^FAILED" /tmp/test_output.log)
-            echo "[TEST-RUN] Failed tests: $FAILED_COUNT"
-          fi
-           
-          if grep -q "passed" /tmp/test_output.log; then
-            # Extract summary line
-            grep "passed" /tmp/test_output.log | tail -1 | sed 's/^/[TEST-RUN] /'
-          fi
-           
-          echo ""
-          echo "[TEST-RUN] ========== Artifact Verification =========="
-           
-          if [ -f coverage.xml ]; then
-            COVERAGE_SIZE=$(du -h coverage.xml | cut -f1)
-            echo "[TEST-RUN] ✓ coverage.xml generated ($COVERAGE_SIZE)"
-            # Verify XML is valid
-            if "$PYTHON_BIN" -c "import xml.etree.ElementTree as ET; ET.parse('coverage.xml')" 2>/dev/null; then
-              echo "[TEST-RUN] ✓ coverage.xml is valid XML"
-            else
-              echo "[TEST-RUN] ⚠️  coverage.xml appears to be invalid XML"
-            fi
-          else
-            echo "[TEST-RUN] ❌ coverage.xml NOT FOUND"
-            TEST_EXIT=1
-          fi
-           
-          if [ -d htmlcov ]; then
-            HTMLCOV_SIZE=$(du -sh htmlcov | cut -f1)
-            HTMLCOV_FILES=$(find htmlcov -type f | wc -l)
-            echo "[TEST-RUN] ✓ htmlcov/ generated ($HTMLCOV_SIZE, $HTMLCOV_FILES files)"
-          else
-            echo "[TEST-RUN] ❌ htmlcov/ NOT FOUND"
-            TEST_EXIT=1
-          fi
-           
-          echo ""
-          if [ $TEST_EXIT -eq 0 ]; then
-            echo "[TEST-RUN] ✅ All test artifacts verified successfully"
-          else
-            echo "[TEST-RUN] ❌ Test artifact verification FAILED"
-            echo "[TEST-RUN] Last 100 lines of test output:"
-            tail -100 /tmp/test_output.log
-          fi
-           
-          echo "[TEST-RUN] Final disk space:"
-          df -h / | tail -1 | awk '{print "  Available: " $4 ", Used: " $3 ", Size: " $2}'
-           
-          exit $TEST_EXIT
+        echo "[SETUP] System info:"
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354
-        if: always()
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage.xml
-          flags: rag-modules
-          name: rag-coverage-${{ matrix.python-version }}
-          fail_ci_if_error: false
+        echo "  OS: $(uname -s)"
 
-      - name: Upload HTML coverage report
-        uses: actions/upload-artifact@v5 # v7.0.1
-        if: always()
-        with:
-          name: coverage-report-${{ matrix.python-version }}
-          path: htmlcov/
-          retention-days: 30
-          if-no-files-found: warn
+        echo "  Arch: $(uname -m)"
 
-      - name: Check coverage threshold
-        run: |
-          PYTHON_BIN="${VENV_PYTHON:-python3}"
-          echo "[COVERAGE-CHECK] ========== Coverage Threshold Check =========="
-          echo "[COVERAGE-CHECK] Parsing coverage.xml..."
-          echo ""
-           
-          if [ ! -f coverage.xml ]; then
-            echo "[COVERAGE-CHECK] ❌ ERROR: coverage.xml not found!"
-            echo "[COVERAGE-CHECK] Current directory contents:"
-            ls -la | head -20
-            echo "[COVERAGE-CHECK] Looking for coverage files:"
-            find . -name "coverage*" -type f 2>/dev/null | head -10
-            exit 1
-          fi
-           
-          COVERAGE_SIZE=$(du -h coverage.xml | cut -f1)
-          echo "[COVERAGE-CHECK] coverage.xml exists ($COVERAGE_SIZE)"
-           
-          # Parse coverage from XML report with detailed error reporting
-          echo "[COVERAGE-CHECK] Extracting coverage percentage from XML..."
-          if ! COVERAGE=$("$PYTHON_BIN" << 'COVERAGE_PARSER'
-          import xml.etree.ElementTree as ET
-          import sys
-           
-          try:
-              tree = ET.parse('coverage.xml')
-              root = tree.getroot()
-              line_rate = float(root.attrib.get('line-rate', 0)) * 100
-              print(f'{line_rate:.2f}')
-          except ET.ParseError as e:
-              print(f'ERROR: XML parse error: {e}', file=sys.stderr)
-              print('0.00')  # Return 0 to cause failure below
-              sys.exit(1)
-          except KeyError as e:
-              print(f'ERROR: Missing attribute in XML: {e}', file=sys.stderr)
-              print('0.00')
-              sys.exit(1)
-          except Exception as e:
-              print(f'ERROR: {e}', file=sys.stderr)
-              print('0.00')
-              sys.exit(1)
-          COVERAGE_PARSER
-          ); then
-            echo "[COVERAGE-CHECK] ❌ Failed to parse coverage.xml"
-            echo "[COVERAGE-CHECK] First 30 lines of coverage.xml:"
-            head -30 coverage.xml
-            exit 1
-          fi
-           
-          echo "[COVERAGE-CHECK] Coverage percentage extracted: ${COVERAGE}%"
-          echo ""
-           
-          # Minimum coverage threshold — raised incrementally each S-session.
-          # Baseline is ~27.5%; raised from 27% → 30% in S195, 30% → 35% in S197, 35% → 40% in S198, 40% → 45% in S199, 45% → 50% in S200, 50% → 60% in S201 (2026-03-25), 60% → 70% in S203 (2026-03-25), 70% → 80% in S204 (2026-03-25), 80% → 85% in S209 (2026-03-26), 85% → 90% in S211 (2026-03-26), 90% → 95% in S212 (2026-03-26), 95% → 95% in S228 (2026-05-09).
-          # Long-term target: 95% coverage.
-          THRESHOLD=95
-           
-          echo "[COVERAGE-CHECK] Coverage threshold: $THRESHOLD%"
-          echo "[COVERAGE-CHECK] Current coverage: $COVERAGE%"
-          echo ""
-           
-          if (( $(echo "$COVERAGE < $THRESHOLD" | bc -l) )); then
-            echo "[COVERAGE-CHECK] ❌ Coverage ${COVERAGE}% is below ${THRESHOLD}% threshold"
-            echo "[COVERAGE-CHECK] This workflow requires >= $THRESHOLD% coverage for RAG module"
-            echo "[COVERAGE-CHECK] Gap: $("$PYTHON_BIN" -c "print(f'{$THRESHOLD - $COVERAGE:.2f}%')")"
-            exit 1
-          else
-            COVERAGE_BUFFER=$("$PYTHON_BIN" -c "print(f'{$COVERAGE - $THRESHOLD:.2f}%')")
-            echo "[COVERAGE-CHECK] ✅ Coverage ${COVERAGE}% meets ${THRESHOLD}% threshold"
-            echo "[COVERAGE-CHECK] Buffer: +${COVERAGE_BUFFER}"
-          fi
-           
-          echo ""
-          echo "[COVERAGE-CHECK] ✅ Coverage check passed"
+        echo "  Total CPU cores: $(nproc)"
 
-      - name: Security scan
-        run: |
-          PYTHON_BIN="${VENV_PYTHON:-python3}"
-           
-          echo "[SECURITY] ========== Security Scan =========="
-          echo "[SECURITY] Installing bandit..."
-          if ! "$PYTHON_BIN" -m pip install bandit 2>&1 | tail -3; then
-            echo "[SECURITY] ⚠️  Warning: bandit installation failed, skipping security scan"
-            echo "[SECURITY] No security issues found by Bandit (scan skipped)" > bandit-report.txt
-            exit 0
-          fi
-           
-          echo "[SECURITY] Running bandit security scan on src/codex/rag/..."
-          echo "[SECURITY] Scan start time: $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
-           
-          if "$PYTHON_BIN" -m bandit -r src/codex/rag/ -f txt -o bandit-report.txt 2>&1 | tee /tmp/bandit_output.log; then
-            BANDIT_EXIT=0
-            echo "[SECURITY] ✓ Bandit completed successfully"
-          else
-            BANDIT_EXIT=$?
-            echo "[SECURITY] ⚠️  Bandit found potential issues (exit code $BANDIT_EXIT)"
-          fi
-           
-          # Ensure file exists even if bandit fails or produces no output
-          touch bandit-report.txt
-           
-          echo "[SECURITY] Scan end time: $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
-          echo ""
-           
-          if [ -s bandit-report.txt ]; then
-            REPORT_SIZE=$(du -h bandit-report.txt | cut -f1)
-            LINE_COUNT=$(wc -l < bandit-report.txt)
-            echo "[SECURITY] ✓ bandit-report.txt generated ($REPORT_SIZE, $LINE_COUNT lines)"
-            echo "[SECURITY] Report content:"
-            cat bandit-report.txt
-          else
-            echo "[SECURITY] ✓ No security issues found by Bandit" | tee -a bandit-report.txt
-            cat bandit-report.txt
-          fi
-           
-          echo ""
-          echo "[SECURITY] ✅ Security scan completed"
+        '
+    - name: Set up Python (cached)
+      id: setup-python
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache-tier: pytorch
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+    - name: Verify Python setup
+      run: "echo \"[SETUP] Python setup completed\"\necho \"  Cache hit: ${{ steps.setup-python.outputs.cache-hit\
+        \ }}\"\necho \"  venv-python: ${{ steps.setup-python.outputs.venv-python }}\"\
+        \nexport VENV_PYTHON=\"${{ steps.setup-python.outputs.venv-python }}\"\necho\
+        \ \"VENV_PYTHON=${VENV_PYTHON}\" >> \"$GITHUB_ENV\"\necho \"[SETUP] Timestamp:\
+        \ $(date -u +'%Y-%m-%d %H:%M:%S UTC')\"\n\"$VENV_PYTHON\" --version\n\"$VENV_PYTHON\"\
+        \ -m pip --version\n \n# Verify venv directory exists\nif [ ! -d \"$(dirname\
+        \ \"$VENV_PYTHON\")\" ]; then\n  echo \"[SETUP] \u274C CRITICAL: venv directory\
+        \ not found at $(dirname \"$VENV_PYTHON\")\"\n  exit 1\nfi\necho \"[SETUP]\
+        \ \u2713 venv directory verified at $(dirname \"$VENV_PYTHON\")\"\n"
+    - name: Cache sentence-transformers models
+      uses: actions/cache@v5
+      with:
+        path: ~/.cache/torch/sentence_transformers
+        key: ${{ runner.os }}-sentence-transformers-py${{ matrix.python-version }}-${{
+          hashFiles('**/pyproject.toml') }}
+        restore-keys: '${{ runner.os }}-sentence-transformers-py${{ matrix.python-version
+          }}-
 
-      - name: Cache health report
-        if: always()
-        continue-on-error: true
-        run: |
-          PYTHON_BIN="${VENV_PYTHON:-python3}"
-           
-          echo "[CACHE-HEALTH] ========== Cache Health Report =========="
-          echo "[CACHE-HEALTH] Timestamp: $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
-          echo ""
-           
-          # Check Python package cache
-          echo "[CACHE-HEALTH] Python package cache status:"
-          if [ -d ~/.cache/pip ]; then
-            pip_cache_size=$(du -sh ~/.cache/pip 2>/dev/null | cut -f1)
-            echo "  ✓ pip cache: $pip_cache_size"
-          else
-            echo "  - pip cache: not found"
-          fi
-           
-          # Check sentence-transformers model cache
-          echo "[CACHE-HEALTH] Sentence-transformers model cache status:"
-          if [ -d ~/.cache/torch/sentence_transformers ]; then
-            st_cache_size=$(du -sh ~/.cache/torch/sentence_transformers 2>/dev/null | cut -f1)
-            st_files=$(find ~/.cache/torch/sentence_transformers -type f 2>/dev/null | wc -l)
-            echo "  ✓ Cache directory: $st_cache_size ($st_files files)"
-          else
-            echo "  - Cache directory: not found"
-          fi
-           
-          # Check torch cache
-          echo "[CACHE-HEALTH] PyTorch cache status:"
-          if [ -d ~/.cache/torch ]; then
-            torch_cache_size=$(du -sh ~/.cache/torch 2>/dev/null | cut -f1)
-            echo "  ✓ torch cache: $torch_cache_size"
-          else
-            echo "  - torch cache: not found"
-          fi
-           
-          # Check HuggingFace cache
-          echo "[CACHE-HEALTH] HuggingFace cache status:"
-          if [ -d ~/.cache/huggingface ]; then
-            hf_cache_size=$(du -sh ~/.cache/huggingface 2>/dev/null | cut -f1)
-            echo "  ✓ HuggingFace cache: $hf_cache_size"
-          else
-            echo "  - HuggingFace cache: not found"
-          fi
-           
-          echo ""
-          echo "[CACHE-HEALTH] Disk usage summary:"
-          df -h / | tail -1 | awk '{print "  Root: " $2 " total, " $4 " available (" int($4/$2*100) "%)"}'
-           
-          echo ""
-           
-          # Optional: Try to generate cache health check via script
-          if [ -f scripts/ci/generate_cache_keys.py ]; then
-            echo "[CACHE-HEALTH] Running cache health check script..."
-            "$PYTHON_BIN" scripts/ci/generate_cache_keys.py --type pip --workflow test-rag --health 2>/dev/null || \
-              echo "[CACHE-HEALTH] ⚠️  Cache health check script failed (non-critical)"
-          else
-            echo "[CACHE-HEALTH] ⚠️  generate_cache_keys.py not found (skipping detailed check)"
-          fi
-           
-          echo "[CACHE-HEALTH] ✅ Cache health report complete"
+          ${{ runner.os }}-sentence-transformers-
 
-      - name: Upload security report
-        uses: actions/upload-artifact@v5 # v7.0.1
-        if: always()
-        with:
-          name: security-report-${{ matrix.python-version }}
-          path: bandit-report.txt
-          retention-days: 30
-          if-no-files-found: warn
-
-  # ── rescue comment — posted on PR whenever this workflow fails ──────────
+          '
+    - name: Free disk space
+      run: "echo \"[DISK-CLEANUP] Starting disk cleanup...\"\necho \"\"\necho \"[DISK-CLEANUP]\
+        \ Disk space BEFORE cleanup:\"\ndf -h / | tail -1 | awk '{print \"  Available:\
+        \ \" $4 \", Used: \" $3 \", Size: \" $2}'\necho \"\"\n \n# CRITICAL: These\
+        \ steps must NOT affect the venv or build tools\necho \"[DISK-CLEANUP] Removing\
+        \ large system packages that don't affect test runs...\"\n \n# Remove dotnet\
+        \ (safe \u2014 Python/pytest don't depend on it)\nif [ -d /usr/share/dotnet\
+        \ ]; then\n  echo \"[DISK-CLEANUP] Removing /usr/share/dotnet...\"\n  sudo\
+        \ rm -rf /usr/share/dotnet 2>&1 | grep -v \"Permission denied\" || true\n\
+        fi\n \n# Remove GHC (safe \u2014 Python/pytest don't depend on it)\nif [ -d\
+        \ /opt/ghc ]; then\n  echo \"[DISK-CLEANUP] Removing /opt/ghc...\"\n  sudo\
+        \ rm -rf /opt/ghc 2>&1 | grep -v \"Permission denied\" || true\nfi\n \n# Remove\
+        \ boost (safe \u2014 Python/pytest don't depend on it)\nif [ -d /usr/local/share/boost\
+        \ ]; then\n  echo \"[DISK-CLEANUP] Removing /usr/local/share/boost...\"\n\
+        \  sudo rm -rf /usr/local/share/boost 2>&1 | grep -v \"Permission denied\"\
+        \ || true\nfi\n \n# Remove Android NDK (safe \u2014 not needed for Python)\n\
+        if [ -d /usr/local/lib/android ]; then\n  echo \"[DISK-CLEANUP] Removing /usr/local/lib/android...\"\
+        \n  sudo rm -rf /usr/local/lib/android 2>&1 | grep -v \"Permission denied\"\
+        \ || true\nfi\n \n# Remove large developer tools\nif [ -d /opt/hostedtoolcache/CodeQL\
+        \ ]; then\n  echo \"[DISK-CLEANUP] Removing /opt/hostedtoolcache/CodeQL...\"\
+        \n  sudo rm -rf /opt/hostedtoolcache/CodeQL 2>&1 | grep -v \"Permission denied\"\
+        \ || true\nfi\n \n# Perform safe apt cleanup\necho \"[DISK-CLEANUP] Running\
+        \ apt-get cleanup (safe, doesn't remove test deps)...\"\nsudo apt-get clean\
+        \ 2>&1 | grep -v \"Permission denied\" || true\nsudo apt-get autoclean 2>&1\
+        \ | grep -v \"Permission denied\" || true\n \n# Docker cleanup (safe \u2014\
+        \ only removes dangling images/volumes)\necho \"[DISK-CLEANUP] Docker cleanup\
+        \ (images, containers, dangling volumes)...\"\n# CRITICAL: Use --volumes=false\
+        \ to preserve named volumes (avoid breaking cache)\n# Only remove dangling\
+        \ volumes, not all volumes\nsudo docker system prune --all --force --volumes=false\
+        \ 2>/dev/null || true\n \necho \"\"\necho \"[DISK-CLEANUP] Disk space AFTER\
+        \ cleanup:\"\ndf -h / | tail -1 | awk '{print \"  Available: \" $4 \", Used:\
+        \ \" $3 \", Size: \" $2}'\n \n# Verify we have enough disk space (need ~5GB\
+        \ for torch/transformers)\nAVAILABLE=$(df / | tail -1 | awk '{print int($4\
+        \ / 1024 / 1024)}')  # in GB\nif [ \"$AVAILABLE\" -lt 5 ]; then\n  echo \"\
+        [DISK-CLEANUP] \u26A0\uFE0F  WARNING: Only ${AVAILABLE}GB disk space available\
+        \ (need \u22655GB)\"\n  echo \"[DISK-CLEANUP] This may cause PyTorch/transformers\
+        \ installation to fail\"\nelse\n  echo \"[DISK-CLEANUP] \u2713 Sufficient\
+        \ disk space: ${AVAILABLE}GB available\"\nfi\n \n# Verify AGENT_TOOLSDIRECTORY\
+        \ is intact (preserve hosted Python cache)\nif [ -d \"$AGENT_TOOLSDIRECTORY\"\
+        \ ]; then\n  echo \"[DISK-CLEANUP] \u2713 AGENT_TOOLSDIRECTORY is intact:\
+        \ $AGENT_TOOLSDIRECTORY\"\nelse\n  echo \"[DISK-CLEANUP] \u26A0\uFE0F  AGENT_TOOLSDIRECTORY\
+        \ not found: $AGENT_TOOLSDIRECTORY\"\nfi\n"
+    - name: Install dependencies
+      run: "PYTHON_BIN=\"${VENV_PYTHON:-python3}\"\necho \"[INSTALL] Using Python:\
+        \ $PYTHON_BIN\"\n\"$PYTHON_BIN\" --version\n \necho \"\"\necho \"[INSTALL]\
+        \ Step 1: Upgrade pip, wheel, setuptools...\"\nif ! \"$PYTHON_BIN\" -m pip\
+        \ install --upgrade pip wheel 2>&1 | tail -5; then\n  echo \"[INSTALL] \u274C\
+        \ FAILED: pip upgrade failed\"\n  exit 1\nfi\necho \"[INSTALL] \u2713 pip/wheel\
+        \ upgraded\"\n \necho \"\"\necho \"[INSTALL] Step 2: Install setuptools <82\
+        \ (torch requirement)...\"\nif ! \"$PYTHON_BIN\" -m pip install 'setuptools<82'\
+        \ 2>&1 | tail -5; then\n  echo \"[INSTALL] \u274C FAILED: setuptools installation\
+        \ failed\"\n  exit 1\nfi\necho \"[INSTALL] \u2713 setuptools installed\"\n\
+        \ \necho \"\"\necho \"[INSTALL] Step 3: Upgrade cryptography and pyOpenSSL\
+        \ (Python 3.12 fix)...\"\nif ! \"$PYTHON_BIN\" -m pip install --upgrade cryptography\
+        \ pyOpenSSL 2>&1 | tail -5; then\n  echo \"[INSTALL] \u274C FAILED: cryptography/pyOpenSSL\
+        \ upgrade failed\"\n  exit 1\nfi\necho \"[INSTALL] \u2713 cryptography/pyOpenSSL\
+        \ upgraded\"\n \necho \"\"\necho \"[INSTALL] Step 4: Installing main package\
+        \ with extras: [rag,test]...\"\necho \"         (This will install: sentence-transformers,\
+        \ chromadb, faiss-cpu, pytest, torch, transformers)\"\necho \"         This\
+        \ may take 5-15 minutes depending on cache status...\"\n \n# Monitor disk\
+        \ space during installation\nINSTALL_START=$(date +%s)\nif ! timeout 900 \"\
+        $PYTHON_BIN\" -m pip install --no-cache-dir -e \".[rag,test]\" 2>&1 | tee\
+        \ /tmp/install_main.log; then\n  INSTALL_EXIT=$?\n  INSTALL_END=$(date +%s)\n\
+        \  INSTALL_DURATION=$((INSTALL_END - INSTALL_START))\n   \n  echo \"[INSTALL]\
+        \ \u274C FAILED: Main package installation failed (exit: $INSTALL_EXIT, duration:\
+        \ ${INSTALL_DURATION}s)\"\n  echo \"[INSTALL] Disk space during failure:\"\
+        \n  df -h / | tail -1 | awk '{print \"  Available: \" $4 \", Used: \" $3 \"\
+        , Size: \" $2}'\n  echo \"[INSTALL] Last 50 lines of install log:\"\n  tail\
+        \ -50 /tmp/install_main.log\n   \n  # Check for specific failure patterns\n\
+        \  if grep -q \"No space left on device\" /tmp/install_main.log; then\n  \
+        \  echo \"[INSTALL] \u274C ROOT CAUSE: Disk space exhausted during installation\"\
+        \n  elif grep -q \"timeout\" /tmp/install_main.log; then\n    echo \"[INSTALL]\
+        \ \u274C ROOT CAUSE: Installation timed out (>15 min)\"\n  elif grep -q \"\
+        Connection refused\\|Unable to connect\" /tmp/install_main.log; then\n   \
+        \ echo \"[INSTALL] \u274C ROOT CAUSE: Network connection failure\"\n  fi\n\
+        \  exit 1\nfi\n \nINSTALL_END=$(date +%s)\nINSTALL_DURATION=$((INSTALL_END\
+        \ - INSTALL_START))\necho \"[INSTALL] \u2713 Main package installation successful\
+        \ (${INSTALL_DURATION}s)\"\n \necho \"\"\necho \"[INSTALL] Step 5: Force-reinstall\
+        \ pytest plugins with pinned versions...\"\nPYTEST_PLUGINS=(\n  \"pytest==9.0.2\"\
+        \n  \"pytest-cov==7.0.0\"\n  \"pytest-xdist==3.8.0\"\n  \"pytest-timeout==2.3.1\"\
+        \n  \"pytest-rerunfailures==14.0\"\n  \"pytest-randomly==3.16.0\"\n  \"coverage>=7.10.6,<8\"\
+        \n)\nfor plugin in \"${PYTEST_PLUGINS[@]}\"; do\n  echo \"  Installing: $plugin\"\
+        \ndone\nif ! \"$PYTHON_BIN\" -m pip install --no-cache-dir --force-reinstall\
+        \ \"${PYTEST_PLUGINS[@]}\" 2>&1 | tail -10; then\n  echo \"[INSTALL] \u274C\
+        \ FAILED: pytest plugins installation failed\"\n  exit 1\nfi\necho \"[INSTALL]\
+        \ \u2713 pytest plugins installation successful\"\n \necho \"\"\necho \"[INSTALL]\
+        \ Step 6: Verify all plugins are importable...\"\nif ! \"$PYTHON_BIN\" scripts/ci/verify_pytest_plugins.py;\
+        \ then\n  echo \"[INSTALL] \u274C FAILED: Plugin verification failed\"\n \
+        \ exit 1\nfi\necho \"[INSTALL] \u2713 All plugins verified as importable\"\
+        \n \necho \"\"\necho \"[INSTALL] Step 7: Verify pytest and dependencies...\"\
+        \n\"$PYTHON_BIN\" -m pytest --version\n \n# List installed key packages for\
+        \ debugging\necho \"\"\necho \"[INSTALL] Step 8: Verify key packages installed...\"\
+        \nfor pkg in pytest sentence-transformers torch transformers chromadb faiss-cpu;\
+        \ do\n  if \"$PYTHON_BIN\" -c \"import ${pkg/./-}; print(f'  \u2713 {pkg}');\
+        \ __import__('${pkg/./-}').__version__ and print(f'    Version: ' + __import__(\\\
+        \"${pkg/./-}\\\").__version__)\" 2>/dev/null; then\n    :\n  else\n    echo\
+        \ \"  \u274C Missing: $pkg\"\n    exit 1\n  fi\ndone\n \necho \"\"\necho \"\
+        [INSTALL] \u2705 All dependencies installed successfully\"\necho \"[INSTALL]\
+        \ Final disk space:\"\ndf -h / | tail -1 | awk '{print \"  Available: \" $4\
+        \ \", Used: \" $3 \", Size: \" $2}'\n"
+    - name: Pre-download embedding models
+      id: model-cache
+      continue-on-error: true
+      env:
+        HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      run: "PYTHON_BIN=\"${VENV_PYTHON:-python3}\"\nCACHE_DIR=\"$HOME/.cache/torch/sentence_transformers\"\
+        \n \necho \"[MODEL-CACHE] Starting sentence-transformers model pre-download...\"\
+        \necho \"[MODEL-CACHE] Cache directory: $CACHE_DIR\"\necho \"\"\n \nmkdir\
+        \ -p \"$CACHE_DIR\"\necho \"[MODEL-CACHE] \u2713 Cache directory created/verified\"\
+        \n \necho \"[MODEL-CACHE] Disk space before model download:\"\ndf -h / | tail\
+        \ -1 | awk '{print \"  Available: \" $4 \", Used: \" $3 \", Size: \" $2}'\n\
+        \ \nCACHE_START=$(date +%s)\necho \"[MODEL-CACHE] Downloading all-MiniLM-L6-v2\
+        \ model (this may take 2-5 minutes)...\"\n\"$PYTHON_BIN\" << 'PYTHON_SCRIPT'\n\
+        from sentence_transformers import SentenceTransformer\nimport os\nimport sys\n\
+        import time\n \ntry:\n    cache_dir = os.path.expanduser('~/.cache/torch/sentence_transformers')\n\
+        \    os.makedirs(cache_dir, exist_ok=True)\n     \n    print(f\"[MODEL-CACHE]\
+        \ Pre-downloading sentence-transformers model...\")\n    hf_token = os.getenv('HF_TOKEN')\
+        \ or None\n     \n    if hf_token and hf_token.strip():\n        print(f\"\
+        [MODEL-CACHE] Using HF_TOKEN (first 10 chars): {hf_token[:10]}...\")\n   \
+        \ else:\n        print(\"[MODEL-CACHE] No HF_TOKEN provided (using public\
+        \ access)\")\n        hf_token = None\n     \n    start_time = time.time()\n\
+        \     \n    model = SentenceTransformer(\n        'sentence-transformers/all-MiniLM-L6-v2',\n\
+        \        cache_folder=cache_dir,\n        token=hf_token\n    )\n     \n \
+        \   load_time = time.time() - start_time\n     \n    # Verify the model is\
+        \ functional\n    print(\"[MODEL-CACHE] Testing model functionality...\")\n\
+        \    test_sentences = [\"test sentence 1\", \"test sentence 2\"]\n    embeddings\
+        \ = model.encode(test_sentences)\n    print(f\"[MODEL-CACHE] \u2713 Model\
+        \ cached successfully to {cache_dir}\")\n    print(f\"[MODEL-CACHE] \u2713\
+        \ Embedding dimension verified: {embeddings.shape}\")\n    print(f\"[MODEL-CACHE]\
+        \ \u2713 Model load time: {load_time:.2f}s\")\n     \nexcept Exception as\
+        \ e:\n    print(f\"[MODEL-CACHE] \u26A0\uFE0F  Warning: Failed to pre-download\
+        \ model: {e}\")\n    print(\"[MODEL-CACHE] Tests will download model on-demand\
+        \ (may add 2-5 min to first test)\")\n    import traceback\n    traceback.print_exc()\n\
+        \    sys.exit(0)  # Don't fail workflow - model will be downloaded during\
+        \ tests\nPYTHON_SCRIPT\n \nCACHE_END=$(date +%s)\nCACHE_DURATION=$((CACHE_END\
+        \ - CACHE_START))\n \necho \"\"\necho \"[MODEL-CACHE] Disk space after model\
+        \ download:\"\ndf -h / | tail -1 | awk '{print \"  Available: \" $4 \", Used:\
+        \ \" $3 \", Size: \" $2}'\n \necho \"\"\necho \"[MODEL-CACHE] Model cache\
+        \ contents:\"\nls -lh \"$CACHE_DIR\" 2>/dev/null | head -10 || echo \"[MODEL-CACHE]\
+        \ Cache directory is empty (will download during tests)\"\n \necho \"[MODEL-CACHE]\
+        \ Model pre-download completed in ${CACHE_DURATION}s (or skipped with warning)\"\
+        \n"
+    - name: Run RAG tests with coverage
+      id: run-tests
+      env:
+        HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        HUGGING_FACE_HUB_TOKEN: ${{ secrets.HF_TOKEN }}
+        RAG_OPENAI_KEY: ${{ secrets.RAG_OPENAI_KEY }}
+      run: "PYTHON_BIN=\"${VENV_PYTHON:-python3}\"\necho \"[TEST-RUN] Using Python:\
+        \ $PYTHON_BIN\"\n\"$PYTHON_BIN\" --version\necho \"[TEST-RUN] pytest version:\"\
+        \n\"$PYTHON_BIN\" -m pytest --version\n \n# Ensure plugins are loaded before\
+        \ running tests\nexport PYTHONPATH=\"${PYTHONPATH}:$(pwd)/src\"\necho \"[TEST-RUN]\
+        \ PYTHONPATH: $PYTHONPATH\"\necho \"\"\n \n# Pre-test environment checks\n\
+        echo \"[TEST-RUN] ========== Pre-Test Environment Check ==========\"\necho\
+        \ \"[TEST-RUN] Disk space:\"\ndf -h / | tail -1 | awk '{print \"  Available:\
+        \ \" $4 \", Used: \" $3 \", Size: \" $2}'\n \necho \"[TEST-RUN] Memory info:\"\
+        \nfree -h | head -2 | tail -1 | awk '{print \"  Total: \" $2 \", Used: \"\
+        \ $3 \", Available: \" $7}'\n \necho \"[TEST-RUN] System info:\"\necho \"\
+        \  CPU cores: $(nproc)\"\necho \"  Uptime: $(uptime -p)\"\necho \"\"\n \n\
+        echo \"[TEST-RUN] Verifying test files exist...\"\nTEST_FILES=(\n  \"tests/test_rag_*.py\"\
+        \n  \"tests/rag/\"\n)\nTOTAL_TEST_FILES=0\nfor pattern in \"${TEST_FILES[@]}\"\
+        ; do\n  count=$(find $pattern -type f -name \"*.py\" 2>/dev/null | wc -l)\n\
+        \  if [ \"$count\" -gt 0 ]; then\n    echo \"[TEST-RUN] \u2713 Found $count\
+        \ test files matching $pattern\"\n    TOTAL_TEST_FILES=$((TOTAL_TEST_FILES\
+        \ + count))\n  fi\ndone\n \nif [ \"$TOTAL_TEST_FILES\" -eq 0 ]; then\n  echo\
+        \ \"[TEST-RUN] \u274C ERROR: No test files found!\"\n  exit 1\nfi\necho \"\
+        [TEST-RUN] Total test files: $TOTAL_TEST_FILES\"\necho \"\"\n \necho \"[TEST-RUN]\
+        \ ========== Test Execution Configuration ==========\"\necho \"[TEST-RUN]\
+        \ Module: src/codex/rag\"\necho \"[TEST-RUN] Coverage config: tests/rag/.coveragerc\"\
+        \necho \"[TEST-RUN] Individual test timeout: 300s (5 min)\"\necho \"[TEST-RUN]\
+        \ Workflow timeout: 60 minutes\"\necho \"[TEST-RUN] Parallel execution: Disabled\
+        \ (serial mode)\"\necho \"\"\n \n# Run RAG tests serially to avoid xdist worker\
+        \ plugin-discovery failures\n# (workers crash when pytest-cov/timeout aren't\
+        \ auto-discoverable in the worker env)\n#\n# --cov-config=tests/rag/.coveragerc\
+        \ scopes coverage to src/codex/rag only,\n# preventing the global .coveragerc\
+        \ `source=src` from diluting the line-rate.\n# (S235 fix: on main branch `--cov=src`\
+        \ was measuring all of src/ with only\n# RAG tests running \u2192 5 % line-rate;\
+        \ this config isolates the RAG module.)\n \necho \"[TEST-RUN] ========== Starting\
+        \ Test Execution ==========\"\nTEST_START=$(date +%s)\nTEST_START_ISO=$(date\
+        \ -u +'%Y-%m-%d %H:%M:%S UTC')\necho \"[TEST-RUN] Start time: $TEST_START_ISO\"\
+        \necho \"\"\n \n# Run tests with comprehensive output\nif timeout 3300 \"\
+        $PYTHON_BIN\" -m pytest tests/test_rag_*.py tests/rag/ \\\n  -v \\\n  --tb=short\
+        \ \\\n  --timeout=300 \\\n  --timeout-method=signal \\\n  --cov=src/codex/rag\
+        \ \\\n  --cov-config=tests/rag/.coveragerc \\\n  --cov-report=xml \\\n  --cov-report=html\
+        \ \\\n  --cov-report=term-missing 2>&1 | tee /tmp/test_output.log; then\n\
+        \  TEST_EXIT=0\n  TEST_STATUS=\"PASSED\"\n  echo \"[TEST-RUN] \u2705 Tests\
+        \ PASSED\"\nelse\n  TEST_EXIT=$?\n  TEST_STATUS=\"FAILED\"\n  echo \"[TEST-RUN]\
+        \ \u274C Tests FAILED with exit code $TEST_EXIT\"\nfi\nTEST_END=$(date +%s)\n\
+        TEST_END_ISO=$(date -u +'%Y-%m-%d %H:%M:%S UTC')\nTEST_DURATION=$((TEST_END\
+        \ - TEST_START))\nTEST_DURATION_MIN=$((TEST_DURATION / 60))\nTEST_DURATION_SEC=$((TEST_DURATION\
+        \ % 60))\n \necho \"\"\necho \"[TEST-RUN] ========== Test Execution Summary\
+        \ ==========\"\necho \"[TEST-RUN] End time: $TEST_END_ISO\"\necho \"[TEST-RUN]\
+        \ Duration: ${TEST_DURATION_MIN}m ${TEST_DURATION_SEC}s\"\necho \"[TEST-RUN]\
+        \ Status: $TEST_STATUS\"\necho \"\"\n \n# Analyze test output for patterns\n\
+        if grep -q \"FAILED\" /tmp/test_output.log; then\n  FAILED_COUNT=$(grep -c\
+        \ \"^FAILED\" /tmp/test_output.log)\n  echo \"[TEST-RUN] Failed tests: $FAILED_COUNT\"\
+        \nfi\n \nif grep -q \"passed\" /tmp/test_output.log; then\n  # Extract summary\
+        \ line\n  grep \"passed\" /tmp/test_output.log | tail -1 | sed 's/^/[TEST-RUN]\
+        \ /'\nfi\n \necho \"\"\necho \"[TEST-RUN] ========== Artifact Verification\
+        \ ==========\"\n \nif [ -f coverage.xml ]; then\n  COVERAGE_SIZE=$(du -h coverage.xml\
+        \ | cut -f1)\n  echo \"[TEST-RUN] \u2713 coverage.xml generated ($COVERAGE_SIZE)\"\
+        \n  # Verify XML is valid\n  if \"$PYTHON_BIN\" -c \"import xml.etree.ElementTree\
+        \ as ET; ET.parse('coverage.xml')\" 2>/dev/null; then\n    echo \"[TEST-RUN]\
+        \ \u2713 coverage.xml is valid XML\"\n  else\n    echo \"[TEST-RUN] \u26A0\
+        \uFE0F  coverage.xml appears to be invalid XML\"\n  fi\nelse\n  echo \"[TEST-RUN]\
+        \ \u274C coverage.xml NOT FOUND\"\n  TEST_EXIT=1\nfi\n \nif [ -d htmlcov ];\
+        \ then\n  HTMLCOV_SIZE=$(du -sh htmlcov | cut -f1)\n  HTMLCOV_FILES=$(find\
+        \ htmlcov -type f | wc -l)\n  echo \"[TEST-RUN] \u2713 htmlcov/ generated\
+        \ ($HTMLCOV_SIZE, $HTMLCOV_FILES files)\"\nelse\n  echo \"[TEST-RUN] \u274C\
+        \ htmlcov/ NOT FOUND\"\n  TEST_EXIT=1\nfi\n \necho \"\"\nif [ $TEST_EXIT -eq\
+        \ 0 ]; then\n  echo \"[TEST-RUN] \u2705 All test artifacts verified successfully\"\
+        \nelse\n  echo \"[TEST-RUN] \u274C Test artifact verification FAILED\"\n \
+        \ echo \"[TEST-RUN] Last 100 lines of test output:\"\n  tail -100 /tmp/test_output.log\n\
+        fi\n \necho \"[TEST-RUN] Final disk space:\"\ndf -h / | tail -1 | awk '{print\
+        \ \"  Available: \" $4 \", Used: \" $3 \", Size: \" $2}'\n \nexit $TEST_EXIT\n"
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354
+      if: always()
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./coverage.xml
+        flags: rag-modules
+        name: rag-coverage-${{ matrix.python-version }}
+        fail_ci_if_error: false
+    - name: Upload HTML coverage report
+      uses: actions/upload-artifact@v5
+      if: always()
+      with:
+        name: coverage-report-${{ matrix.python-version }}
+        path: htmlcov/
+        retention-days: 30
+        if-no-files-found: warn
+    - name: Check coverage threshold
+      run: "PYTHON_BIN=\"${VENV_PYTHON:-python3}\"\necho \"[COVERAGE-CHECK] ==========\
+        \ Coverage Threshold Check ==========\"\necho \"[COVERAGE-CHECK] Parsing coverage.xml...\"\
+        \necho \"\"\n \nif [ ! -f coverage.xml ]; then\n  echo \"[COVERAGE-CHECK]\
+        \ \u274C ERROR: coverage.xml not found!\"\n  echo \"[COVERAGE-CHECK] Current\
+        \ directory contents:\"\n  ls -la | head -20\n  echo \"[COVERAGE-CHECK] Looking\
+        \ for coverage files:\"\n  find . -name \"coverage*\" -type f 2>/dev/null\
+        \ | head -10\n  exit 1\nfi\n \nCOVERAGE_SIZE=$(du -h coverage.xml | cut -f1)\n\
+        echo \"[COVERAGE-CHECK] coverage.xml exists ($COVERAGE_SIZE)\"\n \n# Parse\
+        \ coverage from XML report with detailed error reporting\necho \"[COVERAGE-CHECK]\
+        \ Extracting coverage percentage from XML...\"\nif ! COVERAGE=$(\"$PYTHON_BIN\"\
+        \ << 'COVERAGE_PARSER'\nimport xml.etree.ElementTree as ET\nimport sys\n \n\
+        try:\n    tree = ET.parse('coverage.xml')\n    root = tree.getroot()\n   \
+        \ line_rate = float(root.attrib.get('line-rate', 0)) * 100\n    print(f'{line_rate:.2f}')\n\
+        except ET.ParseError as e:\n    print(f'ERROR: XML parse error: {e}', file=sys.stderr)\n\
+        \    print('0.00')  # Return 0 to cause failure below\n    sys.exit(1)\nexcept\
+        \ KeyError as e:\n    print(f'ERROR: Missing attribute in XML: {e}', file=sys.stderr)\n\
+        \    print('0.00')\n    sys.exit(1)\nexcept Exception as e:\n    print(f'ERROR:\
+        \ {e}', file=sys.stderr)\n    print('0.00')\n    sys.exit(1)\nCOVERAGE_PARSER\n\
+        ); then\n  echo \"[COVERAGE-CHECK] \u274C Failed to parse coverage.xml\"\n\
+        \  echo \"[COVERAGE-CHECK] First 30 lines of coverage.xml:\"\n  head -30 coverage.xml\n\
+        \  exit 1\nfi\n \necho \"[COVERAGE-CHECK] Coverage percentage extracted: ${COVERAGE}%\"\
+        \necho \"\"\n \n# Minimum coverage threshold \u2014 raised incrementally each\
+        \ S-session.\n# Baseline is ~27.5%; raised from 27% \u2192 30% in S195, 30%\
+        \ \u2192 35% in S197, 35% \u2192 40% in S198, 40% \u2192 45% in S199, 45%\
+        \ \u2192 50% in S200, 50% \u2192 60% in S201 (2026-03-25), 60% \u2192 70%\
+        \ in S203 (2026-03-25), 70% \u2192 80% in S204 (2026-03-25), 80% \u2192 85%\
+        \ in S209 (2026-03-26), 85% \u2192 90% in S211 (2026-03-26), 90% \u2192 95%\
+        \ in S212 (2026-03-26), 95% \u2192 95% in S228 (2026-05-09).\n# Long-term\
+        \ target: 95% coverage.\nTHRESHOLD=95\n \necho \"[COVERAGE-CHECK] Coverage\
+        \ threshold: $THRESHOLD%\"\necho \"[COVERAGE-CHECK] Current coverage: $COVERAGE%\"\
+        \necho \"\"\n \nif (( $(echo \"$COVERAGE < $THRESHOLD\" | bc -l) )); then\n\
+        \  echo \"[COVERAGE-CHECK] \u274C Coverage ${COVERAGE}% is below ${THRESHOLD}%\
+        \ threshold\"\n  echo \"[COVERAGE-CHECK] This workflow requires >= $THRESHOLD%\
+        \ coverage for RAG module\"\n  echo \"[COVERAGE-CHECK] Gap: $(\"$PYTHON_BIN\"\
+        \ -c \"print(f'{$THRESHOLD - $COVERAGE:.2f}%')\")\"\n  exit 1\nelse\n  COVERAGE_BUFFER=$(\"\
+        $PYTHON_BIN\" -c \"print(f'{$COVERAGE - $THRESHOLD:.2f}%')\")\n  echo \"[COVERAGE-CHECK]\
+        \ \u2705 Coverage ${COVERAGE}% meets ${THRESHOLD}% threshold\"\n  echo \"\
+        [COVERAGE-CHECK] Buffer: +${COVERAGE_BUFFER}\"\nfi\n \necho \"\"\necho \"\
+        [COVERAGE-CHECK] \u2705 Coverage check passed\"\n"
+    - name: Security scan
+      run: "PYTHON_BIN=\"${VENV_PYTHON:-python3}\"\n \necho \"[SECURITY] ==========\
+        \ Security Scan ==========\"\necho \"[SECURITY] Installing bandit...\"\nif\
+        \ ! \"$PYTHON_BIN\" -m pip install bandit 2>&1 | tail -3; then\n  echo \"\
+        [SECURITY] \u26A0\uFE0F  Warning: bandit installation failed, skipping security\
+        \ scan\"\n  echo \"[SECURITY] No security issues found by Bandit (scan skipped)\"\
+        \ > bandit-report.txt\n  exit 0\nfi\n \necho \"[SECURITY] Running bandit security\
+        \ scan on src/codex/rag/...\"\necho \"[SECURITY] Scan start time: $(date -u\
+        \ +'%Y-%m-%d %H:%M:%S UTC')\"\n \nif \"$PYTHON_BIN\" -m bandit -r src/codex/rag/\
+        \ -f txt -o bandit-report.txt 2>&1 | tee /tmp/bandit_output.log; then\n  BANDIT_EXIT=0\n\
+        \  echo \"[SECURITY] \u2713 Bandit completed successfully\"\nelse\n  BANDIT_EXIT=$?\n\
+        \  echo \"[SECURITY] \u26A0\uFE0F  Bandit found potential issues (exit code\
+        \ $BANDIT_EXIT)\"\nfi\n \n# Ensure file exists even if bandit fails or produces\
+        \ no output\ntouch bandit-report.txt\n \necho \"[SECURITY] Scan end time:\
+        \ $(date -u +'%Y-%m-%d %H:%M:%S UTC')\"\necho \"\"\n \nif [ -s bandit-report.txt\
+        \ ]; then\n  REPORT_SIZE=$(du -h bandit-report.txt | cut -f1)\n  LINE_COUNT=$(wc\
+        \ -l < bandit-report.txt)\n  echo \"[SECURITY] \u2713 bandit-report.txt generated\
+        \ ($REPORT_SIZE, $LINE_COUNT lines)\"\n  echo \"[SECURITY] Report content:\"\
+        \n  cat bandit-report.txt\nelse\n  echo \"[SECURITY] \u2713 No security issues\
+        \ found by Bandit\" | tee -a bandit-report.txt\n  cat bandit-report.txt\n\
+        fi\n \necho \"\"\necho \"[SECURITY] \u2705 Security scan completed\"\n"
+    - name: Cache health report
+      if: always()
+      continue-on-error: true
+      run: "PYTHON_BIN=\"${VENV_PYTHON:-python3}\"\n \necho \"[CACHE-HEALTH] ==========\
+        \ Cache Health Report ==========\"\necho \"[CACHE-HEALTH] Timestamp: $(date\
+        \ -u +'%Y-%m-%d %H:%M:%S UTC')\"\necho \"\"\n \n# Check Python package cache\n\
+        echo \"[CACHE-HEALTH] Python package cache status:\"\nif [ -d ~/.cache/pip\
+        \ ]; then\n  pip_cache_size=$(du -sh ~/.cache/pip 2>/dev/null | cut -f1)\n\
+        \  echo \"  \u2713 pip cache: $pip_cache_size\"\nelse\n  echo \"  - pip cache:\
+        \ not found\"\nfi\n \n# Check sentence-transformers model cache\necho \"[CACHE-HEALTH]\
+        \ Sentence-transformers model cache status:\"\nif [ -d ~/.cache/torch/sentence_transformers\
+        \ ]; then\n  st_cache_size=$(du -sh ~/.cache/torch/sentence_transformers 2>/dev/null\
+        \ | cut -f1)\n  st_files=$(find ~/.cache/torch/sentence_transformers -type\
+        \ f 2>/dev/null | wc -l)\n  echo \"  \u2713 Cache directory: $st_cache_size\
+        \ ($st_files files)\"\nelse\n  echo \"  - Cache directory: not found\"\nfi\n\
+        \ \n# Check torch cache\necho \"[CACHE-HEALTH] PyTorch cache status:\"\nif\
+        \ [ -d ~/.cache/torch ]; then\n  torch_cache_size=$(du -sh ~/.cache/torch\
+        \ 2>/dev/null | cut -f1)\n  echo \"  \u2713 torch cache: $torch_cache_size\"\
+        \nelse\n  echo \"  - torch cache: not found\"\nfi\n \n# Check HuggingFace\
+        \ cache\necho \"[CACHE-HEALTH] HuggingFace cache status:\"\nif [ -d ~/.cache/huggingface\
+        \ ]; then\n  hf_cache_size=$(du -sh ~/.cache/huggingface 2>/dev/null | cut\
+        \ -f1)\n  echo \"  \u2713 HuggingFace cache: $hf_cache_size\"\nelse\n  echo\
+        \ \"  - HuggingFace cache: not found\"\nfi\n \necho \"\"\necho \"[CACHE-HEALTH]\
+        \ Disk usage summary:\"\ndf -h / | tail -1 | awk '{print \"  Root: \" $2 \"\
+        \ total, \" $4 \" available (\" int($4/$2*100) \"%)\"}'\n \necho \"\"\n \n\
+        # Optional: Try to generate cache health check via script\nif [ -f scripts/ci/generate_cache_keys.py\
+        \ ]; then\n  echo \"[CACHE-HEALTH] Running cache health check script...\"\n\
+        \  \"$PYTHON_BIN\" scripts/ci/generate_cache_keys.py --type pip --workflow\
+        \ test-rag --health 2>/dev/null || \\\n    echo \"[CACHE-HEALTH] \u26A0\uFE0F\
+        \  Cache health check script failed (non-critical)\"\nelse\n  echo \"[CACHE-HEALTH]\
+        \ \u26A0\uFE0F  generate_cache_keys.py not found (skipping detailed check)\"\
+        \nfi\n \necho \"[CACHE-HEALTH] \u2705 Cache health report complete\"\n"
+    - name: Upload security report
+      uses: actions/upload-artifact@v5
+      if: always()
+      with:
+        name: security-report-${{ matrix.python-version }}
+        path: bandit-report.txt
+        retention-days: 30
+        if-no-files-found: warn
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
     needs: test-rag
-    if: |
-      failure() &&
-      github.event_name == 'pull_request' &&
+    if: 'failure() &&
+
+      github.event_name == ''pull_request'' &&
+
       github.event.pull_request.head.repo.full_name == github.repository
+
+      '
     permissions:
       pull-requests: write
       issues: write
     timeout-minutes: 5
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          fetch-depth: 1
-
-      - name: Post or update rescue comment
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_NAME: "Test RAG"
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          BRANCH: ${{ github.head_ref }}
-        run: python scripts/ci/post_rescue_comment.py
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        fetch-depth: 1
+    - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: Test RAG
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+        BRANCH: ${{ github.head_ref }}
+      run: python scripts/ci/post_rescue_comment.py
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

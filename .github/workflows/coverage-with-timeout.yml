@@ -1,24 +1,22 @@
 name: Coverage with Timeout Guards
-
-on:
+true:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types:
+    - opened
+    - synchronize
+    - reopened
   workflow_dispatch:
     inputs:
       shard_count:
-        description: 'Number of shards for parallel execution'
+        description: Number of shards for parallel execution
         required: false
         default: '4'
         type: string
-
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
-
 jobs:
   coverage-with-timeout:
     runs-on: ubuntu-latest
@@ -28,96 +26,105 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3, 4]
+        shard:
+        - 1
+        - 2
+        - 3
+        - 4
     timeout-minutes: ${{ fromJSON(vars.CODEX_TEST_TIMEOUT_MINUTES || '30') }}
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v7 # v6.0.3
+    - name: Checkout code
+      uses: actions/checkout@v7
+    - name: Set up Python
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+    - name: Install dependencies
+      run: 'python -m pip install --upgrade pip
 
-      - name: Set up Python
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12.13'
-          cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+        # Pin pytest plugins (PR #3248)
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          # Pin pytest plugins (PR #3248)
-          # Pin pytest plugins before package install (PR #3248 stability fix)
-          pip install pytest==8.4.2 pytest-xdist==3.8.0 pytest-timeout==2.4.0 pytest-cov==5.0.0 pytest-asyncio==1.3.0
+        # Pin pytest plugins before package install (PR #3248 stability fix)
+
+        pip install pytest==8.4.2 pytest-xdist==3.8.0 pytest-timeout==2.4.0 pytest-cov==5.0.0
+        pytest-asyncio==1.3.0
 
 
-          pip install pytest pytest-cov pytest-timeout pytest-xdist
-          pip install -e .
 
-      - name: Configure pytest timeout
-        run: |
-          # Create pytest configuration with timeout settings
-          cat > pytest_timeout.ini <<EOF
-          [pytest]
-          timeout = 420  # 7 minutes per test
-          timeout_method = thread
-          EOF
+        pip install pytest pytest-cov pytest-timeout pytest-xdist
 
-          echo "Pytest timeout configuration created"
-          cat pytest_timeout.ini
+        pip install -e .
 
-      - name: Run coverage with timeout (Shard ${{ matrix.shard }})
-        id: coverage
-        continue-on-error: true
-        run: |
-          # Calculate shard parameters
-          SHARD_INDEX=${{ matrix.shard }}
-          TOTAL_SHARDS=${{ strategy.job-total }}
+        '
+    - name: Configure pytest timeout
+      run: '# Create pytest configuration with timeout settings
 
-          echo "Running shard $SHARD_INDEX of $TOTAL_SHARDS"
+        cat > pytest_timeout.ini <<EOF
 
-          # Run pytest with timeout plugin and coverage
-          pytest \
-            -c pytest_timeout.ini \
-            --timeout=420 \
-            --cov=src \
-            --cov-report=xml:coverage_shard_${SHARD_INDEX}.xml \
-            --cov-report=term-missing \
-            --cov-report=html:htmlcov_shard_${SHARD_INDEX} \
-            --dist=loadfile \
-            -n auto \
-            --durations=10 \
-            --shard-id=$((SHARD_INDEX - 1)) \
-            --num-shards=${TOTAL_SHARDS} \
-            tests/ || echo "coverage_failed=true" >> $GITHUB_OUTPUT
+        [pytest]
 
-      - name: Check for timeouts
-        if: steps.coverage.outputs.coverage_failed == 'true'
-        run: |
-          echo "::warning::Coverage collection encountered issues (timeout or test failure)"
-          echo "This may indicate slow tests or hanging operations."
-          echo "Review the test output above for timeout messages."
+        timeout = 420  # 7 minutes per test
 
-      - name: Upload coverage artifact (shard ${{ matrix.shard }})
-        if: always()
-        uses: actions/upload-artifact@v5 # v7.0.1
-        with:
-          name: coverage-shard-${{ matrix.shard }}
-          path: |
-            coverage_shard_${{ matrix.shard }}.xml
-            htmlcov_shard_${{ matrix.shard }}/
-            .coverage
-          retention-days: 7
+        timeout_method = thread
 
-      - name: Upload timeout logs
-        if: steps.coverage.outputs.coverage_failed == 'true'
-        uses: actions/upload-artifact@v5 # v7.0.1
-        with:
-          name: timeout-logs-shard-${{ matrix.shard }}
-          path: |
-            pytest_timeout.ini
-            *.log
-          retention-days: 7
+        EOF
 
+
+        echo "Pytest timeout configuration created"
+
+        cat pytest_timeout.ini
+
+        '
+    - name: Run coverage with timeout (Shard ${{ matrix.shard }})
+      id: coverage
+      continue-on-error: true
+      run: "# Calculate shard parameters\nSHARD_INDEX=${{ matrix.shard }}\nTOTAL_SHARDS=${{\
+        \ strategy.job-total }}\n\necho \"Running shard $SHARD_INDEX of $TOTAL_SHARDS\"\
+        \n\n# Run pytest with timeout plugin and coverage\npytest \\\n  -c pytest_timeout.ini\
+        \ \\\n  --timeout=420 \\\n  --cov=src \\\n  --cov-report=xml:coverage_shard_${SHARD_INDEX}.xml\
+        \ \\\n  --cov-report=term-missing \\\n  --cov-report=html:htmlcov_shard_${SHARD_INDEX}\
+        \ \\\n  --dist=loadfile \\\n  -n auto \\\n  --durations=10 \\\n  --shard-id=$((SHARD_INDEX\
+        \ - 1)) \\\n  --num-shards=${TOTAL_SHARDS} \\\n  tests/ || echo \"coverage_failed=true\"\
+        \ >> $GITHUB_OUTPUT\n"
+    - name: Check for timeouts
+      if: steps.coverage.outputs.coverage_failed == 'true'
+      run: 'echo "::warning::Coverage collection encountered issues (timeout or test
+        failure)"
+
+        echo "This may indicate slow tests or hanging operations."
+
+        echo "Review the test output above for timeout messages."
+
+        '
+    - name: Upload coverage artifact (shard ${{ matrix.shard }})
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: coverage-shard-${{ matrix.shard }}
+        path: 'coverage_shard_${{ matrix.shard }}.xml
+
+          htmlcov_shard_${{ matrix.shard }}/
+
+          .coverage
+
+          '
+        retention-days: 7
+    - name: Upload timeout logs
+      if: steps.coverage.outputs.coverage_failed == 'true'
+      uses: actions/upload-artifact@v5
+      with:
+        name: timeout-logs-shard-${{ matrix.shard }}
+        path: 'pytest_timeout.ini
+
+          *.log
+
+          '
+        retention-days: 7
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   merge-coverage:
     needs: coverage-with-timeout
     runs-on: ubuntu-latest
@@ -126,142 +133,128 @@ jobs:
       contents: read
       actions: read
     if: always()
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v7 # v6.0.3
+    - name: Checkout code
+      uses: actions/checkout@v7
+    - name: Set up Python
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+    - name: Install coverage tools
+      run: 'python -m pip install --upgrade pip
 
-      - name: Set up Python
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12.13'
-          cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+        pip install coverage
 
-      - name: Install coverage tools
-        run: |
-          python -m pip install --upgrade pip
-          pip install coverage
+        '
+    - name: Download all coverage artifacts
+      uses: actions/download-artifact@v5
+      with:
+        pattern: coverage-shard-*
+        path: coverage-shards
+    - name: Merge coverage reports
+      id: merge
+      continue-on-error: true
+      run: "# Find all coverage XML files\nCOVERAGE_FILES=$(find coverage-shards -name\
+        \ \"coverage_shard_*.xml\" | wc -l)\necho \"Found $COVERAGE_FILES coverage\
+        \ files\"\n\nif [ \"$COVERAGE_FILES\" -eq 0 ]; then\n  echo \"::error::No\
+        \ coverage files found to merge\"\n  echo \"merge_failed=true\" >> $GITHUB_OUTPUT\n\
+        \  exit 0\nfi\n\n# Combine coverage data\ncd coverage-shards\ncoverage combine\
+        \ coverage-shard-*/.coverage || true\ncoverage xml -o ../coverage_combined.xml\
+        \ || true\ncoverage html -d ../htmlcov_combined || true\ncoverage report ||\
+        \ true\n\ncd ..\n\nif [ -f coverage_combined.xml ]; then\n  echo \"merge_succeeded=true\"\
+        \ >> $GITHUB_OUTPUT\n  echo \"✓ Coverage merge succeeded\"\nelse\n  echo \"\
+        merge_failed=true\" >> $GITHUB_OUTPUT\n  echo \"::warning::Coverage merge\
+        \ produced no output\"\nfi\n"
+    - name: Upload combined coverage
+      if: steps.merge.outputs.merge_succeeded == 'true'
+      uses: actions/upload-artifact@v5
+      with:
+        name: coverage-combined
+        path: 'coverage_combined.xml
 
-      - name: Download all coverage artifacts
-        uses: actions/download-artifact@v5 # v8.0.1
-        with:
-          pattern: coverage-shard-*
-          path: coverage-shards
+          htmlcov_combined/
 
-      - name: Merge coverage reports
-        id: merge
-        continue-on-error: true
-        run: |
-          # Find all coverage XML files
-          COVERAGE_FILES=$(find coverage-shards -name "coverage_shard_*.xml" | wc -l)
-          echo "Found $COVERAGE_FILES coverage files"
+          '
+        retention-days: 30
+    - name: Generate coverage summary
+      if: steps.merge.outputs.merge_succeeded == 'true'
+      run: "echo \"## Coverage Report Summary\" >> $GITHUB_STEP_SUMMARY\necho \"\"\
+        \ >> $GITHUB_STEP_SUMMARY\necho \"Coverage data collected from ${{ strategy.job-total\
+        \ }} shards\" >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\n\
+        \nif [ -f coverage_combined.xml ]; then\n  # Extract coverage percentage from\
+        \ XML\n  COVERAGE=$(python -c \"\nimport xml.etree.ElementTree as ET\ntree\
+        \ = ET.parse('coverage_combined.xml')\nroot = tree.getroot()\nline_rate =\
+        \ float(root.attrib.get('line-rate', 0))\nprint(f'{line_rate * 100:.1f}')\n\
+        \" 2>/dev/null || echo \"N/A\")\n\n  echo \"**Overall Coverage:** ${COVERAGE}%\"\
+        \ >> $GITHUB_STEP_SUMMARY\nelse\n  echo \"**Status:** Coverage data could\
+        \ not be merged\" >> $GITHUB_STEP_SUMMARY\nfi\n\necho \"\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"### Timeout Protection\" >> $GITHUB_STEP_SUMMARY\necho \"- Per-test\
+        \ timeout: 7 minutes\" >> $GITHUB_STEP_SUMMARY\necho \"- Job timeout: 30 minutes\"\
+        \ >> $GITHUB_STEP_SUMMARY\necho \"- Shard isolation: Enabled\" >> $GITHUB_STEP_SUMMARY\n"
+    - name: Report degraded mode
+      if: steps.merge.outputs.merge_failed == 'true'
+      run: 'echo "## ⚠️ Coverage Collection - Degraded Mode" >> $GITHUB_STEP_SUMMARY
 
-          if [ "$COVERAGE_FILES" -eq 0 ]; then
-            echo "::error::No coverage files found to merge"
-            echo "merge_failed=true" >> $GITHUB_OUTPUT
-            exit 0
-          fi
+        echo "" >> $GITHUB_STEP_SUMMARY
 
-          # Combine coverage data
-          cd coverage-shards
-          coverage combine coverage-shard-*/.coverage || true
-          coverage xml -o ../coverage_combined.xml || true
-          coverage html -d ../htmlcov_combined || true
-          coverage report || true
+        echo "Coverage collection encountered issues, likely due to test timeouts."
+        >> $GITHUB_STEP_SUMMARY
 
-          cd ..
+        echo "" >> $GITHUB_STEP_SUMMARY
 
-          if [ -f coverage_combined.xml ]; then
-            echo "merge_succeeded=true" >> $GITHUB_OUTPUT
-            echo "✓ Coverage merge succeeded"
-          else
-            echo "merge_failed=true" >> $GITHUB_OUTPUT
-            echo "::warning::Coverage merge produced no output"
-          fi
+        echo "**Recommendations:**" >> $GITHUB_STEP_SUMMARY
 
-      - name: Upload combined coverage
-        if: steps.merge.outputs.merge_succeeded == 'true'
-        uses: actions/upload-artifact@v5 # v7.0.1
-        with:
-          name: coverage-combined
-          path: |
-            coverage_combined.xml
-            htmlcov_combined/
-          retention-days: 30
+        echo "1. Review timeout logs in artifacts" >> $GITHUB_STEP_SUMMARY
 
-      - name: Generate coverage summary
-        if: steps.merge.outputs.merge_succeeded == 'true'
-        run: |
-          echo "## Coverage Report Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Coverage data collected from ${{ strategy.job-total }} shards" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
+        echo "2. Identify slow or hanging tests" >> $GITHUB_STEP_SUMMARY
 
-          if [ -f coverage_combined.xml ]; then
-            # Extract coverage percentage from XML
-            COVERAGE=$(python -c "
-          import xml.etree.ElementTree as ET
-          tree = ET.parse('coverage_combined.xml')
-          root = tree.getroot()
-          line_rate = float(root.attrib.get('line-rate', 0))
-          print(f'{line_rate * 100:.1f}')
-          " 2>/dev/null || echo "N/A")
+        echo "3. Consider splitting slow tests into separate jobs" >> $GITHUB_STEP_SUMMARY
 
-            echo "**Overall Coverage:** ${COVERAGE}%" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "**Status:** Coverage data could not be merged" >> $GITHUB_STEP_SUMMARY
-          fi
+        echo "4. Add explicit timeouts to slow operations" >> $GITHUB_STEP_SUMMARY
 
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Timeout Protection" >> $GITHUB_STEP_SUMMARY
-          echo "- Per-test timeout: 7 minutes" >> $GITHUB_STEP_SUMMARY
-          echo "- Job timeout: 30 minutes" >> $GITHUB_STEP_SUMMARY
-          echo "- Shard isolation: Enabled" >> $GITHUB_STEP_SUMMARY
 
-      - name: Report degraded mode
-        if: steps.merge.outputs.merge_failed == 'true'
-        run: |
-          echo "## ⚠️ Coverage Collection - Degraded Mode" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Coverage collection encountered issues, likely due to test timeouts." >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Recommendations:**" >> $GITHUB_STEP_SUMMARY
-          echo "1. Review timeout logs in artifacts" >> $GITHUB_STEP_SUMMARY
-          echo "2. Identify slow or hanging tests" >> $GITHUB_STEP_SUMMARY
-          echo "3. Consider splitting slow tests into separate jobs" >> $GITHUB_STEP_SUMMARY
-          echo "4. Add explicit timeouts to slow operations" >> $GITHUB_STEP_SUMMARY
+        echo "::warning::Coverage collection in degraded mode - partial data available"
 
-          echo "::warning::Coverage collection in degraded mode - partial data available"
-
-  # ── rescue comment — posted on PR whenever coverage-with-timeout fails ──────
+        '
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   rescue-comment:
     name: Post rescue comment on coverage failure
     runs-on: ubuntu-latest
     needs: coverage-with-timeout
-    if: |
-      failure() &&
-      github.event_name == 'pull_request' &&
+    if: 'failure() &&
+
+      github.event_name == ''pull_request'' &&
+
       github.event.pull_request.head.repo.full_name == github.repository
+
+      '
     permissions:
       pull-requests: write
       issues: write
     timeout-minutes: 5
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          fetch-depth: 1
-
-      - name: Post or update rescue comment
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_NAME: "Coverage with Timeout Guards"
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          BRANCH: ${{ github.head_ref }}
-        run: python scripts/ci/post_rescue_comment.py
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        token: ${{ secrets.CODEX_MASTER_KEY || github.token }}
+        fetch-depth: 1
+    - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: Coverage with Timeout Guards
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+        BRANCH: ${{ github.head_ref }}
+      run: python scripts/ci/post_rescue_comment.py
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

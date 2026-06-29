@@ -41,6 +41,8 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
+from scripts.ci._token_resolver import get_token
+
 
 try:
     from github import Github
@@ -61,7 +63,7 @@ class JWTSecretRotator:
     """Handles JWT secret rotation with backup and validation."""
 
     def __init__(self):
-        self.master_key = os.getenv('CODEX_MASTER_KEY')
+        self.master_key = get_token(required_elevated=True)[0]
         self.github_token = os.getenv('GITHUB_TOKEN')
         self.current_secret = os.getenv('TOKEN_SECRET_KEY')
         self.force_rotation = os.getenv('FORCE_ROTATION', 'false').lower() == 'true'

@@ -12,6 +12,8 @@ import os
 import sys
 import unittest
 from unittest.mock import MagicMock, patch
+from scripts.ci._token_resolver import get_token
+
 
 # Ensure scripts/ and src/ are importable
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
@@ -38,8 +40,8 @@ class TestResolveToken(unittest.TestCase):
 
     def test_priority_order_master_key_first(self):
         self._clear_tokens()
-        os.environ["CODEX_MASTER_KEY"] = "master_token"
-        os.environ["CODEX_BACKUP_KEY"] = "backup_token"
+        get_token(required_elevated=True)[0] = "master_token"
+        get_token(required_elevated=True)[0] = "backup_token"
         os.environ["GITHUB_TOKEN"] = "gh_token"
         tok, src = _resolve_token()
         self.assertEqual(tok, "master_token")
@@ -47,7 +49,7 @@ class TestResolveToken(unittest.TestCase):
 
     def test_priority_backup_key_when_master_absent(self):
         self._clear_tokens()
-        os.environ["CODEX_BACKUP_KEY"] = "backup_token"
+        get_token(required_elevated=True)[0] = "backup_token"
         os.environ["GITHUB_TOKEN"] = "gh_token"
         tok, src = _resolve_token()
         self.assertEqual(tok, "backup_token")
@@ -90,7 +92,7 @@ class TestRepoVariables(unittest.TestCase):
     REPO = "_codex_"
 
     def setUp(self):
-        os.environ["CODEX_MASTER_KEY"] = "test_master_token"
+        get_token(required_elevated=True)[0] = "test_master_token"
         self.vm = VariableManager(brain=None)
 
     def tearDown(self):
@@ -214,7 +216,7 @@ class TestEnvironmentVariables(unittest.TestCase):
     ENV = "production"
 
     def setUp(self):
-        os.environ["CODEX_MASTER_KEY"] = "test_master_token"
+        get_token(required_elevated=True)[0] = "test_master_token"
         self.vm = VariableManager(brain=None)
 
     def tearDown(self):
@@ -278,7 +280,7 @@ class TestOrgVariables(unittest.TestCase):
     ORG = "Aries-Serpent"
 
     def setUp(self):
-        os.environ["CODEX_MASTER_KEY"] = "test_master_token"
+        get_token(required_elevated=True)[0] = "test_master_token"
         self.vm = VariableManager(brain=None)
 
     def tearDown(self):
@@ -354,7 +356,7 @@ class TestBrainClientMechanism(unittest.TestCase):
             "body": {"total_count": 0, "variables": []},
         }
 
-        os.environ["CODEX_MASTER_KEY"] = "tok"
+        get_token(required_elevated=True)[0] = "tok"
         vm = VariableManager(brain=mock_brain)
         vm.list_repo_vars("Aries-Serpent", "_codex_")
         mock_brain.proxy_request.assert_called_once()
@@ -386,7 +388,7 @@ class TestBrainClientMechanism(unittest.TestCase):
             ).encode()
             mock_urlopen.return_value = mock_response
 
-            os.environ["CODEX_MASTER_KEY"] = "tok"
+            get_token(required_elevated=True)[0] = "tok"
             vm = VariableManager(brain=mock_brain)
             try:
                 vm.list_repo_vars("Aries-Serpent", "_codex_")
@@ -404,7 +406,7 @@ class TestLiveTestDryRun(unittest.TestCase):
     """Simulate the full create→verify→update→verify→delete cycle via mocks."""
 
     def setUp(self):
-        os.environ["CODEX_MASTER_KEY"] = "test_tok"
+        get_token(required_elevated=True)[0] = "test_tok"
 
     def tearDown(self):
         os.environ.pop("CODEX_MASTER_KEY", None)

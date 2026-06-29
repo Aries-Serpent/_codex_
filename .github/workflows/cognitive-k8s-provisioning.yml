@@ -1,6 +1,5 @@
 name: Cognitive K8s Provisioning Pipeline
-
-on:
+true:
   workflow_dispatch:
     inputs:
       environment:
@@ -9,28 +8,25 @@ on:
         default: dev
         type: choice
         options:
-          - dev
-          - staging
-          - prod
+        - dev
+        - staging
+        - prod
       cloud_provider:
         description: Cloud provider (aws/gcp/azure)
         required: true
         default: aws
         type: choice
         options:
-          - aws
-          - gcp
-          - azure
-
+        - aws
+        - gcp
+        - azure
 permissions:
   contents: read
   actions: write
   id-token: write
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 jobs:
   query-patterns:
     name: Query K8s Patterns
@@ -39,236 +35,268 @@ jobs:
     outputs:
       patterns: ${{ steps.query.outputs.patterns }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
+    - name: Checkout
+      uses: actions/checkout@v5
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.11'
+    - name: Query Patterns
+      id: query
+      run: 'python scripts/cognitive/query_k8s_patterns.py
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.11"
+        PATTERNS=$(cat k8s_patterns.json | base64 -w 0)
 
-      - name: Query Patterns
-        id: query
-        run: |
-          python scripts/cognitive/query_k8s_patterns.py
-          PATTERNS=$(cat k8s_patterns.json | base64 -w 0)
-          echo "patterns=$PATTERNS" >> $GITHUB_OUTPUT
-        shell: bash
+        echo "patterns=$PATTERNS" >> $GITHUB_OUTPUT
 
-      - name: Upload Patterns
-        uses: actions/upload-artifact@v5
-        with:
-          name: k8s-patterns
-          path: k8s_patterns.json
-          retention-days: 30
-
+        '
+      shell: bash
+    - name: Upload Patterns
+      uses: actions/upload-artifact@v5
+      with:
+        name: k8s-patterns
+        path: k8s_patterns.json
+        retention-days: 30
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   validate-config:
     name: Validate Configuration
     needs: query-patterns
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
+    - name: Checkout
+      uses: actions/checkout@v5
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.11'
+    - name: Download Patterns
+      uses: actions/download-artifact@v5
+      with:
+        name: k8s-patterns
+    - name: Validate Configuration
+      run: 'python scripts/deployment/validate_infrastructure_policy.py
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.11"
-
-      - name: Download Patterns
-        uses: actions/download-artifact@v5
-        with:
-          name: k8s-patterns
-
-      - name: Validate Configuration
-        run: |
-          python scripts/deployment/validate_infrastructure_policy.py
-
-      - name: Upload Compliance Report
-        uses: actions/upload-artifact@v5
-        with:
-          name: compliance-report
-          path: infrastructure_compliance_report.json
-          retention-days: 30
-
+        '
+    - name: Upload Compliance Report
+      uses: actions/upload-artifact@v5
+      with:
+        name: compliance-report
+        path: infrastructure_compliance_report.json
+        retention-days: 30
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   estimate-costs:
     name: Estimate Costs
     needs: query-patterns
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
+    - name: Checkout
+      uses: actions/checkout@v5
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.11'
+    - name: Download Patterns
+      uses: actions/download-artifact@v5
+      with:
+        name: k8s-patterns
+    - name: Estimate Costs
+      run: 'python scripts/deployment/estimate_infrastructure_cost.py
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.11"
-
-      - name: Download Patterns
-        uses: actions/download-artifact@v5
-        with:
-          name: k8s-patterns
-
-      - name: Estimate Costs
-        run: |
-          python scripts/deployment/estimate_infrastructure_cost.py
-
-      - name: Upload Cost Estimate
-        uses: actions/upload-artifact@v5
-        with:
-          name: cost-estimate
-          path: cost_estimate.json
-          retention-days: 30
-
+        '
+    - name: Upload Cost Estimate
+      uses: actions/upload-artifact@v5
+      with:
+        name: cost-estimate
+        path: cost_estimate.json
+        retention-days: 30
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   generate-terraform:
     name: Generate Terraform Configuration
     needs: query-patterns
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
+    - name: Checkout
+      uses: actions/checkout@v5
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.11'
+    - name: Download Patterns
+      uses: actions/download-artifact@v5
+      with:
+        name: k8s-patterns
+    - name: Generate Terraform Configuration
+      run: 'python scripts/deployment/generate_tf_config.py
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.11"
-
-      - name: Download Patterns
-        uses: actions/download-artifact@v5
-        with:
-          name: k8s-patterns
-
-      - name: Generate Terraform Configuration
-        run: |
-          python scripts/deployment/generate_tf_config.py
-
-      - name: Upload Terraform Modules
-        uses: actions/upload-artifact@v5
-        with:
-          name: terraform-modules
-          path: infrastructure/terraform/
-          retention-days: 30
-
+        '
+    - name: Upload Terraform Modules
+      uses: actions/upload-artifact@v5
+      with:
+        name: terraform-modules
+        path: infrastructure/terraform/
+        retention-days: 30
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   terraform-plan:
     name: Create Terraform Plan
     needs: generate-terraform
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
+    - name: Checkout
+      uses: actions/checkout@v5
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.11'
+    - name: Download Terraform Modules
+      uses: actions/download-artifact@v5
+      with:
+        name: terraform-modules
+        path: infrastructure/terraform/
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.5.0
+    - name: Generate Terraform Plan
+      run: 'python scripts/deployment/run_terraform_plan.py
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.11"
-
-      - name: Download Terraform Modules
-        uses: actions/download-artifact@v5
-        with:
-          name: terraform-modules
-          path: infrastructure/terraform/
-
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.5.0
-
-      - name: Generate Terraform Plan
-        run: |
-          python scripts/deployment/run_terraform_plan.py
-
-      - name: Upload Plan Summary
-        uses: actions/upload-artifact@v5
-        with:
-          name: terraform-plan
-          path: terraform_plan_summary.md
-          retention-days: 30
-
+        '
+    - name: Upload Plan Summary
+      uses: actions/upload-artifact@v5
+      with:
+        name: terraform-plan
+        path: terraform_plan_summary.md
+        retention-days: 30
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   approval-gate:
     name: Approval Gate
     needs:
-      - query-patterns
-      - validate-config
-      - estimate-costs
-      - generate-terraform
-      - terraform-plan
+    - query-patterns
+    - validate-config
+    - estimate-costs
+    - generate-terraform
+    - terraform-plan
     runs-on: ubuntu-latest
     timeout-minutes: 20
     environment:
       name: infrastructure-approval
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
+    - name: Checkout
+      uses: actions/checkout@v5
+    - name: Download All Artifacts
+      uses: actions/download-artifact@v5
+    - name: Generate Approval Summary
+      run: 'echo "# K8s Cluster Provisioning Approval" > approval_summary.md
 
-      - name: Download All Artifacts
-        uses: actions/download-artifact@v5
+        echo "" >> approval_summary.md
 
-      - name: Generate Approval Summary
-        run: |
-          echo "# K8s Cluster Provisioning Approval" > approval_summary.md
-          echo "" >> approval_summary.md
-          echo "## Provisioning Details" >> approval_summary.md
-          echo "- **Environment:** ${{ github.event.inputs.environment }}" >> approval_summary.md
-          echo "- **Cloud Provider:** ${{ github.event.inputs.cloud_provider }}" >> approval_summary.md
-          echo "" >> approval_summary.md
-          echo "## Review Items" >> approval_summary.md
-          echo "- [ ] Cost estimate reviewed and approved" >> approval_summary.md
-          echo "- [ ] Compliance report reviewed" >> approval_summary.md
-          echo "- [ ] Terraform plan reviewed" >> approval_summary.md
-          echo "- [ ] Security review completed" >> approval_summary.md
-          echo "" >> approval_summary.md
-          echo "## Next Steps" >> approval_summary.md
-          echo "After approval, infrastructure will be provisioned automatically." >> approval_summary.md
+        echo "## Provisioning Details" >> approval_summary.md
 
-      - name: Create Approval PR
-        uses: peter-evans/create-pull-request@c5c74f5e2823915447de1807e88514fad615c86f
-        with:
-          commit-message: "K8s Cluster Provisioning (${{ github.event.inputs.environment }} - ${{ github.event.inputs.cloud_provider }})"
-          title: "K8s Cluster Provisioning: ${{ github.event.inputs.environment }} - ${{ github.event.inputs.cloud_provider }}"
-          body-path: approval_summary.md
-          branch: k8s-provisioning-${{ github.event.inputs.environment }}-${{ github.event.inputs.cloud_provider }}
-          delete-branch: false
+        echo "- **Environment:** ${{ github.event.inputs.environment }}" >> approval_summary.md
 
+        echo "- **Cloud Provider:** ${{ github.event.inputs.cloud_provider }}" >>
+        approval_summary.md
+
+        echo "" >> approval_summary.md
+
+        echo "## Review Items" >> approval_summary.md
+
+        echo "- [ ] Cost estimate reviewed and approved" >> approval_summary.md
+
+        echo "- [ ] Compliance report reviewed" >> approval_summary.md
+
+        echo "- [ ] Terraform plan reviewed" >> approval_summary.md
+
+        echo "- [ ] Security review completed" >> approval_summary.md
+
+        echo "" >> approval_summary.md
+
+        echo "## Next Steps" >> approval_summary.md
+
+        echo "After approval, infrastructure will be provisioned automatically." >>
+        approval_summary.md
+
+        '
+    - name: Create Approval PR
+      uses: peter-evans/create-pull-request@c5c74f5e2823915447de1807e88514fad615c86f
+      with:
+        commit-message: K8s Cluster Provisioning (${{ github.event.inputs.environment
+          }} - ${{ github.event.inputs.cloud_provider }})
+        title: 'K8s Cluster Provisioning: ${{ github.event.inputs.environment }} -
+          ${{ github.event.inputs.cloud_provider }}'
+        body-path: approval_summary.md
+        branch: k8s-provisioning-${{ github.event.inputs.environment }}-${{ github.event.inputs.cloud_provider
+          }}
+        delete-branch: false
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   notify-completion:
     name: Notify Completion
     needs:
-      - approval-gate
+    - approval-gate
     runs-on: ubuntu-latest
     timeout-minutes: 15
     if: always()
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
+    - name: Checkout
+      uses: actions/checkout@v5
+    - name: Generate Completion Report
+      run: 'echo "# K8s Provisioning Pipeline Complete" > completion_report.md
 
-      - name: Generate Completion Report
-        run: |
-          echo "# K8s Provisioning Pipeline Complete" > completion_report.md
-          echo "" >> completion_report.md
-          echo "**Status:** SUCCESS" >> completion_report.md
-          echo "**Timestamp:** $(date -u '+%Y-%m-%dT%H:%M:%SZ')" >> completion_report.md
-          echo "" >> completion_report.md
-          echo "## Artifacts Generated" >> completion_report.md
-          echo "- Terraform modules for all providers" >> completion_report.md
-          echo "- Cost estimates and analysis" >> completion_report.md
-          echo "- Compliance validation report" >> completion_report.md
-          echo "- Cluster provisioning plan" >> completion_report.md
+        echo "" >> completion_report.md
 
-      - name: Upload Completion Report
-        uses: actions/upload-artifact@v5
-        with:
-          name: completion-report
-          path: completion_report.md
-          retention-days: 30
+        echo "**Status:** SUCCESS" >> completion_report.md
 
-      - name: Workflow Summary
-        run: |
-          echo "✅ K8s Provisioning Pipeline Complete" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Environment: ${{ github.event.inputs.environment }}" >> $GITHUB_STEP_SUMMARY
-          echo "Cloud Provider: ${{ github.event.inputs.cloud_provider }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Approval PR created. Review and approve to proceed with provisioning." >> $GITHUB_STEP_SUMMARY
+        echo "**Timestamp:** $(date -u ''+%Y-%m-%dT%H:%M:%SZ'')" >> completion_report.md
+
+        echo "" >> completion_report.md
+
+        echo "## Artifacts Generated" >> completion_report.md
+
+        echo "- Terraform modules for all providers" >> completion_report.md
+
+        echo "- Cost estimates and analysis" >> completion_report.md
+
+        echo "- Compliance validation report" >> completion_report.md
+
+        echo "- Cluster provisioning plan" >> completion_report.md
+
+        '
+    - name: Upload Completion Report
+      uses: actions/upload-artifact@v5
+      with:
+        name: completion-report
+        path: completion_report.md
+        retention-days: 30
+    - name: Workflow Summary
+      run: 'echo "✅ K8s Provisioning Pipeline Complete" >> $GITHUB_STEP_SUMMARY
+
+        echo "" >> $GITHUB_STEP_SUMMARY
+
+        echo "Environment: ${{ github.event.inputs.environment }}" >> $GITHUB_STEP_SUMMARY
+
+        echo "Cloud Provider: ${{ github.event.inputs.cloud_provider }}" >> $GITHUB_STEP_SUMMARY
+
+        echo "" >> $GITHUB_STEP_SUMMARY
+
+        echo "Approval PR created. Review and approve to proceed with provisioning."
+        >> $GITHUB_STEP_SUMMARY
+
+        '
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

@@ -1,153 +1,177 @@
 name: Repository Health Monitoring
-
-on:
+true:
   schedule:
-    # Run weekly on Mondays at 00:00 UTC
-    - cron: '0 0 * * 1'
+  - cron: 0 0 * * 1
   workflow_dispatch:
     inputs:
       execute_offload:
-        description: 'Execute offload for candidates (requires approval)'
+        description: Execute offload for candidates (requires approval)
         required: false
         type: boolean
         default: false
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: write
   pull-requests: write
-
-
 jobs:
   monitor_repository_health:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          fetch-depth: 0  # Full history for accurate age calculation
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        fetch-depth: 0
+    - name: Set up Python 3.12 with tiered cache
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        cache-tier: common
+    - name: Scan for offload candidates
+      id: scan
+      run: "python scripts/repository_organization/monitor_offload_candidates.py \\\
+        \n  --repo-root . \\\n  --output .codex/repository_health/offload_candidates.json\
+        \ \\\n  --log-actions\n\n# Extract summary for PR comment (including scan_time\
+        \ for consistency)\nCANDIDATE_COUNT=$(jq -r '.summary.total_candidates' .codex/repository_health/offload_candidates.json)\n\
+        TOTAL_SIZE=$(jq -r '.summary.total_size_mb' .codex/repository_health/offload_candidates.json)\n\
+        SCAN_TIME=$(jq -r '.metadata.scan_time' .codex/repository_health/offload_candidates.json)\n\
+        \necho \"candidate_count=$CANDIDATE_COUNT\" >> $GITHUB_OUTPUT\necho \"total_size_mb=$TOTAL_SIZE\"\
+        \ >> $GITHUB_OUTPUT\necho \"scan_time=$SCAN_TIME\" >> $GITHUB_OUTPUT\n"
+    - name: Generate repository health dashboard
+      run: '# Dashboard is already created, but we could update it programmatically
+        here
 
-      - name: Set up Python 3.12 with tiered cache
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12.13'
-          cache-tier: common
+        echo "✅ Health dashboard up to date"
 
-      - name: Scan for offload candidates
-        id: scan
-        run: |
-          python scripts/repository_organization/monitor_offload_candidates.py \
-            --repo-root . \
-            --output .codex/repository_health/offload_candidates.json \
-            --log-actions
+        '
+    - name: Upload health report artifacts
+      uses: actions/upload-artifact@v5
+      with:
+        name: repository-health-report
+        path: '.codex/repository_health/offload_candidates.json
 
-          # Extract summary for PR comment (including scan_time for consistency)
-          CANDIDATE_COUNT=$(jq -r '.summary.total_candidates' .codex/repository_health/offload_candidates.json)
-          TOTAL_SIZE=$(jq -r '.summary.total_size_mb' .codex/repository_health/offload_candidates.json)
-          SCAN_TIME=$(jq -r '.metadata.scan_time' .codex/repository_health/offload_candidates.json)
+          .codex/repository_health/DASHBOARD.md
 
-          echo "candidate_count=$CANDIDATE_COUNT" >> $GITHUB_OUTPUT
-          echo "total_size_mb=$TOTAL_SIZE" >> $GITHUB_OUTPUT
-          echo "scan_time=$SCAN_TIME" >> $GITHUB_OUTPUT
+          '
+        retention-days: 90
+    - name: Check if action is needed
+      id: check_action
+      run: "CANDIDATE_COUNT=${{ steps.scan.outputs.candidate_count }}\n\nif [ \"$CANDIDATE_COUNT\"\
+        \ -gt 0 ]; then\n  echo \"action_needed=true\" >> $GITHUB_OUTPUT\n  echo \"\
+        ⚠️ Found $CANDIDATE_COUNT offload candidates\"\nelse\n  echo \"action_needed=false\"\
+        \ >> $GITHUB_OUTPUT\n  echo \"✅ No offload candidates found\"\nfi\n"
+    - name: Create PR with findings (if needed)
+      if: steps.check_action.outputs.action_needed == 'true'
+      uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1
+      with:
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        commit-message: 'chore: Repository health monitoring report'
+        branch: automated/repository-health-${{ github.run_number }}
+        title: '🔍 Repository Health: ${{ steps.scan.outputs.candidate_count }} offload
+          candidates found'
+        body: '## Repository Health Monitoring Report
 
-      - name: Generate repository health dashboard
-        run: |
-          # Dashboard is already created, but we could update it programmatically here
-          echo "✅ Health dashboard up to date"
 
-      - name: Upload health report artifacts
-        uses: actions/upload-artifact@v5 # v7.0.1
-        with:
-          name: repository-health-report
-          path: |
-            .codex/repository_health/offload_candidates.json
-            .codex/repository_health/DASHBOARD.md
-          retention-days: 90
+          **Scan Date**: ${{ steps.scan.outputs.scan_time }}
 
-      - name: Check if action is needed
-        id: check_action
-        run: |
-          CANDIDATE_COUNT=${{ steps.scan.outputs.candidate_count }}
+          **Triggered by**: ${{ github.event_name }}
 
-          if [ "$CANDIDATE_COUNT" -gt 0 ]; then
-            echo "action_needed=true" >> $GITHUB_OUTPUT
-            echo "⚠️ Found $CANDIDATE_COUNT offload candidates"
-          else
-            echo "action_needed=false" >> $GITHUB_OUTPUT
-            echo "✅ No offload candidates found"
-          fi
 
-      - name: Create PR with findings (if needed)
-        if: steps.check_action.outputs.action_needed == 'true'
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1
-        with:
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-          commit-message: 'chore: Repository health monitoring report'
-          branch: automated/repository-health-${{ github.run_number }}
-          title: '🔍 Repository Health: ${{ steps.scan.outputs.candidate_count }} offload candidates found'
-          body: |
-            ## Repository Health Monitoring Report
+          ### Summary
 
-            **Scan Date**: ${{ steps.scan.outputs.scan_time }}
-            **Triggered by**: ${{ github.event_name }}
 
-            ### Summary
+          - **Offload Candidates**: ${{ steps.scan.outputs.candidate_count }}
 
-            - **Offload Candidates**: ${{ steps.scan.outputs.candidate_count }}
-            - **Total Size**: ${{ steps.scan.outputs.total_size_mb }} MB
-            - **Dashboard**: [View Dashboard](.codex/repository_health/DASHBOARD.md)
-            - **Detailed Report**: [View Candidates](.codex/repository_health/offload_candidates.json)
+          - **Total Size**: ${{ steps.scan.outputs.total_size_mb }} MB
 
-            ### Recommendations
+          - **Dashboard**: [View Dashboard](.codex/repository_health/DASHBOARD.md)
 
-            Review the candidates in `.codex/repository_health/offload_candidates.json` and execute offloads as appropriate using:
+          - **Detailed Report**: [View Candidates](.codex/repository_health/offload_candidates.json)
 
-            ```bash
-            # Review candidates
-            cat .codex/repository_health/offload_candidates.json | jq '.candidates[]'
 
-            # Execute offload (manual review required)
-            # Determine appropriate category and move files
-            ```
+          ### Recommendations
 
-            ### Next Steps
 
-            1. Review offload candidates
-            2. Determine which files should be offloaded
-            3. Execute offloads using repository organization scripts
-            4. Update documentation
+          Review the candidates in `.codex/repository_health/offload_candidates.json`
+          and execute offloads as appropriate using:
 
-            ### Automation
 
-            This PR was automatically created by the Repository Health Monitoring workflow.
+          ```bash
 
-            **Workflow**: `.github/workflows/repository-health-monitoring.yml`
-            **Agent**: `repository-organization-agent`
-            **Run**: ${{ github.run_id }}
-          labels: |
-            automated
-            repository-health
-            monitoring
-          assignees: mbaetiong
+          # Review candidates
 
-      - name: Summary
-        run: |
-          echo "## Repository Health Monitoring" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Candidates Found**: ${{ steps.scan.outputs.candidate_count }}" >> $GITHUB_STEP_SUMMARY
-          echo "**Total Size**: ${{ steps.scan.outputs.total_size_mb }} MB" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Status**: ${{ steps.check_action.outputs.action_needed == 'true' && '⚠️ Action Needed' || '✅ Healthy' }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "See artifacts for detailed report." >> $GITHUB_STEP_SUMMARY
+          cat .codex/repository_health/offload_candidates.json | jq ''.candidates[]''
 
-      - name: Cache health report
-        if: always()
-        continue-on-error: true
-        run: |
-          python scripts/ci/generate_cache_keys.py --health --workflow repository-health-monitoring 2>/dev/null || echo "Cache health: check skipped"
+
+          # Execute offload (manual review required)
+
+          # Determine appropriate category and move files
+
+          ```
+
+
+          ### Next Steps
+
+
+          1. Review offload candidates
+
+          2. Determine which files should be offloaded
+
+          3. Execute offloads using repository organization scripts
+
+          4. Update documentation
+
+
+          ### Automation
+
+
+          This PR was automatically created by the Repository Health Monitoring workflow.
+
+
+          **Workflow**: `.github/workflows/repository-health-monitoring.yml`
+
+          **Agent**: `repository-organization-agent`
+
+          **Run**: ${{ github.run_id }}
+
+          '
+        labels: 'automated
+
+          repository-health
+
+          monitoring
+
+          '
+        assignees: mbaetiong
+    - name: Summary
+      run: 'echo "## Repository Health Monitoring" >> $GITHUB_STEP_SUMMARY
+
+        echo "" >> $GITHUB_STEP_SUMMARY
+
+        echo "**Candidates Found**: ${{ steps.scan.outputs.candidate_count }}" >>
+        $GITHUB_STEP_SUMMARY
+
+        echo "**Total Size**: ${{ steps.scan.outputs.total_size_mb }} MB" >> $GITHUB_STEP_SUMMARY
+
+        echo "" >> $GITHUB_STEP_SUMMARY
+
+        echo "**Status**: ${{ steps.check_action.outputs.action_needed == ''true''
+        && ''⚠️ Action Needed'' || ''✅ Healthy'' }}" >> $GITHUB_STEP_SUMMARY
+
+        echo "" >> $GITHUB_STEP_SUMMARY
+
+        echo "See artifacts for detailed report." >> $GITHUB_STEP_SUMMARY
+
+        '
+    - name: Cache health report
+      if: always()
+      continue-on-error: true
+      run: 'python scripts/ci/generate_cache_keys.py --health --workflow repository-health-monitoring
+        2>/dev/null || echo "Cache health: check skipped"
+
+        '
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

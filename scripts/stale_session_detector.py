@@ -29,6 +29,8 @@ import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Optional
+from scripts.ci._token_resolver import get_token
+
 
 # Allow running from repo root without installing the package
 REPO_ROOT = Path(__file__).parent.parent
@@ -62,7 +64,7 @@ def _pr_merged_at(pr_number: int) -> Optional[datetime]:
     Requires a ``GITHUB_TOKEN`` environment variable.  Returns ``None`` if the
     token is missing, the PR is not found, or the PR has not been merged.
     """
-    token = os.environ.get("GITHUB_TOKEN") or os.environ.get("CODEX_MASTER_KEY")
+    token = os.environ.get("GITHUB_TOKEN") or get_token(required_elevated=True)[0]
     if not token:
         return None
 
@@ -213,7 +215,7 @@ def main() -> int:
     # Auto-enable --check-prs when GITHUB_TOKEN is available in the environment
     # (unblocked by COPILOT_AGENT_AUTH_ENABLED=true token delegation)
     check_prs = args.check_prs or bool(
-        os.environ.get("GITHUB_TOKEN") or os.environ.get("CODEX_MASTER_KEY")
+        os.environ.get("GITHUB_TOKEN") or get_token(required_elevated=True)[0]
     )
 
     stale = detect_stale_sessions(

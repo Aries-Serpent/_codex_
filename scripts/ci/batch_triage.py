@@ -48,6 +48,8 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional
+from scripts.ci._token_resolver import get_token
+
 
 logging.basicConfig(
     level=logging.INFO,
@@ -122,7 +124,7 @@ class BatchTriageEngine:
         self.owner, self.repo_name = repo.split('/')
         self.failures: list[FailureRecord] = []
         self.groups: list[TriageGroup] = []
-        self.gh_token = os.environ.get('GITHUB_TOKEN') or os.environ.get('GH_TOKEN')
+        self.gh_token = os.environ.get('GITHUB_TOKEN') or get_token(required_elevated=False)[0]
 
         # Initialize self-healing engine if available
         self.healing_engine = None

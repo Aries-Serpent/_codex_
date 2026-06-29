@@ -1,213 +1,158 @@
 name: CODEX Manifest Auto-Refresh
-
-# Automatically regenerate CODEX_MANIFEST.json to satisfy the E→D Transition Gate
-# C2 condition (manifest < 24h old).
-#
-# Trigger policy (S155 — reduced cascade):
-# • PR opened/reopened: generate manifest for new/retargeted PRs
-# • schedule 6h: keeps manifest fresh on long-running branches without firing on
-#   every push — eliminates the "approve runs all" auto-commit storm
-# • synchronize REMOVED: the 6h schedule is sufficient; firing on every push caused
-#   concurrent auto-commits alongside agent-auth-delegation, leading to rebase conflicts
-#
-# Uses [skip ci] on the bot commit to avoid recursive workflow triggers.
-# REQ-4/5 compliance: also touches AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md.
-
-on:
+true:
   pull_request:
-    types: [opened, reopened]
-  # Scheduled refresh every 6h to prevent E→D C2 stale-manifest failures on
-  # long-running branches (the manifest generated_at must be < 24h old).
+    types:
+    - opened
+    - reopened
   schedule:
-    - cron: '0 */6 * * *'
-  # NOTE: The E→D Transition Readiness Gate now includes a self-healing job
-  # (heal-stale-manifest) that directly regenerates CODEX_MANIFEST.json when
-  # C2 fails on a PR. A workflow_run trigger here is NOT needed and was removed
-  # to prevent the "untrusted-checkout" CodeQL security pattern (a privileged
-  # workflow_run with contents:write that executes code is a security risk).
-  workflow_dispatch:
-
-
+  - cron: 0 */6 * * *
+  workflow_dispatch: null
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
-  contents: write       # For manifest file creation and push
-  pull-requests: read   # For querying active PRs to prevent conflicts
-  actions: write        # For triggering pages-mkdocs.yml workflow
-
+  contents: write
+  pull-requests: read
+  actions: write
 jobs:
   refresh-manifest:
-    name: "🔄 Refresh CODEX_MANIFEST.json"
+    name: "\U0001F504 Refresh CODEX_MANIFEST.json"
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    # Skip when the actor is the bot itself (prevents recursion on the bot commit).
-    # On schedule runs, github.actor is 'github-actions[bot]' — we explicitly allow
-    # scheduled runs to proceed by checking github.event_name.
     if: github.actor != 'github-actions[bot]' || github.event_name == 'schedule'
-
     steps:
-      - name: Checkout PR branch (or main on schedule)
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          # On schedule runs, HEAD ref is not available — fall back to main.
-          ref: ${{ github.head_ref || 'main' }}
-          fetch-depth: 1
-          token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Checkout PR branch (or main on schedule)
+      uses: actions/checkout@v7
+      with:
+        ref: ${{ github.head_ref || 'main' }}
+        fetch-depth: 1
+        token: ${{ secrets.GITHUB_TOKEN }}
+    - name: "\U0001F500 Resolve push target (chain: sub-PR \u2192 0D_base_ \u2192\
+        \ main)"
+      id: resolve-target
+      uses: ./.github/actions/resolve-push-target
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: 3.12.13
+        cache: pip
+    - name: Install minimal deps
+      run: pip install pyyaml --quiet
+    - name: Regenerate CODEX_MANIFEST.json
+      id: refresh
+      run: 'python scripts/ci/generate_manifest.py
 
-      - name: "🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)"
-        id: resolve-target
-        uses: ./.github/actions/resolve-push-target
+        python3 -c ''import json; d=json.load(open("CODEX_MANIFEST.json")); print("generated_at="+d["generated_at"])''
+        >> "$GITHUB_OUTPUT"
 
-      - name: Set up Python
-        uses: actions/setup-python@v6 # v6
-        with:
-          python-version: '3.12.13'
-          cache: 'pip'
-
-      - name: Install minimal deps
-        run: pip install pyyaml --quiet
-
-      - name: Regenerate CODEX_MANIFEST.json
-        id: refresh
-        run: |
-          python scripts/ci/generate_manifest.py
-          python3 -c 'import json; d=json.load(open("CODEX_MANIFEST.json")); print("generated_at="+d["generated_at"])' >> "$GITHUB_OUTPUT"
-
-      - name: Update compliance files (REQ-4/5 — PR runs only)
-        # On pull_request runs: runs session_wrapup_autofix.py so that
-        # AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md are updated in the
-        # same commit as the manifest, satisfying REQ-4 and REQ-5.
-        # On schedule runs: this step is skipped (no PR payload is available).
-        # The manifest-only commit is still valid for schedule runs; compliance
-        # files are updated by the next PR-triggered run instead.
-        env:
-          PR_NUMBER: ${{ github.event.pull_request.number || '' }}
-          RUN_URL: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          GIT_SHA: ${{ github.sha }}
-          EVENT_NAME: ${{ github.event_name }}
-        run: |
-          if [ "${EVENT_NAME}" = "schedule" ]; then
-            echo "Scheduled run — skipping PR-scoped compliance update (no PR payload)"
-          else
-            python scripts/ci/session_wrapup_autofix.py \
-              --pr-number "${PR_NUMBER}" \
-              --sha "${GIT_SHA:0:8}" \
-              --run-url "${RUN_URL}" \
-              --fix-all
-          fi
-
-      - name: Sync all tracked files (manifest integrity + .secrets.baseline + changelog)
-        env:
-          HEAD_REF: ${{ github.head_ref || 'main' }}
-          EVENT_NAME: ${{ github.event_name }}
-        run: |
-          # sync_tracked_files.py atomically:
-          #   1. Recomputes CODEX_MANIFEST.json integrity_sha256 after generate_manifest.py
-          #   2. Re-scans .secrets.baseline for the updated manifest hash
-          #   3. Validates CHANGELOG.md has a non-empty [Unreleased] section
-          #   4. Adds an auto-sync stub to AGENT_ACCOUNTABILITY_REPORT.md if needed
-          # This eliminates the manual "update .secrets.baseline" step that agents
-          # frequently forget, which was a recurring P-B / P-E cascade failure pattern.
-          if python -m detect_secrets --version >/dev/null 2>&1; then
-            python scripts/ci/sync_tracked_files.py --fix --manifest-only --quiet
-            echo "✅ sync_tracked_files.py applied manifest + baseline sync"
-          else
-            echo "ℹ️  detect-secrets not installed — skipping .secrets.baseline sync"
-            echo "   Install: pip install detect-secrets"
-          fi
-          git config user.name  "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add CODEX_MANIFEST.json \
-                  .secrets.baseline \
-                  docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md \
-                  CHANGELOG.md
-          # Only commit if there are actual changes
-          if git diff --cached --quiet; then
-            echo "All files already up-to-date — no commit needed"
-          else
-            git commit -m "chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci]"
-            # For schedule/dispatch runs walk the staging chain; for PR runs use the PR branch.
-            if [ "${EVENT_NAME}" = "schedule" ] || [ -z "${HEAD_REF}" ]; then
-              TARGET_REF="${{ steps.resolve-target.outputs.branch }}"
-              echo "🔀 Push target: ${TARGET_REF} (reason: ${{ steps.resolve-target.outputs.reason }})"
-            else
-              TARGET_REF="${HEAD_REF}"
-            fi
-
-            # ── Active-PR guard (inline — avoids composite action checkout overhead) ─
-            # Skip push to main/0D_base_ if ANY open or draft PR exists targeting
-            # that branch.  The old file-overlap approach was insufficient: it missed
-            # PRs that hadn't yet touched manifest files but would conflict once the
-            # auto-refresh pushed a new generated_at + integrity_sha.
-            PR_SKIP=false
-            if [ "${TARGET_REF}" = "main" ] || [ "${TARGET_REF}" = "0D_base_" ]; then
-              PR_COUNT=$(gh api \
-                "repos/${{ github.repository }}/pulls?base=${TARGET_REF}&state=open&per_page=1" \
-                --jq 'length' 2>/dev/null || echo "0")
-              if [ "${PR_COUNT}" -gt "0" ]; then
-                PR_SKIP=true
-                echo "⛔ ${PR_COUNT} open/draft PR(s) targeting ${TARGET_REF} — deferring push." \
-                  | tee -a "$GITHUB_STEP_SUMMARY"
-                echo "The manifest will auto-refresh once all active PRs are merged." \
-                  >> "$GITHUB_STEP_SUMMARY"
-              fi
-            fi
-            # ── end active-PR guard ───────────────────────────────────────────────
-
-            if [ "${PR_SKIP}" = "true" ]; then
-              echo "🚫 Push skipped — active PR(s) detected on ${TARGET_REF}."
-            else
-              git pull --rebase --autostash origin "${TARGET_REF}" 2>/dev/null || true
-              git push origin "HEAD:${TARGET_REF}"
-              echo "✅ CODEX_MANIFEST.json + compliance files refreshed and pushed to ${TARGET_REF}"
-
-              # Re-trigger MkDocs Pages build explicitly after the [skip ci] commit.
-              # [skip ci] prevents GitHub Actions workflows (including pages-mkdocs.yml) from
-              # running on the auto-refresh push, but the branch-mode pages-build-deployment
-              # (internal GitHub Pages service) is NOT skipped and would serve raw files → 404.
-              # This explicit workflow_dispatch call bypasses [skip ci] and ensures the MkDocs
-              # site is always rebuilt after a manifest refresh to main.
-              if [ "${TARGET_REF}" = "main" ]; then
-                echo "🔄 Triggering pages-mkdocs.yml rebuild to prevent branch-mode 404…"
-                gh workflow run pages-mkdocs.yml \
-                  --ref main \
-                  --field reason="post-manifest-refresh-pages-heal" 2>/dev/null \
-                  && echo "✅ pages-mkdocs.yml rebuild triggered" \
-                  || echo "⚠️  Could not trigger pages-mkdocs.yml (non-fatal; pages-health-guard.yml will self-heal)"
-              fi
-            fi
-          fi
-
-  # ── rescue comment — posted on PR whenever this workflow fails ──────────
+        '
+    - name: "Update compliance files (REQ-4/5 \u2014 PR runs only)"
+      env:
+        PR_NUMBER: ${{ github.event.pull_request.number || '' }}
+        RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id
+          }}
+        GIT_SHA: ${{ github.sha }}
+        EVENT_NAME: ${{ github.event_name }}
+      run: "if [ \"${EVENT_NAME}\" = \"schedule\" ]; then\n  echo \"Scheduled run\
+        \ \u2014 skipping PR-scoped compliance update (no PR payload)\"\nelse\n  python\
+        \ scripts/ci/session_wrapup_autofix.py \\\n    --pr-number \"${PR_NUMBER}\"\
+        \ \\\n    --sha \"${GIT_SHA:0:8}\" \\\n    --run-url \"${RUN_URL}\" \\\n \
+        \   --fix-all\nfi\n"
+    - name: Sync all tracked files (manifest integrity + .secrets.baseline + changelog)
+      env:
+        HEAD_REF: ${{ github.head_ref || 'main' }}
+        EVENT_NAME: ${{ github.event_name }}
+      run: "# sync_tracked_files.py atomically:\n#   1. Recomputes CODEX_MANIFEST.json\
+        \ integrity_sha256 after generate_manifest.py\n#   2. Re-scans .secrets.baseline\
+        \ for the updated manifest hash\n#   3. Validates CHANGELOG.md has a non-empty\
+        \ [Unreleased] section\n#   4. Adds an auto-sync stub to AGENT_ACCOUNTABILITY_REPORT.md\
+        \ if needed\n# This eliminates the manual \"update .secrets.baseline\" step\
+        \ that agents\n# frequently forget, which was a recurring P-B / P-E cascade\
+        \ failure pattern.\nif python -m detect_secrets --version >/dev/null 2>&1;\
+        \ then\n  python scripts/ci/sync_tracked_files.py --fix --manifest-only --quiet\n\
+        \  echo \"\u2705 sync_tracked_files.py applied manifest + baseline sync\"\n\
+        else\n  echo \"\u2139\uFE0F  detect-secrets not installed \u2014 skipping\
+        \ .secrets.baseline sync\"\n  echo \"   Install: pip install detect-secrets\"\
+        \nfi\ngit config user.name  \"github-actions[bot]\"\ngit config user.email\
+        \ \"github-actions[bot]@users.noreply.github.com\"\ngit add CODEX_MANIFEST.json\
+        \ \\\n        .secrets.baseline \\\n        docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\
+        \ \\\n        CHANGELOG.md\n# Only commit if there are actual changes\nif\
+        \ git diff --cached --quiet; then\n  echo \"All files already up-to-date \u2014\
+        \ no commit needed\"\nelse\n  git commit -m \"chore(manifest): auto-refresh\
+        \ CODEX_MANIFEST.json [skip ci]\"\n  # For schedule/dispatch runs walk the\
+        \ staging chain; for PR runs use the PR branch.\n  if [ \"${EVENT_NAME}\"\
+        \ = \"schedule\" ] || [ -z \"${HEAD_REF}\" ]; then\n    TARGET_REF=\"${{ steps.resolve-target.outputs.branch\
+        \ }}\"\n    echo \"\U0001F500 Push target: ${TARGET_REF} (reason: ${{ steps.resolve-target.outputs.reason\
+        \ }})\"\n  else\n    TARGET_REF=\"${HEAD_REF}\"\n  fi\n\n  # \u2500\u2500\
+        \ Active-PR guard (inline \u2014 avoids composite action checkout overhead)\
+        \ \u2500\n  # Skip push to main/0D_base_ if ANY open or draft PR exists targeting\n\
+        \  # that branch.  The old file-overlap approach was insufficient: it missed\n\
+        \  # PRs that hadn't yet touched manifest files but would conflict once the\n\
+        \  # auto-refresh pushed a new generated_at + integrity_sha.\n  PR_SKIP=false\n\
+        \  if [ \"${TARGET_REF}\" = \"main\" ] || [ \"${TARGET_REF}\" = \"0D_base_\"\
+        \ ]; then\n    PR_COUNT=$(gh api \\\n      \"repos/${{ github.repository }}/pulls?base=${TARGET_REF}&state=open&per_page=1\"\
+        \ \\\n      --jq 'length' 2>/dev/null || echo \"0\")\n    if [ \"${PR_COUNT}\"\
+        \ -gt \"0\" ]; then\n      PR_SKIP=true\n      echo \"\u26D4 ${PR_COUNT} open/draft\
+        \ PR(s) targeting ${TARGET_REF} \u2014 deferring push.\" \\\n        | tee\
+        \ -a \"$GITHUB_STEP_SUMMARY\"\n      echo \"The manifest will auto-refresh\
+        \ once all active PRs are merged.\" \\\n        >> \"$GITHUB_STEP_SUMMARY\"\
+        \n    fi\n  fi\n  # \u2500\u2500 end active-PR guard \u2500\u2500\u2500\u2500\
+        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+        \u2500\u2500\u2500\u2500\n\n  if [ \"${PR_SKIP}\" = \"true\" ]; then\n   \
+        \ echo \"\U0001F6AB Push skipped \u2014 active PR(s) detected on ${TARGET_REF}.\"\
+        \n  else\n    git pull --rebase --autostash origin \"${TARGET_REF}\" 2>/dev/null\
+        \ || true\n    git push origin \"HEAD:${TARGET_REF}\"\n    echo \"\u2705 CODEX_MANIFEST.json\
+        \ + compliance files refreshed and pushed to ${TARGET_REF}\"\n\n    # Re-trigger\
+        \ MkDocs Pages build explicitly after the [skip ci] commit.\n    # [skip ci]\
+        \ prevents GitHub Actions workflows (including pages-mkdocs.yml) from\n  \
+        \  # running on the auto-refresh push, but the branch-mode pages-build-deployment\n\
+        \    # (internal GitHub Pages service) is NOT skipped and would serve raw\
+        \ files \u2192 404.\n    # This explicit workflow_dispatch call bypasses [skip\
+        \ ci] and ensures the MkDocs\n    # site is always rebuilt after a manifest\
+        \ refresh to main.\n    if [ \"${TARGET_REF}\" = \"main\" ]; then\n      echo\
+        \ \"\U0001F504 Triggering pages-mkdocs.yml rebuild to prevent branch-mode\
+        \ 404\u2026\"\n      gh workflow run pages-mkdocs.yml \\\n        --ref main\
+        \ \\\n        --field reason=\"post-manifest-refresh-pages-heal\" 2>/dev/null\
+        \ \\\n        && echo \"\u2705 pages-mkdocs.yml rebuild triggered\" \\\n \
+        \       || echo \"\u26A0\uFE0F  Could not trigger pages-mkdocs.yml (non-fatal;\
+        \ pages-health-guard.yml will self-heal)\"\n    fi\n  fi\nfi\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
     needs: refresh-manifest
-    if: |
-      failure() &&
-      github.event_name == 'pull_request' &&
+    if: 'failure() &&
+
+      github.event_name == ''pull_request'' &&
+
       github.event.pull_request.head.repo.full_name == github.repository
+
+      '
     permissions:
       pull-requests: write
       issues: write
     timeout-minutes: 5
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          fetch-depth: 1
-
-      - name: Post or update rescue comment
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_NAME: "CODEX Manifest Refresh"
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          BRANCH: ${{ github.head_ref }}
-        run: python scripts/ci/post_rescue_comment.py
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        fetch-depth: 1
+    - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: CODEX Manifest Refresh
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+        BRANCH: ${{ github.head_ref }}
+      run: python scripts/ci/post_rescue_comment.py
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

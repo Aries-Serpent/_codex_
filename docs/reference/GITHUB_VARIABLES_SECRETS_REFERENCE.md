@@ -451,6 +451,76 @@ def encrypt_secret(public_key_b64: str, secret_value: str) -> str:
 
 ---
 
+## 6. Test Variable Naming Conventions
+
+**Added in CODEX_MASTER_KEY testing implementation (2026-06-29)**
+
+When creating test variables for CODEX_MASTER_KEY API testing, use the following naming convention to ensure isolation across parallel test runs:
+
+### Naming Pattern
+
+```
+CODEX_API_TEST_{PURPOSE}_{TIMESTAMP}_{RANDOM}
+```
+
+**Components:**
+- `CODEX_API_TEST_` — Prefix for easy identification and filtering
+- `{PURPOSE}` — Test purpose (e.g., `REPO_VAR`, `SECRETS`, `ORG_VARS`)
+- `{TIMESTAMP}` — ISO-8601 UTC timestamp (YYYYMMDD_HHMMSS format)
+- `{RANDOM}` — 6-character random suffix to prevent collisions
+
+### Examples
+
+```
+CODEX_API_TEST_REPO_VAR_20260629_030738_abc123
+CODEX_API_TEST_ORG_SECRET_20260629_030742_def456
+CODEX_API_TEST_ENV_VAR_20260629_030745_ghi789
+```
+
+### Isolation Strategy
+
+**Test Data Persistence:**
+- Each test creates timestamped variables with unique suffixes
+- Tests never collide due to timestamp uniqueness
+- Cleanup: Optional - variables auto-expire after 24 hours or explicit deletion
+
+**Scope Separation:**
+- Repository-scope test variables: `CODEX_API_TEST_REPO_*`
+- Organization-scope test variables: `CODEX_API_TEST_ORG_*`
+- Environment-scope test variables: `CODEX_API_TEST_ENV_*`
+
+**Batch Operation Testing:**
+- Multiple variables with same timestamp but different purposes
+- Enables validating concurrent/batch creation, update, deletion
+- Query pattern: Filter by `CODEX_API_TEST_{PURPOSE}_{TIMESTAMP}`
+
+### Rate Limit Handling
+
+Test variable naming does NOT include rate limit tokens. Test infrastructure tracks rate limits separately via:
+- `X-RateLimit-Remaining` header inspection
+- Exponential backoff on 429 responses
+- `.codex/CODEX_MASTER_KEY_AUDIT_TRAIL.jsonl` for audit logging
+
+### Integration with Test Fixtures
+
+From `tests/github/conftest_codex_master_key.py`:
+
+```python
+@pytest.fixture
+def test_repo_var_name() -> str:
+    """Generate timestamped test variable name."""
+    timestamp = datetime.now(tz=timezone.utc).strftime("%Y%m%d_%H%M%S")
+    random_suffix = secrets.token_hex(3)  # 6 chars
+    return f"CODEX_API_TEST_REPO_VAR_{timestamp}_{random_suffix}"
+
+def test_create_variable(github_token: str, test_repo_var_name: str):
+    """Test creating a variable with proper naming."""
+    # Variable automatically has unique, timestamped name
+    # Query and cleanup are trivial due to naming convention
+```
+
+---
+
 ## References
 
 - [REST API: Actions Secrets](https://docs.github.com/en/rest/actions/secrets)
@@ -462,3 +532,5 @@ def encrypt_secret(public_key_b64: str, secret_value: str) -> str:
 - [MCP Server Configuration](https://github.com/github/github-mcp-server/blob/main/docs/server-configuration.md)
 - [This repo: GITHUB_API_COPILOT_AGENT_REFERENCE.md](../ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md)
 - [This repo: COPILOT_MCP_TOOL_REFERENCE.md](../../.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md)
+- [CODEX_MASTER_KEY Capabilities](CODEX_MASTER_KEY_CAPABILITIES.md)
+- [CODEX_MASTER_KEY Test Guide](../testing/CODEX_MASTER_KEY_TEST_GUIDE.md)

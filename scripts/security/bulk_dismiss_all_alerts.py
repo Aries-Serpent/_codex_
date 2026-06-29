@@ -40,6 +40,8 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+from scripts.ci._token_resolver import get_token
+
 
 try:
     import requests
@@ -157,7 +159,7 @@ def main() -> int:
     parser.add_argument("--output", default=".codex/security/bulk_dismiss_report.json", help="Report path")
     args = parser.parse_args()
 
-    token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN") or os.environ.get("CODEX_MASTER_KEY")
+    token = get_token(required_elevated=False)[0] or os.environ.get("GITHUB_TOKEN") or get_token(required_elevated=True)[0]
     if not token:
         logger.error("Set GH_TOKEN, GITHUB_TOKEN, or CODEX_MASTER_KEY environment variable.")
         return 1

@@ -1,264 +1,223 @@
 name: Auto-Fix Common CI Issues
-
-on:
+true:
   workflow_dispatch:
     inputs:
       check_only:
-        description: 'Only check for issues (do not fix)'
+        description: Only check for issues (do not fix)
         required: false
         type: boolean
         default: false
       pattern:
-        description: 'Specific pattern to run (1-8, or leave empty for all)'
+        description: Specific pattern to run (1-8, or leave empty for all)
         required: false
         type: choice
         options:
-          - 'all'
-          - '1'
-          - '2'
-          - '3'
-          - '4'
-          - '5'
-          - '6'
-          - '7'
-          - '8'
-
-  # Run on PR to detect issues early
+        - all
+        - '1'
+        - '2'
+        - '3'
+        - '4'
+        - '5'
+        - '6'
+        - '7'
+        - '8'
   pull_request:
     paths:
-      - 'tests/**/*.py'
-      - 'src/**/*.py'
-      - '.github/workflows/*.yml'
-
-# Allow one concurrent run per PR/branch
+    - tests/**/*.py
+    - src/**/*.py
+    - .github/workflows/*.yml
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   pull-requests: write
-
-
 jobs:
   auto-fix:
     name: Detect and Fix Common Issues
     runs-on: ubuntu-latest
     timeout-minutes: 60
-
     permissions:
-      contents: write  # Need write to push fixes
-      pull-requests: write  # Need write to comment on PRs
-
+      contents: write
+      pull-requests: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          fetch-depth: 0  # Full history for better analysis
-          # Fall back to the built-in GITHUB_TOKEN when neither repo secret is
-          # set (e.g. forks, new installations).  GITHUB_TOKEN always has
-          # contents:write on the owner's own repos so the push step below still
-          # works; on forks the push will be skipped by the if-condition anyway.
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+    - name: CacheManager health check
+      continue-on-error: true
+      run: 'python scripts/ci/generate_cache_keys.py --health --workflow auto-fix-common-issues
+        2>/dev/null || echo "Cache health: check skipped"
 
-      - name: CacheManager health check
-        continue-on-error: true
-        run: |
-          python scripts/ci/generate_cache_keys.py --health --workflow auto-fix-common-issues 2>/dev/null || echo "Cache health: check skipped"
-      - name: Set up Python
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12.13'
-          cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+        '
+    - name: Set up Python
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+    - name: Install dependencies
+      run: 'python -m pip install --upgrade pip
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install ruff pyyaml
+        pip install ruff pyyaml
 
-      - name: Run auto-fix script (check mode)
-        id: check
-        run: |
-          python scripts/ci/auto_fix_common_issues.py --check-only
-        continue-on-error: true
+        '
+    - name: Run auto-fix script (check mode)
+      id: check
+      run: 'python scripts/ci/auto_fix_common_issues.py --check-only
 
-      - name: Apply fixes (if not check-only)
-        if: |
-          steps.check.outcome == 'failure' &&
-          github.event_name == 'workflow_dispatch' &&
-          !inputs.check_only
-        run: |
-          python scripts/ci/auto_fix_common_issues.py
+        '
+      continue-on-error: true
+    - name: Apply fixes (if not check-only)
+      if: 'steps.check.outcome == ''failure'' &&
 
-      - name: Commit and push fixes
-        # Only push when: (a) fixes are available, (b) triggered manually,
-        # (c) not in check-only mode.  The workflow_dispatch trigger already
-        # guarantees this only runs from the Actions UI (not on forks or PRs).
-        if: |
-          steps.check.outcome == 'failure' &&
-          github.event_name == 'workflow_dispatch' &&
-          !inputs.check_only
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+        github.event_name == ''workflow_dispatch'' &&
 
-          git add -A
+        !inputs.check_only
 
-          if git diff --staged --quiet; then
-            echo "No changes to commit"
-          else
-            git commit -m "fix(ci): auto-fix common CI issues [skip ci]"
+        '
+      run: 'python scripts/ci/auto_fix_common_issues.py
 
-            git push
-          fi
+        '
+    - name: Commit and push fixes
+      if: 'steps.check.outcome == ''failure'' &&
 
-      # Serialise rescue comments across all workflows on the same PR
-      # to prevent simultaneous creation races (RCP-01).
-      - name: Comment on PR (if auto-fixable issues found)
-        if: |
-          github.event_name == 'pull_request' &&
-          steps.check.outcome == 'failure'
-        uses: actions/github-script@v8 # v9
-        with:
-          script: |
-            const MARKER = '<!-- auto-fix-ci-issues -->';
-            const message = `${MARKER}\n## ❌ Auto-Fixable CI Issues Detected
+        github.event_name == ''workflow_dispatch'' &&
 
-            The auto-fix script detected issues that can be automatically fixed:
+        !inputs.check_only
 
-            | Pattern | Description | Auto-Fix | Causes CI Failure |
-            |---------|-------------|----------|-------------------|
-            | 1 | Unused imports | ✅ Yes (ruff) | ✅ Yes |
-            | 4 | Coverage thresholds | ✅ Yes | ✅ Yes |
-            | 8 | CodeQL alerts | ✅ Yes (ruff) | ✅ Yes |
+        '
+      run: "git config user.name \"github-actions[bot]\"\ngit config user.email \"\
+        github-actions[bot]@users.noreply.github.com\"\n\ngit add -A\n\nif git diff\
+        \ --staged --quiet; then\n  echo \"No changes to commit\"\nelse\n  git commit\
+        \ -m \"fix(ci): auto-fix common CI issues [skip ci]\"\n\n  git push\nfi\n"
+    - name: Comment on PR (if auto-fixable issues found)
+      if: 'github.event_name == ''pull_request'' &&
 
-            ### Informational Warnings (Do NOT cause CI failure):
+        steps.check.outcome == ''failure''
 
-            | Pattern | Description | Auto-Fix |
-            |---------|-------------|----------|
-            | 2 | Unused variables | ⚠️ Manual review |
-            | 3 | YAML indentation | ⚠️ Manual review |
-            | 5 | Tokenizer fallbacks | ⚠️ Manual review |
-            | 6 | Test assertions | ⚠️ Manual review |
-            | 7 | Redundant imports | ⚠️ Manual review |
+        '
+      uses: actions/github-script@v8
+      with:
+        script: "const MARKER = '<!-- auto-fix-ci-issues -->';\nconst message = `${MARKER}\\\
+          n## ❌ Auto-Fixable CI Issues Detected\n\nThe auto-fix script detected issues\
+          \ that can be automatically fixed:\n\n| Pattern | Description | Auto-Fix\
+          \ | Causes CI Failure |\n|---------|-------------|----------|-------------------|\n\
+          | 1 | Unused imports | ✅ Yes (ruff) | ✅ Yes |\n| 4 | Coverage thresholds\
+          \ | ✅ Yes | ✅ Yes |\n| 8 | CodeQL alerts | ✅ Yes (ruff) | ✅ Yes |\n\n###\
+          \ Informational Warnings (Do NOT cause CI failure):\n\n| Pattern | Description\
+          \ | Auto-Fix |\n|---------|-------------|----------|\n| 2 | Unused variables\
+          \ | ⚠️ Manual review |\n| 3 | YAML indentation | ⚠️ Manual review |\n| 5\
+          \ | Tokenizer fallbacks | ⚠️ Manual review |\n| 6 | Test assertions | ⚠️\
+          \ Manual review |\n| 7 | Redundant imports | ⚠️ Manual review |\n\n### To\
+          \ apply automatic fixes:\n\n\\`\\`\\`bash\n# Locally\npython scripts/ci/auto_fix_common_issues.py\n\
+          \n# Via workflow\n# Go to Actions > Auto-Fix Common CI Issues > Run workflow\n\
+          \\`\\`\\`\n\n**Note:** Manual review patterns are informational only and\
+          \ do not cause CI failures.\n\nSee the workflow logs for details.\n\n_[\U0001F517\
+          \ Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`;\n\
+          \nconst { data: comments } = await github.rest.issues.listComments({\n \
+          \ owner: context.repo.owner, repo: context.repo.repo,\n  issue_number: context.issue.number,\
+          \ per_page: 100,\n});\nconst existing = comments.find(c => c.body && c.body.includes(MARKER));\n\
+          if (existing) {\n  await github.rest.issues.updateComment({\n    owner:\
+          \ context.repo.owner, repo: context.repo.repo,\n    comment_id: existing.id,\
+          \ body: message,\n  });\n} else {\n  await github.rest.issues.createComment({\n\
+          \    issue_number: context.issue.number,\n    owner: context.repo.owner,\
+          \ repo: context.repo.repo,\n    body: message,\n  });\n}\n"
+    - name: Apply and push fixes on PR (Detect→Heal→Commit)
+      id: pr_heal
+      if: 'github.event_name == ''pull_request'' &&
 
-            ### To apply automatic fixes:
+        github.event.pull_request.head.repo.full_name == github.repository &&
 
-            \`\`\`bash
-            # Locally
-            python scripts/ci/auto_fix_common_issues.py
+        steps.check.outcome == ''failure'' &&
 
-            # Via workflow
-            # Go to Actions > Auto-Fix Common CI Issues > Run workflow
-            \`\`\`
+        !startsWith(github.head_ref, ''copilot/'')
 
-            **Note:** Manual review patterns are informational only and do not cause CI failures.
+        '
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        TARGET_BRANCH: ${{ github.head_ref }}
+      run: "git config user.name \"github-actions[bot]\"\ngit config user.email \"\
+        github-actions[bot]@users.noreply.github.com\"\n\n# Apply all auto-fixable\
+        \ patterns (includes Pattern 35: Markdown FP Secrets)\npython scripts/ci/auto_fix_common_issues.py\
+        \ || true\n\ngit add -A\nif git diff --staged --quiet; then\n  echo \"healed=false\"\
+        \ >> \"$GITHUB_OUTPUT\"\n  echo \"ℹ️  No changes after auto-fix — issues may\
+        \ require manual review.\"\nelse\n  TIMESTAMP=$(date -u +\"%Y-%m-%dT%H:%M:%SZ\"\
+        )\n  git commit -m \"fix(ci): auto-fix CI issues on PR [skip ci] (Pattern\
+        \ 35/RP-007)\"\n\n  git push origin \"HEAD:${TARGET_BRANCH}\"\n  echo \"healed=true\"\
+        \ >> \"$GITHUB_OUTPUT\"\n  echo \"✅ Auto-fixes applied and pushed to PR branch.\"\
+        \nfi\n"
+    - name: Re-check after heal (fail only if manual issues remain)
+      if: 'github.event_name == ''pull_request'' &&
 
-            See the workflow logs for details.
+        steps.check.outcome == ''failure''
 
-            _[🔗 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`;
+        '
+      id: recheck
+      run: 'python scripts/ci/auto_fix_common_issues.py --check-only
 
-            const { data: comments } = await github.rest.issues.listComments({
-              owner: context.repo.owner, repo: context.repo.repo,
-              issue_number: context.issue.number, per_page: 100,
-            });
-            const existing = comments.find(c => c.body && c.body.includes(MARKER));
-            if (existing) {
-              await github.rest.issues.updateComment({
-                owner: context.repo.owner, repo: context.repo.repo,
-                comment_id: existing.id, body: message,
-              });
-            } else {
-              await github.rest.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner, repo: context.repo.repo,
-                body: message,
-              });
-            }
+        '
+      continue-on-error: true
+    - name: Fail if un-healable issues remain (PR only)
+      if: 'github.event_name == ''pull_request'' &&
 
-      - name: Apply and push fixes on PR (Detect→Heal→Commit)
-        # Phase 2 hardening: replace "Fail if auto-fixable issues found" with a
-        # heal-and-commit loop so PRs are never permanently blocked by auto-fixable
-        # issues.  Only runs on PRs from the same repo (not forks) so we can push.
-        # RP-009: Auto-Fix Workflow Loop pattern — detects, heals, and commits.
-        id: pr_heal
-        if: |
-          github.event_name == 'pull_request' &&
-          github.event.pull_request.head.repo.full_name == github.repository &&
-          steps.check.outcome == 'failure' &&
-          !startsWith(github.head_ref, 'copilot/')
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          TARGET_BRANCH: ${{ github.head_ref }}
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+        steps.recheck.outcome == ''failure'' &&
 
-          # Apply all auto-fixable patterns (includes Pattern 35: Markdown FP Secrets)
-          python scripts/ci/auto_fix_common_issues.py || true
+        steps.pr_heal.outputs.healed != ''true'' &&
 
-          git add -A
-          if git diff --staged --quiet; then
-            echo "healed=false" >> "$GITHUB_OUTPUT"
-            echo "ℹ️  No changes after auto-fix — issues may require manual review."
-          else
-            TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-            git commit -m "fix(ci): auto-fix CI issues on PR [skip ci] (Pattern 35/RP-007)"
+        !startsWith(github.head_ref, ''copilot/'')
 
-            git push origin "HEAD:${TARGET_BRANCH}"
-            echo "healed=true" >> "$GITHUB_OUTPUT"
-            echo "✅ Auto-fixes applied and pushed to PR branch."
-          fi
+        '
+      run: 'echo "❌ Manual-review CI issues remain after auto-fix. See PR comment
+        for remediation steps."
 
-      - name: Re-check after heal (fail only if manual issues remain)
-        if: |
-          github.event_name == 'pull_request' &&
-          steps.check.outcome == 'failure'
-        id: recheck
-        run: |
-          python scripts/ci/auto_fix_common_issues.py --check-only
-        continue-on-error: true
+        echo "ℹ️  All auto-fixable issues have been applied. Only manual-review items
+        remain."
 
-      - name: Fail if un-healable issues remain (PR only)
-        if: |
-          github.event_name == 'pull_request' &&
-          steps.recheck.outcome == 'failure' &&
-          steps.pr_heal.outputs.healed != 'true' &&
-          !startsWith(github.head_ref, 'copilot/')
-        run: |
-          echo "❌ Manual-review CI issues remain after auto-fix. See PR comment for remediation steps."
-          echo "ℹ️  All auto-fixable issues have been applied. Only manual-review items remain."
-          exit 1
+        exit 1
 
-  # ── rescue comment — posted on PR whenever this workflow fails ──────────
+        '
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
     needs: auto-fix
-    if: |
-      failure() &&
-      github.event_name == 'pull_request' &&
+    if: 'failure() &&
+
+      github.event_name == ''pull_request'' &&
+
       github.event.pull_request.head.repo.full_name == github.repository
+
+      '
     permissions:
       pull-requests: write
       issues: write
     timeout-minutes: 5
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          fetch-depth: 1
-
-      - name: Post or update rescue comment
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_NAME: "Auto-Fix Common Issues"
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          BRANCH: ${{ github.head_ref }}
-        run: python scripts/ci/post_rescue_comment.py
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        token: ${{ secrets.CODEX_MASTER_KEY || github.token }}
+        fetch-depth: 1
+    - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: Auto-Fix Common Issues
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+        BRANCH: ${{ github.head_ref }}
+      run: python scripts/ci/post_rescue_comment.py
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

@@ -1,300 +1,248 @@
-# GitHub Pages Pre-Merge Validation Workflow
-#
-# Validates GitHub Pages deployment before merging to main:
-# - Validates all documentation links
-# - Checks cognitive_app accessibility
-# - Validates mkdocs.yml configuration
-# - Ensures documentation sync
-# - Tests MkDocs build
-#
-# Runs on: Pull requests that modify docs or configuration
-# Blocks merge if: Critical validation errors found
-
 name: Pages Pre-Merge Validation
-
-on:
+true:
   pull_request:
     branches:
-      - main
+    - main
     paths:
-      - 'docs/**'
-      - 'mkdocs.yml'
-      - 'cognitive_app/**'
-      - '.github/workflows/pages-*.yml'
-
+    - docs/**
+    - mkdocs.yml
+    - cognitive_app/**
+    - .github/workflows/pages-*.yml
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   pull-requests: write
   issues: write
-
-
 jobs:
   validate-docs:
     name: Validate Documentation
     runs-on: ubuntu-latest
     timeout-minutes: 60
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          fetch-depth: 0
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        fetch-depth: 0
+    - name: Set up Python 3.12
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+    - name: Install dependencies
+      run: 'python -m pip install --upgrade pip
 
-      - name: Set up Python 3.12
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12.13'
-          cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+        pip install mkdocs-material pymdown-extensions pyyaml mkdocs-mermaid2-plugin
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install mkdocs-material pymdown-extensions pyyaml mkdocs-mermaid2-plugin
+        '
+    - name: Run link validation
+      id: link_validation
+      continue-on-error: true
+      run: 'python scripts/validate_docs_links.py > validation_report.txt 2>&1
 
-      - name: Run link validation
-        id: link_validation
-        continue-on-error: true
-        run: |
-          python scripts/validate_docs_links.py > validation_report.txt 2>&1
-          EXIT_CODE=$?
-          echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
-          cat validation_report.txt
+        EXIT_CODE=$?
 
-      - name: Check table formatting
-        id: table_check
-        continue-on-error: true
-        run: |
-          python scripts/fix_markdown_tables.py --check-only > table_report.txt 2>&1
-          EXIT_CODE=$?
-          echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
+        echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
 
-          # Extract issue count
-          ISSUE_COUNT=$(grep -oP "(?<=Summary: )\d+" table_report.txt | head -1 || echo "0")
-          echo "issue_count=$ISSUE_COUNT" >> $GITHUB_OUTPUT
+        cat validation_report.txt
 
-          cat table_report.txt
+        '
+    - name: Check table formatting
+      id: table_check
+      continue-on-error: true
+      run: 'python scripts/fix_markdown_tables.py --check-only > table_report.txt
+        2>&1
 
-      - name: Nav smoke test (docs_lint)
-        id: nav_smoke
-        # Verifies that every entry in mkdocs.yml nav section resolves to an existing .md file.
-        # Catches 404s on GitHub Pages before they reach production.
-        # Uses docs_lint.py --strict (state-machine nav extractor; safe with Python YAML tags).
-        run: |
-          python scripts/ci/docs_lint.py --strict 2>&1 | tee nav_smoke_report.txt
-          EXIT_CODE=${PIPESTATUS[0]}
-          echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
-          if [ "$EXIT_CODE" -ne 0 ]; then
-            echo "::error::docs_lint --strict found broken nav links — check nav_smoke_report.txt for details"
-          else
-            echo "✅ All MkDocs nav entries resolve to existing files"
-          fi
+        EXIT_CODE=$?
 
-      - name: Test MkDocs build
-        id: mkdocs_build
-        continue-on-error: true
-        run: |
-          mkdocs build --verbose 2>&1 | tee build_report.txt
-          EXIT_CODE=${PIPESTATUS[0]}
-          echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
+        echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
 
-      - name: Validate cognitive_app
-        id: cognitive_app
-        continue-on-error: true
-        run: |
-          echo "## Cognitive App Validation" > cognitive_app_report.txt
 
-          # Check if cognitive_app.md exists
-          if [ -f "docs/cognitive_app.md" ]; then
-            echo "✅ cognitive_app.md found" >> cognitive_app_report.txt
-          else
-            echo "❌ cognitive_app.md missing" >> cognitive_app_report.txt
-            exit 1
-          fi
+        # Extract issue count
 
-          # Check if cognitive_app directory exists
-          if [ -d "cognitive_app" ]; then
-            echo "✅ cognitive_app/ directory found" >> cognitive_app_report.txt
-          else
-            echo "❌ cognitive_app/ directory missing" >> cognitive_app_report.txt
-            exit 1
-          fi
+        ISSUE_COUNT=$(grep -oP "(?<=Summary: )\d+" table_report.txt | head -1 || echo
+        "0")
 
-          # Check for key files
-          for file in package.json index.html src/main.tsx vite.config.ts; do
-            if [ -f "cognitive_app/$file" ]; then
-              echo "✅ $file found" >> cognitive_app_report.txt
-            else
-              echo "⚠️  $file missing" >> cognitive_app_report.txt
-            fi
-          done
+        echo "issue_count=$ISSUE_COUNT" >> $GITHUB_OUTPUT
 
-          cat cognitive_app_report.txt
 
-      - name: Create validation summary
-        if: always()
-        id: summary
-        run: |
-          echo "## 🔍 GitHub Pages Validation Results" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
+        cat table_report.txt
 
-          # Link validation results
-          echo "### 📝 Link Validation" >> $GITHUB_STEP_SUMMARY
-          if [ "${{ steps.link_validation.outputs.exit_code }}" == "0" ]; then
-            echo "✅ **PASSED** - All links valid" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "❌ **FAILED** - Broken links detected" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "<details><summary>View Details</summary>" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-            head -50 validation_report.txt >> $GITHUB_STEP_SUMMARY
-            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-            echo "</details>" >> $GITHUB_STEP_SUMMARY
-          fi
-          echo "" >> $GITHUB_STEP_SUMMARY
+        '
+    - name: Nav smoke test (docs_lint)
+      id: nav_smoke
+      run: "python scripts/ci/docs_lint.py --strict 2>&1 | tee nav_smoke_report.txt\n\
+        EXIT_CODE=${PIPESTATUS[0]}\necho \"exit_code=$EXIT_CODE\" >> $GITHUB_OUTPUT\n\
+        if [ \"$EXIT_CODE\" -ne 0 ]; then\n  echo \"::error::docs_lint --strict found\
+        \ broken nav links — check nav_smoke_report.txt for details\"\nelse\n  echo\
+        \ \"✅ All MkDocs nav entries resolve to existing files\"\nfi\n"
+    - name: Test MkDocs build
+      id: mkdocs_build
+      continue-on-error: true
+      run: 'mkdocs build --verbose 2>&1 | tee build_report.txt
 
-          # Table formatting results
-          echo "### 📊 Table Formatting" >> $GITHUB_STEP_SUMMARY
-          TABLE_ISSUES="${{ steps.table_check.outputs.issue_count }}"
-          if [ "$TABLE_ISSUES" == "0" ] || [ -z "$TABLE_ISSUES" ]; then
-            echo "✅ **PASSED** - All tables properly formatted" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "⚠️  **WARNINGS** - $TABLE_ISSUES table formatting issues" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "> **Note**: Tables need blank lines before them and proper separator rows" >> $GITHUB_STEP_SUMMARY
-            echo "> Run \`python scripts/fix_markdown_tables.py\` to auto-fix" >> $GITHUB_STEP_SUMMARY
-          fi
-          echo "" >> $GITHUB_STEP_SUMMARY
+        EXIT_CODE=${PIPESTATUS[0]}
 
-          # MkDocs build results
-          echo "### 🏗️ MkDocs Build" >> $GITHUB_STEP_SUMMARY
-          if [ "${{ steps.mkdocs_build.outputs.exit_code }}" == "0" ]; then
-            echo "✅ **PASSED** - Build successful" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "❌ **FAILED** - Build errors detected" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "<details><summary>View Details</summary>" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-            tail -30 build_report.txt >> $GITHUB_STEP_SUMMARY
-            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-            echo "</details>" >> $GITHUB_STEP_SUMMARY
-          fi
-          echo "" >> $GITHUB_STEP_SUMMARY
+        echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
 
-          # cognitive_app validation
-          echo "### 🧠 cognitive_app Status" >> $GITHUB_STEP_SUMMARY
-          if [ "${{ steps.cognitive_app.outputs.exit_code }}" == "0" ] || [ -z "${{ steps.cognitive_app.outputs.exit_code }}" ]; then
-            echo "✅ **PASSED** - cognitive_app accessible" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "❌ **FAILED** - cognitive_app issues detected" >> $GITHUB_STEP_SUMMARY
-          fi
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "<details><summary>View Details</summary>" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-          cat cognitive_app_report.txt >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-          echo "</details>" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
+        '
+    - name: Validate cognitive_app
+      id: cognitive_app
+      continue-on-error: true
+      run: "echo \"## Cognitive App Validation\" > cognitive_app_report.txt\n\n# Check\
+        \ if cognitive_app.md exists\nif [ -f \"docs/cognitive_app.md\" ]; then\n\
+        \  echo \"✅ cognitive_app.md found\" >> cognitive_app_report.txt\nelse\n \
+        \ echo \"❌ cognitive_app.md missing\" >> cognitive_app_report.txt\n  exit\
+        \ 1\nfi\n\n# Check if cognitive_app directory exists\nif [ -d \"cognitive_app\"\
+        \ ]; then\n  echo \"✅ cognitive_app/ directory found\" >> cognitive_app_report.txt\n\
+        else\n  echo \"❌ cognitive_app/ directory missing\" >> cognitive_app_report.txt\n\
+        \  exit 1\nfi\n\n# Check for key files\nfor file in package.json index.html\
+        \ src/main.tsx vite.config.ts; do\n  if [ -f \"cognitive_app/$file\" ]; then\n\
+        \    echo \"✅ $file found\" >> cognitive_app_report.txt\n  else\n    echo\
+        \ \"⚠️  $file missing\" >> cognitive_app_report.txt\n  fi\ndone\n\ncat cognitive_app_report.txt\n"
+    - name: Create validation summary
+      if: always()
+      id: summary
+      run: "echo \"## \U0001F50D GitHub Pages Validation Results\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"\" >> $GITHUB_STEP_SUMMARY\n\n# Link validation results\necho \"###\
+        \ \U0001F4DD Link Validation\" >> $GITHUB_STEP_SUMMARY\nif [ \"${{ steps.link_validation.outputs.exit_code\
+        \ }}\" == \"0\" ]; then\n  echo \"✅ **PASSED** - All links valid\" >> $GITHUB_STEP_SUMMARY\n\
+        else\n  echo \"❌ **FAILED** - Broken links detected\" >> $GITHUB_STEP_SUMMARY\n\
+        \  echo \"\" >> $GITHUB_STEP_SUMMARY\n  echo \"<details><summary>View Details</summary>\"\
+        \ >> $GITHUB_STEP_SUMMARY\n  echo \"\" >> $GITHUB_STEP_SUMMARY\n  echo \"\\\
+        `\\`\\`\" >> $GITHUB_STEP_SUMMARY\n  head -50 validation_report.txt >> $GITHUB_STEP_SUMMARY\n\
+        \  echo \"\\`\\`\\`\" >> $GITHUB_STEP_SUMMARY\n  echo \"</details>\" >> $GITHUB_STEP_SUMMARY\n\
+        fi\necho \"\" >> $GITHUB_STEP_SUMMARY\n\n# Table formatting results\necho\
+        \ \"### \U0001F4CA Table Formatting\" >> $GITHUB_STEP_SUMMARY\nTABLE_ISSUES=\"\
+        ${{ steps.table_check.outputs.issue_count }}\"\nif [ \"$TABLE_ISSUES\" ==\
+        \ \"0\" ] || [ -z \"$TABLE_ISSUES\" ]; then\n  echo \"✅ **PASSED** - All tables\
+        \ properly formatted\" >> $GITHUB_STEP_SUMMARY\nelse\n  echo \"⚠️  **WARNINGS**\
+        \ - $TABLE_ISSUES table formatting issues\" >> $GITHUB_STEP_SUMMARY\n  echo\
+        \ \"\" >> $GITHUB_STEP_SUMMARY\n  echo \"> **Note**: Tables need blank lines\
+        \ before them and proper separator rows\" >> $GITHUB_STEP_SUMMARY\n  echo\
+        \ \"> Run \\`python scripts/fix_markdown_tables.py\\` to auto-fix\" >> $GITHUB_STEP_SUMMARY\n\
+        fi\necho \"\" >> $GITHUB_STEP_SUMMARY\n\n# MkDocs build results\necho \"###\
+        \ \U0001F3D7️ MkDocs Build\" >> $GITHUB_STEP_SUMMARY\nif [ \"${{ steps.mkdocs_build.outputs.exit_code\
+        \ }}\" == \"0\" ]; then\n  echo \"✅ **PASSED** - Build successful\" >> $GITHUB_STEP_SUMMARY\n\
+        else\n  echo \"❌ **FAILED** - Build errors detected\" >> $GITHUB_STEP_SUMMARY\n\
+        \  echo \"\" >> $GITHUB_STEP_SUMMARY\n  echo \"<details><summary>View Details</summary>\"\
+        \ >> $GITHUB_STEP_SUMMARY\n  echo \"\" >> $GITHUB_STEP_SUMMARY\n  echo \"\\\
+        `\\`\\`\" >> $GITHUB_STEP_SUMMARY\n  tail -30 build_report.txt >> $GITHUB_STEP_SUMMARY\n\
+        \  echo \"\\`\\`\\`\" >> $GITHUB_STEP_SUMMARY\n  echo \"</details>\" >> $GITHUB_STEP_SUMMARY\n\
+        fi\necho \"\" >> $GITHUB_STEP_SUMMARY\n\n# cognitive_app validation\necho\
+        \ \"### \U0001F9E0 cognitive_app Status\" >> $GITHUB_STEP_SUMMARY\nif [ \"\
+        ${{ steps.cognitive_app.outputs.exit_code }}\" == \"0\" ] || [ -z \"${{ steps.cognitive_app.outputs.exit_code\
+        \ }}\" ]; then\n  echo \"✅ **PASSED** - cognitive_app accessible\" >> $GITHUB_STEP_SUMMARY\n\
+        else\n  echo \"❌ **FAILED** - cognitive_app issues detected\" >> $GITHUB_STEP_SUMMARY\n\
+        fi\necho \"\" >> $GITHUB_STEP_SUMMARY\necho \"<details><summary>View Details</summary>\"\
+        \ >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\necho \"\\`\\\
+        `\\`\" >> $GITHUB_STEP_SUMMARY\ncat cognitive_app_report.txt >> $GITHUB_STEP_SUMMARY\n\
+        echo \"\\`\\`\\`\" >> $GITHUB_STEP_SUMMARY\necho \"</details>\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"\" >> $GITHUB_STEP_SUMMARY\n\n# Overall status\necho \"### \U0001F4CA\
+        \ Overall Status\" >> $GITHUB_STEP_SUMMARY\nCRITICAL_FAIL=0\nif [ \"${{ steps.mkdocs_build.outputs.exit_code\
+        \ }}\" != \"0\" ]; then\n  CRITICAL_FAIL=1\nfi\n\nif [ $CRITICAL_FAIL -eq\
+        \ 1 ]; then\n  echo \"❌ **VALIDATION FAILED** - Critical errors must be fixed\
+        \ before merge\" >> $GITHUB_STEP_SUMMARY\n  echo \"validation_status=failed\"\
+        \ >> $GITHUB_OUTPUT\nelse\n  if [ \"${{ steps.link_validation.outputs.exit_code\
+        \ }}\" != \"0\" ]; then\n    echo \"⚠️  **WARNINGS** - Non-critical issues\
+        \ found, review recommended\" >> $GITHUB_STEP_SUMMARY\n    echo \"validation_status=warning\"\
+        \ >> $GITHUB_OUTPUT\n  else\n    echo \"✅ **ALL CHECKS PASSED** - Safe to\
+        \ merge\" >> $GITHUB_STEP_SUMMARY\n    echo \"validation_status=passed\" >>\
+        \ $GITHUB_OUTPUT\n  fi\nfi\n"
+    - name: Upload validation artifacts
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: validation-reports
+        path: 'validation_report.txt
 
-          # Overall status
-          echo "### 📊 Overall Status" >> $GITHUB_STEP_SUMMARY
-          CRITICAL_FAIL=0
-          if [ "${{ steps.mkdocs_build.outputs.exit_code }}" != "0" ]; then
-            CRITICAL_FAIL=1
-          fi
+          table_report.txt
 
-          if [ $CRITICAL_FAIL -eq 1 ]; then
-            echo "❌ **VALIDATION FAILED** - Critical errors must be fixed before merge" >> $GITHUB_STEP_SUMMARY
-            echo "validation_status=failed" >> $GITHUB_OUTPUT
-          else
-            if [ "${{ steps.link_validation.outputs.exit_code }}" != "0" ]; then
-              echo "⚠️  **WARNINGS** - Non-critical issues found, review recommended" >> $GITHUB_STEP_SUMMARY
-              echo "validation_status=warning" >> $GITHUB_OUTPUT
-            else
-              echo "✅ **ALL CHECKS PASSED** - Safe to merge" >> $GITHUB_STEP_SUMMARY
-              echo "validation_status=passed" >> $GITHUB_OUTPUT
-            fi
-          fi
+          build_report.txt
 
-      - name: Upload validation artifacts
-        if: always()
-        uses: actions/upload-artifact@v5 # v7.0.1
-        with:
-          name: validation-reports
-          path: |
-            validation_report.txt
-            table_report.txt
-            build_report.txt
-            cognitive_app_report.txt
-          retention-days: 30
+          cognitive_app_report.txt
 
-      - name: Post to PR Status Dashboard
-        if: always() && github.event_name == 'pull_request'
-        uses: ./.github/actions/post-pr-summary
-        with:
-          workflow-name: 'GitHub Pages Validation'
-          status: ${{ steps.summary.outputs.validation_status == 'failed' && 'failure' || steps.summary.outputs.validation_status == 'warning' && 'warning' || 'success' }}
-          summary: '${{ steps.summary.outputs.validation_status == ''failed'' && ''❌ Critical validation errors'' || steps.summary.outputs.validation_status == ''warning'' && ''⚠️ Non-critical warnings'' || ''✅ All checks passed'' }}'
-          details: |
-            | Check | Status |
-            |-------|--------|
-            | Link Validation | ${{ steps.link_validation.outputs.exit_code == '0' && '✅ Passed' || '❌ Failed' }} |
-            | Table Formatting | ${{ steps.table_check.outputs.issue_count == '0' && '✅ Passed' || format('⚠️ {0} issues', steps.table_check.outputs.issue_count) }} |
-            | MkDocs Build | ${{ steps.mkdocs_build.outputs.exit_code == '0' && '✅ Passed' || '❌ Failed' }} |
-            | cognitive_app | ${{ (steps.cognitive_app.outputs.exit_code == '0' || steps.cognitive_app.outputs.exit_code == '') && '✅ Passed' || '❌ Failed' }} |
+          '
+        retention-days: 30
+    - name: Post to PR Status Dashboard
+      if: always() && github.event_name == 'pull_request'
+      uses: ./.github/actions/post-pr-summary
+      with:
+        workflow-name: GitHub Pages Validation
+        status: ${{ steps.summary.outputs.validation_status == 'failed' && 'failure'
+          || steps.summary.outputs.validation_status == 'warning' && 'warning' ||
+          'success' }}
+        summary: ${{ steps.summary.outputs.validation_status == 'failed' && '❌ Critical
+          validation errors' || steps.summary.outputs.validation_status == 'warning'
+          && '⚠️ Non-critical warnings' || '✅ All checks passed' }}
+        details: '| Check | Status |
 
-      - name: Set check status
-        if: always()
-        run: |
-          if [ "${{ steps.summary.outputs.validation_status }}" == "failed" ]; then
-            echo "❌ Validation failed - blocking merge"
-            exit 1
-          else
-            echo "✅ Validation passed or warnings only"
-            exit 0
-          fi
+          |-------|--------|
 
-      - name: Cache health report
-        if: always()
-        continue-on-error: true
-        run: |
-          python scripts/ci/generate_cache_keys.py --health --workflow pages-pre-merge-validation 2>/dev/null || echo "Cache health: check skipped"
+          | Link Validation | ${{ steps.link_validation.outputs.exit_code == ''0''
+          && ''✅ Passed'' || ''❌ Failed'' }} |
 
-  # ── rescue comment — posted on PR whenever this workflow fails ──────────
+          | Table Formatting | ${{ steps.table_check.outputs.issue_count == ''0''
+          && ''✅ Passed'' || format(''⚠️ {0} issues'', steps.table_check.outputs.issue_count)
+          }} |
+
+          | MkDocs Build | ${{ steps.mkdocs_build.outputs.exit_code == ''0'' && ''✅
+          Passed'' || ''❌ Failed'' }} |
+
+          | cognitive_app | ${{ (steps.cognitive_app.outputs.exit_code == ''0'' ||
+          steps.cognitive_app.outputs.exit_code == '''') && ''✅ Passed'' || ''❌ Failed''
+          }} |
+
+          '
+    - name: Set check status
+      if: always()
+      run: "if [ \"${{ steps.summary.outputs.validation_status }}\" == \"failed\"\
+        \ ]; then\n  echo \"❌ Validation failed - blocking merge\"\n  exit 1\nelse\n\
+        \  echo \"✅ Validation passed or warnings only\"\n  exit 0\nfi\n"
+    - name: Cache health report
+      if: always()
+      continue-on-error: true
+      run: 'python scripts/ci/generate_cache_keys.py --health --workflow pages-pre-merge-validation
+        2>/dev/null || echo "Cache health: check skipped"
+
+        '
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
     needs: validate-docs
-    if: |
-      failure() &&
-      github.event_name == 'pull_request' &&
+    if: 'failure() &&
+
+      github.event_name == ''pull_request'' &&
+
       github.event.pull_request.head.repo.full_name == github.repository
+
+      '
     permissions:
       pull-requests: write
       issues: write
     timeout-minutes: 5
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          fetch-depth: 1
-
-      - name: Post or update rescue comment
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_NAME: "Pages Pre-Merge Validation"
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          BRANCH: ${{ github.head_ref }}
-        run: python scripts/ci/post_rescue_comment.py
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        token: ${{ secrets.CODEX_MASTER_KEY || github.token }}
+        fetch-depth: 1
+    - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: Pages Pre-Merge Validation
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+        BRANCH: ${{ github.head_ref }}
+      run: python scripts/ci/post_rescue_comment.py
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

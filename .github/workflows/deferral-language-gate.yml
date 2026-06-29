@@ -1,220 +1,155 @@
-name: "🚨 Deferral Language Gate"
-
-# Enforces the AI Codebase Agency Policy:
-#   Any deferral language in PR body or commit messages triggers a hard failure
-#   and forces the agent to reload policy + memory before continuing.
-#
-# Policy: .codex/CODEBASE_AGENCY_POLICY.md
-# Script: scripts/ci/check_deferral_language.py
-#
-# ML enhancement (opt-in):
-#   Set repository/environment variable DEFERRAL_SCANNER_ML=1 to enable the
-#   TF-IDF + LogisticRegression classifier as a second-pass detector.
-#   Regex patterns always run regardless of this flag.
-
-on:
+name: "\U0001F6A8 Deferral Language Gate"
+true:
   pull_request:
-    # 'edited' intentionally omitted: report_progress updates the PR body on
-    # every push, which fires 'edited' alongside 'synchronize'. With
-    # cancel-in-progress the two runs race and one gets cancelled — the CI
-    # dashboard then reports the latest run as "cancelled" (looks like a failure).
-    # Removing 'edited' eliminates the double-trigger. The deferral check still
-    # scans the full PR body on every 'synchronize' event (push), so coverage
-    # is identical.
-    types: [opened, synchronize, reopened]
-
+    types:
+    - opened
+    - synchronize
+    - reopened
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   pull-requests: write
   checks: write
-
-
 jobs:
   deferral-language-check:
-    name: "🚨 Deferral Language Policy Check"
+    name: "\U0001F6A8 Deferral Language Policy Check"
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
       pull-requests: read
       contents: read
-
     steps:
-      - name: "📥 Checkout"
-        uses: actions/checkout@v7 # v6.0.3
+    - name: "\U0001F4E5 Checkout"
+      uses: actions/checkout@v7
+    - name: "\U0001F5C2\uFE0F Pre-create pip cache dir"
+      run: mkdir -p ~/.cache/pip
+    - name: "\U0001F40D Set up Python"
+      uses: actions/setup-python@v6
+      with:
+        python-version: 3.12.13
+    - name: "\U0001F4E6 Install ML dependencies (if DEFERRAL_SCANNER_ML=1)"
+      if: ${{ vars.DEFERRAL_SCANNER_ML == '1' || env.DEFERRAL_SCANNER_ML == '1' }}
+      run: 'pip install --quiet scikit-learn
 
-      - name: "🗂️ Pre-create pip cache dir"
-        run: mkdir -p ~/.cache/pip
-        # setup-python@v5 post-step fails with "Cache folder doesn't exist on disk"
-        # when no packages were installed (the default when DEFERRAL_SCANNER_ML=0).
-        # Pre-creating the directory prevents that transient post-step failure.
+        '
+    - name: "\U0001F4DD Write PR body to file"
+      env:
+        PR_BODY: ${{ github.event.pull_request.body }}
+      run: 'printf ''%s'' "$PR_BODY" > "${RUNNER_TEMP}/pr_body.txt"
 
-      - name: "🐍 Set up Python"
-        uses: actions/setup-python@v6 # v6
-        with:
-          python-version: "3.12.13"
-          # No pip cache: scikit-learn is only installed when DEFERRAL_SCANNER_ML=1
-          # (which is off by default).  In the common case nothing is installed,
-          # ~/.cache/pip is never created, and the post-step fails with
-          # "Cache folder doesn't exist on disk".  Cache is not worth the
-          # fragility given the conditional install.
+        echo "PR body written ($(wc -c < "${RUNNER_TEMP}/pr_body.txt") bytes)"
 
-      - name: "📦 Install ML dependencies (if DEFERRAL_SCANNER_ML=1)"
-        if: ${{ vars.DEFERRAL_SCANNER_ML == '1' || env.DEFERRAL_SCANNER_ML == '1' }}
-        run: |
-          pip install --quiet scikit-learn
+        '
+    - name: "\U0001F50D Scan PR body for deferral language"
+      id: scan_pr_body
+      env:
+        DEFERRAL_SCANNER_ML: ${{ vars.DEFERRAL_SCANNER_ML || '0' }}
+      run: 'python scripts/ci/check_deferral_language.py --pr-body "${RUNNER_TEMP}/pr_body.txt"
 
-      - name: "📝 Write PR body to file"
-        env:
-          PR_BODY: ${{ github.event.pull_request.body }}
-        run: |
-          printf '%s' "$PR_BODY" > "${RUNNER_TEMP}/pr_body.txt"
-          echo "PR body written ($(wc -c < "${RUNNER_TEMP}/pr_body.txt") bytes)"
+        '
+      continue-on-error: true
+    - name: "\U0001F50D Scan last 10 commit messages for deferral language"
+      id: scan_commits
+      env:
+        DEFERRAL_SCANNER_ML: ${{ vars.DEFERRAL_SCANNER_ML || '0' }}
+      run: 'python scripts/ci/check_deferral_language.py --git-log
 
-      - name: "🔍 Scan PR body for deferral language"
-        id: scan_pr_body
-        env:
-          DEFERRAL_SCANNER_ML: ${{ vars.DEFERRAL_SCANNER_ML || '0' }}
-        run: |
-          python scripts/ci/check_deferral_language.py --pr-body "${RUNNER_TEMP}/pr_body.txt"
-        continue-on-error: true
-
-      - name: "🔍 Scan last 10 commit messages for deferral language"
-        id: scan_commits
-        env:
-          DEFERRAL_SCANNER_ML: ${{ vars.DEFERRAL_SCANNER_ML || '0' }}
-        run: |
-          python scripts/ci/check_deferral_language.py --git-log
-        continue-on-error: true
-
-      # GAP FIXED (S173 PR #3661): The gate previously only scanned PR body +
-      # commit messages. Agent deferral language appeared in PR *comments* -- e.g.
-      # "Confirm the 3576 are pre-existing, not introduced by this PR" -- which
-      # was not caught. This step fetches the last 50 agent-posted PR comments
-      # (copilot-swe-agent[bot], github-copilot[bot], copilot[bot]) via the
-      # GitHub API and scans them for deferral language.
-      - name: "🔍 Fetch agent-posted PR comments for deferral scan"
-        id: fetch_pr_comments
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: |
-          echo "Fetching last 50 PR comments for PR #${PR_NUMBER}..."
-          gh api \
-            "repos/${{ github.repository }}/issues/${PR_NUMBER}/comments?per_page=50" \
-            --jq '.[] | select(
-              .user.login == "copilot-swe-agent[bot]" or
-              .user.login == "github-copilot[bot]" or
-              .user.login == "copilot[bot]" or
-              .user.login == "Copilot"
-            ) | {body: .body, user: {login: .user.login}, created_at: .created_at}' \
-            > "${RUNNER_TEMP}/pr_comments.jsonl" || echo '{}' > "${RUNNER_TEMP}/pr_comments.jsonl"
-          LINE_COUNT=$(wc -l < "${RUNNER_TEMP}/pr_comments.jsonl")
-          echo "Fetched ${LINE_COUNT} agent comment(s) for deferral scan"
-
-      - name: "🔍 Scan agent PR comments for deferral language"
-        id: scan_pr_comments
-        env:
-          DEFERRAL_SCANNER_ML: ${{ vars.DEFERRAL_SCANNER_ML || '0' }}
-        run: |
-          if [ -s "${RUNNER_TEMP}/pr_comments.jsonl" ]; then
-            # Compute SINCE_DATE as the HEAD commit's authored timestamp so that only
-            # @copilot comments posted AFTER the most-recent push are re-scanned.
-            # This prevents an old "future session" handoff note in a previous commit's
-            # comment from permanently blocking every subsequent push on a long-lived PR.
-            # Fall back to 8 hours ago if git log is unavailable (shallow clone edge-case).
-            HEAD_COMMIT_TIME=$(git log -1 --format="%aI" HEAD 2>/dev/null || echo "")
-            if [ -n "${HEAD_COMMIT_TIME}" ]; then
-              SINCE_DATE="${HEAD_COMMIT_TIME}"
-            else
-              SINCE_DATE=$(date -u -d "8 hours ago" +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || \
-                           date -u -v-8H +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || \
-                           echo "2000-01-01T00:00:00Z")
-            fi
-            echo "Scanning comments created after: ${SINCE_DATE}"
-            python scripts/ci/check_deferral_language.py \
-              --pr-comments "${RUNNER_TEMP}/pr_comments.jsonl" \
-              --since "${SINCE_DATE}"
-          else
-            echo "No agent comments to scan."
-          fi
-        continue-on-error: true
-
-      - name: "📊 Evaluate results and enforce policy"
-        env:
-          PR_SCAN: ${{ steps.scan_pr_body.outcome }}
-          COMMIT_SCAN: ${{ steps.scan_commits.outcome }}
-          COMMENT_SCAN: ${{ steps.scan_pr_comments.outcome }}
-        run: |
-          set -euo pipefail
-          FAIL=0
-
-          if [ "$PR_SCAN" = "failure" ]; then
-            echo "::error::PR body contains deferral language -- policy violation"
-            echo "::error::MANDATORY: Load .codex/CODEBASE_AGENCY_POLICY.md and docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
-            FAIL=1
-          fi
-
-          if [ "$COMMIT_SCAN" = "failure" ]; then
-            echo "::error::Commit message(s) contain deferral language -- policy violation"
-            echo "::error::MANDATORY: Load .codex/CODEBASE_AGENCY_POLICY.md and docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
-            FAIL=1
-          fi
-
-          if [ "$COMMENT_SCAN" = "failure" ]; then
-            echo "::error::Agent PR comment(s) contain deferral language -- policy violation"
-            echo "::error::Root cause: Agent said 'pre-existing' or similar in a PR comment."
-            echo "::error::MANDATORY: Load .codex/CODEBASE_AGENCY_POLICY.md and docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
-            FAIL=1
-          fi
-
-          if [ "$FAIL" -eq 1 ]; then
-            echo ""
-            echo "================================================================"
-            echo "  CODEBASE AGENCY POLICY VIOLATION"
-            echo "  Deferral language detected. Required actions:"
-            echo "  1. Load .codex/CODEBASE_AGENCY_POLICY.md"
-            echo "  2. Load docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
-            echo "  3. Load all stored session memories"
-            echo "  4. Fix the deferred issue immediately -- no exceptions"
-            echo "================================================================"
-            exit 1
-          fi
-
-          echo "OK No deferral language detected -- policy compliant"
-
-  # ── rescue comment — posted on PR whenever the deferral gate fails ──────────
-  # Same SHA-scoped pattern as validate.yml rescue-comment (S202).
+        '
+      continue-on-error: true
+    - name: "\U0001F50D Fetch agent-posted PR comments for deferral scan"
+      id: fetch_pr_comments
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+      run: "echo \"Fetching last 50 PR comments for PR #${PR_NUMBER}...\"\ngh api\
+        \ \\\n  \"repos/${{ github.repository }}/issues/${PR_NUMBER}/comments?per_page=50\"\
+        \ \\\n  --jq '.[] | select(\n    .user.login == \"copilot-swe-agent[bot]\"\
+        \ or\n    .user.login == \"github-copilot[bot]\" or\n    .user.login == \"\
+        copilot[bot]\" or\n    .user.login == \"Copilot\"\n  ) | {body: .body, user:\
+        \ {login: .user.login}, created_at: .created_at}' \\\n  > \"${RUNNER_TEMP}/pr_comments.jsonl\"\
+        \ || echo '{}' > \"${RUNNER_TEMP}/pr_comments.jsonl\"\nLINE_COUNT=$(wc -l\
+        \ < \"${RUNNER_TEMP}/pr_comments.jsonl\")\necho \"Fetched ${LINE_COUNT} agent\
+        \ comment(s) for deferral scan\"\n"
+    - name: "\U0001F50D Scan agent PR comments for deferral language"
+      id: scan_pr_comments
+      env:
+        DEFERRAL_SCANNER_ML: ${{ vars.DEFERRAL_SCANNER_ML || '0' }}
+      run: "if [ -s \"${RUNNER_TEMP}/pr_comments.jsonl\" ]; then\n  # Compute SINCE_DATE\
+        \ as the HEAD commit's authored timestamp so that only\n  # @copilot comments\
+        \ posted AFTER the most-recent push are re-scanned.\n  # This prevents an\
+        \ old \"future session\" handoff note in a previous commit's\n  # comment\
+        \ from permanently blocking every subsequent push on a long-lived PR.\n  #\
+        \ Fall back to 8 hours ago if git log is unavailable (shallow clone edge-case).\n\
+        \  HEAD_COMMIT_TIME=$(git log -1 --format=\"%aI\" HEAD 2>/dev/null || echo\
+        \ \"\")\n  if [ -n \"${HEAD_COMMIT_TIME}\" ]; then\n    SINCE_DATE=\"${HEAD_COMMIT_TIME}\"\
+        \n  else\n    SINCE_DATE=$(date -u -d \"8 hours ago\" +\"%Y-%m-%dT%H:%M:%SZ\"\
+        \ 2>/dev/null || \\\n                 date -u -v-8H +\"%Y-%m-%dT%H:%M:%SZ\"\
+        \ 2>/dev/null || \\\n                 echo \"2000-01-01T00:00:00Z\")\n  fi\n\
+        \  echo \"Scanning comments created after: ${SINCE_DATE}\"\n  python scripts/ci/check_deferral_language.py\
+        \ \\\n    --pr-comments \"${RUNNER_TEMP}/pr_comments.jsonl\" \\\n    --since\
+        \ \"${SINCE_DATE}\"\nelse\n  echo \"No agent comments to scan.\"\nfi\n"
+      continue-on-error: true
+    - name: "\U0001F4CA Evaluate results and enforce policy"
+      env:
+        PR_SCAN: ${{ steps.scan_pr_body.outcome }}
+        COMMIT_SCAN: ${{ steps.scan_commits.outcome }}
+        COMMENT_SCAN: ${{ steps.scan_pr_comments.outcome }}
+      run: "set -euo pipefail\nFAIL=0\n\nif [ \"$PR_SCAN\" = \"failure\" ]; then\n\
+        \  echo \"::error::PR body contains deferral language -- policy violation\"\
+        \n  echo \"::error::MANDATORY: Load .codex/CODEBASE_AGENCY_POLICY.md and docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\"\
+        \n  FAIL=1\nfi\n\nif [ \"$COMMIT_SCAN\" = \"failure\" ]; then\n  echo \"::error::Commit\
+        \ message(s) contain deferral language -- policy violation\"\n  echo \"::error::MANDATORY:\
+        \ Load .codex/CODEBASE_AGENCY_POLICY.md and docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\"\
+        \n  FAIL=1\nfi\n\nif [ \"$COMMENT_SCAN\" = \"failure\" ]; then\n  echo \"\
+        ::error::Agent PR comment(s) contain deferral language -- policy violation\"\
+        \n  echo \"::error::Root cause: Agent said 'pre-existing' or similar in a\
+        \ PR comment.\"\n  echo \"::error::MANDATORY: Load .codex/CODEBASE_AGENCY_POLICY.md\
+        \ and docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\"\n  FAIL=1\nfi\n\
+        \nif [ \"$FAIL\" -eq 1 ]; then\n  echo \"\"\n  echo \"================================================================\"\
+        \n  echo \"  CODEBASE AGENCY POLICY VIOLATION\"\n  echo \"  Deferral language\
+        \ detected. Required actions:\"\n  echo \"  1. Load .codex/CODEBASE_AGENCY_POLICY.md\"\
+        \n  echo \"  2. Load docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\"\n\
+        \  echo \"  3. Load all stored session memories\"\n  echo \"  4. Fix the deferred\
+        \ issue immediately -- no exceptions\"\n  echo \"================================================================\"\
+        \n  exit 1\nfi\n\necho \"OK No deferral language detected -- policy compliant\"\
+        \n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   rescue-comment:
     name: Post rescue comment on deferral failure
     runs-on: ubuntu-latest
     needs: deferral-language-check
-    if: |
-      failure() &&
-      github.event_name == 'pull_request' &&
+    if: 'failure() &&
+
+      github.event_name == ''pull_request'' &&
+
       github.event.pull_request.head.repo.full_name == github.repository
+
+      '
     permissions:
       pull-requests: write
       issues: write
     timeout-minutes: 5
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          fetch-depth: 1
-
-      - name: Post or update rescue comment
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_NAME: "Deferral Language Gate"
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          BRANCH: ${{ github.head_ref }}
-        run: python scripts/ci/post_rescue_comment.py
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        fetch-depth: 1
+    - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: Deferral Language Gate
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+        BRANCH: ${{ github.head_ref }}
+      run: python scripts/ci/post_rescue_comment.py
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

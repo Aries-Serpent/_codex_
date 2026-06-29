@@ -1,64 +1,60 @@
 name: Sync Environment Variables
-
-on:
+true:
   push:
     branches:
-      - main
-      - develop
+    - main
+    - develop
     paths:
-      - 'src/cognitive_brain/quantum/ghz_states.py'
-      - 'src/cognitive_brain/quantum/multi_agent_coordinator.py'
-      - 'src/cognitive_brain/quantum/topology_manager.py'
-      - 'src/codex_ml/data/validation.py'
-      - '.github/scripts/env_var_converter.py'
-
+    - src/cognitive_brain/quantum/ghz_states.py
+    - src/cognitive_brain/quantum/multi_agent_coordinator.py
+    - src/cognitive_brain/quantum/topology_manager.py
+    - src/codex_ml/data/validation.py
+    - .github/scripts/env_var_converter.py
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Target environment'
+        description: Target environment
         required: true
-        default: 'production'
+        default: production
         type: choice
         options:
-          - production
-          - staging
-          - development
+        - production
+        - staging
+        - development
       dry_run:
-        description: 'Dry run (no actual sync)'
+        description: Dry run (no actual sync)
         required: false
         default: true
         type: boolean
-
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
-
 jobs:
   sync-env-vars:
     name: Sync Environment Variables
     runs-on: ubuntu-latest
     timeout-minutes: 60
-
     permissions:
       contents: read
-      id-token: write  # For GitHub API access
-
+      id-token: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          fetch-depth: 0  # Full history for git describe
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        fetch-depth: 0
+    - name: CacheManager health check
+      continue-on-error: true
+      run: 'python scripts/ci/generate_cache_keys.py --health --workflow sync-env-vars
+        2>/dev/null || echo "Cache health: check skipped"
 
-      - name: CacheManager health check
-        continue-on-error: true
-        run: |
-          python scripts/ci/generate_cache_keys.py --health --workflow sync-env-vars 2>/dev/null || echo "Cache health: check skipped"
-      - name: Set up Python
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12.13'
-          cache-tier: 'common'
+        '
+    - name: Set up Python
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        cache-tier: common
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

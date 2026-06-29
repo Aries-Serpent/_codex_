@@ -39,6 +39,8 @@ import sys
 from typing import Any
 
 import requests
+from scripts.ci._token_resolver import get_token
+
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -319,7 +321,7 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
+    token = os.environ.get("GITHUB_TOKEN") or get_token(required_elevated=False)[0]
     if not token:
         print("ERROR: GITHUB_TOKEN (or GH_TOKEN) must be set.", file=sys.stderr)
         return 1

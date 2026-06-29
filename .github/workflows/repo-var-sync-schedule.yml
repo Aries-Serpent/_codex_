@@ -1,261 +1,160 @@
-# repo-var-sync-schedule.yml
-#
-# Scheduled Repo Variable Sync — repo-var-sync-agent
-# ====================================================
-#
-# PURPOSE:
-#   Runs the repo-var-sync-agent (Direction A: repo variables → .codex/agent_context.json)
-#   on a daily schedule so that any variable changes made via the GitHub UI or API are
-#   automatically reflected in .codex/agent_context.json within 24 hours.
-#
-#   GitHub Actions does not emit a native event when repository variables are updated,
-#   so daily polling is the standard mechanism for drift detection and sync.
-#
-# SCHEDULING:
-#   Explicitly scheduled by the active Copilot Agent (copilot-swe-agent[bot])
-#   in PR #3496 (2026-03-05) per Priority 3 of FOLLOWUP_PROMPT_PR3495.md.
-#   Schedule: daily at 06:00 UTC.
-#
-# HOW IT WORKS:
-#   1. Reads all tracked repo variables (COPILOT_* CODEX_* COGNITIVE_BRAIN_* AGENT_*
-#      EMBEDDING_* AUTO_*) via CODEX_MASTER_KEY (falls back to GITHUB_TOKEN).
-#   2. Compares current values against .codex/agent_context.json.
-#   3. If drift is detected, rewrites the file and commits the update.
-#   4. Writes a job summary showing current variable values and any drift.
-#
-# TRACKED PREFIXES (from repo-var-sync-agent.md v1.1):
-#   COPILOT_* | CODEX_* | COGNITIVE_BRAIN_* | AGENT_* | EMBEDDING_* | AUTO_*
-#
-# SECURITY:
-#   - Reads vars.* only (never secrets).
-#   - CODEX_MASTER_KEY / CODEX_BACKUP_KEY used for GET /repos/.../actions/variables
-#     to fetch all variables in a single paginated call.
-#   - Never writes secrets to .codex/agent_context.json.
-#
-# INTEGRATION POINTS (repo-var-sync-agent.md):
-#   - copilot-agent-vars-bootstrap.yml — complementary (runs on PR push)
-#   - copilot-setup-steps.yml          — consumes .codex/agent_context.json
-#   - agent-var-writer.yml             — writes Direction B changes back to API
-
-name: "Repo Var Sync (Scheduled)"
-# aais-cache: none  # Python referenced in template/doc strings only — no pip install
-
-on:
+name: Repo Var Sync (Scheduled)
+true:
   schedule:
-    # Daily at 06:00 UTC — ensures any variable changes made via GitHub UI
-    # are reflected in .codex/agent_context.json within 24 hours.
-    - cron: '0 6 * * *'
+  - cron: 0 6 * * *
   workflow_dispatch:
     inputs:
       dry_run:
-        description: 'Dry run — print drift report without writing or committing'
+        description: "Dry run \u2014 print drift report without writing or committing"
         type: boolean
         default: false
       force_sync:
-        description: 'Force sync even if no drift detected'
+        description: Force sync even if no drift detected
         type: boolean
         default: false
-
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: write
-
 jobs:
   sync-repo-vars:
-    name: "Sync repo variables → .codex/agent_context.json"
+    name: "Sync repo variables \u2192 .codex/agent_context.json"
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          fetch-depth: 1
-          # Use CODEX_MASTER_KEY so the commit step can push to the repo.
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-
-      - name: "🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)"
-        id: resolve-target
-        uses: ./.github/actions/resolve-push-target
-
-      # ── Fetch all tracked repo variables via GitHub API ───────────────────
-      - name: Fetch repo variables and detect drift
-        id: sync
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
-          DRY_RUN: ${{ inputs.dry_run || 'false' }}
-          FORCE_SYNC: ${{ inputs.force_sync || 'false' }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          # Expose all tracked vars.* using GitHub's native syntax so they are
-          # always current even when the API call is rate-limited.
-          COPILOT_AGENT_AUTH_ENABLED: ${{ vars.COPILOT_AGENT_AUTH_ENABLED }}
-          COPILOT_AGENT_MAX_AUTONOMY_LEVEL: ${{ vars.COPILOT_AGENT_MAX_AUTONOMY_LEVEL }}
-          COPILOT_AGENT_SESSION_RESTORE_ENABLED: ${{ vars.COPILOT_AGENT_SESSION_RESTORE_ENABLED }}
-          COPILOT_AGENT_FIREWALL_ENABLED: ${{ vars.COPILOT_AGENT_FIREWALL_ENABLED }}
-          COPILOT_CLI_BASE_URL: ${{ vars.COPILOT_CLI_BASE_URL }}
-          COPILOT_CLI_ENABLED: ${{ vars.COPILOT_CLI_ENABLED }}
-          CODEX_CI_FAILURE_RATE: ${{ vars.CODEX_CI_FAILURE_RATE }}
-          CODEX_CI_FAILURE_THRESHOLD: ${{ vars.CODEX_CI_FAILURE_THRESHOLD }}
-          CODEX_CI_LAST_GREEN_SHA: ${{ vars.CODEX_CI_LAST_GREEN_SHA }}
-          CODEX_COVERAGE_THRESHOLD: ${{ vars.CODEX_COVERAGE_THRESHOLD }}
-          CODEX_LOG_LEVEL: ${{ vars.CODEX_LOG_LEVEL }}
-          CODEX_NETWORK_MODE: ${{ vars.CODEX_NETWORK_MODE }}
-          CODEX_CLI_API_URL: ${{ vars.CODEX_CLI_API_URL }}
-          COGNITIVE_BRAIN_SESSION_NUMBER: ${{ vars.COGNITIVE_BRAIN_SESSION_NUMBER }}
-          COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS: ${{ vars.COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS }}
-          COGNITIVE_BRAIN_LTM_RETENTION_DAYS: ${{ vars.COGNITIVE_BRAIN_LTM_RETENTION_DAYS }}
-          COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE: ${{ vars.COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE }}
-          COGNITIVE_BRAIN_MEMORY_TIER: ${{ vars.COGNITIVE_BRAIN_MEMORY_TIER }}
-          COGNITIVE_BRAIN_INJECTION_ENABLED: ${{ vars.COGNITIVE_BRAIN_INJECTION_ENABLED }}
-          COGNITIVE_BRAIN_ALLOWED_ACTORS: ${{ vars.COGNITIVE_BRAIN_ALLOWED_ACTORS }}
-          AGENT_HANDOFF_TIMEOUT_SECONDS: ${{ vars.AGENT_HANDOFF_TIMEOUT_SECONDS }}
-          EMBEDDING_INDEX_AUTO_REBUILD: ${{ vars.EMBEDDING_INDEX_AUTO_REBUILD }}
-          AUTO_PROMOTE_TIER_ENABLED: ${{ vars.AUTO_PROMOTE_TIER_ENABLED }}
-        run: |
-          python3 - << 'PYEOF'
-          import json
-          import os
-          import pathlib
-          import datetime
-
-          TRACKED_PREFIXES = (
-              "COPILOT_",
-              "CODEX_",
-              "COGNITIVE_BRAIN_",
-              "AGENT_",
-              "EMBEDDING_",
-              "AUTO_",
-          )
-
-          # Collect current values from environment (injected via vars.*)
-          current = {}
-          for key, val in os.environ.items():
-              if any(key.startswith(p) for p in TRACKED_PREFIXES) and val:
-                  current[key] = val
-
-          # Add mandatory CCA version-lock constants (CAD-Mandate Rule 2 / MSPV)
-          current["COPILOT_AGENT_CCA_VERSION_LOCK"] = "stable"
-          current["COPILOT_AGENT_DEDUPLICATION_ENABLED"] = "true"
-          current["COPILOT_AGENT_TURN_ISOLATION_ENABLED"] = "true"
-
-          dry_run = os.environ.get("DRY_RUN", "false").lower() == "true"
-          force_sync = os.environ.get("FORCE_SYNC", "false").lower() == "true"
-
-          output_path = pathlib.Path(".codex/agent_context.json")
-          output_path.parent.mkdir(parents=True, exist_ok=True)
-
-          # Load existing file (if present) for drift detection
-          existing = {}
-          if output_path.exists():
-              try:
-                  raw = json.loads(output_path.read_text())
-                  existing = {k: v for k, v in raw.items() if not k.startswith("_")}
-              except (json.JSONDecodeError, OSError):
-                  pass
-
-          # Compute drift
-          drift = {}
-          for key, val in current.items():
-              if existing.get(key) != val:
-                  drift[key] = {"old": existing.get(key, "<missing>"), "new": val}
-          for key in existing:
-              if key not in current and any(key.startswith(p) for p in TRACKED_PREFIXES):
-                  drift[key] = {"old": existing[key], "new": "<removed>"}
-
-          print(f"Variables in scope:  {len(current)}")
-          print(f"Variables in file:   {len(existing)}")
-          print(f"Drift entries:       {len(drift)}")
-
-          if drift:
-              print("\nDRIFT REPORT:")
-              for key, change in sorted(drift.items()):
-                  print(f"  {key}: {change['old']!r} → {change['new']!r}")
-
-          needs_write = bool(drift) or force_sync or not output_path.exists()
-
-          if dry_run:
-              print("\n🔍 DRY RUN — no file written.")
-              print("GITHUB_OUTPUT: drift_count=" + str(len(drift)))
-              # Write output for summary step even in dry-run
-              with open(os.environ.get("GITHUB_OUTPUT", "/dev/null"), "a") as f:
-                  f.write(f"drift_count={len(drift)}\n")
-                  f.write("written=false\n")
-                  f.write(f"var_count={len(current)}\n")
-          elif needs_write:
-              # Write updated file with metadata
-              context = dict(current)
-              context["_meta"] = {
-                  "generated_at":   datetime.datetime.now(datetime.timezone.utc).isoformat(),
-                  "workflow":       "repo-var-sync-schedule",
-                  "sha":            os.environ.get("GITHUB_SHA", "")[:8],
-                  "ref":            os.environ.get("GITHUB_REF", ""),
-                  "actor":          os.environ.get("GITHUB_ACTOR", ""),
-                  "run_id":         os.environ.get("GITHUB_RUN_ID", ""),
-                  "repo_variables_count": len(current),
-                  "drift_entries":  len(drift),
-              }
-              output_path.write_text(json.dumps(context, indent=2) + "\n")
-              print(f"\n✅ Written {len(current)} variables to {output_path}")
-              with open(os.environ.get("GITHUB_OUTPUT", "/dev/null"), "a") as f:
-                  f.write(f"drift_count={len(drift)}\n")
-                  f.write("written=true\n")
-                  f.write(f"var_count={len(current)}\n")
-          else:
-              print("\n✅ No drift detected — .codex/agent_context.json is current.")
-              with open(os.environ.get("GITHUB_OUTPUT", "/dev/null"), "a") as f:
-                  f.write("drift_count=0\n")
-                  f.write("written=false\n")
-                  f.write(f"var_count={len(current)}\n")
-          PYEOF
-
-      # ── Commit updated file if changed ────────────────────────────────────
-      - name: Commit updated agent_context.json
-        if: steps.sync.outputs.written == 'true' && inputs.dry_run != 'true'
-        env:
-          PUSH_TARGET: ${{ steps.resolve-target.outputs.branch }}
-        run: |
-          # Walk the staging chain: sub-PR → 0D_base_ → main  (resolved above)
-          _TARGET="${PUSH_TARGET}"
-          echo "🔀 Push target: $_TARGET (reason: ${{ steps.resolve-target.outputs.reason }})"
-          cp .codex/agent_context.json /tmp/_agent_context_sync_
-          git fetch origin "$_TARGET" --depth=1
-          git checkout -fB _autogen_sync_ origin/"$_TARGET"  # S237: force-checkout (files already in /tmp)
-          cp /tmp/_agent_context_sync_ .codex/agent_context.json
-          git config user.name  "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add .codex/agent_context.json
-          git diff --cached --quiet || \
-            git commit -m "chore(vars): sync .codex/agent_context.json from repo variables [skip ci]"
-          git push origin HEAD:"$_TARGET" || true
-          echo "📤 Pushed to $_TARGET"
-
-      # ── Write job summary ────────────────────────────────────────────────
-      - name: Write job summary
-        if: always()
-        env:
-          DRIFT_COUNT: ${{ steps.sync.outputs.drift_count }}
-          WRITTEN: ${{ steps.sync.outputs.written }}
-          VAR_COUNT: ${{ steps.sync.outputs.var_count }}
-        run: |
-          echo "## 🔄 Repo Var Sync — repo-var-sync-agent" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Metric | Value |" >> "$GITHUB_STEP_SUMMARY"
-          echo "|--------|-------|" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Variables synced | ${VAR_COUNT:-0} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Drift entries    | ${DRIFT_COUNT:-0} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| File updated     | ${WRITTEN:-false} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Dry run          | ${{ inputs.dry_run || 'false' }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "**Scheduled by:** copilot-swe-agent[bot] (PR #3496, 2026-03-05)" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "**Tracked prefixes:** \`COPILOT_*\` · \`CODEX_*\` · \`COGNITIVE_BRAIN_*\` · \`AGENT_*\` · \`EMBEDDING_*\` · \`AUTO_*\`" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "### Governance" >> "$GITHUB_STEP_SUMMARY"
-          echo "- ✅ Never overwrites: \`AUTONOMOUS_ACTIONS_ENABLED\`, \`COPILOT_AGENT_AUTH_ENABLED\`," >> "$GITHUB_STEP_SUMMARY"
-          echo "  \`COPILOT_AGENT_FIREWALL_ENABLED\`, \`COGNITIVE_BRAIN_INJECTION_ENABLED\`" >> "$GITHUB_STEP_SUMMARY"
-          echo "- ✅ Direction A only (read from API → write to file)" >> "$GITHUB_STEP_SUMMARY"
-          echo "- ✅ No secrets written to .codex/agent_context.json" >> "$GITHUB_STEP_SUMMARY"
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        fetch-depth: 1
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+    - name: "\U0001F500 Resolve push target (chain: sub-PR \u2192 0D_base_ \u2192\
+        \ main)"
+      id: resolve-target
+      uses: ./.github/actions/resolve-push-target
+    - name: Fetch repo variables and detect drift
+      id: sync
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN
+          }}
+        DRY_RUN: ${{ inputs.dry_run || 'false' }}
+        FORCE_SYNC: ${{ inputs.force_sync || 'false' }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        COPILOT_AGENT_AUTH_ENABLED: ${{ vars.COPILOT_AGENT_AUTH_ENABLED }}
+        COPILOT_AGENT_MAX_AUTONOMY_LEVEL: ${{ vars.COPILOT_AGENT_MAX_AUTONOMY_LEVEL
+          }}
+        COPILOT_AGENT_SESSION_RESTORE_ENABLED: ${{ vars.COPILOT_AGENT_SESSION_RESTORE_ENABLED
+          }}
+        COPILOT_AGENT_FIREWALL_ENABLED: ${{ vars.COPILOT_AGENT_FIREWALL_ENABLED }}
+        COPILOT_CLI_BASE_URL: ${{ vars.COPILOT_CLI_BASE_URL }}
+        COPILOT_CLI_ENABLED: ${{ vars.COPILOT_CLI_ENABLED }}
+        CODEX_CI_FAILURE_RATE: ${{ vars.CODEX_CI_FAILURE_RATE }}
+        CODEX_CI_FAILURE_THRESHOLD: ${{ vars.CODEX_CI_FAILURE_THRESHOLD }}
+        CODEX_CI_LAST_GREEN_SHA: ${{ vars.CODEX_CI_LAST_GREEN_SHA }}
+        CODEX_COVERAGE_THRESHOLD: ${{ vars.CODEX_COVERAGE_THRESHOLD }}
+        CODEX_LOG_LEVEL: ${{ vars.CODEX_LOG_LEVEL }}
+        CODEX_NETWORK_MODE: ${{ vars.CODEX_NETWORK_MODE }}
+        CODEX_CLI_API_URL: ${{ vars.CODEX_CLI_API_URL }}
+        COGNITIVE_BRAIN_SESSION_NUMBER: ${{ vars.COGNITIVE_BRAIN_SESSION_NUMBER }}
+        COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS: ${{ vars.COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS
+          }}
+        COGNITIVE_BRAIN_LTM_RETENTION_DAYS: ${{ vars.COGNITIVE_BRAIN_LTM_RETENTION_DAYS
+          }}
+        COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE: ${{ vars.COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE
+          }}
+        COGNITIVE_BRAIN_MEMORY_TIER: ${{ vars.COGNITIVE_BRAIN_MEMORY_TIER }}
+        COGNITIVE_BRAIN_INJECTION_ENABLED: ${{ vars.COGNITIVE_BRAIN_INJECTION_ENABLED
+          }}
+        COGNITIVE_BRAIN_ALLOWED_ACTORS: ${{ vars.COGNITIVE_BRAIN_ALLOWED_ACTORS }}
+        AGENT_HANDOFF_TIMEOUT_SECONDS: ${{ vars.AGENT_HANDOFF_TIMEOUT_SECONDS }}
+        EMBEDDING_INDEX_AUTO_REBUILD: ${{ vars.EMBEDDING_INDEX_AUTO_REBUILD }}
+        AUTO_PROMOTE_TIER_ENABLED: ${{ vars.AUTO_PROMOTE_TIER_ENABLED }}
+      run: "python3 - << 'PYEOF'\nimport json\nimport os\nimport pathlib\nimport datetime\n\
+        \nTRACKED_PREFIXES = (\n    \"COPILOT_\",\n    \"CODEX_\",\n    \"COGNITIVE_BRAIN_\"\
+        ,\n    \"AGENT_\",\n    \"EMBEDDING_\",\n    \"AUTO_\",\n)\n\n# Collect current\
+        \ values from environment (injected via vars.*)\ncurrent = {}\nfor key, val\
+        \ in os.environ.items():\n    if any(key.startswith(p) for p in TRACKED_PREFIXES)\
+        \ and val:\n        current[key] = val\n\n# Add mandatory CCA version-lock\
+        \ constants (CAD-Mandate Rule 2 / MSPV)\ncurrent[\"COPILOT_AGENT_CCA_VERSION_LOCK\"\
+        ] = \"stable\"\ncurrent[\"COPILOT_AGENT_DEDUPLICATION_ENABLED\"] = \"true\"\
+        \ncurrent[\"COPILOT_AGENT_TURN_ISOLATION_ENABLED\"] = \"true\"\n\ndry_run\
+        \ = os.environ.get(\"DRY_RUN\", \"false\").lower() == \"true\"\nforce_sync\
+        \ = os.environ.get(\"FORCE_SYNC\", \"false\").lower() == \"true\"\n\noutput_path\
+        \ = pathlib.Path(\".codex/agent_context.json\")\noutput_path.parent.mkdir(parents=True,\
+        \ exist_ok=True)\n\n# Load existing file (if present) for drift detection\n\
+        existing = {}\nif output_path.exists():\n    try:\n        raw = json.loads(output_path.read_text())\n\
+        \        existing = {k: v for k, v in raw.items() if not k.startswith(\"_\"\
+        )}\n    except (json.JSONDecodeError, OSError):\n        pass\n\n# Compute\
+        \ drift\ndrift = {}\nfor key, val in current.items():\n    if existing.get(key)\
+        \ != val:\n        drift[key] = {\"old\": existing.get(key, \"<missing>\"\
+        ), \"new\": val}\nfor key in existing:\n    if key not in current and any(key.startswith(p)\
+        \ for p in TRACKED_PREFIXES):\n        drift[key] = {\"old\": existing[key],\
+        \ \"new\": \"<removed>\"}\n\nprint(f\"Variables in scope:  {len(current)}\"\
+        )\nprint(f\"Variables in file:   {len(existing)}\")\nprint(f\"Drift entries:\
+        \       {len(drift)}\")\n\nif drift:\n    print(\"\\nDRIFT REPORT:\")\n  \
+        \  for key, change in sorted(drift.items()):\n        print(f\"  {key}: {change['old']!r}\
+        \ \u2192 {change['new']!r}\")\n\nneeds_write = bool(drift) or force_sync or\
+        \ not output_path.exists()\n\nif dry_run:\n    print(\"\\n\U0001F50D DRY RUN\
+        \ \u2014 no file written.\")\n    print(\"GITHUB_OUTPUT: drift_count=\" +\
+        \ str(len(drift)))\n    # Write output for summary step even in dry-run\n\
+        \    with open(os.environ.get(\"GITHUB_OUTPUT\", \"/dev/null\"), \"a\") as\
+        \ f:\n        f.write(f\"drift_count={len(drift)}\\n\")\n        f.write(\"\
+        written=false\\n\")\n        f.write(f\"var_count={len(current)}\\n\")\nelif\
+        \ needs_write:\n    # Write updated file with metadata\n    context = dict(current)\n\
+        \    context[\"_meta\"] = {\n        \"generated_at\":   datetime.datetime.now(datetime.timezone.utc).isoformat(),\n\
+        \        \"workflow\":       \"repo-var-sync-schedule\",\n        \"sha\"\
+        :            os.environ.get(\"GITHUB_SHA\", \"\")[:8],\n        \"ref\": \
+        \           os.environ.get(\"GITHUB_REF\", \"\"),\n        \"actor\":    \
+        \      os.environ.get(\"GITHUB_ACTOR\", \"\"),\n        \"run_id\":      \
+        \   os.environ.get(\"GITHUB_RUN_ID\", \"\"),\n        \"repo_variables_count\"\
+        : len(current),\n        \"drift_entries\":  len(drift),\n    }\n    output_path.write_text(json.dumps(context,\
+        \ indent=2) + \"\\n\")\n    print(f\"\\n\u2705 Written {len(current)} variables\
+        \ to {output_path}\")\n    with open(os.environ.get(\"GITHUB_OUTPUT\", \"\
+        /dev/null\"), \"a\") as f:\n        f.write(f\"drift_count={len(drift)}\\\
+        n\")\n        f.write(\"written=true\\n\")\n        f.write(f\"var_count={len(current)}\\\
+        n\")\nelse:\n    print(\"\\n\u2705 No drift detected \u2014 .codex/agent_context.json\
+        \ is current.\")\n    with open(os.environ.get(\"GITHUB_OUTPUT\", \"/dev/null\"\
+        ), \"a\") as f:\n        f.write(\"drift_count=0\\n\")\n        f.write(\"\
+        written=false\\n\")\n        f.write(f\"var_count={len(current)}\\n\")\nPYEOF\n"
+    - name: Commit updated agent_context.json
+      if: steps.sync.outputs.written == 'true' && inputs.dry_run != 'true'
+      env:
+        PUSH_TARGET: ${{ steps.resolve-target.outputs.branch }}
+      run: "# Walk the staging chain: sub-PR \u2192 0D_base_ \u2192 main  (resolved\
+        \ above)\n_TARGET=\"${PUSH_TARGET}\"\necho \"\U0001F500 Push target: $_TARGET\
+        \ (reason: ${{ steps.resolve-target.outputs.reason }})\"\ncp .codex/agent_context.json\
+        \ /tmp/_agent_context_sync_\ngit fetch origin \"$_TARGET\" --depth=1\ngit\
+        \ checkout -fB _autogen_sync_ origin/\"$_TARGET\"  # S237: force-checkout\
+        \ (files already in /tmp)\ncp /tmp/_agent_context_sync_ .codex/agent_context.json\n\
+        git config user.name  \"github-actions[bot]\"\ngit config user.email \"github-actions[bot]@users.noreply.github.com\"\
+        \ngit add .codex/agent_context.json\ngit diff --cached --quiet || \\\n  git\
+        \ commit -m \"chore(vars): sync .codex/agent_context.json from repo variables\
+        \ [skip ci]\"\ngit push origin HEAD:\"$_TARGET\" || true\necho \"\U0001F4E4\
+        \ Pushed to $_TARGET\"\n"
+    - name: Write job summary
+      if: always()
+      env:
+        DRIFT_COUNT: ${{ steps.sync.outputs.drift_count }}
+        WRITTEN: ${{ steps.sync.outputs.written }}
+        VAR_COUNT: ${{ steps.sync.outputs.var_count }}
+      run: "echo \"## \U0001F504 Repo Var Sync \u2014 repo-var-sync-agent\" >> \"\
+        $GITHUB_STEP_SUMMARY\"\necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"| Metric\
+        \ | Value |\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"|--------|-------|\" >>\
+        \ \"$GITHUB_STEP_SUMMARY\"\necho \"| Variables synced | ${VAR_COUNT:-0} |\"\
+        \ >> \"$GITHUB_STEP_SUMMARY\"\necho \"| Drift entries    | ${DRIFT_COUNT:-0}\
+        \ |\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"| File updated     | ${WRITTEN:-false}\
+        \ |\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"| Dry run          | ${{ inputs.dry_run\
+        \ || 'false' }} |\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \necho \"**Scheduled by:** copilot-swe-agent[bot] (PR #3496, 2026-03-05)\"\
+        \ >> \"$GITHUB_STEP_SUMMARY\"\necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\necho\
+        \ \"**Tracked prefixes:** \\`COPILOT_*\\` \xB7 \\`CODEX_*\\` \xB7 \\`COGNITIVE_BRAIN_*\\\
+        ` \xB7 \\`AGENT_*\\` \xB7 \\`EMBEDDING_*\\` \xB7 \\`AUTO_*\\`\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"### Governance\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \necho \"- \u2705 Never overwrites: \\`AUTONOMOUS_ACTIONS_ENABLED\\`, \\`COPILOT_AGENT_AUTH_ENABLED\\\
+        `,\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"  \\`COPILOT_AGENT_FIREWALL_ENABLED\\\
+        `, \\`COGNITIVE_BRAIN_INJECTION_ENABLED\\`\" >> \"$GITHUB_STEP_SUMMARY\"\n\
+        echo \"- \u2705 Direction A only (read from API \u2192 write to file)\" >>\
+        \ \"$GITHUB_STEP_SUMMARY\"\necho \"- \u2705 No secrets written to .codex/agent_context.json\"\
+        \ >> \"$GITHUB_STEP_SUMMARY\"\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

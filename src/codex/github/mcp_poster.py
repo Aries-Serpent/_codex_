@@ -42,6 +42,8 @@ CLI (from CI workflow)::
 Python API::
 
     from codex.github.mcp_poster import GitHubMCPPoster
+from scripts.ci._token_resolver import get_token
+
     poster = GitHubMCPPoster()
     poster.post_pr_comment(repo="Aries-Serpent/_codex_", pr_number=3401, body="@copilot ...")
     poster.create_ref("Aries-Serpent/_codex_", "refs/heads/0D_base_", sha="abc123")
@@ -120,16 +122,16 @@ class GitHubMCPPoster:
     def __init__(self, token: str | None = None) -> None:
         self._token = (
             token
-            or os.environ.get("CODEX_MASTER_KEY")
-            or os.environ.get("CODEX_BACKUP_KEY")
+            or get_token(required_elevated=True)[0]
+            or get_token(required_elevated=True)[0]
             or os.environ.get("GITHUB_TOKEN")
         )
         # Track which key is active for health-check reporting (GAP-033).
         if token:
             self._token_source = "explicit"  # nosec B105 — label string, not a credential
-        elif os.environ.get("CODEX_MASTER_KEY"):
+        elif get_token(required_elevated=True)[0]:
             self._token_source = "CODEX_MASTER_KEY"  # nosec B105 — env-var name label
-        elif os.environ.get("CODEX_BACKUP_KEY"):
+        elif get_token(required_elevated=True)[0]:
             self._token_source = "CODEX_BACKUP_KEY"  # nosec B105 — env-var name label
         elif os.environ.get("GITHUB_TOKEN"):
             self._token_source = "GITHUB_TOKEN"  # nosec B105 — env-var name label

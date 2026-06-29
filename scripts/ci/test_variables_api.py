@@ -36,6 +36,8 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
+from scripts.ci._token_resolver import get_token
+
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -44,9 +46,9 @@ from datetime import datetime, timezone
 REPO = os.environ.get("REPO", "Aries-Serpent/_codex_")
 ORG = os.environ.get("ORG", "Aries-Serpent")
 GH_TOKEN = (
-    os.environ.get("CODEX_MASTER_KEY")
-    or os.environ.get("CODEX_BACKUP_KEY")
-    or os.environ.get("GH_TOKEN")
+    get_token(required_elevated=True)[0]
+    or get_token(required_elevated=True)[0]
+    or get_token(required_elevated=False)[0]
     or os.environ.get("GITHUB_TOKEN", "")
 )
 GH_API = "https://api.github.com"
@@ -313,9 +315,9 @@ def test_token_info() -> None:
         with urllib.request.urlopen(req) as resp_raw:
             scopes_header = resp_raw.headers.get("X-OAuth-Scopes", "")
             token_source = (
-                "CODEX_MASTER_KEY" if os.environ.get("CODEX_MASTER_KEY")
-                else "CODEX_BACKUP_KEY" if os.environ.get("CODEX_BACKUP_KEY")
-                else "GH_TOKEN" if os.environ.get("GH_TOKEN")
+                "CODEX_MASTER_KEY" if get_token(required_elevated=True)[0]
+                else "CODEX_BACKUP_KEY" if get_token(required_elevated=True)[0]
+                else "GH_TOKEN" if get_token(required_elevated=False)[0]
                 else "GITHUB_TOKEN"
             )
             print(f"     token_source={token_source}")  # codeql[py/clear-text-logging-sensitive-data]

@@ -1,251 +1,194 @@
 name: Workflow Restore Tool
-
-on:
+true:
   workflow_dispatch:
     inputs:
       workflow_file:
-        description: 'Workflow to restore'
+        description: Workflow to restore
         required: true
         type: choice
         options:
-          - test-suite.yml
-          - mcp-ci.yml
-          - docs.yml
-          - validate-docs.yml
-          - validate-docs-enhanced.yml
-          - container-build.yml
-          - build-container-cache.yml
-          - workflow-lint.yml
-          - workflow-validator.yml
-          - template-validation.yml
-          - cache-cleanup.yml
-          - cache-warmer.yml
-          - daily_status_cron.yml
-          - daily_status_enrich.yml
-          - automation_ingest.yml
-          - produce-trend.yml
-          - report_publish.yml
-          - duplicate-detection-weekly.yml
-          - post-merge-validation.yml
-
+        - test-suite.yml
+        - mcp-ci.yml
+        - docs.yml
+        - validate-docs.yml
+        - validate-docs-enhanced.yml
+        - container-build.yml
+        - build-container-cache.yml
+        - workflow-lint.yml
+        - workflow-validator.yml
+        - template-validation.yml
+        - cache-cleanup.yml
+        - cache-warmer.yml
+        - daily_status_cron.yml
+        - daily_status_enrich.yml
+        - automation_ingest.yml
+        - produce-trend.yml
+        - report_publish.yml
+        - duplicate-detection-weekly.yml
+        - post-merge-validation.yml
       restore_source:
-        description: 'Restore from'
+        description: Restore from
         required: true
         type: choice
         options:
-          - backup-latest
-          - backup-date
-          - archive-disabled
-
+        - backup-latest
+        - backup-date
+        - archive-disabled
       backup_date:
-        description: 'Backup date (YYYY-MM-DD) if restore_source=backup-date'
+        description: Backup date (YYYY-MM-DD) if restore_source=backup-date
         required: false
         type: string
-
       enable_immediately:
-        description: 'Enable workflow after restoration'
+        description: Enable workflow after restoration
         required: true
         type: boolean
         default: false
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: write
   pull-requests: write
-
-
 jobs:
   restore:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v7 # v6.0.3
-        with:
-          fetch-depth: 0
+    - uses: actions/checkout@v7
+      with:
+        fetch-depth: 0
+    - name: CacheManager health check
+      continue-on-error: true
+      run: 'python scripts/ci/generate_cache_keys.py --health --workflow workflow-restore
+        2>/dev/null || echo "Cache health: check skipped"
 
-      - name: CacheManager health check
-        continue-on-error: true
-        run: |
-          python scripts/ci/generate_cache_keys.py --health --workflow workflow-restore 2>/dev/null || echo "Cache health: check skipped"
-      - name: Validate inputs
-        id: validate
-        run: |
-          WORKFLOW="${{ github.event.inputs.workflow_file }}"
-          SOURCE="${{ github.event.inputs.restore_source }}"
-          DATE="${{ github.event.inputs.backup_date }}"
+        '
+    - name: Validate inputs
+      id: validate
+      run: "WORKFLOW=\"${{ github.event.inputs.workflow_file }}\"\nSOURCE=\"${{ github.event.inputs.restore_source\
+        \ }}\"\nDATE=\"${{ github.event.inputs.backup_date }}\"\n\necho \"=== Restoration\
+        \ Request ===\"\necho \"Workflow: $WORKFLOW\"\necho \"Source: $SOURCE\"\n\
+        echo \"Date: $DATE\"\necho \"Enable immediately: ${{ github.event.inputs.enable_immediately\
+        \ }}\"\n\n# Validate backup date format if provided\nif [ \"$SOURCE\" = \"\
+        backup-date\" ] && [ -n \"$DATE\" ]; then\n  if ! [[ \"$DATE\" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$\
+        \ ]]; then\n    echo \"❌ Invalid date format. Use YYYY-MM-DD\"\n    exit 1\n\
+        \  fi\nfi\n\necho \"✅ Inputs validated\"\n"
+    - name: Locate source file
+      id: locate
+      run: "WORKFLOW=\"${{ github.event.inputs.workflow_file }}\"\nSOURCE=\"${{ github.event.inputs.restore_source\
+        \ }}\"\nDATE=\"${{ github.event.inputs.backup_date }}\"\n\nSOURCE_FILE=\"\"\
+        \n\ncase \"$SOURCE\" in\n  \"backup-latest\")\n    # Find most recent backup\n\
+        \    LATEST_DIR=$(ls -t .github/workflow-archive/backups/ | head -1)\n   \
+        \ SOURCE_FILE=\".github/workflow-archive/backups/$LATEST_DIR/$WORKFLOW\"\n\
+        \    ;;\n  \"backup-date\")\n    SOURCE_FILE=\".github/workflow-archive/backups/$DATE/$WORKFLOW\"\
+        \n    ;;\n  \"archive-disabled\")\n    SOURCE_FILE=\".github/workflow-archive/disabled/$WORKFLOW\"\
+        \n    ;;\nesac\n\nif [ ! -f \"$SOURCE_FILE\" ]; then\n  echo \"❌ Source file\
+        \ not found: $SOURCE_FILE\"\n  echo \"Available files in source:\"\n  ls -la\
+        \ \"$(dirname \"$SOURCE_FILE\")\" 2>/dev/null || echo \"Directory does not\
+        \ exist\"\n  exit 1\nfi\n\necho \"source_file=$SOURCE_FILE\" >> $GITHUB_OUTPUT\n\
+        echo \"✅ Source located: $SOURCE_FILE\"\n"
+    - name: Restore workflow file
+      run: "WORKFLOW=\"${{ github.event.inputs.workflow_file }}\"\nSOURCE_FILE=\"\
+        ${{ steps.locate.outputs.source_file }}\"\nDEST_FILE=\".github/workflows/$WORKFLOW\"\
+        \n\necho \"Restoring: $SOURCE_FILE → $DEST_FILE\"\n\n# Check if workflow already\
+        \ exists\nif [ -f \"$DEST_FILE\" ]; then\n  echo \"⚠️ Workflow already exists.\
+        \ Creating backup before overwrite...\"\n  cp \"$DEST_FILE\" \"$DEST_FILE.backup-$(date\
+        \ +%Y%m%d%H%M%S)\"\nfi\n\n# Copy workflow file\ncp \"$SOURCE_FILE\" \"$DEST_FILE\"\
+        \n\n# If not enabling immediately, add disabled comment header\nif [ \"${{\
+        \ github.event.inputs.enable_immediately }}\" = \"false\" ]; then\n  echo\
+        \ \"Adding disabled notice header...\"\n  echo \"# ⚠️ WORKFLOW DISABLED -\
+        \ Restored but not enabled\" > /tmp/header.txt\n  echo \"# Remove this comment\
+        \ block when ready to activate\" >> /tmp/header.txt\n  echo \"# Restored:\
+        \ \\$(date -u +\\\"%Y-%m-%dT%H:%M:%SZ\\\")\" >> /tmp/header.txt\n  echo \"\
+        # \" >> /tmp/header.txt\n  echo \"# To enable: Remove this comment block\"\
+        \ >> /tmp/header.txt\n  echo \"\" >> /tmp/header.txt\n  cat /tmp/header.txt\
+        \ \"$DEST_FILE\" > /tmp/workflow_with_header.yml\n  mv /tmp/workflow_with_header.yml\
+        \ \"$DEST_FILE\"\nfi\n\necho \"✅ Workflow restored\"\n"
+    - name: Update inventory
+      run: 'python3 scripts/catalog_workflows.py
 
-          echo "=== Restoration Request ==="
-          echo "Workflow: $WORKFLOW"
-          echo "Source: $SOURCE"
-          echo "Date: $DATE"
-          echo "Enable immediately: ${{ github.event.inputs.enable_immediately }}"
+        echo "✅ Inventory updated"
 
-          # Validate backup date format if provided
-          if [ "$SOURCE" = "backup-date" ] && [ -n "$DATE" ]; then
-            if ! [[ "$DATE" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
-              echo "❌ Invalid date format. Use YYYY-MM-DD"
-              exit 1
-            fi
-          fi
+        '
+    - name: Create restoration report
+      run: "# Build the restoration report using shell logic to avoid embedding complex\
+        \ GitHub expressions\nWORKFLOW=\"${{ github.event.inputs.workflow_file }}\"\
+        \nSOURCE=\"${{ github.event.inputs.restore_source }}\"\nSOURCE_FILE=\"${{\
+        \ steps.locate.outputs.source_file }}\"\nENABLED=\"${{ github.event.inputs.enable_immediately\
+        \ }}\"\nNOW=$(date -u +\"%Y-%m-%dT%H:%M:%SZ\")\n\nSTATUS=\"⚠️ DISABLED (requires\
+        \ manual enablement)\"\nif [ \"$ENABLED\" = \"true\" ] || [ \"$ENABLED\" =\
+        \ \"True\" ]; then\n  STATUS=\"✅ ENABLED\"\nfi\n\ncat > /tmp/restoration-report.md\
+        \ <<REPORT\n## \U0001F504 Workflow Restoration Report\n\n**Date**: $NOW\n\
+        **Workflow**: \\`$WORKFLOW\\`\n**Restored from**: $SOURCE (\\`$SOURCE_FILE\\\
+        `)\n**Status**: $STATUS\n\n### Actions Taken\n- ✅ Source file located and\
+        \ validated\n- ✅ Workflow file restored to \\`.github/workflows/$WORKFLOW\\\
+        `\n- ✅ Workflow inventory updated\nREPORT\n\nif [ \"$ENABLED\" != \"true\"\
+        \ ]; then\n  cat >> /tmp/restoration-report.md <<REPORT_DISABLED\n\n- ⚠️ Workflow\
+        \ is DISABLED (comment header added)\n\n### Next Steps\n1. Review restored\
+        \ workflow in \\`.github/workflows/$WORKFLOW\\`\n2. Remove disabled comment\
+        \ header when ready to activate\n3. Test workflow execution in a safe environment\n\
+        \nREPORT_DISABLED\nfi\n\ncat >> /tmp/restoration-report.md <<REPORT_FINAL\n\
+        \n### Restoration Details\n- **Triggered by**: @${{ github.actor }}\n- **Run\
+        \ ID**: ${{ github.run_id }}\n- **Commit**: ${{ github.sha }}\n- **Source\
+        \ SHA256**: $(sha256sum \"$SOURCE_FILE\" | awk '{print $1}')\nREPORT_FINAL\n\
+        \ncat /tmp/restoration-report.md\n"
+    - name: Commit changes
+      run: 'WORKFLOW="${{ github.event.inputs.workflow_file }}"
 
-          echo "✅ Inputs validated"
 
-      - name: Locate source file
-        id: locate
-        run: |
-          WORKFLOW="${{ github.event.inputs.workflow_file }}"
-          SOURCE="${{ github.event.inputs.restore_source }}"
-          DATE="${{ github.event.inputs.backup_date }}"
+        git config user.name "github-actions[bot]"
 
-          SOURCE_FILE=""
+        git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          case "$SOURCE" in
-            "backup-latest")
-              # Find most recent backup
-              LATEST_DIR=$(ls -t .github/workflow-archive/backups/ | head -1)
-              SOURCE_FILE=".github/workflow-archive/backups/$LATEST_DIR/$WORKFLOW"
-              ;;
-            "backup-date")
-              SOURCE_FILE=".github/workflow-archive/backups/$DATE/$WORKFLOW"
-              ;;
-            "archive-disabled")
-              SOURCE_FILE=".github/workflow-archive/disabled/$WORKFLOW"
-              ;;
-          esac
 
-          if [ ! -f "$SOURCE_FILE" ]; then
-            echo "❌ Source file not found: $SOURCE_FILE"
-            echo "Available files in source:"
-            ls -la "$(dirname "$SOURCE_FILE")" 2>/dev/null || echo "Directory does not exist"
-            exit 1
-          fi
+        git add .github/workflows/"$WORKFLOW"
 
-          echo "source_file=$SOURCE_FILE" >> $GITHUB_OUTPUT
-          echo "✅ Source located: $SOURCE_FILE"
+        git add .github/workflow-archive/WORKFLOW_INVENTORY.yaml
 
-      - name: Restore workflow file
-        run: |
-          WORKFLOW="${{ github.event.inputs.workflow_file }}"
-          SOURCE_FILE="${{ steps.locate.outputs.source_file }}"
-          DEST_FILE=".github/workflows/$WORKFLOW"
+        git add .github/workflow-archive/INVENTORY_SUMMARY.md
 
-          echo "Restoring: $SOURCE_FILE → $DEST_FILE"
 
-          # Check if workflow already exists
-          if [ -f "$DEST_FILE" ]; then
-            echo "⚠️ Workflow already exists. Creating backup before overwrite..."
-            cp "$DEST_FILE" "$DEST_FILE.backup-$(date +%Y%m%d%H%M%S)"
-          fi
+        STATUS="${{ github.event.inputs.enable_immediately == ''true'' && ''enabled''
+        || ''disabled'' }}"
 
-          # Copy workflow file
-          cp "$SOURCE_FILE" "$DEST_FILE"
 
-          # If not enabling immediately, add disabled comment header
-          if [ "${{ github.event.inputs.enable_immediately }}" = "false" ]; then
-            echo "Adding disabled notice header..."
-            echo "# ⚠️ WORKFLOW DISABLED - Restored but not enabled" > /tmp/header.txt
-            echo "# Remove this comment block when ready to activate" >> /tmp/header.txt
-            echo "# Restored: \$(date -u +\"%Y-%m-%dT%H:%M:%SZ\")" >> /tmp/header.txt
-            echo "# " >> /tmp/header.txt
-            echo "# To enable: Remove this comment block" >> /tmp/header.txt
-            echo "" >> /tmp/header.txt
-            cat /tmp/header.txt "$DEST_FILE" > /tmp/workflow_with_header.yml
-            mv /tmp/workflow_with_header.yml "$DEST_FILE"
-          fi
+        git commit -m "restore(ci): restore $WORKFLOW from ${{ github.event.inputs.restore_source
+        }} ($STATUS)
 
-          echo "✅ Workflow restored"
 
-      - name: Update inventory
-        run: |
-          python3 scripts/catalog_workflows.py
-          echo "✅ Inventory updated"
+        Workflow restored via automated restoration tool.
 
-      - name: Create restoration report
-        run: |
-          # Build the restoration report using shell logic to avoid embedding complex GitHub expressions
-          WORKFLOW="${{ github.event.inputs.workflow_file }}"
-          SOURCE="${{ github.event.inputs.restore_source }}"
-          SOURCE_FILE="${{ steps.locate.outputs.source_file }}"
-          ENABLED="${{ github.event.inputs.enable_immediately }}"
-          NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
-          STATUS="⚠️ DISABLED (requires manual enablement)"
-          if [ "$ENABLED" = "true" ] || [ "$ENABLED" = "True" ]; then
-            STATUS="✅ ENABLED"
-          fi
+        - Source: ${{ steps.locate.outputs.source_file }}
 
-          cat > /tmp/restoration-report.md <<REPORT
-          ## 🔄 Workflow Restoration Report
+        - Status: $STATUS
 
-          **Date**: $NOW
-          **Workflow**: \`$WORKFLOW\`
-          **Restored from**: $SOURCE (\`$SOURCE_FILE\`)
-          **Status**: $STATUS
+        - Triggered by: @${{ github.actor }}
 
-          ### Actions Taken
-          - ✅ Source file located and validated
-          - ✅ Workflow file restored to \`.github/workflows/$WORKFLOW\`
-          - ✅ Workflow inventory updated
-          REPORT
+        - Restore method: ${{ github.event.inputs.restore_source }}
 
-          if [ "$ENABLED" != "true" ]; then
-            cat >> /tmp/restoration-report.md <<REPORT_DISABLED
 
-          - ⚠️ Workflow is DISABLED (comment header added)
+        Ref: workflow-restore-${{ github.run_id }}"
 
-          ### Next Steps
-          1. Review restored workflow in \`.github/workflows/$WORKFLOW\`
-          2. Remove disabled comment header when ready to activate
-          3. Test workflow execution in a safe environment
 
-          REPORT_DISABLED
-          fi
+        git push
 
-          cat >> /tmp/restoration-report.md <<REPORT_FINAL
+        '
+    - name: Summary
+      run: 'echo "✅ Workflow restoration complete!"
 
-          ### Restoration Details
-          - **Triggered by**: @${{ github.actor }}
-          - **Run ID**: ${{ github.run_id }}
-          - **Commit**: ${{ github.sha }}
-          - **Source SHA256**: $(sha256sum "$SOURCE_FILE" | awk '{print $1}')
-          REPORT_FINAL
+        echo ""
 
-          cat /tmp/restoration-report.md
+        echo "Workflow: ${{ github.event.inputs.workflow_file }}"
 
-      - name: Commit changes
-        run: |
-          WORKFLOW="${{ github.event.inputs.workflow_file }}"
+        echo "Status: ${{ github.event.inputs.enable_immediately == ''true'' && ''✅
+        ENABLED'' || ''⚠️ DISABLED'' }}"
 
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+        echo ""
 
-          git add .github/workflows/"$WORKFLOW"
-          git add .github/workflow-archive/WORKFLOW_INVENTORY.yaml
-          git add .github/workflow-archive/INVENTORY_SUMMARY.md
+        cat /tmp/restoration-report.md >> $GITHUB_STEP_SUMMARY
 
-          STATUS="${{ github.event.inputs.enable_immediately == 'true' && 'enabled' || 'disabled' }}"
-
-          git commit -m "restore(ci): restore $WORKFLOW from ${{ github.event.inputs.restore_source }} ($STATUS)
-
-          Workflow restored via automated restoration tool.
-
-          - Source: ${{ steps.locate.outputs.source_file }}
-          - Status: $STATUS
-          - Triggered by: @${{ github.actor }}
-          - Restore method: ${{ github.event.inputs.restore_source }}
-
-          Ref: workflow-restore-${{ github.run_id }}"
-
-          git push
-
-      - name: Summary
-        run: |
-          echo "✅ Workflow restoration complete!"
-          echo ""
-          echo "Workflow: ${{ github.event.inputs.workflow_file }}"
-          echo "Status: ${{ github.event.inputs.enable_immediately == 'true' && '✅ ENABLED' || '⚠️ DISABLED' }}"
-          echo ""
-          cat /tmp/restoration-report.md >> $GITHUB_STEP_SUMMARY
+        '
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

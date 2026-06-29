@@ -73,6 +73,8 @@ import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
+from scripts.ci._token_resolver import get_token
+
 
 logger = logging.getLogger(__name__)
 
@@ -1178,8 +1180,8 @@ class CommonIssueFixer:
 
         # Determine authentication token (prefer CODEX_MASTER_KEY for full scope)
         token = (
-            os.environ.get("CODEX_MASTER_KEY")
-            or os.environ.get("GH_TOKEN")
+            get_token(required_elevated=True)[0]
+            or get_token(required_elevated=False)[0]
             or os.environ.get("GITHUB_TOKEN")
         )
         repo = os.environ.get("GITHUB_REPOSITORY", "")

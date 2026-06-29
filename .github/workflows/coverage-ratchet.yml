@@ -1,209 +1,145 @@
 name: Coverage Ratchet
-
-# Enforces a minimum coverage threshold aligned with pyproject.toml `fail_under`.
-# Blocks PRs when coverage drops below the ratchet floor.
-#
-# The pyproject.toml `fail_under = 35` is the single source of truth for the
-# current regression floor (Phase 5 planning; Phase 10B target is ≥50%).
-# The default threshold here matches pyproject.toml to avoid spurious failures.
-#
-# Exemption policy (2026-06-11):
-#   Copilot-generated branches (head ref matching `copilot/*`) are exempt from
-#   ratchet enforcement UNLESS the PR targets `main` or `0D_base_`.
-#   This prevents spurious failures on exploration/agent branches that are created
-#   without accompanying tests, while preserving full enforcement on trunk merges.
-#
-# Domain: D7 · Test System Maturity (completion rubric v1)
-# Evidence: coverage ratchet blocks regression → score 4 evidence
-
-on:
+true:
   pull_request:
-    branches: [main, develop, "0D_base_"]
+    branches:
+    - main
+    - develop
+    - 0D_base_
     paths:
-      - "src/**"
-      - "tests/**"
-      - "agents/**"
-      - "pyproject.toml"
+    - src/**
+    - tests/**
+    - agents/**
+    - pyproject.toml
   workflow_dispatch:
     inputs:
       threshold:
-        description: "Coverage threshold % (default: 35)"
+        description: 'Coverage threshold % (default: 35)'
         type: string
-        default: "35"
-
+        default: '35'
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   pull-requests: write
-
-
 jobs:
   coverage-check:
-    name: "🧪 Coverage Ratchet"
+    name: 🧪 Coverage Ratchet
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    # Skip ratchet enforcement for Copilot-generated branches (copilot/*) unless
-    # the PR targets the protected trunks (main or 0D_base_).  Copilot exploration
-    # branches targeting other integration branches are exempt; they must add
-    # tests before promoting to main/0D_base_.
-    if: >
-      !startsWith(github.head_ref, 'copilot/') ||
-      github.base_ref == 'main' ||
-      github.base_ref == '0D_base_'
+    if: '!startsWith(github.head_ref, ''copilot/'') || github.base_ref == ''main''
+      || github.base_ref == ''0D_base_''
 
+      '
     steps:
-      - name: Checkout
-        uses: actions/checkout@v7 # v6.0.3
+    - name: Checkout
+      uses: actions/checkout@v7
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: 3.12.13
+        cache: pip
+    - name: Install with test dependencies
+      run: 'pip install --upgrade pip --quiet
 
-      - name: Set up Python
-        uses: actions/setup-python@v6 # v6
-        with:
-          python-version: "3.12.13"
-          cache: "pip"
+        pip install pytest==8.4.2 pytest-xdist==3.8.0 pytest-timeout==2.4.0 --quiet
 
-      - name: Install with test dependencies
-        run: |
-          pip install --upgrade pip --quiet
-          pip install pytest==8.4.2 pytest-xdist==3.8.0 pytest-timeout==2.4.0 --quiet
-          pip install -e ".[dev]" --quiet 2>/dev/null || pip install -e ".[dev]" --quiet
+        pip install -e ".[dev]" --quiet 2>/dev/null || pip install -e ".[dev]" --quiet
 
-      - name: Run coverage with ratchet threshold
-        id: coverage
-        env:
-          THRESHOLD: ${{ inputs.threshold || '35' }}
-        run: |
-          set +e
-          python -m pytest \
-            --cov=src \
-            --cov-report=term-missing \
-            --cov-report=xml:coverage.xml \
-            --cov-fail-under="${THRESHOLD}" \
-            -q \
-            --timeout=120 \
-            --continue-on-collection-errors \
-            tests/ \
-            2>&1 | tee "$RUNNER_TEMP/coverage_output.txt"
-          EXIT_CODE=${PIPESTATUS[0]}
-          set -e
-          echo "exit_code=$EXIT_CODE" >> "$GITHUB_OUTPUT"
-          # Extract coverage percentage
-          COVERAGE_PCT=$(awk '/^TOTAL[[:space:]]/ { for (i = 1; i <= NF; i++) if ($i ~ /^[0-9]+([.][0-9]+)?%$/) cov = $i } END { gsub(/%/, "", cov); print cov }' "$RUNNER_TEMP/coverage_output.txt")
-          if ! [[ "$COVERAGE_PCT" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
-            COVERAGE_PCT="unknown"
-          fi
-          if [[ "$COVERAGE_PCT" == "unknown" ]]; then
-            THRESHOLD_BREACHED="true"
-            echo "::warning::Coverage percentage is unknown; treating as ratchet breach."
-          else
-            THRESHOLD_BREACHED="false"
-            if ! THRESHOLD_BREACHED=$(python -c 'import sys; print(str(float(sys.argv[1]) < float(sys.argv[2])).lower())' "$COVERAGE_PCT" "$THRESHOLD"); then
-              THRESHOLD_BREACHED="true"
-              echo "::warning::Failed to compare coverage ($COVERAGE_PCT) against threshold ($THRESHOLD); treating as ratchet breach."
-            fi
-          fi
-          echo "coverage_pct=$COVERAGE_PCT" >> "$GITHUB_OUTPUT"
-          echo "threshold_breached=$THRESHOLD_BREACHED" >> "$GITHUB_OUTPUT"
-          exit $EXIT_CODE
-        continue-on-error: true
+        '
+    - name: Run coverage with ratchet threshold
+      id: coverage
+      env:
+        THRESHOLD: ${{ inputs.threshold || '35' }}
+      run: "set +e\npython -m pytest \\\n  --cov=src \\\n  --cov-report=term-missing\
+        \ \\\n  --cov-report=xml:coverage.xml \\\n  --cov-fail-under=\"${THRESHOLD}\"\
+        \ \\\n  -q \\\n  --timeout=120 \\\n  --continue-on-collection-errors \\\n\
+        \  tests/ \\\n  2>&1 | tee \"$RUNNER_TEMP/coverage_output.txt\"\nEXIT_CODE=${PIPESTATUS[0]}\n\
+        set -e\necho \"exit_code=$EXIT_CODE\" >> \"$GITHUB_OUTPUT\"\n# Extract coverage\
+        \ percentage\nCOVERAGE_PCT=$(awk '/^TOTAL[[:space:]]/ { for (i = 1; i <= NF;\
+        \ i++) if ($i ~ /^[0-9]+([.][0-9]+)?%$/) cov = $i } END { gsub(/%/, \"\",\
+        \ cov); print cov }' \"$RUNNER_TEMP/coverage_output.txt\")\nif ! [[ \"$COVERAGE_PCT\"\
+        \ =~ ^[0-9]+(\\.[0-9]+)?$ ]]; then\n  COVERAGE_PCT=\"unknown\"\nfi\nif [[\
+        \ \"$COVERAGE_PCT\" == \"unknown\" ]]; then\n  THRESHOLD_BREACHED=\"true\"\
+        \n  echo \"::warning::Coverage percentage is unknown; treating as ratchet\
+        \ breach.\"\nelse\n  THRESHOLD_BREACHED=\"false\"\n  if ! THRESHOLD_BREACHED=$(python\
+        \ -c 'import sys; print(str(float(sys.argv[1]) < float(sys.argv[2])).lower())'\
+        \ \"$COVERAGE_PCT\" \"$THRESHOLD\"); then\n    THRESHOLD_BREACHED=\"true\"\
+        \n    echo \"::warning::Failed to compare coverage ($COVERAGE_PCT) against\
+        \ threshold ($THRESHOLD); treating as ratchet breach.\"\n  fi\nfi\necho \"\
+        coverage_pct=$COVERAGE_PCT\" >> \"$GITHUB_OUTPUT\"\necho \"threshold_breached=$THRESHOLD_BREACHED\"\
+        \ >> \"$GITHUB_OUTPUT\"\nexit $EXIT_CODE\n"
+      continue-on-error: true
+    - name: Post PR comment on regression
+      if: 'github.event_name == ''pull_request'' && steps.coverage.outputs.threshold_breached
+        == ''true''
 
-      - name: Post PR comment on regression
-        if: >
-          github.event_name == 'pull_request' &&
-          steps.coverage.outputs.threshold_breached == 'true'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          THRESHOLD: ${{ inputs.threshold || '35' }}
-        run: |
-          printf "%s\n" \
-            "## 🧪 Coverage Ratchet — Regression Detected" \
-            "" \
-            "Coverage dropped below the **${THRESHOLD}%** ratchet floor." \
-            "Current: \`${{ steps.coverage.outputs.coverage_pct }}%\`" \
-            "" \
-            "Please add tests to restore coverage before merging." \
-            "" \
-            "<details><summary>Coverage output</summary>" \
-            "" \
-            "\`\`\`" \
-            "$(cat "$RUNNER_TEMP/coverage_output.txt" | tail -30)" \
-            "\`\`\`" \
-            "" \
-            "</details>" \
-            "" \
-            "See \`pyproject.toml → [tool.coverage.report]\` for configuration." \
-            > "$RUNNER_TEMP/coverage_body.txt"
-          gh pr comment "$PR_NUMBER" --body-file "$RUNNER_TEMP/coverage_body.txt" 2>/dev/null || true
+        '
+      env:
+        GH_TOKEN: ${{ github.token }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        THRESHOLD: ${{ inputs.threshold || '35' }}
+      run: "printf \"%s\\n\" \\\n  \"## \U0001F9EA Coverage Ratchet — Regression Detected\"\
+        \ \\\n  \"\" \\\n  \"Coverage dropped below the **${THRESHOLD}%** ratchet\
+        \ floor.\" \\\n  \"Current: \\`${{ steps.coverage.outputs.coverage_pct }}%\\\
+        `\" \\\n  \"\" \\\n  \"Please add tests to restore coverage before merging.\"\
+        \ \\\n  \"\" \\\n  \"<details><summary>Coverage output</summary>\" \\\n  \"\
+        \" \\\n  \"\\`\\`\\`\" \\\n  \"$(cat \"$RUNNER_TEMP/coverage_output.txt\"\
+        \ | tail -30)\" \\\n  \"\\`\\`\\`\" \\\n  \"\" \\\n  \"</details>\" \\\n \
+        \ \"\" \\\n  \"See \\`pyproject.toml → [tool.coverage.report]\\` for configuration.\"\
+        \ \\\n  > \"$RUNNER_TEMP/coverage_body.txt\"\ngh pr comment \"$PR_NUMBER\"\
+        \ --body-file \"$RUNNER_TEMP/coverage_body.txt\" 2>/dev/null || true\n"
+    - name: Fail on coverage regression
+      if: steps.coverage.outputs.threshold_breached == 'true'
+      run: 'echo "::error::Coverage ${{ steps.coverage.outputs.coverage_pct }}% is
+        below ratchet threshold ${{ inputs.threshold || ''35'' }}%"
 
-      - name: Fail on coverage regression
-        if: steps.coverage.outputs.threshold_breached == 'true'
-        run: |
-          echo "::error::Coverage ${{ steps.coverage.outputs.coverage_pct }}% is below ratchet threshold ${{ inputs.threshold || '35' }}%"
-          exit 1
+        exit 1
 
-      - name: Job summary
-        if: always()
-        run: |
-          {
-            echo "## 🧪 Coverage Ratchet"
-            echo ""
-            echo "| Item | Value |"
-            echo "|------|-------|"
-            echo "| Coverage | ${{ steps.coverage.outputs.coverage_pct }}% |"
-            echo "| Threshold | ${{ inputs.threshold || '35' }}% |"
-            echo "| Status | ${{ steps.coverage.outputs.exit_code == '0' && '✅ PASS' || '❌ FAIL' }} |"
-          } >> "$GITHUB_STEP_SUMMARY"
-
-  # Informational job: runs only when the ratchet is exempt for a copilot/* branch.
-  # Posts a concise notice so contributors know the check was intentionally skipped.
+        '
+    - name: Job summary
+      if: always()
+      run: "{\n  echo \"## \U0001F9EA Coverage Ratchet\"\n  echo \"\"\n  echo \"|\
+        \ Item | Value |\"\n  echo \"|------|-------|\"\n  echo \"| Coverage | ${{\
+        \ steps.coverage.outputs.coverage_pct }}% |\"\n  echo \"| Threshold | ${{\
+        \ inputs.threshold || '35' }}% |\"\n  echo \"| Status | ${{ steps.coverage.outputs.exit_code\
+        \ == '0' && '✅ PASS' || '❌ FAIL' }} |\"\n} >> \"$GITHUB_STEP_SUMMARY\"\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   notify-exempt:
-    name: "🧪 Coverage Ratchet (exempt)"
+    name: 🧪 Coverage Ratchet (exempt)
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    if: >
-      github.event_name == 'pull_request' &&
-      startsWith(github.head_ref, 'copilot/') &&
-      github.base_ref != 'main' &&
-      github.base_ref != '0D_base_'
+    if: 'github.event_name == ''pull_request'' && startsWith(github.head_ref, ''copilot/'')
+      && github.base_ref != ''main'' && github.base_ref != ''0D_base_''
+
+      '
     permissions:
       pull-requests: write
     steps:
-      - name: Post exemption notice
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          HEAD_REF: ${{ github.head_ref }}
-          BASE_REF: ${{ github.base_ref }}
-        run: |
-          printf "%s\n" \
-            "## 🧪 Coverage Ratchet — Exempt ✅" \
-            "" \
-            "Coverage ratchet enforcement is **skipped** for Copilot-generated branches targeting \`${BASE_REF}\`." \
-            "" \
-            "| Item | Value |" \
-            "|------|-------|" \
-            "| Head branch | \`${HEAD_REF}\` |" \
-            "| Base branch | \`${BASE_REF}\` |" \
-            "| Status | ⏭️ Exempt |" \
-            "" \
-            "> **Note:** Full ratchet enforcement resumes when this branch (or its changes) targets \`main\` or \`0D_base_\`." \
-            > "${RUNNER_TEMP}/exempt_body.txt"
-          gh pr comment "$PR_NUMBER" --body-file "${RUNNER_TEMP}/exempt_body.txt" 2>/dev/null || true
-
-      - name: Job summary
-        env:
-          HEAD_REF: ${{ github.head_ref }}
-          BASE_REF: ${{ github.base_ref }}
-        run: |
-          {
-            echo "## 🧪 Coverage Ratchet (exempt)"
-            echo ""
-            echo "| Item | Value |"
-            echo "|------|-------|"
-            echo "| Head branch | \`${HEAD_REF}\` |"
-            echo "| Base branch | \`${BASE_REF}\` |"
-            echo "| Status | ⏭️ Exempt — Copilot branch targeting non-trunk |"
-          } >> "$GITHUB_STEP_SUMMARY"
+    - name: Post exemption notice
+      env:
+        GH_TOKEN: ${{ github.token }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        HEAD_REF: ${{ github.head_ref }}
+        BASE_REF: ${{ github.base_ref }}
+      run: "printf \"%s\\n\" \\\n  \"## \U0001F9EA Coverage Ratchet — Exempt ✅\" \\\
+        \n  \"\" \\\n  \"Coverage ratchet enforcement is **skipped** for Copilot-generated\
+        \ branches targeting \\`${BASE_REF}\\`.\" \\\n  \"\" \\\n  \"| Item | Value\
+        \ |\" \\\n  \"|------|-------|\" \\\n  \"| Head branch | \\`${HEAD_REF}\\\
+        ` |\" \\\n  \"| Base branch | \\`${BASE_REF}\\` |\" \\\n  \"| Status | ⏭️\
+        \ Exempt |\" \\\n  \"\" \\\n  \"> **Note:** Full ratchet enforcement resumes\
+        \ when this branch (or its changes) targets \\`main\\` or \\`0D_base_\\`.\"\
+        \ \\\n  > \"${RUNNER_TEMP}/exempt_body.txt\"\ngh pr comment \"$PR_NUMBER\"\
+        \ --body-file \"${RUNNER_TEMP}/exempt_body.txt\" 2>/dev/null || true\n"
+    - name: Job summary
+      env:
+        HEAD_REF: ${{ github.head_ref }}
+        BASE_REF: ${{ github.base_ref }}
+      run: "{\n  echo \"## \U0001F9EA Coverage Ratchet (exempt)\"\n  echo \"\"\n \
+        \ echo \"| Item | Value |\"\n  echo \"|------|-------|\"\n  echo \"| Head\
+        \ branch | \\`${HEAD_REF}\\` |\"\n  echo \"| Base branch | \\`${BASE_REF}\\\
+        ` |\"\n  echo \"| Status | ⏭️ Exempt — Copilot branch targeting non-trunk\
+        \ |\"\n} >> \"$GITHUB_STEP_SUMMARY\"\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

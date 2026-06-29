@@ -1,5 +1,5 @@
 name: Rust-Python Hybrid Swarm CI/CD
-on:
+true:
   push:
     branches:
     - main
@@ -41,6 +41,8 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   rust_tests:
     name: Rust Unit Tests
     runs-on: ubuntu-latest
@@ -326,6 +328,8 @@ jobs:
           \ repo: context.repo.repo, body,\n      });\n    }\n    break; // success\n\
           \  } catch (e) {\n    if (attempt === 3) throw e;\n    await new Promise(r\
           \ => setTimeout(r, (attempt + 1) * 2000));\n  }\n}\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   security_audit:
     name: Security Audit
     runs-on: ubuntu-latest
@@ -474,3 +478,5 @@ jobs:
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

@@ -1,26 +1,26 @@
 name: Authentication Tests
-
-on:
+true:
   push:
-    branches: [main, develop, 'copilot/**']
+    branches:
+    - main
+    - develop
+    - copilot/**
     paths:
-      - 'src/codex/auth/**'
-      - 'tests/auth/**'
-      - '.github/workflows/auth-tests.yml'
+    - src/codex/auth/**
+    - tests/auth/**
+    - .github/workflows/auth-tests.yml
   pull_request:
-    branches: [main, develop]
+    branches:
+    - main
+    - develop
     paths:
-      - 'src/codex/auth/**'
-      - 'tests/auth/**'
-  workflow_dispatch:
-
-
+    - src/codex/auth/**
+    - tests/auth/**
+  workflow_dispatch: null
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions: read-all
-
 jobs:
   test-authentication:
     name: Test Authentication Module
@@ -30,143 +30,106 @@ jobs:
     timeout-minutes: 60
     strategy:
       matrix:
-        python-version: ['3.12.13']
-
+        python-version:
+        - 3.12.13
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v7 # v6.0.3
+    - name: Checkout code
+      uses: actions/checkout@v7
+    - name: Initialize with repository variables
+      env:
+        CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+        CODEX_TEST_TIMEOUT_MINUTES: ${{ vars.CODEX_TEST_TIMEOUT_MINUTES || '60' }}
+        CODEX_LOG_LEVEL: ${{ vars.CODEX_LOG_LEVEL || 'INFO' }}
+      run: 'echo "Auth test variables initialized:"
 
-      - name: Initialize with repository variables
-        env:
-          CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
-          CODEX_TEST_TIMEOUT_MINUTES: ${{ vars.CODEX_TEST_TIMEOUT_MINUTES || '60' }}
-          CODEX_LOG_LEVEL: ${{ vars.CODEX_LOG_LEVEL || 'INFO' }}
-        run: |
-          echo "Auth test variables initialized:"
-          echo "  CODEX_CACHE_VERSION=$CODEX_CACHE_VERSION"
-          echo "  CODEX_TEST_TIMEOUT_MINUTES=$CODEX_TEST_TIMEOUT_MINUTES"
-          echo "  CODEX_LOG_LEVEL=$CODEX_LOG_LEVEL"
+        echo "  CODEX_CACHE_VERSION=$CODEX_CACHE_VERSION"
 
-      - name: Set up Python ${{ matrix.python-version }} with tiered cache
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: ${{ matrix.python-version }}
-          cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+        echo "  CODEX_TEST_TIMEOUT_MINUTES=$CODEX_TEST_TIMEOUT_MINUTES"
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          # Install pytest plugins with security updates (CVE-2025-71176)
-          # Use versions from requirements-test.txt for full compatibility
-          echo "Installing pytest plugins with Python 3.12.13..."
-          pip install pytest==9.0.3 pytest-xdist==3.8.0 pytest-timeout==2.4.0 pytest-cov==5.0.0 pytest-asyncio==1.3.0
-           
-          # Verify installations
-          python -c "import pytest; print(f'✓ pytest {pytest.__version__}')"
-          python -c "import xdist; print(f'✓ pytest-xdist {xdist.__version__}')"
-          python -c "import pytest_timeout; print(f'✓ pytest-timeout installed')"
-          python -c "import pytest_cov; print(f'✓ pytest-cov installed')"
-          python -c "import pytest_asyncio; print(f'✓ pytest-asyncio {pytest_asyncio.__version__}')"
+        echo "  CODEX_LOG_LEVEL=$CODEX_LOG_LEVEL"
 
-          pip install -e ".[dev]"
-          pip install httpx  # Additional dependency for auth tests
-          pip install bandit>=1.7.5  # Pre-install bandit for security scan
+        '
+    - name: Set up Python ${{ matrix.python-version }} with tiered cache
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+    - name: Install dependencies
+      run: "python -m pip install --upgrade pip\n# Install pytest plugins with security\
+        \ updates (CVE-2025-71176)\n# Use versions from requirements-test.txt for\
+        \ full compatibility\necho \"Installing pytest plugins with Python 3.12.13...\"\
+        \npip install pytest==9.0.3 pytest-xdist==3.8.0 pytest-timeout==2.4.0 pytest-cov==5.0.0\
+        \ pytest-asyncio==1.3.0\n \n# Verify installations\npython -c \"import pytest;\
+        \ print(f'✓ pytest {pytest.__version__}')\"\npython -c \"import xdist; print(f'✓\
+        \ pytest-xdist {xdist.__version__}')\"\npython -c \"import pytest_timeout;\
+        \ print(f'✓ pytest-timeout installed')\"\npython -c \"import pytest_cov; print(f'✓\
+        \ pytest-cov installed')\"\npython -c \"import pytest_asyncio; print(f'✓ pytest-asyncio\
+        \ {pytest_asyncio.__version__}')\"\n\npip install -e \".[dev]\"\npip install\
+        \ httpx  # Additional dependency for auth tests\npip install bandit>=1.7.5\
+        \  # Pre-install bandit for security scan\n"
+    - name: Run authentication tests
+      run: "# Run pytest with verbose output and proper error reporting\npytest tests/auth/\
+        \ -v --cov=src/codex/auth --cov-report=xml --cov-report=term --timeout=300\
+        \ --tb=short\nTEST_EXIT_CODE=$?\n\nif [ $TEST_EXIT_CODE -ne 0 ]; then\n  echo\
+        \ \"ERROR: Authentication tests failed with exit code $TEST_EXIT_CODE\" >&2\n\
+        \  exit $TEST_EXIT_CODE\nfi\n\necho \"✓ Authentication tests passed\"\n"
+    - name: Upload coverage reports
+      uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354
+      if: always()
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./coverage.xml
+        flags: authentication
+        name: auth-coverage
+        fail_ci_if_error: false
+    - name: Test examples
+      run: '# Test that examples run without errors (in demo mode)
 
-      - name: Run authentication tests
-        run: |
-          # Run pytest with verbose output and proper error reporting
-          pytest tests/auth/ -v --cov=src/codex/auth --cov-report=xml --cov-report=term --timeout=300 --tb=short
-          TEST_EXIT_CODE=$?
-          
-          if [ $TEST_EXIT_CODE -ne 0 ]; then
-            echo "ERROR: Authentication tests failed with exit code $TEST_EXIT_CODE" >&2
-            exit $TEST_EXIT_CODE
-          fi
-          
-          echo "✓ Authentication tests passed"
+        python examples/authentication/02_mfa_setup.py || true
 
-      - name: Upload coverage reports
-        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354
-        if: always()
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage.xml
-          flags: authentication
-          name: auth-coverage
-          fail_ci_if_error: false
+        python examples/authentication/03_token_management.py
 
-      - name: Test examples
-        run: |
-          # Test that examples run without errors (in demo mode)
-          python examples/authentication/02_mfa_setup.py || true
-          python examples/authentication/03_token_management.py
-          python examples/authentication/04_complete_flow.py
+        python examples/authentication/04_complete_flow.py
 
-      - name: Security scan
-        run: |
-          # Install specific bandit version for consistency
-          pip install bandit>=1.7.5
-           
-          # Verify bandit installation
-          python -c "import bandit; print(f'✓ bandit {bandit.__version__}')"
-           
-          # Run bandit with explicit error handling and verbose output
-          # Do NOT suppress errors with || true — we need visibility into failures
-          set -e
-           
-          # Create output directory if needed
-          mkdir -p security-reports
-           
-          # Run bandit with full error reporting
-          bandit -r src/codex/auth/ -ll -f json -o auth-security-report.json -v 2>&1 | tee bandit-output.log
-           
-          # Verify report was generated
-          if [ ! -f auth-security-report.json ]; then
-            echo "ERROR: bandit failed to generate auth-security-report.json" >&2
-            echo "Bandit output:" >&2
-            cat bandit-output.log >&2
-            exit 1
-          fi
-           
-          # Verify JSON is valid and contains expected fields
-          python -c "
-          import json
-          with open('auth-security-report.json') as f:
-              data = json.load(f)
-              required_keys = ['metrics', 'results']
-              missing = [k for k in required_keys if k not in data]
-              if missing:
-                  raise ValueError(f'Missing keys in report: {missing}')
-          print('✓ Security report JSON is valid and complete')
-          " || {
-            echo "ERROR: Generated report is not valid JSON or missing required fields" >&2
-            exit 1
-          }
-           
-          echo "✓ Security scan completed successfully"
-          echo "Report location: auth-security-report.json"
-
-      - name: Verify security report exists before upload
-        if: always()
-        run: |
-          if [ ! -f auth-security-report.json ]; then
-            echo "ERROR: auth-security-report.json not found before artifact upload" >&2
-            ls -la auth-security-report.json 2>&1 || true
-            exit 1
-          fi
-          echo "✓ Security report verified and ready for upload"
-          ls -lh auth-security-report.json
-
-      - name: Upload security report
-        uses: actions/upload-artifact@v5 # v7.0.1
-        if: always()
-        with:
-          name: auth-security-report-${{ matrix.python-version }}
-          path: auth-security-report.json
-          retention-days: 30
-          if-no-files-found: error
-
+        '
+    - name: Security scan
+      run: "# Install specific bandit version for consistency\npip install bandit>=1.7.5\n\
+        \ \n# Verify bandit installation\npython -c \"import bandit; print(f'✓ bandit\
+        \ {bandit.__version__}')\"\n \n# Run bandit with explicit error handling and\
+        \ verbose output\n# Do NOT suppress errors with || true — we need visibility\
+        \ into failures\nset -e\n \n# Create output directory if needed\nmkdir -p\
+        \ security-reports\n \n# Run bandit with full error reporting\nbandit -r src/codex/auth/\
+        \ -ll -f json -o auth-security-report.json -v 2>&1 | tee bandit-output.log\n\
+        \ \n# Verify report was generated\nif [ ! -f auth-security-report.json ];\
+        \ then\n  echo \"ERROR: bandit failed to generate auth-security-report.json\"\
+        \ >&2\n  echo \"Bandit output:\" >&2\n  cat bandit-output.log >&2\n  exit\
+        \ 1\nfi\n \n# Verify JSON is valid and contains expected fields\npython -c\
+        \ \"\nimport json\nwith open('auth-security-report.json') as f:\n    data\
+        \ = json.load(f)\n    required_keys = ['metrics', 'results']\n    missing\
+        \ = [k for k in required_keys if k not in data]\n    if missing:\n       \
+        \ raise ValueError(f'Missing keys in report: {missing}')\nprint('✓ Security\
+        \ report JSON is valid and complete')\n\" || {\n  echo \"ERROR: Generated\
+        \ report is not valid JSON or missing required fields\" >&2\n  exit 1\n}\n\
+        \ \necho \"✓ Security scan completed successfully\"\necho \"Report location:\
+        \ auth-security-report.json\"\n"
+    - name: Verify security report exists before upload
+      if: always()
+      run: "if [ ! -f auth-security-report.json ]; then\n  echo \"ERROR: auth-security-report.json\
+        \ not found before artifact upload\" >&2\n  ls -la auth-security-report.json\
+        \ 2>&1 || true\n  exit 1\nfi\necho \"✓ Security report verified and ready\
+        \ for upload\"\nls -lh auth-security-report.json\n"
+    - name: Upload security report
+      uses: actions/upload-artifact@v5
+      if: always()
+      with:
+        name: auth-security-report-${{ matrix.python-version }}
+        path: auth-security-report.json
+        retention-days: 30
+        if-no-files-found: error
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   integration-test:
     name: Integration Tests
     runs-on: ubuntu-latest
@@ -174,119 +137,135 @@ jobs:
       contents: read
     timeout-minutes: 60
     needs: test-authentication
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v7 # v6.0.3
+    - name: Checkout code
+      uses: actions/checkout@v7
+    - name: Set up Python (cached)
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        cache-tier: common
+    - name: Install dependencies
+      run: "pip install --upgrade pip\n# Pin pytest plugins with security updates\
+        \ (CVE-2025-71176)\n# Use versions from requirements-test.txt for full compatibility\n\
+        pip install pytest==9.0.3 pytest-xdist==3.8.0 pytest-timeout==2.4.0 pytest-cov==5.0.0\
+        \ pytest-asyncio==1.3.0\n \n# Verify installations\npython -c \"import pytest;\
+        \ print(f'✓ pytest {pytest.__version__}')\"\npython -c \"import xdist; print(f'✓\
+        \ pytest-xdist {xdist.__version__}')\"\npython -c \"import pytest_asyncio;\
+        \ print(f'✓ pytest-asyncio {pytest_asyncio.__version__}')\"\n \npip install\
+        \ -e \".[dev]\"\npip install httpx  # Additional dependency for auth tests\n"
+    - name: Run integration tests
+      run: "# Run integration tests with verbose output\npytest tests/auth/ -v -m\
+        \ \"not slow\" --tb=short -x\nINTEGRATION_EXIT_CODE=$?\n\nif [ $INTEGRATION_EXIT_CODE\
+        \ -ne 0 ]; then\n  echo \"ERROR: Integration tests failed with exit code $INTEGRATION_EXIT_CODE\"\
+        \ >&2\n  exit $INTEGRATION_EXIT_CODE\nfi\n\necho \"✓ Integration tests passed\"\
+        \n"
+    - name: Test OAuth flow components
+      run: 'python -c "
 
-      - name: Set up Python (cached)
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12.13'
-          cache-tier: common
+        from src.codex.auth import OAuthManager, MFAProvider, TokenManager
 
-      - name: Install dependencies
-        run: |
-          pip install --upgrade pip
-          # Pin pytest plugins with security updates (CVE-2025-71176)
-          # Use versions from requirements-test.txt for full compatibility
-          pip install pytest==9.0.3 pytest-xdist==3.8.0 pytest-timeout==2.4.0 pytest-cov==5.0.0 pytest-asyncio==1.3.0
-           
-          # Verify installations
-          python -c "import pytest; print(f'✓ pytest {pytest.__version__}')"
-          python -c "import xdist; print(f'✓ pytest-xdist {xdist.__version__}')"
-          python -c "import pytest_asyncio; print(f'✓ pytest-asyncio {pytest_asyncio.__version__}')"
-           
-          pip install -e ".[dev]"
-          pip install httpx  # Additional dependency for auth tests
 
-      - name: Run integration tests
-        run: |
-          # Run integration tests with verbose output
-          pytest tests/auth/ -v -m "not slow" --tb=short -x
-          INTEGRATION_EXIT_CODE=$?
-          
-          if [ $INTEGRATION_EXIT_CODE -ne 0 ]; then
-            echo "ERROR: Integration tests failed with exit code $INTEGRATION_EXIT_CODE" >&2
-            exit $INTEGRATION_EXIT_CODE
-          fi
-          
-          echo "✓ Integration tests passed"
+        # Verify all components initialize correctly
 
-      - name: Test OAuth flow components
-        run: |
-          python -c "
-          from src.codex.auth import OAuthManager, MFAProvider, TokenManager
+        oauth = OAuthManager()
 
-          # Verify all components initialize correctly
-          oauth = OAuthManager()
-          mfa = MFAProvider()
-          tokens = TokenManager()
+        mfa = MFAProvider()
 
-          print('✓ All authentication components initialized successfully')
-          "
+        tokens = TokenManager()
 
-      - name: Test MFA functionality
-        run: |
-          python -c "
-          from src.codex.auth.mfa_provider import MFAProvider
 
-          mfa = MFAProvider()
-          secret = mfa.generate_totp_secret('test_user')
-          code = mfa.generate_totp(secret.secret)
-          valid = mfa.verify_totp(secret.secret, code, 'test_user')
+        print(''✓ All authentication components initialized successfully'')
 
-          assert valid, 'MFA verification failed'
-          print('✓ MFA functionality verified')
-          "
+        "
 
-      - name: Test token management
-        run: |
-          python -c "
-          from src.codex.auth.token_manager import TokenManager, TokenType
+        '
+    - name: Test MFA functionality
+      run: 'python -c "
 
-          tokens = TokenManager()
-          access_token = tokens.generate_access_token('test_user')
-          claims = tokens.validate_token(access_token, TokenType.ACCESS)
+        from src.codex.auth.mfa_provider import MFAProvider
 
-          assert claims.sub == 'test_user', 'Token validation failed'
-          print('✓ Token management verified')
-          "
 
-      - name: Cache health report
-        if: always()
-        continue-on-error: true
-        run: |
-          python scripts/ci/generate_cache_keys.py --type pip --workflow auth-tests --health 2>/dev/null || echo '{"status": "cache health check skipped"}'
+        mfa = MFAProvider()
 
-  # ── rescue comment — posted on PR whenever this workflow fails ──────────
+        secret = mfa.generate_totp_secret(''test_user'')
+
+        code = mfa.generate_totp(secret.secret)
+
+        valid = mfa.verify_totp(secret.secret, code, ''test_user'')
+
+
+        assert valid, ''MFA verification failed''
+
+        print(''✓ MFA functionality verified'')
+
+        "
+
+        '
+    - name: Test token management
+      run: 'python -c "
+
+        from src.codex.auth.token_manager import TokenManager, TokenType
+
+
+        tokens = TokenManager()
+
+        access_token = tokens.generate_access_token(''test_user'')
+
+        claims = tokens.validate_token(access_token, TokenType.ACCESS)
+
+
+        assert claims.sub == ''test_user'', ''Token validation failed''
+
+        print(''✓ Token management verified'')
+
+        "
+
+        '
+    - name: Cache health report
+      if: always()
+      continue-on-error: true
+      run: 'python scripts/ci/generate_cache_keys.py --type pip --workflow auth-tests
+        --health 2>/dev/null || echo ''{"status": "cache health check skipped"}''
+
+        '
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
     needs: integration-test
-    if: |
-      failure() &&
-      github.event_name == 'pull_request' &&
+    if: 'failure() &&
+
+      github.event_name == ''pull_request'' &&
+
       github.event.pull_request.head.repo.full_name == github.repository
+
+      '
     permissions:
       pull-requests: write
       issues: write
     timeout-minutes: 5
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
-        with:
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          fetch-depth: 1
-
-      - name: Post or update rescue comment
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_NAME: "Auth Tests"
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          BRANCH: ${{ github.head_ref }}
-        run: python scripts/ci/post_rescue_comment.py
+    - name: Checkout repository
+      uses: actions/checkout@v7
+      with:
+        token: ${{ secrets.CODEX_MASTER_KEY || github.token }}
+        fetch-depth: 1
+    - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: Auth Tests
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+        BRANCH: ${{ github.head_ref }}
+      run: python scripts/ci/post_rescue_comment.py
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
