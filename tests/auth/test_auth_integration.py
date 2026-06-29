@@ -276,7 +276,7 @@ class TestStateTransitions:
         assert "admin" in retrieved.roles, "Condition must be true"
         assert "user" in retrieved.roles, "Default user role must persist"
         assert len(retrieved.roles) == 2, "Should have exactly 2 roles after adding admin"
-        
+
         # Add another role
         auth_system.user_store.add_role(user.user_id, "moderator")
         retrieved = auth_system.user_store.get_by_user_id(user.user_id)

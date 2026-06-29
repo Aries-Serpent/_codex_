@@ -89,7 +89,7 @@ class TestRegisterBasic:
         # Verify default role is the only role when empty list is provided
         assert len(user.roles) == 1, "Should have exactly 1 default role"
         assert set(user.roles) == {"user"}, "Default role must be exactly 'user'"
-        
+
         # Test with explicit None as well
         user2 = auth_no_mfa.register("diane", "diane@example.com", "Str0ngPass!", roles=None)
         assert "user" in user2.roles, "Default role must be assigned when roles is None"
@@ -288,12 +288,12 @@ class TestLogout:
         # Should not raise and should return False
         result = auth_no_mfa.logout(None)
         assert result is False, "Logout with None token should return False"
-        
+
     def test_logout_invalid_token(self, auth_no_mfa):
         # Should not raise and should return False
         result = auth_no_mfa.logout("invalid.token.here")
         assert result is False, "Logout with invalid token should return False"
-        
+
         # Also test with empty string
         result = auth_no_mfa.logout("")
         assert result is False, "Logout with empty token should return False"
@@ -414,15 +414,15 @@ class TestErrorHandling:
         with pytest.raises(ValueError) as exc_info:
             auth_no_mfa.register("user name", "user@example.com", "Str0ngPass!")
         assert "username" in str(exc_info.value).lower(), "Error should reference username validation"
-        
+
         # Whitespace-only username should fail
         with pytest.raises(ValueError):
             auth_no_mfa.register("   ", "user@example.com", "Str0ngPass!")
-        
+
         # Email with only whitespace should fail
         with pytest.raises(ValueError):
             auth_no_mfa.register("validuser", "   ", "Str0ngPass!")
-        
+
         # Valid username but whitespace-only password should fail
         with pytest.raises(ValueError):
             auth_no_mfa.register("validuser", "valid@example.com", "   ")

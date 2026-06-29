@@ -483,7 +483,7 @@ class TokenManager:
             # Handle None or empty token gracefully
             if token is None or not isinstance(token, str):
                 return False
-            
+
             claims = self._decode_token(token)
             if claims.jti:
                 self._revoked_tokens.add(claims.jti)

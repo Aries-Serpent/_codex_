@@ -11,21 +11,19 @@ All tests enforce zero token exposure in logs and full audit coverage.
 """
 
 import json
-import os
+import sys
 import tempfile
 import unittest
 from datetime import datetime
-from pathlib import Path # pragma: allowlist secret
-from unittest.mock import MagicMock, patch
-
-import sys
+from pathlib import Path  # pragma: allowlist secret
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "ci"))
 
 from _hidden_scripts_manager import (
+    AuditLogEntry,
     HiddenScriptsManager,
     ScriptMetadata,
-    AuditLogEntry,
     SecurityLevel,
 )
 

@@ -12,12 +12,7 @@ Process 2 validation from the implementation plan.
 
 from __future__ import annotations
 
-import json
-from typing import Any, Optional
-from unittest import mock
-
 import pytest
-
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Fixtures

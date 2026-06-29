@@ -8,19 +8,14 @@ from __future__ import annotations
 
 import base64
 import io
-import json
 import logging
 import os
-import sys
 import uuid
-from contextlib import contextmanager
 from typing import Any, Dict, Generator, List, Optional, Tuple
-from unittest.mock import MagicMock, Mock, patch
 
 import pytest
+
 from scripts.ci._token_resolver import get_token
-
-
 
 # ============================================================================
 # ENVIRONMENT ISOLATION FIXTURES

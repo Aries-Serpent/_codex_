@@ -1,6 +1,5 @@
 """Multi-agent coordination and CI/CD integration tests for CODEX_MASTER_KEY."""
 
-import pytest
 
 
 class TestCICDIntegration:

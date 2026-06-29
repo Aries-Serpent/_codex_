@@ -3,7 +3,6 @@
 Process 7 validation from the implementation plan.
 """
 
-import pytest
 
 
 class TestPROperations:

@@ -452,7 +452,7 @@ class TestTimeWindow:
 
     def test_expired_totp_window(self, mfa_provider, mfa_secret):
         code = mfa_provider.generate_totp_code(mfa_secret.secret, digits=mfa_secret.digits)
-        
+
         # Code generated just now should be valid
         is_valid = mfa_provider.verify_totp_code(mfa_secret.secret, code, mfa_secret.user_id)
         # Either valid (within window) or invalid (already expired in extreme cases)

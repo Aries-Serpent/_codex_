@@ -8,8 +8,8 @@ Tests avoid slow subprocess calls that can timeout in parallel test execution.
 """
 
 from pathlib import Path
-import pytest
 
+import pytest
 
 # ============================================================================
 # PHASE 1: Configuration Loading Tests

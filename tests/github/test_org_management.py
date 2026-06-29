@@ -12,8 +12,6 @@ Process 5 validation from the implementation plan.
 
 from __future__ import annotations
 
-import pytest
-
 
 class TestOrganizationTeams:
     """Test organization team management."""

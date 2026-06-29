@@ -16,16 +16,12 @@ Required scopes (23 total):
 
 from __future__ import annotations
 
-import json
 import os
-import urllib.request
-from typing import Optional
 from unittest import mock
 
 import pytest
+
 from scripts.ci._token_resolver import get_token
-
-
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Expected Scopes
@@ -361,12 +357,12 @@ class TestBearerTokenFormat:
     def test_bearer_token_header_format(self):
         """Test ****** is correctly formatted."""
         token = "******"
-        header = f"******"
+        header = "******"
         assert header.startswith("Bearer "), "Token header should start with 'Bearer '"
         assert len(header) > len("Bearer "), "Token header should include token value"
 
     def test_bearer_token_in_authorization_header(self):
         """Test token placement in Authorization header."""
         token = "test_token"
-        headers = {"Authorization": f"******"}
+        headers = {"Authorization": "******"}
         assert headers["Authorization"].startswith("Bearer "), "Auth header should use ******"

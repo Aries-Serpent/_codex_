@@ -13,12 +13,8 @@ Process 3 validation from the implementation plan.
 from __future__ import annotations
 
 import base64
-import json
-from typing import Any
-from unittest import mock # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
 import pytest
-
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Fixtures

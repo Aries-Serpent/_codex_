@@ -3,7 +3,6 @@
 Process 8 & 9 validation from the implementation plan.
 """
 
-import pytest
 
 
 class TestSecurityManagement:
