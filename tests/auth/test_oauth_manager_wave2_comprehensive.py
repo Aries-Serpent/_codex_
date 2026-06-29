@@ -157,6 +157,7 @@ class TestTokenExchange:
         """Test exchanging code for token."""
         if hasattr(oauth_manager, "exchange_code_for_token"):
             with patch("requests.post") as mock_post:
+                mock_post.return_value.status_code = 200
                 mock_post.return_value.json.return_value = {
                     "access_token": "test_token",
                     "token_type": "Bearer",
@@ -165,12 +166,14 @@ class TestTokenExchange:
 
                 result = oauth_manager.exchange_code_for_token("auth_code")
                 if result:
-                    assert "access_token" in result or result is not None, "result must be initialized"
+                    assert result.access_token == "test_token"
+                    assert result.token_type == "Bearer"
 
     def test_token_includes_access_token(self, oauth_manager):
         """Test that token response includes access token."""
         if hasattr(oauth_manager, "exchange_code_for_token"):
             with patch("requests.post") as mock_post:
+                mock_post.return_value.status_code = 200
                 mock_post.return_value.json.return_value = {
                     "access_token": "test_token_value",
                     "token_type": "Bearer",
@@ -184,6 +187,7 @@ class TestTokenExchange:
         """Test handling of error in token exchange."""
         if hasattr(oauth_manager, "exchange_code_for_token"):
             with patch("requests.post") as mock_post:
+                mock_post.return_value.status_code = 200
                 mock_post.return_value.json.return_value = {
                     "error": "invalid_code",
                     "error_description": "The code is invalid",
@@ -208,6 +212,7 @@ class TestCallbackHandling:
         """Test handling callback with authorization code."""
         if hasattr(oauth_manager, "handle_callback"):
             with patch("requests.post") as mock_post:
+                mock_post.return_value.status_code = 200
                 mock_post.return_value.json.return_value = {
                     "access_token": "token",
                     "token_type": "Bearer",
@@ -256,6 +261,7 @@ class TestUserInfoRetrieval:
         """Test retrieving user info."""
         if hasattr(oauth_manager, "get_user_info"):
             with patch("requests.get") as mock_get:
+                mock_get.return_value.status_code = 200
                 mock_get.return_value.json.return_value = {
                     "id": "user_123",
                     "name": "Test User",
@@ -270,6 +276,7 @@ class TestUserInfoRetrieval:
         """Test user info with ******"""
         if hasattr(oauth_manager, "get_user_info"):
             with patch("requests.get") as mock_get:
+                mock_get.return_value.status_code = 200
                 mock_get.return_value.json.return_value = {
                     "login": "testuser",
                     "id": 123,
@@ -291,7 +298,8 @@ class TestTokenRefresh:
     def test_refresh_token(self, oauth_manager):
         """Test refreshing an access token."""
         if hasattr(oauth_manager, "refresh_token"):
-            with patch("requests.post") as mock_post:
+            with patch("httpx.Client.post") as mock_post:
+                mock_post.return_value.status_code = 200
                 mock_post.return_value.json.return_value = {
                     "access_token": "new_token",
                     "refresh_token": "new_refresh_token",
@@ -300,20 +308,22 @@ class TestTokenRefresh:
 
                 result = oauth_manager.refresh_token("refresh_token_value")
                 if result:
-                    assert "access_token" in result or result is not None, "result must be initialized"
+                    assert result.access_token == "new_token"
+                    assert result.token_type == "bearer"
 
     def test_refresh_token_expiration(self, oauth_manager):
         """Test that refreshed token has expiration."""
         if hasattr(oauth_manager, "refresh_token"):
-            with patch("requests.post") as mock_post:
+            with patch("httpx.Client.post") as mock_post:
+                mock_post.return_value.status_code = 200
                 mock_post.return_value.json.return_value = {
                     "access_token": "new_token",
                     "expires_in": 3600,
                 }
 
                 result = oauth_manager.refresh_token("refresh_token")
-                if result and "expires_in" in result:
-                    assert result["expires_in"] > 0, "Value must be greater than zero"
+                if result and result.expires_in > 0:
+                    assert result.expires_in > 0, "Value must be greater than zero"
 
 
 # ============================================================================
@@ -384,6 +394,7 @@ class TestOAuthEdgeCases:
         if hasattr(oauth_manager, "exchange_code_for_token"):
             special_code = "code_with_!@#$%^&*()"
             with patch("requests.post") as mock_post:
+                mock_post.return_value.status_code = 200
                 mock_post.return_value.json.return_value = {"error": "invalid_code"}
 
                 try:
@@ -408,6 +419,7 @@ class TestOAuthEdgeCases:
         """Test handling empty access token."""
         if hasattr(oauth_manager, "get_user_info"):
             with patch("requests.get") as mock_get:
+                mock_get.return_value.status_code = 200
                 mock_get.return_value.json.return_value = {}
 
                 try:
@@ -420,6 +432,7 @@ class TestOAuthEdgeCases:
         """Test handling null response."""
         if hasattr(oauth_manager, "exchange_code_for_token"):
             with patch("requests.post") as mock_post:
+                mock_post.return_value.status_code = 200
                 mock_post.return_value.json.return_value = None
 
                 try:
@@ -448,6 +461,7 @@ class TestOAuthIntegration:
         """Test OAuth flow including token exchange."""
         if hasattr(oauth_manager, "exchange_code_for_token"):
             with patch("requests.post") as mock_post:
+                mock_post.return_value.status_code = 200
                 mock_post.return_value.json.return_value = {
                     "access_token": "token_value",
                     "token_type": "Bearer",
@@ -462,6 +476,7 @@ class TestOAuthIntegration:
         """Test OAuth flow including user info retrieval."""
         if hasattr(oauth_manager, "get_user_info"):
             with patch("requests.get") as mock_get:
+                mock_get.return_value.status_code = 200
                 mock_get.return_value.json.return_value = {
                     "id": "user_123",
                     "login": "testuser",
