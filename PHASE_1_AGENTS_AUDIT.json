@@ -1,0 +1,1413 @@
+{
+  "timestamp": "2026-06-29T03:43:22.913844+00:00",
+  "total_active_agents": 147,
+  "summary": {
+    "with_api_usage": 94,
+    "token_guidance_complete": 40,
+    "token_guidance_partial": 41,
+    "token_guidance_missing": 13,
+    "no_api_usage": 53
+  },
+  "agents_by_token_level": {
+    "level_1_mandatory": [
+      {
+        "name": "GitHub App Manager",
+        "id": "github-app-manager",
+        "requires_codex_master_key": true,
+        "operations": [
+          "variable write",
+          "deployment"
+        ],
+        "guidance_status": "complete",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "GitHub Guru Agent",
+        "id": "github-guru-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "workflow dispatch",
+          "PR operations",
+          "variable write",
+          "security event handling"
+        ],
+        "guidance_status": "partial",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "Unified Security Scanner",
+        "id": "unified-security-scanner",
+        "requires_codex_master_key": true,
+        "operations": [
+          "PR operations",
+          "security event handling"
+        ],
+        "guidance_status": "partial",
+        "scope_documented": true,
+        "fallback_documented": false
+      },
+      {
+        "name": "Cross-Agent Knowledge Graph",
+        "id": "cross-agent-knowledge-graph",
+        "requires_codex_master_key": true,
+        "operations": [
+          "variable write"
+        ],
+        "guidance_status": "missing",
+        "scope_documented": false,
+        "fallback_documented": true
+      },
+      {
+        "name": "CodeQL Alert Resolution Agent",
+        "id": "codeql-alert-resolution-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "workflow dispatch",
+          "variable write",
+          "deployment",
+          "security event handling"
+        ],
+        "guidance_status": "complete",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "CI Triage Pipeline Agent",
+        "id": "ci-triage-pipeline-agent",
+        "requires_codex_master_key": true,
+        "operations": [],
+        "guidance_status": "missing",
+        "scope_documented": true,
+        "fallback_documented": false
+      },
+      {
+        "name": "Recon Scout Agent",
+        "id": "recon-scout-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "variable write",
+          "deployment"
+        ],
+        "guidance_status": "partial",
+        "scope_documented": true,
+        "fallback_documented": false
+      },
+      {
+        "name": "Policy Coach Agent",
+        "id": "policy-coach-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "variable write",
+          "security event handling"
+        ],
+        "guidance_status": "partial",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "Python Architect Agent",
+        "id": "python-architect-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "variable write"
+        ],
+        "guidance_status": "partial",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "CI Auto-Healer Agent",
+        "id": "ci-auto-healer",
+        "requires_codex_master_key": true,
+        "operations": [],
+        "guidance_status": "partial",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "Agent Orchestrator",
+        "id": "agent-orchestrator",
+        "requires_codex_master_key": true,
+        "operations": [
+          "variable write",
+          "security event handling"
+        ],
+        "guidance_status": "partial",
+        "scope_documented": false,
+        "fallback_documented": false
+      },
+      {
+        "name": "Artifact Monitor Agent",
+        "id": "artifact-monitor-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "PR operations",
+          "issue operations",
+          "variable write"
+        ],
+        "guidance_status": "complete",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "Autonomous Test Healer Agent",
+        "id": "autonomous-test-healer-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "PR operations",
+          "security event handling"
+        ],
+        "guidance_status": "complete",
+        "scope_documented": true,
+        "fallback_documented": false
+      },
+      {
+        "name": "Bridge Security Monitor",
+        "id": "bridge-security-monitor",
+        "requires_codex_master_key": true,
+        "operations": [
+          "security event handling"
+        ],
+        "guidance_status": "complete",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "Cache Management Agent",
+        "id": "cache-management-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "security event handling"
+        ],
+        "guidance_status": "partial",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "CI Auto-Healer Agent",
+        "id": "ci-auto-healer-agent",
+        "requires_codex_master_key": true,
+        "operations": [],
+        "guidance_status": "partial",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "CI Emergency Response Agent",
+        "id": "ci-emergency-response-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "PR operations"
+        ],
+        "guidance_status": "partial",
+        "scope_documented": true,
+        "fallback_documented": false
+      },
+      {
+        "name": "CI Log Retrieval Agent",
+        "id": "ci-log-retrieval-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "variable write",
+          "status check"
+        ],
+        "guidance_status": "complete",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "CI Optimization Agent",
+        "id": "ci-optimization-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "PR operations",
+          "issue operations",
+          "variable write",
+          "deployment",
+          "security event handling"
+        ],
+        "guidance_status": "complete",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "CI Parameter Mismatch Healer",
+        "id": "ci-parameter-mismatch-healer",
+        "requires_codex_master_key": true,
+        "operations": [
+          "variable write"
+        ],
+        "guidance_status": "missing",
+        "scope_documented": true,
+        "fallback_documented": false
+      },
+      {
+        "name": "Code Scanning Remediation Agent",
+        "id": "code-scanning-remediation-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "PR operations",
+          "variable write",
+          "deployment",
+          "security event handling"
+        ],
+        "guidance_status": "complete",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "Codebase Health Guardian",
+        "id": "codebase-health-guardian",
+        "requires_codex_master_key": true,
+        "operations": [
+          "security event handling"
+        ],
+        "guidance_status": "partial",
+        "scope_documented": true,
+        "fallback_documented": false
+      },
+      {
+        "name": "Cognitive Brain Manager",
+        "id": "cognitive-brain-manager",
+        "requires_codex_master_key": true,
+        "operations": [
+          "workflow dispatch",
+          "PR operations",
+          "variable write",
+          "deployment",
+          "security event handling"
+        ],
+        "guidance_status": "complete",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "Doc Refactor Test Agent",
+        "id": "doc-refactor-test-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "PR operations",
+          "variable write",
+          "deployment"
+        ],
+        "guidance_status": "missing",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "GitHub Pages Manager",
+        "id": "github-pages-manager",
+        "requires_codex_master_key": true,
+        "operations": [
+          "issue operations",
+          "variable write",
+          "deployment"
+        ],
+        "guidance_status": "partial",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "JSON Serialization Expert",
+        "id": "json-serialization-expert",
+        "requires_codex_master_key": true,
+        "operations": [
+          "deployment",
+          "security event handling"
+        ],
+        "guidance_status": "missing",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "Link Validator Agent",
+        "id": "link-validator-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "workflow dispatch",
+          "PR operations",
+          "variable write",
+          "deployment"
+        ],
+        "guidance_status": "complete",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "Meta Tensor Validator",
+        "id": "meta-tensor-validator",
+        "requires_codex_master_key": true,
+        "operations": [
+          "PR operations",
+          "issue operations",
+          "variable write",
+          "deployment",
+          "security event handling"
+        ],
+        "guidance_status": "complete",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "MSV Dashboard Monitor",
+        "id": "msv-dashboard-monitor",
+        "requires_codex_master_key": true,
+        "operations": [
+          "issue operations",
+          "variable write",
+          "deployment",
+          "security event handling"
+        ],
+        "guidance_status": "partial",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "Performance Regression Detector",
+        "id": "performance-regression-detector",
+        "requires_codex_master_key": true,
+        "operations": [
+          "security event handling"
+        ],
+        "guidance_status": "complete",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "PR-3095 Verification Agent",
+        "id": "pr-3095-verification-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "PR operations",
+          "variable write"
+        ],
+        "guidance_status": "partial",
+        "scope_documented": true,
+        "fallback_documented": false
+      },
+      {
+        "name": "PR Check Remediation Agent",
+        "id": "pr-check-remediation-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "PR operations",
+          "issue operations",
+          "status check",
+          "deployment",
+          "security event handling"
+        ],
+        "guidance_status": "partial",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "PyPI Publishing Operations Agent",
+        "id": "pypi-publishing-operations-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "workflow dispatch",
+          "variable write",
+          "status check",
+          "deployment",
+          "security event handling"
+        ],
+        "guidance_status": "partial",
+        "scope_documented": true,
+        "fallback_documented": false
+      },
+      {
+        "name": "Python 3.12 Type Fixer",
+        "id": "python-312-type-fixer",
+        "requires_codex_master_key": true,
+        "operations": [
+          "variable write"
+        ],
+        "guidance_status": "partial",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "QA Walkthrough Agent",
+        "id": "qa-walkthrough-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "PR operations",
+          "variable write",
+          "deployment",
+          "security event handling"
+        ],
+        "guidance_status": "complete",
+        "scope_documented": true,
+        "fallback_documented": false
+      },
+      {
+        "name": "Quantum Compliance Tuning Agent",
+        "id": "quantum-compliance-tuning-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "variable write"
+        ],
+        "guidance_status": "partial",
+        "scope_documented": true,
+        "fallback_documented": false
+      },
+      {
+        "name": "RAG Meta Tensor Guardian",
+        "id": "rag-meta-tensor-guardian",
+        "requires_codex_master_key": true,
+        "operations": [
+          "variable write",
+          "deployment",
+          "security event handling"
+        ],
+        "guidance_status": "complete",
+        "scope_documented": true,
+        "fallback_documented": false
+      },
+      {
+        "name": "RAG Module Management Agent",
+        "id": "rag-module-management-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "variable write"
+        ],
+        "guidance_status": "partial",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "Root Organizer Agent",
+        "id": "root-organizer-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "variable write"
+        ],
+        "guidance_status": "complete",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "Security Alert Verification Agent",
+        "id": "security-alert-verification-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "variable write",
+          "security event handling"
+        ],
+        "guidance_status": "partial",
+        "scope_documented": true,
+        "fallback_documented": false
+      },
+      {
+        "name": "Session Log Retrieval Agent",
+        "id": "session-log-retrieval-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "variable write"
+        ],
+        "guidance_status": "partial",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "Terminology Consistency Agent",
+        "id": "terminology-consistency-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "PR operations",
+          "variable write",
+          "deployment"
+        ],
+        "guidance_status": "partial",
+        "scope_documented": true,
+        "fallback_documented": false
+      },
+      {
+        "name": "Test Enhancement Agent",
+        "id": "unified-coverage-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "PR operations",
+          "variable write"
+        ],
+        "guidance_status": "partial",
+        "scope_documented": true,
+        "fallback_documented": false
+      },
+      {
+        "name": "Test Failure Analyzer Agent",
+        "id": "test-failure-analyzer-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "variable write",
+          "deployment"
+        ],
+        "guidance_status": "partial",
+        "scope_documented": true,
+        "fallback_documented": false
+      },
+      {
+        "name": "Unified Governance Gate",
+        "id": "unified-governance-gate",
+        "requires_codex_master_key": true,
+        "operations": [
+          "workflow dispatch",
+          "variable write",
+          "deployment"
+        ],
+        "guidance_status": "missing",
+        "scope_documented": true,
+        "fallback_documented": false
+      },
+      {
+        "name": "Workflow Analytics Agent",
+        "id": "workflow-analytics-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "variable write"
+        ],
+        "guidance_status": "complete",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "Workflow CI Fixer",
+        "id": "workflow-ci-fixer",
+        "requires_codex_master_key": true,
+        "operations": [
+          "workflow dispatch",
+          "PR operations",
+          "issue operations",
+          "deployment",
+          "security event handling"
+        ],
+        "guidance_status": "complete",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "Workflow Health Monitor",
+        "id": "workflow-health-monitor",
+        "requires_codex_master_key": true,
+        "operations": [
+          "workflow dispatch",
+          "deployment",
+          "security event handling"
+        ],
+        "guidance_status": "partial",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "Workflow Management Agent",
+        "id": "workflow-management-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "workflow dispatch",
+          "PR operations",
+          "issue operations",
+          "deployment"
+        ],
+        "guidance_status": "partial",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "Workflow Optimization Agent",
+        "id": "workflow-optimization-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "workflow dispatch",
+          "PR operations",
+          "security event handling"
+        ],
+        "guidance_status": "missing",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "Cognitive Brain CLI Agent",
+        "id": "cognitive-brain-cli-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "variable write"
+        ],
+        "guidance_status": "missing",
+        "scope_documented": true,
+        "fallback_documented": false
+      },
+      {
+        "name": "CI Health Alert Agent",
+        "id": "ci-health-alert-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "workflow dispatch",
+          "variable write",
+          "security event handling"
+        ],
+        "guidance_status": "partial",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "Repo Var Sync Agent",
+        "id": "repo-var-sync-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "variable write"
+        ],
+        "guidance_status": "partial",
+        "scope_documented": false,
+        "fallback_documented": true
+      },
+      {
+        "name": "Cognitive OODA Loop Agent",
+        "id": "cognitive-ooda-loop-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "variable write"
+        ],
+        "guidance_status": "partial",
+        "scope_documented": false,
+        "fallback_documented": true
+      },
+      {
+        "name": "Memory Sync Agent",
+        "id": "memory-sync-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "variable write"
+        ],
+        "guidance_status": "missing",
+        "scope_documented": false,
+        "fallback_documented": true
+      },
+      {
+        "name": "Telemetry Classifier Agent",
+        "id": "telemetry-classifier-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "PR operations",
+          "variable write",
+          "security event handling"
+        ],
+        "guidance_status": "partial",
+        "scope_documented": true,
+        "fallback_documented": false
+      },
+      {
+        "name": "Admin Automation Agent",
+        "id": "admin-automation-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "variable write",
+          "deployment"
+        ],
+        "guidance_status": "complete",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "Batch Triage Agent",
+        "id": "batch-triage-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "PR operations",
+          "deployment",
+          "security event handling"
+        ],
+        "guidance_status": "complete",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "Codebase QA Walkthrough Agent",
+        "id": "codebase-qa-walkthrough-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "PR operations",
+          "security event handling"
+        ],
+        "guidance_status": "complete",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "Cognitive Brain Session Injector",
+        "id": "cognitive-brain-session-injector",
+        "requires_codex_master_key": true,
+        "operations": [
+          "variable write"
+        ],
+        "guidance_status": "complete",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "Documentation Sync Validator",
+        "id": "documentation-sync-validator",
+        "requires_codex_master_key": true,
+        "operations": [
+          "PR operations",
+          "variable write",
+          "deployment",
+          "security event handling"
+        ],
+        "guidance_status": "complete",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "GitHub Deployment Gatekeeper",
+        "id": "github-deployment-gatekeeper",
+        "requires_codex_master_key": true,
+        "operations": [
+          "workflow dispatch",
+          "issue operations",
+          "deployment",
+          "security event handling"
+        ],
+        "guidance_status": "complete",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "GitHub Security Validator Agent",
+        "id": "github-security-validator-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "workflow dispatch",
+          "issue operations",
+          "status check",
+          "security event handling"
+        ],
+        "guidance_status": "complete",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "GitHub Testing Orchestrator Agent",
+        "id": "github-testing-orchestrator-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "workflow dispatch",
+          "PR operations",
+          "variable write"
+        ],
+        "guidance_status": "complete",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "ML Threat Detector",
+        "id": "ml-threat-detector",
+        "requires_codex_master_key": true,
+        "operations": [
+          "PR operations",
+          "variable write",
+          "security event handling"
+        ],
+        "guidance_status": "complete",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "Security Vulnerability Patcher",
+        "id": "security-vulnerability-patcher",
+        "requires_codex_master_key": true,
+        "operations": [
+          "workflow dispatch",
+          "PR operations",
+          "deployment"
+        ],
+        "guidance_status": "complete",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "Service Integration Tester",
+        "id": "service-integration-tester",
+        "requires_codex_master_key": true,
+        "operations": [
+          "variable write"
+        ],
+        "guidance_status": "complete",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "Test Coverage Enforcer",
+        "id": "test-coverage-enforcer",
+        "requires_codex_master_key": true,
+        "operations": [
+          "PR operations",
+          "variable write"
+        ],
+        "guidance_status": "complete",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "Orchestrator Agent",
+        "id": "orchestrator-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "variable write",
+          "deployment",
+          "security event handling"
+        ],
+        "guidance_status": "partial",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "Packaging Validation Agent",
+        "id": "packaging-validation-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "variable write",
+          "security event handling"
+        ],
+        "guidance_status": "partial",
+        "scope_documented": true,
+        "fallback_documented": false
+      },
+      {
+        "name": "Energy Conversion Agent",
+        "id": "energy-conversion-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "deployment",
+          "security event handling"
+        ],
+        "guidance_status": "partial",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "Self-Healing Orchestrator Agent",
+        "id": "self-healing-orchestrator-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "PR operations",
+          "deployment"
+        ],
+        "guidance_status": "missing",
+        "scope_documented": true,
+        "fallback_documented": false
+      },
+      {
+        "name": "Branch Divergence Resolution Agent",
+        "id": "branch-divergence-resolution-agent",
+        "requires_codex_master_key": true,
+        "operations": [
+          "workflow dispatch",
+          "PR operations",
+          "issue operations",
+          "variable write"
+        ],
+        "guidance_status": "partial",
+        "scope_documented": true,
+        "fallback_documented": false
+      }
+    ],
+    "level_2_preferred": [
+      {
+        "name": "Test Pattern Guardian",
+        "id": "test-pattern-guardian",
+        "prefers_codex_master_key": true,
+        "operations": [
+          "deployment"
+        ],
+        "guidance_status": "complete",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "Agent IQ Scoring Gate",
+        "id": "agent-iq-scoring-gate",
+        "prefers_codex_master_key": true,
+        "operations": [
+          "deployment"
+        ],
+        "guidance_status": "missing",
+        "scope_documented": false,
+        "fallback_documented": false
+      },
+      {
+        "name": "Code Analysis Agent",
+        "id": "code-analysis-agent",
+        "prefers_codex_master_key": true,
+        "operations": [
+          "PR operations",
+          "deployment"
+        ],
+        "guidance_status": "partial",
+        "scope_documented": true,
+        "fallback_documented": false
+      },
+      {
+        "name": "CPU-Only CI Config Agent",
+        "id": "cpu-only-ci-config-agent",
+        "prefers_codex_master_key": true,
+        "operations": [
+          "deployment"
+        ],
+        "guidance_status": "missing",
+        "scope_documented": true,
+        "fallback_documented": false
+      },
+      {
+        "name": "Cross-Platform Filename Validator",
+        "id": "cross-platform-filename-validator",
+        "prefers_codex_master_key": true,
+        "operations": [
+          "issue operations",
+          "deployment"
+        ],
+        "guidance_status": "complete",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "Doc Freshness Checker",
+        "id": "doc-freshness-checker",
+        "prefers_codex_master_key": true,
+        "operations": [
+          "deployment"
+        ],
+        "guidance_status": "complete",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "Integration Test Runner",
+        "id": "integration-test-runner",
+        "prefers_codex_master_key": true,
+        "operations": [
+          "PR operations",
+          "deployment"
+        ],
+        "guidance_status": "complete",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "Owner Approval Guard",
+        "id": "owner-approval-guard",
+        "prefers_codex_master_key": true,
+        "operations": [
+          "deployment"
+        ],
+        "guidance_status": "complete",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "RAG Freshness Loop Agent",
+        "id": "rag-freshness-loop-agent",
+        "prefers_codex_master_key": true,
+        "operations": [
+          "deployment"
+        ],
+        "guidance_status": "partial",
+        "scope_documented": true,
+        "fallback_documented": false
+      },
+      {
+        "name": "Reference Updater Agent",
+        "id": "reference-updater-agent",
+        "prefers_codex_master_key": true,
+        "operations": [
+          "deployment"
+        ],
+        "guidance_status": "complete",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "Rust Config Validator",
+        "id": "rust-config-validator",
+        "prefers_codex_master_key": true,
+        "operations": [
+          "deployment"
+        ],
+        "guidance_status": "complete",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "Session Analysis Agent",
+        "id": "session-analysis-agent",
+        "prefers_codex_master_key": true,
+        "operations": [
+          "deployment"
+        ],
+        "guidance_status": "partial",
+        "scope_documented": true,
+        "fallback_documented": true
+      },
+      {
+        "name": "Unified Doc Agent",
+        "id": "unified-doc-agent",
+        "prefers_codex_master_key": true,
+        "operations": [
+          "deployment"
+        ],
+        "guidance_status": "partial",
+        "scope_documented": true,
+        "fallback_documented": false
+      },
+      {
+        "name": "Workflow Compliance Guardian",
+        "id": "workflow-compliance-guardian",
+        "prefers_codex_master_key": true,
+        "operations": [
+          "PR operations",
+          "deployment"
+        ],
+        "guidance_status": "partial",
+        "scope_documented": true,
+        "fallback_documented": false
+      },
+      {
+        "name": "CI Diagnostic Agent",
+        "id": "ci-diagnostic-agent",
+        "prefers_codex_master_key": true,
+        "operations": [
+          "deployment"
+        ],
+        "guidance_status": "complete",
+        "scope_documented": true,
+        "fallback_documented": true
+      }
+    ],
+    "level_3_standard": [
+      {
+        "name": "Mutation Testing Agent",
+        "id": "mutation-testing-agent",
+        "uses_standard_token": true,
+        "operations": [
+          "PR operations"
+        ],
+        "guidance_status": "partial"
+      },
+      {
+        "name": "Test Alignment Fixer Enhanced",
+        "id": "test-alignment-fixer-enhanced",
+        "uses_standard_token": true,
+        "operations": [
+          "PR operations"
+        ],
+        "guidance_status": "missing"
+      },
+      {
+        "name": "Tracking Document QA Agent",
+        "id": "tracking-document-qa-agent",
+        "uses_standard_token": true,
+        "operations": [
+          "issue operations",
+          "status check"
+        ],
+        "guidance_status": "partial"
+      },
+      {
+        "name": "Dependency Conflict Resolver",
+        "id": "dependency-conflict-resolver",
+        "uses_standard_token": true,
+        "operations": [
+          "PR operations"
+        ],
+        "guidance_status": "complete"
+      },
+      {
+        "name": "GitHub Code Reviewer",
+        "id": "github-code-reviewer",
+        "uses_standard_token": true,
+        "operations": [
+          "PR operations",
+          "issue operations",
+          "status check"
+        ],
+        "guidance_status": "complete"
+      },
+      {
+        "name": "GitHub Test Orchestrator",
+        "id": "github-test-orchestrator",
+        "uses_standard_token": true,
+        "operations": [
+          "PR operations",
+          "issue operations",
+          "status check"
+        ],
+        "guidance_status": "complete"
+      }
+    ],
+    "level_0_no_api": [
+      {
+        "name": "Ast Analysis Agent",
+        "id": "ast-analysis-agent",
+        "uses_github_api": false,
+        "guidance_status": "n/a"
+      },
+      {
+        "name": "Cache Logic Validator",
+        "id": "cache-logic-validator",
+        "uses_github_api": false,
+        "guidance_status": "n/a"
+      },
+      {
+        "name": "Ci Failure Diagnostician",
+        "id": "ci-failure-diagnostician",
+        "uses_github_api": false,
+        "guidance_status": "n/a"
+      },
+      {
+        "name": "Ci Optimizer Agent",
+        "id": "ci-optimizer-agent",
+        "uses_github_api": false,
+        "guidance_status": "n/a"
+      },
+      {
+        "name": "Ci Testing Agent",
+        "id": "ci-testing-agent",
+        "uses_github_api": false,
+        "guidance_status": "n/a"
+      },
+      {
+        "name": "Codex_Reviewer",
+        "id": "codex_reviewer",
+        "uses_github_api": false,
+        "guidance_status": "n/a"
+      },
+      {
+        "name": "Cognitive Brain Agent",
+        "id": "cognitive-brain-agent",
+        "uses_github_api": false,
+        "guidance_status": "n/a"
+      },
+      {
+        "name": "Compliance Checker Agent",
+        "id": "compliance-checker-agent",
+        "uses_github_api": false,
+        "guidance_status": "n/a"
+      },
+      {
+        "name": "Dep Upgrade Agent",
+        "id": "dep-upgrade-agent",
+        "uses_github_api": false,
+        "guidance_status": "n/a"
+      },
+      {
+        "name": "Documentation Agent",
+        "id": "documentation-agent",
+        "uses_github_api": false,
+        "guidance_status": "n/a"
+      },
+      {
+        "name": "Ecosystem Coordinator Agent",
+        "id": "ecosystem-coordinator-agent",
+        "uses_github_api": false,
+        "guidance_status": "n/a"
+      },
+      {
+        "name": "Emergent Intelligence Agent",
+        "id": "emergent-intelligence-agent",
+        "uses_github_api": false,
+        "guidance_status": "n/a"
+      },
+      {
+        "name": "Flaky Triage Agent",
+        "id": "flaky-triage-agent",
+        "uses_github_api": false,
+        "guidance_status": "n/a"
+      },
+      {
+        "name": "Infra Linter Agent",
+        "id": "infra-linter-agent",
+        "uses_github_api": false,
+        "guidance_status": "n/a"
+      },
+      {
+        "name": "Performance Monitor Agent",
+        "id": "performance-monitor-agent",
+        "uses_github_api": false,
+        "guidance_status": "n/a"
+      },
+      {
+        "name": "Project Architect Researcher",
+        "id": "project-architect-researcher",
+        "uses_github_api": false,
+        "guidance_status": "n/a"
+      },
+      {
+        "name": "Pyo3 Integration Tester",
+        "id": "pyo3-integration-tester",
+        "uses_github_api": false,
+        "guidance_status": "n/a"
+      },
+      {
+        "name": "Reasoning Advisor Agent",
+        "id": "reasoning-advisor-agent",
+        "uses_github_api": false,
+        "guidance_status": "n/a"
+      },
+      {
+        "name": "Release Gate Agent",
+        "id": "release-gate-agent",
+        "uses_github_api": false,
+        "guidance_status": "n/a"
+      },
+      {
+        "name": "Rust Error Validator",
+        "id": "rust-error-validator",
+        "uses_github_api": false,
+        "guidance_status": "n/a"
+      }
+    ]
+  },
+  "guidance_gaps": [
+    {
+      "agent": "cross-agent-knowledge-graph",
+      "issue": "Incomplete token guidance (only 1 of 5 signals detected)",
+      "token_level": 1,
+      "operations": [
+        "variable write"
+      ],
+      "impact": "Agent may not know to request elevated token when needed",
+      "recommendation": "Add token guidance section with token hierarchy, scopes, and error handling"
+    },
+    {
+      "agent": "ci-triage-pipeline-agent",
+      "issue": "Incomplete token guidance (only 1 of 5 signals detected)",
+      "token_level": 1,
+      "operations": [],
+      "impact": "Agent may not know to request elevated token when needed",
+      "recommendation": "Add token guidance section with token hierarchy, scopes, and error handling"
+    },
+    {
+      "agent": "agent-iq-scoring-gate",
+      "issue": "Incomplete token guidance (only 0 of 5 signals detected)",
+      "token_level": 2,
+      "operations": [
+        "deployment"
+      ],
+      "impact": "Agent may not know to request elevated token when needed",
+      "recommendation": "Add token guidance section with token hierarchy, scopes, and error handling"
+    },
+    {
+      "agent": "ci-parameter-mismatch-healer",
+      "issue": "Incomplete token guidance (only 1 of 5 signals detected)",
+      "token_level": 1,
+      "operations": [
+        "variable write"
+      ],
+      "impact": "Agent may not know to request elevated token when needed",
+      "recommendation": "Add token guidance section with token hierarchy, scopes, and error handling"
+    },
+    {
+      "agent": "cpu-only-ci-config-agent",
+      "issue": "Incomplete token guidance (only 1 of 5 signals detected)",
+      "token_level": 2,
+      "operations": [
+        "deployment"
+      ],
+      "impact": "Agent may not know to request elevated token when needed",
+      "recommendation": "Add token guidance section with token hierarchy, scopes, and error handling"
+    },
+    {
+      "agent": "doc-refactor-test-agent",
+      "issue": "Incomplete token guidance (only 1 of 5 signals detected)",
+      "token_level": 1,
+      "operations": [
+        "PR operations",
+        "variable write",
+        "deployment"
+      ],
+      "impact": "Agent may not know to request elevated token when needed",
+      "recommendation": "Add token guidance section with token hierarchy, scopes, and error handling"
+    },
+    {
+      "agent": "json-serialization-expert",
+      "issue": "Incomplete token guidance (only 1 of 5 signals detected)",
+      "token_level": 1,
+      "operations": [
+        "deployment",
+        "security event handling"
+      ],
+      "impact": "Agent may not know to request elevated token when needed",
+      "recommendation": "Add token guidance section with token hierarchy, scopes, and error handling"
+    },
+    {
+      "agent": "test-alignment-fixer-enhanced",
+      "issue": "Incomplete token guidance (only 1 of 5 signals detected)",
+      "token_level": 3,
+      "operations": [
+        "PR operations"
+      ],
+      "impact": "Agent may not know to request elevated token when needed",
+      "recommendation": "Add token guidance section with token hierarchy, scopes, and error handling"
+    },
+    {
+      "agent": "unified-governance-gate",
+      "issue": "Incomplete token guidance (only 1 of 5 signals detected)",
+      "token_level": 1,
+      "operations": [
+        "workflow dispatch",
+        "variable write",
+        "deployment"
+      ],
+      "impact": "Agent may not know to request elevated token when needed",
+      "recommendation": "Add token guidance section with token hierarchy, scopes, and error handling"
+    },
+    {
+      "agent": "workflow-optimization-agent",
+      "issue": "Incomplete token guidance (only 1 of 5 signals detected)",
+      "token_level": 1,
+      "operations": [
+        "workflow dispatch",
+        "PR operations",
+        "security event handling"
+      ],
+      "impact": "Agent may not know to request elevated token when needed",
+      "recommendation": "Add token guidance section with token hierarchy, scopes, and error handling"
+    },
+    {
+      "agent": "cognitive-brain-cli-agent",
+      "issue": "Incomplete token guidance (only 1 of 5 signals detected)",
+      "token_level": 1,
+      "operations": [
+        "variable write"
+      ],
+      "impact": "Agent may not know to request elevated token when needed",
+      "recommendation": "Add token guidance section with token hierarchy, scopes, and error handling"
+    },
+    {
+      "agent": "memory-sync-agent",
+      "issue": "Incomplete token guidance (only 0 of 5 signals detected)",
+      "token_level": 1,
+      "operations": [
+        "variable write"
+      ],
+      "impact": "Agent may not know to request elevated token when needed",
+      "recommendation": "Add token guidance section with token hierarchy, scopes, and error handling"
+    },
+    {
+      "agent": "self-healing-orchestrator-agent",
+      "issue": "Incomplete token guidance (only 1 of 5 signals detected)",
+      "token_level": 1,
+      "operations": [
+        "PR operations",
+        "deployment"
+      ],
+      "impact": "Agent may not know to request elevated token when needed",
+      "recommendation": "Add token guidance section with token hierarchy, scopes, and error handling"
+    }
+  ],
+  "agency_policy_alignment": {
+    "agents_with_clear_guidance": 40,
+    "agents_needing_update": 54
+  }
+}
