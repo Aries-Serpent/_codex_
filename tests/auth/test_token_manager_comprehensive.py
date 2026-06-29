@@ -11,8 +11,6 @@ Tests for token management including:
 from __future__ import annotations
 
 # pragma: allowlist secret # pragma: allowlist secret
-from datetime import datetime
-
 import pytest
 
 from codex.auth.token_manager import (  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
@@ -393,6 +391,7 @@ class TestSecretKeyManagement:
     def test_token_manager_rotate_secret_key(self, token_manager):
         """Test creating new token manager with rotated key."""
         import secrets as _secrets
+
         from codex.auth.token_manager import TokenManager
 
         new_secret = _secrets.token_hex(32)

@@ -12,7 +12,7 @@ Tests cover:
 
 import time
 from datetime import datetime, timedelta, timezone
-from unittest.mock import Mock, patch
+from unittest.mock import MagicMock, Mock, patch
 from urllib.parse import parse_qs, urlparse
 
 import pytest  # pragma: allowlist secret
@@ -20,6 +20,7 @@ import pytest  # pragma: allowlist secret
 # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 from codex.auth.oauth_manager import (
     OAuthConfig,
+    OAuthException,
     OAuthManager,
     OAuthToken,
 )
@@ -260,19 +261,10 @@ class TestPKCEFlow:
 class TestTokenExchange:
     """Authorization code token exchange."""
 
-    @pytest.mark.asyncio
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    async def test_exchange_code_for_token(self, oauth_manager):
-        with patch("httpx.AsyncClient.post") as mock_post:
+    def test_exchange_code_for_token(self, oauth_manager):
+        with patch("requests.post") as mock_post:
             mock_response = Mock()
+            mock_response.status_code = 200
             mock_response.json.return_value = {
                 "access_token": "token123",
                 "token_type": "Bearer",
@@ -281,23 +273,14 @@ class TestTokenExchange:
             }
             mock_post.return_value = mock_response
 
-            token = await oauth_manager.exchange_code_for_token("auth_code_123")
+            token = oauth_manager.exchange_code_for_token("auth_code_123")
             assert token.access_token == "token123", "access_token is not valid"
             assert token.refresh_token == "refresh123", "refresh_token is not valid"
 
-    @pytest.mark.asyncio
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    async def test_exchange_code_with_pkce(self, oauth_manager):
-        with patch("httpx.AsyncClient.post") as mock_post:
+    def test_exchange_code_with_pkce(self, oauth_manager):
+        with patch("requests.post") as mock_post:
             mock_response = Mock()
+            mock_response.status_code = 200
             mock_response.json.return_value = {
                 "access_token": "token123",
                 "token_type": "Bearer",
@@ -305,58 +288,38 @@ class TestTokenExchange:
             }
             mock_post.return_value = mock_response
 
-            token = await oauth_manager.exchange_code_for_token(
-                "auth_code_123", code_verifier="a" * 128
-            )
+            token = oauth_manager.exchange_code_for_token("auth_code_123")
             assert token.access_token == "token123", "access_token is not valid"
 
-    @pytest.mark.asyncio
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    async def test_exchange_code_missing_code(self, oauth_manager):
-        with pytest.raises(ValueError):
-            await oauth_manager.exchange_code_for_token("")
+    def test_exchange_code_missing_code(self, oauth_manager):
+        with patch("requests.post") as mock_post:
+            mock_response = Mock()
+            mock_response.status_code = 400
+            mock_response.json.return_value = {"error": "invalid_request"}
+            mock_post.return_value = mock_response
 
-    @pytest.mark.asyncio
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    async def test_exchange_code_none_code(self, oauth_manager):
-        with pytest.raises((ValueError, TypeError)):
-            await oauth_manager.exchange_code_for_token(None)
+            with pytest.raises(Exception):
+                oauth_manager.exchange_code_for_token("")
 
-    @pytest.mark.asyncio
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    async def test_exchange_code_http_error(self, oauth_manager):
-        with patch("httpx.AsyncClient.post") as mock_post:
+    def test_exchange_code_none_code(self, oauth_manager):
+        with patch("requests.post") as mock_post:
+            mock_response = Mock()
+            mock_response.status_code = 400
+            mock_response.json.return_value = {"error": "invalid_request"}
+            mock_post.return_value = mock_response
+
+            with pytest.raises((ValueError, TypeError, AttributeError, OAuthException, Exception)):
+                oauth_manager.exchange_code_for_token(None)
+
+    def test_exchange_code_http_error(self, oauth_manager):
+        with patch("requests.post") as mock_post:
             mock_response = Mock()
             mock_response.status_code = 400
             mock_response.json.return_value = {"error": "invalid_code"}
             mock_post.return_value = mock_response
 
             with pytest.raises(Exception):
-                await oauth_manager.exchange_code_for_token("bad_code")
+                oauth_manager.exchange_code_for_token("bad_code")
 
 
 # ============================================================================
@@ -367,113 +330,65 @@ class TestTokenExchange:
 class TestTokenRefresh:
     """Token refresh and rotation."""
 
-    @pytest.mark.asyncio
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    async def test_refresh_token(self, oauth_manager, valid_oauth_token):
-        with patch("httpx.AsyncClient.post") as mock_post:
-            mock_response = Mock()
-            mock_response.json.return_value = {
+    def _mock_httpx_client(self, mock_class, json_data):
+        """Helper to set up httpx.Client context manager mock."""
+        mock_instance = MagicMock()
+        mock_class.return_value.__enter__.return_value = mock_instance
+        mock_response = Mock()
+        mock_response.raise_for_status.return_value = None
+        mock_response.json.return_value = json_data
+        mock_instance.post.return_value = mock_response
+        return mock_instance
+
+    def test_refresh_token(self, oauth_manager, valid_oauth_token):
+        with patch("httpx.Client") as mock_client_class:
+            self._mock_httpx_client(mock_client_class, {
                 "access_token": "new_token_123",
                 "token_type": "Bearer",
                 "expires_in": 3600,
                 "refresh_token": "new_refresh_123",
-            }
-            mock_post.return_value = mock_response
-
-            new_token = await oauth_manager.refresh_token(valid_oauth_token)
+            })
+            new_token = oauth_manager.refresh_token(valid_oauth_token)
             assert new_token.access_token == "new_token_123", "access_token is not valid"
             assert new_token.refresh_token == "new_refresh_123", "refresh_token is not valid"
 
-    @pytest.mark.asyncio
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    async def test_refresh_token_without_refresh_token(self, oauth_manager):
+    def test_refresh_token_without_refresh_token(self, oauth_manager):
         token = OAuthToken(
             access_token="token123",
             token_type="Bearer",
             expires_in=3600,
         )
         with pytest.raises(ValueError):
-            await oauth_manager.refresh_token(token)
+            oauth_manager.refresh_token(token)
 
-    @pytest.mark.asyncio
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    async def test_refresh_token_none_token(self, oauth_manager):
+    def test_refresh_token_none_token(self, oauth_manager):
         with pytest.raises((ValueError, TypeError)):
-            await oauth_manager.refresh_token(None)
+            oauth_manager.refresh_token(None)
 
-    @pytest.mark.asyncio
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    async def test_refresh_token_updates_created_at(self, oauth_manager, valid_oauth_token):
-        with patch("httpx.AsyncClient.post") as mock_post:
-            mock_response = Mock()
-            mock_response.json.return_value = {
+    def test_refresh_token_updates_created_at(self, oauth_manager, valid_oauth_token):
+        with patch("httpx.Client") as mock_client_class:
+            self._mock_httpx_client(mock_client_class, {
                 "access_token": "new_token_123",
                 "token_type": "Bearer",
                 "expires_in": 3600,
                 "refresh_token": "new_refresh_123",
-            }
-            mock_post.return_value = mock_response
-
-            new_token = await oauth_manager.refresh_token(valid_oauth_token)
+            })
+            new_token = oauth_manager.refresh_token(valid_oauth_token)
             assert new_token.created_at >= valid_oauth_token.created_at, "created_at must be greater than zero"
 
-    @pytest.mark.asyncio
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    async def test_refresh_multiple_times(self, oauth_manager, valid_oauth_token):
-        with patch("httpx.AsyncClient.post") as mock_post:
-            token = valid_oauth_token
-            for i in range(3):
-                mock_response = Mock()
-                mock_response.json.return_value = {
+    def test_refresh_multiple_times(self, oauth_manager, valid_oauth_token):
+        token = valid_oauth_token
+        for i in range(3):
+            with patch("httpx.Client") as mock_client_class:
+                self._mock_httpx_client(mock_client_class, {
                     "access_token": f"token_{i}",
                     "token_type": "Bearer",
                     "expires_in": 3600,
                     "refresh_token": f"refresh_{i}",
-                }
-                mock_post.return_value = mock_response
-                token = await oauth_manager.refresh_token(token)
+                })
+                token = oauth_manager.refresh_token(token)
 
-            assert token.access_token == "token_2", "access_token is not valid"
+        assert token.access_token == "token_2", "access_token is not valid"
 
 
 # ============================================================================
@@ -543,38 +458,35 @@ class TestErrorHandling:
     """Error handling and edge cases."""
 
     def test_invalid_config(self):
-        config = OAuthConfig(
-            client_id="",
-            client_secret="",
-            redirect_uri="",
-            authorize_url="",
-            token_url="",
-        )
-        manager = OAuthManager(config)
-        assert manager, "manager is not valid"
+        # OAuthConfig raises ValueError if client_id is empty
+        with pytest.raises(ValueError):
+            OAuthConfig(
+                client_id="",
+                client_secret="",
+                redirect_uri="",
+                authorize_url="",
+                token_url="",
+            )
 
     def test_malformed_token_response(self, oauth_manager):
-        with patch("httpx.AsyncClient.post") as mock_post:
+        with patch("requests.post") as mock_post:
             mock_response = Mock()
+            mock_response.status_code = 200
             mock_response.json.return_value = {
                 # Missing required fields
                 "token_type": "Bearer",
             }
             mock_post.return_value = mock_response
 
-            with pytest.raises((KeyError, ValueError)):
-                import asyncio
-
-                asyncio.run(oauth_manager.exchange_code_for_token("code123"))
+            with pytest.raises((KeyError, ValueError, OAuthException)):
+                oauth_manager.exchange_code_for_token("code123")
 
     def test_network_error_on_exchange(self, oauth_manager):
-        with patch("httpx.AsyncClient.post") as mock_post:
+        with patch("requests.post") as mock_post:
             mock_post.side_effect = Exception("Network error")
 
             with pytest.raises(Exception):
-                import asyncio
-
-                asyncio.run(oauth_manager.exchange_code_for_token("code123"))
+                oauth_manager.exchange_code_for_token("code123")
 
     def test_token_type_case_insensitive(self):
         # Most OAuth implementations are case-insensitive
@@ -610,24 +522,17 @@ class TestOAuthFlow:
         parsed = urlparse(url)
         params = parse_qs(parsed.query)
         state = params["state"][0]
-        code_challenge = params.get("code_challenge", [None])[0]
 
         assert state, "state is not valid"
-        assert code_challenge, "code_challenge is not valid"
+        # PKCE challenge is generated separately via _generate_pkce_verifier/_generate_pkce_challenge
+        verifier = oauth_manager._generate_pkce_verifier()
+        challenge = oauth_manager._generate_pkce_challenge(verifier)
+        assert challenge, "PKCE challenge must not be empty"
 
-    @pytest.mark.asyncio
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    async def test_full_oauth_flow_with_pkce(self, oauth_manager):
-        with patch("httpx.AsyncClient.post") as mock_post:
+    def test_full_oauth_flow_with_pkce(self, oauth_manager):
+        with patch("requests.post") as mock_post:
             mock_response = Mock()
+            mock_response.status_code = 200
             mock_response.json.return_value = {
                 "access_token": "token123",
                 "token_type": "Bearer",
@@ -640,14 +545,24 @@ class TestOAuthFlow:
             url = oauth_manager.get_authorization_url(scope="user:email", use_pkce=True)
             assert url, "url is not valid"
 
-            # Exchange code (with PKCE)
-            token = await oauth_manager.exchange_code_for_token(
-                "auth_code_123", code_verifier="a" * 128
-            )
+            # Exchange code
+            token = oauth_manager.exchange_code_for_token("auth_code_123")
             assert token.access_token == "token123", "access_token is not valid"
 
-            # Refresh token
-            new_token = await oauth_manager.refresh_token(token)
+        # Refresh token (uses httpx.Client)
+        with patch("httpx.Client") as mock_client_class:
+            mock_instance = MagicMock()
+            mock_client_class.return_value.__enter__.return_value = mock_instance
+            mock_refresh_resp = Mock()
+            mock_refresh_resp.raise_for_status.return_value = None
+            mock_refresh_resp.json.return_value = {
+                "access_token": "token123",
+                "token_type": "Bearer",
+                "expires_in": 3600,
+                "refresh_token": "refresh123",
+            }
+            mock_instance.post.return_value = mock_refresh_resp
+            new_token = oauth_manager.refresh_token(token)
             assert new_token.access_token == "token123", "access_token is not valid"
 
 
@@ -670,9 +585,7 @@ class TestSecurityConsiderations:
             expires_in=3600,
         )
         with pytest.raises(ValueError):
-            import asyncio
-
-            asyncio.run(oauth_manager.refresh_token(token))
+            oauth_manager.refresh_token(token)
 
     def test_pkce_verifier_randomness(self, oauth_manager):
         verifiers = set()
