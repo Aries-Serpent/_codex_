@@ -249,7 +249,7 @@ hydra-core==1.3.2
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
-hypothesis==6.152.4
+hypothesis==6.155.7
     # via codex-ml (pyproject.toml)
 identify==2.6.14
     # via pre-commit
