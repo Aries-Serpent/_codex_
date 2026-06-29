@@ -56,7 +56,7 @@ cachetools==7.0.5
     # via
     #   mlflow-skinny
     #   mlflow-tracing
-certifi==2026.1.4
+certifi==2026.6.17
     # via
     #   codex-ml (pyproject.toml)
     #   evidently
