@@ -83,6 +83,7 @@ class TestProcess7WorkflowOperations:
             "inputs": test_workflow_inputs,
         }
 
+        assert "/dispatches" in endpoint
         assert payload["ref"] == test_workflow_ref
         assert payload["inputs"]["environment"] == "staging"
 
@@ -100,6 +101,7 @@ class TestProcess7WorkflowOperations:
             "ref": test_workflow_ref,
         }
 
+        assert "/dispatches" in endpoint
         assert payload["ref"]
 
     def test_process7_dispatch_workflow_with_inputs(
@@ -121,6 +123,7 @@ class TestProcess7WorkflowOperations:
             },
         }
 
+        assert "/dispatches" in endpoint
         assert payload["inputs"]["string_input"] == "test_value"
         # Note: all inputs are strings in workflow_dispatch
 
@@ -179,6 +182,7 @@ class TestProcess7WorkflowOperations:
             ],
         }
 
+        assert "/actions/runs" in endpoint
         assert expected_response["total_count"] == 2
 
     def test_process7_list_workflow_runs_with_filters(
