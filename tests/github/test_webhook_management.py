@@ -112,10 +112,6 @@ class TestProcess8RepositoryWebhooks:
     ):
         """Test: List all repository webhooks."""
         endpoint = f"{gh_api_base}{repo_webhooks_endpoint}"
-        expected_response = [
-            mock_webhook_response(hook_id=1),
-            mock_webhook_response(hook_id=2),
-        ]
 
         assert "/repos/" in endpoint
         assert "/hooks" in endpoint
@@ -129,6 +125,8 @@ class TestProcess8RepositoryWebhooks:
         endpoint = f"{gh_api_base}{repo_webhooks_endpoint}"
         expected_response = []
 
+        assert "/repos/" in endpoint
+        assert "/hooks" in endpoint
         assert len(expected_response) == 0
 
     def test_process8_list_repo_webhooks_pagination(
@@ -152,6 +150,7 @@ class TestProcess8RepositoryWebhooks:
         endpoint = f"{gh_api_base}{repo_webhooks_endpoint}/{hook_id}"
         response = mock_webhook_response(hook_id=hook_id)
 
+        assert str(hook_id) in endpoint
         assert response["id"] == hook_id
         assert response["config"]["url"]
 
@@ -175,6 +174,8 @@ class TestProcess8RepositoryWebhooks:
             },
         }
 
+        assert "/repos/" in endpoint
+        assert "/hooks" in endpoint
         assert payload["name"] == "web"
         assert payload["active"] is True
         assert test_webhook_url in payload["config"]["url"]
@@ -187,8 +188,6 @@ class TestProcess8RepositoryWebhooks:
         test_webhook_secret: str,
     ):
         """Test: Create webhook with HMAC-SHA256 secret."""
-        endpoint = f"{gh_api_base}{repo_webhooks_endpoint}"
-
         payload = {
             "name": "web",
             "active": True,
@@ -209,8 +208,6 @@ class TestProcess8RepositoryWebhooks:
         test_webhook_url: str,
     ):
         """Test: Create webhook with various event types."""
-        endpoint = f"{gh_api_base}{repo_webhooks_endpoint}"
-
         event_combos = [
             ["push"],
             ["pull_request"],
@@ -250,6 +247,7 @@ class TestProcess8RepositoryWebhooks:
             },
         }
 
+        assert str(hook_id) in endpoint
         assert payload["active"] is False
 
     def test_process8_delete_repo_webhook_success(
@@ -287,17 +285,6 @@ class TestProcess8RepositoryWebhooks:
         hook_id = 12345
         endpoint = f"{gh_api_base}{repo_webhooks_endpoint}/{hook_id}/deliveries"
 
-        expected_response = {
-            "deliveries": [
-                {
-                    "id": 1,
-                    "guid": "delivery-guid-1",
-                    "status": "delivered",
-                    "response": {"status": 200},
-                },
-            ],
-        }
-
         assert "deliveries" in endpoint
 
     def test_process8_webhook_delivery_details(
@@ -325,6 +312,7 @@ class TestProcess8RepositoryWebhooks:
             },
         }
 
+        assert f"/deliveries/{delivery_id}" in endpoint
         assert expected_response["status"] in ["delivered", "failed", "pending"]
 
     # ───────────────────────────────────────────────────────────────────────
@@ -388,7 +376,6 @@ class TestProcess9OrganizationWebhooks:
     ):
         """Test: List all organization webhooks."""
         endpoint = f"{gh_api_base}{org_webhooks_endpoint}"
-        expected_response = [mock_webhook_response(hook_id=1)]
 
         assert "/orgs/" in endpoint
         assert "/hooks" in endpoint
