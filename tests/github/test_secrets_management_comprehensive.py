@@ -339,7 +339,7 @@ class TestProcess4OrganizationActionsSecrets:
     # Organization Secret CRUD
     # ───────────────────────────────────────────────────────────────────────
 
-     def test_process4_list_org_secrets_success(
+    def test_process4_list_org_secrets_success(
         self,
         gh_api_base: str,
         org_actions_secrets_endpoint: str,
