@@ -13,7 +13,6 @@ All tests skip gracefully if CODEX_MASTER_KEY is unavailable.
 
 from __future__ import annotations
 
-from typing import Any, Optional
 from urllib.parse import urlparse
 
 import pytest

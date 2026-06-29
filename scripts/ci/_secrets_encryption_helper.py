@@ -257,7 +257,7 @@ def encrypt_secret_mock(
         Dict with 'encrypted_value' (base64-mock), 'key_id', 'key_type'
     """
     # Still validate the key structure
-    key_info = validate_public_key(public_key, key_type)
+    validate_public_key(public_key, key_type)
     
     # Mock encryption: just base64-encode the secret with a marker
     mock_ciphertext = f"MOCK_ENCRYPTED:{secret_value}".encode("utf-8")

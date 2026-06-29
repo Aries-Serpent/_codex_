@@ -127,7 +127,6 @@ class TestProcess3RepositoryActionsSecrets:
         mock_public_key_response,
     ):
         """Test: Public key should be cached to minimize API calls."""
-        endpoint = f"{gh_api_base}{actions_secrets_endpoint}/public-key"
         # First call retrieves key
         key1 = mock_public_key_response()
         # Second call should return cached key
@@ -174,7 +173,8 @@ class TestProcess3RepositoryActionsSecrets:
         endpoint = f"{gh_api_base}{actions_secrets_endpoint}"
         expected_response = {"total_count": 0, "secrets": []}
 
-        assert expected_response["total_count"] == 0
+       assert "actions/secrets" in endpoint
+       assert expected_response["total_count"] == 0
 
     def test_process3_create_actions_secret_success(
         self,

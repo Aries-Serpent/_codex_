@@ -111,7 +111,9 @@ class TestProcess10AuditLogAccess:
         endpoint = f"{gh_api_base}{org_audit_logs_endpoint}"
         expected_response = []
 
-        assert len(expected_response) == 0
+       assert "/audit-log" in endpoint
+       assert "/orgs/" in endpoint
+       assert len(expected_response) == 0
 
     # ───────────────────────────────────────────────────────────────────────
     # Filtering
@@ -140,18 +142,20 @@ class TestProcess10AuditLogAccess:
         assert "actor=testuser" in endpoint
 
     def test_process10_filter_by_date_range(
-        self,
-        gh_api_base: str,
-        org_audit_logs_endpoint: str,
+       self,
+       gh_api_base: str,
+       org_audit_logs_endpoint: str,
     ):
-        """Test: Filter audit logs by date range."""
-        now = datetime.now(tz=timezone.utc)
-        start_date = (now - timedelta(days=30)).isoformat()
-        end_date = now.isoformat()
+       """Test: Filter audit logs by date range."""
+       now = datetime.now(tz=timezone.utc)
+       start_date = (now - timedelta(days=30)).isoformat()
+       end_date = now.isoformat()
 
-        # GitHub uses URL encoding for ISO 8601 dates
-        endpoint = f"{gh_api_base}{org_audit_logs_endpoint}?include=all&sort=asc"
-        assert "/audit-log" in endpoint
+       # GitHub uses URL encoding for ISO 8601 dates
+       endpoint = f"{gh_api_base}{org_audit_logs_endpoint}?phrase=created:{start_date}..{end_date}&include=all&sort=asc"
+       assert "/audit-log" in endpoint
+       assert start_date in endpoint
+       assert end_date in endpoint
 
     def test_process10_filter_by_operation_result(
         self,
@@ -162,9 +166,10 @@ class TestProcess10AuditLogAccess:
         # GitHub audit logs typically return all, filtering done client-side
         endpoint = f"{gh_api_base}{org_audit_logs_endpoint}"
 
-        expected_results = ["success", "failure"]
-        for result in expected_results:
-            assert result in expected_results
+       assert "/audit-log" in endpoint
+       expected_results = ["success", "failure"]
+       for result in expected_results:
+           assert result in expected_results
 
     def test_process10_filter_by_include_type(
         self,
@@ -426,11 +431,13 @@ class TestEnterpriseAuditLogs:
         """Test: Query enterprise audit logs."""
         endpoint = f"{gh_api_base}{enterprise_audit_logs_endpoint}"
 
-        response = [
-            mock_audit_log_entry(action="org.create"),
-        ]
+       assert "/enterprises/" in endpoint
+       assert "/audit-log" in endpoint
+       response = [
+           mock_audit_log_entry(action="org.create"),
+       ]
 
-        assert len(response) >= 0
+       assert len(response) >= 0
 
     def test_enterprise_audit_logs_filter(
         self,

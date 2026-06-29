@@ -13,7 +13,6 @@ Tests skip gracefully if CODEX_MASTER_KEY is unavailable.
 from __future__ import annotations
 
 from datetime import datetime, timezone
-from typing import Any, Optional
 
 import pytest
 
