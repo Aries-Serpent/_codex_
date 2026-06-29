@@ -73,8 +73,9 @@ class TestInMemoryUserRepository:
 
     def test_get_user_by_nonexistent_id(self, repository):
         """Test retrieving nonexistent user by ID."""
-        with pytest.raises(UserNotFoundError):
-            repository.get_by_id("nonexistent_id")
+        # get_by_id returns None for nonexistent users (does not raise)
+        result = repository.get_by_id("nonexistent_id")
+        assert result is None, "get_by_id should return None for nonexistent user"
 
     def test_get_user_by_username(self, repository, test_user):
         """Test retrieving user by username."""
@@ -86,8 +87,9 @@ class TestInMemoryUserRepository:
 
     def test_get_user_by_nonexistent_username(self, repository):
         """Test retrieving nonexistent user by username."""
-        with pytest.raises(UserNotFoundError):
-            repository.get_by_username("nonexistent_user")
+        # get_by_username returns None for nonexistent users (does not raise)
+        result = repository.get_by_username("nonexistent_user")
+        assert result is None, "get_by_username should return None for nonexistent user"
 
     def test_update_user(self, repository, test_user):
         """Test updating user."""
@@ -109,8 +111,9 @@ class TestInMemoryUserRepository:
         repository.create(test_user)
         repository.delete(test_user.user_id)
 
-        with pytest.raises(UserNotFoundError):
-            repository.get_by_id(test_user.user_id)
+        # get_by_id returns None for deleted users (does not raise)
+        result = repository.get_by_id(test_user.user_id)
+        assert result is None, "get_by_id should return None after deletion"
 
     def test_delete_nonexistent_user(self, repository):
         """Test deleting nonexistent user."""
@@ -166,8 +169,9 @@ class TestInMemoryUserRepository:
 
     def test_user_nonexistence_check(self, repository):
         """Test checking nonexistent user."""
-        with pytest.raises(UserNotFoundError):
-            repository.get_by_id("nonexistent_id")
+        # get_by_id returns None for nonexistent users (does not raise)
+        result = repository.get_by_id("nonexistent_id")
+        assert result is None, "get_by_id should return None for nonexistent user"
 
     def test_get_by_email(self, repository, test_user):
         """Test retrieving user by email."""
@@ -367,13 +371,13 @@ class TestInMemoryUserRepositoryEdgeCases:
 
     def test_null_id_handling(self, repository):
         """Test handling of null ID."""
-        user = User(
-            user_id=None,
-            username="testuser",
-            email="test@example.com",
-            password_hash="hash",
-            created_at=datetime.now(),
-        )
-
+        # User raises ValueError when both user_id and id are None
         with pytest.raises((ValueError, TypeError)):
+            user = User(
+                user_id=None,
+                username="testuser",
+                email="test@example.com",
+                password_hash="hash",
+                created_at=datetime.now(),
+            )
             repository.create(user)

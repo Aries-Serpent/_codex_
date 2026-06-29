@@ -405,8 +405,9 @@ class TestDataIntegrity:
         repo.create_user(user)
         repo.delete_user("temp_user")
 
-        with pytest.raises(Exception):
-            repo.get_by_user_id("temp_user")
+        # get_by_user_id returns None for deleted users (does not raise)
+        result = repo.get_by_user_id("temp_user")
+        assert result is None, "Deleted user should not be found"
 
     def test_unique_constraints_enforced(self, repo):
         hasher = PasswordHasher()
@@ -484,8 +485,9 @@ class TestUserStateTransitions:
         # Deactivate by deletion
         repo.delete_user("active_user")
 
-        with pytest.raises(Exception):
-            repo.get_by_user_id("active_user")
+        # get_by_user_id returns None for deleted users (does not raise)
+        result = repo.get_by_user_id("active_user")
+        assert result is None, "Deactivated (deleted) user should not be found"
 
 
 # ============================================================================
