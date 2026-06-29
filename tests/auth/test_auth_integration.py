@@ -416,7 +416,7 @@ class TestEdgeCaseCombinations:
 
     def test_very_long_username_and_password(self, auth_system):
         long_username = "u" * 200
-        long_password = "P" + "a" * 200 + "!"
+        long_password = "P1" + "a" * 199 + "!"
 
         user = auth_system.register(long_username, "long@example.com", long_password)
 
@@ -436,21 +436,21 @@ class TestEdgeCaseCombinations:
         assert result.user_id == user.user_id, "Result must not be empty"
 
     def test_email_and_password_both_unicode(self, auth_system):
-        user = auth_system.register("sam", "用户@例え.jp", "密码123!")
+        user = auth_system.register("sam", "用户@例え.jp", "密码Pass123!")
         assert user.email, "Condition must be true"
         assert user.username == "sam", "username is not valid"
 
     def test_rapid_password_changes(self, auth_system):
-        user = auth_system.register("sam", "sam@example.com", "Pass0!")
+        user = auth_system.register("sam", "sam@example.com", "Pass0!ab")
 
         # Rapid changes
         for i in range(5):
-            old_pass = f"Pass{i}!"
-            new_pass = f"Pass{i+1}!"
+            old_pass = f"Pass{i}!ab"
+            new_pass = f"Pass{i+1}!ab"
             auth_system.change_password(user.user_id, old_pass, new_pass)
 
         # Final password works
-        result = auth_system.login("sam", "Pass5!")
+        result = auth_system.login("sam", "Pass5!ab")
         assert result.user_id == user.user_id, "Result must not be empty"
 
 

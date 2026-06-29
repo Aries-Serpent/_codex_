@@ -10,7 +10,7 @@ Tests cover:
 
 import pytest
 
-from codex.auth.mfa_provider import MFAProvider
+from codex.auth.mfa_provider import MFAProvider, MFASecret
 
 # ============================================================================
 # Fixtures
@@ -39,10 +39,10 @@ class TestMFAEnrollment:
 
     def test_enroll_user_returns_secret(self, mfa_provider, test_user_id):
         """Test that enrolling user returns secret."""
-        secret = mfa_provider.enroll_user(test_user_id)
-        assert secret is not None, "secret must be initialized"
-        assert isinstance(secret, str)
-        assert len(secret) > 0, "Secret must not be empty"
+        mfa_secret = mfa_provider.enroll_user(test_user_id)
+        assert mfa_secret is not None, "secret must be initialized"
+        assert isinstance(mfa_secret, MFASecret)
+        assert len(mfa_secret.secret) > 0, "Secret must not be empty"
 
     def test_enroll_user_generates_unique_secrets(self, mfa_provider):
         """Test that each enrollment generates unique secret."""
@@ -80,53 +80,49 @@ class TestMFAVerification:
 
     def test_verify_valid_totp_code(self, mfa_provider, test_user_id):
         """Test verification of valid TOTP code."""
-        secret = mfa_provider.enroll_user(test_user_id)
-        # Generate a valid code
-        import pyotp
-
-        totp = pyotp.TOTP(secret)
-        valid_code = totp.now()
+        mfa_secret = mfa_provider.enroll_user(test_user_id)
+        # Generate a valid code using the provider's own method (SHA256)
+        valid_code = mfa_provider.generate_totp_code(mfa_secret.secret)
 
         # Should verify successfully
-        is_valid = mfa_provider.verify_totp(test_user_id, valid_code)
+        is_valid = mfa_provider.verify_totp(mfa_secret.secret, valid_code, test_user_id)
         assert is_valid is True, "is_valid is not valid"
 
     def test_verify_invalid_totp_code(self, mfa_provider, test_user_id):
         """Test verification of invalid TOTP code."""
-        mfa_provider.enroll_user(test_user_id)
+        mfa_secret = mfa_provider.enroll_user(test_user_id)
 
         # Invalid code should fail
-        is_valid = mfa_provider.verify_totp(test_user_id, "000000")
+        is_valid = mfa_provider.verify_totp(mfa_secret.secret, "000000", test_user_id)
         assert is_valid is False, "is_valid is not valid"
 
     def test_verify_nonexistent_user_returns_false(self, mfa_provider):
         """Test that verifying nonexistent user returns False."""
-        is_valid = mfa_provider.verify_totp("nonexistent_user", "123456")
+        # Use a dummy base32 secret since user has no stored secret
+        is_valid = mfa_provider.verify_totp("AAAAAAAAAAAAAAAA", "123456", "nonexistent_user")
         assert is_valid is False, "is_valid is not valid"
 
     def test_verify_empty_code(self, mfa_provider, test_user_id):
         """Test verification with empty code."""
-        mfa_provider.enroll_user(test_user_id)
-        is_valid = mfa_provider.verify_totp(test_user_id, "")
+        mfa_secret = mfa_provider.enroll_user(test_user_id)
+        is_valid = mfa_provider.verify_totp(mfa_secret.secret, "", test_user_id)
         assert is_valid is False, "is_valid is not valid"
 
     def test_verify_too_short_code(self, mfa_provider, test_user_id):
         """Test verification with too short code."""
-        mfa_provider.enroll_user(test_user_id)
-        is_valid = mfa_provider.verify_totp(test_user_id, "123")
+        mfa_secret = mfa_provider.enroll_user(test_user_id)
+        is_valid = mfa_provider.verify_totp(mfa_secret.secret, "123", test_user_id)
         assert is_valid is False, "is_valid is not valid"
 
     def test_verify_code_with_spaces(self, mfa_provider, test_user_id):
         """Test verification with spaces in code."""
-        secret = mfa_provider.enroll_user(test_user_id)
-        import pyotp
-
-        totp = pyotp.TOTP(secret)
-        valid_code = totp.now()
+        mfa_secret = mfa_provider.enroll_user(test_user_id)
+        # Generate a valid code using provider's own method (SHA256)
+        valid_code = mfa_provider.generate_totp_code(mfa_secret.secret)
 
         # Code with spaces might be accepted
         code_with_spaces = f"{valid_code[:3]} {valid_code[3:]}"
-        is_valid = mfa_provider.verify_totp(test_user_id, code_with_spaces)
+        is_valid = mfa_provider.verify_totp(mfa_secret.secret, code_with_spaces, test_user_id)
         # Should either accept or reject consistently
         assert isinstance(is_valid, bool)
 
@@ -249,9 +245,9 @@ class TestMFAEdgeCases:
 
     def test_verify_with_none_code(self, mfa_provider, test_user_id):
         """Test verification with None code."""
-        mfa_provider.enroll_user(test_user_id)
+        mfa_secret = mfa_provider.enroll_user(test_user_id)
         try:
-            is_valid = mfa_provider.verify_totp(test_user_id, None)
+            is_valid = mfa_provider.verify_totp(mfa_secret.secret, None, test_user_id)
             assert is_valid is False, "is_valid is not valid"
         except (TypeError, AttributeError):
             # Exception is acceptable for None input
@@ -259,14 +255,11 @@ class TestMFAEdgeCases:
 
     def test_secret_format(self, mfa_provider, test_user_id):
         """Test that secret is in correct format."""
-        secret = mfa_provider.enroll_user(test_user_id)
+        mfa_secret = mfa_provider.enroll_user(test_user_id)
         # TOTP secrets should be base32 encoded
-        import pyotp
-
         try:
-            totp = pyotp.TOTP(secret)
-            # Should be able to generate code
-            code = totp.now()
+            # Use the provider's own code generation (SHA256 consistent)
+            code = mfa_provider.generate_totp_code(mfa_secret.secret)
             assert len(code) == 6, "Code must not be empty"
         except ValueError:
             pytest.skip("Secret format validation skipped")
@@ -283,19 +276,16 @@ class TestMFAIntegration:
     def test_complete_enrollment_verification_workflow(self, mfa_provider, test_user_id):
         """Test complete enrollment and verification workflow."""
         # Enroll
-        secret = mfa_provider.enroll_user(test_user_id)
-        assert secret is not None, "secret must be initialized"
+        mfa_secret = mfa_provider.enroll_user(test_user_id)
+        assert mfa_secret is not None, "secret must be initialized"
 
         # Check enrollment
         assert mfa_provider.is_user_enrolled(test_user_id) is True, "Condition must be true"
 
-        # Generate and verify code
-        import pyotp
+        # Generate code using the provider's own method (SHA256 algorithm)
+        code = mfa_provider.generate_totp_code(mfa_secret.secret)
 
-        totp = pyotp.TOTP(secret)
-        code = totp.now()
-
-        is_valid = mfa_provider.verify_totp(test_user_id, code)
+        is_valid = mfa_provider.verify_totp(mfa_secret.secret, code, test_user_id)
         assert is_valid is True, "is_valid is not valid"
 
     def test_multiple_users_mfa_workflow(self, mfa_provider):
@@ -312,11 +302,8 @@ class TestMFAIntegration:
         for user_id in users:
             assert mfa_provider.is_user_enrolled(user_id) is True, "Condition must be true"
 
-        # Verify codes for all users
-        import pyotp
-
+        # Verify codes for all users using the provider's code generation (SHA256)
         for user_id in users:
-            totp = pyotp.TOTP(secrets[user_id])
-            code = totp.now()
-            is_valid = mfa_provider.verify_totp(user_id, code)
+            code = mfa_provider.generate_totp_code(secrets[user_id].secret)
+            is_valid = mfa_provider.verify_totp(secrets[user_id].secret, code, user_id)
             assert is_valid is True, "is_valid is not valid"

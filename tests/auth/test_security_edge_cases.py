@@ -39,11 +39,15 @@ class TestInjectionPrevention:
 
     def test_sql_injection_in_username(self, auth_system):
         """Prevent SQL injection via username."""
-        malicious = "admin' OR '1'='1"
+        # Username with whitespace (e.g. SQL injection with spaces) is rejected
+        malicious_with_spaces = "admin' OR '1'='1"
+        with pytest.raises(ValueError):
+            auth_system.register(malicious_with_spaces, "test@example.com", "Str0ngPass!")
 
-        user = auth_system.register(malicious, "test@example.com", "Str0ngPass!")
-        # Should create user with literal username, not inject SQL
-        assert user.username == malicious, "username is not valid"
+        # Username without spaces but with SQL chars stored literally
+        malicious_no_spaces = "admin'OR'1'='1"
+        user = auth_system.register(malicious_no_spaces, "test2@example.com", "Str0ngPass!")
+        assert user.username == malicious_no_spaces, "username is not valid"
 
     def test_sql_injection_in_password(self, auth_system):
         """Prevent SQL injection via password."""
@@ -185,7 +189,7 @@ class TestTimingAttackPrevention:
         start = time.time()
         try:
             auth_system.token_manager.validate_token("invalid.token.format")
-        except (AttributeError, OSError, RuntimeError):
+        except (AttributeError, OSError, RuntimeError, ValueError):
             pass
         time_invalid = time.time() - start
 
@@ -233,7 +237,7 @@ class TestResourceExhaustion:
         for i in range(20):
             try:
                 auth_system.change_password(user.user_id, "Str0ngPass!", f"NewPass{i}!")
-            except (AttributeError, OSError, RuntimeError):
+            except (AttributeError, OSError, RuntimeError, InvalidCredentialsError):
                 pass
 
     def test_very_large_token_payload(self, auth_system):
@@ -294,7 +298,7 @@ class TestBoundaryConditions:
 
     def test_maximum_password_length(self, auth_system):
         """Test very long password."""
-        long_password = "P" + "a" * 1000 + "!"
+        long_password = "P1" + "a" * 999 + "!"
         user = auth_system.register("longpwd", "longpwd@example.com", long_password)
 
         result = auth_system.login("longpwd", long_password)

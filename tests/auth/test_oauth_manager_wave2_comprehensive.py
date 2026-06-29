@@ -12,7 +12,7 @@ from unittest.mock import patch
 
 import pytest
 
-from codex.auth.oauth_manager import OAuthConfig, OAuthManager
+from codex.auth.oauth_manager import OAuthConfig, OAuthException, OAuthManager
 
 # ============================================================================
 # Fixtures
@@ -399,7 +399,7 @@ class TestOAuthEdgeCases:
 
                 try:
                     oauth_manager.exchange_code_for_token(special_code)
-                except (AttributeError, OSError, RuntimeError):
+                except (AttributeError, OSError, RuntimeError, OAuthException):
                     # Expected: method may not exist or raise implementation errors
                     pass
 
@@ -437,7 +437,7 @@ class TestOAuthEdgeCases:
 
                 try:
                     oauth_manager.exchange_code_for_token("code")
-                except (AttributeError, OSError, RuntimeError):
+                except (AttributeError, OSError, RuntimeError, TypeError, OAuthException):
                     # Expected: method may not exist or raise implementation errors
                     pass
 

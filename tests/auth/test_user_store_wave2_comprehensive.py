@@ -189,7 +189,7 @@ class TestPasswordVerification:
         """Test that None password fails verification."""
         user_store.create_user("charlie", "charlie@example.com", "Pass123!")
 
-        with pytest.raises((ValueError, TypeError)):
+        with pytest.raises((ValueError, TypeError, InvalidCredentialsError)):
             user_store.authenticate("charlie", None)
 
     def test_password_case_sensitivity(self, user_store):
@@ -413,7 +413,7 @@ class TestEdgeCases:
 
     def test_very_strong_password(self, user_store):
         """Test very long/complex password."""
-        long_password = "X" * 1000 + "1!@#$%^&*()"
+        long_password = "Xa" + "X" * 998 + "1!@#$%^&*()"
         user = user_store.create_user("jane", "jane@example.com", long_password)
         assert user.user_id is not None, "user_id must be initialized"
 

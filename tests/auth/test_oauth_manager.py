@@ -12,6 +12,7 @@ Tests cover:
 from datetime import (  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
     datetime,
     timedelta,
+    timezone,
 )
 from unittest.mock import MagicMock, patch
 
@@ -111,8 +112,7 @@ class TestOAuthManager:
         token = OAuthToken(
             access_token="test_token",
             token_type="Bearer",
-            expires_in=1,  # Expires in 1 second
-            expires_at=datetime.now() + timedelta(seconds=1),
+            expires_in=7200,  # 2 hours - well above the 300s buffer
         )
 
         assert not token.is_expired(), "Condition must be true"
@@ -281,7 +281,7 @@ class TestOAuthToken:
         )
 
         assert token.expires_at is not None, "expires_at must be initialized"
-        assert token.expires_at > datetime.now(), "expires_at must be greater than zero"
+        assert token.expires_at > datetime.now(timezone.utc), "expires_at must be greater than zero"
 
 
 class TestOAuthEdgeCases:
