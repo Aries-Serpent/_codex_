@@ -275,7 +275,7 @@ Token was revoked
 # 1. Validate token format
 if [[ ! $TOKEN =~ ^gh(p|o|u|r|s)_ ]]; then
     echo "❌ Token format invalid"
-    echo "   Expected: ghp_... or gho_... or ghu_..."
+    echo "   Expected: ghp_... or gho_... or ghu_..." <!-- pragma: allowlist secret -->
     echo "   Got: $TOKEN"
     exit 1
 fi
@@ -603,7 +603,7 @@ When diagnosing token-related failures:
   - [ ] CODEX_MASTER_KEY present? (check auth)
 
 - [ ] **Check Token Validity**
-  - [ ] Token format correct? (ghp_... etc)
+  - [ ] Token format correct? (ghp_... etc) <!-- pragma: allowlist secret -->
   - [ ] Test with curl 401? → Invalid/revoked
   - [ ] Check expiration? (if applicable)
 
