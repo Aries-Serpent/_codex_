@@ -91,7 +91,7 @@ def _git_staged_files(repo_root: Path) -> list[str]:
             text=True,
         )
     except FileNotFoundError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("FileNotFoundError: <ERROR_TYPE>")
         logger.warning("FileNotFoundError: <ERROR_TYPE>", exc_info=True)
         return []

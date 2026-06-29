@@ -225,7 +225,7 @@ class PROperator:
             else:
                 logger.warning("GITHUB_TOKEN not set, PR creation disabled")
         except ImportError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("ImportError: <ERROR_TYPE>")
             logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
             logger.warning("PyGithub not installed, PR creation disabled")
@@ -318,7 +318,7 @@ class PROperator:
                 )
                 logger.info("Created branch: %s", content.branch_name)
             except (IOError, OSError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 if "already exists" not in str(e).lower():
                     raise
@@ -373,7 +373,7 @@ class PROperator:
             )
 
         except (ConnectionError, TimeoutError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.error("Failed to create PR: %s", e)
             return PRResult(

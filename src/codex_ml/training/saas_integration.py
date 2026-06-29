@@ -109,7 +109,7 @@ class SaaSKnowledgeLoader:
             logger.info(f"Loaded Zendesk index with {len(data.get('articles', {}))} articles")
             return data
         except (json.JSONDecodeError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.error("Failed to load Zendesk index: <ERROR_TYPE>")
             return {}
 
@@ -129,7 +129,7 @@ class SaaSKnowledgeLoader:
             logger.info(f"Loaded {len(data.get('policies', []))} D365 SLA policies")
             return data
         except (json.JSONDecodeError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.error("Failed to load D365 policies: <ERROR_TYPE>")
             return {}
 

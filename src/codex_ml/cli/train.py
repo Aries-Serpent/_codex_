@@ -162,7 +162,7 @@ def _apply_prompt_sanitization(
             if isinstance(config_obj, (DictConfig, dict)):
                 config_obj[key] = sanitised
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
     return total
@@ -304,7 +304,7 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Optional[Path]]:
         if sample_rate is not None:
             os.environ["CODEX_TELEMETRY_SAMPLE_RATE"] = str(float(sample_rate))
     except (ValueError, TypeError, RuntimeError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 
@@ -342,7 +342,7 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Optional[Path]]:
         try:
             cfg.reproducibility["seed"] = seed
         except (ValueError, TypeError, RuntimeError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
     reproducibility_cfg.setdefault("seed", seed)

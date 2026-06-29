@@ -47,7 +47,7 @@ def read_pa_legacy(zip_path: str | Path) -> dict[str, Any]:
                 if name.startswith("flows/") and name.endswith(".json"):
                     flows[Path(name).stem] = json.loads(archive.read(name))
     except (IOError, OSError) as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         raise PowerAutomateParseError(str(exc)) from exc
     return {"manifest": manifest, "flows": flows}

@@ -134,7 +134,7 @@ class ModelRegistry:
             return self.get_model_version(name, result.version)
 
         except (ValueError, TypeError, RuntimeError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.error(f"Failed to register model {name}: <ERROR_TYPE>")
             raise
@@ -165,7 +165,7 @@ class ModelRegistry:
                 source=mv.source,
             )
         except (ValueError, TypeError, RuntimeError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.error(f"Failed to get model version {name}/{version}: <ERROR_TYPE>")
             raise
@@ -205,7 +205,7 @@ class ModelRegistry:
                 for mv in versions
             ]
         except (ValueError, TypeError, RuntimeError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.error(f"Failed to list model versions for {name}: <ERROR_TYPE>")
             raise
@@ -240,7 +240,7 @@ class ModelRegistry:
 
             return self.get_model_version(name, version)
         except (ValueError, TypeError, RuntimeError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.error(f"Failed to promote model {name}/{version} to {stage.value}: <ERROR_TYPE>")
             raise
@@ -268,7 +268,7 @@ class ModelRegistry:
             self.client.delete_model_version(name=name, version=version)
             logger.info(f"Deleted model {name} version {version}")
         except (ValueError, TypeError, RuntimeError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.error(f"Failed to delete model {name}/{version}: <ERROR_TYPE>")
             raise
@@ -320,7 +320,7 @@ class ModelRegistry:
                 ),
             }
         except (ValueError, TypeError, RuntimeError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.error(f"Failed to compare models {name}/{version1} vs {version2}: <ERROR_TYPE>")
             raise
@@ -359,7 +359,7 @@ class ModelRegistry:
 
             return {"model": mv.to_dict(), "lineage": lineage}
         except (ValueError, TypeError, RuntimeError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.error(f"Failed to get model lineage for {name}/{version}: <ERROR_TYPE>")
             raise
@@ -374,7 +374,7 @@ class ModelRegistry:
             models = self.client.search_registered_models()
             return [model.name for model in models]
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.error("Failed to list models: <ERROR_TYPE>")
             raise
@@ -406,7 +406,7 @@ class ModelRegistry:
             logger.info(f"Exported model {name}/{version} to {output_path}")
             return output_path
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.error(f"Failed to export model {name}/{version}: <ERROR_TYPE>")
             raise

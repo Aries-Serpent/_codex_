@@ -95,7 +95,7 @@ class AzureEventPublisher(EventPublisher):
             return True
 
         except (ValueError, TypeError, RuntimeError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.error("Failed to publish to Azure Event Grid: <ERROR_TYPE>")
             return False
@@ -132,7 +132,7 @@ class AzureEventPublisher(EventPublisher):
             return True
 
         except (ValueError, TypeError, RuntimeError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.error("Failed to publish batch to Azure Event Grid: <ERROR_TYPE>")
             return False

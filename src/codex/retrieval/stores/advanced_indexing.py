@@ -148,7 +148,7 @@ class HNSWIndex:
         try:
             import faiss
         except ImportError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("ImportError: <ERROR_TYPE>")
             logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
             raise RuntimeError(
@@ -252,7 +252,7 @@ class HNSWIndex:
         try:
             import faiss
         except ImportError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("ImportError: <ERROR_TYPE>")
             logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
             raise RuntimeError("FAISS is required") from e
@@ -269,7 +269,7 @@ class HNSWIndex:
         try:
             import faiss
         except ImportError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("ImportError: <ERROR_TYPE>")
             logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
             raise RuntimeError("FAISS is required") from e
@@ -329,7 +329,7 @@ class IVFPQIndex:
         try:
             import faiss
         except ImportError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("ImportError: <ERROR_TYPE>")
             logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
             raise RuntimeError(
@@ -374,7 +374,7 @@ class IVFPQIndex:
         try:
             __import__("numpy")
         except ImportError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("ImportError: <ERROR_TYPE>")
             logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
             raise RuntimeError("NumPy is required. Install with: pip install numpy") from e
@@ -409,7 +409,7 @@ class IVFPQIndex:
         try:
             __import__("numpy")
         except ImportError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("ImportError: <ERROR_TYPE>")
             logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
             raise RuntimeError("NumPy is required. Install with: pip install numpy") from e
@@ -443,7 +443,7 @@ class IVFPQIndex:
         try:
             __import__("numpy")
         except ImportError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("ImportError: <ERROR_TYPE>")
             logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
             raise RuntimeError("NumPy is required. Install with: pip install numpy") from e
@@ -485,7 +485,7 @@ class IVFPQIndex:
         try:
             import faiss
         except ImportError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("ImportError: <ERROR_TYPE>")
             logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
             raise RuntimeError("FAISS is required") from e
@@ -502,7 +502,7 @@ class IVFPQIndex:
         try:
             import faiss
         except ImportError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("ImportError: <ERROR_TYPE>")
             logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
             raise RuntimeError("FAISS is required") from e

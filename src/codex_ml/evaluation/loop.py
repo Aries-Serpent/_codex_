@@ -337,7 +337,7 @@ def _collect_system_metrics() -> dict[str, float]:
         cpu_percent = float(psutil.cpu_percent(interval=None))
         memory_percent = float(psutil.virtual_memory().percent)
     except (IOError, OSError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 

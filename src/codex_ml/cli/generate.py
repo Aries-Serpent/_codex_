@@ -123,7 +123,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             try:
                 prompt = filters.enforce(prompt, stage="prompt", bypass=bypass)
             except SafetyViolation as exc:
-                error_type = type(exc).__name__
+                type(exc).__name__
                 logger.debug("SafetyViolation: <ERROR_TYPE>")
                 log_event(
                     logger,
@@ -154,7 +154,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             try:
                 text = filters.enforce(text, stage="output", bypass=bypass)
             except SafetyViolation as exc:
-                error_type = type(exc).__name__
+                type(exc).__name__
                 logger.debug("SafetyViolation: <ERROR_TYPE>")
                 log_event(
                     logger,

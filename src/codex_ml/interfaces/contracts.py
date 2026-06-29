@@ -93,7 +93,7 @@ def validate_tokenizer_contract(adapter: Any) -> None:
     try:
         tokens = adapter.encode("contract smoke test")
     except (ValueError, TypeError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("TypeError/ValueError: <ERROR_TYPE>")
         logger.warning("TypeError/ValueError: <ERROR_TYPE>", exc_info=True)
         raise TokenizationContractError(f"encode failed: {e}") from e

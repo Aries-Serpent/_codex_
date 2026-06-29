@@ -117,7 +117,7 @@ def _load_checkpoint_payload(path: Path, *, map_location: Any) -> Mapping[str, A
     try:
         result = _TORCH_LOAD_FN(path, **kwargs)
     except TypeError as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("TypeError: <ERROR_TYPE>")
         if _TORCH_SUPPORTS_WEIGHTS_ONLY and "weights_only" in str(exc):
             kwargs.pop("weights_only", None)
@@ -282,7 +282,7 @@ class Trainer:
             try:
                 resolved_seed = int(cfg.seed)
             except (TypeError, ValueError) as exc:
-                error_type = type(exc).__name__
+                type(exc).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 raise ValueError("TrainerConfig.seed must be an int") from exc
             _set_seed(resolved_seed)
@@ -479,7 +479,7 @@ class Trainer:
             try:
                 data = json.loads(meta_path.read_text(encoding="utf-8"))
             except (IOError, OSError) as exc:
-                error_type = type(exc).__name__
+                type(exc).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 LOGGER.debug("Skipping checkpoint metadata %s: %s", meta_path, exc)
                 continue
@@ -520,7 +520,7 @@ class Trainer:
             try:
                 data = json.loads(meta_path.read_text(encoding="utf-8"))
             except (IOError, OSError) as exc:
-                error_type = type(exc).__name__
+                type(exc).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 LOGGER.debug("Skipping checkpoint metadata %s: %s", meta_path, exc)
                 continue

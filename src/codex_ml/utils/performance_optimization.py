@@ -141,7 +141,7 @@ class MemoryOptimizer:
                 model = model.to(memory_format=torch.channels_last)
                 logger.info("Converted model to channels_last memory format")
             except (ValueError, TypeError, RuntimeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.debug("Could not convert to channels_last: <ERROR_TYPE>")
 
@@ -233,7 +233,7 @@ def optimize_model(
             model = model.to(memory_format=torch.channels_last)
             logger.info("Converted to channels_last memory format")
         except (ValueError, TypeError, RuntimeError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.debug("Could not convert to channels_last: <ERROR_TYPE>")
 
@@ -243,7 +243,7 @@ def optimize_model(
             model = torch.compile(model)
             logger.info("Model compiled with torch.compile")
         except (ValueError, TypeError, RuntimeError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.warning("Could not compile model: <ERROR_TYPE>")
 

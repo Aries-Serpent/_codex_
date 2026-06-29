@@ -160,7 +160,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             try:
                 prompt_decision = moderation_adapter.enforce(prompt_text, stage="prompt")
             except ModerationRejection as exc:
-                error_type = type(exc).__name__
+                type(exc).__name__
                 logger.debug("ModerationRejection: <ERROR_TYPE>")
                 log_event(
                     logger,
@@ -187,7 +187,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             try:
                 output_decision = moderation_adapter.enforce(text, stage="output")
             except ModerationRejection as exc:
-                error_type = type(exc).__name__
+                type(exc).__name__
                 logger.debug("ModerationRejection: <ERROR_TYPE>")
                 log_event(
                     logger,
@@ -210,7 +210,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         try:
             pkg_version = version("codex")
         except PackageNotFoundError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("PackageNotFoundError: <ERROR_TYPE>")
             logger.warning("PackageNotFoundError: <ERROR_TYPE>", exc_info=True)
             pkg_version = "0.0"

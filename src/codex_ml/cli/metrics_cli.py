@@ -262,7 +262,7 @@ def cmd_ingest(args: argparse.Namespace) -> int:
         try:
             _validate_with_jsonschema(input_path, schema_path)
         except ValueError as exc:
-            error_type = type(exc).__name__
+            type(exc).__name__
             logger.debug("ValueError: <ERROR_TYPE>")
             print("[metrics-cli] <ERROR_TYPE>", file=sys.stderr)
             return 3
@@ -332,7 +332,7 @@ def _summarize(path: Path) -> dict[str, Any]:
             try:
                 epochs.add(int(record["epoch"]))
             except (IOError, OSError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
         for key, value in record.items():

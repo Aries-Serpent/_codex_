@@ -71,7 +71,7 @@ def _coerce_int(value: object, *, default: int) -> int:
         try:
             return int(value.strip())
         except ValueError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("ValueError: <ERROR_TYPE>")
             logger.warning("ValueError: <ERROR_TYPE>", exc_info=True)
             return default
@@ -85,7 +85,7 @@ def _coerce_float(value: object, *, default: float) -> float:
         try:
             return float(value.strip())
         except ValueError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("ValueError: <ERROR_TYPE>")
             logger.warning("ValueError: <ERROR_TYPE>", exc_info=True)
             return default

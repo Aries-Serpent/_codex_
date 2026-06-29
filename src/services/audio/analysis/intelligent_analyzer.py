@@ -84,7 +84,7 @@ class IntelligentAudioAnalyzer:
                 metadata=self._extract_metadata(file_path),
             )
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             self.logger.error("Analysis failed: <ERROR_TYPE>")
             raise
 

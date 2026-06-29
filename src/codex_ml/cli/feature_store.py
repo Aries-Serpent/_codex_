@@ -78,7 +78,7 @@ def register(
         )  # codeql[py/clear-text-logging-sensitive-data]
 
     except (ValueError, TypeError, RuntimeError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         console.print(
             "[red]✗[/red] Error registering feature group: <ERROR_TYPE>"
@@ -148,7 +148,7 @@ def list(
         )  # codeql[py/clear-text-logging-sensitive-data]
 
     except (ValueError, TypeError, RuntimeError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         console.print(
             "[red]✗[/red] Error listing features: <ERROR_TYPE>"
@@ -228,7 +228,7 @@ def health(
         )  # codeql[py/clear-text-logging-sensitive-data]
 
     except (ValueError, TypeError, RuntimeError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         console.print(
             "[red]✗[/red] Error generating health report: <ERROR_TYPE>"
@@ -278,7 +278,7 @@ def materialize(
         )  # codeql[py/clear-text-logging-sensitive-data]
 
     except (ValueError, TypeError, RuntimeError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         console.print(
             "[red]✗[/red] Error materializing features: <ERROR_TYPE>"
@@ -325,7 +325,7 @@ def versions(
         )  # codeql[py/clear-text-logging-sensitive-data]
 
     except (ValueError, TypeError, RuntimeError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         console.print(
             "[red]✗[/red] Error listing versions: <ERROR_TYPE>"
@@ -425,7 +425,7 @@ def info(
                 console.print(f"  • {warning}")  # codeql[py/clear-text-logging-sensitive-data]
 
     except (ValueError, TypeError, RuntimeError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         console.print(
             "[red]✗[/red] Error getting feature info: <ERROR_TYPE>"

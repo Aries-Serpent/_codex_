@@ -93,7 +93,7 @@ def _fallback_detect_encoding(path: Path, sample_size: int = 131072) -> str:
         if data.startswith(b"\xef\xbb\xbf"):
             return "utf-8"
     except (ValueError, TypeError, RuntimeError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 
@@ -254,7 +254,7 @@ def _manual_read_text(
     try:
         data = p.read_bytes()
     except (IOError, OSError) as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         raise RuntimeError(f"Failed to read bytes from {p}: {exc}") from exc
 
@@ -307,14 +307,14 @@ def read_text(path: str | Path, encoding: str = "utf-8", errors: str = "strict")
         try:
             result = _io_read_text(p, encoding=encoding, errors=errors)
         except TypeError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("TypeError: <ERROR_TYPE>")
             logger.warning("TypeError: <ERROR_TYPE>", exc_info=True)
             # The helper may not accept encoding/errors kwargs — try positional and fewer args
             try:
                 result = _io_read_text(p, encoding)
             except TypeError as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("TypeError: <ERROR_TYPE>")
                 logger.warning("TypeError: <ERROR_TYPE>", exc_info=True)
                 try:

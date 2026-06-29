@@ -93,7 +93,7 @@ class BleuMetric(MetricAdapter):
                 f"{self.name}_precisions": bleu.precisions,
             }
         except (ValueError, TypeError, RuntimeError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.debug("Exception caught, returning", exc_info=True)
             return {f"{self.name}_error": str(e)}  # type: ignore[dict-item]

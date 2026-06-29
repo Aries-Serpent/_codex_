@@ -51,14 +51,14 @@ def _load_yaml_config(path: Path) -> dict[str, Any]:
     except FileNotFoundError as exc:  # pragma: no cover - Click handles presentation
         raise TokenizerPipelineError(f"config not found: {path}") from exc
     except MissingPyYAMLError as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("MissingPyYAMLError: <ERROR_TYPE>")
         raise TokenizerPipelineError(
             'PyYAML is required to parse tokenizer configs. Install it via ``pip install "PyYAML>=6.0"`` '  # noqa: E501
             "before running tokenizer commands."
         ) from exc
     except YAMLError as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("YAMLError: <ERROR_TYPE>")
         raise TokenizerPipelineError(f"failed to parse config {path}: {exc}") from exc
     if not isinstance(data, dict):
@@ -79,7 +79,7 @@ def load_train_config(config_path: str) -> TrainTokenizerConfig:
     try:
         return TrainTokenizerConfig(**kwargs)
     except TypeError as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("TypeError: <ERROR_TYPE>")
         raise TokenizerPipelineError(f"invalid tokenizer config: {exc}") from exc
 

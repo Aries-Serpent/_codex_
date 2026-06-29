@@ -57,7 +57,7 @@ def validate_file_structure(file_path: str) -> dict[str, bool]:
     try:
         content = path.read_text()
     except (IOError, OSError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         logger.error("Failed to read file: <ERROR_TYPE>")
         return issues
@@ -108,7 +108,7 @@ def validate_file_structure(file_path: str) -> dict[str, bool]:
         try:
             ast.parse(content)
         except SyntaxError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("SyntaxError: <ERROR_TYPE>")
             issues["valid_syntax"] = False
             logger.error(f"Syntax error in {file_path}: <ERROR_TYPE>")
@@ -149,7 +149,7 @@ def validate_with_checksum(
         logger.info(f"Checksum computed: {sha} ({file_path})")
         return True, sha
     except (IOError, OSError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         logger.error("Checksum validation failed: <ERROR_TYPE>")
         return False, ""
@@ -184,7 +184,7 @@ def validate_with_diff(
         logger.info(f"Files differ: {original_file} vs {modified_file}")
         return False, result.stdout
     except (IOError, OSError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         logger.error("Diff validation failed: <ERROR_TYPE>")
         return False, ""
@@ -218,7 +218,7 @@ def validate_code_quality(file_path: str) -> dict[str, bool]:
                 ast.parse(content)
                 logger.info(f"Python syntax valid: {file_path}")
             except SyntaxError as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("SyntaxError: <ERROR_TYPE>")
                 checks["syntax_valid"] = False
                 logger.error("Python syntax error: <ERROR_TYPE>")
@@ -231,7 +231,7 @@ def validate_code_quality(file_path: str) -> dict[str, bool]:
                 logger.error(f"Bash syntax error: {result.stderr.decode()}")
 
     except (IOError, OSError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         logger.error("Code quality check failed: <ERROR_TYPE>")
 

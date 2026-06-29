@@ -203,7 +203,7 @@ def _read_yaml_mapping(path: Path) -> dict[str, Any]:
         try:
             data = safe_load(fh) or {}
         except MissingPyYAMLError as exc:
-            error_type = type(exc).__name__
+            type(exc).__name__
             logger.debug("MissingPyYAMLError: <ERROR_TYPE>")
             raise RuntimeError(
                 'PyYAML is required to parse configuration files. Install it via ``pip install "PyYAML>=6.0"`` '  # noqa: E501
@@ -225,7 +225,7 @@ def _apply_overrides_to_mapping(
         try:
             parsed = safe_load(value)
         except MissingPyYAMLError as exc:
-            error_type = type(exc).__name__
+            type(exc).__name__
             logger.debug("MissingPyYAMLError: <ERROR_TYPE>")
             raise RuntimeError(
                 'YAML overrides require PyYAML. Install it via ``pip install "PyYAML>=6.0"`` '
@@ -328,7 +328,7 @@ def load_config(*, config_path: str) -> DictConfig:
         try:
             data = safe_load(fh) or {}
         except MissingPyYAMLError as exc:
-            error_type = type(exc).__name__
+            type(exc).__name__
             logger.debug("MissingPyYAMLError: <ERROR_TYPE>")
             raise RuntimeError(
                 'PyYAML is required to parse configuration files. Install it via ``pip install "PyYAML>=6.0"`` '  # noqa: E501

@@ -91,7 +91,7 @@ class LlamaCppEmbeddingProvider:
                 logger.debug(f"Detected embedding dimension: {detected_dim}")
 
         except (ValueError, TypeError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.error("Failed to load llama.cpp model: <ERROR_TYPE>")
             raise
 
@@ -128,7 +128,7 @@ class LlamaCppEmbeddingProvider:
                     embeddings.append([0.0] * self.dimension)
 
             except (ValueError, TypeError, RuntimeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.error("Error encoding text: <ERROR_TYPE>")
                 embeddings.append([0.0] * self.dimension)
 

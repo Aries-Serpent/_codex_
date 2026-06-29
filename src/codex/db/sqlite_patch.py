@@ -75,7 +75,7 @@ class PooledConnectionProxy:
             try:
                 self._conn.rollback()
             except (ValueError, TypeError, RuntimeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
         # Returning False ensures exceptions propagate like the standard
@@ -97,7 +97,7 @@ class PooledConnectionProxy:
                 try:
                     _CONN_POOL.remove(self._conn)
                 except ValueError as e:
-                    error_type = type(e).__name__
+                    type(e).__name__
                     logger.debug("ValueError: <ERROR_TYPE>")
                     logger.warning("ValueError: <ERROR_TYPE>", exc_info=True)
         return self._conn.close()
@@ -186,7 +186,7 @@ def _close_all() -> None:
             try:
                 conn.close()
             except (ValueError, TypeError, RuntimeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 

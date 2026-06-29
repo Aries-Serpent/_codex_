@@ -370,7 +370,7 @@ def cache_dataset(
                     try:
                         fcntl.flock(fd, fcntl.LOCK_UN)
                     except (IOError, OSError) as e:
-                        error_type = type(e).__name__
+                        type(e).__name__
                         logger.debug("Exception: <ERROR_TYPE>")
                         logger.warning(
                             f"Exception: {e}", exc_info=True

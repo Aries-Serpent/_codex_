@@ -205,7 +205,7 @@ class SessionDB:
 
                         return session_data
                 except (ValueError, TypeError, RuntimeError) as e:
-                    error_type = type(e).__name__
+                    type(e).__name__
                     logger.error(f"Error loading archived session {session_id}: <ERROR_TYPE>")
 
         return row_dict
@@ -311,7 +311,7 @@ class SessionDB:
                 self.mark_deleted(session_id)
                 deleted_count += 1
             except (IOError, OSError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.error(f"Error deleting archive {session_id}: <ERROR_TYPE>")
 
         conn.close()

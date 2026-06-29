@@ -131,7 +131,7 @@ def _open_locked(path: Path) -> Generator[Any, None, None]:
             try:
                 fcntl.flock(f.fileno(), fcntl.LOCK_UN)
             except (IOError, OSError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
         f.close()

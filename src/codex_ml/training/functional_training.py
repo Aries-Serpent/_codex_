@@ -223,7 +223,7 @@ def train(
             try:
                 metrics_path.unlink()
             except (IOError, OSError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
         try:
@@ -248,7 +248,7 @@ def train(
                 try:
                     return int(size_attr(0))
                 except (ValueError, TypeError, RuntimeError) as e:
-                    error_type = type(e).__name__
+                    type(e).__name__
                     logger.debug("Exception: <ERROR_TYPE>")
                     logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
             try:
@@ -292,7 +292,7 @@ def train(
             with metrics_path.open("a", encoding="utf-8") as fh:
                 fh.write(json.dumps(record, sort_keys=True) + "\n")
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 
@@ -339,7 +339,7 @@ def train(
                 }
                 log_params_safe(_as_flat_params(params))
             except (ValueError, TypeError, RuntimeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 
@@ -391,14 +391,14 @@ def train(
                             try:
                                 writer.add_scalar("train/loss", loss_value, global_step)
                             except (IOError, OSError) as e:
-                                error_type = type(e).__name__
+                                type(e).__name__
                                 logger.debug("Exception: <ERROR_TYPE>")
                                 logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
                         if config.mlflow_enable:
                             try:
                                 log_metric_safe("train/loss", float(loss_value), step=global_step)
                             except (ValueError, TypeError, RuntimeError) as e:
-                                error_type = type(e).__name__
+                                type(e).__name__
                                 logger.debug("Exception: <ERROR_TYPE>")
                                 logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
                             _append_metric(
@@ -413,7 +413,7 @@ def train(
                             try:
                                 wb.log({"train/loss": loss_value}, step=global_step)
                             except (ValueError, TypeError, RuntimeError) as e:
-                                error_type = type(e).__name__
+                                type(e).__name__
                                 logger.debug("Exception: <ERROR_TYPE>")
                                 logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 
@@ -486,7 +486,7 @@ def train(
                             global_step,
                         )
                     except (IOError, OSError) as e:
-                        error_type = type(e).__name__
+                        type(e).__name__
                         logger.debug("Exception: <ERROR_TYPE>")
                         logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
                 if config.mlflow_enable:
@@ -502,7 +502,7 @@ def train(
                             step=global_step,
                         )
                     except (ValueError, TypeError, RuntimeError) as e:
-                        error_type = type(e).__name__
+                        type(e).__name__
                         logger.debug("Exception: <ERROR_TYPE>")
                         logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
                     _append_metric(
@@ -524,7 +524,7 @@ def train(
                         if wb_payload:
                             wb.log(wb_payload, step=global_step)
                     except (ValueError, TypeError, RuntimeError) as e:
-                        error_type = type(e).__name__
+                        type(e).__name__
                         logger.debug("Exception: <ERROR_TYPE>")
                         logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 
@@ -556,7 +556,7 @@ def train(
                 for artifact in artifacts:
                     log_artifact_safe(str(artifact))
             except (ValueError, TypeError, RuntimeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
         if config.wandb_enable:
@@ -569,7 +569,7 @@ def train(
                 if final_payload:
                     wb.log(final_payload, step=global_step)
             except (IOError, OSError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 
@@ -578,7 +578,7 @@ def train(
             stop_event.set()
             system_thread.join(timeout=5.0)
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 
@@ -587,7 +587,7 @@ def train(
             writer.flush()
             writer.close()
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 

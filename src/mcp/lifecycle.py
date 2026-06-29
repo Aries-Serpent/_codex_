@@ -173,7 +173,7 @@ class LifecycleManager:
             self._logger.info("Server initialized successfully")
 
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             self._logger.error("Initialization failed: %s", e)
             await self.transition_to(ServerState.ERROR)
@@ -214,7 +214,7 @@ class LifecycleManager:
             try:
                 hook()
             except (ValueError, TypeError, RuntimeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 self._logger.error("Shutdown hook failed: %s", e)
 
@@ -270,7 +270,7 @@ class LifecycleManager:
                     all_healthy = False
                     messages.append(result.message)
             except (ValueError, TypeError, RuntimeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 all_healthy = False
                 details[f"check_{i}"] = {"healthy": False, "error": str(e)}

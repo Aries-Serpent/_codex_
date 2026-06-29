@@ -214,7 +214,7 @@ def build(
         )  # codeql[py/clear-text-logging-sensitive-data]
 
     except ImportError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         console.print(
             "[red]❌ Missing dependencies: <ERROR_TYPE>[/red]"
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -223,7 +223,7 @@ def build(
         )  # codeql[py/clear-text-logging-sensitive-data]
         raise typer.Exit(1) from e
     except (ValueError, TypeError, RuntimeError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         console.print(
             "[red]❌ Failed to build index: <ERROR_TYPE>[/red]"
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -363,13 +363,13 @@ def query(
         )  # codeql[py/clear-text-logging-sensitive-data]
         raise typer.Exit(1) from err
     except ImportError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         console.print(
             "[red]❌ Missing dependencies: <ERROR_TYPE>[/red]"
         )  # codeql[py/clear-text-logging-sensitive-data]
         raise typer.Exit(1) from e
     except (ValueError, TypeError, RuntimeError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         console.print(
             "[red]❌ Query failed: <ERROR_TYPE>[/red]"
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -433,7 +433,7 @@ def list_indices(
                             }
                         )
                     except (IOError, OSError) as e:
-                        error_type = type(e).__name__
+                        type(e).__name__
                         logger.warning(
                             f"Failed to read metadata for {index_path}: <ERROR_TYPE>"
                         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -468,7 +468,7 @@ def list_indices(
         )  # codeql[py/clear-text-logging-sensitive-data]
 
     except (ValueError, TypeError, RuntimeError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         console.print(
             "[red]❌ Failed to list indices: <ERROR_TYPE>[/red]"
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -543,7 +543,7 @@ def delete(
         )  # codeql[py/clear-text-logging-sensitive-data]
 
     except (IOError, OSError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         console.print(
             "[red]❌ Failed to delete index: <ERROR_TYPE>[/red]"
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -631,13 +631,13 @@ def merge(
             raise typer.Exit(1)
 
     except ImportError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         console.print(
             "[red]❌ Missing dependencies: <ERROR_TYPE>[/red]"
         )  # codeql[py/clear-text-logging-sensitive-data]
         raise typer.Exit(1) from e
     except (ValueError, TypeError, RuntimeError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         console.print(
             "[red]❌ Merge failed: <ERROR_TYPE>[/red]"
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -725,7 +725,7 @@ def stats(
         console.print(table)  # codeql[py/clear-text-logging-sensitive-data]
 
     except (IOError, OSError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         console.print(
             "[red]❌ Failed to get stats: <ERROR_TYPE>[/red]"
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -789,13 +789,13 @@ def metrics(
             print(content)  # codeql[py/clear-text-logging-sensitive-data]
 
     except ImportError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         console.print(
             "[red]❌ Missing dependencies: <ERROR_TYPE>[/red]"
         )  # codeql[py/clear-text-logging-sensitive-data]
         raise typer.Exit(1) from e
     except (ValueError, TypeError, RuntimeError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         console.print(
             "[red]❌ Failed to export metrics: <ERROR_TYPE>[/red]"
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -940,13 +940,13 @@ def benchmark(
             )  # codeql[py/clear-text-logging-sensitive-data]
 
     except ImportError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         console.print(
             "[red]❌ Missing benchmark dependencies: <ERROR_TYPE>[/red]"
         )  # codeql[py/clear-text-logging-sensitive-data]
         raise typer.Exit(1) from e
     except (ValueError, TypeError, RuntimeError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         console.print(
             "[red]❌ Benchmark failed: <ERROR_TYPE>[/red]"
         )  # codeql[py/clear-text-logging-sensitive-data]

@@ -381,7 +381,7 @@ class OODAOrchestrator:
                 # Loop closure: use previous execution report as context
                 context = self.previous_execution_report if cycle_count > 0 else None
 
-                record = self.run_cycle(context)
+                self.run_cycle(context)
                 cycle_count += 1
 
                 # Enforce frequency

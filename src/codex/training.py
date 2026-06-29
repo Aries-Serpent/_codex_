@@ -190,7 +190,7 @@ def save_checkpoint(
         if write_metadata is not None:
             write_metadata(p, extra={"epoch": epoch, "keys": list(payload.keys())})
     except (IOError, OSError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         logger.warning(
             "Exception: <ERROR_TYPE>", exc_info=True
@@ -352,7 +352,7 @@ def run_functional_training(
             try:
                 sanitized_text = filters.enforce(sanitized_text, stage="prompt")
             except SafetyViolation as exc:
-                error_type = type(exc).__name__
+                type(exc).__name__
                 logger.debug(
                     "SafetyViolation: <ERROR_TYPE>"
                 )  # codeql[py/clear-text-logging-sensitive-data]
@@ -389,7 +389,7 @@ def run_functional_training(
             try:
                 dataset_paths.append(Path(entry))
             except TypeError as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug(
                     "TypeError: <ERROR_TYPE>"
                 )  # codeql[py/clear-text-logging-sensitive-data]
@@ -421,7 +421,7 @@ def run_functional_training(
                 try:
                     key = str(candidate.resolve()) if candidate.exists() else str(candidate)
                 except OSError as e:
-                    error_type = type(e).__name__
+                    type(e).__name__
                     logger.debug(
                         "OSError: <ERROR_TYPE>"
                     )  # codeql[py/clear-text-logging-sensitive-data]
@@ -667,7 +667,7 @@ def _run_minilm_training(
                             f"Resumed training from checkpoint epoch {epoch}"
                         )  # codeql[py/clear-text-logging-sensitive-data]
             except (ValueError, TypeError, RuntimeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug(
                     "Exception: <ERROR_TYPE>"
                 )  # codeql[py/clear-text-logging-sensitive-data]
@@ -777,7 +777,7 @@ def _run_minilm_training(
             }
             _codex_log_all(epoch + 1, scalars, loggers)
         except (IOError, OSError) as exc:
-            error_type = type(exc).__name__
+            type(exc).__name__
             logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
             print(
                 "[monitoring-error] <ERROR_TYPE>", file=sys.stderr
@@ -794,7 +794,7 @@ def _run_minilm_training(
                     metrics={"loss": loss_val, "accuracy": acc, "perplexity": ppl},
                 )
             except (IOError, OSError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug(
                     "Exception: <ERROR_TYPE>"
                 )  # codeql[py/clear-text-logging-sensitive-data]
@@ -842,7 +842,7 @@ def _run_minilm_training(
                 }
                 _codex_log_all(epoch + 1, val_metrics, loggers)
             except (IOError, OSError) as exc:
-                error_type = type(exc).__name__
+                type(exc).__name__
                 logger.debug(
                     "Exception: <ERROR_TYPE>"
                 )  # codeql[py/clear-text-logging-sensitive-data]
@@ -869,7 +869,7 @@ def _run_minilm_training(
             writer.flush()
             writer.close()
         except (IOError, OSError) as exc:
-            error_type = type(exc).__name__
+            type(exc).__name__
             logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
             print(
                 "[monitoring-error] <ERROR_TYPE>", file=sys.stderr
@@ -1260,7 +1260,7 @@ def _codex_apply_training_integration(args, train_loop_fn, config: dict[str, Any
                 try:
                     clip_grad_norm_(model.parameters(), grad_clip)
                 except (ValueError, TypeError, RuntimeError) as e:
-                    error_type = type(e).__name__
+                    type(e).__name__
                     logger.debug(
                         "Exception: <ERROR_TYPE>"
                     )  # codeql[py/clear-text-logging-sensitive-data]
@@ -1273,7 +1273,7 @@ def _codex_apply_training_integration(args, train_loop_fn, config: dict[str, Any
                 try:
                     last_sched.step()
                 except (ValueError, TypeError, RuntimeError) as e:
-                    error_type = type(e).__name__
+                    type(e).__name__
                     logger.debug(
                         "Exception: <ERROR_TYPE>"
                     )  # codeql[py/clear-text-logging-sensitive-data]
@@ -1376,7 +1376,7 @@ def codex_train_step(
                 scaler.unscale_(optimizer)
                 clip_grad_norm_(model.parameters(), grad_clip)
             except (ValueError, TypeError, RuntimeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug(
                     "Exception: <ERROR_TYPE>"
                 )  # codeql[py/clear-text-logging-sensitive-data]
@@ -1390,7 +1390,7 @@ def codex_train_step(
             try:
                 clip_grad_norm_(model.parameters(), grad_clip)
             except (ValueError, TypeError, RuntimeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug(
                     "Exception: <ERROR_TYPE>"
                 )  # codeql[py/clear-text-logging-sensitive-data]

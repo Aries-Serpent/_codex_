@@ -56,7 +56,7 @@ class PluginLoader:
                 module = importlib.import_module(f"codex.ast.plugins.{module_name}")
                 self._register_from_module(module)
             except (IOError, OSError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.warning(f"Failed to load plugin {module_name}: <ERROR_TYPE>")
 
     def _load_external_plugins(self) -> None:
@@ -76,12 +76,12 @@ class PluginLoader:
                     except ImportError as ie:
                         logger.debug(f"Failed to import external plugin {name}: {ie}")
                     except AttributeError as e:
-                        error_type = type(e).__name__
+                        type(e).__name__
                         logger.warning(
                             f"Failed to load external plugin {name}: <ERROR_TYPE>", exc_info=True
                         )
         except (ImportError, AttributeError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("External plugin discovery failed: <ERROR_TYPE>")
 
     def _register_from_module(self, module) -> None:
@@ -98,7 +98,7 @@ class PluginLoader:
                             self._ast_plugins[plugin_instance.language] = plugin_instance
                             logger.info(f"Registered AST plugin: {plugin_instance.language}")
                     except (ValueError, TypeError, RuntimeError) as e:
-                        error_type = type(e).__name__
+                        type(e).__name__
                         logger.warning(f"Failed to instantiate plugin {attr_name}: <ERROR_TYPE>")
 
                 elif issubclass(attr, AnalysisPlugin) and attr is not AnalysisPlugin:
@@ -107,7 +107,7 @@ class PluginLoader:
                         self._analysis_plugins[plugin_instance.name] = plugin_instance  # type: ignore[attr-defined]
                         logger.info(f"Registered analysis plugin: {plugin_instance.name}")  # type: ignore[attr-defined]
                     except (IOError, OSError) as e:
-                        error_type = type(e).__name__
+                        type(e).__name__
                         logger.warning(
                             f"Failed to instantiate analysis plugin {attr_name}: <ERROR_TYPE>"
                         )

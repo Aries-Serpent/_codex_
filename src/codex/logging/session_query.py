@@ -108,7 +108,7 @@ def detect_schema(conn: sqlite3.Connection) -> tuple[str, dict[str, str]]:
         try:
             safe = _sanitize_table(table)
         except ValueError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("ValueError: <ERROR_TYPE>")
             logger.warning("ValueError: <ERROR_TYPE>", exc_info=True)
             continue
@@ -209,7 +209,7 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
         print_rows(rows, cols)
         return 0
     except (IOError, OSError) as exc:  # pragma: no cover - top-level guard
-        error_type = type(exc).__name__
+        type(exc).__name__
         print("ERROR: <ERROR_TYPE>", file=sys.stderr)
         return 2
 

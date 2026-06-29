@@ -92,7 +92,7 @@ def inspect_torch(module: Optional[ModuleType] = None) -> TorchStatus:
     try:
         data_module = importlib.import_module("torch.utils.data")
     except (ImportError, AttributeError) as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         logger.debug("Exception caught, returning", exc_info=True)
         return TorchStatus(

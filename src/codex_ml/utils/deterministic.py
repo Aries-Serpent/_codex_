@@ -62,11 +62,11 @@ def enable_deterministic_mode(warn_only: bool = False) -> None:
             tf.config.experimental.enable_op_determinism()
             logger.info("TensorFlow deterministic ops enabled")
     except ImportError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("ImportError: <ERROR_TYPE>")
         logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)  # TensorFlow not installed
     except (ValueError, TypeError, RuntimeError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         logger.warning("Failed to enable TensorFlow deterministic mode: <ERROR_TYPE>")
 
@@ -96,11 +96,11 @@ def disable_deterministic_mode() -> None:
 
         logger.info("PyTorch deterministic algorithms disabled")
     except ImportError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("ImportError: <ERROR_TYPE>")
         logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
     except (ValueError, TypeError, RuntimeError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         logger.warning("Failed to disable PyTorch deterministic mode: <ERROR_TYPE>")
 
@@ -122,7 +122,7 @@ def is_deterministic_mode_enabled() -> bool:
 
         return torch.are_deterministic_algorithms_enabled()
     except ImportError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("ImportError: <ERROR_TYPE>")
         logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
         return False
@@ -186,7 +186,7 @@ def check_deterministic_operations() -> dict[str, bool | None]:
             status["cudnn_deterministic"] = None  # type: ignore[assignment]
             status["cudnn_benchmark_disabled"] = None  # type: ignore[assignment]
     except ImportError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("ImportError: <ERROR_TYPE>")
         logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
         status["torch_available"] = False

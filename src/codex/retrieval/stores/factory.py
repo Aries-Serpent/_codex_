@@ -95,7 +95,7 @@ class VectorStoreFactory:
             logger.info(f"Successfully created {store_type} store")
             return instance
         except (ValueError, TypeError, RuntimeError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.error(f"Failed to create {store_type} store: <ERROR_TYPE>")
             raise

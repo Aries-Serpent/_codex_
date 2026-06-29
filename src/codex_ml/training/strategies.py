@@ -116,7 +116,7 @@ class FunctionalStrategy:
             try:
                 cb.on_epoch_start(0, {"resume_from": resume_from})
             except (ValueError, TypeError, RuntimeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 
         functional_overrides: dict[str, Any] = {}
@@ -195,7 +195,7 @@ class FunctionalStrategy:
                 try:
                     cb.on_epoch_end(0, {"error": 1.0}, {"exception": repr(exc)})
                 except (ValueError, TypeError, RuntimeError) as e:
-                    error_type = type(e).__name__
+                    type(e).__name__
                     logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
         else:
             for cb in callbacks:
@@ -206,7 +206,7 @@ class FunctionalStrategy:
                         {"metrics": metrics or {}, "trained": bool(train_texts)},
                     )
                 except (ValueError, TypeError, RuntimeError) as e:
-                    error_type = type(e).__name__
+                    type(e).__name__
                     logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 
         if functional_overrides:
@@ -243,7 +243,7 @@ class LegacyStrategy:
             try:
                 cb.on_epoch_start(0, {"resume_from": resume_from})
             except (ValueError, TypeError, RuntimeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
         try:
             _legacy(
@@ -260,7 +260,7 @@ class LegacyStrategy:
                 try:
                     cb.on_epoch_end(0, {"error": 1.0}, {"exception": repr(exc)})
                 except (ValueError, TypeError, RuntimeError) as e:
-                    error_type = type(e).__name__
+                    type(e).__name__
                     logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
         return TrainingResult(
             status=status,
@@ -330,7 +330,7 @@ class ContinualReplayStrategy:
             try:
                 payload = target_path.read_text(encoding="utf-8")
             except OSError as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("OSError: <ERROR_TYPE>")
                 logger.warning("OSError: <ERROR_TYPE>", exc_info=True)
                 return [], []
@@ -367,7 +367,7 @@ class ContinualReplayStrategy:
                 try:
                     resolved.append(dict(phase))
                 except TypeError as e:
-                    error_type = type(e).__name__
+                    type(e).__name__
                     logger.debug("TypeError: <ERROR_TYPE>")
                     logger.warning("TypeError: <ERROR_TYPE>", exc_info=True)
                     resolved.append(dict(vars(phase)))

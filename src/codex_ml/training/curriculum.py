@@ -171,7 +171,7 @@ class CurriculumScheduler:
                 logger.info(f"Loaded curriculum state from {self.state_file}")
                 return CurriculumState.from_dict(data)
             except (IOError, OSError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.warning("Failed to load state, creating new: <ERROR_TYPE>")
 
@@ -184,7 +184,7 @@ class CurriculumScheduler:
                 json.dump(self.state.to_dict(), f, indent=2)
             logger.info(f"Saved curriculum state to {self.state_file}")
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.error("Failed to save state: <ERROR_TYPE>")
             raise
@@ -416,7 +416,7 @@ def load_curriculum_from_config(config_path: str) -> list[TrainingPhase]:
     try:
         import yaml
     except ImportError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("ImportError: <ERROR_TYPE>")
         logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
         raise RuntimeError("PyYAML not installed. Install with: pip install pyyaml") from e

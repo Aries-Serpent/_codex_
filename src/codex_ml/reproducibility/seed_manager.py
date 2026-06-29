@@ -157,7 +157,7 @@ class SeedManager:
                     try:
                         torch.use_deterministic_algorithms(True)
                     except RuntimeError as e:
-                        error_type = type(e).__name__
+                        type(e).__name__
                         logger.debug("RuntimeError: <ERROR_TYPE>")
                         logger.warning(
                             f"torch.use_deterministic_algorithms(True) failed: {e}. "

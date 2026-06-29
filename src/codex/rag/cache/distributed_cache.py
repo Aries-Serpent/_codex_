@@ -159,7 +159,7 @@ class RedisCacheBackend(BaseCacheBackend):
                 self._connected = False
                 return None
             except (ConnectionError, TimeoutError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.warning("Failed to connect to Redis: <ERROR_TYPE>")
                 self._connected = False
                 return None
@@ -209,7 +209,7 @@ class RedisCacheBackend(BaseCacheBackend):
                 return None
             return self._deserialize(data)
         except (ValueError, TypeError, RuntimeError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.warning("Redis get error: <ERROR_TYPE>")
             return None
 
@@ -224,7 +224,7 @@ class RedisCacheBackend(BaseCacheBackend):
             client.setex(self._make_key(key), ttl, data)
             return True
         except (ValueError, TypeError, RuntimeError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.warning("Redis put error: <ERROR_TYPE>")
             return False
 
@@ -237,7 +237,7 @@ class RedisCacheBackend(BaseCacheBackend):
             result = client.delete(self._make_key(key))
             return result > 0
         except (ValueError, TypeError, RuntimeError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.warning("Redis delete error: <ERROR_TYPE>")
             return False
 
@@ -258,7 +258,7 @@ class RedisCacheBackend(BaseCacheBackend):
                     break
             logger.debug("Redis cache cleared")
         except (ValueError, TypeError, RuntimeError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.warning("Redis clear error: <ERROR_TYPE>")
 
     def contains(self, key: str) -> bool:
@@ -269,7 +269,7 @@ class RedisCacheBackend(BaseCacheBackend):
         try:
             return bool(client.exists(self._make_key(key)))
         except (ConnectionError, TimeoutError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.warning("Redis contains error: <ERROR_TYPE>")
             return False
 

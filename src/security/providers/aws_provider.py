@@ -144,7 +144,7 @@ class AWSSecretsManagerProvider(SecretProvider):
                 error_message=f"{error_code}: {error_msg}",
             )
         except (ValueError, TypeError, RuntimeError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.error("AWS rotation failed: <ERROR_TYPE>")
             return RotationResult(success=False, old_secret_id=secret_id, error_message=str(e))
 

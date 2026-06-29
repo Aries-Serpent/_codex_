@@ -88,7 +88,7 @@ def _load_csv(path: Path, model: type[T]) -> MappingLoadResult[T]:
             try:
                 records.append(model.model_validate(row))
             except ValidationError as exc:
-                error_type = type(exc).__name__
+                type(exc).__name__
                 logger.debug("ValidationError: <ERROR_TYPE>")
                 _log_deferred(candidate, idx, row, exc.errors(include_url=False))
                 deferred += 1

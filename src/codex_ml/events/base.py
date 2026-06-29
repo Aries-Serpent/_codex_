@@ -141,7 +141,7 @@ class EventBus(EventPublisher, EventSubscriber):
             try:
                 callback(event)
             except (ValueError, TypeError, RuntimeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.error("Error in event callback: <ERROR_TYPE>")
 

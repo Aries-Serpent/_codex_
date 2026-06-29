@@ -73,7 +73,7 @@ def _resolve_connector_cache_root() -> Path:
         try:
             return Path(override).expanduser().resolve()
         except OSError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("OSError: <ERROR_TYPE>")
             logger.warning("OSError: <ERROR_TYPE>", exc_info=True)
             return Path(override).expanduser()
@@ -84,7 +84,7 @@ def _run_connector_coro(coro):
     try:
         loop = asyncio.get_running_loop()
     except RuntimeError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("RuntimeError: <ERROR_TYPE>")
         logger.warning("RuntimeError: <ERROR_TYPE>", exc_info=True)
         return asyncio.run(coro)
@@ -109,7 +109,7 @@ def _materialize_connector_uri(uri: str, *, cache_root: Path | None = None) -> l
     try:
         connector = get_connector(name)
     except KeyError as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("KeyError: <ERROR_TYPE>")
         raise ValueError(f"unknown connector: {name}") from exc
 
@@ -126,7 +126,7 @@ def _materialize_connector_uri(uri: str, *, cache_root: Path | None = None) -> l
         else:
             remote_files = list(_run_connector_coro(connector.list_files(normalized)))
     except ConnectorError as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("ConnectorError: <ERROR_TYPE>")
         raise RuntimeError(f"connector list failed for {uri}: {exc}") from exc
 
@@ -143,7 +143,7 @@ def _materialize_connector_uri(uri: str, *, cache_root: Path | None = None) -> l
         try:
             payload = _run_connector_coro(connector.read_file(remote_file))
         except ConnectorError as exc:
-            error_type = type(exc).__name__
+            type(exc).__name__
             logger.debug("ConnectorError: <ERROR_TYPE>")
             raise RuntimeError(f"connector read failed for {uri}: {exc}") from exc
         destination.write_bytes(payload)

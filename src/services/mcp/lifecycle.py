@@ -66,7 +66,7 @@ class LifecycleManager:
             self._is_healthy = True
             logger.info(f"Initialized ({len(executed)} hooks)")
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.error("Startup failed: <ERROR_TYPE>")
             await self._rollback_startup(executed)
@@ -78,7 +78,7 @@ class LifecycleManager:
             try:
                 logger.debug(f"Rolling back: {hook.__name__}")
             except (IOError, OSError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.warning("Rollback error: <ERROR_TYPE>")
 
@@ -93,7 +93,7 @@ class LifecycleManager:
                 else:
                     hook()
             except (ValueError, TypeError, RuntimeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.error("Shutdown hook failed: <ERROR_TYPE>")
         await self._cleanup_resources()
@@ -121,7 +121,7 @@ class LifecycleManager:
                         close()
                 logger.debug(f"Cleaned: {name}")
             except (ValueError, TypeError, RuntimeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.warning(f"Cleanup failed for {name}: <ERROR_TYPE>")
         self._resources.clear()
@@ -148,7 +148,7 @@ class LifecycleManager:
                         loop = asyncio.get_event_loop()
                         running = loop.is_running()
                     except RuntimeError as e:
-                        error_type = type(e).__name__
+                        type(e).__name__
                         logger.debug("RuntimeError: <ERROR_TYPE>")
                         logger.warning("RuntimeError: <ERROR_TYPE>", exc_info=True)
                         running = False
@@ -164,7 +164,7 @@ class LifecycleManager:
                 if not bool(result):
                     checks_ok = False
             except (ValueError, TypeError, RuntimeError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.warning("Health check failed: <ERROR_TYPE>")
                 checks_ok = False

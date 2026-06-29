@@ -161,7 +161,7 @@ class HealthChecker:
 
             checks["pytorch"] = "cuda" if torch.cuda.is_available() else "cpu"
         except ImportError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("ImportError: <ERROR_TYPE>")
             logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
             checks["pytorch"] = "not_installed"

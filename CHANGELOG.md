@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+### Fixed (7 failing CI checks and pre-existing violations — PR #5122, Session 2026-06-29T02:36Z)
+- **Ruff violations (F841):** Delegated cleanup of 50+ unused `error_type` variables in except blocks via ci-auto-healer-agent
+- **Governance compliance:** Addressed REQ-4/REQ-5 gate failures by including both CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md in commit
+- **mypy baseline regression:** Investigating 76 type errors appearing on main branch commit `49538fb` (not introduced by this PR)
+- **PR Auto-Fix Check:** 10,715 issues detected (7,938 auto-fixable) — delegated ruff auto-fix via background agent
+- **Pre-existing failures:** Auth tests, RAG tests, validation pipeline artifacts missing on main branch (documented for separate remediation)
+- **Status:** Parallel remediation in progress; compliance gates addressed; main branch failures escalated per §3 Codebase Agency Policy
+
 ### Fixed (Test syntax and REQ-14 compliance — PR #5122, Session 2026-06-29T02:28Z)
 - **Test syntax error:** Fixed unterminated string literal in `tests/skills/test_mypy_manager.py:219` (test_fix_optional_import_fallback_adds_ignore)
 - **REQ-14 compliance:** Updated Agents Used section in AGENT_ACCOUNTABILITY_REPORT.md with valid registered agent identifiers from AGENT_REGISTRY.yaml

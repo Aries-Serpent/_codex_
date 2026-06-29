@@ -143,7 +143,7 @@ def redact_url_credentials(url: str | None) -> str:
     try:
         parsed = urlsplit(url)
     except ValueError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("ValueError: <ERROR_TYPE>")
         logger.warning("ValueError: <ERROR_TYPE>", exc_info=True)
         return url

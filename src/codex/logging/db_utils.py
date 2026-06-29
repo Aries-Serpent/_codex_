@@ -51,7 +51,7 @@ def open_db(
         try:
             conn.execute("PRAGMA journal_mode=WAL;")
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
         return conn
@@ -62,7 +62,7 @@ def open_db(
             try:
                 conn.execute("PRAGMA journal_mode=WAL;")
             except (ConnectionError, TimeoutError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
             return conn
@@ -78,7 +78,7 @@ def open_db(
             try:
                 conn.execute("PRAGMA journal_mode=WAL;")
             except (IOError, OSError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
             return conn
@@ -87,7 +87,7 @@ def open_db(
     try:
         conn.execute("PRAGMA journal_mode=WAL;")
     except (ConnectionError, TimeoutError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
     return conn
@@ -146,7 +146,7 @@ def infer_probable_table(
         try:
             cols = get_columns(con, t)
         except ValueError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("ValueError: <ERROR_TYPE>")
             logger.warning("ValueError: <ERROR_TYPE>", exc_info=True)
             continue

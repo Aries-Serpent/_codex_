@@ -262,7 +262,7 @@ class QuantumPluginRegistry:
                 try:
                     loaded_modules[p_name] = plugin.observe()
                 except (ImportError, AttributeError) as exc:
-                    error_type = type(exc).__name__
+                    type(exc).__name__
                     logger.warning(f"Failed to load dependency '{p_name}': <ERROR_TYPE>")
 
         return loaded_modules.get(plugin_name)

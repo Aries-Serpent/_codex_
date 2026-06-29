@@ -60,7 +60,7 @@ def _fallback_validate(clean_csv: Path) -> tuple[bool, Path]:
             try:
                 value = int(row["value"])
             except ValueError as exc:
-                error_type = type(exc).__name__
+                type(exc).__name__
                 logger.debug("ValueError: <ERROR_TYPE>")
                 raise RuntimeError("GE validation failed for cleaned dataset.") from exc
             if not 0 <= value <= 2:
@@ -116,7 +116,7 @@ def run_clean_checkpoint(
     try:
         success_flag = results.success
     except AttributeError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("AttributeError: <ERROR_TYPE>")
         logger.warning("AttributeError: <ERROR_TYPE>", exc_info=True)
         try:

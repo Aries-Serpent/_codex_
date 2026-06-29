@@ -199,7 +199,7 @@ def deprecated_legacy_access(name: str):
     try:
         value = provider()
     except ModuleNotFoundError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("ModuleNotFoundError: <ERROR_TYPE>")
         logger.warning("ModuleNotFoundError: <ERROR_TYPE>", exc_info=True)
         raise

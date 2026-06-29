@@ -2672,7 +2672,7 @@ def main(argv: list[str] | None = None) -> int:
             )
 
     except RuntimeError as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         print("❌ <ERROR_TYPE>", file=sys.stderr)  # codeql[py/clear-text-logging-sensitive-data]
         return 1
     except urllib.error.HTTPError as exc:

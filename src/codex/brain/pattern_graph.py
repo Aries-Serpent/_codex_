@@ -464,8 +464,8 @@ class GraphBuilder:
     def _is_causal(source: PatternNode, target: PatternNode) -> bool:
         """Determine if source pattern causes target pattern."""
         # Check for common tags indicating causality
-        source_tags = set(source.tags) if source.tags else set()
-        target_tags = set(target.tags) if target.tags else set()
+        set(source.tags) if source.tags else set()
+        set(target.tags) if target.tags else set()
 
         # Causal indicators
         causal_indicators = {

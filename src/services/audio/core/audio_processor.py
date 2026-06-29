@@ -67,6 +67,6 @@ class AudioProcessor:
                 processing_time=time.time() - start_time,
             )
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.error("Processing failed: <ERROR_TYPE>")
             return ProcessingResult(success=False, error=str(e))

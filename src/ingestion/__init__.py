@@ -105,7 +105,7 @@ def detect_encoding(path: str | Path) -> str:
         try:
             return _io_text__detect_encoding(p)
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 
@@ -125,7 +125,7 @@ def detect_encoding(path: str | Path) -> str:
         if raw.startswith(b"\xef\xbb\xbf"):
             return "utf-8"
     except (ValueError, TypeError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 
@@ -160,25 +160,25 @@ def _call_repo_read_text(
         # Newer helpers may return (text, used_encoding)
         result = _io_text_read_text(path, encoding=encoding, errors=errors)
     except TypeError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("TypeError: <ERROR_TYPE>")
         logger.warning("TypeError: <ERROR_TYPE>", exc_info=True)
         try:
             # Older helper may accept (path, encoding)
             result = _io_text_read_text(path, encoding)
         except TypeError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("TypeError: <ERROR_TYPE>")
             logger.warning("TypeError: <ERROR_TYPE>", exc_info=True)
             try:
                 # Very old: only path
                 result = _io_text_read_text(path)
             except (IOError, OSError) as exc:
-                error_type = type(exc).__name__
+                type(exc).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 raise RuntimeError(f"repo read_text failed: {exc}") from exc
     except (IOError, OSError) as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         # Pass up other errors as runtime errors
         raise RuntimeError(f"repo read_text failed: {exc}") from exc
@@ -204,7 +204,7 @@ def _manual_read_text(
     try:
         raw = path.read_bytes()
     except (IOError, OSError) as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         raise RuntimeError(f"Failed to read bytes from {path}: {exc}") from exc
 
@@ -237,7 +237,7 @@ def _manual_read_text(
         if text and text[0] == "\ufeff":
             text = text.lstrip("\ufeff")
     except (IOError, OSError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 
@@ -334,7 +334,7 @@ def ingest(
                         break
                     yield chunk
         except (IOError, OSError) as exc:
-            error_type = type(exc).__name__
+            type(exc).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             # Surface as runtime error to calling code (ingestion pipelines should catch)
             raise RuntimeError(f"Failed to stream file {file_path}: {exc}") from exc

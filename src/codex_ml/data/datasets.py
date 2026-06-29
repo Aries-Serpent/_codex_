@@ -60,7 +60,7 @@ def get_dataset_spec(name: str) -> DatasetSpec:
     try:
         return _DATASET_REGISTRY[name]
     except KeyError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("KeyError: <ERROR_TYPE>")
         logger.warning("KeyError: <ERROR_TYPE>", exc_info=True)
         raise KeyError(f"Dataset {name!r} is not registered") from None

@@ -198,7 +198,7 @@ class SessionResume:
         # Extract key information
         agent_id = content.get("agent_id", "unknown")
         session_id = content.get("session_id", "unknown")
-        session_state = content.get("session_state", {})
+        content.get("session_state", {})
 
         logger.info(f"Checkpoint content loaded: agent_id={agent_id}, session_id={session_id}")
 

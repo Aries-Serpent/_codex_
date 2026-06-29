@@ -28,7 +28,7 @@ def validate_metric_registry() -> list[str]:
     try:
         from codex_ml.metrics.registry import METRIC_REGISTRY, get_metric
     except ImportError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("ImportError: <ERROR_TYPE>")
         raise MetricValidationError(f"Failed to import metric registry: {e}") from e
 
@@ -38,7 +38,7 @@ def validate_metric_registry() -> list[str]:
             if not callable(metric_fn):
                 raise MetricValidationError(f"Metric '{metric_name}' is not callable")
         except (ImportError, AttributeError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             raise MetricValidationError(
                 f"Metric '{metric_name}' registered but not implemented: {e}"
@@ -77,7 +77,7 @@ def get_all_registered_metrics() -> list[str]:
 
         return list(METRIC_REGISTRY.keys())
     except ImportError as e:
-        error_type = type(e).__name__
+        type(e).__name__
         logger.debug("ImportError: <ERROR_TYPE>")
         logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
         return []

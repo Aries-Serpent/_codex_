@@ -72,7 +72,7 @@ def parse_command(args) -> int:
         return 0
 
     except (IOError, OSError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         print("Error parsing file: <ERROR_TYPE>", file=sys.stderr)
         return 1
 
@@ -103,7 +103,7 @@ def stats_command(args) -> int:
         return 0
 
     except (IOError, OSError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         print("Error getting statistics: <ERROR_TYPE>", file=sys.stderr)
         return 1
 
@@ -150,7 +150,7 @@ def query_command(args) -> int:
         return 0
 
     except (IOError, OSError) as e:
-        error_type = type(e).__name__
+        type(e).__name__
         print("Error querying nodes: <ERROR_TYPE>", file=sys.stderr)
         return 1
 

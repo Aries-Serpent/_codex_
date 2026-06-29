@@ -200,7 +200,7 @@ class ModelLoader:
             return model_data
 
         except (IOError, OSError) as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.error("Failed to load model: <ERROR_TYPE>")
             raise RuntimeError(f"Model loading failed: {e}") from e
@@ -269,7 +269,7 @@ class ModelLoader:
             from transformers import AutoModel as AutoModel
             from transformers import AutoTokenizer as AutoTokenizer
         except ImportError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("ImportError: <ERROR_TYPE>")
             logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
             raise ImportError(
@@ -348,7 +348,7 @@ class ModelLoader:
             }
             return dtype_map.get(dtype_str)
         except ImportError as e:
-            error_type = type(e).__name__
+            type(e).__name__
             logger.debug("ImportError: <ERROR_TYPE>")
             logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
             logger.warning("torch not available, ignoring dtype specification")
@@ -424,7 +424,7 @@ class ModelLoader:
                 with open(path, "rb") as f:
                     f.read(1)
             except (IOError, OSError) as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.error("Cannot read checkpoint file: <ERROR_TYPE>")
                 return False

@@ -181,7 +181,7 @@ class F1Score(MetricBase):
                 try:
                     idx = labels.index(positive)
                 except ValueError as e:
-                    error_type = type(e).__name__
+                    type(e).__name__
                     logger.debug("ValueError: <ERROR_TYPE>")
                     logger.warning("ValueError: <ERROR_TYPE>", exc_info=True)
                     return {self.name: 0.0}
@@ -230,7 +230,7 @@ class RecallScore(MetricBase):
                 try:
                     idx = labels.index(positive)
                 except ValueError as e:
-                    error_type = type(e).__name__
+                    type(e).__name__
                     logger.debug("ValueError: <ERROR_TYPE>")
                     logger.warning("ValueError: <ERROR_TYPE>", exc_info=True)
                     score = 0.0

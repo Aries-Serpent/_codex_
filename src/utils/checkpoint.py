@@ -171,7 +171,7 @@ def _legacy_restore_rng_state(state: Mapping[str, Any]) -> None:
             try:
                 iterable_states = list(cuda_state)
             except TypeError as e:
-                error_type = type(e).__name__
+                type(e).__name__
                 logger.debug("TypeError: <ERROR_TYPE>")
                 logger.warning("TypeError: <ERROR_TYPE>", exc_info=True)
                 iterable_states = [cuda_state]
@@ -221,7 +221,7 @@ def _torch_load(path: str, *, map_location: str | None = None) -> Any:
     try:
         return load_fn(path, **kwargs)
     except TypeError as exc:
-        error_type = type(exc).__name__
+        type(exc).__name__
         logger.debug("TypeError: <ERROR_TYPE>")
         if _TORCH_SUPPORTS_WEIGHTS_ONLY and "weights_only" in str(exc):
             kwargs.pop("weights_only", None)
@@ -278,7 +278,7 @@ def save_checkpoint(
             try:
                 tmp_path.unlink()
             except (IOError, OSError) as exc:
-                error_type = type(exc).__name__
+                type(exc).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 LOGGER.warning("Temporary checkpoint cleanup failed for %s: %s", tmp_path, exc)
 
@@ -286,7 +286,7 @@ def save_checkpoint(
         try:
             target.unlink()
         except (IOError, OSError) as exc:
-            error_type = type(exc).__name__
+            type(exc).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             LOGGER.debug("Failed to clean up symlink %s during archive: %s", target, exc)
     return
