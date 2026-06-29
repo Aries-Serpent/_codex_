@@ -693,7 +693,7 @@ rich==15.0.0
     #   typer
 rich-click==1.9.7
     # via litestar
-rpds-py==0.30.0
+rpds-py==2026.5.1
     # via
     #   jsonschema
     #   referencing
