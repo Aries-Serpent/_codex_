@@ -80,7 +80,7 @@ token = os.environ['GITHUB_TOKEN']  # Level 1 - insufficient
 # ✅ CORRECT: Use CODEX_BACKUP_KEY or CODEX_MASTER_KEY
 from scripts.ci._token_resolver import get_token
 
-token, source = get_token(required_elevated=True)
+token, token_source = get_token(required_elevated=True)
 if not token:
     raise Exception("No elevated token available")
 ```

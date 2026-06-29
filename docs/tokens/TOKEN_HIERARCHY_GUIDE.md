@@ -234,7 +234,7 @@ def read_organization_variables():
     
     # Get appropriate token for org read operation
     # Falls back: CODEX_MASTER_KEY → CODEX_BACKUP_KEY → GH_TOKEN → GITHUB_TOKEN
-    token, source = get_token(required_elevated=True)
+    token, token_source = get_token(required_elevated=True)
     
     if not token:
         raise Exception("No suitable token available for org variable read")
