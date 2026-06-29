@@ -2,7 +2,7 @@
 # Comprehensive cleanup validation script
 # This script runs all validation checks to ensure cleanup doesn't break anything
 
-set -e
+set -o pipefail
 
 # Colors for output
 RED='\033[0;31m'

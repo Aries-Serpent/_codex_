@@ -81,8 +81,7 @@
 - root-org-validation.yml
 - unified-deployment.yml
 
-### mypy.ini (3 workflows)
-- ci-pattern-prevention-gate.yml
+### mypy.ini (2 workflows)
 - ci-pattern-prevention-gate.yml
 - mypy-baseline.yml
 

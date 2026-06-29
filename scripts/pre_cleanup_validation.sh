@@ -2,7 +2,7 @@
 # Pre-Cleanup Validation Checklist
 # This script verifies everything is ready before cleanup execution
 
-set -e
+set -o pipefail
 
 echo "════════════════════════════════════════════════════════════════"
 echo "PRE-CLEANUP VALIDATION CHECKLIST"
@@ -45,7 +45,13 @@ echo ""
 echo "STEP 2: Verify all configuration files exist"
 echo "═══════════════════════════════════════════════════════════════════"
 for file in pytest.ini mypy.ini pyproject.toml .editorconfig .pre-commit-config.yaml; do
-    [ -f "$file ] && echo "✓ $file exists" && ((passed++)) || (echo "✗ $file missing" && ((failed++)))
+    if [ -f "$file" ]; then
+        echo "✓ $file exists"
+        ((passed++))
+    else
+        echo "✗ $file missing"
+        ((failed++))
+    fi
 done
 echo ""
 

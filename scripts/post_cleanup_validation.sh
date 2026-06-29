@@ -2,7 +2,7 @@
 # Post-Cleanup Validation Checklist
 # This script verifies cleanup didn't break anything
 
-set -e
+set -o pipefail
 
 echo "════════════════════════════════════════════════════════════════"
 echo "POST-CLEANUP VALIDATION CHECKLIST"
