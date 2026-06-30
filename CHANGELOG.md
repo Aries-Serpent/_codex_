@@ -2,7 +2,7 @@
 
 ## [Unreleased]
 
-### Fixed (CodeQL security vulnerabilities — Session 2026-06-30T01:02Z)
+### Fixed (CodeQL security vulnerabilities — Session 2026-06-30T01:02:34Z)
 - **2 high-severity CodeQL security alerts resolved:** Incomplete URL substring sanitization
   - **tests/github/test_package_registry.py line 169:** Replaced `assert "ghcr.io" in endpoint` with `assert endpoint.startswith("https://ghcr.io")` — prevents false positives where substring could appear at arbitrary URL positions
   - **tests/github/test_package_registry.py line 185:** Replaced `assert "ghcr.io" in image` with URL parsing validation using `urlparse()` to ensure hostname and path validation — prevents security validation bypass

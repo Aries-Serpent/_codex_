@@ -20,7 +20,7 @@ CodeQL identified that substring-based URL validation (`"ghcr.io" in url`) creat
 
 ### Agents Used
 
-- Direct fix by copilot-swe-agent (investigation of CodeQL alerts, security analysis, and remediation)
+- ✅ `code-scanning-remediation-agent` — Fixed CodeQL security vulnerabilities in test_package_registry.py
 
 ### Compliance Status
 
