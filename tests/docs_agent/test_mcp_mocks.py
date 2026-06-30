@@ -46,7 +46,9 @@ class TestSearchCodeMocks:
     def test_result_contains_url(self):
         """Test result has proper URLs"""
         result = mock_mcp_tools.SearchCodeMockGenerator.generate_result()
-        assert 'api.github.com' in result['text_matches'][0]['object_url']
+        url = result['text_matches'][0]['object_url']
+        # Validate complete URL structure (scheme + domain + path)
+        assert url.startswith('https://api.github.com/'), f"URL must start with 'https://api.github.com/', got {url}"
 
 
 class TestSearchIssuesMocks:
