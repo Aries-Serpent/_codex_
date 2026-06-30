@@ -1,10 +1,12 @@
-# Legacy Configuration Archive
+# .config.legacy/ — Historical Configuration Reference
 
-Contains legacy configuration files migrated from:
-- Hydra configuration (legacy/)
-- Governance rules (legacy/)
-- ML training configs (legacy/)
-- Automation scripts (legacy/)
+This directory contains historical configuration files and deprecated versions archived during Phase 3 root cleanup (2026-06-30T14:46:16Z).
 
-Note: These files are archived and not actively used.
-Current configs: See configs/ directory
+## Purpose
+Traceability and historical reference only. Current configurations live in `.codex/` and `.github/`.
+
+## Contents
+Historical workflow configurations and deprecated version archives for reference.
+
+## Created
+2026-06-30T14:46:16Z during Phase 3 Root Cleanup Campaign

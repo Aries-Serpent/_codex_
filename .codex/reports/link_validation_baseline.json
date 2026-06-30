@@ -1,0 +1,8 @@
+{
+  "timestamp": "2026-06-30T14:46:16Z",
+  "wave": 1,
+  "status": "baseline_locked",
+  "files_scanned": 13870,
+  "validation_type": "pre_cleanup",
+  "message": "Link validation baseline established for pre/post comparison"
+}
