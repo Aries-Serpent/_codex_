@@ -1,5 +1,5 @@
 name: Session Incremental Summary Reminder
-true:
+on:
   schedule:
   - cron: '*/5 * * * *'
 concurrency:

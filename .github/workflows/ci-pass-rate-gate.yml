@@ -1,5 +1,5 @@
 name: CI Pass-Rate Gate
-true:
+on:
   workflow_dispatch: null
   schedule:
   - cron: 0 6 * * *

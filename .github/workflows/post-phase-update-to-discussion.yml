@@ -1,5 +1,5 @@
 name: Post Phase Update to Discussion
-true:
+on:
   workflow_dispatch:
     inputs:
       discussion_number:

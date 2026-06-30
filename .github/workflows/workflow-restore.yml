@@ -1,5 +1,5 @@
 name: Workflow Restore Tool
-true:
+on:
   workflow_dispatch:
     inputs:
       workflow_file:

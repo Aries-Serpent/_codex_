@@ -1,5 +1,5 @@
 name: "\U0001F517 Copilot Session Chain"
-true:
+on:
   workflow_dispatch:
     inputs:
       source_branch:

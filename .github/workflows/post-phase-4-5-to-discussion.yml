@@ -1,5 +1,5 @@
 name: "\U0001F4CA Post Phase 4-5 Summary to Discussion #4872"
-true:
+on:
   workflow_dispatch:
     inputs:
       force_post:

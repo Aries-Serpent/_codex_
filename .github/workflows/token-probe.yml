@@ -1,5 +1,5 @@
 name: "Token Probe \u2014 CODEX_MASTER_KEY & CODEX_BACKUP_KEY Validation"
-true:
+on:
   workflow_dispatch:
     inputs:
       pr_number:

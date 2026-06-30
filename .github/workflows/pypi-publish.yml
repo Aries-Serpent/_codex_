@@ -1,5 +1,5 @@
 name: Publish Python Package to PyPI
-true:
+on:
   release:
     types:
     - published

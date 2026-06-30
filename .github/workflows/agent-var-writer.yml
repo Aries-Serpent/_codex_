@@ -1,5 +1,5 @@
 name: Agent Variable Writer (Provenance-Chain)
-true:
+on:
   issue_comment:
     types:
     - created

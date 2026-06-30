@@ -1,5 +1,5 @@
 name: Automated Post-Deployment Verification
-true:
+on:
   workflow_dispatch:
     inputs:
       environment:

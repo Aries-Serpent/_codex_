@@ -1,5 +1,5 @@
 name: Copilot Issue Triage
-true:
+on:
   issues:
     types:
     - opened

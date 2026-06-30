@@ -89,10 +89,12 @@ if not token:
 1. Reference TOKEN_HIERARCHY_GUIDE.md for operation requirements
 2. Run `enforce_token_patterns.py` on your workflow
 3. Add validation step:
-   ```python
-   if not validate_token_scope(token, ['admin:org_hook']):
-       raise PermissionError("Token lacks required scopes")
-   ```
+
+```python
+def validate_and_use_token(token):
+    if not validate_token_scope(token, ['admin:org_hook']):
+        raise PermissionError("Token lacks required scopes")
+```
 
 ---
 

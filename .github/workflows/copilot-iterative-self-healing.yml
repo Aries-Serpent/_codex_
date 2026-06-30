@@ -1,5 +1,5 @@
 name: Copilot Iterative Self-Healing Auto-Poster
-true:
+on:
   workflow_run:
     workflows:
     - Pre-Merge Validation

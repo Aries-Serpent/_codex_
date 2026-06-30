@@ -1,5 +1,5 @@
 name: "Session Watchdog \u2014 Timebox & Continuity Enforcement"
-true:
+on:
   issue_comment:
     types:
     - created

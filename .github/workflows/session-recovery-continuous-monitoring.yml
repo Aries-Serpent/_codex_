@@ -1,5 +1,5 @@
 name: Session Recovery Continuous Monitoring
-true:
+on:
   schedule:
   - cron: '*/30 * * * *'
   workflow_dispatch:

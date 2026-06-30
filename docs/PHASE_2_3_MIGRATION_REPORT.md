@@ -421,8 +421,6 @@ git commit -m "Phase 2.3: Accountability Report Migration (32 chunks)"
 
 ### Support Documents
 
-- **Strategy:** [.codex/PHASE_2_CHUNKING_STRATEGY.md](../.codex/PHASE_2_CHUNKING_STRATEGY.md)
-- **Completion Summary:** [.codex/PHASE_2_ACCOUNTABILITY_CHUNKING_COMPLETE.md](../.codex/PHASE_2_ACCOUNTABILITY_CHUNKING_COMPLETE.md)
 - **Archive:** [.codex/archive/OLD_ACCOUNTABILITY_REPORT_66K.md.bak](../.codex/archive/OLD_ACCOUNTABILITY_REPORT_66K.md.bak)
 
 ---

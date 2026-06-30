@@ -1,5 +1,5 @@
 name: "\U0001F9F9 Codebase Health Sweep"
-true:
+on:
   schedule:
   - cron: 15 2 * * *
   workflow_dispatch:

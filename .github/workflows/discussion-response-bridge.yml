@@ -1,5 +1,5 @@
 name: "\U0001F309 Discussion \u2192 PR Response Bridge (RC-3)"
-true:
+on:
   discussion_comment:
     types:
     - created

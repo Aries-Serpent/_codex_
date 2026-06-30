@@ -1,5 +1,5 @@
 name: Session Recovery Handler
-true:
+on:
   workflow_run:
     workflows:
     - Running Copilot cloud agent

@@ -1,5 +1,5 @@
 name: 🔧 CI Pattern Healer — Automated Failure Detection & Healing
-true:
+on:
   workflow_run:
     workflows:
     - Secrets Baseline Enforcer

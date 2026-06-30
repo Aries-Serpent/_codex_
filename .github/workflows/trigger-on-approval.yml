@@ -1,5 +1,5 @@
 name: Trigger validations on approval
-true:
+on:
   pull_request_review:
     types:
     - submitted

@@ -1,5 +1,5 @@
 name: Agent Orchestration (Unified)
-true:
+on:
   workflow_run:
     workflows:
     - Workflow Health Check (Quantum-Inspired)

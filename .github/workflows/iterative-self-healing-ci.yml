@@ -1,5 +1,5 @@
 name: Iterative Self-Healing CI
-true:
+on:
   workflow_run:
     workflows:
     - '*'

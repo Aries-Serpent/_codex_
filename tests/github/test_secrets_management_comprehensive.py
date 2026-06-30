@@ -15,7 +15,10 @@ All tests skip gracefully if CODEX_MASTER_KEY is unavailable or libsodium unavai
 from __future__ import annotations
 
 import base64
-from typing import Any, Optional  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+from typing import (  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+    Any,
+    Optional,
+)
 
 import pytest
 
@@ -52,7 +55,7 @@ def org_actions_secrets_endpoint(org_name: str) -> str:
 def mock_public_key_response():
     """Return callable that generates mock public key responses."""
 
-    def _make(key_id: str = "012345678901234567890", key: Optional[str] = None) -> dict[str, Any]:
+    def _make(key_id: str = "012345678901234567890", key: Optional[str] = None) -> dict[str, Any]:  # noqa: F841
         if key is None:
             # Valid base64-encoded 32-byte public key (Curve25519)
             key = base64.b64encode(b"x" * 32).decode()
@@ -116,7 +119,7 @@ class TestProcess3RepositoryActionsSecrets:
         try:
             decoded = base64.b64decode(response["key"])
             assert len(decoded) == 32  # Curve25519 key is 32 bytes
-        except Exception:
+        except Exception as _err:
             pytest.fail("Public key is not valid base64 or incorrect size")
 
     def test_process3_public_key_caching(
@@ -144,7 +147,7 @@ class TestProcess3RepositoryActionsSecrets:
     ):
         """Test: List all repository Actions secrets."""
         endpoint = f"{gh_api_base}{actions_secrets_endpoint}"
-        expected_response = {
+        expected_response = {  # noqa: F841
             "total_count": 2,
             "secrets": [
                 {
@@ -211,7 +214,7 @@ class TestProcess3RepositoryActionsSecrets:
         endpoint = f"{gh_api_base}{actions_secrets_endpoint}"
 
         # Mock encryption without libsodium
-        secret_value = "my_secret_password"
+        secret_value = "my_secret_password"  # noqa: F841
         mock_encrypted = base64.b64encode(secret_value.encode()).decode()
 
         payload = {
@@ -233,7 +236,7 @@ class TestProcess3RepositoryActionsSecrets:
         """Test: Create secret with optional visibility parameter."""
         endpoint = f"{gh_api_base}{actions_secrets_endpoint}"
 
-        payload = {
+        payload = {  # noqa: F841
             "name": test_secret_name_base,
             "encrypted_value": "base64-value",
             "key_id": "key_id",
