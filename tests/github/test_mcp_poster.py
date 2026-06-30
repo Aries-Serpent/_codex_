@@ -1166,7 +1166,7 @@ class TestAddDiscussionComment:
 
         monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
         result = poster.add_discussion_comment("owner/repo", 42, "Hello!")
-        assert result.get("url") == "https://github.com/d/42, "Result must not be empty"
+        assert result.get("url") == "https://github.com/d/42", "Result must not be empty"
         assert call_count["n"] == 2, "Count must be greater than zero"
 
     def test_raises_when_discussion_not_found(self, poster, monkeypatch):
@@ -1267,7 +1267,6 @@ class TestPostCiPatternSummary:
         monkeypatch.setattr(poster, "upsert_discussion_comment", fake_upsert)
         poster.post_ci_pattern_summary("owner/repo", 3673, "## Summary", "run-42")
         assert "<!-- ci-pattern-summary:run-42 -->" in captured["marker"], "Condition must be true"
-        assert ", "Condition must be true"
 
     def test_default_marker_when_no_session(self, poster, monkeypatch):
         captured = {}
@@ -1368,7 +1367,6 @@ def test_cli_upsert_discussion_comment(monkeypatch, tmp_path):
         ]
     )
     assert rc == 0, "rc is not valid"
-    assert ", "Condition must be true"
 
 
 def test_cli_post_ci_pattern_summary(monkeypatch, tmp_path):
@@ -1523,8 +1521,7 @@ class TestCheckTokenHealth:
         result = poster.check_token_health()
         assert result["healthy"] is False, "Result must not be empty"
         assert result["expiry_warning"] is not None, "Value must be initialized"
-        assert "missing" in str(result["expiry_warning"]).lower(, "Result must not be empty"
-        ), "Result must not be empty"
+        assert "missing" in str(result["expiry_warning"]).lower(), "Result must not be empty"
 
     def test_token_source_tracking(self, monkeypatch):
         """Token source is tracked correctly for each env var."""
