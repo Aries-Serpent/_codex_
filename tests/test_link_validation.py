@@ -105,8 +105,13 @@ class LinkValidator:
                                 "url": url,
                                 "type": "invalid_format"
                             })
-            except Exception:
-                pass
+            except Exception as exc:
+                            # Append structured error information for failure tracking
+                            issues.append({
+                                "file": str(md_file),
+                                "type": "processing_error",
+                                "message": str(exc)
+                            })
         return issues
 
     def validate_anchor_links(self) -> List[Dict]:
@@ -127,8 +132,13 @@ class LinkValidator:
                                 "anchor": anchor_name,
                                 "type": "invalid_anchor"
                             })
-            except Exception:
-                pass
+            except Exception as e:
+                # Append error information for failed files, preserve method resilience
+                issues.append({
+                    "file": str(md_file),
+                    "type": "read_error",
+                    "message": str(e)
+                })
         return issues
 
     def _is_valid_url(self, url: str) -> bool:

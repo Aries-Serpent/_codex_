@@ -296,7 +296,6 @@ class TestDevicePlacementPatterns:
     def test_device_consistency_forward_pass(self):
         """Device consistency should hold through forward pass."""
         try:
-            import torch
             import torch.nn as nn
         except ImportError:
             pytest.skip("PyTorch not installed")
@@ -313,7 +312,6 @@ class TestDevicePlacementPatterns:
     def test_device_after_state_dict_load(self):
         """Device should be preserved after state_dict load."""
         try:
-            import torch
             import torch.nn as nn
         except ImportError:
             pytest.skip("PyTorch not installed")
@@ -365,7 +363,6 @@ class TestModelFactoryPatterns:
     def test_factory_deterministic_initialization(self):
         """Factory should produce deterministic models."""
         try:
-            import torch
             from codex_ml.models.factory import create_model_factory
         except (ImportError, AttributeError):
             pytest.skip("Factory not available")
@@ -460,7 +457,6 @@ class TestMetaTensorErrorRecovery:
     def test_model_serialization_compatibility(self):
         """Model should serialize/deserialize without meta tensors."""
         try:
-            import torch
             import torch.nn as nn
         except ImportError:
             pytest.skip("PyTorch not installed")
@@ -483,7 +479,6 @@ class TestMetaTensorErrorRecovery:
     def test_model_gradient_flow(self):
         """Gradients should flow without meta tensor issues."""
         try:
-            import torch
             import torch.nn as nn
         except ImportError:
             pytest.skip("PyTorch not installed")

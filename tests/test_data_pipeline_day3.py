@@ -102,8 +102,24 @@ class TestDataLoadingFormats:
         formats = ["json", "csv", "parquet", "jsonl"]
         for fmt in formats:
             try:
-                # Should support format detection or explicit format
-                pass
+                # Create temporary test file with minimal valid content
+                with tempfile.NamedTemporaryFile(mode='w', suffix=f'.{fmt}', delete=False) as f:
+                    temp_path = f.name
+                    if fmt == "json":
+                        f.write('{"key": "value"}')
+                    elif fmt == "csv":
+                        f.write("col1,col2\n1,2")
+                    elif fmt == "jsonl":
+                        f.write('{"key": "value"}\n')
+                    else:  # parquet would need pandas
+                        f.write("dummy")
+                
+                try:
+                    # Attempt to load data
+                    result = load_data(temp_path)
+                    assert result is not None, f"load_data should return data for {fmt}"
+                finally:
+                    Path(temp_path).unlink()
             except (NotImplementedError, ValueError):
                 pytest.skip(f"Format {fmt} not supported")
 

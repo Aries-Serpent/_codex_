@@ -61,8 +61,9 @@ class DocumentationRegistry:
                         similarity = 1.0
                         duplicates.append((existing_path, file_path, similarity))
                 contents[file_path] = content
-            except Exception:
-                pass
+            except (OSError, UnicodeDecodeError):
+                # Skip unreadable or unparseable files so one bad file does not stop duplicate detection
+                continue
         return duplicates
 
 
@@ -165,7 +166,7 @@ class TestDocumentationLinkValidity:
         for md_file in doc_registry.get_all_markdown_files()[:10]:
             content = md_file.read_text(encoding="utf-8")
             # Find relative internal links
-            internal_links = re.findall(r"\]\(([^)http][^)]*\.md)\)", content)
+            internal_links = re.findall(r"\]\(((?!https?://)[^)]*\.md)\)", content)
             for link in internal_links[:5]:
                 target_path = (md_file.parent / link).resolve()
                 # Target should exist (allowing for some false positives)
