@@ -1,32 +1,32 @@
-# Session Context — 2026-06-30T16:37:31Z
+# Session Context — 2026-06-30T16:45:39Z
 **Branch:** `copilot/confirm-phase-3-execution`  **PR:** #5149  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4596` (✅)
-- GraphQL remaining: `4995` (✅)
+- REST remaining: `4440` (✅)
+- GraphQL remaining: `4990` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #5149 — Reorganize root folder: migrate 30 files to logical subdirectories
+## 📋 PR #5149 — Phase 9.1 Groundwork: Agent 2-5 Implementation Infrastructure & Machine-Readable Docs Integration
 State: `open`  Draft: `True`  Branch: `copilot/confirm-phase-3-execution` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **.github/workflows/progressive-validation.yml** — `failure` on `copilot/confirm-phase-3-execution` (2026-06-30)
-- **.github/workflows/rust_swarm_ci.yml** — `failure` on `copilot/confirm-phase-3-execution` (2026-06-30)
 - **.github/workflows/data-quality-suite.yml** — `failure` on `copilot/confirm-phase-3-execution` (2026-06-30)
 - **.github/workflows/build-preview-image.yml** — `failure` on `copilot/confirm-phase-3-execution` (2026-06-30)
+- **.github/workflows/progressive-validation.yml** — `failure` on `copilot/confirm-phase-3-execution` (2026-06-30)
 - **.github/workflows/release.yml** — `failure` on `copilot/confirm-phase-3-execution` (2026-06-30)
+- **.github/workflows/embedding-index-rebuild.yml** — `failure` on `copilot/confirm-phase-3-execution` (2026-06-30)
 
 ## 📝 Recent Commits
+- `75ca928b` docs: Phase 9.1 groundwork complete - all infrastructure integration prepared — copilot-swe-agent[bot] (2026-06-30)
+- `f5038b6e` feat: Phase 9.1 groundwork complete with machine-readable docs infrastructure in — copilot-swe-agent[bot] (2026-06-30)
+- `90fe9ee4` groundwork: begin Phase 9.1 agent implementation infrastructure — copilot-swe-agent[bot] (2026-06-30)
 - `f9d123b7` REQ-4: Update accountability report - Root folder reorganization phases 1-4 comp — copilot-swe-agent[bot] (2026-06-30)
 - `f0f17ab3` PHASE 4: Update workflow file references to moved configuration files (.config/) — copilot-swe-agent[bot] (2026-06-30)
 - `01e86a51` PHASE 4: Critical fix - restore conftest.py to root + validation report — copilot-swe-agent[bot] (2026-06-30)
 - `7a37ae20` PHASE 3A-C: Root folder reorganization - Moved 30 files to target folders — copilot-swe-agent[bot] (2026-06-30)
 - `178b879e` BEGIN: Root folder reorganization Phase 1 - Pre-migration validation — copilot-swe-agent[bot] (2026-06-30)
-- `98ab24bc` Merge remote-tracking branch 'origin/copilot/confirm-phase-3-execution' into cop — copilot-swe-agent[bot] (2026-06-30)
-- `c740d302` REQ-4: Update accountability report - Root folder reorganization planning comple — copilot-swe-agent[bot] (2026-06-30)
-- `f5a8a4d4` Planning: Root folder reorganization execution checklist (Phase 0-4 with detaile — copilot-swe-agent[bot] (2026-06-30)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
