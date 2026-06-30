@@ -1,6 +1,8 @@
-"""Adapter layer converting Phase 9.2 Cascade Orchestrator outputs to Phase 9.3 Semantic Router inputs.
+"""Adapter layer converting Phase 9.2 Cascade Orchestrator outputs to Phase 9.3
+Semantic Router inputs.
 
 This module implements bidirectional transformation between:
+
 - Cascade orchestrator pattern detection → Semantic task specification
 - Semantic router routing decisions → Cascade execution plans
 
@@ -11,12 +13,11 @@ Author: Phase 9.2 ↔ 9.3 Integration
 Date: 2026-06-26
 """
 
-from dataclasses import dataclass, field, asdict
-from typing import List, Dict, Optional, Any, Tuple
-from enum import Enum
-import json
 import logging
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
+from enum import Enum
+from typing import Any, Dict, List, Optional, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -235,7 +236,7 @@ class SemanticRoutingResult:
     """
 
     pattern_id: str
-    primary_agent: str
+    primary_agent: Optional[str]
     fallback_agents: List[str]
     semantic_confidence: float
     cascade_default_agent: str
@@ -356,7 +357,7 @@ class CascadeToRouterAdapter:
 
     def transform_pattern_to_task(
         self, pattern: PatternMatch, context: CascadeContext
-    ) -> Tuple[SemanticTask, bool]:
+    ) -> Tuple[Optional[SemanticTask], bool]:
         """Transform cascade pattern detection to semantic router task.
 
         Args:
@@ -672,11 +673,20 @@ Required Actions:
             Reasoning explanation string
         """
         if strategy == ExecutionStrategy.SEMANTIC_PRIMARY:
-            return f"High confidence semantic match ({semantic_confidence:.1f}%) to {semantic_primary_agent} for {pattern_id}"
+            return (
+                f"High confidence semantic match ({semantic_confidence:.1f}%) "
+                f"to {semantic_primary_agent} for {pattern_id}"
+            )
         elif strategy == ExecutionStrategy.HYBRID:
-            return f"Medium confidence semantic match ({semantic_confidence:.1f}%) to {semantic_primary_agent}, fallback available"
+            return (
+                f"Medium confidence semantic match ({semantic_confidence:.1f}%) "
+                f"to {semantic_primary_agent}, fallback available"
+            )
         elif strategy == ExecutionStrategy.CASCADE_DEFAULT:
-            return f"Low semantic confidence ({semantic_confidence:.1f}%), using cascade default {cascade_default_agent}"
+            return (
+                f"Low semantic confidence ({semantic_confidence:.1f}%), "
+                f"using cascade default {cascade_default_agent}"
+            )
         else:
             return f"Escalation required for {pattern_id} (no suitable agent found)"
 

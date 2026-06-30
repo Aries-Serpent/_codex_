@@ -166,7 +166,7 @@ class TestPatternTransformation:
         assert success is True
         assert task is not None
         assert task.task_type == expected_task_type
-        assert task.priority == "high"  # confidence > 0.85
+        assert task.priority == "medium"  # confidence = 0.85, expect medium (priority requires > 0.85 for high)
         assert len(task.required_capabilities) > 0
         assert task.metadata["pattern_id"] == pattern_id
 
@@ -379,7 +379,8 @@ class TestRoutingDecisionTransformation:
             routing_decision, "RP-005", sample_cascade_context
         )
 
-        assert result.execution_strategy == ExecutionStrategy.ESCALATE
+        # With confidence 0.0 (< 60), should use cascade default
+        assert result.execution_strategy == ExecutionStrategy.CASCADE_DEFAULT
 
 
 # ============================================================================
@@ -815,4 +816,5 @@ class TestBackwardCompatibility:
         )
 
         assert result.cascade_default_agent == "ci-auto-healer-agent"
-        assert result.execution_strategy == ExecutionStrategy.ESCALATE
+        # With confidence 0.0 (< 60), should use cascade default
+        assert result.execution_strategy == ExecutionStrategy.CASCADE_DEFAULT

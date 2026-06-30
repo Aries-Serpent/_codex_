@@ -390,8 +390,9 @@ class PatternMatcher:
 
         for other_pattern_id in conflicting_patterns:
             other_keywords = self.patterns[other_pattern_id].get("keywords", [])
-            if isinstance(other_keywords, list) and any(kw.lower() in log.lower() for kw in other_keywords):
-                return 0.5  # Conflict detected, lower confidence
+            if isinstance(other_keywords, list):
+                if any(kw.lower() in log.lower() for kw in other_keywords):
+                    return 0.5  # Conflict detected, lower confidence
 
         return 1.0  # No conflicts, full confidence
 
@@ -433,7 +434,11 @@ class PatternRouter:
         best_pattern_id, best_confidence = matches[0]
         pattern_config: Dict[str, Any] = self.config["patterns"][best_pattern_id]
         raw_threshold: Any = pattern_config.get("confidence_threshold", 0.70)
-        confidence_threshold: float = float(raw_threshold) if isinstance(raw_threshold, (int, float, str)) else 0.70
+        # Type narrowing for confidence threshold
+        if isinstance(raw_threshold, (int, float, str)):
+            confidence_threshold: float = float(raw_threshold)
+        else:
+            confidence_threshold = 0.70
         agent = pattern_config.get("agent")
 
         logger.info(
