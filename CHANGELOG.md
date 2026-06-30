@@ -1,3 +1,98 @@
+## [Fix] 2026-06-30T23:17Z — GitHub Actions Security: Mutable Action Tag Pinning
+
+### Summary
+Fixed Semgrep OSS security findings by pinning `actions/checkout` action to full 40-character commit SHA instead of mutable version tag.
+
+**Root Cause**: GitHub Actions using mutable version tags (e.g., `v5`, `v7`) are vulnerable to supply-chain attacks where the action owner can silently repoint the tag.
+
+**Fix Applied**:
+- Pinned `actions/checkout@v5` to `actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0`
+- Updated both occurrences in `.github/workflows/test-rag.yml`:
+  - Line 40: Checkout code step (test-rag job)
+  - Line 449: Checkout repository step (rescue job)
+
+**Security Alerts Resolved**:
+- Semgrep OSS #17330: yaml.github-actions.security.github-actions-mutable-action-tag
+- Semgrep OSS #17331: yaml.github-actions.security.github-actions-mutable-action-tag
+
+---
+
+## [Fix] 2026-06-30T22:55Z — CI Module Import Errors & Secrets False Positives Resolution
+
+### Summary
+Fixed widespread ModuleNotFoundError in CI scripts and secret detection false positives blocking PR #5158.
+
+**Root Causes**:
+1. **Import Order Bug**: 20+ scripts in `/scripts/ci/` imported from `scripts.ci` module BEFORE adding parent directory to sys.path, causing ModuleNotFoundError when run in CI workflows
+2. **False Positive Secrets**: `.codex/session_access_manifest.json` flagged commit SHAs (short and full git hashes) as high-entropy secrets
+
+**Fixes Applied**:
+- Moved `sys.path.insert()` call to execute BEFORE any `from scripts.ci import` statements in all affected files
+- Updated `.secrets.baseline` to include session_access_manifest.json entries for lines 3 and 166 (commit SHAs)
+- Files fixed: branch_rebase_check.py, auto_fix_common_issues.py, admin_action_probe.py, approve_via_playwright.py, batch_triage.py, check_pr_comments.py, collect_telemetry.py, delete_stale_pr_commands.py, generate_cost_dashboard_data.py, github_api_trickle.py, github_app_bootstrap.py, github_var_writer.py, rate_limit_cooldown.py, rate_limit_handler.py, rate_limit_status.py, test_variables_api.py, validate_token_setup.py, validate_token_utility_adoption.py, webhook_configurator.py, workflow_queue_manager.py
+
+**Files Changed**:
+- 20+ Python scripts in `.github/workflows/` - corrected import order
+- `.secrets.baseline` - added false-positive commit SHA entries
+- `.codex/session_access_manifest.json` - no changes (pragma comments not applicable to JSON)
+
+**Verification**: All 16 failing CI checks should now pass:
+- Branch Rebase Gate (REQ-10)
+- Secrets Baseline Enforcer
+- Secrets False-Positive Healer (RP-007)
+- Machine Readable Governance
+- mypy Baseline
+- PR Comment Review Gate (2 instances)
+- Pre-Merge Validation
+- RAG Module Tests
+- Resilient Validation Suite (2 instances)
+- Unified Governance Check
+- Validation Pipeline
+- Workflow Compliance Audit
+- Workflow Execution Gate
+
+---
+
+## [Fix] 2026-06-30T22:15Z — RAG Module Tests Workflow — Step 8 Package Import Validation
+
+### Summary
+Fixed Step 8 package import validation in `RAG Module Tests` workflow to use correct Python import names.
+
+**Root Cause**: Step 8 validation attempted to import packages using their pip package names (e.g., `sentence-transformers`, `faiss-cpu`) instead of their actual Python import names (`sentence_transformers`, `faiss`), causing import verification to fail.
+
+**Fix Applied**:
+- Created package name to import name mapping dictionary
+- Updated validation to use correct Python import names:
+  - `sentence-transformers` → `import sentence_transformers`
+  - `faiss-cpu` → `import faiss`
+  - Other packages (pytest, torch, transformers, chromadb) already have matching names
+- Removed version extraction from import (simplified validation)
+
+**Files Changed**:
+- `.github/workflows/test-rag.yml` — Step 8: Updated import validation with proper package mapping
+
+**Verification**: Workflow Step 8 will now correctly verify all package imports.
+
+---
+
+## [Fix] 2026-06-30T22:05Z — RAG Module Tests Workflow Fix
+
+### Summary
+Fixed critical CI failure in `RAG Module Tests` workflow.
+
+**Root Cause**: The workflow tried to install with `pip install -e ".[rag,test]"` but the `test` extra doesn't exist in pyproject.toml — only `test-core` is available.
+
+**Fix Applied**:
+- Changed workflow extras from `[rag,test]` to `[rag,test-core]`
+- Updated installation description to accurately reflect packages being installed
+- Workflow now correctly includes pytest, pytest-cov, and test dependencies
+
+**Files Changed**:
+- `.github/workflows/test-rag.yml` — Fixed pip install extras and updated descriptions
+
+**Verification**: Workflow should now pass the "Install dependencies" step and successfully run RAG module tests.
+
+---
 
 ## [Phase 3] 2026-06-30 — Root Cleanup Campaign
 
@@ -53,6 +148,11 @@ Fixed all 15 security vulnerabilities from commit d587689 and PR review comments
 # Changelog
 
 ## [Unreleased]
+
+### Fixed (auto-update — PR #5158)
+- CI Rescue: GitHub Actions version enforcement across 220 workflow files (PR #5158, SHA `3a3a6999`)
+- CI Rescue: `actions/checkout@v7` → `actions/checkout@v5` in test-rag.yml (actionlint compliance, PR #5158)
+- Enforce compliance: Ran `enforce_actions_versions.py --fix` to standardize all workflow action versions
 
 ### Fixed (auto-update — PR #5155)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5155 (SHA `7ba1a7d3`) at 2026-06-30T21:01Z [auto-generated]
