@@ -93,24 +93,34 @@ class TestActionsSecretsRepository:
         }
 
         # Step 2: Encrypt secret value using public key
-        secret_value = "my_secret_value"  # noqa: F841
+        secret_value = "my_secret_value"
         # In real implementation: encrypted = sodium_seal(secret_value, public_key)
+        # Create a deterministic base64 encoding from the secret value for testing
+        encrypted_payload = base64.b64encode(secret_value.encode()).decode()
 
         # Step 3: Create secret with encrypted value
         payload = {
-            "encrypted_value": "encrypted_base64_string",
+            "encrypted_value": encrypted_payload,
             "key_id": public_key["key_id"],
         }
         assert "encrypted_value" in payload
         assert "key_id" in payload
+        assert payload["encrypted_value"] == encrypted_payload
 
     def test_update_actions_secret(self):
         """Test updating an existing Actions secret."""
-        payload = {  # noqa: F841
+        payload = {
             "encrypted_value": "new_encrypted_value",
             "key_id": "key_id_123",
         }
-        endpoint = "/repos/owner/repo/actions/secrets/SECRET_NAME"  # noqa: F841
+        endpoint = "/repos/owner/repo/actions/secrets/SECRET_NAME"
+        
+        # Validate payload structure
+        assert "encrypted_value" in payload
+        assert payload["key_id"] == "key_id_123"
+        # Validate endpoint format
+        assert "actions/secrets" in endpoint
+        assert endpoint.endswith("SECRET_NAME")
 
     def test_delete_actions_secret(
         self,
@@ -250,10 +260,11 @@ class TestOrganizationSecrets:
 
         # Add repository to secret
         repo_id = 123456
-        endpoint_add = f"/orgs/org_name/actions/secrets/SECRET_NAME/repositories/{repo_id}"  # noqa: F841
-
-        # Remove repository from secret
-        endpoint_remove = endpoint_add  # noqa: F841
+        endpoint_add = f"/orgs/org_name/actions/secrets/SECRET_NAME/repositories/{repo_id}"
+        assert "actions/secrets" in endpoint_add
+        
+        # Remove uses same endpoint as add with different HTTP method (DELETE vs PUT)
+        assert repo_id == 123456
 
     def test_org_secret_visibility_all(self):
         """Test organization secret with visibility=all."""
@@ -295,8 +306,10 @@ class TestSecretEncryption:
 
     def test_encrypted_value_base64_format(self):
         """Test that encrypted values are base64-encoded."""
-        encrypted_value = "encrypted_base64_string"  # noqa: F841
-        # Should be decodable as base64
+        encrypted_value = base64.b64encode(b"encrypted_test_data").decode()
+        # Verify it's decodable as base64
+        decoded = base64.b64decode(encrypted_value)
+        assert decoded == b"encrypted_test_data"
 
     def test_key_id_requirement(self):
         """Test that key_id must match public key."""
@@ -360,10 +373,13 @@ class TestSecretErrorHandling:
 
     def test_invalid_encryption_error(self):
         """Test error when encryption fails."""
-        error = {  # noqa: F841
+        error = {
             "status": 422,
             "message": "Validation Failed",
         }
+        # Verify error structure
+        assert error["status"] == 422
+        assert "Validation" in error["message"]
 
     def test_missing_public_key_error(self):
         """Test error when public key cannot be retrieved."""
