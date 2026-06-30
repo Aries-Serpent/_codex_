@@ -501,33 +501,33 @@ if integrity_failures:
 
 4. **Compliance Evidence**
    ```python
-def generate_compliance_report(manager, events):
- # Generate compliance report showing all access
- events = manager.get_audit_log(hours=2592000)  # Last 30 days
-    
- report = {
-     "period": "last_30_days",
-     "total_events": len(events),
-     "success_events": len([e for e in events if e["result"] == "success"]),
-     "blocked_events": len([e for e in events if e["result"] == "blocked"]),
-     "integrity_failures": len([
-         e for e in events 
-         if e["event_type"] == "integrity_fail"
-     ]),
-     "by_script": {}
- }
-    
- for event in events:
-     script = event["script_name"]
-     if script not in report["by_script"]:
-         report["by_script"][script] = {"accesses": 0, "failures": 0}
+   def generate_compliance_report(manager, events):
+       # Generate compliance report showing all access
+       events = manager.get_audit_log(hours=2592000)  # Last 30 days
         
-     report["by_script"][script]["accesses"] += 1
-     if event["result"] != "success":
-         report["by_script"][script]["failures"] += 1
-    
- return report
-```
+       report = {
+           "period": "last_30_days",
+           "total_events": len(events),
+           "success_events": len([e for e in events if e["result"] == "success"]),
+           "blocked_events": len([e for e in events if e["result"] == "blocked"]),
+           "integrity_failures": len([
+               e for e in events 
+               if e["event_type"] == "integrity_fail"
+           ]),
+           "by_script": {}
+       }
+        
+       for event in events:
+           script = event["script_name"]
+           if script not in report["by_script"]:
+               report["by_script"][script] = {"accesses": 0, "failures": 0}
+            
+           report["by_script"][script]["accesses"] += 1
+           if event["result"] != "success":
+               report["by_script"][script]["failures"] += 1
+        
+       return report
+   ```
 
 ### Security Alerts
 

@@ -300,7 +300,7 @@ mock = mock_response(
 with unittest.mock.patch('urllib.request.urlopen', return_value=mock):
     # Test code
     result = urllib.request.urlopen("http://example.com")
-    assert result.status_code == 200
+    assert result.status == 200
 ```
 
 ---

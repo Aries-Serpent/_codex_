@@ -1,5 +1,5 @@
 name: CI Health Monitor
-on:
+true:
   schedule:
   - cron: 0 */6 * * *
   workflow_dispatch: null
@@ -59,22 +59,22 @@ jobs:
         # Fix (S145): previous version used chr(34)+\"key\"+chr(34) lookups which\
         \ embedded\n# literal quote characters into the dict key, so failed_runs/total_runs\
         \ always\n# returned 0 while failure_rate was computed correctly. Replaced\
-        \ with plain string keys.\nMETRICS=$(echo 'aW1wb3J0IGpzb24sc3lzCnRyeToKICAgIGQ9anNvbi5sb2FkKG9wZW4oJy90bXAvdGVsZW1ldHJ5X3JlcG9ydC5qc29uJykpCiAgICBzPWQuZ2V0KCdzdW1tYXJ5Jyx7fSkKICAgIHJhdGU9cy5nZXQoJ2ZhaWx1cmVfcmF0ZScsMCkKICAgIHByaW50KGYnRkFJTFVSRV9SQVRFPXtyYXRlKjEwMDouMWZ9JykKICAgIHByaW50KGYnRkFJTEVEX1JVTlM9e3MuZ2V0KCJmYWlsZWRfcnVucyIsMCl9JykKICAgIHByaW50KGYnVE9UQUxfUlVOUz17cy5nZXQoInRvdGFsX3J1bnMiLDApfScpCmV4Y2VwdCBFeGNlcHRpb246CiAgICBwcmludCgnRkFJTFVSRV9SQVRFPTAnKTtwcmludCgnRkFJTEVEX1JVTlM9MCcpO3ByaW50KCdUT1RBTF9SVU5TPTAnKQo='\  # pragma: allowlist secret
-        \ | base64 -d | python3) || METRICS='FAILURE_RATE=0\\nFAILED_RUNS=0\\nTOTAL_RUNS=0'\
-        \  # pragma: allowlist secret\neval \"$(echo -e \"$METRICS\")\"\n\n\necho\
-        \ \"failure_rate=${FAILURE_RATE}\" >> \"$GITHUB_OUTPUT\"\necho \"failed_runs=${FAILED_RUNS}\"\
-        \   >> \"$GITHUB_OUTPUT\"\necho \"total_runs=${TOTAL_RUNS}\"     >> \"$GITHUB_OUTPUT\"\
-        \n\n# Threshold: alert if failure rate exceeds CODEX_CI_FAILURE_THRESHOLD.\n\
-        # Wired to repo variable (P2.3); falls back to 10% (degraded level) if unset.\n\
-        # Cascade suppression (issue #3669): when >50% of failures are classified\
-        \ as\n# 'self-healing' (a cascade from iterative-self-healing-ci.yml), the\
-        \ raw\n# failure rate is inflated by automated remediation runs \u2014 NOT\
-        \ real regressions.\n# In that case we double the effective threshold to avoid\
-        \ false-positive alerts.\nTHRESHOLD=\"${{ vars.CODEX_CI_FAILURE_THRESHOLD\
-        \ || '10' }}\"\n# Read cascade_detected from telemetry JSON.\n# One-liner\
-        \ kept intentionally compact: reads a single nested boolean key and\n# prints\
-        \ 'true'/'false'. Failure-safe: falls back to 'false' on any error so\n# the\
-        \ threshold check always runs. Logic: d['cascade_analysis']['cascade_detected'].\n\
+        \ with plain string keys.\nMETRICS_B64='aW1wb3J0IGpzb24sc3lzCnRyeToKICAgIGQ9anNvbi5sb2FkKG9wZW4oJy90bXAvdGVsZW1ldHJ5X3JlcG9ydC5qc29uJykpCiAgICBzPWQuZ2V0KCdzdW1tYXJ5Jyx7fSkKICAgIHJhdGU9cy5nZXQoJ2ZhaWx1cmVfcmF0ZScsMCkKICAgIHByaW50KGYnRkFJTFVSRV9SQVRFPXtyYXRlKjEwMDouMWZ9JykKICAgIHByaW50KGYnRkFJTEVEX1JVTlM9e3MuZ2V0KCJmYWlsZWRfcnVucyIsMCl9JykKICAgIHByaW50KGYnVE9UQUxfUlVOUz17cy5nZXQoInRvdGFsX3J1bnMiLDApfScpCmV4Y2VwdCBFeGNlcHRpb246CiAgICBwcmludCgnRkFJTFVSRV9SQVRFPTAnKTtwcmludCgnRkFJTEVEX1JVTlM9MCcpO3ByaW50KCdUT1RBTF9SVU5TPTAnKQo='\
+        \  # pragma: allowlist secret\nMETRICS=$(echo \"$METRICS_B64\" | base64 -d\
+        \ | python3) || METRICS='FAILURE_RATE=0\\nFAILED_RUNS=0\\nTOTAL_RUNS=0'\n\
+        eval \"$(echo -e \"$METRICS\")\"\n\n\necho \"failure_rate=${FAILURE_RATE}\"\
+        \ >> \"$GITHUB_OUTPUT\"\necho \"failed_runs=${FAILED_RUNS}\"   >> \"$GITHUB_OUTPUT\"\
+        \necho \"total_runs=${TOTAL_RUNS}\"     >> \"$GITHUB_OUTPUT\"\n\n# Threshold:\
+        \ alert if failure rate exceeds CODEX_CI_FAILURE_THRESHOLD.\n# Wired to repo\
+        \ variable (P2.3); falls back to 10% (degraded level) if unset.\n# Cascade\
+        \ suppression (issue #3669): when >50% of failures are classified as\n# 'self-healing'\
+        \ (a cascade from iterative-self-healing-ci.yml), the raw\n# failure rate\
+        \ is inflated by automated remediation runs \u2014 NOT real regressions.\n\
+        # In that case we double the effective threshold to avoid false-positive alerts.\n\
+        THRESHOLD=\"${{ vars.CODEX_CI_FAILURE_THRESHOLD || '10' }}\"\n# Read cascade_detected\
+        \ from telemetry JSON.\n# One-liner kept intentionally compact: reads a single\
+        \ nested boolean key and\n# prints 'true'/'false'. Failure-safe: falls back\
+        \ to 'false' on any error so\n# the threshold check always runs. Logic: d['cascade_analysis']['cascade_detected'].\n\
         CASCADE_DETECTED=$(python3 -c \"import json,sys;d=json.load(open('/tmp/telemetry_report.json'));print('true'\
         \ if d.get('cascade_analysis',{}).get('cascade_detected',False) else 'false')\"\
         \ 2>/dev/null || echo 'false')\necho \"cascade_detected=${CASCADE_DETECTED}\"\
