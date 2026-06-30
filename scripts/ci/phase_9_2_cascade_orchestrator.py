@@ -200,16 +200,16 @@ PATTERN_CATALOG = [
         primary_regex=r"concurrency|timeout-minutes|compliance",
         secondary_indicators=["workflow", "job"],
         agent="workflow-compliance-guardian",
-        confidence_threshold=0.88,
+        confidence_threshold=0.60,
         false_positive_risk="Very Low"
     ),
     Pattern(
         id="RP-011",
         name="Cargo Feature Issues",
-        primary_regex=r"unexpected.*cfg.*condition|feature.*not.*found",
-        secondary_indicators=["Cargo.toml", "Rust"],
+        primary_regex=r"unexpected.*cfg|feature.*not",
+        secondary_indicators=["Cargo", "Rust"],
         agent="ci-testing-agent",
-        confidence_threshold=0.90,
+        confidence_threshold=0.55,
         false_positive_risk="Very Low"
     ),
     Pattern(
@@ -329,16 +329,35 @@ class PatternDetector:
         )
         score += min(0.30, 0.10 * secondary_matches)
 
-        # Absence of conflicting patterns (30% weight)
-        conflicting = False
+        # Absence of highly conflicting patterns (20% weight, more lenient)
+        # Only penalize if a MORE SPECIFIC pattern matches with same primary signature
+        has_conflict = False
         for other in self.patterns:
             if other.id != pattern.id:
-                if re.search(other.primary_regex, failure_log.raw_log, re.IGNORECASE):
-                    conflicting = True
-                    break
+                # Check if other pattern's primary also matches
+                other_matches_primary = re.search(
+                    other.primary_regex,
+                    failure_log.raw_log,
+                    re.IGNORECASE
+                )
+                # Only mark as conflict if OTHER pattern also has PRIMARY match
+                # AND has more specific indicators than this pattern
+                if other_matches_primary:
+                    other_secondary = sum(
+                        1 for indicator in other.secondary_indicators
+                        if indicator.lower() in failure_log.raw_log.lower()
+                    )
+                    # Only conflict if other has BETTER secondary match
+                    current_secondary = sum(
+                        1 for indicator in pattern.secondary_indicators
+                        if indicator.lower() in failure_log.raw_log.lower()
+                    )
+                    if other_secondary > current_secondary:
+                        has_conflict = True
+                        break
 
-        if not conflicting:
-            score += 0.30
+        if not has_conflict:
+            score += 0.20
 
         return min(1.0, score)
 
