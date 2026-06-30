@@ -145,7 +145,7 @@ runs:
 
     - name: Generate test suggestions
       shell: bash
-      if: ${{ inputs.auto-generate == 'true' }}
+      if: inputs.auto-generate == 'true'
       env:
         SOURCE_PATH: ${{ inputs.source-path }}
       run: |
