@@ -266,7 +266,8 @@ def run_command(
             cmd,
             timeout=timeout_sec,
             capture_output=capture_output,
-            text=True
+            text=True,
+            shell=False  # Explicitly disable shell to prevent injection attacks
         )
         return result.returncode, result.stdout, result.stderr
     except subprocess.TimeoutExpired:
@@ -284,7 +285,7 @@ def run_command(
 class PatternDetector:
     """Detects CI failure patterns from logs"""
 
-    def __init__(self, patterns: List[Pattern] = None):
+    def __init__(self, patterns: Optional[List[Pattern]] = None):
         self.patterns = patterns or PATTERN_CATALOG
 
     def detect(self, failure_log: FailureLog) -> List[PatternMatch]:

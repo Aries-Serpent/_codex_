@@ -143,7 +143,7 @@ class PatternMatcher:
     def match(self, failure_log: str, top_k: int = 5) -> List[Tuple[str, float]]:
         """
         Match failure against all patterns
-        
+
         Returns: List of (pattern_id, confidence) tuples, sorted by confidence
         """
         results = []
@@ -414,7 +414,7 @@ class PatternRouter:
     ) -> Dict[str, Any]:
         """
         Route failure to appropriate agent
-        
+
         Returns routing decision with pattern, agent, and confidence
         """
 
@@ -431,8 +431,9 @@ class PatternRouter:
             }
 
         best_pattern_id, best_confidence = matches[0]
-        pattern_config = self.config["patterns"][best_pattern_id]
-        confidence_threshold = pattern_config.get("confidence_threshold", 0.70)
+        pattern_config: Dict[str, Any] = self.config["patterns"][best_pattern_id]
+        raw_threshold: Any = pattern_config.get("confidence_threshold", 0.70)
+        confidence_threshold: float = float(raw_threshold) if isinstance(raw_threshold, (int, float, str)) else 0.70
         agent = pattern_config.get("agent")
 
         logger.info(
