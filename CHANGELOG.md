@@ -1,3 +1,22 @@
+## [Fix] 2026-06-30T23:17Z — GitHub Actions Security: Mutable Action Tag Pinning
+
+### Summary
+Fixed Semgrep OSS security findings by pinning `actions/checkout` action to full 40-character commit SHA instead of mutable version tag.
+
+**Root Cause**: GitHub Actions using mutable version tags (e.g., `v5`, `v7`) are vulnerable to supply-chain attacks where the action owner can silently repoint the tag.
+
+**Fix Applied**:
+- Pinned `actions/checkout@v5` to `actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0`
+- Updated both occurrences in `.github/workflows/test-rag.yml`:
+  - Line 40: Checkout code step (test-rag job)
+  - Line 449: Checkout repository step (rescue job)
+
+**Security Alerts Resolved**:
+- Semgrep OSS #17330: yaml.github-actions.security.github-actions-mutable-action-tag
+- Semgrep OSS #17331: yaml.github-actions.security.github-actions-mutable-action-tag
+
+---
+
 ## [Fix] 2026-06-30T22:55Z — CI Module Import Errors & Secrets False Positives Resolution
 
 ### Summary
