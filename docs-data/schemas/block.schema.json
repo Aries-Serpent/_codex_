@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "docs-data/schemas/block.schema.json",
+  "title": "BlockRecord",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "type", "schema_version", "section_id", "block_type", "text", "source_trace", "discovered_at"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^blk_[a-f0-9]{12,}$"},
+    "type": {"const": "block"},
+    "schema_version": {"type": "string"},
+    "section_id": {"type": "string"},
+    "block_type": {"enum": ["paragraph", "list", "table", "code", "quote", "note", "warning", "reference", "action_ref", "decision_ref", "requirement_ref", "unknown"]},
+    "text": {"type": "string"},
+    "lifecycle_status": {"enum": ["discovered", "converted_to_jsonl", "validated", "covered"]},
+    "source_trace": {"$ref": "./reference.schema.json#/$defs/source_trace"},
+    "discovered_at": {"type": "string"},
+    "updated_at": {"type": "string"},
+    "tags": {"type": "array", "items": {"type": "string"}},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "related_ids": {"type": "array", "items": {"type": "string"}}
+  }
+}

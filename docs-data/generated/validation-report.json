@@ -1,0 +1,14 @@
+{
+  "broken_relationships": [],
+  "errors": [],
+  "generated_at": "2026-06-30T18:37:32Z",
+  "orphaned_records": [],
+  "stale_generated_files": [],
+  "stats": {
+    "errors": 0,
+    "records": 0,
+    "warnings": 0
+  },
+  "valid": true,
+  "warnings": []
+}

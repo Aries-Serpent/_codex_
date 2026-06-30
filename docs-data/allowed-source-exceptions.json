@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0.0",
+  "exceptions": [
+    {
+      "path": "README.md",
+      "reason": "Repository landing and package metadata."
+    },
+    {
+      "path": "SECURITY.md",
+      "reason": "Security disclosure entry point required by GitHub and maintainers."
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "reason": "Contributor workflow policy for human contributors."
+    },
+    {
+      "path": "CODE_OF_CONDUCT.md",
+      "reason": "Community policy document required as human-readable."
+    },
+    {
+      "path": "LICENSE",
+      "reason": "License file must remain plaintext legal artifact."
+    },
+    {
+      "path": "AGENTS.md",
+      "reason": "Tool-required agent instruction bootstrap file."
+    },
+    {
+      "path": ".github/instructions/workflows.instructions.md",
+      "reason": "Instruction file consumed directly by automation."
+    },
+    {
+      "path": ".github/instructions/python.instructions.md",
+      "reason": "Instruction file consumed directly by automation."
+    }
+  ]
+}

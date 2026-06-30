@@ -1,0 +1,76 @@
+{
+  "agent_context_status": true,
+  "candidate_files_classified": 8679,
+  "candidate_files_covered": 1536,
+  "candidate_files_discovered": 8679,
+  "candidate_files_unmanaged": 7116,
+  "canonical_jsonl_status": "valid",
+  "copilot_tool_contract_status": true,
+  "exact_local_commands": [
+    "python -m tools.docs_agent.inventory --json",
+    "python -m tools.docs_agent.changed_candidates --json",
+    "python -m tools.docs_agent.coverage --json",
+    "python -m tools.docs_agent.validate --json",
+    "python -m tools.docs_agent.build_index --json",
+    "python -m tools.docs_agent.query health --json",
+    "python -m tools.docs_agent.task_brief \"health check\" --json",
+    "python -m tools.docs_agent.no_unmanaged_candidates --json"
+  ],
+  "exception_list": [
+    ".github/instructions/python.instructions.md",
+    ".github/instructions/workflows.instructions.md",
+    "AGENTS.md",
+    "CODE_OF_CONDUCT.md",
+    "CONTRIBUTING.md",
+    "README.md",
+    "SECURITY.md"
+  ],
+  "files_created": [
+    "docs-data/generated/agent-context.json",
+    "docs-data/generated/candidate-inventory.json",
+    "docs-data/generated/changed-candidates.json",
+    "docs-data/generated/codebase-discovery-report.json",
+    "docs-data/generated/copilot-mcp-config.example.json",
+    "docs-data/generated/copilot-tool-contract.json",
+    "docs-data/generated/deletion-candidates.json",
+    "docs-data/generated/docs.sqlite",
+    "docs-data/generated/docs.sqlite-shm",
+    "docs-data/generated/docs.sqlite-wal",
+    "docs-data/generated/existing-automation-report.json",
+    "docs-data/generated/final-machine-readable-infra-report.json",
+    "docs-data/generated/machine-readable-coverage-report.json",
+    "docs-data/generated/manifest.json",
+    "docs-data/generated/markdown-inventory.json",
+    "docs-data/generated/migration-campaign-plan.json",
+    "docs-data/generated/migration-campaign-plan.txt",
+    "docs-data/generated/migration-readiness-report.json",
+    "docs-data/generated/quarantine-candidates.json",
+    "docs-data/generated/query-health-report.json",
+    "docs-data/generated/search-index.jsonl",
+    "docs-data/generated/unmanaged-candidates-report.json",
+    "docs-data/generated/validation-report.json"
+  ],
+  "files_modified": [
+    "pyproject.toml",
+    ".github/workflows/machine-readable-governance.yml",
+    ".github/workflows/machine-readable-maintenance-pr.yml",
+    "tools/docs_agent/*",
+    "docs-data/*"
+  ],
+  "fts_search_status": true,
+  "generated_at": "2026-06-30T18:37:32Z",
+  "github_actions_status": true,
+  "infrastructure_summary": "Machine-readable documentation, indexing, and MCP tooling infrastructure generated.",
+  "manual_followups": [
+    "Run convert on targeted legacy docs and re-run build/validate."
+  ],
+  "mcp_server_status": true,
+  "next_agent_first_command": "python -m tools.docs_agent.inventory --json",
+  "query_health_status": true,
+  "remaining_risks": [
+    "Unmanaged candidate files remain until conversion/exemption campaign progresses."
+  ],
+  "schema_validation_status": true,
+  "sqlite_index_status": true,
+  "task_brief_health_status": true
+}

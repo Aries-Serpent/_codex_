@@ -1,0 +1,188 @@
+{
+  "blocked_action_count": 0,
+  "canonical_files": {
+    "actions": "/home/runner/work/_codex_/_codex_/docs-data/actions.jsonl",
+    "blocks": "/home/runner/work/_codex_/_codex_/docs-data/blocks.jsonl",
+    "decisions": "/home/runner/work/_codex_/_codex_/docs-data/decisions.jsonl",
+    "documents": "/home/runner/work/_codex_/_codex_/docs-data/documents.jsonl",
+    "references": "/home/runner/work/_codex_/_codex_/docs-data/references.jsonl",
+    "relationships": "/home/runner/work/_codex_/_codex_/docs-data/relationships.jsonl",
+    "requirements": "/home/runner/work/_codex_/_codex_/docs-data/requirements.jsonl",
+    "sections": "/home/runner/work/_codex_/_codex_/docs-data/sections.jsonl"
+  },
+  "copilot_tools": [
+    "get_agent_context",
+    "search_docs",
+    "get_document",
+    "get_related_context",
+    "get_task_brief",
+    "impact_analysis",
+    "list_actions",
+    "validate_docs",
+    "classify_candidate_file",
+    "update_action_status",
+    "ingest_candidate_file",
+    "rebuild_indexes"
+  ],
+  "generated_at": "2026-06-30T18:37:32Z",
+  "generated_files": [
+    "docs.sqlite",
+    "manifest.json",
+    "agent-context.json",
+    "search-index.jsonl",
+    "query-health-report.json",
+    "copilot-tool-contract.json",
+    "copilot-mcp-config.example.json",
+    "deletion-candidates.json",
+    "quarantine-candidates.json",
+    "migration-campaign-plan.json"
+  ],
+  "known_exception_files": [
+    {
+      "path": "README.md",
+      "reason": "Repository landing and package metadata."
+    },
+    {
+      "path": "SECURITY.md",
+      "reason": "Security disclosure entry point required by GitHub and maintainers."
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "reason": "Contributor workflow policy for human contributors."
+    },
+    {
+      "path": "CODE_OF_CONDUCT.md",
+      "reason": "Community policy document required as human-readable."
+    },
+    {
+      "path": "LICENSE",
+      "reason": "License file must remain plaintext legal artifact."
+    },
+    {
+      "path": "AGENTS.md",
+      "reason": "Tool-required agent instruction bootstrap file."
+    },
+    {
+      "path": ".github/instructions/workflows.instructions.md",
+      "reason": "Instruction file consumed directly by automation."
+    },
+    {
+      "path": ".github/instructions/python.instructions.md",
+      "reason": "Instruction file consumed directly by automation."
+    }
+  ],
+  "open_action_count": 0,
+  "policy_summary": {
+    "agent_query_rules": {
+      "allow_raw_sql_for_agents": false,
+      "deterministic_output": true,
+      "primary_interface": "mcp_tools",
+      "require_json_response": true
+    },
+    "allowed_exceptions_file": "docs-data/allowed-source-exceptions.json",
+    "candidate_extensions": [
+      ".md",
+      ".mdx",
+      ".markdown",
+      ".txt",
+      ".rst",
+      ".yaml",
+      ".yml",
+      ".toml",
+      ".json",
+      ".jsonl"
+    ],
+    "canonical_dir": "docs-data",
+    "enforcement": {
+      "default_mode": "strict",
+      "fail_on_broken_relationships": true,
+      "fail_on_invalid_jsonl": true,
+      "fail_on_restricted_path_prose": true,
+      "fail_on_stale_generated_indexes": true,
+      "fail_on_unmanaged_candidates": true
+    },
+    "generated_dir": "docs-data/generated",
+    "ignored_paths": [
+      ".git/**",
+      ".venv/**",
+      "venv/**",
+      "node_modules/**",
+      "vendor/**",
+      "dist/**",
+      "build/**",
+      "coverage/**",
+      "target/**",
+      ".next/**",
+      "__pycache__/**",
+      ".pytest_cache/**",
+      ".mypy_cache/**",
+      ".ruff_cache/**"
+    ],
+    "legacy_source_paths": [
+      "docs/**",
+      "planning/**",
+      "architecture/**",
+      "specs/**",
+      ".codex/**"
+    ],
+    "machine_readable_only_paths": [
+      "docs-data/**"
+    ],
+    "required_ingestion": {
+      "allowed_states": [
+        "requires_ingestion",
+        "exempted",
+        "ignored",
+        "generated",
+        "canonical",
+        "covered"
+      ],
+      "default": "requires_ingestion"
+    },
+    "restricted_paths": [
+      "docs-data/**"
+    ],
+    "schema_version": "1.0.0",
+    "schemas_dir": "docs-data/schemas"
+  },
+  "python_commands": [
+    "python -m tools.docs_agent.inventory --json",
+    "python -m tools.docs_agent.changed_candidates --json",
+    "python -m tools.docs_agent.coverage --json",
+    "python -m tools.docs_agent.validate --json",
+    "python -m tools.docs_agent.build_index --json",
+    "python -m tools.docs_agent.query health --json",
+    "python -m tools.docs_agent.task_brief \"health check\" --json",
+    "python -m tools.docs_agent.no_unmanaged_candidates --json"
+  ],
+  "recommended_agent_workflow": [
+    "get_agent_context",
+    "get_task_brief(objective)",
+    "get_related_context(entity)",
+    "impact_analysis(target_files)",
+    "inspect relevant source files",
+    "make changes",
+    "update relevant JSONL records if needed",
+    "rebuild_indexes",
+    "validate_docs",
+    "summarize changes"
+  ],
+  "restricted_paths": [
+    "docs-data/**"
+  ],
+  "state": "machine-readable-docs-active",
+  "validation_status": {
+    "broken_relationships": [],
+    "errors": [],
+    "generated_at": "2026-06-30T18:37:32Z",
+    "orphaned_records": [],
+    "stale_generated_files": [],
+    "stats": {
+      "errors": 0,
+      "records": 0,
+      "warnings": 0
+    },
+    "valid": true,
+    "warnings": []
+  }
+}
