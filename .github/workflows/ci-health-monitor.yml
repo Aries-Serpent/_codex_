@@ -1,5 +1,5 @@
 name: CI Health Monitor
-true:
+on:
   schedule:
   - cron: 0 */6 * * *
   workflow_dispatch: null
