@@ -148,7 +148,9 @@ class TestCoverageEnforcer:
             }
         }
 
-    def analyze_coverage(self, path: Path, coverage_file: Optional[Path] = None) -> dict[Path, CoverageReport]:
+    def analyze_coverage(
+        self, path: Path, coverage_file: Optional[Path] = None
+    ) -> dict[Path, CoverageReport]:
         """
         Analyze test coverage for given path using coverage.py
 
@@ -299,7 +301,10 @@ class TestCoverageEnforcer:
                 file_path=report.file_path,
                 issue_type='untested_function',
                 severity=severity,
-                description=f"Function coverage {report.function_coverage:.1f}% below threshold {self.function_threshold}%",
+                description=(
+                    f"Function coverage {report.function_coverage:.1f}% below "
+                    f"threshold {self.function_threshold}%"
+                ),
                 suggested_tests=[f"test_{func}" for func in report.uncovered_functions],
                 confidence=0.9
             )
@@ -367,7 +372,9 @@ class TestCoverageEnforcer:
             enforcement_actions=actions
         )
 
-    def generate_test_suggestions(self, reports: dict[Path, CoverageReport]) -> list[TestGenerationSuggestion]:
+    def generate_test_suggestions(
+        self, reports: dict[Path, CoverageReport]
+    ) -> list[TestGenerationSuggestion]:
         """
         Generate suggestions for new tests to improve coverage
 
@@ -501,7 +508,10 @@ def test_{func_name}_edge_cases():
             lines.append("-" * 80)
             for path, report in self.reports.items():
                 status = "✓" if report.line_coverage >= self.line_threshold else "✗"
-                lines.append(f"{status} {path}: {report.line_coverage:.1f}% line, {report.function_coverage:.1f}% function")
+                lines.append(
+                    f"{status} {path}: {report.line_coverage:.1f}% line, "
+                    f"{report.function_coverage:.1f}% function"
+                )
 
         if self.issues:
             lines.append("")
@@ -619,12 +629,12 @@ def main():
         reports = agent.analyze_coverage(args.path)
         print(f"Analyzed {len(reports)} files")  # codeql[py/clear-text-logging-sensitive-data]
         for path, report in reports.items():
-            print(f"{path}: {report.line_coverage:.1f}% coverage")  # codeql[py/clear-text-logging-sensitive-data]
+            print(f"{path}: {report.line_coverage:.1f}% coverage")
 
     elif args.command == 'enforce':
         result = agent.enforce_thresholds(args.path)
-        print(f"Enforcement: {'PASSED' if result.passed else 'FAILED'}")  # codeql[py/clear-text-logging-sensitive-data]
-        print(f"Current coverage: {result.current_coverage:.1f}%")  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"Enforcement: {"PASSED" if result.passed else "FAILED"}")
+        print(f"Current coverage: {result.current_coverage:.1f}%")
         print(f"Threshold: {result.threshold}%")  # codeql[py/clear-text-logging-sensitive-data]
         for action in result.enforcement_actions:
             print(f"  - {action}")  # codeql[py/clear-text-logging-sensitive-data]
@@ -635,10 +645,12 @@ def main():
     elif args.command == 'generate-tests':
         reports = agent.analyze_coverage(args.path)
         suggestions = agent.generate_test_suggestions(reports)
-        print(f"Generated {len(suggestions)} test suggestions:")  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"Generated {len(suggestions)} test suggestions:")
         for s in suggestions[:10]:  # Show top 10
-            print(f"\nPriority {s.priority}: {s.target_function} in {s.target_file}")  # codeql[py/clear-text-logging-sensitive-data]
-            print(f"  Impact: +{s.coverage_impact:.1f}% coverage")  # codeql[py/clear-text-logging-sensitive-data]
+            print(
+                f"\nPriority {s.priority}: {s.target_function} in {s.target_file}"
+            )
+            print(f"  Impact: +{s.coverage_impact:.1f}% coverage")
             print(f"  Test file: {s.test_file}")  # codeql[py/clear-text-logging-sensitive-data]
 
     elif args.command == 'report':
