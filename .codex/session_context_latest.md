@@ -1,35 +1,40 @@
-# Session Context — 2026-06-30T21:11:37Z
-**Branch:** `copilot/explore-codebase-and-create-implementation-plan`  **PR:** #5155  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-06-30T21:40:32Z
+**Branch:** `fix/ci-rag-module-tests-20260630213434`  **PR:** #5158  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4985` (✅)
-- GraphQL remaining: `4989` (✅)
+- REST remaining: `4564` (✅)
+- GraphQL remaining: `4966` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #5155 — Complete Phase 10-12 Campaign Execution & Sync Branch (0 conflicts, 27 days ahead)
-State: `open`  Draft: `False`  Branch: `copilot/explore-codebase-and-create-implementation-plan` → `main`
+## 📋 PR #5158 — fix(ci): 🔧 Critical — RAG Module Tests [b5f504d]
+State: `open`  Draft: `False`  Branch: `fix/ci-rag-module-tests-20260630213434` → `main`
 
-### ❌ 1 Failing CI Check(s)
-- `Governance Compliance` (failure)
+### ❌ 6 Failing CI Check(s)
+- `copilot` (cancelled)
+- `copilot` (cancelled)
+- `Fast Validation` (failure)
+- `Validate WEC Template Integrity` (failure)
+- `Final Pre-Merge Checks` (failure)
+- `🔍 Scan PR comments` (failure)
 
 ## 🚨 Recent CI Failures (last 5 runs)
+- **Phase 8.2 Issue Triage** — `failure` on `main` (2026-06-30)
 - **PR Comment Review Gate** — `failure` on `main` (2026-06-30)
-- **.github/workflows/build-preview-image.yml** — `failure` on `copilot/explore-codebase-and-create-implementation-plan` (2026-06-30)
-- **.github/workflows/build-preview-image.yml** — `failure` on `copilot/explore-codebase-and-create-implementation-plan` (2026-06-30)
-- **.github/workflows/admin-action-t03.yml** — `failure` on `copilot/explore-codebase-and-create-implementation-plan` (2026-06-30)
-- **.github/workflows/build-preview-image.yml** — `failure` on `copilot/explore-codebase-and-create-implementation-plan` (2026-06-30)
+- **PR Comment Review Gate** — `failure` on `fix/ci-rag-module-tests-20260630213434` (2026-06-30)
+- **Workflow Execution Gate** — `failure` on `fix/ci-rag-module-tests-20260630213434` (2026-06-30)
+- **Pre-Merge Validation** — `failure` on `fix/ci-rag-module-tests-20260630213434` (2026-06-30)
 
 ## 📝 Recent Commits
-- `b10e5859` refactor: Fix code review findings - remove unnecessary context syntax and malfo — copilot-swe-agent[bot] (2026-06-30)
-- `dacd1bec` docs: Update accountability report and changelog for session — copilot-swe-agent[bot] (2026-06-30)
-- `7ba1a7d3` Merge remote-tracking branch 'refs/remotes/origin/main' into copilot/explore-cod — copilot-swe-agent[bot] (2026-06-30)
-- `2a1ed074` fix(security): Fix shell injection vulnerabilities in agent YAML files — copilot-swe-agent[bot] (2026-06-30)
-- `77e4731c` metric: Approval telemetry for agent-auth-delegation — GitHub Action (2026-06-30)
-- `92373ba5` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-06-30)
-- `96d7b95c` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-06-30)
-- `426643e1` fix(security): Replace MD5 with SHA-256 for deterministic UUID generation — copilot-swe-agent[bot] (2026-06-30)
+- `7430503f` fix(ci): tracking stub for RAG Module Tests [skip ci] — github-actions[bot] (2026-06-30)
+- `6e9725d8` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-06-30)
+- `b5f504dd` Merge pull request #5155 from Aries-Serpent/copilot/explore-codebase-and-create- — Statix (2026-06-30)
+- `2dd44de9` fix(security): Complete security fixes and update compliance documentation — copilot-swe-agent[bot] (2026-06-30)
+- `43f82123` docs: Final compliance update - accountability report and changelog — copilot-swe-agent[bot] (2026-06-30)
+- `0feed458` docs: Update accountability report and changelog - satisfy REQ-4 and REQ-5 with  — copilot-swe-agent[bot] (2026-06-30)
+- `97dd5348` docs: Update accountability report and changelog - satisfy REQ-4 and REQ-5 — copilot-swe-agent[bot] (2026-06-30)
+- `44524dad` docs: Update accountability report and changelog for session - fix REQ-4/REQ-5 — copilot-swe-agent[bot] (2026-06-30)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
