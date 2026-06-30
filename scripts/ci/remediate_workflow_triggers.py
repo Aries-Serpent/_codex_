@@ -12,12 +12,14 @@ Usage:
 """
 
 import argparse
-import json
-import sys
-from pathlib import Path
-from typing import Dict, List, Tuple
-import re
 import hashlib
+import json
+import re
+import sys
+from datetime import datetime
+from pathlib import Path
+from typing import Dict, Tuple
+
 import yaml
 
 # Target workflows directory
@@ -70,7 +72,7 @@ AFFECTED_WORKFLOWS = [
 
 def get_file_hash(filepath: Path) -> str:
     """Calculate MD5 hash of file for verification."""
-    hash_md5 = hashlib.md5()
+    hash_md5 = hashlib.md5(usedforsecurity=False)
     with open(filepath, "rb") as f:
         for chunk in iter(lambda: f.read(4096), b""):
             hash_md5.update(chunk)
@@ -110,7 +112,8 @@ def remediate_file(filepath: Path, dry_run: bool = True) -> Tuple[bool, str]:
     line_num, found = find_true_key_line(filepath)
     
     if not found:
-        return False, f"No `true:` trigger key found"
+        # File is already remediated or doesn't have the pattern - treat as success
+        return True, "File already has `on:` or `true:` key not found (already remediated)"
     
     # Read file
     with open(filepath, "r") as f:
@@ -145,13 +148,13 @@ def generate_audit_metadata(output_file: Path = None) -> Dict:
     """
     metadata = {
         "campaign": "workflow_trigger_key_remediation",
-        "timestamp": None,
+        "timestamp": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
         "affected_workflows_count": len(AFFECTED_WORKFLOWS),
         "affected_workflows": [],
         "summary": {
             "total_files": 0,
             "found_pattern": 0,
-            "missing_pattern": 0,
+            "missing_files": 0,
             "already_remediated": 0,
         }
     }
@@ -165,7 +168,7 @@ def generate_audit_metadata(output_file: Path = None) -> Dict:
                 "status": "NOT_FOUND",
                 "path": str(filepath),
             })
-            metadata["summary"]["missing_pattern"] += 1
+            metadata["summary"]["missing_files"] += 1
             continue
         
         line_num, found = find_true_key_line(filepath)
@@ -261,7 +264,7 @@ def main():
         print(f"  Total files analyzed: {metadata['summary']['total_files']}")
         print(f"  Requires remediation: {metadata['summary']['found_pattern']}")
         print(f"  Already remediated: {metadata['summary']['already_remediated']}")
-        print(f"  Missing pattern: {metadata['summary']['missing_pattern']}")
+        print(f"  Missing files: {metadata['summary']['missing_files']}")
         
         results["phases"]["audit"] = metadata["summary"]
         

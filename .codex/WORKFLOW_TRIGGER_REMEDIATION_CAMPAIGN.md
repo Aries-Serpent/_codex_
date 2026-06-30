@@ -54,7 +54,7 @@
 - All workflows parse cleanly
 
 **Validation Coverage:**
-- YAML RFC 5545 compliance ✓
+- YAML 1.2 schema compliance ✓
 - GitHub Actions schema compatibility ✓
 - Workflow structure preservation ✓
 - No collateral modifications ✓
