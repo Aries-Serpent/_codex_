@@ -2,11 +2,11 @@ name: Container Security Scan
 on:
   push:
     paths:
-    - Dockerfile*
+    - .config/Dockerfile*
     - docker/**
   pull_request:
     paths:
-    - Dockerfile*
+    - .config/Dockerfile*
     - docker/**
   schedule:
   - cron: 0 5 * * 1
@@ -26,7 +26,7 @@ jobs:
       fail-fast: false
       matrix:
         dockerfile:
-        - Dockerfile
+        - .config/Dockerfile
         - docker/Dockerfile.cpu
         - docker/Dockerfile.gpu
     steps:
