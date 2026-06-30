@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "docs-data/schemas/requirement.schema.json",
+  "title": "RequirementRecord",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "type", "schema_version", "statement", "status", "source_trace", "discovered_at"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^req_[a-f0-9]{12,}$"},
+    "type": {"const": "requirement"},
+    "schema_version": {"type": "string"},
+    "statement": {"type": "string", "minLength": 1},
+    "status": {"enum": ["open", "satisfied", "blocked", "deprecated"]},
+    "acceptance_criteria": {"type": "array", "items": {"type": "string"}},
+    "constraint_type": {"enum": ["behavior", "constraint", "acceptance_criteria", "rule", "unknown"]},
+    "lifecycle_status": {"enum": ["discovered", "converted_to_jsonl", "validated", "covered"]},
+    "source_trace": {"$ref": "./reference.schema.json#/$defs/source_trace"},
+    "discovered_at": {"type": "string"},
+    "updated_at": {"type": "string"},
+    "tags": {"type": "array", "items": {"type": "string"}},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1}
+  }
+}

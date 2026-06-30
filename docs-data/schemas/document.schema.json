@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "docs-data/schemas/document.schema.json",
+  "title": "DocumentRecord",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "type", "schema_version", "title", "lifecycle_status", "source_trace", "discovered_at"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^doc_[a-f0-9]{12,}$"},
+    "type": {"const": "document"},
+    "schema_version": {"type": "string"},
+    "title": {"type": "string", "minLength": 1},
+    "summary": {"type": "string"},
+    "classification": {"type": "string"},
+    "lifecycle_status": {"enum": ["discovered", "classified", "requires_ingestion", "exempted", "converted_to_jsonl", "validated", "indexed_to_sqlite", "available_to_agent", "covered"]},
+    "source_trace": {"$ref": "./reference.schema.json#/$defs/source_trace"},
+    "discovered_at": {"type": "string"},
+    "updated_at": {"type": "string"},
+    "tags": {"type": "array", "items": {"type": "string"}},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "related_ids": {"type": "array", "items": {"type": "string"}}
+  }
+}

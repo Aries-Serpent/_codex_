@@ -1,0 +1,9 @@
+{
+  "candidates": [],
+  "criteria": [
+    "conversion warnings",
+    "low classification confidence",
+    "uncertain external dependency"
+  ],
+  "generated_at": "2026-06-30T18:37:32Z"
+}

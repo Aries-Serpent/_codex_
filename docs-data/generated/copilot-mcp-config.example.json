@@ -1,0 +1,11 @@
+{
+  "notes": "Template only. Do not commit real secrets.",
+  "server": {
+    "args": [
+      "-m",
+      "tools.docs_agent.mcp_server"
+    ],
+    "command": "python",
+    "transport": "stdio"
+  }
+}
