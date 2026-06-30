@@ -1,0 +1,401 @@
+{
+  "analysis_timestamp": "2026-06-30T22:56:20.011122Z",
+  "diagrams_found": [
+    {
+      "file": "docs/REPOSITORY_ARCHITECTURE_DIAGRAMS.md",
+      "type": "repo_architecture",
+      "diagram_count": 14,
+      "file_size_kb": 28.8,
+      "last_modified": "2026-06-30T22:42:50Z"
+    },
+    {
+      "file": "docs/ARCHITECTURE.md",
+      "type": "core_architecture",
+      "diagram_count": 11,
+      "file_size_kb": 73.3,
+      "last_modified": "2026-06-30T22:42:50Z"
+    },
+    {
+      "file": "docs/CODEBASE_MERMAID_MAPS.md",
+      "type": "codebase_maps",
+      "diagram_count": 18,
+      "file_size_kb": 35.2,
+      "last_modified": "2026-06-30T22:42:50Z"
+    },
+    {
+      "file": "docs/ARCHITECTURE_BLUEPRINT.md",
+      "type": "architecture_blueprint",
+      "diagram_count": 1,
+      "file_size_kb": 33.0,
+      "last_modified": "2026-06-30T22:42:50Z"
+    },
+    {
+      "file": "docs/cognitive_brain_integration_master_plan.md",
+      "type": "cognitive_brain",
+      "diagram_count": 2,
+      "file_size_kb": 34.1,
+      "last_modified": "2026-06-30T22:42:50Z"
+    },
+    {
+      "file": "README.md",
+      "type": "readme",
+      "diagram_count": 2,
+      "file_size_kb": 56.8,
+      "last_modified": "2026-06-30T22:42:50Z"
+    },
+    {
+      "file": "AGENTS.md",
+      "type": "agents",
+      "diagram_count": 1,
+      "file_size_kb": 32.3,
+      "last_modified": "2026-06-30T22:42:50Z"
+    }
+  ],
+  "diagram_assessments": [
+    {
+      "diagram_path": "docs/REPOSITORY_ARCHITECTURE_DIAGRAMS.md #0 (CI/CD Pipeline v0.9.0)",
+      "type": "flowchart",
+      "authority": "descriptive",
+      "accuracy": 75,
+      "divergences": [
+        "Test count claim: 21,500+ tests but actual count varies by test discovery method",
+        "Coverage: Shown 10.7% but may have evolved",
+        "Action versions: setup-python-cached versioning may be outdated"
+      ],
+      "missing_elements": [
+        "Recent pytest plugin updates not reflected",
+        "New test categorization frameworks",
+        "Updated timeout and retry strategies"
+      ],
+      "conversion_needed": "maybe",
+      "last_updated_estimate": "2026-05-20"
+    },
+    {
+      "diagram_path": "docs/REPOSITORY_ARCHITECTURE_DIAGRAMS.md #1 (doc-test-scribe workflow)",
+      "type": "flowchart",
+      "authority": "descriptive",
+      "accuracy": 70,
+      "divergences": [
+        "Workflow modes enumeration may be incomplete",
+        "Security scan integration details oversimplified"
+      ],
+      "missing_elements": [
+        "Recent action enhancements",
+        "New security scanning tools",
+        "Cache optimization updates"
+      ],
+      "conversion_needed": "no",
+      "last_updated_estimate": "2026-06-30"
+    },
+    {
+      "diagram_path": "docs/CODEBASE_MERMAID_MAPS.md #0 (Repository Structure)",
+      "type": "flowchart",
+      "authority": "authoritative",
+      "accuracy": 85,
+      "divergences": [
+        "Tests count '2,130 test files' needs verification against actual 3,053 test files",
+        "Module organization simplified but essentially accurate"
+      ],
+      "missing_elements": [
+        "80 actual modules vs simplified high-level view",
+        "New package additions post-Phase 20"
+      ],
+      "conversion_needed": "yes",
+      "last_updated_estimate": "2026-06-03"
+    },
+    {
+      "diagram_path": "docs/CODEBASE_MERMAID_MAPS.md #1 (CI/CD Pipeline Architecture)",
+      "type": "flowchart",
+      "authority": "partially_misleading",
+      "accuracy": 65,
+      "divergences": [
+        "4 tiers abstraction vs 209 actual workflow files in .github/workflows/",
+        "Workflow names may not reflect actual file structure",
+        "Tier categorization becomes quickly outdated as new workflows added"
+      ],
+      "missing_elements": [
+        "Webhook triggers not shown",
+        "New event-driven workflows (dispatch, scheduled)",
+        "Admin actions and emergency procedures",
+        "Recent security scanning integrations"
+      ],
+      "conversion_needed": "yes",
+      "last_updated_estimate": "2026-06-03"
+    },
+    {
+      "diagram_path": "docs/CODEBASE_MERMAID_MAPS.md #3 (Cognitive Brain Core)",
+      "type": "flowchart",
+      "authority": "authoritative",
+      "accuracy": 80,
+      "divergences": [
+        "Phase 9 features (memory-sync-agent, rate-limit orchestrator) dated 2026-05-08 - verify implementation",
+        "k\u2081=0.332 coefficient may have changed",
+        "TTL values may differ from current config"
+      ],
+      "missing_elements": [
+        "Phase 10+ cognitive enhancements",
+        "New autonomy surfaces",
+        "Updated pattern library structures"
+      ],
+      "conversion_needed": "maybe",
+      "last_updated_estimate": "2026-05-08"
+    },
+    {
+      "diagram_path": "docs/ARCHITECTURE.md #1 (ML Platform Architecture)",
+      "type": "flowchart",
+      "authority": "descriptive",
+      "accuracy": 60,
+      "divergences": [
+        "Training Engine shown as single component but 80 actual modules exist",
+        "CLI interface oversimplified - cli.py structure more complex",
+        "Configuration flow doesn't reflect full OmegaConf integration",
+        "Missing 30+ new modules added post-launch"
+      ],
+      "missing_elements": [
+        "autonomy module with privilege surfaces",
+        "cognitive module details",
+        "quantum_orchestrator",
+        "RAG ingestion pipeline granular steps",
+        "New caching subsystem",
+        "New knowledge management",
+        "New session management"
+      ],
+      "conversion_needed": "yes",
+      "last_updated_estimate": "2026-06-30"
+    },
+    {
+      "diagram_path": "docs/ARCHITECTURE.md #3,#4 (Sequence Diagrams)",
+      "type": "sequence",
+      "authority": "descriptive",
+      "accuracy": 65,
+      "divergences": [
+        "Training and eval flows may not reflect current implementations",
+        "Handler signatures may have evolved"
+      ],
+      "missing_elements": [
+        "Error handling paths",
+        "Async operation details",
+        "New validation gates"
+      ],
+      "conversion_needed": "maybe",
+      "last_updated_estimate": "2026-06-30"
+    },
+    {
+      "diagram_path": "AGENTS.md #0 (Agent Registry)",
+      "type": "flowchart",
+      "authority": "misleading",
+      "accuracy": 55,
+      "divergences": [
+        "Claims '145 active / 14 archived' but agent registry may have evolved",
+        "Agent family relationships may be outdated",
+        "Coverage agent paths may no longer be accurate",
+        "MCP enablement status unverified"
+      ],
+      "missing_elements": [
+        "Current autonomous agent count from AGENT_REGISTRY.yaml",
+        "Phase 10+ new agents",
+        "Deprecated agents",
+        "MCP integration status",
+        "New agent coordination patterns"
+      ],
+      "conversion_needed": "yes",
+      "last_updated_estimate": "2026-06-30"
+    },
+    {
+      "diagram_path": "docs/ARCHITECTURE_BLUEPRINT.md #0 (System Context)",
+      "type": "flowchart",
+      "authority": "descriptive",
+      "accuracy": 65,
+      "divergences": [
+        "User role enumeration may be incomplete",
+        "External system boundaries unclear",
+        "Integration complexity understated"
+      ],
+      "missing_elements": [
+        "API gateway layer",
+        "Webhook system details",
+        "MCP server integration",
+        "Session management subsystem",
+        "Rate limiting infrastructure"
+      ],
+      "conversion_needed": "no",
+      "last_updated_estimate": "2026-06-30"
+    },
+    {
+      "diagram_path": "docs/cognitive_brain_integration_master_plan.md #0,#1",
+      "type": "flowchart|sequence",
+      "authority": "misleading",
+      "accuracy": 45,
+      "divergences": [
+        "React App architecture assumes UI implementation not verified in codebase",
+        "FastAPI integration details may be outdated",
+        "Cache strategy references may not match current implementation",
+        "Cognitive Brain module names may have changed"
+      ],
+      "missing_elements": [
+        "Current API endpoint structure",
+        "WebSocket implementation details",
+        "Authentication/authorization flows",
+        "Rate limiting per-user/per-org",
+        "Real-time telemetry ingestion",
+        "Cache invalidation strategy"
+      ],
+      "conversion_needed": "yes",
+      "last_updated_estimate": "2026-06-30"
+    },
+    {
+      "diagram_path": "README.md #0 (codex-ml v0.1.0)",
+      "type": "flowchart",
+      "authority": "stale",
+      "accuracy": 50,
+      "divergences": [
+        "Version label v0.1.0 is outdated (actual: v0.9.0+)",
+        "Component layout doesn't match current module structure",
+        "CLI interface referenced may not match cli.py implementation"
+      ],
+      "missing_elements": [
+        "v0.9.0 features",
+        "Autonomous agent ecosystem",
+        "Phase 20+ capabilities",
+        "MCP integration",
+        "Session management"
+      ],
+      "conversion_needed": "yes",
+      "last_updated_estimate": "2026-06-30"
+    }
+  ],
+  "authoritative_diagrams": [
+    "docs/CODEBASE_MERMAID_MAPS.md #0 (Repository Structure) - high-level view",
+    "docs/CODEBASE_MERMAID_MAPS.md #3 (Cognitive Brain Core) - Phase 9+ design"
+  ],
+  "partially_accurate_diagrams": [
+    "docs/REPOSITORY_ARCHITECTURE_DIAGRAMS.md #0,#1 - CI/CD aspects mostly correct but counts outdated",
+    "docs/ARCHITECTURE.md #1 - Module organization oversimplified",
+    "docs/ARCHITECTURE.md #3,#4 - Sequence flows need update",
+    "AGENTS.md #0 - Agent count and families may be stale",
+    "docs/ARCHITECTURE_BLUEPRINT.md #0 - High-level correct but missing details"
+  ],
+  "misleading_diagrams": [
+    "AGENTS.md #0 - Agent count unverified, relationships may be outdated",
+    "docs/CODEBASE_MERMAID_MAPS.md #1 - Tier abstraction becomes quickly stale",
+    "docs/cognitive_brain_integration_master_plan.md - React app details speculative"
+  ],
+  "conversion_candidates": [
+    {
+      "diagram": "AGENTS.md #0",
+      "reason": "Agent registry must stay in sync with AGENT_REGISTRY.yaml; too volatile for static diagrams",
+      "suggested_format": "Python script to parse AGENT_REGISTRY.yaml and generate JSON/Mermaid on demand",
+      "priority": "CRITICAL",
+      "implementation_effort": "3-4 hours"
+    },
+    {
+      "diagram": "docs/CODEBASE_MERMAID_MAPS.md #1 (CI/CD Pipeline)",
+      "reason": "209+ workflows in .github/workflows/; adding/removing workflows frequently outpaces diagram updates",
+      "suggested_format": "Python script scanning workflow files, generating HTML index and Mermaid summary",
+      "priority": "CRITICAL",
+      "implementation_effort": "4-6 hours"
+    },
+    {
+      "diagram": "docs/ARCHITECTURE.md #1 (ML Platform)",
+      "reason": "80 actual modules vs diagram's simplified view; should auto-generate from src/codex structure",
+      "suggested_format": "Python AST analysis tool generating Mermaid+HTML module dependency graph",
+      "priority": "HIGH",
+      "implementation_effort": "6-8 hours"
+    },
+    {
+      "diagram": "docs/cognitive_brain_integration_master_plan.md",
+      "reason": "Detailed UI/API design docs better served by architecture decision records or sequence diagrams generated from code",
+      "suggested_format": "Auto-generate from API schemas + implementation; consider PlantUML for details",
+      "priority": "MEDIUM",
+      "implementation_effort": "4-5 hours"
+    },
+    {
+      "diagram": "README.md #0",
+      "reason": "High-level overview duplicates CODEBASE_MERMAID_MAPS.md; should reference authoritative source",
+      "suggested_format": "Link to/embed docs/CODEBASE_MERMAID_MAPS.md #0 instead of maintaining separate diagram",
+      "priority": "LOW",
+      "implementation_effort": "0.5 hours"
+    }
+  ],
+  "removal_candidates": [
+    {
+      "diagram": "docs/cognitive_brain_integration_master_plan.md #1 (React/FastAPI sequence)",
+      "reason": "Speculative UI architecture; not authoritative. Better served by actual API docs or code comments.",
+      "priority": "LOW"
+    },
+    {
+      "diagram": "docs/REPOSITORY_ARCHITECTURE_DIAGRAMS.md #7-13 (Gantt/Timeline/MindMap diagrams)",
+      "reason": "Timeline and mindmap views duplicated in task tracking systems; not consulted regularly",
+      "priority": "LOW"
+    }
+  ],
+  "update_priorities": [
+    "CRITICAL: Auto-generate agent registry from config (daily sync)",
+    "CRITICAL: Auto-generate CI/CD workflow summary (weekly scan)",
+    "HIGH: Auto-generate module structure from AST (monthly regeneration)",
+    "HIGH: Add automated verification checklist to CI/CD pipeline",
+    "MEDIUM: Add version/timestamp to all diagrams with 'generated' vs 'manual' labels",
+    "MEDIUM: Create 'living diagram' policy requiring programmatic sync for volatile diagrams",
+    "LOW: Archive or consolidate duplicate architecture overviews"
+  ],
+  "priority_fixes_needed": [
+    {
+      "issue": "Test count (21,500) in REPOSITORY_ARCHITECTURE_DIAGRAMS.md may be outdated",
+      "impact": "MEDIUM - Used for documentation authority but accuracy unverified",
+      "root_cause": "Static count inserted on 2026-05-20; no automation to update",
+      "action": "Add note with discovery date; link to pytest command for live count. Consider CI-based update.",
+      "estimated_effort": "1-2 hours",
+      "verification_method": "Run pytest --collect-only and compare numbers"
+    },
+    {
+      "issue": "Agent registry (AGENTS.md) shows 145 agents without source verification",
+      "impact": "HIGH - Misleading if agents added/removed without diagram update",
+      "root_cause": "Manual diagram; AGENT_REGISTRY.yaml is source of truth but not synced",
+      "action": "Create Python script to parse AGENT_REGISTRY.yaml and programmatically update AGENTS.md with counts/families",
+      "estimated_effort": "3-4 hours",
+      "verification_method": "Script output matches current AGENT_REGISTRY.yaml"
+    },
+    {
+      "issue": "CI/CD workflow diagram (CODEBASE_MERMAID_MAPS.md #1) shows 4 tiers vs 209 actual files",
+      "impact": "CRITICAL - Diagram becomes outdated every time new workflow added",
+      "root_cause": "Manual categorization; new workflows added via ad-hoc PRs",
+      "action": "Create Python scanner for .github/workflows/ generating hierarchical Mermaid + statistics",
+      "estimated_effort": "4-6 hours",
+      "verification_method": "Scan produces file count matching ls .github/workflows/*.yml"
+    },
+    {
+      "issue": "Module structure in ARCHITECTURE.md #1 missing 30+ modules (autonomy, cognitive, quantum_orchestrator, etc)",
+      "impact": "MEDIUM - Incomplete architecture view may mislead developers",
+      "root_cause": "Manual diagram not kept in sync with module growth (14 \u2192 80 modules)",
+      "action": "Build AST analyzer to parse src/codex/ and auto-generate flowchart; verify dependencies",
+      "estimated_effort": "6-8 hours",
+      "verification_method": "Generated diagram lists all 80 modules; spot-check dependencies"
+    },
+    {
+      "issue": "Cognitive Brain architecture references Phase 9 features (2026-05-08) - implementation unverified",
+      "impact": "MEDIUM - Design docs may diverge from actual implementation",
+      "root_cause": "Diagram updated before code; code changes not reflected",
+      "action": "Verify rate_limit_orchestrator.py, memory-sync-agent, k\u2081 coefficient in actual code. Document findings.",
+      "estimated_effort": "2-3 hours",
+      "verification_method": "grep for these terms in src/codex/; confirm module exists and is used"
+    }
+  ],
+  "confidence_level": 68,
+  "summary": {
+    "total_diagrams_analyzed": 49,
+    "authoritative_count": 2,
+    "partially_accurate_count": 5,
+    "misleading_count": 3,
+    "stale_count": 1,
+    "auto_generation_candidates": 5,
+    "removal_candidates": 2,
+    "key_findings": [
+      "Volatile data (agents, workflows) should not be in static diagrams",
+      "Module structure diverged from actual codebase (14 modules \u2192 80 modules)",
+      "Test counts and coverage percentages outdated and unverified",
+      "Three diagrams contain potentially misleading information",
+      "No CI/CD verification that diagrams stay in sync with reality"
+    ],
+    "recommendation": "Implement automated diagram generation for agent registry, CI/CD workflows, and module structure. Convert others to reference/link-based architecture docs."
+  }
+}
