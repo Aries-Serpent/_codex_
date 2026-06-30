@@ -1,6 +1,5 @@
 """Rate limiting and backoff strategy tests for CODEX_MASTER_KEY."""
 
-import pytest
 
 
 class TestRateLimitDetection:

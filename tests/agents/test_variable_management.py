@@ -12,8 +12,8 @@ import os
 import sys
 import unittest
 from unittest.mock import MagicMock, patch
-from scripts.ci._token_resolver import get_token
 
+from scripts.ci._token_resolver import get_token
 
 # Ensure scripts/ and src/ are importable
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))

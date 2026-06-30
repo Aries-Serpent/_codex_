@@ -15,10 +15,9 @@ from __future__ import annotations
 import hashlib
 import hmac
 import json
-from typing import Any, Optional # pragma: allowlist secret # pragma: allowlist secret
+from typing import Any, Optional  # pragma: allowlist secret # pragma: allowlist secret
 
 import pytest
-
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Fixtures

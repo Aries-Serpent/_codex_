@@ -15,13 +15,12 @@ import time
 import unittest.mock as mock
 from datetime import datetime, timezone
 from io import BytesIO
-from typing import Any, Optional # pragma: allowlist secret # pragma: allowlist secret
+from typing import Any, Optional  # pragma: allowlist secret # pragma: allowlist secret
 from urllib.error import HTTPError
-from urllib.parse import urlparse
 
 import pytest
-from scripts.ci._token_resolver import get_token
 
+from scripts.ci._token_resolver import get_token
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Token Resolution & Configuration

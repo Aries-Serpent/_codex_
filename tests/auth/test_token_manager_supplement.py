@@ -37,23 +37,23 @@ class TestTokenCreation:
     """Token creation functionality."""
 
     def test_create_access_token(self, token_manager):
-        token = token_manager.create_token(subject="user123", token_type=TokenType.ACCESS)
+        token = token_manager.create_token(user_id="user123", token_type=TokenType.ACCESS)
         assert token, "token is not valid"
         assert len(token) > 0, "Token must not be empty"
 
     def test_create_refresh_token(self, token_manager):
-        token = token_manager.create_token(subject="user456", token_type=TokenType.REFRESH)
+        token = token_manager.create_token(user_id="user456", token_type=TokenType.REFRESH)
         assert token, "token is not valid"
         assert len(token) > 0, "Token must not be empty"
 
     def test_create_session_token(self, token_manager):
-        token = token_manager.create_token(subject="user789", token_type=TokenType.SESSION)
+        token = token_manager.create_token(user_id="user789", token_type=TokenType.SESSION)
         assert token, "token is not valid"
         assert len(token) > 0, "Token must not be empty"
 
     def test_create_token_with_scope(self, token_manager):
         token = token_manager.create_token(
-            subject="user123", token_type=TokenType.ACCESS, scope="read:repo write:repo"
+            user_id="user123", token_type=TokenType.ACCESS, scope="read:repo write:repo"
         )
         claims = token_manager.validate_token(token, expected_type=TokenType.ACCESS)
         assert claims.scope == "read:repo write:repo", "scope is not valid"
@@ -61,17 +61,17 @@ class TestTokenCreation:
     def test_create_token_with_custom_expiry(self, token_manager):
         custom_exp = 7200  # 2 hours
         token = token_manager.create_token(
-            subject="user123", token_type=TokenType.ACCESS, expires_in=custom_exp
+            user_id="user123", token_type=TokenType.ACCESS, expires_in=custom_exp
         )
         assert token, "token is not valid"
 
     def test_token_contains_subject(self, token_manager):
-        token = token_manager.create_token(subject="user_test", token_type=TokenType.ACCESS)
+        token = token_manager.create_token(user_id="user_test", token_type=TokenType.ACCESS)
         claims = token_manager.validate_token(token)
         assert claims.sub == "user_test", "sub is not valid"
 
     def test_token_contains_type(self, token_manager):
-        token = token_manager.create_token(subject="user123", token_type=TokenType.REFRESH)
+        token = token_manager.create_token(user_id="user123", token_type=TokenType.REFRESH)
         claims = token_manager.validate_token(token, expected_type=TokenType.REFRESH)
         assert claims.type == TokenType.REFRESH, "type is not valid"
 
@@ -318,10 +318,10 @@ class TestEdgeCases:
         assert claims.sub == special_subject, "sub is not valid"
 
     def test_token_with_zero_expiry(self, token_manager):
-        # Should use default
+        # expires_in=0 creates an immediately-expired token; should raise ValueError
         token = token_manager.create_token("user123", TokenType.ACCESS, expires_in=0)
-        claims = token_manager.validate_token(token)
-        assert claims.sub == "user123", "sub is not valid"
+        with pytest.raises(ValueError):
+            token_manager.validate_token(token)
 
     def test_token_with_negative_expiry(self, token_manager):
         # Should already be expired

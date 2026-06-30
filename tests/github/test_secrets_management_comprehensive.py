@@ -15,10 +15,9 @@ All tests skip gracefully if CODEX_MASTER_KEY is unavailable or libsodium unavai
 from __future__ import annotations
 
 import base64
-from typing import Any, Optional # pragma: allowlist secret # pragma: allowlist secret
+from typing import Any, Optional  # pragma: allowlist secret # pragma: allowlist secret
 
 import pytest
-
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Fixtures

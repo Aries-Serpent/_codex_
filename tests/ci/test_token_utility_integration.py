@@ -20,16 +20,15 @@ Test Categories:
 import logging
 import os
 import sys
-import pytest
 from pathlib import Path
-from typing import Optional
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import patch
+
+import pytest
 
 # Add scripts to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts"))
 
-from ci._token_resolver import get_token, TokenResolutionError, validate_token
-
+from ci._token_resolver import TokenResolutionError, get_token, validate_token
 
 logger = logging.getLogger(__name__)
 

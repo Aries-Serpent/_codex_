@@ -1,0 +1,134 @@
+Workflow,Risk Level,Can Survive,Root Files Referenced,Reference Count,Remediation Needed
+actionlint-audit.yml,HIGH,No,.github/workflows/,1,Yes
+adaptive-agent-delegation.yml,HIGH,No,.codex/,1,Yes
+admin-action-t03.yml,HIGH,No,".github/workflows/, .codex/",2,Yes
+admin_setup_verification.yml,HIGH,No,".github/workflows/, .codex/",2,Yes
+agent-auth-delegation.yml,HIGH,No,".github/docs/, .github/workflows/, .codex/",3,Yes
+agent-handoff-gate.yml,HIGH,No,".github/workflows/, .codex/",2,Yes
+agent-health-check.yml,HIGH,No,"requirements-dev.txt, .codex/",2,Yes
+agent-orchestration-unified.yml,HIGH,No,.codex/,1,Yes
+agent-registry-validation.yml,HIGH,No,.codex/,1,Yes
+agent-var-writer.yml,HIGH,No,.codex/,1,Yes
+agent_infrastructure_manager.yml,HIGH,No,"pyproject.toml, .codex/",2,Yes
+app-package-download.yml,HIGH,No,"requirements.txt, README.md",2,Yes
+artifact-monitoring.yml,HIGH,No,.codex/,1,Yes
+audit-qa-suite.yml,HIGH,No,.codex/,1,Yes
+auth-tests.yml,HIGH,No,"setup.py, requirements-test.txt, .github/workflows/, .codex/, tests/, coverage.json",6,Yes
+auto-approve-workflows.yml,HIGH,No,.codex/,1,Yes
+auto-fix-common-issues.yml,HIGH,No,".github/workflows/, tests/",2,Yes
+auto-fix-pr-check.yml,HIGH,No,"pyproject.toml, noxfile.py, .github/workflows/, .codex/, tests/",5,Yes
+automated-monitoring-setup.yml,HIGH,No,.codex/,1,Yes
+automated-post-deployment-verification.yml,HIGH,No,".codex/, tests/",2,Yes
+automated-release-creation.yml,HIGH,No,.codex/,1,Yes
+automated-rollback-generation.yml,HIGH,No,"README.md, .codex/",2,Yes
+autonomous-agent.yml,HIGH,No,.codex/,1,Yes
+autonomy-phase-ci-matrix.yml,HIGH,No,tests/,1,Yes
+batch-ci-triage.yml,HIGH,No,.github/workflows/,1,Yes
+branch-divergence-monitor.yml,HIGH,No,".github/workflows/, .codex/",2,Yes
+build-agent-env-cache.yml,HIGH,No,pyproject.toml,1,Yes
+build-preview-image.yml,HIGH,No,"pyproject.toml, Dockerfile, .github/workflows/",3,Yes
+chatops_copilot_trigger.yml,HIGH,No,"pyproject.toml, .github/workflows/, .codex/, tests/",4,Yes
+ci-checkpoint-validation.yml,HIGH,No,"pyproject.toml, requirements-eval.txt, .github/workflows/, .codex/",4,Yes
+ci-failure-issue-creator.yml,HIGH,No,".github/workflows/, .codex/",2,Yes
+ci-health-monitor.yml,HIGH,No,".github/workflows/, .codex/",2,Yes
+ci-pattern-healer.yml,HIGH,No,.codex/,1,Yes
+ci-pattern-prevention-gate.yml,HIGH,No,"mypy.ini, mypy.ini, .mypy_baseline, .github/workflows/, .codex/",5,Yes
+code-quality-coverage-suite.yml,HIGH,No,".github/workflows/, tests/, coverage.json",3,Yes
+codebase-health-sweep.yml,HIGH,No,".github/workflows/, .codex/",2,Yes
+codeql-alert-fetcher.yml,HIGH,No,.codex/,1,Yes
+codex-manifest-refresh.yml,HIGH,No,mkdocs.yml,1,Yes
+codex-master-key-validation.yml,HIGH,No,".github/workflows/, tests/",2,Yes
+cognitive-analysis-feed.yml,HIGH,No,.codex/,1,Yes
+cognitive_brain_ci_feedback.yml,HIGH,No,.codex/,1,Yes
+consistency-checks.yml,HIGH,No,.github/workflows/,1,Yes
+container-scan.yml,HIGH,No,Dockerfile,1,Yes
+copilot-agent-checkin.yml,HIGH,No,".github/workflows/, .codex/, tests/",3,Yes
+copilot-agent-session-done.yml,HIGH,No,.codex/,1,Yes
+copilot-agent-vars-bootstrap.yml,HIGH,No,.codex/,1,Yes
+copilot-evolution-suite.yml,HIGH,No,".codex/, tests/",2,Yes
+copilot-issue-triage.yml,HIGH,No,".github/workflows/, .codex/",2,Yes
+copilot-iterative-self-healing.yml,HIGH,No,"pyproject.toml, .github/workflows/, .codex/",3,Yes
+copilot-pr-session-injector.yml,HIGH,No,".github/workflows/, .codex/, tests/",3,Yes
+copilot-session-chain.yml,HIGH,No,.codex/,1,Yes
+copilot-setup-steps.yml,CRITICAL,No,"pyproject.toml, .github/workflows/, .codex/",3,Yes
+copilot-setup-validation.yml,HIGH,No,.github/workflows/,1,Yes
+coverage-ratchet.yml,HIGH,No,"pyproject.toml, tests/",2,Yes
+coverage-with-timeout.yml,HIGH,No,"tests/, *.xml",2,Yes
+d-capable-promotion-gate.yml,HIGH,No,.codex/,1,Yes
+data-quality-suite.yml,HIGH,No,".github/workflows/, tests/",2,Yes
+deferral-language-gate.yml,HIGH,No,.codex/,1,Yes
+dependabot-preflight.yml,HIGH,No,requirements.txt,1,Yes
+dependabot-sheriff.yml,HIGH,No,.codex/,1,Yes
+discussion-cleanup.yml,HIGH,No,.codex/,1,Yes
+doc-refresh-gate.yml,HIGH,No,.codex/,1,Yes
+docker-build-push.yml,HIGH,No,"Dockerfile, .github/workflows/",2,Yes
+docs-code-alignment.yml,HIGH,No,"README.md, tests/",2,Yes
+docs-health.yml,HIGH,No,mkdocs.yml,1,Yes
+documentation-link-checker.yml,HIGH,No,"README.md, .github/workflows/, .codex/",3,Yes
+e-to-d-transition-gate.yml,HIGH,No,".github/workflows/, .codex/",2,Yes
+embedding-index-rebuild.yml,HIGH,No,".github/workflows/, .codex/",2,Yes
+fast-forward-safe-files.yml,HIGH,No,.codex/,1,Yes
+forward-sync-autogen.yml,HIGH,No,.codex/,1,Yes
+har-capture.yml,HIGH,No,package-lock.json,1,Yes
+iterative-self-healing-ci.yml,HIGH,No,".codex/, tests/",2,Yes
+mcp-health.yml,HIGH,No,.github/workflows/,1,Yes
+ml-lifecycle-gate.yml,HIGH,No,requirements-dev.txt,1,Yes
+mutation-testing.yml,HIGH,No,"requirements-dev.txt, tests/",2,Yes
+mypy-baseline.yml,HIGH,No,"mypy.ini, .mypy_baseline, pyproject.toml, .github/workflows/",4,Yes
+nightly-codeql-alert-triage.yml,HIGH,No,.codex/,1,Yes
+openvino-phase-c.yml,HIGH,No,tests/,1,Yes
+optimized-ci.yml,HIGH,No,"pyproject.toml, uv.lock, tests/",3,Yes
+pages-health-guard.yml,HIGH,No,"mkdocs.yml, .codex/",2,Yes
+pages-mkdocs.yml,HIGH,No,"package.json, mkdocs.yml, .github/workflows/",3,Yes
+pages-pre-merge-validation.yml,HIGH,No,"package.json, mkdocs.yml, .github/workflows/",3,Yes
+pages-scheduled-validation.yml,HIGH,No,"package.json, mkdocs.yml",2,Yes
+phase-12-2-compliance-check.yml,HIGH,No,.codex/,1,Yes
+phase-8-1-health-monitor.yml,HIGH,No,.codex/,1,Yes
+phase-8-2-issue-triage.yml,HIGH,No,.codex/,1,Yes
+phase-8-3-perf-monitor.yml,HIGH,No,".github/workflows/, .codex/",2,Yes
+post-ci-status-to-discussion.yml,HIGH,No,.codex/,1,Yes
+post-phase-4-5-to-discussion.yml,HIGH,No,.codex/,1,Yes
+post-phase-update-to-discussion.yml,HIGH,No,.codex/,1,Yes
+pr-checks.yml,HIGH,No,"pyproject.toml, .github/workflows/, tests/",3,Yes
+pre-flight-validation.yml,HIGH,No,"pytest.ini, pyproject.toml, .github/workflows/, .codex/, tests/, conftest.py",6,Yes
+pre-merge-validation.yml,HIGH,No,tests/,1,Yes
+process-variable-intents.yml,HIGH,No,.codex/,1,Yes
+progressive-validation.yml,HIGH,No,".github/workflows/, tests/",2,Yes
+promotion-readiness-gate.yml,HIGH,No,.codex/,1,Yes
+rag-freshness-scheduler.yml,HIGH,No,.codex/,1,Yes
+rag-quality-nightly.yml,HIGH,No,requirements-dev.txt,1,Yes
+reference-integrity.yml,HIGH,No,".github/workflows/, .codex/",2,Yes
+release.yml,HIGH,No,".github/workflows/, .codex/",2,Yes
+repo-var-sync-schedule.yml,HIGH,No,.codex/,1,Yes
+repository-health-monitoring.yml,HIGH,No,".github/workflows/, .codex/",2,Yes
+required-actions-enforcer.yml,CRITICAL,No,.github/workflows/,1,Yes
+resilient_validation.yml,CRITICAL,No,".codex/, tests/, coverage.json",3,Yes
+restore-pipeline-ci.yml,HIGH,No,"requirements.txt, .github/workflows/, tests/",3,Yes
+root-org-validation.yml,HIGH,No,"mkdocs.yml, README.md, .codex/, tests/",4,Yes
+rust-error-validator-observation.yml,HIGH,No,.codex/,1,Yes
+rust_swarm_ci.yml,HIGH,No,"pyproject.toml, Cargo.toml, Cargo.lock, .github/workflows/, .codex/, tests/",6,Yes
+scheduled-archival.yml,HIGH,No,"README.md, .github/workflows/",2,Yes
+scheduled-dependency-audit.yml,HIGH,No,"pyproject.toml, requirements-dev.txt, requirements.txt, Dockerfile",4,Yes
+secrets-baseline-enforcer.yml,HIGH,No,".codex/, tests/",2,Yes
+secrets-false-positive-healer.yml,HIGH,No,.codex/,1,Yes
+security-scanning-suite.yml,HIGH,No,.codex/,1,Yes
+session-context-capture.yml,HIGH,No,.codex/,1,Yes
+session-incremental-summary-reminder.yml,HIGH,No,.codex/,1,Yes
+session-recovery-continuous-monitoring.yml,HIGH,No,".github/workflows/, .codex/",2,Yes
+session-recovery-handler.yml,HIGH,No,.codex/,1,Yes
+session-watchdog.yml,HIGH,No,.github/docs/,1,Yes
+sigstore-verify.yml,HIGH,No,"pyproject.toml, requirements.txt, uv.lock",3,Yes
+slo-canary-check.yml,HIGH,No,"requirements-dev.txt, .github/workflows/, .codex/",3,Yes
+test-pyramid-report.yml,HIGH,No,requirements-dev.txt,1,Yes
+test-rag.yml,CRITICAL,No,"pyproject.toml, .github/workflows/, tests/",3,Yes
+unified-deployment.yml,HIGH,No,"package-lock.json, mkdocs.yml, tests/",3,Yes
+unified-governance-check.yml,HIGH,No,.codex/,1,Yes
+validate-api-null-handling.yml,HIGH,No,.github/workflows/,1,Yes
+validate-token-health.yml,HIGH,No,"setup.py, .codex/",2,Yes
+validate.yml,HIGH,No,".github/workflows/, .codex/",2,Yes
+vars-guide-sync.yml,HIGH,No,.codex/,1,Yes
+workflow-analytics-unified.yml,HIGH,No,.codex/,1,Yes
+workflow-compliance-gate.yml,HIGH,No,.github/workflows/,1,Yes
+workflow-execution-gate.yml,HIGH,No,"pyproject.toml, .github/workflows/, .codex/",3,Yes
+workflow-link-validation.yml,HIGH,No,.github/workflows/,1,Yes
+workflow-restore.yml,HIGH,No,.github/workflows/,1,Yes

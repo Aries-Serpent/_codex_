@@ -143,11 +143,9 @@ class TestPKCEAdvanced:
         """Test invalid PKCE method."""
         code_verifier = oauth.generate_code_verifier()
 
-        # Should only accept S256 or plain
-        try:
+        # Should only accept S256 or plain — raises ValueError for unknown methods
+        with pytest.raises((AttributeError, OSError, RuntimeError, ValueError)):
             oauth.create_code_challenge(code_verifier, "invalid")
-        except (AttributeError, OSError, RuntimeError):
-            pass
 
     def test_pkce_missing_verifier(self, oauth):
         """Test PKCE with missing verifier."""

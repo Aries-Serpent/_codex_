@@ -125,6 +125,8 @@ class UserStore:
         email = self._require_non_blank(email, "Email").lower()
         password = self._require_non_blank(password, "Password")
 
+        # Validate username doesn't contain whitespace
+        self._validate_username_format(username)
         self._validate_email_format(email)
         self._validate_password_strength(password)
 
@@ -353,8 +355,12 @@ class UserStore:
             InvalidCredentialsError: If the credentials are wrong or the
                 account is not active.
         """
-        identifier = self._require_non_blank(username_or_email, "Username or email")
-        password = self._require_non_blank(password, "Password")
+        try:
+            identifier = self._require_non_blank(username_or_email, "Username or email")
+            password = self._require_non_blank(password, "Password")
+        except ValueError as e:
+            # Convert validation errors to InvalidCredentialsError for consistency
+            raise InvalidCredentialsError(str(e)) from e
 
         user = self.find_by_username(identifier)
         if user is None:
@@ -449,7 +455,24 @@ class UserStore:
         Raises:
             ValueError: If the email format is invalid.
         """
-        # Basic email format validation pattern
-        email_pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-        if not re.match(email_pattern, email):
+        # Updated email format validation pattern to support unicode characters
+        # Supports unicode in both local part and domain
+        # Matches: user@domain.tld, user+tag@domain, 用户@例え.jp, etc.
+        email_pattern = r"^[\w._%+-]+@[\w.-]+\.[\w]{2,}$"
+        if not re.match(email_pattern, email, re.UNICODE):
             raise ValueError("Invalid email format")
+
+    @staticmethod
+    def _validate_username_format(username: str) -> None:
+        """
+        Validate username format.
+
+        Args:
+            username: Username to validate.
+
+        Raises:
+            ValueError: If the username format is invalid (contains whitespace).
+        """
+        # Reject usernames with spaces or tabs
+        if " " in username or "\t" in username or "\n" in username or "\r" in username:
+            raise ValueError("Username cannot contain whitespace characters")

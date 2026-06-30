@@ -1,32 +1,38 @@
-# Session Context — 2026-06-29T19:41:35Z
-**Branch:** `copilot/fix-authentication-module-tests`  **PR:** #5140  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-06-30T01:01:35Z
+**Branch:** `copilot/migrate-pr-5141-changes`  **PR:** #5142  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4954` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `4930` (✅)
+- GraphQL remaining: `4994` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #5140 — Fix authentication module API contract violations and mock configuration (185 test failures)
-State: `open`  Draft: `False`  Branch: `copilot/fix-authentication-module-tests` → `main`
+## 📋 PR #5142 — Fix 36+ authentication test failures, CodeQL security vulnerabilities, and complete Phase 3 root cleanup for PR #5142
+State: `open`  Draft: `False`  Branch: `copilot/migrate-pr-5141-changes` → `main`
+
+### ❌ 4 Failing CI Check(s)
+- `Governance Compliance` (failure)
+- `validation (quick)` (failure)
+- `validation (skills)` (failure)
+- `Run compliance check` (failure)
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **Phase 8.2 Issue Triage** — `failure` on `main` (2026-06-29)
-- **.github/workflows/repo-var-sync-schedule.yml** — `failure` on `copilot/fix-authentication-module-tests` (2026-06-29)
-- **.github/workflows/coherence-snapshot.yml** — `failure` on `copilot/fix-authentication-module-tests` (2026-06-29)
-- **.github/workflows/proactive-ci-monitor.yml** — `failure` on `copilot/fix-authentication-module-tests` (2026-06-29)
-- **.github/workflows/build-preview-image.yml** — `failure` on `copilot/fix-authentication-module-tests` (2026-06-29)
+- **.github/workflows/copilot-review-responder.yml** — `failure` on `copilot/migrate-pr-5141-changes` (2026-06-30)
+- **.github/workflows/repo-organization.yml** — `failure` on `copilot/migrate-pr-5141-changes` (2026-06-30)
+- **.github/workflows/agent-var-writer.yml** — `failure` on `copilot/migrate-pr-5141-changes` (2026-06-30)
+- **.github/workflows/agent-health-check.yml** — `failure` on `copilot/migrate-pr-5141-changes` (2026-06-30)
+- **.github/workflows/sync-env-vars.yml** — `failure` on `copilot/migrate-pr-5141-changes` (2026-06-30)
 
 ## 📝 Recent Commits
-- `0998e07d` Document comprehensive auth tests fix implementation — copilot-swe-agent[bot] (2026-06-29)
-- `65b6b980` Fix indentation and complete implementation of auth module fixes — copilot-swe-agent[bot] (2026-06-29)
-- `47ae2740` Implement Phase 1-4: Fix UserStore, MFASecret, InMemoryUserRepository, OAuth moc — copilot-swe-agent[bot] (2026-06-29)
-- `1ec552b5` Plan: Fix authentication module tests and bandit security scan — copilot-swe-agent[bot] (2026-06-29)
-- `f872a677` Merge pull request #5139 from Aries-Serpent/copilot/fix-authentication-module-fa — Statix (2026-06-29)
-- `ef508dd0` Fix syntax error in test_jwt_signature_is_base64url assertion - remove malformed — copilot-swe-agent[bot] (2026-06-29)
-- `34810418` Fix syntax error in test_jwt_signature_is_base64url assertion — copilot-swe-agent[bot] (2026-06-29)
-- `5eef5a4e` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-06-29)
+- `afc99d7b` Potential fix for pull request finding 'CodeQL / Incomplete URL substring saniti — Statix (2026-06-30)
+- `8827aa4b` Fix CodeQL: incomplete URL substring sanitization in test assertions — Copilot (2026-06-30)
+- `14dc02e2` Fix CodeQL: incomplete URL substring sanitization in test assertions — Copilot (2026-06-30)
+- `59019bf4` Fix auth test timeouts and SQLite concurrency: fast PasswordHasher in tests, sql — copilot-swe-agent[bot] (2026-06-30)
+- `4081e82b` chore: initial investigation complete - 3 test issues found — copilot-swe-agent[bot] (2026-06-30)
+- `da98b731` Fix all auth CI failures: convert async→sync OAuth tests, fix PKCE/refresh mocks — copilot-swe-agent[bot] (2026-06-29)
+- `eb6c8c14` fix(tests): fix all 10 auth test files to match source APIs — copilot-swe-agent[bot] (2026-06-29)
+- `f5b2342b` fix(auth-tests): align 5 auth test files with actual API behaviour — copilot-swe-agent[bot] (2026-06-29)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`

@@ -480,6 +480,10 @@ class TokenManager:
             True if token was revoked
         """
         try:
+            # Handle None or empty token gracefully
+            if token is None or not isinstance(token, str):
+                return False
+
             claims = self._decode_token(token)
             if claims.jti:
                 self._revoked_tokens.add(claims.jti)
@@ -489,7 +493,7 @@ class TokenManager:
                     del self._sessions[claims.jti]
 
                 return True
-        except ValueError:
+        except (ValueError, AttributeError, TypeError):
             # Invalid or malformed token; nothing to revoke (not an error condition)
             return False
 

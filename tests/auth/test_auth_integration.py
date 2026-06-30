@@ -271,9 +271,19 @@ class TestStateTransitions:
         # Add role
         auth_system.user_store.add_role(user.user_id, "admin")
 
-        # Verify
+        # Verify role was added
         retrieved = auth_system.user_store.get_by_user_id(user.user_id)
         assert "admin" in retrieved.roles, "Condition must be true"
+        assert "user" in retrieved.roles, "Default user role must persist"
+        assert len(retrieved.roles) == 2, "Should have exactly 2 roles after adding admin"
+
+        # Add another role
+        auth_system.user_store.add_role(user.user_id, "moderator")
+        retrieved = auth_system.user_store.get_by_user_id(user.user_id)
+        assert "admin" in retrieved.roles, "Admin role must persist"
+        assert "moderator" in retrieved.roles, "New moderator role must be added"
+        assert "user" in retrieved.roles, "Default user role must persist"
+        assert len(retrieved.roles) == 3, "Should have exactly 3 roles"
 
     def test_token_state_consistency(self, auth_system):
         auth_system.register("paul", "paul@example.com", "Str0ngPass!")
@@ -406,7 +416,7 @@ class TestEdgeCaseCombinations:
 
     def test_very_long_username_and_password(self, auth_system):
         long_username = "u" * 200
-        long_password = "P" + "a" * 200 + "!"
+        long_password = "P1" + "a" * 199 + "!"
 
         user = auth_system.register(long_username, "long@example.com", long_password)
 
@@ -426,21 +436,21 @@ class TestEdgeCaseCombinations:
         assert result.user_id == user.user_id, "Result must not be empty"
 
     def test_email_and_password_both_unicode(self, auth_system):
-        user = auth_system.register("sam", "用户@例え.jp", "密码123!")
+        user = auth_system.register("sam", "用户@例え.jp", "密码Pass123!")
         assert user.email, "Condition must be true"
         assert user.username == "sam", "username is not valid"
 
     def test_rapid_password_changes(self, auth_system):
-        user = auth_system.register("sam", "sam@example.com", "Pass0!")
+        user = auth_system.register("sam", "sam@example.com", "Pass0!ab")
 
         # Rapid changes
         for i in range(5):
-            old_pass = f"Pass{i}!"
-            new_pass = f"Pass{i+1}!"
+            old_pass = f"Pass{i}!ab"
+            new_pass = f"Pass{i+1}!ab"
             auth_system.change_password(user.user_id, old_pass, new_pass)
 
         # Final password works
-        result = auth_system.login("sam", "Pass5!")
+        result = auth_system.login("sam", "Pass5!ab")
         assert result.user_id == user.user_id, "Result must not be empty"
 
 

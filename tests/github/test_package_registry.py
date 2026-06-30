@@ -12,12 +12,9 @@ Process 4 validation from the implementation plan.
 
 from __future__ import annotations
 
-import json
-from typing import Any
-from unittest import mock
+from urllib.parse import urlparse
 
 import pytest
-
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Fixtures
@@ -171,7 +168,7 @@ class TestPublishPackages:
     def test_publish_docker_image_endpoint(self):
         """Test Docker image publishing endpoint."""
         endpoint = "https://ghcr.io"
-        assert "ghcr.io" in endpoint
+        assert endpoint.startswith("https://ghcr.io")
 
     def test_package_publication_payload_npm(self):
         """Test npm package publication payload."""
@@ -187,7 +184,9 @@ class TestPublishPackages:
         """Test Docker image publication payload."""
         # Docker images use container registry format
         image = "ghcr.io/org/repo/image:v1.0.0"
-        assert "ghcr.io" in image
+        parsed = urlparse(f"https://{image}")
+        assert parsed.hostname == "ghcr.io"
+        assert parsed.path.startswith("/org/repo/image:")
 
     def test_publish_with_authentication(self):
         """Test publishing with GitHub token authentication."""

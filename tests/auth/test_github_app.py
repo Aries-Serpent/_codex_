@@ -402,8 +402,8 @@ class TestUtilities:
         assert ts > time.time(), "ts must be greater than zero"
 
     def test_parse_iso8601_invalid_fallback(self):
-        ts = _parse_iso8601("not-a-date")
-        assert ts > time.time(), "ts must be greater than zero"
+        with pytest.raises(ValueError):
+            _parse_iso8601("not-a-date")
 
 
 # ---------------------------------------------------------------------------

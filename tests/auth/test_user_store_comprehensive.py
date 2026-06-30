@@ -56,14 +56,14 @@ class TestPasswordHasher:
     def test_verify_correct_password(self, password_hasher):
         password = "Str0ngPass!"
         hashed = password_hasher.hash_password(password)
-        is_valid = password_hasher.verify_password(password, hashed)
+        is_valid = password_hasher.verify(password, hashed)
         assert is_valid, "is_valid is not valid"
 
     def test_verify_incorrect_password(self, password_hasher):
         password = "Str0ngPass!"
         wrong_password = "WrongPass!"
         hashed = password_hasher.hash_password(password)
-        is_valid = password_hasher.verify_password(wrong_password, hashed)
+        is_valid = password_hasher.verify(wrong_password, hashed)
         assert not is_valid, "not is not valid"
 
     def test_hashes_are_different(self, password_hasher):
@@ -90,25 +90,25 @@ class TestPasswordHasher:
     def test_very_long_password(self, password_hasher):
         password = "P" + "a" * 1000 + "!"
         hashed = password_hasher.hash_password(password)
-        assert password_hasher.verify_password(password, hashed)
+        assert password_hasher.verify(password, hashed)
 
     def test_unicode_password(self, password_hasher):
         password = "Str0ng🔐Pass!"
         hashed = password_hasher.hash_password(password)
-        assert password_hasher.verify_password(password, hashed)
+        assert password_hasher.verify(password, hashed)
 
     def test_special_chars_password(self, password_hasher):
         password = "P@$$w0rd!#%^&*()"
         hashed = password_hasher.hash_password(password)
-        assert password_hasher.verify_password(password, hashed)
+        assert password_hasher.verify(password, hashed)
 
     def test_timing_safe_comparison(self, password_hasher):
         password = "Str0ngPass!"
         hashed = password_hasher.hash_password(password)
 
         # Both should complete without timing differences
-        is_valid1 = password_hasher.verify_password(password, hashed)
-        is_valid2 = password_hasher.verify_password("Wrong!!!!!!!!", hashed)
+        is_valid1 = password_hasher.verify(password, hashed)
+        is_valid2 = password_hasher.verify("Wrong!!!!!!!!", hashed)
 
         assert is_valid1, "is_valid1 is not valid"
         assert not is_valid2, "not is not valid"
@@ -191,21 +191,21 @@ class TestUserRetrieval:
         assert retrieved.email == "karl@example.com", "email is not valid"
 
     def test_get_nonexistent_by_username(self, user_store):
-        with pytest.raises((UserNotFoundError, ValueError)):
-            user_store.get_by_username("nonexistent")
+        result = user_store.get_by_username("nonexistent")
+        assert result is None, "Nonexistent user should return None"
 
     def test_get_nonexistent_by_id(self, user_store):
-        with pytest.raises((UserNotFoundError, ValueError)):
-            user_store.get_by_user_id("nonexistent-id")
+        result = user_store.get_by_user_id("nonexistent-id")
+        assert result is None, "Nonexistent user should return None"
 
     def test_get_nonexistent_by_email(self, user_store):
-        with pytest.raises((UserNotFoundError, ValueError)):
-            user_store.get_by_email("nonexistent@example.com")
+        result = user_store.get_by_email("nonexistent@example.com")
+        assert result is None, "Nonexistent user should return None"
 
     def test_case_sensitive_username(self, user_store):
         user_store.create_user("larry", "larry@example.com", "Str0ngPass!")
-        with pytest.raises((UserNotFoundError, ValueError)):
-            user_store.get_by_username("LARRY")
+        result = user_store.get_by_username("LARRY")
+        assert result is None, "Username lookup should be case-sensitive"
 
     def test_case_insensitive_email(self, user_store):
         user_store.create_user("mike", "mike@example.com", "Str0ngPass!")
@@ -265,36 +265,38 @@ class TestUserUpdate:
 
     def test_update_email(self, user_store):
         user = user_store.create_user("sam", "sam@example.com", "Str0ngPass!")
-        updated_user = user_store.update_user(user.user_id, email="sam.new@example.com")
+        user.email = "sam.new@example.com"
+        updated_user = user_store.update_user(user)
         assert updated_user.email == "sam.new@example.com", "email is not valid"
 
     def test_update_password(self, user_store):
         user = user_store.create_user("tina", "tina@example.com", "Str0ngPass!")
         new_password = "NewPass123!"
-        user_store.update_user(user.user_id, password=new_password)
+        user_store.update_password(user.user_id, new_password)
         # New password should work
         authenticated = user_store.authenticate("tina", new_password)
         assert authenticated.user_id == user.user_id, "user_id is not valid"
 
     def test_update_nonexistent_user(self, user_store):
-        with pytest.raises((UserNotFoundError, ValueError)):
-            user_store.update_user("nonexistent-id", email="new@example.com")
+        nonexistent = User(user_id="nonexistent-id", username="ghost", email="ghost@example.com")
+        with pytest.raises((KeyError, UserNotFoundError, ValueError)):
+            user_store.update_user(nonexistent)
 
     def test_update_multiple_fields(self, user_store):
         user = user_store.create_user("uma", "uma@example.com", "Str0ngPass!")
-        updated_user = user_store.update_user(
-            user.user_id, email="uma.new@example.com", password="Str0ngPass!"
-        )
+        user.email = "uma.new@example.com"
+        updated_user = user_store.update_user(user)
         assert updated_user.email == "uma.new@example.com", "email is not valid"
-        # Verify new password works
-        authenticated = user_store.authenticate("uma", "NewPass123!")
+        new_password = "NewPass123!"
+        user_store.update_password(user.user_id, new_password)
+        authenticated = user_store.authenticate("uma", new_password)
         assert authenticated.user_id == user.user_id, "user_id is not valid"
 
     def test_update_preserves_user_id(self, user_store):
         user = user_store.create_user("victor", "victor@example.com", "Str0ngPass!")
-        updated_user = user_store.update_user(user.user_id, email="victor.new@example.com")
+        user.email = "victor.new@example.com"
+        updated_user = user_store.update_user(user)
         assert updated_user.user_id == user.user_id, "user_id is not valid"
-
 
 # ============================================================================
 # Role Management Tests
@@ -306,21 +308,24 @@ class TestRoleManagement:
 
     def test_add_role(self, user_store):
         user = user_store.create_user("wendy", "wendy@example.com", "Str0ngPass!")
-        updated_user = user_store.add_role(user.user_id, "admin")
+        user_store.add_role(user.user_id, "admin")
+        updated_user = user_store.get_by_user_id(user.user_id)
         assert "admin" in updated_user.roles, "Condition must be true"
 
     def test_remove_role(self, user_store):
         user = user_store.create_user(
             "xavier", "xavier@example.com", "Str0ngPass!", roles=["admin"]
         )
-        updated_user = user_store.remove_role(user.user_id, "admin")
+        user_store.remove_role(user.user_id, "admin")
+        updated_user = user_store.get_by_user_id(user.user_id)
         assert "admin" not in updated_user.roles, "Condition must be true"
 
     def test_add_multiple_roles(self, user_store):
         user = user_store.create_user("yara", "yara@example.com", "Str0ngPass!")
-        user = user_store.add_role(user.user_id, "admin")
-        user = user_store.add_role(user.user_id, "moderator")
-        user = user_store.add_role(user.user_id, "editor")
+        user_store.add_role(user.user_id, "admin")
+        user_store.add_role(user.user_id, "moderator")
+        user_store.add_role(user.user_id, "editor")
+        user = user_store.get_by_user_id(user.user_id)
         assert "admin" in user.roles, "Condition must be true"
         assert "moderator" in user.roles, "Condition must be true"
         assert "editor" in user.roles, "Condition must be true"
@@ -331,9 +336,10 @@ class TestRoleManagement:
 
     def test_add_duplicate_role(self, user_store):
         user = user_store.create_user("zach", "zach@example.com", "Str0ngPass!")
-        user = user_store.add_role(user.user_id, "admin")
+        user_store.add_role(user.user_id, "admin")
         # Adding same role again - should be idempotent
-        user = user_store.add_role(user.user_id, "admin")
+        user_store.add_role(user.user_id, "admin")
+        user = user_store.get_by_user_id(user.user_id)
         assert user.roles.count("admin") <= 1, "Count must be greater than zero"
 
 
@@ -506,16 +512,18 @@ class TestIntegration:
         authenticated = user_store.authenticate("emma", "Str0ngPass!")
         assert authenticated.user_id == user.user_id, "user_id is not valid"
 
-        # Update
-        updated = user_store.update_user(user.user_id, email="emma.new@example.com")
+        # Update email
+        user.email = "emma.new@example.com"
+        updated = user_store.update_user(user)
         assert updated.email == "emma.new@example.com", "email is not valid"
 
         # Add role
-        updated = user_store.add_role(user.user_id, "admin")
+        user_store.add_role(user.user_id, "admin")
+        updated = user_store.get_by_user_id(user.user_id)
         assert "admin" in updated.roles, "Condition must be true"
 
         # Change password
-        updated = user_store.update_user(user.user_id, password="NewPass123!")
+        user_store.update_password(user.user_id, "NewPass123!")
         authenticated = user_store.authenticate("emma", "NewPass123!")
         assert authenticated.user_id == user.user_id, "user_id is not valid"
 
