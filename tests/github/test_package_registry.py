@@ -12,6 +12,8 @@ Process 4 validation from the implementation plan.
 
 from __future__ import annotations
 
+from urllib.parse import urlparse
+
 import pytest
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -182,7 +184,9 @@ class TestPublishPackages:
         """Test Docker image publication payload."""
         # Docker images use container registry format
         image = "ghcr.io/org/repo/image:v1.0.0"
-        assert image.startswith("ghcr.io/")
+        parsed = urlparse(f"https://{image}")
+        assert parsed.hostname == "ghcr.io"
+        assert parsed.path.startswith("/org/repo/image:")
 
     def test_publish_with_authentication(self):
         """Test publishing with GitHub token authentication."""
