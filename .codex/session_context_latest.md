@@ -1,32 +1,35 @@
-# Session Context — 2026-06-30T06:41:50Z
+# Session Context — 2026-06-30T07:45:00Z
 **Branch:** `copilot/fix-failing-checks-implementation-plan`  **PR:** #5144  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4599` (✅)
-- GraphQL remaining: `4968` (✅)
+- REST remaining: `4910` (✅)
+- GraphQL remaining: `4992` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 📋 PR #5144 — Fix 28+ cascading CI check failures: Python validation, module imports, workflow syntax, and compliance updates
 State: `open`  Draft: `False`  Branch: `copilot/fix-failing-checks-implementation-plan` → `main`
 
+### ❌ 1 Failing CI Check(s)
+- `Governance Compliance` (failure)
+
 ## 🚨 Recent CI Failures (last 5 runs)
-- **.github/workflows/release.yml** — `failure` on `copilot/fix-failing-checks-implementation-plan` (2026-06-30)
 - **.github/workflows/embedding-index-rebuild.yml** — `failure` on `copilot/fix-failing-checks-implementation-plan` (2026-06-30)
-- **.github/workflows/rust_swarm_ci.yml** — `failure` on `copilot/fix-failing-checks-implementation-plan` (2026-06-30)
-- **.github/workflows/admin-action-t03.yml** — `failure` on `copilot/fix-failing-checks-implementation-plan` (2026-06-30)
 - **.github/workflows/progressive-validation.yml** — `failure` on `copilot/fix-failing-checks-implementation-plan` (2026-06-30)
+- **.github/workflows/secrets-false-positive-healer.yml** — `failure` on `copilot/fix-failing-checks-implementation-plan` (2026-06-30)
+- **.github/workflows/release.yml** — `failure` on `copilot/fix-failing-checks-implementation-plan` (2026-06-30)
+- **.github/workflows/data-quality-suite.yml** — `failure` on `copilot/fix-failing-checks-implementation-plan` (2026-06-30)
 
 ## 📝 Recent Commits
+- `e18cdbbe` fix(ci): add pragma comments for secrets detection false positives — copilot-swe-agent[bot] (2026-06-30)
+- `9f324606` fix(ci): add pragma comments for secrets detection false positives — copilot-swe-agent[bot] (2026-06-30)
 - `25c92060` feat: validate CI status and reply to blocking comments — copilot-swe-agent[bot] (2026-06-30)
 - `654477d9` Fix critical CI failures: module imports, action versions, and compliance update — copilot-swe-agent[bot] (2026-06-30)
 - `b6a5620c` fix: correct workflow trigger key and fix Python documentation syntax errors — copilot-swe-agent[bot] (2026-06-30)
 - `143a8970` fix: correct workflow trigger key and Python documentation syntax — copilot-swe-agent[bot] (2026-06-30)
 - `7973381a` Diagnose failing CI validation checks — copilot-swe-agent[bot] (2026-06-30)
 - `acf30c52` chore(manifest): auto-heal C2 — refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-06-30)
-- `31670206` fix: resolve 4 review comments - fix status vs status_code, Python indentation,  — copilot-swe-agent[bot] (2026-06-30)
-- `f13f0d4e` WIP: Plan to fix 4 review comments — copilot-swe-agent[bot] (2026-06-30)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`

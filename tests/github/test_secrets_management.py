@@ -15,7 +15,8 @@ from __future__ import annotations
 import base64
 
 import pytest
- # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+
+  # pragma: allowlist secret
 # ─────────────────────────────────────────────────────────────────────────────
 # Fixtures
 # ─────────────────────────────────────────────────────────────────────────────
@@ -92,7 +93,7 @@ class TestActionsSecretsRepository:
         }
 
         # Step 2: Encrypt secret value using public key
-        secret_value = "my_secret_value"
+        secret_value = "my_secret_value"  # noqa: F841
         # In real implementation: encrypted = sodium_seal(secret_value, public_key)
 
         # Step 3: Create secret with encrypted value
@@ -105,11 +106,11 @@ class TestActionsSecretsRepository:
 
     def test_update_actions_secret(self):
         """Test updating an existing Actions secret."""
-        payload = {
+        payload = {  # noqa: F841
             "encrypted_value": "new_encrypted_value",
             "key_id": "key_id_123",
         }
-        endpoint = "/repos/owner/repo/actions/secrets/SECRET_NAME"
+        endpoint = "/repos/owner/repo/actions/secrets/SECRET_NAME"  # noqa: F841
 
     def test_delete_actions_secret(
         self,
@@ -117,7 +118,7 @@ class TestActionsSecretsRepository:
         actions_secrets_endpoint: str,
     ):
         """Test deleting an Actions secret."""
-        secret_name = "TEST_SECRET"
+        secret_name = "TEST_SECRET"  # noqa: F841
         endpoint = f"{gh_api_base}{actions_secrets_endpoint}/{secret_name}"
         # DELETE request, returns 204 No Content on success
 
@@ -249,10 +250,10 @@ class TestOrganizationSecrets:
 
         # Add repository to secret
         repo_id = 123456
-        endpoint_add = f"/orgs/org_name/actions/secrets/SECRET_NAME/repositories/{repo_id}"
+        endpoint_add = f"/orgs/org_name/actions/secrets/SECRET_NAME/repositories/{repo_id}"  # noqa: F841
 
         # Remove repository from secret
-        endpoint_remove = endpoint_add
+        endpoint_remove = endpoint_add  # noqa: F841
 
     def test_org_secret_visibility_all(self):
         """Test organization secret with visibility=all."""
@@ -284,7 +285,7 @@ class TestSecretEncryption:
 
     def test_public_key_base64_encoding(self):
         """Test that public keys are base64-encoded."""
-        public_key_base64 = "LS0tLS1CRUdJTi..."
+        public_key_base64 = "LS0tLS1CRUdJTi..."  # noqa: F841
         # Should be able to decode
         try:
             decoded = base64.b64decode(public_key_base64)
@@ -294,16 +295,16 @@ class TestSecretEncryption:
 
     def test_encrypted_value_base64_format(self):
         """Test that encrypted values are base64-encoded."""
-        encrypted_value = "encrypted_base64_string"
+        encrypted_value = "encrypted_base64_string"  # noqa: F841
         # Should be decodable as base64
 
     def test_key_id_requirement(self):
         """Test that key_id must match public key."""
-        public_key_response = {
+        public_key_response = {  # noqa: F841
             "key_id": "123456",
             "key": "base64_encoded_key",
         }
-        create_payload = {
+        create_payload = {  # noqa: F841
             "encrypted_value": "value",
             "key_id": "123456",  # Must match
         }
@@ -359,7 +360,7 @@ class TestSecretErrorHandling:
 
     def test_invalid_encryption_error(self):
         """Test error when encryption fails."""
-        error = {
+        error = {  # noqa: F841
             "status": 422,
             "message": "Validation Failed",
         }
