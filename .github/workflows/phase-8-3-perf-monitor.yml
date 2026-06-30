@@ -1,5 +1,5 @@
 name: 'Phase 8.3: Performance Monitoring'
-true:
+on:
   schedule:
   - cron: 0 * * * *
   workflow_dispatch: null

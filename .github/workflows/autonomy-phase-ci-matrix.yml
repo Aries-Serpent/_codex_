@@ -1,5 +1,5 @@
 name: Autonomy Phase CI Matrix
-true:
+on:
   push:
     branches:
     - main

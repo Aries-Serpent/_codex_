@@ -1,5 +1,5 @@
 name: Agent Vars Bootstrap
-true:
+on:
   push:
     branches:
     - copilot/**

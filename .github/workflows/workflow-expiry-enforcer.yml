@@ -4,7 +4,7 @@ concurrency:
   cancel-in-progress: true
 permissions:
   contents: write
-true:
+on:
   push:
     branches:
     - '**'

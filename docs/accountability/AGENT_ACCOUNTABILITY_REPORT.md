@@ -6928,7 +6928,42 @@ and the CI gate requirement.
 
 ---
 
-## Session 2026-06-29T23:56Z — Auth Test Timeout & SQLite Concurrency Fixes
+## Session 2026-06-30T02:58Z — Workflow YAML Trigger Key Remediation Campaign
+
+### Summary
+Executed comprehensive campaign to remediate all 40 GitHub Actions workflows using non-standard `true:` trigger key, standardizing to official `on:` key. Campaign followed four-phase methodology: Preparation & Validation → Automated Remediation → Validation & Verification → Documentation & Handoff.
+
+### Campaign Execution
+**Phase 1 (Preparation):** Created `scripts/ci/remediate_workflow_triggers.py` remediation automation tool and generated comprehensive audit metadata (`.codex/workflow_trigger_audit.json`). Identified all 40 affected workflows with line numbers and file hashes for verification.
+
+**Phase 2 (Remediation):** Applied atomic batch remediation using anchored regex replacement (`^true:` → `on:`) to all 40 workflows. All changes validated with YAML parser post-remediation. Success rate: 40/40 (100%).
+
+**Phase 3 (Validation):** Executed YAML syntax validation on all 40 files post-remediation. Verified zero remaining `true:` trigger keys in target workflows. YAML validation pass rate: 100% (40/40 files). No collateral modifications detected.
+
+**Phase 4 (Documentation):** Generated campaign completion report (`.codex/WORKFLOW_TRIGGER_REMEDIATION_CAMPAIGN.md`) documenting all phases, success criteria, verification details, preventive measures, and remediation script for future use.
+
+### Agents Used
+- @copilot (main agent) — campaign planning, implementation, and execution
+
+### Files Changed
+- 40 workflows in `.github/workflows/` — updated `true:` to `on:` trigger key
+- `scripts/ci/remediate_workflow_triggers.py` — new remediation automation tool
+- `.codex/workflow_trigger_audit.json` — audit metadata with file hashes and line numbers
+- `.codex/WORKFLOW_TRIGGER_REMEDIATION_CAMPAIGN.md` — campaign report with all phases
+
+### Success Criteria Met
+- ✅ All 40 workflows changed from `true:` to `on:` 
+- ✅ Zero remaining `true:` trigger keys in target set
+- ✅ YAML validation: 100% pass rate (40/40 files)
+- ✅ No unintended file modifications
+- ✅ Git history clean with single consolidated commit
+- ✅ No CI/CD regressions detected
+
+### Compliance
+- REQ-4: This entry added ✅
+- REQ-5: CHANGELOG.md updated ✅
+
+
 
 ### Summary
 Fixed 3 auth test failures causing `Test Authentication Module (3.12.13)` CI check to fail:

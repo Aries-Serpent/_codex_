@@ -1,5 +1,5 @@
 name: "\U0001F4CB Post Accountability Report to Discussion"
-true:
+on:
   push:
     branches:
     - copilot/**

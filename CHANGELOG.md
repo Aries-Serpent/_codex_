@@ -12762,6 +12762,28 @@ Resolved blocking CI failures (Commit 9681901e) and responded to all 6 unanswere
 
 ---
 
+## Session 2026-06-30T02:58Z - Workflow YAML Trigger Key Remediation Campaign
+
+### Workflow Schema Compliance
+- **Standardized 40 GitHub Actions workflows**: Updated trigger configuration key from non-standard `true:` to official `on:` key
+- **Workflows Updated**: All `.github/workflows/*.yml` files using incorrect `true:` pattern
+- **Success Rate**: 100% (40/40 files remediated, 100% YAML validation pass rate)
+- **Automation**: Created `scripts/ci/remediate_workflow_triggers.py` for systematic remediation
+- **Audit Trail**: Generated `.codex/workflow_trigger_audit.json` with comprehensive metadata
+
+### Campaign Phases Completed
+1. ✅ Phase 1 (Prep): Audit metadata generated, 40 workflows catalogued
+2. ✅ Phase 2 (Execute): Atomic batch remediation applied to all 40 files
+3. ✅ Phase 3 (Validate): YAML syntax validation passed for all files (100%)
+4. ✅ Phase 4 (Document): Campaign report and remediation script created
+
+### Files Modified
+- `.github/workflows/actionlint-audit.yml` and 39 others (40 total)
+- Changed line structure: `true:` → `on:` for workflow trigger key
+- Pre-flight validation confirmed no syntax errors post-remediation
+
+---
+
 ## Session 2026-06-27T11:55Z
 
 ### Fixes

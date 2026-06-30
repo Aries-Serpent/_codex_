@@ -1,5 +1,5 @@
 name: CI Checkpoint Validation
-true:
+on:
   pull_request:
     branches:
     - main

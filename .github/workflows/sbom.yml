@@ -1,5 +1,5 @@
 name: Generate SBOM
-true:
+on:
   workflow_call: null
   workflow_dispatch: null
   push:

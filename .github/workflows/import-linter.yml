@@ -1,5 +1,5 @@
 name: Import Linter
-true:
+on:
   pull_request:
     branches:
     - main

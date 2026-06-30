@@ -1,5 +1,5 @@
 name: Code Example Validation
-true:
+on:
   pull_request:
     paths:
     - docs/**

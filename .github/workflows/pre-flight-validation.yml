@@ -1,5 +1,5 @@
 name: Pre-Flight CI Validation
-true:
+on:
   pull_request:
     paths:
     - .github/workflows/**
