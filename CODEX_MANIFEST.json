@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-06-30T12:55:02Z",
+  "generated_at": "2026-06-30T19:44:37Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1531,6 +1531,16 @@
       "has_concurrency": true
     },
     {
+      "name": "machine-readable-governance",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": false
+    },
+    {
+      "name": "machine-readable-maintenance-pr",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": false
+    },
+    {
       "name": "maturity-check",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -2385,5 +2395,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "771fa3ed62837c101a0934623fab590ba7050385acbc3bd4c56d120efedfd337"
+  "integrity_sha256": "1f2ba4501dc4fe31dbfe01230359dc9514cba87a82a562250ba9762eb9a85de0"
 }
