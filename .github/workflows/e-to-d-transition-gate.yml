@@ -1,5 +1,5 @@
 name: E→D Transition Readiness Gate
-true:
+on:
   pull_request: null
   workflow_dispatch: null
 concurrency:

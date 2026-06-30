@@ -1,5 +1,5 @@
 name: Copilot PR Session Injector
-true:
+on:
   pull_request:
     types:
     - opened

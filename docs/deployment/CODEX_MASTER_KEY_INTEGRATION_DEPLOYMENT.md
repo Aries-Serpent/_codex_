@@ -75,9 +75,14 @@ encrypted = encrypt_secret(
 **Key Classes:**
 ```python
 class WebhookValidator:
-    def validate(payload, signature, algorithm="sha256") -> bool
-    def validate_and_parse(payload, signature) -> Tuple[bool, dict]
-    def compute_signature(payload, algorithm="sha256") -> str
+    def validate(self, payload, signature, algorithm="sha256") -> bool:
+        pass
+    
+    def validate_and_parse(self, payload, signature) -> tuple:
+        pass
+    
+    def compute_signature(self, payload, algorithm="sha256") -> str:
+        pass
 ```
 
 **Usage Example:**
@@ -159,7 +164,7 @@ All test files follow this pattern:
 
 ```python
 """
-test_<process>_<module>.py — Testing for GitHub API Process <N>
+test_process_module.py — Testing for GitHub API Process N
 
 Tests for:
 - Process X: [Name] (scope: [scope])
@@ -170,11 +175,11 @@ Dependencies: pytest, PyNaCl (for encryption tests)
 """
 
 import pytest
-from scripts.ci._gh_api import resolve_token, api_post, ...
-from scripts.ci._secrets_encryption_helper import ...
+from scripts.ci._gh_api import resolve_token, api_post
+from scripts.ci._secrets_encryption_helper import decrypt_secret
 
-class TestProcess<N>:
-    """Test cases for Process <N>"""
+class TestProcessN:
+    """Test cases for Process N"""
     
     @pytest.fixture
     def token(self):
@@ -186,11 +191,11 @@ class TestProcess<N>:
     
     def test_operation_success(self, token):
         """Test successful operation"""
-        ...
+        pass
     
     def test_operation_error_404(self, token):
         """Test 404 error handling"""
-        ...
+        pass
 ```
 
 ### Test File Mapping

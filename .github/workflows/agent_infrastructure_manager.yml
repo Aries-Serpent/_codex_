@@ -1,5 +1,5 @@
 name: Agent Infrastructure Manager
-true:
+on:
   workflow_dispatch:
     inputs:
       operation:

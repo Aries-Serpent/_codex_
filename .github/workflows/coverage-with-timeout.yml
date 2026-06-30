@@ -1,5 +1,5 @@
 name: Coverage with Timeout Guards
-true:
+on:
   pull_request:
     types:
     - opened

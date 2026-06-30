@@ -1,5 +1,5 @@
 name: "Admin Action \u2014 T-03 security_events Scope Gate"
-true:
+on:
   workflow_run:
     workflows:
     - "\u26A1 Auto-Approve Pending Workflow Runs"

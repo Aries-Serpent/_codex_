@@ -1,5 +1,5 @@
 name: Root Organization Validation
-true:
+on:
   pull_request:
     paths:
     - '*.md'

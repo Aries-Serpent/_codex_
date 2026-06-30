@@ -31,16 +31,35 @@ Phase 1: Configuration Loading  →  Phase 2: Tool Integration  →  Phase 3: Im
 ### Test Class: `TestConfigurationLoading`
 
 ```python
-def test_pytest_ini_loads()
-def test_pytest_ini_pythonpath_configured()
-def test_pytest_markers_configured()
-def test_mypy_ini_loads()
-def test_mypy_ini_python_version()
-def test_pyproject_toml_loads()
-def test_pyproject_toml_build_system()
-def test_all_requirements_files_exist()
-def test_requirements_files_parseable()
-def test_coverage_config_exists()
+def test_pytest_ini_loads():
+    pass
+
+def test_pytest_ini_pythonpath_configured():
+    pass
+
+def test_pytest_markers_configured():
+    pass
+
+def test_mypy_ini_loads():
+    pass
+
+def test_mypy_ini_python_version():
+    pass
+
+def test_pyproject_toml_loads():
+    pass
+
+def test_pyproject_toml_build_system():
+    pass
+
+def test_all_requirements_files_exist():
+    pass
+
+def test_requirements_files_parseable():
+    pass
+
+def test_coverage_config_exists():
+    pass
 ```
 
 ### Running Phase 1 Tests
@@ -67,13 +86,26 @@ python -m pytest tests/cleanup_validation/test_cleanup_validation.py::TestConfig
 ### Test Class: `TestToolIntegration`
 
 ```python
-def test_pytest_collection_works()
-def test_pytest_basic_test_runs()
-def test_mypy_can_check_code()
-def test_pre_commit_config_exists()
-def test_ruff_config_exists()
-def test_editorconfig_exists()
-def test_black_can_format_sample_code()
+def test_pytest_collection_works():
+    pass
+
+def test_pytest_basic_test_runs():
+    pass
+
+def test_mypy_can_check_code():
+    pass
+
+def test_pre_commit_config_exists():
+    pass
+
+def test_ruff_config_exists():
+    pass
+
+def test_editorconfig_exists():
+    pass
+
+def test_black_can_format_sample_code():
+    pass
 ```
 
 ### Running Phase 2 Tests
@@ -99,10 +131,17 @@ from codex.integrations import *  # Integrations
 ### Test Class: `TestImportPaths`
 
 ```python
-def test_src_imports_work()
-def test_critical_public_apis_importable()
-def test_no_broken_relative_imports()
-def test_conftest_loads()
+def test_src_imports_work():
+    pass
+
+def test_critical_public_apis_importable():
+    pass
+
+def test_no_broken_relative_imports():
+    pass
+
+def test_conftest_loads():
+    pass
 ```
 
 ### Running Phase 3 Tests
@@ -126,10 +165,17 @@ python -m pytest tests/cleanup_validation/test_cleanup_validation.py::TestImport
 ### Test Class: `TestWorkflowSimulation`
 
 ```python
-def test_pytest_collect_discovers_tests()
-def test_import_smoke_test()
-def test_pytest_basic_test_discovery()
-def test_config_files_in_place()
+def test_pytest_collect_discovers_tests():
+    pass
+
+def test_import_smoke_test():
+    pass
+
+def test_pytest_basic_test_discovery():
+    pass
+
+def test_config_files_in_place():
+    pass
 ```
 
 ### Running Phase 4 Tests
@@ -154,9 +200,14 @@ python -m pytest tests/cleanup_validation/test_cleanup_validation.py::TestWorkfl
 ### Test Class: `TestArtifactVerification`
 
 ```python
-def test_pytest_can_generate_report()
-def test_mypy_generates_output()
-def test_coverage_can_be_configured()
+def test_pytest_can_generate_report():
+    pass
+
+def test_mypy_generates_output():
+    pass
+
+def test_coverage_can_be_configured():
+    pass
 ```
 
 ### Running Phase 5 Tests
@@ -172,9 +223,14 @@ python -m pytest tests/cleanup_validation/test_cleanup_validation.py::TestArtifa
 Comprehensive integration tests:
 
 ```python
-def test_no_circular_imports_in_src()      # No circular dependencies
-def test_git_status_clean_after_tests()    # Tests don't modify files
-def test_all_test_markers_defined()        # All pytest markers exist
+def test_no_circular_imports_in_src():
+    pass  # No circular dependencies
+
+def test_git_status_clean_after_tests():
+    pass  # Tests don't modify files
+
+def test_all_test_markers_defined():
+    pass  # All pytest markers exist
 ```
 
 ## Validation Scripts

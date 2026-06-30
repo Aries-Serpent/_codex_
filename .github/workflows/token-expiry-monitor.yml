@@ -1,5 +1,5 @@
 name: Token Expiry Monitor
-true:
+on:
   schedule:
   - cron: 0 9 * * *
   workflow_dispatch:

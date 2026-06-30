@@ -1,5 +1,5 @@
 name: Bootstrap Security Tools from Variables
-true:
+on:
   workflow_dispatch:
     inputs:
       deploy_location:

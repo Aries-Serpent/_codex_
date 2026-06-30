@@ -1,5 +1,5 @@
 name: 🧹 Agent Task Janitor
-true:
+on:
   workflow_dispatch:
     inputs:
       task_id:

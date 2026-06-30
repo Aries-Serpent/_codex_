@@ -1,5 +1,5 @@
 name: PR Auto-Fix Check
-true:
+on:
   pull_request:
     types:
     - opened

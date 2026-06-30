@@ -1,5 +1,5 @@
 name: Audit & QA Suite (Unified)
-true:
+on:
   schedule:
   - cron: 0 6 * * 1
   pull_request:

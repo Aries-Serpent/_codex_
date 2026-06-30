@@ -1,5 +1,5 @@
 name: Cognitive Action & Decision (Unified)
-true:
+on:
   schedule:
   - cron: 15 */6 * * *
   workflow_run:

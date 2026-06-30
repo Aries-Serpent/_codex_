@@ -1,5 +1,5 @@
 name: Phase 8.1 - Health Monitor
-true:
+on:
   schedule:
   - cron: 0 * * * *
   workflow_dispatch:

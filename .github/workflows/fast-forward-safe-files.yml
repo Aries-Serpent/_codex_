@@ -1,5 +1,5 @@
 name: ⚡ Fast-Forward Safe Files to Main
-true:
+on:
   workflow_dispatch:
     inputs:
       pr_number:

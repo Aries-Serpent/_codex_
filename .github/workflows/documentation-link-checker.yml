@@ -1,5 +1,5 @@
 name: Documentation Link Checker
-true:
+on:
   push:
     paths:
     - docs/**/*.md

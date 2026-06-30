@@ -299,6 +299,8 @@ mock = mock_response(
 # Check mock is used in context
 with unittest.mock.patch('urllib.request.urlopen', return_value=mock):
     # Test code
+    result = urllib.request.urlopen("http://example.com")
+    assert result.status_code == 200
 ```
 
 ---

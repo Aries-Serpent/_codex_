@@ -1,5 +1,5 @@
 name: CODEX Manifest Auto-Refresh
-true:
+on:
   pull_request:
     types:
     - opened

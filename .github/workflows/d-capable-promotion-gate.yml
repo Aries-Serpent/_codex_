@@ -1,5 +1,5 @@
 name: D_CAPABLE Agent Promotion Gate
-true:
+on:
   schedule:
   - cron: 0 3 * * 0
   pull_request:
