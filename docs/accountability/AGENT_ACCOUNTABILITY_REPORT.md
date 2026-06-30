@@ -1,5 +1,45 @@
 # Agent Accountability Report — Index (Phase 2.3 Refactored)
 
+## SESSION SUMMARY — 2026-06-30T22:05Z [RAG MODULE TESTS CI FIX]
+
+**Session:** copilot-fix-ci-rag-module-tests | **Task:** Fix RAG Module Tests workflow failure | **Date:** 2026-06-30T22:05:00Z | **Authority:** @mbaetiong (D-mode autonomy)
+
+Fixed critical CI failure in `RAG Module Tests` workflow caused by incorrect pip extras specification.
+
+### ROOT CAUSE IDENTIFIED
+
+The workflow `.github/workflows/test-rag.yml` attempted to install the main package with extras `[rag,test]`, but only the `test-core` extra exists in `pyproject.toml`. This caused pytest and test dependencies to fail to install, resulting in:
+- Step "Install dependencies" failure
+- Process exit code 1
+- All downstream test steps skipped
+
+### FIX APPLIED
+
+**File Modified:** `.github/workflows/test-rag.yml`
+
+**Changes:**
+1. Line ~157: `[rag,test]` → `[rag,test-core]`
+2. Line ~161: `pip install --no-cache-dir -e ".[rag,test]"` → `pip install --no-cache-dir -e ".[rag,test-core]"`
+3. Updated Step 4 description to accurately reflect packages being installed
+
+**Technical Details:**
+- `test-core` extra includes: pytest (9.0.3+), pytest-cov (4.0+), pytest-randomly, hypothesis, and other test dependencies
+- `rag` extra includes: sentence-transformers, chromadb, faiss-cpu, openai
+- Together these provide all required dependencies for RAG module tests
+
+### VALIDATION COMPLETED
+
+- ✅ Workflow YAML syntax valid
+- ✅ Extras exist and are correctly specified
+- ✅ Installation description updated to match actual packages
+- ✅ No other issues detected in workflow
+
+### STATUS
+
+✅ Ready for re-run. Expected outcome: "Install dependencies" step should pass and RAG module tests should execute successfully.
+
+---
+
 ## SESSION SUMMARY — 2026-06-30T20:30Z [SECURITY FIXES: SHELL INJECTION, MUTABLE ACTION TAGS & WEAK CRYPTO]
 
 **Session:** copilot-explore-codebase-and-create-implementation-plan | **Task:** Fix all security vulnerabilities from commit d587689 + follow-up MD5 weakness | **Date:** 2026-06-30T20:30:00Z | **Authority:** @mbaetiong (CI gate enforcement)

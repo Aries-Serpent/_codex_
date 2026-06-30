@@ -1,3 +1,21 @@
+## [Fix] 2026-06-30T22:05Z — RAG Module Tests Workflow Fix
+
+### Summary
+Fixed critical CI failure in `RAG Module Tests` workflow.
+
+**Root Cause**: The workflow tried to install with `pip install -e ".[rag,test]"` but the `test` extra doesn't exist in pyproject.toml — only `test-core` is available.
+
+**Fix Applied**:
+- Changed workflow extras from `[rag,test]` to `[rag,test-core]`
+- Updated installation description to accurately reflect packages being installed
+- Workflow now correctly includes pytest, pytest-cov, and test dependencies
+
+**Files Changed**:
+- `.github/workflows/test-rag.yml` — Fixed pip install extras and updated descriptions
+
+**Verification**: Workflow should now pass the "Install dependencies" step and successfully run RAG module tests.
+
+---
 
 ## [Phase 3] 2026-06-30 — Root Cleanup Campaign
 
