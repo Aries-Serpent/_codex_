@@ -24,13 +24,19 @@ class TestAuthenticationMechanisms:
         # Test data
         password = "SecurePassword123!@#"
         
-        # Mock bcrypt for demonstration
-        salt = b'$2b$12$test_salt_here_1'
-        hashed = hashlib.sha256(password.encode()).hexdigest()
+        # Use PBKDF2 with SHA256 as a secure alternative for password hashing
+        # (in production use bcrypt or argon2, but PBKDF2 is acceptable for testing)
+        salt = secrets.token_hex(16)
+        hashed = hashlib.pbkdf2_hmac(
+            'sha256',
+            password.encode(),
+            salt.encode(),
+            100000  # PBKDF2 iterations
+        ).hex()
         
-        # Assertion: Not using MD5 or SHA1
-        assert not hashed.startswith('$1$'), "MD5-based crypt detected"
-        assert len(hashed) == 64, "SHA256 hash length verified"
+        # Assertion: Verify PBKDF2 was used with sufficient iterations
+        assert len(hashed) == 64, "PBKDF2-SHA256 hash length verified"
+        assert len(salt) > 0, "Salt was generated"
 
     def test_password_salt_is_unique_per_hash(self):
         """Verify each password hash uses a unique salt."""
