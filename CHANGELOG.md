@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+### Fixed (CodeQL security vulnerabilities — Session 2026-06-30T01:02Z)
+- **2 high-severity CodeQL security alerts resolved:** Incomplete URL substring sanitization
+  - **tests/github/test_package_registry.py line 169:** Replaced `assert "ghcr.io" in endpoint` with `assert endpoint.startswith("https://ghcr.io")` — prevents false positives where substring could appear at arbitrary URL positions
+  - **tests/github/test_package_registry.py line 185:** Replaced `assert "ghcr.io" in image` with URL parsing validation using `urlparse()` to ensure hostname and path validation — prevents security validation bypass
+- **Root cause:** Substring-based URL validation allows false positives; replaced with precise URL structure matching
+- **Validation:** All tests remain functionally equivalent; syntax verified
+
 ### Fixed (Auth test timeout and SQLite concurrency failures — Session 2026-06-29T23:56Z)
 - **3 auth test failures resolved:** Fixed timeout and SQLite locking issues
   - **test_security_edge_cases.py:** All 9 `auth_system` fixtures now use `UserStore(hasher=PasswordHasher(iterations=1))` — eliminated PBKDF2 600K-iteration overhead so 100-attempt exhaustion tests complete in milliseconds
