@@ -1,21 +1,22 @@
-# Session Context — 2026-06-30T02:49:21Z
+# Session Context — 2026-06-30T02:57:50Z
 **Branch:** `copilot/update-workflows-true-to-on`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4632` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `5000` (✅)
+- GraphQL remaining: `4995` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **.github/workflows/test-pyramid-report.yml** — `failure` on `main` (2026-06-30)
-- **.github/workflows/sync-env-vars.yml** — `failure` on `main` (2026-06-30)
-- **.github/workflows/agent-handoff-gate.yml** — `failure` on `main` (2026-06-30)
-- **.github/workflows/fast-forward-safe-files.yml** — `failure` on `main` (2026-06-30)
-- **.github/workflows/scan-secrets-variables.yml** — `failure` on `main` (2026-06-30)
+- **.github/workflows/agent-var-writer.yml** — `failure` on `copilot/update-workflows-true-to-on` (2026-06-30)
+- **.github/workflows/auto-fix-pr-check.yml** — `failure` on `copilot/update-workflows-true-to-on` (2026-06-30)
+- **.github/workflows/cleanup-stale-pr-comments.yml** — `failure` on `copilot/update-workflows-true-to-on` (2026-06-30)
+- **.github/workflows/token-probe.yml** — `failure` on `copilot/update-workflows-true-to-on` (2026-06-30)
+- **.github/workflows/documentation-link-checker.yml** — `failure` on `copilot/update-workflows-true-to-on` (2026-06-30)
 
 ## 📝 Recent Commits
+- `1e776aa8` Apply remaining changes — copilot-swe-agent[bot] (2026-06-30)
 - `c5b3a1ee` Update workflow trigger for container security scan — Statix (2026-06-30)
 - `f596c42b` Fix workflow trigger syntax in health guard YAML — Statix (2026-06-30)
 - `c6d5256d` Fix workflow trigger syntax in YAML file — Statix (2026-06-30)
@@ -23,7 +24,6 @@
 - `0fd5f7bd` Fix workflow trigger syntax in semgrep_sarif.yml — Statix (2026-06-30)
 - `505d0ac4` Fix workflow trigger syntax in pages-mkdocs.yml — Statix (2026-06-30)
 - `7532442a` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-06-30)
-- `7c7074ad` Merge pull request #5142 from Aries-Serpent/copilot/migrate-pr-5141-changes — Statix (2026-06-30)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
