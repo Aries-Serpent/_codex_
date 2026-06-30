@@ -1,3 +1,25 @@
+## [Fix] 2026-06-30T22:15Z — RAG Module Tests Workflow — Step 8 Package Import Validation
+
+### Summary
+Fixed Step 8 package import validation in `RAG Module Tests` workflow to use correct Python import names.
+
+**Root Cause**: Step 8 validation attempted to import packages using their pip package names (e.g., `sentence-transformers`, `faiss-cpu`) instead of their actual Python import names (`sentence_transformers`, `faiss`), causing import verification to fail.
+
+**Fix Applied**:
+- Created package name to import name mapping dictionary
+- Updated validation to use correct Python import names:
+  - `sentence-transformers` → `import sentence_transformers`
+  - `faiss-cpu` → `import faiss`
+  - Other packages (pytest, torch, transformers, chromadb) already have matching names
+- Removed version extraction from import (simplified validation)
+
+**Files Changed**:
+- `.github/workflows/test-rag.yml` — Step 8: Updated import validation with proper package mapping
+
+**Verification**: Workflow Step 8 will now correctly verify all package imports.
+
+---
+
 ## [Fix] 2026-06-30T22:05Z — RAG Module Tests Workflow Fix
 
 ### Summary
