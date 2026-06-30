@@ -1,3 +1,39 @@
+## [Fix] 2026-06-30T22:55Z — CI Module Import Errors & Secrets False Positives Resolution
+
+### Summary
+Fixed widespread ModuleNotFoundError in CI scripts and secret detection false positives blocking PR #5158.
+
+**Root Causes**:
+1. **Import Order Bug**: 20+ scripts in `/scripts/ci/` imported from `scripts.ci` module BEFORE adding parent directory to sys.path, causing ModuleNotFoundError when run in CI workflows
+2. **False Positive Secrets**: `.codex/session_access_manifest.json` flagged commit SHAs (short and full git hashes) as high-entropy secrets
+
+**Fixes Applied**:
+- Moved `sys.path.insert()` call to execute BEFORE any `from scripts.ci import` statements in all affected files
+- Updated `.secrets.baseline` to include session_access_manifest.json entries for lines 3 and 166 (commit SHAs)
+- Files fixed: branch_rebase_check.py, auto_fix_common_issues.py, admin_action_probe.py, approve_via_playwright.py, batch_triage.py, check_pr_comments.py, collect_telemetry.py, delete_stale_pr_commands.py, generate_cost_dashboard_data.py, github_api_trickle.py, github_app_bootstrap.py, github_var_writer.py, rate_limit_cooldown.py, rate_limit_handler.py, rate_limit_status.py, test_variables_api.py, validate_token_setup.py, validate_token_utility_adoption.py, webhook_configurator.py, workflow_queue_manager.py
+
+**Files Changed**:
+- 20+ Python scripts in `.github/workflows/` - corrected import order
+- `.secrets.baseline` - added false-positive commit SHA entries
+- `.codex/session_access_manifest.json` - no changes (pragma comments not applicable to JSON)
+
+**Verification**: All 16 failing CI checks should now pass:
+- Branch Rebase Gate (REQ-10)
+- Secrets Baseline Enforcer
+- Secrets False-Positive Healer (RP-007)
+- Machine Readable Governance
+- mypy Baseline
+- PR Comment Review Gate (2 instances)
+- Pre-Merge Validation
+- RAG Module Tests
+- Resilient Validation Suite (2 instances)
+- Unified Governance Check
+- Validation Pipeline
+- Workflow Compliance Audit
+- Workflow Execution Gate
+
+---
+
 ## [Fix] 2026-06-30T22:15Z — RAG Module Tests Workflow — Step 8 Package Import Validation
 
 ### Summary
