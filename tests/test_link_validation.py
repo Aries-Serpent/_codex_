@@ -339,7 +339,7 @@ class TestBrokenReferenceDetection:
         content = "[text(https://bad[link)) and [good](https://example.com)"
         links = validator.extract_links(content)
         # Should extract at least the valid link
-        assert any("example.com" in url for _, url, _ in links)
+        assert any(url.startswith("https://example.com") for _, url, _ in links)
 
     def test_circular_reference_detection(self, validator):
         """Test detection of potential circular references."""
@@ -379,9 +379,11 @@ class TestLinkConsistency:
             content = md_file.read_text(encoding="utf-8")
             links = validator.extract_links(content)
             for _, url, _ in links:
-                if "github.com" in url:
+                if url.startswith("https://github.com/") or url.startswith("http://github.com/"):
                     # Extract repo part
-                    repo_urls.add(url.split("/github.com/")[1].split("/")[0] if "/github.com/" in url else "")
+                    repo_part = url.split("/github.com/")[1].split("/")[0] if "/github.com/" in url else ""
+                    if repo_part:
+                        repo_urls.add(repo_part)
         # Should have consistent repo references
         assert len(repo_urls) <= 5 or len(repo_urls) == 0
 
