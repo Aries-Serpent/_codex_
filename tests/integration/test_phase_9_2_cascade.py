@@ -18,8 +18,9 @@ from pathlib import Path
 
 import pytest
 
-# Add scripts/ci to path
-sys.path.insert(0, str(Path(__file__).parent / "scripts" / "ci"))
+# Add scripts/ci to path - compute repo root correctly
+repo_root = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(repo_root / "scripts" / "ci"))
 
 from phase_9_2_cascade_orchestrator import (
     CascadeOrchestrator,

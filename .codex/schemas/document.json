@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codex.internal/schemas/document.json",
+  "title": "Document Record Schema",
+  "description": "Top-level documentation entity (README, guide, API doc, etc.)",
+  "type": "object",
+  "required": ["id", "type", "title", "source_file", "created_at", "metadata"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique document identifier (UUID v4)",
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "type": {
+      "type": "string",
+      "enum": ["document"],
+      "description": "Record type discriminator"
+    },
+    "title": {
+      "type": "string",
+      "description": "Document title",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "source_file": {
+      "type": "string",
+      "description": "Relative path to source file (e.g., docs/api/index.md)",
+      "minLength": 1,
+      "maxLength": 512,
+      "pattern": "^(?!/)(?!.*\\.\\.)(?!.*\\x00)[^\u0000]+$"
+    },
+    "created_at": {
+      "type": "string",
+      "description": "Document creation date (ISO 8601 timestamp)",
+      "format": "date-time"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional metadata (key-value pairs)",
+      "additionalProperties": true
+    },
+    "description": {
+      "type": ["string", "null"],
+      "description": "Brief document description",
+      "maxLength": 512
+    },
+    "authors": {
+      "type": "array",
+      "description": "List of author names/emails",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "tags": {
+      "type": "array",
+      "description": "Document tags/categories",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "version": {
+      "type": "string",
+      "description": "Document version (semantic versioning)",
+      "pattern": "^\\d+\\.\\d+\\.\\d+(-[a-zA-Z0-9]+)?$"
+    },
+    "language": {
+      "type": "string",
+      "description": "Document language code (ISO 639-1)",
+      "default": "en",
+      "minLength": 2,
+      "maxLength": 5
+    },
+    "is_draft": {
+      "type": "boolean",
+      "description": "Whether document is in draft status",
+      "default": false
+    },
+    "parent_id": {
+      "type": ["string", "null"],
+      "description": "Parent document ID for hierarchical documents",
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    }
+  },
+  "additionalProperties": false
+}

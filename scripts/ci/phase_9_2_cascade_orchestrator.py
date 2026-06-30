@@ -500,11 +500,11 @@ class FixExecutor:
             "RP-012": 0.65,
         }
 
-        import random
+        import secrets
         success_rate = success_rates.get(pattern.id, 0.75)
 
-        # Simulate fix success based on historical rates
-        if random.random() < success_rate:
+        # Simulate fix success based on historical rates (using cryptographically secure randomness)
+        if secrets.randbelow(100) < int(success_rate * 100):
             return True, "", True
         else:
             return False, f"Simulated fix failure for {pattern.name}", False

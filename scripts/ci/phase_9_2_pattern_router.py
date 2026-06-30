@@ -213,18 +213,18 @@ class PatternMatcher:
         """Apply pattern-specific scoring rules"""
 
         rules = {
-            "RP-001": lambda l: self._score_unused_imports(l),
-            "RP-002": lambda l: self._score_type_errors(l),
-            "RP-003": lambda l: self._score_test_failures(l),
-            "RP-004": lambda l: self._score_dependency_conflicts(l),
-            "RP-005": lambda l: self._score_yaml_errors(l),
-            "RP-006": lambda l: self._score_coverage(l),
-            "RP-007": lambda l: self._score_links(l),
-            "RP-008": lambda l: self._score_import_errors(l),
-            "RP-009": lambda l: self._score_flaky_tests(l),
-            "RP-010": lambda l: self._score_workflow_compliance(l),
-            "RP-011": lambda l: self._score_cargo_features(l),
-            "RP-012": lambda l: self._score_security_alerts(l),
+            "RP-001": lambda log: self._score_unused_imports(log),
+            "RP-002": lambda log: self._score_type_errors(log),
+            "RP-003": lambda log: self._score_test_failures(log),
+            "RP-004": lambda log: self._score_dependency_conflicts(log),
+            "RP-005": lambda log: self._score_yaml_errors(log),
+            "RP-006": lambda log: self._score_coverage(log),
+            "RP-007": lambda log: self._score_links(log),
+            "RP-008": lambda log: self._score_import_errors(log),
+            "RP-009": lambda log: self._score_flaky_tests(log),
+            "RP-010": lambda log: self._score_workflow_compliance(log),
+            "RP-011": lambda log: self._score_cargo_features(log),
+            "RP-012": lambda log: self._score_security_alerts(log),
         }
 
         rule_func = rules.get(pattern_id)

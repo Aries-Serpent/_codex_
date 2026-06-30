@@ -1,0 +1,146 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.1.1, pluggy-1.6.0
+rootdir: /home/runner/work/_codex_/_codex_
+configfile: pytest.ini
+plugins: timeout-2.4.0, anyio-4.14.1, cov-7.1.0, xdist-3.8.0
+collected 23 items
+
+tests/integration/test_phase_9_2_cascade.py F.....FF..F...F.F..FF../home/runner/.local/lib/python3.12/site-packages/coverage/inorout.py:561: CoverageWarning: Module scripts/ci/phase_9_2_cascade_orchestrator was never imported. (module-not-imported); see https://coverage.readthedocs.io/en/7.14.3/messages.html#warning-module-not-imported
+  self.warn(f"Module {pkg} was never imported.", slug="module-not-imported")
+/home/runner/.local/lib/python3.12/site-packages/coverage/inorout.py:561: CoverageWarning: Module scripts/ci/phase_9_2_pattern_router was never imported. (module-not-imported); see https://coverage.readthedocs.io/en/7.14.3/messages.html#warning-module-not-imported
+  self.warn(f"Module {pkg} was never imported.", slug="module-not-imported")
+/home/runner/.local/lib/python3.12/site-packages/coverage/control.py:956: CoverageWarning: No data was collected. (no-data-collected); see https://coverage.readthedocs.io/en/7.14.3/messages.html#warning-no-data-collected
+  self._warn("No data was collected.", slug="no-data-collected")
+/home/runner/.local/lib/python3.12/site-packages/pytest_cov/plugin.py:366: CovReportWarning: Failed to generate report: No data to report.
+
+  warnings.warn(CovReportWarning(message), stacklevel=1)
+
+WARNING: Failed to generate report: No data to report.
+
+                                                                         [100%]
+
+=================================== FAILURES ===================================
+_______________ TestPatternDetection.test_detect_unused_imports ________________
+tests/integration/test_phase_9_2_cascade.py:53: in test_detect_unused_imports
+    assert len(matches) > 0, "Matches must not be empty"
+E   AssertionError: Matches must not be empty
+E   assert 0 > 0
+E    +  where 0 = len([])
+__________ TestPatternDetection.test_detect_link_validation_failures ___________
+tests/integration/test_phase_9_2_cascade.py:172: in test_detect_link_validation_failures
+    assert len(matches) > 0, "Matches must not be empty"
+E   AssertionError: Matches must not be empty
+E   assert 0 > 0
+E    +  where 0 = len([])
+________________ TestPatternDetection.test_detect_import_errors ________________
+tests/integration/test_phase_9_2_cascade.py:191: in test_detect_import_errors
+    assert len(matches) > 0, "Matches must not be empty"
+E   AssertionError: Matches must not be empty
+E   assert 0 > 0
+E    +  where 0 = len([])
+_______________ TestPatternDetection.test_detect_cargo_features ________________
+tests/integration/test_phase_9_2_cascade.py:250: in test_detect_cargo_features
+    assert len(matches) > 0, "Matches must not be empty"
+E   AssertionError: Matches must not be empty
+E   assert 0 > 0
+E    +  where 0 = len([])
+_____________ TestPerformance.test_classification_latency_under_5s _____________
+tests/integration/test_phase_9_2_cascade.py:337: in test_classification_latency_under_5s
+    assert result.pattern_match is not None, "pattern_match must be initialized"
+E   AssertionError: pattern_match must be initialized
+E   assert None is not None
+E    +  where None = OrchestrationResult(failure_log=FailureLog(raw_log="F401 unused import 'sys'", job_name='test', workflow_name='ci', ti...on_reason='No matching pattern detected', commit_sha=None, pr_comment_id=None, created_at='2026-06-30T17:48:34.158801').pattern_match
+----------------------------- Captured stderr call -----------------------------
+[2026-06-30 17:48:34] INFO [phase_9_2_cascade_orchestrator] ======================================================================
+[2026-06-30 17:48:34] INFO [phase_9_2_cascade_orchestrator] CASCADE ORCHESTRATOR STARTED
+[2026-06-30 17:48:34] INFO [phase_9_2_cascade_orchestrator] Workflow: ci
+[2026-06-30 17:48:34] INFO [phase_9_2_cascade_orchestrator] Job: test
+[2026-06-30 17:48:34] INFO [phase_9_2_cascade_orchestrator] Exit code: 1
+[2026-06-30 17:48:34] INFO [phase_9_2_cascade_orchestrator] ======================================================================
+[2026-06-30 17:48:34] INFO [phase_9_2_cascade_orchestrator] 
+[STEP 1] Detecting failure patterns...
+[2026-06-30 17:48:34] ERROR [phase_9_2_cascade_orchestrator] ❌ No patterns detected with sufficient confidence
+------------------------------ Captured log call -------------------------------
+INFO     phase_9_2_cascade_orchestrator:phase_9_2_cascade_orchestrator.py:528 ======================================================================
+INFO     phase_9_2_cascade_orchestrator:phase_9_2_cascade_orchestrator.py:529 CASCADE ORCHESTRATOR STARTED
+INFO     phase_9_2_cascade_orchestrator:phase_9_2_cascade_orchestrator.py:530 Workflow: ci
+INFO     phase_9_2_cascade_orchestrator:phase_9_2_cascade_orchestrator.py:531 Job: test
+INFO     phase_9_2_cascade_orchestrator:phase_9_2_cascade_orchestrator.py:532 Exit code: 1
+INFO     phase_9_2_cascade_orchestrator:phase_9_2_cascade_orchestrator.py:533 ======================================================================
+INFO     phase_9_2_cascade_orchestrator:phase_9_2_cascade_orchestrator.py:536 
+[STEP 1] Detecting failure patterns...
+ERROR    phase_9_2_cascade_orchestrator:phase_9_2_cascade_orchestrator.py:540 ❌ No patterns detected with sufficient confidence
+______________ TestSuccessMetrics.test_pattern_detection_accuracy ______________
+tests/integration/test_phase_9_2_cascade.py:414: in test_pattern_detection_accuracy
+    assert accuracy > 0.95, f"Detection accuracy {accuracy:.2%} should be >95%"
+E   AssertionError: Detection accuracy 16.33% should be >95%
+E   assert 0.16326530612244897 > 0.95
+______________________ TestEdgeCases.test_very_large_log _______________________
+tests/integration/test_phase_9_2_cascade.py:480: in test_very_large_log
+    assert result.pattern_match is not None, "pattern_match must be initialized"
+E   AssertionError: pattern_match must be initialized
+E   assert None is not None
+E    +  where None = OrchestrationResult(failure_log=FailureLog(raw_log='F401 unused import\nF401 unused import\nF401 unused import\nF401 u...on_reason='No matching pattern detected', commit_sha=None, pr_comment_id=None, created_at='2026-06-30T17:48:35.638008').pattern_match
+----------------------------- Captured stderr call -----------------------------
+[2026-06-30 17:48:34] INFO [phase_9_2_cascade_orchestrator] ======================================================================
+[2026-06-30 17:48:34] INFO [phase_9_2_cascade_orchestrator] CASCADE ORCHESTRATOR STARTED
+[2026-06-30 17:48:34] INFO [phase_9_2_cascade_orchestrator] Workflow: ci
+[2026-06-30 17:48:34] INFO [phase_9_2_cascade_orchestrator] Job: test
+[2026-06-30 17:48:34] INFO [phase_9_2_cascade_orchestrator] Exit code: 1
+[2026-06-30 17:48:34] INFO [phase_9_2_cascade_orchestrator] ======================================================================
+[2026-06-30 17:48:34] INFO [phase_9_2_cascade_orchestrator] 
+[STEP 1] Detecting failure patterns...
+[2026-06-30 17:48:35] ERROR [phase_9_2_cascade_orchestrator] ❌ No patterns detected with sufficient confidence
+------------------------------ Captured log call -------------------------------
+INFO     phase_9_2_cascade_orchestrator:phase_9_2_cascade_orchestrator.py:528 ======================================================================
+INFO     phase_9_2_cascade_orchestrator:phase_9_2_cascade_orchestrator.py:529 CASCADE ORCHESTRATOR STARTED
+INFO     phase_9_2_cascade_orchestrator:phase_9_2_cascade_orchestrator.py:530 Workflow: ci
+INFO     phase_9_2_cascade_orchestrator:phase_9_2_cascade_orchestrator.py:531 Job: test
+INFO     phase_9_2_cascade_orchestrator:phase_9_2_cascade_orchestrator.py:532 Exit code: 1
+INFO     phase_9_2_cascade_orchestrator:phase_9_2_cascade_orchestrator.py:533 ======================================================================
+INFO     phase_9_2_cascade_orchestrator:phase_9_2_cascade_orchestrator.py:536 
+[STEP 1] Detecting failure patterns...
+ERROR    phase_9_2_cascade_orchestrator:phase_9_2_cascade_orchestrator.py:540 ❌ No patterns detected with sufficient confidence
+__________________ TestEdgeCases.test_multi_pattern_ambiguity __________________
+tests/integration/test_phase_9_2_cascade.py:503: in test_multi_pattern_ambiguity
+    assert len(matches) >= 2, "Matches must not be empty"
+E   AssertionError: Matches must not be empty
+E   assert 0 >= 2
+E    +  where 0 = len([])
+=============================== warnings summary ===============================
+../../../.local/lib/python3.12/site-packages/_pytest/config/__init__.py:1464
+  /home/runner/.local/lib/python3.12/site-packages/_pytest/config/__init__.py:1464: PytestConfigWarning: Unknown config option: asyncio_default_fixture_loop_scope
+  
+    self._warn_or_fail_if_strict(f"Unknown config option: {key}\n")
+
+../../../.local/lib/python3.12/site-packages/_pytest/config/__init__.py:1464
+  /home/runner/.local/lib/python3.12/site-packages/_pytest/config/__init__.py:1464: PytestConfigWarning: Unknown config option: asyncio_mode
+  
+    self._warn_or_fail_if_strict(f"Unknown config option: {key}\n")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/integration/test_phase_9_2_cascade.py::TestPatternDetection::test_detect_unused_imports - AssertionError: Matches must not be empty
+assert 0 > 0
+ +  where 0 = len([])
+FAILED tests/integration/test_phase_9_2_cascade.py::TestPatternDetection::test_detect_link_validation_failures - AssertionError: Matches must not be empty
+assert 0 > 0
+ +  where 0 = len([])
+FAILED tests/integration/test_phase_9_2_cascade.py::TestPatternDetection::test_detect_import_errors - AssertionError: Matches must not be empty
+assert 0 > 0
+ +  where 0 = len([])
+FAILED tests/integration/test_phase_9_2_cascade.py::TestPatternDetection::test_detect_cargo_features - AssertionError: Matches must not be empty
+assert 0 > 0
+ +  where 0 = len([])
+FAILED tests/integration/test_phase_9_2_cascade.py::TestPerformance::test_classification_latency_under_5s - AssertionError: pattern_match must be initialized
+assert None is not None
+ +  where None = OrchestrationResult(failure_log=FailureLog(raw_log="F401 unused import 'sys'", job_name='test', workflow_name='ci', ti...on_reason='No matching pattern detected', commit_sha=None, pr_comment_id=None, created_at='2026-06-30T17:48:34.158801').pattern_match
+FAILED tests/integration/test_phase_9_2_cascade.py::TestSuccessMetrics::test_pattern_detection_accuracy - AssertionError: Detection accuracy 16.33% should be >95%
+assert 0.16326530612244897 > 0.95
+FAILED tests/integration/test_phase_9_2_cascade.py::TestEdgeCases::test_very_large_log - AssertionError: pattern_match must be initialized
+assert None is not None
+ +  where None = OrchestrationResult(failure_log=FailureLog(raw_log='F401 unused import\nF401 unused import\nF401 unused import\nF401 u...on_reason='No matching pattern detected', commit_sha=None, pr_comment_id=None, created_at='2026-06-30T17:48:35.638008').pattern_match
+FAILED tests/integration/test_phase_9_2_cascade.py::TestEdgeCases::test_multi_pattern_ambiguity - AssertionError: Matches must not be empty
+assert 0 >= 2
+ +  where 0 = len([])
+=================== 8 failed, 15 passed, 2 warnings in 2.55s ===================
