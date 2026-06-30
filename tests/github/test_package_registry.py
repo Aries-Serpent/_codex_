@@ -166,7 +166,7 @@ class TestPublishPackages:
     def test_publish_docker_image_endpoint(self):
         """Test Docker image publishing endpoint."""
         endpoint = "https://ghcr.io"
-        assert "ghcr.io" in endpoint
+        assert endpoint.startswith("https://ghcr.io")
 
     def test_package_publication_payload_npm(self):
         """Test npm package publication payload."""
@@ -182,7 +182,7 @@ class TestPublishPackages:
         """Test Docker image publication payload."""
         # Docker images use container registry format
         image = "ghcr.io/org/repo/image:v1.0.0"
-        assert "ghcr.io" in image
+        assert image.startswith("ghcr.io/")
 
     def test_publish_with_authentication(self):
         """Test publishing with GitHub token authentication."""
