@@ -13,7 +13,7 @@ import json
 import logging
 import re
 import sys
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import yaml
 
@@ -136,14 +136,14 @@ class PatternMatcher:
     - ML-based classification (simulated)
     """
 
-    def __init__(self, config: Dict[str, Any] = None):
+    def __init__(self, config: Optional[Dict[str, Any]] = None):
         self.config = config or DEFAULT_ROUTING_CONFIG
         self.patterns = self.config.get("patterns", {})
 
     def match(self, failure_log: str, top_k: int = 5) -> List[Tuple[str, float]]:
         """
         Match failure against all patterns
-        
+
         Returns: List of (pattern_id, confidence) tuples, sorted by confidence
         """
         results = []
@@ -390,8 +390,9 @@ class PatternMatcher:
 
         for other_pattern_id in conflicting_patterns:
             other_keywords = self.patterns[other_pattern_id].get("keywords", [])
-            if any(kw.lower() in log.lower() for kw in other_keywords):
-                return 0.5  # Conflict detected, lower confidence
+            if isinstance(other_keywords, list):
+                if any(kw.lower() in log.lower() for kw in other_keywords):
+                    return 0.5  # Conflict detected, lower confidence
 
         return 1.0  # No conflicts, full confidence
 
@@ -403,7 +404,7 @@ class PatternMatcher:
 class PatternRouter:
     """Routes detected patterns to appropriate agents"""
 
-    def __init__(self, config: Dict[str, Any] = None):
+    def __init__(self, config: Optional[Dict[str, Any]] = None):
         self.config = config or DEFAULT_ROUTING_CONFIG
         self.matcher = PatternMatcher(config)
 
@@ -414,7 +415,7 @@ class PatternRouter:
     ) -> Dict[str, Any]:
         """
         Route failure to appropriate agent
-        
+
         Returns routing decision with pattern, agent, and confidence
         """
 
@@ -431,8 +432,13 @@ class PatternRouter:
             }
 
         best_pattern_id, best_confidence = matches[0]
-        pattern_config = self.config["patterns"][best_pattern_id]
-        confidence_threshold = pattern_config.get("confidence_threshold", 0.70)
+        pattern_config: Dict[str, Any] = self.config["patterns"][best_pattern_id]
+        raw_threshold: Any = pattern_config.get("confidence_threshold", 0.70)
+        # Type narrowing for confidence threshold
+        if isinstance(raw_threshold, (int, float, str)):
+            confidence_threshold: float = float(raw_threshold)
+        else:
+            confidence_threshold = 0.70
         agent = pattern_config.get("agent")
 
         logger.info(
