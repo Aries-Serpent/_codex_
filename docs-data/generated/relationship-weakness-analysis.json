@@ -1,0 +1,257 @@
+{
+  "analysis_type": "RELATIONSHIP_WEAKNESS_ANALYSIS",
+  "timestamp": "2026-06-30T22:20:15.714Z",
+  "repository": "Aries-Serpent/_codex_",
+
+  "missing_edges_in_dependency_graph": [
+    {
+      "id": "missing-edge-001",
+      "source_node": "Agent: unified-coverage-agent",
+      "target_node": "OODA Loop: Observer Phase",
+      "edge_type": "IMPLICIT",
+      "why_missing": "Agent generates coverage reports; Observer should ingest these as observables. Currently not connected.",
+      "location": "unified-coverage-agent.md does not reference observer_phase; observer_phase.py does not list coverage data as input",
+      "impact": "OODA does not know about coverage changes; orientation decisions lack coverage context",
+      "risk": "HIGH",
+      "recommendation": "Add explicit integration: Observer → read coverage report → add to observable state"
+    },
+    {
+      "id": "missing-edge-002",
+      "source_node": "Workflow: workflow-execution-gate.yml",
+      "target_node": "Memory System: Pattern Storage",
+      "edge_type": "IMPLICIT",
+      "why_missing": "Workflow failures and successes should be learned patterns stored in LTM. Currently logged but not integrated with pattern graph.",
+      "location": ".github/workflows/workflow-execution-gate.yml does not call memory/pattern_learn.py",
+      "impact": "Workflow failure patterns not learned; agents cannot apply historical knowledge",
+      "risk": "MEDIUM",
+      "recommendation": "Post-workflow hook: execute pattern_learn.py to extract and store workflow outcome patterns"
+    },
+    {
+      "id": "missing-edge-003",
+      "source_node": "Agent: dependency-security-review-agent",
+      "target_node": "Governance Policy: RBAC Enforcement",
+      "edge_type": "IMPLICIT",
+      "why_missing": "Dependency security findings should automatically trigger RBAC restriction if critical. Currently findings are reported but not connected to RBAC rules.",
+      "location": "dependency-security-review-agent.md does not reference RBAC module; RBAC rules do not have integration hook for agent findings",
+      "impact": "Security findings do not automatically restrict risky operations",
+      "risk": "HIGH",
+      "recommendation": "Create event trigger: Security finding → RBAC policy amendment"
+    },
+    {
+      "id": "missing-edge-004",
+      "source_node": "Session Checkpoint Store (.codex/ooda_cycles.jsonl)",
+      "target_node": "Quantum Orchestrator",
+      "edge_type": "COMPLETELY_MISSING",
+      "why_missing": "Quantum orchestrator exists but is not integrated with session state. No way for quantum logic to checkpoint or resume.",
+      "location": "src/codex/brain/quantum_*.py has no imports from session_serializer.py",
+      "impact": "Quantum decisions are not reproducible; no audit trail",
+      "risk": "HIGH",
+      "recommendation": "Add checkpoint integration to quantum_orchestrator.py"
+    },
+    {
+      "id": "missing-edge-005",
+      "source_node": "CI/CD Workflow Event",
+      "target_node": "RBAC Policy Engine",
+      "edge_type": "IMPLICIT",
+      "why_missing": "When workflows fail, RBAC permissions should adapt (e.g., restrict PRs from failing branches). Currently no feedback loop.",
+      "location": "CI/CD workflows do not call RBAC update; RBAC does not listen to workflow events",
+      "impact": "RBAC is static; does not adapt to operational reality",
+      "risk": "MEDIUM",
+      "recommendation": "Workflow event handler: parse result → update RBAC rules dynamically"
+    },
+    {
+      "id": "missing-edge-006",
+      "source_node": "Agent Dispatch",
+      "target_node": "Session Context Injection",
+      "edge_type": "PARTIAL",
+      "why_missing": "Agents are dispatched but session context (cycle ID, checkpoint state) is not always injected. Some agents run in isolation.",
+      "location": "agent_dispatch.py line 180: context_injection is conditional; not all agents receive context",
+      "impact": "Some agents cannot recover from checkpoints; isolated decisions not auditable",
+      "risk": "MEDIUM",
+      "recommendation": "Enforce context injection for all agent dispatch paths"
+    }
+  ],
+
+  "implicit_dependencies_not_declared": [
+    {
+      "id": "implicit-dep-001",
+      "dependent": "Artifact Monitor Agent",
+      "dependency": "GitHub Actions API + GraphQL queries",
+      "nature": "Runtime dependency",
+      "why_not_declared": "Agent calls GitHub API but no explicit dependency documentation",
+      "location": ".github/agents/artifact-monitor-agent.md does not mention GitHub API requirements",
+      "consequence": "Agent fails if GitHub API quotas exhausted; no error handling documented",
+      "risk": "MEDIUM"
+    },
+    {
+      "id": "implicit-dep-002",
+      "dependent": "Session Resume Logic",
+      "dependency": "SQLite transaction isolation level",
+      "nature": "Infrastructure assumption",
+      "why_not_declared": "Code assumes SERIALIZABLE isolation; no documentation exists",
+      "location": "src/codex/brain/session_resume.py does not document SQLite config assumptions",
+      "consequence": "Resume fails in race conditions if isolation level is lower",
+      "risk": "MEDIUM"
+    },
+    {
+      "id": "implicit-dep-003",
+      "dependent": "OODA Orienter Phase",
+      "dependency": "Historical pattern cache (LTM)",
+      "nature": "Runtime initialization",
+      "why_not_declared": "Orienter assumes LTM is pre-populated; no initialization dependency declared",
+      "location": "orientation_phase.py does not check LTM state on startup",
+      "consequence": "Cold start: orientation uses empty cache; first cycles are suboptimal",
+      "risk": "LOW"
+    },
+    {
+      "id": "implicit-dep-004",
+      "dependent": "CI Auto-Fix Workflows",
+      "dependency": "Pre-commit hook environment (Python + dependencies)",
+      "nature": "Runtime environment",
+      "why_not_declared": "Workflows assume pre-commit is installed and configured; no setup documented",
+      "location": ".github/workflows/auto-fix-pr-check.yml does not install pre-commit",
+      "consequence": "Workflow fails if pre-commit not in GitHub Actions environment",
+      "risk": "HIGH"
+    },
+    {
+      "id": "implicit-dep-005",
+      "dependent": "Multi-Agent Handoff Protocol (Planned)",
+      "dependency": "Agent State Machine (not yet implemented)",
+      "nature": "Feature prerequisite",
+      "why_not_declared": "Handoff spec references state machine that doesn't exist",
+      "location": "docs/roadmap/agent_handoff.md assumes AgentStateMachine class; not implemented",
+      "consequence": "Handoff cannot be implemented until state machine is built",
+      "risk": "HIGH"
+    }
+  ],
+
+  "circular_dependencies": [
+    {
+      "id": "circular-001",
+      "nodes": ["Agent Orchestration", "OODA Loop", "Session State"],
+      "cycle": "Agents depend on OODA for context; OODA depends on agents for execution; Session depends on both for checkpointing",
+      "severity": "HIGH",
+      "is_problematic": true,
+      "mitigation": "Currently mitigated by strict interface contracts; event-driven decoupling",
+      "risk": "If contracts are violated, system deadlock possible"
+    },
+    {
+      "id": "circular-002",
+      "nodes": ["Workflow Orchestration", "CI/CD Status", "Agent Dispatch"],
+      "cycle": "Workflows dispatch agents; agents report status; workflows depend on status to continue",
+      "severity": "MEDIUM",
+      "is_problematic": true,
+      "mitigation": "Callback/event pattern used; no true circular dependency",
+      "risk": "Low if event handlers are idempotent (currently enforced)"
+    },
+    {
+      "id": "circular-003",
+      "nodes": ["RBAC Policy", "Agent Capabilities", "Governance Enforcement"],
+      "cycle": "RBAC determines agent permissions; agent output influences RBAC rules; governance enforces both",
+      "severity": "MEDIUM",
+      "is_problematic": false,
+      "nature": "Desired feedback loop (not a bug; by design)",
+      "risk": "Policy oscillation if feedback gain too high"
+    }
+  ],
+
+  "orphaned_components": [
+    {
+      "id": "orphan-001",
+      "component": "Quantum Orchestrator Topology",
+      "location": "src/codex/brain/quantum_*.py (4 files)",
+      "orphan_reason": "No incoming edges from session state, OODA, or agent dispatch. Exists in codebase but is not called anywhere.",
+      "evidence": "grep -r 'quantum_orchestrator' returns 0 results in non-quantum files",
+      "impact": "Code never executed; maintenance burden",
+      "recommendation": "Document integration plan or deprecate"
+    },
+    {
+      "id": "orphan-002",
+      "component": "JSON Schema Validator (legacy)",
+      "location": "src/codex/legacy/schema_validator.py",
+      "orphan_reason": "Replaced by Hydra OmegaConf validation; no references from new code",
+      "evidence": "No imports of legacy validator in src/codex/ (except __init__ deprecation notice)",
+      "impact": "Dead code; increases maintenance surface",
+      "recommendation": "Remove or mark as deprecated"
+    },
+    {
+      "id": "orphan-003",
+      "component": "Test fixture: MockAgentBrain",
+      "location": "tests/fixtures/mock_agent_brain.py",
+      "orphan_reason": "Only one test file imports this; most tests use newer MockBrainClient",
+      "evidence": "grep -r 'MockAgentBrain' returns 3 results; 300 tests use MockBrainClient",
+      "impact": "Duplicate fixture maintenance",
+      "recommendation": "Consolidate into MockBrainClient"
+    },
+    {
+      "id": "orphan-004",
+      "component": "Old Planning Docs",
+      "location": ".codex/archive/ (15+ markdown files)",
+      "orphan_reason": "Superseded by current planning docs; not linked from active docs",
+      "evidence": "No references to archive/ from active planning documents",
+      "impact": "Confusion about authoritative source; outdated information visible",
+      "recommendation": "Move to separate archive directory or delete"
+    }
+  ],
+
+  "relationship_strength_matrix": {
+    "strong_coupling": {
+      "count": 12,
+      "examples": [
+        "Brain↔Session State",
+        "Agent Dispatch↔OODA",
+        "Workflow Events↔CI Status"
+      ],
+      "health": "GOOD (mitigated by contracts)"
+    },
+    "weak_coupling": {
+      "count": 8,
+      "examples": [
+        "MCP Adapters↔Core Brain",
+        "Config System↔Runtime",
+        "Individual Agents↔Dispatch"
+      ],
+      "health": "EXCELLENT"
+    },
+    "missing_coupling": {
+      "count": 6,
+      "examples": [
+        "Coverage Reports↔Observer",
+        "Workflow Outcomes↔Pattern Store",
+        "Security Findings↔RBAC"
+      ],
+      "health": "NEEDS_ATTENTION"
+    }
+  },
+
+  "recommendations": [
+    {
+      "priority": 1,
+      "action": "Create Missing Edges",
+      "targets": ["Coverage→Observer", "Security→RBAC", "Quantum→Session"],
+      "timeline": "Immediate",
+      "benefit": "Complete integration graph; enable cross-system learning"
+    },
+    {
+      "priority": 2,
+      "action": "Document Implicit Dependencies",
+      "scope": "All agents and core subsystems",
+      "format": "Add DEPENDENCIES.md to each subsystem",
+      "benefit": "Reduce runtime surprises"
+    },
+    {
+      "priority": 3,
+      "action": "Resolve Orphaned Components",
+      "scope": "Quantum orchestrator, legacy validators, old fixtures",
+      "actions": ["Integrate quantum", "Deprecate legacy", "Consolidate fixtures"],
+      "benefit": "Reduce code maintenance burden"
+    },
+    {
+      "priority": 4,
+      "action": "Declare Implicit Dependencies as Edges",
+      "scope": "GitHub API, SQLite config, LTM initialization, pre-commit",
+      "format": "Update dependency graph schema",
+      "benefit": "Enable automated dependency verification"
+    }
+  ]
+}
