@@ -1,5 +1,5 @@
 name: Agent Registry Validation
-true:
+on:
   pull_request:
     paths:
     - .github/agents/AGENT_REGISTRY.yaml

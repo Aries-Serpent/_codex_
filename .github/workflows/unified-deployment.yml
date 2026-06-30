@@ -1,5 +1,5 @@
 name: Unified Deployment Suite
-true:
+on:
   push:
     branches:
     - main

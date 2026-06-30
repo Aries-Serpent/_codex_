@@ -5,7 +5,7 @@ concurrency:
 permissions:
   contents: read
   packages: write
-true:
+on:
   push:
     branches:
     - main

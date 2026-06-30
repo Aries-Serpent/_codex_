@@ -1,5 +1,5 @@
 name: 🔄 Doc Refresh Gate (AAIS)
-true:
+on:
   push:
     branches:
     - main

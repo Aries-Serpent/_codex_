@@ -1,5 +1,5 @@
 name: "\U0001F9E0 Post CI Status to Discussions"
-true:
+on:
   push:
     branches:
     - copilot/**

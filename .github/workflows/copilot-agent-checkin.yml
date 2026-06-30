@@ -1,5 +1,5 @@
 name: "\U0001F916 Agent Check-In \u2014 Q&A Bridge (Discussion #3756)"
-true:
+on:
   push:
     branches:
     - 0D_base_

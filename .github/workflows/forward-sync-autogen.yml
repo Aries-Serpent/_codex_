@@ -1,5 +1,5 @@
 name: Forward-Sync Auto-Generated Files → staging chain (Safety Net)
-true:
+on:
   push:
     branches:
     - main

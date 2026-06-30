@@ -1,5 +1,5 @@
 name: Code Quality & Coverage Suite
-true:
+on:
   pull_request:
     branches:
     - main

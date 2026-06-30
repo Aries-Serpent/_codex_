@@ -1,5 +1,5 @@
 name: Process Variable Intents
-true:
+on:
   push:
     paths:
     - .codex/pending_ops/variable_*.json
