@@ -1,5 +1,35 @@
 # Agent Accountability Report — Index (Phase 2.3 Refactored)
 
+## SESSION SUMMARY — 2026-06-30T16:15Z [CODEQL URL SANITIZATION VULNERABILITIES RESOLVED]
+
+**Session:** copilot-phase-3-wave-5-codeql-url-fix | **Campaign:** Fix 2 CodeQL security alerts for incomplete URL substring sanitization | **Date:** 2026-06-30T16:15:44Z
+
+Fixed 2 CodeQL security alerts in tests/test_link_validation.py by replacing insecure substring matching with proper URL prefix validation. These vulnerabilities could allow false positives where domain names appear at arbitrary positions in URLs rather than being validated as proper URL components.
+
+### Actions Completed
+
+- ✅ **CodeQL Security Alert (Line 342):** Fixed incomplete URL substring sanitization for "example.com"
+  - **Issue:** Used `"example.com" in url` which allows domain to appear at arbitrary URL position
+  - **Fix:** Replaced with `url.startswith("https://example.com")` for proper URL prefix validation
+  - **Impact:** Prevents false positive matches in query parameters or path components
+
+- ✅ **CodeQL Security Alert (Line 382):** Fixed incomplete URL substring sanitization for "github.com"
+  - **Issue:** Used `"github.com" in url` which allows domain to appear at arbitrary URL position
+  - **Fix:** Replaced with `url.startswith("https://github.com/")` or `url.startswith("http://github.com/")` for proper URL prefix validation
+  - **Impact:** Ensures only valid GitHub URLs are processed
+
+- ✅ **REQ-4: AGENT_ACCOUNTABILITY_REPORT.md** — Updated with current session entry (this document)
+
+- ✅ **REQ-13 Compliance:** Replied to @mbaetiong blocking comment (ID 4845625012) with security fix summary
+
+### Compliance Status
+
+- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated (this entry, latest commit `29f9ffcc`)
+- ✅ REQ-13: Blocking comment reply posted with fix confirmation
+- ✅ All 3 CodeQL security alerts from Phase 3 Wave 5 are now resolved
+
+---
+
 ## SESSION SUMMARY — 2026-06-30T15:58Z [PHASE 3 WAVE 5: SECURITY ALERT & COMPLIANCE FIX]
 
 **Session:** copilot-phase-3-wave-5-compliance | **Campaign:** Address CodeQL security alert and mandatory pre-flight checklist items | **Date:** 2026-06-30T15:58:49Z
