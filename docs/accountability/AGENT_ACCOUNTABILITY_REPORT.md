@@ -1,16 +1,16 @@
 # Agent Accountability Report — Index (Phase 2.3 Refactored)
 
-## SESSION SUMMARY — 2026-06-30T20:30Z [SECURITY FIXES: SHELL INJECTION & MUTABLE ACTION TAGS]
+## SESSION SUMMARY — 2026-06-30T20:30Z [SECURITY FIXES: SHELL INJECTION, MUTABLE ACTION TAGS & WEAK CRYPTO]
 
-**Session:** copilot-explore-codebase-and-create-implementation-plan | **Task:** Fix all security vulnerabilities from commit d587689 | **Date:** 2026-06-30T20:30:00Z | **Authority:** @mbaetiong (CI gate enforcement)
+**Session:** copilot-explore-codebase-and-create-implementation-plan | **Task:** Fix all security vulnerabilities from commit d587689 + follow-up MD5 weakness | **Date:** 2026-06-30T20:30:00Z | **Authority:** @mbaetiong (CI gate enforcement)
 
-Fixed all 14 security vulnerabilities identified by GitHub Advanced Security and Semgrep in commit d587689. Branch `copilot/explore-codebase-and-create-implementation-plan` now has all security issues resolved and is ready for CI re-validation.
+Fixed all 15 security vulnerabilities identified by GitHub Advanced Security, Semgrep, and CodeQL. Branch `copilot/explore-codebase-and-create-implementation-plan` now has all security issues resolved and is ready for CI re-validation.
 
 ### SECURITY ISSUES FIXED (2026-06-30T20:30:00Z)
 
-**Total Vulnerabilities:** 14 (all fixed)
-**Categories:** Shell injection (6), GitHub script injection (2), Mutable action tags (6)
-**Files Modified:** 5
+**Total Vulnerabilities:** 15 (all fixed)
+**Categories:** Shell injection (6), GitHub script injection (2), Mutable action tags (6), Weak cryptographic hash (1)
+**Files Modified:** 6
 
 #### ✅ Shell Injection Vulnerabilities Fixed
 1. `.github/agents/service-integration-tester/agent.yaml:140` — Fixed `${{ inputs.source-path }}` → `$SOURCE_PATH` (env var)
@@ -33,13 +33,18 @@ Fixed all 14 security vulnerabilities identified by GitHub Advanced Security and
 6. `.github/workflows/machine-readable-governance.yml:22,25,64` — 3 actions pinned to SHAs
 7. `.github/workflows/machine-readable-maintenance-pr.yml:18,21` — 2 actions pinned to SHAs
 
+#### ✅ Weak Cryptographic Hash Fixed
+1. `tools/docs_agent/campaign_ingester.py:25` — Replaced MD5 with SHA-256 for deterministic ID generation
+
 ### Actions Completed in This Session
 
-- ✅ **Security Audit Response:** Reviewed all 14 security alerts from commit d587689
+- ✅ **Security Audit Response:** Reviewed all 15 security alerts from commit d587689 + PR review comments
 - ✅ **Shell Injection Remediation:** Used environment variables instead of direct interpolation for all untrusted inputs
 - ✅ **Script Injection Remediation:** Moved all workflow context values to env: section in github-script steps
 - ✅ **Action Pinning:** Pinned all mutable tags to full 40-character commit SHAs
+- ✅ **Cryptographic Hash Upgrade:** Replaced MD5 with SHA-256 in campaign_ingester.py for deterministic ID generation
 - ✅ **YAML Validation:** Verified all modified files pass yamllint
+- ✅ **Python Validation:** Verified campaign_ingester.py syntax and imports
 - ✅ **Automation Scripts:** Created `scripts/ci/fix_security_alerts_d587689.py` and `scripts/ci/fix_remaining_security_issues.py`
 
 ### Validation & Testing

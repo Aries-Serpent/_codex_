@@ -21,15 +21,16 @@ Completed Phase 3 Root Cleanup Campaign with zero breaking changes.
 
 ---
 
-## [Security Fixes] 2026-06-30T20:30Z — Shell Injection & Mutable Action Tags
+## [Security Fixes] 2026-06-30T20:30Z — Shell Injection, Mutable Action Tags & Weak Cryptography
 
 ### Summary
-Fixed all 14 security vulnerabilities from commit d587689 identified by GitHub Advanced Security and Semgrep.
+Fixed all 15 security vulnerabilities from commit d587689 and PR review comments identified by GitHub Advanced Security, Semgrep, and CodeQL.
 
 **Security Vulnerabilities Fixed**:
 - Shell injection: 5 instances fixed by using environment variables instead of direct interpolation
 - GitHub script injection: 3 instances fixed by moving workflow context to env: section
 - Mutable action tags: 6 instances fixed by pinning to full 40-character commit SHAs
+- Weak cryptographic hash: 1 instance fixed by replacing MD5 with SHA-256
 
 **Files Modified**:
 - `.github/agents/service-integration-tester/agent.yaml`
@@ -37,9 +38,11 @@ Fixed all 14 security vulnerabilities from commit d587689 identified by GitHub A
 - `.github/agents/security-vulnerability-patcher/agent.yaml`
 - `.github/workflows/machine-readable-governance.yml`
 - `.github/workflows/machine-readable-maintenance-pr.yml`
+- `tools/docs_agent/campaign_ingester.py` — Replaced MD5 with SHA-256 for deterministic UUID generation
 
 **Validation**:
 - YAML syntax: All 5 files pass yamllint ✅
+- Python syntax: campaign_ingester.py validated ✅
 - Git status: Clean working tree ✅
 - CI gates: Ready for re-validation ✅
 

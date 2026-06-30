@@ -18,11 +18,12 @@ class CampaignIngester:
         self.timestamp = datetime.utcnow().isoformat() + "Z"
 
     def generate_deterministic_id(self, entity_type: str, name: str, phase_id: str = None) -> str:
-        """Generate deterministic UUID from entity type + name."""
+        """Generate deterministic UUID from entity type + name using SHA-256."""
         source = f"{entity_type}:{name}"
         if phase_id:
             source = f"{phase_id}:{source}"
-        hash_digest = hashlib.md5(source.encode()).hexdigest()
+        # Use SHA-256 instead of MD5 for better security
+        hash_digest = hashlib.sha256(source.encode()).hexdigest()[:32]
         return str(uuid.UUID(hex=hash_digest))
 
     def ingest_campaign_phases(self) -> List[Dict[str, Any]]:
