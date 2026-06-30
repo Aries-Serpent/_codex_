@@ -12,10 +12,12 @@ from collections.abc import Mapping  # noqa: E402
 from collections.abc import Sequence as SequenceABC  # noqa: E402
 from datetime import datetime, timezone  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Any, Optional  # noqa: E402
+from typing import TYPE_CHECKING, Any, Optional  # noqa: E402
+
+if TYPE_CHECKING:
+    from codex_ml.tracking.writers import BaseWriter
 
 from codex_ml.logging.ndjson_logger import is_legacy_mode  # noqa: E402
-from codex_ml.tracking.writers import BaseWriter, NdjsonWriter  # type: ignore  # noqa: E402
 
 PARAMS_SCHEMA_URI = "https://codexml.ai/schemas/run_params.schema.json"
 METRICS_SCHEMA_URI = "https://codexml.ai/schemas/run_metrics.schema.json"
@@ -133,6 +135,10 @@ class RunLogger:
         self.metrics_path.parent.mkdir(parents=True, exist_ok=True)
         rotation = _rotation_kwargs()
         manifest_path = self.metrics_path.with_name("metrics_manifest.ndjson")
+        
+        # Lazy import to avoid circular dependency
+        from codex_ml.tracking.writers import NdjsonWriter
+        
         self._metrics_writer: BaseWriter = NdjsonWriter(
             self.metrics_path,
             schema_uri=METRICS_SCHEMA_URI,

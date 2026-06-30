@@ -4,14 +4,14 @@ on:
     branches:
     - main
     paths:
-    - Dockerfile.preview
+    - .config/Dockerfile.preview
     - src/codex/auth/**
     - cognitive_app/**
     - pyproject.toml
     - .devcontainer/**
   pull_request:
     paths:
-    - Dockerfile.preview
+    - .config/Dockerfile.preview
     - src/codex/auth/**
     - cognitive_app/**
     - .devcontainer/**
@@ -58,7 +58,7 @@ jobs:
     - name: Hadolint — Dockerfile linter
       uses: hadolint/hadolint-action@54c9adbab1582c2ef04b2016b760714a4bfde3cf
       with:
-        dockerfile: Dockerfile.preview
+        dockerfile: .config/Dockerfile.preview
         failure-threshold: error
         ignore: DL3008,DL3013
     env:
@@ -110,7 +110,7 @@ jobs:
         \ }}-${TAG}\" >> \"$GITHUB_OUTPUT\"\n  echo \"should_push=false\" >> \"$GITHUB_OUTPUT\"\
         \n  # PR builds: amd64 only — load=true is incompatible with multi-platform\
         \ builds\n  echo \"platforms=linux/amd64\" >> \"$GITHUB_OUTPUT\"\nfi\necho\
-        \ \"cache_key=${TARGET}-${{ hashFiles('Dockerfile.preview','pyproject.toml')\
+        \ \"cache_key=${TARGET}-${{ hashFiles('.config/Dockerfile.preview','pyproject.toml')\
         \ }}\" >> \"$GITHUB_OUTPUT\"\n"
     - name: Log in to GHCR
       if: steps.tags.outputs.should_push == 'true'
@@ -123,7 +123,7 @@ jobs:
       uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf
       with:
         context: .
-        file: Dockerfile.preview
+        file: .config/Dockerfile.preview
         target: ${{ matrix.target }}
         push: ${{ steps.tags.outputs.should_push == 'true' }}
         load: ${{ steps.tags.outputs.should_push != 'true' }}

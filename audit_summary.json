@@ -1,0 +1,12 @@
+{
+  "total_workflows": 207,
+  "triggers": {
+    "workflow_dispatch": 5,
+    "push": 6,
+    "pull_request": 8,
+    "schedule": 3,
+    "workflow_call": 1
+  },
+  "outdated_actions_count": 9,
+  "syntax_issues_count": 0
+}

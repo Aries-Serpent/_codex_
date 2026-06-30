@@ -1,0 +1,24 @@
+Legacy Configuration Inventory
+Created: 2026-06-30T15:00:27Z
+
+Directory: .config.legacy/
+Purpose: Historical configuration reference
+Status: Read-only archive
+
+Files in This Directory:
+- README.md (this directory description)
+- INVENTORY.txt (this inventory file)
+
+Archive Policy:
+- Retention: Permanent (for compliance and governance)
+- Access: Read-only
+- Modification: Prohibited
+- Cleanup: Not subject to future deletions
+
+Reference Documentation:
+- Current Active Configs: See .codex/, .github/, configs/, config/
+- Historical Baseline: This directory
+- Governance Trail: Tracked in git history
+
+Last Updated: 2026-06-30T15:00:27Z
+Archive Curator: Phase 3 Root Organizer Agent
