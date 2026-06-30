@@ -75,6 +75,9 @@ from pathlib import Path
 from typing import Optional
 from scripts.ci._token_resolver import get_token
 
+# Add parent directory to path for CI execution
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
 
 logger = logging.getLogger(__name__)
 
