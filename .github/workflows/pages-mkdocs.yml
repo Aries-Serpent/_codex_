@@ -1,5 +1,5 @@
 name: Deploy Pages (MkDocs)
-true:
+on:
   push:
     branches:
     - main
