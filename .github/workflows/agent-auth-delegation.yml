@@ -752,7 +752,7 @@ jobs:
       id: req8
       if: always()
       continue-on-error: true
-      run: "echo \"### REQ-8: Memory System Health Check\" >> \"$GITHUB_STEP_SUMMARY\"\
+      run: "echo \"### REQ-8: Memory System Health Check\" >> \"$GITHUB_STEP_SUMMARY\"  # pragma: allowlist secret\
         \n# Temporarily disable set -e so python3 non-zero exit (server unreachable)\
         \ is\n# captured in MEMORY_OK rather than hard-failing this soft gate.\nset\
         \ +e\necho \"aW1wb3J0IHVybGxpYi5yZXF1ZXN0LCBqc29uLCBzeXMKdHJ5OgogICAgd2l0aCB1cmxsaWIucmVxdWVzdC51cmxvcGVuKCJodHRwOi8vbG9jYWxob3N0Ojg3NjUvYXBpL21lbW9yeS9zdGF0ZSIsIHRpbWVvdXQ9MykgYXMgcjoKICAgICAgICBkID0ganNvbi5sb2FkcyhyLnJlYWQoKSkKICAgICAgICBzeXMuZXhpdCgwIGlmIGQuZ2V0KCJzdG1fY291bnQiLCAwKSA+PSAwIGVsc2UgMSkKZXhjZXB0IEV4Y2VwdGlvbjoKICAgIHN5cy5leGl0KDIpCg==\"\
@@ -772,7 +772,7 @@ jobs:
         \ verify SQLite schema migration\"\nfi\n"
     - name: 'REQ-9: Iterative self-review (5 passes)'
       if: always()
-      run: "echo \"### REQ-9: 5-Pass Self-Review\" >> \"$GITHUB_STEP_SUMMARY\"\nPASS_FAILURES=0\n\
+      run: "echo \"### REQ-9: 5-Pass Self-Review\" >> \"$GITHUB_STEP_SUMMARY\"  # pragma: allowlist secret\nPASS_FAILURES=0\n\
         # Pass 1: Python AST check on changed server file\nif python3 -c \"import\
         \ ast,sys; [ast.parse(open(f).read()) for f in ['cognitive_app/src/server/cli_api_server.py','scripts/ci/collect_telemetry.py']\
         \ if __import__('os').path.exists(f)]\" 2>/dev/null; then\n  echo \"Pass 1\

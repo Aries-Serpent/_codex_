@@ -59,6 +59,7 @@ encrypted = encrypt_secret(
 )
 # Returns: {"encrypted_value": "...", "key_id": "...", "key_type": "actions"}
 ```
+<!-- pragma: allowlist secret -->
 
 **Error Handling:**
 - Validates key size (32 bytes for Curve25519)

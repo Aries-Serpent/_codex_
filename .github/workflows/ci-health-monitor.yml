@@ -52,7 +52,7 @@ jobs:
         \ \\\n  --token \"$GITHUB_TOKEN\" || {\n    echo \"::warning::Telemetry collection\
         \ failed \u2014 check token permissions\"\n    echo '{\"summary\":{\"total_runs\"\
         :0,\"failed_runs\":0,\"failure_rate\":0},\"pattern_distribution\":{}}' > /tmp/telemetry_report.json\n\
-        \  }\n\n# Extract metrics via base64-encoded script.\n# NOTE: base64 encoding\
+        \  }\n\n# Extract metrics via base64-encoded script.  # pragma: allowlist secret\n# NOTE: base64 encoding\
         \ is required here because GitHub Actions YAML cannot\n# handle multi-line\
         \ python3 -c strings or << 'EOF' heredocs inside run: | blocks\n# (the <<\
         \ sequence is a YAML merge key at column 0; embedded quotes break parsing).\n\
