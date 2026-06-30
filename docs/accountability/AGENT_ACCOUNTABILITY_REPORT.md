@@ -6885,3 +6885,26 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+## Session 2026-06-29T23:56Z — Auth Test Timeout & SQLite Concurrency Fixes
+
+### Summary
+Fixed 3 auth test failures causing `Test Authentication Module (3.12.13)` CI check to fail:
+1. **test_security_edge_cases.py** — 9 fixtures creating `UserStore()` with default 600,000-iteration PBKDF2 hasher; 100-attempt exhaustion tests timed out. Fixed by using `PasswordHasher(iterations=1)` via `_FAST_HASHER` module-level constant.
+2. **test_user_model_supplement.py** — Bulk tests created 50+ users each requiring PBKDF2 hash, causing timeout. Fixed all `PasswordHasher()` calls to use `iterations=1`.
+3. **test_repositories_comprehensive.py::test_concurrent_access** — SQLite database locked error from concurrent threads each doing slow 600K-iteration hashing then writing simultaneously. Fixed with `PasswordHasher(iterations=1)` in threads plus added `timeout=30` to `sqlite3.connect()` in `sqlite_user_repository.py`.
+
+### Agents Used
+- @copilot (main agent) — investigation, root-cause analysis, and fixes
+
+### Files Changed
+- `tests/auth/test_security_edge_cases.py` — fast hasher in all 9 fixtures
+- `tests/auth/test_user_model_supplement.py` — fast hasher in all bulk/concurrent tests
+- `tests/auth/test_repositories_comprehensive.py` — fast hasher in concurrent thread
+- `src/codex/auth/sqlite_user_repository.py` — added `timeout=30` to SQLite connection
+
+### Compliance
+- REQ-4: This entry added ✅
+- REQ-5: CHANGELOG.md updated ✅
+
+---

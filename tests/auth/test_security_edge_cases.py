@@ -19,7 +19,11 @@ from codex.auth.exceptions import (
     InvalidCredentialsError,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 )
 from codex.auth.token_manager import TokenManager
+from codex.auth.user_model import PasswordHasher
 from codex.auth.user_store import UserStore
+
+# Use a minimal iteration count in tests so PBKDF2 hashing is fast.
+_FAST_HASHER = PasswordHasher(iterations=1)
 
 # ============================================================================
 # Injection Attack Prevention Tests
@@ -33,7 +37,7 @@ class TestInjectionPrevention:
     def auth_system(self):
         """Create auth system."""
         return Authenticator(
-            user_store=UserStore(),
+            user_store=UserStore(hasher=_FAST_HASHER),
             token_manager=TokenManager(secret_key="injection-test"),
         )
 
@@ -92,7 +96,7 @@ class TestCryptographicSecurity:
     def auth_system(self):
         """Create auth system."""
         return Authenticator(
-            user_store=UserStore(),
+            user_store=UserStore(hasher=_FAST_HASHER),
             token_manager=TokenManager(secret_key="crypto-test"),
         )
 
@@ -149,7 +153,7 @@ class TestTimingAttackPrevention:
     def auth_system(self):
         """Create auth system."""
         return Authenticator(
-            user_store=UserStore(),
+            user_store=UserStore(hasher=_FAST_HASHER),
             token_manager=TokenManager(secret_key="timing-test"),
         )
 
@@ -210,7 +214,7 @@ class TestResourceExhaustion:
     def auth_system(self):
         """Create auth system."""
         return Authenticator(
-            user_store=UserStore(),
+            user_store=UserStore(hasher=_FAST_HASHER),
             token_manager=TokenManager(secret_key="resource-test"),
         )
 
@@ -274,7 +278,7 @@ class TestBoundaryConditions:
     def auth_system(self):
         """Create auth system."""
         return Authenticator(
-            user_store=UserStore(),
+            user_store=UserStore(hasher=_FAST_HASHER),
             token_manager=TokenManager(secret_key="boundary-test"),
         )
 
@@ -335,7 +339,7 @@ class TestRaceConditions:
     def auth_system(self):
         """Create auth system."""
         return Authenticator(
-            user_store=UserStore(),
+            user_store=UserStore(hasher=_FAST_HASHER),
             token_manager=TokenManager(secret_key="race-test"),
         )
 
@@ -417,7 +421,7 @@ class TestPrivilegeEscalation:
     def auth_system(self):
         """Create auth system."""
         return Authenticator(
-            user_store=UserStore(),
+            user_store=UserStore(hasher=_FAST_HASHER),
             token_manager=TokenManager(secret_key="priv-test"),
         )
 
@@ -460,7 +464,7 @@ class TestSessionSecurity:
     def auth_system(self):
         """Create auth system."""
         return Authenticator(
-            user_store=UserStore(),
+            user_store=UserStore(hasher=_FAST_HASHER),
             token_manager=TokenManager(secret_key="session-test"),
         )
 
@@ -510,7 +514,7 @@ class TestDataIntegrity:
     def auth_system(self):
         """Create auth system."""
         return Authenticator(
-            user_store=UserStore(),
+            user_store=UserStore(hasher=_FAST_HASHER),
             token_manager=TokenManager(secret_key="integrity-test"),
         )
 

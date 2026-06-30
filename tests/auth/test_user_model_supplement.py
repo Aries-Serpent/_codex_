@@ -117,8 +117,8 @@ class TestPasswordHasherExtended:
     """Extended password hasher tests."""
 
     def test_hash_consistency_across_instances(self):
-        hasher1 = PasswordHasher()
-        hasher2 = PasswordHasher()
+        hasher1 = PasswordHasher(iterations=1)
+        hasher2 = PasswordHasher(iterations=1)
 
         password = "Str0ngPass!"
         hash1 = hasher1.hash_password(password)
@@ -132,25 +132,25 @@ class TestPasswordHasherExtended:
         assert hasher2.verify(password, hash2)
 
     def test_password_with_newlines(self):
-        hasher = PasswordHasher()
+        hasher = PasswordHasher(iterations=1)
         password = "Pass\n\nword123!"
         hashed = hasher.hash_password(password)
         assert hasher.verify(password, hashed)
 
     def test_password_with_tabs(self):
-        hasher = PasswordHasher()
+        hasher = PasswordHasher(iterations=1)
         password = "Pass\t\tword123!"
         hashed = hasher.hash_password(password)
         assert hasher.verify(password, hashed)
 
     def test_password_with_mixed_unicode(self):
-        hasher = PasswordHasher()
+        hasher = PasswordHasher(iterations=1)
         password = "Pässwörd123!中文"
         hashed = hasher.hash_password(password)
         assert hasher.verify(password, hashed)
 
     def test_similar_passwords_different_hashes(self):
-        hasher = PasswordHasher()
+        hasher = PasswordHasher(iterations=1)
         password1 = "Pass123!"
         password2 = "Pass124!"  # One character different
 
@@ -176,7 +176,7 @@ class TestRepositoryAdvanced:
         return InMemoryUserRepository()
 
     def test_bulk_create_users(self, repo):
-        hasher = PasswordHasher()
+        hasher = PasswordHasher(iterations=1)
         users = []
 
         for i in range(50):
@@ -192,7 +192,7 @@ class TestRepositoryAdvanced:
         assert repo.get_user_count() == 50, "Count must be greater than zero"
 
     def test_bulk_delete_users(self, repo):
-        hasher = PasswordHasher()
+        hasher = PasswordHasher(iterations=1)
         user_ids = []
 
         for i in range(10):
@@ -211,7 +211,7 @@ class TestRepositoryAdvanced:
         assert repo.get_user_count() == 0, "Count must be greater than zero"
 
     def test_bulk_update_emails(self, repo):
-        hasher = PasswordHasher()
+        hasher = PasswordHasher(iterations=1)
 
         for i in range(10):
             user = User(
@@ -238,7 +238,7 @@ class TestRepositoryAdvanced:
             assert user.email == f"updated{i}@example.com", "email is not valid"
 
     def test_search_by_partial_username(self, repo):
-        hasher = PasswordHasher()
+        hasher = PasswordHasher(iterations=1)
 
         users_data = [
             ("alice", "alice@example.com"),
@@ -261,7 +261,7 @@ class TestRepositoryAdvanced:
         assert alice.username == "alice", "username is not valid"
 
     def test_list_with_pagination(self, repo):
-        hasher = PasswordHasher()
+        hasher = PasswordHasher(iterations=1)
 
         for i in range(30):
             user = User(
@@ -277,7 +277,7 @@ class TestRepositoryAdvanced:
         assert len(users) == 30, "Users must not be empty"
 
     def test_filter_by_creation_date(self, repo):
-        hasher = PasswordHasher()
+        hasher = PasswordHasher(iterations=1)
 
         time.time()
 
@@ -309,7 +309,7 @@ class TestConcurrentRepositoryOperations:
     def test_concurrent_reads(self, repo):
         import threading
 
-        hasher = PasswordHasher()
+        hasher = PasswordHasher(iterations=1)
         user = User(
             user_id="concurrent_user",
             username="concurrent",
@@ -340,7 +340,7 @@ class TestConcurrentRepositoryOperations:
         import threading
 
         def mixed_ops():
-            hasher = PasswordHasher()
+            hasher = PasswordHasher(iterations=1)
             user_id = f"concurrent_{threading.current_thread().name}"
             user = User(
                 user_id=user_id,
@@ -373,7 +373,7 @@ class TestDataIntegrity:
         return InMemoryUserRepository()
 
     def test_no_data_loss_on_update(self, repo):
-        hasher = PasswordHasher()
+        hasher = PasswordHasher(iterations=1)
         original = User(
             user_id="user1",
             username="alice",
@@ -395,7 +395,7 @@ class TestDataIntegrity:
         assert retrieved.user_id == "user1", "user_id is not valid"
 
     def test_deletion_is_permanent(self, repo):
-        hasher = PasswordHasher()
+        hasher = PasswordHasher(iterations=1)
         user = User(
             user_id="temp_user",
             username="temp",
@@ -410,7 +410,7 @@ class TestDataIntegrity:
         assert result is None, "Deleted user should not be found"
 
     def test_unique_constraints_enforced(self, repo):
-        hasher = PasswordHasher()
+        hasher = PasswordHasher(iterations=1)
 
         user1 = User(
             user_id="user1",
@@ -445,7 +445,7 @@ class TestUserStateTransitions:
         return InMemoryUserRepository()
 
     def test_new_user_is_enabled(self, repo):
-        hasher = PasswordHasher()
+        hasher = PasswordHasher(iterations=1)
         user = User(
             user_id="new_user",
             username="newuser",
@@ -459,7 +459,7 @@ class TestUserStateTransitions:
         assert retrieved is not None, "retrieved must be initialized"
 
     def test_email_verification_workflow(self, repo):
-        hasher = PasswordHasher()
+        hasher = PasswordHasher(iterations=1)
         user = User(
             user_id="verify_user",
             username="verify",
@@ -473,7 +473,7 @@ class TestUserStateTransitions:
         assert retrieved.email == "verify@example.com", "email is not valid"
 
     def test_user_deactivation(self, repo):
-        hasher = PasswordHasher()
+        hasher = PasswordHasher(iterations=1)
         user = User(
             user_id="active_user",
             username="active",
@@ -504,7 +504,7 @@ class TestSpecialCases:
         return InMemoryUserRepository()
 
     def test_user_with_system_reserved_username(self, repo):
-        hasher = PasswordHasher()
+        hasher = PasswordHasher(iterations=1)
         reserved_names = ["admin", "root", "system", "guest"]
 
         for name in reserved_names:
@@ -521,7 +521,7 @@ class TestSpecialCases:
                 pass  # Rejection is acceptable
 
     def test_user_with_null_bytes_in_fields(self, repo):
-        hasher = PasswordHasher()
+        hasher = PasswordHasher(iterations=1)
 
         # Should handle or reject null bytes
         try:
@@ -536,7 +536,7 @@ class TestSpecialCases:
             pass  # Rejection is acceptable
 
     def test_user_email_with_plus_addressing(self, repo):
-        hasher = PasswordHasher()
+        hasher = PasswordHasher(iterations=1)
         user = User(
             user_id="user_plus",
             username="userplus",
@@ -549,7 +549,7 @@ class TestSpecialCases:
         assert retrieved.email == "user+test@example.com", "email is not valid"
 
     def test_user_with_international_domain(self, repo):
-        hasher = PasswordHasher()
+        hasher = PasswordHasher(iterations=1)
         user = User(
             user_id="user_intl",
             username="userintl",

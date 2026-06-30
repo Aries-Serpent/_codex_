@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Fixed (Auth test timeout and SQLite concurrency failures — Session 2026-06-29T23:56Z)
+- **3 auth test failures resolved:** Fixed timeout and SQLite locking issues
+  - **test_security_edge_cases.py:** All 9 `auth_system` fixtures now use `UserStore(hasher=PasswordHasher(iterations=1))` — eliminated PBKDF2 600K-iteration overhead so 100-attempt exhaustion tests complete in milliseconds
+  - **test_user_model_supplement.py:** All `PasswordHasher()` calls replaced with `PasswordHasher(iterations=1)` — fixed timeout in bulk-create (50 users) and concurrent tests
+  - **test_repositories_comprehensive.py::test_concurrent_access:** Uses `PasswordHasher(iterations=1)` in concurrent thread; previously each thread hashed at 600K iterations before writing, causing thread-starvation and SQLite lock contention
+  - **src/codex/auth/sqlite_user_repository.py:** Added `timeout=30` to `sqlite3.connect()` so concurrent writers wait up to 30 s for the lock rather than immediately raising `OperationalError: database is locked`
 ### Fixed (Auth CI — 142+ test failures resolved — Session 2026-06-29T23:13Z)
 - **All auth tests now passing (0 failures):** Comprehensive API mismatch fixes across 10+ test files
   - **test_oauth_manager_comprehensive.py:** Replaced all async/await + httpx.AsyncClient mocks with sync calls; switched to `requests.post` for exchange and `httpx.Client` context-manager mocking for refresh; fixed `test_invalid_config` to expect `ValueError`; fixed `test_authorization_flow_components` to not assert `code_challenge` in URL params (implementation generates it separately)

@@ -238,7 +238,7 @@ class TestSQLiteUserRepository:
 
         def create_user(username):
             repo = SQLiteUserRepository(db_path)
-            hasher = PasswordHasher()
+            hasher = PasswordHasher(iterations=1)
             user = User(
                 user_id=f"concurrent_{username}",
                 username=username,
