@@ -3195,7 +3195,6 @@ Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to 
 - `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — this entry
 
 **Session Recovery Documentation:**
-- Recovery Log: [.codex/SESSION_RECOVERY_LOG.md](../../.codex/SESSION_RECOVERY_LOG.md)
 - Recovery Workflow: [.github/workflows/session-recovery-handler.yml](../../.github/workflows/session-recovery-handler.yml)
 
 **Next Steps:**
@@ -4508,7 +4507,6 @@ Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to 
 - `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — this entry
 
 **Session Recovery Documentation:**
-- Recovery Log: [.codex/SESSION_RECOVERY_LOG.md](../../.codex/SESSION_RECOVERY_LOG.md)
 - Recovery Workflow: [.github/workflows/session-recovery-handler.yml](../../.github/workflows/session-recovery-handler.yml)
 
 **Next Steps:**

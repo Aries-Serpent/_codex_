@@ -59,7 +59,7 @@ jobs:
         # Fix (S145): previous version used chr(34)+\"key\"+chr(34) lookups which\
         \ embedded\n# literal quote characters into the dict key, so failed_runs/total_runs\
         \ always\n# returned 0 while failure_rate was computed correctly. Replaced\
-        \ with plain string keys.\nMETRICS=$(echo 'aW1wb3J0IGpzb24sc3lzCnRyeToKICAgIGQ9anNvbi5sb2FkKG9wZW4oJy90bXAvdGVsZW1ldHJ5X3JlcG9ydC5qc29uJykpCiAgICBzPWQuZ2V0KCdzdW1tYXJ5Jyx7fSkKICAgIHJhdGU9cy5nZXQoJ2ZhaWx1cmVfcmF0ZScsMCkKICAgIHByaW50KGYnRkFJTFVSRV9SQVRFPXtyYXRlKjEwMDouMWZ9JykKICAgIHByaW50KGYnRkFJTEVEX1JVTlM9e3MuZ2V0KCJmYWlsZWRfcnVucyIsMCl9JykKICAgIHByaW50KGYnVE9UQUxfUlVOUz17cy5nZXQoInRvdGFsX3J1bnMiLDApfScpCmV4Y2VwdCBFeGNlcHRpb246CiAgICBwcmludCgnRkFJTFVSRV9SQVRFPTAnKTtwcmludCgnRkFJTEVEX1JVTlM9MCcpO3ByaW50KCdUT1RBTF9SVU5TPTAnKQo='\
+        \ with plain string keys.\nMETRICS=$(echo 'aW1wb3J0IGpzb24sc3lzCnRyeToKICAgIGQ9anNvbi5sb2FkKG9wZW4oJy90bXAvdGVsZW1ldHJ5X3JlcG9ydC5qc29uJykpCiAgICBzPWQuZ2V0KCdzdW1tYXJ5Jyx7fSkKICAgIHJhdGU9cy5nZXQoJ2ZhaWx1cmVfcmF0ZScsMCkKICAgIHByaW50KGYnRkFJTFVSRV9SQVRFPXtyYXRlKjEwMDouMWZ9JykKICAgIHByaW50KGYnRkFJTEVEX1JVTlM9e3MuZ2V0KCJmYWlsZWRfcnVucyIsMCl9JykKICAgIHByaW50KGYnVE9UQUxfUlVOUz17cy5nZXQoInRvdGFsX3J1bnMiLDApfScpCmV4Y2VwdCBFeGNlcHRpb246CiAgICBwcmludCgnRkFJTFVSRV9SQVRFPTAnKTtwcmludCgnRkFJTEVEX1JVTlM9MCcpO3ByaW50KCdUT1RBTF9SVU5TPTAnKQo='\  # pragma: allowlist secret
         \ | base64 -d | python3) || METRICS='FAILURE_RATE=0\\nFAILED_RUNS=0\\nTOTAL_RUNS=0'\
         \  # pragma: allowlist secret\neval \"$(echo -e \"$METRICS\")\"\n\n\necho\
         \ \"failure_rate=${FAILURE_RATE}\" >> \"$GITHUB_OUTPUT\"\necho \"failed_runs=${FAILED_RUNS}\"\

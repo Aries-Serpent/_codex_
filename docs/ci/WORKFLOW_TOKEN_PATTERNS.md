@@ -403,4 +403,3 @@ When creating or updating a workflow with GitHub API calls:
 - [GitHub API Reference](https://docs.github.com/en/rest)
 - [GitHub CLI Manual](https://cli.github.com/manual)
 - [GitHub Actions Permissions](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token)
-- [Workflow Execution Checklist](WORKFLOW_EXECUTION_GATE.md)
