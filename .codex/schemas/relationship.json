@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codex.internal/schemas/relationship.json",
+  "title": "Relationship Record Schema",
+  "description": "Generic relationship type for modeling entity connections and dependencies",
+  "type": "object",
+  "required": ["id", "type", "entity_a_id", "entity_b_id", "relationship_type"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique relationship identifier (UUID v4)",
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "type": {
+      "type": "string",
+      "enum": ["relationship"],
+      "description": "Record type discriminator"
+    },
+    "entity_a_id": {
+      "type": "string",
+      "description": "ID of first entity",
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "entity_b_id": {
+      "type": "string",
+      "description": "ID of second entity",
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "relationship_type": {
+      "type": "string",
+      "enum": ["depends_on", "related_to", "extends", "conflicts_with", "similar_to", "supersedes", "precedes"],
+      "description": "Relationship type"
+    },
+    "strength": {
+      "type": "number",
+      "description": "Relationship strength (0=weak, 1=strong)",
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    "direction": {
+      "type": "string",
+      "enum": ["one_way", "two_way"],
+      "description": "Directionality of relationship"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional relationship metadata",
+      "additionalProperties": true
+    },
+    "notes": {
+      "type": ["string", "null"],
+      "description": "Free-form notes about the relationship"
+    },
+    "created_date": {
+      "type": "string",
+      "description": "When relationship was established (ISO 8601 timestamp)",
+      "format": "date-time"
+    },
+    "evidence": {
+      "type": "array",
+      "description": "References supporting this relationship",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "confidence": {
+      "type": "number",
+      "description": "Confidence level in this relationship",
+      "minimum": 0.0,
+      "maximum": 1.0
+    }
+  },
+  "additionalProperties": false
+}

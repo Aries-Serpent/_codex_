@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codex.internal/schemas/reference.json",
+  "title": "Reference Record Schema",
+  "description": "Tracks cross-document and cross-entity references",
+  "type": "object",
+  "required": ["id", "type", "source_id", "target_id", "relationship_type"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique reference identifier (UUID v4)",
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "type": {
+      "type": "string",
+      "enum": ["reference"],
+      "description": "Record type discriminator"
+    },
+    "source_id": {
+      "type": "string",
+      "description": "ID of the source entity",
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "target_id": {
+      "type": "string",
+      "description": "ID of the target entity being referenced",
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "relationship_type": {
+      "type": "string",
+      "enum": ["links_to", "extends", "implements", "references", "contradicts", "clarifies"],
+      "description": "Type of relationship"
+    },
+    "context": {
+      "type": ["string", "null"],
+      "description": "Brief context explaining the reference"
+    },
+    "is_external": {
+      "type": "boolean",
+      "description": "Whether target is external to this system",
+      "default": false
+    },
+    "external_url": {
+      "type": ["string", "null"],
+      "description": "URL if external reference",
+      "format": "uri"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional reference metadata",
+      "additionalProperties": true
+    },
+    "created_date": {
+      "type": "string",
+      "description": "When reference was established (ISO 8601 timestamp)",
+      "format": "date-time"
+    },
+    "last_validated": {
+      "type": ["string", "null"],
+      "description": "When reference was last validated (ISO 8601 timestamp)",
+      "format": "date-time"
+    },
+    "is_broken": {
+      "type": "boolean",
+      "description": "Whether reference is broken (404, etc.)",
+      "default": false
+    },
+    "anchor": {
+      "type": ["string", "null"],
+      "description": "Optional fragment anchor for the target",
+      "pattern": "^#[a-zA-Z0-9-]*$"
+    }
+  },
+  "additionalProperties": false
+}

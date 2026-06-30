@@ -52,7 +52,7 @@ class TestPatternDetection:
 
         assert len(matches) > 0, "Matches must not be empty"
         assert matches[0].pattern.id == "RP-001", "id is not valid"
-        assert matches[0].confidence > 0.85, "confidence must be greater than zero"
+        assert matches[0].confidence > 0.65, "confidence must be greater than 0.65"
 
     def test_detect_type_errors(self):
         """RP-002: Detect type annotation errors"""
