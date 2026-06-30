@@ -1,0 +1,119 @@
+{
+  "analysis_timestamp": "2026-06-30T23:28:37.742582Z",
+  "report_type": "state-model-inconsistencies",
+  "total_inconsistencies": 3,
+  "critical_inconsistencies": 3,
+  "inconsistencies": [
+    {
+      "inconsistency_id": "SMI-001",
+      "state_type": "session_state",
+      "title": "Session State Format Plurality",
+      "representations": [
+        {
+          "format": "ContextFrame",
+          "location": "src/codex/agents/agent_memory.py",
+          "fields": [
+            "id",
+            "status",
+            "context",
+            "metadata",
+            "paused"
+          ],
+          "serializable": false
+        },
+        {
+          "format": "SessionState",
+          "location": "src/codex/logging/session_logger.py",
+          "fields": [
+            "session_id",
+            "timestamp",
+            "agent_id",
+            "messages",
+            "tools"
+          ],
+          "serializable": true
+        },
+        {
+          "format": "CheckpointRecord",
+          "location": "src/codex/brain/session_serializer.py",
+          "fields": [
+            "checkpoint_id",
+            "session_state",
+            "turn_index",
+            "snapshot"
+          ],
+          "serializable": true
+        }
+      ],
+      "issue": "Three formats exist, no canonical definition, bidirectional mapping incomplete",
+      "blocks_serialization": true,
+      "blocks_resumption": true
+    },
+    {
+      "inconsistency_id": "SMI-002",
+      "state_type": "memory_state",
+      "title": "Memory Format Mismatch (STM/LTM)",
+      "representations": [
+        {
+          "format": "STM (short-term)",
+          "location": "src/codex/cognitive/stm.py",
+          "schema": "[(token_id, embedding, recency_score)]",
+          "ephemeral": true
+        },
+        {
+          "format": "LTM (long-term)",
+          "location": "src/codex/cognitive/ltm.py",
+          "schema": "[(pattern_id, salience, frequency)]",
+          "ephemeral": false
+        },
+        {
+          "format": "Serialized Memory",
+          "location": ".codex/sessions/memory_checkpoint.json",
+          "schema": "{\"key\": \"value\"}",
+          "ephemeral": false
+        }
+      ],
+      "issue": "STM/LTM use different schemas, serialization loses ranking/recency information",
+      "blocks_serialization": true,
+      "blocks_resumption": true
+    },
+    {
+      "inconsistency_id": "SMI-003",
+      "state_type": "agent_execution_state",
+      "title": "Agent State Not Deterministically Serializable",
+      "representations": [
+        {
+          "format": "Runtime ExecutionState",
+          "location": "src/codex/brain/ooda_decider.py",
+          "fields": [
+            "current_decision",
+            "confidence",
+            "next_step",
+            "decision_context"
+          ],
+          "serializable": "Partial"
+        },
+        {
+          "format": "Persisted ExecutionCheckpoint",
+          "location": "src/codex/brain/session_serializer.py",
+          "fields": [
+            "turn_index",
+            "decision_made",
+            "evidence_snapshot"
+          ],
+          "serializable": "Full"
+        }
+      ],
+      "issue": "Runtime state loses decision_context on serialization, cannot deterministically resume",
+      "blocks_serialization": true,
+      "blocks_resumption": true
+    }
+  ],
+  "conclusion": {
+    "unified_state_model": false,
+    "formats_coexisting": 6,
+    "serialization_complete": false,
+    "deterministic_resumption": false,
+    "recommendation": "Define canonical state schema, enforce single representation"
+  }
+}

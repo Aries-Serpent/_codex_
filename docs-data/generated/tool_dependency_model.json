@@ -1,0 +1,85 @@
+{
+  "analysis_timestamp": "2026-06-30T23:28:37.742582Z",
+  "report_type": "tool-dependency-model",
+  "total_tools": 3,
+  "tools_with_gaps": 3,
+  "tools_with_circular_deps": 1,
+  "dependencies": [
+    {
+      "tool": "github_mcp_server",
+      "provides": [
+        "list_issues",
+        "get_commit",
+        "search_code"
+      ],
+      "depends_on": [
+        "GitHub API",
+        "authentication_token"
+      ],
+      "missing_capabilities": [
+        "Write variable values",
+        "Approve workflows",
+        "Dispatch workflows"
+      ],
+      "incomplete_chains": [
+        "Query result \u2192 state update (missing)",
+        "Query result \u2192 knowledge indexing (missing)"
+      ],
+      "circular_dependencies": null,
+      "severity": "HIGH"
+    },
+    {
+      "tool": "bash_executor",
+      "provides": [
+        "run_command",
+        "script_execution"
+      ],
+      "depends_on": [
+        "shell_access",
+        "working_directory"
+      ],
+      "missing_capabilities": [
+        "Async execution tracking",
+        "Partial output streaming",
+        "Signal handling"
+      ],
+      "incomplete_chains": [
+        "Execution result \u2192 audit logging (partial)",
+        "Execution error \u2192 recovery mechanism (missing)"
+      ],
+      "circular_dependencies": null,
+      "severity": "MEDIUM"
+    },
+    {
+      "tool": "RAG_indexer",
+      "provides": [
+        "semantic_search",
+        "retrieval"
+      ],
+      "depends_on": [
+        "document_collection",
+        "embedding_model"
+      ],
+      "missing_capabilities": [
+        "Incremental indexing",
+        "Delete from index",
+        "Update semantics"
+      ],
+      "incomplete_chains": [
+        "CI artifact \u2192 RAG indexing (missing)",
+        "Session conclusion \u2192 knowledge freeze (missing)"
+      ],
+      "circular_dependencies": [
+        "RAG depends on docs, docs depend on RAG output"
+      ],
+      "severity": "HIGH"
+    }
+  ],
+  "conclusion": {
+    "complete_tool_chains": false,
+    "circular_dependency_count": 1,
+    "missing_capabilities_count": 7,
+    "incomplete_integrations": 5,
+    "recommendation": "Complete tool contracts, resolve circular dependencies, implement missing integrations"
+  }
+}

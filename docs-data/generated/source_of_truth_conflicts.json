@@ -1,0 +1,86 @@
+{
+  "analysis_timestamp": "2026-06-30T23:28:37.742582Z",
+  "report_type": "source-of-truth-conflicts",
+  "total_conflicts": 4,
+  "critical_conflicts": 2,
+  "autonomy_blocking": 3,
+  "conflicts": [
+    {
+      "conflict_id": "SOT-001",
+      "title": "Session State Representation Conflict",
+      "sources_involved": [
+        "runtime:src/codex/session/",
+        "docs:",
+        "campaign:.codex/"
+      ],
+      "description": "Session state stored with multiple incompatible schemas: SessionState (Python), session_serializer (JSON), ContextFrame (memory). No canonical schema.",
+      "evidence": [
+        "src/codex/logging/session_logger.py has one state format",
+        "src/codex/brain/session_serializer.py has another",
+        "No unified session state contract exists"
+      ],
+      "authoritative_source": "UNKNOWN - conflict unresolved",
+      "risk_level": "CRITICAL",
+      "blocks_autonomy": true
+    },
+    {
+      "conflict_id": "SOT-002",
+      "title": "Agent Decision Authority Conflict",
+      "sources_involved": [
+        "runtime:src/codex/autonomy/",
+        "docs:docs/autonomy/",
+        "campaign:.codex/"
+      ],
+      "description": "OODA loop confidence thresholds documented as configurable (>0.70) but hardcoded in registry.py. Documentation claims threshold is tunable, code says it's fixed.",
+      "evidence": [
+        "docs/autonomy/confidence_model.md: 'threshold is configurable'",
+        "src/codex/autonomy/registry.py:237: min_confidence_threshold=0.70 (hardcoded)",
+        ".codex/AGENTIC_REPO_STATE.md: different threshold value"
+      ],
+      "authoritative_source": "Code (runtime) - docs are stale",
+      "risk_level": "HIGH",
+      "blocks_autonomy": true
+    },
+    {
+      "conflict_id": "SOT-003",
+      "title": "State Transition Semantics Divergence",
+      "sources_involved": [
+        "runtime:execution",
+        "docs:OODA_model",
+        "diagrams:Mermaid"
+      ],
+      "description": "OODA loop sequence documented as O\u2192O\u2192D\u2192A but runtime enforces O\u2192D\u2192A\u2192V\u2192P with optional handoff. Mermaid diagrams show different order.",
+      "evidence": [
+        ".codex/ooda_loop.md: sequential O\u2192O\u2192D\u2192A",
+        "src/codex/brain/ooda_decider.py: observe\u2192decide\u2192act\u2192validate\u2192persist",
+        "Mermaid diagrams in docs/: conflicting sequences"
+      ],
+      "authoritative_source": "AMBIGUOUS - both claim authority",
+      "risk_level": "CRITICAL",
+      "blocks_autonomy": true
+    },
+    {
+      "conflict_id": "SOT-004",
+      "title": "Tool Capability Truth Divergence",
+      "sources_involved": [
+        "runtime:github_mcp_server",
+        "docs:tool_reference",
+        "contract:copilot-tool-contract.json"
+      ],
+      "description": "GitHub MCP server capabilities documented as read-write but runtime implementation is read-only. Contract says write_capability=false.",
+      "evidence": [
+        "docs/tools/mcp_reference.md: 'full read-write support'",
+        "src/codex/tools/mcp_client.py: read-only implementation",
+        "docs-data/generated/copilot-tool-contract.json: write_capability=false"
+      ],
+      "authoritative_source": "Code - docs are aspirational",
+      "risk_level": "HIGH",
+      "blocks_autonomy": false
+    }
+  ],
+  "conclusion": {
+    "unified_source_exists": false,
+    "primary_issue": "Multiple subsystems claim authority without enforcement mechanism",
+    "recommendation": "Establish single source of truth (code is canonical, docs derive from code)"
+  }
+}
