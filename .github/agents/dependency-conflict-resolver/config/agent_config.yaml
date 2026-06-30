@@ -1,121 +1,84 @@
-agent_name: dependency-conflict-resolver
+agent_name: test-coverage-enforcer
 version: 1.0.0
 
+description: >
+  Enforces test coverage thresholds, identifies uncovered code paths, and automatically
+  generates missing tests to maintain quality standards.
+
 capabilities:
-  - dependency_graph_analysis
-  - conflict_detection
-  - version_resolution
-  - multi_ecosystem_support
-  - vulnerability_integration
-  - circular_dependency_detection
-  - semantic_versioning
-  - resolution_strategies
+  - coverage_tracking
+  - threshold_enforcement
+  - test_generation
+  - trend_analysis
 
-supported_ecosystems:
-  - python
-  - javascript
-  - rust
-  - go
+# Coverage thresholds (percentage)
+thresholds:
+  line: 80          # Minimum line coverage required
+  branch: 70        # Minimum branch coverage required
+  function: 85      # Minimum function coverage required
 
-resolution_strategies:
-  default: conservative
-  options:
-    - conservative  # Minimal changes, prefer lower stable versions
-    - balanced      # Balance security, stability, and features
-    - aggressive    # Latest compatible versions
+# Test generation settings
+auto_generate_tests: false      # Automatically generate test templates for uncovered code
+fail_build_below_threshold: true  # Fail CI/CD builds when coverage is below threshold
 
-conflict_detection:
-  check_transitive: true
-  max_depth: 10
-  ignore_dev_dependencies: false
-  detect_circular: true
+# Reporting options
+reporting:
+  formats:
+    - text
+    - json
+    - html
+  output_directory: .coverage_reports
+  include_trends: true
 
-vulnerability_integration:
-  enabled: true
-  fail_on_high_severity: true
-  fail_on_critical_severity: true
-  check_transitive_vulnerabilities: true
-
-semantic_versioning:
-  strict_mode: false
-  allow_pre_releases: false
-  prefer_stable: true
-
-graph_analysis:
-  max_nodes: 10000
-  detect_cycles: true
-  calculate_depth: true
-  identify_critical_paths: true
-
-resolution_preferences:
-  prefer_locked_versions: true
-  update_only_necessary: true
-  batch_updates: false
-  create_backup: true
-
-output:
-  format: yaml
-  include_graph: true
-  include_plan: true
-  verbose: false
-
+# Cognitive Brain Integration
 cognitive_brain:
   enabled: true
   metrics:
-    - conflicts_detected
-    - conflicts_resolved
-    - ecosystems_analyzed
-    - resolution_strategy_success_rate
-    - vulnerability_fixes
-    - circular_dependencies_found
+    - coverage_percentage     # Overall coverage percentage
+    - gap_count              # Number of coverage gaps found
+    - tests_generated        # Number of test templates generated
+    - enforcement_actions    # Actions taken during enforcement
   reporting_interval: daily
   storage:
     type: sqlite
     path: .codex/sessions/agent_metrics.db
-  learning:
-    track_resolution_outcomes: true
-    adapt_strategy_selection: true
-    remember_project_preferences: true
+  alerts:
+    - type: coverage_drop
+      threshold: 5  # Alert if coverage drops by 5% or more
+    - type: critical_severity
+      immediate: true
 
+# File patterns to include/exclude
+patterns:
+  include:
+    - "src/**/*.py"
+    - "lib/**/*.py"
+  exclude:
+    - "**/__pycache__/**"
+    - "**/test_*.py"
+    - "**/*_test.py"
+    - "**/conftest.py"
+    - "**/.venv/**"
+    - "**/node_modules/**"
+
+# Priority calculation weights
+priority_weights:
+  coverage_level: 0.5    # Weight for current coverage level
+  function_complexity: 0.3  # Weight for function complexity
+  file_importance: 0.2   # Weight for file importance
+
+# Component reuse strategy (from test-coverage-monitor)
 component_reuse:
-  base: dependency-vulnerability-scanner
-  reuse_percentage: 60
+  base_agent: test-coverage-monitor
+  reuse_percentage: 80
   extensions:
-    - config-migration-assistant  # Version resolution logic
-    - semantic-search             # Dependency graph analysis
+    - test-alignment-fixer  # For auto-test generation
+    - integration-test-runner  # For enforcement workflows
 
-integration:
-  ci_cd:
-    github_actions: true
-    gitlab_ci: false
-    jenkins: false
-  package_managers:
-    python:
-      - pip
-      - poetry
-      - pipenv
-    javascript:
-      - npm
-      - yarn
-      - pnpm
-    rust:
-      - cargo
-    go:
-      - go_mod
-
-thresholds:
-  max_conflicts_to_auto_resolve: 10
-  min_confidence_for_auto_apply: 0.8
-  max_resolution_time_seconds: 300
-
-notifications:
-  on_conflict_detected: false
-  on_resolution_complete: true
-  on_high_risk_resolution: true
-  on_validation_failure: true
-
-logging:
-  level: INFO
-  format: json
-  include_timestamps: true
-  log_file: .codex/logs/dependency-conflict-resolver.log
+# Advanced settings
+advanced:
+  parallel_analysis: true
+  cache_coverage_data: true
+  cache_ttl_seconds: 3600
+  max_suggestions_per_file: 10
+  min_confidence_threshold: 0.8

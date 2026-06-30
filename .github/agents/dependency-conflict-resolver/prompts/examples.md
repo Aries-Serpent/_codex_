@@ -1,690 +1,638 @@
-# Dependency Conflict Resolver - Usage Examples
+# Dependency Conflict Resolver Agent - Usage Examples
 
-This document provides comprehensive examples of using the Dependency Conflict Resolver Agent across different scenarios and ecosystems.
+This document provides real-world scenarios and examples of using the Dependency Conflict Resolver Agent.
 
-## Example 1: Resolve Python Requirements Conflict
+## Table of Contents
 
-### Scenario
-Your Python project has conflicting version requirements for the `requests` library in `requirements.txt`.
-
-### Input File (requirements.txt)
-```
-# Web framework
-django==4.1.0
-djangorestframework>=3.14.0
-
-# HTTP client - version 1
-requests>=2.20.0
-beautifulsoup4>=4.11.0
-
-# Data processing
-pandas>=1.5.0
-numpy>=1.23.0
-
-# HTTP client - version 2 (conflict!)
-requests>=2.28.0
-
-# Testing
-pytest>=7.2.0
-pytest-cov>=4.0.0
-```
-
-### Detection
-
-```bash
-$ python src/agent.py detect --file requirements.txt
-```
-
-**Output:**
-```
-🔍 Dependency Conflict Resolver v1.0.0
-
-📦 Parsing Python dependencies from requirements.txt...
-   Found 10 dependencies
-
-🔨 Building dependency graph...
-   Graph: 10 nodes, 0 edges (no transitive dependencies provided)
-
-⚠️  Conflicts Detected: 1
-
-┌─────────────────────────────────────────────────────────────┐
-│ Conflict #1: requests                                        │
-├─────────────────────────────────────────────────────────────┤
-│ Type: DIRECT                                                 │
-│ Severity: Medium                                             │
-│                                                              │
-│ Conflicting Versions:                                        │
-│   • Line 8:  requests>=2.20.0                               │
-│   • Line 17: requests>=2.28.0                               │
-│                                                              │
-│ Description:                                                 │
-│   Multiple incompatible version constraints for 'requests'   │
-│                                                              │
-│ Suggested Resolution:                                        │
-│   Update to requests>=2.28.0 (satisfies both constraints)   │
-└─────────────────────────────────────────────────────────────┘
-
-Summary: 1 conflict detected, 0 circular dependencies
-```
-
-### Resolution
-
-```bash
-$ python src/agent.py resolve --strategy conservative --file requirements.txt
-```
-
-**Output:**
-```
-📋 Generating Resolution Plan (Conservative Strategy)...
-
-Resolution Plan
-═══════════════════════════════════════════════════════════
-
-Strategy: Conservative
-Conflicts to Resolve: 1
-Estimated Risk: Low
-
-Actions:
-────────────────────────────────────────────────────────────
-1. Update 'requests' version
-   Package: requests
-   From: Multiple constraints (>=2.20.0, >=2.28.0)
-   To: ==2.28.0
-   Reason: Minimum version satisfying all constraints
-   Risk: Low (minor version bump, backward compatible)
-   Security: ✅ No known vulnerabilities
-   Files:
-     • requirements.txt (line 8)
-     • requirements.txt (line 17)
-
-────────────────────────────────────────────────────────────
-
-💾 Resolution plan saved to: resolution-plan.yaml
-
-Next steps:
-  1. Review the plan above
-  2. Run 'python src/agent.py apply --plan resolution-plan.yaml' to apply
-  3. Run your tests to verify compatibility
-```
-
-### Application
-
-```bash
-$ python src/agent.py apply --plan resolution-plan.yaml
-```
-
-**Output:**
-```
-🔧 Applying Resolution Plan...
-
-✅ Updated requirements.txt (line 8): requests>=2.28.0
-✅ Removed duplicate at line 17
-
-✅ Resolution applied successfully!
-
-⚠️  Recommended: Run your test suite to verify compatibility
-   $ pytest tests/
-```
+1. [Example 1: PR Coverage Check](#example-1-pr-coverage-check)
+2. [Example 2: Pre-commit Enforcement](#example-2-pre-commit-enforcement)
+3. [Example 3: Auto-generate Missing Tests](#example-3-auto-generate-missing-tests)
+4. [Example 4: Coverage Compatibility Analysis](#example-4-coverage-trend-analysis)
+5. [Example 5: CI/CD Integration](#example-5-cicd-integration)
+6. [Example 6: HTML Report Generation](#example-6-html-report-generation)
 
 ---
 
-## Example 2: Fix npm Package Version Mismatch
+## Example 1: PR Coverage Check
 
-### Scenario
-A JavaScript project has conflicting dependencies between main and dev dependencies.
+**Scenario**: You want to check dependency conflict on every pull request and comment the results.
 
-### Input File (package.json)
-```json
-{
-  "name": "my-web-app",
-  "version": "1.0.0",
-  "dependencies": {
-    "express": "^4.17.1",
-    "lodash": "^4.17.19",
-    "axios": "^0.21.1",
-    "moment": "^2.29.1"
-  },
-  "devDependencies": {
-    "jest": "^27.0.0",
-    "eslint": "^8.0.0",
-    "axios": "^1.3.0"
-  }
-}
-```
+### Setup
 
-### Detection and Resolution
-
-```bash
-$ python src/agent.py detect --file package.json
-```
-
-**Output:**
-```
-🔍 Analyzing JavaScript dependencies from package.json...
-
-📦 Parsed dependencies:
-   • 4 production dependencies
-   • 3 development dependencies
-
-⚠️  Conflicts Detected: 1
-
-┌─────────────────────────────────────────────────────────────┐
-│ Conflict #1: axios                                           │
-├─────────────────────────────────────────────────────────────┤
-│ Type: DIRECT                                                 │
-│ Severity: High (major version difference)                    │
-│                                                              │
-│ Conflicting Versions:                                        │
-│   • dependencies: ^0.21.1 (v0.x)                            │
-│   • devDependencies: ^1.3.0 (v1.x)                          │
-│                                                              │
-│ Impact: Major version mismatch may cause API incompatibility │
-│                                                              │
-│ Suggested Resolution (Aggressive):                           │
-│   Update all to ^1.3.0 (latest stable)                      │
-│                                                              │
-│ Security Note: axios v0.21.1 has known vulnerabilities!      │
-│   CVE-2021-3749: SSRF vulnerability                         │
-│   Recommendation: Upgrade to v1.3.0+                         │
-└─────────────────────────────────────────────────────────────┘
-
-🛡️  Security Check: 1 vulnerability found
-```
-
-```bash
-$ python src/agent.py resolve --strategy aggressive --file package.json
-```
-
-**Resolution Applied:**
-```json
-{
-  "dependencies": {
-    "express": "^4.17.1",
-    "lodash": "^4.17.19",
-    "axios": "^1.3.0",
-    "moment": "^2.29.1"
-  },
-  "devDependencies": {
-    "jest": "^27.0.0",
-    "eslint": "^8.0.0",
-    "axios": "^1.3.0"
-  }
-}
-```
-
----
-
-## Example 3: Rust Cargo.toml Conflicts
-
-### Scenario
-A Rust project has conflicting feature requirements for `tokio`.
-
-### Input File (Cargo.toml)
-```toml
-[package]
-name = "my-rust-app"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-tokio = { version = "1.25", features = ["fs", "io-util"] }
-reqwest = { version = "0.11", features = ["json"] }
-serde = { version = "1.0", features = ["derive"] }
-
-[dev-dependencies]
-tokio = { version = "1.28", features = ["full"] }
-```
-
-### Detection
-
-```bash
-$ python src/agent.py detect --file Cargo.toml
-```
-
-**Output:**
-```
-🔍 Analyzing Rust dependencies from Cargo.toml...
-
-⚠️  Conflicts Detected: 1
-
-┌─────────────────────────────────────────────────────────────┐
-│ Conflict #1: tokio                                           │
-├─────────────────────────────────────────────────────────────┤
-│ Type: DIRECT (dependencies vs dev-dependencies)              │
-│ Severity: Medium                                             │
-│                                                              │
-│ Conflicting Versions:                                        │
-│   • [dependencies]: 1.25 with features ["fs", "io-util"]    │
-│   • [dev-dependencies]: 1.28 with features ["full"]         │
-│                                                              │
-│ Analysis:                                                    │
-│   Different versions between main and dev dependencies       │
-│                                                              │
-│ Suggested Resolution (Balanced):                             │
-│   Use tokio = "1.28" for both, merge features               │
-│   Production: ["fs", "io-util"]                             │
-│   Development: ["full"] (includes all features)              │
-└─────────────────────────────────────────────────────────────┘
-```
-
-### Resolution
-
-```bash
-$ python src/agent.py resolve --strategy balanced --file Cargo.toml
-```
-
-**Resolved Cargo.toml:**
-```toml
-[dependencies]
-tokio = { version = "1.28", features = ["fs", "io-util"] }
-reqwest = { version = "0.11", features = ["json"] }
-serde = { version = "1.0", features = ["derive"] }
-
-[dev-dependencies]
-tokio = { version = "1.28", features = ["full"] }
-```
-
----
-
-## Example 4: Multi-Ecosystem Project
-
-### Scenario
-A full-stack project with both Python (backend) and JavaScript (frontend) dependencies.
-
-### Project Structure
-```
-my-project/
-├── backend/
-│   └── requirements.txt
-├── frontend/
-│   └── package.json
-└── resolve-all.sh
-```
-
-### Script (resolve-all.sh)
-```bash
-#!/bin/bash
-
-echo "🔍 Checking all dependency files..."
-
-# Check Python backend
-echo "\n📦 Backend (Python):"
-python src/agent.py detect --file backend/requirements.txt
-
-# Check JavaScript frontend  
-echo "\n📦 Frontend (JavaScript):"
-python src/agent.py detect --file frontend/package.json
-
-# Generate combined report
-echo "\n📊 Generating multi-ecosystem report..."
-python src/agent.py multi-report --files backend/requirements.txt,frontend/package.json
-```
-
-**Output:**
-```
-🔍 Multi-Ecosystem Analysis Report
-═══════════════════════════════════════════════════════════
-
-Ecosystems Analyzed: 2 (Python, JavaScript)
-Total Dependencies: 23
-  • Python: 12 dependencies
-  • JavaScript: 11 dependencies
-
-Conflicts Found: 0
-Circular Dependencies: 0
-Security Vulnerabilities: 1
-
-┌─────────────────────────────────────────────────────────────┐
-│ Security Alert: Frontend                                     │
-├─────────────────────────────────────────────────────────────┤
-│ Package: axios@0.21.1                                        │
-│ Vulnerability: CVE-2021-3749 (SSRF)                         │
-│ Severity: High                                               │
-│ Recommendation: Update to axios@1.3.0 or later              │
-└─────────────────────────────────────────────────────────────┘
-
-✅ Overall Health: Good (pending security update)
-```
-
----
-
-## Example 5: Security-Aware Resolution
-
-### Scenario
-Resolve conflicts while prioritizing security patches.
-
-### Command
-```bash
-$ python src/agent.py resolve \
-    --strategy balanced \
-    --file requirements.txt \
-    --prioritize-security \
-    --fail-on-high-severity
-```
-
-### Input
-```
-django==3.2.0
-requests>=2.20.0
-urllib3>=1.26.0
-```
-
-### Output
-```
-🛡️  Security-Aware Resolution (Balanced Strategy)
-
-Vulnerability Scan Results:
-───────────────────────────────────────────────────────────
-❌ django 3.2.0
-   CVE-2023-12345: SQL Injection vulnerability
-   Severity: High
-   Fixed in: 3.2.18
-
-⚠️  requests 2.20.0  
-   CVE-2022-67890: Certificate validation bypass
-   Severity: Medium
-   Fixed in: 2.27.1
-
-✅ urllib3 1.26.0
-   No known vulnerabilities
-
-Resolution Plan (Security Priority):
-───────────────────────────────────────────────────────────
-1. django: 3.2.0 → 3.2.18 (SECURITY PATCH)
-   Fixes: CVE-2023-12345 (High)
-
-2. requests: 2.20.0 → 2.27.1 (SECURITY PATCH)
-   Fixes: CVE-2022-67890 (Medium)
-
-3. urllib3: No changes needed
-
-Risk Assessment: Low (only security patches)
-Compatibility: High (patch versions maintain backward compatibility)
-
-Apply this resolution? [y/N]:
-```
-
----
-
-## Example 6: CI/CD Integration
-
-### GitHub Actions Workflow
+Create `.github/workflows/pr-coverage.yml`:
 
 ```yaml
-name: Dependency Conflict Check
+name: PR Coverage Check
 
 on:
   pull_request:
-    paths:
-      - '**/requirements.txt'
-      - '**/package.json'
-      - '**/Cargo.toml'
-      - '**/go.mod'
-  push:
     branches: [main, develop]
 
 jobs:
-  check-dependencies:
+  coverage:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      - name: Setup Python
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
-      - name: Resolve Dependency Conflicts
-        id: resolve
-        uses: ./.github/agents/dependency-conflict-resolver
+      - name: Install dependencies
+        run: |
+          pip install -e ".[dev,test]"
+
+      - name: Run tests with coverage
+        run: |
+          pytest --cov=src --cov-report=json:coverage.json
+
+      - name: Enforce version constraints
+        uses: ./.github/agents/test-coverage-enforcer
         with:
-          ecosystem: auto-detect
-          strategy: balanced
-          check-vulnerabilities: true
-          fail-on-conflicts: false
-          auto-apply: false
-
-      - name: Upload Resolution Plan
-        if: steps.resolve.outputs.conflicts-found != '0'
-        uses: actions/upload-artifact@v3
-        with:
-          name: resolution-plan
-          path: ${{ steps.resolve.outputs.resolution-plan }}
-
-      - name: Comment on PR
-        if: github.event_name == 'pull_request' && steps.resolve.outputs.conflicts-found != '0'
-        uses: actions/github-script@v6
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `## 🔍 Dependency Conflict Report
-
-              **Conflicts Found:** ${{ steps.resolve.outputs.conflicts-found }}
-              **Ecosystem:** ${{ steps.resolve.outputs.ecosystem-detected }}
-              **Strategy:** balanced
-
-              📋 Resolution plan available in artifacts.
-
-              To resolve conflicts:
-              1. Download the resolution plan artifact
-              2. Review the suggested changes
-              3. Run: \`python agent.py apply --plan resolution-plan.yaml\`
-              `
-            })
+          check-coverage: true
+          threshold: 80
+          fail-below-threshold: false  # Don't fail, just report
+          source-path: src
+          output-format: text
 ```
+
+### Expected Output
+
+**PR Comment:**
+```
+## ✅ dependency conflict Report
+
+**Status:** ✅ PASS
+**Current Coverage:** 85.5%
+**Threshold:** 80%
+
+<details>
+<summary>View Full Report</summary>
+
+Coverage by File:
+✓ src/module1.py: 95.0% line, 100.0% function
+✓ src/module2.py: 82.0% line, 90.0% function
+✗ src/module3.py: 65.0% line, 70.0% function
+
+</details>
+```
+
+### Key Takeaways
+
+- Sets `fail-below-threshold: false` to avoid blocking PRs
+- Provides visibility without strict enforcement
+- Generates automatic PR comments
+- Helps reviewers see coverage impact
 
 ---
 
-## Example 7: Pre-commit Hook Setup
+## Example 2: Pre-commit Enforcement
+
+**Scenario**: Enforce coverage locally before allowing commits using pre-commit hooks.
 
 ### Setup
 
-Create `.git/hooks/pre-commit`:
+Create `.pre-commit-config.yaml`:
+
+```yaml
+repos:
+  - repo: local
+    hooks:
+      - id: coverage-check
+        name: Check dependency conflict
+        entry: bash -c 'cd .github/agents/test-coverage-enforcer && python -m src.agent enforce --path src --threshold 75'
+        language: system
+        pass_filenames: false
+        always_run: true
+```
+
+### Local Usage
 
 ```bash
-#!/bin/bash
+# Install pre-commit
+pip install pre-commit
 
-echo "🔍 Checking for dependency conflicts..."
+# Install hooks
+pre-commit install
 
-# Find all dependency files
-PYTHON_FILES=$(find . -name "requirements*.txt" -not -path "./.venv/*")
-JS_FILES=$(find . -name "package.json" -not -path "./node_modules/*")
+# Now coverage is checked before every commit
+git commit -m "Add new feature"
+# → Runs coverage check
+# → Blocks commit if coverage < 75%
+```
 
-HAS_CONFLICTS=0
+### Expected Output
 
-# Check Python dependencies
-for file in $PYTHON_FILES; do
-    if [ -f "$file" ]; then
-        echo "Checking $file..."
-        python .github/agents/dependency-conflict-resolver/src/agent.py detect --file "$file" --quiet
-        if [ $? -ne 0 ]; then
-            HAS_CONFLICTS=1
-        fi
-    fi
-done
+**When coverage is good:**
+```bash
+Check dependency conflict...................Passed
+[main abc1234] Add new feature
+```
 
-# Check JavaScript dependencies
-for file in $JS_FILES; do
-    if [ -f "$file" ]; then
-        echo "Checking $file..."
-        python .github/agents/dependency-conflict-resolver/src/agent.py detect --file "$file" --quiet
-        if [ $? -ne 0 ]; then
-            HAS_CONFLICTS=1
-        fi
-    fi
-done
+**When coverage is low:**
+```bash
+Check dependency conflict...................Failed
+- Coverage 72.0% is below threshold 75%
+- Found 3 version conflicts
+```
 
-if [ $HAS_CONFLICTS -eq 1 ]; then
-    echo ""
-    echo "❌ Dependency conflicts detected!"
-    echo "   Run 'python agent.py detect --file <file>' for details"
-    echo "   Or use 'git commit --no-verify' to bypass this check"
-    exit 1
-fi
+### Key Takeaways
 
-echo "✅ No dependency conflicts detected"
-exit 0
+- Catches coverage issues before they reach CI/CD
+- Provides immediate feedback to developers
+- Can be bypassed with `--no-verify` if needed
+- Customizable threshold per project
+
+---
+
+## Example 3: Auto-generate Missing Tests
+
+**Scenario**: Automatically generate resolution strategys for uncovered functions.
+
+### Command
+
+```bash
+cd .github/agents/test-coverage-enforcer
+
+# Analyze and generate suggestions
+python -m src.agent generate-tests \
+  --path src/calculator.py \
+  --format text
+```
+
+### Input Code (src/calculator.py)
+
+```python
+def add(a, b):
+    """Add two numbers"""
+    return a + b
+
+def subtract(a, b):
+    """Subtract b from a"""
+    return a - b
+
+def multiply(a, b):
+    """Multiply two numbers"""
+    return a * b
+
+def divide(a, b):
+    """Divide a by b"""
+    if b == 0:
+        raise ValueError("Cannot divide by zero")
+    return a / b
+```
+
+### Expected Output
+
+```
+Generated 4 test suggestions:
+
+Priority 1: divide in src/calculator.py
+  Impact: +25.0% coverage
+  Test file: tests/test_calculator.py
+
+Priority 2: multiply in src/calculator.py
+  Impact: +20.0% coverage
+  Test file: tests/test_calculator.py
+
+Priority 3: subtract in src/calculator.py
+  Impact: +15.0% coverage
+  Test file: tests/test_calculator.py
+
+Priority 4: add in src/calculator.py
+  Impact: +15.0% coverage
+  Test file: tests/test_calculator.py
+```
+
+### Generated resolution strategy
+
+Create `tests/test_calculator.py`:
+
+```python
+def test_divide_basic():
+    """Test divide basic functionality"""
+    # TODO: Implement test for divide
+    # from calculator import divide
+    # result = divide(10, 2)
+    # assert result == 5
+    pass
+
+
+def test_divide_edge_cases():
+    """Test divide edge cases"""
+    # TODO: Test edge cases for divide
+    # Test division by zero
+    # from calculator import divide
+    # with pytest.raises(ValueError):
+    #     divide(10, 0)
+    pass
+```
+
+### Key Takeaways
+
+- Automatically identifies untested functions
+- Generates starter resolution strategys
+- Prioritizes based on impact and coverage
+- Templates require manual refinement
+
+---
+
+## Example 4: Coverage Compatibility Analysis
+
+**Scenario**: Track coverage changes over time to identify trends.
+
+### Setup
+
+Enable cognitive brain in config:
+
+```yaml
+# config/agent_config.yaml
+cognitive_brain:
+  enabled: true
+  metrics:
+    - coverage_percentage
+    - gap_count
+    - tests_generated
+  reporting_interval: per-iteration
+  storage:
+    type: sqlite
+    path: .codex/sessions/agent_metrics.db
 ```
 
 ### Usage
 
 ```bash
-# Make hook executable
-chmod +x .git/hooks/pre-commit
+# Run per-iteration coverage check
+python -m src.agent enforce --path src --threshold 80
 
-# Now conflicts are checked automatically on commit
-git add requirements.txt
-git commit -m "Update dependencies"
-
-# Output:
-🔍 Checking for dependency conflicts...
-Checking ./requirements.txt...
-❌ Dependency conflicts detected!
-   Run 'python agent.py detect --file requirements.txt' for details
+# Coverage data is automatically stored in SQLite DB
+# Accessible via cognitive brain queries
 ```
 
----
-
-## Example 8: Programmatic API Usage
-
-### Python Script
+### Query Historical Data
 
 ```python
-#!/usr/bin/env python3
-"""
-Custom dependency conflict resolution script
-"""
+import sqlite3
 
-from pathlib import Path
-from agent import (
-    DependencyConflictResolver,
-    ResolutionStrategy,
-    Ecosystem
-)
+# Connect to metrics database
+conn = sqlite3.connect('.codex/sessions/agent_metrics.db')
+cursor = conn.cursor()
 
-def main():
-    # Initialize resolver
-    resolver = DependencyConflictResolver(
-        config_path=Path('config/custom_config.yaml')
-    )
+# Query coverage trend
+cursor.execute("""
+    SELECT date, coverage_percentage, gap_count
+    FROM coverage_metrics
+    ORDER BY date DESC
+    LIMIT 30
+""")
 
-    # Parse dependencies
-    print("📦 Parsing dependencies...")
-    deps = resolver.parse_dependency_file(Path('requirements.txt'))
-    print(f"   Found {len(deps)} dependencies")
+results = cursor.fetchall()
+for date, coverage, gaps in results:
+    print(f"{date}: {coverage:.1f}% coverage, {gaps} gaps")
+```
 
-    # Build graph
-    print("🔨 Building dependency graph...")
-    graph = resolver.build_dependency_graph(deps)
-    print(f"   Graph: {len(graph)} nodes")
+### Expected Output
 
-    # Detect conflicts
-    print("🔍 Detecting conflicts...")
-    conflicts = resolver.detect_conflicts()
+```
+2026-01-23: 85.5% coverage, 2 gaps
+2026-01-23: 84.0% coverage, 3 gaps
+2026-01-23: 82.5% coverage, 4 gaps
+2026-01-23: 81.0% coverage, 5 gaps
+...
+```
 
-    if not conflicts:
-        print("✅ No conflicts detected!")
-        return 0
+### Visualization
 
-    print(f"⚠️  Found {len(conflicts)} conflicts:")
-    for i, conflict in enumerate(conflicts, 1):
-        print(f"   {i}. {conflict.package_name}: {conflict.description}")
+```python
+import matplotlib.pyplot as plt
 
-    # Check vulnerabilities
-    print("\n🛡️  Checking for vulnerabilities...")
-    vulns = resolver.check_vulnerabilities()
-    if vulns:
-        print(f"   ⚠️  {len(vulns)} vulnerable packages found")
+dates = [r[0] for r in results]
+coverage = [r[1] for r in results]
 
-    # Generate resolution plan
-    print("\n📋 Generating resolution plan...")
-    report = resolver.generate_resolution_plan()
-    plan = report.resolution_plan
+plt.plot(dates, coverage)
+plt.xlabel('Date')
+plt.ylabel('Coverage %')
+plt.title('Coverage Trend - Last 30 iterations')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.savefig('coverage_trend.png')
+```
 
-    print(f"   Strategy: {plan.strategy.value}")
-    print(f"   Actions: {len(plan.actions)}")
-    print(f"   Risk: {plan.estimated_risk}")
+### Key Takeaways
 
-    # Prompt for confirmation
-    if plan.requires_manual_review:
-        print("\n⚠️  Manual review required for some conflicts")
-        return 1
+- Tracks coverage changes over time
+- Identifies upward or downward trends
+- Helps measure improvement efforts
+- Stored in SQLite for easy querying
 
-    response = input("\n Apply resolution? [y/N]: ")
-    if response.lower() != 'y':
-        print("Aborted.")
-        return 1
+---
 
-    # Apply resolution
-    print("\n🔧 Applying resolution...")
-    success = resolver.apply_resolution(plan)
+## Example 5: CI/CD Integration
 
-    if not success:
-        print("❌ Failed to apply resolution")
-        return 1
+**Scenario**: Integrate coverage enforcement into a complete CI/CD pipeline.
 
-    # Validate
-    print("✔️  Validating...")
-    valid, errors = resolver.validate_resolution()
+### Full Pipeline Workflow
 
-    if valid:
-        print("✅ Resolution applied successfully!")
-        print("\n⚠️  Remember to:")
-        print("   1. Review the changes")
-        print("   2. Run your test suite")
-        print("   3. Commit the updated dependency files")
-        return 0
-    else:
-        print("❌ Validation failed:")
-        for error in errors:
-            print(f"   - {error}")
-        return 1
+```yaml
+name: Complete CI/CD Pipeline
 
-if __name__ == '__main__':
-    exit(main())
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -e ".[dev,test]"
+
+      - name: Run linters
+        run: |
+          ruff check src/
+          black --check src/
+          isort --check src/
+
+      - name: Run tests
+        run: |
+          pytest tests/ -v --tb=short
+
+      - name: Enforce coverage
+        uses: ./.github/agents/test-coverage-enforcer
+        id: coverage
+        with:
+          check-coverage: true
+          threshold: 80
+          fail-below-threshold: true
+          auto-generate: true
+          source-path: src
+          output-format: json
+          output-file: coverage-report.json
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: coverage-report.json
+
+      - name: Notify on failure
+        if: steps.coverage.outputs.passed == 'false'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const coverage = '${{ steps.coverage.outputs.coverage-percentage }}';
+            const threshold = '80';
+
+            core.setFailed(`Coverage ${coverage}% is below threshold ${threshold}%`);
+
+      - name: Deploy
+        if: github.ref == 'refs/heads/main' && steps.coverage.outputs.passed == 'true'
+        run: |
+          echo "Deploying application..."
+          # Deployment commands here
+```
+
+### Pipeline Flow
+
+```
+┌─────────────┐
+│  Checkout   │
+└──────┬──────┘
+       │
+┌──────▼──────┐
+│ Setup Python│
+└──────┬──────┘
+       │
+┌──────▼──────┐
+│   Install   │
+│Dependencies │
+└──────┬──────┘
+       │
+┌──────▼──────┐
+│ Run Linters │
+└──────┬──────┘
+       │
+┌──────▼──────┐
+│  Run Tests  │
+└──────┬──────┘
+       │
+┌──────▼──────┐
+│   Enforce   │
+│  Coverage   │ ← Dependency Conflict Resolver
+└──────┬──────┘
+       │
+    ┌──▼──┐
+    │Pass?│
+    └─┬─┬─┘
+  Yes │ │ No
+      │ └────► Fail Build
+      │
+┌─────▼─────┐
+│   Deploy  │
+└───────────┘
+```
+
+### Key Takeaways
+
+- Coverage enforcement is a gate before deployment
+- Automatic version resolution on failure
+- Reports uploaded as artifacts
+- Clear failure notifications
+
+---
+
+## Example 6: HTML Report Generation
+
+**Scenario**: Generate a visual HTML coverage report for team review.
+
+### Command
+
+```bash
+cd .github/agents/test-coverage-enforcer
+
+python -m src.agent report \
+  --path src \
+  --format html \
+  --output coverage_report.html
+```
+
+### Generated HTML Report
+
+The agent generates a styled HTML report:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Coverage Enforcement Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #333; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #4CAF50; color: white; }
+        .pass { color: green; }
+        .fail { color: red; }
+    </style>
+</head>
+<body>
+    <h1>dependency conflict resolution Report</h1>
+    <p><strong>Total files:</strong> 5</p>
+    <p><strong>Issues found:</strong> 2</p>
+
+    <h2>Coverage by File</h2>
+    <table>
+        <tr>
+            <th>File</th>
+            <th>compatibility score</th>
+            <th>resolution confidence</th>
+            <th>Status</th>
+        </tr>
+        <tr>
+            <td>src/module1.py</td>
+            <td>95.0%</td>
+            <td>100.0%</td>
+            <td class="pass">PASS</td>
+        </tr>
+        ...
+    </table>
+</body>
+</html>
+```
+
+### Usage in CI/CD
+
+```yaml
+- name: Generate HTML report
+  run: |
+    cd .github/agents/test-coverage-enforcer
+    python -m src.agent report \
+      --path src \
+      --format html \
+      --output coverage_report.html
+
+- name: Upload HTML report
+  uses: actions/upload-artifact@v3
+  with:
+    name: html-coverage-report
+    path: .github/agents/test-coverage-enforcer/coverage_report.html
+
+- name: Publish to GitHub Pages
+  uses: peaceiris/actions-gh-pages@v3
+  with:
+    github_token: ${{ secrets.GITHUB_TOKEN }}
+    publish_dir: .github/agents/test-coverage-enforcer
+    destination_dir: coverage
+```
+
+### Access Report
+
+```
+https://your-org.github.io/your-repo/coverage/coverage_report.html
+```
+
+### Key Takeaways
+
+- Visual, interactive HTML reports
+- Can be published to GitHub Pages
+- Easy to share with non-technical stakeholders
+- Color-coded status indicators
+
+---
+
+## Quick Reference
+
+### Common Commands
+
+```bash
+# Basic analysis
+python -m src.agent analyze --path src/
+
+# Enforce with custom threshold
+python -m src.agent enforce --path src/ --threshold 85
+
+# Generate test suggestions
+python -m src.agent generate-tests --path src/
+
+# Create JSON report
+python -m src.agent report --path src/ --format json --output report.json
+
+# Create HTML report
+python -m src.agent report --path src/ --format html --output report.html
+```
+
+### Configuration Tips
+
+```yaml
+# Strict enforcement for production
+thresholds:
+  line: 90
+  branch: 85
+  function: 95
+fail_build_below_threshold: true
+
+# Lenient for development
+thresholds:
+  line: 70
+  branch: 60
+  function: 75
+fail_build_below_threshold: false
+auto_generate_tests: true
+```
+
+### Troubleshooting
+
+**Issue**: "No coverage data available"
+```bash
+# Run tests with coverage first
+pytest --cov=src --cov-report=json:coverage.json
+# Then run enforcement
+python -m src.agent enforce --path src/
+```
+
+**Issue**: "ModuleNotFoundError"
+```bash
+# Add agent to PYTHONPATH
+export PYTHONPATH="${PWD}/.github/agents/test-coverage-enforcer:${PYTHONPATH}"
+```
+
+**Issue**: Too many suggestions generated
+```yaml
+# In config/agent_config.yaml
+advanced:
+  max_suggestions_per_file: 5
+  min_confidence_threshold: 0.9
 ```
 
 ---
 
-## Quick Reference Commands
-
-```bash
-# Detect conflicts
-python agent.py detect --file <dependency-file>
-
-# Resolve with strategy
-python agent.py resolve --strategy <conservative|balanced|aggressive> --file <file>
-
-# Visualize graph
-python agent.py visualize --file <file> --output graph.txt
-
-# Apply resolution plan
-python agent.py apply --plan resolution-plan.yaml
-
-# Validate after resolution
-python agent.py validate --file <file>
-
-# Generate report
-python agent.py report --file <file> --format <json|yaml|text>
-```
-
-These examples demonstrate the agent's capabilities across various scenarios and ecosystems. Adapt them to your specific use case!
+**For more examples, see:**
+- [Advanced Patterns](advanced.md)
+- [Main Prompts](main.md)
+- [README](../README.md)
 
 ---
 
 ## 🎯 Mission Overview
 
-**Agent Name**: Dependency Conflict Resolver - Usage Examples  
+**Agent Name**: Dependency Conflict Resolver Agent - Usage Examples  
 **Agent Type**: Specialized Domain  
 **Energy Level**: 3/5  
 **Operational Status**: ✅ Active
 
 ### Purpose
-This agent provides specialized functionality for dependency conflict resolver - usage examples operations within the Codex ecosystem.
+This agent provides specialized functionality for Dependency Conflict Resolver agent - usage examples operations within the Codex ecosystem.
 
 ### Core Capabilities
 - Automated execution and validation
@@ -890,7 +838,7 @@ Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporti
 ### Basic Invocation
 
 ```yaml
-agent_type: dependency-conflict-resolver---usage-examples
+agent_type: test-coverage-enforcer-agent---usage-examples
 prompt: |
   Execute standard operation with default parameters
   Target: <target>
@@ -900,7 +848,7 @@ prompt: |
 ### Advanced Usage
 
 ```yaml
-agent_type: dependency-conflict-resolver---usage-examples
+agent_type: test-coverage-enforcer-agent---usage-examples
 prompt: |
   Execute with custom configuration:
   - Parameter 1: value1
@@ -972,16 +920,16 @@ graph LR
 
 ```bash
 # Via task tool
-task agent_type="dependency-conflict-resolver---usage-examples" description="<description>" prompt="<prompt>"
+task agent_type="test-coverage-enforcer-agent---usage-examples" description="<description>" prompt="<prompt>"
 ```
 
 ### GitHub Actions Trigger
 
 ```yaml
-- name: Activate dependency-conflict-resolver---usage-examples
+- name: Activate test-coverage-enforcer-agent---usage-examples
   uses: ./.github/actions/agent-runner
   with:
-    agent: dependency-conflict-resolver---usage-examples
+    agent: test-coverage-enforcer-agent---usage-examples
     parameters: |
       target: ${{ github.workspace }}
       mode: full
@@ -993,10 +941,39 @@ task agent_type="dependency-conflict-resolver---usage-examples" description="<de
 from agent_framework import invoke_agent
 
 result = invoke_agent(
-    agent_type="dependency-conflict-resolver---usage-examples",
+    agent_type="test-coverage-enforcer-agent---usage-examples",
     prompt="Execute operation",
     context={"target": "path/to/target"}
 )
+```
+
+**Last Updated**: 2026-01-23T19:45:00Z
+
+
+
+## 📦 Tool Dependencies
+
+### Required Tools
+
+| Tool | Version | Purpose | Installation |
+|------|---------|---------|--------------|
+| Python | ≥3.11 | Runtime | Pre-installed |
+| Git | ≥2.40 | Version control | Pre-installed |
+| bash | ≥5.0 | Shell execution | Pre-installed |
+
+### Optional Tools
+
+| Tool | Version | Purpose | Notes |
+|------|---------|---------|-------|
+| jq | ≥1.6 | JSON processing | For JSON output |
+| yq | ≥4.0 | YAML processing | For YAML configs |
+| curl | ≥7.0 | HTTP requests | For API calls |
+
+### Python Dependencies
+```python
+# requirements.txt
+pyyaml>=6.0
+requests>=2.31.0
 ```
 
 **Last Updated**: 2026-01-23T19:45:00Z
@@ -1054,6 +1031,75 @@ result = invoke_agent(
 2026-01-23T19:45:00Z [INFO] Processing item 1/10
 2026-01-23T19:45:00Z [WARN] Minor issue detected
 2026-01-23T19:45:00Z [INFO] Execution completed
+```
+
+**Last Updated**: 2026-01-23T19:45:00Z
+
+
+
+## ⚠️ Error Handling
+
+### Common Failure Modes
+
+#### 1. Input Validation Failure
+**Symptoms**: Agent rejects input parameters  
+**Recovery**:
+- Validate input format
+- Check required fields
+- Verify value ranges
+- Review examples
+
+#### 2. Resource Access Failure
+**Symptoms**: Cannot access required resources  
+**Recovery**:
+- Check permissions
+- Verify paths exist
+- Confirm network connectivity
+- Review authentication
+
+#### 3. Execution Timeout
+**Symptoms**: Operation exceeds time limit  
+**Recovery**:
+- Reduce scope of operation
+- Check for blocking operations
+- Review performance bottlenecks
+- Consider batch processing
+
+#### 4. Dependency Failure
+**Symptoms**: Required tool or service unavailable  
+**Recovery**:
+- Verify tool installation
+- Check service status
+- Review dependency versions
+- Use fallback mechanisms
+
+### Error Categories
+
+| Category | Severity | Auto-Retry | Escalation |
+|----------|----------|------------|------------|
+| Transient | Low | ✅ Yes (3x) | After retries |
+| Configuration | Medium | ❌ No | Immediate |
+| Permission | High | ❌ No | Immediate |
+| System | Critical | ⚠️ Once | Immediate |
+
+### Recovery Patterns
+
+**Pattern 1: Graceful Degradation**
+```python
+try:
+    full_operation()
+except NonCriticalError:
+    limited_operation()
+    log_warning()
+```
+
+**Pattern 2: Checkpoint Resume**
+```python
+checkpoint = load_checkpoint()
+if checkpoint:
+    resume_from(checkpoint)
+else:
+    start_fresh()
 ```
 
 **Last Updated**: 2026-01-23T19:45:00Z

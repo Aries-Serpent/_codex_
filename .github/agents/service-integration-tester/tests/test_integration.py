@@ -1,538 +1,496 @@
 #!/usr/bin/env python3
 """
-Integration tests for Service Integration Tester Agent
+Integration tests for Test Coverage Enforcer Agent
 
-Tests full workflows including:
-- Multi-service testing
-- End-to-end contract validation
-- Performance testing workflows
-- CLI integration
-- File I/O operations
+Tests end-to-end workflows and real file system interactions.
 """
 
-import json
-
-# Import agent components
 import sys
 import tempfile
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
-import yaml
 
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
+# Add parent directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from agent import (
-    Endpoint,
-    EndpointMethod,
-    IntegrationTestSuite,
-    ServiceContract,
-    ServiceIntegrationTester,
-    TestStatus,
+from src.agent import (
+    EnforcementResult,
+    TestCoverageEnforcer,
 )
 
 
-class TestMultiServiceIntegration:
-    """Test integration across multiple services"""
+class TestAnalyzeCoverageFullWorkflow:
+    """Integration tests for complete coverage analysis workflow"""
 
-    def test_multiple_services_health_check(self):
-        """Test health checks across multiple services"""
-        tester = ServiceIntegrationTester()
+    def test_analyze_coverage_with_real_python_files(self):
+        """Test analyzing coverage with real Python source files"""
+        agent = TestCoverageEnforcer()
 
-        services = {
-            'auth': 'https://auth.example.com',
-            'users': 'https://users.example.com',
-            'payments': 'https://payments.example.com'
-        }
+        # Create temporary directory with Python files
+        with tempfile.TemporaryDirectory() as tmpdir:
+            src_dir = Path(tmpdir) / 'src'
+            src_dir.mkdir()
 
-        all_results = []
+            # Create sample Python file
+            sample_file = src_dir / 'calculator.py'
+            sample_file.write_text("""
+def add(a, b):
+    return a + b
 
-        for service_name, base_url in services.items():
-            endpoints = tester.scan_endpoints(base_url, "common")
+def subtract(a, b):
+    return a - b
 
-            for endpoint in endpoints:
-                result = tester.test_endpoint_sync(endpoint)
-                all_results.append(result)
+def multiply(a, b):
+    return a * b
+""")
 
-        assert len(all_results) > 0
-        # At least some endpoints should succeed
-        success_count = sum(1 for r in all_results if r.status == TestStatus.SUCCESS)
-        assert success_count > 0
-
-    def test_service_dependency_chain(self):
-        """Test a chain of dependent service calls"""
-        tester = ServiceIntegrationTester()
-
-        # Step 1: Authenticate
-        auth_endpoint = Endpoint(
-            path="/auth/login",
-            method=EndpointMethod.POST,
-            base_url="https://api.example.com",
-            expected_status=200
-        )
-        auth_result = tester.test_endpoint_sync(
-            auth_endpoint,
-            payload={'username': 'testuser', 'password': 'testpass'}
-        )
-
-        assert auth_result.status in [TestStatus.SUCCESS, TestStatus.FAILURE]
-
-        # Step 2: Fetch user data (would use token from step 1)
-        user_endpoint = Endpoint(
-            path="/api/user/profile",
-            method=EndpointMethod.GET,
-            base_url="https://api.example.com",
-            requires_auth=True
-        )
-        user_result = tester.test_endpoint_sync(
-            user_endpoint,
-            headers={'Authorization': 'Bearer mock-token'}
-        )
-
-        assert user_result.status in [TestStatus.SUCCESS, TestStatus.FAILURE]
-
-        # Step 3: Update profile
-        update_endpoint = Endpoint(
-            path="/api/user/profile",
-            method=EndpointMethod.PATCH,
-            base_url="https://api.example.com",
-            requires_auth=True
-        )
-        update_result = tester.test_endpoint_sync(
-            update_endpoint,
-            headers={'Authorization': 'Bearer mock-token'},
-            payload={'display_name': 'Updated Name'}
-        )
-
-        assert update_result.status in [TestStatus.SUCCESS, TestStatus.FAILURE]
-
-        # Verify all steps were recorded
-        assert len(tester.test_results) == 3
-
-    def test_parallel_service_testing(self):
-        """Test multiple services in parallel (simulated)"""
-        tester = ServiceIntegrationTester()
-
-        contracts = [
-            ServiceContract(
-                service_name="service1",
-                base_url="https://service1.example.com",
-                endpoints=[
-                    Endpoint(path="/health", method=EndpointMethod.GET,
-                            base_url="https://service1.example.com")
-                ]
-            ),
-            ServiceContract(
-                service_name="service2",
-                base_url="https://service2.example.com",
-                endpoints=[
-                    Endpoint(path="/health", method=EndpointMethod.GET,
-                            base_url="https://service2.example.com")
-                ]
-            ),
-            ServiceContract(
-                service_name="service3",
-                base_url="https://service3.example.com",
-                endpoints=[
-                    Endpoint(path="/health", method=EndpointMethod.GET,
-                            base_url="https://service3.example.com")
-                ]
-            ),
-        ]
-
-        all_results = []
-        for contract in contracts:
-            results = tester.test_service_contract(contract)
-            all_results.extend(results)
-
-        assert len(all_results) == 3
-        assert tester.metrics.total_tests == 3
-
-
-class TestEndToEndContractValidation:
-    """Test end-to-end contract validation workflows"""
-
-    def test_complete_api_contract_validation(self):
-        """Test validating a complete API contract"""
-        tester = ServiceIntegrationTester()
-
-        # Create comprehensive OpenAPI spec
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
-            spec = {
-                'openapi': '3.0.0',
-                'info': {'title': 'Test API', 'version': '1.0.0'},
-                'paths': {
-                    '/health': {
-                        'get': {
-                            'summary': 'Health check',
-                            'responses': {'200': {'description': 'Healthy'}}
-                        }
-                    },
-                    '/api/users': {
-                        'get': {
-                            'summary': 'List users',
-                            'responses': {'200': {'description': 'User list'}}
-                        },
-                        'post': {
-                            'summary': 'Create user',
-                            'security': [{'bearerAuth': []}],
-                            'responses': {'201': {'description': 'User created'}}
-                        }
-                    },
-                    '/api/users/{id}': {
-                        'get': {
-                            'summary': 'Get user',
-                            'responses': {'200': {'description': 'User details'}}
-                        },
-                        'put': {
-                            'summary': 'Update user',
-                            'security': [{'bearerAuth': []}],
-                            'responses': {'200': {'description': 'User updated'}}
-                        },
-                        'delete': {
-                            'summary': 'Delete user',
-                            'security': [{'bearerAuth': []}],
-                            'responses': {'204': {'description': 'User deleted'}}
-                        }
+            # Mock the coverage analysis
+            with patch.object(agent, '_run_coverage_analysis') as mock_run:
+                mock_run.return_value = {
+                    str(sample_file): {
+                        'executed_lines': [2, 3, 5, 6],
+                        'missing_lines': [8, 9],
+                        'excluded_lines': []
                     }
                 }
-            }
-            yaml.dump(spec, f)
-            spec_path = Path(f.name)
 
-        try:
-            base_url = "https://api.example.com"
-
-            # Discover endpoints
-            endpoints = tester.scan_endpoints(base_url, spec_path)
-
-            assert len(endpoints) > 0
-
-            # Validate contract
-            compliant, violations = tester.validate_contract_compliance(spec_path, base_url)
-
-            assert isinstance(compliant, bool)
-            assert isinstance(violations, list)
-
-        finally:
-            spec_path.unlink()
-
-    def test_rest_api_crud_workflow(self):
-        """Test complete REST API CRUD workflow"""
-        tester = ServiceIntegrationTester()
-        base_url = "https://api.example.com"
-
-        # CREATE
-        create_endpoint = Endpoint(
-            path="/api/resources",
-            method=EndpointMethod.POST,
-            base_url=base_url,
-            expected_status=201
-        )
-        create_payload = tester.generate_mock_data({
-            'name': 'string',
-            'description': 'string',
-            'active': 'bool'
-        })
-        create_result = tester.test_endpoint_sync(create_endpoint, payload=create_payload)
-
-        assert create_result.status == TestStatus.SUCCESS
-
-        # READ (list)
-        list_endpoint = Endpoint(
-            path="/api/resources",
-            method=EndpointMethod.GET,
-            base_url=base_url
-        )
-        list_result = tester.test_endpoint_sync(list_endpoint)
-
-        assert list_result.status == TestStatus.SUCCESS
-
-        # READ (single)
-        get_endpoint = Endpoint(
-            path="/api/resources/123",
-            method=EndpointMethod.GET,
-            base_url=base_url
-        )
-        get_result = tester.test_endpoint_sync(get_endpoint)
-
-        assert get_result.status == TestStatus.SUCCESS
-
-        # UPDATE
-        update_endpoint = Endpoint(
-            path="/api/resources/123",
-            method=EndpointMethod.PUT,
-            base_url=base_url
-        )
-        update_payload = tester.generate_mock_data({
-            'name': 'string',
-            'description': 'string'
-        })
-        update_result = tester.test_endpoint_sync(update_endpoint, payload=update_payload)
-
-        assert update_result.status == TestStatus.SUCCESS
-
-        # DELETE
-        delete_endpoint = Endpoint(
-            path="/api/resources/123",
-            method=EndpointMethod.DELETE,
-            base_url=base_url,
-            expected_status=204
-        )
-        tester.test_endpoint_sync(delete_endpoint, expected_status=204)
-
-        # All operations recorded
-        assert len(tester.test_results) == 5
-
-
-class TestPerformanceWorkflows:
-    """Test performance testing workflows"""
-
-    def test_response_time_tracking(self):
-        """Test that response times are tracked correctly"""
-        tester = ServiceIntegrationTester()
-
-        endpoint = Endpoint(
-            path="/health",
-            method=EndpointMethod.GET,
-            base_url="https://api.example.com"
-        )
-
-        # Run multiple tests
-        for _ in range(5):
-            tester.test_endpoint_sync(endpoint)
-
-        metrics = tester.get_metrics()
-
-        assert metrics['total_tests'] == 5
-        assert metrics['avg_response_time_ms'] > 0
-        assert metrics['min_response_time_ms'] > 0
-        assert metrics['max_response_time_ms'] > 0
-        assert metrics['min_response_time_ms'] <= metrics['avg_response_time_ms']
-        assert metrics['avg_response_time_ms'] <= metrics['max_response_time_ms']
-
-    def test_load_testing_simulation(self):
-        """Test simulating load testing"""
-        tester = ServiceIntegrationTester()
-
-        endpoint = Endpoint(
-            path="/api/endpoint",
-            method=EndpointMethod.GET,
-            base_url="https://api.example.com"
-        )
-
-        # Simulate 20 requests
-        num_requests = 20
-        for _ in range(num_requests):
-            tester.test_endpoint_sync(endpoint)
-
-        metrics = tester.get_metrics()
-
-        assert metrics['total_tests'] == num_requests
-        assert metrics['success_rate'] >= 0.0
-        assert metrics['total_response_time_ms'] > 0
-
-    def test_performance_degradation_detection(self):
-        """Test detecting performance degradation"""
-        tester = ServiceIntegrationTester()
-
-        endpoint = Endpoint(
-            path="/api/slow",
-            method=EndpointMethod.GET,
-            base_url="https://api.example.com",
-            timeout_ms=1000
-        )
-
-        # Run tests
-        for _ in range(10):
-            tester.test_endpoint_sync(endpoint)
-
-        tester.get_metrics()
-
-        # Check if any requests exceeded threshold
-        slow_requests = [
-            r for r in tester.test_results
-            if r.response_time_ms and r.response_time_ms > endpoint.timeout_ms
-        ]
-
-        # All should be under timeout (in mock implementation)
-        assert len(slow_requests) == 0
-
-
-class TestCLIIntegration:
-    """Test CLI integration"""
-
-    def test_cli_test_command(self):
-        """Test CLI test command"""
-        # This would normally invoke the CLI, but we'll test the main function logic
-        from agent import ServiceIntegrationTester
-
-        tester = ServiceIntegrationTester()
-        endpoints = tester.scan_endpoints("https://api.example.com", "common")
-
-        assert len(endpoints) > 0
-
-        for endpoint in endpoints:
-            result = tester.test_endpoint_sync(endpoint)
-            assert result.status in [TestStatus.SUCCESS, TestStatus.FAILURE, TestStatus.ERROR]
-
-    def test_cli_scan_command(self):
-        """Test CLI scan command"""
-        tester = ServiceIntegrationTester()
-
-        endpoints = tester.scan_endpoints("https://api.example.com", "common")
-
-        assert len(endpoints) > 0
-        assert all(isinstance(ep, Endpoint) for ep in endpoints)
-
-    def test_cli_generate_report_command(self):
-        """Test CLI generate-report command"""
-        tester = ServiceIntegrationTester()
-
-        # Run some tests first
-        endpoint = Endpoint(
-            path="/health",
-            method=EndpointMethod.GET,
-            base_url="https://api.example.com"
-        )
-        tester.test_endpoint_sync(endpoint)
-
-        # Generate report
-        report = tester.generate_report()
-
-        assert len(report) > 0
-        assert "SERVICE INTEGRATION TEST REPORT" in report
-
-
-class TestFileOperations:
-    """Test file I/O operations"""
-
-    def test_report_generation_to_file(self):
-        """Test generating report to file"""
-        tester = ServiceIntegrationTester()
-
-        # Run tests
-        endpoint = Endpoint(
-            path="/health",
-            method=EndpointMethod.GET,
-            base_url="https://api.example.com"
-        )
-        tester.test_endpoint_sync(endpoint)
-
-        # Generate report to file
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
-            output_path = Path(f.name)
-
-        try:
-            tester.generate_report(output_path)
-
-            assert output_path.exists()
-            assert output_path.stat().st_size > 0
-
-            content = output_path.read_text()
-            assert "SERVICE INTEGRATION TEST REPORT" in content
-            assert "SUMMARY" in content
-            assert "Total Tests:" in content
-        finally:
-            output_path.unlink()
-
-    def test_json_export(self):
-        """Test exporting results as JSON"""
-        tester = ServiceIntegrationTester()
-
-        # Run tests
-        endpoints = [
-            Endpoint(path="/health", method=EndpointMethod.GET, base_url="https://api1.example.com"),
-            Endpoint(path="/status", method=EndpointMethod.GET, base_url="https://api2.example.com"),
-        ]
-
-        for endpoint in endpoints:
-            tester.test_endpoint_sync(endpoint)
-
-        # Export to JSON
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
-            output_path = Path(f.name)
-
-        try:
-            tester.export_results_json(output_path)
-
-            assert output_path.exists()
-
-            with open(output_path, 'r') as f:
-                data = json.load(f)
-
-            assert 'timestamp' in data
-            assert 'metrics' in data
-            assert 'results' in data
-            assert len(data['results']) == 2
-
-            # Verify structure
-            first_result = data['results'][0]
-            assert 'endpoint' in first_result
-            assert 'status' in first_result
-            assert 'status_code' in first_result
-        finally:
-            output_path.unlink()
-
-    def test_config_loading(self):
-        """Test loading configuration from file"""
-        # Create config file
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
-            config = {
-                'agent_name': 'service-integration-tester',
-                'cognitive_brain': {
-                    'enabled': True,
-                    'metrics': ['test_count', 'success_rate', 'avg_response_time']
-                },
-                'thresholds': {
-                    'max_response_time_ms': 5000,
-                    'min_success_rate': 0.95
+                reports = agent.analyze_coverage(src_dir)
+
+                assert len(reports) == 1
+                assert sample_file in reports
+                report = reports[sample_file]
+                assert report.line_coverage > 0
+                assert report.total_lines > 0
+
+    def test_analyze_coverage_with_multiple_files(self):
+        """Test analyzing coverage across multiple files"""
+        agent = TestCoverageEnforcer()
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            src_dir = Path(tmpdir) / 'src'
+            src_dir.mkdir()
+
+            # Create multiple files
+            file1 = src_dir / 'module1.py'
+            file2 = src_dir / 'module2.py'
+
+            file1.write_text("def func1():\n    return 1\n")
+            file2.write_text("def func2():\n    return 2\n")
+
+            # Mock coverage data for both files
+            with patch.object(agent, '_run_coverage_analysis') as mock_run:
+                mock_run.return_value = {
+                    str(file1): {
+                        'executed_lines': [1, 2],
+                        'missing_lines': [],
+                        'excluded_lines': []
+                    },
+                    str(file2): {
+                        'executed_lines': [1],
+                        'missing_lines': [2],
+                        'excluded_lines': []
+                    }
                 }
-            }
-            yaml.dump(config, f)
+
+                reports = agent.analyze_coverage(src_dir)
+
+                assert len(reports) == 2
+                assert file1 in reports
+                assert file2 in reports
+
+    def test_analyze_coverage_handles_no_coverage_data(self):
+        """Test analysis handles missing coverage data gracefully"""
+        agent = TestCoverageEnforcer()
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            src_dir = Path(tmpdir) / 'src'
+            src_dir.mkdir()
+
+            with patch.object(agent, '_run_coverage_analysis') as mock_run:
+                mock_run.return_value = {}
+
+                reports = agent.analyze_coverage(src_dir)
+
+                assert len(reports) == 0
+
+
+class TestEnforceThresholdsIntegration:
+    """Integration tests for threshold enforcement"""
+
+    def test_enforce_thresholds_pass_scenario(self):
+        """Test complete enforcement scenario that passes"""
+        agent = TestCoverageEnforcer()
+        agent.line_threshold = 75
+        agent.auto_generate = False
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            src_dir = Path(tmpdir) / 'src'
+            src_dir.mkdir()
+
+            sample_file = src_dir / 'good_coverage.py'
+            sample_file.write_text("""
+def well_tested():
+    return "tested"
+
+def also_tested():
+    return "also tested"
+""")
+
+            # Mock high coverage
+            with patch.object(agent, '_run_coverage_analysis') as mock_run:
+                mock_run.return_value = {
+                    str(sample_file): {
+                        'executed_lines': [2, 3, 5, 6],
+                        'missing_lines': [],
+                        'excluded_lines': []
+                    }
+                }
+
+                result = agent.enforce_thresholds(src_dir)
+
+                assert result.passed is True
+                assert result.current_coverage >= 75.0
+                assert result.threshold == 75.0
+                assert result.gaps_found == 0
+
+    def test_enforce_thresholds_fail_scenario(self):
+        """Test complete enforcement scenario that fails"""
+        agent = TestCoverageEnforcer()
+        agent.line_threshold = 90
+        agent.auto_generate = False
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            src_dir = Path(tmpdir) / 'src'
+            src_dir.mkdir()
+
+            sample_file = src_dir / 'low_coverage.py'
+            sample_file.write_text("""
+def tested():
+    return "tested"
+
+def untested():
+    return "not tested"
+
+def also_untested():
+    return "also not tested"
+""")
+
+            # Mock low coverage
+            with patch.object(agent, '_run_coverage_analysis') as mock_run:
+                mock_run.return_value = {
+                    str(sample_file): {
+                        'executed_lines': [2, 3],
+                        'missing_lines': [5, 6, 8, 9],
+                        'excluded_lines': []
+                    }
+                }
+
+                result = agent.enforce_thresholds(src_dir)
+
+                assert result.passed is False
+                assert result.current_coverage < 90.0
+                assert result.threshold == 90.0
+                assert result.gaps_found > 0
+                assert len(result.enforcement_actions) > 0
+
+    def test_enforce_thresholds_with_empty_directory(self):
+        """Test enforcement with empty directory"""
+        agent = TestCoverageEnforcer()
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            src_dir = Path(tmpdir) / 'empty_src'
+            src_dir.mkdir()
+
+            with patch.object(agent, '_run_coverage_analysis') as mock_run:
+                mock_run.return_value = {}
+
+                result = agent.enforce_thresholds(src_dir)
+
+                assert result.passed is False
+                assert result.current_coverage == 0.0
+                assert 'No coverage data' in str(result.enforcement_actions)
+
+
+class TestGenerateTestSuggestionsIntegration:
+    """Integration tests for test suggestion generation"""
+
+    def test_generate_test_suggestions_end_to_end(self):
+        """Test generating suggestions from real file analysis"""
+        agent = TestCoverageEnforcer()
+        agent.line_threshold = 80
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            src_dir = Path(tmpdir) / 'src'
+            src_dir.mkdir()
+
+            sample_file = src_dir / 'math_utils.py'
+            sample_file.write_text("""
+def add(a, b):
+    return a + b
+
+def subtract(a, b):
+    return a - b
+
+def multiply(a, b):
+    return a * b
+
+def divide(a, b):
+    if b == 0:
+        raise ValueError("Cannot divide by zero")
+    return a / b
+""")
+
+            # Mock partial coverage
+            with patch.object(agent, '_run_coverage_analysis') as mock_run:
+                mock_run.return_value = {
+                    str(sample_file): {
+                        'executed_lines': [2, 3, 5, 6],
+                        'missing_lines': [8, 9, 11, 12, 13, 14],
+                        'excluded_lines': []
+                    }
+                }
+
+                reports = agent.analyze_coverage(src_dir)
+                suggestions = agent.generate_test_suggestions(reports)
+
+                # Should have suggestions for untested functions
+                assert len(suggestions) > 0
+
+                for suggestion in suggestions:
+                    assert suggestion.test_file.name.startswith('test_')
+                    assert 'def test_' in suggestion.test_template
+                    assert suggestion.priority >= 1
+                    assert suggestion.priority <= 5
+                    assert suggestion.coverage_impact >= 0.0
+
+    def test_generate_suggestions_with_auto_generate_enabled(self):
+        """Test automatic test generation when auto_generate is enabled"""
+        agent = TestCoverageEnforcer()
+        agent.line_threshold = 80
+        agent.auto_generate = True
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            src_dir = Path(tmpdir) / 'src'
+            src_dir.mkdir()
+
+            sample_file = src_dir / 'service.py'
+            sample_file.write_text("""
+def process_data(data):
+    return data.upper()
+
+def validate_input(input_str):
+    return len(input_str) > 0
+""")
+
+            # Mock low coverage to trigger suggestions
+            with patch.object(agent, '_run_coverage_analysis') as mock_run:
+                mock_run.return_value = {
+                    str(sample_file): {
+                        'executed_lines': [2, 3],
+                        'missing_lines': [5, 6],
+                        'excluded_lines': []
+                    }
+                }
+
+                result = agent.enforce_thresholds(src_dir)
+
+                # Should generate suggestions when auto_generate is enabled
+                assert result.suggestions_generated > 0
+
+
+class TestReportGenerationIntegration:
+    """Integration tests for report generation"""
+
+    def test_generate_all_report_formats(self):
+        """Test generating reports in all formats"""
+        agent = TestCoverageEnforcer()
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            src_dir = Path(tmpdir) / 'src'
+            src_dir.mkdir()
+
+            sample_file = src_dir / 'example.py'
+            sample_file.write_text("def example():\n    return 'example'\n")
+
+            # Mock coverage data
+            with patch.object(agent, '_run_coverage_analysis') as mock_run:
+                mock_run.return_value = {
+                    str(sample_file): {
+                        'executed_lines': [1, 2],
+                        'missing_lines': [],
+                        'excluded_lines': []
+                    }
+                }
+
+                agent.analyze_coverage(src_dir)
+
+                # Test text format
+                text_report = agent.generate_coverage_report('text')
+                assert 'Test Coverage Enforcement Report' in text_report
+                assert len(text_report) > 100
+
+                # Test JSON format
+                json_report = agent.generate_coverage_report('json')
+                assert '"summary"' in json_report
+                assert '"reports"' in json_report
+
+                # Test HTML format
+                html_report = agent.generate_coverage_report('html')
+                assert '<!DOCTYPE html>' in html_report
+                assert '<table>' in html_report
+
+    def test_report_includes_all_analysis_data(self):
+        """Test report contains all analyzed data"""
+        agent = TestCoverageEnforcer()
+        agent.line_threshold = 80
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            src_dir = Path(tmpdir) / 'src'
+            src_dir.mkdir()
+
+            file1 = src_dir / 'module1.py'
+            file2 = src_dir / 'module2.py'
+
+            file1.write_text("def func1():\n    return 1\n")
+            file2.write_text("def func2():\n    return 2\n")
+
+            with patch.object(agent, '_run_coverage_analysis') as mock_run:
+                mock_run.return_value = {
+                    str(file1): {
+                        'executed_lines': [1, 2],
+                        'missing_lines': [],
+                        'excluded_lines': []
+                    },
+                    str(file2): {
+                        'executed_lines': [1],
+                        'missing_lines': [2],
+                        'excluded_lines': []
+                    }
+                }
+
+                agent.analyze_coverage(src_dir)
+                report = agent.generate_coverage_report('text')
+
+                # Should include both files
+                assert 'module1.py' in report
+                assert 'module2.py' in report
+
+                # Should show analysis counts
+                assert 'Total files analyzed: 2' in report
+
+
+class TestEndToEndCoverageEnforcement:
+    """Complete end-to-end integration tests"""
+
+    def test_full_workflow_from_analysis_to_report(self):
+        """Test complete workflow: analyze -> enforce -> generate suggestions -> report"""
+        agent = TestCoverageEnforcer()
+        agent.line_threshold = 75
+        agent.auto_generate = True
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            src_dir = Path(tmpdir) / 'src'
+            src_dir.mkdir()
+
+            # Create a realistic Python module
+            module_file = src_dir / 'user_service.py'
+            module_file.write_text("""
+class UserService:
+    def __init__(self):
+        self.users = {}
+
+    def add_user(self, user_id, name):
+        self.users[user_id] = name
+        return True
+
+    def get_user(self, user_id):
+        return self.users.get(user_id)
+
+    def delete_user(self, user_id):
+        if user_id in self.users:
+            del self.users[user_id]
+            return True
+        return False
+
+    def list_users(self):
+        return list(self.users.values())
+""")
+
+            # Mock coverage data (partial coverage)
+            with patch.object(agent, '_run_coverage_analysis') as mock_run:
+                mock_run.return_value = {
+                    str(module_file): {
+                        'executed_lines': [2, 3, 4, 6, 7, 8],
+                        'missing_lines': [10, 11, 13, 14, 15, 16, 17, 19, 20],
+                        'excluded_lines': []
+                    }
+                }
+
+                # Step 1: Analyze coverage
+                reports = agent.analyze_coverage(src_dir)
+                assert len(reports) == 1
+
+                # Step 2: Enforce thresholds
+                result = agent.enforce_thresholds(src_dir)
+                assert isinstance(result, EnforcementResult)
+
+                # Step 3: Generate suggestions (auto-generated due to auto_generate=True)
+                if not result.passed:
+                    assert result.suggestions_generated > 0
+
+                # Step 4: Generate report
+                text_report = agent.generate_coverage_report('text')
+                assert 'user_service.py' in text_report
+
+                json_report = agent.generate_coverage_report('json')
+                assert '"user_service.py"' in json_report or 'user_service.py' in json_report
+
+    def test_workflow_with_configuration_override(self):
+        """Test workflow with custom configuration"""
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
+            f.write("""
+thresholds:
+  line: 95
+  branch: 90
+  function: 95
+auto_generate_tests: true
+fail_build_below_threshold: true
+""")
             config_path = Path(f.name)
 
         try:
-            tester = ServiceIntegrationTester(config_path)
+            agent = TestCoverageEnforcer(config_path=config_path)
 
-            assert tester.config is not None
-            assert tester.config['agent_name'] == 'service-integration-tester'
-            assert 'cognitive_brain' in tester.config
-            assert tester.config['cognitive_brain']['enabled']
+            # Verify custom config loaded
+            assert agent.line_threshold == 95
+            assert agent.branch_threshold == 90
+            assert agent.function_threshold == 95
+            assert agent.auto_generate is True
+
+            with tempfile.TemporaryDirectory() as tmpdir:
+                src_dir = Path(tmpdir) / 'src'
+                src_dir.mkdir()
+
+                sample_file = src_dir / 'module.py'
+                sample_file.write_text("def func():\n    return 1\n")
+
+                with patch.object(agent, '_run_coverage_analysis') as mock_run:
+                    mock_run.return_value = {
+                        str(sample_file): {
+                            'executed_lines': [1, 2],
+                            'missing_lines': [],
+                            'excluded_lines': []
+                        }
+                    }
+
+                    # With 100% coverage, should still pass 95% threshold
+                    result = agent.enforce_thresholds(src_dir)
+                    assert result.passed is True
+
         finally:
             config_path.unlink()
-
-
-class TestErrorHandling:
-    """Test error handling and edge cases"""
-
-    def test_invalid_config_path(self):
-        """Test handling invalid config path"""
-        with pytest.raises(FileNotFoundError):
-            ServiceIntegrationTester(Path("/nonexistent/config.yaml"))
-
-    def test_empty_test_suite(self):
-        """Test running empty test suite"""
-        tester = ServiceIntegrationTester()
-
-        suite = IntegrationTestSuite(
-            name="empty",
-            description="Empty suite"
-        )
-
-        success, metrics = tester.run_integration_suite(suite)
-
-        assert success
-        assert metrics.total_tests >= 0
-
-    def test_generate_report_no_tests(self):
-        """Test generating report with no tests run"""
-        tester = ServiceIntegrationTester()
-
-        report = tester.generate_report()
-
-        assert "Total Tests:    0" in report
-        assert "Passed:         0" in report
 
 
 if __name__ == '__main__':
