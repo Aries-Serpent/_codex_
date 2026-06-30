@@ -15,7 +15,7 @@
 | **Total Statements** | 98,530 | — | — | — |
 | **Covered Lines** | 17,120 | — | — | — |
 | **Missing Lines** | 76,410 | — | — | — |
-| **Branch Coverage** | Mixed | 70% target | ⚠️ UNKNOWN | — |
+| **Branch Coverage** | Mixed | 70% target | ⚠️ UNKNOWN | — | # pragma: allowlist secret
 
 ### Phase 7A Readiness Assessment
 

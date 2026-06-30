@@ -15,7 +15,7 @@ from codex.auth.token_manager import TokenManager, TokenType
 from codex.auth.user_store import UserStore
 
 # ---------------------------------------------------------------------------
-# Helpers # pragma: allowlist secret
+# Helpers # pragma: allowlist secret # pragma: allowlist secret
 # ---------------------------------------------------------------------------
 
 

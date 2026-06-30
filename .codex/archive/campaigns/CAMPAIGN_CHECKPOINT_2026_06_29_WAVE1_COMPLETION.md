@@ -15,7 +15,7 @@
 4. 🔄 Execute parallel validation and documentation prep
 
 ### Status Overview
-| Component | Status | Progress | ETA |
+| Component | Status | Progress | ETA | # pragma: allowlist secret # pragma: allowlist secret
 |-----------|--------|----------|-----|
 | **Lane 1: Auth Tests** | 🔄 RUNNING | ~400s/1200-1800s | 20-30 min |
 | **Lane 2: Secrets Baseline** | ✅ COMPLETE | 367s | DONE |

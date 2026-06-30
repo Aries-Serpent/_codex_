@@ -15,7 +15,7 @@ from codex.auth.authenticator import Authenticator
 from codex.auth.exceptions import (
     InvalidCredentialsError,
     MFARequiredError,
-    MFAVerificationError,
+    MFAVerificationError, # pragma: allowlist secret
     UserAlreadyExistsError,
     UserNotFoundError,
 )

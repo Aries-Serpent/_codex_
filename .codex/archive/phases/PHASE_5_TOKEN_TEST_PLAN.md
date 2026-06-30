@@ -15,7 +15,7 @@ Phase 5 implements comprehensive validation of the token hierarchy system introd
 
 - **Token Resolution**: Full fallback chain (CODEX_MASTER_KEY → CODEX_BACKUP_KEY → GH_TOKEN → GITHUB_TOKEN)
 - **Security Enforcement**: Elevated operations deny when scopes insufficient
-- **Scope Validation**: Correct scope detection and enforcement # pragma: allowlist secret
+- **Scope Validation**: Correct scope detection and enforcement # pragma: allowlist secret # pragma: allowlist secret
 - **Audit Trail**: Token usage logged without exposing values
 - **Error Handling**: Graceful handling of invalid/missing tokens
 

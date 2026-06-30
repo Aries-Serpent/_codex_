@@ -15,7 +15,7 @@ A comprehensive Phase 5 CodeQL security scan has been completed for the Aries-Se
 | Metric | Value | Status |
 |--------|-------|--------|
 | **Critical Issues (P0)** | 0 | ✅ EXCELLENT |
-| **High Severity (P1)** | 42 | ⚠️ REQUIRES IMMEDIATE ACTION |
+| **High Severity (P1)** | 42 | ⚠️ REQUIRES IMMEDIATE ACTION | # pragma: allowlist secret
 | **Medium Severity (P2)** | 6 | ⚠️ REQUIRES ACTION |
 | **Low Severity (P3)** | 59 | ℹ️ IMPROVEMENT OPPORTUNITY |
 | **Total Findings** | 107 | |
