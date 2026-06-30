@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codex.internal/schemas/block.json",
+  "title": "Block Record Schema",
+  "description": "Atomic content blocks (paragraphs, code blocks, tables, etc.)",
+  "type": "object",
+  "required": ["id", "type", "section_id", "content_type", "content", "line_range"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique block identifier (UUID v4)",
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "type": {
+      "type": "string",
+      "enum": ["block"],
+      "description": "Record type discriminator"
+    },
+    "section_id": {
+      "type": "string",
+      "description": "Parent section ID (must exist in Section records)",
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "content_type": {
+      "type": "string",
+      "enum": ["paragraph", "code", "table", "list", "quote", "admonition", "image"],
+      "description": "Block content type"
+    },
+    "content": {
+      "type": "string",
+      "description": "Block content (raw or Markdown)",
+      "minLength": 1
+    },
+    "line_range": {
+      "type": "object",
+      "description": "Source location information",
+      "required": ["start", "end", "file"],
+      "properties": {
+        "start": {
+          "type": "integer",
+          "description": "Starting line number in source file",
+          "minimum": 1
+        },
+        "end": {
+          "type": "integer",
+          "description": "Ending line number in source file",
+          "minimum": 1
+        },
+        "file": {
+          "type": "string",
+          "description": "Source file path",
+          "minLength": 1,
+          "maxLength": 512
+        }
+      },
+      "additionalProperties": false
+    },
+    "references": {
+      "type": "array",
+      "description": "IDs of referenced entities",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-zA-Z0-9_-]+$",
+        "minLength": 1
+      }
+    },
+    "language": {
+      "type": "string",
+      "description": "For code blocks, the programming language",
+      "minLength": 1,
+      "maxLength": 32
+    },
+    "weight": {
+      "type": "number",
+      "description": "Importance weight for ranking",
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional block-specific metadata",
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,555 +1,638 @@
-# Service Integration Tester - Usage Examples
+# Service Integration Tester Agent - Usage Examples
 
-This document provides real-world examples of using the Service Integration Tester agent.
+This document provides real-world scenarios and examples of using the Service Integration Tester Agent.
 
 ## Table of Contents
 
-1. [Example 1: Microservice Health Checks](#example-1-microservice-health-checks)
-2. [Example 2: REST API Contract Testing](#example-2-rest-api-contract-testing)
-3. [Example 3: Authenticated API Testing](#example-3-authenticated-api-testing)
-4. [Example 4: End-to-End User Journey](#example-4-end-to-end-user-journey)
-5. [Example 5: Multi-Environment Testing](#example-5-multi-environment-testing)
-6. [Example 6: Performance Testing](#example-6-performance-testing)
+1. [Example 1: PR Coverage Check](#example-1-pr-coverage-check)
+2. [Example 2: Pre-commit Enforcement](#example-2-pre-commit-enforcement)
+3. [Example 3: Auto-generate Missing Tests](#example-3-auto-generate-missing-tests)
+4. [Example 4: Coverage Integration Health Analysis](#example-4-coverage-trend-analysis)
+5. [Example 5: CI/CD Integration](#example-5-cicd-integration)
+6. [Example 6: HTML Report Generation](#example-6-html-report-generation)
 
 ---
 
-## Example 1: Microservice Health Checks
+## Example 1: PR Coverage Check
 
-Test health endpoints across multiple microservices.
+**Scenario**: You want to check service integration on every pull request and comment the results.
 
-```python
-from service_integration_tester import ServiceIntegrationTester
+### Setup
 
-# Initialize tester
-tester = ServiceIntegrationTester()
-
-# Define microservices
-microservices = {
-    'auth': 'https://auth-service.example.com',
-    'users': 'https://user-service.example.com',
-    'payments': 'https://payment-service.example.com',
-    'notifications': 'https://notification-service.example.com',
-    'analytics': 'https://analytics-service.example.com'
-}
-
-# Test each service
-results = {}
-for service_name, service_url in microservices.items():
-    print(f"Testing {service_name} service...")
-
-    # Discover health endpoints
-    endpoints = tester.scan_endpoints(service_url, "common")
-
-    # Test first endpoint (usually /health)
-    if endpoints:
-        result = tester.test_endpoint_sync(endpoints[0])
-        results[service_name] = {
-            'status': result.status,
-            'response_time': result.response_time_ms,
-            'status_code': result.status_code
-        }
-
-        if result.status == 'success':
-            print(f"  ✅ {service_name}: Healthy ({result.response_time_ms:.0f}ms)")
-        else:
-            print(f"  ❌ {service_name}: Unhealthy")
-            if result.error:
-                print(f"     Error: {result.error}")
-
-# Summary report
-print("\n" + "="*60)
-print("Health Check Summary")
-print("="*60)
-healthy = sum(1 for r in results.values() if r['status'] == 'success')
-total = len(results)
-print(f"Services Healthy: {healthy}/{total} ({healthy/total*100:.0f}%)")
-print(f"Average Response Time: {sum(r['response_time'] for r in results.values())/total:.0f}ms")
-```
-
-**Output**:
-```
-Testing auth service...
-  ✅ auth: Healthy (45ms)
-Testing users service...
-  ✅ users: Healthy (52ms)
-Testing payments service...
-  ✅ payments: Healthy (38ms)
-Testing notifications service...
-  ✅ notifications: Healthy (41ms)
-Testing analytics service...
-  ✅ analytics: Healthy (67ms)
-
-============================================================
-Health Check Summary
-============================================================
-Services Healthy: 5/5 (100%)
-Average Response Time: 49ms
-```
-
----
-
-## Example 2: REST API Contract Testing
-
-Validate that your API implementation matches its OpenAPI specification.
-
-```python
-from pathlib import Path
-from service_integration_tester import ServiceIntegrationTester, Endpoint
-
-# Load configuration
-config_path = Path("config/agent_config.yaml")
-tester = ServiceIntegrationTester(config_path)
-
-# Discover endpoints from OpenAPI spec
-base_url = "https://api.example.com"
-spec_path = Path("openapi.yaml")
-endpoints = tester.scan_endpoints(base_url, spec_path)
-
-print(f"Discovered {len(endpoints)} endpoints from spec")
-
-# Test each endpoint
-contract_violations = []
-
-for endpoint in endpoints:
-    print(f"\nTesting {endpoint.method} {endpoint.path}")
-
-    # Prepare test data for POST/PUT/PATCH
-    payload = None
-    expected_status = 200
-
-    if endpoint.method in ['POST', 'PUT', 'PATCH']:
-        # Generate mock data based on endpoint
-        if 'user' in endpoint.path:
-            schema = {'name': 'name', 'email': 'email', 'age': 'int'}
-        elif 'product' in endpoint.path:
-            schema = {'name': 'string', 'price': 'float', 'available': 'bool'}
-        else:
-            schema = None
-
-        payload = tester.generate_mock_data(schema)
-        expected_status = 201 if endpoint.method == 'POST' else 200
-
-    # Test endpoint
-    result = tester.test_endpoint_sync(
-        endpoint,
-        payload=payload,
-        expected_status=expected_status
-    )
-
-    # Check for contract violations
-    if result.validation_errors:
-        contract_violations.append({
-            'endpoint': f"{endpoint.method} {endpoint.path}",
-            'errors': result.validation_errors
-        })
-        print(f"  ❌ Contract violation detected")
-    else:
-        print(f"  ✅ Contract validated ({result.response_time_ms:.0f}ms)")
-
-# Final report
-print("\n" + "="*70)
-print("Contract Validation Report")
-print("="*70)
-if not contract_violations:
-    print("✅ All endpoints comply with OpenAPI contract")
-else:
-    print(f"❌ Found {len(contract_violations)} contract violations:")
-    for violation in contract_violations:
-        print(f"\n{violation['endpoint']}:")
-        for error in violation['errors']:
-            print(f"  - {error}")
-```
-
----
-
-## Example 3: Authenticated API Testing
-
-Test endpoints that require authentication.
-
-```python
-from service_integration_tester import ServiceIntegrationTester, Endpoint
-import os
-
-tester = ServiceIntegrationTester()
-base_url = "https://api.example.com"
-
-# Get API credentials from environment
-api_key = os.environ.get('API_KEY', 'test-api-key')
-bearer_token = os.environ.get('BEARER_TOKEN', '')
-
-# Test with API Key authentication
-print("Testing API Key Authentication...")
-api_key_endpoint = Endpoint(
-    path="/api/protected/data",
-    method="GET",
-    base_url=base_url
-)
-
-result = tester.test_endpoint_sync(
-    api_key_endpoint,
-    headers={'X-API-Key': api_key}
-)
-
-if result.status_code == 401:
-    print("  ❌ API Key authentication failed")
-elif result.status_code == 200:
-    print(f"  ✅ API Key auth successful ({result.response_time_ms:.0f}ms)")
-
-# Test with Bearer authentication
-print("\nTesting Bearer Authentication...")
-bearer_endpoint = Endpoint(
-    path="/api/user/profile",
-    method="GET",
-    base_url=base_url
-)
-
-result = tester.test_endpoint_sync(
-    bearer_endpoint,
-    headers={'Authorization': f'Bearer {bearer_token}'}
-)
-
-if result.status_code == 401:
-    print("  ❌ Bearer authentication failed")
-elif result.status_code == 200:
-    print(f"  ✅ Bearer auth successful ({result.response_time_ms:.0f}ms)")
-
-# Test without authentication (should fail)
-print("\nTesting endpoint without authentication (should fail)...")
-result = tester.test_endpoint_sync(bearer_endpoint)
-
-if result.status_code == 401:
-    print("  ✅ Correctly rejected unauthenticated request")
-else:
-    print(f"  ⚠️  Unexpected status: {result.status_code}")
-```
-
----
-
-## Example 4: End-to-End User Journey
-
-Test a complete user journey across multiple endpoints.
-
-```python
-from service_integration_tester import ServiceIntegrationTester, Endpoint
-
-tester = ServiceIntegrationTester()
-base_url = "https://api.example.com"
-
-print("Testing E2E User Journey: Purchase Flow")
-print("="*70)
-
-# Step 1: User Registration
-print("\n1. User Registration")
-register_endpoint = Endpoint(
-    path="/api/auth/register",
-    method="POST",
-    base_url=base_url,
-    expected_status=201
-)
-register_payload = tester.generate_mock_data({
-    'username': 'string',
-    'email': 'email',
-    'password': 'string' <!-- pragma: allowlist secret -->
-})
-register_result = tester.test_endpoint_sync(register_endpoint, payload=register_payload)
-
-if register_result.status != 'success':
-    print(f"   ❌ Registration failed")
-    exit(1)
-
-print(f"   ✅ User registered")
-
-# Step 2: Login
-print("\n2. User Login")
-login_endpoint = Endpoint(
-    path="/api/auth/login",
-    method="POST",
-    base_url=base_url
-)
-login_payload = {
-    'username': register_payload['username'],
-    'password': register_payload['password']
-}
-login_result = tester.test_endpoint_sync(login_endpoint, payload=login_payload)
-
-if login_result.status != 'success':
-    print(f"   ❌ Login failed")
-    exit(1)
-
-auth_token = "mock-jwt-token"  # In real scenario, extract from response
-print(f"   ✅ Login successful, token obtained")
-
-# Step 3: Browse Products
-print("\n3. Browse Products")
-products_endpoint = Endpoint(
-    path="/api/products",
-    method="GET",
-    base_url=base_url
-)
-products_result = tester.test_endpoint_sync(
-    products_endpoint,
-    headers={'Authorization': f'Bearer {auth_token}'}
-)
-
-if products_result.status != 'success':
-    print(f"   ❌ Product browse failed")
-    exit(1)
-
-print(f"   ✅ Products retrieved")
-
-# Step 4: Add to Cart
-print("\n4. Add to Cart")
-cart_endpoint = Endpoint(
-    path="/api/cart/items",
-    method="POST",
-    base_url=base_url,
-    expected_status=201
-)
-cart_payload = {'product_id': '123', 'quantity': 2}
-cart_result = tester.test_endpoint_sync(
-    cart_endpoint,
-    headers={'Authorization': f'Bearer {auth_token}'},
-    payload=cart_payload
-)
-
-if cart_result.status != 'success':
-    print(f"   ❌ Add to cart failed")
-    exit(1)
-
-print(f"   ✅ Item added to cart")
-
-# Step 5: Checkout
-print("\n5. Create Order")
-order_endpoint = Endpoint(
-    path="/api/orders",
-    method="POST",
-    base_url=base_url,
-    expected_status=201
-)
-order_payload = tester.generate_mock_data({
-    'shipping_address': 'string',
-    'payment_method': 'string'
-})
-order_result = tester.test_endpoint_sync(
-    order_endpoint,
-    headers={'Authorization': f'Bearer {auth_token}'},
-    payload=order_payload
-)
-
-if order_result.status != 'success':
-    print(f"   ❌ Order creation failed")
-    exit(1)
-
-order_id = "ORDER123"  # Extract from response
-print(f"   ✅ Order created: {order_id}")
-
-# Journey complete
-print("\n" + "="*70)
-print("✅ E2E User Journey: PASSED")
-print("="*70)
-
-# Generate journey report
-metrics = tester.get_metrics()
-print(f"\nTotal Steps: {metrics['total_tests']}")
-print(f"Success Rate: {metrics['passed'] / metrics['total_tests'] * 100:.0f}%")
-print(f"Total Journey Time: {metrics['total_response_time_ms']:.0f}ms")
-```
-
----
-
-## Example 5: Multi-Environment Testing
-
-Test the same endpoints across multiple environments.
-
-```python
-from service_integration_tester import ServiceIntegrationTester
-
-# Define environments
-environments = {
-    'dev': 'https://dev-api.example.com',
-    'staging': 'https://staging-api.example.com',
-    'production': 'https://api.example.com'
-}
-
-# Endpoints to test
-test_endpoints = [
-    {'path': '/health', 'method': 'GET'},
-    {'path': '/api/status', 'method': 'GET'},
-    {'path': '/api/version', 'method': 'GET'}
-]
-
-# Test each environment
-results = {}
-
-for env_name, base_url in environments.items():
-    print(f"\nTesting {env_name.upper()} environment...")
-    print("-" * 60)
-
-    tester = ServiceIntegrationTester()
-    endpoints = tester.scan_endpoints(base_url, test_endpoints)
-
-    for endpoint in endpoints:
-        result = tester.test_endpoint_sync(endpoint)
-
-        key = f"{env_name}:{endpoint.path}"
-        results[key] = {
-            'status': result.status,
-            'status_code': result.status_code,
-            'response_time': result.response_time_ms
-        }
-
-        status_icon = "✅" if result.status == 'success' else "❌"
-        print(f"  {status_icon} {endpoint.path}: {result.status_code} ({result.response_time_ms:.0f}ms)")
-
-# Environment comparison
-print("\n" + "="*60)
-print("Environment Comparison")
-print("="*60)
-
-for env_name in environments.keys():
-    env_results = {k: v for k, v in results.items() if k.startswith(f"{env_name}:")}
-    success_count = sum(1 for r in env_results.values() if r['status'] == 'success')
-    avg_time = sum(r['response_time'] for r in env_results.values()) / len(env_results)
-
-    print(f"\n{env_name.upper()}:")
-    print(f"  Success Rate: {success_count}/{len(env_results)}")
-    print(f"  Avg Response Time: {avg_time:.0f}ms")
-```
-
----
-
-## Example 6: Performance Testing
-
-Measure and track endpoint performance over multiple iterations.
-
-```python
-from service_integration_tester import ServiceIntegrationTester, Endpoint
-import statistics
-
-tester = ServiceIntegrationTester()
-base_url = "https://api.example.com"
-
-# Define endpoints to test
-endpoints_to_test = [
-    Endpoint(path="/api/users", method="GET", base_url=base_url),
-    Endpoint(path="/api/products", method="GET", base_url=base_url),
-    Endpoint(path="/api/orders", method="GET", base_url=base_url),
-]
-
-# Number of iterations
-iterations = 20
-
-print(f"Running performance tests ({iterations} iterations per endpoint)...")
-print("="*70)
-
-performance_data = {}
-
-for endpoint in endpoints_to_test:
-    print(f"\nTesting {endpoint.path}...")
-
-    response_times = []
-    success_count = 0
-
-    # Run iterations
-    for i in range(iterations):
-        result = tester.test_endpoint_sync(endpoint)
-
-        if result.status == 'success':
-            success_count += 1
-            response_times.append(result.response_time_ms)
-
-    # Calculate statistics
-    if response_times:
-        performance_data[endpoint.path] = {
-            'success_rate': (success_count / iterations) * 100,
-            'avg': statistics.mean(response_times),
-            'median': statistics.median(response_times),
-            'min': min(response_times),
-            'max': max(response_times),
-            'p95': sorted(response_times)[int(len(response_times) * 0.95)],
-            'p99': sorted(response_times)[int(len(response_times) * 0.99)]
-        }
-
-        print(f"  Success Rate: {performance_data[endpoint.path]['success_rate']:.0f}%")
-        print(f"  Avg: {performance_data[endpoint.path]['avg']:.1f}ms")
-        print(f"  Median: {performance_data[endpoint.path]['median']:.1f}ms")
-        print(f"  Min/Max: {performance_data[endpoint.path]['min']:.1f}ms / {performance_data[endpoint.path]['max']:.1f}ms")
-        print(f"  P95/P99: {performance_data[endpoint.path]['p95']:.1f}ms / {performance_data[endpoint.path]['p99']:.1f}ms")
-
-# Performance summary
-print("\n" + "="*70)
-print("Performance Summary")
-print("="*70)
-
-for path, stats in performance_data.items():
-    status = "✅" if stats['p95'] < 1000 else "⚠️"
-    print(f"{status} {path}: {stats['avg']:.0f}ms avg, {stats['p95']:.0f}ms p95")
-```
-
----
-
-## CI/CD Integration Example
-
-GitHub Actions workflow:
+Create `.github/workflows/pr-coverage.yml`:
 
 ```yaml
-name: Service Integration Tests
+name: PR Coverage Check
 
 on:
   pull_request:
-    branches: [main]
-  schedule:
-    - cron: '0 */6 * * *'  # Every 6 hours
+    branches: [main, develop]
 
 jobs:
-  integration-tests:
+  coverage:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
 
-      - name: Test Staging API
-        uses: ./.github/agents/service-integration-tester
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          base-url: 'https://staging-api.example.com'
-          endpoints: 'openapi.yaml'
-          fail-on-error: 'true'
-          output-file: 'staging_report.txt'
-          export-json: 'true'
+          python-version: '3.11'
 
-      - name: Performance Check
-        uses: ./.github/agents/service-integration-tester
+      - name: Install dependencies
+        run: |
+          pip install -e ".[dev,test]"
+
+      - name: Run tests with coverage
+        run: |
+          pytest --cov=src --cov-report=json:coverage.json
+
+      - name: Enforce integration thresholds
+        uses: ./.github/agents/test-coverage-enforcer
         with:
-          base-url: 'https://staging-api.example.com'
-          test-common: 'true'
-          measure-performance: 'true'
-          performance-iterations: '20'
+          check-coverage: true
+          threshold: 80
+          fail-below-threshold: false  # Don't fail, just report
+          source-path: src
+          output-format: text
+```
 
-      - name: Upload Results
+### Expected Output
+
+**PR Comment:**
+```
+## ✅ service integration Report
+
+**Status:** ✅ PASS
+**Current Coverage:** 85.5%
+**Threshold:** 80%
+
+<details>
+<summary>View Full Report</summary>
+
+Coverage by File:
+✓ src/module1.py: 95.0% line, 100.0% function
+✓ src/module2.py: 82.0% line, 90.0% function
+✗ src/module3.py: 65.0% line, 70.0% function
+
+</details>
+```
+
+### Key Takeaways
+
+- Sets `fail-below-threshold: false` to avoid blocking PRs
+- Provides visibility without strict enforcement
+- Generates automatic PR comments
+- Helps reviewers see coverage impact
+
+---
+
+## Example 2: Pre-commit Enforcement
+
+**Scenario**: Enforce coverage locally before allowing commits using pre-commit hooks.
+
+### Setup
+
+Create `.pre-commit-config.yaml`:
+
+```yaml
+repos:
+  - repo: local
+    hooks:
+      - id: coverage-check
+        name: Check service integration
+        entry: bash -c 'cd .github/agents/test-coverage-enforcer && python -m src.agent enforce --path src --threshold 75'
+        language: system
+        pass_filenames: false
+        always_run: true
+```
+
+### Local Usage
+
+```bash
+# Install pre-commit
+pip install pre-commit
+
+# Install hooks
+pre-commit install
+
+# Now coverage is checked before every commit
+git commit -m "Add new feature"
+# → Runs coverage check
+# → Blocks commit if coverage < 75%
+```
+
+### Expected Output
+
+**When coverage is good:**
+```bash
+Check service integration...................Passed
+[main abc1234] Add new feature
+```
+
+**When coverage is low:**
+```bash
+Check service integration...................Failed
+- Coverage 72.0% is below threshold 75%
+- Found 3 integration gaps
+```
+
+### Key Takeaways
+
+- Catches coverage issues before they reach CI/CD
+- Provides immediate feedback to developers
+- Can be bypassed with `--no-verify` if needed
+- Customizable threshold per project
+
+---
+
+## Example 3: Auto-generate Missing Tests
+
+**Scenario**: Automatically generate integration test templates for uncovered functions.
+
+### Command
+
+```bash
+cd .github/agents/test-coverage-enforcer
+
+# Analyze and generate suggestions
+python -m src.agent generate-tests \
+  --path src/calculator.py \
+  --format text
+```
+
+### Input Code (src/calculator.py)
+
+```python
+def add(a, b):
+    """Add two numbers"""
+    return a + b
+
+def subtract(a, b):
+    """Subtract b from a"""
+    return a - b
+
+def multiply(a, b):
+    """Multiply two numbers"""
+    return a * b
+
+def divide(a, b):
+    """Divide a by b"""
+    if b == 0:
+        raise ValueError("Cannot divide by zero")
+    return a / b
+```
+
+### Expected Output
+
+```
+Generated 4 test suggestions:
+
+Priority 1: divide in src/calculator.py
+  Impact: +25.0% coverage
+  Test file: tests/test_calculator.py
+
+Priority 2: multiply in src/calculator.py
+  Impact: +20.0% coverage
+  Test file: tests/test_calculator.py
+
+Priority 3: subtract in src/calculator.py
+  Impact: +15.0% coverage
+  Test file: tests/test_calculator.py
+
+Priority 4: add in src/calculator.py
+  Impact: +15.0% coverage
+  Test file: tests/test_calculator.py
+```
+
+### Generated integration test template
+
+Create `tests/test_calculator.py`:
+
+```python
+def test_divide_basic():
+    """Test divide basic functionality"""
+    # TODO: Implement test for divide
+    # from calculator import divide
+    # result = divide(10, 2)
+    # assert result == 5
+    pass
+
+
+def test_divide_edge_cases():
+    """Test divide edge cases"""
+    # TODO: Test edge cases for divide
+    # Test division by zero
+    # from calculator import divide
+    # with pytest.raises(ValueError):
+    #     divide(10, 0)
+    pass
+```
+
+### Key Takeaways
+
+- Automatically identifies untested functions
+- Generates starter integration test templates
+- Prioritizes based on impact and coverage
+- Templates require manual refinement
+
+---
+
+## Example 4: Coverage Integration Health Analysis
+
+**Scenario**: Track coverage changes over time to identify trends.
+
+### Setup
+
+Enable cognitive brain in config:
+
+```yaml
+# config/agent_config.yaml
+cognitive_brain:
+  enabled: true
+  metrics:
+    - coverage_percentage
+    - gap_count
+    - tests_generated
+  reporting_interval: per-iteration
+  storage:
+    type: sqlite
+    path: .codex/sessions/agent_metrics.db
+```
+
+### Usage
+
+```bash
+# Run per-iteration coverage check
+python -m src.agent enforce --path src --threshold 80
+
+# Coverage data is automatically stored in SQLite DB
+# Accessible via cognitive brain queries
+```
+
+### Query Historical Data
+
+```python
+import sqlite3
+
+# Connect to metrics database
+conn = sqlite3.connect('.codex/sessions/agent_metrics.db')
+cursor = conn.cursor()
+
+# Query coverage trend
+cursor.execute("""
+    SELECT date, coverage_percentage, gap_count
+    FROM coverage_metrics
+    ORDER BY date DESC
+    LIMIT 30
+""")
+
+results = cursor.fetchall()
+for date, coverage, gaps in results:
+    print(f"{date}: {coverage:.1f}% coverage, {gaps} gaps")
+```
+
+### Expected Output
+
+```
+2026-01-23: 85.5% coverage, 2 gaps
+2026-01-23: 84.0% coverage, 3 gaps
+2026-01-23: 82.5% coverage, 4 gaps
+2026-01-23: 81.0% coverage, 5 gaps
+...
+```
+
+### Visualization
+
+```python
+import matplotlib.pyplot as plt
+
+dates = [r[0] for r in results]
+coverage = [r[1] for r in results]
+
+plt.plot(dates, coverage)
+plt.xlabel('Date')
+plt.ylabel('Coverage %')
+plt.title('Coverage Trend - Last 30 iterations')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.savefig('coverage_trend.png')
+```
+
+### Key Takeaways
+
+- Tracks coverage changes over time
+- Identifies upward or downward trends
+- Helps measure improvement efforts
+- Stored in SQLite for easy querying
+
+---
+
+## Example 5: CI/CD Integration
+
+**Scenario**: Integrate coverage enforcement into a complete CI/CD pipeline.
+
+### Full Pipeline Workflow
+
+```yaml
+name: Complete CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -e ".[dev,test]"
+
+      - name: Run linters
+        run: |
+          ruff check src/
+          black --check src/
+          isort --check src/
+
+      - name: Run tests
+        run: |
+          pytest tests/ -v --tb=short
+
+      - name: Enforce coverage
+        uses: ./.github/agents/test-coverage-enforcer
+        id: coverage
+        with:
+          check-coverage: true
+          threshold: 80
+          fail-below-threshold: true
+          auto-generate: true
+          source-path: src
+          output-format: json
+          output-file: coverage-report.json
+
+      - name: Upload coverage report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
-          name: integration-test-results
-          path: |
-            staging_report.txt
-            integration_results.json
+          name: coverage-report
+          path: coverage-report.json
+
+      - name: Notify on failure
+        if: steps.coverage.outputs.passed == 'false'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const coverage = '${{ steps.coverage.outputs.coverage-percentage }}';
+            const threshold = '80';
+
+            core.setFailed(`Coverage ${coverage}% is below threshold ${threshold}%`);
+
+      - name: Deploy
+        if: github.ref == 'refs/heads/main' && steps.coverage.outputs.passed == 'true'
+        run: |
+          echo "Deploying application..."
+          # Deployment commands here
+```
+
+### Pipeline Flow
+
+```
+┌─────────────┐
+│  Checkout   │
+└──────┬──────┘
+       │
+┌──────▼──────┐
+│ Setup Python│
+└──────┬──────┘
+       │
+┌──────▼──────┐
+│   Install   │
+│Dependencies │
+└──────┬──────┘
+       │
+┌──────▼──────┐
+│ Run Linters │
+└──────┬──────┘
+       │
+┌──────▼──────┐
+│  Run Tests  │
+└──────┬──────┘
+       │
+┌──────▼──────┐
+│   Enforce   │
+│  Coverage   │ ← Service Integration Tester
+└──────┬──────┘
+       │
+    ┌──▼──┐
+    │Pass?│
+    └─┬─┬─┘
+  Yes │ │ No
+      │ └────► Fail Build
+      │
+┌─────▼─────┐
+│   Deploy  │
+└───────────┘
+```
+
+### Key Takeaways
+
+- Coverage enforcement is a gate before deployment
+- Automatic integration Integration Test Generation on failure
+- Reports uploaded as artifacts
+- Clear failure notifications
+
+---
+
+## Example 6: HTML Report Generation
+
+**Scenario**: Generate a visual HTML coverage report for team review.
+
+### Command
+
+```bash
+cd .github/agents/test-coverage-enforcer
+
+python -m src.agent report \
+  --path src \
+  --format html \
+  --output coverage_report.html
+```
+
+### Generated HTML Report
+
+The agent generates a styled HTML report:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Coverage Enforcement Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #333; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #4CAF50; color: white; }
+        .pass { color: green; }
+        .fail { color: red; }
+    </style>
+</head>
+<body>
+    <h1>service integration testing Report</h1>
+    <p><strong>Total files:</strong> 5</p>
+    <p><strong>Issues found:</strong> 2</p>
+
+    <h2>Coverage by File</h2>
+    <table>
+        <tr>
+            <th>File</th>
+            <th>service coverage</th>
+            <th>endpoint coverage</th>
+            <th>Status</th>
+        </tr>
+        <tr>
+            <td>src/module1.py</td>
+            <td>95.0%</td>
+            <td>100.0%</td>
+            <td class="pass">PASS</td>
+        </tr>
+        ...
+    </table>
+</body>
+</html>
+```
+
+### Usage in CI/CD
+
+```yaml
+- name: Generate HTML report
+  run: |
+    cd .github/agents/test-coverage-enforcer
+    python -m src.agent report \
+      --path src \
+      --format html \
+      --output coverage_report.html
+
+- name: Upload HTML report
+  uses: actions/upload-artifact@v3
+  with:
+    name: html-coverage-report
+    path: .github/agents/test-coverage-enforcer/coverage_report.html
+
+- name: Publish to GitHub Pages
+  uses: peaceiris/actions-gh-pages@v3
+  with:
+    github_token: ${{ secrets.GITHUB_TOKEN }}
+    publish_dir: .github/agents/test-coverage-enforcer
+    destination_dir: coverage
+```
+
+### Access Report
+
+```
+https://your-org.github.io/your-repo/coverage/coverage_report.html
+```
+
+### Key Takeaways
+
+- Visual, interactive HTML reports
+- Can be published to GitHub Pages
+- Easy to share with non-technical stakeholders
+- Color-coded status indicators
+
+---
+
+## Quick Reference
+
+### Common Commands
+
+```bash
+# Basic analysis
+python -m src.agent analyze --path src/
+
+# Enforce with custom threshold
+python -m src.agent enforce --path src/ --threshold 85
+
+# Generate test suggestions
+python -m src.agent generate-tests --path src/
+
+# Create JSON report
+python -m src.agent report --path src/ --format json --output report.json
+
+# Create HTML report
+python -m src.agent report --path src/ --format html --output report.html
+```
+
+### Configuration Tips
+
+```yaml
+# Strict enforcement for production
+thresholds:
+  line: 90
+  branch: 85
+  function: 95
+fail_build_below_threshold: true
+
+# Lenient for development
+thresholds:
+  line: 70
+  branch: 60
+  function: 75
+fail_build_below_threshold: false
+auto_generate_tests: true
+```
+
+### Troubleshooting
+
+**Issue**: "No coverage data available"
+```bash
+# Run tests with coverage first
+pytest --cov=src --cov-report=json:coverage.json
+# Then run enforcement
+python -m src.agent enforce --path src/
+```
+
+**Issue**: "ModuleNotFoundError"
+```bash
+# Add agent to PYTHONPATH
+export PYTHONPATH="${PWD}/.github/agents/test-coverage-enforcer:${PYTHONPATH}"
+```
+
+**Issue**: Too many suggestions generated
+```yaml
+# In config/agent_config.yaml
+advanced:
+  max_suggestions_per_file: 5
+  min_confidence_threshold: 0.9
 ```
 
 ---
 
-These examples cover the most common use cases for the Service Integration Tester agent. For more advanced patterns, see `advanced.md`.
+**For more examples, see:**
+- [Advanced Patterns](advanced.md)
+- [Main Prompts](main.md)
+- [README](../README.md)
 
 ---
 
 ## 🎯 Mission Overview
 
-**Agent Name**: Service Integration Tester - Usage Examples  
+**Agent Name**: Service Integration Tester Agent - Usage Examples  
 **Agent Type**: Specialized Domain  
 **Energy Level**: 3/5  
 **Operational Status**: ✅ Active
 
 ### Purpose
-This agent provides specialized functionality for service integration tester - usage examples operations within the Codex ecosystem.
+This agent provides specialized functionality for Service Integration Tester agent - usage examples operations within the Codex ecosystem.
 
 ### Core Capabilities
 - Automated execution and validation
@@ -755,7 +838,7 @@ Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporti
 ### Basic Invocation
 
 ```yaml
-agent_type: service-integration-tester---usage-examples
+agent_type: test-coverage-enforcer-agent---usage-examples
 prompt: |
   Execute standard operation with default parameters
   Target: <target>
@@ -765,7 +848,7 @@ prompt: |
 ### Advanced Usage
 
 ```yaml
-agent_type: service-integration-tester---usage-examples
+agent_type: test-coverage-enforcer-agent---usage-examples
 prompt: |
   Execute with custom configuration:
   - Parameter 1: value1
@@ -837,16 +920,16 @@ graph LR
 
 ```bash
 # Via task tool
-task agent_type="service-integration-tester---usage-examples" description="<description>" prompt="<prompt>"
+task agent_type="test-coverage-enforcer-agent---usage-examples" description="<description>" prompt="<prompt>"
 ```
 
 ### GitHub Actions Trigger
 
 ```yaml
-- name: Activate service-integration-tester---usage-examples
+- name: Activate test-coverage-enforcer-agent---usage-examples
   uses: ./.github/actions/agent-runner
   with:
-    agent: service-integration-tester---usage-examples
+    agent: test-coverage-enforcer-agent---usage-examples
     parameters: |
       target: ${{ github.workspace }}
       mode: full
@@ -858,7 +941,7 @@ task agent_type="service-integration-tester---usage-examples" description="<desc
 from agent_framework import invoke_agent
 
 result = invoke_agent(
-    agent_type="service-integration-tester---usage-examples",
+    agent_type="test-coverage-enforcer-agent---usage-examples",
     prompt="Execute operation",
     context={"target": "path/to/target"}
 )
@@ -948,6 +1031,75 @@ requests>=2.31.0
 2026-01-23T19:45:00Z [INFO] Processing item 1/10
 2026-01-23T19:45:00Z [WARN] Minor issue detected
 2026-01-23T19:45:00Z [INFO] Execution completed
+```
+
+**Last Updated**: 2026-01-23T19:45:00Z
+
+
+
+## ⚠️ Error Handling
+
+### Common Failure Modes
+
+#### 1. Input Validation Failure
+**Symptoms**: Agent rejects input parameters  
+**Recovery**:
+- Validate input format
+- Check required fields
+- Verify value ranges
+- Review examples
+
+#### 2. Resource Access Failure
+**Symptoms**: Cannot access required resources  
+**Recovery**:
+- Check permissions
+- Verify paths exist
+- Confirm network connectivity
+- Review authentication
+
+#### 3. Execution Timeout
+**Symptoms**: Operation exceeds time limit  
+**Recovery**:
+- Reduce scope of operation
+- Check for blocking operations
+- Review performance bottlenecks
+- Consider batch processing
+
+#### 4. Dependency Failure
+**Symptoms**: Required tool or service unavailable  
+**Recovery**:
+- Verify tool installation
+- Check service status
+- Review dependency versions
+- Use fallback mechanisms
+
+### Error Categories
+
+| Category | Severity | Auto-Retry | Escalation |
+|----------|----------|------------|------------|
+| Transient | Low | ✅ Yes (3x) | After retries |
+| Configuration | Medium | ❌ No | Immediate |
+| Permission | High | ❌ No | Immediate |
+| System | Critical | ⚠️ Once | Immediate |
+
+### Recovery Patterns
+
+**Pattern 1: Graceful Degradation**
+```python
+try:
+    full_operation()
+except NonCriticalError:
+    limited_operation()
+    log_warning()
+```
+
+**Pattern 2: Checkpoint Resume**
+```python
+checkpoint = load_checkpoint()
+if checkpoint:
+    resume_from(checkpoint)
+else:
+    start_fresh()
 ```
 
 **Last Updated**: 2026-01-23T19:45:00Z

@@ -1,119 +1,111 @@
 #!/usr/bin/env python3
 """
-Dependency Conflict Resolver Agent
+Test Coverage Enforcer Agent
 
-Resolves dependency version conflicts across multiple ecosystems (Python, JavaScript,
-Rust, Go) using graph analysis and semantic versioning. Integrates with
-dependency-vulnerability-scanner for security-aware resolution.
+Enforces test coverage thresholds, identifies uncovered code paths, and automatically
+generates missing tests to maintain quality standards.
 
 Component Reuse Strategy:
-- Base: dependency-vulnerability-scanner (60% reuse)
-- Extension 1: config-migration-assistant (version resolution)
-- Extension 2: semantic-search (dependency graph analysis)
+- Base: test-coverage-monitor (80% reuse)
+- Extension 1: test-alignment-fixer (auto-test generation)
+- Extension 2: integration-test-runner (enforcement workflows)
 
 Usage:
-    python -m dependency_conflict_resolver.src.agent detect --file requirements.txt
-    python -m dependency_conflict_resolver.src.agent resolve --strategy conservative
-    python -m dependency_conflict_resolver.src.agent analyze --ecosystem python
+    python -m test_coverage_enforcer.src.agent analyze --path src/
+    python -m test_coverage_enforcer.src.agent enforce --threshold 90
+    python -m test_coverage_enforcer.src.agent generate-tests --file src/module.py
 """
 
+import ast
 import json
-import re
+import subprocess
+import sys
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
-from typing import Any, Optional
+from typing import Optional
 
 import yaml
 
 
-class ResolutionStrategy(Enum):
-    """Strategy for resolving dependency conflicts"""
-    CONSERVATIVE = "conservative"  # Minimal changes, prefer lower versions
-    BALANCED = "balanced"  # Balance security and stability
-    AGGRESSIVE = "aggressive"  # Latest compatible versions
+class CoverageSeverity(Enum):
+    """Severity levels for coverage gaps"""
+    NONE = "none"
+    LOW = "low"  # 80-89%
+    MEDIUM = "medium"  # 70-79%
+    HIGH = "high"  # 60-69%
+    CRITICAL = "critical"  # <60%
 
 
-class ConflictType(Enum):
-    """Types of dependency conflicts"""
-    DIRECT = "direct"  # Direct conflict between two explicit dependencies
-    TRANSITIVE = "transitive"  # Conflict in transitive dependencies
-    CIRCULAR = "circular"  # Circular dependency detected
-    VERSION_RANGE = "version_range"  # Incompatible version ranges
-
-
-class Ecosystem(Enum):
-    """Supported dependency ecosystems"""
-    PYTHON = "python"
-    JAVASCRIPT = "javascript"
-    RUST = "rust"
-    GO = "go"
+class CoverageType(Enum):
+    """Types of code coverage metrics"""
+    LINE = "line"
+    BRANCH = "branch"
+    FUNCTION = "function"
+    STATEMENT = "statement"
 
 
 @dataclass
-class DependencyInfo:
-    """Information about a single dependency"""
-    name: str
-    version: str
-    version_constraint: str  # e.g., ">=1.0.0,<2.0.0"
-    ecosystem: Ecosystem
-    is_dev: bool = False
-    source: str = ""  # File where dependency is declared
-    line_number: Optional[int] = None
-    transitive_from: Optional[str] = None  # Parent dependency if transitive
-
-
-@dataclass
-class DependencyConflict:
-    """Represents a detected dependency conflict"""
-    conflict_type: ConflictType
-    package_name: str
-    conflicting_versions: list[str]
-    dependencies: list[DependencyInfo]
-    severity: str  # 'low', 'medium', 'high', 'critical'
+class CoverageIssue:
+    """Represents a detected coverage issue"""
+    file_path: Path
+    issue_type: str  # 'uncovered_lines', 'missing_branch', 'untested_function'
+    severity: CoverageSeverity
     description: str
-    suggested_resolution: Optional[str] = None
-    has_vulnerability: bool = False
-    vulnerability_details: Optional[dict] = None
+    line_numbers: list[int] = field(default_factory=list)
+    suggested_tests: list[str] = field(default_factory=list)
+    confidence: float = 1.0
 
 
 @dataclass
-class ResolutionPlan:
-    """Plan for resolving dependency conflicts"""
-    conflicts_detected: int
-    conflicts_to_resolve: list[DependencyConflict]
-    strategy: ResolutionStrategy
-    actions: list[dict[str, Any]] = field(default_factory=list)
-    estimated_risk: str = "low"  # 'low', 'medium', 'high'
-    requires_manual_review: bool = False
+class CoverageReport:
+    """Comprehensive coverage report for a file or module"""
+    file_path: Path
+    line_coverage: float
+    branch_coverage: float
+    function_coverage: float
+    total_lines: int
+    covered_lines: int
+    missing_lines: list[int] = field(default_factory=list)
+    partial_branches: list[int] = field(default_factory=list)
+    uncovered_functions: list[str] = field(default_factory=list)
 
 
 @dataclass
-class ConflictReport:
-    """Comprehensive report of dependency conflicts"""
-    ecosystem: Ecosystem
-    timestamp: datetime
-    total_dependencies: int
-    conflicts_found: int
-    conflicts: list[DependencyConflict]
-    dependency_graph: dict[str, list[str]] = field(default_factory=dict)
-    circular_dependencies: list[list[str]] = field(default_factory=list)
-    resolution_plan: Optional[ResolutionPlan] = None
+class TestGenerationSuggestion:
+    """Suggestion for generating new tests"""
+    target_file: Path
+    target_function: str
+    test_file: Path
+    test_template: str
+    coverage_impact: float  # Expected coverage increase (0.0 to 1.0)
+    priority: int  # 1 (highest) to 5 (lowest)
 
 
-class DependencyConflictResolver:
-    """Main agent class for dependency conflict resolution"""
+@dataclass
+class EnforcementResult:
+    """Result of enforcing coverage thresholds"""
+    passed: bool
+    current_coverage: float
+    threshold: float
+    gaps_found: int
+    suggestions_generated: int
+    enforcement_actions: list[str] = field(default_factory=list)
+
+
+class TestCoverageEnforcer:
+    """Main agent class for test coverage enforcement"""
 
     def __init__(self, config_path: Optional[Path] = None):
         """Initialize the agent with optional configuration"""
         self.config = self._load_config(config_path)
-        self.max_graph_depth = self.config.get('conflict_detection', {}).get('max_depth', 10)
-        self.check_transitive = self.config.get('conflict_detection', {}).get('check_transitive', True)
-        self.vulnerability_checking_enabled = self.config.get('vulnerability_integration', {}).get('enabled', True)
-        self.dependencies: dict[str, DependencyInfo] = {}
-        self.dependency_graph: dict[str, set[str]] = {}
-        self.conflicts: list[DependencyConflict] = []
+        self.line_threshold = self.config.get('thresholds', {}).get('line', 80)
+        self.branch_threshold = self.config.get('thresholds', {}).get('branch', 70)
+        self.function_threshold = self.config.get('thresholds', {}).get('function', 85)
+        self.auto_generate = self.config.get('auto_generate_tests', False)
+        self.issues: list[CoverageIssue] = []
+        self.reports: dict[Path, CoverageReport] = {}
 
     def _load_config(self, config_path: Optional[Path]) -> dict:
         """Load agent configuration from YAML file"""
@@ -129,656 +121,548 @@ class DependencyConflictResolver:
     def _default_config(self) -> dict:
         """Return default configuration"""
         return {
-            'agent_name': 'dependency-conflict-resolver',
+            'agent_name': 'test-coverage-enforcer',
             'version': '1.0.0',
-            'supported_ecosystems': ['python', 'javascript', 'rust', 'go'],
-            'resolution_strategies': {
-                'default': 'conservative',
-                'options': ['conservative', 'balanced', 'aggressive']
+            'capabilities': [
+                'coverage_tracking',
+                'threshold_enforcement',
+                'test_generation',
+                'trend_analysis'
+            ],
+            'thresholds': {
+                'line': 80,
+                'branch': 70,
+                'function': 85
             },
-            'conflict_detection': {
-                'check_transitive': True,
-                'max_depth': 10,
-                'ignore_dev_dependencies': False
-            },
-            'vulnerability_integration': {
+            'auto_generate_tests': False,
+            'fail_build_below_threshold': True,
+            'cognitive_brain': {
                 'enabled': True,
-                'fail_on_high_severity': True
+                'metrics': [
+                    'coverage_percentage',
+                    'gap_count',
+                    'tests_generated',
+                    'enforcement_actions'
+                ],
+                'reporting_interval': 'daily'
             }
         }
 
-    def parse_dependency_file(self, file_path: Path) -> list[DependencyInfo]:
-        """Parse a dependency file and return list of dependencies"""
-        if not file_path.exists():
-            raise FileNotFoundError(f"Dependency file not found: {file_path}")
-
-        # Detect ecosystem from filename
-        ecosystem = self._detect_ecosystem(file_path)
-
-        if ecosystem == Ecosystem.PYTHON:
-            return self._parse_python_requirements(file_path)
-        if ecosystem == Ecosystem.JAVASCRIPT:
-            return self._parse_package_json(file_path)
-        if ecosystem == Ecosystem.RUST:
-            return self._parse_cargo_toml(file_path)
-        if ecosystem == Ecosystem.GO:
-            return self._parse_go_mod(file_path)
-        raise ValueError(f"Unsupported dependency file: {file_path}")
-
-    def _detect_ecosystem(self, file_path: Path) -> Ecosystem:
-        """Detect ecosystem from file name/extension"""
-        name = file_path.name.lower()
-
-        # Check for Python files
-        if 'requirements' in name and name.endswith('.txt'):
-            return Ecosystem.PYTHON
-        if name in ('pyproject.toml',):
-            return Ecosystem.PYTHON
-        # Check for JavaScript files
-        if name in ('package.json', 'package-lock.json') or 'package' in name and name.endswith('.json'):
-            return Ecosystem.JAVASCRIPT
-        # Check for Rust files
-        if 'cargo' in name and name.endswith('.toml'):
-            return Ecosystem.RUST
-        # Check for Go files
-        if 'go.mod' in name or name == 'go.mod':
-            return Ecosystem.GO
-        raise ValueError(f"Cannot detect ecosystem for file: {file_path}")
-
-    def _parse_python_requirements(self, file_path: Path) -> list[DependencyInfo]:
-        """Parse Python requirements.txt file"""
-        dependencies = []
-
-        with open(file_path) as f:
-            for line_num, line in enumerate(f, 1):
-                line = line.strip()
-
-                # Skip comments and empty lines
-                if not line or line.startswith('#'):
-                    continue
-
-                # Parse dependency specification
-                match = re.match(r'^([a-zA-Z0-9_-]+)([>=<~!]+.+)?$', line)
-                if match:
-                    name = match.group(1)
-                    constraint = match.group(2) or ""
-                    version = self._extract_version_from_constraint(constraint)
-
-                    dependencies.append(DependencyInfo(
-                        name=name,
-                        version=version,
-                        version_constraint=constraint,
-                        ecosystem=Ecosystem.PYTHON,
-                        source=str(file_path),
-                        line_number=line_num
-                    ))
-
-        return dependencies
-
-    def _parse_package_json(self, file_path: Path) -> list[DependencyInfo]:
-        """Parse JavaScript package.json file"""
-        dependencies = []
-
-        with open(file_path) as f:
-            data = json.load(f)
-
-        # Parse dependencies
-        for dep_type in ('dependencies', 'devDependencies'):
-            deps = data.get(dep_type, {})
-            is_dev = dep_type == 'devDependencies'
-
-            for name, constraint in deps.items():
-                version = self._extract_version_from_constraint(constraint)
-
-                dependencies.append(DependencyInfo(
-                    name=name,
-                    version=version,
-                    version_constraint=constraint,
-                    ecosystem=Ecosystem.JAVASCRIPT,
-                    is_dev=is_dev,
-                    source=str(file_path)
-                ))
-
-        return dependencies
-
-    def _parse_cargo_toml(self, file_path: Path) -> list[DependencyInfo]:
-        """Parse Rust Cargo.toml file"""
-        dependencies = []
-
-        # Simple TOML parsing (basic implementation)
-        with open(file_path) as f:
-            content = f.read()
-
-        # Extract [dependencies] section
-        dep_section = re.search(r'\[dependencies\](.*?)(\[|$)', content, re.DOTALL)
-        if dep_section:
-            lines = dep_section.group(1).strip().split('\n')
-
-            for line in lines:
-                line = line.strip()
-                if not line or line.startswith('#'):
-                    continue
-
-                # Parse "name = "version"" or "name = { version = "version" }"
-                match = re.match(r'^([a-zA-Z0-9_-]+)\s*=\s*"([^"]+)"', line)
-                if not match:
-                    match = re.match(r'^([a-zA-Z0-9_-]+)\s*=\s*\{.*?version\s*=\s*"([^"]+)"', line)
-
-                if match:
-                    name = match.group(1)
-                    constraint = match.group(2)
-                    version = self._extract_version_from_constraint(constraint)
-
-                    dependencies.append(DependencyInfo(
-                        name=name,
-                        version=version,
-                        version_constraint=constraint,
-                        ecosystem=Ecosystem.RUST,
-                        source=str(file_path)
-                    ))
-
-        return dependencies
-
-    def _parse_go_mod(self, file_path: Path) -> list[DependencyInfo]:
-        """Parse Go go.mod file"""
-        dependencies = []
-
-        with open(file_path) as f:
-            in_require = False
-
-            for line in f:
-                line = line.strip()
-
-                # Track require block
-                if line.startswith('require ('):
-                    in_require = True
-                    continue
-                if in_require and line == ')':
-                    in_require = False
-                    continue
-
-                # Parse single require
-                if line.startswith('require '):
-                    line = line[8:].strip()
-
-                # Parse require line
-                if in_require or line:
-                    match = re.match(r'^([^\s]+)\s+v?([^\s]+)', line)
-                    if match:
-                        name = match.group(1)
-                        version = match.group(2)
-
-                        dependencies.append(DependencyInfo(
-                            name=name,
-                            version=version,
-                            version_constraint=f"v{version}",
-                            ecosystem=Ecosystem.GO,
-                            source=str(file_path)
-                        ))
-
-        return dependencies
-
-    def _extract_version_from_constraint(self, constraint: str) -> str:
-        """Extract a version number from a constraint string"""
-        if not constraint:
-            return "latest"
-
-        # Remove operators and extract version
-        version_match = re.search(r'(\d+\.\d+\.?\d*)', constraint)
-        if version_match:
-            return version_match.group(1)
-
-        return constraint.lstrip('>=<~^!= ')
-
-    def build_dependency_graph(self, dependencies: list[DependencyInfo]) -> dict[str, list[str]]:
-        """Build a dependency graph from list of dependencies"""
-        graph: dict[str, list[str]] = {}
-
-        # Store dependencies with unique keys to handle duplicates
-        dep_counter: dict[str, int] = {}
-
-        for dep in dependencies:
-            # Create unique key for storage
-            count = dep_counter.get(dep.name, 0)
-            dep_counter[dep.name] = count + 1
-            unique_key = f"{dep.name}_{count}" if count > 0 else dep.name
-
-            # Store in dependencies dict (override if same name)
-            self.dependencies[unique_key] = dep
-
-            if dep.name not in graph:
-                graph[dep.name] = []
-
-            # Add transitive relationship
-            if dep.transitive_from:
-                if dep.transitive_from not in graph:
-                    graph[dep.transitive_from] = []
-                graph[dep.transitive_from].append(dep.name)
-
-        self.dependency_graph = {k: set(v) for k, v in graph.items()}
-        return graph
-
-    def detect_conflicts(self) -> list[DependencyConflict]:
-        """Detect version conflicts in dependencies"""
-        conflicts = []
-
-        # Group dependencies by name (track all instances, even from same source)
-        dep_groups: dict[str, list[DependencyInfo]] = {}
-        dep_counter: dict[str, int] = {}
-
-        for dep in self.dependencies.values():
-            f"{dep.name}_{dep_counter.get(dep.name, 0)}"
-            dep_counter[dep.name] = dep_counter.get(dep.name, 0) + 1
-
-            if dep.name not in dep_groups:
-                dep_groups[dep.name] = []
-            dep_groups[dep.name].append(dep)
-
-        # Check for version conflicts
-        for name, deps in dep_groups.items():
-            if len(deps) > 1:
-                # Check if versions are compatible
-                versions = [d.version for d in deps]
-                unique_versions = list(set(versions))
-
-                # If we have different versions, check compatibility
-                if len(unique_versions) > 1 and not self._are_versions_compatible(versions, deps[0].ecosystem):
-                    conflict = DependencyConflict(
-                        conflict_type=ConflictType.DIRECT if all(not d.transitive_from for d in deps) else ConflictType.TRANSITIVE,
-                        package_name=name,
-                        conflicting_versions=unique_versions,
-                        dependencies=deps,
-                        severity=self._assess_conflict_severity(deps),
-                        description=f"Multiple incompatible versions required for {name}: {', '.join(unique_versions)}"
-                    )
-
-                    # Add resolution suggestion
-                    conflict.suggested_resolution = self._suggest_resolution(conflict)
-                    conflicts.append(conflict)
-
-        # Check for circular dependencies
-        circular = self._detect_circular_dependencies()
-        for cycle in circular:
-            conflict = DependencyConflict(
-                conflict_type=ConflictType.CIRCULAR,
-                package_name=" -> ".join(cycle),
-                conflicting_versions=[],
-                dependencies=[],
-                severity="high",
-                description=f"Circular dependency detected: {' -> '.join(cycle)}"
-            )
-            conflicts.append(conflict)
-
-        self.conflicts = conflicts
-        return conflicts
-
-    def _are_versions_compatible(self, versions: list[str], ecosystem: Ecosystem) -> bool:
-        """Check if version list is compatible
-
-        Versions are considered compatible if they only differ in patch version
-        (e.g., 2.28.0, 2.28.1, 2.28.2 are compatible).
+    def analyze_coverage(
+        self, path: Path, coverage_file: Optional[Path] = None
+    ) -> dict[Path, CoverageReport]:
         """
-        if len(versions) <= 1:
-            return True
+        Analyze test coverage for given path using coverage.py
 
-        # Remove duplicates
-        unique_versions = list(set(versions))
-        if len(unique_versions) == 1:
-            return True
+        Args:
+            path: Path to analyze (file or directory)
+            coverage_file: Optional path to existing .coverage file
 
-        # Parse versions
+        Returns:
+            Dictionary mapping file paths to coverage reports
+        """
+        if coverage_file and coverage_file.exists():
+            coverage_data = self._load_coverage_data(coverage_file)
+        else:
+            coverage_data = self._run_coverage_analysis(path)
+
+        self.reports = {}
+        for file_path, data in coverage_data.items():
+            report = self._create_coverage_report(file_path, data)
+            # Ensure key is a Path object for consistency
+            path_key = Path(file_path) if isinstance(file_path, str) else file_path
+            self.reports[path_key] = report
+
+            # Identify issues
+            self._check_coverage_thresholds(report)
+
+        return self.reports
+
+    def _run_coverage_analysis(self, path: Path) -> dict:
+        """Run pytest with coverage.py to collect coverage data"""
         try:
-            parsed_versions = []
-            for v in unique_versions:
-                if v == "latest":
-                    continue
-                match = re.match(r'^(\d+)\.(\d+)\.?(\d*).*', v)
-                if match:
-                    major = int(match.group(1))
-                    minor = int(match.group(2))
-                    patch = int(match.group(3)) if match.group(3) else 0
-                    parsed_versions.append((major, minor, patch))
+            # Run pytest with coverage
+            cmd = [
+                'python', '-m', 'pytest',
+                '--cov=' + str(path),
+                '--cov-report=json:coverage.json',
+                '--cov-report=term',
+                '-v'
+            ]
+            subprocess.run(cmd, capture_output=True, text=True, timeout=300)
 
-            if not parsed_versions or len(parsed_versions) != len(unique_versions):
-                # Can't parse all versions, consider incompatible
-                return False
+            # Load JSON coverage report
+            coverage_json = Path('coverage.json')
+            if coverage_json.exists():
+                with open(coverage_json) as f:
+                    return json.load(f).get('files', {})
 
-            # Check if all major.minor versions are the same
-            # (patch differences are okay)
-            major_minor = set((v[0], v[1]) for v in parsed_versions)
-            return len(major_minor) == 1
-
-        except (ValueError, AttributeError):
-            return False
-
-    def _assess_conflict_severity(self, deps: list[DependencyInfo]) -> str:
-        """Assess severity of a conflict"""
-        versions = [d.version for d in deps]
-
-        # Check version distance
-        try:
-            parsed = []
-            for v in versions:
-                match = re.match(r'^(\d+)', v)
-                if match:
-                    parsed.append(int(match.group(1)))
-
-            if parsed:
-                version_range = max(parsed) - min(parsed)
-                if version_range >= 2:
-                    return "critical"
-                if version_range == 1:
-                    return "high"
-                return "medium"
-        except (ValueError, AttributeError):  # invalid version format, default to low
-            pass
-
-        return "low"
-
-    def _suggest_resolution(self, conflict: DependencyConflict) -> str:
-        """Suggest a resolution for a conflict"""
-        versions = conflict.conflicting_versions
-
-        # Sort versions
-        try:
-            sorted_versions = sorted(versions, key=lambda v: [int(x) for x in re.findall(r'\d+', v)])
-
-            # Conservative: use lowest compatible version
-            # Aggressive: use highest version
-            return f"Consider using version {sorted_versions[-1]} or find a compatible range"
-        except (ValueError, TypeError):
-            return "Manual review required to resolve version conflict"
-
-    def _detect_circular_dependencies(self) -> list[list[str]]:
-        """Detect circular dependencies in the graph"""
-        cycles = []
-        visited = set()
-        rec_stack = set()
-
-        def dfs(node: str, path: list[str]) -> None:
-            visited.add(node)
-            rec_stack.add(node)
-            path.append(node)
-
-            for neighbor in self.dependency_graph.get(node, set()):
-                if neighbor not in visited:
-                    dfs(neighbor, path.copy())
-                elif neighbor in rec_stack:
-                    # Cycle detected
-                    cycle_start = path.index(neighbor)
-                    cycle = path[cycle_start:] + [neighbor]
-                    if cycle not in cycles:
-                        cycles.append(cycle)
-
-            rec_stack.remove(node)
-
-        for node in self.dependency_graph:
-            if node not in visited:
-                dfs(node, [])
-
-        return cycles
-
-    def resolve_conflicts(self, strategy: ResolutionStrategy = ResolutionStrategy.CONSERVATIVE) -> ResolutionPlan:
-        """Resolve conflicts using the specified strategy"""
-        if not self.conflicts:
-            return ResolutionPlan(
-                conflicts_detected=0,
-                conflicts_to_resolve=[],
-                strategy=strategy
-            )
-
-        plan = ResolutionPlan(
-            conflicts_detected=len(self.conflicts),
-            conflicts_to_resolve=self.conflicts.copy(),
-            strategy=strategy
-        )
-
-        for conflict in self.conflicts:
-            if conflict.conflict_type == ConflictType.CIRCULAR:
-                plan.actions.append({
-                    'type': 'manual_review',
-                    'conflict': conflict.package_name,
-                    'reason': 'Circular dependency requires manual intervention'
-                })
-                plan.requires_manual_review = True
-                continue
-
-            # Version conflict resolution
-            action = self._create_resolution_action(conflict, strategy)
-            plan.actions.append(action)
-
-        # Assess risk
-        plan.estimated_risk = self._assess_resolution_risk(plan)
-
-        return plan
-
-    def _create_resolution_action(self, conflict: DependencyConflict, strategy: ResolutionStrategy) -> dict[str, Any]:
-        """Create a resolution action for a conflict"""
-        versions = conflict.conflicting_versions
-
-        # Parse versions
-        parsed_versions = []
-        for v in versions:
-            match = re.match(r'^(\d+)\.(\d+)\.?(\d*).*', v)
-            if match:
-                major = int(match.group(1))
-                minor = int(match.group(2))
-                patch = int(match.group(3)) if match.group(3) else 0
-                parsed_versions.append((v, major, minor, patch))
-
-        if not parsed_versions:
-            return {
-                'type': 'manual_review',
-                'package': conflict.package_name,
-                'reason': 'Cannot parse version numbers'
-            }
-
-        # Select version based on strategy
-        if strategy == ResolutionStrategy.CONSERVATIVE:
-            # Use lowest stable version
-            selected = min(parsed_versions, key=lambda x: (x[1], x[2], x[3]))
-        elif strategy == ResolutionStrategy.AGGRESSIVE:
-            # Use highest version
-            selected = max(parsed_versions, key=lambda x: (x[1], x[2], x[3]))
-        else:  # BALANCED
-            # Use median version
-            sorted_versions = sorted(parsed_versions, key=lambda x: (x[1], x[2], x[3]))
-            selected = sorted_versions[len(sorted_versions) // 2]
-
-        return {
-            'type': 'update_version',
-            'package': conflict.package_name,
-            'from_versions': versions,
-            'to_version': selected[0],
-            'files': [d.source for d in conflict.dependencies]
-        }
-
-    def _assess_resolution_risk(self, plan: ResolutionPlan) -> str:
-        """Assess risk level of resolution plan"""
-        if plan.requires_manual_review:
-            return "high"
-
-        # Count major version changes
-        major_changes = 0
-        for action in plan.actions:
-            if action['type'] == 'update_version':
-                from_versions = action.get('from_versions', [])
-                to_version = action.get('to_version', '')
-
-                # Check if major version changes
-                for from_ver in from_versions:
-                    from_major = re.match(r'^(\d+)', from_ver)
-                    to_major = re.match(r'^(\d+)', to_version)
-
-                    if from_major and to_major:
-                        if from_major.group(1) != to_major.group(1):
-                            major_changes += 1
-
-        if major_changes > 2:
-            return "high"
-        if major_changes > 0:
-            return "medium"
-        return "low"
-
-    def check_vulnerabilities(self) -> dict[str, list[dict]]:
-        """Check dependencies for known vulnerabilities"""
-        if not self.vulnerability_checking_enabled:
+            return {}
+        except (subprocess.TimeoutExpired, FileNotFoundError, json.JSONDecodeError) as e:
+            print(f"Coverage analysis failed: {e}")  # codeql[py/clear-text-logging-sensitive-data]
             return {}
 
-        vulnerabilities: dict[str, list[dict]] = {}
+    def _load_coverage_data(self, coverage_file: Path) -> dict:
+        """Load coverage data from existing .coverage file"""
+        try:
+            # Use coverage.py API to read data
+            from coverage import Coverage
+            cov = Coverage(data_file=str(coverage_file))
+            cov.load()
 
-        # Mock vulnerability check (would integrate with actual scanner)
-        for dep in self.dependencies.values():
-            # Check for known vulnerable versions (simplified)
-            if self._is_vulnerable_version(dep):
-                if dep.name not in vulnerabilities:
-                    vulnerabilities[dep.name] = []
+            data = {}
+            for filename in cov.get_data().measured_files():
+                analysis = cov.analysis2(filename)
+                data[filename] = {
+                    'executed_lines': analysis[1],
+                    'missing_lines': analysis[2],
+                    'excluded_lines': analysis[3]
+                }
+            return data
+        except Exception as e:
+            print(f"Failed to load coverage data: {e}")  # codeql[py/clear-text-logging-sensitive-data]
+            return {}
 
-                vulnerabilities[dep.name].append({
-                    'severity': 'high',
-                    'cve': 'CVE-XXXX-XXXX',
-                    'description': f'Known vulnerability in {dep.name} {dep.version}'
-                })
+    def _create_coverage_report(self, file_path: str, data: dict) -> CoverageReport:
+        """Create structured coverage report from raw data"""
+        path = Path(file_path)
 
-        return vulnerabilities
+        # Extract coverage metrics
+        if isinstance(data, dict):
+            executed = set(data.get('executed_lines', []))
+            missing = list(data.get('missing_lines', []))
+            total_lines = len(executed) + len(missing)
+            covered = len(executed)
+        else:
+            total_lines = 0
+            covered = 0
+            missing = []
 
-    def _is_vulnerable_version(self, dep: DependencyInfo) -> bool:
-        """Check if a dependency version is known to be vulnerable (mock)"""
-        # This would integrate with actual vulnerability database
-        # For now, just a placeholder
-        return False
+        # Calculate coverage percentage
+        line_coverage = (covered / total_lines * 100) if total_lines > 0 else 0.0
 
-    def generate_resolution_plan(self) -> ConflictReport:
-        """Generate a comprehensive conflict resolution plan"""
-        report = ConflictReport(
-            ecosystem=list(self.dependencies.values())[0].ecosystem if self.dependencies else Ecosystem.PYTHON,
-            timestamp=datetime.now(timezone.utc),
-            total_dependencies=len(self.dependencies),
-            conflicts_found=len(self.conflicts),
-            conflicts=self.conflicts.copy(),
-            dependency_graph={k: list(v) for k, v in self.dependency_graph.items()}
+        # Parse file for functions and branches (simplified)
+        functions = self._extract_functions(path)
+        uncovered_funcs = [f for f in functions if any(line in missing for line in range(f[1], f[2]))]
+        function_coverage = ((len(functions) - len(uncovered_funcs)) / len(functions) * 100) if functions else 100.0
+
+        return CoverageReport(
+            file_path=path,
+            line_coverage=line_coverage,
+            branch_coverage=line_coverage,  # Simplified - same as line coverage
+            function_coverage=function_coverage,
+            total_lines=total_lines,
+            covered_lines=covered,
+            missing_lines=missing,
+            partial_branches=[],
+            uncovered_functions=[f[0] for f in uncovered_funcs]
         )
 
-        # Detect circular dependencies
-        report.circular_dependencies = self._detect_circular_dependencies()
+    def _extract_functions(self, file_path: Path) -> list[tuple[str, int, int]]:
+        """Extract function definitions from Python file"""
+        if not file_path.exists() or file_path.suffix != '.py':
+            return []
 
-        # Generate resolution plan
-        strategy = ResolutionStrategy[self.config.get('resolution_strategies', {}).get('default', 'conservative').upper()]
-        report.resolution_plan = self.resolve_conflicts(strategy)
+        try:
+            with open(file_path) as f:
+                tree = ast.parse(f.read())
 
-        return report
+            functions = []
+            for node in ast.walk(tree):
+                if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    functions.append((
+                        node.name,
+                        node.lineno,
+                        node.end_lineno or node.lineno
+                    ))
+            return functions
+        except Exception:
+            return []
 
-    def apply_resolution(self, plan: ResolutionPlan) -> bool:
-        """Apply resolution plan to dependency files"""
-        if plan.requires_manual_review:
-            return False
+    def _check_coverage_thresholds(self, report: CoverageReport):
+        """Check if coverage report meets thresholds and record issues"""
+        severity = self._calculate_severity(report.line_coverage)
 
-        success = True
+        # Check line coverage
+        if report.line_coverage < self.line_threshold:
+            issue = CoverageIssue(
+                file_path=report.file_path,
+                issue_type='uncovered_lines',
+                severity=severity,
+                description=f"Line coverage {report.line_coverage:.1f}% below threshold {self.line_threshold}%",
+                line_numbers=report.missing_lines,
+                confidence=1.0
+            )
+            self.issues.append(issue)
 
-        for action in plan.actions:
-            if action['type'] == 'update_version':
-                try:
-                    self._update_dependency_file(
-                        action['package'],
-                        action['to_version'],
-                        action['files']
-                    )
-                except Exception as e:
-                    print(f"Error applying resolution: {e}")  # codeql[py/clear-text-logging-sensitive-data]
-                    success = False
+        # Check function coverage
+        if report.function_coverage < self.function_threshold:
+            issue = CoverageIssue(
+                file_path=report.file_path,
+                issue_type='untested_function',
+                severity=severity,
+                description=(
+                    f"Function coverage {report.function_coverage:.1f}% below "
+                    f"threshold {self.function_threshold}%"
+                ),
+                suggested_tests=[f"test_{func}" for func in report.uncovered_functions],
+                confidence=0.9
+            )
+            self.issues.append(issue)
 
-        return success
+    def _calculate_severity(self, coverage: float) -> CoverageSeverity:
+        """Calculate severity level based on coverage percentage"""
+        if coverage >= 80:
+            return CoverageSeverity.LOW
+        if coverage >= 70:
+            return CoverageSeverity.MEDIUM
+        if coverage >= 60:
+            return CoverageSeverity.HIGH
+        return CoverageSeverity.CRITICAL
 
-    def _update_dependency_file(self, package: str, version: str, files: list[str]) -> None:
-        """Update dependency version in file"""
-        for file_path in files:
-            path = Path(file_path)
-            if not path.exists():
-                continue
+    def enforce_thresholds(self, path: Path) -> EnforcementResult:
+        """
+        Enforce coverage thresholds and take action if below threshold
 
-            # Read file
-            with open(path) as f:
-                content = f.read()
+        Args:
+            path: Path to enforce coverage for
 
-            # Update version (simple string replacement)
-            # This is a simplified implementation
-            updated = re.sub(
-                rf'({package}[>=<~!]+)[\d.]+',
-                rf'\g<1>{version}',
-                content
+        Returns:
+            EnforcementResult with enforcement outcome
+        """
+        # Analyze coverage
+        reports = self.analyze_coverage(path)
+
+        if not reports:
+            return EnforcementResult(
+                passed=False,
+                current_coverage=0.0,
+                threshold=self.line_threshold,
+                gaps_found=0,
+                suggestions_generated=0,
+                enforcement_actions=['No coverage data available']
             )
 
-            # Write back
-            with open(path, 'w') as f:
-                f.write(updated)
+        # Calculate aggregate coverage
+        total_lines = sum(r.total_lines for r in reports.values())
+        covered_lines = sum(r.covered_lines for r in reports.values())
+        current_coverage = (covered_lines / total_lines * 100) if total_lines > 0 else 0.0
 
-    def validate_resolution(self) -> tuple[bool, list[str]]:
-        """Validate that resolution doesn't introduce new conflicts"""
-        errors = []
+        # Check threshold
+        passed = current_coverage >= self.line_threshold
 
-        # Re-detect conflicts
-        new_conflicts = self.detect_conflicts()
+        # Generate test suggestions if below threshold
+        suggestions = []
+        if not passed and self.auto_generate:
+            suggestions = self.generate_test_suggestions(reports)
 
-        if new_conflicts:
-            errors.append(f"Resolution introduced {len(new_conflicts)} new conflicts")
+        actions = []
+        if not passed:
+            actions.append(f"Coverage {current_coverage:.1f}% below threshold {self.line_threshold}%")
+            actions.append(f"Found {len(self.issues)} coverage gaps")
+            if suggestions:
+                actions.append(f"Generated {len(suggestions)} test suggestions")
 
-        # Check for circular dependencies
-        circular = self._detect_circular_dependencies()
-        if circular:
-            errors.append(f"Circular dependencies still present: {len(circular)}")
+        return EnforcementResult(
+            passed=passed,
+            current_coverage=current_coverage,
+            threshold=self.line_threshold,
+            gaps_found=len(self.issues),
+            suggestions_generated=len(suggestions),
+            enforcement_actions=actions
+        )
 
-        return len(errors) == 0, errors
+    def generate_test_suggestions(
+        self, reports: dict[Path, CoverageReport]
+    ) -> list[TestGenerationSuggestion]:
+        """
+        Generate suggestions for new tests to improve coverage
 
-    def visualize_dependency_graph(self, output_path: Optional[Path] = None) -> str:
-        """Generate a text-based visualization of the dependency graph"""
-        lines = ["Dependency Graph:", "=" * 50]
+        Args:
+            reports: Coverage reports to analyze
 
-        for node, deps in sorted(self.dependency_graph.items()):
-            lines.append(f"\n{node}:")
-            for dep in sorted(deps):
-                lines.append(f"  └─ {dep}")
+        Returns:
+            List of test generation suggestions
+        """
+        suggestions = []
 
-        visualization = "\n".join(lines)
+        for file_path, report in reports.items():
+            # Skip if coverage is already good
+            if report.line_coverage >= self.line_threshold:
+                continue
 
-        if output_path:
-            with open(output_path, 'w') as f:
-                f.write(visualization)
+            # Generate suggestions for uncovered functions
+            for func_name in report.uncovered_functions:
+                test_file = self._determine_test_file(file_path)
+                test_template = self._generate_test_template(file_path, func_name)
 
-        return visualization
+                suggestion = TestGenerationSuggestion(
+                    target_file=file_path,
+                    target_function=func_name,
+                    test_file=test_file,
+                    test_template=test_template,
+                    coverage_impact=self._estimate_coverage_impact(report, func_name),
+                    priority=self._calculate_priority(report, func_name)
+                )
+                suggestions.append(suggestion)
+
+        # Sort by priority
+        suggestions.sort(key=lambda s: (s.priority, -s.coverage_impact))
+
+        return suggestions
+
+    def _determine_test_file(self, source_file: Path) -> Path:
+        """Determine the appropriate test file for a source file"""
+        # Ensure we have a Path object
+        if isinstance(source_file, str):
+            source_file = Path(source_file)
+
+        # Convert src/module.py to tests/test_module.py
+        parts = list(source_file.parts)
+
+        if 'src' in parts:
+            idx = parts.index('src')
+            parts[idx] = 'tests'
+
+        filename = source_file.stem
+        if not filename.startswith('test_'):
+            filename = f'test_{filename}'
+        parts[-1] = f'{filename}.py'
+
+        return Path(*parts)
+
+    def _generate_test_template(self, file_path: Path, func_name: str) -> str:
+        """Generate a test template for a function"""
+        module_name = file_path.stem
+
+        template = f'''
+def test_{func_name}_basic():
+    """Test {func_name} basic functionality"""
+    # TODO: Implement test for {func_name}
+    # from {module_name} import {func_name}
+    # result = {func_name}()
+    # assert result is not None
+    pass
+
+
+def test_{func_name}_edge_cases():
+    """Test {func_name} edge cases"""
+    # TODO: Test edge cases for {func_name}
+    pass
+'''
+        return template.strip()
+
+    def _estimate_coverage_impact(self, report: CoverageReport, func_name: str) -> float:
+        """Estimate how much coverage would improve by testing this function"""
+        # Simplified estimation
+        functions = self._extract_functions(report.file_path)
+        func_lines = [f for f in functions if f[0] == func_name]
+
+        if not func_lines or report.total_lines == 0:
+            return 0.0
+
+        func_line_count = func_lines[0][2] - func_lines[0][1]
+        return (func_line_count / report.total_lines) * 100
+
+    def _calculate_priority(self, report: CoverageReport, func_name: str) -> int:
+        """Calculate priority for testing a function (1=highest, 5=lowest)"""
+        # Higher priority for functions in files with very low coverage
+        if report.line_coverage < 50:
+            return 1
+        if report.line_coverage < 70:
+            return 2
+        if report.line_coverage < 80:
+            return 3
+        return 4
+
+    def generate_coverage_report(self, output_format: str = 'text') -> str:
+        """
+        Generate human-readable coverage report
+
+        Args:
+            output_format: 'text', 'json', or 'html'
+
+        Returns:
+            Formatted coverage report
+        """
+        if output_format == 'json':
+            return self._generate_json_report()
+        if output_format == 'html':
+            return self._generate_html_report()
+        return self._generate_text_report()
+
+    def _generate_text_report(self) -> str:
+        """Generate text format coverage report"""
+        lines = [
+            "=" * 80,
+            "Test Coverage Enforcement Report",
+            "=" * 80,
+            "",
+            f"Total files analyzed: {len(self.reports)}",
+            f"Coverage issues found: {len(self.issues)}",
+            ""
+        ]
+
+        if self.reports:
+            lines.append("Coverage by File:")
+            lines.append("-" * 80)
+            for path, report in self.reports.items():
+                status = "✓" if report.line_coverage >= self.line_threshold else "✗"
+                lines.append(
+                    f"{status} {path}: {report.line_coverage:.1f}% line, "
+                    f"{report.function_coverage:.1f}% function"
+                )
+
+        if self.issues:
+            lines.append("")
+            lines.append("Coverage Issues:")
+            lines.append("-" * 80)
+            for issue in self.issues:
+                lines.append(f"[{issue.severity.value.upper()}] {issue.file_path}")
+                lines.append(f"  {issue.description}")
+                if issue.suggested_tests:
+                    lines.append(f"  Suggested tests: {', '.join(issue.suggested_tests)}")
+
+        lines.append("")
+        lines.append("=" * 80)
+
+        return "\n".join(lines)
+
+    def _generate_json_report(self) -> str:
+        """Generate JSON format coverage report"""
+        data = {
+            'summary': {
+                'files_analyzed': len(self.reports),
+                'issues_found': len(self.issues),
+                'timestamp': datetime.now(timezone.utc).isoformat()
+            },
+            'reports': [
+                {
+                    'file': str(r.file_path),
+                    'line_coverage': r.line_coverage,
+                    'branch_coverage': r.branch_coverage,
+                    'function_coverage': r.function_coverage,
+                    'missing_lines': r.missing_lines
+                }
+                for r in self.reports.values()
+            ],
+            'issues': [
+                {
+                    'file': str(i.file_path),
+                    'type': i.issue_type,
+                    'severity': i.severity.value,
+                    'description': i.description
+                }
+                for i in self.issues
+            ]
+        }
+        return json.dumps(data, indent=2)
+
+    def _generate_html_report(self) -> str:
+        """Generate HTML format coverage report"""
+        html = f'''
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Coverage Enforcement Report</title>
+    <style>
+        body {{ font-family: Arial, sans-serif; margin: 20px; }}
+        h1 {{ color: #333; }}
+        table {{ border-collapse: collapse; width: 100%; }}
+        th, td {{ border: 1px solid #ddd; padding: 8px; text-align: left; }}
+        th {{ background-color: #4CAF50; color: white; }}
+        .pass {{ color: green; }}
+        .fail {{ color: red; }}
+    </style>
+</head>
+<body>
+    <h1>Test Coverage Enforcement Report</h1>
+    <p><strong>Total files:</strong> {len(self.reports)}</p>
+    <p><strong>Issues found:</strong> {len(self.issues)}</p>
+    <h2>Coverage by File</h2>
+    <table>
+        <tr>
+            <th>File</th>
+            <th>Line Coverage</th>
+            <th>Function Coverage</th>
+            <th>Status</th>
+        </tr>
+'''
+        for path, report in self.reports.items():
+            status_class = "pass" if report.line_coverage >= self.line_threshold else "fail"
+            status_text = "PASS" if report.line_coverage >= self.line_threshold else "FAIL"
+            html += f'''
+        <tr>
+            <td>{path}</td>
+            <td>{report.line_coverage:.1f}%</td>
+            <td>{report.function_coverage:.1f}%</td>
+            <td class="{status_class}">{status_text}</td>
+        </tr>
+'''
+        html += '''
+    </table>
+</body>
+</html>
+'''
+        return html
 
 
 def main():
-    """Main entry point for CLI usage"""
-    import sys
+    """CLI entry point"""
+    import argparse
 
-    if len(sys.argv) < 2:
-        print("Usage: python agent.py <command> [options]")  # codeql[py/clear-text-logging-sensitive-data]
-        print("Commands: detect, resolve, analyze, visualize")  # codeql[py/clear-text-logging-sensitive-data]
-        return
+    parser = argparse.ArgumentParser(description='Test Coverage Enforcer Agent')
+    parser.add_argument('command', choices=['analyze', 'enforce', 'generate-tests', 'report'])
+    parser.add_argument('--path', type=Path, default=Path('src'), help='Path to analyze')
+    parser.add_argument('--threshold', type=float, help='Coverage threshold percentage')
+    parser.add_argument('--format', choices=['text', 'json', 'html'], default='text')
+    parser.add_argument('--output', type=Path, help='Output file for report')
 
-    command = sys.argv[1]
-    resolver = DependencyConflictResolver()
+    args = parser.parse_args()
 
-    if command == "detect":
-        if len(sys.argv) < 3:
-            print("Usage: python agent.py detect <dependency_file>")  # codeql[py/clear-text-logging-sensitive-data]
-            return
+    agent = TestCoverageEnforcer()
 
-        file_path = Path(sys.argv[2])
-        deps = resolver.parse_dependency_file(file_path)
-        resolver.build_dependency_graph(deps)
-        conflicts = resolver.detect_conflicts()
+    if args.threshold:
+        agent.line_threshold = args.threshold
 
-        print(f"Found {len(conflicts)} conflicts:")  # codeql[py/clear-text-logging-sensitive-data]
-        for conflict in conflicts:
-            print(f"  - {conflict.description}")  # codeql[py/clear-text-logging-sensitive-data]
+    if args.command == 'analyze':
+        reports = agent.analyze_coverage(args.path)
+        print(f"Analyzed {len(reports)} files")  # codeql[py/clear-text-logging-sensitive-data]
+        for path, report in reports.items():
+            print(f"{path}: {report.line_coverage:.1f}% coverage")
 
-    elif command == "resolve":
-        print("Resolution functionality requires dependency file to be specified")  # codeql[py/clear-text-logging-sensitive-data]
+    elif args.command == 'enforce':
+        result = agent.enforce_thresholds(args.path)
+        print(f"Enforcement: {"PASSED" if result.passed else "FAILED"}")
+        print(f"Current coverage: {result.current_coverage:.1f}%")
+        print(f"Threshold: {result.threshold}%")  # codeql[py/clear-text-logging-sensitive-data]
+        for action in result.enforcement_actions:
+            print(f"  - {action}")  # codeql[py/clear-text-logging-sensitive-data]
 
-    else:
-        print(f"Unknown command: {command}")  # codeql[py/clear-text-logging-sensitive-data]
+        if not result.passed and agent.config.get('fail_build_below_threshold', True):
+            sys.exit(1)
+
+    elif args.command == 'generate-tests':
+        reports = agent.analyze_coverage(args.path)
+        suggestions = agent.generate_test_suggestions(reports)
+        print(f"Generated {len(suggestions)} test suggestions:")
+        for s in suggestions[:10]:  # Show top 10
+            print(
+                f"\nPriority {s.priority}: {s.target_function} in {s.target_file}"
+            )
+            print(f"  Impact: +{s.coverage_impact:.1f}% coverage")
+            print(f"  Test file: {s.test_file}")  # codeql[py/clear-text-logging-sensitive-data]
+
+    elif args.command == 'report':
+        agent.analyze_coverage(args.path)
+        report = agent.generate_coverage_report(args.format)
+
+        if args.output:
+            args.output.write_text(report)
+            print(f"Report saved to {args.output}")  # codeql[py/clear-text-logging-sensitive-data]
+        else:
+            print(report)  # codeql[py/clear-text-logging-sensitive-data]
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

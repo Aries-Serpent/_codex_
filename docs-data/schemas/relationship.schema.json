@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "docs-data/schemas/relationship.schema.json",
+  "title": "RelationshipRecord",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "type", "schema_version", "relationship_type", "source", "target", "source_trace", "discovered_at"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^rel_[a-f0-9]{12,}$"},
+    "type": {"const": "relationship"},
+    "schema_version": {"type": "string"},
+    "relationship_type": {"enum": ["document references document", "document references file", "document owns section", "section owns block", "action relates to file", "action blocks action", "action satisfies requirement", "decision affects requirement", "document supersedes document", "file impacts document"]},
+    "source": {"$ref": "./reference.schema.json#/$defs/endpoint"},
+    "target": {"$ref": "./reference.schema.json#/$defs/endpoint"},
+    "lifecycle_status": {"enum": ["discovered", "validated", "covered"]},
+    "source_trace": {"$ref": "./reference.schema.json#/$defs/source_trace"},
+    "discovered_at": {"type": "string"},
+    "updated_at": {"type": "string"},
+    "tags": {"type": "array", "items": {"type": "string"}},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1}
+  }
+}

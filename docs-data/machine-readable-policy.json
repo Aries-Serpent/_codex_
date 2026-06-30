@@ -1,0 +1,73 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_dir": "docs-data",
+  "generated_dir": "docs-data/generated",
+  "schemas_dir": "docs-data/schemas",
+  "candidate_extensions": [
+    ".md",
+    ".mdx",
+    ".markdown",
+    ".txt",
+    ".rst",
+    ".yaml",
+    ".yml",
+    ".toml",
+    ".json",
+    ".jsonl"
+  ],
+  "machine_readable_only_paths": [
+    "docs-data/**"
+  ],
+  "legacy_source_paths": [
+    "docs/**",
+    "planning/**",
+    "architecture/**",
+    "specs/**",
+    ".codex/**"
+  ],
+  "restricted_paths": [
+    "docs-data/**"
+  ],
+  "ignored_paths": [
+    ".git/**",
+    ".venv/**",
+    "venv/**",
+    "node_modules/**",
+    "vendor/**",
+    "dist/**",
+    "build/**",
+    "coverage/**",
+    "target/**",
+    ".next/**",
+    "__pycache__/**",
+    ".pytest_cache/**",
+    ".mypy_cache/**",
+    ".ruff_cache/**"
+  ],
+  "allowed_exceptions_file": "docs-data/allowed-source-exceptions.json",
+  "required_ingestion": {
+    "default": "requires_ingestion",
+    "allowed_states": [
+      "requires_ingestion",
+      "exempted",
+      "ignored",
+      "generated",
+      "canonical",
+      "covered"
+    ]
+  },
+  "enforcement": {
+    "default_mode": "strict",
+    "fail_on_unmanaged_candidates": true,
+    "fail_on_invalid_jsonl": true,
+    "fail_on_stale_generated_indexes": true,
+    "fail_on_broken_relationships": true,
+    "fail_on_restricted_path_prose": true
+  },
+  "agent_query_rules": {
+    "primary_interface": "mcp_tools",
+    "allow_raw_sql_for_agents": false,
+    "require_json_response": true,
+    "deterministic_output": true
+  }
+}

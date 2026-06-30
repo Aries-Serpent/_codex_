@@ -1,721 +1,668 @@
 #!/usr/bin/env python3
 """
-Service Integration Tester Agent
+Test Coverage Enforcer Agent
 
-Tests service integrations, validates cross-component interactions, and ensures API contracts
-are honored across distributed systems.
+Enforces test coverage thresholds, identifies uncovered code paths, and automatically
+generates missing tests to maintain quality standards.
 
 Component Reuse Strategy:
-- Base: integration-test-runner (60% reuse)
-- Extension 1: pii-scrubber (privacy-safe mock data generation)
-- Extension 2: rag-index-manager (service endpoint discovery)
+- Base: test-coverage-monitor (80% reuse)
+- Extension 1: test-alignment-fixer (auto-test generation)
+- Extension 2: integration-test-runner (enforcement workflows)
 
 Usage:
-    python -m service_integration_tester.src.agent test --service auth
-    python -m service_integration_tester.src.agent scan --base-url https://api.example.com
-    python -m service_integration_tester.src.agent validate-contract --spec openapi.yaml
+    python -m test_coverage_enforcer.src.agent analyze --path src/
+    python -m test_coverage_enforcer.src.agent enforce --threshold 90
+    python -m test_coverage_enforcer.src.agent generate-tests --file src/module.py
 """
 
-import hashlib
+import ast
 import json
-import re
-import shlex
 import subprocess
 import sys
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
-from typing import Any, Optional
+from typing import Optional
 
 import yaml
 
 
-class TestStatus(Enum):
-    """Status of a service integration test"""
-    PENDING = "pending"
-    RUNNING = "running"
-    SUCCESS = "success"
-    FAILURE = "failure"
-    SKIPPED = "skipped"
-    ERROR = "error"
+class CoverageSeverity(Enum):
+    """Severity levels for coverage gaps"""
+    NONE = "none"
+    LOW = "low"  # 80-89%
+    MEDIUM = "medium"  # 70-79%
+    HIGH = "high"  # 60-69%
+    CRITICAL = "critical"  # <60%
 
 
-class EndpointMethod(Enum):
-    """HTTP methods for endpoint testing"""
-    GET = "GET"
-    POST = "POST"
-    PUT = "PUT"
-    PATCH = "PATCH"
-    DELETE = "DELETE"
-    HEAD = "HEAD"
-    OPTIONS = "OPTIONS"
-
-
-class MockDataType(Enum):
-    """Types of mock data for testing"""
-    STRING = "string"
-    INT = "int"
-    FLOAT = "float"
-    BOOL = "bool"
-    EMAIL = "email"
-    PHONE = "phone"
-    NAME = "name"
-    UUID = "uuid"
-    TIMESTAMP = "timestamp"
+class CoverageType(Enum):
+    """Types of code coverage metrics"""
+    LINE = "line"
+    BRANCH = "branch"
+    FUNCTION = "function"
+    STATEMENT = "statement"
 
 
 @dataclass
-class Endpoint:
-    """Represents a service endpoint to test"""
-    path: str
-    method: EndpointMethod
-    base_url: str
-    description: str = ""
-    requires_auth: bool = False
-    expected_status: int = 200
-    timeout_ms: int = 5000
-
-
-@dataclass
-class TestResult:
-    """Result of testing a service endpoint"""
-    endpoint: Endpoint
-    status: TestStatus
-    status_code: Optional[int] = None
-    response_time_ms: Optional[float] = None
-    error: Optional[str] = None
-    validation_errors: list[str] = field(default_factory=list)
-    timestamp: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
-
-
-@dataclass
-class ServiceContract:
-    """API contract definition for a service"""
-    service_name: str
-    base_url: str
-    endpoints: list[Endpoint] = field(default_factory=list)
-    auth_type: Optional[str] = None  # 'bearer', 'api_key', 'basic', None
-    version: str = "1.0"
-
-
-@dataclass
-class IntegrationTestSuite:
-    """A suite of integration tests"""
-    name: str
+class CoverageIssue:
+    """Represents a detected coverage issue"""
+    file_path: Path
+    issue_type: str  # 'uncovered_lines', 'missing_branch', 'untested_function'
+    severity: CoverageSeverity
     description: str
-    contracts: list[ServiceContract] = field(default_factory=list)
-    setup_commands: list[str] = field(default_factory=list)
-    teardown_commands: list[str] = field(default_factory=list)
+    line_numbers: list[int] = field(default_factory=list)
+    suggested_tests: list[str] = field(default_factory=list)
+    confidence: float = 1.0
 
 
 @dataclass
-class TestMetrics:
-    """Aggregated metrics from test runs"""
-    total_tests: int = 0
-    passed: int = 0
-    failed: int = 0
-    skipped: int = 0
-    errors: int = 0
-    total_response_time_ms: float = 0.0
-    avg_response_time_ms: float = 0.0
-    min_response_time_ms: float = float('inf')
-    max_response_time_ms: float = 0.0
+class CoverageReport:
+    """Comprehensive coverage report for a file or module"""
+    file_path: Path
+    line_coverage: float
+    branch_coverage: float
+    function_coverage: float
+    total_lines: int
+    covered_lines: int
+    missing_lines: list[int] = field(default_factory=list)
+    partial_branches: list[int] = field(default_factory=list)
+    uncovered_functions: list[str] = field(default_factory=list)
 
 
-class ServiceIntegrationTester:
-    """Main agent class for service integration testing"""
+@dataclass
+class TestGenerationSuggestion:
+    """Suggestion for generating new tests"""
+    target_file: Path
+    target_function: str
+    test_file: Path
+    test_template: str
+    coverage_impact: float  # Expected coverage increase (0.0 to 1.0)
+    priority: int  # 1 (highest) to 5 (lowest)
+
+
+@dataclass
+class EnforcementResult:
+    """Result of enforcing coverage thresholds"""
+    passed: bool
+    current_coverage: float
+    threshold: float
+    gaps_found: int
+    suggestions_generated: int
+    enforcement_actions: list[str] = field(default_factory=list)
+
+
+class TestCoverageEnforcer:
+    """Main agent class for test coverage enforcement"""
 
     def __init__(self, config_path: Optional[Path] = None):
         """Initialize the agent with optional configuration"""
-        self.config = self._load_config(config_path) if config_path else {}
-        self.test_results: list[TestResult] = []
-        self.metrics = TestMetrics()
-        self.mock_data_cache: dict[str, Any] = {}
-        self.discovered_endpoints: dict[str, list[Endpoint]] = {}
+        self.config = self._load_config(config_path)
+        self.line_threshold = self.config.get('thresholds', {}).get('line', 80)
+        self.branch_threshold = self.config.get('thresholds', {}).get('branch', 70)
+        self.function_threshold = self.config.get('thresholds', {}).get('function', 85)
+        self.auto_generate = self.config.get('auto_generate_tests', False)
+        self.issues: list[CoverageIssue] = []
+        self.reports: dict[Path, CoverageReport] = {}
 
-        # PII scrubbing patterns (from pii-scrubber component)
-        self.pii_patterns = {
-            'email': re.compile(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'),
-            'phone': re.compile(r'\b(?:\+?1[-.]?)?\(?\d{3}\)?[-.]?\d{3}[-.]?\d{4}\b|\b\d{3}-\d{4}\b'),
-            'ssn': re.compile(r'\b\d{3}-\d{2}-\d{4}\b'),
-            'credit_card': re.compile(r'\b\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}\b'),
-            'ip_address': re.compile(r'\b(?:\d{1,3}\.){3}\d{1,3}\b'),
-            'aws_key': re.compile(r'AKIA[0-9A-Z]{16}'),
-        }
-
-    def _load_config(self, config_path: Path) -> dict[str, Any]:
+    def _load_config(self, config_path: Optional[Path]) -> dict:
         """Load agent configuration from YAML file"""
-        if not config_path.exists():
-            raise FileNotFoundError(f"Config file not found: {config_path}")
+        if config_path is None:
+            config_path = Path(__file__).parent.parent / "config" / "agent_config.yaml"
 
-        with open(config_path, 'r') as f:
+        if not config_path.exists():
+            return self._default_config()
+
+        with open(config_path) as f:
             return yaml.safe_load(f)
 
-    def scrub_pii(self, text: str, mode: str = "token") -> str:
-        """
-        Remove PII from text (from pii-scrubber component)
-
-        Args:
-            text: Input text potentially containing PII
-            mode: Redaction mode ('token', 'hash', 'semantic')
-
-        Returns:
-            Text with PII removed or redacted
-        """
-        result = text
-
-        for pii_type, pattern in self.pii_patterns.items():
-            if mode == "token":
-                replacement = f"[{pii_type.upper()}_REDACTED]"
-            elif mode == "hash":
-                # Preserve structure with hash
-                matches = pattern.findall(result)
-                for match in matches:
-                    hashed = hashlib.sha256(match.encode()).hexdigest()[:8]
-                    replacement = f"{pii_type}_{hashed}"
-                    result = result.replace(match, replacement)
-                continue
-            elif mode == "semantic":
-                # Keep semantic structure
-                replacement = "user@example.com" if pii_type == "email" else f"[{pii_type}]"
-            else:
-                replacement = f"[{pii_type.upper()}_REDACTED]"
-
-            result = pattern.sub(replacement, result)
-
-        return result
-
-    def generate_mock_data(self, schema: Optional[dict[str, str]] = None) -> dict[str, Any]:
-        """
-        Generate privacy-safe mock data for testing (using pii-scrubber patterns)
-
-        Args:
-            schema: Dictionary mapping field names to data types
-
-        Returns:
-            Dictionary of generated mock data
-        """
-        if schema is None:
-            schema = {'id': 'uuid', 'name': 'name', 'created_at': 'timestamp'}
-
-        mock_data = {}
-
-        for field_name, data_type in schema.items():
-            if data_type == MockDataType.STRING.value or data_type == 'string':
-                mock_data[field_name] = f"test_{field_name}_value"
-            elif data_type == MockDataType.INT.value or data_type == 'int':
-                mock_data[field_name] = 12345
-            elif data_type == MockDataType.FLOAT.value or data_type == 'float':
-                mock_data[field_name] = 123.45
-            elif data_type == MockDataType.BOOL.value or data_type == 'bool':
-                mock_data[field_name] = True
-            elif data_type == MockDataType.EMAIL.value or data_type == 'email':
-                mock_data[field_name] = "test.user@example.com"
-            elif data_type == MockDataType.PHONE.value or data_type == 'phone':
-                mock_data[field_name] = "+1-555-0123"
-            elif data_type == MockDataType.NAME.value or data_type == 'name':
-                mock_data[field_name] = "Test User"
-            elif data_type == MockDataType.UUID.value or data_type == 'uuid':
-                mock_data[field_name] = "123e4567-e89b-12d3-a456-426614174000"
-            elif data_type == MockDataType.TIMESTAMP.value or data_type == 'timestamp':
-                mock_data[field_name] = datetime.now(timezone.utc).isoformat()
-            else:
-                mock_data[field_name] = f"mock_{field_name}"
-
-        return mock_data
-
-    def scan_endpoints(
-        self,
-        base_url: str,
-        spec_source: Optional[Any] = None
-    ) -> list[Endpoint]:
-        """
-        Discover service endpoints (from rag-index-manager component)
-
-        Args:
-            base_url: Base URL of the service
-            spec_source: OpenAPI spec path, list of paths, or "common"
-
-        Returns:
-            List of discovered endpoints
-        """
-        endpoints = []
-
-        if spec_source == "common":
-            # Common health/status endpoints
-            common_paths = [
-                ("/health", EndpointMethod.GET, "Health check"),
-                ("/status", EndpointMethod.GET, "Service status"),
-                ("/ready", EndpointMethod.GET, "Readiness probe"),
-                ("/metrics", EndpointMethod.GET, "Metrics endpoint"),
-                ("/version", EndpointMethod.GET, "Version info"),
-            ]
-
-            for path, method, desc in common_paths:
-                endpoints.append(Endpoint(
-                    path=path,
-                    method=method,
-                    base_url=base_url,
-                    description=desc,
-                    requires_auth=False
-                ))
-
-        elif isinstance(spec_source, Path):
-            # Parse OpenAPI specification
-            if spec_source.exists():
-                with open(spec_source, 'r') as f:
-                    spec = yaml.safe_load(f)
-
-                paths = spec.get('paths', {})
-                for path, methods in paths.items():
-                    for method, details in methods.items():
-                        if method.upper() in [m.value for m in EndpointMethod]:
-                            endpoints.append(Endpoint(
-                                path=path,
-                                method=EndpointMethod[method.upper()],
-                                base_url=base_url,
-                                description=details.get('summary', ''),
-                                requires_auth='security' in details
-                            ))
-
-        elif isinstance(spec_source, list):
-            # Direct list of endpoint definitions
-            for item in spec_source:
-                if isinstance(item, dict):
-                    endpoints.append(Endpoint(
-                        path=item.get('path', '/'),
-                        method=EndpointMethod[item.get('method', 'GET').upper()],
-                        base_url=base_url,
-                        description=item.get('description', ''),
-                        requires_auth=item.get('requires_auth', False)
-                    ))
-
-        # Cache discovered endpoints
-        self.discovered_endpoints[base_url] = endpoints
-
-        return endpoints
-
-    def test_endpoint_sync(
-        self,
-        endpoint: Endpoint,
-        headers: Optional[dict[str, str]] = None,
-        payload: Optional[dict[str, Any]] = None,
-        expected_status: Optional[int] = None
-    ) -> TestResult:
-        """
-        Test a single endpoint synchronously (mock implementation)
-
-        Args:
-            endpoint: Endpoint to test
-            headers: Optional HTTP headers
-            payload: Optional request payload
-            expected_status: Expected HTTP status code
-
-        Returns:
-            Test result
-        """
-        # This is a mock implementation for testing
-        # In production, this would use requests library or httpx
-
-        start_time = datetime.now(timezone.utc)
-
-        try:
-            # Simulate HTTP request
-            full_url = f"{endpoint.base_url}{endpoint.path}"
-
-            # Scrub any PII from payload if present
-            if payload:
-                self.scrub_pii(json.dumps(payload), mode="token")
-
-            # Mock response simulation
-            # In real implementation, would be: response = requests.request(endpoint.method.value, full_url, ...)
-
-            # Simulate network delay
-            response_time_ms = 50.0 + (hash(full_url) % 200)
-
-            # Simulate status code
-            if endpoint.path in ['/health', '/status', '/ready']:
-                status_code = 200
-            elif endpoint.method == EndpointMethod.POST:
-                status_code = 201
-            else:
-                status_code = 200
-
-            # Check against expected status
-            expected = expected_status or endpoint.expected_status
-            status = TestStatus.SUCCESS if status_code == expected else TestStatus.FAILURE
-
-            result = TestResult(
-                endpoint=endpoint,
-                status=status,
-                status_code=status_code,
-                response_time_ms=response_time_ms,
-                timestamp=start_time
-            )
-
-            # Update metrics
-            self.test_results.append(result)
-            self._update_metrics(result)
-
-            return result
-
-        except Exception as e:
-            result = TestResult(
-                endpoint=endpoint,
-                status=TestStatus.ERROR,
-                error=str(e),
-                timestamp=start_time
-            )
-            self.test_results.append(result)
-            self._update_metrics(result)
-            return result
-
-    def test_service_contract(
-        self,
-        contract: ServiceContract,
-        auth_token: Optional[str] = None
-    ) -> list[TestResult]:
-        """
-        Test all endpoints in a service contract
-
-        Args:
-            contract: Service contract to test
-            auth_token: Optional authentication token
-
-        Returns:
-            List of test results for all endpoints
-        """
-        results = []
-        headers = {}
-
-        if auth_token and contract.auth_type == 'bearer':
-            headers['Authorization'] = f'Bearer {auth_token}'
-        elif auth_token and contract.auth_type == 'api_key':
-            headers['X-API-Key'] = auth_token
-
-        for endpoint in contract.endpoints:
-            result = self.test_endpoint_sync(endpoint, headers=headers)
-            results.append(result)
-
-        return results
-
-    def run_integration_suite(
-        self,
-        suite: IntegrationTestSuite,
-        verbose: bool = False
-    ) -> tuple[bool, TestMetrics]:
-        """
-        Run a complete integration test suite
-
-        Args:
-            suite: Test suite to run
-            verbose: Enable verbose output
-
-        Returns:
-            Tuple of (success, metrics)
-        """
-        # Run setup commands
-        for cmd in suite.setup_commands:
-            if verbose:
-                print(f"Setup: {cmd}")  # codeql[py/clear-text-logging-sensitive-data]
-            try:
-                # Convert string command to list to prevent shell injection
-                cmd_list = shlex.split(cmd) if isinstance(cmd, str) else cmd
-                subprocess.run(cmd_list, shell=False, capture_output=True, check=True)
-            except subprocess.CalledProcessError as e:
-                if verbose:
-                    print(f"Setup command failed: {cmd}")  # codeql[py/clear-text-logging-sensitive-data]
-                    print(f"Error: {e}")  # codeql[py/clear-text-logging-sensitive-data]
-                # Continue with other setup commands
-
-        all_results = []
-
-        try:
-            # Test each service contract
-            for contract in suite.contracts:
-                if verbose:
-                    print(f"\nTesting service: {contract.service_name}")  # codeql[py/clear-text-logging-sensitive-data]
-
-                results = self.test_service_contract(contract)
-                all_results.extend(results)
-
-                if verbose:
-                    passed = sum(1 for r in results if r.status == TestStatus.SUCCESS)
-                    print(f"  Results: {passed}/{len(results)} passed")  # codeql[py/clear-text-logging-sensitive-data]
-
-        finally:
-            # Run teardown commands
-            for cmd in suite.teardown_commands:
-                if verbose:
-                    print(f"Teardown: {cmd}")  # codeql[py/clear-text-logging-sensitive-data]
-                try:
-                    # Convert string command to list to prevent shell injection
-                    cmd_list = shlex.split(cmd) if isinstance(cmd, str) else cmd
-                    subprocess.run(cmd_list, shell=False, capture_output=True, check=True)
-                except subprocess.CalledProcessError as e:
-                    if verbose:
-                        print(f"Teardown command failed: {cmd}")  # codeql[py/clear-text-logging-sensitive-data]
-                        print(f"Error: {e}")  # codeql[py/clear-text-logging-sensitive-data]
-                    # Continue with other teardown commands
-
-        # Determine overall success
-        success = all(r.status == TestStatus.SUCCESS for r in all_results)
-
-        return success, self.metrics
-
-    def validate_contract_compliance(
-        self,
-        spec_path: Path,
-        base_url: str
-    ) -> tuple[bool, list[str]]:
-        """
-        Validate that service implementation matches OpenAPI contract
-
-        Args:
-            spec_path: Path to OpenAPI specification
-            base_url: Base URL of service to test
-
-        Returns:
-            Tuple of (compliant, violations)
-        """
-        violations = []
-
-        # Discover endpoints from spec
-        endpoints = self.scan_endpoints(base_url, spec_path)
-
-        if not endpoints:
-            violations.append("No endpoints discovered from specification")
-            return False, violations
-
-        # Test each endpoint
-        for endpoint in endpoints:
-            result = self.test_endpoint_sync(endpoint)
-
-            if result.status != TestStatus.SUCCESS:
-                violations.append(
-                    f"{endpoint.method.value} {endpoint.path}: "
-                    f"Expected {endpoint.expected_status}, got {result.status_code}"
-                )
-
-            if result.validation_errors:
-                violations.extend(result.validation_errors)
-
-        compliant = len(violations) == 0
-        return compliant, violations
-
-    def get_metrics(self) -> dict[str, Any]:
-        """Get current test metrics"""
+    def _default_config(self) -> dict:
+        """Return default configuration"""
         return {
-            'total_tests': self.metrics.total_tests,
-            'passed': self.metrics.passed,
-            'failed': self.metrics.failed,
-            'skipped': self.metrics.skipped,
-            'errors': self.metrics.errors,
-            'success_rate': (
-                self.metrics.passed / self.metrics.total_tests
-                if self.metrics.total_tests > 0 else 0.0
-            ),
-            'total_response_time_ms': self.metrics.total_response_time_ms,
-            'avg_response_time_ms': self.metrics.avg_response_time_ms,
-            'min_response_time_ms': (
-                self.metrics.min_response_time_ms
-                if self.metrics.min_response_time_ms != float('inf') else 0.0
-            ),
-            'max_response_time_ms': self.metrics.max_response_time_ms,
+            'agent_name': 'test-coverage-enforcer',
+            'version': '1.0.0',
+            'capabilities': [
+                'coverage_tracking',
+                'threshold_enforcement',
+                'test_generation',
+                'trend_analysis'
+            ],
+            'thresholds': {
+                'line': 80,
+                'branch': 70,
+                'function': 85
+            },
+            'auto_generate_tests': False,
+            'fail_build_below_threshold': True,
+            'cognitive_brain': {
+                'enabled': True,
+                'metrics': [
+                    'coverage_percentage',
+                    'gap_count',
+                    'tests_generated',
+                    'enforcement_actions'
+                ],
+                'reporting_interval': 'daily'
+            }
         }
 
-    def generate_report(self, output_path: Optional[Path] = None) -> str:
+    def analyze_coverage(
+        self, path: Path, coverage_file: Optional[Path] = None
+    ) -> dict[Path, CoverageReport]:
         """
-        Generate a comprehensive test report
+        Analyze test coverage for given path using coverage.py
 
         Args:
-            output_path: Optional path to write report
+            path: Path to analyze (file or directory)
+            coverage_file: Optional path to existing .coverage file
 
         Returns:
-            Report as string
+            Dictionary mapping file paths to coverage reports
         """
-        lines = []
-        lines.append("=" * 70)
-        lines.append("SERVICE INTEGRATION TEST REPORT")
-        lines.append("=" * 70)
-        lines.append(f"Generated: {datetime.now(timezone.utc).isoformat()}")
-        lines.append("")
+        if coverage_file and coverage_file.exists():
+            coverage_data = self._load_coverage_data(coverage_file)
+        else:
+            coverage_data = self._run_coverage_analysis(path)
 
-        metrics = self.get_metrics()
-        lines.append("SUMMARY")
-        lines.append("-" * 70)
-        lines.append(f"Total Tests:    {metrics['total_tests']}")
-        lines.append(f"Passed:         {metrics['passed']}")
-        lines.append(f"Failed:         {metrics['failed']}")
-        lines.append(f"Errors:         {metrics['errors']}")
-        lines.append(f"Skipped:        {metrics['skipped']}")
-        lines.append(f"Success Rate:   {metrics['success_rate']*100:.1f}%")
-        lines.append("")
-        lines.append(f"Avg Response:   {metrics['avg_response_time_ms']:.2f}ms")
-        lines.append(f"Min Response:   {metrics['min_response_time_ms']:.2f}ms")
-        lines.append(f"Max Response:   {metrics['max_response_time_ms']:.2f}ms")
-        lines.append("")
+        self.reports = {}
+        for file_path, data in coverage_data.items():
+            report = self._create_coverage_report(file_path, data)
+            # Ensure key is a Path object for consistency
+            path_key = Path(file_path) if isinstance(file_path, str) else file_path
+            self.reports[path_key] = report
 
-        # Group results by service
-        by_service: dict[str, list[TestResult]] = {}
-        for result in self.test_results:
-            service = result.endpoint.base_url
-            if service not in by_service:
-                by_service[service] = []
-            by_service[service].append(result)
+            # Identify issues
+            self._check_coverage_thresholds(report)
 
-        lines.append("RESULTS BY SERVICE")
-        lines.append("-" * 70)
-        for service, results in by_service.items():
-            passed = sum(1 for r in results if r.status == TestStatus.SUCCESS)
-            lines.append(f"\n{service}")
-            lines.append(f"  Tests: {len(results)}, Passed: {passed}/{len(results)}")
+        return self.reports
 
-            for result in results:
-                status_icon = "✅" if result.status == TestStatus.SUCCESS else "❌"
-                lines.append(
-                    f"  {status_icon} {result.endpoint.method.value} {result.endpoint.path} "
-                    f"({result.status_code}, {result.response_time_ms:.0f}ms)"
-                )
-                if result.error:
-                    lines.append(f"     Error: {result.error}")
+    def _run_coverage_analysis(self, path: Path) -> dict:
+        """Run pytest with coverage.py to collect coverage data"""
+        try:
+            # Run pytest with coverage
+            cmd = [
+                'python', '-m', 'pytest',
+                '--cov=' + str(path),
+                '--cov-report=json:coverage.json',
+                '--cov-report=term',
+                '-v'
+            ]
+            subprocess.run(cmd, capture_output=True, text=True, timeout=300)
 
-        lines.append("")
-        lines.append("=" * 70)
+            # Load JSON coverage report
+            coverage_json = Path('coverage.json')
+            if coverage_json.exists():
+                with open(coverage_json) as f:
+                    return json.load(f).get('files', {})
 
-        report = "\n".join(lines)
+            return {}
+        except (subprocess.TimeoutExpired, FileNotFoundError, json.JSONDecodeError) as e:
+            print(f"Coverage analysis failed: {e}")  # codeql[py/clear-text-logging-sensitive-data]
+            return {}
 
-        if output_path:
-            with open(output_path, 'w') as f:
-                f.write(report)
+    def _load_coverage_data(self, coverage_file: Path) -> dict:
+        """Load coverage data from existing .coverage file"""
+        try:
+            # Use coverage.py API to read data
+            from coverage import Coverage
+            cov = Coverage(data_file=str(coverage_file))
+            cov.load()
 
-        return report
-
-    def export_results_json(self, output_path: Path) -> None:
-        """Export test results as JSON"""
-        data = {
-            'timestamp': datetime.now(timezone.utc).isoformat(),
-            'metrics': self.get_metrics(),
-            'results': [
-                {
-                    'endpoint': {
-                        'path': r.endpoint.path,
-                        'method': r.endpoint.method.value,
-                        'base_url': r.endpoint.base_url,
-                    },
-                    'status': r.status.value,
-                    'status_code': r.status_code,
-                    'response_time_ms': r.response_time_ms,
-                    'error': r.error,
-                    'validation_errors': r.validation_errors,
-                    'timestamp': r.timestamp.isoformat(),
+            data = {}
+            for filename in cov.get_data().measured_files():
+                analysis = cov.analysis2(filename)
+                data[filename] = {
+                    'executed_lines': analysis[1],
+                    'missing_lines': analysis[2],
+                    'excluded_lines': analysis[3]
                 }
-                for r in self.test_results
+            return data
+        except Exception as e:
+            print(f"Failed to load coverage data: {e}")  # codeql[py/clear-text-logging-sensitive-data]
+            return {}
+
+    def _create_coverage_report(self, file_path: str, data: dict) -> CoverageReport:
+        """Create structured coverage report from raw data"""
+        path = Path(file_path)
+
+        # Extract coverage metrics
+        if isinstance(data, dict):
+            executed = set(data.get('executed_lines', []))
+            missing = list(data.get('missing_lines', []))
+            total_lines = len(executed) + len(missing)
+            covered = len(executed)
+        else:
+            total_lines = 0
+            covered = 0
+            missing = []
+
+        # Calculate coverage percentage
+        line_coverage = (covered / total_lines * 100) if total_lines > 0 else 0.0
+
+        # Parse file for functions and branches (simplified)
+        functions = self._extract_functions(path)
+        uncovered_funcs = [f for f in functions if any(line in missing for line in range(f[1], f[2]))]
+        function_coverage = ((len(functions) - len(uncovered_funcs)) / len(functions) * 100) if functions else 100.0
+
+        return CoverageReport(
+            file_path=path,
+            line_coverage=line_coverage,
+            branch_coverage=line_coverage,  # Simplified - same as line coverage
+            function_coverage=function_coverage,
+            total_lines=total_lines,
+            covered_lines=covered,
+            missing_lines=missing,
+            partial_branches=[],
+            uncovered_functions=[f[0] for f in uncovered_funcs]
+        )
+
+    def _extract_functions(self, file_path: Path) -> list[tuple[str, int, int]]:
+        """Extract function definitions from Python file"""
+        if not file_path.exists() or file_path.suffix != '.py':
+            return []
+
+        try:
+            with open(file_path) as f:
+                tree = ast.parse(f.read())
+
+            functions = []
+            for node in ast.walk(tree):
+                if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    functions.append((
+                        node.name,
+                        node.lineno,
+                        node.end_lineno or node.lineno
+                    ))
+            return functions
+        except Exception:
+            return []
+
+    def _check_coverage_thresholds(self, report: CoverageReport):
+        """Check if coverage report meets thresholds and record issues"""
+        severity = self._calculate_severity(report.line_coverage)
+
+        # Check line coverage
+        if report.line_coverage < self.line_threshold:
+            issue = CoverageIssue(
+                file_path=report.file_path,
+                issue_type='uncovered_lines',
+                severity=severity,
+                description=f"Line coverage {report.line_coverage:.1f}% below threshold {self.line_threshold}%",
+                line_numbers=report.missing_lines,
+                confidence=1.0
+            )
+            self.issues.append(issue)
+
+        # Check function coverage
+        if report.function_coverage < self.function_threshold:
+            issue = CoverageIssue(
+                file_path=report.file_path,
+                issue_type='untested_function',
+                severity=severity,
+                description=(
+                    f"Function coverage {report.function_coverage:.1f}% below "
+                    f"threshold {self.function_threshold}%"
+                ),
+                suggested_tests=[f"test_{func}" for func in report.uncovered_functions],
+                confidence=0.9
+            )
+            self.issues.append(issue)
+
+    def _calculate_severity(self, coverage: float) -> CoverageSeverity:
+        """Calculate severity level based on coverage percentage"""
+        if coverage >= 80:
+            return CoverageSeverity.LOW
+        if coverage >= 70:
+            return CoverageSeverity.MEDIUM
+        if coverage >= 60:
+            return CoverageSeverity.HIGH
+        return CoverageSeverity.CRITICAL
+
+    def enforce_thresholds(self, path: Path) -> EnforcementResult:
+        """
+        Enforce coverage thresholds and take action if below threshold
+
+        Args:
+            path: Path to enforce coverage for
+
+        Returns:
+            EnforcementResult with enforcement outcome
+        """
+        # Analyze coverage
+        reports = self.analyze_coverage(path)
+
+        if not reports:
+            return EnforcementResult(
+                passed=False,
+                current_coverage=0.0,
+                threshold=self.line_threshold,
+                gaps_found=0,
+                suggestions_generated=0,
+                enforcement_actions=['No coverage data available']
+            )
+
+        # Calculate aggregate coverage
+        total_lines = sum(r.total_lines for r in reports.values())
+        covered_lines = sum(r.covered_lines for r in reports.values())
+        current_coverage = (covered_lines / total_lines * 100) if total_lines > 0 else 0.0
+
+        # Check threshold
+        passed = current_coverage >= self.line_threshold
+
+        # Generate test suggestions if below threshold
+        suggestions = []
+        if not passed and self.auto_generate:
+            suggestions = self.generate_test_suggestions(reports)
+
+        actions = []
+        if not passed:
+            actions.append(f"Coverage {current_coverage:.1f}% below threshold {self.line_threshold}%")
+            actions.append(f"Found {len(self.issues)} coverage gaps")
+            if suggestions:
+                actions.append(f"Generated {len(suggestions)} test suggestions")
+
+        return EnforcementResult(
+            passed=passed,
+            current_coverage=current_coverage,
+            threshold=self.line_threshold,
+            gaps_found=len(self.issues),
+            suggestions_generated=len(suggestions),
+            enforcement_actions=actions
+        )
+
+    def generate_test_suggestions(
+        self, reports: dict[Path, CoverageReport]
+    ) -> list[TestGenerationSuggestion]:
+        """
+        Generate suggestions for new tests to improve coverage
+
+        Args:
+            reports: Coverage reports to analyze
+
+        Returns:
+            List of test generation suggestions
+        """
+        suggestions = []
+
+        for file_path, report in reports.items():
+            # Skip if coverage is already good
+            if report.line_coverage >= self.line_threshold:
+                continue
+
+            # Generate suggestions for uncovered functions
+            for func_name in report.uncovered_functions:
+                test_file = self._determine_test_file(file_path)
+                test_template = self._generate_test_template(file_path, func_name)
+
+                suggestion = TestGenerationSuggestion(
+                    target_file=file_path,
+                    target_function=func_name,
+                    test_file=test_file,
+                    test_template=test_template,
+                    coverage_impact=self._estimate_coverage_impact(report, func_name),
+                    priority=self._calculate_priority(report, func_name)
+                )
+                suggestions.append(suggestion)
+
+        # Sort by priority
+        suggestions.sort(key=lambda s: (s.priority, -s.coverage_impact))
+
+        return suggestions
+
+    def _determine_test_file(self, source_file: Path) -> Path:
+        """Determine the appropriate test file for a source file"""
+        # Ensure we have a Path object
+        if isinstance(source_file, str):
+            source_file = Path(source_file)
+
+        # Convert src/module.py to tests/test_module.py
+        parts = list(source_file.parts)
+
+        if 'src' in parts:
+            idx = parts.index('src')
+            parts[idx] = 'tests'
+
+        filename = source_file.stem
+        if not filename.startswith('test_'):
+            filename = f'test_{filename}'
+        parts[-1] = f'{filename}.py'
+
+        return Path(*parts)
+
+    def _generate_test_template(self, file_path: Path, func_name: str) -> str:
+        """Generate a test template for a function"""
+        module_name = file_path.stem
+
+        template = f'''
+def test_{func_name}_basic():
+    """Test {func_name} basic functionality"""
+    # TODO: Implement test for {func_name}
+    # from {module_name} import {func_name}
+    # result = {func_name}()
+    # assert result is not None
+    pass
+
+
+def test_{func_name}_edge_cases():
+    """Test {func_name} edge cases"""
+    # TODO: Test edge cases for {func_name}
+    pass
+'''
+        return template.strip()
+
+    def _estimate_coverage_impact(self, report: CoverageReport, func_name: str) -> float:
+        """Estimate how much coverage would improve by testing this function"""
+        # Simplified estimation
+        functions = self._extract_functions(report.file_path)
+        func_lines = [f for f in functions if f[0] == func_name]
+
+        if not func_lines or report.total_lines == 0:
+            return 0.0
+
+        func_line_count = func_lines[0][2] - func_lines[0][1]
+        return (func_line_count / report.total_lines) * 100
+
+    def _calculate_priority(self, report: CoverageReport, func_name: str) -> int:
+        """Calculate priority for testing a function (1=highest, 5=lowest)"""
+        # Higher priority for functions in files with very low coverage
+        if report.line_coverage < 50:
+            return 1
+        if report.line_coverage < 70:
+            return 2
+        if report.line_coverage < 80:
+            return 3
+        return 4
+
+    def generate_coverage_report(self, output_format: str = 'text') -> str:
+        """
+        Generate human-readable coverage report
+
+        Args:
+            output_format: 'text', 'json', or 'html'
+
+        Returns:
+            Formatted coverage report
+        """
+        if output_format == 'json':
+            return self._generate_json_report()
+        if output_format == 'html':
+            return self._generate_html_report()
+        return self._generate_text_report()
+
+    def _generate_text_report(self) -> str:
+        """Generate text format coverage report"""
+        lines = [
+            "=" * 80,
+            "Test Coverage Enforcement Report",
+            "=" * 80,
+            "",
+            f"Total files analyzed: {len(self.reports)}",
+            f"Coverage issues found: {len(self.issues)}",
+            ""
+        ]
+
+        if self.reports:
+            lines.append("Coverage by File:")
+            lines.append("-" * 80)
+            for path, report in self.reports.items():
+                status = "✓" if report.line_coverage >= self.line_threshold else "✗"
+                lines.append(
+                    f"{status} {path}: {report.line_coverage:.1f}% line, "
+                    f"{report.function_coverage:.1f}% function"
+                )
+
+        if self.issues:
+            lines.append("")
+            lines.append("Coverage Issues:")
+            lines.append("-" * 80)
+            for issue in self.issues:
+                lines.append(f"[{issue.severity.value.upper()}] {issue.file_path}")
+                lines.append(f"  {issue.description}")
+                if issue.suggested_tests:
+                    lines.append(f"  Suggested tests: {', '.join(issue.suggested_tests)}")
+
+        lines.append("")
+        lines.append("=" * 80)
+
+        return "\n".join(lines)
+
+    def _generate_json_report(self) -> str:
+        """Generate JSON format coverage report"""
+        data = {
+            'summary': {
+                'files_analyzed': len(self.reports),
+                'issues_found': len(self.issues),
+                'timestamp': datetime.now(timezone.utc).isoformat()
+            },
+            'reports': [
+                {
+                    'file': str(r.file_path),
+                    'line_coverage': r.line_coverage,
+                    'branch_coverage': r.branch_coverage,
+                    'function_coverage': r.function_coverage,
+                    'missing_lines': r.missing_lines
+                }
+                for r in self.reports.values()
+            ],
+            'issues': [
+                {
+                    'file': str(i.file_path),
+                    'type': i.issue_type,
+                    'severity': i.severity.value,
+                    'description': i.description
+                }
+                for i in self.issues
             ]
         }
+        return json.dumps(data, indent=2)
 
-        with open(output_path, 'w') as f:
-            json.dump(data, f, indent=2)
-
-    def _update_metrics(self, result: TestResult) -> None:
-        """Update aggregated metrics with new test result"""
-        self.metrics.total_tests += 1
-
-        if result.status == TestStatus.SUCCESS:
-            self.metrics.passed += 1
-        elif result.status == TestStatus.FAILURE:
-            self.metrics.failed += 1
-        elif result.status == TestStatus.SKIPPED:
-            self.metrics.skipped += 1
-        elif result.status == TestStatus.ERROR:
-            self.metrics.errors += 1
-
-        if result.response_time_ms is not None:
-            self.metrics.total_response_time_ms += result.response_time_ms
-            self.metrics.min_response_time_ms = min(
-                self.metrics.min_response_time_ms,
-                result.response_time_ms
-            )
-            self.metrics.max_response_time_ms = max(
-                self.metrics.max_response_time_ms,
-                result.response_time_ms
-            )
-
-            # Update average
-            if self.metrics.total_tests > 0:
-                self.metrics.avg_response_time_ms = (
-                    self.metrics.total_response_time_ms / self.metrics.total_tests
-                )
+    def _generate_html_report(self) -> str:
+        """Generate HTML format coverage report"""
+        html = f'''
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Coverage Enforcement Report</title>
+    <style>
+        body {{ font-family: Arial, sans-serif; margin: 20px; }}
+        h1 {{ color: #333; }}
+        table {{ border-collapse: collapse; width: 100%; }}
+        th, td {{ border: 1px solid #ddd; padding: 8px; text-align: left; }}
+        th {{ background-color: #4CAF50; color: white; }}
+        .pass {{ color: green; }}
+        .fail {{ color: red; }}
+    </style>
+</head>
+<body>
+    <h1>Test Coverage Enforcement Report</h1>
+    <p><strong>Total files:</strong> {len(self.reports)}</p>
+    <p><strong>Issues found:</strong> {len(self.issues)}</p>
+    <h2>Coverage by File</h2>
+    <table>
+        <tr>
+            <th>File</th>
+            <th>Line Coverage</th>
+            <th>Function Coverage</th>
+            <th>Status</th>
+        </tr>
+'''
+        for path, report in self.reports.items():
+            status_class = "pass" if report.line_coverage >= self.line_threshold else "fail"
+            status_text = "PASS" if report.line_coverage >= self.line_threshold else "FAIL"
+            html += f'''
+        <tr>
+            <td>{path}</td>
+            <td>{report.line_coverage:.1f}%</td>
+            <td>{report.function_coverage:.1f}%</td>
+            <td class="{status_class}">{status_text}</td>
+        </tr>
+'''
+        html += '''
+    </table>
+</body>
+</html>
+'''
+        return html
 
 
 def main():
     """CLI entry point"""
     import argparse
 
-    parser = argparse.ArgumentParser(description="Service Integration Tester Agent")
-    parser.add_argument(
-        'command',
-        choices=['test', 'scan', 'validate-contract', 'generate-report'],
-        help='Command to execute'
-    )
-    parser.add_argument('--service', help='Service name or URL')
-    parser.add_argument('--base-url', help='Base URL of service')
-    parser.add_argument('--spec', type=Path, help='Path to OpenAPI specification')
-    parser.add_argument('--config', type=Path, help='Path to agent configuration')
-    parser.add_argument('--output', type=Path, help='Output file path')
-    parser.add_argument('--verbose', action='store_true', help='Verbose output')
+    parser = argparse.ArgumentParser(description='Test Coverage Enforcer Agent')
+    parser.add_argument('command', choices=['analyze', 'enforce', 'generate-tests', 'report'])
+    parser.add_argument('--path', type=Path, default=Path('src'), help='Path to analyze')
+    parser.add_argument('--threshold', type=float, help='Coverage threshold percentage')
+    parser.add_argument('--format', choices=['text', 'json', 'html'], default='text')
+    parser.add_argument('--output', type=Path, help='Output file for report')
 
     args = parser.parse_args()
 
-    tester = ServiceIntegrationTester(args.config)
+    agent = TestCoverageEnforcer()
 
-    if args.command == 'test':
-        if not args.base_url:
-            print("Error: --base-url required for test command")  # codeql[py/clear-text-logging-sensitive-data]
-            return 1
+    if args.threshold:
+        agent.line_threshold = args.threshold
 
-        endpoints = tester.scan_endpoints(args.base_url, "common")
-        print(f"Testing {len(endpoints)} endpoints...")  # codeql[py/clear-text-logging-sensitive-data]
+    if args.command == 'analyze':
+        reports = agent.analyze_coverage(args.path)
+        print(f"Analyzed {len(reports)} files")  # codeql[py/clear-text-logging-sensitive-data]
+        for path, report in reports.items():
+            print(f"{path}: {report.line_coverage:.1f}% coverage")
 
-        for endpoint in endpoints:
-            result = tester.test_endpoint_sync(endpoint)
-            status_icon = "✅" if result.status == TestStatus.SUCCESS else "❌"
-            print(f"{status_icon} {endpoint.method.value} {endpoint.path}: {result.status_code}")  # codeql[py/clear-text-logging-sensitive-data]
+    elif args.command == 'enforce':
+        result = agent.enforce_thresholds(args.path)
+        print(f"Enforcement: {"PASSED" if result.passed else "FAILED"}")
+        print(f"Current coverage: {result.current_coverage:.1f}%")
+        print(f"Threshold: {result.threshold}%")  # codeql[py/clear-text-logging-sensitive-data]
+        for action in result.enforcement_actions:
+            print(f"  - {action}")  # codeql[py/clear-text-logging-sensitive-data]
 
-    elif args.command == 'scan':
-        if not args.base_url:
-            print("Error: --base-url required for scan command")  # codeql[py/clear-text-logging-sensitive-data]
-            return 1
+        if not result.passed and agent.config.get('fail_build_below_threshold', True):
+            sys.exit(1)
 
-        spec = args.spec if args.spec else "common"
-        endpoints = tester.scan_endpoints(args.base_url, spec)
-        print(f"Discovered {len(endpoints)} endpoints:")  # codeql[py/clear-text-logging-sensitive-data]
-        for ep in endpoints:
-            print(f"  {ep.method.value} {ep.path}")  # codeql[py/clear-text-logging-sensitive-data]
+    elif args.command == 'generate-tests':
+        reports = agent.analyze_coverage(args.path)
+        suggestions = agent.generate_test_suggestions(reports)
+        print(f"Generated {len(suggestions)} test suggestions:")
+        for s in suggestions[:10]:  # Show top 10
+            print(
+                f"\nPriority {s.priority}: {s.target_function} in {s.target_file}"
+            )
+            print(f"  Impact: +{s.coverage_impact:.1f}% coverage")
+            print(f"  Test file: {s.test_file}")  # codeql[py/clear-text-logging-sensitive-data]
 
-    elif args.command == 'validate-contract':
-        if not args.spec or not args.base_url:
-            print("Error: --spec and --base-url required for validate-contract")  # codeql[py/clear-text-logging-sensitive-data]
-            return 1
+    elif args.command == 'report':
+        agent.analyze_coverage(args.path)
+        report = agent.generate_coverage_report(args.format)
 
-        compliant, violations = tester.validate_contract_compliance(args.spec, args.base_url)
-
-        if compliant:
-            print("✅ Service is compliant with contract")  # codeql[py/clear-text-logging-sensitive-data]
-            return 0
-        print("❌ Contract violations found:")  # codeql[py/clear-text-logging-sensitive-data]
-        for violation in violations:
-            print(f"  - {violation}")  # codeql[py/clear-text-logging-sensitive-data]
-        return 1
-
-    elif args.command == 'generate-report':
-        report = tester.generate_report(args.output)
-        if not args.output:
+        if args.output:
+            args.output.write_text(report)
+            print(f"Report saved to {args.output}")  # codeql[py/clear-text-logging-sensitive-data]
+        else:
             print(report)  # codeql[py/clear-text-logging-sensitive-data]
-
-    return 0
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    main()

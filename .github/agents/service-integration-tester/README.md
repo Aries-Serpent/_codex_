@@ -1,307 +1,287 @@
 # Service Integration Tester Agent
 
-A GitHub Copilot custom agent for testing service integrations, validating API contracts, and ensuring cross-component compatibility in distributed systems.
+> Enforces service integration thresholds, identifies untested services paths, and automatically generates missing tests to maintain quality standards.
 
-## 🎯 Purpose
+## Overview
 
-The Service Integration Tester automates integration testing across microservices, validates OpenAPI contracts, generates privacy-safe mock data, and provides comprehensive testing reports. This agent helps ensure that services work correctly together and maintain their API contracts.
+The Service Integration Tester Agent is a specialized GitHub Copilot agent designed to maintain high code quality through automated service integration testing. It analyzes your codebase, identifies integration gaps, enforces configurable thresholds, and can automatically generate integration test templates to improve coverage.
 
-## ✨ Key Features
+### Key Features
 
-- **Service Endpoint Discovery**: Automatically scan and discover service endpoints from OpenAPI specs
-- **API Contract Validation**: Validate that implementations match OpenAPI specifications
-- **Privacy-Safe Mock Data**: Generate GDPR/CCPA-compliant test data with PII scrubbing
-- **Multi-Service Testing**: Test interactions across multiple microservices
-- **Performance Metrics**: Track response times and identify performance issues
-- **Comprehensive Reporting**: Generate detailed test reports in text and JSON formats
+- **📊 Integration Monitoring**: Monitor line, branch, and function integration metrics
+- **🎯 Integration Validation**: Enforce minimum coverage requirements in CI/CD pipelines
+- **🧪 integration Integration Test Generation**: Automatically generate integration test templates for untested services
+- **📈 Integration Health Analysis**: Track coverage changes over time
+- **🔍 integration Service Gap Detection**: Identify specific uncovered lines, branches, and functions
+- **📝 Comprehensive Reporting**: Generate reports in text, JSON, and HTML formats
+- **🧠 Cognitive Brain Integration**: Store metrics for long-term analysis
 
-## 🚀 Quick Start
+## Capabilities
+
+| Capability | Description |
+|------------|-------------|
+| Integration Monitoring | Real-time monitoring of service integration metrics |
+| Integration Validation | Automatic enforcement of coverage requirements |
+| integration Integration Test Generation | AI-powered integration test template generation |
+| Integration Health Analysis | Historical Integration Monitoring and analysis |
+| integration Service Gap Detection | Precise identification of untested services paths |
+| Priority Calculation | Smart prioritization of testing efforts |
+
+## Quick Start
+
+### Installation
+
+The agent is automatically available in the `_codex_` repository. No additional installation is required.
 
 ### Basic Usage
 
-```python
-from service_integration_tester import ServiceIntegrationTester, Endpoint, EndpointMethod
+#### Analyze Coverage
 
-# Initialize the tester
-tester = ServiceIntegrationTester()
-
-# Test a single endpoint
-endpoint = Endpoint(
-    path="/health",
-    method=EndpointMethod.GET,
-    base_url="https://api.example.com"
-)
-
-result = tester.test_endpoint_sync(endpoint)
-print(f"Status: {result.status}, Code: {result.status_code}")
+```bash
+cd .github/agents/test-coverage-enforcer
+python -m src.agent analyze --path src/
 ```
 
-### Discover and Test Common Endpoints
+#### Enforce Thresholds
 
-```python
-# Discover common health/status endpoints
-endpoints = tester.scan_endpoints("https://api.example.com", "common")
-
-# Test all discovered endpoints
-for endpoint in endpoints:
-    result = tester.test_endpoint_sync(endpoint)
-    print(f"{endpoint.path}: {result.status_code} ({result.response_time_ms:.0f}ms)")
+```bash
+python -m src.agent enforce --path src/ --threshold 80
 ```
 
-### Validate OpenAPI Contract
+#### Generate Test Suggestions
 
-```python
-from pathlib import Path
-
-# Validate service against OpenAPI spec
-compliant, violations = tester.validate_contract_compliance(
-    spec_path=Path("openapi.yaml"),
-    base_url="https://api.example.com"
-)
-
-if compliant:
-    print("✅ Service is contract-compliant")
-else:
-    print("❌ Contract violations:")
-    for violation in violations:
-        print(f"  - {violation}")
+```bash
+python -m src.agent generate-tests --path src/
 ```
 
-### Generate Mock Data
+#### Generate Reports
 
-```python
-# Generate privacy-safe mock data
-schema = {
-    'name': 'name',
-    'email': 'email',
-    'age': 'int',
-    'active': 'bool'
-}
+```bash
+# Text report
+python -m src.agent report --path src/ --format text
 
-mock_data = tester.generate_mock_data(schema)
-# Result: {'name': 'Test User', 'email': 'test.user@example.com', ...}
+# JSON report
+python -m src.agent report --path src/ --format json --output coverage.json
+
+# HTML report
+python -m src.agent report --path src/ --format html --output coverage.html
 ```
 
-## 📊 Component Reuse (60%)
+## GitHub Actions Integration
 
-This agent extends existing components:
+### Using as a Composite Action
 
-- **Base**: `integration-test-runner` (60% reuse) - Core integration testing logic
-- **Extension 1**: `pii-scrubber` - Privacy-safe mock data generation
-- **Extension 2**: `rag-index-manager` - Service endpoint discovery
-
-## 🛠️ Installation
-
-The agent is pre-installed in the `.github/agents/` directory. No additional installation needed.
-
-### Dependencies
+Add to your workflow:
 
 ```yaml
-# Included in the repository
-- Python 3.8+
-- PyYAML
-- pytest (for running tests)
+name: service integration testing
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Enforce Coverage
+        uses: ./.github/agents/test-coverage-enforcer
+        with:
+          check-coverage: true
+          threshold: 80
+          fail-below-threshold: true
+          source-path: src
+          output-format: html
 ```
 
-## 📖 Usage Examples
+### Workflow Inputs
 
-### Test Multiple Services
+| Input | Description | Default |
+|-------|-------------|---------|
+| `check-coverage` | Whether to check coverage | `true` |
+| `threshold` | Minimum coverage percentage | `80` |
+| `auto-generate` | Generate integration test templates | `false` |
+| `fail-below-threshold` | Fail build if below threshold | `true` |
+| `source-path` | Path to source code | `src` |
+| `config-path` | Path to config file | `config/agent_config.yaml` |
+| `output-format` | Report format (text/json/html) | `text` |
 
-```python
-services = {
-    'auth': 'https://auth.example.com',
-    'users': 'https://users.example.com',
-    'payments': 'https://payments.example.com'
-}
+### Workflow Outputs
 
-for service_name, base_url in services.items():
-    endpoints = tester.scan_endpoints(base_url, "common")
+| Output | Description |
+|--------|-------------|
+| `coverage-percentage` | Current overall coverage |
+| `passed` | Whether enforcement passed |
+| `issues-found` | Number of coverage issues |
+| `suggestions-generated` | Number of test suggestions |
 
-    for endpoint in endpoints:
-        result = tester.test_endpoint_sync(endpoint)
+## Configuration
 
-        if result.status == 'success':
-            print(f"✅ {service_name}/{endpoint.path}: OK")
-        else:
-            print(f"❌ {service_name}/{endpoint.path}: FAILED")
-```
+### Configuration File
 
-### Test with Authentication
-
-```python
-from service_integration_tester import ServiceContract
-
-contract = ServiceContract(
-    service_name="auth-service",
-    base_url="https://api.example.com",
-    auth_type="bearer",
-    endpoints=[...]
-)
-
-# Test with bearer token
-results = tester.test_service_contract(
-    contract,
-    auth_token="your-jwt-token-here"
-)
-```
-
-### Generate Test Report
-
-```python
-# Run tests
-tester.test_endpoint_sync(endpoint1)
-tester.test_endpoint_sync(endpoint2)
-
-# Generate report
-report = tester.generate_report(output_path=Path("report.txt"))
-print(report)
-
-# Export as JSON
-tester.export_results_json(Path("results.json"))
-```
-
-## 🔧 Configuration
-
-Create `config/agent_config.yaml`:
+Create `.github/agents/test-coverage-enforcer/config/agent_config.yaml`:
 
 ```yaml
-agent_name: service-integration-tester
-version: "1.0.0"
-
 thresholds:
-  max_response_time_ms: 5000
-  min_success_rate: 0.95
+  line: 80          # Minimum service coverage
+  branch: 70        # Minimum workflow coverage
+  function: 85      # Minimum endpoint coverage
+
+auto_generate_tests: false
+fail_build_below_threshold: true
+
+reporting:
+  formats: [text, json, html]
+  output_directory: .coverage_reports
 
 cognitive_brain:
   enabled: true
   metrics:
-    - test_count
-    - success_rate
-    - avg_response_time_ms
-  reporting_interval: daily
-  storage:
-    type: sqlite
-    path: .codex/sessions/agent_metrics.db
+    - coverage_percentage
+    - gap_count
+    - tests_generated
 ```
 
-## 📋 CLI Commands
+### Customization Options
+
+- **Thresholds**: Set different minimum coverage requirements
+- **Auto-generation**: Enable/disable automatic integration test template creation
+- **Build Behavior**: Choose whether to fail builds on low coverage
+- **Reporting**: Configure output formats and locations
+- **File Patterns**: Include/exclude specific files or directories
+
+## File Structure
+
+```
+test-coverage-enforcer/
+├── src/
+│   ├── __init__.py
+│   └── agent.py              # Main agent implementation
+├── tests/
+│   ├── __init__.py
+│   ├── test_agent.py         # Unit tests (15+ tests)
+│   └── test_integration.py   # Integration tests
+├── config/
+│   └── agent_config.yaml     # Default configuration
+├── prompts/
+│   ├── main.md              # Core agent prompt
+│   ├── examples.md          # Usage examples
+│   └── advanced.md          # Advanced patterns
+├── agent.yaml               # GitHub Actions composite action
+├── README.md                # This file
+└── CHANGELOG.md             # Version history
+```
+
+## Component Reuse Strategy
+
+The Service Integration Tester Agent follows a component reuse strategy to maximize efficiency:
+
+### Base Component (80% reuse)
+- **Source**: `test-coverage-monitor` agent
+- **Reused capabilities**:
+  - Coverage data collection
+  - Metric calculation
+  - Report generation
+  - File analysis
+
+### Extensions
+1. **test-alignment-fixer**: Auto-integration Integration Test Generation capabilities
+2. **integration-test-runner**: Enforcement workflow integration
+
+This approach ensures:
+- Consistent Integration Monitoring across agents
+- Reduced maintenance burden
+- Shared improvements benefit multiple agents
+- Specialized enforcement and generation features
+
+## CLI Reference
+
+### Commands
 
 ```bash
-# Test common endpoints
-python -m service_integration_tester.src.agent test --base-url https://api.example.com
+# Analyze coverage
+python -m src.agent analyze --path <path> [--threshold <percent>]
 
-# Scan for endpoints
-python -m service_integration_tester.src.agent scan --base-url https://api.example.com --spec openapi.yaml
+# Enforce thresholds
+python -m src.agent enforce --path <path> [--threshold <percent>]
 
-# Validate contract
-python -m service_integration_tester.src.agent validate-contract --spec openapi.yaml --base-url https://api.example.com
+# Generate test suggestions
+python -m src.agent generate-tests --path <path> [--format text|json]
 
 # Generate report
-python -m service_integration_tester.src.agent generate-report --output report.txt
+python -m src.agent report --path <path> --format <format> [--output <file>]
 ```
 
-## 🧪 Testing
+### Options
 
-Run the comprehensive test suite:
+- `--path`: Path to analyze (file or directory)
+- `--threshold`: Coverage threshold percentage (default: from config)
+- `--format`: Output format (text, json, html)
+- `--output`: Output file path
+- `--config`: Custom configuration file path
 
-```bash
-# Run all tests
-pytest .github/agents/service-integration-tester/tests/ -v
+## Success Criteria
 
-# Run specific test file
-pytest .github/agents/service-integration-tester/tests/test_agent.py -v
+The agent achieves success when:
 
-# Run with coverage
-pytest .github/agents/service-integration-tester/tests/ --cov=src --cov-report=term
-```
+1. ✅ **Coverage Tracked**: All specified files are analyzed
+2. ✅ **Thresholds Enforced**: Build fails when coverage < threshold
+3. ✅ **Gaps Identified**: All untested services paths are detected
+4. ✅ **Suggestions Generated**: integration test templates provided for untested services
+5. ✅ **Reports Generated**: Human-readable reports in requested format
+6. ✅ **Metrics Stored**: Coverage data persisted for Integration Health Analysis
 
-## 📚 Documentation
+## Best Practices
 
-- **[Prompts & Examples](prompts/examples.md)** - 6 real-world usage scenarios
-- **[Advanced Patterns](prompts/advanced.md)** - 6 advanced integration patterns
-- **[Main Prompt](prompts/main.md)** - Agent identity and workflows
-- **[Changelog](CHANGELOG.md)** - Version history
+1. **Set Realistic Thresholds**: Start with achievable coverage targets
+2. **Gradual Improvement**: Increase thresholds incrementally
+3. **Review Suggestions**: Manually review generated integration test templates
+4. **Exclude Appropriately**: Exclude generated code and vendor files
+5. **Monitor Trends**: Track coverage changes over time
+6. **Integrate Early**: Add to CI/CD from project start
 
-## 🎓 Use Cases
+## Troubleshooting
 
-1. **Microservice Health Checks** - Monitor health of distributed services
-2. **API Contract Testing** - Validate OpenAPI spec compliance
-3. **Integration Testing** - Test service-to-service interactions
-4. **Performance Monitoring** - Track response times and detect degradation
-5. **Multi-Environment Testing** - Test across dev, staging, production
-6. **CRUD Workflow Testing** - Validate complete REST API workflows
+### Common Issues
 
-## 🔒 Privacy & Security
+**Issue**: Coverage data not found
+- **Solution**: Ensure pytest-cov is installed and tests are run first
 
-- **PII Scrubbing**: Automatically removes PII from test payloads
-- **Mock Data**: Generates privacy-safe test data (no real user info)
-- **Secure Headers**: Redacts sensitive headers in logs
-- **GDPR/CCPA Compliant**: Safe for production-like testing
+**Issue**: Agent fails to import
+- **Solution**: Check PYTHONPATH includes agent directory
 
-## 🤝 Integration
+**Issue**: Thresholds too strict
+- **Solution**: Adjust thresholds in config file
 
-### GitHub Actions
+**Issue**: Too many suggestions generated
+- **Solution**: Increase threshold or set `max_suggestions_per_file` in config
 
-```yaml
-- name: Run Integration Tests
-  uses: ./.github/agents/service-integration-tester
-  with:
-    base-url: 'https://staging-api.example.com'
-    endpoints: 'openapi.yaml'
-    output-file: 'integration_report.txt'
-```
+## Related Documentation
 
-### CI/CD Pipeline
+- [Main Agent Prompts](prompts/main.md)
+- [Usage Examples](prompts/examples.md)
+- [Advanced Patterns](prompts/advanced.md)
+- [Changelog](CHANGELOG.md)
 
-```bash
-# In your CI script
-python -m service_integration_tester.src.agent test \
-  --base-url $API_URL \
-  --config config/agent_config.yaml \
-  --output test_results.txt
-```
+## Support
 
-## 📊 Metrics Tracked
+For issues, questions, or contributions:
+- Open an issue in the repository
+- Review existing documentation
+- Check CHANGELOG for recent changes
 
-- Total tests executed
-- Success/failure/error counts
-- Success rate percentage
-- Average response time
-- Min/max response times
-- Per-service statistics
+## License
 
-## 🚦 Status
-
-- **Version**: 1.0.0
-- **Status**: Production Ready ✅
-- **Tests**: 33/33 passing (100%)
-- **Coverage**: >90%
-- **Quality**: A+
-
-## 🔗 Related Agents
-
-- `integration-test-runner` - Base component
-- `pii-scrubber` - Privacy features
-- `rag-index-manager` - Endpoint discovery
-- `test-coverage-monitor` - Test quality
-- `performance-monitor-agent` - Performance tracking
-
-## 📝 License
-
-Part of the _codex_ repository. See repository root for license details.
-
-## 🙋 Support
-
-For issues or questions:
-1. Check [documentation](prompts/)
-2. Review [examples](prompts/examples.md)
-3. See [advanced patterns](prompts/advanced.md)
-4. Open an issue in the repository
+Part of the Aries-Serpent/_codex_ project.
 
 ---
 
-**Quick Links**:
-- [Examples](prompts/examples.md) | [Advanced](prompts/advanced.md) | [Main Prompt](prompts/main.md) | [Changelog](CHANGELOG.md)
+**Version**: 1.0.0  
+**Last Updated**: 2026-01-23  
+**Maintained By**: Codex Team
 
 ---
 
@@ -324,25 +304,6 @@ For issues or questions:
 - ✅ Error detection and recovery
 - ✅ Progress reporting
 - ✅ Result validation
-
-**Last Updated**: 2026-01-23T19:45:00Z
-
-
-
-## 📈 Success Metrics
-
-| Metric | Target | Current | Status | Iteration |
-|--------|--------|---------|--------|-----------|
-| Success Rate | ≥95% | 96% | ✅ | Current |
-| Avg Execution Time | <5min | 3.2min | ✅ | Current |
-| Error Rate | <5% | 2.1% | ✅ | Current |
-| Coverage | ≥90% | 100% | ✅ | Current |
-
-### Performance Indicators
-- **Reliability**: 96% success rate across all invocations
-- **Efficiency**: Average execution time within target
-- **Quality**: Output meets validation criteria
-- **Stability**: Error rate below threshold
 
 **Last Updated**: 2026-01-23T19:45:00Z
 
@@ -411,49 +372,6 @@ Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporti
 
 
 
-## 🧠 Redundancy Patterns
-
-### Fallback Strategies
-
-**Level 1: Automatic Retry**
-- Transient failure detection
-- Exponential backoff (1s, 2s, 4s, 8s)
-- Maximum 3 retry attempts
-
-**Level 2: Degraded Operation**
-- Reduced functionality mode
-- Alternative execution paths
-- Partial result generation
-
-**Level 3: Safe Failure**
-- Graceful shutdown
-- State preservation
-- Detailed error reporting
-
-### Error Recovery Procedures
-
-#### Transient Errors
-1. Log error details
-2. Wait with exponential backoff
-3. Retry operation
-4. Report if max retries exceeded
-
-#### Permanent Errors
-1. Log full context
-2. Preserve state
-3. Generate error report
-4. Escalate to monitoring systems
-
-### State Preservation
-- Checkpoint creation at key milestones
-- Automatic state backup before critical operations
-- Recovery from last valid checkpoint
-- Transaction-like semantics where applicable
-
-**Last Updated**: 2026-01-23T19:45:00Z
-
-
-
 ## 🏷️ Agent Type Classification
 
 **Category**: Specialized Domain  
@@ -469,12 +387,34 @@ Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporti
 
 
 
+## 🛠️ Capabilities Matrix
+
+| Capability | Available | Permission Level | Notes |
+|------------|-----------|------------------|-------|
+| File System Access | ✅ | Read/Write | Scoped to workspace |
+| Network Access | ✅ | Restricted | Approved endpoints only |
+| Process Execution | ✅ | Sandboxed | Monitored execution |
+| Database Access | ⚠️ | Read-only | If configured |
+| API Integrations | ✅ | Authenticated | Token-based |
+| Git Operations | ✅ | Full | Within repository |
+
+### Tool Access
+- **bash**: Command execution
+- **view**: File inspection
+- **edit/create**: File modifications
+- **grep/glob**: Code search
+- **task**: Sub-agent invocation
+
+**Last Updated**: 2026-01-23T19:45:00Z
+
+
+
 ## 💡 Usage Examples
 
 ### Basic Invocation
 
 ```yaml
-agent_type: service-integration-tester-agent
+agent_type: test-coverage-enforcer-agent
 prompt: |
   Execute standard operation with default parameters
   Target: <target>
@@ -484,7 +424,7 @@ prompt: |
 ### Advanced Usage
 
 ```yaml
-agent_type: service-integration-tester-agent
+agent_type: test-coverage-enforcer-agent
 prompt: |
   Execute with custom configuration:
   - Parameter 1: value1
@@ -514,22 +454,58 @@ prompt: |
 
 
 
+## 🔗 Integration Patterns
+
+### Workflow Integration
+
+```mermaid
+graph LR
+    A[Trigger] --> B[Agent Activation]
+    B --> C[Execution]
+    C --> D[Validation]
+    D --> E[Reporting]
+    E --> F[Next Stage]
+```
+
+### Integration Points
+
+**Upstream Dependencies**
+- Event triggers (GitHub Actions, webhooks)
+- Input validation agents
+- Authentication services
+
+**Downstream Consumers**
+- Monitoring dashboards
+- Notification systems
+- Artifact repositories
+- Follow-up agents
+
+### Cross-Agent Communication
+- Shared state via environment variables
+- Artifact passing through files
+- Event-driven triggers
+- Direct agent invocation
+
+**Last Updated**: 2026-01-23T19:45:00Z
+
+
+
 ## ⚡ Activation Commands
 
 ### Manual Activation
 
 ```bash
 # Via task tool
-task agent_type="service-integration-tester-agent" description="<description>" prompt="<prompt>"
+task agent_type="test-coverage-enforcer-agent" description="<description>" prompt="<prompt>"
 ```
 
 ### GitHub Actions Trigger
 
 ```yaml
-- name: Activate service-integration-tester-agent
+- name: Activate test-coverage-enforcer-agent
   uses: ./.github/actions/agent-runner
   with:
-    agent: service-integration-tester-agent
+    agent: test-coverage-enforcer-agent
     parameters: |
       target: ${{ github.workspace }}
       mode: full
@@ -541,7 +517,7 @@ task agent_type="service-integration-tester-agent" description="<description>" p
 from agent_framework import invoke_agent
 
 result = invoke_agent(
-    agent_type="service-integration-tester-agent",
+    agent_type="test-coverage-enforcer-agent",
     prompt="Execute operation",
     context={"target": "path/to/target"}
 )

@@ -1,8 +1,8 @@
-"""Dependency Conflict Resolver Agent - Resolves dependency conflicts and manages versions"""
+"""Test Coverage Enforcer Agent - Enforces test coverage thresholds and generates missing tests"""
 
 __version__ = "1.0.0"
-__agent_name__ = "dependency-conflict-resolver"
+__agent_name__ = "test-coverage-enforcer"
 
-from .agent import DependencyConflictResolver
+from .agent import TestCoverageEnforcer
 
-__all__ = ["DependencyConflictResolver"]
+__all__ = ["TestCoverageEnforcer"]

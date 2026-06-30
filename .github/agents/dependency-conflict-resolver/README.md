@@ -1,414 +1,289 @@
 # Dependency Conflict Resolver Agent
 
-An intelligent agent that automatically detects and resolves dependency version conflicts across multiple ecosystems (Python, JavaScript, Rust, Go) using graph analysis and semantic versioning.
+> Enforces dependency conflict thresholds, identifies conflicting dependencies paths, and automatically generates missing tests to maintain quality standards.
 
-## Purpose
+## Overview
 
-The Dependency Conflict Resolver Agent helps maintain healthy dependency graphs by:
-- **Detecting conflicts** between direct and transitive dependencies
-- **Analyzing dependency graphs** to identify circular dependencies and deep transitive issues
-- **Resolving conflicts** using configurable strategies (conservative, balanced, aggressive)
-- **Integrating with security scanners** for vulnerability-aware resolution
-- **Supporting multiple ecosystems** in a unified workflow
+The Dependency Conflict Resolver Agent is a specialized GitHub Copilot agent designed to maintain high code quality through automated dependency conflict resolution. It analyzes your codebase, identifies version conflicts, enforces configurable thresholds, and can automatically generate resolution strategys to improve coverage.
 
-## Key Features
+### Key Features
 
-### 🔍 Conflict Detection
-- Direct dependency conflicts (explicit version mismatches)
-- Transitive dependency conflicts (inherited from parent dependencies)
-- Circular dependency detection
-- Version range incompatibility analysis
-- Semantic versioning validation
+- **📊 Conflict Detection**: Monitor line, branch, and function dependency compatibility metrics
+- **🎯 Conflict Resolution**: Enforce minimum coverage requirements in CI/CD pipelines
+- **🧪 version resolution**: Automatically generate resolution strategys for conflicting dependencies
+- **📈 Compatibility Analysis**: Track coverage changes over time
+- **🔍 conflict detection**: Identify specific uncovered lines, branches, and functions
+- **📝 Comprehensive Reporting**: Generate reports in text, JSON, and HTML formats
+- **🧠 Cognitive Brain Integration**: Store metrics for long-term analysis
 
-### 📊 Dependency Graph Analysis
-- Build comprehensive dependency graphs
-- Analyze transitive relationships up to configurable depth
-- Identify critical dependency paths
-- Visualize dependency trees
-- Calculate impact of version changes
+## Capabilities
 
-### 🔧 Resolution Strategies
-- **Conservative**: Minimal changes, prefer lower stable versions
-- **Balanced**: Balance security, stability, and features
-- **Aggressive**: Latest compatible versions for maximum features
-
-### 🛡️ Security Integration
-- Integration with dependency-vulnerability-scanner (60% component reuse)
-- Vulnerability-aware conflict resolution
-- Prioritize security patches in version selection
-- Fail on critical/high severity vulnerabilities
-
-### 🌍 Multi-Ecosystem Support
-- **Python**: requirements.txt, pyproject.toml
-- **JavaScript/TypeScript**: package.json, package-lock.json
-- **Rust**: Cargo.toml
-- **Go**: go.mod
-
-## Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/your-org/codex.git
-cd .github/agents/dependency-conflict-resolver
-
-# Install dependencies
-pip install pyyaml
-
-# Run the agent
-python src/agent.py detect --file requirements.txt
-```
+| Capability | Description |
+|------------|-------------|
+| Conflict Detection | Real-time monitoring of dependency conflict metrics |
+| Conflict Resolution | Automatic enforcement of coverage requirements |
+| version resolution | AI-powered resolution strategy generation |
+| Compatibility Analysis | Historical Conflict Detection and analysis |
+| conflict detection | Precise identification of conflicting dependencies paths |
+| Priority Calculation | Smart prioritization of testing efforts |
 
 ## Quick Start
 
-### Python Projects
+### Installation
+
+The agent is automatically available in the `_codex_` repository. No additional installation is required.
+
+### Basic Usage
+
+#### Analyze Coverage
 
 ```bash
-# Detect conflicts in requirements.txt
-python src/agent.py detect --file requirements.txt
-
-# Generate resolution plan with conservative strategy
-python src/agent.py resolve --strategy conservative --file requirements.txt
-
-# Visualize dependency graph
-python src/agent.py visualize --file requirements.txt --output graph.txt
+cd .github/agents/test-coverage-enforcer
+python -m src.agent analyze --path src/
 ```
 
-Example `requirements.txt` with conflicts:
-```
-requests>=2.20.0
-numpy>=1.20.0
-# Another dependency requires different version
-requests>=2.28.0  # Conflict!
-```
-
-### JavaScript Projects
+#### Enforce Thresholds
 
 ```bash
-# Analyze package.json
-python src/agent.py detect --file package.json
-
-# Resolve with balanced strategy
-python src/agent.py resolve --strategy balanced --file package.json
+python -m src.agent enforce --path src/ --threshold 80
 ```
 
-Example `package.json`:
-```json
-{
-  "dependencies": {
-    "express": "^4.18.0",
-    "lodash": "^4.17.21"
-  },
-  "devDependencies": {
-    "jest": "^29.0.0"
-  }
-}
-```
-
-### Rust Projects
+#### Generate Test Suggestions
 
 ```bash
-# Check Cargo.toml for conflicts
-python src/agent.py detect --file Cargo.toml
-
-# Resolve with aggressive strategy
-python src/agent.py resolve --strategy aggressive --file Cargo.toml
+python -m src.agent generate-tests --path src/
 ```
 
-Example `Cargo.toml`:
-```toml
-[dependencies]
-serde = "1.0"
-tokio = { version = "1.28", features = ["full"] }
-reqwest = "0.11.18"
-```
-
-### Go Projects
+#### Generate Reports
 
 ```bash
-# Analyze go.mod
-python src/agent.py detect --file go.mod
+# Text report
+python -m src.agent report --path src/ --format text
 
-# Generate resolution plan
-python src/agent.py resolve --file go.mod
+# JSON report
+python -m src.agent report --path src/ --format json --output coverage.json
+
+# HTML report
+python -m src.agent report --path src/ --format html --output coverage.html
 ```
-
-Example `go.mod`:
-```go
-module example.com/myproject
-
-require (
-    github.com/gin-gonic/gin v1.9.0
-    github.com/stretchr/testify v1.8.2
-)
-```
-
-## Configuration
-
-The agent is configured via `config/agent_config.yaml`:
-
-```yaml
-agent_name: dependency-conflict-resolver
-version: 1.0.0
-
-resolution_strategies:
-  default: conservative
-  options:
-    - conservative
-    - balanced
-    - aggressive
-
-conflict_detection:
-  check_transitive: true
-  max_depth: 10
-  ignore_dev_dependencies: false
-
-vulnerability_integration:
-  enabled: true
-  fail_on_high_severity: true
-```
-
-### Configuration Options
-
-| Option | Description | Default |
-|--------|-------------|---------|
-| `resolution_strategies.default` | Default resolution strategy | `conservative` |
-| `conflict_detection.check_transitive` | Check transitive dependencies | `true` |
-| `conflict_detection.max_depth` | Maximum graph traversal depth | `10` |
-| `vulnerability_integration.enabled` | Enable vulnerability checking | `true` |
 
 ## GitHub Actions Integration
 
-### Workflow Example
+### Using as a Composite Action
+
+Add to your workflow:
 
 ```yaml
-name: Dependency Conflict Check
+name: dependency conflict resolution
 
 on:
+  push:
+    branches: [main]
   pull_request:
-    paths:
-      - 'requirements.txt'
-      - 'package.json'
-      - 'Cargo.toml'
-      - 'go.mod'
 
 jobs:
-  resolve-conflicts:
+  coverage:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
-      - name: Resolve Dependency Conflicts
-        uses: ./.github/agents/dependency-conflict-resolver
+      - name: Enforce Coverage
+        uses: ./.github/agents/test-coverage-enforcer
         with:
-          ecosystem: auto-detect
-          strategy: balanced
-          check-vulnerabilities: true
-          fail-on-conflicts: true
+          check-coverage: true
+          threshold: 80
+          fail-below-threshold: true
+          source-path: src
+          output-format: html
 ```
 
-### Action Inputs
+### Workflow Inputs
 
-| Input | Description | Required | Default |
-|-------|-------------|----------|---------|
-| `ecosystem` | Target ecosystem or auto-detect | No | `auto-detect` |
-| `strategy` | Resolution strategy | No | `conservative` |
-| `check-vulnerabilities` | Enable vulnerability checks | No | `true` |
-| `auto-apply` | Automatically apply fixes | No | `false` |
+| Input | Description | Default |
+|-------|-------------|---------|
+| `check-coverage` | Whether to check coverage | `true` |
+| `threshold` | Minimum coverage percentage | `80` |
+| `auto-generate` | Generate resolution strategys | `false` |
+| `fail-below-threshold` | Fail build if below threshold | `true` |
+| `source-path` | Path to source code | `src` |
+| `config-path` | Path to config file | `config/agent_config.yaml` |
+| `output-format` | Report format (text/json/html) | `text` |
 
-### Action Outputs
+### Workflow Outputs
 
 | Output | Description |
 |--------|-------------|
-| `conflicts-found` | Number of conflicts detected |
-| `conflicts-resolved` | Number of conflicts resolved |
-| `resolution-plan` | Path to resolution plan file |
-| `validation-status` | Validation result (passed/failed) |
+| `coverage-percentage` | Current overall coverage |
+| `passed` | Whether enforcement passed |
+| `issues-found` | Number of coverage issues |
+| `suggestions-generated` | Number of test suggestions |
 
-## Component Reuse
+## Configuration
 
-This agent leverages 60% component reuse from existing agents:
+### Configuration File
 
-### Base Component: dependency-vulnerability-scanner (60%)
-- Dependency parsing logic
-- Vulnerability checking
-- Security assessment
+Create `.github/agents/test-coverage-enforcer/config/agent_config.yaml`:
 
-### Extension 1: config-migration-assistant
-- Version resolution algorithms
-- Constraint solving
-- Migration planning
+```yaml
+thresholds:
+  line: 80          # Minimum compatibility score
+  branch: 70        # Minimum constraint satisfaction
+  function: 85      # Minimum resolution confidence
 
-### Extension 2: semantic-search
-- Dependency graph analysis
-- Relationship mapping
-- Pattern detection
+auto_generate_tests: false
+fail_build_below_threshold: true
 
-## API Usage
+reporting:
+  formats: [text, json, html]
+  output_directory: .coverage_reports
 
-### Python API
-
-```python
-from agent import DependencyConflictResolver, ResolutionStrategy
-
-# Initialize resolver
-resolver = DependencyConflictResolver()
-
-# Parse dependencies
-deps = resolver.parse_dependency_file(Path('requirements.txt'))
-
-# Build graph
-graph = resolver.build_dependency_graph(deps)
-
-# Detect conflicts
-conflicts = resolver.detect_conflicts()
-
-# Generate resolution plan
-report = resolver.generate_resolution_plan()
-
-# Resolve with specific strategy
-plan = resolver.resolve_conflicts(ResolutionStrategy.BALANCED)
-
-# Apply resolution
-success = resolver.apply_resolution(plan)
-
-# Validate
-valid, errors = resolver.validate_resolution()
+cognitive_brain:
+  enabled: true
+  metrics:
+    - coverage_percentage
+    - gap_count
+    - tests_generated
 ```
 
-## Testing
+### Customization Options
 
-The agent includes 20+ comprehensive tests:
+- **Thresholds**: Set different minimum coverage requirements
+- **Auto-generation**: Enable/disable automatic resolution strategy creation
+- **Build Behavior**: Choose whether to fail builds on low coverage
+- **Reporting**: Configure output formats and locations
+- **File Patterns**: Include/exclude specific files or directories
+
+## File Structure
+
+```
+test-coverage-enforcer/
+├── src/
+│   ├── __init__.py
+│   └── agent.py              # Main agent implementation
+├── tests/
+│   ├── __init__.py
+│   ├── test_agent.py         # Unit tests (15+ tests)
+│   └── test_integration.py   # Integration tests
+├── config/
+│   └── agent_config.yaml     # Default configuration
+├── prompts/
+│   ├── main.md              # Core agent prompt
+│   ├── examples.md          # Usage examples
+│   └── advanced.md          # Advanced patterns
+├── agent.yaml               # GitHub Actions composite action
+├── README.md                # This file
+└── CHANGELOG.md             # Version history
+```
+
+## Component Reuse Strategy
+
+The Dependency Conflict Resolver Agent follows a component reuse strategy to maximize efficiency:
+
+### Base Component (80% reuse)
+- **Source**: `test-coverage-monitor` agent
+- **Reused capabilities**:
+  - Coverage data collection
+  - Metric calculation
+  - Report generation
+  - File analysis
+
+### Extensions
+1. **test-alignment-fixer**: Auto-version resolution capabilities
+2. **integration-test-runner**: Enforcement workflow integration
+
+This approach ensures:
+- Consistent Conflict Detection across agents
+- Reduced maintenance burden
+- Shared improvements benefit multiple agents
+- Specialized enforcement and generation features
+
+## CLI Reference
+
+### Commands
 
 ```bash
-# Run unit tests
-python -m pytest tests/test_agent.py -v
+# Analyze coverage
+python -m src.agent analyze --path <path> [--threshold <percent>]
 
-# Run integration tests
-python -m pytest tests/test_integration.py -v
+# Enforce thresholds
+python -m src.agent enforce --path <path> [--threshold <percent>]
 
-# Run all tests with coverage
-python -m pytest tests/ --cov=src --cov-report=html
+# Generate test suggestions
+python -m src.agent generate-tests --path <path> [--format text|json]
+
+# Generate report
+python -m src.agent report --path <path> --format <format> [--output <file>]
 ```
 
-### Test Coverage
+### Options
 
-- ✅ Agent initialization and configuration
-- ✅ Dependency parsing (Python, JS, Rust, Go)
-- ✅ Dependency graph building
-- ✅ Conflict detection (direct, transitive, circular)
-- ✅ Resolution strategies
-- ✅ Semantic versioning
-- ✅ Vulnerability integration
-- ✅ End-to-end workflows
-- ✅ Graph visualization
+- `--path`: Path to analyze (file or directory)
+- `--threshold`: Coverage threshold percentage (default: from config)
+- `--format`: Output format (text, json, html)
+- `--output`: Output file path
+- `--config`: Custom configuration file path
 
 ## Success Criteria
 
-- ✅ **20+ comprehensive tests** covering all functionality
-- ✅ **Multi-ecosystem support** for Python, JavaScript, Rust, Go
-- ✅ **Conflict resolution** with multiple strategies
-- ✅ **Security integration** with vulnerability scanning
-- ✅ **Graph analysis** for transitive dependencies
-- ✅ **Complete documentation** (30-40KB)
+The agent achieves success when:
 
-## Advanced Usage
+1. ✅ **Coverage Tracked**: All specified files are analyzed
+2. ✅ **Thresholds Enforced**: Build fails when coverage < threshold
+3. ✅ **Gaps Identified**: All conflicting dependencies paths are detected
+4. ✅ **Suggestions Generated**: resolution strategys provided for conflicting dependencies
+5. ✅ **Reports Generated**: Human-readable reports in requested format
+6. ✅ **Metrics Stored**: Coverage data persisted for Compatibility Analysis
 
-### Custom Resolution Strategy
+## Best Practices
 
-```python
-# Create custom resolution logic
-def custom_strategy(conflict):
-    # Your custom logic here
-    return selected_version
-
-resolver = DependencyConflictResolver()
-# Apply custom strategy
-```
-
-### Programmatic Graph Analysis
-
-```python
-# Analyze specific dependency path
-resolver = DependencyConflictResolver()
-deps = resolver.parse_dependency_file(Path('requirements.txt'))
-graph = resolver.build_dependency_graph(deps)
-
-# Find all paths to a specific package
-def find_paths(graph, target, path=[]):
-    for node in graph:
-        if target in graph[node]:
-            yield path + [node, target]
-```
-
-### Batch Processing
-
-```bash
-# Process multiple files
-for file in requirements*.txt; do
-    python src/agent.py detect --file "$file"
-done
-```
+1. **Set Realistic Thresholds**: Start with achievable coverage targets
+2. **Gradual Improvement**: Increase thresholds incrementally
+3. **Review Suggestions**: Manually review generated resolution strategys
+4. **Exclude Appropriately**: Exclude generated code and vendor files
+5. **Monitor Trends**: Track coverage changes over time
+6. **Integrate Early**: Add to CI/CD from project start
 
 ## Troubleshooting
 
 ### Common Issues
 
-**Issue**: "Cannot detect ecosystem for file"
-- **Solution**: Specify ecosystem explicitly: `--ecosystem python`
+**Issue**: Coverage data not found
+- **Solution**: Ensure pytest-cov is installed and tests are run first
 
-**Issue**: "Circular dependency detected"
-- **Solution**: Review dependency graph, remove circular references manually
+**Issue**: Agent fails to import
+- **Solution**: Check PYTHONPATH includes agent directory
 
-**Issue**: "Resolution validation failed"
-- **Solution**: Check resolution plan, may require manual intervention
+**Issue**: Thresholds too strict
+- **Solution**: Adjust thresholds in config file
 
-## Contributing
+**Issue**: Too many suggestions generated
+- **Solution**: Increase threshold or set `max_suggestions_per_file` in config
 
-Contributions are welcome! Please ensure:
-- All tests pass
-- New features include tests
-- Documentation is updated
-- Code follows existing style
+## Related Documentation
 
-## License
-
-MIT License - see LICENSE file for details
+- [Main Agent Prompts](prompts/main.md)
+- [Usage Examples](prompts/examples.md)
+- [Advanced Patterns](prompts/advanced.md)
+- [Changelog](CHANGELOG.md)
 
 ## Support
 
-For issues and questions:
-- Open an issue on GitHub
-- Contact the Codex team
-- See documentation at `.github/agents/dependency-conflict-resolver/prompts/`
+For issues, questions, or contributions:
+- Open an issue in the repository
+- Review existing documentation
+- Check CHANGELOG for recent changes
 
-## Changelog
+## License
 
-See [CHANGELOG.md](CHANGELOG.md) for version history and updates.
+Part of the Aries-Serpent/_codex_ project.
 
 ---
 
-## 🎯 Mission Overview
+**Version**: 1.0.0  
+**Last Updated**: 2026-01-23  
+**Maintained By**: Codex Team
 
-**Agent Name**: Dependency Conflict Resolver Agent  
-**Agent Type**: Specialized Domain  
-**Energy Level**: 3/5  
-**Operational Status**: ✅ Active
-
-### Purpose
-This agent provides specialized functionality for dependency conflict resolver agent operations within the Codex ecosystem.
-
-### Core Capabilities
-- Automated execution and validation
-- Integration with CI/CD pipelines
-- Real-time monitoring and reporting
-- Error detection and recovery
-
-### Activation Context
-Triggered by specific events, manual invocation, or scheduled workflows.
-
-**Last Updated**: 2026-01-23T19:45:00Z
-
-
+---
 
 ## ⚖️ Verification Checklist
 
@@ -429,25 +304,6 @@ Triggered by specific events, manual invocation, or scheduled workflows.
 - ✅ Error detection and recovery
 - ✅ Progress reporting
 - ✅ Result validation
-
-**Last Updated**: 2026-01-23T19:45:00Z
-
-
-
-## 📈 Success Metrics
-
-| Metric | Target | Current | Status | Iteration |
-|--------|--------|---------|--------|-----------|
-| Success Rate | ≥95% | 96% | ✅ | Current |
-| Avg Execution Time | <5min | 3.2min | ✅ | Current |
-| Error Rate | <5% | 2.1% | ✅ | Current |
-| Coverage | ≥90% | 100% | ✅ | Current |
-
-### Performance Indicators
-- **Reliability**: 96% success rate across all invocations
-- **Efficiency**: Average execution time within target
-- **Quality**: Output meets validation criteria
-- **Stability**: Error rate below threshold
 
 **Last Updated**: 2026-01-23T19:45:00Z
 
@@ -516,49 +372,6 @@ Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporti
 
 
 
-## 🧠 Redundancy Patterns
-
-### Fallback Strategies
-
-**Level 1: Automatic Retry**
-- Transient failure detection
-- Exponential backoff (1s, 2s, 4s, 8s)
-- Maximum 3 retry attempts
-
-**Level 2: Degraded Operation**
-- Reduced functionality mode
-- Alternative execution paths
-- Partial result generation
-
-**Level 3: Safe Failure**
-- Graceful shutdown
-- State preservation
-- Detailed error reporting
-
-### Error Recovery Procedures
-
-#### Transient Errors
-1. Log error details
-2. Wait with exponential backoff
-3. Retry operation
-4. Report if max retries exceeded
-
-#### Permanent Errors
-1. Log full context
-2. Preserve state
-3. Generate error report
-4. Escalate to monitoring systems
-
-### State Preservation
-- Checkpoint creation at key milestones
-- Automatic state backup before critical operations
-- Recovery from last valid checkpoint
-- Transaction-like semantics where applicable
-
-**Last Updated**: 2026-01-23T19:45:00Z
-
-
-
 ## 🏷️ Agent Type Classification
 
 **Category**: Specialized Domain  
@@ -601,7 +414,7 @@ Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporti
 ### Basic Invocation
 
 ```yaml
-agent_type: dependency-conflict-resolver-agent
+agent_type: test-coverage-enforcer-agent
 prompt: |
   Execute standard operation with default parameters
   Target: <target>
@@ -611,7 +424,7 @@ prompt: |
 ### Advanced Usage
 
 ```yaml
-agent_type: dependency-conflict-resolver-agent
+agent_type: test-coverage-enforcer-agent
 prompt: |
   Execute with custom configuration:
   - Parameter 1: value1
@@ -683,16 +496,16 @@ graph LR
 
 ```bash
 # Via task tool
-task agent_type="dependency-conflict-resolver-agent" description="<description>" prompt="<prompt>"
+task agent_type="test-coverage-enforcer-agent" description="<description>" prompt="<prompt>"
 ```
 
 ### GitHub Actions Trigger
 
 ```yaml
-- name: Activate dependency-conflict-resolver-agent
+- name: Activate test-coverage-enforcer-agent
   uses: ./.github/actions/agent-runner
   with:
-    agent: dependency-conflict-resolver-agent
+    agent: test-coverage-enforcer-agent
     parameters: |
       target: ${{ github.workspace }}
       mode: full
@@ -704,7 +517,7 @@ task agent_type="dependency-conflict-resolver-agent" description="<description>"
 from agent_framework import invoke_agent
 
 result = invoke_agent(
-    agent_type="dependency-conflict-resolver-agent",
+    agent_type="test-coverage-enforcer-agent",
     prompt="Execute operation",
     context={"target": "path/to/target"}
 )

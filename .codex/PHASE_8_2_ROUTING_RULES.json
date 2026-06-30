@@ -1,0 +1,476 @@
+{
+  "version": "1.0",
+  "date_generated": "2026-06-30T18:55:00Z",
+  "description": "Issue classification and routing rules for Phase 8.2 triage system",
+  "severity_levels": {
+    "P0": {
+      "name": "Critical (Immediate)",
+      "description": "Production-impacting issues requiring immediate response",
+      "sla_response_minutes": 15,
+      "sla_resolution_hours": 2,
+      "sla_compliance_target": 100,
+      "routing": {
+        "primary": "@mbaetiong",
+        "team": "emergency-team",
+        "escalation": "immediate",
+        "slack_channel": "#critical-alerts",
+        "labels": [
+          "severity-P0",
+          "critical",
+          "requires-immediate-action"
+        ]
+      },
+      "keywords": [
+        "critical",
+        "production-down",
+        "exploit",
+        "security-breach",
+        "data-loss",
+        "complete-outage",
+        "release-blocker",
+        "all-tests-fail",
+        "regression"
+      ],
+      "auto_notify": true,
+      "skip_validation": false
+    },
+    "P1": {
+      "name": "High Priority (Urgent)",
+      "description": "Significant issues affecting functionality or blocking progress",
+      "sla_response_minutes": 60,
+      "sla_resolution_hours": 8,
+      "sla_compliance_target": 98,
+      "routing": {
+        "primary": "urgent-maintainers",
+        "team": "urgent-maintainers",
+        "escalation": "high",
+        "slack_channel": "#urgent-issues",
+        "labels": [
+          "severity-P1",
+          "high-priority",
+          "requires-escalation"
+        ]
+      },
+      "keywords": [
+        "urgent",
+        "test-failure",
+        "ci-broken",
+        "regression",
+        "blocking",
+        "deployment-blocked",
+        "broken-feature"
+      ],
+      "auto_notify": true,
+      "skip_validation": false
+    },
+    "P2": {
+      "name": "Medium Priority (Standard)",
+      "description": "Normal issues with moderate impact",
+      "sla_response_minutes": 1440,
+      "sla_resolution_hours": 72,
+      "sla_compliance_target": 95,
+      "routing": {
+        "primary": "standard-maintainers",
+        "team": "standard-maintainers",
+        "escalation": "normal",
+        "slack_channel": "#medium-priority",
+        "labels": [
+          "severity-P2",
+          "medium-priority"
+        ]
+      },
+      "keywords": [
+        "significant",
+        "serious",
+        "high-priority",
+        "issue",
+        "bug",
+        "performance-issue"
+      ],
+      "auto_notify": false,
+      "skip_validation": false
+    },
+    "P3": {
+      "name": "Low Priority (Backlog)",
+      "description": "Minor issues or enhancements with low impact",
+      "sla_response_minutes": 10080,
+      "sla_resolution_hours": 168,
+      "sla_compliance_target": 90,
+      "routing": {
+        "primary": "backlog-team",
+        "team": "backlog-team",
+        "escalation": "none",
+        "slack_channel": "#backlog",
+        "labels": [
+          "severity-P3",
+          "low-priority"
+        ]
+      },
+      "keywords": [
+        "minor",
+        "enhancement",
+        "improvement",
+        "nice-to-have"
+      ],
+      "auto_notify": false,
+      "skip_validation": false
+    },
+    "P4": {
+      "name": "Cosmetic (Community)",
+      "description": "Cosmetic or trivial issues",
+      "sla_response_minutes": 43200,
+      "sla_resolution_hours": 720,
+      "sla_compliance_target": 80,
+      "routing": {
+        "primary": "community",
+        "team": "community",
+        "escalation": "none",
+        "slack_channel": null,
+        "labels": [
+          "severity-P4",
+          "cosmetic"
+        ]
+      },
+      "keywords": [
+        "typo",
+        "cosmetic",
+        "trivial",
+        "documentation",
+        "readme"
+      ],
+      "auto_notify": false,
+      "skip_validation": true
+    }
+  },
+  "categories": {
+    "security": {
+      "name": "Security",
+      "default_severity": "P0",
+      "routing": "security-team",
+      "labels": [
+        "category-security",
+        "security-alert"
+      ],
+      "keywords": [
+        "security",
+        "vulnerability",
+        "cve",
+        "exploit",
+        "breach",
+        "authentication",
+        "authorization",
+        "injection",
+        "xss",
+        "csrf"
+      ],
+      "escalate_to": "@mbaetiong",
+      "slack_channel": "#security-alerts"
+    },
+    "bug": {
+      "name": "Bug",
+      "default_severity": "P1",
+      "routing": "bug-squad",
+      "labels": [
+        "category-bug",
+        "bug-report"
+      ],
+      "keywords": [
+        "bug",
+        "error",
+        "crash",
+        "broken",
+        "fails",
+        "failure",
+        "exception",
+        "traceback"
+      ],
+      "escalate_to": null,
+      "slack_channel": "#bug-reports"
+    },
+    "feature_request": {
+      "name": "Feature Request",
+      "default_severity": "P3",
+      "routing": "product-team",
+      "labels": [
+        "category-feature-request",
+        "feature"
+      ],
+      "keywords": [
+        "feature",
+        "enhancement",
+        "request",
+        "add",
+        "support",
+        "implement"
+      ],
+      "escalate_to": null,
+      "slack_channel": "#feature-requests"
+    },
+    "documentation": {
+      "name": "Documentation",
+      "default_severity": "P3",
+      "routing": "docs-team",
+      "labels": [
+        "category-documentation",
+        "docs"
+      ],
+      "keywords": [
+        "documentation",
+        "docs",
+        "readme",
+        "guide",
+        "tutorial",
+        "typo",
+        "grammar"
+      ],
+      "escalate_to": null,
+      "slack_channel": "#documentation"
+    },
+    "performance": {
+      "name": "Performance",
+      "default_severity": "P2",
+      "routing": "performance-team",
+      "labels": [
+        "category-performance",
+        "performance"
+      ],
+      "keywords": [
+        "performance",
+        "slow",
+        "optimize",
+        "latency",
+        "throughput",
+        "memory",
+        "cpu"
+      ],
+      "escalate_to": null,
+      "slack_channel": "#performance"
+    },
+    "infrastructure": {
+      "name": "Infrastructure",
+      "default_severity": "P1",
+      "routing": "devops-team",
+      "labels": [
+        "category-infrastructure",
+        "infrastructure"
+      ],
+      "keywords": [
+        "ci",
+        "cd",
+        "deployment",
+        "workflow",
+        "docker",
+        "kubernetes",
+        "terraform",
+        "infra",
+        "devops"
+      ],
+      "escalate_to": null,
+      "slack_channel": "#infrastructure"
+    },
+    "testing": {
+      "name": "Testing",
+      "default_severity": "P1",
+      "routing": "qa-team",
+      "labels": [
+        "category-testing",
+        "test"
+      ],
+      "keywords": [
+        "test",
+        "pytest",
+        "unittest",
+        "integration test",
+        "coverage",
+        "flaky"
+      ],
+      "escalate_to": null,
+      "slack_channel": "#testing"
+    },
+    "other": {
+      "name": "Other",
+      "default_severity": "P2",
+      "routing": "triage-team",
+      "labels": [
+        "category-other",
+        "needs-review"
+      ],
+      "keywords": [],
+      "escalate_to": null,
+      "slack_channel": "#triage"
+    }
+  },
+  "label_definitions": {
+    "severity_labels": [
+      {
+        "name": "severity-P0",
+        "color": "FF0000",
+        "description": "Critical priority - immediate attention required"
+      },
+      {
+        "name": "severity-P1",
+        "color": "FF6600",
+        "description": "High priority - urgent attention needed"
+      },
+      {
+        "name": "severity-P2",
+        "color": "FFDD00",
+        "description": "Medium priority - standard handling"
+      },
+      {
+        "name": "severity-P3",
+        "color": "00DD00",
+        "description": "Low priority - backlog item"
+      },
+      {
+        "name": "severity-P4",
+        "color": "00AADD",
+        "description": "Cosmetic - can be deferred"
+      }
+    ],
+    "category_labels": [
+      {
+        "name": "category-security",
+        "color": "8B0000",
+        "description": "Security-related issue"
+      },
+      {
+        "name": "category-bug",
+        "color": "D73A49",
+        "description": "Bug report"
+      },
+      {
+        "name": "category-feature-request",
+        "color": "A371F7",
+        "description": "Feature request or enhancement"
+      },
+      {
+        "name": "category-documentation",
+        "color": "1D76DB",
+        "description": "Documentation related"
+      },
+      {
+        "name": "category-performance",
+        "color": "FFA500",
+        "description": "Performance related"
+      },
+      {
+        "name": "category-infrastructure",
+        "color": "0366D6",
+        "description": "Infrastructure/DevOps related"
+      },
+      {
+        "name": "category-testing",
+        "color": "6F42C1",
+        "description": "Testing related"
+      },
+      {
+        "name": "category-other",
+        "color": "999999",
+        "description": "Other/uncategorized"
+      }
+    ],
+    "metadata_labels": [
+      {
+        "name": "triage-automated",
+        "color": "D4C5F9",
+        "description": "Auto-triaged by classification engine"
+      },
+      {
+        "name": "requires-review",
+        "color": "FC8D62",
+        "description": "Requires human review"
+      },
+      {
+        "name": "critical",
+        "color": "FF0000",
+        "description": "Critical issue"
+      },
+      {
+        "name": "security-alert",
+        "color": "8B0000",
+        "description": "Security alert - escalate immediately"
+      },
+      {
+        "name": "performance",
+        "color": "FFA500",
+        "description": "Performance optimization needed"
+      }
+    ]
+  },
+  "assignment_rules": {
+    "load_balancing": "round-robin",
+    "max_issues_per_assignee": 5,
+    "default_assignee": "@mbaetiong",
+    "team_rotations": {
+      "emergency-team": [
+        "@mbaetiong"
+      ],
+      "urgent-maintainers": [
+        "@dev-team",
+        "@maintainer-1",
+        "@maintainer-2"
+      ],
+      "standard-maintainers": [
+        "@contributor-1",
+        "@contributor-2",
+        "@contributor-3"
+      ],
+      "backlog-team": [
+        "@community-lead"
+      ],
+      "community": "open"
+    }
+  },
+  "escalation_rules": {
+    "p0_escalation": {
+      "trigger": "created",
+      "target": "@mbaetiong",
+      "slack_channel": "#critical-alerts",
+      "notify_all_oncall": true,
+      "sla_minutes": 15
+    },
+    "p1_escalation": {
+      "trigger": "age_60_minutes",
+      "target": "urgent-maintainers",
+      "slack_channel": "#urgent-issues",
+      "notify_oncall": true,
+      "sla_minutes": 60
+    },
+    "p2_escalation": {
+      "trigger": "age_12_hours",
+      "target": "tech-lead",
+      "slack_channel": "#escalations",
+      "notify_oncall": false,
+      "sla_minutes": 1440
+    }
+  },
+  "performance_targets": {
+    "classification_accuracy": {
+      "target": 0.95,
+      "measurement": "match_vs_manual_review"
+    },
+    "p0_false_positive_rate": {
+      "target": 0.01,
+      "measurement": "false_positives_over_total_p0"
+    },
+    "mean_classification_time": {
+      "target": 300,
+      "unit": "seconds"
+    },
+    "routing_accuracy": {
+      "target": 0.95,
+      "measurement": "correct_routing_over_total"
+    }
+  },
+  "system_configuration": {
+    "slack_webhook_url": "${SLACK_WEBHOOK_URL}",
+    "github_token": "${GITHUB_TOKEN}",
+    "auto_labeling_enabled": true,
+    "auto_assignment_enabled": true,
+    "auto_notification_enabled": true,
+    "dashboard_update_frequency_minutes": 60,
+    "classification_timeout_seconds": 300,
+    "batch_size": 50
+  }
+}

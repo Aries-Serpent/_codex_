@@ -1,0 +1,6 @@
+{"id": "598b135f-4773-119a-4e2b-299768ab64a3", "name": "session-checkpoint-manager", "phase_id": "abb5691f-7e53-7c0c-2aed-360e37bcd748"}
+{"id": "93bb91ce-bb89-7dc4-4180-775f0d889bca", "name": "memory-consolidator", "phase_id": "abb5691f-7e53-7c0c-2aed-360e37bcd748"}
+{"id": "4828ea05-b345-5b5e-35be-f63360825f71", "name": "ooda-executor", "phase_id": "abb5691f-7e53-7c0c-2aed-360e37bcd748"}
+{"id": "e6ed35d5-4eaa-e8f4-f7c9-0ad2edd318c5", "name": "rbac-controller", "phase_id": "99741f54-9eca-c75e-76dc-b2eacd87006b"}
+{"id": "53fbbf35-539d-dd40-9d1a-30c7599cff14", "name": "governance-enforcer", "phase_id": "99741f54-9eca-c75e-76dc-b2eacd87006b"}
+{"id": "0677d659-3c2d-aece-858b-c2e9ac33749d", "name": "observability-monitor", "phase_id": "99741f54-9eca-c75e-76dc-b2eacd87006b"}

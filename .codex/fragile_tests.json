@@ -1,0 +1,502 @@
+{
+  "tests/agents/test_advanced_physics_iteration2.py": [
+    "numpy",
+    "numpy",
+    "numpy",
+    "numpy"
+  ],
+  "tests/agents/test_edge_cases_phase9_4.py": [
+    "numpy",
+    "numpy",
+    "numpy"
+  ],
+  "tests/agents/test_phase2_corrected_apis.py": [
+    "numpy",
+    "numpy",
+    "numpy",
+    "numpy"
+  ],
+  "tests/agents/test_phase2_deep_coverage_batch1.py": [
+    "numpy",
+    "numpy",
+    "numpy",
+    "numpy",
+    "numpy",
+    "numpy",
+    "numpy",
+    "numpy"
+  ],
+  "tests/agents/test_phase2_deep_coverage_batch10.py": [
+    "numpy"
+  ],
+  "tests/agents/test_phase2_deep_coverage_batch11.py": [
+    "numpy"
+  ],
+  "tests/agents/test_phase2_deep_coverage_batch12.py": [
+    "numpy"
+  ],
+  "tests/agents/test_phase2_deep_coverage_batch13_branch_expansion.py": [
+    "numpy"
+  ],
+  "tests/agents/test_phase2_deep_coverage_batch14_exception_handling.py": [
+    "numpy"
+  ],
+  "tests/agents/test_phase2_deep_coverage_batch15_integration_depth.py": [
+    "numpy"
+  ],
+  "tests/agents/test_phase2_deep_coverage_batch16_method_variations.py": [
+    "numpy"
+  ],
+  "tests/agents/test_phase2_deep_coverage_batch17_final_gaps.py": [
+    "numpy"
+  ],
+  "tests/agents/test_phase2_deep_coverage_batch2.py": [
+    "numpy"
+  ],
+  "tests/agents/test_phase2_deep_coverage_batch3.py": [
+    "numpy"
+  ],
+  "tests/agents/test_phase2_deep_coverage_batch4.py": [
+    "numpy"
+  ],
+  "tests/agents/test_phase2_deep_coverage_batch6.py": [
+    "numpy"
+  ],
+  "tests/agents/test_phase2_deep_coverage_batch7.py": [
+    "numpy"
+  ],
+  "tests/agents/test_phase2_deep_coverage_batch8.py": [
+    "numpy"
+  ],
+  "tests/agents/test_phase2_deep_coverage_batch9.py": [
+    "numpy"
+  ],
+  "tests/agents/test_property_based.py": [
+    "hypothesis",
+    "hypothesis"
+  ],
+  "tests/agents/test_quantum_game_core_flows.py": [
+    "numpy"
+  ],
+  "tests/agents/test_quantum_game_theory_phase9_1.py": [
+    "numpy"
+  ],
+  "tests/ast/test_ast_cli.py": [
+    "typer.testing"
+  ],
+  "tests/atomic_diffs/test_track_a.py": [
+    "transformers"
+  ],
+  "tests/capabilities/checkpoint_capability/test_checkpointing_comprehensive.py": [
+    "hypothesis",
+    "hypothesis"
+  ],
+  "tests/capabilities/ci_test/test_ci_comprehensive.py": [
+    "hypothesis",
+    "hypothesis"
+  ],
+  "tests/capabilities/configuration/test_config_schema_validation.py": [
+    "hypothesis",
+    "hypothesis"
+  ],
+  "tests/capabilities/data_handling/test_data_handling_comprehensive.py": [
+    "hypothesis",
+    "hypothesis"
+  ],
+  "tests/capabilities/error_handling/test_error_handling_comprehensive.py": [
+    "hypothesis",
+    "hypothesis"
+  ],
+  "tests/capabilities/evaluation/test_evaluation_comprehensive.py": [
+    "hypothesis",
+    "hypothesis"
+  ],
+  "tests/capabilities/extensibility/test_extensibility_comprehensive.py": [
+    "hypothesis",
+    "hypothesis"
+  ],
+  "tests/capabilities/logging/test_logging_comprehensive.py": [
+    "hypothesis",
+    "hypothesis"
+  ],
+  "tests/capabilities/modeling/test_modeling_comprehensive.py": [
+    "hypothesis",
+    "hypothesis"
+  ],
+  "tests/capabilities/security/test_security_comprehensive.py": [
+    "hypothesis",
+    "hypothesis"
+  ],
+  "tests/capabilities/tokenization/test_tokenization_comprehensive.py": [
+    "hypothesis",
+    "hypothesis"
+  ],
+  "tests/capabilities/training_engine/test_training_engine_comprehensive.py": [
+    "hypothesis",
+    "hypothesis"
+  ],
+  "tests/checkpoint/test_checkpoint_peft_state.py": [
+    "torch"
+  ],
+  "tests/checkpointing/test_checkpoint_comprehensive.py": [
+    "torch"
+  ],
+  "tests/checkpointing/test_checkpoint_json_event.py": [
+    "torch"
+  ],
+  "tests/checkpointing/test_rng_state_checkpoint.py": [
+    "torch"
+  ],
+  "tests/cli/test_cli_checkpoint_validate.py": [
+    "typer.testing"
+  ],
+  "tests/cli/test_cli_manifest.py": [
+    "typer.testing"
+  ],
+  "tests/cli/test_cli_manifest_init.py": [
+    "typer.testing"
+  ],
+  "tests/cli/test_cli_manifest_validate.py": [
+    "typer.testing"
+  ],
+  "tests/cli/test_cli_rag_comprehensive.py": [
+    "typer.testing",
+    "typer",
+    "typer"
+  ],
+  "tests/cli/test_cli_rag_enhancements.py": [
+    "typer.testing"
+  ],
+  "tests/cli/test_cli_tracking_decide.py": [
+    "typer.testing"
+  ],
+  "tests/cli/test_plugins_cli.py": [
+    "typer.testing"
+  ],
+  "tests/cli/test_train_cli.py": [
+    "typer.testing"
+  ],
+  "tests/codex_ml/metrics/test_classification.py": [
+    "numpy"
+  ],
+  "tests/codex_ml/metrics/test_streaming.py": [
+    "numpy"
+  ],
+  "tests/codex_ml/test_cli_train_config_bridge.py": [
+    "typer.testing"
+  ],
+  "tests/codex_ml/test_eval_modeling_comprehensive.py": [
+    "numpy",
+    "torch"
+  ],
+  "tests/codex_ml/test_hf_loader.py": [
+    "torch",
+    "torch"
+  ],
+  "tests/codex_ml/test_metrics_comprehensive.py": [
+    "numpy",
+    "torch"
+  ],
+  "tests/codex_ml/test_rag_comprehensive.py": [
+    "numpy",
+    "torch"
+  ],
+  "tests/codex_ml/test_train_loop_comprehensive.py": [
+    "torch",
+    "torch.utils.data"
+  ],
+  "tests/cognitive/test_context_injector.py": [
+    "numpy"
+  ],
+  "tests/conftest.py": [
+    "numpy"
+  ],
+  "tests/data/test_cache_flush_threshold.py": [
+    "numpy"
+  ],
+  "tests/data/test_cache_roundtrip.py": [
+    "transformers"
+  ],
+  "tests/data/test_dataset_loaders_extended.py": [
+    "numpy"
+  ],
+  "tests/data/test_datasets_module.py": [
+    "data.datasets"
+  ],
+  "tests/data/test_hf_factory_compat.py": [
+    "transformers"
+  ],
+  "tests/distributed/test_multigpu.py": [
+    "torch.utils.data.distributed",
+    "torch.utils.data"
+  ],
+  "tests/eval/test_eval_runner_smoke.py": [
+    "typer.testing"
+  ],
+  "tests/evaluation/test_eval_cli.py": [
+    "typer.testing"
+  ],
+  "tests/evaluation/test_evaluate_epoch.py": [
+    "torch"
+  ],
+  "tests/fuzz/test_fuzz_api.py": [
+    "hypothesis",
+    "hypothesis"
+  ],
+  "tests/fuzz/test_fuzz_configs.py": [
+    "hypothesis",
+    "hypothesis"
+  ],
+  "tests/integration/test_cross_capability.py": [
+    "hypothesis",
+    "hypothesis"
+  ],
+  "tests/integration/test_e2e_workflows.py": [
+    "torch"
+  ],
+  "tests/integration/test_ml_pipeline_integration.py": [
+    "torch"
+  ],
+  "tests/integration/test_pipeline_integration.py": [
+    "torch",
+    "torch",
+    "torch",
+    "torch",
+    "torch",
+    "torch",
+    "torch"
+  ],
+  "tests/integration/test_property_based_edge_cases.py": [
+    "hypothesis",
+    "hypothesis"
+  ],
+  "tests/logging/test_session_embeddings.py": [
+    "numpy"
+  ],
+  "tests/metrics/test_metrics_comprehensive.py": [
+    "torch"
+  ],
+  "tests/metrics/test_metrics_registry.py": [
+    "torch"
+  ],
+  "tests/metrics/test_streaming_metrics.py": [
+    "torch"
+  ],
+  "tests/models/test_peft_lora_smoke.py": [
+    "transformers"
+  ],
+  "tests/models/test_registry_dtype.py": [
+    "torch"
+  ],
+  "tests/monitoring/test_codex_logging_bootstrap.py": [
+    "mlflow"
+  ],
+  "tests/peft/test_peft_smoke.py": [
+    "torch"
+  ],
+  "tests/phase_5b/test_cli_rag_unit.py": [
+    "typer"
+  ],
+  "tests/privacy/test_dp_training.py": [
+    "torch"
+  ],
+  "tests/production/test_performance_benchmarks.py": [
+    "numpy"
+  ],
+  "tests/property/test_property_resilience.py": [
+    "hypothesis",
+    "hypothesis"
+  ],
+  "tests/quantum_orchestrator/test_mlops_bridge.py": [
+    "numpy"
+  ],
+  "tests/rag/test_device_placement.py": [
+    "torch"
+  ],
+  "tests/rag/test_rag_functionality_comprehensive.py": [
+    "numpy"
+  ],
+  "tests/retrieval/test_optimizations.py": [
+    "numpy"
+  ],
+  "tests/security/test_fixes_validation.py": [
+    "numpy"
+  ],
+  "tests/serving/test_model_loader.py": [
+    "torch"
+  ],
+  "tests/skills/test_browse_command.py": [
+    "typer.testing"
+  ],
+  "tests/smoke/test_hf_trainer_hello.py": [
+    "transformers"
+  ],
+  "tests/smoke/test_openvino_backend_smoke.py": [
+    "numpy"
+  ],
+  "tests/space_traversal/test_peft_comprehensive/test_checkpoint_manager_callback.py": [
+    "torch.optim",
+    "torch",
+    "transformers"
+  ],
+  "tests/space_traversal/test_peft_comprehensive/test_distributed.py": [
+    "torch"
+  ],
+  "tests/space_traversal/test_peft_comprehensive/test_engine_hf_trainer_comprehensive.py": [
+    "torch"
+  ],
+  "tests/space_traversal/test_peft_comprehensive/test_engine_hf_trainer_lora_cfg.py": [
+    "torch"
+  ],
+  "tests/space_traversal/test_peft_comprehensive/test_scheduler_registry.py": [
+    "torch"
+  ],
+  "tests/space_traversal/test_peft_comprehensive/test_strict_determinism.py": [
+    "torch"
+  ],
+  "tests/test_checkpoint_checksum.py": [
+    "torch"
+  ],
+  "tests/test_checkpoint_corrupt_load.py": [
+    "torch"
+  ],
+  "tests/test_checkpoint_corruption.py": [
+    "torch"
+  ],
+  "tests/test_checkpoint_integrity.py": [
+    "torch.optim",
+    "torch"
+  ],
+  "tests/test_checkpoint_integrity_corruption.py": [
+    "torch"
+  ],
+  "tests/test_checkpoint_metadata.py": [
+    "torch"
+  ],
+  "tests/test_checkpoint_provenance.py": [
+    "torch"
+  ],
+  "tests/test_checkpoint_save_resume.py": [
+    "torch"
+  ],
+  "tests/test_cli.py": [
+    "typer.testing",
+    "mlflow",
+    "mlflow"
+  ],
+  "tests/test_cli_rag.py": [
+    "typer.testing"
+  ],
+  "tests/test_cli_report.py": [
+    "typer.testing",
+    "typer.testing",
+    "typer.testing",
+    "typer.testing",
+    "typer.testing",
+    "typer.testing",
+    "typer.testing",
+    "typer.testing",
+    "typer.testing"
+  ],
+  "tests/test_codex_model.py": [
+    "torch"
+  ],
+  "tests/test_dataset_wrapper.py": [
+    "datasets",
+    "datasets"
+  ],
+  "tests/test_determinism.py": [
+    "torch"
+  ],
+  "tests/test_distributed_setup.py": [
+    "torch",
+    "torch.utils.data"
+  ],
+  "tests/test_engine_hf_trainer.py": [
+    "torch",
+    "numpy"
+  ],
+  "tests/test_engine_hf_trainer_lora.py": [
+    "torch"
+  ],
+  "tests/test_model_registry.py": [
+    "typer.testing"
+  ],
+  "tests/test_performance_benchmark.py": [
+    "torch.optim",
+    "torch",
+    "torch.utils.data"
+  ],
+  "tests/test_plugins_cli.py": [
+    "typer.testing"
+  ],
+  "tests/test_rag_error_handling.py": [
+    "numpy"
+  ],
+  "tests/test_repro_determinism.py": [
+    "numpy",
+    "torch"
+  ],
+  "tests/test_repro_helper.py": [
+    "numpy"
+  ],
+  "tests/test_repro_seed_consistency.py": [
+    "numpy"
+  ],
+  "tests/test_reproducibility.py": [
+    "numpy"
+  ],
+  "tests/test_torch_stub.py": [
+    "torch",
+    "torch",
+    "torch",
+    "torch",
+    "torch",
+    "torch",
+    "torch",
+    "torch"
+  ],
+  "tests/test_trainer_reward_registry.py": [
+    "typer.testing"
+  ],
+  "tests/tools/test_cli_ndjson_summary_prop.py": [
+    "hypothesis",
+    "hypothesis"
+  ],
+  "tests/training/test_train_loop_coverage.py": [
+    "torch.optim.lr_scheduler"
+  ],
+  "tests/training/test_training_config_coverage.py": [
+    "torch.optim.lr_scheduler",
+    "torch.optim.lr_scheduler",
+    "torch.optim.lr_scheduler",
+    "torch.optim.lr_scheduler",
+    "torch.optim.lr_scheduler",
+    "torch.utils.data",
+    "torch.optim.lr_scheduler"
+  ],
+  "tests/training/test_training_edge_cases_phase26.py": [
+    "numpy",
+    "torch"
+  ],
+  "tests/unit/test_modeling_coverage_gap.py": [
+    "torch",
+    "torch",
+    "torch",
+    "torch",
+    "torch",
+    "torch",
+    "torch",
+    "torch",
+    "torch",
+    "torch",
+    "torch",
+    "torch"
+  ],
+  "tests/unit/test_rag_embeddings_basic.py": [
+    "numpy"
+  ],
+  "tests/zendesk/test_api_client.py": [
+    "responses"
+  ]
+}

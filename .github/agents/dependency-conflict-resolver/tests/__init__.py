@@ -1,1 +1,1 @@
-"""Tests for Dependency Conflict Resolver Agent"""
+"""Tests for Test Coverage Enforcer Agent"""

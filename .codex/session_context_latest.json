@@ -1,0 +1,21 @@
+{
+  "timestamp": "2026-06-30T20:45:28Z",
+  "repo": "Aries-Serpent/_codex_",
+  "baseline_ok": null,
+  "fetched": [
+    {
+      "url": "https://github.com/Aries-Serpent/_codex_/pull/5155",
+      "kind": "pr",
+      "title": "5155",
+      "summary": "(offline mode \u2014 not fetched)",
+      "details": [],
+      "error": null
+    }
+  ],
+  "triage": [],
+  "blocking": [],
+  "warnings": [
+    "--offline: 1 URL(s) found but not fetched.",
+    "--skip-triage: CI triage checks not run"
+  ]
+}

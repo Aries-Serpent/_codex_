@@ -1,0 +1,2 @@
+{"id": "abb5691f-7e53-7c0c-2aed-360e37bcd748", "phase_number": 10, "name": "Cognitive Brain & Session Restore", "description": "Session checkpoint/resume, STM\u2192LTM consolidation, OODA loop executor", "status": "complete", "tracks": 3, "deliverables": 12}
+{"id": "99741f54-9eca-c75e-76dc-b2eacd87006b", "phase_number": 12, "name": "Enterprise Features", "description": "RBAC system, governance & compliance, observability & monitoring", "status": "complete", "tracks": 3, "deliverables": 12}

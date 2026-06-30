@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codex.internal/schemas/section.json",
+  "title": "Section Record Schema",
+  "description": "Hierarchical section within a document (chapter, subsection, etc.)",
+  "type": "object",
+  "required": ["id", "type", "doc_id", "level", "title", "content", "parent_id"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique section identifier (UUID v4)",
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "type": {
+      "type": "string",
+      "enum": ["section"],
+      "description": "Record type discriminator"
+    },
+    "doc_id": {
+      "type": "string",
+      "description": "Parent document ID (must exist in Document records)",
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "level": {
+      "type": "integer",
+      "description": "Heading level (1=h1, 2=h2, ..., 6=h6)",
+      "minimum": 1,
+      "maximum": 6
+    },
+    "title": {
+      "type": "string",
+      "description": "Section title",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "content": {
+      "type": "string",
+      "description": "Raw section content (can include Markdown)",
+      "minLength": 1
+    },
+    "parent_id": {
+      "type": ["string", "null"],
+      "description": "Parent section ID for nested sections",
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    },
+    "order": {
+      "type": "integer",
+      "description": "Display order within parent (for sorting)",
+      "minimum": 0
+    },
+    "word_count": {
+      "type": "integer",
+      "description": "Number of words in section content",
+      "minimum": 0
+    },
+    "code_blocks": {
+      "type": "integer",
+      "description": "Count of code blocks in section",
+      "minimum": 0
+    },
+    "tags": {
+      "type": "array",
+      "description": "Section-specific tags",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "last_updated": {
+      "type": "string",
+      "description": "When section was last modified (ISO 8601 timestamp)",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false
+}

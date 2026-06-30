@@ -1,0 +1,2 @@
+{"id": "6581f330-4177-0e28-4ecd-cdcde1518398", "phase_id": "abb5691f-7e53-7c0c-2aed-360e37bcd748", "metric_name": "session_restore_time_ms", "value": 35}
+{"id": "4b128b88-31e8-e284-cdec-ea98b91b4b1d", "phase_id": "99741f54-9eca-c75e-76dc-b2eacd87006b", "metric_name": "rbac_check_ms", "value": 8.7}

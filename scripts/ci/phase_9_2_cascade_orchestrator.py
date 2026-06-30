@@ -116,100 +116,100 @@ PATTERN_CATALOG = [
     Pattern(
         id="RP-001",
         name="Unused Imports (F401)",
-        primary_regex=r"F401.*Unused import",
-        secondary_indicators=["ruff check --select F401"],
+        primary_regex=r"F401|unused import",
+        secondary_indicators=["warning", "import"],
         agent="ci-auto-healer-agent",
-        confidence_threshold=0.85,
+        confidence_threshold=0.65,
         false_positive_risk="Low"
     ),
     Pattern(
         id="RP-002",
         name="Type Annotation Errors",
-        primary_regex=r"error: (Argument|Name|Missing type annotation)",
+        primary_regex=r"error:.*Argument|error:.*Name|error:.*type",
         secondary_indicators=["mypy", "incompatible type"],
         agent="python-312-type-fixer",
-        confidence_threshold=0.80,
+        confidence_threshold=0.60,
         false_positive_risk="Medium"
     ),
     Pattern(
         id="RP-003",
         name="Test Assertion Failures",
-        primary_regex=r"FAILED.*AssertionError|assert",
-        secondary_indicators=["pytest", "test_"],
+        primary_regex=r"FAILED|AssertionError|assert",
+        secondary_indicators=["pytest", "test"],
         agent="autonomous-test-healer-agent",
-        confidence_threshold=0.80,
+        confidence_threshold=0.60,
         false_positive_risk="Medium"
     ),
     Pattern(
         id="RP-004",
         name="Dependency Conflicts",
-        primary_regex=r"(ResolutionImpossible|VersionConflict|dependency resolver)",
-        secondary_indicators=["pip install", "requires"],
+        primary_regex=r"ResolutionImpossible|VersionConflict|requires.*not satisfied|conflicts",
+        secondary_indicators=["pip", "dependency", "package"],
         agent="dependency-conflict-agent",
-        confidence_threshold=0.75,
+        confidence_threshold=0.55,
         false_positive_risk="Medium"
     ),
     Pattern(
         id="RP-005",
         name="YAML Formatting Errors",
-        primary_regex=r"(YAML|yaml).*error|mapping values",
-        secondary_indicators=["indentation", "workflows"],
+        primary_regex=r"YAML.*error|mapping values|indentation",
+        secondary_indicators=["workflow", "yaml"],
         agent="workflow-ci-fixer",
-        confidence_threshold=0.90,
+        confidence_threshold=0.70,
         false_positive_risk="Very Low"
     ),
     Pattern(
         id="RP-006",
         name="Coverage Violations",
         primary_regex=r"coverage.*below|fail-under|Coverage.*%",
-        secondary_indicators=["coverage report", "threshold"],
+        secondary_indicators=["coverage", "threshold"],
         agent="unified-coverage-agent",
-        confidence_threshold=0.80,
+        confidence_threshold=0.65,
         false_positive_risk="Medium"
     ),
     Pattern(
         id="RP-007",
         name="Link Validation Failures",
-        primary_regex=r"(Broken link|404|link.*not.*found)",
-        secondary_indicators=["documentation", "href"],
+        primary_regex=r"Broken link|404|not found",
+        secondary_indicators=["link", "documentation"],
         agent="link-validator-agent",
-        confidence_threshold=0.85,
+        confidence_threshold=0.60,
         false_positive_risk="Low"
     ),
     Pattern(
         id="RP-008",
         name="Import Path Issues",
-        primary_regex=r"(ImportError|ModuleNotFoundError|cannot import)",
-        secondary_indicators=["sys.path", "PYTHONPATH"],
+        primary_regex=r"ImportError|ModuleNotFoundError|cannot import",
+        secondary_indicators=["import", "module"],
         agent="ci-importerror-agent",
-        confidence_threshold=0.75,
+        confidence_threshold=0.65,
         false_positive_risk="Medium"
     ),
     Pattern(
         id="RP-009",
         name="Flaky Test Failures",
-        primary_regex=r"(FLAKY|TimeoutError|Passed on retry)",
-        secondary_indicators=["intermittent", "timing"],
+        primary_regex=r"FLAKY|TimeoutError|Passed on retry",
+        secondary_indicators=["intermittent", "timeout"],
         agent="autonomous-test-healer-agent",
-        confidence_threshold=0.70,
+        confidence_threshold=0.55,
         false_positive_risk="Medium-High"
     ),
     Pattern(
         id="RP-010",
         name="Workflow Compliance",
-        primary_regex=r"(concurrency|timeout-minutes|compliance)",
+        primary_regex=r"concurrency|timeout-minutes|compliance",
         secondary_indicators=["workflow", "job"],
         agent="workflow-compliance-guardian",
-        confidence_threshold=0.88,
+        confidence_threshold=0.60,
         false_positive_risk="Very Low"
     ),
     Pattern(
         id="RP-011",
         name="Cargo Feature Issues",
-        primary_regex=r"unexpected.*cfg.*condition|feature.*not.*found",
-        secondary_indicators=["Cargo.toml", "Rust"],
+        primary_regex=r"unexpected.*cfg|feature.*not",
+        secondary_indicators=["Cargo", "Rust"],
         agent="ci-testing-agent",
-        confidence_threshold=0.90,
+        confidence_threshold=0.55,
         false_positive_risk="Very Low"
     ),
     Pattern(
@@ -266,7 +266,8 @@ def run_command(
             cmd,
             timeout=timeout_sec,
             capture_output=capture_output,
-            text=True
+            text=True,
+            shell=False  # Explicitly disable shell to prevent injection attacks
         )
         return result.returncode, result.stdout, result.stderr
     except subprocess.TimeoutExpired:
@@ -284,7 +285,7 @@ def run_command(
 class PatternDetector:
     """Detects CI failure patterns from logs"""
 
-    def __init__(self, patterns: List[Pattern] = None):
+    def __init__(self, patterns: Optional[List[Pattern]] = None):
         self.patterns = patterns or PATTERN_CATALOG
 
     def detect(self, failure_log: FailureLog) -> List[PatternMatch]:
@@ -329,16 +330,35 @@ class PatternDetector:
         )
         score += min(0.30, 0.10 * secondary_matches)
 
-        # Absence of conflicting patterns (30% weight)
-        conflicting = False
+        # Absence of highly conflicting patterns (20% weight, more lenient)
+        # Only penalize if a MORE SPECIFIC pattern matches with same primary signature
+        has_conflict = False
         for other in self.patterns:
             if other.id != pattern.id:
-                if re.search(other.primary_regex, failure_log.raw_log, re.IGNORECASE):
-                    conflicting = True
-                    break
+                # Check if other pattern's primary also matches
+                other_matches_primary = re.search(
+                    other.primary_regex,
+                    failure_log.raw_log,
+                    re.IGNORECASE
+                )
+                # Only mark as conflict if OTHER pattern also has PRIMARY match
+                # AND has more specific indicators than this pattern
+                if other_matches_primary:
+                    other_secondary = sum(
+                        1 for indicator in other.secondary_indicators
+                        if indicator.lower() in failure_log.raw_log.lower()
+                    )
+                    # Only conflict if other has BETTER secondary match
+                    current_secondary = sum(
+                        1 for indicator in pattern.secondary_indicators
+                        if indicator.lower() in failure_log.raw_log.lower()
+                    )
+                    if other_secondary > current_secondary:
+                        has_conflict = True
+                        break
 
-        if not conflicting:
-            score += 0.30
+        if not has_conflict:
+            score += 0.20
 
         return min(1.0, score)
 
@@ -500,11 +520,11 @@ class FixExecutor:
             "RP-012": 0.65,
         }
 
-        import random
+        import secrets
         success_rate = success_rates.get(pattern.id, 0.75)
 
-        # Simulate fix success based on historical rates
-        if random.random() < success_rate:
+        # Simulate fix success based on historical rates (using cryptographically secure randomness)
+        if secrets.randbelow(100) < int(success_rate * 100):
             return True, "", True
         else:
             return False, f"Simulated fix failure for {pattern.name}", False

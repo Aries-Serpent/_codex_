@@ -1,494 +1,497 @@
 #!/usr/bin/env python3
 """
-Integration tests for Dependency Conflict Resolver Agent
+Integration tests for Test Coverage Enforcer Agent
 
-Tests end-to-end workflows including:
-- Full conflict resolution workflows for different ecosystems
-- Multi-ecosystem projects
-- Vulnerability-aware resolution
-- Lock file handling
-- Graph visualization
+Tests end-to-end workflows and real file system interactions.
 """
 
-import json
 import sys
 import tempfile
-import unittest
 from pathlib import Path
+from unittest.mock import patch
 
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
+import pytest
 
-from agent import (
-    DependencyConflictResolver,
-    DependencyInfo,
-    Ecosystem,
-    ResolutionStrategy,
+# Add parent directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from src.agent import (
+    EnforcementResult,
+    TestCoverageEnforcer,
 )
 
 
-class TestEndToEndPythonResolution(unittest.TestCase):
-    """Test end-to-end Python conflict resolution"""
+class TestAnalyzeCoverageFullWorkflow:
+    """Integration tests for complete coverage analysis workflow"""
 
-    def test_end_to_end_python_conflict_resolution(self):
-        """Test complete workflow: parse -> detect -> resolve -> apply -> validate"""
-        # Create test requirements file with conflicts
-        with tempfile.NamedTemporaryFile(mode='w', suffix='requirements.txt', delete=False) as f:
-            f.write("""
-requests>=2.20.0
-pytest==7.2.0
-# Another file depends on different version
-requests>=2.28.0
-numpy>=1.20.0
+    def test_analyze_coverage_with_real_python_files(self):
+        """Test analyzing coverage with real Python source files"""
+        agent = TestCoverageEnforcer()
+
+        # Create temporary directory with Python files
+        with tempfile.TemporaryDirectory() as tmpdir:
+            src_dir = Path(tmpdir) / 'src'
+            src_dir.mkdir()
+
+            # Create sample Python file
+            sample_file = src_dir / 'calculator.py'
+            sample_file.write_text("""
+def add(a, b):
+    return a + b
+
+def subtract(a, b):
+    return a - b
+
+def multiply(a, b):
+    return a * b
 """)
-            req_file = Path(f.name)
 
-        try:
-            resolver = DependencyConflictResolver()
+            # Mock the coverage analysis
+            with patch.object(agent, '_run_coverage_analysis') as mock_run:
+                mock_run.return_value = {
+                    str(sample_file): {
+                        'executed_lines': [2, 3, 5, 6],
+                        'missing_lines': [8, 9],
+                        'excluded_lines': []
+                    }
+                }
 
-            # Step 1: Parse dependencies
-            deps = resolver.parse_dependency_file(req_file)
-            self.assertGreater(len(deps), 0)
+                reports = agent.analyze_coverage(src_dir)
 
-            # Step 2: Build dependency graph
-            graph = resolver.build_dependency_graph(deps)
-            self.assertGreater(len(graph), 0)
+                assert len(reports) == 1
+                assert sample_file in reports
+                report = reports[sample_file]
+                assert report.line_coverage > 0
+                assert report.total_lines > 0
 
-            # Step 3: Detect conflicts
-            conflicts = resolver.detect_conflicts()
-            # Note: Same file won't create conflict in this simple case
-            # but method is tested
+    def test_analyze_coverage_with_multiple_files(self):
+        """Test analyzing coverage across multiple files"""
+        agent = TestCoverageEnforcer()
 
-            # Step 4: Generate resolution plan
-            report = resolver.generate_resolution_plan()
-            self.assertIsNotNone(report)
-            self.assertIsNotNone(report.resolution_plan)
+        with tempfile.TemporaryDirectory() as tmpdir:
+            src_dir = Path(tmpdir) / 'src'
+            src_dir.mkdir()
 
-            # Step 5: Validate
-            valid, errors = resolver.validate_resolution()
-            # Should be valid if no conflicts
-            if not conflicts:
-                self.assertTrue(valid)
+            # Create multiple files
+            file1 = src_dir / 'module1.py'
+            file2 = src_dir / 'module2.py'
 
-        finally:
-            req_file.unlink()
+            file1.write_text("def func1():\n    return 1\n")
+            file2.write_text("def func2():\n    return 2\n")
 
-    def test_python_requirements_with_version_pinning(self):
-        """Test resolution respects version pinning"""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='requirements.txt', delete=False) as f:
-            f.write("""
-django==4.1.0
-requests>=2.28.0,<3.0.0
-pytest>=7.0.0
+            # Mock coverage data for both files
+            with patch.object(agent, '_run_coverage_analysis') as mock_run:
+                mock_run.return_value = {
+                    str(file1): {
+                        'executed_lines': [1, 2],
+                        'missing_lines': [],
+                        'excluded_lines': []
+                    },
+                    str(file2): {
+                        'executed_lines': [1],
+                        'missing_lines': [2],
+                        'excluded_lines': []
+                    }
+                }
+
+                reports = agent.analyze_coverage(src_dir)
+
+                assert len(reports) == 2
+                assert file1 in reports
+                assert file2 in reports
+
+    def test_analyze_coverage_handles_no_coverage_data(self):
+        """Test analysis handles missing coverage data gracefully"""
+        agent = TestCoverageEnforcer()
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            src_dir = Path(tmpdir) / 'src'
+            src_dir.mkdir()
+
+            with patch.object(agent, '_run_coverage_analysis') as mock_run:
+                mock_run.return_value = {}
+
+                reports = agent.analyze_coverage(src_dir)
+
+                assert len(reports) == 0
+
+
+class TestEnforceThresholdsIntegration:
+    """Integration tests for threshold enforcement"""
+
+    def test_enforce_thresholds_pass_scenario(self):
+        """Test complete enforcement scenario that passes"""
+        agent = TestCoverageEnforcer()
+        agent.line_threshold = 75
+        agent.auto_generate = False
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            src_dir = Path(tmpdir) / 'src'
+            src_dir.mkdir()
+
+            sample_file = src_dir / 'good_coverage.py'
+            sample_file.write_text("""
+def well_tested():
+    return "tested"
+
+def also_tested():
+    return "also tested"
 """)
-            req_file = Path(f.name)
 
-        try:
-            resolver = DependencyConflictResolver()
-            deps = resolver.parse_dependency_file(req_file)
-
-            # Check that pinned versions are respected
-            django_dep = next(d for d in deps if d.name == 'django')
-            self.assertEqual(django_dep.version_constraint, '==4.1.0')
-
-            resolver.build_dependency_graph(deps)
-            conflicts = resolver.detect_conflicts()
-
-            # No conflicts expected
-            self.assertEqual(len(conflicts), 0)
-
-        finally:
-            req_file.unlink()
-
-
-class TestEndToEndJavaScriptResolution(unittest.TestCase):
-    """Test end-to-end JavaScript conflict resolution"""
-
-    def test_end_to_end_javascript_conflict_resolution(self):
-        """Test complete workflow for JavaScript package.json"""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='package.json', delete=False) as f:
-            package_data = {
-                "name": "test-project",
-                "version": "1.0.0",
-                "dependencies": {
-                    "express": "^4.18.0",
-                    "lodash": "^4.17.21",
-                    "axios": "^1.3.0"
-                },
-                "devDependencies": {
-                    "jest": "^29.0.0",
-                    "eslint": "^8.35.0"
+            # Mock high coverage
+            with patch.object(agent, '_run_coverage_analysis') as mock_run:
+                mock_run.return_value = {
+                    str(sample_file): {
+                        'executed_lines': [2, 3, 5, 6],
+                        'missing_lines': [],
+                        'excluded_lines': []
+                    }
                 }
-            }
-            json.dump(package_data, f)
-            package_file = Path(f.name)
 
-        try:
-            resolver = DependencyConflictResolver()
+                result = agent.enforce_thresholds(src_dir)
 
-            # Parse and analyze
-            deps = resolver.parse_dependency_file(package_file)
-            self.assertEqual(len(deps), 5)
+                assert result.passed is True
+                assert result.current_coverage >= 75.0
+                assert result.threshold == 75.0
+                assert result.gaps_found == 0
 
-            # Build graph
-            graph = resolver.build_dependency_graph(deps)
-            self.assertEqual(len(graph), 5)
+    def test_enforce_thresholds_fail_scenario(self):
+        """Test complete enforcement scenario that fails"""
+        agent = TestCoverageEnforcer()
+        agent.line_threshold = 90
+        agent.auto_generate = False
 
-            # Detect conflicts
-            resolver.detect_conflicts()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            src_dir = Path(tmpdir) / 'src'
+            src_dir.mkdir()
 
-            # Generate report
-            report = resolver.generate_resolution_plan()
-            self.assertEqual(report.ecosystem, Ecosystem.JAVASCRIPT)
-            self.assertEqual(report.total_dependencies, 5)
+            sample_file = src_dir / 'low_coverage.py'
+            sample_file.write_text("""
+def tested():
+    return "tested"
 
-        finally:
-            package_file.unlink()
+def untested():
+    return "not tested"
 
-    def test_javascript_dev_dependencies_handling(self):
-        """Test proper handling of dev dependencies"""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='package.json', delete=False) as f:
-            package_data = {
-                "name": "test-project",
-                "version": "1.0.0",
-                "dependencies": {
-                    "express": "^4.18.0"
-                },
-                "devDependencies": {
-                    "jest": "^29.0.0"
-                }
-            }
-            json.dump(package_data, f)
-            package_file = Path(f.name)
-
-        try:
-            resolver = DependencyConflictResolver()
-            deps = resolver.parse_dependency_file(package_file)
-
-            # Check dev dependency flag
-            jest_dep = next(d for d in deps if d.name == 'jest')
-            self.assertTrue(jest_dep.is_dev)
-
-            express_dep = next(d for d in deps if d.name == 'express')
-            self.assertFalse(express_dep.is_dev)
-
-        finally:
-            package_file.unlink()
-
-
-class TestEndToEndRustResolution(unittest.TestCase):
-    """Test end-to-end Rust conflict resolution"""
-
-    def test_end_to_end_rust_conflict_resolution(self):
-        """Test complete workflow for Rust Cargo.toml"""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='Cargo.toml', delete=False) as f:
-            f.write("""
-[package]
-name = "test-crate"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-serde = "1.0"
-tokio = { version = "1.28", features = ["full"] }
-reqwest = "0.11.18"
-anyhow = "1.0"
+def also_untested():
+    return "also not tested"
 """)
-            cargo_file = Path(f.name)
 
-        try:
-            resolver = DependencyConflictResolver()
-
-            # Parse dependencies
-            deps = resolver.parse_dependency_file(cargo_file)
-            self.assertGreaterEqual(len(deps), 2)
-
-            # Build graph
-            resolver.build_dependency_graph(deps)
-
-            # All dependencies should be Rust ecosystem
-            for dep in deps:
-                self.assertEqual(dep.ecosystem, Ecosystem.RUST)
-
-            # Detect conflicts
-            resolver.detect_conflicts()
-
-            # Generate report
-            report = resolver.generate_resolution_plan()
-            self.assertEqual(report.ecosystem, Ecosystem.RUST)
-
-        finally:
-            cargo_file.unlink()
-
-
-class TestMultiEcosystemProject(unittest.TestCase):
-    """Test handling of multi-ecosystem projects"""
-
-    def test_multi_ecosystem_project(self):
-        """Test analyzing project with multiple ecosystems"""
-        # Create Python requirements
-        with tempfile.NamedTemporaryFile(mode='w', suffix='requirements.txt', delete=False) as f:
-            f.write("requests>=2.28.0\nnumpy>=1.20.0\n")
-            py_file = Path(f.name)
-
-        # Create JavaScript package.json
-        with tempfile.NamedTemporaryFile(mode='w', suffix='package.json', delete=False) as f:
-            package_data = {
-                "name": "test-project",
-                "dependencies": {
-                    "express": "^4.18.0"
+            # Mock low coverage
+            with patch.object(agent, '_run_coverage_analysis') as mock_run:
+                mock_run.return_value = {
+                    str(sample_file): {
+                        'executed_lines': [2, 3],
+                        'missing_lines': [5, 6, 8, 9],
+                        'excluded_lines': []
+                    }
                 }
-            }
-            json.dump(package_data, f)
-            js_file = Path(f.name)
 
-        try:
-            resolver_py = DependencyConflictResolver()
-            resolver_js = DependencyConflictResolver()
+                result = agent.enforce_thresholds(src_dir)
 
-            # Parse both ecosystems
-            py_deps = resolver_py.parse_dependency_file(py_file)
-            js_deps = resolver_js.parse_dependency_file(js_file)
+                assert result.passed is False
+                assert result.current_coverage < 90.0
+                assert result.threshold == 90.0
+                assert result.gaps_found > 0
+                assert len(result.enforcement_actions) > 0
 
-            # Verify correct ecosystem detection
-            self.assertTrue(all(d.ecosystem == Ecosystem.PYTHON for d in py_deps))
-            self.assertTrue(all(d.ecosystem == Ecosystem.JAVASCRIPT for d in js_deps))
+    def test_enforce_thresholds_with_empty_directory(self):
+        """Test enforcement with empty directory"""
+        agent = TestCoverageEnforcer()
 
-            # Build separate graphs
-            py_graph = resolver_py.build_dependency_graph(py_deps)
-            js_graph = resolver_js.build_dependency_graph(js_deps)
+        with tempfile.TemporaryDirectory() as tmpdir:
+            src_dir = Path(tmpdir) / 'empty_src'
+            src_dir.mkdir()
 
-            self.assertGreater(len(py_graph), 0)
-            self.assertGreater(len(js_graph), 0)
+            with patch.object(agent, '_run_coverage_analysis') as mock_run:
+                mock_run.return_value = {}
 
-        finally:
-            py_file.unlink()
-            js_file.unlink()
+                result = agent.enforce_thresholds(src_dir)
+
+                assert result.passed is False
+                assert result.current_coverage == 0.0
+                assert 'No coverage data' in str(result.enforcement_actions)
 
 
-class TestVulnerabilityAwareResolution(unittest.TestCase):
-    """Test vulnerability-aware conflict resolution"""
+class TestGenerateTestSuggestionsIntegration:
+    """Integration tests for test suggestion generation"""
 
-    def test_vulnerability_aware_resolution(self):
-        """Test resolution considers vulnerability information"""
-        resolver = DependencyConflictResolver()
+    def test_generate_test_suggestions_end_to_end(self):
+        """Test generating suggestions from real file analysis"""
+        agent = TestCoverageEnforcer()
+        agent.line_threshold = 80
 
-        deps = [
-            DependencyInfo('requests', '2.20.0', '>=2.20.0', Ecosystem.PYTHON, source='file1.txt'),
-            DependencyInfo('requests', '2.28.0', '>=2.28.0', Ecosystem.PYTHON, source='file2.txt'),
-        ]
+        with tempfile.TemporaryDirectory() as tmpdir:
+            src_dir = Path(tmpdir) / 'src'
+            src_dir.mkdir()
 
-        resolver.build_dependency_graph(deps)
-        resolver.detect_conflicts()
+            sample_file = src_dir / 'math_utils.py'
+            sample_file.write_text("""
+def add(a, b):
+    return a + b
 
-        # Check vulnerabilities
-        vulnerabilities = resolver.check_vulnerabilities()
+def subtract(a, b):
+    return a - b
 
-        # Vulnerability check should return a dict
-        self.assertIsInstance(vulnerabilities, dict)
+def multiply(a, b):
+    return a * b
 
-        # Resolution should prefer non-vulnerable versions
-        plan = resolver.resolve_conflicts(ResolutionStrategy.BALANCED)
-        self.assertIsNotNone(plan)
+def divide(a, b):
+    if b == 0:
+        raise ValueError("Cannot divide by zero")
+    return a / b
+""")
 
-    def test_vulnerability_integration_disabled(self):
-        """Test resolution with vulnerability checking disabled"""
-        # Create config with vulnerability checking disabled
+            # Mock partial coverage
+            with patch.object(agent, '_run_coverage_analysis') as mock_run:
+                mock_run.return_value = {
+                    str(sample_file): {
+                        'executed_lines': [2, 3, 5, 6],
+                        'missing_lines': [8, 9, 11, 12, 13, 14],
+                        'excluded_lines': []
+                    }
+                }
+
+                reports = agent.analyze_coverage(src_dir)
+                suggestions = agent.generate_test_suggestions(reports)
+
+                # Should have suggestions for untested functions
+                assert len(suggestions) > 0
+
+                for suggestion in suggestions:
+                    assert suggestion.test_file.name.startswith('test_')
+                    assert 'def test_' in suggestion.test_template
+                    assert suggestion.priority >= 1
+                    assert suggestion.priority <= 5
+                    assert suggestion.coverage_impact >= 0.0
+
+    def test_generate_suggestions_with_auto_generate_enabled(self):
+        """Test automatic test generation when auto_generate is enabled"""
+        agent = TestCoverageEnforcer()
+        agent.line_threshold = 80
+        agent.auto_generate = True
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            src_dir = Path(tmpdir) / 'src'
+            src_dir.mkdir()
+
+            sample_file = src_dir / 'service.py'
+            sample_file.write_text("""
+def process_data(data):
+    return data.upper()
+
+def validate_input(input_str):
+    return len(input_str) > 0
+""")
+
+            # Mock low coverage to trigger suggestions
+            with patch.object(agent, '_run_coverage_analysis') as mock_run:
+                mock_run.return_value = {
+                    str(sample_file): {
+                        'executed_lines': [2, 3],
+                        'missing_lines': [5, 6],
+                        'excluded_lines': []
+                    }
+                }
+
+                result = agent.enforce_thresholds(src_dir)
+
+                # Should generate suggestions when auto_generate is enabled
+                assert result.suggestions_generated > 0
+
+
+class TestReportGenerationIntegration:
+    """Integration tests for report generation"""
+
+    def test_generate_all_report_formats(self):
+        """Test generating reports in all formats"""
+        agent = TestCoverageEnforcer()
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            src_dir = Path(tmpdir) / 'src'
+            src_dir.mkdir()
+
+            sample_file = src_dir / 'example.py'
+            sample_file.write_text("def example():\n    return 'example'\n")
+
+            # Mock coverage data
+            with patch.object(agent, '_run_coverage_analysis') as mock_run:
+                mock_run.return_value = {
+                    str(sample_file): {
+                        'executed_lines': [1, 2],
+                        'missing_lines': [],
+                        'excluded_lines': []
+                    }
+                }
+
+                agent.analyze_coverage(src_dir)
+
+                # Test text format
+                text_report = agent.generate_coverage_report('text')
+                assert 'Test Coverage Enforcement Report' in text_report
+                assert len(text_report) > 100
+
+                # Test JSON format
+                json_report = agent.generate_coverage_report('json')
+                assert '"summary"' in json_report
+                assert '"reports"' in json_report
+
+                # Test HTML format
+                html_report = agent.generate_coverage_report('html')
+                assert '<!DOCTYPE html>' in html_report
+                assert '<table>' in html_report
+
+    def test_report_includes_all_analysis_data(self):
+        """Test report contains all analyzed data"""
+        agent = TestCoverageEnforcer()
+        agent.line_threshold = 80
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            src_dir = Path(tmpdir) / 'src'
+            src_dir.mkdir()
+
+            file1 = src_dir / 'module1.py'
+            file2 = src_dir / 'module2.py'
+
+            file1.write_text("def func1():\n    return 1\n")
+            file2.write_text("def func2():\n    return 2\n")
+
+            with patch.object(agent, '_run_coverage_analysis') as mock_run:
+                mock_run.return_value = {
+                    str(file1): {
+                        'executed_lines': [1, 2],
+                        'missing_lines': [],
+                        'excluded_lines': []
+                    },
+                    str(file2): {
+                        'executed_lines': [1],
+                        'missing_lines': [2],
+                        'excluded_lines': []
+                    }
+                }
+
+                agent.analyze_coverage(src_dir)
+                report = agent.generate_coverage_report('text')
+
+                # Should include both files
+                assert 'module1.py' in report
+                assert 'module2.py' in report
+
+                # Should show analysis counts
+                assert 'Total files analyzed: 2' in report
+
+
+class TestEndToEndCoverageEnforcement:
+    """Complete end-to-end integration tests"""
+
+    def test_full_workflow_from_analysis_to_report(self):
+        """Test complete workflow: analyze -> enforce -> generate suggestions -> report"""
+        agent = TestCoverageEnforcer()
+        agent.line_threshold = 75
+        agent.auto_generate = True
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            src_dir = Path(tmpdir) / 'src'
+            src_dir.mkdir()
+
+            # Create a realistic Python module
+            module_file = src_dir / 'user_service.py'
+            module_file.write_text("""
+class UserService:
+    def __init__(self):
+        self.users = {}
+
+    def add_user(self, user_id, name):
+        self.users[user_id] = name
+        return True
+
+    def get_user(self, user_id):
+        return self.users.get(user_id)
+
+    def delete_user(self, user_id):
+        if user_id in self.users:
+            del self.users[user_id]
+            return True
+        return False
+
+    def list_users(self):
+        return list(self.users.values())
+""")
+
+            # Mock coverage data (partial coverage)
+            with patch.object(agent, '_run_coverage_analysis') as mock_run:
+                mock_run.return_value = {
+                    str(module_file): {
+                        'executed_lines': [2, 3, 4, 6, 7, 8],
+                        'missing_lines': [10, 11, 13, 14, 15, 16, 17, 19, 20],
+                        'excluded_lines': []
+                    }
+                }
+
+                # Step 1: Analyze coverage
+                reports = agent.analyze_coverage(src_dir)
+                assert len(reports) == 1
+
+                # Step 2: Enforce thresholds
+                result = agent.enforce_thresholds(src_dir)
+                assert isinstance(result, EnforcementResult)
+
+                # Step 3: Generate suggestions (auto-generated due to auto_generate=True)
+                if not result.passed:
+                    assert result.suggestions_generated > 0
+
+                # Step 4: Generate report
+                text_report = agent.generate_coverage_report('text')
+                assert 'user_service.py' in text_report
+
+                json_report = agent.generate_coverage_report('json')
+                assert '"user_service.py"' in json_report or 'user_service.py' in json_report
+
+    def test_workflow_with_configuration_override(self):
+        """Test workflow with custom configuration"""
         with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
             f.write("""
-vulnerability_integration:
-  enabled: false
+thresholds:
+  line: 95
+  branch: 90
+  function: 95
+auto_generate_tests: true
+fail_build_below_threshold: true
 """)
             config_path = Path(f.name)
 
         try:
-            resolver = DependencyConflictResolver(config_path)
-            self.assertFalse(resolver.vulnerability_checking_enabled)
+            agent = TestCoverageEnforcer(config_path=config_path)
 
-            # Should still work without vulnerability checks
-            deps = [
-                DependencyInfo('requests', '2.28.0', '>=2.28.0', Ecosystem.PYTHON),
-            ]
+            # Verify custom config loaded
+            assert agent.line_threshold == 95
+            assert agent.branch_threshold == 90
+            assert agent.function_threshold == 95
+            assert agent.auto_generate is True
 
-            resolver.build_dependency_graph(deps)
-            vulnerabilities = resolver.check_vulnerabilities()
+            with tempfile.TemporaryDirectory() as tmpdir:
+                src_dir = Path(tmpdir) / 'src'
+                src_dir.mkdir()
 
-            self.assertEqual(len(vulnerabilities), 0)
+                sample_file = src_dir / 'module.py'
+                sample_file.write_text("def func():\n    return 1\n")
+
+                with patch.object(agent, '_run_coverage_analysis') as mock_run:
+                    mock_run.return_value = {
+                        str(sample_file): {
+                            'executed_lines': [1, 2],
+                            'missing_lines': [],
+                            'excluded_lines': []
+                        }
+                    }
+
+                    # With 100% coverage, should still pass 95% threshold
+                    result = agent.enforce_thresholds(src_dir)
+                    assert result.passed is True
 
         finally:
             config_path.unlink()
 
 
-class TestResolutionWithLockedVersions(unittest.TestCase):
-    """Test resolution with locked versions"""
-
-    def test_resolution_with_locked_versions(self):
-        """Test resolution respects locked/pinned versions"""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='requirements.txt', delete=False) as f:
-            f.write("""
-# Locked versions - should not change
-django==4.1.0
-pytest==7.2.0
-
-# Flexible versions
-requests>=2.28.0
-""")
-            req_file = Path(f.name)
-
-        try:
-            resolver = DependencyConflictResolver()
-            deps = resolver.parse_dependency_file(req_file)
-
-            # Find locked dependencies
-            locked_deps = [d for d in deps if '==' in d.version_constraint]
-            self.assertEqual(len(locked_deps), 2)
-
-            # Verify locked versions are parsed correctly
-            django_dep = next(d for d in locked_deps if d.name == 'django')
-            self.assertEqual(django_dep.version, '4.1.0')
-
-        finally:
-            req_file.unlink()
-
-
-class TestConflictResolutionWithPreReleases(unittest.TestCase):
-    """Test conflict resolution with pre-release versions"""
-
-    def test_conflict_resolution_with_pre_releases(self):
-        """Test handling of pre-release versions"""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='requirements.txt', delete=False) as f:
-            f.write("""
-django>=4.2.0
-pytest>=7.2.0
-# Pre-release version
-requests>=2.28.0rc1
-""")
-            req_file = Path(f.name)
-
-        try:
-            resolver = DependencyConflictResolver()
-            deps = resolver.parse_dependency_file(req_file)
-
-            # Should parse pre-release versions
-            self.assertGreater(len(deps), 0)
-
-            resolver.build_dependency_graph(deps)
-            resolver.detect_conflicts()
-
-            # Pre-release shouldn't cause false conflicts
-            # (in real implementation, would handle semver properly)
-
-        finally:
-            req_file.unlink()
-
-
-class TestGraphVisualization(unittest.TestCase):
-    """Test dependency graph visualization"""
-
-    def test_graph_visualization_output(self):
-        """Test generating text-based graph visualization"""
-        resolver = DependencyConflictResolver()
-
-        deps = [
-            DependencyInfo('package-a', '1.0.0', '>=1.0.0', Ecosystem.PYTHON),
-            DependencyInfo('package-b', '2.0.0', '>=2.0.0', Ecosystem.PYTHON, transitive_from='package-a'),
-            DependencyInfo('package-c', '3.0.0', '>=3.0.0', Ecosystem.PYTHON, transitive_from='package-b'),
-        ]
-
-        resolver.build_dependency_graph(deps)
-
-        # Generate visualization
-        visualization = resolver.visualize_dependency_graph()
-
-        self.assertIsInstance(visualization, str)
-        self.assertIn('Dependency Graph', visualization)
-        self.assertIn('package-a', visualization)
-
-    def test_graph_visualization_to_file(self):
-        """Test saving graph visualization to file"""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
-            output_file = Path(f.name)
-
-        try:
-            resolver = DependencyConflictResolver()
-
-            deps = [
-                DependencyInfo('package-a', '1.0.0', '>=1.0.0', Ecosystem.PYTHON),
-                DependencyInfo('package-b', '2.0.0', '>=2.0.0', Ecosystem.PYTHON),
-            ]
-
-            resolver.build_dependency_graph(deps)
-
-            # Save to file
-            resolver.visualize_dependency_graph(output_file)
-
-            # Verify file was created
-            self.assertTrue(output_file.exists())
-
-            # Verify content
-            with open(output_file) as f:
-                content = f.read()
-                self.assertIn('Dependency Graph', content)
-
-        finally:
-            if output_file.exists():
-                output_file.unlink()
-
-    def test_graph_visualization_empty_graph(self):
-        """Test visualization of empty graph"""
-        resolver = DependencyConflictResolver()
-
-        visualization = resolver.visualize_dependency_graph()
-
-        self.assertIsInstance(visualization, str)
-        self.assertIn('Dependency Graph', visualization)
-
-
-class TestComplexResolutionScenarios(unittest.TestCase):
-    """Test complex resolution scenarios"""
-
-    def test_multiple_conflicts_resolution(self):
-        """Test resolving multiple conflicts simultaneously"""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='requirements.txt', delete=False) as f:
-            f.write("""
-requests>=2.20.0
-numpy>=1.20.0
-pytest>=7.0.0
-""")
-            req_file = Path(f.name)
-
-        try:
-            resolver = DependencyConflictResolver()
-            deps = resolver.parse_dependency_file(req_file)
-
-            resolver.build_dependency_graph(deps)
-
-            # Generate resolution plan
-            report = resolver.generate_resolution_plan()
-
-            self.assertIsNotNone(report)
-            self.assertIsNotNone(report.resolution_plan)
-
-        finally:
-            req_file.unlink()
-
-    def test_transitive_dependency_analysis(self):
-        """Test deep transitive dependency analysis"""
-        resolver = DependencyConflictResolver()
-
-        deps = [
-            DependencyInfo('level-0', '1.0.0', '>=1.0.0', Ecosystem.PYTHON),
-            DependencyInfo('level-1', '1.0.0', '>=1.0.0', Ecosystem.PYTHON, transitive_from='level-0'),
-            DependencyInfo('level-2', '1.0.0', '>=1.0.0', Ecosystem.PYTHON, transitive_from='level-1'),
-            DependencyInfo('level-3', '1.0.0', '>=1.0.0', Ecosystem.PYTHON, transitive_from='level-2'),
-        ]
-
-        graph = resolver.build_dependency_graph(deps)
-
-        # Verify transitive relationships
-        self.assertIn('level-1', graph['level-0'])
-        self.assertIn('level-2', graph['level-1'])
-        self.assertIn('level-3', graph['level-2'])
-
-
 if __name__ == '__main__':
-    unittest.main()
+    pytest.main([__file__, '-v'])

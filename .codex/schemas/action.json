@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codex.internal/schemas/action.json",
+  "title": "Action Record Schema",
+  "description": "Actionable items extracted from documentation",
+  "type": "object",
+  "required": ["id", "type", "block_id", "action_type", "description", "priority"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique action identifier (UUID v4)",
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "type": {
+      "type": "string",
+      "enum": ["action"],
+      "description": "Record type discriminator"
+    },
+    "block_id": {
+      "type": "string",
+      "description": "Source block ID (must exist in Block records)",
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "action_type": {
+      "type": "string",
+      "enum": ["todo", "bug", "feature", "improvement", "documentation", "refactor"],
+      "description": "Action category"
+    },
+    "description": {
+      "type": "string",
+      "description": "Action description",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "priority": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "critical"],
+      "description": "Priority level"
+    },
+    "assignee": {
+      "type": ["string", "null"],
+      "description": "User/email assigned to this action",
+      "maxLength": 255
+    },
+    "deadline": {
+      "type": ["string", "null"],
+      "description": "Target completion date (YYYY-MM-DD format)",
+      "format": "date"
+    },
+    "tags": {
+      "type": "array",
+      "description": "Action tags",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "linked_issue": {
+      "type": ["string", "null"],
+      "description": "Reference to external issue tracker (e.g., GitHub issue number)",
+      "maxLength": 255
+    },
+    "status": {
+      "type": "string",
+      "enum": ["open", "in_progress", "done", "cancelled"],
+      "description": "Action status",
+      "default": "open"
+    },
+    "created_date": {
+      "type": "string",
+      "description": "When action was created (ISO 8601 timestamp)",
+      "format": "date-time"
+    },
+    "estimated_effort": {
+      "type": "string",
+      "description": "Effort estimate (e.g., '2h', '1d', '5d')",
+      "pattern": "^\\d+[hd]$",
+      "maxLength": 16
+    }
+  },
+  "additionalProperties": false
+}

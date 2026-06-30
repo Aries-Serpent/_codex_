@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codex.internal/schemas/requirement.json",
+  "title": "Requirement Record Schema",
+  "description": "Captures requirements and acceptance criteria from documentation",
+  "type": "object",
+  "required": ["id", "type", "category", "priority", "description"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique requirement identifier (UUID v4)",
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "type": {
+      "type": "string",
+      "enum": ["requirement"],
+      "description": "Record type discriminator"
+    },
+    "category": {
+      "type": "string",
+      "enum": ["functional", "non-functional", "security", "performance", "usability", "compatibility"],
+      "description": "Requirement category"
+    },
+    "priority": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "critical"],
+      "description": "Priority level"
+    },
+    "description": {
+      "type": "string",
+      "description": "Requirement description",
+      "minLength": 1
+    },
+    "block_id": {
+      "type": ["string", "null"],
+      "description": "Source block ID if in documentation",
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    },
+    "acceptance_criteria": {
+      "type": "array",
+      "description": "AC conditions for requirement satisfaction",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "related_requirements": {
+      "type": "array",
+      "description": "IDs of related requirements",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-zA-Z0-9_-]+$",
+        "minLength": 1
+      }
+    },
+    "version": {
+      "type": "string",
+      "description": "Requirement version (e.g., '1.0', '2.1')",
+      "pattern": "^\\d+\\.\\d+$"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["proposed", "approved", "implemented", "validated", "obsolete"],
+      "description": "Requirement status"
+    },
+    "target_milestone": {
+      "type": "string",
+      "description": "Target milestone/release (e.g., 'v2.0', 'Q3 2026')",
+      "maxLength": 255
+    },
+    "owner": {
+      "type": ["string", "null"],
+      "description": "Requirement owner email/name",
+      "maxLength": 255
+    },
+    "test_case_ids": {
+      "type": "array",
+      "description": "References to test cases validating this requirement",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-zA-Z0-9_-]+$",
+        "minLength": 1
+      }
+    },
+    "rationale": {
+      "type": ["string", "null"],
+      "description": "Why this requirement is needed"
+    },
+    "constraints": {
+      "type": "array",
+      "description": "Any constraints on the requirement",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "measurable_criteria": {
+      "type": "object",
+      "description": "Specific measurable metrics",
+      "additionalProperties": {"type": "string"}
+    }
+  },
+  "additionalProperties": false
+}

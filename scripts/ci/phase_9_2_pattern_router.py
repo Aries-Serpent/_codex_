@@ -13,7 +13,7 @@ import json
 import logging
 import re
 import sys
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import yaml
 
@@ -136,14 +136,14 @@ class PatternMatcher:
     - ML-based classification (simulated)
     """
 
-    def __init__(self, config: Dict[str, Any] = None):
+    def __init__(self, config: Optional[Dict[str, Any]] = None):
         self.config = config or DEFAULT_ROUTING_CONFIG
         self.patterns = self.config.get("patterns", {})
 
     def match(self, failure_log: str, top_k: int = 5) -> List[Tuple[str, float]]:
         """
         Match failure against all patterns
-        
+
         Returns: List of (pattern_id, confidence) tuples, sorted by confidence
         """
         results = []
@@ -213,18 +213,18 @@ class PatternMatcher:
         """Apply pattern-specific scoring rules"""
 
         rules = {
-            "RP-001": lambda l: self._score_unused_imports(l),
-            "RP-002": lambda l: self._score_type_errors(l),
-            "RP-003": lambda l: self._score_test_failures(l),
-            "RP-004": lambda l: self._score_dependency_conflicts(l),
-            "RP-005": lambda l: self._score_yaml_errors(l),
-            "RP-006": lambda l: self._score_coverage(l),
-            "RP-007": lambda l: self._score_links(l),
-            "RP-008": lambda l: self._score_import_errors(l),
-            "RP-009": lambda l: self._score_flaky_tests(l),
-            "RP-010": lambda l: self._score_workflow_compliance(l),
-            "RP-011": lambda l: self._score_cargo_features(l),
-            "RP-012": lambda l: self._score_security_alerts(l),
+            "RP-001": lambda log: self._score_unused_imports(log),
+            "RP-002": lambda log: self._score_type_errors(log),
+            "RP-003": lambda log: self._score_test_failures(log),
+            "RP-004": lambda log: self._score_dependency_conflicts(log),
+            "RP-005": lambda log: self._score_yaml_errors(log),
+            "RP-006": lambda log: self._score_coverage(log),
+            "RP-007": lambda log: self._score_links(log),
+            "RP-008": lambda log: self._score_import_errors(log),
+            "RP-009": lambda log: self._score_flaky_tests(log),
+            "RP-010": lambda log: self._score_workflow_compliance(log),
+            "RP-011": lambda log: self._score_cargo_features(log),
+            "RP-012": lambda log: self._score_security_alerts(log),
         }
 
         rule_func = rules.get(pattern_id)
@@ -390,8 +390,9 @@ class PatternMatcher:
 
         for other_pattern_id in conflicting_patterns:
             other_keywords = self.patterns[other_pattern_id].get("keywords", [])
-            if any(kw.lower() in log.lower() for kw in other_keywords):
-                return 0.5  # Conflict detected, lower confidence
+            if isinstance(other_keywords, list):
+                if any(kw.lower() in log.lower() for kw in other_keywords):
+                    return 0.5  # Conflict detected, lower confidence
 
         return 1.0  # No conflicts, full confidence
 
@@ -403,7 +404,7 @@ class PatternMatcher:
 class PatternRouter:
     """Routes detected patterns to appropriate agents"""
 
-    def __init__(self, config: Dict[str, Any] = None):
+    def __init__(self, config: Optional[Dict[str, Any]] = None):
         self.config = config or DEFAULT_ROUTING_CONFIG
         self.matcher = PatternMatcher(config)
 
@@ -414,7 +415,7 @@ class PatternRouter:
     ) -> Dict[str, Any]:
         """
         Route failure to appropriate agent
-        
+
         Returns routing decision with pattern, agent, and confidence
         """
 
@@ -431,8 +432,13 @@ class PatternRouter:
             }
 
         best_pattern_id, best_confidence = matches[0]
-        pattern_config = self.config["patterns"][best_pattern_id]
-        confidence_threshold = pattern_config.get("confidence_threshold", 0.70)
+        pattern_config: Dict[str, Any] = self.config["patterns"][best_pattern_id]
+        raw_threshold: Any = pattern_config.get("confidence_threshold", 0.70)
+        # Type narrowing for confidence threshold
+        if isinstance(raw_threshold, (int, float, str)):
+            confidence_threshold: float = float(raw_threshold)
+        else:
+            confidence_threshold = 0.70
         agent = pattern_config.get("agent")
 
         logger.info(

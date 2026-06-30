@@ -1,1 +1,1 @@
-"""Tests for Service Integration Tester Agent."""
+"""Tests for Test Coverage Enforcer Agent"""
