@@ -48,7 +48,6 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional
-from scripts.ci._token_resolver import get_token
 
 # Add parent directory to path for CI execution
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
@@ -64,6 +63,8 @@ logger = logging.getLogger(__name__)
 SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parent.parent
 sys.path.insert(0, str(REPO_ROOT))
+
+from scripts.ci._token_resolver import get_token
 
 try:
     from agents.self_healing import (

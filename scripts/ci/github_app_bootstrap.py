@@ -60,7 +60,6 @@ import urllib.error
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
-from scripts.ci._token_resolver import get_token
 
 # Add parent directory to path for CI execution
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
@@ -212,6 +211,8 @@ def convert_code(code: str) -> None:
         # Import and call github_var_writer directly
         scripts_dir = Path(__file__).parent
         sys.path.insert(0, str(scripts_dir))
+
+from scripts.ci._token_resolver import get_token
         try:
             import github_var_writer as vw
             vw.upsert_var("GITHUB_APP_ID", app_id, force=True)
