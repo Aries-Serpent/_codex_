@@ -776,7 +776,7 @@ agents:
   name: Unified Security Scanner
   directory: .github/agents
   file: unified-security-scanner.md
-  status: Token guidance updated
+  status: active
   maturity: production
   session_introduced: S67
   has_prompts: false
@@ -877,7 +877,7 @@ agents:
   name: CodeQL Alert Resolution Agent
   directory: .github/agents
   file: codeql-alert-resolution-agent.md
-  status: Token guidance updated
+  status: active
   maturity: production
   session_introduced: S67
   has_prompts: false
@@ -1321,7 +1321,7 @@ agents:
   batch_scan_enabled: true
   name: CI Auto-Healer Agent
   file: ci-auto-healer-agent.md
-  status: Token guidance updated
+  status: active
   maturity: production
   category: ci_cd
   priority: critical
@@ -1349,7 +1349,7 @@ agents:
   batch_scan_enabled: true
   name: CI Emergency Response Agent
   file: ci-emergency-response-agent.md
-  status: Token guidance updated
+  status: active
   maturity: production
   category: ci_cd
   priority: critical
@@ -1399,7 +1399,7 @@ agents:
   batch_scan_enabled: true
   name: CI ImportError Agent
   file: ci-importerror-agent.md
-  status: Token guidance updated
+  status: active
   maturity: production
   category: ci_cd
   priority: high
@@ -1462,7 +1462,7 @@ agents:
   batch_scan_enabled: true
   name: CI Parameter Mismatch Healer
   file: ci-parameter-mismatch-healer.md
-  status: Token guidance updated
+  status: active
   maturity: beta
   category: ci_cd
   priority: medium
@@ -1790,7 +1790,7 @@ agents:
   batch_scan_enabled: true
   name: Dependency Vulnerability Scanner
   file: dependency-vulnerability-scanner.agent.md
-  status: Token guidance updated
+  status: active
   deprecated: true
   deprecation_date: '2026-06-11'
   superseded_by: unified-security-scanner
@@ -2418,7 +2418,7 @@ agents:
 - id: secret-detection-agent
   name: Secret Detection Agent
   file: secret-detection-agent.md
-  status: Token guidance updated
+  status: active
   deprecated: true
   deprecation_date: '2026-06-11'
   superseded_by: unified-security-scanner
@@ -2449,7 +2449,7 @@ agents:
 - id: security-alert-verification-agent
   name: Security Alert Verification Agent
   file: security-alert-verification-agent.md
-  status: Token guidance updated
+  status: active
   maturity: production
   category: security
   priority: critical
@@ -2898,7 +2898,7 @@ agents:
   name: Workflow Compliance Guardian
   version: 1.0.0
   file: .github/agents/workflow-compliance-guardian.md
-  status: Token guidance updated
+  status: active
   maturity: production
   has_prompts: false
   has_tests: false
@@ -3831,7 +3831,7 @@ agents:
   name: Self-Healing Orchestrator Agent
   version: 1.0.0
   file: .github/agents/self-healing-orchestrator-agent.md
-  status: Token guidance updated
+  status: active
   maturity: production
   has_prompts: false
   has_tests: false
@@ -3872,7 +3872,7 @@ agents:
   name: Branch Divergence Resolution Agent
   version: 1.1.0
   file: .github/agents/branch-divergence-resolution-agent.md
-  status: Token guidance updated
+  status: active
   maturity: production
   has_prompts: false
   has_tests: false
