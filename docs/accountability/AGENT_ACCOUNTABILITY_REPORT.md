@@ -30,6 +30,7 @@ CodeQL identified that substring-based URL validation (`"ghcr.io" in url`) creat
 - ✅ All 2 high-severity CodeQL alerts resolved
 - ✅ Zero regressions in test suite
 - ✅ CodeQL security scan now passing
+- ✅ Compliance verification: Both files in same commit (2026-06-30T01:08Z)
 
 ### Summary
 

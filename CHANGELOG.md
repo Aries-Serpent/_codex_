@@ -8,6 +8,7 @@
   - **tests/github/test_package_registry.py line 185:** Replaced `assert "ghcr.io" in image` with URL parsing validation using `urlparse()` to ensure hostname and path validation — prevents security validation bypass
 - **Root cause:** Substring-based URL validation allows false positives; replaced with precise URL structure matching
 - **Validation:** All tests remain functionally equivalent; syntax verified
+- **Compliance verification:** CodeQL security scan now passing; compliance gates satisfied (REQ-4/REQ-5)
 
 ### Fixed (Auth test timeout and SQLite concurrency failures — Session 2026-06-29T23:56Z)
 - **3 auth test failures resolved:** Fixed timeout and SQLite locking issues
@@ -12774,3 +12775,4 @@ Resolved blocking CI failures (Commit 9681901e) and responded to all 6 unanswere
 - All assertions now compile successfully
 
 ---
+
