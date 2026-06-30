@@ -15,7 +15,7 @@ The Unified RBAC System enforces the principle of least privilege across human o
 1. **5-Tier Role Hierarchy** (Admin, Maintainer, Contributor, Viewer, Guest)
 2. **40+ Granular Capabilities** (actions × resources)
 3. **Enterprise Features** (multi-org support, delegation chains, audit logging)
-4. **Performance Tier** (<10ms permission checks p99, 100+ concurrent requests)
+4. **Performance Tier** (<10ms permission checks p99, 100+ concurrent requests) # pragma: allowlist secret
 5. **OODA Integration** (adaptive permission rules via Phase 10.3 context injection)
 
 ---

@@ -15,7 +15,7 @@ recent CI runs, PR resolution history, and repository codebase. Each pattern inc
 
 - **Failure signature** (regex + text matching rules)
 - **Root cause analysis** (why failures occur)
-- **Automated fix strategy** (how to resolve)
+- **Automated fix strategy** (how to resolve) # pragma: allowlist secret
 - **Success rate estimate** (% of instances auto-fixable)
 - **Specialist agent mapping** (which agent handles repair)
 - **Validation requirements** (post-fix checks)

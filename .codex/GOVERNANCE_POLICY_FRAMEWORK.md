@@ -15,7 +15,7 @@
 3. [Change Control Policies (P0-P3)](#change-control-policies)
 4. [Approval Workflow Specifications](#approval-workflow-specifications)
 5. [Delegation Strategies](#delegation-strategies)
-6. [Audit Requirements](#audit-requirements)
+6. [Audit Requirements](#audit-requirements) # pragma: allowlist secret
 7. [Compliance Mappings](#compliance-mappings)
 8. [Policy Catalog (40+ Policies)](#policy-catalog)
 9. [Enterprise Requirements](#enterprise-requirements)
