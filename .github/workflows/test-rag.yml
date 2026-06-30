@@ -186,14 +186,17 @@ jobs:
         \ 1\nfi\necho \"[INSTALL] ✓ All plugins verified as importable\"\n \necho\
         \ \"\"\necho \"[INSTALL] Step 7: Verify pytest and dependencies...\"\n\"$PYTHON_BIN\"\
         \ -m pytest --version\n \n# List installed key packages for debugging\necho\
-        \ \"\"\necho \"[INSTALL] Step 8: Verify key packages installed...\"\nfor pkg\
-        \ in pytest sentence-transformers torch transformers chromadb faiss-cpu; do\n\
-        \  if \"$PYTHON_BIN\" -c \"import ${pkg/./-}; print(f'  ✓ {pkg}'); __import__('${pkg/./-}').__version__\
-        \ and print(f'    Version: ' + __import__(\\\"${pkg/./-}\\\").__version__)\"\
-        \ 2>/dev/null; then\n    :\n  else\n    echo \"  ❌ Missing: $pkg\"\n    exit\
-        \ 1\n  fi\ndone\n \necho \"\"\necho \"[INSTALL] ✅ All dependencies installed\
-        \ successfully\"\necho \"[INSTALL] Final disk space:\"\ndf -h / | tail -1\
-        \ | awk '{print \"  Available: \" $4 \", Used: \" $3 \", Size: \" $2}'\n"
+        \ \"\"\necho \"[INSTALL] Step 8: Verify key packages installed...\"\n# Package\
+        \ name to import name mapping\ndeclare -A import_names=(\n  [pytest]=\"pytest\"\
+        \n  [sentence-transformers]=\"sentence_transformers\"\n  [torch]=\"torch\"\
+        \n  [transformers]=\"transformers\"\n  [chromadb]=\"chromadb\"\n  [faiss-cpu]=\"\
+        faiss\"\n)\n\nfor pkg in pytest sentence-transformers torch transformers chromadb\
+        \ faiss-cpu; do\n  import_name=\"${import_names[$pkg]}\"\n  if \"$PYTHON_BIN\"\
+        \ -c \"import ${import_name}; print(f'  ✓ {pkg}')\" 2>/dev/null; then\n  \
+        \  :\n  else\n    echo \"  ❌ Missing: $pkg\"\n    exit 1\n  fi\ndone\n \n\
+        echo \"\"\necho \"[INSTALL] ✅ All dependencies installed successfully\"\n\
+        echo \"[INSTALL] Final disk space:\"\ndf -h / | tail -1 | awk '{print \" \
+        \ Available: \" $4 \", Used: \" $3 \", Size: \" $2}'\n"
     - name: Pre-download embedding models
       id: model-cache
       continue-on-error: true
