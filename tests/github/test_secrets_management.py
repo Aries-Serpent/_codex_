@@ -288,7 +288,7 @@ class TestSecretEncryption:
         # Should be able to decode
         try:
             decoded = base64.b64decode(public_key_base64)
-        except Exception:
+        except Exception as _err:
             # In real test, this would decode successfully
             pass
 

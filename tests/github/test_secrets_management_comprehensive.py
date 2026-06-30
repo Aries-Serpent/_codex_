@@ -116,7 +116,7 @@ class TestProcess3RepositoryActionsSecrets:
         try:
             decoded = base64.b64decode(response["key"])
             assert len(decoded) == 32  # Curve25519 key is 32 bytes
-        except Exception:
+        except Exception as _err:
             pytest.fail("Public key is not valid base64 or incorrect size")
 
     def test_process3_public_key_caching(
