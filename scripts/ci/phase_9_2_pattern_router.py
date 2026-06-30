@@ -13,7 +13,7 @@ import json
 import logging
 import re
 import sys
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import yaml
 
@@ -136,7 +136,7 @@ class PatternMatcher:
     - ML-based classification (simulated)
     """
 
-    def __init__(self, config: Dict[str, Any] = None):
+    def __init__(self, config: Optional[Dict[str, Any]] = None):
         self.config = config or DEFAULT_ROUTING_CONFIG
         self.patterns = self.config.get("patterns", {})
 
@@ -390,7 +390,7 @@ class PatternMatcher:
 
         for other_pattern_id in conflicting_patterns:
             other_keywords = self.patterns[other_pattern_id].get("keywords", [])
-            if any(kw.lower() in log.lower() for kw in other_keywords):
+            if isinstance(other_keywords, list) and any(kw.lower() in log.lower() for kw in other_keywords):
                 return 0.5  # Conflict detected, lower confidence
 
         return 1.0  # No conflicts, full confidence
@@ -403,7 +403,7 @@ class PatternMatcher:
 class PatternRouter:
     """Routes detected patterns to appropriate agents"""
 
-    def __init__(self, config: Dict[str, Any] = None):
+    def __init__(self, config: Optional[Dict[str, Any]] = None):
         self.config = config or DEFAULT_ROUTING_CONFIG
         self.matcher = PatternMatcher(config)
 
