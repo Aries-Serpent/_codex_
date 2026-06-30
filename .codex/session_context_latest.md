@@ -1,10 +1,10 @@
-# Session Context — 2026-06-30T06:11:48Z
+# Session Context — 2026-06-30T06:25:15Z
 **Branch:** `copilot/fix-failing-checks-implementation-plan`  **PR:** #5144  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4954` (✅)
-- GraphQL remaining: `4990` (✅)
+- REST remaining: `4797` (✅)
+- GraphQL remaining: `4982` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -12,21 +12,21 @@
 State: `open`  Draft: `False`  Branch: `copilot/fix-failing-checks-implementation-plan` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **.github/workflows/release.yml** — `failure` on `copilot/fix-failing-checks-implementation-plan` (2026-06-30)
+- **.github/workflows/embedding-index-rebuild.yml** — `failure` on `copilot/fix-failing-checks-implementation-plan` (2026-06-30)
 - **.github/workflows/progressive-validation.yml** — `failure` on `copilot/fix-failing-checks-implementation-plan` (2026-06-30)
-- **.github/workflows/rust_swarm_ci.yml** — `failure` on `copilot/fix-failing-checks-implementation-plan` (2026-06-30)
 - **.github/workflows/embedding-index-rebuild.yml** — `failure` on `copilot/fix-failing-checks-implementation-plan` (2026-06-30)
 - **.github/workflows/data-quality-suite.yml** — `failure` on `copilot/fix-failing-checks-implementation-plan` (2026-06-30)
+- **.github/workflows/rust_swarm_ci.yml** — `failure` on `copilot/fix-failing-checks-implementation-plan` (2026-06-30)
 
 ## 📝 Recent Commits
+- `acf30c52` chore(manifest): auto-heal C2 — refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-06-30)
+- `31670206` fix: resolve 4 review comments - fix status vs status_code, Python indentation,  — copilot-swe-agent[bot] (2026-06-30)
+- `f13f0d4e` WIP: Plan to fix 4 review comments — copilot-swe-agent[bot] (2026-06-30)
 - `9e38c387` FINAL: All 6 CI checks should now pass - Steps 1-5 complete — copilot-swe-agent[bot] (2026-06-30)
 - `bb389db8` STEP 1-3 COMPLETE: Fixed workflow triggers, trimmed agent file, fixed Python syn — copilot-swe-agent[bot] (2026-06-30)
 - `e22b20a9` WIP: Starting implementation of 6 CI failure fixes — copilot-swe-agent[bot] (2026-06-30)
 - `5c173ca5` Apply remaining changes — copilot-swe-agent[bot] (2026-06-30)
 - `84c344c1` Merge pull request #5143 from Aries-Serpent/copilot/update-workflows-true-to-on — Statix (2026-06-30)
-- `3661f40d` Fix all 7 review comments: imports sort, MD5 security, idempotent remediation, a — copilot-swe-agent[bot] (2026-06-30)
-- `253c1c5e` COMPLETE: Workflow YAML Trigger Key Remediation Campaign - All 40 workflows stan — copilot-swe-agent[bot] (2026-06-30)
-- `2997db96` WIP: Starting workflow trigger key remediation campaign (Phase 1-4) — copilot-swe-agent[bot] (2026-06-30)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
