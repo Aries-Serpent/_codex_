@@ -1,26 +1,28 @@
-# Session Context — 2026-06-30T20:29:08Z
+# Session Context — 2026-06-30T20:28:17Z
 **Branch:** `copilot/explore-codebase-and-create-implementation-plan`  **PR:** #5155  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
 - REST remaining: `4792` (✅)
-- GraphQL remaining: `4971` (✅)
+- GraphQL remaining: `4976` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 📋 PR #5155 — Complete Phase 10-12 Campaign Execution & Sync Branch (0 conflicts, 27 days ahead)
 State: `open`  Draft: `False`  Branch: `copilot/explore-codebase-and-create-implementation-plan` → `main`
 
-### ❌ 2 Failing CI Check(s)
-- `Validate WEC Template Integrity` (failure)
+### ❌ 4 Failing CI Check(s)
 - `Semgrep OSS` (failure)
+- `validation (quick)` (failure)
+- `validation (skills)` (failure)
+- `Governance Compliance` (failure)
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **Workflow Execution Gate** — `failure` on `copilot/explore-codebase-and-create-implementation-plan` (2026-06-30)
 - **PR Comment Review Gate** — `failure` on `main` (2026-06-30)
 - **.github/workflows/progressive-validation.yml** — `failure` on `copilot/explore-codebase-and-create-implementation-plan` (2026-06-30)
 - **🧹 Cleanup Stale PR Comments** — `failure` on `copilot/explore-codebase-and-create-implementation-plan` (2026-06-30)
 - **Workflow Compliance Gate** — `failure` on `copilot/explore-codebase-and-create-implementation-plan` (2026-06-30)
+- **🩹 Secrets False-Positive Healer** — `failure` on `copilot/explore-codebase-and-create-implementation-plan` (2026-06-30)
 
 ## 📝 Recent Commits
 - `d5876891` Merge branch 'main' into copilot/explore-codebase-and-create-implementation-plan — Statix (2026-06-30)

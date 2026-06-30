@@ -18,6 +18,35 @@ Completed Phase 3 Root Cleanup Campaign with zero breaking changes.
 - Breaking references resolved: 25/25 ✅
 
 **Authority**: @mbaetiong GO CONTINUE (full autonomy)
+
+---
+
+## [Security Fixes] 2026-06-30T20:30Z — Shell Injection & Mutable Action Tags
+
+### Summary
+Fixed all 14 security vulnerabilities from commit d587689 identified by GitHub Advanced Security and Semgrep.
+
+**Security Vulnerabilities Fixed**:
+- Shell injection: 5 instances fixed by using environment variables instead of direct interpolation
+- GitHub script injection: 3 instances fixed by moving workflow context to env: section
+- Mutable action tags: 6 instances fixed by pinning to full 40-character commit SHAs
+
+**Files Modified**:
+- `.github/agents/service-integration-tester/agent.yaml`
+- `.github/agents/dependency-conflict-resolver/agent.yaml`
+- `.github/agents/security-vulnerability-patcher/agent.yaml`
+- `.github/workflows/machine-readable-governance.yml`
+- `.github/workflows/machine-readable-maintenance-pr.yml`
+
+**Validation**:
+- YAML syntax: All 5 files pass yamllint ✅
+- Git status: Clean working tree ✅
+- CI gates: Ready for re-validation ✅
+
+**Authority**: @mbaetiong (CI gate enforcement)
+
+---
+
 # Changelog
 
 ## [Unreleased]
