@@ -1,0 +1,380 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Canonical Execution State Schema",
+  "description": "Standardized state representation for all runtime systems, agents, and decision loops",
+  "type": "object",
+  "required": [
+    "state_id",
+    "agent_id",
+    "phase_id",
+    "track_id",
+    "task_id",
+    "execution_step",
+    "status",
+    "timestamp"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "state_id": {
+      "type": "string",
+      "description": "Unique identifier for this state (UUID)",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "agent_id": {
+      "type": "string",
+      "description": "Identifier of the agent that created/owns this state"
+    },
+    "phase_id": {
+      "type": "string",
+      "description": "Current phase identifier (e.g., 'phase-10', 'phase-12')"
+    },
+    "track_id": {
+      "type": "string",
+      "description": "Track or stream identifier for this execution path"
+    },
+    "task_id": {
+      "type": "string",
+      "description": "Specific task identifier within the track"
+    },
+    "execution_step": {
+      "type": "string",
+      "enum": [
+        "observe",
+        "context",
+        "decide",
+        "act",
+        "validate",
+        "persist",
+        "handoff",
+        "complete"
+      ],
+      "description": "Current execution loop step (1/8 through 8/8)"
+    },
+    "input_context": {
+      "type": "object",
+      "description": "Raw input data, observations, and environmental context",
+      "properties": {
+        "source": {
+          "type": "string",
+          "description": "Source of the input (e.g., 'user', 'webhook', 'scheduled', 'agent')"
+        },
+        "data": {
+          "type": "object",
+          "description": "Input data payload"
+        },
+        "metadata": {
+          "type": "object",
+          "description": "Additional context metadata"
+        }
+      }
+    },
+    "decision_context": {
+      "type": "object",
+      "description": "Decision rationale, constraints, and reasoning trace",
+      "properties": {
+        "reasoning": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Step-by-step reasoning chain"
+        },
+        "constraints": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Applied constraints and rules"
+        },
+        "alternatives_considered": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          },
+          "description": "Alternative paths evaluated"
+        },
+        "selected_action": {
+          "type": "string",
+          "description": "The chosen action identifier"
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Confidence in the decision (0.0 to 1.0)"
+        }
+      }
+    },
+    "actions_taken": {
+      "type": "array",
+      "description": "Actions executed in this state transition",
+      "items": {
+        "type": "object",
+        "properties": {
+          "action_id": {
+            "type": "string",
+            "description": "Unique action identifier"
+          },
+          "action_type": {
+            "type": "string",
+            "description": "Type of action (e.g., 'code_change', 'validation', 'notification')"
+          },
+          "target": {
+            "type": "string",
+            "description": "Target of the action (file, agent, system)"
+          },
+          "details": {
+            "type": "object",
+            "description": "Action-specific details"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "in_progress", "completed", "failed"],
+            "description": "Action execution status"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the action was executed"
+          }
+        },
+        "required": ["action_id", "action_type", "status"]
+      }
+    },
+    "validation_results": {
+      "type": "object",
+      "description": "Results of the validation step (PART 2)",
+      "properties": {
+        "valid": {
+          "type": "boolean",
+          "description": "Whether the state passed validation"
+        },
+        "violations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "rule": {
+                "type": "string",
+                "description": "Validation rule that was violated"
+              },
+              "severity": {
+                "type": "string",
+                "enum": ["critical", "high", "medium", "low"]
+              },
+              "details": {
+                "type": "string"
+              }
+            }
+          },
+          "description": "Validation violations found"
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Non-fatal warnings from validation"
+        },
+        "confidence_adjustment": {
+          "type": "number",
+          "description": "Adjustment to confidence score based on validation results"
+        },
+        "requires_escalation": {
+          "type": "boolean",
+          "description": "Whether this state requires human escalation"
+        }
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "description": "States and actions this state depends on",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["state", "action", "agent", "resource"]
+          },
+          "id": {
+            "type": "string",
+            "description": "Identifier of the dependency"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "resolved", "failed", "blocked"]
+          }
+        },
+        "required": ["type", "id", "status"]
+      }
+    },
+    "unresolved_items": {
+      "type": "array",
+      "description": "Items that require attention or resolution",
+      "items": {
+        "type": "object",
+        "properties": {
+          "item_id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["blocker", "warning", "todo", "question"]
+          },
+          "description": {
+            "type": "string"
+          },
+          "owner": {
+            "type": "string",
+            "description": "Agent or person responsible for resolution"
+          }
+        }
+      }
+    },
+    "confidence_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Overall confidence in this state (0.0 to 1.0)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "in_progress",
+        "validated",
+        "failed",
+        "blocked",
+        "escalated",
+        "handoff_pending"
+      ],
+      "description": "Overall status of this state"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when this state was created"
+    },
+    "previous_state_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "UUID of the previous state (null for initial state)",
+      "pattern": "^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|null)$"
+    },
+    "lineage": {
+      "type": "object",
+      "description": "State lineage tracking for auditing and recovery",
+      "properties": {
+        "created_by": {
+          "type": "string",
+          "description": "Agent ID that created this state"
+        },
+        "modified_by": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of agents that modified this state"
+        },
+        "parent_states": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Parent state IDs in case of branching"
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional metadata not covered by required fields",
+      "properties": {
+        "source_system": {
+          "type": "string",
+          "description": "System that originated this state"
+        },
+        "priority": {
+          "type": "string",
+          "enum": ["critical", "high", "normal", "low"]
+        },
+        "retry_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of times this state was retried"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Arbitrary tags for categorization"
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "state_id": "550e8400-e29b-41d4-a716-446655440000",
+      "agent_id": "orchestrator-agent",
+      "phase_id": "phase-10",
+      "track_id": "track-session-001",
+      "task_id": "task-checkpoint-001",
+      "execution_step": "validate",
+      "input_context": {
+        "source": "agent",
+        "data": {
+          "checkpoint_id": "cp-001",
+          "state_data": {}
+        },
+        "metadata": {}
+      },
+      "decision_context": {
+        "reasoning": [
+          "Received checkpoint restore request",
+          "Validated checkpoint integrity",
+          "Verified all dependencies available"
+        ],
+        "constraints": [
+          "Must restore to exact previous state",
+          "No modifications allowed during restore"
+        ],
+        "selected_action": "proceed_with_restore",
+        "confidence": 0.95
+      },
+      "actions_taken": [
+        {
+          "action_id": "act-001",
+          "action_type": "checkpoint_restore",
+          "target": "state-manager",
+          "status": "completed",
+          "timestamp": "2026-06-30T23:44:58Z"
+        }
+      ],
+      "validation_results": {
+        "valid": true,
+        "violations": [],
+        "warnings": [],
+        "confidence_adjustment": 0.05,
+        "requires_escalation": false
+      },
+      "dependencies": [
+        {
+          "type": "state",
+          "id": "550e8400-e29b-41d4-a716-446655440001",
+          "status": "resolved"
+        }
+      ],
+      "unresolved_items": [],
+      "confidence_score": 0.95,
+      "status": "validated",
+      "timestamp": "2026-06-30T23:44:58Z",
+      "previous_state_id": "550e8400-e29b-41d4-a716-446655440001",
+      "lineage": {
+        "created_by": "orchestrator-agent",
+        "modified_by": [],
+        "parent_states": []
+      }
+    }
+  ]
+}
