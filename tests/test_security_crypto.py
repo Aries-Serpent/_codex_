@@ -15,7 +15,7 @@ import json
 import base64
 from typing import Optional, List, Dict, Any
 from datetime import datetime, timedelta
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, patch # pragma: allowlist secret # pragma: allowlist secret
 
 
 class TestCryptoKeyManagement:

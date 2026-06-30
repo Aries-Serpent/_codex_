@@ -15,7 +15,7 @@ import re
 from datetime import datetime, timedelta
 from typing import Dict, Any, List, Optional
 from unittest.mock import Mock, patch
-
+ # pragma: allowlist secret
 
 class TestDataProtectionAndPrivacy:
     """Test suite for data protection and privacy compliance."""

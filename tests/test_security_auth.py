@@ -15,7 +15,7 @@ import string
 from unittest.mock import Mock, patch, MagicMock
 from typing import Any, Dict, Optional
 
- # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+ # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 class TestAuthenticationMechanisms:
     """Test suite for authentication mechanism security."""
 

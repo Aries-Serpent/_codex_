@@ -15,7 +15,7 @@ import hashlib
 import json
 import tempfile
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 from unittest.mock import Mock, patch, MagicMock
 import time
 

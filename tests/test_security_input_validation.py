@@ -15,7 +15,7 @@ import hashlib
 import os
 from typing import Optional, List, Dict, Any
 
-
+ # pragma: allowlist secret
 class TestInputValidation:
     """Test suite for secure input validation."""
 

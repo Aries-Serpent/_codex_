@@ -15,7 +15,7 @@ from codex.github.mcp_poster import GitHubMCPPoster
 
 
 @pytest.fixture(autouse=True)
-def cleanup_mocks():
+def cleanup_mocks(): # pragma: allowlist secret
     """Automatically reset all mocks after each test."""
     yield
     mock.patch.stopall()

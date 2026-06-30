@@ -15,7 +15,7 @@ from typing import Dict, List
 
 class TestGitHubActionsIntegration:
     """GitHub Actions specific integration tests"""
-    
+     # pragma: allowlist secret
     def test_action_context_availability(self):
         """Verify GitHub context available in actions"""
         context = {

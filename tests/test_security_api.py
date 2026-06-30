@@ -15,7 +15,7 @@ import os
 import re
 from typing import Dict, Any, Optional, List
 from unittest.mock import Mock, patch
-
+ # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
 class TestAPISecurityHeaders:
     """Test suite for secure API headers and configurations."""
