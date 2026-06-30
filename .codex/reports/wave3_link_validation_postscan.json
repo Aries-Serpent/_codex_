@@ -1,0 +1,84 @@
+{
+  "timestamp": "2026-06-30T15:35:00Z",
+  "wave": 3,
+  "phase": "post_cleanup_validation",
+  "files_scanned": 6905,
+  "total_broken_references": 560,
+  "summary": {
+    "status": "SCAN_COMPLETE",
+    "interpretation": "These references may include expected deletions from Wave 2 cleanup",
+    "new_vs_baseline": "Compare with Wave 1 baseline (25 refs) to identify NEW references"
+  },
+  "sample_issues": [
+    {
+      "file": "./TERMINOLOGY_AUDIT_SUMMARY.md",
+      "line": 114,
+      "link": "./docs/TERMINOLOGY_GLOSSARY.md",
+      "target": "/home/runner/work/_codex_/_codex_/docs/TERMINOLOGY_GLOSSARY.md",
+      "target_rel": "docs/TERMINOLOGY_GLOSSARY.md"
+    },
+    {
+      "file": "./scripts/README_DEPLOYMENT_ORCHESTRATOR.md",
+      "line": 343,
+      "link": ".github/docs/DEPLOYMENT_ORCHESTRATION_PR2207.md",
+      "target": "/home/runner/work/_codex_/_codex_/scripts/.github/docs/DEPLOYMENT_ORCHESTRATION_PR2207.md",
+      "target_rel": "scripts/.github/docs/DEPLOYMENT_ORCHESTRATION_PR2207.md"
+    },
+    {
+      "file": "./scripts/README_DEPLOYMENT_ORCHESTRATOR.md",
+      "line": 344,
+      "link": ".github/docs/PR_2207_DEPLOYMENT_PLAYBOOK.md",
+      "target": "/home/runner/work/_codex_/_codex_/scripts/.github/docs/PR_2207_DEPLOYMENT_PLAYBOOK.md",
+      "target_rel": "scripts/.github/docs/PR_2207_DEPLOYMENT_PLAYBOOK.md"
+    },
+    {
+      "file": "./scripts/README_DEPLOYMENT_ORCHESTRATOR.md",
+      "line": 345,
+      "link": ".github/docs/PR_2207_FINAL_SIGN_OFF_CHECKLIST.md",
+      "target": "/home/runner/work/_codex_/_codex_/scripts/.github/docs/PR_2207_FINAL_SIGN_OFF_CHECKLIST.md",
+      "target_rel": "scripts/.github/docs/PR_2207_FINAL_SIGN_OFF_CHECKLIST.md"
+    },
+    {
+      "file": "./scripts/README_DEPLOYMENT_ORCHESTRATOR.md",
+      "line": 346,
+      "link": ".github/docs/COPILOT_AGENT_DEPLOYMENT_INSTRUCTIONS.md",
+      "target": "/home/runner/work/_codex_/_codex_/scripts/.github/docs/COPILOT_AGENT_DEPLOYMENT_INSTRUCTIONS.md",
+      "target_rel": "scripts/.github/docs/COPILOT_AGENT_DEPLOYMENT_INSTRUCTIONS.md"
+    },
+    {
+      "file": "./scripts/AUTONOMOUS_AGENT_README.md",
+      "line": 142,
+      "link": ".codex/guardrails.md",
+      "target": "/home/runner/work/_codex_/_codex_/scripts/.codex/guardrails.md",
+      "target_rel": "scripts/.codex/guardrails.md"
+    },
+    {
+      "file": "./scripts/analysis/README.md",
+      "line": 74,
+      "link": ".codex",
+      "target": "/home/runner/work/_codex_/_codex_/scripts/analysis/.codex",
+      "target_rel": "scripts/analysis/.codex"
+    },
+    {
+      "file": "./scripts/analysis/README.md",
+      "line": 75,
+      "link": ".codex/archive",
+      "target": "/home/runner/work/_codex_/_codex_/scripts/analysis/.codex/archive",
+      "target_rel": "scripts/analysis/.codex/archive"
+    },
+    {
+      "file": "./scripts/analysis/README.md",
+      "line": 86,
+      "link": ".codex",
+      "target": "/home/runner/work/_codex_/_codex_/scripts/analysis/.codex",
+      "target_rel": "scripts/analysis/.codex"
+    },
+    {
+      "file": "./scripts/analysis/README.md",
+      "line": 87,
+      "link": ".codex/archive",
+      "target": "/home/runner/work/_codex_/_codex_/scripts/analysis/.codex/archive",
+      "target_rel": "scripts/analysis/.codex/archive"
+    }
+  ]
+}
