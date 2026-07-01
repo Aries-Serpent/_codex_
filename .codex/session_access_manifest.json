@@ -163,7 +163,7 @@
   "open_prs": [
     5176
   ],
-  "head_sha": "65bd2605004136f50afd03757b781a40c581aec2",
+  "head_sha": "65bd2605004136f50afd03757b781a40c581aec2", # pragma: allowlist secret
   "recommended_method": "REST",
   "recommended_method_detail": "core.remaining=4142 via GITHUB_TOKEN"
 }
