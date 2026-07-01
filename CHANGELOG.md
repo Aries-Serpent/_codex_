@@ -599,6 +599,12 @@ Fixed all 15 security vulnerabilities from commit d587689 and PR review comments
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #5188)
+- RAG Module Tests CI fix: coverage +1.59% (94.41% → ≥95%) — 2 production bugs fixed, 11 targeted tests added (PR #5188, SHA `aa75bcd6`) at 2026-07-01T23:31Z [auto-generated]
+- Production bug fix: `get_gpu_memory()` now catches `ImportError` in addition to `ValueError/TypeError/RuntimeError`
+- Production bug fix: Added `Retrieval = RetrievalPipeline` backward-compatibility alias in `src/rag/pipelines/retrieval.py`
+- REQ-4/REQ-5 compliance: accountability report and CHANGELOG updated in final commit
+
 ### Fixed (auto-update — PR #5181)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5181 (SHA `201aaaad`) at 2026-07-01T20:43Z [auto-generated]
 
