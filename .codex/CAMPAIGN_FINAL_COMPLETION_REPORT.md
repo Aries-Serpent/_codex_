@@ -15,7 +15,7 @@
 
 | Agent | Phase | Duration | Status | Deliverables |
 |-------|-------|----------|--------|--------------|
-| CI Failure Resolution | P0 | 4-6h | ✅ COMPLETE | 3 RAG fixes, secrets baseline cleared |
+| CI Failure Resolution | P0 | 4-6h | ✅ COMPLETE | 3 RAG fixes, secrets baseline cleared | <!-- pragma: allowlist secret -->
 | P2.3 Architecture Diagrams | P2.3 | 28h | ✅ COMPLETE | 44 diagrams (85%+ coverage), index |
 | P0.3 Test Suite | P0.3 | 4-6h | ✅ COMPLETE | 36 tests (103 total, +54% depth) |
 | **P2.2 God Objects** | **P2.2** | **22h** | **✅ COMPLETE** | **19 modules, 4 refactored, SRP applied** |

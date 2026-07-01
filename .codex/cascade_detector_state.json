@@ -6,7 +6,8 @@
     "7:tests/test_security_crypto.py": 4,
     "7:tests/test_cache_management.py": 2,
     "7:tests/test_security_vulnerabilities.py": 2,
-    "7:tests/test_security_api.py": 2
+    "7:tests/test_security_api.py": 2,
+    "35:.codex/CAMPAIGN_FINAL_COMPLETION_REPORT.md": 1
   },
   "circuit_state": {
     "6": "OPEN",
