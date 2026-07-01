@@ -11,3 +11,4 @@
 {"timestamp":"2026-07-01T21:56:54.281Z","approval_source":"agent-auth-delegation","rule_matched":"no_matching_rule","decision":"DENY","confidence":0.0}
 {"timestamp":"2026-07-01T23:09:33.996Z","approval_source":"agent-auth-delegation","rule_matched":"no_matching_rule","decision":"DENY","confidence":0.0}
 {"timestamp":"2026-07-01T23:19:38.123Z","approval_source":"agent-auth-delegation","rule_matched":"persistent_label_rule","decision":"APPROVE","confidence":1.0}
+{"timestamp":"2026-07-01T23:51:16.646Z","approval_source":"agent-auth-delegation","rule_matched":"","decision":"","confidence":}
