@@ -333,7 +333,7 @@ Access: Medium-frequency (queries)
 ## Data Quality & Validation
 
 ### Ingestion Validation
-```python
+```yaml
 checks:
   - file_size: 0 < size < 1GB
   - encoding: valid UTF-8
@@ -348,7 +348,7 @@ fallback:
 ```
 
 ### Tokenization Quality
-```python
+```yaml
 checks:
   - token_count: min/max bounds
   - vocabulary_coverage: >99%
@@ -362,7 +362,7 @@ metrics:
 ```
 
 ### Vector Quality
-```python
+```yaml
 checks:
   - vector_dims: correct
   - magnitude: normalized ~1.0

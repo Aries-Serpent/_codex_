@@ -1,8 +1,9 @@
 version: 2.0.0
-last_updated: '2026-07-01T14:05:30Z'
-total_agents: 161
+last_updated: '2026-07-01T15:26:30Z'
+total_agents: 162
 active_agents: 147
 archived_agents: 15
+enforcement_tier: MIXED
 agents:
 - id: github-app-manager
   name: GitHub App Manager
@@ -4074,6 +4075,8 @@ agents:
   has_src: false
   category: automation
   subcategory: smart_home
+  autonomy_model: E
+  enforcement_tier: ARCHIVED
   deprecation_date: '2026-07-01'
   deprecation_reason: Zero ecosystem integration. Aspirational design only (not in
     agent_brain_api, not in structural_policy_manager). Domain orthogonal to software

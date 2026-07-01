@@ -144,7 +144,7 @@ logger.info("Training started", model="gpt2", epochs=30)
 logger.warning("High loss detected", loss=5.23, threshold=3.0)
 
 # ERROR - Error conditions  
-logger.error("Training failed", error="OOM", gpu_memory=24GB)
+logger.error("Training failed", error="OOM", gpu_memory="24GB")
 
 # CRITICAL - Critical conditions
 logger.critical("Database unavailable", service="postgres")

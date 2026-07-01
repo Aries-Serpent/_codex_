@@ -298,7 +298,7 @@ Each docstring includes:
 
 ```python
 @app.command("example")
-def example_cmd(...) -> None:
+def example_cmd(param1: str = None, param2: str = None) -> None:
     """One-line summary.
 
     Detailed description explaining:
