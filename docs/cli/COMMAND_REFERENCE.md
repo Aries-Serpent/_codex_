@@ -1118,10 +1118,10 @@ CODEX_LOG_DB_PATH=.codex/session_logs.db
 
 ## Related Documentation
 
-- [CLI Architecture](../architecture/cli.md)
-- [RAG Index Guide](../guides/rag-indexing.md)
-- [Zendesk IaC Guide](../guides/zendesk-iac.md)
-- [Release Process](../guides/release-process.md)
+- [5-Layer Architecture](../architecture/5_LAYER_ARCHITECTURE.md) - System architecture
+- Review CLI implementation in the repository
+- Explore RAG indexing patterns in the codebase
+- Check release process documentation
 
 ---
 

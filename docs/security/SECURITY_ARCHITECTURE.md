@@ -254,14 +254,14 @@ graph LR
 
 ## Next Steps
 
-- 👉 See [Authentication Guide](../security/AUTHENTICATION_GUIDE.md) for auth details
-- 👉 See [Secret Management](../security/SECRET_MANAGEMENT.md) for secrets handling
-- 👉 See [Security Scanning Guide](../security/SCANNING_GUIDE.md) for code security
-- 👉 See [Incident Response](../security/INCIDENT_RESPONSE.md) for incident handling
+- Review authentication implementation in the codebase
+- Configure secret management according to your deployment environment
+- Enable security scanning in your CI/CD pipeline
+- Review incident response procedures
 
 ---
 
 **Related Documentation**:
 - [SECURITY.md](../SECURITY.md) - Security policy
-- [5-Layer Architecture](5_LAYER_ARCHITECTURE.md) - System architecture
-- [Monitoring Architecture](MONITORING_ARCHITECTURE.md) - Observability
+- [5-Layer Architecture](../architecture/5_LAYER_ARCHITECTURE.md) - System architecture
+- [Monitoring Architecture](../monitoring/MONITORING_ARCHITECTURE.md) - Observability
