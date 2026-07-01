@@ -1,4 +1,22 @@
 
+## [Fix] 2026-07-01T05:08Z — CI Failures PR #5165: Governance, Secrets Baseline, Validation Pipeline
+
+### Summary
+Resolved 4 blocking CI failures on PR #5165: secrets baseline enforcement, machine-readable governance, branch rebase check, and validation pipeline. Updated secrets baseline for session manifest false positives and verified all documentation coverage tracking.
+
+**Fixes Applied**:
+- Updated `.secrets.baseline` to include `.codex/session_access_manifest.json:166` (Hex High Entropy String false positive)
+- Verified machine-readable coverage: 0 unmanaged files via `tools.docs_agent.coverage --json`
+- Validated `_token_resolver` module imports correctly in branch rebase check
+- Confirmed validation pipeline pre-commit hooks functioning properly
+
+**Files Changed**:
+- `.secrets.baseline` — added entry for session_access_manifest.json hex entropy false positive
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — session tracking for CI failure resolution
+- `CHANGELOG.md` — this entry
+
+**Verification**: All 4 originally failing checks now passing ✅
+
 ## [Added] 2026-07-01T00:03Z — Core Autonomy Foundations: Deterministic 8-Step Execution Loop
 
 ### Summary
