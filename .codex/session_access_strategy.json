@@ -1,20 +1,20 @@
 {
-  "generated_at": "2026-07-01T05:53:34.058811+00:00",
+  "generated_at": "2026-07-01T06:08:55.312728+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 4203,
+  "rest_remaining": 3964,
   "graphql_available": true,
-  "graphql_remaining": 4995,
+  "graphql_remaining": 4984,
   "gh_cli_available": true,
   "codeql_available": false,
   "best_token_var": "GITHUB_TOKEN",
   "open_prs": [
-    5165
+    5167
   ],
-  "branch": "copilot/explore-codebase-failing-checks",
+  "branch": "copilot/fix-actionlint-workflow-compliance",
   "recommendation": "Use REST for data fetches. "
 }
