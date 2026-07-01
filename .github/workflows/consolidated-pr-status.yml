@@ -79,6 +79,3 @@ jobs:
         summary: ${{ inputs.summary }}
         details: ${{ steps.build-details.outputs.details }}
         github-token: ${{ secrets.github-token || github.token }}
-    env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}

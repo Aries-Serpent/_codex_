@@ -53,7 +53,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-    env:
+    secrets:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   approval-check:
     needs: cost-gate
