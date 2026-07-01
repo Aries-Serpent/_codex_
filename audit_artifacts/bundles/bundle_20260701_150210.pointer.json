@@ -1,0 +1,12 @@
+{
+  "original_paths_count": 3,
+  "original_root": "audit_artifacts/raw",
+  "compressed_file": "audit_artifacts/bundles/bundle_20260701_150210.tar.gz",
+  "archive_format": "tar.gz",
+  "total_original_size_bytes": 1200000,
+  "compressed_size_bytes": 1621,
+  "original_sha_aggregate": "798a59ce12a5746e1d8e8e2e1104ed9be6058c7df1c41f33b0c3998a14327d12",
+  "compressed_sha": "f0f26f9ee7df361e9c56bf7e350628de2e1fd8fc7ddc726aa495d32ecda80c5f",
+  "created_utc": "2026-07-01T15:02:10Z",
+  "warnings": []
+}

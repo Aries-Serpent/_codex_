@@ -1,16 +1,15 @@
 """
 Backend Module
 
-This module provides functionality for backend.
+This module provides the Archive Data Access Layer (DAL) facade that composes
+specialized modules for database operations, archive operations, and queries.
 
 Usage:
-    from archive.backend import ...
+    from archive.backend import ArchiveDAL, ArchiveConfig
 
 Classes:
-    [To be documented]
-
-Functions:
-    [To be documented]
+    ArchiveDAL: Main data access layer facade (backward compatible)
+    ArchiveConfig: Runtime configuration
 
 Author: Codex Team
 """
@@ -22,27 +21,17 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-import json  # noqa: E402
 import os  # noqa: E402
-import sqlite3  # noqa: E402
-import uuid  # noqa: E402
-from collections.abc import Callable, Iterable, Iterator, Mapping  # noqa: E402
-from contextlib import contextmanager  # noqa: E402
+from collections.abc import Iterable, Mapping  # noqa: E402
 from dataclasses import dataclass  # noqa: E402
-from pathlib import Path  # noqa: E402
 from typing import TYPE_CHECKING, Any  # noqa: E402
-from urllib.parse import urlparse  # noqa: E402 — CWE-20: proper URL parsing
 
-try:  # pragma: no cover - optional dependency
-    import sqlalchemy as sa
-except (ValueError, TypeError):  # pragma: no cover
-    sa = None
-
-from . import schema  # noqa: E402
-from .util import ensure_directory, json_dumps_sorted, utcnow  # noqa: E402
+from .archive_database import ArchiveDatabase  # noqa: E402
+from .archive_operations import ArchiveOperations  # noqa: E402
+from .archive_query import ArchiveQuery  # noqa: E402
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
-    pass  # No imports needed; from __future__ import annotations makes all annotations lazy
+    pass
 
 Params = dict[str, Any]
 
@@ -86,42 +75,31 @@ def infer_backend(url: str) -> str:
 
 
 class ArchiveDAL:
-    """Archive data access layer supporting PostgreSQL, MariaDB, and SQLite."""
+    """Archive data access layer supporting PostgreSQL, MariaDB, and SQLite.
+
+    This class acts as a facade that composes ArchiveDatabase, ArchiveOperations,
+    and ArchiveQuery modules. It maintains backward compatibility with the original API.
+    """
 
     def __init__(self, config: ArchiveConfig | None = None, *, apply_schema: bool = True) -> None:
         self.config = config or ArchiveConfig.from_env()
         self.backend = self.config.backend
         self.url = self.config.url
-        self._conn: sqlite3.Connection | None = None
-        self._engine: Any | None = None
-        if self.backend == "sqlite":
-            path = self._sqlite_path(self.url)
-            ensure_directory(path.parent)
-            self._conn = sqlite3.connect(str(path))
-            self._conn.row_factory = sqlite3.Row
-        else:
-            if sa is None:  # pragma: no cover - informative guard
-                raise RuntimeError(
-                    "sqlalchemy is required for non-sqlite archive backends. "
-                    "Install sqlalchemy>=2.0"
-                )
-            self._engine = sa.create_engine(self.url, future=True)
-        if apply_schema:
-            self.ensure_schema()
+
+        # Initialize specialized modules
+        self._db = ArchiveDatabase(self.backend, self.url, apply_schema=apply_schema)
+        self._operations = ArchiveOperations(self._db)
+        self._query = ArchiveQuery(self._db)
 
     # ------------------------------------------------------------------
     # schema management
     # ------------------------------------------------------------------
     def ensure_schema(self) -> None:
         """Apply the schema bundle for the configured backend."""
-
-        statements = schema.statements_for(self.backend)
-        with self._transaction() as execute:
-            for statement in statements:
-                execute(statement)  # type: ignore[call-arg]
+        self._db.ensure_schema()
 
     # ------------------------------------------------------------------
-    # public API
+    # public API: delegated to operations module
     # ------------------------------------------------------------------
     def record_archive(
         self,
@@ -139,196 +117,27 @@ class ArchiveDAL:
         tags: Iterable[str] | None = None,
     ) -> dict[str, Any]:
         """Persist an archive record, returning the stored row."""
-
-        now = utcnow()
-        tombstone_id = str(uuid.uuid4())
-        meta_copy = dict(metadata)
-        legal_hold_raw = meta_copy.pop("legal_hold", 0)
-        legal_hold_value = _coerce_bool(legal_hold_raw)
-        delete_after_value = meta_copy.pop("delete_after", None)
-        if legal_hold_value:
-            meta_copy.setdefault("legal_hold", True)
-        if delete_after_value is not None:
-            meta_copy.setdefault("delete_after", delete_after_value)
-        with self._transaction() as execute:
-            artifact = self._get_artifact_by_sha(execute, artifact_payload["content_sha256"])
-            if artifact is None:
-                artifact_id = str(uuid.uuid4())
-                artifact = {
-                    "id": artifact_id,
-                    **artifact_payload,
-                    "created_at": now,
-                }
-                execute(  # type: ignore[call-arg]
-                    """
-                    INSERT INTO artifact (
-                        id, content_sha256, size_bytes, compression, mime_type,
-                        storage_driver, blob_bytes, object_url, created_at
-                    ) VALUES (
-                        :id, :content_sha256, :size_bytes, :compression, :mime_type,
-                        :storage_driver, :blob_bytes, :object_url, :created_at
-                    )
-                    """,
-                    artifact,
-                )
-            else:
-                artifact_id = artifact["id"]
-                needs_refresh = (
-                    artifact.get("blob_bytes") is None
-                    or artifact.get("storage_driver") != artifact_payload["storage_driver"]
-                )
-                metadata_changed = any(
-                    artifact.get(field) != artifact_payload[field]
-                    for field in ("size_bytes", "compression", "mime_type")
-                )
-                if needs_refresh or metadata_changed:
-                    execute(  # type: ignore[call-arg]
-                        """
-                        UPDATE artifact
-                        SET size_bytes = :size_bytes,
-                            compression = :compression,
-                            mime_type = :mime_type,
-                            storage_driver = :storage_driver,
-                            blob_bytes = :blob_bytes,
-                            object_url = :object_url
-                        WHERE id = :id
-                        """,
-                        {"id": artifact_id, **artifact_payload},
-                    )
-
-            item_id = str(uuid.uuid4())
-            item_payload = {
-                "id": item_id,
-                "repo": repo,
-                "path": path,
-                "commit_sha": commit_sha,
-                "language": language,
-                "kind": kind,
-                "reason": reason,
-                "artifact_id": artifact_id,
-                "metadata": json_dumps_sorted(meta_copy),
-                "archived_by": archived_by,
-                "archived_at": now,
-                "tombstone_id": tombstone_id,
-                "legal_hold": legal_hold_value,
-                "delete_after": delete_after_value,
-                "restored_at": None,
-            }
-            execute(  # type: ignore[call-arg]
-                """
-                INSERT INTO item (
-                    id, repo, path, commit_sha, language, kind, reason, artifact_id,
-                    metadata, archived_by, archived_at, tombstone_id, legal_hold,
-                    delete_after, restored_at
-                ) VALUES (
-                    :id, :repo, :path, :commit_sha, :language, :kind, :reason, :artifact_id,
-                    :metadata, :archived_by, :archived_at, :tombstone_id, :legal_hold,
-                    :delete_after, :restored_at
-                )
-                """,
-                item_payload,
-            )
-
-            event_payload = {
-                "id": str(uuid.uuid4()),
-                "item_id": item_id,
-                "action": "ARCHIVE",
-                "actor": archived_by,
-                "context": json_dumps_sorted(context),
-                "created_at": now,
-            }
-            execute(  # type: ignore[call-arg]
-                """
-                INSERT INTO event (id, item_id, action, actor, context, created_at)
-                VALUES (:id, :item_id, :action, :actor, :context, :created_at)
-                """,
-                event_payload,
-            )
-
-            for tag in tags or []:
-                params = {"item_id": item_id, "tag": tag}
-                existing = execute(  # type: ignore[call-arg]
-                    "SELECT 1 FROM tag WHERE item_id = :item_id AND tag = :tag",
-                    params,
-                    fetchone=True,
-                )
-                if existing is None:
-                    execute(  # type: ignore[call-arg]
-                        "INSERT INTO tag (item_id, tag) VALUES (:item_id, :tag)",
-                        params,
-                    )
-
-        return {
-            "tombstone_id": tombstone_id,
-            "artifact_id": artifact_id,
-            "item_id": item_id,
-        }
-
-    def get_restore_payload(self, tombstone_id: str) -> dict[str, Any]:
-        """Return the item and artifact payload for a restore operation."""
-
-        with self._transaction() as execute:
-            item = self._get_item_by_tombstone(execute, tombstone_id)
-            if item is None:
-                raise LookupError(f"Unknown tombstone id: {tombstone_id}")
-            artifact = self._get_artifact_by_id(execute, item["artifact_id"])
-        item_dict = dict(item)
-        if isinstance(item_dict.get("metadata"), str):
-            item_dict["metadata"] = json.loads(item_dict["metadata"])
-        return {"item": item_dict, "artifact": dict(artifact)}
+        return self._operations.record_archive(
+            repo=repo,
+            path=path,
+            commit_sha=commit_sha,
+            language=language,
+            reason=reason,
+            kind=kind,
+            artifact_payload=artifact_payload,
+            archived_by=archived_by,
+            metadata=metadata,
+            context=context,
+            tags=tags,
+        )
 
     def record_restore(self, tombstone_id: str, *, actor: str) -> None:
         """Persist restore metadata after a successful restore."""
-
-        with self._transaction() as execute:
-            item = self._get_item_by_tombstone(execute, tombstone_id)
-            if item is None:
-                raise LookupError(f"Unknown tombstone id: {tombstone_id}")
-            now = utcnow()
-            execute(  # type: ignore[call-arg]
-                """
-                UPDATE item SET restored_at = :restored_at WHERE id = :id
-                """,
-                {"restored_at": now, "id": item["id"]},
-            )
-            event_payload = {
-                "id": str(uuid.uuid4()),
-                "item_id": item["id"],
-                "action": "RESTORE",
-                "actor": actor,
-                "context": json_dumps_sorted({}),
-                "created_at": now,
-            }
-            execute(  # type: ignore[call-arg]
-                """
-                INSERT INTO event (id, item_id, action, actor, context, created_at)
-                VALUES (:id, :item_id, :action, :actor, :context, :created_at)
-                """,
-                event_payload,
-            )
+        self._operations.record_restore(tombstone_id, actor=actor)
 
     def record_prune_request(self, tombstone_id: str, *, actor: str, reason: str) -> None:
         """Record a prune request event."""
-
-        with self._transaction() as execute:
-            item = self._get_item_by_tombstone(execute, tombstone_id)
-            if item is None:
-                raise LookupError(f"Unknown tombstone id: {tombstone_id}")
-            payload = {
-                "id": str(uuid.uuid4()),
-                "item_id": item["id"],
-                "action": "PRUNE_REQUEST",
-                "actor": actor,
-                "context": json_dumps_sorted({"reason": reason}),
-                "created_at": utcnow(),
-            }
-            execute(  # type: ignore[call-arg]
-                """
-                INSERT INTO event (id, item_id, action, actor, context, created_at)
-                VALUES (:id, :item_id, :action, :actor, :context, :created_at)
-                """,
-                payload,
-            )
+        self._operations.record_prune_request(tombstone_id, actor=actor, reason=reason)
 
     def record_delete_approval(
         self,
@@ -339,79 +148,18 @@ class ArchiveDAL:
         reason: str,
         apply: bool = False,
     ) -> bool:
-        """Insert dual approvals and optionally scrub blob bytes.
+        """Insert dual approvals and optionally scrub blob bytes."""
+        return self._operations.record_delete_approval(
+            tombstone_id,
+            primary_actor=primary_actor,
+            secondary_actor=secondary_actor,
+            reason=reason,
+            apply=apply,
+        )
 
-        Returns ``True`` when the underlying artifact payload was scrubbed.
-        ``False`` indicates that the blob bytes were left intact (for example
-        because the artifact is still referenced by other tombstones).
-        """
-
-        if primary_actor == secondary_actor:
-            raise ValueError("Primary and secondary approvers must be distinct")
-        with self._transaction() as execute:
-            item = self._get_item_by_tombstone(execute, tombstone_id)
-            if item is None:
-                raise LookupError(f"Unknown tombstone id: {tombstone_id}")
-            if int(item.get("legal_hold", 0)):
-                raise PermissionError("Item is under legal hold and cannot be purged")
-            artifact_id = item["artifact_id"]
-            blob_scrubbed = False
-            if apply:
-                row = execute(  # type: ignore[call-arg]
-                    """
-                    SELECT COUNT(*) AS ref_count
-                    FROM item
-                    WHERE artifact_id = :artifact_id
-                    """,
-                    {"artifact_id": artifact_id},
-                    fetchone=True,
-                )
-                raw_count = row.get("ref_count", 0) if row else 0
-                reference_count = int(raw_count)
-                blob_scrubbed = reference_count <= 1
-            now = utcnow()
-            for actor, tag in (
-                (primary_actor, "primary"),
-                (secondary_actor, "secondary"),
-            ):
-                context_payload = {"role": tag, "reason": reason}
-                if apply:
-                    context_payload.update(
-                        {
-                            "apply_requested": True,  # type: ignore[dict-item]
-                            "blob_scrubbed": blob_scrubbed,  # type: ignore[dict-item]
-                        }
-                    )
-                    if reference_count > 1:
-                        context_payload["shared_references"] = max(reference_count - 1, 0)  # type: ignore[assignment]
-                payload = {
-                    "id": str(uuid.uuid4()),
-                    "item_id": item["id"],
-                    "action": "DELETE_APPROVED",
-                    "actor": actor,
-                    "context": json_dumps_sorted(context_payload),
-                    "created_at": now,
-                }
-                execute(  # type: ignore[call-arg]
-                    """
-                    INSERT INTO event (id, item_id, action, actor, context, created_at)
-                    VALUES (:id, :item_id, :action, :actor, :context, :created_at)
-                    """,
-                    payload,
-                )
-            if blob_scrubbed:
-                execute(  # type: ignore[call-arg]
-                    """
-                    UPDATE artifact
-                    SET blob_bytes = NULL,
-                        storage_driver = 'object',
-                        object_url = COALESCE(object_url, 'purged://dual-control')
-                    WHERE id = :artifact_id
-                    """,
-                    {"artifact_id": artifact_id},
-                )
-            return blob_scrubbed
-
+    # ------------------------------------------------------------------
+    # public API: delegated to query module
+    # ------------------------------------------------------------------
     def list_items(
         self,
         *,
@@ -420,205 +168,12 @@ class ArchiveDAL:
         limit: int = 100,
     ) -> list[dict[str, Any]]:
         """Return archived items with optional filters."""
-
-        params: Params = {"limit": limit}
-        clauses: list[str] = []
-        if repo:
-            clauses.append("repo = :repo")
-            params["repo"] = repo
-        if since:
-            clauses.append("archived_at >= :since")
-            params["since"] = since
-        query_lines = [
-            "SELECT id, repo, path, commit_sha, reason, archived_by, archived_at, tombstone_id",
-            "FROM item",
-        ]
-        if clauses:
-            query_lines.append("WHERE " + " AND ".join(clauses))
-        query_lines.extend(
-            [
-                "ORDER BY archived_at DESC",
-                "LIMIT :limit",
-            ]
-        )
-        sql = "\n".join(query_lines)
-        with self._transaction() as execute:
-            rows = execute(sql, params, fetchall=True)  # type: ignore[call-arg]
-        result: list[dict[str, Any]] = []
-        for row in rows or []:
-            row_dict = dict(row)
-            result.append(row_dict)
-        return result
+        return self._query.list_items(repo=repo, since=since, limit=limit)
 
     def show_item(self, tombstone_id: str) -> dict[str, Any]:
         """Return a full view of a single item."""
+        return self._query.show_item(tombstone_id)
 
-        with self._transaction() as execute:
-            item = self._get_item_by_tombstone(execute, tombstone_id)
-            if item is None:
-                raise LookupError(f"Unknown tombstone id: {tombstone_id}")
-            events = execute(  # type: ignore[call-arg]
-                (
-                    "SELECT action, actor, context, created_at "
-                    "FROM event WHERE item_id = :item_id "
-                    "ORDER BY created_at"
-                ),
-                {"item_id": item["id"]},
-                fetchall=True,
-            )
-        item_dict = dict(item)
-        if isinstance(item_dict.get("metadata"), str):
-            item_dict["metadata"] = json.loads(item_dict["metadata"])
-        events_payload = []
-        for row in events or []:
-            entry = dict(row)
-            context = entry.get("context")
-            if isinstance(context, str):
-                entry["context"] = json.loads(context)
-            events_payload.append(entry)
-        item_dict["events"] = events_payload
-        return item_dict
-
-    # ------------------------------------------------------------------
-    # helpers
-    # ------------------------------------------------------------------
-    def _sqlite_path(self, url: str) -> Path:
-        """Parse SQLite URL and extract path using proper URL parsing (CWE-20 fix)."""
-        parsed = urlparse(url)
-
-        # Handle sqlite:// or sqlite:/// scheme
-        if parsed.scheme == "sqlite":
-            # Reconstruct path from netloc + path to handle both:
-            # - sqlite://relative/db.sqlite (netloc='relative', path='/db.sqlite')
-            # - sqlite:///./.codex/archive.sqlite (netloc='', path='/./.codex/archive.sqlite')
-            full_path = parsed.netloc + parsed.path
-
-            if not full_path:
-                # Fallback to treating as bare path if no scheme
-                path = url
-            else:
-                # Strip leading slash only for relative-style paths (not absolute paths)
-                # Absolute paths (starting with /) or Windows drive letters (C:) stay as-is
-                if full_path.startswith("/./"):
-                    # Relative path with ./ prefix: strip the leading /
-                    path = full_path[1:]
-                elif full_path.startswith("/") and not (len(full_path) > 2 and full_path[2] == ":"):
-                    # Absolute path (starts with / but not Windows C:/ style)
-                    path = full_path
-                else:
-                    path = full_path
-        else:
-            # No scheme detected, treat as bare path
-            path = url
-
-        return Path(path).expanduser().resolve()
-
-    @contextmanager
-    def _transaction(self) -> Iterator[Callable[[str, Params | None, bool, bool], Any]]:
-        if self.backend == "sqlite":
-            if self._conn is None:
-                raise RuntimeError("SQLite connection is not initialised")
-            cursor = self._conn.cursor()
-            try:
-
-                def execute_sql(
-                    sql: str,
-                    params: Params | None = None,
-                    fetchone: bool = False,
-                    fetchall: bool = False,
-                ) -> Any:
-                    return self._sqlite_execute(cursor, sql, params, fetchone, fetchall)
-
-                yield execute_sql
-                self._conn.commit()
-            except (ValueError, TypeError, RuntimeError):
-                logger.warning("Exception occurred", exc_info=True)
-                self._conn.rollback()
-                raise
-            finally:
-                cursor.close()
-        else:
-            if self._engine is None:
-                raise RuntimeError("SQLAlchemy engine is not initialised")
-            with self._engine.begin() as connection:
-
-                def execute_sql(
-                    sql: str,
-                    params: Params | None = None,
-                    fetchone: bool = False,
-                    fetchall: bool = False,
-                ) -> Any:
-                    return self._sqlalchemy_execute(connection, sql, params, fetchone, fetchall)
-
-                yield execute_sql
-
-    def _sqlite_execute(
-        self,
-        cursor: sqlite3.Cursor,
-        sql: str,
-        params: Params | None,
-        fetchone: bool,
-        fetchall: bool,
-    ) -> Any:
-        parameters = params or {}
-        cursor.execute(sql, parameters)
-        if fetchone:
-            row = cursor.fetchone()
-            return dict(row) if row is not None else None
-        if fetchall:
-            return [dict(row) for row in cursor.fetchall()]
-        return None
-
-    def _sqlalchemy_execute(
-        self,
-        connection: Any,
-        sql: str,
-        params: Params | None,
-        fetchone: bool,
-        fetchall: bool,
-    ) -> Any:
-        statement = sa.text(sql)
-        result = connection.execute(statement, params or {})
-        if fetchone:
-            row = result.mappings().first()
-            return dict(row) if row is not None else None
-        if fetchall:
-            return [dict(row) for row in result.mappings().all()]
-        return None
-
-    def _get_artifact_by_sha(self, execute: Callable[..., Any], sha: str) -> dict[str, Any] | None:
-        return execute(
-            "SELECT * FROM artifact WHERE content_sha256 = :sha",
-            {"sha": sha},
-            fetchone=True,
-        )
-
-    def _get_artifact_by_id(self, execute: Callable[..., Any], artifact_id: str) -> dict[str, Any]:
-        artifact = execute(
-            "SELECT * FROM artifact WHERE id = :id", {"id": artifact_id}, fetchone=True
-        )
-        if artifact is None:
-            raise LookupError(f"Unknown artifact id: {artifact_id}")
-        return artifact
-
-    def _get_item_by_tombstone(
-        self, execute: Callable[..., Any], tombstone_id: str
-    ) -> dict[str, Any] | None:
-        return execute(
-            "SELECT * FROM item WHERE tombstone_id = :tomb",
-            {"tomb": tombstone_id},
-            fetchone=True,
-        )
-
-
-def _coerce_bool(value: Any) -> int:
-    """Normalise truthy inputs to 0/1 for SQL storage."""
-
-    if isinstance(value, bool):
-        return 1 if value else 0
-    if isinstance(value, int | float):
-        return 1 if value else 0
-    if isinstance(value, str):
-        lowered = value.strip().lower()
-        return 1 if lowered in {"1", "true", "yes", "on"} else 0
-    return 0
+    def get_restore_payload(self, tombstone_id: str) -> dict[str, Any]:
+        """Return the item and artifact payload for a restore operation."""
+        return self._query.get_restore_payload(tombstone_id)
