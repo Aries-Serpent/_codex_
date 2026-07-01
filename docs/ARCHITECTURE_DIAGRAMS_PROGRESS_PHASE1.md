@@ -125,23 +125,23 @@
 Testing the diagrams against key onboarding questions:
 
 **Q: "What's the overall system architecture?"**
-- A: See [5-Layer Architecture](5_LAYER_ARCHITECTURE.md) + [System Context](SYSTEM_CONTEXT.md)
+- A: See [5-Layer Architecture](architecture/5_LAYER_ARCHITECTURE.md) + [System Context](architecture/SYSTEM_CONTEXT.md)
 - Clarity: ⭐⭐⭐⭐⭐ (5/5)
 
 **Q: "How does a request flow through the system?"**
-- A: See [End-to-End Request Flow](E2E_REQUEST_FLOW.md)
+- A: See [End-to-End Request Flow](architecture/E2E_REQUEST_FLOW.md)
 - Clarity: ⭐⭐⭐⭐⭐ (5/5)
 
 **Q: "How do I train a model?"**
-- A: See [Training Workflow](../training/TRAINING_WORKFLOW.md)
+- A: See [Training Workflow](training/TRAINING_WORKFLOW.md)
 - Clarity: ⭐⭐⭐⭐⭐ (5/5)
 
 **Q: "What are the security controls?"**
-- A: See [Security Architecture](../security/SECURITY_ARCHITECTURE.md)
+- A: See [Security Architecture](security/SECURITY_ARCHITECTURE.md)
 - Clarity: ⭐⭐⭐⭐⭐ (5/5)
 
 **Q: "How do I deploy to production?"**
-- A: See [Deployment Architecture](DEPLOYMENT_ARCHITECTURE.md)
+- A: See [Deployment Architecture](architecture/DEPLOYMENT_ARCHITECTURE.md)
 - Clarity: ⭐⭐⭐⭐⭐ (5/5)
 
 **Average Clarity Score: 5/5** ✅

@@ -401,9 +401,9 @@ Metadata & Indices
 
 ## Next Steps
 
-- 👉 See [Ingestion Pipeline](../ingestion/INGESTION_PIPELINE.md) for ingestion details
-- 👉 See [RAG Architecture](../rag/RAG_ARCHITECTURE.md) for retrieval details
-- 👉 See [Storage Guide](../storage/STORAGE_GUIDE.md) for storage options
+- Review the ingestion pipeline implementation in `src/codex/ingestion/`
+- Explore the RAG system architecture in `src/codex/rag/`
+- Check storage configuration in the codebase
 
 ---
 

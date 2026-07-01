@@ -264,13 +264,14 @@ Final Test Results:
 
 ## Next Steps
 
-- 👉 See [Evaluation Workflow](../evaluation/EVALUATION_WORKFLOW.md) for evaluation details
-- 👉 See [Serving Workflow](../serving/SERVING_WORKFLOW.md) for deployment
+- Review evaluation workflow implementation in the codebase
+- Explore model serving configuration
 - 👉 See [E2E Request Flow](../architecture/E2E_REQUEST_FLOW.md) for full request lifecycle
 
 ---
 
 **Related Documentation**:
-- [Training Guide](../training/TRAINING_GUIDE.md) - Training how-to
-- [Configuration Guide](../configuration/CONFIGURATION_GUIDE.md) - Configuration management
-- [Model Registry](../models/MODEL_REGISTRY.md) - Model management
+- [5-Layer Architecture](../architecture/5_LAYER_ARCHITECTURE.md) - System architecture
+- Review training guides in the repository
+- Explore configuration management patterns
+- Check model management implementation

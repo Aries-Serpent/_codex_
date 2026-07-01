@@ -221,17 +221,17 @@ graph LR
 | **L1** | API Gateway | ✅ Production | [docs/api](../api/) |
 | **L2** | Training Engine | ✅ Production | [docs/training](../training/) |
 | **L2** | Evaluation Engine | ✅ Production | [docs/evaluation](../evaluation/) |
-| **L2** | Serving | ✅ Production | [docs/serving](../serving/) |
-| **L3** | Code Ingestion | ✅ Production | [docs/ingestion](../ingestion/) |
+| **L2** | Serving | ✅ Production | src/inference/ |
+| **L3** | Code Ingestion | ✅ Production | src/codex/ingestion/ |
 | **L3** | RAG System | ✅ Production | [docs/rag](../rag/) |
-| **L3** | Data Transform | ✅ Production | [docs/transformation](../transformation/) |
+| **L3** | Data Transform | ✅ Production | src/codex/data/ |
 | **L4** | Configuration | ✅ Production | [docs/configuration](../configuration/) |
 | **L4** | Database | ✅ Production | [docs/database](../database/) |
-| **L4** | Caching | ✅ Production | [docs/caching](../caching/) |
+| **L4** | Caching | ✅ Production | src/codex/cache/ |
 | **L4** | Monitoring | ✅ Production | [docs/monitoring](../monitoring/) |
 | **L5** | GitHub Integration | ✅ Production | [docs/integration](../integration/) |
 | **L5** | Zendesk Integration | ✅ Production | [docs/zendesk](../zendesk/) |
-| **L5** | Cloud Services | ✅ Production | [docs/cloud](../cloud/) |
+| **L5** | Cloud Services | ✅ Production | infrastructure/ |
 | **L5** | Auth & Security | ✅ Production | [docs/security](../security/) |
 
 ---

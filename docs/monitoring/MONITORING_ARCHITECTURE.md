@@ -369,13 +369,13 @@ model_accuracy:
 
 ## Next Steps
 
-- 👉 See [Monitoring Guide](../monitoring/MONITORING_GUIDE.md) for setup
-- 👉 See [Alert Configuration](../monitoring/ALERTS.md) for alert rules
-- 👉 See [Dashboard Setup](../monitoring/DASHBOARDS.md) for Grafana config
+- Review monitoring configuration in the codebase
+- Configure alert rules based on your operational requirements
+- Set up dashboards for system observability
 
 ---
 
 **Related Documentation**:
-- [5-Layer Architecture](5_LAYER_ARCHITECTURE.md) - System architecture
-- [Logging Guide](../logging/LOGGING_GUIDE.md) - Structured logging
-- [Performance Optimization](../performance/OPTIMIZATION.md) - Performance metrics
+- [5-Layer Architecture](../architecture/5_LAYER_ARCHITECTURE.md) - System architecture
+- Check logging documentation in the repository for structured logging patterns
+- Review performance metrics in the codebase
