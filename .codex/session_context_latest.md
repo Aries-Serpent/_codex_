@@ -1,24 +1,28 @@
-# Session Context — 2026-07-01T23:30:30Z
+# Session Context — 2026-07-01T23:44:20Z
 **Branch:** `fix/ci-rag-module-tests-20260701225800`  **PR:** #5188  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4748` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `4450` (✅)
+- GraphQL remaining: `4989` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 📋 PR #5188 — fix(ci): 🔧 Critical — RAG Module Tests [3f85539]
 State: `open`  Draft: `False`  Branch: `fix/ci-rag-module-tests-20260701225800` → `main`
 
+### ❌ 1 Failing CI Check(s)
+- `Governance Compliance` (failure)
+
 ## 🚨 Recent CI Failures (last 5 runs)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-01)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-01)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-01)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-01)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-01)
+- **Workflow Execution Gate** — `failure` on `fix/ci-rag-module-tests-20260701225800` (2026-07-01)
+- **PR Comment Review Gate** — `failure` on `fix/ci-rag-module-tests-20260701225800` (2026-07-01)
+- **Phase 8.2 Issue Triage** — `failure` on `main` (2026-07-01)
 
 ## 📝 Recent Commits
+- `267f2434` fix(ci): REQ-4/REQ-5 compliance — update CHANGELOG.md and AGENT_ACCOUNTABILITY_R — copilot-swe-agent[bot] (2026-07-01)
 - `aa75bcd6` fix(rag): explicit return in each ImportError handler; clarify test docstring — copilot-swe-agent[bot] (2026-07-01)
 - `905e028a` fix(rag): coverage +1.59% — ImportError bug fix + 11 targeted tests — copilot-swe-agent[bot] (2026-07-01)
 - `cb9fe474` Merge remote-tracking branch 'origin/fix/ci-rag-module-tests-20260701225800' int — copilot-swe-agent[bot] (2026-07-01)
@@ -26,7 +30,6 @@ State: `open`  Draft: `False`  Branch: `fix/ci-rag-module-tests-20260701225800` 
 - `860f4112` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-07-01)
 - `f71039f4` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-07-01)
 - `3735b8b6` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-07-01)
-- `1e7344ed` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-07-01)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`

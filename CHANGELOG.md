@@ -604,6 +604,9 @@ Fixed all 15 security vulnerabilities from commit d587689 and PR review comments
 - Production bug fix: `get_gpu_memory()` now catches `ImportError` in addition to `ValueError/TypeError/RuntimeError`
 - Production bug fix: Added `Retrieval = RetrievalPipeline` backward-compatibility alias in `src/rag/pipelines/retrieval.py`
 - REQ-4/REQ-5 compliance: accountability report and CHANGELOG updated in final commit
+- CI fix: Removed unused `import pytest` from `tests/rag/test_utils_meta_mocked.py` (RP-007 code quality gate)
+- CI fix: Added `<!-- pragma: allowlist secret -->` to git SHA in AGENT_ACCOUNTABILITY_REPORT.md (secrets false-positive, line 112)
+- CI fix: Fixed double blank line in `tests/rag/test_utils_meta_mocked.py` (import style)
 
 ### Fixed (auto-update — PR #5181)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5181 (SHA `201aaaad`) at 2026-07-01T20:43Z [auto-generated]
