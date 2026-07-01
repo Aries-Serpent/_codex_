@@ -9,10 +9,16 @@
     "7:tests/test_security_api.py": 3,
     "35:.codex/CAMPAIGN_FINAL_COMPLETION_REPORT.md": 1,
     "6:tests/test_train_loop_exception_handlers.py": 2,
-    "35:.codex/PAGES_DEPLOYMENT_RCA_20260701.md": 1
+    "35:.codex/PAGES_DEPLOYMENT_RCA_20260701.md": 1,
+    "1:/home/runner/work/_codex_/_codex_/src/codex/brain/__init__.py": 10,
+    "2:/home/runner/work/_codex_/_codex_/src/codex/docs_agent/cli.py": 2,
+    "2:/home/runner/work/_codex_/_codex_/src/codex/docs_agent/document_processor.py": 2,
+    "2:/home/runner/work/_codex_/_codex_/src/codex/docs_agent/parser.py": 2
   },
   "circuit_state": {
     "6": "BROKEN",
-    "7": "BROKEN"
+    "7": "BROKEN",
+    "1": "BROKEN",
+    "2": "OPEN"
   }
 }

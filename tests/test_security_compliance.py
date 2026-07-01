@@ -7,14 +7,11 @@ Test Count: 16 tests
 """
 
 import pytest
-import logging
 import json
 import hashlib
-import os
 import re
 from datetime import datetime, timedelta
 from typing import Dict, Any, List, Optional
-from unittest.mock import Mock, patch
  # pragma: allowlist secret
 
 class TestDataProtectionAndPrivacy:

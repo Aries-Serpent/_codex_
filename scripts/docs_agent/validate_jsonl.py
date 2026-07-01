@@ -13,7 +13,7 @@ import json
 import sys
 import argparse
 from pathlib import Path
-from typing import Dict, List, Tuple, Any, Optional
+from typing import Dict, List, Tuple, Any
 from dataclasses import dataclass
 from collections import defaultdict
 import logging

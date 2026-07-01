@@ -1,6 +1,5 @@
 """Generate validation report for Phase 5 coverage tests."""
 
-import json
 from pathlib import Path
 
 # Create validation report

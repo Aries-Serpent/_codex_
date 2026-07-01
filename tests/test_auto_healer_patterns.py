@@ -8,12 +8,6 @@ Coverage: 30+ tests for auto-healer loop validation
 """
 
 import pytest
-import yaml
-import tempfile
-from pathlib import Path
-import json
-import re
-from typing import Dict, List, Tuple
 
 
 class TestAutoHealerPatternRP001:

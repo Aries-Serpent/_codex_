@@ -18,15 +18,13 @@ Exit codes:
     1 = Error during refactoring
 """
 
-import ast
 import json
 import logging
-import os
 import re
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Dict, List, Set
 
 # Configure logging
 logging.basicConfig(

@@ -18,10 +18,9 @@ This test file addresses these untested handlers:
 """
 
 import pytest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 from pathlib import Path
 import tempfile
-import json
 
 
 class TestTrainLoopExceptionHandlers:

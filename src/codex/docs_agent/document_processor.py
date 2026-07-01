@@ -11,7 +11,7 @@ import json
 import re
 from pathlib import Path
 from typing import Dict, List, Tuple, Any, Optional
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass
 from datetime import datetime
 import logging
 

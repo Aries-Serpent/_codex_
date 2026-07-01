@@ -1,0 +1,6 @@
+#!/home/runner/work/_codex_/_codex_/.venv_ci/bin/python
+import sys
+from tools.docs_agent.no_unmanaged_candidates import main
+if __name__ == '__main__':
+    sys.argv[0] = sys.argv[0].removesuffix('.exe')
+    sys.exit(main())

@@ -7,9 +7,8 @@ Authority: Lane 3 Unified Documentation Agent
 Status: Task 3.3 Implementation
 """
 
-import json
 import random
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any
 from datetime import datetime, timedelta
 import uuid
 

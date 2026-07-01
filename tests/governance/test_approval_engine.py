@@ -6,14 +6,10 @@ Target: >95% coverage, all success criteria validated
 """
 
 import pytest
-import json
-from datetime import datetime, timezone
 from scripts.governance.approval_engine import (
     ApprovalWorkflowEngine,
     AuditLogger,
     WorkflowStatus,
-    StageStatus,
-    ApprovalType,
     AuditEventType,
 )
 
@@ -231,7 +227,7 @@ class TestSuccessCriteria:
 
     def test_compliance_monitoring(self):
         """SC3: Verify 99%+ compliance rate, 100% audit logging."""
-        from scripts.governance.compliance_monitor import ComplianceMonitor, ComplianceStatus
+        from scripts.governance.compliance_monitor import ComplianceMonitor
         
         monitor = ComplianceMonitor()
         

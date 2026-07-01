@@ -10,13 +10,9 @@ Authority: Lane 3 Unified Documentation Agent
 
 import pytest
 import json
-import tempfile
-from pathlib import Path
-from datetime import datetime
 
 # Import docs_agent modules
 from codex.docs_agent import (
-    schema_validator,
     document_processor,
     semantic_indexer,
     mcp_bridge,

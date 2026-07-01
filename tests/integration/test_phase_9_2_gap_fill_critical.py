@@ -16,12 +16,8 @@ Gap-fill strategy:
 Authority: @mbaetiong (D-tier autonomy)
 """
 
-import json
-import logging
 import sys
 import time
-from io import StringIO
-from typing import Any, Dict, List, Optional
 from unittest import mock
 
 import pytest
@@ -42,14 +38,11 @@ from phase_9_2_cascade_orchestrator import (
     PatternMatch,
     get_confidence_level,
     run_command,
-    setup_logger,
 )
 
 from phase_9_2_pattern_router import (
     PatternMatcher,
     PatternRouter,
-    DEFAULT_ROUTING_CONFIG,
-    setup_logger as setup_logger_router,
 )
 
 

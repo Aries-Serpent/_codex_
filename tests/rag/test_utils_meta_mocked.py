@@ -9,7 +9,6 @@ exercised by the torch-dependent tests in tests/test_rag_utils.py:
 """
 from unittest.mock import MagicMock, patch
 
-import pytest
 
 from codex.rag.utils import check_for_meta_tensors
 

@@ -10,7 +10,7 @@ Phase: 10.1 - Session Checkpoint/Resume System
 import logging
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Dict, Optional
 
 from session_checkpoint_manager import (
     SessionCheckpointManager,

@@ -14,10 +14,6 @@ Authority: Lane 3 Unified Documentation Agent
 """
 
 import pytest
-import json
-from pathlib import Path
-from datetime import datetime
-from typing import Dict, Any
 
 
 # Fixtures for common test data

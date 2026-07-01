@@ -8,12 +8,11 @@ Test Count: 18 tests
 
 import pytest
 import re
-import html
 import urllib.parse
 import secrets
 import hashlib
 import os
-from typing import Optional, List, Dict, Any
+from typing import List
 
  # pragma: allowlist secret
 class TestInputValidation:

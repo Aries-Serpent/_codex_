@@ -21,10 +21,9 @@ These tests complete the 343 untested functions in codex module.
 import tempfile
 import threading
 import time
-from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Generator
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 

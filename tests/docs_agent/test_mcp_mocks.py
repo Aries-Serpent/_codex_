@@ -9,7 +9,6 @@ Authority: Lane 3 Unified Documentation Agent
 """
 
 import pytest
-import json
 from scripts.docs_agent import mock_mcp_tools
 
 

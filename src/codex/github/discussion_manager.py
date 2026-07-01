@@ -9,7 +9,7 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from codex.github.api_client import APIClient, _GITHUB_API
+from codex.github.api_client import APIClient
 
 logger = logging.getLogger(__name__)
 

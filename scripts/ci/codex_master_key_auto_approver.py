@@ -13,7 +13,7 @@ import sys
 import subprocess
 import json
 from datetime import datetime
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, List, Tuple
 
 class WorkflowAutoApprover:
     """Auto-approve workflows using CODEX_MASTER_KEY token."""

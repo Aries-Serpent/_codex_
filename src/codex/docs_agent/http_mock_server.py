@@ -7,7 +7,6 @@ real API responses with realistic latency and error patterns.
 Authority: Lane 3 Unified Documentation Agent
 """
 
-import json
 import time
 import random
 from typing import Dict, List, Any, Optional, Callable

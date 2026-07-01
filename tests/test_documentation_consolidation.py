@@ -8,7 +8,7 @@ Coverage: Documentation structure and consolidation logic.
 
 import re
 from pathlib import Path
-from typing import List, Set, Tuple
+from typing import List, Tuple
 
 import pytest
 

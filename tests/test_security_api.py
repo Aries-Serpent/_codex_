@@ -8,13 +8,10 @@ Test Count: 17 tests
 
 import pytest
 import json
-import base64
 import hmac
 import hashlib
 import os
-import re
 from typing import Dict, Any, Optional, List
-from unittest.mock import Mock, patch
  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
 class TestAPISecurityHeaders:

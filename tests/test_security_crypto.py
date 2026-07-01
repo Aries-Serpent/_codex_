@@ -11,11 +11,9 @@ import hashlib
 import hmac
 import secrets
 import os
-import json
 import base64
-from typing import Optional, List, Dict, Any
+from typing import Dict, Any
 from datetime import datetime, timedelta
-from unittest.mock import Mock, patch # pragma: allowlist secret # pragma: allowlist secret
 
 
 class TestCryptoKeyManagement:
