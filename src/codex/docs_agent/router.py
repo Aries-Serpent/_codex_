@@ -8,6 +8,7 @@ Classes:
 """
 
 import re
+import ast
 from typing import Dict, List, Optional, Any, Callable
 from dataclasses import dataclass
 
@@ -186,6 +187,95 @@ class DecisionEvaluator:
         return best_action or decision.get('default_action_id')
 
     @staticmethod
+    def _safe_eval_expression(expression: str) -> bool:
+        """Safely evaluate a boolean expression using AST inspection.
+        
+        Only allows safe operations:
+        - Comparison operators: ==, !=, <, >, <=, >=
+        - Logical operators: and, or, not
+        - Literals and variable references (already substituted)
+        
+        Args:
+            expression: A boolean expression string
+            
+        Returns:
+            The evaluated result
+            
+        Raises:
+            ValueError: If expression contains unsafe operations
+        """
+        try:
+            # Parse the expression into an AST
+            tree = ast.parse(expression, mode='eval')
+            
+            # Use a visitor to safely evaluate
+            return DecisionEvaluator._visit_expr(tree.body)
+        except Exception:
+            return False
+    
+    @staticmethod
+    def _visit_expr(node: Any) -> Any:
+        """Safely visit and evaluate AST nodes.
+        
+        Only allows safe node types for boolean expressions.
+        """
+        if isinstance(node, ast.Constant):
+            return node.value
+        elif isinstance(node, ast.Name):
+            # Names should already be substituted, but if not, treat as False
+            return False
+        elif isinstance(node, ast.Compare):
+            # Evaluate comparisons: x == y, x > y, etc.
+            left = DecisionEvaluator._visit_expr(node.left)
+            for op, comparator in zip(node.ops, node.comparators):
+                right = DecisionEvaluator._visit_expr(comparator)
+                if isinstance(op, ast.Eq):
+                    if not (left == right):
+                        return False
+                elif isinstance(op, ast.NotEq):
+                    if not (left != right):
+                        return False
+                elif isinstance(op, ast.Lt):
+                    if not (left < right):
+                        return False
+                elif isinstance(op, ast.LtE):
+                    if not (left <= right):
+                        return False
+                elif isinstance(op, ast.Gt):
+                    if not (left > right):
+                        return False
+                elif isinstance(op, ast.GtE):
+                    if not (left >= right):
+                        return False
+                else:
+                    raise ValueError(f"Unsupported comparison operator: {op}")
+                left = right
+            return True
+        elif isinstance(node, ast.BoolOp):
+            # Evaluate boolean operations: x and y, x or y
+            if isinstance(node.op, ast.And):
+                for value in node.values:
+                    if not DecisionEvaluator._visit_expr(value):
+                        return False
+                return True
+            elif isinstance(node.op, ast.Or):
+                for value in node.values:
+                    if DecisionEvaluator._visit_expr(value):
+                        return True
+                return False
+            else:
+                raise ValueError(f"Unsupported boolean operator: {node.op}")
+        elif isinstance(node, ast.UnaryOp):
+            # Evaluate unary operations: not x
+            if isinstance(node.op, ast.Not):
+                return not DecisionEvaluator._visit_expr(node.operand)
+            else:
+                raise ValueError(f"Unsupported unary operator: {node.op}")
+        else:
+            # Reject all other node types (function calls, attribute access, etc.)
+            raise ValueError(f"Unsafe operation in expression: {ast.dump(node)}")
+
+    @staticmethod
     def _match_condition(condition: str, context: Dict[str, Any]) -> bool:
         """Evaluate a condition against context.
         
@@ -205,8 +295,8 @@ class DecisionEvaluator:
             # Replace && and || with Python equivalents
             eval_condition = eval_condition.replace('&&', 'and').replace('||', 'or')
 
-            # Safe evaluation (whitelist operations)
-            return eval(eval_condition, {"__builtins__": {}}, {})
+            # Use safe evaluation instead of raw eval()
+            return DecisionEvaluator._safe_eval_expression(eval_condition)
         except Exception:
             return False
 
