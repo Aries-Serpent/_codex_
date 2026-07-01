@@ -80,14 +80,14 @@ if execution_step == "persist":
 def create_session(agent_id, phase_id, track_id, task_id):
     # Initialize canonical state
     state = {
-        "state_id": uuid.uuid4(),
+        "state_id": str(uuid.uuid4()),
         "agent_id": agent_id,
         "phase_id": phase_id,
         "track_id": track_id,
         "task_id": task_id,
         "execution_step": "observe",
         "status": "in_progress",
-        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "timestamp": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
         ...
     }
     

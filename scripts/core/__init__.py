@@ -40,5 +40,5 @@ __all__ = [
     "HandoffObject",
     "prepare_handoff",
     "resume_from_handoff",
-    "validate_handoff"
+    "validate_handoff",
 ]
