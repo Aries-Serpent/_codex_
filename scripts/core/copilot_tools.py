@@ -154,14 +154,14 @@ class StateOperationTools:
     """Tools for state validation, checkpointing, and resumption."""
     
     @staticmethod
-    def validate_state_tool(state_id: str) -> Dict[str, Any]:
+    def validate_state_tool(state_dict: Dict[str, Any]) -> Dict[str, Any]:
         """
         Validate a canonical state.
         
         Returns validation results from validation_engine.
         
         Args:
-            state_id: The state to validate
+            state_dict: The complete canonical state dict to validate
             
         Returns:
             {
@@ -184,12 +184,10 @@ class StateOperationTools:
         # In real implementation, would call validation_engine.validate_state()
         from scripts.core import validate_state
         
-        # Would load state from storage using state_id
-        state = {"state_id": state_id}  # Placeholder
-        
-        validation = validate_state(state)
+        # Validate the provided state dict
+        validation = validate_state(state_dict)
         return {
-            "state_id": state_id,
+            "state_id": state_dict.get("state_id"),
             **validation
         }
     

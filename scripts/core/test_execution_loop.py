@@ -10,9 +10,10 @@ Comprehensive testing of the core autonomy foundations:
 5. Crash recovery
 """
 
+import sys
 import uuid
 from datetime import datetime
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from .checkpoint_manager import CheckpointManager
 from .handoff_protocol import HandoffProtocol
@@ -24,7 +25,7 @@ def create_test_state(
     status: str = "in_progress",
     confidence: float = 0.85,
     valid: bool = True,
-    previous_state_id: str = None
+    previous_state_id: Optional[str] = None
 ) -> Dict[str, Any]:
     """Create a test state."""
     state_id = str(uuid.uuid4())
@@ -126,7 +127,8 @@ def test_full_execution_loop():
             current_state["status"] = "validated"
     
     print("\n✓ Full execution loop test PASSED")
-    return True
+    assert current_state is not None, "Final state should not be None"
+    assert current_state["execution_step"] == "complete", "Final step should be complete"
 
 
 def test_validation_failure_and_blocking():
@@ -145,11 +147,9 @@ def test_validation_failure_and_blocking():
         print(f"  - {v.get('rule')}: {v.get('message', '')[:70]}")
     
     # Should not persist if invalid
-    if not validation['valid']:
-        print("✓ Invalid state blocked from persistence")
-        return True
-    
-    return False
+    assert not validation['valid'], "Invalid state should fail validation"
+    assert len(validation['violations']) > 0, "Should have violations"
+    print("✓ Invalid state blocked from persistence")
 
 
 def test_rollback_scenario():
@@ -176,19 +176,17 @@ def test_rollback_scenario():
     validation = validate_state(bad_state)
     print(f"Bad state validation: {validation['valid']}")
     
-    if not validation['valid']:
-        # Rollback
-        print("Rolling back to previous state...")
-        rolled_back = checkpoint_manager.rollback_to_previous(bad_state)
-        
-        if rolled_back:
-            print(f"✓ Rolled back to state: {rolled_back.get('state_id')[:8]}...")
-            # Should be the good state
-            if rolled_back.get('state_id') == good_state.get('state_id'):
-                print("✓ Rollback returned correct state")
-                return True
+    assert not validation['valid'], "Bad state should fail validation"
     
-    return False
+    # Rollback
+    print("Rolling back to previous state...")
+    rolled_back = checkpoint_manager.rollback_to_previous(bad_state)
+    
+    assert rolled_back is not None, "Rollback should succeed"
+    print(f"✓ Rolled back to state: {rolled_back.get('state_id')[:8]}...")
+    # Should be the good state
+    assert rolled_back.get('state_id') == good_state.get('state_id'), "Rollback should return correct state"
+    print("✓ Rollback returned correct state")
 
 
 def test_multi_agent_handoff():
@@ -215,9 +213,7 @@ def test_multi_agent_handoff():
     validation = HandoffProtocol.validate_handoff(handoff)
     print(f"Handoff validation: {validation['valid']}")
     
-    if validation['errors']:
-        print(f"  Errors: {validation['errors']}")
-        return False
+    assert validation['valid'], f"Handoff should be valid. Errors: {validation.get('errors', [])}"
     
     # Agent B resumes from handoff
     state_b = HandoffProtocol.resume_from_handoff(handoff)
@@ -226,13 +222,12 @@ def test_multi_agent_handoff():
     print(f"  Preserved unresolved items: {len(state_b.get('unresolved_items', []))}")
     
     # Check that critical info was preserved
-    if state_b.get('state_id') == state_a.get('state_id'):
-        print("✓ State ID preserved")
-    if state_b.get('decision_context'):
-        print("✓ Decision context preserved")
+    assert state_b.get('state_id') == state_a.get('state_id'), "State ID should be preserved"
+    print("✓ State ID preserved")
+    assert state_b.get('decision_context'), "Decision context should be preserved"
+    print("✓ Decision context preserved")
     
     print("✓ Multi-agent handoff test PASSED")
-    return True
 
 
 def test_crash_recovery():
@@ -252,19 +247,18 @@ def test_crash_recovery():
     # Recover from checkpoint
     recovered_state = manager_after_crash.load_checkpoint(checkpoint_id)
     
-    if recovered_state:
-        print("✓ Recovered state from checkpoint")
-        print(f"  State ID matches: {recovered_state.get('state_id') == state.get('state_id')}")
-        print(f"  All data preserved: {len(recovered_state) == len(state)}")
-        
-        # Resume execution
-        resumed_state = manager_after_crash.resume_execution(checkpoint_id)
-        print("✓ Resumed execution from checkpoint")
-        print(f"  Execution step: {resumed_state.get('execution_step')}")
-        
-        return True
+    assert recovered_state is not None, "Should recover state from checkpoint"
+    print("✓ Recovered state from checkpoint")
+    assert recovered_state.get('state_id') == state.get('state_id'), "State ID should match"
+    print(f"  State ID matches: {recovered_state.get('state_id') == state.get('state_id')}")
+    assert len(recovered_state) == len(state), "All data should be preserved"
+    print(f"  All data preserved: {len(recovered_state) == len(state)}")
     
-    return False
+    # Resume execution
+    resumed_state = manager_after_crash.resume_execution(checkpoint_id)
+    assert resumed_state is not None, "Should resume execution from checkpoint"
+    print("✓ Resumed execution from checkpoint")
+    print(f"  Execution step: {resumed_state.get('execution_step')}")
 
 
 def test_state_transition_validation():
@@ -281,21 +275,18 @@ def test_state_transition_validation():
     
     validation = validate_state_transition(from_state, to_state)
     print(f"Valid transition: {validation['valid']}")
-    
-    if not validation['valid']:
-        if validation['violations']:
-            print(f"  Violations: {validation['violations'][0].get('message')}")
+    assert validation['valid'], f"Valid transition should pass: {validation.get('violations')}"
     
     # Invalid transition
     bad_transition_state = create_test_state(step="complete", status="blocked")
     validation2 = validate_state_transition(to_state, bad_transition_state)
     print(f"Invalid transition detected: {not validation2['valid']}")
+    assert not validation2['valid'], "Invalid transition should be detected"
     
-    if not validation2['valid']:
+    if validation2.get('violations'):
         print(f"  Reason: {validation2['violations'][0].get('message')[:70]}")
     
     print("✓ State transition validation test PASSED")
-    return True
 
 
 def test_confidence_thresholds():
@@ -324,7 +315,7 @@ def test_confidence_thresholds():
         else:
             print("✓ No confidence violation")
     
-    return True
+    print("✓ Confidence threshold validation test PASSED")
 
 
 def run_all_tests():
@@ -347,8 +338,11 @@ def run_all_tests():
     
     for test_name, test_func in tests:
         try:
-            result = test_func()
-            results[test_name] = "PASSED" if result else "FAILED"
+            test_func()
+            results[test_name] = "PASSED"
+        except AssertionError as e:
+            results[test_name] = f"FAILED: {str(e)[:50]}"
+            print(f"ASSERTION FAILED in {test_name}: {e}")
         except Exception as e:
             results[test_name] = f"ERROR: {str(e)[:50]}"
             print(f"ERROR in {test_name}: {e}")
@@ -371,4 +365,4 @@ def run_all_tests():
 
 if __name__ == "__main__":
     success = run_all_tests()
-    exit(0 if success else 1)
+    sys.exit(0 if success else 1)

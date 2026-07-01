@@ -16,6 +16,7 @@ REQUIREMENTS:
 """
 
 import json
+import tempfile
 import uuid
 from datetime import datetime
 from pathlib import Path
@@ -26,10 +27,10 @@ class CheckpointStorageConfig:
     """Configuration for checkpoint storage."""
     
     # Default storage location
-    DEFAULT_CHECKPOINT_DIR = "docs-data/runtime/checkpoints"
+    DEFAULT_CHECKPOINT_DIR = ".codex/runtime/checkpoints"
     
     # Metadata storage
-    DEFAULT_METADATA_DIR = "docs-data/runtime/checkpoint_metadata"
+    DEFAULT_METADATA_DIR = ".codex/runtime/checkpoint_metadata"
     
     # Max checkpoints per track
     MAX_CHECKPOINTS_PER_TRACK = 100
@@ -77,9 +78,8 @@ class CheckpointManager:
         self.storage_dir = Path(
             storage_dir or CheckpointStorageConfig.DEFAULT_CHECKPOINT_DIR
         )
-        self.metadata_dir = Path(
-            storage_dir or CheckpointStorageConfig.DEFAULT_METADATA_DIR
-        )
+        # Always use the default metadata directory, independent of storage_dir
+        self.metadata_dir = Path(CheckpointStorageConfig.DEFAULT_METADATA_DIR)
         
         # Ensure directories exist
         self.storage_dir.mkdir(parents=True, exist_ok=True)
@@ -116,10 +116,16 @@ class CheckpointManager:
             "format_version": "1.0"
         }
         
-        # Write checkpoint file
+        # Write checkpoint file atomically (write to temp file, then replace)
         checkpoint_file = self.storage_dir / f"{checkpoint_id}.json"
-        with open(checkpoint_file, "w") as f:
-            json.dump(checkpoint_data, f, indent=2)
+        with tempfile.NamedTemporaryFile(
+            mode='w', dir=self.storage_dir, delete=False, suffix='.json'
+        ) as tmp_file:
+            json.dump(checkpoint_data, tmp_file, indent=2)
+            tmp_path = Path(tmp_file.name)
+        
+        # Atomically replace the target file
+        tmp_path.replace(checkpoint_file)
         
         # Create metadata
         metadata = CheckpointMetadata(state_id, checkpoint_id)
@@ -183,9 +189,11 @@ class CheckpointManager:
         if state is None:
             raise ValueError(f"Checkpoint {checkpoint_id} not found")
         
-        # Mark state as resumed
-        state["_checkpoint_source"] = checkpoint_id
-        state["_resumed_at"] = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+        # Mark state as resumed in metadata (not as underscore fields)
+        if "metadata" not in state:
+            state["metadata"] = {}
+        state["metadata"]["checkpoint_source"] = checkpoint_id
+        state["metadata"]["resumed_at"] = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
         
         # If the execution was paused, may need to update execution_step
         # based on validation results

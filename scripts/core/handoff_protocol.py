@@ -305,8 +305,10 @@ class HandoffProtocol:
         
         state["unresolved_items"] = unresolved_items
         
-        # Add handoff metadata
-        state["_handoff_source"] = {
+        # Add handoff metadata to state's metadata object (not as underscore field)
+        if "metadata" not in state:
+            state["metadata"] = {}
+        state["metadata"]["handoff_source"] = {
             "handoff_id": handoff.handoff_id,
             "from_agent": handoff.from_agent,
             "created_at": handoff.created_at,

@@ -171,7 +171,7 @@ def validate_state(state: Dict[str, Any]) -> Dict[str, Any]:
 def _check_required_fields(state: Dict[str, Any],
                           result: Dict[str, Any]) -> None:
     """Check that all required fields are present."""
-    for field in ValidatorConfig.REQUIRED_FIELDS:
+    for field in sorted(ValidatorConfig.REQUIRED_FIELDS):
         if field not in state or state[field] is None:
             result["violations"].append({
                 "rule": ValidationRule.MISSING_REQUIRED_FIELD,
