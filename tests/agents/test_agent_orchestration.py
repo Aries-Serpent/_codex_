@@ -88,10 +88,10 @@ class TestQuantumAgentOrchestrator:
         ci_testing = orchestrator.agents["ci-testing-agent"]
 
         # ci-testing should be entangled with workflow-health-monitor
-        assert (, "Condition must be true"
+        assert (
             "workflow-health-monitor" in ci_testing.prerequisites
             or "ci-testing-agent" in orchestrator.entanglements.get("workflow-health-monitor", [])
-        ), "Condition must be true"
+        )
 
     def test_chain_creation(self):
         """Chains are created correctly"""

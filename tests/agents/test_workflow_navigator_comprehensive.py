@@ -432,7 +432,7 @@ class TestWorkflowState:
 
                 # Verify state file was created in workflow_state_dir
                 state_files = list(nav.workflow_state_dir.glob("*.json"))
-                assert isinstance(, "Condition must be true"
+                assert isinstance(
                     state_files, (list, tuple, set, dict)
                 )  # May be 0 if dir doesn't exist yet
             except (AttributeError, NotImplementedError, TypeError) as e:
