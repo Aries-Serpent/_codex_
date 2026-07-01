@@ -175,4 +175,4 @@ Level 4: Code (see source files)
 **Related Documentation**:
 - [ARCHITECTURE.md](../ARCHITECTURE.md) - Full architecture documentation
 - [5-Layer Architecture](5_LAYER_ARCHITECTURE.md) - Internal system layers
-- [Integration Guide](../integration/INTEGRATION_GUIDE.md) - External system integration details
+- Check the integration documentation in the repository for external system integration details

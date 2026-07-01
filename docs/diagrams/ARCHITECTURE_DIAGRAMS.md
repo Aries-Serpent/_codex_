@@ -237,21 +237,21 @@ mmdc -i docs/diagrams/phase2_04_cognitive_brain_ooda.mmd -o docs/diagrams/phase2
 
 | File | Purpose | Evidence |
 |------|---------|----------|
-| [`phase3_01_execution_layer.mmd`](phase3_01_execution_layer.mmd) | Execution layer: CLI entry → orchestration → handlers → output | src/cli/, src/orchestrator/ |
-| [`phase3_02_data_layer.mmd`](phase3_02_data_layer.mmd) | Data layer: ingestion → registry → caching (4-tier) → persistence → lifecycle | src/codex/data/ |
-| [`phase3_03_processing_layer.mmd`](phase3_03_processing_layer.mmd) | Processing layer: tokenization → features → forward/backward passes → checkpointing | src/codex_ml/ |
-| [`phase3_04_orchestration_layer.mmd`](phase3_04_orchestration_layer.mmd) | Orchestration layer: request intake → agent selection → task spawning → coordination | src/orchestrator/ |
-| [`phase3_05_observability_layer.mmd`](phase3_05_observability_layer.mmd) | Observability layer: instrumentation → collection → storage → query → alerting → debugging | src/codex/logging/ |
+| [`phase3_01_core_execution_layer.mmd`](phase3_01_core_execution_layer.mmd) | Execution layer: CLI entry → orchestration → handlers → output | src/cli/, src/orchestrator/ |
+| [`phase3_02_core_data_layer.mmd`](phase3_02_core_data_layer.mmd) | Data layer: ingestion → registry → caching (4-tier) → persistence → lifecycle | src/codex/data/ |
+| [`phase3_03_core_processing_layer.mmd`](phase3_03_core_processing_layer.mmd) | Processing layer: tokenization → features → forward/backward passes → checkpointing | src/codex_ml/ |
+| [`phase3_04_core_orchestration_layer.mmd`](phase3_04_core_orchestration_layer.mmd) | Orchestration layer: request intake → agent selection → task spawning → coordination | src/orchestrator/ |
+| [`phase3_05_core_observability_layer.mmd`](phase3_05_core_observability_layer.mmd) | Observability layer: instrumentation → collection → storage → query → alerting → debugging | src/codex/logging/ |
 
 ### Inter-Module Dependencies (5 diagrams)
 
 | File | Purpose | Evidence |
 |------|---------|----------|
-| [`phase3_06_cognitive_brain_deps.mmd`](phase3_06_cognitive_brain_deps.mmd) | Cognitive Brain dependencies: RAG, logging, memory, skills, agents | src/cognitive/ |
-| [`phase3_07_rag_module_deps.mmd`](phase3_07_rag_module_deps.mmd) | RAG dependencies: tokenization, embeddings, indexing, caching, retrieval | src/codex/rag/ |
-| [`phase3_08_ml_module_deps.mmd`](phase3_08_ml_module_deps.mmd) | ML dependencies: tokenization, data, models, optimization, evaluation | src/codex_ml/ |
-| [`phase3_09_security_module_deps.mmd`](phase3_09_security_module_deps.mmd) | Security dependencies: secrets, policies, validation, scanning, audit | src/security/ |
-| [`phase3_10_ci_module_deps.mmd`](phase3_10_ci_module_deps.mmd) | CI dependencies: patterns, validation, gates, reporting | scripts/ci/ |
+| [`phase3_06_cognitive_brain_dependencies.mmd`](phase3_06_cognitive_brain_dependencies.mmd) | Cognitive Brain dependencies: RAG, logging, memory, skills, agents | src/cognitive/ |
+| [`phase3_07_rag_module_dependencies.mmd`](phase3_07_rag_module_dependencies.mmd) | RAG dependencies: tokenization, embeddings, indexing, caching, retrieval | src/codex/rag/ |
+| [`phase3_08_ml_module_dependencies.mmd`](phase3_08_ml_module_dependencies.mmd) | ML dependencies: tokenization, data, models, optimization, evaluation | src/codex_ml/ |
+| [`phase3_09_security_module_dependencies.mmd`](phase3_09_security_module_dependencies.mmd) | Security dependencies: secrets, policies, validation, scanning, audit | src/security/ |
+| [`phase3_10_ci_module_dependencies.mmd`](phase3_10_ci_module_dependencies.mmd) | CI dependencies: patterns, validation, gates, reporting | scripts/ci/ |
 
 ### End-to-End Integration Paths (5 diagrams)
 

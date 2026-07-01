@@ -391,13 +391,10 @@ storage:
 
 ## Next Steps
 
-- 👉 See [Release Workflow](../deployment/RELEASE_WORKFLOW.md) for release process
-- 👉 See [Kubernetes Guide](../deployment/KUBERNETES_GUIDE.md) for K8s details
-- 👉 See [Cloud Deployment](../deployment/CLOUD_DEPLOYMENT.md) for cloud setup
+- Review the Docker multi-stage build configuration in the repository
+- Explore Kubernetes deployment configurations in the `k8s/` directory
+- Consider cloud-specific deployment options based on your infrastructure
 
 ---
 
-**Related Documentation**:
-- [Docker Guide](../deployment/DOCKER_GUIDE.md) - Docker configuration
-- [Kubernetes Guide](../deployment/KUBERNETES_GUIDE.md) - K8s deployment
-- [Cloud Guide](../deployment/CLOUD_GUIDE.md) - Cloud deployment options
+**Note**: This document covers the deployment architecture overview. For detailed deployment guides, refer to the infrastructure documentation in the repository.

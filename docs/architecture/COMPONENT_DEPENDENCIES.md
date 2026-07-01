@@ -340,7 +340,7 @@ CLI Command
 
 - 👉 See [5-Layer Architecture](../architecture/5_LAYER_ARCHITECTURE.md) for layer structure
 - 👉 See module-specific docs for detailed component architectures
-- 👉 See [Performance Optimization](../performance/OPTIMIZATION.md) for dependency optimization
+- 👉 Review source code for performance optimization patterns
 
 ---
 
