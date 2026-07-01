@@ -1,32 +1,32 @@
-# Session Context — 2026-07-01T06:08:55Z
-**Branch:** `copilot/fix-actionlint-workflow-compliance`  **PR:** #5167  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-07-01T08:10:37Z
+**Branch:** `fix/ci-rag-module-tests-20260701060324`  **PR:** #5168  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `3964` (✅)
-- GraphQL remaining: `4984` (✅)
+- REST remaining: `4545` (✅)
+- GraphQL remaining: `4990` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #5167 — fix(ci): 🔧 Critical — RAG Module Tests [a63b72d]
-State: `open`  Draft: `False`  Branch: `fix/ci-rag-module-tests-20260701060324` → `main`
+## 📋 PR #5168 — Fix actionlint compliance: remove env from reusable workflow call
+State: `open`  Draft: `True`  Branch: `copilot/fix-actionlint-workflow-compliance` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **.github/workflows/release.yml** — `failure` on `main` (2026-07-01)
-- **.github/workflows/embedding-index-rebuild.yml** — `failure` on `main` (2026-07-01)
-- **.github/workflows/data-quality-suite.yml** — `failure` on `main` (2026-07-01)
-- **.github/workflows/progressive-validation.yml** — `failure` on `main` (2026-07-01)
-- **.github/workflows/build-preview-image.yml** — `failure` on `main` (2026-07-01)
+- **.github/workflows/rust_swarm_ci.yml** — `failure` on `fix/ci-rag-module-tests-20260701060324` (2026-07-01)
+- **.github/workflows/release.yml** — `failure` on `fix/ci-rag-module-tests-20260701060324` (2026-07-01)
+- **.github/workflows/embedding-index-rebuild.yml** — `failure` on `fix/ci-rag-module-tests-20260701060324` (2026-07-01)
+- **.github/workflows/embedding-index-rebuild.yml** — `failure` on `fix/ci-rag-module-tests-20260701060324` (2026-07-01)
+- **.github/workflows/progressive-validation.yml** — `failure` on `fix/ci-rag-module-tests-20260701060324` (2026-07-01)
 
 ## 📝 Recent Commits
-- `585d7f75` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-07-01)
-- `a63b72dd` Merge pull request #5165 from Aries-Serpent/copilot/explore-codebase-failing-che — Statix (2026-07-01)
-- `429d1250` fix(workflow): Update branch-rebase-gate actions/checkout from v7 to v5 (REQ-10  — copilot-swe-agent[bot] (2026-07-01)
-- `531fa74e` fix(secrets): annotate doc-example false positives [skip ci] (RP-007) — github-actions[bot] (2026-07-01)
-- `906cfd5a` fix(pr5165): Update accountability files (REQ-4/REQ-5 compliance) - branch rebas — copilot-swe-agent[bot] (2026-07-01)
-- `4f8b9164` Apply remaining changes — copilot-swe-agent[bot] (2026-07-01)
-- `bfc4d5b5` SESSION COMPLETION: Track 0 resolved, all workflows approved, ready for Phase 8 — copilot-swe-agent[bot] (2026-07-01)
-- `2e1cb1c6` fix(secrets): annotate doc-example false positives [skip ci] (RP-007) — github-actions[bot] (2026-07-01)
+- `6267ebbf` fix(secrets): annotate doc-example false positives [skip ci] (RP-007) — github-actions[bot] (2026-07-01)
+- `78459d8a` Apply remaining changes — copilot-swe-agent[bot] (2026-07-01)
+- `abd897a2` fix(ci): add missing modules to branch-rebase-gate sparse checkout (REQ-10) — copilot-swe-agent[bot] (2026-07-01)
+- `1fc9c35c` chore: plan for REQ-10 branch rebase gate fix [skip ci] — copilot-swe-agent[bot] (2026-07-01)
+- `1af9aef1` fix(secrets): annotate doc-example false positives [skip ci] (RP-007) — github-actions[bot] (2026-07-01)
+- `10809f0a` fix(ci): fix Python f-string bug in RAG test workflow Step 8 verification — copilot-swe-agent[bot] (2026-07-01)
+- `2ae4a790` chore: initial plan for RAG Module Tests CI fix [skip ci] — copilot-swe-agent[bot] (2026-07-01)
+- `8ec10b80` fix(ci): tracking stub for RAG Module Tests [skip ci] — github-actions[bot] (2026-07-01)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`

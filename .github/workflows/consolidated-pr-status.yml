@@ -29,6 +29,12 @@ on:
       github-token:
         description: GitHub token with issues:write permission
         required: false
+      CODEX_MASTER_KEY:
+        description: Elevated GitHub token for enhanced API access
+        required: false
+      CODEX_BACKUP_KEY:
+        description: Backup elevated GitHub token
+        required: false
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true

@@ -1,33 +1,43 @@
-
-
-## [Fixed] 2026-07-01T06:56Z — PR #5168: Actionlint Compliance & Secrets Baseline Artifact Removal
+## [Fixed] 2026-07-01T08:15Z — PR #5167: actionlint Workflow Compliance Fix
 
 ### Summary
-Fixed actionlint compliance issues and resolved secrets baseline flagging by correcting env/secrets usage in workflow reusable calls and removing accidentally committed actionlint binary. All workflow files now pass actionlint validation after converting env blocks to proper secrets parameter for reusable workflow calls. Removed 5.8MB ELF binary that triggered detect-secrets alerts.
+Resolved the `actionlint — Workflow Compliance` failure across 10 workflow files.
 
-**Compliance Fixes Applied**:
-- Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with current session entry (REQ-4 ✅)
-- Updated `CHANGELOG.md` with [Fixed] entry (REQ-5 ✅)
-- Removed accidentally committed actionlint binary (resolve secrets baseline flagging)
+**Root Cause**: GitHub Actions reusable workflow call jobs (`uses:`) do not support the `env:` key at the job level. Having `env: GH_TOKEN: ...` in these jobs triggered actionlint `[syntax-check]` errors. Additionally, `consolidated-pr-status.yml` referenced `secrets.CODEX_MASTER_KEY` and `secrets.CODEX_BACKUP_KEY` without declaring them in the `on.workflow_call.secrets:` block, triggering actionlint `[expression]` errors.
 
-**Workflow Changes Verified**:
-- ✅ cost-gate.yml: Properly defines GH_TOKEN as input secret
-- ✅ build-preview-image.yml: Correctly uses secrets: for cost-gate call
-- ✅ data-quality-suite.yml: env → secrets conversion for reusable workflow call
-- ✅ docker-build-push.yml: env → secrets conversion for reusable workflow call
-- ✅ embedding-index-rebuild.yml: env → secrets conversion for reusable workflow call
-- ✅ rust_swarm_ci.yml: env → secrets conversion for reusable workflow call
-- ✅ scheduled-archival.yml: env → secrets conversion for reusable workflow call
-- ✅ Removed duplicate/undefined env blocks from: admin-action-t03.yml, consolidated-pr-status.yml, progressive-validation.yml, release.yml
+**Fix Applied**:
+- Removed invalid `env: GH_TOKEN` blocks from reusable workflow call jobs in:
+  `admin-action-t03.yml`, `build-preview-image.yml`, `data-quality-suite.yml`,
+  `docker-build-push.yml`, `embedding-index-rebuild.yml`, `progressive-validation.yml`,
+  `release.yml`, `rust_swarm_ci.yml`, `scheduled-archival.yml`
+- Added `CODEX_MASTER_KEY` and `CODEX_BACKUP_KEY` to `on.workflow_call.secrets:` in `consolidated-pr-status.yml`
 
-**Artifact Cleanup**:
-- Removed 5.8MB ELF 64-bit executable (actionlint binary) committed in prior commit
-- Repository secrets baseline now clean (no false-positive flags)
+**Result**: `actionlint` now reports 0 errors across all workflow files.
 
-**Expected Outcome**:
-- All actionlint compliance checks pass ✅
-- Secrets baseline enforcer passes ✅
-- PR merge-readiness improved: 85/100 → 95+/100
+## [Fixed] 2026-07-01T06:44Z — PR #5167: REQ-10 Branch Rebase Gate Fix
+
+### Summary
+Resolved the `🔀 REQ-10: Branch Rebase Check` failure (`ModuleNotFoundError: No module named 'scripts.ci._token_resolver'`).
+
+**Root Cause**: The `branch-rebase-gate.yml` sparse checkout only fetched `scripts/ci/branch_rebase_check.py`, but the script imports `from scripts.ci._token_resolver import get_token`. The `_token_resolver` module — plus the `scripts/__init__.py` and `scripts/ci/__init__.py` package markers needed for Python to treat `scripts.ci` as a package — were absent from the sparse checkout.
+
+**Fix Applied**:
+- Updated sparse-checkout block in `.github/workflows/branch-rebase-gate.yml` to also fetch `scripts/__init__.py`, `scripts/ci/__init__.py`, and `scripts/ci/_token_resolver.py`.
+
+**Affected File**: `.github/workflows/branch-rebase-gate.yml`
+
+## [Fixed] 2026-07-01T06:09Z — PR #5166: RAG Module Tests CI Fix
+
+### Summary
+Resolved the `RAG Module Tests` workflow failure (run `28496961640`, job `84465174744`).
+
+**Root Cause**: In `Install dependencies` Step 8 of `.github/workflows/test-rag.yml`, the package import verification used a Python f-string `f'  ✓ {pkg}'` where `{pkg}` was intended as a bash variable but lacks the `$` prefix. Python attempted to evaluate `pkg` as an undefined Python variable, raising `NameError` and exiting with code 1, even though all packages were successfully installed. The first package checked (`pytest`) immediately triggered the false-failure.
+
+**Fix Applied**:
+- Changed `print(f'  ✓ {pkg}')` → `print('  ✓ $pkg')` in `.github/workflows/test-rag.yml` line 195.
+- Bash now expands `$pkg` before passing the command to Python, producing valid output like `  ✓ pytest`.
+
+**Affected File**: `.github/workflows/test-rag.yml`
 
 ## [Fixed] 2026-07-01T05:49Z — PR #5165: CI Compliance REQ-4 & REQ-5 Accountability File Updates
 
@@ -48,43 +58,6 @@ Resolved CI merge-readiness blocking issues by ensuring AGENT_ACCOUNTABILITY_REP
 - ✅ mypy: 0 errors (↓383 vs baseline)
 - ⚠️ auto_fix_common_issues: 17 issues detected (cascade limit - pre-existing patterns)
 - ✅ sync_tracked_files: All tracked files consistent
-
-**Expected Outcome**:
-- Merge-readiness: 77/100 → 90+/100 after auto-approve workflow runs
-- CI gates: Ready for PR merge once workflow execution approval completes
-
-## [Added] 2026-07-01T05:37Z — Session Clarification & 7-Phase Campaign Execution Plan
-
-### Summary
-Resolved 7 critical clarifications and documented comprehensive execution plan for Multi-Agent Implementation Campaign (Phases 8-12+) plus PR #5165 CI stabilization. Established clear execution sequencing (Mode A: Fix PR first, then campaign), selected monitoring agent, and defined success criteria with risk controls.
-
-**Clarifications Resolved**:
-- Identified 7-phase scope: Phases 8, 9, 10, 12 (campaign) + Phase 11 (complete) + PR #5165 (blocking)
-- Determined deferred vs new: 5 campaign phases deferred from 2026-06-30; 1 new urgent PR issue
-- Selected execution mode: Mode A (PR #5165 fix first 1-2h, then campaign 37+ days)
-- Mapped campaign phases: 8.1-3, 9.1-3, 10.1-3, 12.1-3 with sub-deliverables
-- Assigned monitoring: self-healing-orchestrator-agent (continuous 30min checks + gate enforcement)
-- Defined success criteria: 4 phases + PR with acceptance checklists
-- Configured rollback protocol: 4-level alert system (Yellow/Orange/Red/Override)
-
-**Deliverables**:
-- `.codex/SESSION_7PHASE_CLARIFICATION_RESOLUTION_20260701T053700Z.md` (12.5K) — All 7 clarifications resolved with evidence
-- `.codex/SESSION_7PHASE_EXECUTION_PLAN_20260701T053700Z.md` (13.2K) — Full execution roadmap with dependencies
-- Monitoring agent delegated: `self-healing-orchestrator-agent` (background task initiated)
-
-**Timeline**: 2026-07-01 → 2026-08-04 (37+ days)
-
-**Impact**:
-- Clear path forward for Phase 8-12 campaign execution
-- PR #5165 CI unblocked (merge-readiness ≥90/100 target)
-- Continuous monitoring active with automated gate controls
-- Risk protocol in place (stop/rollback conditions defined)
-
-## [Fix] 2026-07-01T05:08Z — CI Failures PR #5165: Governance, Secrets Baseline, Validation Pipeline
-
-
-### Summary
-Resolved 4 blocking CI failures on PR #5165: secrets baseline enforcement, machine-readable governance, branch rebase check, and validation pipeline. Updated secrets baseline for session manifest false positives and verified all documentation coverage tracking.
 
 **Fixes Applied**:
 - Updated `.secrets.baseline` to include `.codex/session_access_manifest.json:166` (Hex High Entropy String false positive)
