@@ -1,7 +1,7 @@
 # 📊 Architecture Diagrams Index
 
 > **Last updated:** 2026-05-29 (P2.3 Phase 4 Complete)
-> **Coverage:** 50 diagrams (Phase 1-4: 85%+ target reached)
+> **Coverage:** 44 diagrams (Phase 1-4: 85%+ target reached)
 
 All `.mmd` files in this directory are authoritative Mermaid source diagrams.
 Render with the Mermaid CLI (`mmdc`), GitHub's native Mermaid rendering, or the
@@ -351,7 +351,7 @@ mmdc -i docs/diagrams/phase2_04_cognitive_brain_ooda.mmd -o docs/diagrams/phase2
 
 ## Validation & Quality
 
-✅ **Diagrams created:** 50 (Phase 1: 4 + Phase 2: 10 + Phase 3: 15 + Phase 4: 15 + Phase 1 legacy: 6)
+✅ **Diagrams created:** 44 (Phase 1: 4 + Phase 2: 10 + Phase 3: 15 + Phase 4: 15)
 ✅ **Format:** All in Mermaid `.mmd` format
 ✅ **Documentation:** Comprehensive context, evidence citations, and cross-references for each diagram
 ✅ **Rendering:** Tested in GitHub-native Mermaid renderer
