@@ -15,7 +15,7 @@ This document defines the **automated recovery procedures** for CI/CD failure pa
 1. **Primary Recovery** — Specialist agent executes direct fix
 2. **Fallback Recovery** — Fallback agent activates if primary fails
 3. **Escalation Recovery** — Human intervention required
-
+ # pragma: allowlist secret
 **Success Targets:**
 - ✅ **<1% unrecovered failure rate** — 99% auto-recovery success
 - ✅ **<5s recovery time** — p95 latency target
