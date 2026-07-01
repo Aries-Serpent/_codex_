@@ -1,0 +1,53 @@
+{
+  "checkpoint_id": "3fdea755-72d4-4ccb-b6af-5bbad46d365b",
+  "state": {
+    "state_id": "cf8f7d7f-5327-4fa0-b099-7255390d1aeb",
+    "agent_id": "test-agent",
+    "phase_id": "phase-10",
+    "track_id": "test-track",
+    "task_id": "test-task",
+    "execution_step": "act",
+    "status": "in_progress",
+    "timestamp": "2026-07-01T00:06:54Z",
+    "previous_state_id": "null",
+    "confidence_score": 0.85,
+    "input_context": {
+      "source": "test",
+      "data": {
+        "test_key": "test_value"
+      }
+    },
+    "decision_context": {
+      "reasoning": [
+        "Test reasoning"
+      ],
+      "constraints": [
+        "Test constraint"
+      ],
+      "selected_action": "test_action",
+      "confidence": 0.85
+    },
+    "actions_taken": [
+      {
+        "action_id": "action-1",
+        "action_type": "test",
+        "status": "completed",
+        "target": "test-system"
+      }
+    ],
+    "validation_results": {},
+    "dependencies": [
+      {
+        "type": "state",
+        "id": "3dce5804-b555-4829-89de-e5816c60c66d",
+        "status": "resolved"
+      }
+    ],
+    "unresolved_items": [],
+    "lineage": {
+      "created_by": "test-agent"
+    }
+  },
+  "created_at": "2026-07-01T00:06:54Z",
+  "format_version": "1.0"
+}
