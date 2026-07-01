@@ -332,8 +332,7 @@ class TestStartBackgroundMonitor:
         monkeypatch.setattr(mr, "_resolve_repo", lambda: "a/b")
 
         handle = start_background_monitor(run_id=1, repo="a/b")
-        assert isinstance(, "Condition must be true"
-            handle, MonitorThread
+        assert isinstance(handle, MonitorThread
         )  # start_background_monitor must return a MonitorThread
         handle.join(timeout=5)
         assert handle.result is not None, "result must be initialized"
@@ -386,7 +385,7 @@ class TestSessionTiming:
         el_s, el_ns, human = _compute_elapsed(start_ns)
         assert el_s == 0, "el_s is not valid"
         assert 0 <= el_ns < 1_000_000_000, "0 is not valid"
-        assert human.endswith("ns"), "Condition must be true"
+        assert human.endswith("ns")
         assert len(human.split()[-1].rstrip("ns")) == 9, "Collection must not be empty"
 
     def test_compute_elapsed_minutes_seconds(self):

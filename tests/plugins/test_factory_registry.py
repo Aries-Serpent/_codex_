@@ -113,8 +113,7 @@ def test_metrics_registry_exists():
 
         # Check for some expected stable names (if they exist)
         # This validates the registry has been populated
-        assert isinstance(, "Condition must be true"
-            BUILTIN_METRICS, (list, tuple, set, dict)
+        assert isinstance(BUILTIN_METRICS, (list, tuple, set, dict)
         )  # At minimum, should be defined
 
     except ImportError:
@@ -127,7 +126,7 @@ def test_model_factory_list():
         from codex_ml.models.factory import load_model
 
         # Function should exist and be callable
-        assert callable(load_model), "Condition must be true"
+        assert callable(load_model)
 
         # Should accept a config dict (basic smoke test)
         # Don't actually load - just verify interface

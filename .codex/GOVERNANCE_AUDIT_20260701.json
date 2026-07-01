@@ -1,0 +1,169 @@
+{
+  "metadata": {
+    "timestamp": "2026-07-01T16:16:53.505784Z",
+    "audit_type": "GOVERNANCE_CLASSIFICATION_AUDIT",
+    "scope": "All markdown documentation files",
+    "repository": "Aries-Serpent/_codex_",
+    "auditor": "unified-doc-agent",
+    "version": "1.0"
+  },
+  "summary": {
+    "total_unmanaged": 48,
+    "total_markdown_files_in_repo": 1798,
+    "registered_in_governance": 1785,
+    "coverage_percentage": 97.28,
+    "status": "REQUIRES_REMEDIATION"
+  },
+  "classification": {
+    "auto_generated": {
+      "count": 10,
+      "description": "Auto-generated reports, summaries, and reference documentation",
+      "action": "REVIEW_FOR_EXCLUSION",
+      "priority": "MEDIUM",
+      "files": [
+        ".codex/AGENT_ECOSYSTEM_SEMANTIC_INDEX.md",
+        ".codex/CAMPAIGN_STATUS_3OF4_AGENTS_COMPLETE.md",
+        ".codex/CODEBASE_EXPLORATION_MASTER_GUIDE.md",
+        ".codex/EXECUTION_STATUS_FINAL.md",
+        ".codex/PR_5165_MONITORING_SESSION.md",
+        ".codex/coverage/COVERAGE_GAPS.md",
+        "P22_EXECUTIVE_SUMMARY.md",
+        "docs/cli/COMMAND_REFERENCE.md",
+        "docs/cli/DOCUMENTATION_SUMMARY.md",
+        "workbench/coverage/gap5_coverage_evidence.md"
+      ]
+    },
+    "archived_deprecated": {
+      "count": 19,
+      "description": "Session reports, phase-specific documentation, and deprecated notices",
+      "action": "ARCHIVE_OR_DELETE",
+      "priority": "HIGH",
+      "files": [
+        ".codex/CAMPAIGN_FINAL_COMPLETION_REPORT.md",
+        ".codex/EXPLORATION_PHASE_1_DISCOVERY.md",
+        ".codex/EXPLORATION_PHASE_1_QUALITY_DASHBOARD.md",
+        ".codex/EXPLORATION_PHASE_1_SEMANTIC_INDEX.md",
+        ".codex/EXPLORATION_PHASE_2_DOC_AUDIT.md",
+        ".codex/EXPLORATION_PHASE_2_QA_REPORT.md",
+        ".codex/EXPLORATION_PHASE_2_SECURITY_AUDIT.md",
+        ".codex/EXPLORATION_PHASE_3_AGENT_AUDIT.md",
+        ".codex/EXPLORATION_PHASE_3_SKILLS_INVENTORY.md",
+        ".codex/FINAL_SESSION_SUMMARY_20260701T0548Z.md",
+        ".codex/PHASE_2_2_UTILITIES_SUMMARY.md",
+        ".codex/PHASE_2_COMPLETION_REPORT.md",
+        ".codex/PHASE_3_AGENT_AUDIT_INDEX.md",
+        ".codex/SESSION_20260701T0545Z_TRACK0_COMPLETION.md",
+        ".codex/SESSION_7PHASE_CLARIFICATION_RESOLUTION_20260701T053700Z.md",
+        ".codex/SESSION_7PHASE_EXECUTION_PLAN_20260701T053700Z.md",
+        ".codex/link-fix-completion-report.md",
+        "ENERGY_CONVERSION_AGENT_DEPRECATION.md",
+        "GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md"
+      ]
+    },
+    "recently_added": {
+      "count": 19,
+      "description": "Recently added documentation not yet registered in governance",
+      "action": "REGISTER_IN_GOVERNANCE",
+      "priority": "HIGH",
+      "files": [
+        ".codex/ARCHITECTURE_DIAGRAMS.md",
+        ".codex/DESIGN_PATTERNS_REFERENCE.md",
+        ".codex/security_vulnerability_scan_latest.md",
+        "P1.4_FINAL_EXECUTION_REPORT.md",
+        "P22_PHASE6_VALIDATION_REPORT.md",
+        "QUANTUM_COMPLIANCE_TUNING_AGENT_INTEGRATION_GUIDE.md",
+        "docs/ARCHITECTURE_DIAGRAMS_INDEX.md",
+        "docs/ARCHITECTURE_DIAGRAMS_PROGRESS_PHASE1.md",
+        "docs/REFACTORING_UTILITIES.md",
+        "docs/architecture/5_LAYER_ARCHITECTURE.md",
+        "docs/architecture/COMPONENT_DEPENDENCIES.md",
+        "docs/architecture/DATA_FLOW_ARCHITECTURE.md",
+        "docs/architecture/DEPLOYMENT_ARCHITECTURE.md",
+        "docs/architecture/E2E_REQUEST_FLOW.md",
+        "docs/architecture/SYSTEM_CONTEXT.md",
+        "docs/diagrams/ARCHITECTURE_DIAGRAMS.md",
+        "docs/monitoring/MONITORING_ARCHITECTURE.md",
+        "docs/security/SECURITY_ARCHITECTURE.md",
+        "docs/training/TRAINING_WORKFLOW.md"
+      ]
+    },
+    "external": {
+      "count": 0,
+      "description": "Third-party or externally maintained documentation",
+      "action": "EXCLUDE_FROM_GOVERNANCE",
+      "priority": "LOW",
+      "files": []
+    },
+    "build_artifacts": {
+      "count": 0,
+      "description": "Generated build artifacts that should not be tracked",
+      "action": "DELETE_AND_ADD_TO_GITIGNORE",
+      "priority": "LOW",
+      "files": []
+    }
+  },
+  "remediation_plan": {
+    "phase_1_auto_generated": {
+      "action": "REVIEW_FOR_EXCLUSION",
+      "priority": "MEDIUM",
+      "timeline": "1-2 weeks",
+      "owner": "documentation-team",
+      "steps": [
+        "Review each auto-generated document for necessity",
+        "If build artifact: add to .gitignore and delete",
+        "If valuable: integrate into main docs and register",
+        "Update .gitignore for coverage reports and execution logs"
+      ],
+      "target_files": 10
+    },
+    "phase_2_deprecated": {
+      "action": "ARCHIVE_OR_DELETE",
+      "priority": "HIGH",
+      "timeline": "1 week",
+      "owner": "documentation-team",
+      "steps": [
+        "Mark deprecated files with deprecation notice",
+        "Move to .codex/archive/ subdirectory",
+        "Update DEPRECATED.md with list of archived docs",
+        "Remove from main governance tracking",
+        "Verify no broken references from other docs"
+      ],
+      "target_files": 19
+    },
+    "phase_3_register_new": {
+      "action": "REGISTER_IN_GOVERNANCE",
+      "priority": "HIGH",
+      "timeline": "2-3 weeks",
+      "owner": "documentation-team",
+      "steps": [
+        "Create governance registration entries for 19 docs",
+        "Add to machine-readable-coverage-report.json covered_files",
+        "Update mkdocs.yml navigation if public docs",
+        "Add to CODEX_MANIFEST.json documentation field",
+        "Run validation to confirm coverage"
+      ],
+      "target_files": 19
+    }
+  },
+  "success_criteria": {
+    "unmanaged_documents": "0",
+    "coverage_percentage": ">= 99.5%",
+    "broken_references": "0",
+    "deprecated_docs_archived": "all",
+    "validation_status": "PASSED"
+  },
+  "risk_assessment": [
+    {
+      "risk": "Deleting non-archived files may break references",
+      "mitigation": "Scan for broken links before deletion, maintain archive"
+    },
+    {
+      "risk": "Some phase documentation may still be needed for historical context",
+      "mitigation": "Archive to .codex/archive/ rather than delete"
+    },
+    {
+      "risk": "New docs may be missed if not registered promptly",
+      "mitigation": "Add pre-commit hook to flag unregistered markdown"
+    }
+  ]
+}

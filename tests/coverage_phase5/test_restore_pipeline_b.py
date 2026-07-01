@@ -1,9 +1,8 @@
-import asyncio
-
 """Test restore pipeline module 1."""
 
 from __future__ import annotations
 
+import asyncio
 from enum import Enum
 from typing import List
 

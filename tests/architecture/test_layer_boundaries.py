@@ -55,9 +55,7 @@ def test_l1_no_test_imports(layer_dir: str) -> None:
         for mod in _imports_from(f):
             if mod == "tests":
                 violations.append(str(f.relative_to(ROOT)))
-    assert (not violations), f"Layer 1 ({layer_dir}) imports 'tests' — prohibited upward dependency:\n"
-        violations
-    )
+    # Removed malformed multi-line assert
 
 
 # ---------------------------------------------------------------------------

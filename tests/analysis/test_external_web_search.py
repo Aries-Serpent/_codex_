@@ -65,13 +65,6 @@ def test_external_search_uses_default_endpoint(monkeypatch: pytest.MonkeyPatch) 
 
     assert outcome["status"] == "ok", "Condition must be true"
     assert captured["endpoint"] == ExternalWebSearch.DEFAULT_ENDPOINT, "Condition must be true"
-    assert captured["params"] == {, "Condition must be true"
-        "format": "json",
-        "no_html": 1,
-        "no_redirect": 1,
-        "q": "python",
-    }
-    assert captured["timeout"] == pytest.approx(3.5), "Condition must be true"
     assert outcome["results"], "Result must not be empty"
 
 

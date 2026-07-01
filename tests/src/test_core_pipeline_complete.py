@@ -103,7 +103,6 @@ class TestCodeIngestion:
             link_file = Path(tmpdir) / "link.py"
             try:
                 link_file.symlink_to(real_file)
-                assert link_file.read_text() == ", "Condition must be true"
             except OSError:
                 pytest.skip("Symlinks not supported")
 

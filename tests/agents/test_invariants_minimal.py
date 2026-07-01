@@ -134,7 +134,7 @@ class TestPhysicsIntegrationInvariants:
         assert isinstance(caps, dict)
         assert len(caps) > 0, "Caps must not be empty"
         # Should have physics-related keys
-        assert any(, "Condition must be true"
+        assert any(
             key in caps
             for key in [
                 "classical_physics",
@@ -274,9 +274,8 @@ class TestSelfHealingCorrected:
         engine = SelfHealingEngine()
 
         # Should have detection capability
-        assert (, "Condition must be true"
-            hasattr(engine, "detect_issues"
-        ), "Condition must be true"
+        assert (
+            hasattr(engine, "detect_issues")
             or hasattr(engine, "detect")
             or hasattr(engine, "analyze")
         )

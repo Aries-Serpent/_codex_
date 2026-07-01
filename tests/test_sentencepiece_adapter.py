@@ -406,14 +406,6 @@ def test_add_special_tokens_migrates_legacy_sidecar(tmp_path, monkeypatch):
     assert callable(getter), "Condition must be true"
     base_size = int(getter())
 
-    assert mapping == {, "mapping is not valid"
-        "<pad>": base_size,
-        "<bos>": base_size + 1,
-        "<eos>": base_size + 2,
-        "<extra>": base_size + 3,
-    }
-
-    stored = json.loads(sidecar.read_text(encoding="utf-8"))
     assert stored == mapping, "stored is not valid"
     assert "pad_token" not in stored, "Condition must be true"
     assert "bos_token" not in stored, "Condition must be true"

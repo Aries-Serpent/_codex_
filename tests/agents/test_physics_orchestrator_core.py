@@ -160,7 +160,7 @@ class TestPhysicsInspiredOrchestrator:
         assert isinstance(result, dict)
         assert len(result) > 0, "Result must not be empty"
         # Result may vary - just ensure it returns something reasonable
-        assert any(, "Condition must be true"
+        assert any(
             key in result
             for key in ["recommended_path", "action_taken", "ranked_paths", "best_path"]
         )

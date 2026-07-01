@@ -1,9 +1,8 @@
-import asyncio
-
 """Test cognitive brain experiment validation 1."""
 
 from __future__ import annotations
 
+import asyncio
 from typing import Any, Dict
 
 import pytest

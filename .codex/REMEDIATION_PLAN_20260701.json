@@ -1,0 +1,216 @@
+{
+  "title": "Documentation Governance Remediation Plan",
+  "date": "2026-07-01",
+  "overview": "48 unmanaged markdown documents identified across the repository. 97.28% coverage achieved with 1,785 registered files out of 1,798 total.",
+  "phases": [
+    {
+      "phase": 1,
+      "title": "Auto-Generated Documents Review",
+      "priority": "MEDIUM",
+      "timeline": "1-2 weeks",
+      "documents": [
+        {
+          "path": ".codex/AGENT_ECOSYSTEM_SEMANTIC_INDEX.md",
+          "decision": "DELETE - session report from exploration phase",
+          "rationale": "Ephemeral session documentation, archive to .codex/archive/"
+        },
+        {
+          "path": ".codex/CAMPAIGN_STATUS_3OF4_AGENTS_COMPLETE.md",
+          "decision": "DELETE - phase completion report",
+          "rationale": "Campaign-specific execution log"
+        },
+        {
+          "path": ".codex/CODEBASE_EXPLORATION_MASTER_GUIDE.md",
+          "decision": "REVIEW - may have long-term value",
+          "rationale": "Could serve as codebase orientation guide if updated and registered"
+        },
+        {
+          "path": ".codex/EXECUTION_STATUS_FINAL.md",
+          "decision": "DELETE - phase-specific status",
+          "rationale": "Superseded by newer reports"
+        },
+        {
+          "path": ".codex/PR_5165_MONITORING_SESSION.md",
+          "decision": "DELETE - PR-specific session doc",
+          "rationale": "Tied to specific PR, archive to .codex/archive/"
+        },
+        {
+          "path": ".codex/coverage/COVERAGE_GAPS.md",
+          "decision": "DELETE - generated coverage report",
+          "rationale": "Build artifact, add to .gitignore"
+        },
+        {
+          "path": "P22_EXECUTIVE_SUMMARY.md",
+          "decision": "REVIEW - check for current relevance",
+          "rationale": "May be referenced in project documentation"
+        },
+        {
+          "path": "docs/cli/COMMAND_REFERENCE.md",
+          "decision": "REGISTER - valid CLI documentation",
+          "rationale": "Legitimate documentation, should be in governance"
+        },
+        {
+          "path": "docs/cli/DOCUMENTATION_SUMMARY.md",
+          "decision": "DELETE or ARCHIVE - meta documentation",
+          "rationale": "Documentation about documentation, likely generated"
+        },
+        {
+          "path": "workbench/coverage/gap5_coverage_evidence.md",
+          "decision": "DELETE - coverage report",
+          "rationale": "Generated evidence file, add to .gitignore"
+        }
+      ]
+    },
+    {
+      "phase": 2,
+      "title": "Archive Deprecated Documents",
+      "priority": "HIGH",
+      "timeline": "1 week",
+      "actions": [
+        "Create .codex/archive/sessions/ subdirectory",
+        "Move all session reports (19 files) to archive",
+        "Create .codex/archive/README.md documenting archived content",
+        "Add .codex/archive entries to governance exclusion list",
+        "Update DEPRECATED.md with links to archived docs"
+      ],
+      "documents": [
+        ".codex/CAMPAIGN_FINAL_COMPLETION_REPORT.md",
+        ".codex/EXPLORATION_PHASE_1_DISCOVERY.md",
+        ".codex/EXPLORATION_PHASE_1_QUALITY_DASHBOARD.md",
+        ".codex/EXPLORATION_PHASE_1_SEMANTIC_INDEX.md",
+        ".codex/EXPLORATION_PHASE_2_DOC_AUDIT.md",
+        ".codex/EXPLORATION_PHASE_2_QA_REPORT.md",
+        ".codex/EXPLORATION_PHASE_2_SECURITY_AUDIT.md",
+        ".codex/EXPLORATION_PHASE_3_AGENT_AUDIT.md",
+        ".codex/EXPLORATION_PHASE_3_SKILLS_INVENTORY.md",
+        ".codex/FINAL_SESSION_SUMMARY_20260701T0548Z.md",
+        ".codex/PHASE_2_2_UTILITIES_SUMMARY.md",
+        ".codex/PHASE_2_COMPLETION_REPORT.md",
+        ".codex/PHASE_3_AGENT_AUDIT_INDEX.md",
+        ".codex/SESSION_20260701T0545Z_TRACK0_COMPLETION.md",
+        ".codex/SESSION_7PHASE_CLARIFICATION_RESOLUTION_20260701T053700Z.md",
+        ".codex/SESSION_7PHASE_EXECUTION_PLAN_20260701T053700Z.md",
+        ".codex/link-fix-completion-report.md",
+        "ENERGY_CONVERSION_AGENT_DEPRECATION.md",
+        "GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "title": "Register Recently Added Documents",
+      "priority": "HIGH",
+      "timeline": "2-3 weeks",
+      "documents": [
+        {
+          "path": "QUANTUM_COMPLIANCE_TUNING_AGENT_INTEGRATION_GUIDE.md",
+          "action": "REGISTER",
+          "rationale": "Active integration guide for quantum compliance agent"
+        },
+        {
+          "path": "docs/ARCHITECTURE_DIAGRAMS_INDEX.md",
+          "action": "REGISTER",
+          "rationale": "Architecture documentation index"
+        },
+        {
+          "path": "docs/architecture/5_LAYER_ARCHITECTURE.md",
+          "action": "REGISTER",
+          "rationale": "Core architecture documentation"
+        },
+        {
+          "path": "docs/architecture/COMPONENT_DEPENDENCIES.md",
+          "action": "REGISTER",
+          "rationale": "Architecture dependency documentation"
+        },
+        {
+          "path": "docs/architecture/DATA_FLOW_ARCHITECTURE.md",
+          "action": "REGISTER",
+          "rationale": "Data flow architecture documentation"
+        },
+        {
+          "path": "docs/architecture/DEPLOYMENT_ARCHITECTURE.md",
+          "action": "REGISTER",
+          "rationale": "Deployment documentation"
+        },
+        {
+          "path": "docs/architecture/E2E_REQUEST_FLOW.md",
+          "action": "REGISTER",
+          "rationale": "End-to-end request flow documentation"
+        },
+        {
+          "path": "docs/architecture/SYSTEM_CONTEXT.md",
+          "action": "REGISTER",
+          "rationale": "System context documentation"
+        },
+        {
+          "path": "docs/diagrams/ARCHITECTURE_DIAGRAMS.md",
+          "action": "REGISTER",
+          "rationale": "Architecture diagrams reference"
+        },
+        {
+          "path": "docs/monitoring/MONITORING_ARCHITECTURE.md",
+          "action": "REGISTER",
+          "rationale": "Monitoring documentation"
+        },
+        {
+          "path": "docs/security/SECURITY_ARCHITECTURE.md",
+          "action": "REGISTER",
+          "rationale": "Security architecture documentation"
+        },
+        {
+          "path": "docs/training/TRAINING_WORKFLOW.md",
+          "action": "REGISTER",
+          "rationale": "Training documentation"
+        },
+        {
+          "path": ".codex/ARCHITECTURE_DIAGRAMS.md",
+          "action": "REVIEW - check if duplicate with docs/",
+          "rationale": "May be internal reference"
+        },
+        {
+          "path": ".codex/DESIGN_PATTERNS_REFERENCE.md",
+          "action": "REGISTER if valuable",
+          "rationale": "Design patterns documentation"
+        },
+        {
+          "path": ".codex/security_vulnerability_scan_latest.md",
+          "action": "DELETE - generated report",
+          "rationale": "Transient security scan output"
+        },
+        {
+          "path": "P1.4_FINAL_EXECUTION_REPORT.md",
+          "action": "ARCHIVE",
+          "rationale": "Phase-specific execution report"
+        },
+        {
+          "path": "P22_PHASE6_VALIDATION_REPORT.md",
+          "action": "ARCHIVE",
+          "rationale": "Phase-specific validation report"
+        },
+        {
+          "path": "docs/ARCHITECTURE_DIAGRAMS_PROGRESS_PHASE1.md",
+          "action": "DELETE or ARCHIVE",
+          "rationale": "Phase-specific progress document"
+        },
+        {
+          "path": "docs/REFACTORING_UTILITIES.md",
+          "action": "REVIEW",
+          "rationale": "Check if still relevant to utilities refactoring"
+        }
+      ]
+    }
+  ],
+  "implementation_strategy": {
+    "step_1_analyze": "Run script to analyze each unmanaged document",
+    "step_2_categorize": "Use classification heuristics from GOVERNANCE_AUDIT_20260701.json",
+    "step_3_move_archive": "Move deprecated docs to .codex/archive/ with manifest",
+    "step_4_register": "Add new docs to machine-readable-coverage-report.json",
+    "step_5_validate": "Re-run coverage validation to confirm 100% governance",
+    "step_6_commit": "Create PR with governance fixes and updates"
+  },
+  "success_metrics": {
+    "unmanaged_documents_remaining": "0 (target)",
+    "coverage_percentage": ">=99.5% (target)",
+    "all_deprecated_archived": "yes",
+    "all_new_docs_registered": "yes"
+  }
+}

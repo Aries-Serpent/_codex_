@@ -1,0 +1,574 @@
+---
+# Incident Logging Configuration - Phase 9.3
+# Document: INCIDENT_LOGGING_CONFIG.yaml
+# Version: 1.0.0
+# Generated: 2026-07-07
+# Purpose: Structured incident tracking for CI/CD failure detection and recovery
+# Status: PRODUCTION READY
+
+incident_logging:
+  version: "1.0.0"
+  schema_version: "2026-07-07"
+  enabled: true
+  storage:
+    backend: "jsonl"
+    path: ".codex/incidents"
+    retention_days: 90
+    indexing: "elasticsearch"
+  
+  # Global incident configuration
+  global_settings:
+    incident_id_format: "INC-YYYY-MM-DD-XXXXX"
+    timestamp_format: "ISO8601"
+    timezone: "UTC"
+    severity_levels: ["critical", "high", "medium", "low", "info"]
+    status_values: ["detected", "in_progress", "recovered", "escalated", "failed"]
+    sampling_rate: 1.0  # Log 100% of incidents (no sampling)
+    min_confidence_to_log: 0.50  # Log if confidence >= 50%
+
+# Core incident schema - all incidents must include these fields
+incident_schema:
+  required_fields:
+    - incident_id
+    - timestamp
+    - pattern_id
+    - status
+    - detection_confidence
+    - recovery_time_ms
+    - primary_agent
+    - recovery_strategy
+    - result_status
+  
+  # Schema definition for each field
+  fields:
+    incident_id:
+      type: "string"
+      format: "INC-YYYY-MM-DD-XXXXX"
+      description: "Unique incident identifier"
+      example: "INC-2026-07-07-00001"
+    
+    timestamp:
+      type: "string"
+      format: "ISO8601"
+      description: "UTC timestamp of incident detection"
+      example: "2026-07-07T14:32:15.234Z"
+    
+    pattern_id:
+      type: "string"
+      enum: ["RP-001", "RP-002", "RP-003", "RP-004", "RP-005", "RP-006", "RP-007", "RP-008", "RP-009", "RP-010", "RP-011", "RP-012"]
+      description: "Detected failure pattern"
+      example: "RP-001"
+    
+    pattern_name:
+      type: "string"
+      description: "Human-readable pattern name"
+      enum: 
+        - "Unused Imports"
+        - "Type Annotations"
+        - "Test Assertions"
+        - "Dependency Conflicts"
+        - "YAML Formatting"
+        - "Coverage Thresholds"
+        - "Documentation Links"
+        - "Import Path Issues"
+        - "Flaky Tests"
+        - "Workflow Compliance"
+        - "Cargo Features"
+        - "CodeQL/Security"
+    
+    status:
+      type: "string"
+      enum: ["detected", "in_progress", "recovered", "escalated", "failed"]
+      description: "Current incident status"
+      example: "recovered"
+    
+    severity:
+      type: "string"
+      enum: ["critical", "high", "medium", "low", "info"]
+      description: "Incident severity classification"
+      example: "high"
+      rules:
+        critical: "Unrecovered failure, system impact"
+        high: "Major failure, affects multiple tests/modules"
+        medium: "Moderate failure, affects some functionality"
+        low: "Minor failure, limited scope"
+        info: "Informational incident logged"
+    
+    detection_confidence:
+      type: "number"
+      minimum: 0.0
+      maximum: 1.0
+      description: "Confidence level of pattern detection (0.0-1.0)"
+      example: 0.85
+      confidence_bands:
+        high: { min: 0.80, max: 1.0, action: "execute_immediately" }
+        medium: { min: 0.60, max: 0.79, action: "execute_with_audit" }
+        low: { min: 0.0, max: 0.59, action: "escalate_for_review" }
+    
+    source:
+      type: "object"
+      description: "Source of failure detection"
+      fields:
+        trigger_type:
+          type: "string"
+          enum: ["workflow_run", "pr_comment", "manual_trigger", "scheduled"]
+          example: "workflow_run"
+        
+        trigger_id:
+          type: "string"
+          description: "GitHub Actions run ID or PR comment ID"
+          example: "workflow-run-12345"
+        
+        repository:
+          type: "string"
+          description: "Repository where failure detected"
+          example: "Aries-Serpent/_codex_"
+        
+        branch:
+          type: "string"
+          description: "Git branch of failure"
+          example: "main"
+        
+        pr_number:
+          type: "integer"
+          description: "PR number if applicable"
+          example: 1234
+        
+        workflow_name:
+          type: "string"
+          description: "GitHub Actions workflow file name"
+          example: "ci.yml"
+    
+    primary_agent:
+      type: "string"
+      description: "Specialist agent assigned for recovery"
+      example: "ci-testing-agent"
+      valid_agents:
+        - "ci-testing-agent"
+        - "python-312-type-fixer"
+        - "test-alignment-fixer"
+        - "dependency-conflict-agent"
+        - "workflow-ci-fixer"
+        - "unified-coverage-agent"
+        - "link-validator-agent"
+        - "ci-importerror-agent"
+        - "autonomous-test-healer-agent"
+        - "workflow-compliance-guardian"
+        - "rust-config-validator"
+        - "codeql-alert-resolution-agent"
+    
+    fallback_agents:
+      type: "array"
+      description: "Fallback agents if primary fails"
+      items:
+        type: "string"
+      example: ["ci-auto-healer-agent", "ci-failure-resolution-agent"]
+    
+    recovery_strategy:
+      type: "string"
+      description: "Recovery strategy executed"
+      example: "automated_import_removal"
+      strategy_examples:
+        RP-001:
+          - "automated_import_removal"
+          - "linter_auto_fix"
+        RP-002:
+          - "type_annotation_fixup"
+          - "type_ignore_suppression"
+        RP-003:
+          - "assertion_remediation"
+          - "test_regeneration"
+        RP-004:
+          - "version_constraint_resolution"
+          - "downgrade_to_known_good"
+        RP-005:
+          - "yaml_format_correction"
+          - "yaml_template_replacement"
+        RP-006:
+          - "coverage_gap_fill"
+          - "threshold_adjustment"
+        RP-007:
+          - "link_validation_fix"
+          - "link_removal"
+        RP-008:
+          - "import_path_resolution"
+          - "venv_rebuild"
+        RP-009:
+          - "flaky_test_stabilization"
+          - "test_quarantine"
+        RP-010:
+          - "workflow_compliance_correction"
+          - "workflow_template_generation"
+        RP-011:
+          - "cargo_feature_resolution"
+          - "feature_removal"
+        RP-012:
+          - "security_alert_remediation"
+          - "suppression_with_documentation"
+    
+    recovery_time_ms:
+      type: "integer"
+      minimum: 0
+      description: "Total recovery time in milliseconds"
+      example: 2300
+      sla_target: 5000  # 5 second SLA
+    
+    result_status:
+      type: "string"
+      enum: ["success", "partial", "failed"]
+      description: "Recovery outcome"
+      example: "success"
+      definitions:
+        success: "Failure fully resolved, validation passed"
+        partial: "Failure partially resolved, requires manual review"
+        failed: "Recovery unsuccessful, escalation required"
+    
+    result_details:
+      type: "object"
+      description: "Details about recovery outcome"
+      fields:
+        files_modified:
+          type: "integer"
+          description: "Number of files modified"
+          example: 5
+        
+        changes_applied:
+          type: "array"
+          description: "List of changes applied"
+          items:
+            type: "object"
+            fields:
+              file: "string"
+              change_type: "string"
+              description: "string"
+          example:
+            - { file: "src/module.py", change_type: "import_removal", description: "Removed unused import X" }
+        
+        validation_passed:
+          type: "boolean"
+          description: "Did recovery pass all validation checks?"
+          example: true
+        
+        validation_details:
+          type: "object"
+          description: "Validation check results"
+          example:
+            syntax_check: { passed: true, details: "All files compile successfully" }
+            linting_check: { passed: true, details: "0 linting violations" }
+            test_check: { passed: true, details: "100 tests passing" }
+            coverage_check: { passed: true, details: "Coverage maintained at 87.3%" }
+        
+        error_message:
+          type: "string"
+          description: "Error message if recovery failed"
+          example: "Recovery failed: Unable to resolve dependency conflict"
+        
+        error_category:
+          type: "string"
+          description: "Category of error"
+          enum: ["timeout", "invalid_fix", "validation_failure", "agent_error", "unknown"]
+          example: "validation_failure"
+    
+    retry_count:
+      type: "integer"
+      minimum: 0
+      description: "Number of retries attempted"
+      example: 1
+    
+    attempts:
+      type: "array"
+      description: "Log of all recovery attempts"
+      items:
+        type: "object"
+        fields:
+          attempt_number: "integer"
+          strategy: "string"
+          agent_used: "string"
+          status: "string"
+          recovery_time_ms: "integer"
+          result: "string"
+      example:
+        - attempt_number: 1
+          strategy: "automated_import_removal"
+          agent_used: "ci-testing-agent"
+          status: "failed"
+          recovery_time_ms: 2100
+          result: "Syntax error in modified file"
+        - attempt_number: 2
+          strategy: "linter_auto_fix"
+          agent_used: "ci-auto-healer-agent"
+          status: "success"
+          recovery_time_ms: 2200
+          result: "Successfully fixed all imports"
+    
+    escalation_info:
+      type: "object"
+      description: "Escalation details if incident escalated"
+      fields:
+        escalated: "boolean"
+        escalation_timestamp: "string (ISO8601)"
+        escalation_reason: "string"
+        escalation_level: "string (MEDIUM / HIGH / CRITICAL)"
+        assigned_to: "string"
+        escalation_notes: "string"
+      example:
+        escalated: true
+        escalation_timestamp: "2026-07-07T14:35:00Z"
+        escalation_reason: "Recovery failed after 5 attempts"
+        escalation_level: "HIGH"
+        assigned_to: "engineering-team"
+        escalation_notes: "Complex dependency conflict requires manual resolution"
+    
+    cost_impact:
+      type: "object"
+      description: "Estimated cost impact of recovery"
+      fields:
+        compute_seconds: "integer"
+        estimated_cost_usd: "number"
+        cost_category: "string (compute|storage|data_transfer)"
+      example:
+        compute_seconds: 15
+        estimated_cost_usd: 0.45
+        cost_category: "compute"
+    
+    context:
+      type: "object"
+      description: "Additional context about the failure"
+      fields:
+        failure_error_message:
+          type: "string"
+          description: "Original error message from CI logs"
+          example: "F401 module 'X' imported but unused"
+        
+        affected_modules:
+          type: "array"
+          items: "string"
+          description: "Modules/files affected by failure"
+          example: ["src/module_a.py", "src/module_b.py"]
+        
+        affected_tests:
+          type: "array"
+          items: "string"
+          description: "Test cases affected"
+          example: ["test_feature_a", "test_feature_b"]
+        
+        failure_category:
+          type: "string"
+          description: "General category of failure"
+          enum: ["code_quality", "testing", "dependencies", "config", "documentation", "build", "security"]
+          example: "code_quality"
+        
+        root_cause_analysis:
+          type: "string"
+          description: "Root cause of failure (if determined)"
+          example: "Unused import from old refactor left behind"
+    
+    tags:
+      type: "array"
+      items: "string"
+      description: "Custom tags for incident categorization"
+      example: ["urgent", "python-related", "import-fix"]
+    
+    metadata:
+      type: "object"
+      description: "Additional metadata"
+      fields:
+        session_id: "string"
+        operator: "string"
+        automation_level: "string (full_auto|semi_auto|manual)"
+      example:
+        session_id: "copilot-session-xyz"
+        operator: "self-healing-orchestrator-agent"
+        automation_level: "full_auto"
+
+# Log output format examples
+log_output_examples:
+  example_success_incident: |
+    {
+      "incident_id": "INC-2026-07-07-00001",
+      "timestamp": "2026-07-07T14:32:15.234Z",
+      "pattern_id": "RP-001",
+      "pattern_name": "Unused Imports",
+      "status": "recovered",
+      "severity": "medium",
+      "detection_confidence": 0.85,
+      "source": {
+        "trigger_type": "workflow_run",
+        "trigger_id": "workflow-run-54321",
+        "repository": "Aries-Serpent/_codex_",
+        "branch": "feature/x",
+        "pr_number": 1234,
+        "workflow_name": "ci.yml"
+      },
+      "primary_agent": "ci-testing-agent",
+      "fallback_agents": ["ci-auto-healer-agent"],
+      "recovery_strategy": "automated_import_removal",
+      "recovery_time_ms": 2300,
+      "result_status": "success",
+      "result_details": {
+        "files_modified": 5,
+        "changes_applied": [
+          {
+            "file": "src/module.py",
+            "change_type": "import_removal",
+            "description": "Removed unused import: sys"
+          }
+        ],
+        "validation_passed": true,
+        "validation_details": {
+          "syntax_check": { "passed": true, "details": "All files compile" },
+          "linting_check": { "passed": true, "details": "0 violations" },
+          "test_check": { "passed": true, "details": "100 tests pass" }
+        }
+      },
+      "retry_count": 0,
+      "attempts": [
+        {
+          "attempt_number": 1,
+          "strategy": "automated_import_removal",
+          "agent_used": "ci-testing-agent",
+          "status": "success",
+          "recovery_time_ms": 2300,
+          "result": "Successfully removed 5 unused imports"
+        }
+      ],
+      "escalation_info": {
+        "escalated": false
+      },
+      "cost_impact": {
+        "compute_seconds": 10,
+        "estimated_cost_usd": 0.30,
+        "cost_category": "compute"
+      },
+      "context": {
+        "failure_error_message": "F401 module 'sys' imported but unused",
+        "affected_modules": ["src/module.py"],
+        "failure_category": "code_quality",
+        "root_cause_analysis": "Old import left after refactor"
+      },
+      "tags": ["import-cleanup", "low-risk"],
+      "metadata": {
+        "session_id": "session-abc123",
+        "operator": "self-healing-orchestrator-agent",
+        "automation_level": "full_auto"
+      }
+    }
+
+  example_escalated_incident: |
+    {
+      "incident_id": "INC-2026-07-07-00002",
+      "timestamp": "2026-07-07T14:45:00.500Z",
+      "pattern_id": "RP-004",
+      "pattern_name": "Dependency Conflicts",
+      "status": "escalated",
+      "severity": "high",
+      "detection_confidence": 0.80,
+      "source": { ... },
+      "primary_agent": "dependency-conflict-agent",
+      "recovery_strategy": "version_constraint_resolution",
+      "recovery_time_ms": 4500,
+      "result_status": "failed",
+      "result_details": {
+        "validation_passed": false,
+        "error_message": "No compatible version found for package X",
+        "error_category": "validation_failure"
+      },
+      "retry_count": 2,
+      "attempts": [
+        { "attempt_number": 1, "strategy": "version_constraint_resolution", "status": "failed", ... },
+        { "attempt_number": 2, "strategy": "downgrade_to_known_good", "status": "failed", ... }
+      ],
+      "escalation_info": {
+        "escalated": true,
+        "escalation_timestamp": "2026-07-07T14:52:30Z",
+        "escalation_reason": "Recovery failed after 2 attempts, no compatible version exists",
+        "escalation_level": "HIGH",
+        "assigned_to": "engineering-team",
+        "escalation_notes": "Complex multi-package dependency graph requires manual review of architecture"
+      }
+    }
+
+# Incident querying and analytics
+querying:
+  supported_queries:
+    by_pattern: "SELECT * FROM incidents WHERE pattern_id = 'RP-001'"
+    by_status: "SELECT * FROM incidents WHERE status = 'recovered'"
+    by_severity: "SELECT * FROM incidents WHERE severity = 'critical'"
+    by_agent: "SELECT * FROM incidents WHERE primary_agent = 'ci-testing-agent'"
+    by_time_range: "SELECT * FROM incidents WHERE timestamp BETWEEN '2026-07-07T00:00:00Z' AND '2026-07-08T00:00:00Z'"
+    recovery_success_rate: "SELECT COUNT(CASE WHEN result_status='success' THEN 1 END) / COUNT(*) as success_rate FROM incidents"
+    avg_recovery_time: "SELECT AVG(recovery_time_ms) as avg_ms FROM incidents WHERE status = 'recovered'"
+    escalation_rate: "SELECT COUNT(CASE WHEN escalation_info.escalated=true THEN 1 END) / COUNT(*) as escalation_rate FROM incidents"
+
+# Retention and archival policy
+retention_policy:
+  active_incidents: 
+    retention_days: 30
+    storage: "elasticsearch"
+  
+  archived_incidents:
+    retention_days: 90
+    storage: "s3"
+    compression: "gzip"
+  
+  purge_policy:
+    older_than_days: 90
+    action: "delete"
+
+# Alerts and notifications
+alerting:
+  enabled: true
+  
+  alert_rules:
+    high_escalation_rate:
+      condition: "escalation_rate > 0.10"  # > 10%
+      severity: "high"
+      notification_channels: ["slack", "pagerduty"]
+    
+    recovery_success_below_target:
+      condition: "recovery_success_rate < 0.99"  # < 99%
+      severity: "high"
+      notification_channels: ["slack", "email"]
+    
+    slow_recovery_time:
+      condition: "avg_recovery_time_ms > 5000"  # > 5s
+      severity: "medium"
+      notification_channels: ["slack"]
+    
+    critical_incident_detected:
+      condition: "severity = 'critical' AND escalated = true"
+      severity: "critical"
+      notification_channels: ["pagerduty", "slack", "email"]
+
+# Performance metrics derived from logging
+performance_metrics:
+  tracked_metrics:
+    - "recovery_success_rate"  # % incidents with result_status='success'
+    - "mean_recovery_time"      # avg recovery_time_ms across incidents
+    - "p95_recovery_time"       # 95th percentile of recovery_time_ms
+    - "escalation_rate"         # % incidents escalated
+    - "false_positive_rate"     # % incorrect pattern detections
+    - "cost_per_recovery"       # avg estimated_cost_usd per incident
+  
+  sla_targets:
+    recovery_success_rate: ">= 0.99"  # >= 99%
+    mean_recovery_time: "<= 5000ms"   # <= 5 seconds
+    p95_recovery_time: "<= 5000ms"    # <= 5 seconds
+    escalation_rate: "<= 0.02"        # <= 2%
+    false_positive_rate: "<= 0.01"    # <= 1%
+
+# Validation rules for incident logs
+validation:
+  rules:
+    incident_id_format: "Must match pattern INC-YYYY-MM-DD-XXXXX"
+    timestamp_format: "Must be valid ISO8601"
+    pattern_id_enum: "Must be RP-001 through RP-012"
+    confidence_bounds: "Must be between 0.0 and 1.0"
+    recovery_time_positive: "recovery_time_ms must be >= 0"
+    required_fields_present: "All required_fields must be present"
+    status_enum_match: "status must match status_values enum"
+  
+  validation_on_write:
+    enabled: true
+    fail_on_invalid: true
+    log_validation_errors: true

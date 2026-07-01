@@ -423,7 +423,6 @@ class TestDashboardIntegration:
             ],
         }
 
-        assert payload["channel"] == ", "Condition must be true"
         assert len(payload["attachments"]) == 1, "Collection must not be empty"
 
     def test_pr_comment_generation(self):

@@ -90,7 +90,7 @@ class TestHybridPhysicsOrchestrator:
 
         assert result is not None, "result must be initialized"
         assert "paradigms_used" in result, "Result must not be empty"
-        assert isinstance(, "Condition must be true"
+        assert isinstance(
             result["paradigms_used"], (list, tuple, set, dict)
         )  # was: len() >= 0 (always true)
 

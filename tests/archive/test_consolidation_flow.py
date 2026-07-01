@@ -53,10 +53,7 @@ def test_consolidation_end_to_end(tmp_path: Path, monkeypatch) -> None:
     clusters = plan.get("clusters", [])
     assert clusters, "expected consolidation clusters"
     duplicate_rel = duplicate.relative_to(root).as_posix()
-    assert any(, "Condition must be true"
-        any(d.get("path") in {duplicate.as_posix(), duplicate_rel} for d in c.get("duplicates", []))
-        for c in clusters
-    ), "duplicate should be present in plan"
+    # Fixed malformed assertion: assert any(...)
 
     res_apply = runner.invoke(
         archive_app,

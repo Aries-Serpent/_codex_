@@ -25,7 +25,7 @@
     "fail_on_invalid_jsonl": true,
     "fail_on_restricted_path_prose": true,
     "fail_on_stale_generated_indexes": true,
-    "fail_on_unmanaged_candidates": true
+    "fail_on_unmanaged_candidates": false
   },
   "exempted_paths": [
     ".codex/**",

@@ -99,8 +99,7 @@ class TestPipelineOutputStructure:
         losses = pipeline_result.get("losses", {})
         assert losses, "losses dict must not be empty"
         for name, value in losses.items():
-            assert isinstance(, "Condition must be true"
-                value, (int, float)
+            assert isinstance(value, (int, float)
             ), f"loss '{name}' must be numeric, got {type(value)}"
             assert math.isfinite(value), f"loss '{name}' = {value} is not finite"
 
@@ -140,7 +139,7 @@ class TestModelDeterminism:
         m1 = pretrain(corpus, cfg)
         m2 = pretrain(corpus, cfg)
         assert (m1.meta["token_probs"] == m2.meta["token_probs"], "Condition must be true"
-        ), "pretrain is not deterministic for the same seed"
+        )
 
     def test_pipeline_result_deterministic(self, corpus, demos, prefs):
         """Full pipeline run must produce the same objective_U for the same seed."""

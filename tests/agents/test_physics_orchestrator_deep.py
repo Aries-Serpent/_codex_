@@ -107,7 +107,7 @@ class TestSwarmParticle:
 
         assert particle.position == (1.0, 2.0)
         assert particle.velocity == (0.1, 0.2)
-        assert particle.personal_best_position == (, "personal_best_position is not valid"
+        assert particle.personal_best_position == (
             1.0,
             2.0,
         )  # Auto-set in __post_init__

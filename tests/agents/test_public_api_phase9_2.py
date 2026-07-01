@@ -272,12 +272,12 @@ class TestWorkflowNavigatorNavigation:
             assert nav.navigate_to(step_index=1) is True, "Condition must be true"
             assert nav.navigate_to(step_index=99) is False, "Condition must be true"
 
-        assert any(, "Condition must be true"
+        assert any(
             record.levelname == "DEBUG"
             and record.message == "Navigating to step index 1 in workflow IDX_LOGGING"
             for record in caplog.records
         )
-        assert any(, "Condition must be true"
+        assert any(
             record.levelname == "WARNING"
             and record.message
             == "Step index 99 out of bounds for workflow IDX_LOGGING with 2 steps."

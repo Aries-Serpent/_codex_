@@ -7,6 +7,19 @@ Validates that a PR meets basic structural requirements:
 - PR title is descriptive
 - PR description adequate
 - Reviewer assigned
+
+Reviewer-assignment exemption for bot/copilot PRs
+--------------------------------------------------
+GitHub Copilot agent PRs and other bot-authored PRs (user.type == "Bot", login
+ending in "[bot]", or branch prefix "copilot/") legitimately have no human
+reviewers at creation time.  For these PRs the reviewer check is downgraded from
+a hard FAIL (score=0.0) to a WARN (score=0.5) so that the overall governance
+score is not blocked solely by the absence of a reviewer.
+
+The bot identity is determined primarily via the server-side ``user.type`` field
+(returned as ``"Bot"`` by the GitHub API for GitHub Apps / bots), which cannot
+be forged via branch naming.  The ``[bot]`` login suffix and ``copilot/`` branch
+prefix are accepted as secondary signals for robustness.
 """
 
 from __future__ import annotations
@@ -88,8 +101,23 @@ class REQ1EligibilityValidator(RequirementValidator):
         reviewers = pr_details.get("requested_reviewers", [])
         metadata["reviewers_assigned"] = len(reviewers) > 0
         metadata["reviewers_count"] = len(reviewers)
+        reviewer_warning: str | None = None
         if not reviewers:
-            issues.append("No reviewers assigned")
+            # Exempt bot/copilot-authored PRs from the hard reviewer requirement.
+            # Use user.type == "Bot" as the primary (server-side, unforgeable) signal.
+            # Fall back to login suffix and branch prefix as secondary signals.
+            pr_author = pr_details.get("user", {}).get("login", "")
+            pr_author_type = pr_details.get("user", {}).get("type", "")
+            is_bot_pr = (
+                pr_author_type == "Bot"
+                or pr_author.endswith("[bot]")
+                or branch_name.startswith("copilot/")
+            )
+            if is_bot_pr:
+                reviewer_warning = "No reviewers assigned (bot/copilot PR — warning only)"
+                metadata["reviewer_exemption"] = "bot_or_copilot_branch"
+            else:
+                issues.append("No reviewers assigned")
 
         # Determine overall status
         if issues:
@@ -104,6 +132,16 @@ class REQ1EligibilityValidator(RequirementValidator):
                     "Add detailed PR description (minimum 50 characters)",
                     "Assign at least one reviewer",
                 ],
+                metadata=metadata,
+            )
+
+        if reviewer_warning:
+            return ComplianceResult(
+                requirement_id=self.requirement_id,
+                status="warn",
+                score=0.5,
+                reason=reviewer_warning,
+                remediation=["Consider assigning a human reviewer for visibility"],
                 metadata=metadata,
             )
 

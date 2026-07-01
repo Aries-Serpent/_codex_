@@ -233,7 +233,7 @@ class TestPhysicsIntegrationExpanded:
 
         assert isinstance(caps, dict)
         # Should have some capability keys
-        assert any(, "Condition must be true"
+        assert any(
             "physics" in k.lower() or "chaos" in k.lower() or "fluid" in k.lower() for k in caps
         )
 

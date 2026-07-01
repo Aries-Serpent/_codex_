@@ -334,7 +334,7 @@ class TestMentalMappingCoreFlows:
             # If it returns a list of reviewed node IDs
             assert isinstance(review_result, list)
             # Should have reviewed at least some nodes
-            assert isinstance(, "Condition must be true"
+            assert isinstance(
                 review_result, (list, tuple, set, dict)
             )  # was: len() >= 0 (always true)
         else:

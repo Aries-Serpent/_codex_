@@ -1,9 +1,8 @@
-import asyncio
-
 """Test SaaS integration module 5."""
 
 from __future__ import annotations
 
+import asyncio
 from enum import Enum
 from typing import Any, Dict
 
@@ -16,7 +15,7 @@ class SaaSEndpointStatus(Enum):
     DOWN = "down"
 
 
-class SaaSClient:  # pragma: allowlist secret # pragma: allowlist secret
+class SaaSClient:  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
     def __init__(self, api_key: str):
         self.api_key = api_key
         self.status = SaaSEndpointStatus.HEALTHY

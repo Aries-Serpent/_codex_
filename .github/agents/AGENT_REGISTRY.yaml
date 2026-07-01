@@ -3948,6 +3948,9 @@ agents:
   deprecation_reason: Zero ecosystem integration. Aspirational design only (not in agent_brain_api, not in structural_policy_manager). Domain orthogonal to software engineering. See GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md
   description: 'DEPRECATED: Smart-home automation agent for Google Home script generation. Archived 2026-07-01 due to zero ecosystem integration and out-of-scope domain.'
   handoff_protocol: none
+  capability_tags:
+    - smart_home_automation
+    - google_home_integration
 standardization_status:
   fully_compliant: 12
   partially_compliant: 20

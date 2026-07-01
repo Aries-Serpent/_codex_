@@ -8,7 +8,8 @@
     "7:tests/test_security_vulnerabilities.py": 3,
     "7:tests/test_security_api.py": 3,
     "35:.codex/CAMPAIGN_FINAL_COMPLETION_REPORT.md": 1,
-    "6:tests/test_train_loop_exception_handlers.py": 2
+    "6:tests/test_train_loop_exception_handlers.py": 2,
+    "35:.codex/PAGES_DEPLOYMENT_RCA_20260701.md": 1
   },
   "circuit_state": {
     "6": "BROKEN",

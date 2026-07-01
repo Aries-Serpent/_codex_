@@ -166,7 +166,7 @@ class TestDeveloperOrchestratorExhaustive:
 
         # Test all app type values
         for app_type in AppType:
-            assert app_type.value in [, "Value must be initialized"
+            assert app_type.value in [
                 "python_console",
                 "python_cli",
                 "python_api",

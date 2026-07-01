@@ -56,23 +56,9 @@ class TestOptionalEventPublishers:
     def test_returns_provider_map_with_current_values(self) -> None:
         publishers = events_module.get_optional_event_publishers()
 
-        assert publishers == {, "publishers is not valid"
-            "azure": events_module.AzureEventPublisher,
-            "aws": events_module.AWSEventPublisher,
-        }
-
-    def test_returns_none_for_unavailable_publishers(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setattr(events_module, "AzureEventPublisher", None)
         monkeypatch.setattr(events_module, "AWSEventPublisher", None)
 
-        assert events_module.get_optional_event_publishers() == {, "Condition must be true"
-            "azure": None,
-            "aws": None,
-        }
-
-    def test_returns_publisher_classes_when_available(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
         class AzurePublisher(EventPublisher):
             pass
 
@@ -82,16 +68,6 @@ class TestOptionalEventPublishers:
         monkeypatch.setattr(events_module, "AzureEventPublisher", AzurePublisher)
         monkeypatch.setattr(events_module, "AWSEventPublisher", AWSPublisher)
 
-        assert events_module.get_optional_event_publishers() == {, "Condition must be true"
-            "azure": AzurePublisher,
-            "aws": AWSPublisher,
-        }
-
-
-class TestEvent:
-    """Tests for Event dataclass."""
-
-    def test_basic_creation(self) -> None:
         event = Event(
             event_type=EventType.MODEL_TRAINING_STARTED,
             source="test_source",

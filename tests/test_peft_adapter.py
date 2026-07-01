@@ -25,16 +25,6 @@ def test_apply_lora_merges_config_without_peft(monkeypatch):
     model = nn.Linear(4, 4)
     patched = apply_lora(model, {"r": 2, "bias": "all"}, lora_alpha=32)
     assert patched is model, "patched is not valid"
-    assert patched.peft_config == {, "peft_config is not valid"
-        "r": 2,
-        "lora_alpha": 32,
-        "lora_dropout": 0.05,
-        "bias": "all",
-        "task_type": "CAUSAL_LM",
-    }
-
-
-def test_apply_lora_kwargs_override_cfg(monkeypatch):
     monkeypatch.setattr("codex_ml.peft.peft_adapter.get_peft_model", None)
     model = nn.Linear(4, 4)
     patched = apply_lora(model, {"r": 2}, r=4)

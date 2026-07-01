@@ -229,8 +229,7 @@ class TestOrchestratingAgents:
         """Test all agents have orchestration pattern."""
         for agent_id, config in ORCHESTRATING_AGENTS.items():
             assert "pattern" in config, f"{agent_id} missing pattern"
-            assert isinstance(, "Condition must be true"
-                config["pattern"], OrchestrationPattern
+            assert isinstance(config["pattern"], OrchestrationPattern
             ), f"{agent_id} pattern is not OrchestrationPattern"
 
     def test_all_agents_have_capability(self):
@@ -547,7 +546,7 @@ class TestLearningAggregation:
         assert summary["total_orchestrations"] == 3, "Condition must be true"
         assert summary["total_agents_executed"] == 6, "Condition must be true"
         assert summary["successful_orchestrations"] == 2, "Condition must be true"
-        assert summary["success_rate"] == pytest.approx(2 / 3), "Condition must be true"
+        assert summary["success_rate"] == pytest.approx(2 / 3)
         assert "hierarchical" in summary["patterns_used"], "Condition must be true"
         assert "sequential_chain" in summary["patterns_used"], "Condition must be true"
 
