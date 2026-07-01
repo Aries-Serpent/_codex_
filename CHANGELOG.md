@@ -1,3 +1,18 @@
+## [Fixed] 2026-07-01T21:44Z — RAG Module Tests Dependency Conflict
+
+- Fixed dependency version conflict in `.github/workflows/test-rag.yml` that blocked dependency installation
+- **Root Cause**: Workflow pinned `pytest==9.0.2` and `pytest-cov==7.0.0`, conflicting with `pyproject.toml` constraints (`pytest>=9.0.3,<10.0.0` and `pytest-cov>=4.1.0,<6.0.0`)
+- **Fix**: Updated workflow pytest plugin versions to align with pyproject.toml:
+  - `pytest>=9.0.3,<10.0.0` (was `pytest==9.0.2`)
+  - `pytest-cov>=4.1.0,<6.0.0` (was `pytest-cov==7.0.0`)
+  - `pytest-xdist>=3.5.0,<4.0.0` (was `pytest-xdist==3.8.0`)
+  - `pytest-timeout>=2.2.0,<3.0.0` (was `pytest-timeout==2.3.1`)
+  - `pytest-rerunfailures>=12.0` (was `pytest-rerunfailures==14.0`)
+  - `pytest-randomly>=3.15` (was `pytest-randomly==3.16.0`)
+- **Impact**: Resolves pip `ResolutionImpossible` errors in test-rag (3.12.13) workflow
+- **Issue**: #5183
+- **PR**: #5184
+
 ## [Fixed] 2026-07-01T21:18Z — Fix CI Comment Review Gate
 
 - Replied to all 4 blocking CI Rescue comments to clear the comment review gate on PR #5181

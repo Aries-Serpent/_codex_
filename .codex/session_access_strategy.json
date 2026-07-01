@@ -1,20 +1,20 @@
 {
-  "generated_at": "2026-07-01T20:58:58.111995+00:00",
+  "generated_at": "2026-07-01T21:42:58.932607+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 4182,
+  "rest_remaining": 4417,
   "graphql_available": true,
-  "graphql_remaining": 4996,
+  "graphql_remaining": 4956,
   "gh_cli_available": true,
   "codeql_available": false,
   "best_token_var": "GITHUB_TOKEN",
   "open_prs": [
-    5181
+    5184
   ],
-  "branch": "copilot/multi-agent-implementation-fixes",
+  "branch": "fix/ci-rag-module-tests-20260701213724",
   "recommendation": "Use REST for data fetches. "
 }
