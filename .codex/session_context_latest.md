@@ -1,21 +1,30 @@
-# Session Context — 2026-07-01T08:40:37Z
-**Branch:** `copilot/explore-codebase-structure`  **PR:** none  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-07-01T08:45:20Z
+**Branch:** `copilot/explore-codebase-structure`  **PR:** #5172  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4879` (✅)
-- GraphQL remaining: `4965` (✅)
+- REST remaining: `4822` (✅)
+- GraphQL remaining: `4951` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
+## 📋 PR #5172 — fix(ci): 🔧 Critical — RAG Module Tests [f7f511f]
+State: `open`  Draft: `False`  Branch: `fix/ci-rag-module-tests-20260701084037` → `main`
+
+### ❌ 3 Failing CI Check(s)
+- `Fast Validation` (failure)
+- `Validate WEC Template Integrity` (failure)
+- `Final Pre-Merge Checks` (failure)
+
 ## 🚨 Recent CI Failures (last 5 runs)
-- **🔐 Secrets Baseline Enforcer** — `failure` on `main` (2026-07-01)
-- **Machine Readable Governance** — `failure` on `main` (2026-07-01)
-- **RAG Module Tests** — `failure` on `main` (2026-07-01)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-01)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-01)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-01)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-01)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-01)
 
 ## 📝 Recent Commits
+- `d9be25f7` Apply remaining changes — copilot-swe-agent[bot] (2026-07-01)
 - `f7f511f7` Merge pull request #5167 from Aries-Serpent/fix/ci-rag-module-tests-202607010603 — Statix (2026-07-01)
 - `be276daf` chore: merge main branch into fix/ci-rag-module-tests (resolve merge conflicts) — copilot-swe-agent[bot] (2026-07-01)
 - `9d8b5566` fix(ci): resolve actionlint workflow compliance errors in 10 workflow files — copilot-swe-agent[bot] (2026-07-01)
@@ -23,7 +32,6 @@
 - `41ce7a82` chore: initial checklist for actionlint fixes [skip ci] — copilot-swe-agent[bot] (2026-07-01)
 - `0a7903d1` fix(secrets): annotate doc-example false positives [skip ci] (RP-007) — github-actions[bot] (2026-07-01)
 - `6267ebbf` fix(secrets): annotate doc-example false positives [skip ci] (RP-007) — github-actions[bot] (2026-07-01)
-- `d4a187db` chore(vars): auto-sync variable audit report [skip ci] — github-actions[bot] (2026-07-01)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
