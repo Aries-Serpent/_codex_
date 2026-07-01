@@ -119,7 +119,9 @@ class TestTemplateListing:
         """Test listing templates by tags."""
         create_templates = generator.list_templates(tags=["create"])
         assert len(create_templates) >= 2, "Create_templates must not be empty"
-        assert all(any("create" in t.tags for t in create_templates) for t in create_templates), "Condition must be true"
+        assert all(
+            any("create" in t.tags for t in create_templates) for t in create_templates
+        ), "Condition must be true"
 
     def test_list_templates_with_combined_filters(self, generator: ZendeskJSONGenerator) -> None:
         """Test listing templates with both category and tags filters."""
@@ -154,7 +156,9 @@ class TestScriptGeneration:
         assert script["ticket"]["subject"] == "Test Subject", "Condition must be true"
         assert script["ticket"]["description"] == "Test Description", "Condition must be true"
         assert script["ticket"]["priority"] == "high", "Condition must be true"
-        assert script["ticket"]["requester"]["email"] == "test@example.com", "Condition must be true"
+        assert (
+            script["ticket"]["requester"]["email"] == "test@example.com"
+        ), "Condition must be true"
 
     def test_generate_with_defaults(self, generator: ZendeskJSONGenerator) -> None:
         """Test that defaults are applied for missing optional variables."""
@@ -497,5 +501,7 @@ class TestSLAPolicyTemplate:
 
         assert "sla_policy" in script, "Condition must be true"
         assert script["sla_policy"]["title"] == "Premium Support", "Condition must be true"
-        assert script["sla_policy"]["filter"]["all"][0]["value"] == "urgent", "Value must be initialized"
+        assert (
+            script["sla_policy"]["filter"]["all"][0]["value"] == "urgent"
+        ), "Value must be initialized"
         assert script["sla_policy"]["policy_metrics"][0]["target"] == 30, "Condition must be true"

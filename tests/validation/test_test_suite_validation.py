@@ -162,7 +162,8 @@ class TestTestFunctionValidation:
             except OSError:
                 continue
 
-        assert (len(files_without_asserts) == 0, "Files_without_asserts must not be empty"
+        assert (
+            len(files_without_asserts) == 0
         ), f"Test files without assertions: {files_without_asserts}"
 
 
@@ -197,7 +198,8 @@ class TestTestIsolation:
                 continue
 
         # Allow some files with controlled state modification
-        assert (len(files_with_issues) <= 5, "Files_with_issues must not be empty"
+        assert (
+            len(files_with_issues) <= 5
         ), f"Files with potential global state issues: {files_with_issues}"
 
     def test_fixtures_used_for_setup(self) -> None:
@@ -231,7 +233,8 @@ class TestTestIsolation:
             except OSError:
                 continue
 
-        assert (len(files_with_hardcoded_paths) == 0, "Files_with_hardcoded_paths must not be empty"
+        assert (
+            len(files_with_hardcoded_paths) == 0
         ), f"Files with hardcoded paths: {files_with_hardcoded_paths}"
 
 
