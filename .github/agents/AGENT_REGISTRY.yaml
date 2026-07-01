@@ -1,8 +1,8 @@
 version: 2.0.0
-last_updated: '2026-06-26T04:25:00Z'
+last_updated: '2026-07-01T14:05:00Z'
 total_agents: 161
-active_agents: 149
-archived_agents: 12
+active_agents: 147
+archived_agents: 14
 agents:
 - id: github-app-manager
   name: GitHub App Manager
@@ -2330,7 +2330,7 @@ agents:
   name: Quantum Compliance Tuning Agent
   file: quantum-compliance-tuning-agent.md
   status: active
-  maturity: beta
+  maturity: production
   category: cognitive
   priority: medium
   purpose: Tunes quantum-inspired compliance parameters for cognitive brain optimization.
@@ -2343,6 +2343,10 @@ agents:
   description: Tunes quantum-inspired compliance parameters for cognitive brain optimization.
   capability_tags:
   - cognitive
+  integration_confirmed: true
+  integration_date: '2026-07-01'
+  integration_notes: Core executor of QI_TESTING improvement area. 10+ deep references.
+    27 tests. Integration verified. See QUANTUM_COMPLIANCE_TUNING_AGENT_INTEGRATION_GUIDE.md
 - id: rag-freshness-loop-agent
   name: RAG Freshness Loop Agent
   file: rag-freshness-loop-agent.md
@@ -3838,7 +3842,7 @@ agents:
   name: Energy Conversion Agent
   version: 1.0.0
   file: .github/agents/energy-conversion-agent.md
-  status: active
+  status: archived
   maturity: production
   has_prompts: false
   has_tests: false
@@ -3871,6 +3875,9 @@ agents:
   - grid_stability
   - demand_forecasting
   - anomaly_detection
+  deprecation_date: '2026-07-01'
+  deprecation_reason: Out-of-scope domain (G2E energy conversion). Minimal integration
+    (4 refs, IQ=0.6558). Zero active use. See ENERGY_CONVERSION_AGENT_DEPRECATION.md
 - id: promote-integration-branch
   name: Promote Integration Branch Workflow
   version: 1.0.0
