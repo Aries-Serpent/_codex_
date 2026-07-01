@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-07-01T15:15:51Z",
+  "generated_at": "2026-07-01T20:26:20Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -971,7 +971,7 @@
     {
       "name": "google-home-script-agent",
       "role": "specialist",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "ARCHIVED",
       "autonomy_model": "E"
     }
   ],
@@ -2401,5 +2401,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "b151965fbd4ff263a514cf93c12e6ecee98ffe02bcde9c62b8efeec6b7d359f3"
+  "integrity_sha256": "8496aa277bf798cc6763bcfc83e044477c5ecb35fcbf0faa00a27a9b4817601a"
 }
