@@ -396,6 +396,8 @@ functional = "codex_ml.registry.trainers:_load_functional_trainer"
 [tool.setuptools.package-dir]
 "" = "src"
 agents = "agents"
+config = "src/config"
+codex_bridge = "src/codex_bridge"
 codex_addons = "codex_addons"
 codex_digest = "codex_digest"
 codex_utils = "codex_utils"
