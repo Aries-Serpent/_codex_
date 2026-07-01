@@ -1,32 +1,29 @@
-# Session Context — 2026-07-01T04:01:51Z
-**Branch:** `copilot/full-execution-plan-advanced-repo`  **PR:** #5160  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-07-01T04:35:51Z
+**Branch:** `copilot/explore-codebase-failing-checks`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4610` (✅)
-- GraphQL remaining: `4993` (✅)
+- REST remaining: `4983` (✅)
+- GraphQL remaining: `4988` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #5160 — Implement core autonomy foundations: deterministic 8-step execution loop with validation, persistence, and structured handoffs
-State: `open`  Draft: `False`  Branch: `copilot/full-execution-plan-advanced-repo` → `main`
-
 ## 🚨 Recent CI Failures (last 5 runs)
-- **.github/workflows/rust_swarm_ci.yml** — `failure` on `copilot/full-execution-plan-advanced-repo` (2026-07-01)
-- **.github/workflows/release.yml** — `failure` on `copilot/full-execution-plan-advanced-repo` (2026-07-01)
-- **.github/workflows/build-preview-image.yml** — `failure` on `copilot/full-execution-plan-advanced-repo` (2026-07-01)
-- **.github/workflows/embedding-index-rebuild.yml** — `failure` on `copilot/full-execution-plan-advanced-repo` (2026-07-01)
-- **.github/workflows/progressive-validation.yml** — `failure` on `copilot/full-execution-plan-advanced-repo` (2026-07-01)
+- **Artifact Monitoring** — `failure` on `main` (2026-07-01)
+- **Validation Pipeline** — `failure` on `main` (2026-07-01)
+- **🔐 Secrets Baseline Enforcer** — `failure` on `main` (2026-07-01)
+- **Machine Readable Governance** — `failure` on `main` (2026-07-01)
+- **RAG Module Tests** — `failure` on `main` (2026-07-01)
 
 ## 📝 Recent Commits
+- `1609c8ca` Merge pull request #5160 from Aries-Serpent/copilot/full-execution-plan-advanced — Statix (2026-07-01)
+- `fe4d3e7e` Fix Phase 4 & 6: Documentation, config, and generated files cleanup — copilot-swe-agent[bot] (2026-07-01)
+- `243598b3` Fix Phase 2: Type/Schema fixes and determinism improvements — copilot-swe-agent[bot] (2026-07-01)
+- `0a7ba046` Fix Phase 1: Resolve merge conflicts and remove unused imports — copilot-swe-agent[bot] (2026-07-01)
+- `f7c1fc48` Start: Address all 23 PR review comments — copilot-swe-agent[bot] (2026-07-01)
 - `f87bfa25` Resolve merge conflicts with main branch — copilot-swe-agent[bot] (2026-07-01)
 - `c13a9cd7` Merge pull request #5162 from Aries-Serpent/copilot/copilotfull-execution-plan-a — Statix (2026-07-01)
 - `ef44f8f6` fix: Restore ExecutionReport import (part of public API) and update documentatio — copilot-swe-agent[bot] (2026-07-01)
-- `541c7389` fix: Resolve Comment Review Gate blocking issue and code quality — copilot-swe-agent[bot] (2026-07-01)
-- `b64743b1` 🧠 Update cognitive brain patterns [automated] — github-actions[bot] (2026-07-01)
-- `f678afc8` docs: Initialize PR #5160 merge resolution campaign with phase checklist — copilot-swe-agent[bot] (2026-07-01)
-- `6f6a19d3` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-07-01)
-- `bfe9a8ee` fix: Remove runtime files from git tracking and add comprehensive .gitignore — copilot-swe-agent[bot] (2026-07-01)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-30T18:37:32Z",
+  "generated_at": "2026-07-01T04:37:38Z",
   "scripts": [
     "tools/codex_ingest_md.py",
     "tools/codex_sqlite_align.py",
