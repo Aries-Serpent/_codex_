@@ -1,0 +1,33 @@
+# Debug experiment configuration
+# Used for development and debugging test runs
+
+defaults:
+  - _self_
+
+# Experiment settings
+experiment:
+  name: debug
+  description: "Debug mode for development and testing"
+  enabled: true
+  log_level: DEBUG
+
+# Test configuration
+test:
+  timeout: 300  # 5 minutes
+  reruns: 0
+  verbose: true
+  fail_fast: true
+  markers:
+    - unit
+    - integration
+
+# Coverage settings
+coverage:
+  enabled: true
+  min_threshold: 70
+  fail_under: false  # Don't fail on low coverage in debug mode
+
+# Performance
+performance:
+  parallel_workers: 1  # Single worker for easier debugging
+  cache_enabled: true
