@@ -458,11 +458,17 @@ def _check_action_execution_status(state: Dict[str, Any],
         
         # If execution_step is "validate" but action failed, flag it
         if action_status == "failed" and state.get("execution_step") == "validate":
+            action_type = action.get("action_type", "unknown")
+            action_target = action.get("target", "N/A")
+            error_info = action.get("error", "No error details")
             result["violations"].append({
                 "rule": ValidationRule.ACTION_EXECUTION_FAILED,
                 "severity": ValidationSeverity.HIGH,
                 "action_id": action.get("action_id", f"action[{i}]"),
-                "message": "Action failed during validation step"
+                "message": (
+                    f"Action failed: type={action_type}, target={action_target}, "
+                    f"error={error_info}"
+                )
             })
 
 

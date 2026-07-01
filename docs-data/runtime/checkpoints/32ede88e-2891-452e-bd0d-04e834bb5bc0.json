@@ -1,0 +1,53 @@
+{
+  "checkpoint_id": "32ede88e-2891-452e-bd0d-04e834bb5bc0",
+  "state": {
+    "state_id": "82d533ae-ed92-4b8e-9b5b-58c68baf06b2",
+    "agent_id": "test-agent",
+    "phase_id": "phase-10",
+    "track_id": "test-track",
+    "task_id": "test-task",
+    "execution_step": "handoff",
+    "status": "in_progress",
+    "timestamp": "2026-07-01T00:08:06Z",
+    "previous_state_id": "b18a3fe1-3006-486c-8e6f-dfcfee39ad17",
+    "confidence_score": 0.8,
+    "input_context": {
+      "source": "test",
+      "data": {
+        "test_key": "test_value"
+      }
+    },
+    "decision_context": {
+      "reasoning": [
+        "Test reasoning"
+      ],
+      "constraints": [
+        "Test constraint"
+      ],
+      "selected_action": "test_action",
+      "confidence": 0.8
+    },
+    "actions_taken": [
+      {
+        "action_id": "action-1",
+        "action_type": "test",
+        "status": "completed",
+        "target": "test-system"
+      }
+    ],
+    "validation_results": {},
+    "dependencies": [
+      {
+        "type": "state",
+        "id": "310ac039-9fb2-43a2-9614-2f7672bfca59",
+        "status": "resolved"
+      }
+    ],
+    "unresolved_items": [],
+    "lineage": {
+      "created_by": "test-agent"
+    }
+  },
+  "created_at": "2026-07-01T00:08:06Z",
+  "format_version": "1.0"
+}
