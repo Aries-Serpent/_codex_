@@ -73168,7 +73168,7 @@
       "extension": ".json",
       "path": "docs-data/generated/candidate-inventory.json",
       "requires_ingestion": false,
-      "size_bytes": 2268521
+      "size_bytes": 2308538
     },
     {
       "classification": "generated_machine_readable_artifact",
@@ -73186,7 +73186,7 @@
       "extension": ".json",
       "path": "docs-data/generated/codebase-discovery-report.json",
       "requires_ingestion": false,
-      "size_bytes": 1146563
+      "size_bytes": 1160284
     },
     {
       "classification": "generated_machine_readable_artifact",
@@ -73339,7 +73339,7 @@
       "extension": ".json",
       "path": "docs-data/generated/machine-readable-coverage-report.json",
       "requires_ingestion": false,
-      "size_bytes": 829140
+      "size_bytes": 841075
     },
     {
       "classification": "generated_machine_readable_artifact",
@@ -73357,7 +73357,7 @@
       "extension": ".json",
       "path": "docs-data/generated/markdown-inventory.json",
       "requires_ingestion": false,
-      "size_bytes": 1874119
+      "size_bytes": 1895712
     },
     {
       "classification": "generated_machine_readable_artifact",
@@ -73555,7 +73555,7 @@
       "extension": ".json",
       "path": "docs-data/generated/validation-report.json",
       "requires_ingestion": false,
-      "size_bytes": 254
+      "size_bytes": 282
     },
     {
       "classification": "configuration",
@@ -79471,5 +79471,5 @@
       "size_bytes": 6029
     }
   ],
-  "generated_at": "2026-07-01T04:37:38Z"
+  "generated_at": "2026-07-01T04:48:16Z"
 }

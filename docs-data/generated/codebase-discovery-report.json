@@ -21489,7 +21489,7 @@
     "SECURITY.md"
   ],
   "files_recommended_for_quarantine": [],
-  "generated_at": "2026-07-01T04:37:38Z",
+  "generated_at": "2026-07-01T04:48:16Z",
   "total_candidate_files": 8830,
   "unresolved_risks": [
     "Large unmanaged legacy document volume may require staged migration.",
