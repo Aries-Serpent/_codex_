@@ -1,0 +1,13 @@
+{
+  "checked": 2284,
+  "warnings_count": 1,
+  "errors_count": 0,
+  "warnings": [
+    {
+      "file": "docs/testing/CODEX_MASTER_KEY_TEST_GUIDE.md",
+      "link": "../../../tests/github/conftest_codex_master_key.py",
+      "message": "Link points outside repository: ../../../tests/github/conftest_codex_master_key.py"
+    }
+  ],
+  "errors": []
+}
