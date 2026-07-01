@@ -10,16 +10,13 @@ Comprehensive testing of the core autonomy foundations:
 5. Crash recovery
 """
 
-import json
-import tempfile
 import uuid
 from datetime import datetime
-from pathlib import Path
 from typing import Any, Dict
 
-from validation_engine import validate_state, validate_state_transition
 from checkpoint_manager import CheckpointManager
-from handoff_protocol import HandoffProtocol, HandoffObject
+from handoff_protocol import HandoffProtocol
+from validation_engine import validate_state, validate_state_transition
 
 
 def create_test_state(
@@ -256,13 +253,13 @@ def test_crash_recovery():
     recovered_state = manager_after_crash.load_checkpoint(checkpoint_id)
     
     if recovered_state:
-        print(f"✓ Recovered state from checkpoint")
+        print("✓ Recovered state from checkpoint")
         print(f"  State ID matches: {recovered_state.get('state_id') == state.get('state_id')}")
         print(f"  All data preserved: {len(recovered_state) == len(state)}")
         
         # Resume execution
         resumed_state = manager_after_crash.resume_execution(checkpoint_id)
-        print(f"✓ Resumed execution from checkpoint")
+        print("✓ Resumed execution from checkpoint")
         print(f"  Execution step: {resumed_state.get('execution_step')}")
         
         return True

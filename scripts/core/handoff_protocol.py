@@ -15,7 +15,6 @@ FLOW:
 Agent A → prepare_handoff() → handoff_object → Agent B → resume_from_handoff()
 """
 
-import json
 import uuid
 from datetime import datetime
 from typing import Any, Dict, List, Optional

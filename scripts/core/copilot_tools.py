@@ -16,7 +16,7 @@ TOOL CATEGORIES:
 """
 
 import json
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 
 class CopilotToolContract:
@@ -58,7 +58,8 @@ class ContextRetrievalTools:
             {
                 "agent_id": str,
                 "current_state_id": str,
-                "execution_step": str,  # observe|context|decide|act|validate|persist|handoff|complete
+                # observe|context|decide|act|validate|persist|handoff|complete
+                "execution_step": str,
                 "phase": str,
                 "track": str,
                 "task": str,

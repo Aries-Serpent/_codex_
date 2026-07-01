@@ -13,11 +13,10 @@ INTEGRATION POINTS:
 - Used by runtime before step continuation
 """
 
-import json
 import uuid
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Set, Tuple
 from enum import Enum
+from typing import Any, Dict, List, Optional, Set
 
 
 class ValidationSeverity(str, Enum):
@@ -463,7 +462,7 @@ def _check_action_execution_status(state: Dict[str, Any],
                 "rule": ValidationRule.ACTION_EXECUTION_FAILED,
                 "severity": ValidationSeverity.HIGH,
                 "action_id": action.get("action_id", f"action[{i}]"),
-                "message": f"Action failed during validation step"
+                "message": "Action failed during validation step"
             })
 
 

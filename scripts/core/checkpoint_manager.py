@@ -16,7 +16,6 @@ REQUIREMENTS:
 """
 
 import json
-import os
 import uuid
 from datetime import datetime
 from pathlib import Path
@@ -412,7 +411,10 @@ def create_checkpoint(state: Dict[str, Any], storage_dir: Optional[str] = None) 
     return manager.create_checkpoint(state)
 
 
-def load_checkpoint(checkpoint_id: str, storage_dir: Optional[str] = None) -> Optional[Dict[str, Any]]:
+def load_checkpoint(
+    checkpoint_id: str,
+    storage_dir: Optional[str] = None
+) -> Optional[Dict[str, Any]]:
     """
     Convenience function to load a checkpoint.
     
