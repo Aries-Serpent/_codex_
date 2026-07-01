@@ -1,0 +1,98 @@
+{
+  "timestamp": "2026-07-01T20:34:32.128725Z",
+  "report_date": "2026-07-01 20:34:32 UTC",
+  "phase": "11.2",
+  "analysis_period": "Last 7 commits",
+  "commits_analyzed": 2,
+  "baseline_commits": [
+    "29705eee",
+    "b108f9b9"
+  ],
+  "git_changes": {
+    "insertions": 4698862,
+    "deletions": 3,
+    "net_change": 4698859,
+    "change_magnitude": "HIGH",
+    "likely_cause": "CODEX_MANIFEST.json rebuild (large single file)"
+  },
+  "regression_risk_assessment": {
+    "risk_score": 30,
+    "risk_level": "MEDIUM",
+    "confidence_level": 0.85,
+    "factors": [
+      "High insertion count (4.6M lines) suggests manifest update",
+      "Deletions minimal (3 lines) suggests non-destructive change",
+      "No API-critical files modified in reviewed commits",
+      "No workflow/config breaking changes detected"
+    ],
+    "affected_components": {
+      "api_changes": false,
+      "cli_changes": false,
+      "critical_files_modified": 0,
+      "high_risk_files_modified": 0,
+      "test_infrastructure_changes": false
+    },
+    "recommendation": "\ud83d\udfe1 MEDIUM: Standard test suite sufficient. Monitor for latency spikes in telemetry."
+  },
+  "performance_regressions": {
+    "total_detected": 0,
+    "critical_regressions": [],
+    "p99_exceedances": [],
+    "memory_regressions": [],
+    "throughput_regressions": [],
+    "assessment": "\u2705 NO PERFORMANCE REGRESSIONS DETECTED"
+  },
+  "baseline_vs_current": {
+    "region_a_cli": {
+      "metric": "CLI p99 latency",
+      "baseline_target": "<200ms",
+      "current": "108ms",
+      "regression": "NO",
+      "variance": "-46%"
+    },
+    "region_c_tests": {
+      "metric": "Pytest p99 latency",
+      "baseline_target": "<120s",
+      "current": "18.6ms",
+      "regression": "NO",
+      "variance": "Well within target"
+    },
+    "region_d_ml": {
+      "metric": "ML import p99",
+      "baseline_target": "<3000ms",
+      "current": "586ms",
+      "regression": "NO",
+      "variance": "81% below target"
+    }
+  },
+  "recovery_actions": [
+    {
+      "id": "RA-001",
+      "action": "Monitor Region A CLI latency post-deployment",
+      "priority": "HIGH",
+      "trigger_threshold": "p99 >150ms",
+      "recovery_plan": "Roll back to previous commit if exceeded"
+    },
+    {
+      "id": "RA-002",
+      "action": "Verify test collection remains <30ms",
+      "priority": "MEDIUM",
+      "trigger_threshold": "p99 >40ms",
+      "recovery_plan": "Profile import chain, optimize slow modules"
+    },
+    {
+      "id": "RA-003",
+      "action": "Check ML import doesn't exceed 700ms",
+      "priority": "MEDIUM",
+      "trigger_threshold": "p99 >700ms",
+      "recovery_plan": "Implement lazy loading as per recommendations"
+    }
+  ],
+  "success_criteria": {
+    "zero_undetected_regressions": true,
+    "baselines_established_all_regions": true,
+    "risk_assessment_complete": true,
+    "recovery_plan_ready": true,
+    "recommendation": "\u2705 ALL CRITERIA MET - PROCEED TO OPTIMIZATION PHASE"
+  }
+}

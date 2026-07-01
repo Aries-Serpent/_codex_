@@ -1,18 +1,20 @@
 {
-  "generated_at": "2026-07-01T20:13:40.730410+00:00",
+  "generated_at": "2026-07-01T20:29:16.543373+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 4613,
+  "rest_remaining": 4863,
   "graphql_available": true,
-  "graphql_remaining": 4990,
+  "graphql_remaining": 4977,
   "gh_cli_available": true,
   "codeql_available": false,
   "best_token_var": "GITHUB_TOKEN",
-  "open_prs": [],
+  "open_prs": [
+    5181
+  ],
   "branch": "copilot/multi-agent-implementation-fixes",
   "recommendation": "Use REST for data fetches. "
 }
