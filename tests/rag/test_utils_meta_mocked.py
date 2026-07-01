@@ -36,7 +36,11 @@ class TestCheckForMetaTensorsMocked:
         assert result is None
 
     def test_root_module_skipped_in_named_modules_walk(self):
-        """Root module is skipped via 'continue' in the named_modules walk (line 95)."""
+        """Root module is skipped via 'continue' in the named_modules walk (line 95).
+
+        Non-root submodule processing is validated by
+        test_meta_tensor_detected_in_submodule_parameter.
+        """
         fake_module_class = type("FakeModule", (), {})
         mock_torch = MagicMock()
         mock_torch.nn.Module = fake_module_class

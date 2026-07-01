@@ -48,9 +48,11 @@ def get_gpu_memory() -> tuple[int, int]:
             return free, total
     except ImportError:
         logger.debug("PyTorch not installed")
+        return 0, 0
     except (ValueError, TypeError, RuntimeError) as e:
         type(e).__name__
         logger.debug("Could not get GPU memory: <ERROR_TYPE>")
+        return 0, 0
     return 0, 0
 
 
