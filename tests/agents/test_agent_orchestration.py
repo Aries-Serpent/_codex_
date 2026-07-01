@@ -113,8 +113,7 @@ class TestQuantumAgentOrchestrator:
 
         # Valid order
         valid_order = ["workflow-health-monitor", "ci-testing-agent", "test-alignment-fixer"]
-        assert orchestrator._prerequisites_satisfied(valid_order, "orchestrat is not valid"
-        ), "orchestrat is not valid"
+        assert orchestrator._prerequisites_satisfied(valid_order)
 
         # Invalid order (ci-testing-agent before prerequisite)
         invalid_order = ["ci-testing-agent", "workflow-health-monitor"]
