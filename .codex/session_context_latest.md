@@ -1,10 +1,10 @@
-# Session Context — 2026-07-01T06:43:28Z
+# Session Context — 2026-07-01T06:52:22Z
 **Branch:** `fix/ci-rag-module-tests-20260701060324`  **PR:** #5168  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4897` (✅)
-- GraphQL remaining: `4963` (✅)
+- REST remaining: `4673` (✅)
+- GraphQL remaining: `4993` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -12,21 +12,21 @@
 State: `open`  Draft: `True`  Branch: `copilot/fix-actionlint-workflow-compliance` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **.github/workflows/progressive-validation.yml** — `failure` on `copilot/fix-actionlint-workflow-compliance` (2026-07-01)
-- **.github/workflows/progressive-validation.yml** — `failure` on `copilot/fix-actionlint-workflow-compliance` (2026-07-01)
-- **.github/workflows/data-quality-suite.yml** — `failure` on `copilot/fix-actionlint-workflow-compliance` (2026-07-01)
-- **.github/workflows/data-quality-suite.yml** — `failure` on `copilot/fix-actionlint-workflow-compliance` (2026-07-01)
-- **.github/workflows/embedding-index-rebuild.yml** — `failure` on `copilot/fix-actionlint-workflow-compliance` (2026-07-01)
+- **.github/workflows/build-preview-image.yml** — `failure` on `fix/ci-rag-module-tests-20260701060324` (2026-07-01)
+- **.github/workflows/admin-action-t03.yml** — `failure` on `fix/ci-rag-module-tests-20260701060324` (2026-07-01)
+- **.github/workflows/release.yml** — `failure` on `fix/ci-rag-module-tests-20260701060324` (2026-07-01)
+- **.github/workflows/rust_swarm_ci.yml** — `failure` on `fix/ci-rag-module-tests-20260701060324` (2026-07-01)
+- **.github/workflows/embedding-index-rebuild.yml** — `failure` on `fix/ci-rag-module-tests-20260701060324` (2026-07-01)
 
 ## 📝 Recent Commits
+- `abd897a2` fix(ci): add missing modules to branch-rebase-gate sparse checkout (REQ-10) — copilot-swe-agent[bot] (2026-07-01)
+- `1fc9c35c` chore: plan for REQ-10 branch rebase gate fix [skip ci] — copilot-swe-agent[bot] (2026-07-01)
 - `1af9aef1` fix(secrets): annotate doc-example false positives [skip ci] (RP-007) — github-actions[bot] (2026-07-01)
 - `10809f0a` fix(ci): fix Python f-string bug in RAG test workflow Step 8 verification — copilot-swe-agent[bot] (2026-07-01)
 - `2ae4a790` chore: initial plan for RAG Module Tests CI fix [skip ci] — copilot-swe-agent[bot] (2026-07-01)
 - `8ec10b80` fix(ci): tracking stub for RAG Module Tests [skip ci] — github-actions[bot] (2026-07-01)
 - `585d7f75` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-07-01)
 - `a63b72dd` Merge pull request #5165 from Aries-Serpent/copilot/explore-codebase-failing-che — Statix (2026-07-01)
-- `429d1250` fix(workflow): Update branch-rebase-gate actions/checkout from v7 to v5 (REQ-10  — copilot-swe-agent[bot] (2026-07-01)
-- `531fa74e` fix(secrets): annotate doc-example false positives [skip ci] (RP-007) — github-actions[bot] (2026-07-01)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
