@@ -1,4 +1,16 @@
 
+## [Fixed] 2026-07-01T06:44Z — PR #5167: REQ-10 Branch Rebase Gate Fix
+
+### Summary
+Resolved the `🔀 REQ-10: Branch Rebase Check` failure (`ModuleNotFoundError: No module named 'scripts.ci._token_resolver'`).
+
+**Root Cause**: The `branch-rebase-gate.yml` sparse checkout only fetched `scripts/ci/branch_rebase_check.py`, but the script imports `from scripts.ci._token_resolver import get_token`. The `_token_resolver` module — plus the `scripts/__init__.py` and `scripts/ci/__init__.py` package markers needed for Python to treat `scripts.ci` as a package — were absent from the sparse checkout.
+
+**Fix Applied**:
+- Updated sparse-checkout block in `.github/workflows/branch-rebase-gate.yml` to also fetch `scripts/__init__.py`, `scripts/ci/__init__.py`, and `scripts/ci/_token_resolver.py`.
+
+**Affected File**: `.github/workflows/branch-rebase-gate.yml`
+
 ## [Fixed] 2026-07-01T06:09Z — PR #5166: RAG Module Tests CI Fix
 
 ### Summary
