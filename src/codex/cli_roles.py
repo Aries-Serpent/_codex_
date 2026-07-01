@@ -27,6 +27,40 @@ def export_matrix(
     dynamics_roles_file: Path = typer.Argument(..., exists=True, readable=True),
     output_json: Path = typer.Argument(...),
 ) -> None:
+    """Export cross-platform role matrices for Zendesk and Dynamics.
+
+    Loads role definitions from both Zendesk and Dynamics systems, builds
+    a unified role matrix showing cross-platform relationships, and exports
+    to JSON for use in access control and permission harmonization.
+
+    Args:
+        zendesk_roles_file: Zendesk roles file (JSON or JSONL)
+        dynamics_roles_file: Dynamics roles file (JSON or JSONL)
+        output_json: Output matrix JSON file
+
+    Input Formats:
+        - JSON: Single object or array of objects
+        - JSONL: One role object per line
+
+    Output:
+        JSON matrix with:
+        - Zendesk roles
+        - Dynamics roles
+        - Role mappings and relationships
+
+    Examples:
+        # Export role matrices
+        codex roles export-matrix zendesk_roles.json dynamics_roles.json matrix.json
+
+        # From JSONL files
+        codex roles export-matrix zendesk_roles.jsonl dynamics_roles.jsonl matrix.json
+
+        # Mixed formats
+        codex roles export-matrix zendesk.json dynamics.jsonl output_matrix.json
+
+    See Also:
+        codex zendesk snapshot - Export Zendesk configuration
+    """
     zendesk_raw = _load_jsonl_or_json(zendesk_roles_file)
     dynamics_raw = _load_jsonl_or_json(dynamics_roles_file)
 

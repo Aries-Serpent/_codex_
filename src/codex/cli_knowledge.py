@@ -160,6 +160,35 @@ def build_kb_cmd(
     max_tokens: int = MAX_TOKENS_OPTION,
     dedup: bool = DEDUP_OPTION,
 ) -> None:
+    """Build knowledge base from documentation files.
+
+    This command processes documentation files in the specified root directory,
+    normalizes content, chunks text by headings, and generates a knowledge base
+    in NDJSONL format ready for indexing or RAG pipelines.
+
+    Args:
+        root: Root documentation directory (default: docs/)
+        out: Output KB file path (default: artifacts/kb.ndjsonl)
+        allow_gpl: Include GPL-licensed content (default: False)
+        max_tokens: Maximum tokens per record (default: 2048)
+        dedup: Deduplicate content (default: True)
+
+    Output:
+        JSON summary with records processed, tokens used, deduplication stats
+
+    Examples:
+        # Build KB from default docs directory
+        codex knowledge build-kb
+
+        # Custom output and token limit
+        codex knowledge build-kb --out my_kb.ndjsonl --max-tokens 4096
+
+        # Include GPL-licensed content
+        codex knowledge build-kb --allow-gpl
+
+        # Without deduplication
+        codex knowledge build-kb --no-dedup
+    """
     res = build_kb(
         root,
         out,
@@ -177,6 +206,33 @@ def archive_and_manifest_cmd(
     evl: Path | None = EVAL_OPTION,
     by: str = ACTOR_OPTION,
 ) -> None:
+    """Archive knowledge base and generate manifest for release.
+
+    This command creates an archive from a built knowledge base and generates
+    a manifest file that includes metadata and validation information for
+    distribution or deployment.
+
+    Args:
+        kb: Path to built knowledge base file (must exist)
+        instructions: Optional instructions/README file
+        evl: Optional evaluation/metrics file
+        by: Actor identifier for the manifest (default: "codex")
+
+    Output:
+        JSON manifest with archive metadata and checksums
+
+    Examples:
+        # Basic archive with KB only
+        codex knowledge archive-and-manifest artifacts/kb.ndjsonl
+
+        # With instructions and evaluation files
+        codex knowledge archive-and-manifest artifacts/kb.ndjsonl \\
+          --instructions docs/instructions.md \\
+          --eval docs/eval.md
+
+        # Specify actor
+        codex knowledge archive-and-manifest artifacts/kb.ndjsonl --by bot
+    """
     res = archive_and_manifest(kb, instructions, evl, actor=by)
     typer.echo(json.dumps(res, indent=2))
 
@@ -187,6 +243,33 @@ def pack_release_cmd(
     staging: Path = STAGING_OPTION,
     out_bundle: Path = BUNDLE_OPTION,
 ) -> None:
+    """Pack knowledge base release bundle with verification.
+
+    This command creates a compressed bundle from a manifest, including all
+    components, files, and checksums. The bundle can be verified independently
+    and extracted to any destination.
+
+    Args:
+        manifest: Path to manifest file (must exist)
+        staging: Staging directory for bundle creation (default: work/knowledge_staging)
+        out_bundle: Output bundle path (default: dist/codex-knowledge.tar.gz)
+
+    Output:
+        JSON with bundle path, SHA256 hash, and verification status
+
+    Examples:
+        # Pack with defaults
+        codex knowledge pack-release artifacts/knowledge.release.manifest.json
+
+        # Custom staging and output
+        codex knowledge pack-release artifacts/knowledge.release.manifest.json \\
+          --staging /tmp/staging \\
+          --out dist/codex-kb-v1.tar.gz
+
+    See Also:
+        codex knowledge archive-and-manifest - Create manifest from KB
+        codex release verify - Verify bundle integrity
+    """
     bundle, locked = pack_release(manifest, staging, out_bundle)
     v = verify_bundle(bundle)
     typer.echo(
