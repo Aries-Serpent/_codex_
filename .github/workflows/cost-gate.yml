@@ -26,6 +26,10 @@ on:
         required: false
         default: false
         type: boolean
+    secrets:
+      GH_TOKEN:
+        description: GitHub token for API calls
+        required: false
     outputs:
       tier:
         description: GREEN | YELLOW | RED
@@ -95,6 +99,7 @@ jobs:
         PROPOSAL_MD: ${{ steps.proposal.outputs.proposal_md }}
         WORKFLOW_NAME: ${{ inputs.workflow_name }}
         EFFECTIVE_MIN: ${{ steps.estimate.outputs.effective_minutes }}
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
       with:
         script: "const tier         = '${{ steps.estimate.outputs.tier }}';\nconst\
           \ proposal     = (process.env.PROPOSAL_MD   || '').trim();\nconst workflowName\
@@ -151,7 +156,7 @@ jobs:
           \ 4 s, 6 s).\n    await new Promise(r => setTimeout(r, Math.random() * Math.pow(2,\
           \ attempt) * 1000 + 500));\n  }\n}\n"
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
   gate:
     name: "\U0001F6A6 Cost gate (${{ needs.estimate.outputs.tier }})"
     runs-on: ubuntu-latest
@@ -243,7 +248,7 @@ jobs:
         \ != \"true\" ]; then\n  echo \"::error::Cost gate not approved\"\n  exit\
         \ 1\nfi\necho \"\u2705 Cost gate passed \u2014 job may proceed.\"\n"
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
@@ -263,12 +268,11 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v7
       with:
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.GH_TOKEN || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
         REPO: ${{ github.repository }}
         COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
@@ -278,5 +282,3 @@ jobs:
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
-    env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
