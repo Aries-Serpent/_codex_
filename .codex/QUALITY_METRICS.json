@@ -1,0 +1,92 @@
+{
+  "repository": {
+    "name": "codex-ml",
+    "version": "v0.1.0-pre-release",
+    "python_files": 449,
+    "total_lines": 87676,
+    "total_functions": 3786,
+    "total_classes": 949
+  },
+  "coverage": {
+    "current": 17.57,
+    "target": 70.0,
+    "gap": -52.43,
+    "test_files": 2679,
+    "test_functions": 37665,
+    "test_ratio": 9.95
+  },
+  "complexity": {
+    "average": 6.2,
+    "target": 10.0,
+    "hotspot_count": 20,
+    "top_functions": [
+      {
+        "file": "github/mcp_poster.py",
+        "function": "__init__",
+        "cc": 252,
+        "lines": 2056
+      },
+      {
+        "file": "retrieval/stores/faiss_store.py",
+        "function": "__init__",
+        "cc": 155,
+        "lines": 608
+      },
+      {
+        "file": "cognitive/brain_interface.py",
+        "function": "__init__",
+        "cc": 121,
+        "lines": 639
+      }
+    ]
+  },
+  "type_hints": {
+    "average_coverage": 62.0,
+    "target": 80.0,
+    "files_with_100_percent": 12,
+    "files_with_low_coverage": 8
+  },
+  "documentation": {
+    "comment_ratio": 5.1,
+    "target": 15.0,
+    "docstring_coverage": 39.6,
+    "missing_docstrings_files": 71
+  },
+  "code_smells": {
+    "god_objects": 5,
+    "bare_except": 1,
+    "long_params": 4,
+    "magic_numbers": 150,
+    "large_functions": 36
+  },
+  "modules": {
+    "cognitive": {
+      "files": 27,
+      "code": 12131,
+      "risk": "CRITICAL"
+    },
+    "logging": {
+      "files": 24,
+      "code": 5532,
+      "risk": "CRITICAL"
+    },
+    "rag": {
+      "files": 32,
+      "code": 7244,
+      "risk": "HIGH"
+    },
+    "archive": {
+      "files": 23,
+      "code": 4869,
+      "risk": "HIGH"
+    },
+    "auth": {
+      "files": 13,
+      "code": 3746,
+      "risk": "HIGH"
+    }
+  },
+  "quality_score": 42,
+  "quality_grade": "F",
+  "timestamp": "2026-07-01T08:45:00Z"
+}
