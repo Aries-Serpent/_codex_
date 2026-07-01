@@ -15,7 +15,7 @@ The test-rag (3.12.13) workflow failed during "Install dependencies" step with p
 
 **Root Cause:** Conflicting numpy version constraints in `pyproject.toml`
 - Line 50: Base dependencies require `numpy>=2.4.6,<3`
-- Line 217: RAG optional dependencies pinned `numpy>=1.20,<2.0.0`
+- Line 217: RAG optional dependencies pinned `numpy>=1.20,<2.0.0` # pragma: allowlist secret
 - This made `pip install .[rag,test-core]` impossible
 
 **2. Secrets Baseline Enforcer**
