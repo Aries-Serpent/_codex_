@@ -32,6 +32,7 @@ from codex.brain.session_serializer import (
 # Phase 10.3: OODA Orchestration
 try:
     from codex.brain.ooda_actor import (
+        ExecutionReport,
         OODAactor,
     )
     from codex.brain.ooda_decider import (

@@ -12,13 +12,12 @@ Resolved PR #5160 merge conflict blocking issue by addressing unaddressed commen
 2. **Code Quality Issues**: Minor unused import violations detected by ruff:
    - `pathlib.Path` unused in `src/codex/ast/plugins/__init__.py`
    - `typing.Optional` unused in `src/codex/ast/plugins/__init__.py`
-   - `ExecutionReport` unused in `src/codex/brain/__init__.py`
 
 ### FIXES APPLIED
 
 **Code Cleanup**:
 - Removed unused imports from `src/codex/ast/plugins/__init__.py` (Path, Optional)
-- Removed unused `ExecutionReport` import from `src/codex/brain/__init__.py`
+- Preserved ExecutionReport in `src/codex/brain/__init__.py` (part of module's public API via __all__)
 
 **Documentation**:
 - Updated CHANGELOG.md with fix session entry
@@ -26,7 +25,8 @@ Resolved PR #5160 merge conflict blocking issue by addressing unaddressed commen
 
 ### VALIDATION COMPLETED
 
-- ✅ Unused imports removed
+- ✅ Unused imports removed from ast/plugins/__init__.py
+- ✅ ExecutionReport preserved (verified in __all__ export list)
 - ✅ Code quality checks pass (ruff, mypy)
 - ✅ CHANGELOG.md updated with fix session
 - ✅ AGENT_ACCOUNTABILITY_REPORT.md updated
