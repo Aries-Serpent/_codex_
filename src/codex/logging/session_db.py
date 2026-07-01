@@ -1,44 +1,35 @@
 """
-SessionDB: SQLite backend for session tracking and querying.
+SessionDB: Facade for session database operations.
 
-Provides O(log n) query performance through proper indexing, thread-safe
-access through connection pooling, and automatic ACID compliance.
+Composes specialized modules for:
+- Database operations (SessionDatabase)
+- Query building (SessionQueryBuilder)
+- Analytics (SessionAnalytics)
+- Pattern/event recording (PatternEventRecorder)
 
-Key Features:
-- WAL mode for concurrent writes
-- Proper indices for common query patterns
-- Thread-safe connection management
-- Query result caching (TTL=5 minutes)
-- Transaction support with context managers
-- Foreign key constraint enforcement
-- Comprehensive error handling
+Maintains backward compatibility with existing public API.
 """
 
-import sqlite3
-import threading
-import time
-from contextlib import contextmanager
-from dataclasses import dataclass
-from datetime import datetime, timedelta
-from pathlib import Path
-from typing import Any, Generator, Optional
+from typing import Any, Optional
 
+from .pattern_event_recorder import PatternEventRecorder
+from .session_analytics import SessionAnalytics
+from .session_database import SessionDatabase
+from .session_query_builder import SessionQueryBuilder
 
-@dataclass
-class CacheEntry:
-    """Represents a cached query result with TTL."""
-
-    data: Any
-    timestamp: float
-
-    def is_expired(self, ttl: int = 300) -> bool:
-        """Check if cache entry has expired (default TTL: 5 minutes)."""
-        return time.time() - self.timestamp > ttl
+# Re-export CacheEntry for backward compatibility
+from .session_database import CacheEntry  # noqa: F401
 
 
 class SessionDB:
     """
     SQLite backend for session tracking with optimized query performance.
+
+    Facade that composes specialized modules for:
+    - Core database operations (SessionDatabase)
+    - Session querying (SessionQueryBuilder)
+    - Analytics and statistics (SessionAnalytics)
+    - Pattern and event recording (PatternEventRecorder)
 
     Implements:
     - O(log n) queries through strategic indexing
@@ -51,7 +42,7 @@ class SessionDB:
 
     def __init__(self, db_path: str = ".codex/sessions.db") -> None:
         """
-        Initialize database connection pool and ensure schema.
+        Initialize database facade and submodules.
 
         Args:
             db_path: Path to SQLite database file. Created if doesn't exist.
@@ -60,150 +51,37 @@ class SessionDB:
             sqlite3.Error: If schema initialization fails.
         """
         self.db_path = db_path
-        self._lock = threading.RLock()
-        self._cache: dict[str, CacheEntry] = {}
-        self._cache_ttl = 300  # 5 minutes
-        self._ensure_schema()
-        self._optimize_db()
+        
+        # Initialize specialized modules
+        self._database = SessionDatabase(db_path)
+        self._query_builder = SessionQueryBuilder(self._database)
+        self._analytics = SessionAnalytics(self._database)
+        self._recorder = PatternEventRecorder(self._database)
+        
+        # Expose internal references for backward compatibility
+        self._lock = self._database._lock
+        self._cache = self._database._cache
+        self._cache_ttl = self._database._cache_ttl
 
-    @contextmanager
-    def _get_connection(self) -> Generator[sqlite3.Connection, None, None]:
-        """
-        Context manager for thread-safe database connections.
-
-        Yields:
-            sqlite3.Connection: Database connection with row factory set.
-
-        Features:
-        - Automatic connection cleanup
-        - Row factory set for dict-like access
-        - 10-second connection timeout
-        """
-        conn = sqlite3.connect(self.db_path, timeout=10, check_same_thread=False)
-        conn.row_factory = sqlite3.Row
-        conn.execute("PRAGMA foreign_keys = ON")
-        try:
-            yield conn
-        finally:
-            conn.close()
+    def _get_connection(self):
+        """Get database connection (for backward compatibility)."""
+        return self._database._get_connection()
 
     def _ensure_schema(self) -> None:
-        """
-        Create database schema if it doesn't exist.
-
-        Loads and executes session_schema.sql from .codex directory.
-        Creates all tables and indices for optimal query performance.
-
-        Raises:
-            sqlite3.Error: If schema initialization fails.
-            FileNotFoundError: If schema file not found.
-        """
-        schema_path = Path(__file__).parent.parent.parent / ".codex" / "session_schema.sql"
-
-        if not schema_path.exists():
-            # Fallback: create schema inline if file not found
-            self._create_inline_schema()
-            return
-
-        with open(schema_path, "r") as f:
-            schema_sql = f.read()
-
-        with self._get_connection() as conn:
-            cursor = conn.cursor()
-            cursor.executescript(schema_sql)
-            conn.commit()
+        """Ensure database schema (for backward compatibility)."""
+        self._database._ensure_schema()
 
     def _create_inline_schema(self) -> None:
-        """Create schema using inline SQL (fallback method)."""
-        schema_sql = """
-        PRAGMA foreign_keys = ON;
-        PRAGMA journal_mode = WAL;
-        PRAGMA synchronous = NORMAL;
-        PRAGMA cache_size = -64000;
-
-        CREATE TABLE IF NOT EXISTS sessions (
-            session_id TEXT PRIMARY KEY,
-            pr_number INTEGER,
-            branch TEXT,
-            timestamp TEXT,
-            git_sha TEXT,
-            status TEXT NOT NULL CHECK (status IN ('pending', 'in-progress', 'complete', 'failed')),
-            agent_name TEXT,
-            duration_minutes INTEGER,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            UNIQUE(session_id)
-        );
-
-        CREATE TABLE IF NOT EXISTS session_metadata (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            session_id TEXT NOT NULL,
-            key TEXT NOT NULL,
-            value TEXT,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (session_id) REFERENCES sessions(session_id) ON DELETE CASCADE,
-            UNIQUE(session_id, key)
-        );
-
-        CREATE TABLE IF NOT EXISTS session_patterns (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            session_id TEXT NOT NULL,
-            pattern_id TEXT NOT NULL,
-            pattern_name TEXT,
-            success BOOLEAN DEFAULT 1,
-            applied_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (session_id) REFERENCES sessions(session_id) ON DELETE CASCADE
-        );
-
-        CREATE TABLE IF NOT EXISTS session_outcomes (
-            session_id TEXT PRIMARY KEY,
-            ci_checks_green INTEGER DEFAULT 0,
-            ci_checks_red INTEGER DEFAULT 0,
-            ci_checks_total INTEGER DEFAULT 0,
-            test_coverage REAL,
-            linting_errors INTEGER DEFAULT 0,
-            linting_warnings INTEGER DEFAULT 0,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (session_id) REFERENCES sessions(session_id) ON DELETE CASCADE
-        );
-
-        CREATE TABLE IF NOT EXISTS session_events (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            session_id TEXT NOT NULL,
-            event_type TEXT NOT NULL CHECK (event_type IN ('start', 'pattern_applied', 'check_passed', 'check_failed', 'error', 'complete')),
-            event_details TEXT,
-            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (session_id) REFERENCES sessions(session_id) ON DELETE CASCADE
-        );
-
-        CREATE INDEX IF NOT EXISTS idx_timestamp_status ON sessions(timestamp DESC, status);
-        CREATE INDEX IF NOT EXISTS idx_pr_number_branch ON sessions(pr_number, branch);
-        CREATE INDEX IF NOT EXISTS idx_agent_name ON sessions(agent_name);
-        CREATE INDEX IF NOT EXISTS idx_session_id ON sessions(session_id);
-        CREATE INDEX IF NOT EXISTS idx_created_at ON sessions(created_at DESC);
-        CREATE INDEX IF NOT EXISTS idx_metadata_session_key ON session_metadata(session_id, key);
-        CREATE INDEX IF NOT EXISTS idx_patterns_session ON session_patterns(session_id);
-        CREATE INDEX IF NOT EXISTS idx_events_session_time ON session_events(session_id, timestamp DESC);
-        CREATE INDEX IF NOT EXISTS idx_outcomes_session ON session_outcomes(session_id);
-        CREATE INDEX IF NOT EXISTS idx_sessions_status_created ON sessions(status, created_at DESC);
-        """  # noqa: E501
-
-        with self._get_connection() as conn:
-            conn.executescript(schema_sql)
-            conn.commit()
+        """Create inline schema (for backward compatibility)."""
+        self._database._create_inline_schema()
 
     def _optimize_db(self) -> None:
-        """Optimize database settings and structure."""
-        with self._get_connection() as conn:
-            cursor = conn.cursor()
-            cursor.execute("PRAGMA optimize")
-            conn.commit()
+        """Optimize database (for backward compatibility)."""
+        self._database._optimize_db()
 
     def _invalidate_cache(self) -> None:
-        """Clear all cached query results."""
-        with self._lock:
-            self._cache.clear()
+        """Clear all cached query results (for backward compatibility)."""
+        self._database._invalidate_cache()
 
     def insert_session(self, session: dict[str, Any]) -> bool:
         """
@@ -220,102 +98,7 @@ class SessionDB:
             ValueError: If required fields missing or invalid.
             sqlite3.IntegrityError: If session_id already exists.
         """
-        # Validate required fields
-        required_fields = ["session_id", "status", "timestamp"]
-        for field in required_fields:
-            if field not in session:
-                raise ValueError(f"Missing required field: {field}")
-
-        # Validate status value
-        valid_statuses = {"pending", "in-progress", "complete", "failed"}
-        if session.get("status") not in valid_statuses:
-            raise ValueError(
-                f"Invalid status: {session['status']}. Must be one of {valid_statuses}"
-            )
-
-        self._invalidate_cache()
-
-        with self._lock:
-            try:
-                with self._get_connection() as conn:
-                    cursor = conn.cursor()
-
-                    # Insert into sessions table
-                    cursor.execute(
-                        """
-                        INSERT INTO sessions
-                        (session_id, pr_number, branch, timestamp, git_sha, status, agent_name, duration_minutes)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                        """,  # noqa: E501
-                        (
-                            session["session_id"],
-                            session.get("pr_number"),
-                            session.get("branch"),
-                            session["timestamp"],
-                            session.get("git_sha"),
-                            session["status"],
-                            session.get("agent_name"),
-                            session.get("duration_minutes"),
-                        ),
-                    )
-
-                    # Insert outcomes if provided
-                    if "outcomes" in session:
-                        outcomes = session["outcomes"]
-                        cursor.execute(
-                            """
-                            INSERT OR REPLACE INTO session_outcomes
-                            (session_id, ci_checks_green, ci_checks_red, ci_checks_total,
-                             test_coverage, linting_errors, linting_warnings)
-                            VALUES (?, ?, ?, ?, ?, ?, ?)
-                            """,
-                            (
-                                session["session_id"],
-                                outcomes.get("ci_checks_green", 0),
-                                outcomes.get("ci_checks_red", 0),
-                                outcomes.get("ci_checks_total", 0),
-                                outcomes.get("test_coverage"),
-                                outcomes.get("linting_errors", 0),
-                                outcomes.get("linting_warnings", 0),
-                            ),
-                        )
-
-                    # Insert metadata if provided
-                    if "metadata" in session:
-                        for key, value in session["metadata"].items():
-                            cursor.execute(
-                                """
-                                INSERT OR REPLACE INTO session_metadata (session_id, key, value)
-                                VALUES (?, ?, ?)
-                                """,
-                                (session["session_id"], key, str(value)),
-                            )
-
-                    # Insert patterns if provided
-                    if "patterns" in session:
-                        for pattern in session["patterns"]:
-                            cursor.execute(
-                                """
-                                INSERT INTO session_patterns (session_id, pattern_id, pattern_name, success)
-                                VALUES (?, ?, ?, ?)
-                                """,  # noqa: E501
-                                (
-                                    session["session_id"],
-                                    pattern.get("pattern_id"),
-                                    pattern.get("pattern_name"),
-                                    pattern.get("success", True),
-                                ),
-                            )
-
-                    conn.commit()
-                    return True
-
-            except sqlite3.IntegrityError as e:
-                if "UNIQUE constraint failed" in str(e):
-                    raise ValueError(f"Session ID {session['session_id']} already exists") from e
-                raise
-            except (IOError, OSError) as e:
-                raise sqlite3.Error(f"Failed to insert session: {e}") from e
+        return self._database.insert_session(session)
 
     def query_sessions(
         self, filters: Optional[dict[str, Any]] = None, limit: int = 100, offset: int = 0
@@ -341,65 +124,7 @@ class SessionDB:
             - O(log n) with proper indices on filter fields
             - Typical 7-day query: <100ms
         """
-        cache_key = f"query_{str(filters)}_{limit}_{offset}"
-
-        # Check cache
-        with self._lock:
-            if cache_key in self._cache:
-                entry = self._cache[cache_key]
-                if not entry.is_expired(self._cache_ttl):
-                    return entry.data
-
-        filters = filters or {}
-        where_clauses = []
-        params = []
-
-        # Build WHERE clause dynamically
-        if "status" in filters:
-            where_clauses.append("status = ?")
-            params.append(filters["status"])
-
-        if "agent_name" in filters:
-            where_clauses.append("agent_name = ?")
-            params.append(filters["agent_name"])
-
-        if "branch" in filters:
-            where_clauses.append("branch = ?")
-            params.append(filters["branch"])
-
-        if "pr_number" in filters:
-            where_clauses.append("pr_number = ?")
-            params.append(filters["pr_number"])
-
-        if "start_time" in filters:
-            where_clauses.append("timestamp >= ?")
-            params.append(filters["start_time"])
-
-        if "end_time" in filters:
-            where_clauses.append("timestamp <= ?")
-            params.append(filters["end_time"])
-
-        where_clause = " AND ".join(where_clauses) if where_clauses else "1=1"
-
-        query = f"""
-            SELECT * FROM sessions
-            WHERE {where_clause}
-            ORDER BY timestamp DESC
-            LIMIT ? OFFSET ?
-        """  # nosec B608 - where_clause is built from safe values
-        params.extend([limit, offset])
-
-        with self._lock:
-            with self._get_connection() as conn:
-                cursor = conn.cursor()
-                cursor.execute(query, params)
-                rows = cursor.fetchall()
-                results = [dict(row) for row in rows]
-
-            # Cache result
-            self._cache[cache_key] = CacheEntry(results, time.time())
-
-        return results
+        return self._query_builder.query_sessions(filters, limit, offset)
 
     def query_by_date_range(
         self, start_dt: str, end_dt: str, limit: int = 1000
@@ -419,9 +144,7 @@ class SessionDB:
             - Uses index: idx_timestamp_status
             - 7-day query typically <100ms
         """
-        return self.query_sessions(
-            filters={"start_time": start_dt, "end_time": end_dt}, limit=limit
-        )
+        return self._query_builder.query_by_date_range(start_dt, end_dt, limit)
 
     def query_by_agent(self, agent_name: str, days: int = 7) -> list[dict[str, Any]]:
         """
@@ -438,13 +161,7 @@ class SessionDB:
             - Uses index: idx_agent_name
             - Typical query <50ms
         """
-        start_dt = (datetime.utcnow() - timedelta(days=days)).isoformat() + "Z"
-        end_dt = datetime.utcnow().isoformat() + "Z"
-
-        return self.query_sessions(
-            filters={"agent_name": agent_name, "start_time": start_dt, "end_time": end_dt},
-            limit=1000,
-        )
+        return self._query_builder.query_by_agent(agent_name, days)
 
     def query_by_status(self, status: str, limit: int = 100) -> list[dict[str, Any]]:
         """
@@ -457,11 +174,7 @@ class SessionDB:
         Returns:
             List of sessions with specified status.
         """
-        valid_statuses = {"pending", "in-progress", "complete", "failed"}
-        if status not in valid_statuses:
-            raise ValueError(f"Invalid status: {status}")
-
-        return self.query_sessions(filters={"status": status}, limit=limit)
+        return self._query_builder.query_by_status(status, limit)
 
     def get_session(self, session_id: str) -> Optional[dict[str, Any]]:
         """
@@ -476,24 +189,7 @@ class SessionDB:
         Performance:
             - O(1) lookup via PRIMARY KEY
         """
-        cache_key = f"session_{session_id}"
-
-        with self._lock:
-            if cache_key in self._cache:
-                entry = self._cache[cache_key]
-                if not entry.is_expired(self._cache_ttl):
-                    return entry.data
-
-            with self._get_connection() as conn:
-                cursor = conn.cursor()
-                cursor.execute("SELECT * FROM sessions WHERE session_id = ?", (session_id,))
-                row = cursor.fetchone()
-                result = dict(row) if row else None
-
-            if result:
-                self._cache[cache_key] = CacheEntry(result, time.time())
-
-        return result
+        return self._database.get_session(session_id)
 
     def get_session_with_details(self, session_id: str) -> Optional[dict[str, Any]]:
         """
@@ -505,46 +201,7 @@ class SessionDB:
         Returns:
             Session dictionary with nested details or None if not found.
         """
-        session = self.get_session(session_id)
-        if session is None:
-            return None
-
-        with self._get_connection() as conn:
-            cursor = conn.cursor()
-
-            # Get metadata
-            cursor.execute(
-                "SELECT key, value FROM session_metadata WHERE session_id = ?",
-                (session_id,),
-            )
-            metadata = {row[0]: row[1] for row in cursor.fetchall()}
-            session["metadata"] = metadata
-
-            # Get patterns
-            cursor.execute(
-                "SELECT pattern_id, pattern_name, success FROM session_patterns WHERE session_id = ?",  # noqa: E501
-                (session_id,),
-            )
-            patterns = [dict(row) for row in cursor.fetchall()]
-            session["patterns"] = patterns
-
-            # Get outcomes
-            cursor.execute(
-                "SELECT * FROM session_outcomes WHERE session_id = ?",
-                (session_id,),
-            )
-            outcomes_row = cursor.fetchone()
-            session["outcomes"] = dict(outcomes_row) if outcomes_row else {}
-
-            # Get events
-            cursor.execute(
-                "SELECT event_type, event_details, timestamp FROM session_events WHERE session_id = ? ORDER BY timestamp DESC",  # noqa: E501
-                (session_id,),
-            )
-            events = [dict(row) for row in cursor.fetchall()]
-            session["events"] = events
-
-        return session
+        return self._database.get_session_with_details(session_id)
 
     def update_session_status(self, session_id: str, new_status: str) -> bool:
         """
@@ -560,21 +217,7 @@ class SessionDB:
         Raises:
             ValueError: If status invalid.
         """
-        valid_statuses = {"pending", "in-progress", "complete", "failed"}
-        if new_status not in valid_statuses:
-            raise ValueError(f"Invalid status: {new_status}")
-
-        self._invalidate_cache()
-
-        with self._lock:
-            with self._get_connection() as conn:
-                cursor = conn.cursor()
-                cursor.execute(
-                    "UPDATE sessions SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE session_id = ?",  # noqa: E501
-                    (new_status, session_id),
-                )
-                conn.commit()
-                return cursor.rowcount > 0
+        return self._database.update_session_status(session_id, new_status)
 
     def get_stats(self, timeframe: str = "7d") -> dict[str, Any]:
         """
@@ -593,87 +236,7 @@ class SessionDB:
                 'success_rate': float
             }
         """
-        cache_key = f"stats_{timeframe}"
-
-        with self._lock:
-            if cache_key in self._cache:
-                entry = self._cache[cache_key]
-                if not entry.is_expired(self._cache_ttl):
-                    return entry.data
-
-        # Calculate time filter
-        now = datetime.utcnow()
-        if timeframe == "24h":
-            start_time = now - timedelta(hours=24)
-        elif timeframe == "7d":
-            start_time = now - timedelta(days=7)
-        elif timeframe == "30d":
-            start_time = now - timedelta(days=30)
-        else:
-            start_time = datetime.min
-
-        start_str = start_time.isoformat() + "Z" if timeframe != "all" else None
-
-        with self._lock:
-            with self._get_connection() as conn:
-                cursor = conn.cursor()
-
-                # Total sessions
-                if start_str:
-                    cursor.execute(
-                        "SELECT COUNT(*) FROM sessions WHERE timestamp >= ?",
-                        (start_str,),
-                    )
-                else:
-                    cursor.execute("SELECT COUNT(*) FROM sessions")
-                total = cursor.fetchone()[0]
-
-                # By status
-                if start_str:
-                    cursor.execute(
-                        "SELECT status, COUNT(*) FROM sessions WHERE timestamp >= ? GROUP BY status",  # noqa: E501
-                        (start_str,),
-                    )
-                else:
-                    cursor.execute("SELECT status, COUNT(*) FROM sessions GROUP BY status")
-                by_status = {row[0]: row[1] for row in cursor.fetchall()}
-
-                # By agent
-                if start_str:
-                    cursor.execute(
-                        "SELECT agent_name, COUNT(*) FROM sessions WHERE timestamp >= ? GROUP BY agent_name",  # noqa: E501
-                        (start_str,),
-                    )
-                else:
-                    cursor.execute("SELECT agent_name, COUNT(*) FROM sessions GROUP BY agent_name")
-                by_agent = {row[0]: row[1] for row in cursor.fetchall() if row[0]}
-
-                # By branch
-                if start_str:
-                    cursor.execute(
-                        "SELECT branch, COUNT(*) FROM sessions WHERE timestamp >= ? GROUP BY branch",  # noqa: E501
-                        (start_str,),
-                    )
-                else:
-                    cursor.execute("SELECT branch, COUNT(*) FROM sessions GROUP BY branch")
-                by_branch = {row[0]: row[1] for row in cursor.fetchall() if row[0]}
-
-                # Success rate (complete / total)
-                completed = by_status.get("complete", 0)
-                success_rate = (completed / total * 100) if total > 0 else 0.0
-
-            stats = {
-                "total": total,
-                "by_status": by_status,
-                "by_agent": by_agent,
-                "by_branch": by_branch,
-                "success_rate": round(success_rate, 2),
-                "timeframe": timeframe,
-            }
-
-            self._cache[cache_key] = CacheEntry(stats, time.time())
-
-        return stats
+        return self._analytics.get_stats(timeframe)
 
     def add_pattern_to_session(
         self, session_id: str, pattern_id: str, pattern_name: str, success: bool = True
@@ -690,20 +253,7 @@ class SessionDB:
         Returns:
             True if added successfully.
         """
-        self._invalidate_cache()
-
-        with self._lock:
-            with self._get_connection() as conn:
-                cursor = conn.cursor()
-                cursor.execute(
-                    """
-                    INSERT INTO session_patterns (session_id, pattern_id, pattern_name, success)
-                    VALUES (?, ?, ?, ?)
-                    """,
-                    (session_id, pattern_id, pattern_name, success),
-                )
-                conn.commit()
-                return cursor.rowcount > 0
+        return self._recorder.add_pattern_to_session(session_id, pattern_id, pattern_name, success)
 
     def add_event_to_session(
         self, session_id: str, event_type: str, event_details: Optional[str] = None
@@ -721,32 +271,8 @@ class SessionDB:
 
         Raises:
             ValueError: If event_type invalid.
-        """  # noqa: E501
-        valid_types = {
-            "start",
-            "pattern_applied",
-            "check_passed",
-            "check_failed",
-            "error",
-            "complete",
-        }
-        if event_type not in valid_types:
-            raise ValueError(f"Invalid event_type: {event_type}")
-
-        self._invalidate_cache()
-
-        with self._lock:
-            with self._get_connection() as conn:
-                cursor = conn.cursor()
-                cursor.execute(
-                    """
-                    INSERT INTO session_events (session_id, event_type, event_details)
-                    VALUES (?, ?, ?)
-                    """,
-                    (session_id, event_type, event_details),
-                )
-                conn.commit()
-                return cursor.rowcount > 0
+        """
+        return self._recorder.add_event_to_session(session_id, event_type, event_details)
 
     def delete_session(self, session_id: str) -> bool:
         """
@@ -758,56 +284,12 @@ class SessionDB:
         Returns:
             True if deleted successfully, False if not found.
         """
-        self._invalidate_cache()
-
-        with self._lock:
-            with self._get_connection() as conn:
-                cursor = conn.cursor()
-                cursor.execute("DELETE FROM sessions WHERE session_id = ?", (session_id,))
-                conn.commit()
-                return cursor.rowcount > 0
+        return self._database.delete_session(session_id)
 
     def vacuum(self) -> None:
         """Optimize database size and performance."""
-        with self._lock:
-            with self._get_connection() as conn:
-                cursor = conn.cursor()
-                cursor.execute("VACUUM")
-                cursor.execute("PRAGMA optimize")
-                conn.commit()
+        self._database.vacuum()
 
     def get_connection_info(self) -> dict[str, Any]:
         """Get information about database connection and settings."""
-        with self._get_connection() as conn:
-            cursor = conn.cursor()
-
-            # Get journal mode
-            cursor.execute("PRAGMA journal_mode")
-            journal_mode = cursor.fetchone()[0]
-
-            # Get cache size
-            cursor.execute("PRAGMA cache_size")
-            cache_size = cursor.fetchone()[0]
-
-            # Get synchronous setting
-            cursor.execute("PRAGMA synchronous")
-            synchronous = cursor.fetchone()[0]
-
-            # Get foreign keys setting
-            cursor.execute("PRAGMA foreign_keys")
-            foreign_keys = cursor.fetchone()[0]
-
-            # Get database size
-            db_file = Path(self.db_path)
-            db_size = db_file.stat().st_size if db_file.exists() else 0
-
-            return {
-                "db_path": self.db_path,
-                "journal_mode": journal_mode,
-                "cache_size": cache_size,
-                "synchronous": synchronous,
-                "foreign_keys": bool(foreign_keys),
-                "db_size_bytes": db_size,
-                "cache_ttl": self._cache_ttl,
-                "cached_queries": len(self._cache),
-            }
+        return self._database.get_connection_info()
