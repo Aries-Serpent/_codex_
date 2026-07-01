@@ -1,0 +1,3788 @@
+{
+  "version": "1.0.0",
+  "timestamp": "2026-07-07T14:30:00Z",
+  "total_agents": 148,
+  "fallback_coverage": 100.0,
+  "fallback_chains": {
+    "github-app-manager": {
+      "primary": {
+        "agent_id": "github-app-manager",
+        "name": "GitHub App Manager",
+        "category": "operations",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "github-guru-agent",
+          "name": "GitHub Guru Agent",
+          "category": "operations",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "project-architect-researcher",
+          "name": "Project Architect Researcher",
+          "category": "operations",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: operations category"
+    },
+    "github-guru-agent": {
+      "primary": {
+        "agent_id": "github-guru-agent",
+        "name": "GitHub Guru Agent",
+        "category": "operations",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "github-app-manager",
+          "name": "GitHub App Manager",
+          "category": "operations",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "project-architect-researcher",
+          "name": "Project Architect Researcher",
+          "category": "operations",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: operations category"
+    },
+    "ast-analysis-agent": {
+      "primary": {
+        "agent_id": "ast-analysis-agent",
+        "name": "Ast Analysis Agent",
+        "category": "quality",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "codex_reviewer",
+          "name": "Codex_Reviewer",
+          "category": "quality",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "rust-error-validator",
+          "name": "Rust Error Validator",
+          "category": "quality",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: quality category"
+    },
+    "cache-logic-validator": {
+      "primary": {
+        "agent_id": "cache-logic-validator",
+        "name": "Cache Logic Validator",
+        "category": "performance",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "performance-regression-detector",
+          "name": "Performance Regression Detector",
+          "category": "performance",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: performance category"
+    },
+    "ci-failure-diagnostician": {
+      "primary": {
+        "agent_id": "ci-failure-diagnostician",
+        "name": "Ci Failure Diagnostician",
+        "category": "ci_cd",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "release-gate-agent",
+          "name": "Release Gate Agent",
+          "category": "ci_cd",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "ci-triage-pipeline-agent",
+          "name": "CI Triage Pipeline Agent",
+          "category": "ci_cd",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ci_cd category"
+    },
+    "ci-optimizer-agent": {
+      "primary": {
+        "agent_id": "ci-optimizer-agent",
+        "name": "Ci Optimizer Agent",
+        "category": "ci",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "workflow-compliance-guardian",
+          "name": "Workflow Compliance Guardian",
+          "category": "ci",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "ci-health-alert-agent",
+          "name": "CI Health Alert Agent",
+          "category": "ci",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ci category"
+    },
+    "ci-testing-agent": {
+      "primary": {
+        "agent_id": "ci-testing-agent",
+        "name": "Ci Testing Agent",
+        "category": "testing",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "flaky-triage-agent",
+          "name": "Flaky Triage Agent",
+          "category": "testing",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "pyo3-integration-tester",
+          "name": "Pyo3 Integration Tester",
+          "category": "testing",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: testing category"
+    },
+    "codex_reviewer": {
+      "primary": {
+        "agent_id": "codex_reviewer",
+        "name": "Codex_Reviewer",
+        "category": "quality",
+        "status": "active",
+        "maturity": "experimental"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ast-analysis-agent",
+          "name": "Ast Analysis Agent",
+          "category": "quality",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "rust-error-validator",
+          "name": "Rust Error Validator",
+          "category": "quality",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: quality category"
+    },
+    "cognitive-brain-agent": {
+      "primary": {
+        "agent_id": "cognitive-brain-agent",
+        "name": "Cognitive Brain Agent",
+        "category": "cognitive",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "emergent-intelligence-agent",
+          "name": "Emergent Intelligence Agent",
+          "category": "cognitive",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "reasoning-advisor-agent",
+          "name": "Reasoning Advisor Agent",
+          "category": "cognitive",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: cognitive category"
+    },
+    "compliance-checker-agent": {
+      "primary": {
+        "agent_id": "compliance-checker-agent",
+        "name": "Compliance Checker Agent",
+        "category": "governance",
+        "status": "active",
+        "maturity": "experimental"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "policy-coach-agent",
+          "name": "Policy Coach Agent",
+          "category": "governance",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "agent-iq-scoring-gate",
+          "name": "Agent IQ Scoring Gate",
+          "category": "governance",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: governance category"
+    },
+    "dep-upgrade-agent": {
+      "primary": {
+        "agent_id": "dep-upgrade-agent",
+        "name": "Dep Upgrade Agent",
+        "category": "dependencies",
+        "status": "active",
+        "maturity": "experimental"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "dependency-conflict-agent",
+          "name": "Dependency Conflict Agent",
+          "category": "dependencies",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "dependency-conflict-resolver",
+          "name": "Dependency Conflict Resolver",
+          "category": "dependencies",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: dependencies category"
+    },
+    "documentation-agent": {
+      "primary": {
+        "agent_id": "documentation-agent",
+        "name": "Documentation Agent",
+        "category": "documentation",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "claim-verification-agent",
+          "name": "Claim Verification Agent",
+          "category": "documentation",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "doc-freshness-checker",
+          "name": "Doc Freshness Checker",
+          "category": "documentation",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: documentation category"
+    },
+    "ecosystem-coordinator-agent": {
+      "primary": {
+        "agent_id": "ecosystem-coordinator-agent",
+        "name": "Ecosystem Coordinator Agent",
+        "category": "orchestration",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "agent-orchestrator",
+          "name": "Agent Orchestrator",
+          "category": "orchestration",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: orchestration category"
+    },
+    "emergent-intelligence-agent": {
+      "primary": {
+        "agent_id": "emergent-intelligence-agent",
+        "name": "Emergent Intelligence Agent",
+        "category": "cognitive",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "cognitive-brain-agent",
+          "name": "Cognitive Brain Agent",
+          "category": "cognitive",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "reasoning-advisor-agent",
+          "name": "Reasoning Advisor Agent",
+          "category": "cognitive",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: cognitive category"
+    },
+    "flaky-triage-agent": {
+      "primary": {
+        "agent_id": "flaky-triage-agent",
+        "name": "Flaky Triage Agent",
+        "category": "testing",
+        "status": "active",
+        "maturity": "experimental"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-testing-agent",
+          "name": "Ci Testing Agent",
+          "category": "testing",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "pyo3-integration-tester",
+          "name": "Pyo3 Integration Tester",
+          "category": "testing",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: testing category"
+    },
+    "infra-linter-agent": {
+      "primary": {
+        "agent_id": "infra-linter-agent",
+        "name": "Infra Linter Agent",
+        "category": "infrastructure",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "repo-var-sync-agent",
+          "name": "Repo Var Sync Agent",
+          "category": "infrastructure",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: infrastructure category"
+    },
+    "performance-monitor-agent": {
+      "primary": {
+        "agent_id": "performance-monitor-agent",
+        "name": "Performance Monitor Agent",
+        "category": "monitoring",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "msv-dashboard-monitor",
+          "name": "MSV Dashboard Monitor",
+          "category": "monitoring",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: monitoring category"
+    },
+    "project-architect-researcher": {
+      "primary": {
+        "agent_id": "project-architect-researcher",
+        "name": "Project Architect Researcher",
+        "category": "operations",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "github-app-manager",
+          "name": "GitHub App Manager",
+          "category": "operations",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "github-guru-agent",
+          "name": "GitHub Guru Agent",
+          "category": "operations",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: operations category"
+    },
+    "pyo3-integration-tester": {
+      "primary": {
+        "agent_id": "pyo3-integration-tester",
+        "name": "Pyo3 Integration Tester",
+        "category": "testing",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-testing-agent",
+          "name": "Ci Testing Agent",
+          "category": "testing",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "flaky-triage-agent",
+          "name": "Flaky Triage Agent",
+          "category": "testing",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: testing category"
+    },
+    "reasoning-advisor-agent": {
+      "primary": {
+        "agent_id": "reasoning-advisor-agent",
+        "name": "Reasoning Advisor Agent",
+        "category": "cognitive",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "cognitive-brain-agent",
+          "name": "Cognitive Brain Agent",
+          "category": "cognitive",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "emergent-intelligence-agent",
+          "name": "Emergent Intelligence Agent",
+          "category": "cognitive",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: cognitive category"
+    },
+    "release-gate-agent": {
+      "primary": {
+        "agent_id": "release-gate-agent",
+        "name": "Release Gate Agent",
+        "category": "ci_cd",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-failure-diagnostician",
+          "name": "Ci Failure Diagnostician",
+          "category": "ci_cd",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "ci-triage-pipeline-agent",
+          "name": "CI Triage Pipeline Agent",
+          "category": "ci_cd",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ci_cd category"
+    },
+    "rust-error-validator": {
+      "primary": {
+        "agent_id": "rust-error-validator",
+        "name": "Rust Error Validator",
+        "category": "quality",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ast-analysis-agent",
+          "name": "Ast Analysis Agent",
+          "category": "quality",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "codex_reviewer",
+          "name": "Codex_Reviewer",
+          "category": "quality",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: quality category"
+    },
+    "security-advisory-resolver": {
+      "primary": {
+        "agent_id": "security-advisory-resolver",
+        "name": "Security Advisory Resolver",
+        "category": "security",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "security-scan-agent",
+          "name": "Security Scan Agent",
+          "category": "security",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "unified-security-scanner",
+          "name": "Unified Security Scanner",
+          "category": "security",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: security category"
+    },
+    "security-scan-agent": {
+      "primary": {
+        "agent_id": "security-scan-agent",
+        "name": "Security Scan Agent",
+        "category": "security",
+        "status": "active",
+        "maturity": "experimental"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "security-advisory-resolver",
+          "name": "Security Advisory Resolver",
+          "category": "security",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "unified-security-scanner",
+          "name": "Unified Security Scanner",
+          "category": "security",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: security category"
+    },
+    "test-assertion-updater": {
+      "primary": {
+        "agent_id": "test-assertion-updater",
+        "name": "Test Assertion Updater",
+        "category": "testing",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-testing-agent",
+          "name": "Ci Testing Agent",
+          "category": "testing",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "flaky-triage-agent",
+          "name": "Flaky Triage Agent",
+          "category": "testing",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: testing category"
+    },
+    "utf8-safety-linter": {
+      "primary": {
+        "agent_id": "utf8-safety-linter",
+        "name": "Utf8 Safety Linter",
+        "category": "quality",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ast-analysis-agent",
+          "name": "Ast Analysis Agent",
+          "category": "quality",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "codex_reviewer",
+          "name": "Codex_Reviewer",
+          "category": "quality",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: quality category"
+    },
+    "test-pattern-guardian": {
+      "primary": {
+        "agent_id": "test-pattern-guardian",
+        "name": "Test Pattern Guardian",
+        "category": "testing",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-testing-agent",
+          "name": "Ci Testing Agent",
+          "category": "testing",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "flaky-triage-agent",
+          "name": "Flaky Triage Agent",
+          "category": "testing",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: testing category"
+    },
+    "config-validator-enhanced": {
+      "primary": {
+        "agent_id": "config-validator-enhanced",
+        "name": "Config Validator (Enhanced)",
+        "category": "configuration",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "config-migration-assistant",
+          "name": "Config Migration Assistant",
+          "category": "configuration",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "config-validator",
+          "name": "Config Validator",
+          "category": "configuration",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: configuration category"
+    },
+    "unified-security-scanner": {
+      "primary": {
+        "agent_id": "unified-security-scanner",
+        "name": "Unified Security Scanner",
+        "category": "security",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "security-advisory-resolver",
+          "name": "Security Advisory Resolver",
+          "category": "security",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "security-scan-agent",
+          "name": "Security Scan Agent",
+          "category": "security",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: security category"
+    },
+    "cross-agent-knowledge-graph": {
+      "primary": {
+        "agent_id": "cross-agent-knowledge-graph",
+        "name": "Cross-Agent Knowledge Graph",
+        "category": "cognitive",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "cognitive-brain-agent",
+          "name": "Cognitive Brain Agent",
+          "category": "cognitive",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "emergent-intelligence-agent",
+          "name": "Emergent Intelligence Agent",
+          "category": "cognitive",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: cognitive category"
+    },
+    "codeql-alert-resolution-agent": {
+      "primary": {
+        "agent_id": "codeql-alert-resolution-agent",
+        "name": "CodeQL Alert Resolution Agent",
+        "category": "security",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "security-advisory-resolver",
+          "name": "Security Advisory Resolver",
+          "category": "security",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "security-scan-agent",
+          "name": "Security Scan Agent",
+          "category": "security",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: security category"
+    },
+    "rag-meta-tensor-regression-agent": {
+      "primary": {
+        "agent_id": "rag-meta-tensor-regression-agent",
+        "name": "RAG Meta-Tensor Regression Agent",
+        "category": "ml",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "meta-tensor-validator",
+          "name": "Meta Tensor Validator",
+          "category": "ml",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "ml-validation-suite-agent",
+          "name": "ML Validation Suite Agent",
+          "category": "ml",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ml category"
+    },
+    "ci-triage-pipeline-agent": {
+      "primary": {
+        "agent_id": "ci-triage-pipeline-agent",
+        "name": "CI Triage Pipeline Agent",
+        "category": "ci_cd",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-failure-diagnostician",
+          "name": "Ci Failure Diagnostician",
+          "category": "ci_cd",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "release-gate-agent",
+          "name": "Release Gate Agent",
+          "category": "ci_cd",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ci_cd category"
+    },
+    "recon-scout-agent": {
+      "primary": {
+        "agent_id": "recon-scout-agent",
+        "name": "Recon Scout Agent",
+        "category": "operations",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "github-app-manager",
+          "name": "GitHub App Manager",
+          "category": "operations",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "github-guru-agent",
+          "name": "GitHub Guru Agent",
+          "category": "operations",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: operations category"
+    },
+    "policy-coach-agent": {
+      "primary": {
+        "agent_id": "policy-coach-agent",
+        "name": "Policy Coach Agent",
+        "category": "governance",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "compliance-checker-agent",
+          "name": "Compliance Checker Agent",
+          "category": "governance",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "agent-iq-scoring-gate",
+          "name": "Agent IQ Scoring Gate",
+          "category": "governance",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: governance category"
+    },
+    "python-architect-agent": {
+      "primary": {
+        "agent_id": "python-architect-agent",
+        "name": "Python Architect Agent",
+        "category": "quality",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ast-analysis-agent",
+          "name": "Ast Analysis Agent",
+          "category": "quality",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "codex_reviewer",
+          "name": "Codex_Reviewer",
+          "category": "quality",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: quality category"
+    },
+    "ci-auto-healer": {
+      "primary": {
+        "agent_id": "ci-auto-healer",
+        "name": "CI Auto-Healer Agent",
+        "category": "ci_cd",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-failure-diagnostician",
+          "name": "Ci Failure Diagnostician",
+          "category": "ci_cd",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "release-gate-agent",
+          "name": "Release Gate Agent",
+          "category": "ci_cd",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ci_cd category"
+    },
+    "agent-iq-scoring-gate": {
+      "primary": {
+        "agent_id": "agent-iq-scoring-gate",
+        "name": "Agent IQ Scoring Gate",
+        "category": "governance",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "compliance-checker-agent",
+          "name": "Compliance Checker Agent",
+          "category": "governance",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "policy-coach-agent",
+          "name": "Policy Coach Agent",
+          "category": "governance",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: governance category"
+    },
+    "agent-orchestrator": {
+      "primary": {
+        "agent_id": "agent-orchestrator",
+        "name": "Agent Orchestrator",
+        "category": "orchestration",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ecosystem-coordinator-agent",
+          "name": "Ecosystem Coordinator Agent",
+          "category": "orchestration",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: orchestration category"
+    },
+    "artifact-monitor-agent": {
+      "primary": {
+        "agent_id": "artifact-monitor-agent",
+        "name": "Artifact Monitor Agent",
+        "category": "ci_cd",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-failure-diagnostician",
+          "name": "Ci Failure Diagnostician",
+          "category": "ci_cd",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "release-gate-agent",
+          "name": "Release Gate Agent",
+          "category": "ci_cd",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ci_cd category"
+    },
+    "autonomous-test-healer-agent": {
+      "primary": {
+        "agent_id": "autonomous-test-healer-agent",
+        "name": "Autonomous Test Healer Agent",
+        "category": "testing",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-testing-agent",
+          "name": "Ci Testing Agent",
+          "category": "testing",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "flaky-triage-agent",
+          "name": "Flaky Triage Agent",
+          "category": "testing",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: testing category"
+    },
+    "bridge-security-monitor": {
+      "primary": {
+        "agent_id": "bridge-security-monitor",
+        "name": "Bridge Security Monitor",
+        "category": "security",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "security-advisory-resolver",
+          "name": "Security Advisory Resolver",
+          "category": "security",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "security-scan-agent",
+          "name": "Security Scan Agent",
+          "category": "security",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: security category"
+    },
+    "cache-management-agent": {
+      "primary": {
+        "agent_id": "cache-management-agent",
+        "name": "Cache Management Agent",
+        "category": "ci_cd",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-failure-diagnostician",
+          "name": "Ci Failure Diagnostician",
+          "category": "ci_cd",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "release-gate-agent",
+          "name": "Release Gate Agent",
+          "category": "ci_cd",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ci_cd category"
+    },
+    "ci-auto-healer-agent": {
+      "primary": {
+        "agent_id": "ci-auto-healer-agent",
+        "name": "CI Auto-Healer Agent",
+        "category": "ci_cd",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-failure-diagnostician",
+          "name": "Ci Failure Diagnostician",
+          "category": "ci_cd",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "release-gate-agent",
+          "name": "Release Gate Agent",
+          "category": "ci_cd",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ci_cd category"
+    },
+    "ci-emergency-response-agent": {
+      "primary": {
+        "agent_id": "ci-emergency-response-agent",
+        "name": "CI Emergency Response Agent",
+        "category": "ci_cd",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-failure-diagnostician",
+          "name": "Ci Failure Diagnostician",
+          "category": "ci_cd",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "release-gate-agent",
+          "name": "Release Gate Agent",
+          "category": "ci_cd",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ci_cd category"
+    },
+    "ci-importerror-agent": {
+      "primary": {
+        "agent_id": "ci-importerror-agent",
+        "name": "CI ImportError Agent",
+        "category": "ci_cd",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-failure-diagnostician",
+          "name": "Ci Failure Diagnostician",
+          "category": "ci_cd",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "release-gate-agent",
+          "name": "Release Gate Agent",
+          "category": "ci_cd",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ci_cd category"
+    },
+    "ci-log-retrieval-agent": {
+      "primary": {
+        "agent_id": "ci-log-retrieval-agent",
+        "name": "CI Log Retrieval Agent",
+        "category": "ci_cd",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-failure-diagnostician",
+          "name": "Ci Failure Diagnostician",
+          "category": "ci_cd",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "release-gate-agent",
+          "name": "Release Gate Agent",
+          "category": "ci_cd",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ci_cd category"
+    },
+    "ci-optimization-agent": {
+      "primary": {
+        "agent_id": "ci-optimization-agent",
+        "name": "CI Optimization Agent",
+        "category": "ci_cd",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-failure-diagnostician",
+          "name": "Ci Failure Diagnostician",
+          "category": "ci_cd",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "release-gate-agent",
+          "name": "Release Gate Agent",
+          "category": "ci_cd",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ci_cd category"
+    },
+    "ci-parameter-mismatch-healer": {
+      "primary": {
+        "agent_id": "ci-parameter-mismatch-healer",
+        "name": "CI Parameter Mismatch Healer",
+        "category": "ci_cd",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-failure-diagnostician",
+          "name": "Ci Failure Diagnostician",
+          "category": "ci_cd",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "release-gate-agent",
+          "name": "Release Gate Agent",
+          "category": "ci_cd",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ci_cd category"
+    },
+    "claim-verification-agent": {
+      "primary": {
+        "agent_id": "claim-verification-agent",
+        "name": "Claim Verification Agent",
+        "category": "documentation",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "documentation-agent",
+          "name": "Documentation Agent",
+          "category": "documentation",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "doc-freshness-checker",
+          "name": "Doc Freshness Checker",
+          "category": "documentation",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: documentation category"
+    },
+    "code-analysis-agent": {
+      "primary": {
+        "agent_id": "code-analysis-agent",
+        "name": "Code Analysis Agent",
+        "category": "quality",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ast-analysis-agent",
+          "name": "Ast Analysis Agent",
+          "category": "quality",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "codex_reviewer",
+          "name": "Codex_Reviewer",
+          "category": "quality",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: quality category"
+    },
+    "code-scanning-remediation-agent": {
+      "primary": {
+        "agent_id": "code-scanning-remediation-agent",
+        "name": "Code Scanning Remediation Agent",
+        "category": "security",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "security-advisory-resolver",
+          "name": "Security Advisory Resolver",
+          "category": "security",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "security-scan-agent",
+          "name": "Security Scan Agent",
+          "category": "security",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: security category"
+    },
+    "codebase-health-guardian": {
+      "primary": {
+        "agent_id": "codebase-health-guardian",
+        "name": "Codebase Health Guardian",
+        "category": "quality",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ast-analysis-agent",
+          "name": "Ast Analysis Agent",
+          "category": "quality",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "codex_reviewer",
+          "name": "Codex_Reviewer",
+          "category": "quality",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: quality category"
+    },
+    "cognitive-brain-manager": {
+      "primary": {
+        "agent_id": "cognitive-brain-manager",
+        "name": "Cognitive Brain Manager",
+        "category": "cognitive",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "cognitive-brain-agent",
+          "name": "Cognitive Brain Agent",
+          "category": "cognitive",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "emergent-intelligence-agent",
+          "name": "Emergent Intelligence Agent",
+          "category": "cognitive",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: cognitive category"
+    },
+    "config-migration-assistant": {
+      "primary": {
+        "agent_id": "config-migration-assistant",
+        "name": "Config Migration Assistant",
+        "category": "configuration",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "config-validator-enhanced",
+          "name": "Config Validator (Enhanced)",
+          "category": "configuration",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "config-validator",
+          "name": "Config Validator",
+          "category": "configuration",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: configuration category"
+    },
+    "config-validator": {
+      "primary": {
+        "agent_id": "config-validator",
+        "name": "Config Validator",
+        "category": "configuration",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "config-validator-enhanced",
+          "name": "Config Validator (Enhanced)",
+          "category": "configuration",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "config-migration-assistant",
+          "name": "Config Migration Assistant",
+          "category": "configuration",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: configuration category"
+    },
+    "cpu-only-ci-config-agent": {
+      "primary": {
+        "agent_id": "cpu-only-ci-config-agent",
+        "name": "CPU-Only CI Config Agent",
+        "category": "ci_cd",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-failure-diagnostician",
+          "name": "Ci Failure Diagnostician",
+          "category": "ci_cd",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "release-gate-agent",
+          "name": "Release Gate Agent",
+          "category": "ci_cd",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ci_cd category"
+    },
+    "cross-platform-filename-validator": {
+      "primary": {
+        "agent_id": "cross-platform-filename-validator",
+        "name": "Cross-Platform Filename Validator",
+        "category": "quality",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ast-analysis-agent",
+          "name": "Ast Analysis Agent",
+          "category": "quality",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "codex_reviewer",
+          "name": "Codex_Reviewer",
+          "category": "quality",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: quality category"
+    },
+    "datetime-modernizer": {
+      "primary": {
+        "agent_id": "datetime-modernizer",
+        "name": "Datetime Modernizer",
+        "category": "quality",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ast-analysis-agent",
+          "name": "Ast Analysis Agent",
+          "category": "quality",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "codex_reviewer",
+          "name": "Codex_Reviewer",
+          "category": "quality",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: quality category"
+    },
+    "dependency-conflict-agent": {
+      "primary": {
+        "agent_id": "dependency-conflict-agent",
+        "name": "Dependency Conflict Agent",
+        "category": "dependencies",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "dep-upgrade-agent",
+          "name": "Dep Upgrade Agent",
+          "category": "dependencies",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "dependency-conflict-resolver",
+          "name": "Dependency Conflict Resolver",
+          "category": "dependencies",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: dependencies category"
+    },
+    "dependency-vulnerability-scanner": {
+      "primary": {
+        "agent_id": "dependency-vulnerability-scanner",
+        "name": "Dependency Vulnerability Scanner",
+        "category": "security",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "security-advisory-resolver",
+          "name": "Security Advisory Resolver",
+          "category": "security",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "security-scan-agent",
+          "name": "Security Scan Agent",
+          "category": "security",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: security category"
+    },
+    "doc-freshness-checker": {
+      "primary": {
+        "agent_id": "doc-freshness-checker",
+        "name": "Doc Freshness Checker",
+        "category": "documentation",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "documentation-agent",
+          "name": "Documentation Agent",
+          "category": "documentation",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "claim-verification-agent",
+          "name": "Claim Verification Agent",
+          "category": "documentation",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: documentation category"
+    },
+    "doc-refactor-test-agent": {
+      "primary": {
+        "agent_id": "doc-refactor-test-agent",
+        "name": "Doc Refactor Test Agent",
+        "category": "documentation",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "documentation-agent",
+          "name": "Documentation Agent",
+          "category": "documentation",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "claim-verification-agent",
+          "name": "Claim Verification Agent",
+          "category": "documentation",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: documentation category"
+    },
+    "fragile-test-guardian": {
+      "primary": {
+        "agent_id": "fragile-test-guardian",
+        "name": "Fragile Test Guardian",
+        "category": "testing",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-testing-agent",
+          "name": "Ci Testing Agent",
+          "category": "testing",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "flaky-triage-agent",
+          "name": "Flaky Triage Agent",
+          "category": "testing",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: testing category"
+    },
+    "github-pages-manager": {
+      "primary": {
+        "agent_id": "github-pages-manager",
+        "name": "GitHub Pages Manager",
+        "category": "documentation",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "documentation-agent",
+          "name": "Documentation Agent",
+          "category": "documentation",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "claim-verification-agent",
+          "name": "Claim Verification Agent",
+          "category": "documentation",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: documentation category"
+    },
+    "integration-test-runner": {
+      "primary": {
+        "agent_id": "integration-test-runner",
+        "name": "Integration Test Runner",
+        "category": "testing",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-testing-agent",
+          "name": "Ci Testing Agent",
+          "category": "testing",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "flaky-triage-agent",
+          "name": "Flaky Triage Agent",
+          "category": "testing",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: testing category"
+    },
+    "json-serialization-expert": {
+      "primary": {
+        "agent_id": "json-serialization-expert",
+        "name": "JSON Serialization Expert",
+        "category": "quality",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ast-analysis-agent",
+          "name": "Ast Analysis Agent",
+          "category": "quality",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "codex_reviewer",
+          "name": "Codex_Reviewer",
+          "category": "quality",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: quality category"
+    },
+    "link-validator-agent": {
+      "primary": {
+        "agent_id": "link-validator-agent",
+        "name": "Link Validator Agent",
+        "category": "documentation",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "documentation-agent",
+          "name": "Documentation Agent",
+          "category": "documentation",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "claim-verification-agent",
+          "name": "Claim Verification Agent",
+          "category": "documentation",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: documentation category"
+    },
+    "meta-tensor-validator": {
+      "primary": {
+        "agent_id": "meta-tensor-validator",
+        "name": "Meta Tensor Validator",
+        "category": "ml",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "rag-meta-tensor-regression-agent",
+          "name": "RAG Meta-Tensor Regression Agent",
+          "category": "ml",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "ml-validation-suite-agent",
+          "name": "ML Validation Suite Agent",
+          "category": "ml",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ml category"
+    },
+    "ml-validation-suite-agent": {
+      "primary": {
+        "agent_id": "ml-validation-suite-agent",
+        "name": "ML Validation Suite Agent",
+        "category": "ml",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "rag-meta-tensor-regression-agent",
+          "name": "RAG Meta-Tensor Regression Agent",
+          "category": "ml",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "meta-tensor-validator",
+          "name": "Meta Tensor Validator",
+          "category": "ml",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ml category"
+    },
+    "msv-dashboard-monitor": {
+      "primary": {
+        "agent_id": "msv-dashboard-monitor",
+        "name": "MSV Dashboard Monitor",
+        "category": "monitoring",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "performance-monitor-agent",
+          "name": "Performance Monitor Agent",
+          "category": "monitoring",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: monitoring category"
+    },
+    "mutation-testing-agent": {
+      "primary": {
+        "agent_id": "mutation-testing-agent",
+        "name": "Mutation Testing Agent",
+        "category": "testing",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-testing-agent",
+          "name": "Ci Testing Agent",
+          "category": "testing",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "flaky-triage-agent",
+          "name": "Flaky Triage Agent",
+          "category": "testing",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: testing category"
+    },
+    "owner-approval-guard": {
+      "primary": {
+        "agent_id": "owner-approval-guard",
+        "name": "Owner Approval Guard",
+        "category": "governance",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "compliance-checker-agent",
+          "name": "Compliance Checker Agent",
+          "category": "governance",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "policy-coach-agent",
+          "name": "Policy Coach Agent",
+          "category": "governance",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: governance category"
+    },
+    "performance-regression-detector": {
+      "primary": {
+        "agent_id": "performance-regression-detector",
+        "name": "Performance Regression Detector",
+        "category": "performance",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "cache-logic-validator",
+          "name": "Cache Logic Validator",
+          "category": "performance",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: performance category"
+    },
+    "pii-scrubber": {
+      "primary": {
+        "agent_id": "pii-scrubber",
+        "name": "PII Scrubber",
+        "category": "security",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "security-advisory-resolver",
+          "name": "Security Advisory Resolver",
+          "category": "security",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "security-scan-agent",
+          "name": "Security Scan Agent",
+          "category": "security",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: security category"
+    },
+    "pr-3095-verification-agent": {
+      "primary": {
+        "agent_id": "pr-3095-verification-agent",
+        "name": "PR-3095 Verification Agent",
+        "category": "governance",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "compliance-checker-agent",
+          "name": "Compliance Checker Agent",
+          "category": "governance",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "policy-coach-agent",
+          "name": "Policy Coach Agent",
+          "category": "governance",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: governance category"
+    },
+    "pr-check-remediation-agent": {
+      "primary": {
+        "agent_id": "pr-check-remediation-agent",
+        "name": "PR Check Remediation Agent",
+        "category": "ci_cd",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-failure-diagnostician",
+          "name": "Ci Failure Diagnostician",
+          "category": "ci_cd",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "release-gate-agent",
+          "name": "Release Gate Agent",
+          "category": "ci_cd",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ci_cd category"
+    },
+    "pr-test-infrastructure-fixer": {
+      "primary": {
+        "agent_id": "pr-test-infrastructure-fixer",
+        "name": "PR Test Infrastructure Fixer",
+        "category": "testing",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-testing-agent",
+          "name": "Ci Testing Agent",
+          "category": "testing",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "flaky-triage-agent",
+          "name": "Flaky Triage Agent",
+          "category": "testing",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: testing category"
+    },
+    "pypi-publishing-operations-agent": {
+      "primary": {
+        "agent_id": "pypi-publishing-operations-agent",
+        "name": "PyPI Publishing Operations Agent",
+        "category": "operations",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "github-app-manager",
+          "name": "GitHub App Manager",
+          "category": "operations",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "github-guru-agent",
+          "name": "GitHub Guru Agent",
+          "category": "operations",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: operations category"
+    },
+    "python-312-type-fixer": {
+      "primary": {
+        "agent_id": "python-312-type-fixer",
+        "name": "Python 3.12 Type Fixer",
+        "category": "quality",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ast-analysis-agent",
+          "name": "Ast Analysis Agent",
+          "category": "quality",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "codex_reviewer",
+          "name": "Codex_Reviewer",
+          "category": "quality",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: quality category"
+    },
+    "qa-walkthrough-agent": {
+      "primary": {
+        "agent_id": "qa-walkthrough-agent",
+        "name": "QA Walkthrough Agent",
+        "category": "testing",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-testing-agent",
+          "name": "Ci Testing Agent",
+          "category": "testing",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "flaky-triage-agent",
+          "name": "Flaky Triage Agent",
+          "category": "testing",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: testing category"
+    },
+    "quantum-compliance-tuning-agent": {
+      "primary": {
+        "agent_id": "quantum-compliance-tuning-agent",
+        "name": "Quantum Compliance Tuning Agent",
+        "category": "cognitive",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "cognitive-brain-agent",
+          "name": "Cognitive Brain Agent",
+          "category": "cognitive",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "emergent-intelligence-agent",
+          "name": "Emergent Intelligence Agent",
+          "category": "cognitive",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: cognitive category"
+    },
+    "rag-freshness-loop-agent": {
+      "primary": {
+        "agent_id": "rag-freshness-loop-agent",
+        "name": "RAG Freshness Loop Agent",
+        "category": "ml",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "rag-meta-tensor-regression-agent",
+          "name": "RAG Meta-Tensor Regression Agent",
+          "category": "ml",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "meta-tensor-validator",
+          "name": "Meta Tensor Validator",
+          "category": "ml",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ml category"
+    },
+    "rag-index-manager": {
+      "primary": {
+        "agent_id": "rag-index-manager",
+        "name": "RAG Index Manager",
+        "category": "ml",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "rag-meta-tensor-regression-agent",
+          "name": "RAG Meta-Tensor Regression Agent",
+          "category": "ml",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "meta-tensor-validator",
+          "name": "Meta Tensor Validator",
+          "category": "ml",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ml category"
+    },
+    "rag-meta-tensor-guardian": {
+      "primary": {
+        "agent_id": "rag-meta-tensor-guardian",
+        "name": "RAG Meta Tensor Guardian",
+        "category": "ml",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "rag-meta-tensor-regression-agent",
+          "name": "RAG Meta-Tensor Regression Agent",
+          "category": "ml",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "meta-tensor-validator",
+          "name": "Meta Tensor Validator",
+          "category": "ml",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ml category"
+    },
+    "rag-module-management-agent": {
+      "primary": {
+        "agent_id": "rag-module-management-agent",
+        "name": "RAG Module Management Agent",
+        "category": "ml",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "rag-meta-tensor-regression-agent",
+          "name": "RAG Meta-Tensor Regression Agent",
+          "category": "ml",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "meta-tensor-validator",
+          "name": "Meta Tensor Validator",
+          "category": "ml",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ml category"
+    },
+    "reference-updater-agent": {
+      "primary": {
+        "agent_id": "reference-updater-agent",
+        "name": "Reference Updater Agent",
+        "category": "quality",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ast-analysis-agent",
+          "name": "Ast Analysis Agent",
+          "category": "quality",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "codex_reviewer",
+          "name": "Codex_Reviewer",
+          "category": "quality",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: quality category"
+    },
+    "repository-hygiene-agent": {
+      "primary": {
+        "agent_id": "repository-hygiene-agent",
+        "name": "Repository Hygiene Agent",
+        "category": "operations",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "github-app-manager",
+          "name": "GitHub App Manager",
+          "category": "operations",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "github-guru-agent",
+          "name": "GitHub Guru Agent",
+          "category": "operations",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: operations category"
+    },
+    "repository-organization-agent": {
+      "primary": {
+        "agent_id": "repository-organization-agent",
+        "name": "Repository Organization Agent",
+        "category": "operations",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "github-app-manager",
+          "name": "GitHub App Manager",
+          "category": "operations",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "github-guru-agent",
+          "name": "GitHub Guru Agent",
+          "category": "operations",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: operations category"
+    },
+    "root-organizer-agent": {
+      "primary": {
+        "agent_id": "root-organizer-agent",
+        "name": "Root Organizer Agent",
+        "category": "operations",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "github-app-manager",
+          "name": "GitHub App Manager",
+          "category": "operations",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "github-guru-agent",
+          "name": "GitHub Guru Agent",
+          "category": "operations",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: operations category"
+    },
+    "rust-config-validator": {
+      "primary": {
+        "agent_id": "rust-config-validator",
+        "name": "Rust Config Validator",
+        "category": "configuration",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "config-validator-enhanced",
+          "name": "Config Validator (Enhanced)",
+          "category": "configuration",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "config-migration-assistant",
+          "name": "Config Migration Assistant",
+          "category": "configuration",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: configuration category"
+    },
+    "secret-detection-agent": {
+      "primary": {
+        "agent_id": "secret-detection-agent",
+        "name": "Secret Detection Agent",
+        "category": "security",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "security-advisory-resolver",
+          "name": "Security Advisory Resolver",
+          "category": "security",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "security-scan-agent",
+          "name": "Security Scan Agent",
+          "category": "security",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: security category"
+    },
+    "security-alert-verification-agent": {
+      "primary": {
+        "agent_id": "security-alert-verification-agent",
+        "name": "Security Alert Verification Agent",
+        "category": "security",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "security-advisory-resolver",
+          "name": "Security Advisory Resolver",
+          "category": "security",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "security-scan-agent",
+          "name": "Security Scan Agent",
+          "category": "security",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: security category"
+    },
+    "semantic-search": {
+      "primary": {
+        "agent_id": "semantic-search",
+        "name": "Semantic Search Agent",
+        "category": "ml",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "rag-meta-tensor-regression-agent",
+          "name": "RAG Meta-Tensor Regression Agent",
+          "category": "ml",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "meta-tensor-validator",
+          "name": "Meta Tensor Validator",
+          "category": "ml",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ml category"
+    },
+    "session-analysis-agent": {
+      "primary": {
+        "agent_id": "session-analysis-agent",
+        "name": "Session Analysis Agent",
+        "category": "cognitive",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "cognitive-brain-agent",
+          "name": "Cognitive Brain Agent",
+          "category": "cognitive",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "emergent-intelligence-agent",
+          "name": "Emergent Intelligence Agent",
+          "category": "cognitive",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: cognitive category"
+    },
+    "session-log-retrieval-agent": {
+      "primary": {
+        "agent_id": "session-log-retrieval-agent",
+        "name": "Session Log Retrieval Agent",
+        "category": "cognitive",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "cognitive-brain-agent",
+          "name": "Cognitive Brain Agent",
+          "category": "cognitive",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "emergent-intelligence-agent",
+          "name": "Emergent Intelligence Agent",
+          "category": "cognitive",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: cognitive category"
+    },
+    "terminology-consistency-agent": {
+      "primary": {
+        "agent_id": "terminology-consistency-agent",
+        "name": "Terminology Consistency Agent",
+        "category": "documentation",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "documentation-agent",
+          "name": "Documentation Agent",
+          "category": "documentation",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "claim-verification-agent",
+          "name": "Claim Verification Agent",
+          "category": "documentation",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: documentation category"
+    },
+    "test-alignment-fixer": {
+      "primary": {
+        "agent_id": "test-alignment-fixer",
+        "name": "Test Alignment Fixer",
+        "category": "testing",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-testing-agent",
+          "name": "Ci Testing Agent",
+          "category": "testing",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "flaky-triage-agent",
+          "name": "Flaky Triage Agent",
+          "category": "testing",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: testing category"
+    },
+    "test-alignment-fixer-enhanced": {
+      "primary": {
+        "agent_id": "test-alignment-fixer-enhanced",
+        "name": "Test Alignment Fixer Enhanced",
+        "category": "testing",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-testing-agent",
+          "name": "Ci Testing Agent",
+          "category": "testing",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "flaky-triage-agent",
+          "name": "Flaky Triage Agent",
+          "category": "testing",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: testing category"
+    },
+    "unified-coverage-agent": {
+      "primary": {
+        "agent_id": "unified-coverage-agent",
+        "name": "Test Enhancement Agent",
+        "category": "testing",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-testing-agent",
+          "name": "Ci Testing Agent",
+          "category": "testing",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "flaky-triage-agent",
+          "name": "Flaky Triage Agent",
+          "category": "testing",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: testing category"
+    },
+    "test-failure-analyzer-agent": {
+      "primary": {
+        "agent_id": "test-failure-analyzer-agent",
+        "name": "Test Failure Analyzer Agent",
+        "category": "testing",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-testing-agent",
+          "name": "Ci Testing Agent",
+          "category": "testing",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "flaky-triage-agent",
+          "name": "Flaky Triage Agent",
+          "category": "testing",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: testing category"
+    },
+    "tokenization-coverage-agent": {
+      "primary": {
+        "agent_id": "tokenization-coverage-agent",
+        "name": "Tokenization Coverage Agent",
+        "category": "testing",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-testing-agent",
+          "name": "Ci Testing Agent",
+          "category": "testing",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "flaky-triage-agent",
+          "name": "Flaky Triage Agent",
+          "category": "testing",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: testing category"
+    },
+    "tracking-document-qa-agent": {
+      "primary": {
+        "agent_id": "tracking-document-qa-agent",
+        "name": "Tracking Document QA Agent",
+        "category": "documentation",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "documentation-agent",
+          "name": "Documentation Agent",
+          "category": "documentation",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "claim-verification-agent",
+          "name": "Claim Verification Agent",
+          "category": "documentation",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: documentation category"
+    },
+    "unified-doc-agent": {
+      "primary": {
+        "agent_id": "unified-doc-agent",
+        "name": "Unified Doc Agent",
+        "category": "documentation",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "documentation-agent",
+          "name": "Documentation Agent",
+          "category": "documentation",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "claim-verification-agent",
+          "name": "Claim Verification Agent",
+          "category": "documentation",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: documentation category"
+    },
+    "unified-governance-gate": {
+      "primary": {
+        "agent_id": "unified-governance-gate",
+        "name": "Unified Governance Gate",
+        "category": "governance",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "compliance-checker-agent",
+          "name": "Compliance Checker Agent",
+          "category": "governance",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "policy-coach-agent",
+          "name": "Policy Coach Agent",
+          "category": "governance",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: governance category"
+    },
+    "workflow-analytics-agent": {
+      "primary": {
+        "agent_id": "workflow-analytics-agent",
+        "name": "Workflow Analytics Agent",
+        "category": "ci_cd",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-failure-diagnostician",
+          "name": "Ci Failure Diagnostician",
+          "category": "ci_cd",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "release-gate-agent",
+          "name": "Release Gate Agent",
+          "category": "ci_cd",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ci_cd category"
+    },
+    "workflow-ci-fixer": {
+      "primary": {
+        "agent_id": "workflow-ci-fixer",
+        "name": "Workflow CI Fixer",
+        "category": "ci_cd",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-failure-diagnostician",
+          "name": "Ci Failure Diagnostician",
+          "category": "ci_cd",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "release-gate-agent",
+          "name": "Release Gate Agent",
+          "category": "ci_cd",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ci_cd category"
+    },
+    "workflow-health-monitor": {
+      "primary": {
+        "agent_id": "workflow-health-monitor",
+        "name": "Workflow Health Monitor",
+        "category": "ci_cd",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-failure-diagnostician",
+          "name": "Ci Failure Diagnostician",
+          "category": "ci_cd",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "release-gate-agent",
+          "name": "Release Gate Agent",
+          "category": "ci_cd",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ci_cd category"
+    },
+    "workflow-management-agent": {
+      "primary": {
+        "agent_id": "workflow-management-agent",
+        "name": "Workflow Management Agent",
+        "category": "ci_cd",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-failure-diagnostician",
+          "name": "Ci Failure Diagnostician",
+          "category": "ci_cd",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "release-gate-agent",
+          "name": "Release Gate Agent",
+          "category": "ci_cd",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ci_cd category"
+    },
+    "workflow-optimization-agent": {
+      "primary": {
+        "agent_id": "workflow-optimization-agent",
+        "name": "Workflow Optimization Agent",
+        "category": "ci_cd",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-failure-diagnostician",
+          "name": "Ci Failure Diagnostician",
+          "category": "ci_cd",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "release-gate-agent",
+          "name": "Release Gate Agent",
+          "category": "ci_cd",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ci_cd category"
+    },
+    "cognitive-brain-cli-agent": {
+      "primary": {
+        "agent_id": "cognitive-brain-cli-agent",
+        "name": "Cognitive Brain CLI Agent",
+        "category": "operations",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "github-app-manager",
+          "name": "GitHub App Manager",
+          "category": "operations",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "github-guru-agent",
+          "name": "GitHub Guru Agent",
+          "category": "operations",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: operations category"
+    },
+    "workflow-compliance-guardian": {
+      "primary": {
+        "agent_id": "workflow-compliance-guardian",
+        "name": "Workflow Compliance Guardian",
+        "category": "ci",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-optimizer-agent",
+          "name": "Ci Optimizer Agent",
+          "category": "ci",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "ci-health-alert-agent",
+          "name": "CI Health Alert Agent",
+          "category": "ci",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ci category"
+    },
+    "ci-health-alert-agent": {
+      "primary": {
+        "agent_id": "ci-health-alert-agent",
+        "name": "CI Health Alert Agent",
+        "category": "ci",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-optimizer-agent",
+          "name": "Ci Optimizer Agent",
+          "category": "ci",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "workflow-compliance-guardian",
+          "name": "Workflow Compliance Guardian",
+          "category": "ci",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ci category"
+    },
+    "repo-var-sync-agent": {
+      "primary": {
+        "agent_id": "repo-var-sync-agent",
+        "name": "Repo Var Sync Agent",
+        "category": "infrastructure",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "infra-linter-agent",
+          "name": "Infra Linter Agent",
+          "category": "infrastructure",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: infrastructure category"
+    },
+    "cognitive-ooda-loop-agent": {
+      "primary": {
+        "agent_id": "cognitive-ooda-loop-agent",
+        "name": "Cognitive OODA Loop Agent",
+        "category": "cognitive",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "cognitive-brain-agent",
+          "name": "Cognitive Brain Agent",
+          "category": "cognitive",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "emergent-intelligence-agent",
+          "name": "Emergent Intelligence Agent",
+          "category": "cognitive",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: cognitive category"
+    },
+    "memory-sync-agent": {
+      "primary": {
+        "agent_id": "memory-sync-agent",
+        "name": "Memory Sync Agent",
+        "category": "cognitive",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "cognitive-brain-agent",
+          "name": "Cognitive Brain Agent",
+          "category": "cognitive",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "emergent-intelligence-agent",
+          "name": "Emergent Intelligence Agent",
+          "category": "cognitive",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: cognitive category"
+    },
+    "telemetry-classifier-agent": {
+      "primary": {
+        "agent_id": "telemetry-classifier-agent",
+        "name": "Telemetry Classifier Agent",
+        "category": "ci",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-optimizer-agent",
+          "name": "Ci Optimizer Agent",
+          "category": "ci",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "workflow-compliance-guardian",
+          "name": "Workflow Compliance Guardian",
+          "category": "ci",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ci category"
+    },
+    "admin-automation-agent": {
+      "primary": {
+        "agent_id": "admin-automation-agent",
+        "name": "Admin Automation Agent",
+        "category": "operations",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "github-app-manager",
+          "name": "GitHub App Manager",
+          "category": "operations",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "github-guru-agent",
+          "name": "GitHub Guru Agent",
+          "category": "operations",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: operations category"
+    },
+    "batch-triage-agent": {
+      "primary": {
+        "agent_id": "batch-triage-agent",
+        "name": "Batch Triage Agent",
+        "category": "ci",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-optimizer-agent",
+          "name": "Ci Optimizer Agent",
+          "category": "ci",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "workflow-compliance-guardian",
+          "name": "Workflow Compliance Guardian",
+          "category": "ci",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ci category"
+    },
+    "ci-diagnostic-agent": {
+      "primary": {
+        "agent_id": "ci-diagnostic-agent",
+        "name": "CI Diagnostic Agent",
+        "category": "ci",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-optimizer-agent",
+          "name": "Ci Optimizer Agent",
+          "category": "ci",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "workflow-compliance-guardian",
+          "name": "Workflow Compliance Guardian",
+          "category": "ci",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ci category"
+    },
+    "codebase-qa-walkthrough-agent": {
+      "primary": {
+        "agent_id": "codebase-qa-walkthrough-agent",
+        "name": "Codebase QA Walkthrough Agent",
+        "category": "quality",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ast-analysis-agent",
+          "name": "Ast Analysis Agent",
+          "category": "quality",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "codex_reviewer",
+          "name": "Codex_Reviewer",
+          "category": "quality",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: quality category"
+    },
+    "cognitive-brain-session-injector": {
+      "primary": {
+        "agent_id": "cognitive-brain-session-injector",
+        "name": "Cognitive Brain Session Injector",
+        "category": "cognitive",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "cognitive-brain-agent",
+          "name": "Cognitive Brain Agent",
+          "category": "cognitive",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "emergent-intelligence-agent",
+          "name": "Emergent Intelligence Agent",
+          "category": "cognitive",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: cognitive category"
+    },
+    "dependency-conflict-resolver": {
+      "primary": {
+        "agent_id": "dependency-conflict-resolver",
+        "name": "Dependency Conflict Resolver",
+        "category": "dependencies",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "dep-upgrade-agent",
+          "name": "Dep Upgrade Agent",
+          "category": "dependencies",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "dependency-conflict-agent",
+          "name": "Dependency Conflict Agent",
+          "category": "dependencies",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: dependencies category"
+    },
+    "doc-test-scribe": {
+      "primary": {
+        "agent_id": "doc-test-scribe",
+        "name": "Doc Test Scribe",
+        "category": "documentation",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "documentation-agent",
+          "name": "Documentation Agent",
+          "category": "documentation",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "claim-verification-agent",
+          "name": "Claim Verification Agent",
+          "category": "documentation",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: documentation category"
+    },
+    "documentation-sync-validator": {
+      "primary": {
+        "agent_id": "documentation-sync-validator",
+        "name": "Documentation Sync Validator",
+        "category": "documentation",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "documentation-agent",
+          "name": "Documentation Agent",
+          "category": "documentation",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "claim-verification-agent",
+          "name": "Claim Verification Agent",
+          "category": "documentation",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: documentation category"
+    },
+    "dynamics365-powerplatform-architect-agent": {
+      "primary": {
+        "agent_id": "dynamics365-powerplatform-architect-agent",
+        "name": "Dynamics365 PowerPlatform Architect Agent",
+        "category": "integration",
+        "status": "active",
+        "maturity": "experimental"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "zendesk-architect-agent",
+          "name": "Zendesk Architect Agent",
+          "category": "integration",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: integration category"
+    },
+    "github-auth-manager": {
+      "primary": {
+        "agent_id": "github-auth-manager",
+        "name": "GitHub Auth Manager",
+        "category": "security",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "security-advisory-resolver",
+          "name": "Security Advisory Resolver",
+          "category": "security",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "security-scan-agent",
+          "name": "Security Scan Agent",
+          "category": "security",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: security category"
+    },
+    "github-code-reviewer": {
+      "primary": {
+        "agent_id": "github-code-reviewer",
+        "name": "GitHub Code Reviewer",
+        "category": "quality",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ast-analysis-agent",
+          "name": "Ast Analysis Agent",
+          "category": "quality",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "codex_reviewer",
+          "name": "Codex_Reviewer",
+          "category": "quality",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: quality category"
+    },
+    "github-deployment-gatekeeper": {
+      "primary": {
+        "agent_id": "github-deployment-gatekeeper",
+        "name": "GitHub Deployment Gatekeeper",
+        "category": "operations",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "github-app-manager",
+          "name": "GitHub App Manager",
+          "category": "operations",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "github-guru-agent",
+          "name": "GitHub Guru Agent",
+          "category": "operations",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: operations category"
+    },
+    "github-security-enforcer": {
+      "primary": {
+        "agent_id": "github-security-enforcer",
+        "name": "GitHub Security Enforcer",
+        "category": "security",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "security-advisory-resolver",
+          "name": "Security Advisory Resolver",
+          "category": "security",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "security-scan-agent",
+          "name": "Security Scan Agent",
+          "category": "security",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: security category"
+    },
+    "github-security-validator-agent": {
+      "primary": {
+        "agent_id": "github-security-validator-agent",
+        "name": "GitHub Security Validator Agent",
+        "category": "security",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "security-advisory-resolver",
+          "name": "Security Advisory Resolver",
+          "category": "security",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "security-scan-agent",
+          "name": "Security Scan Agent",
+          "category": "security",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: security category"
+    },
+    "github-test-orchestrator": {
+      "primary": {
+        "agent_id": "github-test-orchestrator",
+        "name": "GitHub Test Orchestrator",
+        "category": "testing",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-testing-agent",
+          "name": "Ci Testing Agent",
+          "category": "testing",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "flaky-triage-agent",
+          "name": "Flaky Triage Agent",
+          "category": "testing",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: testing category"
+    },
+    "github-testing-orchestrator-agent": {
+      "primary": {
+        "agent_id": "github-testing-orchestrator-agent",
+        "name": "GitHub Testing Orchestrator Agent",
+        "category": "testing",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-testing-agent",
+          "name": "Ci Testing Agent",
+          "category": "testing",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "flaky-triage-agent",
+          "name": "Flaky Triage Agent",
+          "category": "testing",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: testing category"
+    },
+    "github-workflow-optimizer": {
+      "primary": {
+        "agent_id": "github-workflow-optimizer",
+        "name": "GitHub Workflow Optimizer",
+        "category": "operations",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "github-app-manager",
+          "name": "GitHub App Manager",
+          "category": "operations",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "github-guru-agent",
+          "name": "GitHub Guru Agent",
+          "category": "operations",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: operations category"
+    },
+    "ml-threat-detector": {
+      "primary": {
+        "agent_id": "ml-threat-detector",
+        "name": "ML Threat Detector",
+        "category": "security",
+        "status": "active",
+        "maturity": "experimental"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "security-advisory-resolver",
+          "name": "Security Advisory Resolver",
+          "category": "security",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "security-scan-agent",
+          "name": "Security Scan Agent",
+          "category": "security",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: security category"
+    },
+    "repo-health-guardian": {
+      "primary": {
+        "agent_id": "repo-health-guardian",
+        "name": "Repo Health Guardian",
+        "category": "operations",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "github-app-manager",
+          "name": "GitHub App Manager",
+          "category": "operations",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "github-guru-agent",
+          "name": "GitHub Guru Agent",
+          "category": "operations",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: operations category"
+    },
+    "security-vulnerability-patcher": {
+      "primary": {
+        "agent_id": "security-vulnerability-patcher",
+        "name": "Security Vulnerability Patcher",
+        "category": "security",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "security-advisory-resolver",
+          "name": "Security Advisory Resolver",
+          "category": "security",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "security-scan-agent",
+          "name": "Security Scan Agent",
+          "category": "security",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: security category"
+    },
+    "service-integration-tester": {
+      "primary": {
+        "agent_id": "service-integration-tester",
+        "name": "Service Integration Tester",
+        "category": "testing",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-testing-agent",
+          "name": "Ci Testing Agent",
+          "category": "testing",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "flaky-triage-agent",
+          "name": "Flaky Triage Agent",
+          "category": "testing",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: testing category"
+    },
+    "test-coverage-enforcer": {
+      "primary": {
+        "agent_id": "test-coverage-enforcer",
+        "name": "Test Coverage Enforcer",
+        "category": "testing",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-testing-agent",
+          "name": "Ci Testing Agent",
+          "category": "testing",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "flaky-triage-agent",
+          "name": "Flaky Triage Agent",
+          "category": "testing",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: testing category"
+    },
+    "zendesk-architect-agent": {
+      "primary": {
+        "agent_id": "zendesk-architect-agent",
+        "name": "Zendesk Architect Agent",
+        "category": "integration",
+        "status": "active",
+        "maturity": "experimental"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "dynamics365-powerplatform-architect-agent",
+          "name": "Dynamics365 PowerPlatform Architect Agent",
+          "category": "integration",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: integration category"
+    },
+    "orchestrator-agent": {
+      "primary": {
+        "agent_id": "orchestrator-agent",
+        "name": "Orchestrator Agent",
+        "category": "operations",
+        "status": "active",
+        "maturity": "beta"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "github-app-manager",
+          "name": "GitHub App Manager",
+          "category": "operations",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "github-guru-agent",
+          "name": "GitHub Guru Agent",
+          "category": "operations",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: operations category"
+    },
+    "copilot-session-chain": {
+      "primary": {
+        "agent_id": "copilot-session-chain",
+        "name": "Copilot Session Chain",
+        "category": "ci_cd",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-failure-diagnostician",
+          "name": "Ci Failure Diagnostician",
+          "category": "ci_cd",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "release-gate-agent",
+          "name": "Release Gate Agent",
+          "category": "ci_cd",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ci_cd category"
+    },
+    "packaging-validation-agent": {
+      "primary": {
+        "agent_id": "packaging-validation-agent",
+        "name": "Packaging Validation Agent",
+        "category": "security",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "security-advisory-resolver",
+          "name": "Security Advisory Resolver",
+          "category": "security",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "security-scan-agent",
+          "name": "Security Scan Agent",
+          "category": "security",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: security category"
+    },
+    "promote-integration-branch": {
+      "primary": {
+        "agent_id": "promote-integration-branch",
+        "name": "Promote Integration Branch Workflow",
+        "category": "ci_cd",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-failure-diagnostician",
+          "name": "Ci Failure Diagnostician",
+          "category": "ci_cd",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "release-gate-agent",
+          "name": "Release Gate Agent",
+          "category": "ci_cd",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ci_cd category"
+    },
+    "create-sub-pr-to-0D_base_": {
+      "primary": {
+        "agent_id": "create-sub-pr-to-0D_base_",
+        "name": "Create Sub-PR to 0D_base_ Workflow",
+        "category": "ci_cd",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-failure-diagnostician",
+          "name": "Ci Failure Diagnostician",
+          "category": "ci_cd",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "release-gate-agent",
+          "name": "Release Gate Agent",
+          "category": "ci_cd",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ci_cd category"
+    },
+    "self-healing-orchestrator-agent": {
+      "primary": {
+        "agent_id": "self-healing-orchestrator-agent",
+        "name": "Self-Healing Orchestrator Agent",
+        "category": "ci_cd",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-failure-diagnostician",
+          "name": "Ci Failure Diagnostician",
+          "category": "ci_cd",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "release-gate-agent",
+          "name": "Release Gate Agent",
+          "category": "ci_cd",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ci_cd category"
+    },
+    "branch-divergence-resolution-agent": {
+      "primary": {
+        "agent_id": "branch-divergence-resolution-agent",
+        "name": "Branch Divergence Resolution Agent",
+        "category": "ci_cd",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-failure-diagnostician",
+          "name": "Ci Failure Diagnostician",
+          "category": "ci_cd",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "release-gate-agent",
+          "name": "Release Gate Agent",
+          "category": "ci_cd",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ci_cd category"
+    },
+    "post-accountability-to-discussion": {
+      "primary": {
+        "agent_id": "post-accountability-to-discussion",
+        "name": "Post Accountability to Discussion Workflow",
+        "category": "ci_cd",
+        "status": "active",
+        "maturity": "production"
+      },
+      "fallback_agents": [
+        {
+          "sequence": 1,
+          "agent_id": "ci-failure-diagnostician",
+          "name": "Ci Failure Diagnostician",
+          "category": "ci_cd",
+          "reason": "Same category"
+        },
+        {
+          "sequence": 2,
+          "agent_id": "release-gate-agent",
+          "name": "Release Gate Agent",
+          "category": "ci_cd",
+          "reason": "Same category"
+        }
+      ],
+      "reasoning": "Primary: ci_cd category"
+    }
+  },
+  "validation_status": "PASSED",
+  "notes": "All 148 active agents have 2-3 agent fallback chains. Chains tested and verified."
+}
