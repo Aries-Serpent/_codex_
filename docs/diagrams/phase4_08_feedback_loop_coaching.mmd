@@ -1,0 +1,22 @@
+%% Feedback Loop Coaching — Aries-Serpent/_codex_
+%% Phase 4.8 — Integration Scenario Diagrams
+
+flowchart TD
+    A["🤖 Agent Attempts Task"]
+    B["📊 Evaluate Result\n(quality metrics)"]
+    C{"Success?"}
+    D["👍 User Feedback\n(this is good)"]
+    E["💾 Store Pattern\n(solution → outcome)"]
+    F["📈 Update Weights\n(increase prob)"]
+    G["👎 Failure Feedback\n(this didn't work)"]
+    H["🐛 Root Cause\n(analyze why)"]
+    I["🔄 Alternative Strategy\n(suggest)"]
+    J["💾 Store Anti-pattern\n(don't repeat)"]
+    K["🧠 Learn & Improve\n(next attempt better)"]
+    
+    A --> B --> C
+    C -->|"yes"| D --> E --> F --> K
+    C -->|"no"| G --> H --> I --> J --> K
+    
+    style A fill:#4a4e69,color:#fff
+    style K fill:#1b4332,color:#fff

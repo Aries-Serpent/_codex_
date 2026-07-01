@@ -1,0 +1,29 @@
+%% PR Validation to Merge — Aries-Serpent/_codex_
+%% Phase 4.3 — Integration Scenario Diagrams
+
+flowchart TD
+    A["📤 Push to 0D_base_"]
+    B["⚙️ agent-auth-delegation"]
+    C["📋 pre-merge-validation"]
+    D["🚪 workflow-execution-gate"]
+    E["🔧 auto_fix_all_missing()"]
+    F["📊 Pattern 30 Scorecard\n(10 dimensions)"]
+    G{"Score ≥\n98%?"}
+    H["🟢 Merge Ready"]
+    I["�� CodeQL Gate\n(< 25 alerts)"]
+    J{"All Pass?"}
+    K["🎉 Merge to main"]
+    L["🔴 Require Fixes\n(block merge)"]
+    
+    A --> B --> E
+    A --> C --> F
+    A --> D
+    E --> F --> G
+    G -->|"no"| L
+    G -->|"yes"| H --> I --> J
+    J -->|"yes"| K
+    J -->|"no"| L
+    
+    style A fill:#4a4e69,color:#fff
+    style K fill:#1b4332,color:#fff
+    style L fill:#e63946,color:#fff

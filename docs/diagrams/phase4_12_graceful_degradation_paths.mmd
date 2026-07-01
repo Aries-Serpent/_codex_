@@ -1,0 +1,26 @@
+%% Graceful Degradation Paths — Aries-Serpent/_codex_
+%% Phase 4.12 — Integration Scenario Diagrams
+
+flowchart TD
+    A["🚀 Ideal Path\n(full capability)"]
+    B["❌ Component Fails\n(RAG unavailable)"]
+    C["🔄 Degrade to LVL2\n(use cache)"]
+    D["❌ Cache Fails\n(too old)"]
+    E["🔄 Degrade to LVL3\n(keyword search)"]
+    F["❌ Search Fails"]
+    G["🔄 Degrade to LVL4\n(direct answer)"]
+    H["✅ Return Result\n(lower quality OK)"]
+    
+    A -->|"normal"| A
+    A -->|"error"| B --> C
+    C -->|"error"| D --> E
+    E -->|"error"| F --> G
+    G --> H
+    
+    C -->|"success"| H
+    E -->|"success"| H
+    
+    style A fill:#1b4332,color:#fff
+    style B fill:#e63946,color:#fff
+    style C fill:#f4a261,color:#000
+    style H fill:#1b4332,color:#fff
