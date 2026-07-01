@@ -1,0 +1,112 @@
+%% Configuration Management System — Aries-Serpent/_codex_
+%% Phase 2.6 — Module Interaction Diagrams
+%% Hydra-based configuration with overrides, validation, and composition
+%% Evidence: configs/, scripts/, pyproject.toml, Hydra documentation
+
+flowchart TD
+
+    %% ── Configuration Sources ───────────────────────────────────────────────
+    subgraph SOURCES ["📁 Configuration Sources"]
+        DEFAULT_YAML["Default YAML\n(configs/config.yaml)"]
+        DOMAIN_YAML["Domain Configs\n(configs/domain/)"]
+        ENV_VARS["Environment Variables\n(CODEX_*, ML_*)"]
+        CLI_ARGS["CLI Arguments\n(--param value)"]
+        COMP_YAML["Composition File\n(defaults: [base, model])"]
+        
+        DEFAULT_YAML --> COMP_YAML
+        DOMAIN_YAML --> COMP_YAML
+    end
+
+    %% ── Hydra Initialization ────────────────────────────────────────────────
+    subgraph HYDRA_INIT ["⚙️  Hydra Initialization"]
+        DISCOVER["Discover Config Files\n(walk configs/)"]
+        VALIDATE_SCHEMA["Validate Against Schema\n(OmegaConf)"]
+        COMPOSE["Compose Configs\n(merge hierarchy)"]
+        
+        DISCOVER --> VALIDATE_SCHEMA
+        VALIDATE_SCHEMA --> COMPOSE
+    end
+
+    COMP_YAML --> DISCOVER
+    ENV_VARS --> VALIDATE_SCHEMA
+    CLI_ARGS --> COMPOSE
+
+    %% ── Override Resolution ─────────────────────────────────────────────────
+    subgraph OVERRIDE ["🔄 Override Resolution"]
+        PARSE_CLI["Parse CLI Overrides\n(++new_key=val)"]
+        APPLY_ENV["Apply Environment\n(env var precedence)"]
+        MERGE_CASCADE["Merge Cascade\n(CLI > ENV > YAML)"]
+        RESOLVE_REF["Resolve References\n(${other.key})"]
+        
+        PARSE_CLI --> MERGE_CASCADE
+        APPLY_ENV --> MERGE_CASCADE
+        MERGE_CASCADE --> RESOLVE_REF
+    end
+
+    COMPOSE --> PARSE_CLI
+
+    %% ── Validation ──────────────────────────────────────────────────────────
+    subgraph VALIDATION ["✓ Validation"]
+        TYPE_CHECK["Type Check\n(int, str, list)"]
+        RANGE_CHECK["Range Check\n(min, max, enum)"]
+        DEPENDENCY_CHECK["Dependency Check\n(required keys)"]
+        CUSTOM_VALIDATE["Custom Validation\n(user-defined)"]
+        
+        TYPE_CHECK --> RANGE_CHECK
+        RANGE_CHECK --> DEPENDENCY_CHECK
+        DEPENDENCY_CHECK --> CUSTOM_VALIDATE
+    end
+
+    RESOLVE_REF --> TYPE_CHECK
+
+    %% ── Instantiation ───────────────────────────────────────────────────────
+    subgraph INSTANTIATE ["🏗️  Instantiation"]
+        STRUCTURED["Structured Config\n(dataclass)"]
+        CREATE_OBJECTS["Create Objects\n(model, optimizer)"]
+        INJECT_CONFIG["Inject Config\n(to constructors)"]
+        VERIFY_CREATION["Verify Creation\n(smoke test)"]
+        
+        STRUCTURED --> CREATE_OBJECTS
+        CREATE_OBJECTS --> INJECT_CONFIG
+        INJECT_CONFIG --> VERIFY_CREATION
+    end
+
+    CUSTOM_VALIDATE --> STRUCTURED
+
+    %% ── Runtime Access ──────────────────────────────────────────────────────
+    subgraph RUNTIME ["🎯 Runtime Access"]
+        LOAD_CONFIG["Load into OmegaConf\n(cfg = OmegaConf.load)"]
+        GET_VALUE["Get Value\n(cfg.model.hidden_size)"]
+        UPDATE_VALUE["Update Value\n(during execution)"]
+        RELOAD_CHECK["Check Reload\n(watch for changes)"]
+        
+        LOAD_CONFIG --> GET_VALUE
+        GET_VALUE --> UPDATE_VALUE
+        UPDATE_VALUE --> RELOAD_CHECK
+    end
+
+    VERIFY_CREATION --> LOAD_CONFIG
+
+    %% ── Output & Logging ────────────────────────────────────────────────────
+    RELOAD_CHECK --> OUTPUT["✅ Configuration Ready"]
+
+    %% ── Config Artifact ─────────────────────────────────────────────────────
+    subgraph ARTIFACT ["📦 Configuration Artifact"]
+        SAVE_CONFIG["Save Config\n(run/.hydra/config.yaml)"]
+        SAVE_METADATA["Save Metadata\n(source, overrides)"]
+        REPRODUCIBLE["Ensure Reproducible\n(same seed from config)"]
+        
+        OUTPUT --> SAVE_CONFIG
+        SAVE_CONFIG --> SAVE_METADATA
+        SAVE_METADATA --> REPRODUCIBLE
+    end
+
+    %% ── Styling ────────────────────────────────────────────────────────────
+    style SOURCES fill:#16213e,color:#e0e0e0
+    style HYDRA_INIT fill:#0f3460,color:#e0e0e0
+    style OVERRIDE fill:#4a4e69,color:#fff
+    style VALIDATION fill:#2d6a4f,color:#fff
+    style INSTANTIATE fill:#533483,color:#fff
+    style RUNTIME fill:#457b9d,color:#fff
+    style ARTIFACT fill:#1b4332,color:#fff
+    style OUTPUT fill:#1b4332,color:#fff

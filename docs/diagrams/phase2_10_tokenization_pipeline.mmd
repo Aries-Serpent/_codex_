@@ -1,0 +1,138 @@
+%% Tokenization Pipeline — Aries-Serpent/_codex_
+%% Phase 2.10 — Module Interaction Diagrams
+%% Multi-backend tokenizer support and registration
+%% Evidence: src/tokenization/, src/codex_ml/tokenization/
+
+flowchart TD
+
+    %% ── Tokenizer Selection ─────────────────────────────────────────────────
+    subgraph SELECT ["🎯 Tokenizer Selection"]
+        REQUEST["Request Tokenizer\n(by name)"]
+        LOOKUP_REGISTRY["Lookup Registry\n(get metadata)"]
+        CHECK_INSTALLED["Check if Installed\n(dependency available)"]
+        SELECT_BACKEND["Select Backend\n(HF, SentencePiece, BPE)"]
+        
+        REQUEST --> LOOKUP_REGISTRY
+        LOOKUP_REGISTRY --> CHECK_INSTALLED
+        CHECK_INSTALLED --> SELECT_BACKEND
+    end
+
+    %% ── HuggingFace Backend ─────────────────────────────────────────────────
+    subgraph HF_BACK ["🤖 HuggingFace Backend  •  HFAdapter"]
+        HF_LOAD["Load Pretrained\n(from_pretrained)"]
+        HF_CONFIG["Get Config\n(vocab_size, max_len)"]
+        HF_DOWNLOAD["Download Model\n(cache if needed)"]
+        HF_CACHE["Cache Locally\n(~/.cache/huggingface)"]
+        
+        HF_LOAD --> HF_CONFIG
+        HF_LOAD --> HF_DOWNLOAD
+        HF_DOWNLOAD --> HF_CACHE
+    end
+
+    SELECT_BACKEND -->|"HF"| HF_LOAD
+
+    %% ── SentencePiece Backend ───────────────────────────────────────────────
+    subgraph SP_BACK ["⚙️  SentencePiece Backend"]
+        SP_LOAD["Load Model\n(sentencepiece.SentencePieceProcessor)"]
+        SP_TRAIN["Train Model\n(if custom)"]
+        SP_CONFIG["Get Config\n(vocab, bos_id, eos_id)"]
+        SP_OPTIMIZE["Optimize\n(compile to C++)"]
+        
+        SP_LOAD --> SP_CONFIG
+        SP_TRAIN --> SP_OPTIMIZE
+    end
+
+    SELECT_BACKEND -->|"SentencePiece"| SP_LOAD
+
+    %% ── BPE Backend ─────────────────────────────────────────────────────────
+    subgraph BPE_BACK ["📊 Byte-Pair Encoding Backend"]
+        BPE_LOAD["Load Vocab\n(merges.txt, vocab.json)"]
+        BPE_INIT["Initialize State\n(merge priority queue)"]
+        BPE_CONFIG["Get Config\n(special tokens)"]
+        
+        BPE_LOAD --> BPE_INIT
+        BPE_INIT --> BPE_CONFIG
+    end
+
+    SELECT_BACKEND -->|"BPE"| BPE_LOAD
+
+    %% ── Tokenization Process ────────────────────────────────────────────────
+    subgraph TOKENIZE ["🔤 Tokenization  •  CentralizedTokenizerRegistry"]
+        PREPROCESS["Preprocess Text\n(lowercase, strip)"]
+        SPLIT_WORDS["Split into Words\n(whitespace)"]
+        ENCODE_TOKENS["Encode to Token IDs\n(backend-specific)"]
+        ADD_SPECIAL["Add Special Tokens\n([CLS], [SEP], [PAD])"]
+        VALIDATE_LEN["Validate Length\n(< max_len)"]
+        
+        PREPROCESS --> SPLIT_WORDS
+        SPLIT_WORDS --> ENCODE_TOKENS
+        ENCODE_TOKENS --> ADD_SPECIAL
+        ADD_SPECIAL --> VALIDATE_LEN
+    end
+
+    HF_CONFIG --> PREPROCESS
+    SP_CONFIG --> PREPROCESS
+    BPE_CONFIG --> PREPROCESS
+
+    %% ── Padding & Truncation ────────────────────────────────────────────────
+    subgraph PAD_TRUNC ["📏 Padding & Truncation"]
+        TRUNCATE{"len > max_len?"}
+        VALIDATE_LEN --> TRUNCATE
+        
+        TRUNCATE -->|"yes"| TRUNC["Truncate\n(keep first K)"]
+        TRUNCATE -->|"no"| PAD_CHECK{"len < max_len?"}
+        
+        PAD_CHECK -->|"yes"| PAD["Pad\n(add [PAD] tokens)"]
+        PAD_CHECK -->|"no"| READY["Ready to use"]
+        
+        TRUNC --> READY
+        PAD --> READY
+    end
+
+    %% ── Output: Token Tensor ────────────────────────────────────────────────
+    READY --> OUTPUT["📦 Token Tensor\n(input_ids, attention_mask)"]
+
+    %% ── Decoding ────────────────────────────────────────────────────────────
+    subgraph DECODE ["🔙 Decoding (Inverse)"]
+        TOKEN_TO_TEXT["Map Token IDs → Text"]
+        MERGE_TOKENS["Merge Subword Tokens\n(##, <piece>)"]
+        CLEANUP_SPECIAL["Remove Special Tokens"]
+        FINAL_TEXT["Final Text\n(reconstructed)"]
+        
+        TOKEN_TO_TEXT --> MERGE_TOKENS
+        MERGE_TOKENS --> CLEANUP_SPECIAL
+        CLEANUP_SPECIAL --> FINAL_TEXT
+    end
+
+    OUTPUT --> TOKEN_TO_TEXT
+
+    %% ── Caching ─────────────────────────────────────────────────────────────
+    subgraph CACHE ["💾 Tokenization Cache"]
+        CHECK_CACHE["Check Cache\n(text → tokens)"]
+        CACHE_HIT{"Cache hit?"}
+        RETURN_CACHED["Return Cached\n(O(1))"]
+        STORE_RESULT["Store Result\n(LRU, ~100MB)"]
+        
+        PREPROCESS --> CHECK_CACHE
+        CHECK_CACHE --> CACHE_HIT
+        CACHE_HIT -->|"yes"| RETURN_CACHED
+        CACHE_HIT -->|"no"| ENCODE_TOKENS
+        READY --> STORE_RESULT
+    end
+
+    RETURN_CACHED --> OUTPUT
+
+    %% ── Error Handling ──────────────────────────────────────────────────────
+    CHECK_INSTALLED -->|"not installed"| IMPORT_ERR["🚫 ImportError\n(raise to user)"]
+
+    %% ── Styling ────────────────────────────────────────────────────────────
+    style SELECT fill:#16213e,color:#e0e0e0
+    style HF_BACK fill:#0f3460,color:#e0e0e0
+    style SP_BACK fill:#0f3460,color:#e0e0e0
+    style BPE_BACK fill:#0f3460,color:#e0e0e0
+    style TOKENIZE fill:#4a4e69,color:#fff
+    style PAD_TRUNC fill:#2d6a4f,color:#fff
+    style DECODE fill:#533483,color:#fff
+    style CACHE fill:#457b9d,color:#fff
+    style OUTPUT fill:#1b4332,color:#fff
+    style IMPORT_ERR fill:#e63946,color:#fff
