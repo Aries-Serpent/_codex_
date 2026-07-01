@@ -1,3 +1,18 @@
+## [Fixed] 2026-07-01T08:45Z — RAG Module Tests: syntax error fixes
+
+### Summary
+Fixed two syntax errors in RAG test files that were blocking the entire test collection and causing the `RAG Module Tests` CI workflow to fail.
+
+**Root Cause**:
+- `tests/rag/test_ingestion_preprocessor.py` line 152: `any(,` — stray comma after opening parenthesis
+- `tests/rag/test_rag_security_comprehensive.py` line 79: `str(,` — stray comma after opening parenthesis in `assert` expression
+
+**Fix Applied**:
+- `tests/rag/test_ingestion_preprocessor.py`: removed stray `, "Condition must be true"` inserted between `any(` and the generator expression
+- `tests/rag/test_rag_security_comprehensive.py`: removed stray `, "cache_dir is not valid"` inserted between `str(` and the argument
+
+**Result**: All 834 RAG tests now collect cleanly with no syntax errors.
+
 ## [Fixed] 2026-07-01T08:15Z — PR #5167: actionlint Workflow Compliance Fix
 
 ### Summary
