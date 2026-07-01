@@ -433,4 +433,4 @@ open htmlcov/index.html
 - [CODEX_MASTER_KEY Capabilities](../reference/CODEX_MASTER_KEY_CAPABILITIES.md)
 - [GitHub API Reference](../ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md)
 - [Variables & Secrets Reference](../reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md)
-- [Test Infrastructure](../../../tests/github/conftest_codex_master_key.py)
+- [Test Infrastructure](https://github.com/Aries-Serpent/_codex_/blob/main/tests/github/conftest_codex_master_key.py) — External test configuration file

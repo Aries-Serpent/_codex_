@@ -147,6 +147,8 @@ npm run preview
 
 The application is automatically deployed to GitHub Pages via GitHub Actions when changes are pushed to the `main` branch.
 
+**Live Application:** [https://aries-serpent.github.io/_codex_/cognitive_app/](https://aries-serpent.github.io/_codex_/cognitive_app/)
+
 **Workflow:** `.github/workflows/deploy-cognitive-app.yml`
 
 

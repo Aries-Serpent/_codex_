@@ -152,9 +152,26 @@ docs/plans/
 4. Update this README
 
 ### Referencing Plans
-- From docs: `[Plan Name](./plans/FILENAME.md)`
-- From root: `[Plan Name](./docs/plans/FILENAME.md)`
-- Archived: `[Plan Name](./plans/archive/FILENAME.md)`
+
+Use the following patterns to reference plans in documentation:
+
+**Pattern 1 (from docs/):**
+```markdown
+[Plan Name](./plans/PLAN_TITLE.md)
+```
+Example: Link to `./plans/PHASE_3_PLAN.md`
+
+**Pattern 2 (from root):**
+```markdown
+[Plan Name](./docs/plans/PLAN_TITLE.md)
+```
+Example: Link to `./docs/plans/PHASE_3_PLAN.md`
+
+**Pattern 3 (archived):**
+```markdown
+[Plan Name](./plans/archive/PLAN_TITLE.md)
+```
+Example: Link to `./plans/archive/PHASE_1_PLAN.md`
 
 ---
 
