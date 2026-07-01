@@ -15,7 +15,7 @@ These E2E tests validate 70%+ coverage across codex module.
 
 import json
 import tempfile
-import threading # pragma: allowlist secret
+import threading # pragma: allowlist secret # pragma: allowlist secret
 import time
 from datetime import datetime, timedelta
 from pathlib import Path
