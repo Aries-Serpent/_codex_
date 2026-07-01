@@ -23,9 +23,6 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-    env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
   smoke-tests:
     needs: analyze
     runs-on: ubuntu-latest

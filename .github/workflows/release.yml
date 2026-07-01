@@ -48,9 +48,6 @@ jobs:
     permissions:
       contents: read
       actions: write
-    env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
   release:
     name: Create GitHub Release
     needs:
