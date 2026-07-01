@@ -1,0 +1,139 @@
+{
+  "version": "1.0.0",
+  "patterns": {
+    "RP-001": {
+      "primary": "ci-testing-agent",
+      "fallback": [
+        "flaky-triage-agent",
+        "pyo3-integration-tester"
+      ],
+      "chain": [
+        "ci-testing-agent",
+        "flaky-triage-agent",
+        "pyo3-integration-tester"
+      ],
+      "chain_length": 3
+    },
+    "RP-003": {
+      "primary": "ci-failure-diagnostician",
+      "fallback": [
+        "ci-triage-pipeline-agent",
+        "ci-auto-healer"
+      ],
+      "chain": [
+        "ci-failure-diagnostician",
+        "ci-triage-pipeline-agent",
+        "ci-auto-healer"
+      ],
+      "chain_length": 3
+    },
+    "RP-004": {
+      "primary": "security-alert-verification-agent",
+      "fallback": [
+        "code-scanning-remediation-agent",
+        "dependency-vulnerability-scanner"
+      ],
+      "chain": [
+        "security-alert-verification-agent",
+        "code-scanning-remediation-agent",
+        "dependency-vulnerability-scanner"
+      ],
+      "chain_length": 3
+    },
+    "RP-005": {
+      "primary": "code-scanning-remediation-agent",
+      "fallback": [
+        "dependency-vulnerability-scanner",
+        "pii-scrubber"
+      ],
+      "chain": [
+        "code-scanning-remediation-agent",
+        "dependency-vulnerability-scanner",
+        "pii-scrubber"
+      ],
+      "chain_length": 3
+    },
+    "RP-006": {
+      "primary": "dependency-conflict-agent",
+      "fallback": [
+        "dependency-conflict-resolver",
+        "dep-upgrade-agent"
+      ],
+      "chain": [
+        "dependency-conflict-agent",
+        "dependency-conflict-resolver",
+        "dep-upgrade-agent"
+      ],
+      "chain_length": 3
+    },
+    "RP-007": {
+      "primary": "autonomous-test-healer-agent",
+      "fallback": [
+        "integration-test-runner",
+        "mutation-testing-agent"
+      ],
+      "chain": [
+        "autonomous-test-healer-agent",
+        "integration-test-runner",
+        "mutation-testing-agent"
+      ],
+      "chain_length": 3
+    },
+    "RP-008": {
+      "primary": "workflow-ci-fixer",
+      "fallback": [
+        "cache-management-agent",
+        "ci-auto-healer-agent"
+      ],
+      "chain": [
+        "workflow-ci-fixer",
+        "cache-management-agent",
+        "ci-auto-healer-agent"
+      ],
+      "chain_length": 3
+    },
+    "RP-010": {
+      "primary": "documentation-agent",
+      "fallback": [
+        "claim-verification-agent",
+        "doc-freshness-checker"
+      ],
+      "chain": [
+        "documentation-agent",
+        "claim-verification-agent",
+        "doc-freshness-checker"
+      ],
+      "chain_length": 3
+    },
+    "RP-011": {
+      "primary": "codebase-health-guardian",
+      "fallback": [
+        "code-analysis-agent",
+        "cross-platform-filename-validator"
+      ],
+      "chain": [
+        "codebase-health-guardian",
+        "code-analysis-agent",
+        "cross-platform-filename-validator"
+      ],
+      "chain_length": 3
+    },
+    "RP-012": {
+      "primary": "test-alignment-fixer",
+      "fallback": [
+        "autonomous-test-healer-agent",
+        "integration-test-runner"
+      ],
+      "chain": [
+        "test-alignment-fixer",
+        "autonomous-test-healer-agent",
+        "integration-test-runner"
+      ],
+      "chain_length": 3
+    }
+  },
+  "metadata": {
+    "total_patterns": 10,
+    "chain_length_range": "2-3"
+  }
+}

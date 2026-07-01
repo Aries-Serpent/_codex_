@@ -1,0 +1,764 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Anomaly Detection Rules - Phase 9.3",
+  "description": "Routing anomaly thresholds and failure detection rules for RP-001 through RP-012 patterns",
+  "version": "1.0.0",
+  "generated": "2026-07-07T00:00:00Z",
+  "total_rules": 12,
+  "confidence_bands": {
+    "high": {
+      "min": 0.80,
+      "max": 1.0,
+      "description": "High confidence: Immediate recovery without human intervention"
+    },
+    "medium": {
+      "min": 0.60,
+      "max": 0.79,
+      "description": "Medium confidence: Auto-recovery with human audit trail"
+    },
+    "low": {
+      "min": 0.0,
+      "max": 0.59,
+      "description": "Low confidence: Escalate for manual review"
+    }
+  },
+  "global_thresholds": {
+    "task_failure_rate_critical": 0.05,
+    "task_failure_rate_warning": 0.02,
+    "recovery_time_sla_ms": 5000,
+    "incident_logging_required": true,
+    "max_retry_attempts": 5,
+    "cooldown_minutes": 15
+  },
+  "patterns": [
+    {
+      "id": "RP-001",
+      "name": "Unused Imports",
+      "category": "code_quality",
+      "specialist_agent": "ci-testing-agent",
+      "fallback_agents": [
+        "ci-auto-healer-agent",
+        "ci-failure-resolution-agent"
+      ],
+      "detection": {
+        "trigger_keywords": [
+          "unused import",
+          "imported but unused",
+          "import.*but never used",
+          "ruff.*F401"
+        ],
+        "regex_pattern": "^.*F401.*unused.*import.*$",
+        "log_signature": "unused import detection"
+      },
+      "thresholds": {
+        "detection_confidence_min": 0.75,
+        "failure_rate_threshold": 0.03,
+        "timeout_seconds": 30,
+        "max_files_to_fix": 50
+      },
+      "recovery": {
+        "strategy": "automated_import_removal",
+        "steps": [
+          "analyze_import_statements",
+          "identify_unused_imports",
+          "remove_unused_imports",
+          "validate_syntax",
+          "run_linter"
+        ],
+        "estimated_recovery_time_ms": 2500,
+        "success_rate_expected": 0.97
+      },
+      "confidence_bands": {
+        "high": {
+          "min": 0.85,
+          "action": "execute_recovery_immediately"
+        },
+        "medium": {
+          "min": 0.70,
+          "action": "execute_with_audit_logging"
+        },
+        "low": {
+          "min": 0.0,
+          "action": "escalate_for_review"
+        }
+      },
+      "incident_fields": {
+        "pattern_id": "RP-001",
+        "affected_files_count": "int",
+        "unused_imports_count": "int",
+        "recovery_status": "enum: success|partial|failed",
+        "recovery_duration_ms": "int"
+      }
+    },
+    {
+      "id": "RP-002",
+      "name": "Type Annotations",
+      "category": "code_quality",
+      "specialist_agent": "python-312-type-fixer",
+      "fallback_agents": [
+        "mypy-manager-agent",
+        "ci-testing-agent"
+      ],
+      "detection": {
+        "trigger_keywords": [
+          "error: invalid syntax",
+          "error: Name.*is not defined",
+          "type annotation",
+          "mypy error",
+          "undefined name"
+        ],
+        "regex_pattern": "^.*mypy.*error:.*$",
+        "log_signature": "type annotation error"
+      },
+      "thresholds": {
+        "detection_confidence_min": 0.72,
+        "failure_rate_threshold": 0.025,
+        "timeout_seconds": 45,
+        "max_files_to_fix": 30
+      },
+      "recovery": {
+        "strategy": "type_annotation_fixup",
+        "steps": [
+          "parse_type_annotations",
+          "identify_type_errors",
+          "apply_type_fixes",
+          "run_mypy",
+          "validate_changes"
+        ],
+        "estimated_recovery_time_ms": 3200,
+        "success_rate_expected": 0.92
+      },
+      "confidence_bands": {
+        "high": {
+          "min": 0.80,
+          "action": "execute_recovery_immediately"
+        },
+        "medium": {
+          "min": 0.65,
+          "action": "execute_with_audit_logging"
+        },
+        "low": {
+          "min": 0.0,
+          "action": "escalate_for_review"
+        }
+      },
+      "incident_fields": {
+        "pattern_id": "RP-002",
+        "error_type": "string",
+        "affected_files_count": "int",
+        "type_errors_count": "int",
+        "recovery_status": "enum: success|partial|failed"
+      }
+    },
+    {
+      "id": "RP-003",
+      "name": "Test Assertions",
+      "category": "testing",
+      "specialist_agent": "test-alignment-fixer",
+      "fallback_agents": [
+        "autonomous-test-healer-agent",
+        "test-enhancement-agent"
+      ],
+      "detection": {
+        "trigger_keywords": [
+          "AssertionError",
+          "assert.*failed",
+          "test.*failed",
+          "FAILED",
+          "expected.*actual"
+        ],
+        "regex_pattern": "^.*AssertionError:.*$",
+        "log_signature": "assertion failure detected"
+      },
+      "thresholds": {
+        "detection_confidence_min": 0.78,
+        "failure_rate_threshold": 0.04,
+        "timeout_seconds": 60,
+        "max_tests_to_fix": 100
+      },
+      "recovery": {
+        "strategy": "assertion_remediation",
+        "steps": [
+          "identify_failed_assertions",
+          "analyze_failure_context",
+          "adjust_assertions_or_logic",
+          "re_run_tests",
+          "validate_coverage"
+        ],
+        "estimated_recovery_time_ms": 4000,
+        "success_rate_expected": 0.88
+      },
+      "confidence_bands": {
+        "high": {
+          "min": 0.82,
+          "action": "execute_recovery_immediately"
+        },
+        "medium": {
+          "min": 0.70,
+          "action": "execute_with_audit_logging"
+        },
+        "low": {
+          "min": 0.0,
+          "action": "escalate_for_review"
+        }
+      },
+      "incident_fields": {
+        "pattern_id": "RP-003",
+        "failed_tests_count": "int",
+        "failed_assertions_count": "int",
+        "recovery_status": "enum: success|partial|failed",
+        "tests_passing_after": "int"
+      }
+    },
+    {
+      "id": "RP-004",
+      "name": "Dependency Conflicts",
+      "category": "dependencies",
+      "specialist_agent": "dependency-conflict-agent",
+      "fallback_agents": [
+        "dependency-security-review-agent",
+        "packaging-validation-agent"
+      ],
+      "detection": {
+        "trigger_keywords": [
+          "ResolutionImpossible",
+          "VersionConflict",
+          "pip.*conflict",
+          "cannot install",
+          "requirement.*conflict"
+        ],
+        "regex_pattern": "^.*ERROR:.*ResolutionImpossible.*$",
+        "log_signature": "dependency resolution failure"
+      },
+      "thresholds": {
+        "detection_confidence_min": 0.80,
+        "failure_rate_threshold": 0.015,
+        "timeout_seconds": 90,
+        "max_constraints_to_resolve": 20
+      },
+      "recovery": {
+        "strategy": "version_constraint_resolution",
+        "steps": [
+          "analyze_dependency_graph",
+          "identify_conflicts",
+          "suggest_version_pins",
+          "validate_compatibility",
+          "test_installation"
+        ],
+        "estimated_recovery_time_ms": 4500,
+        "success_rate_expected": 0.85
+      },
+      "confidence_bands": {
+        "high": {
+          "min": 0.85,
+          "action": "execute_recovery_immediately"
+        },
+        "medium": {
+          "min": 0.72,
+          "action": "execute_with_audit_logging"
+        },
+        "low": {
+          "min": 0.0,
+          "action": "escalate_for_review"
+        }
+      },
+      "incident_fields": {
+        "pattern_id": "RP-004",
+        "conflicting_packages": "array",
+        "attempted_pins": "object",
+        "resolution_strategy": "string",
+        "recovery_status": "enum: success|partial|failed"
+      }
+    },
+    {
+      "id": "RP-005",
+      "name": "YAML Formatting",
+      "category": "config",
+      "specialist_agent": "workflow-ci-fixer",
+      "fallback_agents": [
+        "config-validator",
+        "ci-testing-agent"
+      ],
+      "detection": {
+        "trigger_keywords": [
+          "YAML error",
+          "bad indentation",
+          "mapping values",
+          "invalid YAML",
+          "yamllint error"
+        ],
+        "regex_pattern": "^.*error:.*indentation.*$",
+        "log_signature": "YAML syntax error"
+      },
+      "thresholds": {
+        "detection_confidence_min": 0.88,
+        "failure_rate_threshold": 0.02,
+        "timeout_seconds": 15,
+        "max_files_to_fix": 10
+      },
+      "recovery": {
+        "strategy": "yaml_format_correction",
+        "steps": [
+          "parse_yaml_error",
+          "identify_formatting_issues",
+          "apply_indentation_fixes",
+          "validate_yaml",
+          "run_yamllint"
+        ],
+        "estimated_recovery_time_ms": 1500,
+        "success_rate_expected": 0.98
+      },
+      "confidence_bands": {
+        "high": {
+          "min": 0.87,
+          "action": "execute_recovery_immediately"
+        },
+        "medium": {
+          "min": 0.75,
+          "action": "execute_with_audit_logging"
+        },
+        "low": {
+          "min": 0.0,
+          "action": "escalate_for_review"
+        }
+      },
+      "incident_fields": {
+        "pattern_id": "RP-005",
+        "yaml_file": "string",
+        "error_line": "int",
+        "error_type": "enum: indentation|syntax|structure",
+        "recovery_status": "enum: success|partial|failed"
+      }
+    },
+    {
+      "id": "RP-006",
+      "name": "Coverage Thresholds",
+      "category": "testing",
+      "specialist_agent": "unified-coverage-agent",
+      "fallback_agents": [
+        "coverage-gapfill-agent",
+        "test-enhancement-agent"
+      ],
+      "detection": {
+        "trigger_keywords": [
+          "coverage.*below",
+          "FAILED.*coverage",
+          "coverage.*threshold",
+          "coverage.*error",
+          "TOTAL.*below"
+        ],
+        "regex_pattern": "^.*TOTAL.*coverage.*below.*$",
+        "log_signature": "coverage threshold failure"
+      },
+      "thresholds": {
+        "detection_confidence_min": 0.75,
+        "failure_rate_threshold": 0.03,
+        "timeout_seconds": 120,
+        "coverage_gap_threshold": 0.05
+      },
+      "recovery": {
+        "strategy": "coverage_gap_fill",
+        "steps": [
+          "analyze_coverage_report",
+          "identify_uncovered_lines",
+          "generate_test_templates",
+          "write_gap_fill_tests",
+          "re_run_coverage"
+        ],
+        "estimated_recovery_time_ms": 5000,
+        "success_rate_expected": 0.80
+      },
+      "confidence_bands": {
+        "high": {
+          "min": 0.80,
+          "action": "execute_recovery_immediately"
+        },
+        "medium": {
+          "min": 0.65,
+          "action": "execute_with_audit_logging"
+        },
+        "low": {
+          "min": 0.0,
+          "action": "escalate_for_review"
+        }
+      },
+      "incident_fields": {
+        "pattern_id": "RP-006",
+        "current_coverage": "float",
+        "target_coverage": "float",
+        "gap_percentage": "float",
+        "uncovered_lines_count": "int",
+        "recovery_status": "enum: success|partial|failed"
+      }
+    },
+    {
+      "id": "RP-007",
+      "name": "Documentation Links",
+      "category": "documentation",
+      "specialist_agent": "link-validator-agent",
+      "fallback_agents": [
+        "doc-freshness-checker",
+        "documentation-quality-agent"
+      ],
+      "detection": {
+        "trigger_keywords": [
+          "broken link",
+          "404 not found",
+          "link.*error",
+          "documentation.*failed",
+          "href.*invalid"
+        ],
+        "regex_pattern": "^.*ERROR:.*link.*broken.*$",
+        "log_signature": "broken documentation link"
+      },
+      "thresholds": {
+        "detection_confidence_min": 0.85,
+        "failure_rate_threshold": 0.02,
+        "timeout_seconds": 45,
+        "max_links_to_fix": 100
+      },
+      "recovery": {
+        "strategy": "link_validation_fix",
+        "steps": [
+          "identify_broken_links",
+          "locate_correct_paths",
+          "update_link_references",
+          "validate_links",
+          "run_link_checker"
+        ],
+        "estimated_recovery_time_ms": 3000,
+        "success_rate_expected": 0.94
+      },
+      "confidence_bands": {
+        "high": {
+          "min": 0.88,
+          "action": "execute_recovery_immediately"
+        },
+        "medium": {
+          "min": 0.78,
+          "action": "execute_with_audit_logging"
+        },
+        "low": {
+          "min": 0.0,
+          "action": "escalate_for_review"
+        }
+      },
+      "incident_fields": {
+        "pattern_id": "RP-007",
+        "broken_links_count": "int",
+        "affected_files_count": "int",
+        "corrected_links_count": "int",
+        "recovery_status": "enum: success|partial|failed"
+      }
+    },
+    {
+      "id": "RP-008",
+      "name": "Import Path Issues",
+      "category": "code_quality",
+      "specialist_agent": "ci-importerror-agent",
+      "fallback_agents": [
+        "ci-testing-agent",
+        "ci-auto-healer-agent"
+      ],
+      "detection": {
+        "trigger_keywords": [
+          "ImportError",
+          "ModuleNotFoundError",
+          "cannot import name",
+          "P19 shadow import",
+          "sys.path"
+        ],
+        "regex_pattern": "^.*(ImportError|ModuleNotFoundError).*$",
+        "log_signature": "import path resolution failure"
+      },
+      "thresholds": {
+        "detection_confidence_min": 0.80,
+        "failure_rate_threshold": 0.025,
+        "timeout_seconds": 30,
+        "max_modules_to_fix": 20
+      },
+      "recovery": {
+        "strategy": "import_path_resolution",
+        "steps": [
+          "analyze_import_error",
+          "detect_p19_shadow_imports",
+          "adjust_sys_path",
+          "fix_import_statements",
+          "validate_imports"
+        ],
+        "estimated_recovery_time_ms": 2800,
+        "success_rate_expected": 0.91
+      },
+      "confidence_bands": {
+        "high": {
+          "min": 0.85,
+          "action": "execute_recovery_immediately"
+        },
+        "medium": {
+          "min": 0.70,
+          "action": "execute_with_audit_logging"
+        },
+        "low": {
+          "min": 0.0,
+          "action": "escalate_for_review"
+        }
+      },
+      "incident_fields": {
+        "pattern_id": "RP-008",
+        "import_error_type": "enum: ImportError|ModuleNotFoundError|ShadowImport",
+        "failed_module": "string",
+        "p19_shadow_detected": "boolean",
+        "recovery_status": "enum: success|partial|failed"
+      }
+    },
+    {
+      "id": "RP-009",
+      "name": "Flaky Tests",
+      "category": "testing",
+      "specialist_agent": "autonomous-test-healer-agent",
+      "fallback_agents": [
+        "fragile-test-guardian",
+        "test-pattern-guardian"
+      ],
+      "detection": {
+        "trigger_keywords": [
+          "FLAKY",
+          "pytest.mark.flaky",
+          "intermittent failure",
+          "timing issue",
+          "race condition"
+        ],
+        "regex_pattern": "^.*(FLAKY|flaky|intermittent).*$",
+        "log_signature": "flaky test detected"
+      },
+      "thresholds": {
+        "detection_confidence_min": 0.72,
+        "failure_rate_threshold": 0.05,
+        "timeout_seconds": 90,
+        "max_flaky_tests": 50
+      },
+      "recovery": {
+        "strategy": "flaky_test_stabilization",
+        "steps": [
+          "identify_flaky_tests",
+          "analyze_timing_patterns",
+          "increase_timeouts",
+          "add_retries",
+          "re_run_tests_multiple_times"
+        ],
+        "estimated_recovery_time_ms": 4500,
+        "success_rate_expected": 0.83
+      },
+      "confidence_bands": {
+        "high": {
+          "min": 0.80,
+          "action": "execute_recovery_immediately"
+        },
+        "medium": {
+          "min": 0.65,
+          "action": "execute_with_audit_logging"
+        },
+        "low": {
+          "min": 0.0,
+          "action": "escalate_for_review"
+        }
+      },
+      "incident_fields": {
+        "pattern_id": "RP-009",
+        "flaky_tests_count": "int",
+        "failure_frequency": "float",
+        "stabilization_strategy": "string",
+        "recovery_status": "enum: success|partial|failed"
+      }
+    },
+    {
+      "id": "RP-010",
+      "name": "Workflow Compliance",
+      "category": "workflow",
+      "specialist_agent": "workflow-compliance-guardian",
+      "fallback_agents": [
+        "workflow-ci-fixer",
+        "ci-testing-agent"
+      ],
+      "detection": {
+        "trigger_keywords": [
+          "concurrency",
+          "timeout-minutes",
+          "missing concurrency",
+          "workflow.*missing",
+          "compliance.*error"
+        ],
+        "regex_pattern": "^.*ERROR:.*concurrency.*timeout.*$",
+        "log_signature": "workflow compliance violation"
+      },
+      "thresholds": {
+        "detection_confidence_min": 0.90,
+        "failure_rate_threshold": 0.01,
+        "timeout_seconds": 20,
+        "max_workflows_to_fix": 30
+      },
+      "recovery": {
+        "strategy": "workflow_compliance_correction",
+        "steps": [
+          "parse_workflow_file",
+          "identify_compliance_gaps",
+          "add_concurrency_config",
+          "add_timeout_config",
+          "validate_workflow"
+        ],
+        "estimated_recovery_time_ms": 1800,
+        "success_rate_expected": 0.96
+      },
+      "confidence_bands": {
+        "high": {
+          "min": 0.88,
+          "action": "execute_recovery_immediately"
+        },
+        "medium": {
+          "min": 0.78,
+          "action": "execute_with_audit_logging"
+        },
+        "low": {
+          "min": 0.0,
+          "action": "escalate_for_review"
+        }
+      },
+      "incident_fields": {
+        "pattern_id": "RP-010",
+        "workflow_file": "string",
+        "compliance_violations": "array",
+        "missing_concurrency": "boolean",
+        "missing_timeout": "boolean",
+        "recovery_status": "enum: success|partial|failed"
+      }
+    },
+    {
+      "id": "RP-011",
+      "name": "Cargo Features",
+      "category": "build",
+      "specialist_agent": "rust-config-validator",
+      "fallback_agents": [
+        "ci-auto-healer-agent",
+        "ci-failure-resolution-agent"
+      ],
+      "detection": {
+        "trigger_keywords": [
+          "cargo.*error",
+          "feature.*not found",
+          "Cargo.toml",
+          "no feature named",
+          "rust.*compilation"
+        ],
+        "regex_pattern": "^.*error\\[E.*\\]:.*feature.*$",
+        "log_signature": "cargo feature compilation error"
+      },
+      "thresholds": {
+        "detection_confidence_min": 0.83,
+        "failure_rate_threshold": 0.02,
+        "timeout_seconds": 60,
+        "max_features_to_fix": 15
+      },
+      "recovery": {
+        "strategy": "cargo_feature_resolution",
+        "steps": [
+          "parse_cargo_error",
+          "identify_missing_features",
+          "update_cargo_toml",
+          "validate_features",
+          "rebuild_cargo"
+        ],
+        "estimated_recovery_time_ms": 3500,
+        "success_rate_expected": 0.89
+      },
+      "confidence_bands": {
+        "high": {
+          "min": 0.85,
+          "action": "execute_recovery_immediately"
+        },
+        "medium": {
+          "min": 0.72,
+          "action": "execute_with_audit_logging"
+        },
+        "low": {
+          "min": 0.0,
+          "action": "escalate_for_review"
+        }
+      },
+      "incident_fields": {
+        "pattern_id": "RP-011",
+        "cargo_error_type": "string",
+        "missing_features": "array",
+        "affected_crate": "string",
+        "recovery_status": "enum: success|partial|failed"
+      }
+    },
+    {
+      "id": "RP-012",
+      "name": "CodeQL/Security",
+      "category": "security",
+      "specialist_agent": "codeql-alert-resolution-agent",
+      "fallback_agents": [
+        "security-alert-verification-agent",
+        "code-scanning-remediation-agent"
+      ],
+      "detection": {
+        "trigger_keywords": [
+          "CodeQL alert",
+          "security alert",
+          "vulnerability",
+          "SAST scan",
+          "code scanning"
+        ],
+        "regex_pattern": "^.*ERROR:.*CodeQL.*alert.*$",
+        "log_signature": "security scanning alert"
+      },
+      "thresholds": {
+        "detection_confidence_min": 0.82,
+        "failure_rate_threshold": 0.015,
+        "timeout_seconds": 120,
+        "max_alerts_to_fix": 20
+      },
+      "recovery": {
+        "strategy": "security_alert_remediation",
+        "steps": [
+          "parse_codeql_alert",
+          "analyze_vulnerability",
+          "generate_fix",
+          "apply_security_patch",
+          "run_codeql_recheck"
+        ],
+        "estimated_recovery_time_ms": 4800,
+        "success_rate_expected": 0.87
+      },
+      "confidence_bands": {
+        "high": {
+          "min": 0.85,
+          "action": "execute_recovery_immediately"
+        },
+        "medium": {
+          "min": 0.70,
+          "action": "execute_with_audit_logging"
+        },
+        "low": {
+          "min": 0.0,
+          "action": "escalate_for_review"
+        }
+      },
+      "incident_fields": {
+        "pattern_id": "RP-012",
+        "alert_count": "int",
+        "severity_levels": "array",
+        "alert_types": "array",
+        "recovery_status": "enum: success|partial|failed"
+      }
+    }
+  ],
+  "validation": {
+    "schema_version": "1.0.0",
+    "total_rules_defined": 12,
+    "coverage_percentage": 100,
+    "last_updated": "2026-07-07T00:00:00Z",
+    "validation_status": "valid",
+    "notes": "All 12 RP patterns (RP-001 through RP-012) have complete anomaly detection rules with confidence bands, recovery strategies, and incident logging specifications."
+  }
+}
