@@ -35,10 +35,11 @@ import sys
 from datetime import datetime, timezone
 from typing import Any
 from urllib import error, request
-from scripts.ci._token_resolver import get_token
 
 # Add parent directory to path for CI execution
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
+from scripts.ci._token_resolver import get_token
 
 
 logger = logging.getLogger(__name__)

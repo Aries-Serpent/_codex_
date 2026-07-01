@@ -37,7 +37,7 @@ jobs:
         - 3.12.13
     steps:
     - name: Checkout code
-      uses: actions/checkout@v7
+      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
     - name: Initialize with repository variables
       env:
         CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
@@ -446,7 +446,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
         fetch-depth: 1

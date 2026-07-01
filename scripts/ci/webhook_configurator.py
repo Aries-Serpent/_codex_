@@ -63,6 +63,10 @@ import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlparse
+
+# Add parent directory to path for CI execution
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
 from scripts.ci._token_resolver import get_token
 
 
