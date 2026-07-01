@@ -46,6 +46,8 @@ def get_gpu_memory() -> tuple[int, int]:
             free, total = torch.cuda.mem_get_info()
             logger.debug(f"GPU memory: {free / 1e9:.2f}GB free / {total / 1e9:.2f}GB total")
             return free, total
+    except ImportError:
+        logger.debug("PyTorch not installed")
     except (ValueError, TypeError, RuntimeError) as e:
         type(e).__name__
         logger.debug("Could not get GPU memory: <ERROR_TYPE>")

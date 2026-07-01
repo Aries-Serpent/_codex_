@@ -682,3 +682,27 @@ class TestSlidingWindowChunkerCoverage:
         chunks = chunker.chunk(text)
         # Should produce chunks without gaps
         assert len(chunks) >= 1, "Chunks must not be empty"
+
+
+class TestSentenceChunkerEmptySentence:
+    """Tests for empty-sentence skipping in SentenceChunker (lines 247-248)."""
+
+    def test_sentence_chunker_skips_empty_trailing_sentence(self):
+        """Empty string after regex split on trailing period is skipped (lines 247-248)."""
+        config = ChunkingConfig(
+            strategy=ChunkingStrategy.SENTENCE,
+            chunk_size=200,
+            max_chunk_size=500,
+            min_chunk_size=1,
+        )
+        chunker = SentenceChunker(config)
+        # Text ending with '.' causes the regex to split and produce an empty
+        # trailing element; the code must skip it rather than creating an empty chunk.
+        text = "First sentence. Second sentence."
+        chunks = chunker.chunk(text)
+        # All chunks must have non-empty text
+        assert all(chunk.text.strip() for chunk in chunks), "no empty chunks expected"
+        # Both sentences should be present in the combined text
+        combined = " ".join(c.text for c in chunks)
+        assert "First sentence" in combined, "first sentence missing"
+        assert "Second sentence" in combined, "second sentence missing"

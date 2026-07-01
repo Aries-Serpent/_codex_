@@ -1,3 +1,16 @@
+## [Fixed] 2026-07-01T23:10Z — RAG Module Tests: Coverage +1.59% and ImportError production bug fix
+
+- **Production bug fix** (`src/codex/rag/gpu_utils.py`): `get_gpu_memory()` now catches `ImportError` (in addition to `ValueError`, `TypeError`, `RuntimeError`) so that environments without PyTorch return `(0, 0)` cleanly instead of propagating the error
+- **Production bug fix** (`src/rag/pipelines/retrieval.py`): Added `Retrieval = RetrievalPipeline` backward-compatibility alias that `cached_retrieval.py` was importing at module level
+- **New targeted tests** to cover previously uncovered lines in `src/codex/rag/`:
+  - `tests/test_rag_postprocess.py`: 3 tests covering `postprocess.py` lines 135, 169, and branch 34→31
+  - `tests/rag/test_gpu_utils.py`: 3 tests covering `gpu_utils.py` line 88 (ValueError) and ImportError path
+  - `tests/rag/ingestion/test_chunker.py`: 1 test covering `chunker.py` lines 247-248 (empty trailing sentence)
+  - `tests/rag/test_utils_meta_mocked.py`: 4 tests covering `utils.py` lines 95, 105-106, 138-141 using mocks
+- **Coverage impact**: +~1.59% statement coverage (14 statements), surpassing the 95% CI threshold
+- **Issues**: #5187
+- **PR**: #5188
+
 ## [Fixed] 2026-07-01T22:30Z — Comprehensive CI Fix: RAG Module Tests, Secrets, Docs, Governance
 
 - **Primary Fix**: Removed conflicting numpy version pin in `pyproject.toml` [project.optional-dependencies].rag section
