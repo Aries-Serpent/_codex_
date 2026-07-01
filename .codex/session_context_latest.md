@@ -1,10 +1,10 @@
-# Session Context — 2026-07-01T15:25:23Z
+# Session Context — 2026-07-01T15:37:46Z
 **Branch:** `copilot/explore-codebase-structure`  **PR:** #5176  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4426` (✅)
-- GraphQL remaining: `4989` (✅)
+- REST remaining: `4142` (✅)
+- GraphQL remaining: `4976` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -12,21 +12,21 @@
 State: `open`  Draft: `False`  Branch: `copilot/explore-codebase-structure` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **Code Example Validation** — `failure` on `copilot/explore-codebase-structure` (2026-07-01)
-- **Unified Governance Check** — `failure` on `copilot/explore-codebase-structure` (2026-07-01)
-- **PR Comment Review Gate** — `failure` on `copilot/explore-codebase-structure` (2026-07-01)
-- **Validation Pipeline** — `failure` on `copilot/explore-codebase-structure` (2026-07-01)
-- **Agent Registry Validation** — `failure` on `copilot/explore-codebase-structure` (2026-07-01)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-01)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-01)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-01)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-01)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-01)
 
 ## 📝 Recent Commits
+- `65bd2605` Merge remote-tracking branch 'origin/copilot/explore-codebase-structure' into co — copilot-swe-agent[bot] (2026-07-01)
+- `50e8bab7` Fix: Resolve 4 CI check failures (agent registry, Python code syntax) — copilot-swe-agent[bot] (2026-07-01)
+- `8c3b7802` fix(secrets): annotate doc-example false positives [skip ci] (RP-007) — github-actions[bot] (2026-07-01)
+- `ca5cd735` WIP: Resolving 8 CI check failures — copilot-swe-agent[bot] (2026-07-01)
 - `38619916` fix(secrets): annotate doc-example false positives [skip ci] (RP-007) — github-actions[bot] (2026-07-01)
 - `95faa1e7` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-07-01)
 - `63e32d46` 🎉 CAMPAIGN COMPLETE - All 4 Agents Finished + PR #5176 Created (Quality 72→82-85 — copilot-swe-agent[bot] (2026-07-01)
 - `79b2a62b` P2.2 COMPLETE: Executive Summary - All 6 phases finished, 4 God Objects refactor — copilot-swe-agent[bot] (2026-07-01)
-- `1be1c23d` P2.2 Phase 6: Complete - All validations passed, comprehensive testing report — copilot-swe-agent[bot] (2026-07-01)
-- `dd78322d` P2.2 Phase 5: Extract shared utilities (180 LOC consolidated, 5 utility modules  — copilot-swe-agent[bot] (2026-07-01)
-- `1751fc59` 🔄 Merge main into explore-codebase-structure - sync branches (0 behind main) — copilot-swe-agent[bot] (2026-07-01)
-- `3c64318a` Merge main into explore-codebase-structure - sync branches — copilot-swe-agent[bot] (2026-07-01)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
