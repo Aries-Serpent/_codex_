@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 ## [Added] 2026-07-01T00:03Z — Core Autonomy Foundations: Deterministic 8-Step Execution Loop
 
 ### Summary
@@ -24,7 +24,7 @@ Implemented core autonomy foundations addressing execution blocking and critical
 - Runtime storage: `docs-data/runtime/checkpoints/` and `checkpoint_metadata/`
 
 **Test Coverage**: 7 comprehensive scenarios in `scripts/core/test_execution_loop.py` — all tests passing
-=======
+
 ## [Fix] 2026-07-01T03:18Z — PR #5160 Merge Resolution & Code Quality Fixes
 
 ### Summary
@@ -103,7 +103,7 @@ Fixed widespread ModuleNotFoundError in CI scripts and secret detection false po
 - Validation Pipeline
 - Workflow Compliance Audit
 - Workflow Execution Gate
->>>>>>> origin/main
+
 
 ---
 

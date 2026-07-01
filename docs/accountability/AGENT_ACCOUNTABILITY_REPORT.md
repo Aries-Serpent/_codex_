@@ -1,6 +1,6 @@
 # Agent Accountability Report — Index (Phase 2.3 Refactored)
 
-<<<<<<< HEAD
+
 ## SESSION SUMMARY — 2026-07-01T00:03Z [CORE AUTONOMY FOUNDATIONS: DETERMINISTIC 8-STEP EXECUTION LOOP]
 
 **Session:** copilot/full-execution-plan-advanced-repo | **Task:** Implement core autonomy foundations with validation, persistence, and structured handoffs | **Date:** 2026-07-01T00:03:00Z | **Authority:** @mbaetiong (D-mode autonomy)
@@ -116,7 +116,7 @@ Ready for:
 
 ---
 
-=======
+
 ## SESSION SUMMARY — 2026-07-01T03:18Z [PR #5160 MERGE RESOLUTION & CODE QUALITY FIXES]
 
 **Session:** copilot-pr5160-merge-resolution | **Task:** Address Comment Review Gate blocking issue and resolve merge conflicts | **Date:** 2026-07-01T03:18:00Z | **Authority:** @mbaetiong (CI rescue)
@@ -273,7 +273,7 @@ Addressed failing CI checks and enforced GitHub Actions version standards across
 ---
 
 
->>>>>>> origin/main
+
 ## SESSION SUMMARY — 2026-06-30T22:15Z [RAG MODULE TESTS CI FIX — STEP 8 PACKAGE IMPORT VALIDATION]
 
 **Session:** copilot-fix-ci-rag-module-tests | **Task:** Fix RAG Module Tests Step 8 package import validation | **Date:** 2026-06-30T22:15:00Z | **Authority:** @mbaetiong (D-mode autonomy)

@@ -17,13 +17,9 @@ Generated: 2026-06-30T23:26:21Z
 """
 
 import json
-import os
-import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Set, Tuple
-import ast
-import re
+from typing import Any, Dict
 
 class ConvergenceAnalyzer:
     """Analyzes system convergence failures across multiple dimensions."""
