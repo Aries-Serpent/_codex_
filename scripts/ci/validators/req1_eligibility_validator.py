@@ -7,6 +7,19 @@ Validates that a PR meets basic structural requirements:
 - PR title is descriptive
 - PR description adequate
 - Reviewer assigned
+
+Reviewer-assignment exemption for bot/copilot PRs
+--------------------------------------------------
+GitHub Copilot agent PRs and other bot-authored PRs (user.type == "Bot", login
+ending in "[bot]", or branch prefix "copilot/") legitimately have no human
+reviewers at creation time.  For these PRs the reviewer check is downgraded from
+a hard FAIL (score=0.0) to a WARN (score=0.5) so that the overall governance
+score is not blocked solely by the absence of a reviewer.
+
+The bot identity is determined primarily via the server-side ``user.type`` field
+(returned as ``"Bot"`` by the GitHub API for GitHub Apps / bots), which cannot
+be forged via branch naming.  The ``[bot]`` login suffix and ``copilot/`` branch
+prefix are accepted as secondary signals for robustness.
 """
 
 from __future__ import annotations
@@ -91,10 +104,15 @@ class REQ1EligibilityValidator(RequirementValidator):
         reviewer_warning: str | None = None
         if not reviewers:
             # Exempt bot/copilot-authored PRs from the hard reviewer requirement.
-            # Copilot agent PRs (branch prefix "copilot/" or author login ending in
-            # "[bot]") may legitimately have no human reviewers at creation time.
+            # Use user.type == "Bot" as the primary (server-side, unforgeable) signal.
+            # Fall back to login suffix and branch prefix as secondary signals.
             pr_author = pr_details.get("user", {}).get("login", "")
-            is_bot_pr = pr_author.endswith("[bot]") or branch_name.startswith("copilot/")
+            pr_author_type = pr_details.get("user", {}).get("type", "")
+            is_bot_pr = (
+                pr_author_type == "Bot"
+                or pr_author.endswith("[bot]")
+                or branch_name.startswith("copilot/")
+            )
             if is_bot_pr:
                 reviewer_warning = "No reviewers assigned (bot/copilot PR — warning only)"
                 metadata["reviewer_exemption"] = "bot_or_copilot_branch"
