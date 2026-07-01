@@ -27,7 +27,7 @@ jobs:
       head_branch: ${{ steps.check.outputs.head_branch }}
     steps:
     - name: 📥 Checkout (sparse — script only)
-      uses: actions/checkout@v7
+      uses: actions/checkout@v5
       with:
         sparse-checkout: 'scripts/ci/branch_rebase_check.py
 
@@ -93,7 +93,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@v5
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || github.token }}
         fetch-depth: 1

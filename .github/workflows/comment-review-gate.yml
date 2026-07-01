@@ -40,6 +40,7 @@ jobs:
           scripts/ci/__init__.py
           scripts/ci/check_pr_comments.py
           scripts/ci/_token_resolver.py
+          pyproject.toml
         sparse-checkout-cone-mode: false
     - name: Set up Python
       uses: actions/setup-python@v6
