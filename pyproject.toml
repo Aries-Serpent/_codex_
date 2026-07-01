@@ -436,6 +436,8 @@ include = [
     "quantum*",
     "cognitive_brain*",
     "zendesk*",
+    "config",
+    "codex_bridge",
 ]
 exclude = [
     "tests*",
@@ -444,7 +446,6 @@ exclude = [
     "*__pycache__*",
     "security-suite-artifacts*",
     "configs*",
-    "config*",
     "config_legacy*",
     "cli",
     "cli.*",

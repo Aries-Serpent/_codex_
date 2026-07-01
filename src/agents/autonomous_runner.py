@@ -23,7 +23,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from codex_ml.safety.moderation import ModerationAdapter, ModerationRejection, ModerationSettings
-from config.openai_client import CodexOpenAIClient, ExecutionResult
+from codex.clients import CodexOpenAIClient, ExecutionResult
 
 # Configure logging
 logger = logging.getLogger(__name__)
