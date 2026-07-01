@@ -133,6 +133,7 @@ class PullRequestManager:
         state: str = "open",
         head: str | None = None,
         base: str | None = None,
+        per_page: int = 30,
     ) -> list[dict[str, Any]]:
         """List pull requests in a repository.
 
@@ -146,6 +147,8 @@ class PullRequestManager:
             Filter by head branch (format: ``"owner:branch"``).
         base:
             Filter by base branch name (e.g. ``"main"``).
+        per_page:
+            Number of results per page (max 100, default 30).
 
         Returns
         -------
@@ -154,7 +157,7 @@ class PullRequestManager:
         """
         self._api._require_token()
         url = f"{_GITHUB_API}/repos/{repo}/pulls"
-        params = {"state": state}
+        params = {"state": state, "per_page": min(per_page, 100)}
         if head:
             params["head"] = head
         if base:

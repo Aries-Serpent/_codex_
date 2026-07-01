@@ -369,20 +369,25 @@ class GitHubMCPPoster:
     # ------------------------------------------------------------------
 
     def _record_cb_pattern(
-        self, pattern_id: str, summary: str, context: dict[str, str] | None = None
+        self,
+        pattern_id: str,
+        summary: str,
+        context: dict[str, str] | None = None,
+        outcome: str = "pending",
     ) -> None:
         """Record a cognitive-brain pattern. Delegates to CognitiveBrainIntegration."""
-        return self._cb._record_cb_pattern(pattern_id, summary, context)
+        return self._cb._record_cb_pattern(pattern_id, summary, context, outcome)
 
     def _request(
         self,
         method: str,
         url: str,
-        body: str | None = None,
+        body: str | dict | None = None,
         headers: dict[str, str] | None = None,
+        max_retries: int = 3,
     ) -> dict:
         """Make an HTTP request. Delegates to APIClient."""
-        return self._api._request(method, url, body, headers)
+        return self._api._request(method, url, body, headers, max_retries)
 
     def _get(self, url: str) -> dict:
         """Make a GET request. Delegates to APIClient."""
