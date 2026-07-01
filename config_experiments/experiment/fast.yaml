@@ -1,0 +1,33 @@
+# Fast experiment configuration
+# Optimized for quick feedback during development
+
+defaults:
+  - _self_
+
+# Experiment settings
+experiment:
+  name: fast
+  description: "Fast mode for quick iteration"
+  enabled: true
+  log_level: INFO
+
+# Test configuration
+test:
+  timeout: 60  # 1 minute per test
+  reruns: 0
+  verbose: false
+  fail_fast: true
+  markers:
+    - unit  # Only run unit tests, skip integration
+  exclude_patterns:
+    - "*/test_integration/*"
+    - "*/test_e2e/*"
+
+# Coverage settings
+coverage:
+  enabled: false  # Disable for speed
+
+# Performance
+performance:
+  parallel_workers: auto  # Use all available cores
+  cache_enabled: true

@@ -1,0 +1,129 @@
+%% RAG Module Dependencies — Aries-Serpent/_codex_
+%% Phase 3.7 — Component Relationship Diagrams
+%% RAG → embeddings, indexing, caching, retrieval
+%% Evidence: src/codex/rag/, embeddings.py, indexer.py
+
+graph TB
+
+    %% ── Document Processing ─────────────────────────────────────────────────
+    subgraph DOC_PROC ["📄 Document Processing"]
+        LOAD_DOCS["Load Documents\n(from sources)"]
+        CHUNK["Chunk Documents\n(semantic, sliding)"]
+        EXTRACT_META["Extract Metadata\n(source, author, date)"]
+    end
+
+    %% ── Embedding Dependencies ──────────────────────────────────────────────
+    subgraph EMB_DEP ["🔗 Embedding Dependencies  •  EmbeddingProvider"]
+        SELECT_BACKEND["Select Backend\n(HF, OpenAI, local)"]
+        BATCH_PROCESS["Batch Processing\n(optimize throughput)"]
+        CACHE_VECTORS["Cache Vectors\n(avoid recompute)"]
+    end
+
+    CHUNK --> SELECT_BACKEND
+    EXTRACT_META --> BATCH_PROCESS
+    BATCH_PROCESS --> CACHE_VECTORS
+
+    %% ── Tokenization Dependencies ───────────────────────────────────────────
+    subgraph TOK_DEP ["🔤 Tokenization Dependencies"]
+        USE_TOK["Use Tokenizer\n(CentralizedTokenizerRegistry)"]
+        LIMIT_LENGTH["Limit to Max Tokens\n(context window)"]
+    end
+
+    SELECT_BACKEND --> USE_TOK
+    USE_TOK --> LIMIT_LENGTH
+
+    %% ── Indexing Dependencies ───────────────────────────────────────────────
+    subgraph INDEX_DEP ["🔍 Indexing Dependencies  •  Indexer"]
+        CREATE_INDEX["Create Index\n(FAISS)"]
+        ADD_VECTORS["Add Vectors\n(batch insert)"]
+        OPTIMIZE_INDEX["Optimize Index\n(build IVF clusters)"]
+    end
+
+    LIMIT_LENGTH --> CREATE_INDEX
+    CACHE_VECTORS --> ADD_VECTORS
+    ADD_VECTORS --> OPTIMIZE_INDEX
+
+    %% ── Cache Dependencies ──────────────────────────────────────────────────
+    subgraph CACHE_DEP ["💾 Cache Dependencies"]
+        CACHE_STORE["Cache Store\n(FAISS index file)"]
+        CACHE_METADATA["Cache Metadata\n(chunk → source)"]
+        CACHE_EMBEDDINGS["Cache Embeddings\n(vector file)"]
+    end
+
+    OPTIMIZE_INDEX --> CACHE_STORE
+    EXTRACT_META --> CACHE_METADATA
+    CACHE_VECTORS --> CACHE_EMBEDDINGS
+
+    %% ── Query Processing Dependencies ───────────────────────────────────────
+    subgraph QUERY_DEP ["❓ Query Processing"]
+        PARSE_QUERY["Parse Query\n(normalize)"]
+        EMBED_QUERY["Embed Query\n(same encoder)"]
+        SEARCH_INDEX["Search Index\n(k-NN)"]
+        RERANK["Re-rank Results\n(BM25, diversity)"]
+    end
+
+    PARSE_QUERY --> EMBED_QUERY
+    EMBED_QUERY --> SEARCH_INDEX
+    SEARCH_INDEX --> RERANK
+
+    %% ── Retrieval Dependencies ──────────────────────────────────────────────
+    subgraph RET_DEP ["🎯 Retrieval  •  Retriever"]
+        FETCH_TOP_K["Fetch Top-K\n(from FAISS)"]
+        FETCH_SOURCE["Fetch Source\n(from cache)"]
+        ASSEMBLE_CTX["Assemble Context\n(format markdown)"]
+        TRIM_LEN["Trim to Context\n(token budget)"]
+    end
+
+    RERANK --> FETCH_TOP_K
+    CACHE_METADATA --> FETCH_SOURCE
+    FETCH_TOP_K --> ASSEMBLE_CTX
+    FETCH_SOURCE --> ASSEMBLE_CTX
+    ASSEMBLE_CTX --> TRIM_LEN
+
+    %% ── Logging Dependencies ────────────────────────────────────────────────
+    subgraph LOG_RAG_DEP ["📋 Logging Dependencies"]
+        LOG_QUERY["Log Query\n(intent)"]
+        LOG_RESULTS["Log Results\n(rank, score)"]
+        LOG_FEEDBACK["Log Feedback\n(relevance)"]
+    end
+
+    PARSE_QUERY --> LOG_QUERY
+    FETCH_TOP_K --> LOG_RESULTS
+    RERANK --> LOG_FEEDBACK
+
+    %% ── Feedback & Optimization ─────────────────────────────────────────────
+    subgraph FEEDBACK ["🔄 Feedback & Optimization"]
+        EVAL_RELEVANCE["Evaluate Relevance\n(user feedback)"]
+        UPDATE_STATS["Update Stats\n(hit rate, latency)"]
+        TRIGGER_RETRAIN["Trigger Retrain\n(if drift detected)"]
+    end
+
+    LOG_FEEDBACK --> EVAL_RELEVANCE
+    LOG_RESULTS --> UPDATE_STATS
+    EVAL_RELEVANCE --> TRIGGER_RETRAIN
+    TRIGGER_RETRAIN -.->|"periodic"| OPTIMIZE_INDEX
+
+    %% ── Output ──────────────────────────────────────────────────────────────
+    TRIM_LEN --> OUTPUT["📤 Retrieved Context\n(with citations)"]
+
+    %% ── Dependency Summary ──────────────────────────────────────────────────
+    subgraph SUMMARY ["📊 Dependency Graph"]
+        DEP1["RAG → Tokenization"]
+        DEP2["RAG → Embeddings → Caching"]
+        DEP3["RAG → Indexing (FAISS)"]
+        DEP4["RAG → Retrieval"]
+        DEP5["RAG → Logging (queries, feedback)"]
+    end
+
+    %% ── Styling ────────────────────────────────────────────────────────────
+    style DOC_PROC fill:#16213e,color:#e0e0e0
+    style EMB_DEP fill:#0f3460,color:#e0e0e0
+    style TOK_DEP fill:#4a4e69,color:#fff
+    style INDEX_DEP fill:#533483,color:#fff
+    style CACHE_DEP fill:#2d6a4f,color:#fff
+    style QUERY_DEP fill:#457b9d,color:#fff
+    style RET_DEP fill:#1b4332,color:#fff
+    style LOG_RAG_DEP fill:#665c84,color:#fff
+    style FEEDBACK fill:#4a4e69,color:#fff
+    style OUTPUT fill:#1b4332,color:#fff
+    style SUMMARY fill:#16213e,color:#e0e0e0

@@ -173,12 +173,31 @@ Key rules enforced:
 
 ### Cross-Reference Patterns
 
-The checker validates:
+The checker validates these link patterns (shown as code examples):
 
-- Internal file links: `[text](path/to/file.md)`
-- Anchor references: `[text](file.md#anchor)`
-- Relative paths: `../docs/file.md`
-- Absolute repo paths: `/docs/file.md`
+**Internal file links:**
+```markdown
+[text](docs/file.md)
+```
+Relative path within repository
+
+**Anchor references:**
+```markdown
+[text](docs/file.md#anchor)
+```
+Link to specific section
+
+**Relative paths:**
+```markdown
+../docs/file.md
+```
+Navigate parent directories
+
+**Absolute repo paths:**
+```markdown
+/docs/file.md
+```
+From repository root
 
 **Supported:**
 

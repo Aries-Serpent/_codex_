@@ -1,0 +1,112 @@
+%% CI Module Dependencies — Aries-Serpent/_codex_
+%% Phase 3.10 — Component Relationship Diagrams
+%% CI → fix patterns, validation, gates
+%% Evidence: scripts/ci/, .github/workflows/
+
+graph TB
+
+    %% ── CI Triggers ─────────────────────────────────────────────────────────
+    subgraph CI_TRIGGER ["⚙️  CI Triggers"]
+        PUSH["Push Event"]
+        PR["Pull Request"]
+        SCHEDULE["Scheduled"]
+    end
+
+    %% ── Auto-Fix Patterns ───────────────────────────────────────────────────
+    subgraph PATTERNS ["🔧 Auto-Fix Patterns"]
+        LOAD_PATTERNS["Load Pattern Library\n(Patterns 1-32)"]
+        SELECT_PATTERN["Select Pattern\n(by issue type)"]
+        APPLY_FIX["Apply Fix\n(code transformation)"]
+        VALIDATE_FIX["Validate Fix\n(compile, test)"]
+    end
+
+    PUSH --> LOAD_PATTERNS
+    PR --> LOAD_PATTERNS
+    LOAD_PATTERNS --> SELECT_PATTERN
+    SELECT_PATTERN --> APPLY_FIX
+    APPLY_FIX --> VALIDATE_FIX
+
+    %% ── Validation Dependencies ─────────────────────────────────────────────
+    subgraph VALIDATE ["✓ Validation"]
+        LINT["Run Linter\n(ruff, black)"]
+        TYPE_CHECK["Type Check\n(mypy)"]
+        TEST_RUN["Run Tests\n(pytest)"]
+        COVERAGE_CHECK["Coverage Check\n(≥ threshold)"]
+    end
+
+    VALIDATE_FIX --> LINT
+    LINT --> TYPE_CHECK
+    TYPE_CHECK --> TEST_RUN
+    TEST_RUN --> COVERAGE_CHECK
+
+    %% ── Security Scanning Dependencies ──────────────────────────────────────
+    subgraph SECURITY ["🔒 Security Scanning"]
+        SECRETS_SCAN["Secrets Scan\n(gitleaks)"]
+        BANDIT["Bandit\n(Python security)"]
+        CODEQL["CodeQL\n(SAST)"]
+        PIP_AUDIT["pip-audit\n(dependencies)"]
+    end
+
+    PUSH --> SECRETS_SCAN
+    PUSH --> BANDIT
+    PUSH --> CODEQL
+    PUSH --> PIP_AUDIT
+
+    %% ── Gating & Approval ───────────────────────────────────────────────────
+    subgraph GATES ["🚪 Gating & Approval"]
+        PATTERN30["Pattern 30\n(merge readiness)"]
+        SCORECARD["Scorecard\n(10 dimensions)"]
+        THRESHOLD{"Score ≥\n98%?"}
+    end
+
+    COVERAGE_CHECK --> PATTERN30
+    LINT --> PATTERN30
+    PATTERN30 --> SCORECARD
+    SCORECARD --> THRESHOLD
+
+    %% ── CodeQL Gate ─────────────────────────────────────────────────────────
+    subgraph CODEQL_GATE ["🔒 CodeQL Gate"]
+        COUNT_ALERTS["Count Alerts"]
+        ALERT_THRESHOLD{"Alerts\n< 25?"}
+        ALLOW_MERGE["Allow Merge"]
+        FIX_ALERTS["Fix Alerts\n(pattern-based)"]
+    end
+
+    CODEQL --> COUNT_ALERTS
+    COUNT_ALERTS --> ALERT_THRESHOLD
+    THRESHOLD -->|"yes"| ALERT_THRESHOLD
+    ALERT_THRESHOLD -->|"yes"| ALLOW_MERGE
+    ALERT_THRESHOLD -->|"no"| FIX_ALERTS
+    FIX_ALERTS -.->|"retry"| CODEQL
+
+    %% ── Merge Decision ──────────────────────────────────────────────────────
+    subgraph MERGE ["🎯 Merge Decision"]
+        ALL_PASS{"All gates\npassed?"}
+        MERGE_PR["Merge PR\n(to main)"]
+        BLOCK_MERGE["Block Merge\n(require fixes)"]
+    end
+
+    ALLOW_MERGE --> ALL_PASS
+    ALL_PASS -->|"yes"| MERGE_PR
+    THRESHOLD -->|"no"| BLOCK_MERGE
+
+    %% ── Reporting Dependencies ──────────────────────────────────────────────
+    subgraph REPORT ["📊 Reporting"]
+        UPDATE_BADGE["Update Badge\n(CI status)"]
+        POST_COMMENT["Post Comment\n(on PR)"]
+        LOG_METRICS["Log Metrics\n(CI duration)"]
+    end
+
+    VALIDATE_FIX --> UPDATE_BADGE
+    SCORECARD --> POST_COMMENT
+    SCORECARD --> LOG_METRICS
+
+    %% ── Styling ────────────────────────────────────────────────────────────
+    style CI_TRIGGER fill:#16213e,color:#e0e0e0
+    style PATTERNS fill:#4a4e69,color:#fff
+    style VALIDATE fill:#2d6a4f,color:#fff
+    style SECURITY fill:#e63946,color:#fff
+    style GATES fill:#1b4332,color:#fff
+    style CODEQL_GATE fill:#e63946,color:#fff
+    style MERGE fill:#1b4332,color:#fff
+    style REPORT fill:#457b9d,color:#fff

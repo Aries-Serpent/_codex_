@@ -4,7 +4,7 @@
 
 > **Status:** ✅ Current (S227 · 2026-03-29) — Race condition fixes applied; REQ-13 comment-review-gate added  
 > **Scope:** Every GitHub Actions workflow that posts PR/issue comments on behalf of the maintainer or an autonomous agent.  
-> **Run-link attribution:** All comments now end with `_[🔗 Workflow run](URL)_` so every automated post can be traced to its exact run.
+> **Run-link attribution:** All comments now end with `_[🔗 Workflow run](https://github.com/Aries-Serpent/_codex_/actions/runs/RUN_ID)_` so every automated post can be traced to its exact run.
 
 ---
 
@@ -516,10 +516,10 @@ Multiple callers invoke `cost-gate.yml` simultaneously (C-01 cluster). All try t
 
 **Q6.1 — What should the canonical footer format be?**
 
-- [x] **(A — RECOMMENDED) Italic link at end: `_[🔗 Workflow run](URL)_`** — consistent with GitHub markdown italics convention; clearly distinct from content; already applied to all 34 workflows in this PR.
-- [ ] (B) Plain link: `[Workflow run](URL)`.
+- [x] **(A — RECOMMENDED) Italic link at end: `_[🔗 Workflow run](https://github.com/Aries-Serpent/_codex_/actions/runs/RUN_ID)_`** — consistent with GitHub markdown italics convention; clearly distinct from content; already applied to all 34 workflows in this PR.
+- [ ] (B) Plain link: `[Workflow run](https://github.com/Aries-Serpent/_codex_/actions/runs/RUN_ID)`.
 - [ ] (C) HTML comment containing run ID (invisible in rendered view): `<!-- run:ID -->`.
-- [ ] (D) Bold link: `**[🔗 Workflow run](URL)**`.
+- [ ] (D) Bold link: `**[🔗 Workflow run](https://github.com/Aries-Serpent/_codex_/actions/runs/RUN_ID)**`.
 
 **Q6.2 — Should rescue upsert comments update the run link on each append?**
 

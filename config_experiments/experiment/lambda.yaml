@@ -1,0 +1,39 @@
+# Lambda experiment configuration
+# Optimized for AWS Lambda execution environment
+
+defaults:
+  - _self_
+
+# Experiment settings
+experiment:
+  name: lambda
+  description: "Configuration for AWS Lambda deployment testing"
+  enabled: true
+  log_level: WARNING  # Minimize logs in Lambda
+
+# Test configuration
+test:
+  timeout: 30  # Lambda has strict time limits
+  reruns: 1  # Retry once for Lambda cold start issues
+  verbose: false
+  fail_fast: false
+  markers:
+    - lambda
+    - deployment
+
+# Coverage settings
+coverage:
+  enabled: false  # Skip coverage in Lambda to save time/memory
+
+# Performance
+performance:
+  parallel_workers: 1  # Lambda typically runs single-threaded
+  cache_enabled: false  # Limited persistent storage in Lambda
+  memory_limit: 512  # MB
+
+# Lambda-specific settings
+lambda:
+  runtime: python3.12
+  handler: lambda_function.lambda_handler
+  memory_size: 512
+  timeout: 30

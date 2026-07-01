@@ -1,26 +1,31 @@
 ---
 name: Google Home Script Agent
 description: >
-  AI-enhanced agent for generating, validating, and maintaining Google Home
-  Automation scripts (Apps Script / Google Home SDK), smart-home device
-  routines, YAML-based automation templates, and guardian checks that
-  prevent template drift across smart-home integrations.
+  DEPRECATED (2026-07-01): AI-enhanced agent for generating and validating
+  Google Home automation scripts and smart-home device routines.
+  This agent has been archived due to zero ecosystem integration,
+  purely aspirational design, and out-of-scope domain (smart-home automation).
+  See GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md for details.
 version: 1.0.0
 updated: 2026-03-25
+status: archived
+deprecation_date: 2026-07-01
 cognitive_integration_level: 2
 aais_contribution: +1.5 points
 batch: s201
-capability_tags:
-  - smart_home
-  - google_home
-  - automation_scripts
-  - template_guardian
-  - apps_script
 runner_compatibility:
   default: ubuntu-latest
 ---
 
-# Google Home Script Agent v1.0
+# ⚠️ DEPRECATED: Google Home Script Agent v1.0
+
+> **Status**: 🗑️ Archived 2026-07-01
+> 
+> This agent is no longer maintained or available for use. See [`GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md`](../../GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md) for rationale and archive information.
+
+---
+
+# Original Documentation (Archived)
 
 > Production-ready Copilot custom agent for generating and validating
 > Google Home automation scripts, detecting template drift, and enforcing

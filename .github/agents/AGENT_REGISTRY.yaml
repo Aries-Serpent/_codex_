@@ -1,8 +1,9 @@
 version: 2.0.0
-last_updated: '2026-06-26T04:25:00Z'
-total_agents: 161
+last_updated: '2026-07-01T15:26:30Z'
+total_agents: 162
 active_agents: 147
-archived_agents: 14
+archived_agents: 15
+enforcement_tier: MIXED
 agents:
 - id: github-app-manager
   name: GitHub App Manager
@@ -52,8 +53,7 @@ agents:
     energy: 5
   primary_skill: GitHub repository intelligence, PR analysis, issue triage, workflow health
   secondary_skill: Pattern synthesis, cross-repo knowledge surfacing, developer guidance
-  purpose: 'Full-spectrum GitHub repository intelligence: PR analysis, issue triage, workflow health monitoring, branch governance,
-    dependency drift detection, repository hygiene reporting, and label taxonomy enforcement.
+  purpose: 'Full-spectrum GitHub repository intelligence: PR analysis, issue triage, workflow health monitoring, branch governance, dependency drift detection, repository hygiene reporting, and label taxonomy enforcement.
 
     '
   capabilities:
@@ -86,8 +86,7 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: 'Full-spectrum GitHub repository intelligence: PR analysis, issue triage, workflow health monitoring, branch
-    governance, dependency drift detection, repository hygiene reporting, and label taxonomy enforcement.
+  description: 'Full-spectrum GitHub repository intelligence: PR analysis, issue triage, workflow health monitoring, branch governance, dependency drift detection, repository hygiene reporting, and label taxonomy enforcement.
 
     '
   capability_tags:
@@ -121,6 +120,7 @@ agents:
   description: specialist
   capability_tags:
   - ast_analysis_agent
+  category: quality
 - id: cache-logic-validator
   name: Cache Logic Validator
   directory: .github/agents/cache-logic-validator
@@ -143,6 +143,7 @@ agents:
   description: specialist
   capability_tags:
   - cache_logic_validator
+  category: performance
 - id: ci-failure-diagnostician
   name: Ci Failure Diagnostician
   directory: .github/agents/ci-failure-diagnostician
@@ -165,6 +166,7 @@ agents:
   description: specialist
   capability_tags:
   - ci_failure_diagnostician
+  category: ci_cd
 - id: ci-optimizer-agent
   name: Ci Optimizer Agent
   directory: .github/agents/ci-optimizer-agent
@@ -187,6 +189,7 @@ agents:
   description: specialist
   capability_tags:
   - ci_optimizer_agent
+  category: ci
 - id: ci-testing-agent
   batch_scan_enabled: true
   name: Ci Testing Agent
@@ -225,6 +228,7 @@ agents:
   - test_failure_analysis
   - build_problem_resolution
   - log_analysis
+  category: testing
 - id: codex_reviewer
   name: Codex_Reviewer
   directory: .github/agents/codex_reviewer
@@ -247,6 +251,7 @@ agents:
   description: specialist
   capability_tags:
   - codex_reviewer
+  category: quality
 - id: cognitive-brain-agent
   name: Cognitive Brain Agent
   directory: .github/agents/cognitive-brain-agent
@@ -269,6 +274,7 @@ agents:
   description: specialist
   capability_tags:
   - cognitive_brain_agent
+  category: cognitive
 - id: compliance-checker-agent
   name: Compliance Checker Agent
   directory: .github/agents/compliance-checker-agent
@@ -291,6 +297,7 @@ agents:
   description: utility
   capability_tags:
   - compliance_checker_agent
+  category: governance
 - id: dep-upgrade-agent
   name: Dep Upgrade Agent
   directory: .github/agents/dep-upgrade-agent
@@ -313,6 +320,7 @@ agents:
   description: specialist
   capability_tags:
   - dep_upgrade_agent
+  category: dependencies
 - id: documentation-agent
   name: Documentation Agent
   directory: .github/agents/documentation-agent
@@ -335,6 +343,7 @@ agents:
   description: specialist
   capability_tags:
   - documentation_agent
+  category: documentation
 - id: ecosystem-coordinator-agent
   name: Ecosystem Coordinator Agent
   directory: .github/agents/ecosystem-coordinator-agent
@@ -357,6 +366,7 @@ agents:
   description: specialist
   capability_tags:
   - ecosystem_coordinator_agent
+  category: orchestration
 - id: emergent-intelligence-agent
   name: Emergent Intelligence Agent
   directory: .github/agents/emergent-intelligence-agent
@@ -379,6 +389,7 @@ agents:
   description: specialist
   capability_tags:
   - emergent_intelligence_agent
+  category: cognitive
 - id: flaky-triage-agent
   name: Flaky Triage Agent
   directory: .github/agents/flaky-triage-agent
@@ -401,6 +412,7 @@ agents:
   description: specialist
   capability_tags:
   - flaky_triage_agent
+  category: testing
 - id: infra-linter-agent
   name: Infra Linter Agent
   directory: .github/agents/infra-linter-agent
@@ -423,6 +435,7 @@ agents:
   description: specialist
   capability_tags:
   - infra_linter_agent
+  category: infrastructure
 - id: performance-monitor-agent
   name: Performance Monitor Agent
   directory: .github/agents/performance-monitor-agent
@@ -445,6 +458,7 @@ agents:
   description: utility
   capability_tags:
   - performance_monitor_agent
+  category: monitoring
 - id: project-architect-researcher
   name: Project Architect Researcher
   directory: .github/agents/project-architect-researcher
@@ -476,6 +490,7 @@ agents:
   - research_synthesis
   - architecture_design
   - documentation_analysis
+  category: operations
 - id: pyo3-integration-tester
   name: Pyo3 Integration Tester
   directory: .github/agents/pyo3-integration-tester
@@ -506,6 +521,7 @@ agents:
   - pyo3_testing
   - rust_python_bindings
   - integration_validation
+  category: testing
 - id: reasoning-advisor-agent
   name: Reasoning Advisor Agent
   directory: .github/agents/reasoning-advisor-agent
@@ -528,6 +544,7 @@ agents:
   description: specialist
   capability_tags:
   - reasoning_advisor_agent
+  category: cognitive
 - id: release-gate-agent
   name: Release Gate Agent
   directory: .github/agents/release-gate-agent
@@ -550,6 +567,7 @@ agents:
   description: utility
   capability_tags:
   - release_gate_agent
+  category: ci_cd
 - id: rust-error-validator
   name: Rust Error Validator
   directory: .github/agents/rust-error-validator
@@ -587,6 +605,7 @@ agents:
   - rust_error_detection
   - unwrap_validation
   - pyresult_checking
+  category: quality
 - id: security-advisory-resolver
   name: Security Advisory Resolver
   directory: .github/agents/security-advisory-resolver
@@ -609,6 +628,7 @@ agents:
   description: specialist
   capability_tags:
   - security_advisory_resolver
+  category: security
 - id: security-scan-agent
   name: Security Scan Agent
   directory: .github/agents/security-scan-agent
@@ -631,6 +651,7 @@ agents:
   description: specialist
   capability_tags:
   - security_scan_agent
+  category: security
 - id: test-assertion-updater
   name: Test Assertion Updater
   directory: .github/agents/test-assertion-updater
@@ -665,6 +686,7 @@ agents:
   - test_alignment
   - assertion_updates
   - api_change_tracking
+  category: testing
 - id: utf8-safety-linter
   name: Utf8 Safety Linter
   directory: .github/agents/utf8-safety-linter
@@ -687,6 +709,7 @@ agents:
   description: specialist
   capability_tags:
   - utf8_safety_linter
+  category: quality
 - id: test-pattern-guardian
   batch_scan_enabled: true
   name: Test Pattern Guardian
@@ -698,8 +721,7 @@ agents:
   has_tests: false
   has_docs: true
   has_src: false
-  purpose: Proactive test quality enforcement through AST-based pattern detection for mock exhaustion, serialization issues,
-    and fixture independence
+  purpose: Proactive test quality enforcement through AST-based pattern detection for mock exhaustion, serialization issues, and fixture independence
   capabilities:
   - ast_pattern_detection
   - mock_exhaustion_prevention
@@ -723,14 +745,14 @@ agents:
   - agent-orchestrator
   consolidation_priority: false
   role: utility
-  description: Proactive test quality enforcement through AST-based pattern detection for mock exhaustion, serialization issues,
-    and fixture independence
+  description: Proactive test quality enforcement through AST-based pattern detection for mock exhaustion, serialization issues, and fixture independence
   capability_tags:
   - ast_pattern_detection
   - mock_exhaustion_prevention
   - json_serialization_validation
   - fixture_independence_checking
   - test_quality_enforcement
+  category: testing
 - id: config-validator-enhanced
   name: Config Validator (Enhanced)
   directory: .github/agents
@@ -741,8 +763,7 @@ agents:
   has_tests: false
   has_docs: true
   has_src: false
-  purpose: Hydra config integrity and coverage validation, ensures all experiment configs referenced in tests exist and are
-    schema-compliant
+  purpose: Hydra config integrity and coverage validation, ensures all experiment configs referenced in tests exist and are schema-compliant
   capabilities:
   - config_existence_validation
   - cross_reference_checking
@@ -764,13 +785,13 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Hydra config integrity and coverage validation, ensures all experiment configs referenced in tests exist and
-    are schema-compliant
+  description: Hydra config integrity and coverage validation, ensures all experiment configs referenced in tests exist and are schema-compliant
   capability_tags:
   - config_existence_validation
   - cross_reference_checking
   - schema_compliance
   - hydra_integration
+  category: configuration
 - id: unified-security-scanner
   batch_scan_enabled: true
   name: Unified Security Scanner
@@ -806,8 +827,7 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Multi-scanner security audit — CVE detection, secret scanning, GHAS triage, SBOM generation, and unified risk
-    scoring
+  description: Multi-scanner security audit — CVE detection, secret scanning, GHAS triage, SBOM generation, and unified risk scoring
   capability_tags:
   - cve_scanning
   - secret_detection
@@ -825,6 +845,7 @@ agents:
   - docs/agents/CUSTOM_AGENT_TOKEN_QUICK_REFERENCE.md#unified-security-scanner
   - .codex/TOKEN_HIERARCHY_GUIDE.md
   last_updated: '2026-06-29T12:00:00Z'
+  category: security
 - id: cross-agent-knowledge-graph
   name: Cross-Agent Knowledge Graph
   directory: .github/agents
@@ -836,8 +857,7 @@ agents:
   has_tests: false
   has_docs: true
   has_src: false
-  purpose: Persistent JSON-LD knowledge graph enabling cross-session pattern sharing, fix pattern deduplication, and semantic
-    blocker querying between agents
+  purpose: Persistent JSON-LD knowledge graph enabling cross-session pattern sharing, fix pattern deduplication, and semantic blocker querying between agents
   capabilities:
   - node_registration
   - edge_creation
@@ -862,8 +882,7 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Persistent JSON-LD knowledge graph enabling cross-session pattern sharing, fix pattern deduplication, and semantic
-    blocker querying between agents
+  description: Persistent JSON-LD knowledge graph enabling cross-session pattern sharing, fix pattern deduplication, and semantic blocker querying between agents
   capability_tags:
   - node_registration
   - edge_creation
@@ -872,6 +891,7 @@ agents:
   - staleness_pruning
   - snapshot_export
   - drq_pattern_sync
+  category: cognitive
 - id: codeql-alert-resolution-agent
   batch_scan_enabled: true
   name: CodeQL Alert Resolution Agent
@@ -884,8 +904,7 @@ agents:
   has_tests: false
   has_docs: true
   has_src: false
-  purpose: Autonomous CodeQL alert triage and resolution — classifies CWE categories, applies fix patterns, dismisses false
-    positives, and contributes to AAIS scoring
+  purpose: Autonomous CodeQL alert triage and resolution — classifies CWE categories, applies fix patterns, dismisses false positives, and contributes to AAIS scoring
   capabilities:
   - codeql_alert_ingestion
   - cwe_classification
@@ -908,8 +927,7 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Autonomous CodeQL alert triage and resolution — classifies CWE categories, applies fix patterns, dismisses
-    false positives, and contributes to AAIS scoring
+  description: Autonomous CodeQL alert triage and resolution — classifies CWE categories, applies fix patterns, dismisses false positives, and contributes to AAIS scoring
   capability_tags:
   - codeql_alert_ingestion
   - cwe_classification
@@ -927,6 +945,7 @@ agents:
   - docs/agents/CUSTOM_AGENT_TOKEN_QUICK_REFERENCE.md#codeql-alert-resolution-agent
   - .codex/TOKEN_HIERARCHY_GUIDE.md
   last_updated: '2026-06-29T12:00:00Z'
+  category: security
 - id: rag-meta-tensor-regression-agent
   name: RAG Meta-Tensor Regression Agent
   directory: .github/agents
@@ -938,8 +957,7 @@ agents:
   has_tests: false
   has_docs: true
   has_src: false
-  purpose: Prevents and resolves meta-tensor initialization regressions in the RAG pipeline — guards safe_model_to_device()
-    call order (has_meta_tensors before isinstance)
+  purpose: Prevents and resolves meta-tensor initialization regressions in the RAG pipeline — guards safe_model_to_device() call order (has_meta_tensors before isinstance)
   capabilities:
   - meta_tensor_detection
   - device_placement_validation
@@ -960,14 +978,14 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Prevents and resolves meta-tensor initialization regressions in the RAG pipeline — guards safe_model_to_device()
-    call order (has_meta_tensors before isinstance)
+  description: Prevents and resolves meta-tensor initialization regressions in the RAG pipeline — guards safe_model_to_device() call order (has_meta_tensors before isinstance)
   capability_tags:
   - meta_tensor_detection
   - device_placement_validation
   - regression_prevention
   - canonical_fix_application
   - cognitive_brain_pattern_storage
+  category: ml
 - id: ci-triage-pipeline-agent
   batch_scan_enabled: true
   name: CI Triage Pipeline Agent
@@ -980,8 +998,7 @@ agents:
   has_tests: false
   has_docs: true
   has_src: false
-  purpose: Systematic CI failure triage using GitHub MCP tools — downloads logs, classifies failures by pattern, applies fix
-    patterns from DRQ library
+  purpose: Systematic CI failure triage using GitHub MCP tools — downloads logs, classifies failures by pattern, applies fix patterns from DRQ library
   capabilities:
   - ci_log_retrieval
   - failure_classification
@@ -1000,14 +1017,14 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Systematic CI failure triage using GitHub MCP tools — downloads logs, classifies failures by pattern, applies
-    fix patterns from DRQ library
+  description: Systematic CI failure triage using GitHub MCP tools — downloads logs, classifies failures by pattern, applies fix patterns from DRQ library
   capability_tags:
   - ci_log_retrieval
   - failure_classification
   - fix_pattern_application
   - drq_integration
   - cognitive_brain_learning
+  category: ci_cd
 - id: recon-scout-agent
   batch_scan_enabled: true
   name: Recon Scout Agent
@@ -1020,8 +1037,7 @@ agents:
   has_tests: false
   has_docs: true
   has_src: false
-  purpose: Read-only codebase reconnaissance — walks all files to surface CI blockers, security risks, quality issues, and
-    architecture drift, tagging each as DRQ entries for deep research
+  purpose: Read-only codebase reconnaissance — walks all files to surface CI blockers, security risks, quality issues, and architecture drift, tagging each as DRQ entries for deep research
   capabilities:
   - ci_blocker_detection
   - security_tripwire_scan
@@ -1049,8 +1065,7 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Read-only codebase reconnaissance — walks all files to surface CI blockers, security risks, quality issues,
-    and architecture drift, tagging each as DRQ entries for deep research
+  description: Read-only codebase reconnaissance — walks all files to surface CI blockers, security risks, quality issues, and architecture drift, tagging each as DRQ entries for deep research
   capability_tags:
   - ci_blocker_detection
   - security_tripwire_scan
@@ -1060,6 +1075,7 @@ agents:
   - dependency_risk_assessment
   - quick_fix_application
   - drq_filing
+  category: operations
 - id: policy-coach-agent
   name: Policy Coach Agent
   directory: .github/agents
@@ -1071,9 +1087,7 @@ agents:
   has_tests: false
   has_docs: true
   has_src: false
-  purpose: 'Monitors Copilot Agent sessions for codebase policy violations and re-aligns behaviour at 3 mandatory checkpoints:
-    plan declaration (T-1), mid-session violation detection (T-2), and pre-close gate (T-3). Contains 14 violation patterns
-    (P-01..P-14) with verbatim re-alignment prompts.
+  purpose: 'Monitors Copilot Agent sessions for codebase policy violations and re-aligns behaviour at 3 mandatory checkpoints: plan declaration (T-1), mid-session violation detection (T-2), and pre-close gate (T-3). Contains 14 violation patterns (P-01..P-14) with verbatim re-alignment prompts.
 
     '
   capabilities:
@@ -1100,9 +1114,7 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: 'Monitors Copilot Agent sessions for codebase policy violations and re-aligns behaviour at 3 mandatory checkpoints:
-    plan declaration (T-1), mid-session violation detection (T-2), and pre-close gate (T-3). Contains 14 violation patterns
-    (P-01..P-14) with verbatim re-alignment prompts.
+  description: 'Monitors Copilot Agent sessions for codebase policy violations and re-aligns behaviour at 3 mandatory checkpoints: plan declaration (T-1), mid-session violation detection (T-2), and pre-close gate (T-3). Contains 14 violation patterns (P-01..P-14) with verbatim re-alignment prompts.
 
     '
   capability_tags:
@@ -1111,6 +1123,7 @@ agents:
   - pre_close_gate_enforcement
   - violation_pattern_matching
   - prompt_injection
+  category: governance
 - id: python-architect-agent
   name: Python Architect Agent
   directory: .github/agents
@@ -1122,8 +1135,7 @@ agents:
   has_tests: false
   has_docs: true
   has_src: false
-  purpose: Advanced Python architecture design and review — enforces patterns, refactoring strategies, and module structure
-    compliance for the cognitive brain and ML pipeline
+  purpose: Advanced Python architecture design and review — enforces patterns, refactoring strategies, and module structure compliance for the cognitive brain and ML pipeline
   capabilities:
   - architecture_review
   - refactoring_guidance
@@ -1141,13 +1153,13 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Advanced Python architecture design and review — enforces patterns, refactoring strategies, and module structure
-    compliance for the cognitive brain and ML pipeline
+  description: Advanced Python architecture design and review — enforces patterns, refactoring strategies, and module structure compliance for the cognitive brain and ML pipeline
   capability_tags:
   - architecture_review
   - refactoring_guidance
   - pattern_enforcement
   - module_structure_validation
+  category: quality
 - id: ci-auto-healer
   name: CI Auto-Healer Agent
   version: 1.0.0
@@ -1157,8 +1169,7 @@ agents:
   category: ci_cd
   primary_skill: Autonomous CI failure detection, pattern-matching, and self-healing
   secondary_skill: Pattern library management, DRQ filing, cognitive brain integration
-  purpose: 'Detects CI failures, matches them to a known pattern library (P-001 to P-029), applies validated fixes, and escalates
-    unrecognized patterns as DRQ entries.
+  purpose: 'Detects CI failures, matches them to a known pattern library (P-001 to P-029), applies validated fixes, and escalates unrecognized patterns as DRQ entries.
 
     '
   capabilities:
@@ -1180,8 +1191,7 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: 'Detects CI failures, matches them to a known pattern library (P-001 to P-029), applies validated fixes, and
-    escalates unrecognized patterns as DRQ entries.
+  description: 'Detects CI failures, matches them to a known pattern library (P-001 to P-029), applies validated fixes, and escalates unrecognized patterns as DRQ entries.
 
     '
   capability_tags:
@@ -1650,8 +1660,7 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: 'DEPRECATED (S174): Superseded by unified-coverage-agent. Targets low-coverage modules and generates tests
-    to close coverage gaps.'
+  description: 'DEPRECATED (S174): Superseded by unified-coverage-agent. Targets low-coverage modules and generates tests to close coverage gaps.'
   capability_tags:
   - testing
 - id: coverage-maintenance-agent
@@ -1693,8 +1702,7 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: 'DEPRECATED (S174): Superseded by unified-coverage-agent. Drives coverage threshold roadmap, tracks phase completion,
-    validates thresholds.'
+  description: 'DEPRECATED (S174): Superseded by unified-coverage-agent. Drives coverage threshold roadmap, tracks phase completion, validates thresholds.'
   capability_tags:
   - testing
 - id: cpu-only-ci-config-agent
@@ -1930,8 +1938,7 @@ agents:
   category: documentation
   priority: high
   version: 4.0.0-production
-  purpose: Manages GitHub Pages deployment, MkDocs builds, documentation validation, cognitive_app accessibility and live
-    site validation. Resolves all scheduled GitHub Pages validation issues.
+  purpose: Manages GitHub Pages deployment, MkDocs builds, documentation validation, cognitive_app accessibility and live site validation. Resolves all scheduled GitHub Pages validation issues.
   enforcement_tier: PARTIAL
   autonomy_model: E
   handoff_protocol: structured
@@ -1942,8 +1949,7 @@ agents:
   consolidation_priority: true
   activation_frequency_rank: 18
   role: specialist
-  description: Manages GitHub Pages deployment, MkDocs builds, documentation validation, cognitive_app accessibility and live
-    site validation. Resolves all scheduled GitHub Pages validation issues.
+  description: Manages GitHub Pages deployment, MkDocs builds, documentation validation, cognitive_app accessibility and live site validation. Resolves all scheduled GitHub Pages validation issues.
   capability_tags:
   - documentation
 - id: integration-test-runner
@@ -2246,7 +2252,7 @@ agents:
   name: Quantum Compliance Tuning Agent
   file: quantum-compliance-tuning-agent.md
   status: active
-  maturity: beta
+  maturity: production
   category: cognitive
   priority: medium
   purpose: Tunes quantum-inspired compliance parameters for cognitive brain optimization.
@@ -2259,6 +2265,9 @@ agents:
   description: Tunes quantum-inspired compliance parameters for cognitive brain optimization.
   capability_tags:
   - cognitive
+  integration_confirmed: true
+  integration_date: '2026-07-01'
+  integration_notes: Core executor of QI_TESTING improvement area. 10+ deep references. 27 tests. Integration verified. See QUANTUM_COMPLIANCE_TUNING_AGENT_INTEGRATION_GUIDE.md
 - id: rag-freshness-loop-agent
   name: RAG Freshness Loop Agent
   file: rag-freshness-loop-agent.md
@@ -2623,8 +2632,7 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: 'DEPRECATED (S174): Superseded by unified-coverage-agent. Drives test coverage improvements; identifies uncovered
-    code paths.'
+  description: 'DEPRECATED (S174): Superseded by unified-coverage-agent. Drives test coverage improvements; identifies uncovered code paths.'
   capability_tags:
   - testing
 - id: test-coverage-monitor
@@ -2649,8 +2657,7 @@ agents:
   consolidation_priority: true
   activation_frequency_rank: 5
   role: utility
-  description: 'DEPRECATED (S174): Superseded by unified-coverage-agent. Monitors test coverage, enforces thresholds, validates
-    documentation quality.'
+  description: 'DEPRECATED (S174): Superseded by unified-coverage-agent. Monitors test coverage, enforces thresholds, validates documentation quality.'
   capability_tags:
   - testing
 - id: unified-coverage-agent
@@ -2878,8 +2885,7 @@ agents:
   has_src: false
   category: operations
   subcategory: cli
-  description: 'Production agent for operating the Cognitive Brain CLI console. Executes shell commands, HTTP requests, and
-    drives the cognitive_app dev server. Backend: FastAPI :8765 with PTY WebSocket and HTTP proxy.
+  description: 'Production agent for operating the Cognitive Brain CLI console. Executes shell commands, HTTP requests, and drives the cognitive_app dev server. Backend: FastAPI :8765 with PTY WebSocket and HTTP proxy.
 
     '
   added_in_pr: 3421
@@ -2906,8 +2912,7 @@ agents:
   has_src: false
   category: ci
   subcategory: enforcement
-  description: 'Enforces and auto-heals branch-scoped concurrency + timeout rules across all 91 GitHub Actions workflows.
-    Runs compliance audit on every PR push and self-heals non-compliant files within the session.
+  description: 'Enforces and auto-heals branch-scoped concurrency + timeout rules across all 91 GitHub Actions workflows. Runs compliance audit on every PR push and self-heals non-compliant files within the session.
 
     '
   added_in_pr: 3421
@@ -2946,9 +2951,7 @@ agents:
   has_src: false
   category: ci
   subcategory: health
-  description: 'Auto-responds to GitHub issues tagged ci-health-alert. Classifies failure patterns (including SELF_HEALING_001
-    cascade) via ci_failure_patterns.yaml, proposes batch fixes, and updates CODEX_CI_FAILURE_RATE + CODEX_OPEN_*_ALERTS repo
-    variables after remediation.
+  description: 'Auto-responds to GitHub issues tagged ci-health-alert. Classifies failure patterns (including SELF_HEALING_001 cascade) via ci_failure_patterns.yaml, proposes batch fixes, and updates CODEX_CI_FAILURE_RATE + CODEX_OPEN_*_ALERTS repo variables after remediation.
 
     '
   added_in_pr: 3421
@@ -2978,8 +2981,7 @@ agents:
   has_src: false
   category: infrastructure
   subcategory: configuration
-  description: 'Keeps .codex/agent_context.json bidirectionally in sync with GitHub Actions repository variables (COPILOT_*
-    / CODEX_*). Supports both bootstrap sync (vars→file) and propagation (file→vars) with drift detection.
+  description: 'Keeps .codex/agent_context.json bidirectionally in sync with GitHub Actions repository variables (COPILOT_* / CODEX_*). Supports both bootstrap sync (vars→file) and propagation (file→vars) with drift detection.
 
     '
   added_in_pr: 3421
@@ -3007,9 +3009,7 @@ agents:
   has_src: false
   category: cognitive
   subcategory: orchestration
-  description: 'Executes a full OODA loop from a PR comment. Drives the real OODAOrchestrator via POST /api/ooda/process on
-    the CLI API server (:8765). Replaces mock-api-client in AgentOrchestrationPanel. Also exposes GET /api/ooda/metrics for
-    MetricsDashboard K1 factor display.
+  description: 'Executes a full OODA loop from a PR comment. Drives the real OODAOrchestrator via POST /api/ooda/process on the CLI API server (:8765). Replaces mock-api-client in AgentOrchestrationPanel. Also exposes GET /api/ooda/metrics for MetricsDashboard K1 factor display.
 
     '
   added_in_pr: 3421
@@ -3037,8 +3037,7 @@ agents:
   has_src: false
   category: cognitive
   subcategory: memory
-  description: 'Syncs SQLiteMemory (STM/LTM) with the cognitive brain pattern library. Consolidates hot STM entries into LTM
-    when capacity exceeds 80%, tags patterns with ImprovementArea, and prunes stale LTM entries.
+  description: 'Syncs SQLiteMemory (STM/LTM) with the cognitive brain pattern library. Consolidates hot STM entries into LTM when capacity exceeds 80%, tags patterns with ImprovementArea, and prunes stale LTM entries.
 
     '
   added_in_pr: 3422
@@ -3068,8 +3067,7 @@ agents:
   has_src: false
   category: ci
   subcategory: telemetry
-  description: 'Reads CI telemetry artifacts, identifies top-N unknown failure patterns, and generates new classifier entries
-    for collect_telemetry.py. Drives the unknown pattern bucket from ~60% toward <20%.
+  description: 'Reads CI telemetry artifacts, identifies top-N unknown failure patterns, and generates new classifier entries for collect_telemetry.py. Drives the unknown pattern bucket from ~60% toward <20%.
 
     '
   added_in_pr: 3422
@@ -3674,9 +3672,7 @@ agents:
   accepts_handoff_from:
   - agent-auth-delegation
   role: orchestrator
-  description: 'Automates opening the next Copilot Coding Agent sub-PR targeting 0D_base_ (the staging integration branch).  Enforces
-    the sub-PR model: sessions always run on copilot/session-* branches, never on 0D_base_ directly. Triggers on workflow_dispatch
-    or automatically when a sub-PR merges into 0D_base_.
+  description: 'Automates opening the next Copilot Coding Agent sub-PR targeting 0D_base_ (the staging integration branch).  Enforces the sub-PR model: sessions always run on copilot/session-* branches, never on 0D_base_ directly. Triggers on workflow_dispatch or automatically when a sub-PR merges into 0D_base_.
 
     '
   capability_tags:
@@ -3704,8 +3700,7 @@ agents:
   has_src: false
   category: security
   subcategory: dependency_management
-  description: 'Validates Python packaging configuration (pyproject.toml, lock files), detects Dependabot vulnerabilities,
-    applies safe upgrades, enforces PEP 621 compliance, and updates AAIS security posture repo variables after remediation.
+  description: 'Validates Python packaging configuration (pyproject.toml, lock files), detects Dependabot vulnerabilities, applies safe upgrades, enforces PEP 621 compliance, and updates AAIS security posture repo variables after remediation.
 
     '
   added_in_pr: 3661
@@ -3730,7 +3725,7 @@ agents:
   name: Energy Conversion Agent
   version: 1.0.0
   file: .github/agents/energy-conversion-agent.md
-  status: active
+  status: archived
   maturity: production
   has_prompts: false
   has_tests: false
@@ -3738,9 +3733,7 @@ agents:
   has_src: false
   category: simulation
   subcategory: energy_systems
-  description: AI-enhanced agent skilled in developing programmatic systems for simulating and calculating gas-to-electric
-    energy conversion. Provides compute-regulated power distribution modeling, thermodynamic conversion analysis, grid stability
-    simulation, and AI-driven optimization for integrated energy systems.
+  description: AI-enhanced agent skilled in developing programmatic systems for simulating and calculating gas-to-electric energy conversion. Provides compute-regulated power distribution modeling, thermodynamic conversion analysis, grid stability simulation, and AI-driven optimization for integrated energy systems.
   added_in_pr: energy-conversion
   sprint: Sprint 5
   physics_model:
@@ -3762,6 +3755,8 @@ agents:
   - grid_stability
   - demand_forecasting
   - anomaly_detection
+  deprecation_date: '2026-07-01'
+  deprecation_reason: Out-of-scope domain (G2E energy conversion). Minimal integration (4 refs, IQ=0.6558). Zero active use. See ENERGY_CONVERSION_AGENT_DEPRECATION.md
 - id: promote-integration-branch
   name: Promote Integration Branch Workflow
   version: 1.0.0
@@ -3774,8 +3769,7 @@ agents:
   has_src: false
   category: ci_cd
   subcategory: branch_management
-  description: 'Autonomously creates the 0D_base_ staging integration branch from a given SHA using GitHubMCPPoster.create_ref()
-    and opens the 0D_base_ → main promotion PR. Uses CODEX_MASTER_KEY. workflow_dispatch only (must be on main).
+  description: 'Autonomously creates the 0D_base_ staging integration branch from a given SHA using GitHubMCPPoster.create_ref() and opens the 0D_base_ → main promotion PR. Uses CODEX_MASTER_KEY. workflow_dispatch only (must be on main).
 
     '
   added_in_pr: S174
@@ -3807,8 +3801,7 @@ agents:
   has_src: false
   category: ci_cd
   subcategory: pr_management
-  description: 'Creates a pull request from any session branch into 0D_base_ (staging integration branch). Verifies 0D_base_
-    exists, idempotent (skips if PR already open), and uses mcp_poster create-pr CLI. Requires CODEX_MASTER_KEY.
+  description: 'Creates a pull request from any session branch into 0D_base_ (staging integration branch). Verifies 0D_base_ exists, idempotent (skips if PR already open), and uses mcp_poster create-pr CLI. Requires CODEX_MASTER_KEY.
 
     '
   added_in_pr: S174
@@ -3839,8 +3832,7 @@ agents:
   has_src: false
   category: ci_cd
   subcategory: healing_orchestration
-  description: Orchestrates autonomous self-healing loops across CI failure patterns (RP-001 through RP-004+). Coordinates
-    pattern recognition, fix application, verification, and escalation across agents.
+  description: Orchestrates autonomous self-healing loops across CI failure patterns (RP-001 through RP-004+). Coordinates pattern recognition, fix application, verification, and escalation across agents.
   added_in_pr: Phase9
   sprint: Sprint 6
   physics_model:
@@ -3880,8 +3872,7 @@ agents:
   has_src: false
   category: ci_cd
   subcategory: branch_management
-  description: Production-ready Copilot custom agent that detects, classifies, and resolves branch divergence between staging
-    (0D_base_) and default (main) branches.
+  description: Production-ready Copilot custom agent that detects, classifies, and resolves branch divergence between staging (0D_base_) and default (main) branches.
   added_in_pr: Phase9
   sprint: Sprint 6
   physics_model:
@@ -3920,9 +3911,7 @@ agents:
   has_src: false
   category: ci_cd
   subcategory: governance
-  description: 'Automated workflow that posts session accountability entries to GitHub Discussion #3673 ([Ongoing] Copilot
-    Coding Agent Accountability Report). Triggered when AGENT_ACCOUNTABILITY_REPORT.md is updated. Uses GraphQL to add a dedup-safe
-    comment on the discussion thread. Priority 0 hardened process replacing direct file logging.
+  description: 'Automated workflow that posts session accountability entries to GitHub Discussion #3673 ([Ongoing] Copilot Coding Agent Accountability Report). Triggered when AGENT_ACCOUNTABILITY_REPORT.md is updated. Uses GraphQL to add a dedup-safe comment on the discussion thread. Priority 0 hardened process replacing direct file logging.
 
     '
   added_in_pr: S175
@@ -3941,9 +3930,28 @@ agents:
   - discussion_posting
   - governance_automation
   - session_documentation
+- id: google-home-script-agent
+  name: Google Home Script Agent
+  version: 1.0.0
+  file: .github/agents/google-home-script-agent.md
+  status: archived
+  maturity: production
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: automation
+  subcategory: smart_home
+  autonomy_model: E
+  enforcement_tier: ARCHIVED
+  deprecation_date: '2026-07-01'
+  deprecation_reason: Zero ecosystem integration. Aspirational design only (not in agent_brain_api, not in structural_policy_manager). Domain orthogonal to software engineering. See GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md
+  description: 'DEPRECATED: Smart-home automation agent for Google Home script generation. Archived 2026-07-01 due to zero ecosystem integration and out-of-scope domain.'
+  handoff_protocol: none
 standardization_status:
   fully_compliant: 12
   partially_compliant: 20
   non_compliant: 3
   target: 100%
   deadline: '2026-03-15'
+handoff_protocol: mixed

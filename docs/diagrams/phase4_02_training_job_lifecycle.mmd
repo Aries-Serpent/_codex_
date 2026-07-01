@@ -1,0 +1,25 @@
+%% Training Job Lifecycle — Aries-Serpent/_codex_
+%% Phase 4.2 — Integration Scenario Diagrams
+
+flowchart TD
+    A["📋 Submit Job\n(config, data)"]
+    B["⚙️ Validate Config\n(Hydra, schema)"]
+    C["🚀 Schedule Job\n(queue, priority)"]
+    D["⏳ Wait for Resources\n(GPU available)"]
+    E["▶️ Start Training\n(data loader, model)"]
+    F["🔄 Training Loop\n(1000s batches)"]
+    G["📊 Monitor\n(loss, metrics)"]
+    H["✓ Evaluate\n(val set)")
+    I["💾 Save Checkpoint\n(if improved)"]
+    J["🛑 Converged?\n(early stop)")
+    K["📈 Export Model\n(safetensors)")
+    L["✅ Job Complete\n(notify user)"]
+    
+    A --> B --> C --> D --> E
+    E --> F --> G --> H --> I --> J
+    J -->|"no"| F
+    J -->|"yes"| K --> L
+    
+    style A fill:#4a4e69,color:#fff
+    style E fill:#1b4332,color:#fff
+    style L fill:#1b4332,color:#fff

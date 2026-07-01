@@ -1,0 +1,22 @@
+%% Observability Troubleshooting — Aries-Serpent/_codex_
+%% Phase 4.15 — Integration Scenario Diagrams
+
+flowchart TD
+    A["🚨 Alert: High Error Rate\n(5% vs 0.1% baseline)"]
+    B["🔍 Retrieve Logs\n(last 10 minutes)"]
+    C["🔎 Search for Patterns\n(common errors)"]
+    D["📊 Correlate Events\n(error → preceding)"]
+    E["🎯 Identify Root Cause\n(service X down)"]
+    F["💡 Hypothesis\n(service X overloaded)"]
+    G["✓ Verify Hypothesis\n(check metrics)"]
+    H{"Confirmed?"}
+    I["🔧 Apply Fix\n(restart, scale)"]
+    J["📈 Monitor Recovery"]
+    K["✅ Incident Resolved"]
+    
+    A --> B --> C --> D --> E --> F --> G --> H
+    H -->|"yes"| I --> J --> K
+    H -->|"no"| D
+    
+    style A fill:#e63946,color:#fff
+    style K fill:#1b4332,color:#fff

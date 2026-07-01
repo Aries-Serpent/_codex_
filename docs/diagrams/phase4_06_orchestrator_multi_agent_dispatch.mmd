@@ -1,0 +1,25 @@
+%% Orchestrator Multi-Agent Dispatch — Aries-Serpent/_codex_
+%% Phase 4.6 — Integration Scenario Diagrams
+
+flowchart TD
+    A["🎯 Orchestrator Receives Task"]
+    B["🔍 Semantic Search\n(find matching agents)"]
+    C["📊 Rank Candidates\n(by relevance)"]
+    D["👉 Select Primary\n(best match)"]
+    E["📋 Plan Task Chain\n(sequence of skills)"]
+    F["🚀 Spawn Agent 1\n(explore codebase)"]
+    G["⏳ Wait for Result"]
+    H{"Success?"}
+    I["🚀 Spawn Agent 2\n(analyze findings)"]
+    J["🚀 Spawn Agent 3\n(generate solution)"]
+    K["🔗 Aggregate Results"]
+    L["✅ Return to Orchestrator"]
+    
+    A --> B --> C --> D --> E
+    E --> F --> G --> H
+    H -->|"yes"| I --> J --> K --> L
+    H -->|"no"| J
+    
+    style A fill:#4a4e69,color:#fff
+    style D fill:#533483,color:#fff
+    style L fill:#1b4332,color:#fff

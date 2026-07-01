@@ -22,7 +22,7 @@ from enum import Enum
 from typing import Any
 
 from codex_ml.safety.moderation import ModerationAdapter, ModerationRejection, ModerationSettings
-from config.openai_client import CodexOpenAIClient, ExecutionResult
+from codex.clients import CodexOpenAIClient, ExecutionResult
 
 # Configure logging
 logger = logging.getLogger(__name__)

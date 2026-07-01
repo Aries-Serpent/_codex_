@@ -1,0 +1,116 @@
+%% Cognitive Brain Dependencies — Aries-Serpent/_codex_
+%% Phase 3.6 — Component Relationship Diagrams
+%% CB → RAG, logging, memory, orchestration
+%% Evidence: scripts/cognitive/, cognitive_brain_core.py, OODAOrchestrator
+
+graph TB
+
+    %% ── Cognitive Brain Core ────────────────────────────────────────────────
+    subgraph CB_CORE ["🧠 Cognitive Brain Core  •  cognitive_brain_core.py"]
+        OBSERVE["Observe Phase\n(capture input, state)"]
+        ORIENT["Orient Phase\n(build model)"]
+        DECIDE["Decide Phase\n(select action)"]
+        ACT["Act Phase\n(execute skill)"]
+        MEMORY_MGT["Memory Management\n(STM ↔ LTM)"]
+    end
+
+    %% ── RAG Dependencies ────────────────────────────────────────────────────
+    subgraph RAG_DEP ["📚 RAG Dependencies"]
+        RAG_RETRIEVE["Retrieve Context\n(from knowledge)"]
+        RAG_RERANK["Re-rank Results\n(relevance)"]
+        RAG_FORMAT["Format Context\n(for CB)"]
+    end
+
+    ORIENT --> RAG_RETRIEVE
+    RAG_RETRIEVE --> RAG_RERANK
+    RAG_RERANK --> RAG_FORMAT
+
+    %% ── Skill Registry ──────────────────────────────────────────────────────
+    subgraph SKILLS_DEP ["⚙️  Skill Dependencies"]
+        SKILL_DISCOVER["Discover Skills\n(for task)"]
+        SKILL_VALIDATE["Validate Inputs\n(type check)"]
+        SKILL_EXECUTE["Execute Skill\n(with params)"]
+        SKILL_MONITOR["Monitor Execution\n(progress, errors)"]
+    end
+
+    DECIDE --> SKILL_DISCOVER
+    SKILL_DISCOVER --> SKILL_VALIDATE
+    SKILL_VALIDATE --> SKILL_EXECUTE
+    SKILL_EXECUTE --> SKILL_MONITOR
+
+    %% ── Agent Registry ──────────────────────────────────────────────────────
+    subgraph AGENT_DEP ["🤖 Agent Dependencies"]
+        AGENT_SELECT["Select Sub-Agent\n(if delegation)"]
+        AGENT_SPAWN["Spawn Task\n(create context)"]
+        AGENT_WAIT["Wait for Result\n(async)"]
+        AGENT_INTEGRATE["Integrate Result\n(merge output)"]
+    end
+
+    DECIDE --> AGENT_SELECT
+    AGENT_SELECT --> AGENT_SPAWN
+    AGENT_SPAWN --> AGENT_WAIT
+    AGENT_WAIT --> AGENT_INTEGRATE
+
+    %% ── Logging Dependencies ────────────────────────────────────────────────
+    subgraph LOG_DEP ["📋 Logging Dependencies"]
+        LOG_OBSERVE["Log Observation\n(input, context)"]
+        LOG_DECISION["Log Decision\n(selected action)"]
+        LOG_EXECUTION["Log Execution\n(skill, result)"]
+        LOG_TELEMETRY["Log Telemetry\n(metrics, timing)"]
+    end
+
+    OBSERVE --> LOG_OBSERVE
+    DECIDE --> LOG_DECISION
+    SKILL_EXECUTE --> LOG_EXECUTION
+    ACT --> LOG_TELEMETRY
+
+    %% ── Memory Dependencies ─────────────────────────────────────────────────
+    subgraph MEM_DEP ["💾 Memory Dependencies"]
+        STM_STORE["Store in STM\n(current session)"]
+        STM_RETRIEVE["Retrieve from STM\n(recent items)"]
+        LTM_PROMOTE["Promote to LTM\n(if valuable)"]
+        LTM_SEARCH["Search LTM\n(pattern matching)"]
+    end
+
+    OBSERVE --> STM_STORE
+    ORIENT --> STM_RETRIEVE
+    STM_RETRIEVE --> LTM_SEARCH
+    MEMORY_MGT --> LTM_PROMOTE
+    MEMORY_MGT --> LTM_SEARCH
+
+    %% ── Feedback Loop ───────────────────────────────────────────────────────
+    subgraph FEEDBACK ["🔄 Feedback Dependencies"]
+        MEASURE_OUTCOME["Measure Outcome\n(success/failure)"]
+        EXTRACT_LESSON["Extract Lesson\n(what worked)"]
+        UPDATE_PATTERNS["Update Patterns\n(new solution)"]
+        PRUNE_MEMORY["Prune Memory\n(evict stale)"]
+    end
+
+    SKILL_MONITOR --> MEASURE_OUTCOME
+    MEASURE_OUTCOME --> EXTRACT_LESSON
+    EXTRACT_LESSON --> UPDATE_PATTERNS
+    UPDATE_PATTERNS --> MEMORY_MGT
+    MEMORY_MGT --> PRUNE_MEMORY
+
+    %% ── Output ──────────────────────────────────────────────────────────────
+    ACT --> RESULT["✅ CB Result\n(to user/system)"]
+
+    %% ── Dependency Summary ──────────────────────────────────────────────────
+    subgraph SUMMARY ["📊 Dependency Graph"]
+        DEP1["CB → RAG (context retrieval)"]
+        DEP2["CB → Skills (execution)"]
+        DEP3["CB → Agents (delegation)"]
+        DEP4["CB → Logging (observability)"]
+        DEP5["CB → Memory (learning)"]
+    end
+
+    %% ── Styling ────────────────────────────────────────────────────────────
+    style CB_CORE fill:#533483,color:#fff
+    style RAG_DEP fill:#0f3460,color:#e0e0e0
+    style SKILLS_DEP fill:#1b4332,color:#fff
+    style AGENT_DEP fill:#4a4e69,color:#fff
+    style LOG_DEP fill:#457b9d,color:#fff
+    style MEM_DEP fill:#2d6a4f,color:#fff
+    style FEEDBACK fill:#665c84,color:#fff
+    style RESULT fill:#1b4332,color:#fff
+    style SUMMARY fill:#16213e,color:#e0e0e0

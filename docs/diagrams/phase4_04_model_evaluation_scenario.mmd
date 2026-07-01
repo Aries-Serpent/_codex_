@@ -1,0 +1,24 @@
+%% Model Evaluation Scenario — Aries-Serpent/_codex_
+%% Phase 4.4 — Integration Scenario Diagrams
+
+flowchart TD
+    A["📦 Load Models\n(checkpoint A, B, C)"]
+    B["📊 Evaluate on Test Set\n(perplexity, accuracy)"]
+    C["⏱️ Measure Latency\n(inference speed)"]
+    D["�� Compute Metrics"]
+    E["🔄 Compare vs Baseline"]
+    F{"Better\nthan baseline?"}
+    G["✅ New Best Model\n(save metadata)"]
+    H["📊 Generate Report\n(with visualizations)"]
+    I["🎯 Ranking\n(models by score)"]
+    J["💾 Archive Results"]
+    
+    A --> B --> C
+    C --> D --> E --> F
+    F -->|"yes"| G --> H
+    F -->|"no"| H
+    H --> I --> J
+    
+    style A fill:#16213e,color:#e0e0e0
+    style G fill:#1b4332,color:#fff
+    style J fill:#1b4332,color:#fff
