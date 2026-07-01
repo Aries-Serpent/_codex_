@@ -14,9 +14,10 @@ import time
 import urllib.error
 import urllib.request
 from typing import Any
-from urllib.parse import urlsplit, urlunsplit
 
 from scripts.ci._token_resolver import get_token
+
+from . import error_utils, url_utils
 
 logger = logging.getLogger(__name__)
 
@@ -24,25 +25,9 @@ _GITHUB_API = "https://api.github.com"
 _ACCEPT = "application/vnd.github+json"
 _API_VERSION = "2022-11-28"
 
-
-def _redact_url_for_log(url: str) -> str:
-    """Return URL without credentials, query, or fragment for safe logging."""
-    parts = urlsplit(url)
-    host = parts.hostname or ""
-    if ":" in host and not host.startswith("["):
-        host = f"[{host}]"
-    netloc = f"{host}:{parts.port}" if parts.port else host
-    return urlunsplit((parts.scheme, netloc, parts.path, "", ""))
-
-
-def _validated_github_api_url(url: str) -> str:
-    """Allow only credential-free HTTPS calls to api.github.com."""
-    parts = urlsplit(url)
-    if parts.scheme != "https" or parts.hostname != "api.github.com":
-        raise ValueError(f"GitHub API URL must target https://api.github.com: {url!r}")
-    if parts.username or parts.password:
-        raise ValueError("GitHub API URL must not contain embedded credentials")
-    return url
+# Re-export for backward compatibility
+_redact_url_for_log = url_utils.redact_url_for_log
+_validated_github_api_url = url_utils.validate_github_api_url
 
 
 class APIClient:
