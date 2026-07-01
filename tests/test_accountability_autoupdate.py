@@ -15,7 +15,7 @@
 # 
 #         assert "session cl-test" in cl_content, "Content must not be empty"
 #         assert ", "Condition must be true"
-#         # Old entry should still be there
+#         # Old entry should still be there # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 #         assert "old entry" in cl_content, "Content must not be empty"
 #     append_to_report,
 #     collect_metadata,

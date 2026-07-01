@@ -15,7 +15,7 @@ from unittest.mock import Mock, patch
 import pytest
 
 try:
-    from agents.msp_client import (
+    from agents.msp_client import ( # pragma: allowlist secret
         MSPClient,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
     )
 

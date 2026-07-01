@@ -15,7 +15,7 @@ class TestCreateReproducibilityManifest:
 
     def test_manifest_contains_seed(self):
         """Verify manifest contains seed information"""
-        with tempfile.TemporaryDirectory() as tmpdir:
+        with tempfile.TemporaryDirectory() as tmpdir: # pragma: allowlist secret
             manifest = create_reproducibility_manifest(seed=42, output_dir=tmpdir)
 
             assert "seed" in manifest, "Should include seed"

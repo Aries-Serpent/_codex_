@@ -15,7 +15,7 @@
 # - SHA256 hash format validation
 # - JSON structure integrity
 #     """
-#     Calculate total space in MB format.
+#     Calculate total space in MB format. # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 # import json
 #     assert not is_valid_sha256("not_a_hash"), "not is not valid"
 #     assert not is_valid_sha256(, "not is not valid"

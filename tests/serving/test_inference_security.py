@@ -15,7 +15,7 @@
 #         rate_limited = sum(1 for status in responses if status == 429)
 #         assert rate_limited > 0 or all(, "rate_limited must be greater than zero"
 #             s == 200 for s in responses
-#         ), "Rate limiting should trigger or all succeed"
+#         ), "Rate limiting should trigger or all succeed" # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 #     from src.codex_ml.serving.inference_server import create_app
 #     # Authentication is controlled via env vars, not function parameter
 #     with patch.dict("os.environ", {"CODEX_API_KEYS": "test-key-1,test-key-2"}):
