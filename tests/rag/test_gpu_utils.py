@@ -437,3 +437,38 @@ class TestGpuUtilsEdgeCases:
             result = try_gpu_index(None, None, device="cuda")
             # Should return None without crashing
             assert result is None, "Result must not be empty"
+
+
+class TestGetOptimalBatchSizeValidation:
+    """Tests for input validation in get_optimal_batch_size."""
+
+    def test_invalid_embedding_dim_zero(self):
+        """Test that embedding_dim=0 raises ValueError (line 88)."""
+        import pytest
+        from codex.rag.gpu_utils import get_optimal_batch_size
+
+        with pytest.raises(ValueError, match="embedding_dim must be positive"):
+            get_optimal_batch_size(embedding_dim=0)
+
+    def test_invalid_embedding_dim_negative(self):
+        """Test that negative embedding_dim raises ValueError."""
+        import pytest
+        from codex.rag.gpu_utils import get_optimal_batch_size
+
+        with pytest.raises(ValueError, match="embedding_dim must be positive"):
+            get_optimal_batch_size(embedding_dim=-1)
+
+
+class TestGetGpuMemoryImportError:
+    """Tests for ImportError handling in get_gpu_memory."""
+
+    def test_gpu_memory_import_error(self):
+        """Test that get_gpu_memory returns (0, 0) when torch raises ImportError."""
+        from unittest.mock import patch
+
+        from codex.rag.gpu_utils import get_gpu_memory
+
+        with patch.dict("sys.modules", {"torch": None}):
+            free, total = get_gpu_memory()
+            assert free == 0, "free must be 0 when torch is unavailable"
+            assert total == 0, "total must be 0 when torch is unavailable"
