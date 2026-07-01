@@ -192,7 +192,7 @@ jobs:
         \n  [transformers]=\"transformers\"\n  [chromadb]=\"chromadb\"\n  [faiss-cpu]=\"\
         faiss\"\n)\n\nfor pkg in pytest sentence-transformers torch transformers chromadb\
         \ faiss-cpu; do\n  import_name=\"${import_names[$pkg]}\"\n  if \"$PYTHON_BIN\"\
-        \ -c \"import ${import_name}; print(f'  ✓ {pkg}')\" 2>/dev/null; then\n  \
+        \ -c \"import ${import_name}; print('  ✓ $pkg')\" 2>/dev/null; then\n  \
         \  :\n  else\n    echo \"  ❌ Missing: $pkg\"\n    exit 1\n  fi\ndone\n \n\
         echo \"\"\necho \"[INSTALL] ✅ All dependencies installed successfully\"\n\
         echo \"[INSTALL] Final disk space:\"\ndf -h / | tail -1 | awk '{print \" \

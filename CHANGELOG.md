@@ -1,4 +1,17 @@
 
+## [Fixed] 2026-07-01T06:09Z — PR #5166: RAG Module Tests CI Fix
+
+### Summary
+Resolved the `RAG Module Tests` workflow failure (run `28496961640`, job `84465174744`).
+
+**Root Cause**: In `Install dependencies` Step 8 of `.github/workflows/test-rag.yml`, the package import verification used a Python f-string `f'  ✓ {pkg}'` where `{pkg}` was intended as a bash variable but lacks the `$` prefix. Python attempted to evaluate `pkg` as an undefined Python variable, raising `NameError` and exiting with code 1, even though all packages were successfully installed. The first package checked (`pytest`) immediately triggered the false-failure.
+
+**Fix Applied**:
+- Changed `print(f'  ✓ {pkg}')` → `print('  ✓ $pkg')` in `.github/workflows/test-rag.yml` line 195.
+- Bash now expands `$pkg` before passing the command to Python, producing valid output like `  ✓ pytest`.
+
+**Affected File**: `.github/workflows/test-rag.yml`
+
 ## [Fixed] 2026-07-01T05:49Z — PR #5165: CI Compliance REQ-4 & REQ-5 Accountability File Updates
 
 ### Summary
