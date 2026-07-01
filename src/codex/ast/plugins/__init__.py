@@ -7,8 +7,7 @@ and custom analysis tools.
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from codex.ast.node import StandardizedASTNode
 
