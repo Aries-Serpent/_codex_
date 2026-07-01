@@ -1,2 +1,3 @@
 {"approval_id":"f889c3ac-c4c6-4117-a492-f858764e48cd","timestamp":"2026-07-01T08:52:11.421Z","run_id":"","pr_number":"5172","approval_source":"agent-auth-delegation","rule_matched":"persistent_label_rule","confidence":1.0}
 {"approval_id":"1968261e-f0a3-43de-be79-903416b054b5","timestamp":"2026-07-01T09:02:02.976Z","run_id":"","pr_number":"5172","approval_source":"agent-auth-delegation","rule_matched":"persistent_label_rule","confidence":1.0}
+{"approval_id":"421d64c2-be24-47de-88bb-69f2fb546bbe","timestamp":"2026-07-01T22:28:58.104Z","run_id":"","pr_number":"5186","approval_source":"agent-auth-delegation","rule_matched":"persistent_label_rule","confidence":1.0}
