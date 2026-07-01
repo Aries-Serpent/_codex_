@@ -1,4 +1,20 @@
 
+## [Fixed] 2026-07-01T08:15Z — PR #5167: actionlint Workflow Compliance Fix
+
+### Summary
+Resolved the `actionlint — Workflow Compliance` failure across 10 workflow files.
+
+**Root Cause**: GitHub Actions reusable workflow call jobs (`uses:`) do not support the `env:` key at the job level. Having `env: GH_TOKEN: ...` in these jobs triggered actionlint `[syntax-check]` errors. Additionally, `consolidated-pr-status.yml` referenced `secrets.CODEX_MASTER_KEY` and `secrets.CODEX_BACKUP_KEY` without declaring them in the `on.workflow_call.secrets:` block, triggering actionlint `[expression]` errors.
+
+**Fix Applied**:
+- Removed invalid `env: GH_TOKEN` blocks from reusable workflow call jobs in:
+  `admin-action-t03.yml`, `build-preview-image.yml`, `data-quality-suite.yml`,
+  `docker-build-push.yml`, `embedding-index-rebuild.yml`, `progressive-validation.yml`,
+  `release.yml`, `rust_swarm_ci.yml`, `scheduled-archival.yml`
+- Added `CODEX_MASTER_KEY` and `CODEX_BACKUP_KEY` to `on.workflow_call.secrets:` in `consolidated-pr-status.yml`
+
+**Result**: `actionlint` now reports 0 errors across all workflow files.
+
 ## [Fixed] 2026-07-01T06:44Z — PR #5167: REQ-10 Branch Rebase Gate Fix
 
 ### Summary

@@ -53,8 +53,6 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-    env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   approval-check:
     needs: cost-gate
     name: "Owner approval \u2014 check-only gate"

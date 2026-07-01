@@ -1,6 +1,29 @@
 # Agent Accountability Report — Index (Phase 2.3 Refactored)
 
 
+## SESSION SUMMARY — 2026-07-01T08:15Z [PR #5167 ACTIONLINT WORKFLOW COMPLIANCE FIX]
+
+**Session:** fix/ci-rag-module-tests-20260701060324 (PR #5167) | **Task:** Fix `actionlint — Workflow Compliance` failure — invalid `env:` in reusable workflow call jobs and undeclared secrets in `consolidated-pr-status.yml` | **Date:** 2026-07-01T08:15:00Z | **Authority:** @mbaetiong (D-mode autonomy)
+
+Diagnosed and resolved the failing `actionlint — Workflow Compliance` CI job (run `28499354898`). Root cause: 9 workflow files had `env: GH_TOKEN:` blocks at job level in reusable workflow call jobs (`uses:`). GitHub Actions does not allow `env:` on reusable workflow call jobs — only `name`, `uses`, `with`, `secrets`, `needs`, `if`, and `permissions` are valid keys. Additionally, `consolidated-pr-status.yml` referenced `secrets.CODEX_MASTER_KEY` and `secrets.CODEX_BACKUP_KEY` without declaring them in `on.workflow_call.secrets:`. Fixed by removing the 9 invalid `env:` blocks and adding the 2 missing secret declarations. All 10 files now pass actionlint with 0 errors.
+
+### DELIVERABLES IMPLEMENTED
+
+**Workflow Fixes** (10 files):
+- Removed invalid `env: GH_TOKEN` blocks from reusable workflow call jobs in:
+  `admin-action-t03.yml`, `build-preview-image.yml`, `data-quality-suite.yml`,
+  `docker-build-push.yml`, `embedding-index-rebuild.yml`, `progressive-validation.yml`,
+  `release.yml`, `rust_swarm_ci.yml`, `scheduled-archival.yml`
+- Added `CODEX_MASTER_KEY` and `CODEX_BACKUP_KEY` to `on.workflow_call.secrets:` in `consolidated-pr-status.yml`
+
+**Accountability Tracking** (docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md)
+- Added this session entry documenting PR #5167 actionlint fix
+
+**Changelog Update** (CHANGELOG.md)
+- Added [Fixed] entry documenting PR #5167 actionlint compliance fix
+
+---
+
 ## SESSION SUMMARY — 2026-07-01T06:44Z [PR #5167 REQ-10 BRANCH REBASE GATE FIX]
 
 **Session:** fix/ci-rag-module-tests-20260701060324 (PR #5167) | **Task:** Fix `REQ-10 Branch Rebase Check` failure — `ModuleNotFoundError: No module named 'scripts.ci._token_resolver'` | **Date:** 2026-07-01T06:44:00Z | **Authority:** @mbaetiong (D-mode autonomy)
