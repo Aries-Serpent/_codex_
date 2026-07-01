@@ -1,0 +1,70 @@
+{
+  "analysis_timestamp": "2026-06-30T23:28:37.742582Z",
+  "report_type": "convergence-failure-points",
+  "total_failures": 4,
+  "critical_failures": 3,
+  "failures": [
+    {
+      "failure_id": "CFP-001",
+      "connection": "runtime \u2194 state_data_model",
+      "title": "Session State Serialization Boundary Broken",
+      "description": "Agents produce runtime ContextFrame state but cannot serialize to persistence layer. Checkpoint system expects different format.",
+      "missing_layer": "State transformation adapter",
+      "evidence": [
+        "ContextFrame.to_json() incomplete",
+        "session_serializer.py expects different structure",
+        "No bidirectional serialization contract"
+      ],
+      "impact": "State lost on session pause/resume",
+      "severity": "P0"
+    },
+    {
+      "failure_id": "CFP-002",
+      "connection": "pattern_graph \u2194 runtime_execution",
+      "title": "Graph Authority Does Not Drive Runtime Decisions",
+      "description": "Pattern graph (pattern_graph.py) stores relationships but OODA loop makes decisions independently. Graph not queried during execution.",
+      "missing_layer": "Query interface from execution to graph",
+      "evidence": [
+        "src/codex/brain/pattern_graph.py: relationship store",
+        "src/codex/brain/ooda_decider.py: no graph queries",
+        "Mermaid diagrams show graph influence but code has none"
+      ],
+      "impact": "Execution cannot use relationship knowledge",
+      "severity": "P0"
+    },
+    {
+      "failure_id": "CFP-003",
+      "connection": "copilot_tools \u2194 backend_state",
+      "title": "Tool Results Not Persisted to State Model",
+      "description": "Copilot tools (GitHub MCP server) return results but no mechanism to update backend state/graph with results.",
+      "missing_layer": "Result ingestion pipeline",
+      "evidence": [
+        "Tool calls return JSON but no persistence contract",
+        "Backend has no listener for tool completion events",
+        "State only updated if agent manually calls update()"
+      ],
+      "impact": "Tool insights cannot be leveraged by autonomous loops",
+      "severity": "P0"
+    },
+    {
+      "failure_id": "CFP-004",
+      "connection": "ci_workflows \u2194 ingestion_logic",
+      "title": "CI/CD Artifacts Not Flowing to RAG/Memory",
+      "description": "CI runs, produces artifacts (test results, coverage, logs) but no automated ingestion to knowledge store.",
+      "missing_layer": "Artifact\u2192Knowledge bridge",
+      "evidence": [
+        ".github/workflows/ produce artifacts but no ingestion target",
+        "RAG system requires manual indexing",
+        "No event-driven trigger for knowledge updates"
+      ],
+      "impact": "Agents cannot learn from CI data",
+      "severity": "HIGH"
+    }
+  ],
+  "conclusion": {
+    "systems_disconnected": 4,
+    "missing_adapters": 4,
+    "pattern": "Boundaries exist but no integration layer crosses them",
+    "recommendation": "Build explicit adapters at each system boundary"
+  }
+}

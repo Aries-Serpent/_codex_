@@ -1,0 +1,84 @@
+{
+  "title": "FINAL GAP EXTRACTION ANALYSIS",
+  "description": "Complete gap analysis for self-managing agentic system autonomy",
+  "generation_date": "2026-06-30T23:01:23.802696Z",
+  "analysis_count": 10,
+  "execution_mode": "PARALLEL - 9 specialized agents + 1 consolidation",
+  "analyses": [
+    {
+      "filename": "final-entity-identity-gap.json",
+      "title": "Entity Identity System Gap Analysis",
+      "size_kb": 8.6,
+      "last_modified": "2026-06-30T22:48:32.081757Z",
+      "metrics": {
+        "confidence": "82%"
+      }
+    },
+    {
+      "filename": "agent-handoff-gap.json",
+      "title": "Agent Handoff + State Transfer Gap Analysis",
+      "size_kb": 24.2,
+      "last_modified": "2026-06-30T22:47:38.071389Z",
+      "metrics": {
+        "confidence": "72%"
+      }
+    },
+    {
+      "filename": "graph-authority-gap.json",
+      "title": "Graph Authority Gap Analysis",
+      "size_kb": 16.2,
+      "last_modified": "2026-06-30T22:54:02.659667Z",
+      "metrics": {
+        "confidence": "72%"
+      }
+    },
+    {
+      "filename": "mermaid-reconciliation-gap.json",
+      "title": "Mermaid Diagram Reconciliation Gap Analysis",
+      "size_kb": 16.0,
+      "last_modified": "2026-06-30T22:56:20.011115Z",
+      "metrics": {
+        "confidence": "68%"
+      }
+    },
+    {
+      "filename": "autonomy-blockers.json",
+      "title": "Autonomy Blockers (CRITICAL) Gap Analysis",
+      "size_kb": 18.3,
+      "last_modified": "2026-06-30T22:51:37.023572Z",
+      "metrics": {
+        "confidence": "85%%",
+        "autonomy_readiness": "25%"
+      }
+    },
+    {
+      "filename": "non-determinism-analysis.json",
+      "title": "Non-Determinism Sources Analysis",
+      "size_kb": 25.9,
+      "last_modified": "2026-06-30T22:50:20.727577Z",
+      "metrics": {
+        "confidence": "78%"
+      }
+    },
+    {
+      "filename": "tool-contract-gaps.json",
+      "title": "Tool Contract Failure Points Analysis",
+      "size_kb": 26.7,
+      "last_modified": "2026-06-30T22:58:06.214314Z",
+      "metrics": {
+        "confidence": "75%"
+      }
+    },
+    {
+      "filename": "final-autonomy-gap-report.json",
+      "title": "FINAL Autonomy Gap Consolidation Report",
+      "size_kb": 3.5,
+      "last_modified": "2026-06-30T23:00:47.844779Z",
+      "metrics": {
+        "confidence": "78%",
+        "autonomy_readiness": "25%",
+        "readiness_score": "25%"
+      }
+    }
+  ]
+}

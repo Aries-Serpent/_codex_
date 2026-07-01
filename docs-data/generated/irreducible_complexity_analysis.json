@@ -1,0 +1,67 @@
+{
+  "analysis_timestamp": "2026-06-30T23:29:25.175976Z",
+  "report_type": "irreducible-complexity-analysis",
+  "total_complexity_sources": 5,
+  "fixable_count": 2,
+  "irreducible_count": 3,
+  "complexities": [
+    {
+      "category": "semantic_ambiguity",
+      "example": "PR feedback interpretation",
+      "description": "Some decisions require human judgment to interpret intent from natural language",
+      "is_fixable": false,
+      "reasoning": "Requires semantic understanding beyond current NLP capabilities",
+      "mitigation": "Constrain to structured feedback only, use templates"
+    },
+    {
+      "category": "cross_domain_constraint_resolution",
+      "example": "Balancing security vs performance vs usability",
+      "description": "Trade-off decisions have no objective function",
+      "is_fixable": false,
+      "reasoning": "Requires value judgments not present in code",
+      "mitigation": "Establish decision policies, encode as rules"
+    },
+    {
+      "category": "unknown_unknowns",
+      "example": "New CI failure patterns",
+      "description": "Cannot anticipate all possible failure modes",
+      "is_fixable": true,
+      "reasoning": "Can be addressed with better monitoring and classification",
+      "mitigation": "Implement anomaly detection, escalate unknown patterns"
+    },
+    {
+      "category": "system_boundary_decisions",
+      "example": "When to escalate vs retry",
+      "description": "Decisions about system boundaries require human policy",
+      "is_fixable": false,
+      "reasoning": "Policy is human domain, not computable",
+      "mitigation": "Encode escalation policies explicitly"
+    },
+    {
+      "category": "context_limits",
+      "example": "Full historical context too large to process",
+      "description": "Token budgets and memory limits force lossy compression",
+      "is_fixable": true,
+      "reasoning": "Can use better compression, chunking, ranking strategies",
+      "mitigation": "Implement better summarization and relevance ranking"
+    }
+  ],
+  "autonomy_limits": {
+    "human_judgment_required": [
+      "semantic_ambiguity",
+      "cross_domain_constraint_resolution",
+      "system_boundary_decisions"
+    ],
+    "technical_improvements": [
+      "unknown_unknowns",
+      "context_limits"
+    ],
+    "percentage_reducible": 40.0
+  },
+  "conclusion": {
+    "full_autonomy_possible": false,
+    "max_achievable_autonomy": 60,
+    "irreducible_human_decisions": 3,
+    "recommendation": "Design for human-in-the-loop, not full autonomy"
+  }
+}

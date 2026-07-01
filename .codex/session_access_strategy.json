@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-07-01T02:40:58.260038+00:00",
+  "generated_at": "2026-07-01T04:01:51.583183+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 4998,
+  "rest_remaining": 4610,
   "graphql_available": true,
   "graphql_remaining": 4993,
   "gh_cli_available": true,
@@ -15,6 +15,6 @@
   "open_prs": [
     5160
   ],
-  "branch": "copilot/copilotfull-execution-plan-advanced-repo",
+  "branch": "copilot/full-execution-plan-advanced-repo",
   "recommendation": "Use REST for data fetches. "
 }

@@ -1,0 +1,347 @@
+{
+  "analysis_type": "SYSTEM_FAILURE_MODES",
+  "timestamp": "2026-06-30T22:20:15.714Z",
+  "repository": "Aries-Serpent/_codex_",
+
+  "failure_mode_catalog": [
+    {
+      "id": "FM-001",
+      "title": "Ingestion Schema Mismatch",
+      "description": "JSONL ingestion fails because schema of incoming data doesn't match expected schema",
+      "trigger": "New data source added with incompatible format",
+      "severity": "P1",
+      "likelihood": "HIGH",
+      "impact": "Ingestion pipeline stops; no new data flows",
+      "detection_method": "Schema validation error on first record",
+      "recovery_time": "1-4 hours",
+      "mitigation": [
+        "Schema versioning in JSONL records",
+        "Schema migration tool",
+        "Backward compatibility enforcement"
+      ]
+    },
+    {
+      "id": "FM-002",
+      "title": "Schema Drift in Mermaid Diagrams",
+      "description": "Mermaid diagrams diverge from actual system architecture; agents rely on stale diagrams for decisions",
+      "trigger": "Architecture changes not reflected in diagrams",
+      "severity": "P2",
+      "likelihood": "MEDIUM",
+      "impact": "Agent decisions based on incorrect understanding of system",
+      "detection_method": "Automated diagram drift check (not currently implemented)",
+      "recovery_time": "2-8 hours to discover and fix",
+      "mitigation": [
+        "Automated diagram validation against code",
+        "Diagram update CI check",
+        "Versioned diagrams"
+      ]
+    },
+    {
+      "id": "FM-003",
+      "title": "Missing Relationship Edges",
+      "description": "Implicit dependencies not declared; system assumes relationships that don't exist",
+      "trigger": "New subsystem added without dependency graph registration",
+      "severity": "P2",
+      "likelihood": "MEDIUM",
+      "impact": "System operates with incomplete model; cascading failures possible",
+      "detection_method": "Dependency graph validation (not currently implemented)",
+      "recovery_time": "4-24 hours",
+      "mitigation": [
+        "Mandatory dependency declaration",
+        "Dependency graph validation in CI",
+        "Runtime dependency verification"
+      ]
+    },
+    {
+      "id": "FM-004",
+      "title": "Circular Dependency Deadlock",
+      "description": "Agent A waits for Agent B; Agent B waits for Agent A; system deadlock",
+      "trigger": "Agent handoff protocol creates circular waits",
+      "severity": "P0",
+      "likelihood": "LOW",
+      "impact": "System completely stuck; requires manual intervention",
+      "detection_method": "Watchdog timer; circular dependency graph analysis",
+      "recovery_time": "Manual recovery needed",
+      "mitigation": [
+        "Deadlock detection algorithm",
+        "Timeout enforcement",
+        "Transaction ordering discipline"
+      ]
+    },
+    {
+      "id": "FM-005",
+      "title": "Session Checkpoint Recovery Failure",
+      "description": "Session checkpoint exists but cannot be resumed; execution lost",
+      "trigger": "Checkpoint written but resume path not implemented for that cycle type",
+      "severity": "P1",
+      "likelihood": "MEDIUM",
+      "impact": "Work lost; agent execution cannot resume; manually redone",
+      "detection_method": "Recovery attempt fails; fallback to manual intervention",
+      "recovery_time": "24-48 hours (manual)",
+      "mitigation": [
+        "Comprehensive edge case handlers",
+        "Fallback resumption strategies",
+        "Checkpoint validity checks"
+      ]
+    },
+    {
+      "id": "FM-006",
+      "title": "Memory System Exhaustion",
+      "description": "STM or LTM grows unbounded; system runs out of memory",
+      "trigger": "No automatic eviction policy; manual cleanup not run",
+      "severity": "P1",
+      "likelihood": "MEDIUM",
+      "impact": "Agent execution slows; memory errors; system crash",
+      "detection_method": "Memory usage monitoring (partially implemented)",
+      "recovery_time": "4-8 hours",
+      "mitigation": [
+        "Automatic TTL-based eviction",
+        "Automatic memory pressure response",
+        "Memory usage dashboard"
+      ]
+    },
+    {
+      "id": "FM-007",
+      "title": "RBAC Policy Conflict",
+      "description": "Agent has conflicting permissions; authorization decision undefined",
+      "trigger": "Policy update creates conflicting rules",
+      "severity": "P2",
+      "likelihood": "LOW",
+      "impact": "Agent cannot execute safely; operations blocked",
+      "detection_method": "Policy conflict detection (not implemented)",
+      "recovery_time": "1-4 hours",
+      "mitigation": [
+        "Policy conflict detection in RBAC engine",
+        "Policy validation in CI",
+        "Conservative default (deny-by-default)"
+      ]
+    },
+    {
+      "id": "FM-008",
+      "title": "Tool Contract Breakage",
+      "description": "Agent calls tool with wrong parameters; tool returns unexpected format",
+      "trigger": "Tool interface changes but agent code not updated",
+      "severity": "P2",
+      "likelihood": "MEDIUM",
+      "impact": "Agent execution fails; error handling may not catch edge case",
+      "detection_method": "Type checking, schema validation",
+      "recovery_time": "1-4 hours",
+      "mitigation": [
+        "Tool interface versioning",
+        "Contract validation at call site",
+        "Automated contract testing"
+      ]
+    },
+    {
+      "id": "FM-009",
+      "title": "Workflow State Inconsistency",
+      "description": "GitHub Actions workflow state in GitHub API doesn't match local state in .codex/",
+      "trigger": "GitHub API lag; local state stale",
+      "severity": "P2",
+      "likelihood": "MEDIUM",
+      "impact": "Decisions based on stale state; workflow coordination errors",
+      "detection_method": "State reconciliation check (not implemented)",
+      "recovery_time": "5-60 minutes",
+      "mitigation": [
+        "Periodic state reconciliation",
+        "Event-driven state updates",
+        "Conflict resolution strategy"
+      ]
+    },
+    {
+      "id": "FM-010",
+      "title": "CI Enforcement Gap",
+      "description": "Breaking change merged without triggering CI check",
+      "trigger": "CI gate misconfigured or bypass used",
+      "severity": "P1",
+      "likelihood": "LOW",
+      "impact": "System broken; cascading failures",
+      "detection_method": "Post-merge validation (emergency response)",
+      "recovery_time": "1-4 hours",
+      "mitigation": [
+        "Mandatory CI checks",
+        "No bypass without audit",
+        "Post-merge validation"
+      ]
+    },
+    {
+      "id": "FM-011",
+      "title": "Entity Normalization Failure",
+      "description": "Same entity (agent/workflow/deliverable) has multiple IDs; deduplication fails",
+      "trigger": "Entity registry not synchronized",
+      "severity": "P2",
+      "likelihood": "MEDIUM",
+      "impact": "Duplicate execution; inconsistent state",
+      "detection_method": "Deduplication audit (not automated)",
+      "recovery_time": "2-8 hours",
+      "mitigation": [
+        "Entity ID canonicalization",
+        "Deduplication check in CI",
+        "Alias resolution mechanism"
+      ]
+    },
+    {
+      "id": "FM-012",
+      "title": "Knowledge Graph Incoherence",
+      "description": "Learned patterns in LTM contradict current system state",
+      "trigger": "Patterns not updated when system changes",
+      "severity": "P3",
+      "likelihood": "LOW",
+      "impact": "Agent decisions suboptimal; may not be harmful",
+      "detection_method": "Pattern validation (not implemented)",
+      "recovery_time": "Manual pattern refresh",
+      "mitigation": [
+        "Automatic pattern invalidation on system change",
+        "Pattern freshness tracking",
+        "Fallback to rule-based decisions"
+      ]
+    },
+    {
+      "id": "FM-013",
+      "title": "Multi-Agent Handoff Failure",
+      "description": "Agent A hands off to Agent B; context not properly passed; B cannot execute",
+      "trigger": "Handoff protocol not fully implemented",
+      "severity": "P1",
+      "likelihood": "HIGH",
+      "impact": "Task execution chain broken; work lost",
+      "detection_method": "Handoff timeout; agent reports missing context",
+      "recovery_time": "4-12 hours",
+      "mitigation": [
+        "Implement handoff protocol",
+        "Context passing validation",
+        "Handoff audit trail"
+      ]
+    },
+    {
+      "id": "FM-014",
+      "title": "Observability Data Loss",
+      "description": "Telemetry not persisted; telemetry database corrupted or lost",
+      "trigger": "SQLite transaction failure; database not backed up",
+      "severity": "P3",
+      "likelihood": "LOW",
+      "impact": "No observability; cannot debug system issues",
+      "detection_method": "Database integrity check; transaction rollback detection",
+      "recovery_time": "1-24 hours",
+      "mitigation": [
+        "Database replication",
+        "Transaction durability enforcement",
+        "Regular backups"
+      ]
+    },
+    {
+      "id": "FM-015",
+      "title": "Deferral Language Bypass",
+      "description": "Agent uses deferral language in commit messages; governance check doesn't catch it",
+      "trigger": "Deferral language in commit message; workflow only checks PR body",
+      "severity": "P2",
+      "likelihood": "MEDIUM",
+      "impact": "Policy violation not caught; audit trail incomplete",
+      "detection_method": "GitHub push hook scanning commits (not implemented)",
+      "recovery_time": "1-2 hours",
+      "mitigation": [
+        "Commit message scanning in CI",
+        "Post-merge commit validation",
+        "Audit trail completeness check"
+      ]
+    }
+  ],
+
+  "failure_mode_severity_distribution": {
+    "P0_critical": 1,
+    "P1_high": 5,
+    "P2_medium": 8,
+    "P3_low": 2
+  },
+
+  "failure_mode_mitigation_priorities": [
+    {
+      "rank": 1,
+      "failure_mode": "FM-004 - Circular Dependency Deadlock",
+      "mitigation_type": "PREVENTION",
+      "timeline": "IMMEDIATE",
+      "effort": "SMALL"
+    },
+    {
+      "rank": 2,
+      "failure_mode": "FM-013 - Multi-Agent Handoff Failure",
+      "mitigation_type": "IMPLEMENTATION",
+      "timeline": "IMMEDIATE",
+      "effort": "LARGE"
+    },
+    {
+      "rank": 3,
+      "failure_mode": "FM-001 - Ingestion Schema Mismatch",
+      "mitigation_type": "PREVENTION",
+      "timeline": "SHORT-TERM",
+      "effort": "MEDIUM"
+    },
+    {
+      "rank": 4,
+      "failure_mode": "FM-006 - Memory System Exhaustion",
+      "mitigation_type": "PREVENTION",
+      "timeline": "SHORT-TERM",
+      "effort": "MEDIUM"
+    },
+    {
+      "rank": 5,
+      "failure_mode": "FM-015 - Deferral Language Bypass",
+      "mitigation_type": "PREVENTION",
+      "timeline": "SHORT-TERM",
+      "effort": "SMALL"
+    }
+  ],
+
+  "systemic_risk_analysis": {
+    "cascade_potential": "MODERATE",
+    "most_likely_cascade": "FM-005 (checkpoint failure) → FM-013 (handoff failure) → FM-004 (deadlock)",
+    "single_point_of_failure": [
+      "Session checkpoint storage (.codex/ooda_cycles.jsonl)",
+      "AGENT_REGISTRY.yaml (agent routing)",
+      "GitHub API (all workflow operations)"
+    ],
+    "recovery_time_summary": {
+      "P0": "Hours to days (manual intervention required)",
+      "P1": "1-4 hours",
+      "P2": "1-8 hours",
+      "P3": "Manual recovery"
+    }
+  },
+
+  "recommendations": [
+    {
+      "priority": 1,
+      "action": "Implement Deadlock Detection",
+      "failure_modes": ["FM-004"],
+      "method": "Watchdog timer + circular dependency detection",
+      "timeline": "IMMEDIATE"
+    },
+    {
+      "priority": 2,
+      "action": "Complete Multi-Agent Handoff Protocol",
+      "failure_modes": ["FM-013"],
+      "method": "Implement context passing + validation + timeout",
+      "timeline": "IMMEDIATE"
+    },
+    {
+      "priority": 3,
+      "action": "Implement Schema Versioning & Validation",
+      "failure_modes": ["FM-001"],
+      "method": "Schema version field + validation at ingestion",
+      "timeline": "SHORT-TERM"
+    },
+    {
+      "priority": 4,
+      "action": "Automate Memory Eviction",
+      "failure_modes": ["FM-006"],
+      "method": "TTL-based eviction + memory pressure triggers",
+      "timeline": "SHORT-TERM"
+    },
+    {
+      "priority": 5,
+      "action": "Extend CI Governance Checks",
+      "failure_modes": ["FM-015", "FM-010"],
+      "method": "Commit message scanning + post-merge validation",
+      "timeline": "SHORT-TERM"
+    }
+  ]
+}

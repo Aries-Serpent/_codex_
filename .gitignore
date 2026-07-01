@@ -1,0 +1,94 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Runtime files - Codex session/context files
+.codex/rag/session_delta.json
+.codex/session_access_manifest.json
+.codex/session_access_strategy.json
+.codex/session_context_latest.md
+.codex/session_context_latest.json
+.codex/runtime/
+.codex/sessions/
+.codex/.session_cache/
+
+# Testing
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.hypothesis/
+
+# Development
+.env
+.env.local
+*.log
+temp/
+tmp/
+
+# DVC
+.dvc/cache/
+.dvc/tmp/
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# ML models and data
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+models/
+data/checkpoints/
+
+# Miscellaneous
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.ruff_cache/
