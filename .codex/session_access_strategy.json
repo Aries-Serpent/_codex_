@@ -1,20 +1,20 @@
 {
-  "generated_at": "2026-07-01T21:42:58.932607+00:00",
+  "generated_at": "2026-07-01T22:18:06.421829+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 4417,
+  "rest_remaining": 4999,
   "graphql_available": true,
-  "graphql_remaining": 4956,
+  "graphql_remaining": 5000,
   "gh_cli_available": true,
   "codeql_available": false,
   "best_token_var": "GITHUB_TOKEN",
   "open_prs": [
-    5184
+    5186
   ],
-  "branch": "fix/ci-rag-module-tests-20260701213724",
+  "branch": "fix/ci-rag-module-tests-20260701221229",
   "recommendation": "Use REST for data fetches. "
 }
