@@ -1,0 +1,140 @@
+%% Core Orchestration Layer — Aries-Serpent/_codex_
+%% Phase 3.4 — Component Relationship Diagrams
+%% Agent routing, task scheduling, and coordination
+%% Evidence: orchestrator-agent, agents/, AGENT_REGISTRY.yaml
+
+graph TB
+
+    %% ── Request Input ───────────────────────────────────────────────────────
+    INPUT["📩 Incoming Request\n(user, PR comment, API)"]
+
+    %% ── Request Intake ──────────────────────────────────────────────────────
+    subgraph INTAKE ["📋 Request Intake"]
+        PARSE_REQ["Parse Request\n(extract intent)"]
+        BUILD_CTX["Build Context\n(user, org, repo)"]
+        CHECK_AUTH["Check Authorization\n(RBAC)"]
+        VALIDATE_REQ["Validate Request\n(format, required fields)"]
+    end
+
+    INPUT --> PARSE_REQ
+    PARSE_REQ --> BUILD_CTX
+    BUILD_CTX --> CHECK_AUTH
+    CHECK_AUTH --> VALIDATE_REQ
+
+    %% ── Agent Selection ─────────────────────────────────────────────────────
+    subgraph AGENT_SEL ["🎯 Agent Selection  •  orchestrator-agent"]
+        SEMANTIC_SEARCH["Semantic Search\n(FAISS query)"]
+        TAG_FILTER["Tag-based Filter\n(capability match)"]
+        RANK_AGENTS["Rank Candidates\n(relevance score)"]
+        SELECT_PRIMARY["Select Primary Agent\n(best match)"]
+    end
+
+    VALIDATE_REQ --> SEMANTIC_SEARCH
+    SEMANTIC_SEARCH --> TAG_FILTER
+    TAG_FILTER --> RANK_AGENTS
+    RANK_AGENTS --> SELECT_PRIMARY
+
+    %% ── Skill Chain Planning ────────────────────────────────────────────────
+    subgraph PLANNING ["🗺️  Skill Chain Planning"]
+        ANALYZE_TASK["Analyze Task\n(complexity, steps)"]
+        QUERY_SKILLS["Query Skill Registry\n(available skills)"]
+        BUILD_CHAIN["Build Skill Chain\n(sequence)"]
+        VALIDATE_CHAIN["Validate Chain\n(dependencies, resources)"]
+    end
+
+    SELECT_PRIMARY --> ANALYZE_TASK
+    ANALYZE_TASK --> QUERY_SKILLS
+    QUERY_SKILLS --> BUILD_CHAIN
+    BUILD_CHAIN --> VALIDATE_CHAIN
+
+    %% ── Task Spawning ───────────────────────────────────────────────────────
+    subgraph SPAWN ["🚀 Task Spawning"]
+        CREATE_TASK["Create Task\n(unique ID)"]
+        ALLOC_RESOURCES["Allocate Resources\n(memory, threads)"]
+        SPAWN_SUBPROCESS["Spawn Subprocess\n(async execution)"]
+        SET_TIMEOUT["Set Timeout\n(max duration)"]
+    end
+
+    VALIDATE_CHAIN --> CREATE_TASK
+    CREATE_TASK --> ALLOC_RESOURCES
+    ALLOC_RESOURCES --> SPAWN_SUBPROCESS
+    SPAWN_SUBPROCESS --> SET_TIMEOUT
+
+    %% ── Execution Coordination ──────────────────────────────────────────────
+    subgraph EXEC_COORD ["🔄 Execution Coordination"]
+        MONITOR_PROGRESS["Monitor Progress\n(heartbeat, logs)"]
+        HANDLE_FAILURE["Handle Failure\n(retry, fallback)"]
+        ENFORCE_LIMITS["Enforce Limits\n(memory, time)"]
+        COLLECT_OUTPUT["Collect Output\n(result, stderr)"]
+    end
+
+    SET_TIMEOUT --> MONITOR_PROGRESS
+    MONITOR_PROGRESS --> HANDLE_FAILURE
+    HANDLE_FAILURE --> ENFORCE_LIMITS
+    ENFORCE_LIMITS --> COLLECT_OUTPUT
+
+    %% ── Result Aggregation ──────────────────────────────────────────────────
+    subgraph AGGREGATE ["📊 Result Aggregation"]
+        MERGE_RESULTS["Merge Results\n(from skill chain)"]
+        VALIDATE_OUTPUT["Validate Output\n(schema, quality)"]
+        FORMAT_RESPONSE["Format Response\n(user-facing)"]
+    end
+
+    COLLECT_OUTPUT --> MERGE_RESULTS
+    MERGE_RESULTS --> VALIDATE_OUTPUT
+    VALIDATE_OUTPUT --> FORMAT_RESPONSE
+
+    %% ── Queue Management ────────────────────────────────────────────────────
+    subgraph QUEUE ["⏳ Queue Management  •  task queue"]
+        ENQUEUE["Enqueue Task\n(add to queue)"]
+        DEQUEUE["Dequeue Task\n(when worker ready)"]
+        REPRIORITIZE["Re-prioritize\n(by urgency)"]
+        DEDUP["Deduplicate\n(avoid redundant work)"]
+    end
+
+    CREATE_TASK --> ENQUEUE
+    ENQUEUE --> DEQUEUE
+    DEQUEUE --> REPRIORITIZE
+    REPRIORITIZE --> DEDUP
+
+    %% ── Load Balancing ──────────────────────────────────────────────────────
+    subgraph LOAD_BAL ["⚖️  Load Balancing"]
+        CHECK_CAPACITY["Check Capacity\n(worker pool)"]
+        DISTRIBUTE["Distribute Load\n(round-robin, least-busy)"]
+        SCALE_WORKERS["Scale Workers\n(up/down)"]
+    end
+
+    DEDUP --> CHECK_CAPACITY
+    CHECK_CAPACITY --> DISTRIBUTE
+    DISTRIBUTE --> SCALE_WORKERS
+
+    %% ── Feedback & Learning ─────────────────────────────────────────────────
+    subgraph FEEDBACK ["📊 Feedback & Learning"]
+        EVALUATE_RESULT["Evaluate Result\n(success, latency)"]
+        UPDATE_AGENT_SCORE["Update Agent Score\n(for future routing)"]
+        LOG_PATTERN["Log Pattern\n(for analysis)"]
+    end
+
+    FORMAT_RESPONSE --> EVALUATE_RESULT
+    EVALUATE_RESULT --> UPDATE_AGENT_SCORE
+    UPDATE_AGENT_SCORE --> LOG_PATTERN
+
+    %% ── Output ──────────────────────────────────────────────────────────────
+    FORMAT_RESPONSE --> OUTPUT["✅ Response Ready\n(to user)"]
+
+    %% ── Error Path ──────────────────────────────────────────────────────────
+    CHECK_AUTH -->|"denied"| DENY["🚫 Access Denied\n(403)"]
+
+    %% ── Styling ────────────────────────────────────────────────────────────
+    style INPUT fill:#16213e,color:#e0e0e0
+    style INTAKE fill:#0f3460,color:#e0e0e0
+    style AGENT_SEL fill:#533483,color:#fff
+    style PLANNING fill:#4a4e69,color:#fff
+    style SPAWN fill:#1b4332,color:#fff
+    style EXEC_COORD fill:#2d6a4f,color:#fff
+    style AGGREGATE fill:#457b9d,color:#fff
+    style QUEUE fill:#665c84,color:#fff
+    style LOAD_BAL fill:#4a4e69,color:#fff
+    style FEEDBACK fill:#2d6a4f,color:#fff
+    style OUTPUT fill:#1b4332,color:#fff
+    style DENY fill:#e63946,color:#fff

@@ -1,0 +1,129 @@
+%% Cache Hierarchy Flow — Aries-Serpent/_codex_
+%% Phase 3.14 — Component Relationship Diagrams
+%% 4-layer cache integration: L1 → L2 → L3 → L4
+%% Evidence: src/codex/rag/cache/, scripts/, artifacts/
+
+graph LR
+
+    %% ── Cache Access Request ────────────────────────────────────────────────
+    REQUEST["📥 Cache Request\n(key)"]
+
+    %% ── L1: In-Memory Cache ─────────────────────────────────────────────────
+    subgraph L1_MEM ["⚡ L1: In-Memory\n(current epoch)"]
+        L1_CHECK["Check L1\n(dict lookup)"]
+        L1_HIT{"L1 Hit?"}
+        L1_RETURN["Return Value\n(O(1) latency)"]
+    end
+
+    REQUEST --> L1_CHECK
+    L1_CHECK --> L1_HIT
+    L1_HIT -->|"yes"| L1_RETURN
+
+    %% ── L2: Disk Cache ──────────────────────────────────────────────────────
+    subgraph L2_DISK ["💾 L2: Disk Cache\n(artifacts/, .codex/)"]
+        L2_CHECK["Check L2\n(SQLite, pickle)"]
+        L2_HIT{"L2 Hit?"}
+        L2_LOAD["Load from Disk\n(deserialize)"]
+        L2_PROMOTE["Promote to L1\n(load into memory)"]
+        L2_RETURN["Return Value\n(ms latency)"]
+    end
+
+    L1_HIT -->|"no"| L2_CHECK
+    L2_CHECK --> L2_HIT
+    L2_HIT -->|"yes"| L2_LOAD
+    L2_LOAD --> L2_PROMOTE
+    L2_PROMOTE --> L2_RETURN
+
+    %% ── L3: Remote Cache ────────────────────────────────────────────────────
+    subgraph L3_REMOTE ["🌐 L3: Remote Cache\n(S3, GCS, artifacts)"]
+        L3_CHECK["Check L3\n(API call)"]
+        L3_HIT{"L3 Hit?"}
+        L3_DOWNLOAD["Download Object\n(streaming)"]
+        L3_VERIFY["Verify Checksum\n(md5)"]
+        L3_CACHE_L2["Cache to L2\n(persist locally)"]
+        L3_PROMOTE["Promote to L1"]
+        L3_RETURN["Return Value\n(seconds latency)"]
+    end
+
+    L2_HIT -->|"no"| L3_CHECK
+    L3_CHECK --> L3_HIT
+    L3_HIT -->|"yes"| L3_DOWNLOAD
+    L3_DOWNLOAD --> L3_VERIFY
+    L3_VERIFY -->|"valid"| L3_CACHE_L2
+    L3_CACHE_L2 --> L3_PROMOTE
+    L3_PROMOTE --> L3_RETURN
+
+    %% ── L4: Source Cache ────────────────────────────────────────────────────
+    subgraph L4_SOURCE ["📚 L4: Source Cache\n(original location)"]
+        L4_CHECK["Check L4\n(recompute/refetch)"]
+        L4_COMPUTE["Recompute Value\n(if derivable)"]
+        L4_FETCH["Fetch from Source\n(API, database)"]
+        L4_CACHE_L3["Cache to L3"]
+        L4_CACHE_L2_2["Cache to L2"]
+        L4_RETURN["Return Value\n(seconds/minutes)"]
+    end
+
+    L3_HIT -->|"no"| L4_CHECK
+    L4_CHECK --> L4_COMPUTE
+    L4_CHECK --> L4_FETCH
+    L4_COMPUTE --> L4_CACHE_L3
+    L4_FETCH --> L4_CACHE_L3
+    L4_CACHE_L3 --> L4_CACHE_L2_2
+    L4_CACHE_L2_2 --> L4_RETURN
+
+    %% ── Cache Eviction Policies ─────────────────────────────────────────────
+    subgraph EVICT ["🧹 Eviction Policies"]
+        L1_SIZE["L1: 100MB, LRU"]
+        L2_SIZE["L2: 10GB, time-based\n(30 days)"]
+        L3_SIZE["L3: Unlimited, version-based"]
+        L4_SIZE["L4: Original source\n(no eviction)"]
+    end
+
+    L1_RETURN --> L1_SIZE
+    L2_RETURN --> L2_SIZE
+    L3_RETURN --> L3_SIZE
+    L4_RETURN --> L4_SIZE
+
+    %% ── Cache Coherency ─────────────────────────────────────────────────────
+    subgraph COHERE ["🔄 Cache Coherency"]
+        INVALIDATE["Invalidate Cache\n(on data change)"]
+        VERIFY_VERSION["Verify Version\n(check freshness)"]
+        REFRESH["Refresh from Source\n(if stale)"]
+    end
+
+    %% ── Monitoring ──────────────────────────────────────────────────────────
+    subgraph MONITOR ["📊 Cache Monitoring"]
+        TRACK_HITS["Track Hit Rate\n(% requests cached)"]
+        TRACK_MISSES["Track Miss Rate\n(% requests uncached)"]
+        TRACK_LATENCY["Track Latency\n(by layer)"]
+        OPTIMIZE["Optimize Policy\n(if ratio poor)"]
+    end
+
+    L1_SIZE --> TRACK_HITS
+    L4_SIZE --> TRACK_MISSES
+    L1_RETURN --> TRACK_LATENCY
+    L2_RETURN --> TRACK_LATENCY
+    L3_RETURN --> TRACK_LATENCY
+    L4_RETURN --> TRACK_LATENCY
+    TRACK_HITS --> OPTIMIZE
+    TRACK_MISSES --> OPTIMIZE
+
+    %% ── Output States ───────────────────────────────────────────────────────
+    L1_RETURN --> OUTPUT_L1["✅ From L1\n(hot, fast)"]
+    L2_RETURN --> OUTPUT_L2["✅ From L2\n(warm, medium)"]
+    L3_RETURN --> OUTPUT_L3["✅ From L3\n(cool, slow)"]
+    L4_RETURN --> OUTPUT_L4["✅ From L4\n(cold, slowest)"]
+
+    %% ── Styling ────────────────────────────────────────────────────────────
+    style REQUEST fill:#4a4e69,color:#fff
+    style L1_MEM fill:#1b4332,color:#fff
+    style L2_DISK fill:#2d6a4f,color:#fff
+    style L3_REMOTE fill:#457b9d,color:#fff
+    style L4_SOURCE fill:#16213e,color:#e0e0e0
+    style EVICT fill:#665c84,color:#fff
+    style COHERE fill:#f4a261,color:#000
+    style MONITOR fill:#4a4e69,color:#fff
+    style OUTPUT_L1 fill:#1b4332,color:#fff
+    style OUTPUT_L2 fill:#2d6a4f,color:#fff
+    style OUTPUT_L3 fill:#457b9d,color:#fff
+    style OUTPUT_L4 fill:#16213e,color:#e0e0e0
