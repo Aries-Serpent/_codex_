@@ -1,12 +1,15 @@
 ---
 name: Energy Conversion Agent
 description: >
-  AI-enhanced agent skilled in developing programmatic systems for simulating
-  and calculating G2E (gas-to-electric) conversion. Provides CR (compute-regulated)
-  PD (power distribution) modeling, thermodynamic analysis, grid stability
-  simulation, and AI-driven optimization for integrated energy systems.
+  DEPRECATED (2026-07-01): AI-enhanced agent skilled in developing programmatic
+  systems for simulating and calculating G2E (gas-to-electric) conversion.
+  This agent has been archived due to out-of-scope domain (energy systems),
+  minimal integration (4 refs, IQ=0.6558), and zero active use.
+  See ENERGY_CONVERSION_AGENT_DEPRECATION.md for details.
 version: 1.2.0
 updated: 2026-03-21
+status: archived
+deprecation_date: 2026-07-01
 cognitive_integration_level: 2
 aais_contribution: +2.0 points
 batch: pr-energy
@@ -15,7 +18,15 @@ runner_compatibility:
   large:   ubuntu-latest-large  # 4-core — high-performance multiphysics simulation and ML training
 ---
 
-# Energy Conversion Agent
+# ⚠️ DEPRECATED: Energy Conversion Agent
+
+> **Status**: 🗑️ Archived 2026-07-01
+> 
+> This agent is no longer maintained or available for use. See [`ENERGY_CONVERSION_AGENT_DEPRECATION.md`](../../ENERGY_CONVERSION_AGENT_DEPRECATION.md) for rationale and archive information.
+
+---
+
+# Original Documentation (Archived)
 
 ## Purpose
 

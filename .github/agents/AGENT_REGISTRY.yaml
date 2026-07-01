@@ -1,8 +1,8 @@
 version: 2.0.0
-last_updated: '2026-07-01T14:05:00Z'
+last_updated: '2026-07-01T14:05:30Z'
 total_agents: 161
 active_agents: 147
-archived_agents: 14
+archived_agents: 15
 agents:
 - id: github-app-manager
   name: GitHub App Manager
@@ -4062,6 +4062,24 @@ agents:
   - discussion_posting
   - governance_automation
   - session_documentation
+- id: google-home-script-agent
+  name: Google Home Script Agent
+  version: 1.0.0
+  file: .github/agents/google-home-script-agent.md
+  status: archived
+  maturity: production
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: automation
+  subcategory: smart_home
+  deprecation_date: '2026-07-01'
+  deprecation_reason: Zero ecosystem integration. Aspirational design only (not in
+    agent_brain_api, not in structural_policy_manager). Domain orthogonal to software
+    engineering. See GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md
+  description: 'DEPRECATED: Smart-home automation agent for Google Home script generation.
+    Archived 2026-07-01 due to zero ecosystem integration and out-of-scope domain.'
 standardization_status:
   fully_compliant: 12
   partially_compliant: 20
