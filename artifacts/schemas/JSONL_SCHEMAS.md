@@ -259,7 +259,7 @@ Cross-repository references (commits, PRs, issues, files, sections).
   "id": "ref_commit_abc123",
   "type": "reference",
   "reference_type": "commit",
-  "value": "abc123def456",
+  "value": "abc123def456", <!-- pragma: allowlist secret -->
   "source_id": "doc_readme_001",
   "metadata": {
     "message": "feat: implement machine-readable docs",

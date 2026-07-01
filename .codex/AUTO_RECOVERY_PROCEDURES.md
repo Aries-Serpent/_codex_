@@ -946,7 +946,7 @@ step_2_classify_vulnerability:
     xss: "Escape/sanitize output"
     path_traversal: "Validate path input"
     unsafe_deserialization: "Use safe deserializer"
-    hardcoded_secrets: "Use environment variables"
+    hardcoded_secrets: "Use environment variables" # pragma: allowlist secret
     buffer_overflow: "Use safe APIs"
 
 step_3_apply_security_fix:

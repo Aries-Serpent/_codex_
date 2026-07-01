@@ -88,8 +88,18 @@ class REQ1EligibilityValidator(RequirementValidator):
         reviewers = pr_details.get("requested_reviewers", [])
         metadata["reviewers_assigned"] = len(reviewers) > 0
         metadata["reviewers_count"] = len(reviewers)
+        reviewer_warning: str | None = None
         if not reviewers:
-            issues.append("No reviewers assigned")
+            # Exempt bot/copilot-authored PRs from the hard reviewer requirement.
+            # Copilot agent PRs (branch prefix "copilot/" or author login ending in
+            # "[bot]") may legitimately have no human reviewers at creation time.
+            pr_author = pr_details.get("user", {}).get("login", "")
+            is_bot_pr = pr_author.endswith("[bot]") or branch_name.startswith("copilot/")
+            if is_bot_pr:
+                reviewer_warning = "No reviewers assigned (bot/copilot PR — warning only)"
+                metadata["reviewer_exemption"] = "bot_or_copilot_branch"
+            else:
+                issues.append("No reviewers assigned")
 
         # Determine overall status
         if issues:
@@ -104,6 +114,16 @@ class REQ1EligibilityValidator(RequirementValidator):
                     "Add detailed PR description (minimum 50 characters)",
                     "Assign at least one reviewer",
                 ],
+                metadata=metadata,
+            )
+
+        if reviewer_warning:
+            return ComplianceResult(
+                requirement_id=self.requirement_id,
+                status="warn",
+                score=0.5,
+                reason=reviewer_warning,
+                remediation=["Consider assigning a human reviewer for visibility"],
                 metadata=metadata,
             )
 

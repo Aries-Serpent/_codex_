@@ -400,7 +400,7 @@ To prevent similar issues:
 ```json
 {
   "id": 5272032606,
-  "sha": "4ba92fdd803879f3a00ffe79933db64bd77a1b70",
+  "sha": "4ba92fdd803879f3a00ffe79933db64bd77a1b70", <!-- pragma: allowlist secret -->
   "ref": "main",
   "environment": "github-pages",
   "created_at": "2026-07-01T16:04:33Z",
