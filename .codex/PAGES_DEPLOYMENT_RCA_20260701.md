@@ -94,7 +94,7 @@ Two GitHub Pages deployments were created successfully but subsequently marked a
 
 **Commit 6101a9fd**:
 ```
-fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [skip ci]
+fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [skip ci]  # pragma: allowlist secret
 ```
 
 ⚠️ **[skip ci] Flag Present**: This commit has `[skip ci]` in the message, which signals CI to skip custom workflows. **However, GitHub's internal `pages-build-deployment` service is NOT affected by [skip ci].**
