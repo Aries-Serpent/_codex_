@@ -42,7 +42,6 @@ CLI (from CI workflow)::
 Python API::
 
     from codex.github.mcp_poster import GitHubMCPPoster
-from scripts.ci._token_resolver import get_token
 
     poster = GitHubMCPPoster()
     poster.post_pr_comment(repo="Aries-Serpent/_codex_", pr_number=3401, body="@copilot ...")
@@ -64,38 +63,18 @@ import json
 import logging
 import os
 import sys
-import time
 import urllib.error
 import urllib.request
 from pathlib import Path
 from typing import Any
-from urllib.parse import urlsplit, urlunsplit
+
+from codex.github.api_client import APIClient
+from codex.github.cognitive_brain_integration import CognitiveBrainIntegration
+from codex.github.discussion_manager import DiscussionManager
+from codex.github.git_operations import GitOperations
+from codex.github.pull_request_manager import PullRequestManager
 
 logger = logging.getLogger(__name__)
-
-_GITHUB_API = "https://api.github.com"
-_ACCEPT = "application/vnd.github+json"
-_API_VERSION = "2022-11-28"
-
-
-def _redact_url_for_log(url: str) -> str:
-    """Return URL without credentials, query, or fragment for safe logging."""
-    parts = urlsplit(url)
-    host = parts.hostname or ""
-    if ":" in host and not host.startswith("["):
-        host = f"[{host}]"
-    netloc = f"{host}:{parts.port}" if parts.port else host
-    return urlunsplit((parts.scheme, netloc, parts.path, "", ""))
-
-
-def _validated_github_api_url(url: str) -> str:
-    """Allow only credential-free HTTPS calls to api.github.com."""
-    parts = urlsplit(url)
-    if parts.scheme != "https" or parts.hostname != "api.github.com":
-        raise ValueError(f"GitHub API URL must target https://api.github.com: {url!r}")
-    if parts.username or parts.password:
-        raise ValueError("GitHub API URL must not contain embedded credentials")
-    return url
 
 
 class GitHubMCPPoster:
@@ -117,183 +96,61 @@ class GitHubMCPPoster:
     3. ``GITHUB_TOKEN`` (fallback — likely read-only for branch/PR write ops)
 
     If none of these are set, all write operations raise ``RuntimeError``.
+    
+    **Note:** This class delegates to specialized modules (APIClient, DiscussionManager,
+    PullRequestManager, GitOperations, CognitiveBrainIntegration) for specific operations.
+    The public API remains unchanged for backward compatibility.
     """
 
     def __init__(self, token: str | None = None) -> None:
-        self._token = (
-            token
-            or get_token(required_elevated=True)[0]
-            or get_token(required_elevated=True)[0]
-            or os.environ.get("GITHUB_TOKEN")
-        )
-        # Track which key is active for health-check reporting (GAP-033).
-        if token:
-            self._token_source = "explicit"  # nosec B105 — label string, not a credential
-        elif get_token(required_elevated=True)[0]:
-            self._token_source = "CODEX_MASTER_KEY"  # nosec B105 — env-var name label
-        elif get_token(required_elevated=True)[0]:
-            self._token_source = "CODEX_BACKUP_KEY"  # nosec B105 — env-var name label
-        elif os.environ.get("GITHUB_TOKEN"):
-            self._token_source = "GITHUB_TOKEN"  # nosec B105 — env-var name label
-        else:
-            self._token_source = "none"  # nosec B105 — sentinel label, not a credential
+        """Initialize the MCP poster with all specialized managers.
+        
+        Parameters
+        ----------
+        token:
+            Optional explicit token. If None, resolves from environment.
+        """
+        # Initialize the base API client
+        self._api = APIClient(token)
+        
+        # Initialize all specialized managers
+        self._discussions = DiscussionManager(self._api)
+        self._prs = PullRequestManager(self._api)
+        self._git = GitOperations(self._api)
+        self._cb = CognitiveBrainIntegration(self._api)
+        
+        # Expose token source for compatibility
+        self._token_source = self._api._token_source
 
-        if not self._token:
-            logger.warning(
-                "No GitHub token found. Set CODEX_MASTER_KEY or CODEX_BACKUP_KEY. "
-                "See .codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md § 3."
-            )
+    @property
+    def _token(self) -> str:
+        """Backward compatibility: expose token from APIClient."""
+        return self._api._token
 
     # ------------------------------------------------------------------
-    # GAP-033 — Token health check
+    # Token health check (delegates to APIClient)
     # ------------------------------------------------------------------
 
     def check_token_health(self) -> dict[str, object]:
-        """GAP-033: Verify the active GitHub token and report its scopes / expiry.
-
-        This resolves the systemic risk identified in the Cognitive Brain deep
-        reflection (S323): when ``CODEX_MASTER_KEY`` expires or is rotated, the
-        self-healing loop silently degrades because ``@copilot`` only responds to
-        comments that appear to come from ``@mbaetiong`` (which requires the key).
-        The fallback chain (``CODEX_BACKUP_KEY → GITHUB_TOKEN``) keeps basic API
-        calls alive but lacks the ``repo + workflow`` scopes needed for rescue
-        comments and workflow dispatches.
-
-        Returns a dict with keys::
-
-            {
-                "source": "CODEX_MASTER_KEY" | "CODEX_BACKUP_KEY" | "GITHUB_TOKEN" | "none",
-                "login": "<github-username>",
-                "scopes": ["repo", "workflow", ...],
-                "has_master_key_scopes": True | False,
-                "expiry_warning": "<message>" | None,
-                "healthy": True | False,
-            }
-
-        **Integration point:** call this at session start and log the result to the
-        PDA loop.  CI can dispatch a ``CODEX_MASTER_KEY``-rotation alert if
-        ``healthy=False``.
-        """
-        health: dict[str, object] = {
-            "source": self._token_source,
-            "login": None,
-            "scopes": [],
-            "has_master_key_scopes": False,
-            "expiry_warning": None,
-            "healthy": False,
-        }
-        if not self._token:
-            health["expiry_warning"] = "No token configured — loop is broken."
-            return health
-
-        try:
-            req = urllib.request.Request(
-                _validated_github_api_url(f"{_GITHUB_API}/user"),
-                headers={
-                    "Authorization": f"Bearer {self._token}",
-                    "Accept": "application/vnd.github+json",
-                    "X-GitHub-Api-Version": _API_VERSION,
-                },
-            )
-            with urllib.request.urlopen(  # nosec B310  # nosemgrep: semgrep.urllib-urlopen-dynamic -- URL is validated by _validated_github_api_url()
-                req, timeout=10
-            ) as resp:
-                body = json.loads(resp.read().decode())
-                raw_scopes = resp.headers.get("x-oauth-scopes", "")
-                status = resp.status
-        except urllib.error.HTTPError as exc:
-            status = exc.code
-            body = {}
-            raw_scopes = ""
-        except (ConnectionError, TimeoutError) as exc:
-            health["expiry_warning"] = f"Request failed: {exc}"
-            return health
-
-        if status == 401:
-            health["expiry_warning"] = (
-                f"Token ({self._token_source}) is invalid or expired. "
-                "Rotate CODEX_MASTER_KEY immediately to preserve the self-healing loop."
-            )
-            logger.error(health["expiry_warning"])  # codeql[py/clear-text-logging-sensitive-data]
-            return health
-
-        if status != 200:
-            health["expiry_warning"] = f"Unexpected /user status {status}"
-            return health
-
-        health["login"] = body.get("login")
-
-        # Parse OAuth scopes from response header
-        scopes = [s.strip() for s in raw_scopes.split(",") if s.strip()]
-        health["scopes"] = scopes
-
-        required = {"repo", "workflow"}
-        health["has_master_key_scopes"] = required.issubset(set(scopes))
-
-        if not health["has_master_key_scopes"] and self._token_source in (
-            "CODEX_MASTER_KEY",
-            "CODEX_BACKUP_KEY",
-        ):
-            missing = required - set(scopes)
-            health["expiry_warning"] = (
-                f"Token ({self._token_source}) is missing required scopes: "
-                f"{missing}.  Self-healing loop will silently degrade."
-            )
-            logger.warning(health["expiry_warning"])  # codeql[py/clear-text-logging-sensitive-data]
-
-        health["healthy"] = bool(health["has_master_key_scopes"])
-        return health
+        """Check GitHub token health and scopes. See APIClient.check_token_health()."""
+        return self._api.check_token_health()
 
     # ------------------------------------------------------------------
-    # PR comments
+    # PR comments (delegates to PullRequestManager)
     # ------------------------------------------------------------------
 
-    def post_pr_comment(
-        self,
-        repo: str,
-        pr_number: int,
-        body: str,
-    ) -> dict[str, Any]:
-        """Post *body* as a comment on PR *pr_number* in *repo*.
-
-        Parameters
-        ----------
-        repo:
-            ``"owner/repo"`` format, e.g. ``"Aries-Serpent/_codex_"``.
-        pr_number:
-            PR number (int).
-        body:
-            Comment markdown body. Must start with ``@copilot`` for
-            autonomous session triggering.
-
-        Returns
-        -------
-        dict
-            GitHub API response payload (includes ``html_url`` of comment).
-
-        Raises
-        ------
-        RuntimeError
-            If no token is available.
-        urllib.error.HTTPError
-            If GitHub returns a non-2xx status.
-        """
-        self._require_token()
-        url = f"{_GITHUB_API}/repos/{repo}/issues/{pr_number}/comments"
-        return self._request("POST", url, {"body": body})
+    def post_pr_comment(self, repo: str, pr_number: int, body: str) -> dict[str, Any]:
+        """Post a comment on a PR. See PullRequestManager.post_pr_comment()."""
+        return self._prs.post_pr_comment(repo, pr_number, body)
 
     def post_pr_comment_from_file(
-        self,
-        repo: str,
-        pr_number: int,
-        body_file: str | Path,
+        self, repo: str, pr_number: int, body_file: str | Path
     ) -> dict[str, Any]:
-        """Read *body_file* and post its contents as a PR comment."""
-        body = Path(body_file).read_text()
-        return self.post_pr_comment(repo, pr_number, body)
+        """Read a file and post as a PR comment. See PullRequestManager.post_pr_comment_from_file()."""
+        return self._prs.post_pr_comment_from_file(repo, pr_number, body_file)
 
     # ------------------------------------------------------------------
-    # GitHub Discussions
+    # GitHub Discussions (delegates to DiscussionManager)
     # ------------------------------------------------------------------
 
     def create_discussion(
@@ -303,188 +160,33 @@ class GitHubMCPPoster:
         body: str,
         category_slug: str = "cognitive-brain-patterns",
     ) -> dict[str, Any]:
-        """Create a GitHub Discussion via GraphQL.
-
-        Parameters
-        ----------
-        repo:
-            ``"owner/repo"`` format.
-        title:
-            Discussion title.
-        body:
-            Discussion body (markdown).
-        category_slug:
-            Slug of an existing Discussion category.
-            See ADMIN_MANUAL_SETUP_GUIDE.md § 4 for required categories.
-
-        Returns
-        -------
-        dict
-            GraphQL response payload.
-        """
-        self._require_token()
-        owner, repo_name = repo.split("/", 1)
-
-        # Step 1: resolve repository + category node IDs
-        repo_id, category_id = self._resolve_discussion_ids(owner, repo_name, category_slug)
-
-        # Step 2: create discussion
-        mutation = """
-        mutation CreateDiscussion($repoId: ID!, $categoryId: ID!, $title: String!, $body: String!) {
-          createDiscussion(input: {
-            repositoryId: $repoId
-            categoryId: $categoryId
-            title: $title
-            body: $body
-          }) {
-            discussion { number url title }
-          }
-        }
-        """
-        variables = {
-            "repoId": repo_id,
-            "categoryId": category_id,
-            "title": title,
-            "body": body,
-        }
-        result = self._graphql_with_retry(mutation, variables, operation_name="CreateDiscussion")
-        return result.get("data", {}).get("createDiscussion", {}).get("discussion", result)
+        """Create a GitHub Discussion. See DiscussionManager.create_discussion()."""
+        return self._discussions.create_discussion(repo, title, body, category_slug)
 
     def post_session_summary_discussion(
-        self,
-        repo: str,
-        session_num: int,
-        summary_md: str,
+        self, repo: str, session_num: int, summary_md: str
     ) -> dict[str, Any]:
-        """Post a session summary as a GitHub Discussion announcement."""
-        title = f"Session S{session_num} — Completion Summary"
-        return self.create_discussion(
-            repo=repo,
-            title=title,
-            body=summary_md,
-            category_slug="session-summaries",
-        )
+        """Post a session summary as a Discussion. See DiscussionManager.post_session_summary_discussion()."""
+        return self._discussions.post_session_summary_discussion(repo, session_num, summary_md)
 
     def add_discussion_comment(
-        self,
-        repo: str,
-        discussion_number: int,
-        body: str,
+        self, repo: str, discussion_number: int, body: str
     ) -> dict[str, Any]:
-        """Add a comment to an existing GitHub Discussion via GraphQL.
-
-        Parameters
-        ----------
-        repo:
-            ``"owner/repo"`` format.
-        discussion_number:
-            The integer number of the target discussion (visible in the URL).
-        body:
-            Comment body in Markdown.
-
-        Returns
-        -------
-        dict
-            GraphQL response payload with ``id``, ``url``, ``body``.
-        """
-        self._require_token()
-        owner, repo_name = repo.split("/", 1)
-
-        # Step 1: resolve the discussion node ID
-        discussion_id = self._resolve_discussion_node_id(owner, repo_name, discussion_number)
-
-        # Step 2: add comment
-        mutation = """
-        mutation AddDiscussionComment($discussionId: ID!, $body: String!) {
-          addDiscussionComment(input: { discussionId: $discussionId, body: $body }) {
-            comment { id url body }
-          }
-        }
-        """
-        result = self._graphql(mutation, {"discussionId": discussion_id, "body": body})
-        # Surface GraphQL-level errors (HTTP 200 but errors in body, e.g. FORBIDDEN)
-        gql_errors = result.get("errors") if result else None
-        if gql_errors:
-            first_err = gql_errors[0]
-            err_type = first_err.get("type", "UNKNOWN")
-            err_msg = first_err.get("message", str(gql_errors))
-            raise PermissionError(
-                f"GitHub Discussion comment FORBIDDEN ({err_type}): {err_msg}. "
-                "Ensure the token has 'write:discussion' scope (PAT) or the workflow "
-                "declares 'discussions: write' permission."
-            )
-        comment_data = (result or {}).get("data", {}).get("addDiscussionComment")
-        if comment_data is None:
-            raise RuntimeError(
-                f"addDiscussionComment returned null for discussion #{discussion_number}. "
-                "Full response: " + str(result)
-            )
-        return comment_data.get("comment", comment_data)
+        """Add a comment to a Discussion. See DiscussionManager.add_discussion_comment()."""
+        return self._discussions.add_discussion_comment(repo, discussion_number, body)
 
     def upsert_discussion_comment(
-        self,
-        repo: str,
-        discussion_number: int,
-        body: str,
-        marker: str = "",
+        self, repo: str, discussion_number: int, body: str, marker: str = ""
     ) -> dict[str, Any]:
-        """Idempotent add-or-update of a Discussion comment.
-
-        Searches existing comments in *discussion_number* for one whose body
-        contains *marker*.  If found, updates it; otherwise posts a new comment.
-        This prevents duplicate status summaries when a workflow runs multiple
-        times on the same discussion.
-
-        Parameters
-        ----------
-        repo:
-            ``"owner/repo"`` format.
-        discussion_number:
-            Integer number of the target Discussion.
-        body:
-            Full Markdown comment body (should include *marker* so future calls
-            can identify it).
-        marker:
-            A unique string used to detect whether a previous comment from this
-            caller already exists.  If empty, always creates a new comment.
-
-        Returns
-        -------
-        dict
-            GraphQL response payload.
-        """
-        self._require_token()
-        owner, repo_name = repo.split("/", 1)
-
-        if marker:
-            existing_id = self._find_discussion_comment(owner, repo_name, discussion_number, marker)
-            if existing_id:
-                return self._update_discussion_comment(existing_id, body)
-
-        return self.add_discussion_comment(repo, discussion_number, body)
+        """Add or update a Discussion comment. See DiscussionManager.upsert_discussion_comment()."""
+        return self._discussions.upsert_discussion_comment(repo, discussion_number, body, marker)
 
     def post_ci_pattern_summary(
-        self,
-        repo: str,
-        discussion_number: int,
-        summary_md: str,
-        session_id: str = "",
+        self, repo: str, discussion_number: int, summary_md: str, session_id: str = ""
     ) -> dict[str, Any]:
-        """Post (or update) a CI pattern knowledge-graph summary as a Discussion comment.
-
-        Uses ``upsert_discussion_comment`` so each session's summary replaces
-        the previous one rather than growing the thread indefinitely.
-
-        Parameters
-        ----------
-        repo:
-            ``"owner/repo"`` format.
-        discussion_number:
-            Target Discussion number (e.g. 3673 for the accountability thread).
-        summary_md:
-            Markdown content — typically output from ``pattern_recorder summary``.
-        session_id:
-            Optional session ID embedded in the marker for deduplication.
+        """Post a CI pattern summary to a Discussion.
+        
+        Uses upsert_discussion_comment to replace previous summary.
         """
         marker = (
             f"<!-- ci-pattern-summary:{session_id} -->"
@@ -495,101 +197,10 @@ class GitHubMCPPoster:
         return self.upsert_discussion_comment(repo, discussion_number, full_body, marker)
 
     def post_continuation_chain(
-        self,
-        repo: str,
-        discussion_number: int,
-        chain_md: str,
+        self, repo: str, discussion_number: int, chain_md: str
     ) -> dict[str, Any]:
-        """Post a tokenized continuation chain prompt as a new Discussion comment.
-
-        Continuation chains are always posted as new comments (not upserted)
-        so the discussion thread preserves the full history of chain prompts.
-
-        Parameters
-        ----------
-        repo:
-            ``"owner/repo"`` format.
-        discussion_number:
-            Target Discussion number.
-        chain_md:
-            Full Markdown content of the continuation chain prompt, including
-            tokenized context sections and ``@copilot continue`` call-to-action.
-        """
+        """Post a continuation chain as a Discussion comment."""
         return self.add_discussion_comment(repo, discussion_number, chain_md)
-
-    # ------------------------------------------------------------------
-    # Discussion internals
-    # ------------------------------------------------------------------
-
-    def _resolve_discussion_node_id(self, owner: str, repo: str, discussion_number: int) -> str:
-        """Return the GraphQL node ID for a Discussion identified by its number."""
-        query = """
-        query GetDiscussionId($owner: String!, $repo: String!, $number: Int!) {
-          repository(owner: $owner, name: $repo) {
-            discussion(number: $number) { id }
-          }
-        }
-        """
-        result = self._graphql(query, {"owner": owner, "repo": repo, "number": discussion_number})
-        discussion = result.get("data", {}).get("repository", {}).get("discussion") or {}
-        node_id: str = discussion.get("id", "")
-        if not node_id:
-            raise RuntimeError(
-                f"Discussion #{discussion_number} not found in {owner}/{repo}. "
-                "Ensure the discussion exists and the token has 'discussions:write' scope."
-            )
-        return node_id
-
-    def _find_discussion_comment(
-        self, owner: str, repo: str, discussion_number: int, marker: str
-    ) -> str:
-        """Return the node ID of the most-recent comment containing *marker*, or ``""``.
-
-        Searches newest-first using ``last: 100`` with backward cursor pagination
-        so that recent upsert markers are found quickly even in high-volume threads
-        (e.g. Discussion #3756 with 700+ comments).  Continues paginating backward
-        through older pages until the marker is found or all comments are exhausted.
-        """
-        query = """
-        query FindDiscussionComment(
-          $owner: String!, $repo: String!, $number: Int!, $cursor: String
-        ) {
-          repository(owner: $owner, name: $repo) {
-            discussion(number: $number) {
-              comments(last: 100, before: $cursor) {
-                nodes { id body }
-                pageInfo { hasPreviousPage startCursor }
-              }
-            }
-          }
-        }
-        """
-        cursor: str | None = None
-        while True:
-            result = self._graphql(
-                query,
-                {"owner": owner, "repo": repo, "number": discussion_number, "cursor": cursor},
-            )
-            disc = (
-                result.get("data", {})
-                .get("repository", {})
-                .get("discussion", {})
-                .get("comments", {})
-            )
-            nodes = disc.get("nodes", [])
-            page_info = disc.get("pageInfo", {})
-            # Iterate newest→oldest within this page
-            for c in reversed(nodes):
-                if marker in (c.get("body") or ""):
-                    return c["id"]
-            if not page_info.get("hasPreviousPage"):
-                break
-            cursor = page_info.get("startCursor")
-        return ""
-
-    # ------------------------------------------------------------------
-    # Per-PR discussion auto-create / find-or-create
-    # ------------------------------------------------------------------
 
     def find_or_create_pr_discussion(
         self,
@@ -598,153 +209,8 @@ class GitHubMCPPoster:
         purpose: str,
         category_slug: str = "show-and-tell",
     ) -> tuple[int, str]:
-        """Find an existing discussion for a PR + purpose, or create one.
-
-        This is the canonical entry-point for all per-PR discussion posting.
-        It removes the need to hard-code discussion numbers (e.g. #3673, #3756)
-        in workflows and scripts — every PR gets its own isolated thread.
-
-        Title format
-        ~~~~~~~~~~~~
-        ``"🤖 {purpose_title} — PR #{pr_number}"``
-
-        Supported *purpose* values and their titles
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        ``"accountability"``   → ``"📋 Agent Accountability — PR #{pr_number}"``
-        ``"pre-session"``      → ``"🧠 Pre-Session Context — PR #{pr_number}"``
-        ``"qa"``               → ``"❓ Q&A — PR #{pr_number}"``
-
-        Any other string is used as-is for the title prefix.
-
-        Parameters
-        ----------
-        repo:
-            ``"owner/repo"`` format.
-        pr_number:
-            The PR number to scope this discussion to.
-        purpose:
-            Short identifier for the discussion's purpose (see above).
-        category_slug:
-            Slug of the Discussion category to create in if needed.
-            Defaults to ``"show-and-tell"`` (always available).
-
-        Returns
-        -------
-        tuple[int, str]
-            ``(discussion_number, discussion_node_id)``
-
-        Raises
-        ------
-        RuntimeError
-            If neither an existing discussion is found nor a new one can be created.
-        """
-        self._require_token()
-        owner, repo_name = repo.split("/", 1)
-
-        _PURPOSE_TITLES = {
-            "accountability": f"📋 Agent Accountability — PR #{pr_number}",
-            "pre-session": f"🧠 Pre-Session Context — PR #{pr_number}",
-            "qa": f"❓ Q&A — PR #{pr_number}",
-        }
-        title = _PURPOSE_TITLES.get(purpose, f"🤖 {purpose} — PR #{pr_number}")
-        # Dedup marker embedded in the discussion *body* (not a comment)
-        registry_marker = f"<!-- pr-discussion-registry:{pr_number}:{purpose} -->"
-
-        # Search existing discussions for matching title OR body marker
-        # (search newest-first; discussions are ordered by UPDATED_AT DESC)
-        page_cursor: str | None = None
-        while True:
-            list_query = """
-            query ListDiscussions(
-              $owner: String!, $repo: String!, $first: Int!, $after: String
-            ) {
-              repository(owner: $owner, name: $repo) {
-                discussions(
-                  first: $first, after: $after,
-                  orderBy: {field: UPDATED_AT, direction: DESC}
-                ) {
-                  pageInfo { hasNextPage endCursor }
-                  nodes { number id title body }
-                }
-              }
-            }
-            """
-            result = self._graphql(
-                list_query,
-                {"owner": owner, "repo": repo_name, "first": 50, "after": page_cursor},
-            )
-            page = result.get("data", {}).get("repository", {}).get("discussions", {})
-            for d in page.get("nodes", []):
-                if d.get("title") == title or registry_marker in (d.get("body") or ""):
-                    return d["number"], d["id"]
-            page_info = page.get("pageInfo", {})
-            if not page_info.get("hasNextPage"):
-                break
-            page_cursor = page_info.get("endCursor")
-
-        # Not found — create a new discussion
-        _PURPOSE_DESCRIPTIONS = {
-            "accountability": (
-                "Automatically maintained by `post-accountability-to-discussion.yml`.\n\n"
-                "Each comment in this discussion is one session's accountability entry for "
-                f"PR #{pr_number}. Copilot Coding Agent posts here at the end of every session "
-                "and checks this thread for maintainer feedback at the start of the next session."
-            ),
-            "pre-session": (
-                "Automatically maintained by `scripts/ci/discussion_context_store.py` (P6-C).\n\n"
-                "Each comment contains a structured pre-session briefing (§A workflow status, "
-                f"§B blocking comments, §D action queue) for PR #{pr_number}. "
-                "Copilot reads the latest comment here at session start."
-            ),
-            "qa": (
-                "Automatically maintained by `copilot-agent-checkin.yml`.\n\n"
-                f"Q&A thread for PR #{pr_number}. Copilot posts questions derived from the "
-                "current PDA pattern library and CI failure state. "
-                "Maintainer responses are detected at session close and acted on."
-            ),
-        }
-        description = _PURPOSE_DESCRIPTIONS.get(
-            purpose,
-            f"Automatically maintained discussion for PR #{pr_number} — purpose: {purpose}.",
-        )
-        body = (
-            f"{registry_marker}\n\n"
-            f"**PR:** #{pr_number} · **Repo:** [{repo}](https://github.com/{repo})\n\n"
-            f"{description}\n\n"
-            f"**⚠️ Do not delete this discussion** — it is the canonical record for its purpose."
-        )
-        discussion = self.create_discussion(
-            repo=repo, title=title, body=body, category_slug=category_slug
-        )
-        number = discussion.get("number")
-        node_id = discussion.get("id") or discussion.get("url", "")
-        if not number:
-            raise RuntimeError(
-                f"find_or_create_pr_discussion: createDiscussion returned no number. "
-                f"Response: {discussion}"
-            )
-        logger.info(
-            "Created new %r discussion #%s for PR #%s in %s",
-            purpose,
-            number,
-            pr_number,
-            repo,
-        )
-        return int(number), str(node_id)
-
-    # ------------------------------------------------------------------
-    # Response-checking: detect unread maintainer replies
-    # ------------------------------------------------------------------
-
-    _BOT_LOGINS: frozenset[str] = frozenset(
-        {
-            "github-actions[bot]",
-            "copilot-swe-agent[bot]",
-            "github-copilot[bot]",
-            "copilot[bot]",
-            "dependabot[bot]",
-        }
-    )
+        """Find or create a per-PR Discussion. See DiscussionManager.find_or_create_pr_discussion()."""
+        return self._discussions.find_or_create_pr_discussion(repo, pr_number, purpose, category_slug)
 
     def check_discussion_replies(
         self,
@@ -753,153 +219,8 @@ class GitHubMCPPoster:
         since_marker: str = "",
         max_comments: int = 200,
     ) -> list[dict[str, Any]]:
-        """Return a list of unread human replies in a discussion thread.
-
-        "Unread" means: posted by a non-bot author AND appearing *after* the
-        most recent Copilot-agent comment in the same thread (or after the
-        comment identified by *since_marker*).
-
-        This lets Copilot Coding Agent check at session start whether the
-        maintainer has responded to any accountability entry or Q&A post
-        without needing to be explicitly prompted.
-
-        Parameters
-        ----------
-        repo:
-            ``"owner/repo"`` format.
-        discussion_number:
-            The discussion to check (e.g. the per-PR accountability discussion).
-        since_marker:
-            Optional HTML-comment marker string.  If supplied, only replies
-            posted *after* the comment containing this marker are returned.
-            If empty, replies after the latest Copilot comment are returned.
-        max_comments:
-            Maximum number of recent comments to fetch (newest first).
-
-        Returns
-        -------
-        list[dict]
-            Each entry has keys: ``author``, ``body`` (first 300 chars),
-            ``url``, ``created_at``, ``in_reply_to_marker``.
-        """
-        self._require_token()
-        owner, repo_name = repo.split("/", 1)
-
-        # Fetch newest max_comments comments (last: N paginated)
-        query = """
-        query CheckReplies(
-          $owner: String!, $repo: String!, $number: Int!, $cursor: String
-        ) {
-          repository(owner: $owner, name: $repo) {
-            discussion(number: $number) {
-              comments(last: 100, before: $cursor) {
-                nodes {
-                  id body createdAt url
-                  author { login }
-                  replies(first: 20) {
-                    nodes { id body createdAt url author { login } }
-                  }
-                }
-                pageInfo { hasPreviousPage startCursor }
-              }
-            }
-          }
-        }
-        """
-        all_comments: list[dict[str, Any]] = []
-        cursor: str | None = None
-        fetched = 0
-        while fetched < max_comments:
-            result = self._graphql(
-                query,
-                {"owner": owner, "repo": repo_name, "number": discussion_number, "cursor": cursor},
-            )
-            disc = (
-                result.get("data", {})
-                .get("repository", {})
-                .get("discussion", {})
-                .get("comments", {})
-            )
-            nodes = disc.get("nodes", [])
-            all_comments = nodes + all_comments  # prepend so list is oldest→newest
-            fetched += len(nodes)
-            page_info = disc.get("pageInfo", {})
-            if not page_info.get("hasPreviousPage") or not nodes:
-                break
-            cursor = page_info.get("startCursor")
-
-        if not all_comments:
-            return []
-
-        # Find the anchor point: the latest Copilot comment OR the since_marker comment
-        anchor_idx = -1
-        for i, c in enumerate(all_comments):
-            login = (c.get("author") or {}).get("login", "")
-            body = c.get("body") or ""
-            if since_marker and since_marker in body:
-                anchor_idx = i
-                break
-            if not since_marker and login in (
-                "copilot-swe-agent[bot]",
-                "github-copilot[bot]",
-                "copilot[bot]",
-            ):
-                anchor_idx = i  # keep updating — want the LAST one
-
-        unread: list[dict[str, Any]] = []
-
-        # Collect top-level non-bot comments posted after anchor
-        for i, c in enumerate(all_comments):
-            if i <= anchor_idx:
-                continue
-            login = (c.get("author") or {}).get("login", "")
-            if login in self._BOT_LOGINS:
-                continue
-            unread.append(
-                {
-                    "author": login,
-                    "body": (c.get("body") or "")[:300],
-                    "url": c.get("url", ""),
-                    "created_at": c.get("createdAt", ""),
-                    "in_reply_to_marker": "",
-                    "type": "comment",
-                }
-            )
-
-        # Collect reply-thread entries anywhere in the discussion
-        for c in all_comments:
-            for r in (c.get("replies") or {}).get("nodes", []):
-                login = (r.get("author") or {}).get("login", "")
-                if login in self._BOT_LOGINS:
-                    continue
-                # Only count replies posted after the anchor comment's timestamp
-                anchor_ts = all_comments[anchor_idx].get("createdAt", "") if anchor_idx >= 0 else ""
-                if anchor_ts and r.get("createdAt", "") <= anchor_ts:
-                    continue
-                unread.append(
-                    {
-                        "author": login,
-                        "body": (r.get("body") or "")[:300],
-                        "url": r.get("url", ""),
-                        "created_at": r.get("createdAt", ""),
-                        "in_reply_to_marker": since_marker,
-                        "type": "reply",
-                    }
-                )
-
-        return unread
-
-    def _update_discussion_comment(self, comment_id: str, body: str) -> dict[str, Any]:
-        """Update an existing Discussion comment by its GraphQL node ID."""
-        mutation = """
-        mutation UpdateDiscussionComment($commentId: ID!, $body: String!) {
-          updateDiscussionComment(input: { commentId: $commentId, body: $body }) {
-            comment { id url body }
-          }
-        }
-        """
-        result = self._graphql(mutation, {"commentId": comment_id, "body": body})
-        return result.get("data", {}).get("updateDiscussionComment", {}).get("comment", result)
+        """Check for unread human replies in a Discussion. See DiscussionManager.check_discussion_replies()."""
+        return self._discussions.check_discussion_replies(repo, discussion_number, since_marker, max_comments)
 
     def update_discussion(
         self,
@@ -910,173 +231,34 @@ class GitHubMCPPoster:
         body: str | None = None,
         category_slug: str | None = None,
     ) -> dict[str, Any]:
-        """Update an existing Discussion's title, body, and/or category.
-
-        Parameters
-        ----------
-        repo:
-            ``"owner/repo"`` format.
-        discussion_number:
-            The integer discussion number (visible in the URL).
-        title, body:
-            New values; ``None`` means leave unchanged.
-        category_slug:
-            Slug of a new category to move the discussion into; ``None`` leaves it.
-
-        Returns
-        -------
-        dict
-            GraphQL ``updateDiscussion.discussion`` payload.
-        """
-        self._require_token()
-        owner, repo_name = repo.split("/", 1)
-        discussion_id = self._resolve_discussion_node_id(owner, repo_name, discussion_number)
-
-        variables: dict[str, Any] = {"discussionId": discussion_id}
-        if title is not None:
-            variables["title"] = title
-        if body is not None:
-            variables["body"] = body
-        if category_slug is not None:
-            _, category_id = self._resolve_discussion_ids(owner, repo_name, category_slug)
-            variables["categoryId"] = category_id
-
-        mutation = """
-        mutation UpdateDiscussion(
-          $discussionId: ID!
-          $title: String
-          $body: String
-          $categoryId: ID
-        ) {
-          updateDiscussion(input: {
-            discussionId: $discussionId
-            title: $title
-            body: $body
-            categoryId: $categoryId
-          }) {
-            discussion { number url title }
-          }
-        }
-        """
-        result = self._graphql(mutation, variables)
-        return result.get("data", {}).get("updateDiscussion", {}).get("discussion", result)
+        """Update a Discussion. See DiscussionManager.update_discussion()."""
+        return self._discussions.update_discussion(repo, discussion_number, title=title, body=body, category_slug=category_slug)
 
     def lock_discussion(
-        self,
-        repo: str,
-        discussion_number: int,
-        reason: str = "RESOLVED",
+        self, repo: str, discussion_number: int, reason: str = "RESOLVED"
     ) -> dict[str, Any]:
-        """Lock a Discussion to prevent further comments.
-
-        Parameters
-        ----------
-        reason:
-            One of ``"OFF_TOPIC"``, ``"RESOLVED"``, ``"SPAM"``, ``"TOO_HEATED"``.
-        """
-        self._require_token()
-        owner, repo_name = repo.split("/", 1)
-        discussion_id = self._resolve_discussion_node_id(owner, repo_name, discussion_number)
-        mutation = """
-        mutation LockDiscussion($id: ID!, $reason: LockReason) {
-          lockLockable(input: { lockableId: $id, lockReason: $reason }) {
-            lockedRecord { ... on Discussion { number url } }
-          }
-        }
-        """
-        result = self._graphql(mutation, {"id": discussion_id, "reason": reason})
-        return result.get("data", {}).get("lockLockable", result)
+        """Lock a Discussion. See DiscussionManager.lock_discussion()."""
+        return self._discussions.lock_discussion(repo, discussion_number, reason)
 
     def unlock_discussion(self, repo: str, discussion_number: int) -> dict[str, Any]:
-        """Unlock a previously locked Discussion."""
-        self._require_token()
-        owner, repo_name = repo.split("/", 1)
-        discussion_id = self._resolve_discussion_node_id(owner, repo_name, discussion_number)
-        mutation = """
-        mutation UnlockDiscussion($id: ID!) {
-          unlockLockable(input: { lockableId: $id }) {
-            unlockedRecord { ... on Discussion { number url } }
-          }
-        }
-        """
-        result = self._graphql(mutation, {"id": discussion_id})
-        return result.get("data", {}).get("unlockLockable", result)
+        """Unlock a Discussion. See DiscussionManager.unlock_discussion()."""
+        return self._discussions.unlock_discussion(repo, discussion_number)
 
     def delete_discussion(self, repo: str, discussion_number: int) -> bool:
-        """Permanently delete a Discussion.
-
-        Returns ``True`` if deletion succeeded, ``False`` otherwise.
-        Requires admin-level token with ``discussions:write`` scope.
-        """
-        self._require_token()
-        owner, repo_name = repo.split("/", 1)
-        discussion_id = self._resolve_discussion_node_id(owner, repo_name, discussion_number)
-        mutation = """
-        mutation DeleteDiscussion($id: ID!) {
-          deleteDiscussion(input: { id: $id }) {
-            clientMutationId
-          }
-        }
-        """
-        result = self._graphql(mutation, {"id": discussion_id})
-        return "errors" not in result
+        """Delete a Discussion. See DiscussionManager.delete_discussion()."""
+        return self._discussions.delete_discussion(repo, discussion_number)
 
     def delete_discussion_comment(self, comment_id: str) -> bool:
-        """Delete a Discussion comment by its GraphQL node ID.
-
-        Returns ``True`` if deletion succeeded, ``False`` otherwise.
-        """
-        self._require_token()
-        mutation = """
-        mutation DeleteDiscussionComment($id: ID!) {
-          deleteDiscussionComment(input: { id: $id }) {
-            clientMutationId
-          }
-        }
-        """
-        result = self._graphql(mutation, {"id": comment_id})
-        return "errors" not in result
+        """Delete a Discussion comment. See DiscussionManager.delete_discussion_comment()."""
+        return self._discussions.delete_discussion_comment(comment_id)
 
     def mark_answer(self, comment_id: str) -> dict[str, Any]:
-        """Mark a Discussion comment as the accepted answer.
-
-        Parameters
-        ----------
-        comment_id:
-            GraphQL node ID of the comment (obtain from ``add_discussion_comment``
-            or ``_find_discussion_comment``).
-        """
-        self._require_token()
-        mutation = """
-        mutation MarkAnswer($commentId: ID!) {
-          markDiscussionCommentAsAnswer(input: { id: $commentId }) {
-            discussion { number url }
-          }
-        }
-        """
-        result = self._graphql(mutation, {"commentId": comment_id})
-        return (
-            result.get("data", {})
-            .get("markDiscussionCommentAsAnswer", {})
-            .get("discussion", result)
-        )
+        """Mark a comment as the answer. See DiscussionManager.mark_answer()."""
+        return self._discussions.mark_answer(comment_id)
 
     def unmark_answer(self, comment_id: str) -> dict[str, Any]:
-        """Unmark a previously accepted answer on a Discussion."""
-        self._require_token()
-        mutation = """
-        mutation UnmarkAnswer($commentId: ID!) {
-          unmarkDiscussionCommentAsAnswer(input: { id: $commentId }) {
-            discussion { number url }
-          }
-        }
-        """
-        result = self._graphql(mutation, {"commentId": comment_id})
-        return (
-            result.get("data", {})
-            .get("unmarkDiscussionCommentAsAnswer", {})
-            .get("discussion", result)
-        )
+        """Unmark a comment as the answer. See DiscussionManager.unmark_answer()."""
+        return self._discussions.unmark_answer(comment_id)
 
     def list_discussions(
         self,
@@ -1085,72 +267,8 @@ class GitHubMCPPoster:
         first: int = 20,
         after: str | None = None,
     ) -> dict[str, Any]:
-        """List Discussions in a repository, optionally filtered by category.
-
-        Parameters
-        ----------
-        category_slug:
-            Filter to this category; ``None`` returns all categories.
-        first:
-            Number of discussions to return (max 100 per GitHub's GraphQL limits).
-        after:
-            Cursor for pagination.  Pass ``pageInfo.endCursor`` from a previous
-            response to retrieve the next page.
-
-        Returns
-        -------
-        dict
-            ``nodes`` — list of discussion dicts with ``number``, ``title``,
-            ``url``, ``category`` (name), ``createdAt``, ``isAnswered``,
-            ``comments`` (count).
-            ``pageInfo`` — ``{"endCursor": str | None, "hasNextPage": bool}``.
-        """
-        self._require_token()
-        owner, repo_name = repo.split("/", 1)
-
-        category_id: str | None = None
-        if category_slug:
-            _, category_id = self._resolve_discussion_ids(owner, repo_name, category_slug)
-
-        query = """
-        query ListDiscussions(
-          $owner: String!, $repo: String!, $first: Int!,
-          $categoryId: ID, $after: String
-        ) {
-          repository(owner: $owner, name: $repo) {
-            discussions(
-              first: $first, categoryId: $categoryId, after: $after,
-              orderBy: {field: UPDATED_AT, direction: DESC}
-            ) {
-              pageInfo { endCursor hasNextPage }
-              nodes {
-                number
-                title
-                url
-                createdAt
-                updatedAt
-                isAnswered
-                category { name slug }
-                comments { totalCount }
-                author { login }
-              }
-            }
-          }
-        }
-        """
-        variables: dict[str, Any] = {
-            "owner": owner,
-            "repo": repo_name,
-            "first": min(first, 100),
-            "categoryId": category_id,
-            "after": after,
-        }
-        result = self._graphql(query, variables)
-        disc_data = result.get("data", {}).get("repository", {}).get("discussions", {})
-        return {
-            "nodes": disc_data.get("nodes", []),
-            "pageInfo": disc_data.get("pageInfo", {"endCursor": None, "hasNextPage": False}),
-        }
+        """List Discussions in a repo. See DiscussionManager.list_discussions()."""
+        return self._discussions.list_discussions(repo, category_slug, first, after)
 
     def get_discussion(
         self,
@@ -1159,226 +277,36 @@ class GitHubMCPPoster:
         comments_first: int = 50,
         comments_after: str | None = None,
     ) -> dict[str, Any]:
-        """Fetch a single Discussion by number including its comments.
-
-        Parameters
-        ----------
-        repo:
-            Full repository name (``owner/repo``).
-        discussion_number:
-            The discussion number (visible in the URL).
-        comments_first:
-            Number of comments to return per page (max 100).
-        comments_after:
-            Cursor for comment pagination.  Pass ``comments.pageInfo.endCursor``
-            from a previous response to retrieve the next comment page.
-
-        Returns
-        -------
-        dict
-            Discussion fields: ``id`` (node ID), ``number``, ``title``,
-            ``body``, ``url``, ``category``, ``isAnswered``, ``comments`` with
-            ``totalCount``, ``pageInfo``, and ``nodes`` (up to *comments_first*).
-            The ``id`` field is the GraphQL node ID required by mutations such
-            as :meth:`pin_discussion`.
-        """
-        self._require_token()
-        owner, repo_name = repo.split("/", 1)
-        query = """
-        query GetDiscussion(
-          $owner: String!, $repo: String!, $number: Int!,
-          $commentsFirst: Int!, $commentsAfter: String
-        ) {
-          repository(owner: $owner, name: $repo) {
-            discussion(number: $number) {
-              id number title url body createdAt updatedAt isAnswered isLocked
-              category { name slug }
-              author { login }
-              comments(first: $commentsFirst, after: $commentsAfter) {
-                totalCount
-                pageInfo { endCursor hasNextPage }
-                nodes { id body createdAt author { login } isAnswer }
-              }
-            }
-          }
-        }
-        """
-        result = self._graphql(
-            query,
-            {
-                "owner": owner,
-                "repo": repo_name,
-                "number": discussion_number,
-                "commentsFirst": min(comments_first, 100),
-                "commentsAfter": comments_after,
-            },
-        )
-        disc = result.get("data", {}).get("repository", {}).get("discussion")
-        if disc is None:
-            raise RuntimeError(f"Discussion #{discussion_number} not found in {owner}/{repo_name}")
-        return disc
+        """Get a single Discussion with comments. See DiscussionManager.get_discussion()."""
+        return self._discussions.get_discussion(repo, discussion_number, comments_first, comments_after)
 
     def pin_discussion(self, repo: str, discussion_number: int) -> dict[str, Any]:
-        """Pin a Discussion to the repository.
-
-        Requires the token to have ``discussions: write`` scope.
-
-        Parameters
-        ----------
-        repo:
-            Full repository name (``owner/repo``).
-        discussion_number:
-            The discussion number (visible in the URL).
-
-        Returns
-        -------
-        dict
-            The pinned discussion fields returned by the GraphQL mutation.
-        """
-        self._require_token()
-        disc = self.get_discussion(repo, discussion_number)
-        discussion_id: str = disc["id"]
-        mutation = """
-        mutation PinDiscussion($discussionId: ID!) {
-          pinDiscussion(input: { discussionId: $discussionId }) {
-            discussion { id number title url }
-          }
-        }
-        """
-        result = self._graphql(mutation, {"discussionId": discussion_id})
-        return result.get("data", {}).get("pinDiscussion", {}).get("discussion", result)
+        """Pin a Discussion. See DiscussionManager.pin_discussion()."""
+        return self._discussions.pin_discussion(repo, discussion_number)
 
     def unpin_discussion(self, repo: str, discussion_number: int) -> dict[str, Any]:
-        """Unpin a previously pinned Discussion from the repository.
-
-        Requires the token to have ``discussions: write`` scope.
-
-        Parameters
-        ----------
-        repo:
-            Full repository name (``owner/repo``).
-        discussion_number:
-            The discussion number (visible in the URL).
-
-        Returns
-        -------
-        dict
-            The discussion fields returned by the GraphQL mutation.
-        """
-        self._require_token()
-        disc = self.get_discussion(repo, discussion_number)
-        discussion_id: str = disc["id"]
-        mutation = """
-        mutation UnpinDiscussion($discussionId: ID!) {
-          unpinDiscussion(input: { discussionId: $discussionId }) {
-            discussion { id number title url }
-          }
-        }
-        """
-        result = self._graphql(mutation, {"discussionId": discussion_id})
-        return result.get("data", {}).get("unpinDiscussion", {}).get("discussion", result)
+        """Unpin a Discussion. See DiscussionManager.unpin_discussion()."""
+        return self._discussions.unpin_discussion(repo, discussion_number)
 
     def list_discussion_categories(self, repo: str) -> list[dict[str, Any]]:
-        """List all Discussion categories in a repository.
-
-        **Note:** Categories can only be *created* or *deleted* via the GitHub web UI
-        (Settings → Discussions).  This method is read-only.
-
-        Returns
-        -------
-        list[dict]
-            Each entry has ``id``, ``name``, ``slug``, ``description``,
-            ``emojiHTML``, ``isAnswerable``.
-        """
-        self._require_token()
-        owner, repo_name = repo.split("/", 1)
-        query = """
-        query ListCategories($owner: String!, $repo: String!) {
-          repository(owner: $owner, name: $repo) {
-            discussionCategories(first: 25) {
-              nodes { id name slug description emojiHTML isAnswerable }
-            }
-          }
-        }
-        """
-        result = self._graphql(query, {"owner": owner, "repo": repo_name})
-        return (
-            result.get("data", {})
-            .get("repository", {})
-            .get("discussionCategories", {})
-            .get("nodes", [])
-        )
+        """List Discussion categories. See DiscussionManager.list_discussion_categories()."""
+        return self._discussions.list_discussion_categories(repo)
 
     # ------------------------------------------------------------------
     # Repository variables
     # ------------------------------------------------------------------
 
     def set_repo_variable(self, repo: str, name: str, value: str) -> dict[str, Any]:
-        """Create or update a repository Actions variable.
-
-        Requires the token to have ``actions: write`` scope.
-        """
-        self._require_token()
-        url = f"{_GITHUB_API}/repos/{repo}/actions/variables/{name}"
-        # Try PATCH first (update existing); fall back to POST (create new)
-        try:
-            return self._request("PATCH", url, {"name": name, "value": value})
-        except urllib.error.HTTPError as exc:
-            if exc.code == 404:
-                url_create = f"{_GITHUB_API}/repos/{repo}/actions/variables"
-                return self._request("POST", url_create, {"name": name, "value": value})
-            raise
+        """Create or update a repository variable. See CognitiveBrainIntegration.set_repo_variable()."""
+        return self._cb.set_repo_variable(repo, name, value)
 
     # ------------------------------------------------------------------
-    # Branch & PR management (IMP-001 — S174)
+    # Branch & PR management (delegates to GitOperations and PullRequestManager)
     # ------------------------------------------------------------------
 
     def create_ref(self, repo: str, ref: str, sha: str) -> dict[str, Any]:
-        """Create a git reference (branch or tag) on GitHub.
-
-        Requires the token to have ``contents: write`` scope.
-
-        Parameters
-        ----------
-        repo:
-            ``"owner/repo"`` format, e.g. ``"Aries-Serpent/_codex_"``.
-        ref:
-            Full ref name, e.g. ``"refs/heads/0D_base_"``.
-        sha:
-            40-character commit SHA the new ref should point to.
-            The commit must already exist in the repository (pushed
-            via another mechanism such as a PR merge).
-
-        Returns
-        -------
-        dict
-            GitHub API response payload with ``ref`` and ``object.sha``.
-
-        Raises
-        ------
-        RuntimeError
-            If no token is available.
-        urllib.error.HTTPError
-            If GitHub returns non-2xx (e.g. 422 ref already exists,
-            403 insufficient token scope).
-        """
-        self._require_token()
-        # Normalise the ref: only add refs/heads/ when the caller passes a bare
-        # branch name (no slash at all).  Explicit refs/heads/…, refs/tags/…, or
-        # heads/… / tags/… prefixes are left intact to avoid double-prefixing.
-        if not ref.startswith("refs/"):
-            if ref.startswith("heads/") or ref.startswith("tags/"):
-                ref = f"refs/{ref}"
-            else:
-                ref = f"refs/heads/{ref}"
-        url = f"{_GITHUB_API}/repos/{repo}/git/refs"
-        result = self._request("POST", url, {"ref": ref, "sha": sha})
-        self._record_cb_pattern(
-            "CB-branch-create",
-            f"create_ref: {ref} @ {sha[:8] if sha else sha}",
-            {"repo": repo, "ref": ref, "sha": sha},
-        )
-        return result
+        """Create a git reference (branch or tag). See GitOperations.create_ref()."""
+        return self._git.create_ref(repo, ref, sha)
 
     def create_pull_request(
         self,
@@ -1389,58 +317,8 @@ class GitHubMCPPoster:
         base: str,
         draft: bool = False,
     ) -> dict[str, Any]:
-        """Open a pull request on GitHub.
-
-        Requires the token to have ``pull-requests: write`` scope.
-
-        Parameters
-        ----------
-        repo:
-            ``"owner/repo"`` format.
-        title:
-            PR title string.
-        body:
-            PR description (markdown).
-        head:
-            Branch name for the source (head) of the PR,
-            e.g. ``"0D_base_"``.
-        base:
-            Branch name for the target (base) of the PR,
-            e.g. ``"main"``.
-        draft:
-            When ``True``, open as a draft PR.
-
-        Returns
-        -------
-        dict
-            GitHub API response payload including ``number`` and
-            ``html_url``.
-        """
-        self._require_token()
-        url = f"{_GITHUB_API}/repos/{repo}/pulls"
-        result = self._request(
-            "POST",
-            url,
-            {
-                "title": title,
-                "body": body,
-                "head": head,
-                "base": base,
-                "draft": draft,
-            },
-        )
-        self._record_cb_pattern(
-            "CB-pr-open",
-            f"create_pull_request: {head!r} → {base!r} (#{result.get('number', '?')})",
-            {
-                "repo": repo,
-                "head": head,
-                "base": base,
-                "pr_number": result.get("number"),
-                "draft": draft,
-            },
-        )
-        return result
+        """Open a pull request. See PullRequestManager.create_pull_request()."""
+        return self._prs.create_pull_request(repo, title, body, head, base, draft)
 
     def list_pull_requests(
         self,
@@ -1450,61 +328,8 @@ class GitHubMCPPoster:
         base: str = "",
         per_page: int = 30,
     ) -> list[dict[str, Any]]:
-        """List pull requests, optionally filtered by head/base branch.
-
-        Parameters
-        ----------
-        repo:
-            ``"owner/repo"`` format.
-        state:
-            One of ``"open"``, ``"closed"``, or ``"all"``.
-        head:
-            Filter by head branch name.  The GitHub REST API requires the
-            ``owner:branch`` format; pass a bare branch name and the owner
-            will be derived from *repo* automatically.
-        base:
-            Filter by base branch name.
-        per_page:
-            Number of results per page (max 100).
-
-        Returns
-        -------
-        list[dict]
-            List of PR objects from the GitHub API.
-        """
-        self._require_token()
-        params = [f"state={state}", f"per_page={min(per_page, 100)}"]
-        if head:
-            # GitHub requires "owner:branch" format for the head filter.
-            # Derive the owner from repo when the caller passes a bare branch name.
-            if ":" not in head:
-                owner = repo.split("/")[0]
-                head = f"{owner}:{head}"
-            params.append(f"head={head}")
-        if base:
-            params.append(f"base={base}")
-        url = _validated_github_api_url(f"{_GITHUB_API}/repos/{repo}/pulls?{'&'.join(params)}")
-        req = urllib.request.Request(
-            url,
-            headers={
-                "Authorization": f"Bearer {self._token}",
-                "Accept": _ACCEPT,
-                "X-GitHub-Api-Version": _API_VERSION,
-            },
-        )
-        try:
-            with urllib.request.urlopen(  # nosec B310  # nosemgrep: semgrep.urllib-urlopen-dynamic -- URL is validated by _validated_github_api_url()
-                req, timeout=30
-            ) as resp:
-                return json.loads(resp.read())
-        except urllib.error.HTTPError as exc:
-            logger.error(
-                "GitHub API GET %s → %d (%s)",
-                _redact_url_for_log(url),
-                exc.code,
-                type(exc).__name__,
-            )
-            raise
+        """List pull requests. See PullRequestManager.list_pull_requests()."""
+        return self._prs.list_pull_requests(repo, state, head, base, per_page)
 
     def merge_branch(
         self,
@@ -1513,178 +338,8 @@ class GitHubMCPPoster:
         head: str,
         commit_message: str = "",
     ) -> dict[str, Any]:
-        """Merge *head* into *base* via GitHub's server-side merge API.
-
-        Creates a merge commit on GitHub without requiring a local git
-        clone or ``git push`` — ideal for autonomous branch management.
-        The resulting commit SHA can be used with :meth:`create_ref` to
-        create or update a branch pointing to the merge result.
-
-        Requires the token to have ``contents: write`` scope.
-
-        Parameters
-        ----------
-        repo:
-            ``"owner/repo"`` format.
-        base:
-            Target branch name (e.g. ``"0D_base_"``).
-        head:
-            Source branch name or commit SHA to merge in.
-        commit_message:
-            Optional custom merge commit message.
-
-        Returns
-        -------
-        dict
-            GitHub API response with ``sha``, ``commit``, and
-            ``parents`` keys — or an empty dict when no merge was
-            necessary (already up-to-date).
-
-        Raises
-        ------
-        urllib.error.HTTPError
-            HTTP 409 when there is a merge conflict.
-        """
-        self._require_token()
-        url = f"{_GITHUB_API}/repos/{repo}/merges"
-        payload: dict[str, Any] = {"base": base, "head": head}
-        if commit_message:
-            payload["commit_message"] = commit_message
-        result = self._request("POST", url, payload)
-        outcome = "success" if result else "already_exists"
-        self._record_cb_pattern(
-            "CB-merge",
-            f"merge_branch: {head!r} → {base!r} outcome={outcome}",
-            {
-                "repo": repo,
-                "base": base,
-                "head": head,
-                "sha": result.get("sha", "") if result else "",
-            },
-            outcome=outcome,
-        )
-        return result
-
-    # ------------------------------------------------------------------
-    # Git Data API — autonomous commits (IMP-002 — S178)
-    # ------------------------------------------------------------------
-
-    def _create_blob(self, repo: str, content: str, encoding: str = "utf-8") -> str:
-        """Create a git blob object and return its SHA.
-
-        Parameters
-        ----------
-        repo:
-            ``"owner/repo"`` format.
-        content:
-            File content as a string (UTF-8 or base64 encoded).
-        encoding:
-            ``"utf-8"`` (default) or ``"base64"``.
-        """
-        url = f"{_GITHUB_API}/repos/{repo}/git/blobs"
-        result = self._request("POST", url, {"content": content, "encoding": encoding})
-        return result["sha"]
-
-    def _create_tree(
-        self,
-        repo: str,
-        tree_items: list[dict[str, Any]],
-        base_tree_sha: str = "",
-    ) -> str:
-        """Create a git tree object and return its SHA.
-
-        Parameters
-        ----------
-        repo:
-            ``"owner/repo"`` format.
-        tree_items:
-            List of tree entries, each with ``path``, ``mode``, ``type``,
-            and either ``sha`` (blob SHA) or ``content`` (inline content).
-        base_tree_sha:
-            SHA of the tree to build on top of.  Pass an empty string to
-            create a standalone root tree (rarely needed — usually the
-            current commit tree SHA should be passed here).
-        """
-        url = f"{_GITHUB_API}/repos/{repo}/git/trees"
-        payload: dict[str, Any] = {"tree": tree_items}
-        if base_tree_sha:
-            payload["base_tree"] = base_tree_sha
-        result = self._request("POST", url, payload)
-        return result["sha"]
-
-    def _create_commit(
-        self,
-        repo: str,
-        message: str,
-        tree_sha: str,
-        parent_shas: list[str],
-    ) -> str:
-        """Create a git commit object and return its SHA.
-
-        Parameters
-        ----------
-        repo:
-            ``"owner/repo"`` format.
-        message:
-            Commit message string.
-        tree_sha:
-            SHA of the root tree for this commit (from :meth:`_create_tree`).
-        parent_shas:
-            List of parent commit SHAs (typically one — the current HEAD).
-        """
-        url = f"{_GITHUB_API}/repos/{repo}/git/commits"
-        result = self._request(
-            "POST",
-            url,
-            {
-                "message": message,
-                "tree": tree_sha,
-                "parents": parent_shas,
-            },
-        )
-        return result["sha"]
-
-    def _update_ref(self, repo: str, ref: str, sha: str, force: bool = False) -> dict[str, Any]:
-        """Update (fast-forward) a git reference to a new commit SHA.
-
-        Parameters
-        ----------
-        repo:
-            ``"owner/repo"`` format.
-        ref:
-            Full ref name, e.g. ``"refs/heads/0D_base_"``.  A bare branch
-            name is accepted and will be normalised to ``refs/heads/<name>``.
-        sha:
-            New target commit SHA.
-        force:
-            When ``True``, perform a force-update (non-fast-forward).
-        """
-        if not ref.startswith("refs/"):
-            ref = f"refs/heads/{ref}"
-        url = f"{_GITHUB_API}/repos/{repo}/git/refs/{ref.removeprefix('refs/')}"
-        return self._request("PATCH", url, {"sha": sha, "force": force})
-
-    def _get_ref_sha(self, repo: str, ref: str) -> str:
-        """Resolve a branch ref to the current tip commit SHA.
-
-        Parameters
-        ----------
-        repo:
-            ``"owner/repo"`` format.
-        ref:
-            Branch name or full ref (e.g. ``"main"`` or
-            ``"refs/heads/main"``).
-        """
-        branch = ref.removeprefix("refs/heads/")
-        url = f"{_GITHUB_API}/repos/{repo}/git/refs/heads/{branch}"
-        result_get = self._get(url)
-        return result_get["object"]["sha"]
-
-    def _get_commit_tree_sha(self, repo: str, commit_sha: str) -> str:
-        """Return the tree SHA for a given commit SHA."""
-        url = f"{_GITHUB_API}/repos/{repo}/git/commits/{commit_sha}"
-        result = self._get(url)
-        return result["tree"]["sha"]
+        """Merge branches server-side. See GitOperations.merge_branch()."""
+        return self._git.merge_branch(repo, base, head, commit_message)
 
     def commit_files(
         self,
@@ -1694,485 +349,56 @@ class GitHubMCPPoster:
         message: str,
         force: bool = False,
     ) -> str:
-        """Push one or more file changes as a single commit via the Git Data API.
-
-        IMP-002: Closes the "agent can only push via ``report_progress``"
-        constraint.  Uses the low-level Git Data API
-        (blobs → trees → commits → PATCH refs) to create a commit
-        entirely through HTTPS REST calls, without requiring a local
-        ``git clone`` or ``git push``.
-
-        Requires the token to have ``contents: write`` scope.
-
-        Parameters
-        ----------
-        repo:
-            ``"owner/repo"`` format, e.g. ``"Aries-Serpent/_codex_"``.
-        branch:
-            Target branch name (e.g. ``"0D_base_"``).  The branch must
-            already exist.
-        files:
-            Mapping of file paths (repo-relative, e.g.
-            ``"src/codex/foo.py"``) to their new UTF-8 string content.
-        message:
-            Commit message.
-        force:
-            When ``True``, force-update the branch ref even for
-            non-fast-forward situations.  Use with caution.
-
-        Returns
-        -------
-        str
-            The SHA of the new commit.
-
-        Raises
-        ------
-        RuntimeError
-            If no token is available.
-        urllib.error.HTTPError
-            On GitHub API errors (e.g. 422 branch not found, 409 conflict).
-
-        Examples
-        --------
-        >>> poster = GitHubMCPPoster()
-        >>> sha = poster.commit_files(
-        ...     repo="Aries-Serpent/_codex_",
-        ...     branch="0D_base_",
-        ...     files={"README.md": "# Updated\\n"},
-        ...     message="docs: update README",
-        ... )
-        """
-        self._require_token()
-
-        # 1. Resolve the current tip of the target branch.
-        head_sha = self._get_ref_sha(repo, branch)
-        base_tree_sha = self._get_commit_tree_sha(repo, head_sha)
-
-        # 2. Create a blob for each changed file.
-        tree_items: list[dict[str, Any]] = []
-        for path, content in files.items():
-            blob_sha = self._create_blob(repo, content, encoding="utf-8")
-            tree_items.append(
-                {
-                    "path": path,
-                    "mode": "100644",  # regular file
-                    "type": "blob",
-                    "sha": blob_sha,
-                }
-            )
-
-        # 3. Create a new tree that layers the changed files on top of the
-        #    existing tree.
-        new_tree_sha = self._create_tree(repo, tree_items, base_tree_sha=base_tree_sha)
-
-        # 4. Create the commit object.
-        commit_sha = self._create_commit(repo, message, new_tree_sha, [head_sha])
-
-        # 5. Fast-forward the branch ref to the new commit.
-        self._update_ref(repo, branch, commit_sha, force=force)
-
-        self._record_cb_pattern(
-            "CB-commit-files",
-            f"commit_files: {len(files)} file(s) to {branch!r} as {commit_sha[:8]}",
-            {
-                "repo": repo,
-                "branch": branch,
-                "file_count": len(files),
-                "sha": commit_sha,
-            },
-        )
-        logger.info(
-            "commit_files: pushed %d file(s) to %s/%s as %s",
-            len(files),
-            repo,
-            branch,
-            commit_sha[:8],
-        )
-        return commit_sha
+        """Commit files via Git Data API. See GitOperations.commit_files()."""
+        return self._git.commit_files(repo, branch, files, message, force)
 
     # ------------------------------------------------------------------
-    # Cognitive brain lifecycle hooks (IMP-012 — S175)
+    # Cognitive brain integration (delegates to CognitiveBrainIntegration)
     # ------------------------------------------------------------------
-
-    def _record_cb_pattern(
-        self,
-        pattern_id: str,
-        decision: str,
-        context: dict[str, Any],
-        outcome: str = "success",
-    ) -> None:
-        """Record a lifecycle event as a cognitive-brain memory pattern.
-
-        Emits a structured log entry (always) and optionally stores the
-        pattern in the SQLite cognitive-brain memory when the
-        ``cognitive_brain`` package is available (fail-open — any import
-        or write error is logged at DEBUG and silently ignored).
-
-        Parameters
-        ----------
-        pattern_id:
-            Short identifier, e.g. ``"CB-branch-create"``.
-        decision:
-            Human-readable description of the action taken.
-        context:
-            Arbitrary key/value pairs describing the operation context.
-        outcome:
-            Outcome string, one of ``"success"``, ``"error"``, or
-            ``"already_exists"`` (used as the ``success_rate`` signal).
-        """
-        success_rate = 1.0 if outcome == "success" else 0.0
-        logger.info(
-            "CB lifecycle: %s | %s | outcome=%s | %s",
-            pattern_id,
-            decision,
-            outcome,
-            context,
-        )
-        try:
-            from cognitive_brain.quantum.memory import MemoryPattern, SQLiteMemory
-
-            features: dict[str, float] = {
-                "success": success_rate,
-                "has_repo": float(bool(context.get("repo"))),
-                "has_sha": float(bool(context.get("sha"))),
-                "has_pr_number": float(bool(context.get("pr_number"))),
-            }
-            pattern = MemoryPattern(
-                pattern_id=pattern_id,
-                features=features,
-                decision=decision,
-                confidence=0.9,
-                success_rate=success_rate,
-            )
-            mem = SQLiteMemory()
-            mem.store_pattern(pattern)
-            logger.debug(
-                "CB pattern stored: %s", pattern_id
-            )  # codeql[py/clear-text-logging-sensitive-data]
-        except (ValueError, TypeError, RuntimeError) as _cb_exc:
-            logger.debug(
-                "CB pattern storage skipped (%s: %s)",
-                type(_cb_exc).__name__,
-                _cb_exc,
-            )
 
     def retrieve_cb_patterns(
         self,
         limit: int = 10,
         pattern_prefix: str = "CB-",
     ) -> str:
-        """Retrieve recent cognitive-brain patterns for session context injection (IMP-013).
+        """Retrieve cognitive-brain patterns. See CognitiveBrainIntegration.retrieve_cb_patterns()."""
+        return self._cb.retrieve_cb_patterns(limit, pattern_prefix)
 
-        Queries the SQLite cognitive-brain memory for the most recent patterns
-        whose ``pattern_id`` starts with *pattern_prefix*.  Returns a
-        Markdown-formatted block suitable for injection into a
-        ``@copilot continue`` comment body.
+    # ------------------------------------------------------------------
+    # Internal methods (exposed for testing & backward compatibility)
+    # ------------------------------------------------------------------
 
-        Fail-open: if ``cognitive_brain`` is not importable (e.g. in CI
-        without the package) or the database is empty, returns an empty
-        string so callers can concatenate without conditional logic.
-
-        Parameters
-        ----------
-        limit:
-            Maximum number of patterns to return (default 10).
-        pattern_prefix:
-            Only return patterns whose ``pattern_id`` starts with this
-            prefix (default ``"CB-"``).
-
-        Returns
-        -------
-        str
-            Markdown block of recent CB patterns, or ``""`` on failure/empty.
-        """
-        try:
-            from cognitive_brain.quantum.memory import SQLiteMemory
-
-            mem = SQLiteMemory()
-            all_patterns = mem.get_recent_patterns(limit=limit * 4)
-            patterns = [
-                p for p in all_patterns if getattr(p, "pattern_id", "").startswith(pattern_prefix)
-            ][:limit]
-
-            if not patterns:
-                return ""
-
-            lines = [
-                "### 🧠 Recent Cognitive-Brain Patterns",
-                "",
-                "| Pattern | Decision | Outcome |",
-                "|---------|----------|---------|",
-            ]
-            for p in patterns:
-                pid = getattr(p, "pattern_id", "unknown")
-                dec = getattr(p, "decision", "")[:60]
-                sr = getattr(p, "success_rate", None)
-                outcome = (
-                    "✅ success" if sr == 1.0 else ("⚠️ partial" if sr and sr > 0 else "❌ fail")
-                )
-                lines.append(f"| `{pid}` | {dec} | {outcome} |")
-
-            return "\n".join(lines) + "\n"
-
-        except (IOError, OSError) as _exc:
-            logger.debug(
-                "CB pattern retrieval skipped (%s: %s)", type(_exc).__name__, _exc
-            )  # codeql[py/clear-text-logging-sensitive-data]
-            return ""
-
-    def _require_token(self) -> None:
-        """Raise RuntimeError if no token is available.
-
-        Requires the token to have ``contents: write`` scope.
-        """
-        if not self._token:
-            raise RuntimeError(
-                "No GitHub token available. Set CODEX_MASTER_KEY. "
-                "See .codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md § 3."
-            )
-
-    def _get(self, url: str) -> dict[str, Any]:
-        """Execute a single GET request to the GitHub REST API (no retry).
-
-        Use :meth:`_request` with ``method="GET"`` when retry-on-rate-limit is
-        needed.  This lightweight helper is used by the Git Data API helpers
-        (:meth:`_get_ref_sha`, :meth:`_get_commit_tree_sha`) where a single
-        attempt is sufficient.
-        """
-        url = _validated_github_api_url(url)
-        req = urllib.request.Request(
-            url,
-            headers={
-                "Authorization": f"Bearer {self._token}",
-                "Accept": _ACCEPT,
-                "X-GitHub-Api-Version": _API_VERSION,
-            },
-        )
-        try:
-            with urllib.request.urlopen(  # nosec B310  # nosemgrep: semgrep.urllib-urlopen-dynamic -- URL is validated by _validated_github_api_url()
-                req, timeout=30
-            ) as resp:
-                return json.loads(resp.read())
-        except urllib.error.HTTPError as exc:
-            logger.error(
-                "GitHub API GET %s → %d (%s)",
-                _redact_url_for_log(url),
-                exc.code,
-                type(exc).__name__,
-            )
-            raise
+    def _record_cb_pattern(
+        self, pattern_id: str, summary: str, context: dict[str, str] | None = None
+    ) -> None:
+        """Record a cognitive-brain pattern. Delegates to CognitiveBrainIntegration."""
+        return self._cb._record_cb_pattern(pattern_id, summary, context)
 
     def _request(
         self,
         method: str,
         url: str,
-        payload: dict[str, Any],
-        max_retries: int = 3,
-    ) -> dict[str, Any]:
-        """Execute a GitHub REST API call with exponential back-off retry.
+        body: str | None = None,
+        headers: dict[str, str] | None = None,
+    ) -> dict:
+        """Make an HTTP request. Delegates to APIClient."""
+        return self._api._request(method, url, body, headers)
 
-        Retries on HTTP 403 (secondary rate limit) and 429 (primary rate
-        limit).  Respects the ``Retry-After`` response header when present.
-        Non-retryable errors (4xx other than 403/429, 5xx) are raised
-        immediately after logging.
+    def _get(self, url: str) -> dict:
+        """Make a GET request. Delegates to APIClient."""
+        return self._api._get(url)
 
-        Parameters
-        ----------
-        method:
-            HTTP method string, e.g. ``"POST"`` or ``"PATCH"``.
-        url:
-            Fully-qualified HTTPS URL.
-        payload:
-            Request body as a JSON-serialisable dict.
-        max_retries:
-            Maximum number of retry attempts after the first failure
-            (default 3, giving up to 4 total attempts).
-        """
-        url = _validated_github_api_url(url)
-        data = json.dumps(payload).encode()
-        last_exc: urllib.error.HTTPError | None = None
-        for attempt in range(max_retries + 1):
-            req = urllib.request.Request(
-                url,
-                data=data,
-                method=method,
-                headers={
-                    "Authorization": f"Bearer {self._token}",
-                    "Accept": _ACCEPT,
-                    "X-GitHub-Api-Version": _API_VERSION,
-                    "Content-Type": "application/json",
-                },
-            )
-            try:
-                with urllib.request.urlopen(  # nosec B310  # nosemgrep: semgrep.urllib-urlopen-dynamic -- URL is validated by _validated_github_api_url()
-                    req, timeout=30
-                ) as resp:
-                    body = resp.read()
-                    return json.loads(body) if body else {}
-            except urllib.error.HTTPError as exc:
-                last_exc = exc
-                # Only retry on rate-limiting, not on real permission/auth errors.
-                # 429 (primary rate limit) — always retryable.
-                # 403 (secondary rate limit) — retryable only when GitHub signals
-                #   throttling via a Retry-After header or x-ratelimit-remaining=0.
-                is_rate_limited = False
-                if exc.code == 429:
-                    is_rate_limited = True
-                elif exc.code == 403:
-                    retry_after_hdr = exc.headers.get("Retry-After", "")
-                    remaining = exc.headers.get("x-ratelimit-remaining", "")
-                    is_rate_limited = bool(retry_after_hdr) or remaining == "0"
+    def _resolve_discussion_node_id(self, repo: str, discussion_number: int) -> str:
+        """Resolve discussion number to GraphQL node ID. Delegates to DiscussionManager."""
+        return self._discussions._resolve_discussion_node_id(repo, discussion_number)
 
-                if is_rate_limited and attempt < max_retries:
-                    retry_after_hdr = exc.headers.get("Retry-After", "")
-                    try:
-                        wait = float(retry_after_hdr)
-                    except (TypeError, ValueError):
-                        wait = (2**attempt) * 1.0  # 1s, 2s, 4s …
-                    logger.warning(
-                        "GitHub API rate-limited (%d). Retrying in %.0fs (attempt %d/%d)…",
-                        exc.code,
-                        wait,
-                        attempt + 1,
-                        max_retries,
-                    )
-                    time.sleep(wait)
-                else:
-                    logger.error(
-                        "GitHub API %s %s → %d (%s)",
-                        method,
-                        _redact_url_for_log(url),
-                        exc.code,
-                        type(exc).__name__,
-                    )
-                    raise
-        # Should be unreachable, but satisfy type checker
-        if last_exc is not None:
-            raise last_exc
-        raise RuntimeError("Request failed after all retries but exception was not captured")
-
-    def _graphql(self, query: str, variables: dict[str, Any]) -> dict[str, Any]:
-        url = f"{_GITHUB_API}/graphql"
-        return self._request("POST", url, {"query": query, "variables": variables})
-
-    def _graphql_with_retry(
-        self,
-        query: str,
-        variables: dict[str, Any],
-        *,
-        max_retries: int = 3,
-        operation_name: str = "GraphQL",
-    ) -> dict[str, Any]:
-        """Execute a GraphQL mutation/query with exponential back-off retry.
-
-        Hardened posting pipeline (Phase 8 P6):
-        - Detects GraphQL ``errors`` array in the response body and raises.
-        - Recognises ``RATE_LIMITED`` errors from GitHub and waits/retries.
-        - Retries on transient network errors (``urllib.error.URLError``,
-          ``http.client.RemoteDisconnected``, ``TimeoutError``).
-        - Non-retryable errors (``FORBIDDEN``, ``NOT_FOUND``, auth failures)
-          are raised immediately.
-        - Returns ``result["data"]`` on success (unwraps the envelope).
-
-        Returns:
-            The full parsed JSON response dict (including ``data`` key) so
-            callers can continue to use the same access pattern.
-        """
-        _NON_RETRYABLE_TYPES = frozenset({"FORBIDDEN", "NOT_FOUND", "UNPROCESSABLE", "BAD_REQUEST"})
-        _RETRYABLE_TYPES = frozenset({"RATE_LIMITED", "SERVICE_UNAVAILABLE", "INTERNAL"})
-
-        last_exc: Exception | None = None
-        for attempt in range(max_retries + 1):
-            try:
-                url = f"{_GITHUB_API}/graphql"
-                result = self._request("POST", url, {"query": query, "variables": variables})
-
-                # Check for GraphQL-level errors (HTTP 200 but errors in body)
-                gql_errors = result.get("errors")
-                if gql_errors:
-                    first = gql_errors[0]
-                    err_type = first.get("type", "UNKNOWN")
-                    err_msg = first.get("message", str(gql_errors))
-
-                    if err_type in _NON_RETRYABLE_TYPES:
-                        raise ValueError(f"{operation_name} GraphQL {err_type}: {err_msg}")
-
-                    if err_type in _RETRYABLE_TYPES and attempt < max_retries:
-                        wait = 2 ** (attempt + 1)
-                        print(
-                            f"[mcp_poster] {operation_name} GraphQL {err_type} "
-                            f"(attempt {attempt + 1}/{max_retries + 1}) — retry in {wait}s",
-                            file=sys.stderr,
-                        )
-                        time.sleep(wait)
-                        continue
-
-                    # Unknown error type or retries exhausted
-                    raise RuntimeError(f"{operation_name} GraphQL error ({err_type}): {err_msg}")
-
-                return result
-
-            except (urllib.error.URLError, TimeoutError, ConnectionResetError) as exc:
-                last_exc = exc
-                if attempt < max_retries:
-                    wait = 2 ** (attempt + 1)
-                    print(
-                        f"[mcp_poster] {operation_name} network error "
-                        f"(attempt {attempt + 1}/{max_retries + 1}) — retry in {wait}s: {exc}",
-                        file=sys.stderr,
-                    )
-                    time.sleep(wait)
-                else:
-                    raise
-
-        # Should never reach here but satisfy type checker
-        if last_exc is not None:
-            raise last_exc
-        raise RuntimeError(f"{operation_name}: max retries ({max_retries}) exceeded")
-
-    def _resolve_discussion_ids(self, owner: str, repo: str, category_slug: str) -> tuple[str, str]:
-        """Return (repository_node_id, category_node_id) for GraphQL mutations."""
-        query = """
-        query GetRepoAndCategory($owner: String!, $repo: String!) {
-          repository(owner: $owner, name: $repo) {
-            id
-            discussionCategories(first: 20) {
-              nodes { id slug name }
-            }
-          }
-        }
-        """
-        result = self._graphql_with_retry(
-            query, {"owner": owner, "repo": repo}, operation_name="ResolveDiscussionIds"
-        )
-        repo_data = result.get("data", {}).get("repository", {})
-        repo_id: str = repo_data.get("id", "")
-        categories = repo_data.get("discussionCategories", {}).get("nodes", [])
-        category_id = ""
-        for cat in categories:
-            if (
-                cat.get("slug") == category_slug
-                or cat.get("name", "").lower().replace(" ", "-") == category_slug
-            ):
-                category_id = cat["id"]
-                break
-        if not category_id and categories:
-            # Fall back to first available category when slug not matched.
-            fallback = categories[0]
-            fallback_slug = fallback.get("slug") or fallback.get("name", "?")
-            logger.warning(
-                "Discussion category %r not found in %r; falling back to %r.",
-                category_slug,
-                f"{owner}/{repo}",
-                fallback_slug,
-            )
-            category_id = fallback["id"]
-        return repo_id, category_id
+    def _find_discussion_comment(
+        self, repo: str, discussion_number: int, marker: str
+    ) -> dict[str, str] | None:
+        """Find a discussion comment by marker. Delegates to DiscussionManager."""
+        return self._discussions._find_discussion_comment(repo, discussion_number, marker)
 
 
-# ---------------------------------------------------------------------------
-# CLI entry point
-# ---------------------------------------------------------------------------
 
 
 def _build_parser() -> argparse.ArgumentParser:

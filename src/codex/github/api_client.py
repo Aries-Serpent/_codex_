@@ -66,19 +66,25 @@ class APIClient:
             2. CODEX_BACKUP_KEY
             3. GITHUB_TOKEN
         """
-        self._token = (
-            token
-            or get_token(required_elevated=True)[0]
-            or get_token(required_elevated=True)[0]
-            or os.environ.get("GITHUB_TOKEN")
-        )
+        # Try to get elevated token, fall back to GITHUB_TOKEN
+        elevated_token = None
+        try:
+            elevated_token, elevated_source = get_token(required_elevated=True)
+        except Exception:
+            pass  # Will fall back to GITHUB_TOKEN below
+
+        self._token = token or elevated_token or os.environ.get("GITHUB_TOKEN")
+
         # Track which key is active for health-check reporting (GAP-033).
         if token:
             self._token_source = "explicit"  # nosec B105 — label string, not a credential
-        elif get_token(required_elevated=True)[0]:
-            self._token_source = "CODEX_MASTER_KEY"  # nosec B105 — env-var name label
-        elif get_token(required_elevated=True)[0]:
-            self._token_source = "CODEX_BACKUP_KEY"  # nosec B105 — env-var name label
+        elif elevated_token:
+            # Determine if it's CODEX_MASTER_KEY or CODEX_BACKUP_KEY
+            try:
+                _, source = get_token(required_elevated=True)
+                self._token_source = source  # nosec B105 — env-var name label
+            except Exception:
+                self._token_source = "none"  # nosec B105 — sentinel label
         elif os.environ.get("GITHUB_TOKEN"):
             self._token_source = "GITHUB_TOKEN"  # nosec B105 — env-var name label
         else:
