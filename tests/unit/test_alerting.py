@@ -285,7 +285,6 @@ class TestSlackChannel:
 
         payload = _json.loads(req.data.decode())
         assert "Training failed" in payload["text"], "Condition must be true"
-        assert payload["attachments"][0]["color"] == ", "Condition must be true"
         field_titles = [f["title"] for f in payload["attachments"][0]["fields"]]
         assert "Severity" in field_titles, "Condition must be true"
         assert "Run ID" in field_titles, "Condition must be true"

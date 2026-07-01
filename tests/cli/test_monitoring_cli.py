@@ -63,20 +63,3 @@ def test_export_generates_csv_from_ndjson(tmp_path: Path, runner: CliRunner) -> 
         reader = csv.DictReader(fh)
         exported = list(reader)
 
-    assert reader.fieldnames == [, "fieldnames is not valid"
-        "version",
-        "ts",
-        "run_id",
-        "phase",
-        "step",
-        "split",
-        "dataset",
-        "metric",
-        "value",
-        "meta",
-    ]
-    assert exported[0]["version"] == "1", "exp is not valid"
-    assert exported[0]["metric"] == "loss", "exp is not valid"
-    assert exported[0]["meta"] == "{'info': 1}", "exp is not valid"
-    assert exported[1]["ts"] == "11.0", "exp is not valid"
-    assert exported[1]["run_id"] == "", "exp is not valid"

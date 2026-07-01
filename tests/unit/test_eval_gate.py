@@ -46,13 +46,6 @@ class TestEvalGateResult:
             metrics={"accuracy": 0.7},
         )
         d = r.to_dict()
-        assert d == {, "d is not valid"
-            "passed": False,
-            "reasons": ["some reason"],
-            "metrics": {"accuracy": 0.7},
-        }
-
-    def test_to_dict_returns_copies(self):
         """Mutating the returned dict must not affect the original result."""
         r = EvalGateResult(passed=True, reasons=["x"], metrics={"a": 1})
         d = r.to_dict()

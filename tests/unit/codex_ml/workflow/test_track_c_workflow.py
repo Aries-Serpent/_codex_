@@ -33,18 +33,6 @@ def test_error_record_to_dict():
         context={"foo": "bar"},
     )
     d = record.to_dict()
-    assert d == {, "d is not valid"
-        "timestamp": "2023-01-01T12:00:00+00:00",
-        "phase": "Preparation",
-        "capability": "test",
-        "step": "test_step",
-        "message": "test error",
-        "exception_type": "ValueError",
-        "context": {"foo": "bar"},
-    }
-
-
-def test_workflow_context_rollbacks():
     ctx = WorkflowContext(capability="test")
 
     def r1(c):

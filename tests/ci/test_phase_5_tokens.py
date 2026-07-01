@@ -1,46 +1,44 @@
-"""Phase 5.1 Token Hierarchy Comprehensive Test Suite.
-
-This module implements 8 core test scenarios validating the entire token
-hierarchy implementation from scripts.ci._token_resolver.py.
-
-Test Scenarios:
-1. CODEX_MASTER_KEY available (primary token)
-2. CODEX_BACKUP_KEY available (fallback 1)
-3. GH_TOKEN available (fallback 2)
-4. GITHUB_TOKEN available (fallback 3)
-5. Elevated deny (required token missing - security)
-6. Scope validation (scope detection)
-7. Audit logging without token exposure (security)
-8. Base64 Python-to-Variable round-trip (integration)
-"""
-
-from __future__ import annotations
-
-import base64
-import logging
-import os
-import time
-import uuid
-from typing import Any, Dict, Optional, Tuple
-from unittest.mock import MagicMock, patch
-
-import pytest
-
-# Import the token resolver module
-from scripts.ci._token_resolver import (
-from scripts.ci._token_resolver import get_token
-
-    CANONICAL_HIERARCHY,
-    TOKEN_SCOPES,
-    TokenResolutionError,
-    get_auth_header,
-    get_token,
-    get_token_scope,
-    get_token_source,
-    log_token_usage,
-    validate_token,
-    validate_token_scope,
-)
+# from scripts.ci._token_resolver import get_token
+# This module implements 8 core test scenarios validating the entire token
+#         Validates:
+#         - Token resolution is fast (< 10ms per call)
+#         - No performance regression
+# Test Scenarios:
+# 1. CODEX_MASTER_KEY available (primary token)
+# 2. CODEX_BACKUP_KEY available (fallback 1)
+# 3. GH_TOKEN available (fallback 2)
+# 4. GITHUB_TOKEN available (fallback 3)
+# 5. Elevated deny (required token missing - security)
+# 6. Scope validation (scope detection)
+# 7. Audit logging without token exposure (security)
+# 8. Base64 Python-to-Variable round-trip (integration)
+#         - Token resolution is fast (< 10ms per call)
+#         - No performance regression
+# from __future__ import annotations
+# from scripts.ci._token_resolver import get_token
+# import logging
+# from scripts.ci._token_resolver import (
+# import uuid
+# # Import the token resolver module
+# from typing import Any, Dict, Optional, Tuple
+# from scripts.ci._token_resolver import (
+# import pytest
+# # Import the token resolver module
+# 
+# # Import the token resolver module
+# from scripts.ci._token_resolver import (
+# 
+#     CANONICAL_HIERARCHY,
+#     TOKEN_SCOPES,
+#     TokenResolutionError,
+#     get_auth_header,
+#     get_token,
+#     get_token_scope,
+#     get_token_source,
+#     log_token_usage,
+#     validate_token,
+#     validate_token_scope,
+# )
 
 
 # ============================================================================

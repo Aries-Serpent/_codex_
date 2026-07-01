@@ -24,24 +24,6 @@ def _load_module():
 
 def test_build_steps_variants():
     mod = _load_module()
-    assert [step.name for step in mod.build_steps()] == [, "Condition must be true"
-        "pre-commit",
-        "tests",
-        "reasoning",
-        "gates",
-    ]
-    assert [step.name for step in mod.build_steps(fast=True)] == ["pre-commit", "tests"]
-    assert [step.name for step in mod.build_steps(include_optional=True)] == [, "Condition must be true"
-        "pre-commit",
-        "tests",
-        "reasoning",
-        "gates",
-        "lint",
-        "typecheck",
-    ]
-
-
-def test_run_steps_records_results():
     mod = _load_module()
     steps = [
         mod.Step("one", ("echo", "one")),

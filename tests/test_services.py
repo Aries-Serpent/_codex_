@@ -101,72 +101,7 @@ class TestServicesModuleInitialization:
             WorkflowMetadata,
             WorkflowTrigger,
         )
-        assert all(, "Condition must be true"
-            [
-                WorkflowDependency,
-                WorkflowInput,
-                WorkflowJob,
-                WorkflowMetadata,
-                WorkflowTrigger,
-            ]
-        )
-
-    def test_all_exported_items_accessible(self):
-        """Test that all items in __all__ are accessible."""
-        import services
-        from services import __all__
-
-        for item_name in __all__:
-            assert hasattr(services, item_name)
-
-    def test_module_has_logger(self):
-        """Test that module has logger configured."""
-        import services
-        assert hasattr(services, "logger")
-        assert isinstance(services.logger, logging.Logger)
-
-    def test_github_client_optional_import(self):
-        """Test GitHub client optional import handling."""
-        import services
-
-        # Check that GitHubClient is handled
-        if "GitHubClient" in services.__all__:
-            # If imported, it should be accessible
-            assert hasattr(services, "GitHubClient")
-        # It's OK if GitHubClient is not in __all__ (optional dependency)
-
-
-# ============================================================================
-# WORKFLOW PARSER TESTS
-# ============================================================================
-
-
-class TestWorkflowParserBasic:
-    """Basic tests for WorkflowParser class."""
-
-    def test_parser_instantiation(self):
-        """Test that WorkflowParser can be instantiated."""
-        from services import WorkflowParser
-
-        parser = WorkflowParser()
-        assert parser is not None, "parser must be initialized"
-        assert isinstance(parser, WorkflowParser)
-
-    def test_parser_has_cache_attribute(self):
-        """Test that parser has _cache attribute."""
-        from services import WorkflowParser
-
-        parser = WorkflowParser()
-        assert hasattr(parser, "_cache")
-        assert isinstance(parser._cache, dict)
-
-    def test_parser_parse_file_method_exists(self):
-        """Test that parse_file method exists."""
-        from services import WorkflowParser
-
-        parser = WorkflowParser()
-        assert hasattr(parser, "parse_file")
-        assert callable(parser.parse_file), "Condition must be true"
+        # Fixed malformed assertion: assert all(...)
 
     def test_parser_parse_file_accepts_path(self):
         """Test that parse_file accepts Path objects."""

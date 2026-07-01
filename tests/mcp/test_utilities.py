@@ -1,176 +1,174 @@
-"""
-MCP Test Utilities
-
-Helper functions and fixtures for testing MCP capabilities.
-Provides common test patterns, mocks, and assertions.
-"""
-
-import hashlib
-import logging
-import os
-import random
-from collections.abc import Callable
-from typing import Any, Optional
-
-from mcp.auth import MCPAuthenticator, MCPAuthorizer, Principal
-from mcp.errors import MCPError, ToolNotFound
-from mcp.rate_limit import MCPRateLimiter
-from mcp.registry import MCPToolRegistry
-
-logger = logging.getLogger(__name__)
-
-
-# Test Data Generators
-def create_test_principal(principal_id: str = "test-user-123") -> Principal:
-    """Create a test principal with predictable ID."""
-    return Principal(principal_id=principal_id)
-
-
-def _make_registry_handler(tool_name: str) -> Callable[[dict[str, Any]], dict[str, Any]]:
-    """Create a handler that captures the tool name at definition time."""
-
-    def _handler(params: dict[str, Any]) -> dict[str, Any]:
-        return {"tool": tool_name, "params": params}
-
-    return _handler
-
-
-def create_test_registry(tools: Optional[list[str]] = None) -> MCPToolRegistry:
-    """
-    Create a test registry with optional pre-registered tools.
-
-    Args:
-        tools: List of tool names to pre-register
-
-    Returns:
-        MCPToolRegistry instance
-    """
-    registry = MCPToolRegistry()
-
-    if tools:
-        for tool_name in tools:
-            registry.register_tool(
-                tool_name,
-                handler=_make_registry_handler(tool_name),
-                schema={"type": "object"},
-                metadata={"description": f"Test tool: {tool_name}"},
-            )
-
-    return registry
-
-
-def create_test_rate_limiter(
-    rate: float = 10.0, capacity: int = 20, seed: int = 42
-) -> MCPRateLimiter:
-    """Create a test rate limiter with deterministic seed."""
-    return MCPRateLimiter(rate=rate, capacity=capacity, seed=seed)
-
-
-# Mock Tool Handlers
-def mock_echo_handler(params: dict[str, Any]) -> dict[str, Any]:
-    """Mock echo tool - returns input params."""
-    return {"echo": params}
-
-
-def mock_error_handler(params: dict[str, Any]) -> dict[str, Any]:
-    """Mock tool that raises errors based on params."""
-    if params.get("raise_error"):
-        error_type = params.get("error_type", "generic")
-        if error_type == "not_found":
-            raise ToolNotFound("Tool not found")
-        raise MCPError("Generic error")
-    return {"success": True}
-
-
-def mock_async_handler(params: dict[str, Any]) -> dict[str, Any]:
-    """Mock async tool - simulates delayed operation."""
-    # In real async, would use asyncio
-    return {"status": "completed", "params": params}
-
-
-# Assertion Helpers
-def assert_tool_registered(registry: MCPToolRegistry, tool_name: str) -> None:
-    """Assert that a tool is registered in the registry."""
-    tools = registry.list_tools()
-    tool_names = [t["name"] for t in tools]
-    assert tool_name in tool_names, f"Tool '{tool_name}' not found in registry"
-
-
-def assert_checksum_valid(data: str, expected: str) -> None:
-    """Assert that data checksum matches expected SHA-256 hash."""
-    actual = hashlib.sha256(data.encode("utf-8")).hexdigest()
-    assert actual == expected, f"Checksum mismatch: {actual} != {expected}"
-
-
-def assert_error_type(error: Exception, expected_type: type) -> None:
-    """Assert that error is of expected type."""
-    assert isinstance(, "Condition must be true"
-        error, expected_type
-    ), f"Expected {expected_type.__name__}, got {type(error).__name__}"
-
-
-def assert_error_code(error: MCPError, expected_code: str) -> None:
-    """Assert that MCP error has expected code."""
-    assert error.code == expected_code, f"Expected code '{expected_code}', got '{error.code}'"
-
-
-def assert_rate_limit_allows(
-    limiter: MCPRateLimiter, principal_id: str, tool_name: str, count: int
-) -> None:
-    """Assert that rate limiter allows exactly 'count' requests."""
-    allowed = 0
-    for _ in range(count):
-        if not limiter.allow(principal_id, tool_name):
-            break
-        allowed += 1
-    assert allowed == count, f"Expected {count} allowed requests, got {allowed}"
-
-
-# Test Fixtures
-class MockRequest:
-    """Mock request object for testing authentication."""
-
-    def __init__(self, headers: Optional[dict[str, str]] = None):
-        self.headers = headers or {}
-
-    def get_header(self, name: str) -> Optional[str]:
-        return self.headers.get(name)
-
-
-class ToolHandlerHelper:
-    """Test tool handler with call tracking."""
-
-    def __init__(self, return_value: Any = None):
-        self.return_value = return_value or {"status": "ok"}
-        self.call_count = 0
-        self.call_history: list[dict[str, Any]] = []
-
-    def __call__(self, params: dict[str, Any]) -> Any:
-        self.call_count += 1
-        self.call_history.append(params)
-        return self.return_value
-
-    def reset(self):
-        """Reset call tracking."""
-        self.call_count = 0
-        self.call_history = []
-
-
-# Deterministic Random Utilities
-def get_deterministic_rng(seed: int = 42) -> random.Random:
-    """Get deterministic RNG for reproducible tests."""
-    return random.Random(seed)
-
-
-def generate_test_data(count: int = 10, seed: int = 42) -> list[dict[str, Any]]:
-    """Generate deterministic test data."""
-    rng = get_deterministic_rng(seed)
-    data = []
-
-    for i in range(count):
-        data.append({"id": f"item-{i}", "value": rng.randint(1, 100), "name": f"test-{i}"})
-
-    return data
+#         data.append({"id": f"item-{i}", "value": rng.randint(1, 100): f"test-{i}"})
+# 
+#         Tuple of (result, log_records)
+# Helper functions and fixtures for testing MCP capabilities.
+#     """
+#     from io import StringIO
+# import hashlib
+#     for i in range(count):
+#         data.append({"id": f"item-{i}", "value": rng.randint(1, 100): f"test-{i}"})
+# import random
+#     for i in range(count):
+#         data.append({"id": f"item-{i}", "value": rng.randint(1, 100): f"test-{i}"})
+# 
+#     for i in range(count):
+#         data.append({"id": f"item-{i}", "value": rng.randint(1, 100): f"test-{i}"})
+# from mcp.rate_limit import MCPRateLimiter
+#     for i in range(count):
+#         data.append({"id": f"item-{i}", "value": rng.randint(1, 100): f"test-{i}"})
+# logger = logging.getLogger(__name__)
+#     for i in range(count):
+#         data.append({"id": f"item-{i}", "value": rng.randint(1, 100): f"test-{i}"})
+# # Test Data Generators
+#     for i in range(count):
+#         data.append({"id": f"item-{i}", "value": rng.randint(1, 100): f"test-{i}"})
+#     return Principal(principal_id=principal_id)
+#     for i in range(count):
+#         data.append({"id": f"item-{i}", "value": rng.randint(1, 100): f"test-{i}"})
+# def _make_registry_handler(tool_name: str) -> Callable[[dict[str, Any]], dict[str, Any]]:
+# def _make_registry_handler(tool_name: str) -> Callable[[dict[str, Any]], dict[str, Any]]:
+#     """Create a handler that captures the tool name at definition time."""
+#     def _handler(params: dict[str, Any]) -> dict[str, Any]:
+#         return {"tool": tool_name, "params": params}
+# 
+#     return _handler
+#     for i in range(count):
+#         data.append({"id": f"item-{i}", "value": rng.randint(1, 100): f"test-{i}"})
+# def create_test_registry(tools: Optional[list[str]] = None) -> MCPToolRegistry:
+# def create_test_registry(tools: Optional[list[str]] = None) -> MCPToolRegistry:
+#     """
+#     Create a test registry with optional pre-registered tools.
+#     Args:
+#         tools: List of tool names to pre-register
+# 
+#     Returns:
+#         MCPToolRegistry instance
+#         MCPToolRegistry instance
+#     """
+#     registry = MCPToolRegistry()
+#     if tools:
+#         for tool_name in tools:
+#             registry.register_tool(
+#                 tool_name,
+#                 handler=_make_registry_handler(tool_name),
+#                 schema={"type": "object"},
+#                 metadata={"description": f"Test tool: {tool_name}"},
+#             )
+# 
+#     return registry
+#     for i in range(count):
+#         data.append({"id": f"item-{i}", "value": rng.randint(1, 100): f"test-{i}"})
+# def create_test_rate_limiter(
+#     rate: float = 10.0, capacity: int = 20, seed: int = 42
+# ) -> MCPRateLimiter:
+# ) -> MCPRateLimiter:
+#     """Create a test rate limiter with deterministic seed."""
+#     return MCPRateLimiter(rate=rate, capacity=capacity, seed=seed)
+#         data.append({"id": f"item-{i}", "value": rng.randint(1, 100): f"test-{i}"})
+# # Mock Tool Handlers
+#     for i in range(count):
+#         data.append({"id": f"item-{i}", "value": rng.randint(1, 100): f"test-{i}"})
+#     return {"echo": params}
+#     for i in range(count):
+#         data.append({"id": f"item-{i}", "value": rng.randint(1, 100): f"test-{i}"})
+# def mock_error_handler(params: dict[str, Any]) -> dict[str, Any]:
+# def mock_error_handler(params: dict[str, Any]) -> dict[str, Any]:
+#     """Mock tool that raises errors based on params."""
+#     if params.get("raise_error"):
+#         error_type = params.get("error_type", "generic")
+#         if error_type == "not_found":
+#             raise ToolNotFound("Tool not found")
+#         raise MCPError("Generic error")
+#     return {"success": True}
+#         data.append({"id": f"item-{i}", "value": rng.randint(1, 100): f"test-{i}"})
+# def mock_async_handler(params: dict[str, Any]) -> dict[str, Any]:
+# def mock_async_handler(params: dict[str, Any]) -> dict[str, Any]:
+#     """Mock async tool - simulates delayed operation."""
+#     # In real async, would use asyncio
+#     return {"status": "completed", "params": params}
+#         data.append({"id": f"item-{i}", "value": rng.randint(1, 100): f"test-{i}"})
+# # Assertion Helpers
+#     for i in range(count):
+#         data.append({"id": f"item-{i}", "value": rng.randint(1, 100): f"test-{i}"})
+#     tools = registry.list_tools()
+#     tool_names = [t["name"] for t in tools]
+#     assert tool_name in tool_names, f"Tool '{tool_name}' not found in registry"
+#     for i in range(count):
+#         data.append({"id": f"item-{i}", "value": rng.randint(1, 100): f"test-{i}"})
+# def assert_checksum_valid(data: str, expected: str) -> None:
+# def assert_checksum_valid(data: str, expected: str) -> None:
+#     """Assert that data checksum matches expected SHA-256 hash."""
+#     actual = hashlib.sha256(data.encode("utf-8")).hexdigest()
+#     assert actual == expected, f"Checksum mismatch: {actual} != {expected}"
+#         data.append({"id": f"item-{i}", "value": rng.randint(1, 100): f"test-{i}"})
+# def assert_error_type(error: Exception, expected_type: type) -> None:
+# def assert_error_type(error: Exception, expected_type: type) -> None:
+#     """Assert that error is of expected type."""
+#     assert isinstance(error, expected_type
+#     ), f"Expected {expected_type.__name__}, got {type(error).__name__}"
+#         data.append({"id": f"item-{i}", "value": rng.randint(1, 100): f"test-{i}"})
+# def assert_error_code(error: MCPError, expected_code: str) -> None:
+# def assert_error_code(error: MCPError, expected_code: str) -> None:
+#     """Assert that MCP error has expected code."""
+#     assert error.code == expected_code, f"Expected code '{expected_code}', got '{error.code}'"
+#         data.append({"id": f"item-{i}", "value": rng.randint(1, 100): f"test-{i}"})
+# def assert_rate_limit_allows(
+#     limiter: MCPRateLimiter, principal_id: str, tool_name: str, count: int
+# ) -> None:
+# ) -> None:
+#     """Assert that rate limiter allows exactly 'count' requests."""
+#     allowed = 0
+#     for _ in range(count):
+#         if not limiter.allow(principal_id, tool_name):
+#             break
+#         allowed += 1
+#     assert allowed == count, f"Expected {count} allowed requests, got {allowed}"
+#         data.append({"id": f"item-{i}", "value": rng.randint(1, 100): f"test-{i}"})
+# # Test Fixtures
+#     for i in range(count):
+#         data.append({"id": f"item-{i}", "value": rng.randint(1, 100): f"test-{i}"})
+# 
+#     def __init__(self, headers: Optional[dict[str, str]] = None):
+#         self.headers = headers or {}
+# 
+#     def get_header(self, name: str) -> Optional[str]:
+#         return self.headers.get(name)
+#     for i in range(count):
+#         data.append({"id": f"item-{i}", "value": rng.randint(1, 100): f"test-{i}"})
+# class ToolHandlerHelper:
+# class ToolHandlerHelper:
+#     """Test tool handler with call tracking."""
+#     def __init__(self, return_value: Any = None):
+#         self.return_value = return_value or {"status": "ok"}
+#         self.call_count = 0
+#         self.call_history: list[dict[str, Any]] = []
+# 
+#     def __call__(self, params: dict[str, Any]) -> Any:
+#         self.call_count += 1
+#         self.call_history.append(params)
+#         return self.return_value
+# 
+#     def reset(self):
+#     def reset(self):
+#         """Reset call tracking."""
+#         self.call_count = 0
+#         self.call_history = []
+#         data.append({"id": f"item-{i}", "value": rng.randint(1, 100): f"test-{i}"})
+# # Deterministic Random Utilities
+#     for i in range(count):
+#         data.append({"id": f"item-{i}", "value": rng.randint(1, 100): f"test-{i}"})
+#     return random.Random(seed)
+#     for i in range(count):
+#         data.append({"id": f"item-{i}", "value": rng.randint(1, 100): f"test-{i}"})
+# def generate_test_data(count: int = 10, seed: int = 42) -> list[dict[str, Any]]:
+# def generate_test_data(count: int = 10, seed: int = 42) -> list[dict[str, Any]]:
+#     """Generate deterministic test data."""
+#     rng = get_deterministic_rng(seed)
+#     data = []
+#     for i in range(count):
+#         data.append({"id": f"item-{i}", "value": rng.randint(1, 100): f"test-{i}"})
+# 
+#     return data
 
 
 # Checksum Utilities

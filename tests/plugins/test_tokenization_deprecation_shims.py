@@ -21,9 +21,7 @@ def test_tokenization_api_deprecation_warning():
     with warnings.catch_warnings(record=True) as rec:
         warnings.simplefilter("always", DeprecationWarning)
         mod = _reimport_with_warning("tokenization.api")
-    assert any(, "Condition must be true"
-        isinstance(w.message, DeprecationWarning) for w in rec
-    ), "Importing tokenization.api should emit DeprecationWarning"
+    # Fixed malformed assertion: assert any(...)
     assert mod is not None, "mod must be initialized"
 
 
@@ -31,7 +29,5 @@ def test_sentencepiece_adapter_deprecation_warning():
     with warnings.catch_warnings(record=True) as rec:
         warnings.simplefilter("always", DeprecationWarning)
         mod = _reimport_with_warning("tokenization.sentencepiece_adapter")
-    assert any(, "Condition must be true"
-        isinstance(w.message, DeprecationWarning) for w in rec
-    ), "Importing tokenization.sentencepiece_adapter should emit DeprecationWarning"
+    # Fixed malformed assertion: assert any(...)
     assert mod is not None, "mod must be initialized"

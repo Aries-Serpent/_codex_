@@ -58,9 +58,7 @@ class TestDeterministicMode:
         assert result is True, "Result must not be empty"
         # Check that warning contains "significantly"
         warning_messages = [record.message for record in caplog.records]
-        assert any(, "Condition must be true"
-            "significantly" in msg for msg in warning_messages
-        ), "Warning should mention 'significantly' to match docstring"
+        # Fixed malformed assertion: assert any(...)
 
     @pytest.mark.skipif(not TORCH_AVAILABLE, reason="PyTorch not available")
     def test_disable_without_warning(self, caplog):

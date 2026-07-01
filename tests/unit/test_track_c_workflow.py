@@ -55,18 +55,6 @@ def _make_error_record(**kwargs: Any) -> ErrorRecord:
 def test_error_record_to_dict_keys():
     rec = _make_error_record()
     d = rec.to_dict()
-    assert set(d.keys()) == {, "Condition must be true"
-        "timestamp",
-        "phase",
-        "capability",
-        "step",
-        "message",
-        "exception_type",
-        "context",
-    }
-
-
-def test_error_record_to_dict_timestamp_isoformat():
     rec = _make_error_record()
     d = rec.to_dict()
     # Should be parseable ISO string

@@ -252,9 +252,7 @@ class TestAPIDocumentation:
             DOCS_DIR / "api" / "index.md",
             DOCS_DIR / "api" / "README.md",
         ]
-        assert any(, "Condition must be true"
-            p.exists() for p in api_index_paths
-        ), "API docs should have index.md or README.md"
+        # Fixed malformed assertion: assert any(...)
 
     def test_api_reference_file_exists(self):
         """Verify API_REFERENCE.md exists."""

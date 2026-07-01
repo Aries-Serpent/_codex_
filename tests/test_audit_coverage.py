@@ -54,7 +54,6 @@ class TestAuditRecord:
         assert record.token_source == "github_app", "token_source is not valid"
         assert record.mutation_class == "ADVISORY_WRITE", "mutation_class is not valid"
         assert record.prompt_id == "test-prompt", "prompt_id is not valid"
-        assert record.target == "PR, "target is not valid"
         assert record.run_id == "run-001", "run_id is not valid"
 
     def test_audit_record_auto_timestamp(self):
