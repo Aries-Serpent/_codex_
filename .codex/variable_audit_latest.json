@@ -1,0 +1,906 @@
+{
+  "timestamp": "2026-07-01T07:42:34.577987+00:00",
+  "owner": "Aries-Serpent",
+  "repo": "_codex_",
+  "auth_ok": false,
+  "summary": {
+    "total": 99,
+    "present": 0,
+    "absent": 0,
+    "unknown": 99
+  },
+  "results": [
+    {
+      "name": "CODECOV_TOKEN",
+      "layer": "org-secrets",
+      "status": "unknown",
+      "required": true,
+      "category": "CI/CD",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_ADMIN_KEY",
+      "layer": "org-secrets",
+      "status": "unknown",
+      "required": true,
+      "category": "Auth",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_BACKUP_KEY",
+      "layer": "org-secrets",
+      "status": "unknown",
+      "required": true,
+      "category": "Auth",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_MASTER_KEY",
+      "layer": "org-secrets",
+      "status": "unknown",
+      "required": true,
+      "category": "Auth",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "HF_TOKEN",
+      "layer": "org-secrets",
+      "status": "unknown",
+      "required": true,
+      "category": "ML",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "NPM_TOKEN",
+      "layer": "org-secrets",
+      "status": "unknown",
+      "required": false,
+      "category": "Publish",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "PYPI_TOKEN",
+      "layer": "org-secrets",
+      "status": "unknown",
+      "required": false,
+      "category": "Publish",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "RAG_OPENAI_KEY",
+      "layer": "org-secrets",
+      "status": "unknown",
+      "required": true,
+      "category": "ML",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "_CODEX_ACTION_RUNNER",
+      "layer": "org-secrets",
+      "status": "unknown",
+      "required": true,
+      "category": "CI/CD",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "_GITHUB_APP_CLIENT_SECRET",
+      "layer": "org-secrets",
+      "status": "unknown",
+      "required": true,
+      "category": "GitHub App",
+      "human_governance": true,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "_GITHUB_APP_ID",
+      "layer": "org-secrets",
+      "status": "unknown",
+      "required": true,
+      "category": "GitHub App",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "_GITHUB_APP_INSTALLATION_ID",
+      "layer": "org-secrets",
+      "status": "unknown",
+      "required": true,
+      "category": "GitHub App",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "_GITHUB_APP_PRIVATE_KEY",
+      "layer": "org-secrets",
+      "status": "unknown",
+      "required": true,
+      "category": "GitHub App",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_GHP_TOKEN_BASE64",
+      "layer": "repo-secrets",
+      "status": "unknown",
+      "required": true,
+      "category": "Auth",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_GHP_TOKEN_HEX",
+      "layer": "repo-secrets",
+      "status": "unknown",
+      "required": true,
+      "category": "Auth",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_GHP_TOKEN_SHA256",
+      "layer": "repo-secrets",
+      "status": "unknown",
+      "required": true,
+      "category": "Auth",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_REPO_ID",
+      "layer": "repo-secrets",
+      "status": "unknown",
+      "required": true,
+      "category": "Config",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_WEBHOOK_SECRET",
+      "layer": "repo-secrets",
+      "status": "unknown",
+      "required": true,
+      "category": "Auth",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "OPENAI_API_KEY",
+      "layer": "repo-secrets",
+      "status": "unknown",
+      "required": true,
+      "category": "ML",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "_CODEX_BOT_RUNNER",
+      "layer": "repo-secrets",
+      "status": "unknown",
+      "required": true,
+      "category": "CI/CD",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_ENVIRONMENT_RUNNER",
+      "layer": "env-secrets",
+      "status": "unknown",
+      "required": true,
+      "category": "CI/CD",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_RUNNER_SHA256",
+      "layer": "env-secrets",
+      "status": "unknown",
+      "required": true,
+      "category": "CI/CD",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_RUNNER_TOKEN",
+      "layer": "env-secrets",
+      "status": "unknown",
+      "required": true,
+      "category": "CI/CD",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "COGNITIVE_BRAIN_ALLOWED_ACTORS",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Cognitive Brain",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "COGNITIVE_BRAIN_INJECTION_ENABLED",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Cognitive Brain",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "COGNITIVE_BRAIN_LTM_RETENTION_DAYS",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Cognitive Brain",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Cognitive Brain",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "COGNITIVE_BRAIN_MEMORY_TIER",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Cognitive Brain",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Cognitive Brain",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "COGNITIVE_BRAIN_SESSION_NUMBER",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Cognitive Brain",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "COPILOT_AGENT_AUTH_ENABLED",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Copilot Runtime",
+      "human_governance": true,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "COPILOT_AGENT_FIREWALL_ENABLED",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Copilot Runtime",
+      "human_governance": true,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "COPILOT_AGENT_FIREWALL_ALLOW_LIST_ADDITIONS",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Copilot Runtime",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "COPILOT_AGENT_MAX_AUTONOMY_LEVEL",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Copilot Runtime",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "COPILOT_AGENT_SESSION_RESTORE_ENABLED",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Copilot Runtime",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "COPILOT_CLI_BASE_URL",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Copilot Runtime",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "COPILOT_CLI_ENABLED",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Copilot Runtime",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "AGENT_HANDOFF_TIMEOUT_SECONDS",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "CI/CD",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "AUTO_PROMOTE_TIER_ENABLED",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "CI/CD",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "AUTONOMOUS_ACTIONS_ENABLED",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "CI/CD",
+      "human_governance": true,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_CI_FAILURE_RATE",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "CI/CD",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_CI_FAILURE_THRESHOLD",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "CI/CD",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_CI_LAST_GREEN_SHA",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "CI/CD",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "EMBEDDING_INDEX_AUTO_REBUILD",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "CI/CD",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "AUDIT_RETENTION_DAYS",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Config",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_AGENT_NAME",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Config",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_API_VERSION",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Config",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_ISOLATED_PATH",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Config",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_LOG_LEVEL",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Config",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_NETWORK_MODE",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Config",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_ORG_NAME",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Config",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "GENESIS_TIMESTAMP",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Config",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_CACHE_VERSION",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Build",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_CLI_API_URL",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Build",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_COVERAGE_THRESHOLD",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Build",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_D365_POLICIES_PATH",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Build",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_FORCE_CPU",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Build",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_LINT_STRICT",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Build",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_LLM_MODEL",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Build",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_LLM_RATE_LIMIT_DELAY",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Build",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_OFFLINE",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Build",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_PYTHON_VERSION",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Build",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_SANDBOX_TIMEOUT",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Build",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_SESSION_ID",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Build",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_SESSION_LOG_DIR",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Build",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_TEST_PARALLELISM",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Build",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_ZENDESK_DOCS_ROOT",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": false,
+      "category": "Build",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "ENABLE_LIVE_TESTS",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Build",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "COMPOSE_DOCKER_CLI_BUILD",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": false,
+      "category": "ML",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "DOCKER_BUILDKIT",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": false,
+      "category": "ML",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "GPU_OPT",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": false,
+      "category": "ML",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "HF_HOME",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "ML",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "MLFLOW_EXPERIMENT_NAME",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": false,
+      "category": "ML",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "TORCH_HOME",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "ML",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "TRANSFORMERS_OFFLINE",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "ML",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "WANDB_MODE",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": false,
+      "category": "ML",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "ZENDESK_RATE_LIMIT",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": false,
+      "category": "ML",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "ZENDESK_SYNC_INTERVAL",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": false,
+      "category": "ML",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_ACTIVE_CODESPACE",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Webhook/Infra",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "WEBHOOK_RECEIVER_URL",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Webhook/Infra",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "AGENT_KILL_SWITCH",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Autonomous Agent",
+      "human_governance": true,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "AUTONOMY_BUDGET_SECONDS",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": false,
+      "category": "Autonomous Agent",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "AUTONOMY_MAX_ITERATIONS",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": false,
+      "category": "Autonomous Agent",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "AUTONOMY_DRY_RUN",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": false,
+      "category": "Autonomous Agent",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "AGENT_RUNNER_BUDGET_SECONDS",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": false,
+      "category": "Autonomous Agent",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "AGENT_RUNNER_ITERATIONS",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": false,
+      "category": "Autonomous Agent",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "AGENT_RUNNER_DRY_RUN",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": false,
+      "category": "Autonomous Agent",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "UNCERTAINTY_BUDGET_SECONDS",
+      "layer": "repo-vars",
+      "status": "unknown",
+      "required": false,
+      "category": "Autonomous Agent",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_ENV_NODE_VERSION",
+      "layer": "env-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Build",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_ENV_PYTHON_VERSION",
+      "layer": "env-vars",
+      "status": "unknown",
+      "required": true,
+      "category": "Build",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_MASTER_KEY",
+      "layer": "codespace",
+      "status": "unknown",
+      "required": true,
+      "category": "Auth",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_BACKUP_KEY",
+      "layer": "codespace",
+      "status": "unknown",
+      "required": true,
+      "category": "Auth",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "CODEX_ADMIN_KEY",
+      "layer": "codespace",
+      "status": "unknown",
+      "required": true,
+      "category": "Auth",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "_GITHUB_APP_ID",
+      "layer": "codespace",
+      "status": "unknown",
+      "required": true,
+      "category": "GitHub App",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "_GITHUB_APP_PRIVATE_KEY",
+      "layer": "codespace",
+      "status": "unknown",
+      "required": true,
+      "category": "GitHub App",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "_GITHUB_APP_INSTALLATION_ID",
+      "layer": "codespace",
+      "status": "unknown",
+      "required": true,
+      "category": "GitHub App",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "_GITHUB_APP_CLIENT_SECRET",
+      "layer": "codespace",
+      "status": "unknown",
+      "required": true,
+      "category": "GitHub App",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "WEBHOOK_SECRET",
+      "layer": "codespace",
+      "status": "unknown",
+      "required": true,
+      "category": "Webhook/Infra",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    },
+    {
+      "name": "WEBHOOK_RECEIVER_URL",
+      "layer": "codespace",
+      "status": "unknown",
+      "required": false,
+      "category": "Webhook/Infra",
+      "human_governance": false,
+      "note": "No auth token \u2014 run with CODEX_MASTER_KEY set for live checks"
+    }
+  ],
+  "extra_vars": []
+}
