@@ -97,9 +97,9 @@ class MarkdownParser:
         section_recs = []
         block_recs = []
          
-        current_section = None
-        current_content: list[str] = []
-        line_start = None
+        current_section: Optional[Dict[str, Any]] = None
+        current_content: List[str] = []
+        line_start: Optional[int] = None
         section_order = 0
         
         for line_no, line in enumerate(self.lines, 1):
@@ -107,6 +107,7 @@ class MarkdownParser:
             if line.startswith('#'):
                 # Save previous section if any
                 if current_section and current_content:
+                    assert line_start is not None
                     section_recs.append(current_section)
                     blocks = self._extract_blocks_from_content(
                         current_section['id'],
@@ -139,6 +140,7 @@ class MarkdownParser:
         
         # Save final section
         if current_section and current_content:
+            assert line_start is not None
             section_recs.append(current_section)
             blocks = self._extract_blocks_from_content(
                 current_section['id'],
