@@ -14,7 +14,6 @@ from collections.abc import Callable, Mapping, MutableMapping, Sequence
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
-from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 try:  # Optional dependency
@@ -256,7 +255,7 @@ def _fingerprint_default(obj: Any) -> str:
     return repr(obj)
 
 
-def _hardware_fingerlogger.info(hardware: Mapping[str, Any] | None) -> str | None:
+def _hardware_fingerprint(hardware: Mapping[str, Any] | None) -> str | None:
     """Return a stable SHA-256 fingerprint for the provided hardware mapping."""
 
     if not hardware:
@@ -299,7 +298,7 @@ def _concise_summary(
         summary["command"] = command
     if extras:
         summary.update({k: v for k, v in extras.items() if v is not None})
-    fingerprint = _hardware_fingerlogger.info(info.get("hardware"))
+    fingerprint = _hardware_fingerprint(info.get("hardware"))
     if fingerprint:
         summary["hardware_fingerprint"] = fingerprint
     return {k: v for k, v in summary.items() if v not in (None, [], {})}

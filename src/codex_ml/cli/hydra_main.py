@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 import platform
@@ -45,7 +46,6 @@ else:  # pragma: no cover - executed when distributed helpers are available
 
 
 from codex_ml.codex_structured_logging import (
-from codex.logging.structured_logger import logger
     ArgparseJSONParser,
     capture_exceptions,
     init_json_logging,

@@ -1,5 +1,6 @@
 """
 from __future__ import annotations
+from codex.logging.structured_logger import logger
 
 Audit Pipeline Module
 
@@ -40,7 +41,6 @@ from codex_ml.analysis.metrics import mccabe_minimal, perplexity_from_mean_nll
 from codex_ml.analysis.parsers import parse_tiered
 from codex_ml.analysis.providers import ExternalWebSearch, InternalRepoSearch
 from codex_ml.codex_structured_logging import (
-from codex.logging.structured_logger import logger
     ArgparseJSONParser,
     capture_exceptions,
     init_json_logging,
@@ -250,7 +250,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         )
         report["files"] = sorted(report["files"], key=lambda x: x.get("file", ""))
         Path(args.out).write_text(json.dumps(report, indent=2), encoding="utf-8")
-        logger.info(json.dumps(
+        logger.info(
+            json.dumps(
                 {
                     "summary": {
                         "root": str(root),
