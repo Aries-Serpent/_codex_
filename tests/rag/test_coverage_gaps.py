@@ -564,7 +564,7 @@ class TestModelUtilsSafeLoad:
                 safe_load_sentence_transformer("nonexistent-model-xyz", None)
 
     def test_raises_attributeerror_on_missing_to_empty(self):
-        """When ST raises NotImplementedError (meta tensor) and model has no to_empty, raise RuntimeError."""
+        """Raise RuntimeError when meta fallback returns a model without to_empty()."""
         pytest.importorskip(
             "sentence_transformers",
             reason="sentence_transformers not installed — skipping meta-tensor load tests",
@@ -583,6 +583,51 @@ class TestModelUtilsSafeLoad:
             pytest.raises(RuntimeError, match="to_empty"),
         ):
             _mu.safe_load_sentence_transformer("test-model", None)
+
+    def test_meta_fallback_materializes_and_returns_model(self, monkeypatch):
+        """Meta fallback should materialize to CPU and verify all params are non-meta."""
+        from codex.rag._model_utils import safe_load_sentence_transformer
+
+        fake_st_module = SimpleNamespace()
+        materialized_model = MagicMock()
+        materialized_model.named_parameters.return_value = [
+            ("encoder.weight", SimpleNamespace(is_meta=False))
+        ]
+        meta_model = MagicMock()
+        meta_model.to_empty.return_value = materialized_model
+
+        fake_constructor = MagicMock(
+            side_effect=[NotImplementedError("meta tensor"), meta_model]
+        )
+        fake_st_module.SentenceTransformer = fake_constructor
+        monkeypatch.setitem(sys.modules, "sentence_transformers", fake_st_module)
+
+        result = safe_load_sentence_transformer("test-model", None)
+
+        assert result is materialized_model
+        meta_model.to_empty.assert_called_once_with(device="cpu")
+        materialized_model.eval.assert_called_once_with()
+
+    def test_meta_fallback_raises_when_meta_params_remain(self, monkeypatch):
+        """Meta fallback should fail if any parameter remains on the meta device."""
+        from codex.rag._model_utils import safe_load_sentence_transformer
+
+        fake_st_module = SimpleNamespace()
+        materialized_model = MagicMock()
+        materialized_model.named_parameters.return_value = [
+            ("encoder.weight", SimpleNamespace(is_meta=True))
+        ]
+        meta_model = MagicMock()
+        meta_model.to_empty.return_value = materialized_model
+
+        fake_constructor = MagicMock(
+            side_effect=[NotImplementedError("meta tensor"), meta_model]
+        )
+        fake_st_module.SentenceTransformer = fake_constructor
+        monkeypatch.setitem(sys.modules, "sentence_transformers", fake_st_module)
+
+        with pytest.raises(RuntimeError, match="Meta tensors still present"):
+            safe_load_sentence_transformer("test-model", None)
 
 
 # ===========================================================================

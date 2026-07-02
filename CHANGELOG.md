@@ -1,3 +1,9 @@
+## [Fixed] 2026-07-02T00:25Z — PR #5190 RAG coverage + governance follow-up
+
+- Added 2 targeted meta-fallback tests in `tests/rag/test_coverage_gaps.py` to cover `_model_utils.py` lines exercised when `SentenceTransformer` falls back from `device="cpu"` to `device="meta"` and then materializes with `to_empty(device="cpu")`
+- Added 1 targeted chunker test in `tests/rag/ingestion/test_chunker.py` to cover `SentenceChunker.chunk()` skipping whitespace-only split sentences (`chunker.py` lines 247-248)
+- Re-verified `python -m tools.docs_agent.no_unmanaged_candidates --json` returns `{"ok": true, "unmanaged_count": 0}` locally for the machine-readable-governance failure mentioned on PR #5190
+
 ## [Fixed] 2026-07-01T23:10Z — RAG Module Tests: Coverage +1.59% and ImportError production bug fix
 
 - **Production bug fix** (`src/codex/rag/gpu_utils.py`): `get_gpu_memory()` now catches `ImportError` (in addition to `ValueError`, `TypeError`, `RuntimeError`) so that environments without PyTorch return `(0, 0)` cleanly instead of propagating the error
@@ -13639,4 +13645,3 @@ Completed TIER 1 semantic routing quality validation for multi-agent orchestrati
 - **Machine Readable Governance**: Set `fail_on_unmanaged_candidates` to `false` in `docs-data/machine-readable-policy.json` to prevent hard failures from 126 unmanaged doc candidates
 - **REQ-1 Eligibility Validator**: Copilot and bot-authored PRs (branch prefix `copilot/` or `[bot]` author login) no longer receive a hard FAIL for missing reviewers; they now receive a WARN (score=0.5) — fixing governance compliance BLOCK for automated PRs
 - **REQ-4/REQ-5 Compliance**: Updated `AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md` in this non-merge commit so they appear in `commits[-1]` and pass the compliance validators
-
