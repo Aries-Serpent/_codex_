@@ -1,0 +1,23 @@
+{
+  "converted_files": [
+    ".venv_ci/evidently/legacy/ui/assets/robots.txt",
+    ".venv_ci/evidently/nbextension/static/index.js.LICENSE.txt",
+    ".venv_ci/evidently/ui/service/assets/robots.txt",
+    ".venv_ci/evidently/ui/service/storage/sql/migrations/README.md",
+    ".venv_ci/share/jupyter/labextensions/jupyterlab-plotly/static/478.fdc0539db81116781109.js.LICENSE.txt",
+    ".venv_ci/share/jupyter/labextensions/jupyterlab-plotly/static/486.6450efe6168c2f8caddb.js.LICENSE.txt",
+    ".venv_ci/share/jupyter/nbextensions/jupyterlab-plotly/index.js.LICENSE.txt"
+  ],
+  "generated_at": "2026-07-02T00:46:20Z",
+  "records_generated": {
+    "actions": 0,
+    "blocks": 275,
+    "decisions": 0,
+    "documents": 7,
+    "references": 38,
+    "relationships": 305,
+    "requirements": 0,
+    "sections": 34
+  },
+  "total_converted": 7
+}

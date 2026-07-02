@@ -46,6 +46,15 @@
       "size_bytes": 2770
     },
     {
+      "classification": "configuration",
+      "confidence": 0.75,
+      "exception": false,
+      "extension": ".json",
+      "path": ".codex/.validation_cache.json",
+      "requires_ingestion": false,
+      "size_bytes": 287999
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -379,6 +388,24 @@
       "size_bytes": 49996
     },
     {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/AGENT_ECOSYSTEM_SEMANTIC_INDEX.md",
+      "requires_ingestion": true,
+      "size_bytes": 7911
+    },
+    {
+      "classification": "configuration",
+      "confidence": 0.75,
+      "exception": false,
+      "extension": ".json",
+      "path": ".codex/AGENT_METADATA_ENRICHMENT.json",
+      "requires_ingestion": false,
+      "size_bytes": 127573
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -595,6 +622,15 @@
       "size_bytes": 27000
     },
     {
+      "classification": "configuration",
+      "confidence": 0.75,
+      "exception": false,
+      "extension": ".json",
+      "path": ".codex/ANOMALY_DETECTION_RULES.json",
+      "requires_ingestion": false,
+      "size_bytes": 21649
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -665,6 +701,15 @@
       "path": ".codex/APPROVAL_WORKFLOWS_MAPPING_CONSOLIDATED.md",
       "requires_ingestion": false,
       "size_bytes": 2556
+    },
+    {
+      "classification": "architecture_note",
+      "confidence": 0.9,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/ARCHITECTURE_DIAGRAMS.md",
+      "requires_ingestion": true,
+      "size_bytes": 13107
     },
     {
       "classification": "exception_candidate",
@@ -782,6 +827,15 @@
       "path": ".codex/AUTO_APPROVE_PREREQUISITE_GUIDE.md",
       "requires_ingestion": false,
       "size_bytes": 13313
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/AUTO_RECOVERY_PROCEDURES.md",
+      "requires_ingestion": true,
+      "size_bytes": 25243
     },
     {
       "classification": "exception_candidate",
@@ -937,6 +991,15 @@
       "size_bytes": 7239
     },
     {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/CAMPAIGN_IMPLEMENTATION_SUMMARY.md",
+      "requires_ingestion": true,
+      "size_bytes": 18861
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -946,6 +1009,24 @@
       "size_bytes": 12846
     },
     {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/CAMPAIGN_STATUS_3OF4_AGENTS_COMPLETE.md",
+      "requires_ingestion": true,
+      "size_bytes": 8020
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/CAMPAIGN_STATUS_LIVE_DASHBOARD.md",
+      "requires_ingestion": true,
+      "size_bytes": 9790
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -953,6 +1034,15 @@
       "path": ".codex/CAMPAIGN_VALIDATION_REPORT_2026_06_30.md",
       "requires_ingestion": false,
       "size_bytes": 17362
+    },
+    {
+      "classification": "configuration",
+      "confidence": 0.75,
+      "exception": false,
+      "extension": ".json",
+      "path": ".codex/CAPABILITY_MATRIX.json",
+      "requires_ingestion": false,
+      "size_bytes": 55949
     },
     {
       "classification": "exception_candidate",
@@ -1403,6 +1493,15 @@
       "path": ".codex/CODEBASE_CONFLICT_AND_RESTRICTION_ANALYSIS.md",
       "requires_ingestion": false,
       "size_bytes": 20326
+    },
+    {
+      "classification": "developer_guide",
+      "confidence": 0.85,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/CODEBASE_EXPLORATION_MASTER_GUIDE.md",
+      "requires_ingestion": true,
+      "size_bytes": 19910
     },
     {
       "classification": "exception_candidate",
@@ -3277,6 +3376,15 @@
       "size_bytes": 9265
     },
     {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/DESIGN_PATTERNS_REFERENCE.md",
+      "requires_ingestion": true,
+      "size_bytes": 9346
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -3556,6 +3664,15 @@
       "size_bytes": 7057
     },
     {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/EDGE_CASE_ANALYSIS.md",
+      "requires_ingestion": true,
+      "size_bytes": 12401
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -3619,6 +3736,15 @@
       "size_bytes": 15494
     },
     {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/EXECUTION_STATUS_FINAL.md",
+      "requires_ingestion": true,
+      "size_bytes": 4050
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -3655,6 +3781,24 @@
       "size_bytes": 9332
     },
     {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/EXPEDITED_CAMPAIGN_LIVE_TRACKER.md",
+      "requires_ingestion": true,
+      "size_bytes": 9260
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/EXPEDITED_CAMPAIGN_PLAN_20260701.md",
+      "requires_ingestion": true,
+      "size_bytes": 14383
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -3673,6 +3817,33 @@
       "size_bytes": 5037
     },
     {
+      "classification": "configuration",
+      "confidence": 0.75,
+      "exception": false,
+      "extension": ".json",
+      "path": ".codex/FAISS_INDEX_METADATA.json",
+      "requires_ingestion": false,
+      "size_bytes": 4744
+    },
+    {
+      "classification": "configuration",
+      "confidence": 0.75,
+      "exception": false,
+      "extension": ".json",
+      "path": ".codex/FALLBACK_CHAIN_VALIDATION.json",
+      "requires_ingestion": false,
+      "size_bytes": 38392
+    },
+    {
+      "classification": "configuration",
+      "confidence": 0.75,
+      "exception": false,
+      "extension": ".json",
+      "path": ".codex/FALLBACK_ROUTING_CHAINS.json",
+      "requires_ingestion": false,
+      "size_bytes": 3339
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -3680,6 +3851,15 @@
       "path": ".codex/FINAL_ASSESSMENT_AND_SOLUTIONS.md",
       "requires_ingestion": false,
       "size_bytes": 11984
+    },
+    {
+      "classification": "configuration",
+      "confidence": 0.75,
+      "exception": false,
+      "extension": ".json",
+      "path": ".codex/FINAL_AUDIT_20260701.json",
+      "requires_ingestion": false,
+      "size_bytes": 5803
     },
     {
       "classification": "exception_candidate",
@@ -4312,6 +4492,24 @@
       "size_bytes": 13396
     },
     {
+      "classification": "decision_record",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/GATE_6_DECISION_BRIEF.md",
+      "requires_ingestion": true,
+      "size_bytes": 8872
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/GATE_VALIDATION_PROCEDURES.md",
+      "requires_ingestion": true,
+      "size_bytes": 9779
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -4337,6 +4535,15 @@
       "path": ".codex/GITHUB_PAGES_FOLLOWUP_PROMPT.md",
       "requires_ingestion": false,
       "size_bytes": 11637
+    },
+    {
+      "classification": "configuration",
+      "confidence": 0.75,
+      "exception": false,
+      "extension": ".json",
+      "path": ".codex/GOVERNANCE_AUDIT_20260701.json",
+      "requires_ingestion": false,
+      "size_bytes": 6295
     },
     {
       "classification": "exception_candidate",
@@ -4535,6 +4742,15 @@
       "path": ".codex/IMPLEMENTATION_SUMMARY.md",
       "requires_ingestion": false,
       "size_bytes": 12003
+    },
+    {
+      "classification": "configuration",
+      "confidence": 0.95,
+      "exception": false,
+      "extension": ".yaml",
+      "path": ".codex/INCIDENT_LOGGING_CONFIG.yaml",
+      "requires_ingestion": false,
+      "size_bytes": 18962
     },
     {
       "classification": "exception_candidate",
@@ -5363,6 +5579,24 @@
       "path": ".codex/OPTION_A_EXECUTION_SUMMARY.md",
       "requires_ingestion": false,
       "size_bytes": 7408
+    },
+    {
+      "classification": "developer_guide",
+      "confidence": 0.85,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PAGES_DEPLOYMENT_FIX_GUIDE.md",
+      "requires_ingestion": true,
+      "size_bytes": 2601
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PAGES_DEPLOYMENT_RCA_20260701.md",
+      "requires_ingestion": true,
+      "size_bytes": 17536
     },
     {
       "classification": "exception_candidate",
@@ -6751,6 +6985,15 @@
       "size_bytes": 3830
     },
     {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_10_AGENT_DEPLOYMENT_QUEUE.md",
+      "requires_ingestion": true,
+      "size_bytes": 8295
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -6814,6 +7057,24 @@
       "size_bytes": 2717
     },
     {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_10_GATE_VALIDATION_STATUS.md",
+      "requires_ingestion": true,
+      "size_bytes": 12025
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_10_IMMEDIATE_EXECUTION_SUMMARY.md",
+      "requires_ingestion": true,
+      "size_bytes": 12308
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -6868,6 +7129,15 @@
       "size_bytes": 7718
     },
     {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_10_READINESS_PLAN.md",
+      "requires_ingestion": true,
+      "size_bytes": 19644
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -6875,6 +7145,15 @@
       "path": ".codex/PHASE_10_REALTIME_MONITORING.md",
       "requires_ingestion": false,
       "size_bytes": 3817
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_10_SESSION_SUMMARY.md",
+      "requires_ingestion": true,
+      "size_bytes": 14076
     },
     {
       "classification": "exception_candidate",
@@ -6895,6 +7174,69 @@
       "size_bytes": 9071
     },
     {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_11_2_BOTTLENECK_ANALYSIS.md",
+      "requires_ingestion": true,
+      "size_bytes": 5909
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".json",
+      "path": ".codex/PHASE_11_2_EXECUTION_COMPLETE.json",
+      "requires_ingestion": true,
+      "size_bytes": 4948
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_11_2_EXECUTION_SUMMARY.md",
+      "requires_ingestion": true,
+      "size_bytes": 5789
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_11_2_OPTIMIZATION_RECOMMENDATIONS.md",
+      "requires_ingestion": true,
+      "size_bytes": 7423
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_11_2_PERFORMANCE_BASELINE_REPORT.md",
+      "requires_ingestion": true,
+      "size_bytes": 5198
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_11_2_QUICK_REFERENCE.md",
+      "requires_ingestion": true,
+      "size_bytes": 3852
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".json",
+      "path": ".codex/PHASE_11_2_REGRESSION_ANALYSIS.json",
+      "requires_ingestion": true,
+      "size_bytes": 2976
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -6913,6 +7255,33 @@
       "size_bytes": 12818
     },
     {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_11_3_ANOMALY_DETECTION_RULES.md",
+      "requires_ingestion": true,
+      "size_bytes": 18715
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_11_3_EVENT_CORRELATION_MATRIX.md",
+      "requires_ingestion": true,
+      "size_bytes": 21461
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_11_3_EXECUTION_SUMMARY.md",
+      "requires_ingestion": true,
+      "size_bytes": 14782
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -6920,6 +7289,42 @@
       "path": ".codex/PHASE_11_3_HEALTH_MONITORING_QUICK.md",
       "requires_ingestion": false,
       "size_bytes": 10905
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".json",
+      "path": ".codex/PHASE_11_3_PATTERN_LIBRARY.json",
+      "requires_ingestion": true,
+      "size_bytes": 21926
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".json",
+      "path": ".codex/PHASE_11_3_STATUS.json",
+      "requires_ingestion": true,
+      "size_bytes": 12469
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_11_3_TELEMETRY_CLASSIFICATION_REPORT.md",
+      "requires_ingestion": true,
+      "size_bytes": 17882
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_11_FINAL_GATE_STATUS.md",
+      "requires_ingestion": true,
+      "size_bytes": 4207
     },
     {
       "classification": "exception_candidate",
@@ -7102,6 +7507,15 @@
       "size_bytes": 4062
     },
     {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_12_AGENT_DEPLOYMENT_BRIEF.md",
+      "requires_ingestion": true,
+      "size_bytes": 6019
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -7118,6 +7532,15 @@
       "path": ".codex/PHASE_12_IMPLEMENTATION_PLAN.md",
       "requires_ingestion": false,
       "size_bytes": 10100
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_12_PREPARATION_CHECKLIST.md",
+      "requires_ingestion": true,
+      "size_bytes": 7966
     },
     {
       "classification": "exception_candidate",
@@ -7640,6 +8063,15 @@
       "path": ".codex/PHASE_3_ACCURACY_PROGRESS.md",
       "requires_ingestion": false,
       "size_bytes": 9334
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".txt",
+      "path": ".codex/PHASE_3_AGENT_AUDIT_TRACKING.txt",
+      "requires_ingestion": true,
+      "size_bytes": 7831
     },
     {
       "classification": "exception_candidate",
@@ -12430,6 +12862,15 @@
       "size_bytes": 11989
     },
     {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_8_EXECUTION_TRACKING.md",
+      "requires_ingestion": true,
+      "size_bytes": 6969
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -12547,6 +12988,15 @@
       "size_bytes": 14689
     },
     {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_9_2_APPROVAL_MILESTONE_2026_07_01.md",
+      "requires_ingestion": true,
+      "size_bytes": 4184
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -12565,6 +13015,33 @@
       "size_bytes": 19111
     },
     {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_9_2_CAMPAIGN_EXECUTION_SUMMARY_2026_07_01.md",
+      "requires_ingestion": true,
+      "size_bytes": 15264
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_9_2_CAMPAIGN_FINAL_COMPLETION_2026_07_01.md",
+      "requires_ingestion": true,
+      "size_bytes": 12553
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_9_2_CAMPAIGN_KICKOFF_2026_07_01.md",
+      "requires_ingestion": true,
+      "size_bytes": 11054
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -12581,6 +13058,15 @@
       "path": ".codex/PHASE_9_2_CAMPAIGN_STATUS.txt",
       "requires_ingestion": false,
       "size_bytes": 22818
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_9_2_CAMPAIGN_STATUS_UPDATE_2026_07_01.md",
+      "requires_ingestion": true,
+      "size_bytes": 11717
     },
     {
       "classification": "exception_candidate",
@@ -12607,7 +13093,7 @@
       "extension": ".md",
       "path": ".codex/PHASE_9_2_CODEQL_ANALYSIS.md",
       "requires_ingestion": false,
-      "size_bytes": 19344
+      "size_bytes": 2991
     },
     {
       "classification": "exception_candidate",
@@ -12625,7 +13111,7 @@
       "extension": ".md",
       "path": ".codex/PHASE_9_2_COVERAGE_REPORT.md",
       "requires_ingestion": false,
-      "size_bytes": 9954
+      "size_bytes": 8622
     },
     {
       "classification": "exception_candidate",
@@ -12643,7 +13129,7 @@
       "extension": ".md",
       "path": ".codex/PHASE_9_2_DEPENDENCY_AUDIT.md",
       "requires_ingestion": false,
-      "size_bytes": 16891
+      "size_bytes": 4051
     },
     {
       "classification": "exception_candidate",
@@ -12727,6 +13213,15 @@
       "size_bytes": 10111
     },
     {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_9_2_LANE_2_SECURITY_HARDENING_SUMMARY.md",
+      "requires_ingestion": true,
+      "size_bytes": 6692
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -12761,6 +13256,15 @@
       "path": ".codex/PHASE_9_2_PATTERN_PROMOTION_RULES.md",
       "requires_ingestion": false,
       "size_bytes": 15227
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_9_2_QA_STANDUP_DAY_1.md",
+      "requires_ingestion": true,
+      "size_bytes": 7699
     },
     {
       "classification": "exception_candidate",
@@ -12808,6 +13312,24 @@
       "size_bytes": 5293
     },
     {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_9_2_SECURITY_AUDIT.md",
+      "requires_ingestion": true,
+      "size_bytes": 9529
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_9_2_SESSION_CHECKPOINT_DAY_1.md",
+      "requires_ingestion": true,
+      "size_bytes": 7855
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -12826,6 +13348,24 @@
       "size_bytes": 15485
     },
     {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_9_2_TEST_STABILITY_REPORT.md",
+      "requires_ingestion": true,
+      "size_bytes": 6047
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_9_3_ACTIVATION_DASHBOARD.md",
+      "requires_ingestion": true,
+      "size_bytes": 11526
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -12833,6 +13373,51 @@
       "path": ".codex/PHASE_9_3_AGENT_DELEGATION_BRIEF.md",
       "requires_ingestion": false,
       "size_bytes": 16670
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_9_3_CAMPAIGN_CHECKPOINT.md",
+      "requires_ingestion": true,
+      "size_bytes": 9664
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_9_3_CAMPAIGN_IMPLEMENTATION_STATUS.md",
+      "requires_ingestion": true,
+      "size_bytes": 10369
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_9_3_CI_AUTONOMY_CONFIG.md",
+      "requires_ingestion": true,
+      "size_bytes": 17113
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_9_3_CI_HEALING_METRICS.md",
+      "requires_ingestion": true,
+      "size_bytes": 19453
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_9_3_CI_HEALING_POLICIES.md",
+      "requires_ingestion": true,
+      "size_bytes": 15859
     },
     {
       "classification": "exception_candidate",
@@ -12869,6 +13454,24 @@
       "path": ".codex/PHASE_9_3_DESIGN_AUDIT.md",
       "requires_ingestion": false,
       "size_bytes": 22429
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_9_3_EXECUTIVE_COMPLETION_SUMMARY.md",
+      "requires_ingestion": true,
+      "size_bytes": 11426
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_9_3_EXECUTIVE_SUMMARY.md",
+      "requires_ingestion": true,
+      "size_bytes": 10428
     },
     {
       "classification": "exception_candidate",
@@ -12914,6 +13517,51 @@
       "path": ".codex/PHASE_9_3_ROUTER_SPECIFICATION.md",
       "requires_ingestion": false,
       "size_bytes": 18660
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_9_3_TIER1_ANOMALY_DETECTION_REPORT.md",
+      "requires_ingestion": true,
+      "size_bytes": 14531
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_9_3_TIER1_EXECUTION_SUMMARY.md",
+      "requires_ingestion": true,
+      "size_bytes": 10175
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_9_3_TIER1_FINAL_STATUS.md",
+      "requires_ingestion": true,
+      "size_bytes": 10077
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_9_3_TIER1_PROGRESS_REPORT.md",
+      "requires_ingestion": true,
+      "size_bytes": 16753
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PHASE_9_3_TIER_1_VALIDATION_SUMMARY.md",
+      "requires_ingestion": true,
+      "size_bytes": 6818
     },
     {
       "classification": "exception_candidate",
@@ -14689,6 +15337,15 @@
       "size_bytes": 9432
     },
     {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/PR_5165_MONITORING_SESSION.md",
+      "requires_ingestion": true,
+      "size_bytes": 5820
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -14795,6 +15452,15 @@
       "path": ".codex/QA_WALKTHROUGH_UPDATE_REPORT_2026_01_18.md",
       "requires_ingestion": false,
       "size_bytes": 15401
+    },
+    {
+      "classification": "configuration",
+      "confidence": 0.75,
+      "exception": false,
+      "extension": ".json",
+      "path": ".codex/QUALITY_METRICS.json",
+      "requires_ingestion": false,
+      "size_bytes": 1822
     },
     {
       "classification": "exception_candidate",
@@ -15067,6 +15733,15 @@
       "size_bytes": 11120
     },
     {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".json",
+      "path": ".codex/REMEDIATION_PLAN_20260701.json",
+      "requires_ingestion": true,
+      "size_bytes": 8275
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -15209,6 +15884,15 @@
       "path": ".codex/ROOT_FOLDER_REORGANIZATION_PLAN.md",
       "requires_ingestion": false,
       "size_bytes": 24839
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/ROUTING_QUALITY_REPORT.md",
+      "requires_ingestion": true,
+      "size_bytes": 6350
     },
     {
       "classification": "exception_candidate",
@@ -15929,6 +16613,96 @@
       "path": ".codex/TIER_1_100_PERCENT_COMPLETION_SUMMARY.md",
       "requires_ingestion": false,
       "size_bytes": 8193
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/TIER_1_AGENT_DELEGATION_BRIEF.md",
+      "requires_ingestion": true,
+      "size_bytes": 10672
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/TIER_1_COMPLETION_FINAL.md",
+      "requires_ingestion": true,
+      "size_bytes": 10077
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/TIER_1_EXECUTION_BRIEF.md",
+      "requires_ingestion": true,
+      "size_bytes": 12730
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/TIER_2_AGENT_DELEGATION_BRIEF.md",
+      "requires_ingestion": true,
+      "size_bytes": 12026
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/TIER_2_CAMPAIGN_MASTER_PLAN.md",
+      "requires_ingestion": true,
+      "size_bytes": 21000
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/TIER_2_CAMPAIGN_STATUS_TRACKER.md",
+      "requires_ingestion": true,
+      "size_bytes": 13883
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/TIER_2_DAILY_STANDUP_TEMPLATE.md",
+      "requires_ingestion": true,
+      "size_bytes": 12309
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/TIER_2_EXECUTION_BRIEF.md",
+      "requires_ingestion": true,
+      "size_bytes": 11214
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/TIER_3_4_AGENT_DELEGATION_BRIEF.md",
+      "requires_ingestion": true,
+      "size_bytes": 9086
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/TIER_3_4_EXECUTION_BRIEF.md",
+      "requires_ingestion": true,
+      "size_bytes": 17515
     },
     {
       "classification": "exception_candidate",
@@ -18943,7 +19717,7 @@
       "extension": ".jsonl",
       "path": ".codex/aftermath/pda_iterations.jsonl",
       "requires_ingestion": false,
-      "size_bytes": 220870
+      "size_bytes": 222664
     },
     {
       "classification": "exception_candidate",
@@ -19243,6 +20017,15 @@
       "size_bytes": 824
     },
     {
+      "classification": "configuration",
+      "confidence": 0.75,
+      "exception": false,
+      "extension": ".jsonl",
+      "path": ".codex/approvals.jsonl",
+      "requires_ingestion": false,
+      "size_bytes": 669
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -19268,6 +20051,24 @@
       "path": ".codex/archive/CI_INCIDENTS/2026-06-23_RESOLUTION.md",
       "requires_ingestion": false,
       "size_bytes": 5175
+    },
+    {
+      "classification": "configuration",
+      "confidence": 0.75,
+      "exception": false,
+      "extension": ".json",
+      "path": ".codex/archive/MANIFEST.json",
+      "requires_ingestion": false,
+      "size_bytes": 2990
+    },
+    {
+      "classification": "repository_readme",
+      "confidence": 0.95,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/archive/README.md",
+      "requires_ingestion": true,
+      "size_bytes": 1527
     },
     {
       "classification": "exception_candidate",
@@ -22276,6 +23077,87 @@
       "size_bytes": 13135
     },
     {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/archive/sessions/CAMPAIGN_FINAL_COMPLETION_REPORT.md",
+      "requires_ingestion": true,
+      "size_bytes": 11317
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/archive/sessions/EXPLORATION_PHASE_1_DISCOVERY.md",
+      "requires_ingestion": true,
+      "size_bytes": 18510
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/archive/sessions/EXPLORATION_PHASE_1_QUALITY_DASHBOARD.md",
+      "requires_ingestion": true,
+      "size_bytes": 18570
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/archive/sessions/EXPLORATION_PHASE_1_SEMANTIC_INDEX.md",
+      "requires_ingestion": true,
+      "size_bytes": 29810
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/archive/sessions/EXPLORATION_PHASE_2_DOC_AUDIT.md",
+      "requires_ingestion": true,
+      "size_bytes": 24118
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/archive/sessions/EXPLORATION_PHASE_2_QA_REPORT.md",
+      "requires_ingestion": true,
+      "size_bytes": 19233
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/archive/sessions/EXPLORATION_PHASE_2_SECURITY_AUDIT.md",
+      "requires_ingestion": true,
+      "size_bytes": 20918
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/archive/sessions/EXPLORATION_PHASE_3_AGENT_AUDIT.md",
+      "requires_ingestion": true,
+      "size_bytes": 20695
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/archive/sessions/EXPLORATION_PHASE_3_SKILLS_INVENTORY.md",
+      "requires_ingestion": true,
+      "size_bytes": 21428
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -22285,6 +23167,15 @@
       "size_bytes": 8420
     },
     {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/archive/sessions/FINAL_SESSION_SUMMARY_20260701T0548Z.md",
+      "requires_ingestion": true,
+      "size_bytes": 10500
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -22292,6 +23183,33 @@
       "path": ".codex/archive/sessions/PHASE1_PHASE2_CONTINUATION_ACTIVE.md",
       "requires_ingestion": false,
       "size_bytes": 5150
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/archive/sessions/PHASE_2_2_UTILITIES_SUMMARY.md",
+      "requires_ingestion": true,
+      "size_bytes": 11177
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/archive/sessions/PHASE_2_COMPLETION_REPORT.md",
+      "requires_ingestion": true,
+      "size_bytes": 7635
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/archive/sessions/PHASE_3_AGENT_AUDIT_INDEX.md",
+      "requires_ingestion": true,
+      "size_bytes": 7722
     },
     {
       "classification": "exception_candidate",
@@ -22321,6 +23239,15 @@
       "size_bytes": 8055
     },
     {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/archive/sessions/SESSION_20260701T0545Z_TRACK0_COMPLETION.md",
+      "requires_ingestion": true,
+      "size_bytes": 14198
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -22346,6 +23273,24 @@
       "path": ".codex/archive/sessions/SESSION_5084_COMPLETION_REPORT.md",
       "requires_ingestion": false,
       "size_bytes": 11860
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/archive/sessions/SESSION_7PHASE_CLARIFICATION_RESOLUTION_20260701T053700Z.md",
+      "requires_ingestion": true,
+      "size_bytes": 12605
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/archive/sessions/SESSION_7PHASE_EXECUTION_PLAN_20260701T053700Z.md",
+      "requires_ingestion": true,
+      "size_bytes": 13375
     },
     {
       "classification": "exception_candidate",
@@ -22742,6 +23687,15 @@
       "path": ".codex/archive/sessions/WORK_COMPLETION_SUMMARY.md",
       "requires_ingestion": false,
       "size_bytes": 8240
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/archive/sessions/link-fix-completion-report.md",
+      "requires_ingestion": true,
+      "size_bytes": 5372
     },
     {
       "classification": "exception_candidate",
@@ -23275,13 +24229,22 @@
       "size_bytes": 13771
     },
     {
+      "classification": "configuration",
+      "confidence": 0.75,
+      "exception": false,
+      "extension": ".json",
+      "path": ".codex/cascade_detector_state.json",
+      "requires_ingestion": false,
+      "size_bytes": 938
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
       "path": ".codex/change_log.md",
       "requires_ingestion": false,
-      "size_bytes": 110208
+      "size_bytes": 119171
     },
     {
       "classification": "exception_candidate",
@@ -27784,6 +28747,15 @@
       "size_bytes": 6735
     },
     {
+      "classification": "configuration",
+      "confidence": 0.75,
+      "exception": false,
+      "extension": ".json",
+      "path": ".codex/link-validation-report.json",
+      "requires_ingestion": false,
+      "size_bytes": 345
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -27844,7 +28816,7 @@
       "extension": ".jsonl",
       "path": ".codex/metrics/hourly.jsonl",
       "requires_ingestion": false,
-      "size_bytes": 691
+      "size_bytes": 2029
     },
     {
       "classification": "exception_candidate",
@@ -28322,6 +29294,15 @@
       "path": ".codex/phase_7a_final_cleanup/merge_history.txt",
       "requires_ingestion": false,
       "size_bytes": 95
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".json",
+      "path": ".codex/phase_9_3_routing_validation_results.json",
+      "requires_ingestion": true,
+      "size_bytes": 31373
     },
     {
       "classification": "exception_candidate",
@@ -33172,7 +34153,7 @@
       "extension": ".json",
       "path": ".codex/session_access_manifest.json",
       "requires_ingestion": false,
-      "size_bytes": 4656
+      "size_bytes": 4666
     },
     {
       "classification": "exception_candidate",
@@ -33181,7 +34162,7 @@
       "extension": ".json",
       "path": ".codex/session_access_strategy.json",
       "requires_ingestion": false,
-      "size_bytes": 443
+      "size_bytes": 454
     },
     {
       "classification": "exception_candidate",
@@ -33190,7 +34171,7 @@
       "extension": ".md",
       "path": ".codex/session_context_latest.md",
       "requires_ingestion": false,
-      "size_bytes": 2741
+      "size_bytes": 2990
     },
     {
       "classification": "exception_candidate",
@@ -34912,6 +35893,15 @@
       "size_bytes": 3542
     },
     {
+      "classification": "configuration",
+      "confidence": 0.75,
+      "exception": false,
+      "extension": ".json",
+      "path": ".codex/variable_audit_latest.json",
+      "requires_ingestion": false,
+      "size_bytes": 27668
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -35054,6 +36044,15 @@
       "path": ".copilot-space/workflow.yaml",
       "requires_ingestion": false,
       "size_bytes": 7113
+    },
+    {
+      "classification": "configuration",
+      "confidence": 0.75,
+      "exception": false,
+      "extension": ".json",
+      "path": ".coverage_baseline.json",
+      "requires_ingestion": false,
+      "size_bytes": 0
     },
     {
       "classification": "exception_candidate",
@@ -36340,7 +37339,7 @@
       "extension": ".md",
       "path": ".github/agents/AGENT_REGISTRY.md",
       "requires_ingestion": false,
-      "size_bytes": 29897
+      "size_bytes": 29857
     },
     {
       "classification": "configuration",
@@ -36349,7 +37348,7 @@
       "extension": ".yaml",
       "path": ".github/agents/AGENT_REGISTRY.yaml",
       "requires_ingestion": false,
-      "size_bytes": 115501
+      "size_bytes": 117393
     },
     {
       "classification": "exception_candidate",
@@ -38248,7 +39247,7 @@
       "extension": ".md",
       "path": ".github/agents/energy-conversion-agent.md",
       "requires_ingestion": false,
-      "size_bytes": 29970
+      "size_bytes": 30358
     },
     {
       "classification": "exception_candidate",
@@ -38473,7 +39472,7 @@
       "extension": ".md",
       "path": ".github/agents/google-home-script-agent.md",
       "requires_ingestion": false,
-      "size_bytes": 7671
+      "size_bytes": 7977
     },
     {
       "classification": "exception_candidate",
@@ -38914,7 +39913,7 @@
       "extension": ".md",
       "path": ".github/agents/quantum-compliance-tuning-agent.md",
       "requires_ingestion": false,
-      "size_bytes": 9805
+      "size_bytes": 10215
     },
     {
       "classification": "configuration",
@@ -48193,7 +49192,7 @@
       "extension": ".yml",
       "path": ".github/workflows/admin-action-t03.yml",
       "requires_ingestion": false,
-      "size_bytes": 3609
+      "size_bytes": 3524
     },
     {
       "classification": "workflow_file",
@@ -48589,7 +49588,7 @@
       "extension": ".yml",
       "path": ".github/workflows/branch-rebase-gate.yml",
       "requires_ingestion": false,
-      "size_bytes": 3954
+      "size_bytes": 4055
     },
     {
       "classification": "workflow_file",
@@ -48616,7 +49615,7 @@
       "extension": ".yml",
       "path": ".github/workflows/build-preview-image.yml",
       "requires_ingestion": false,
-      "size_bytes": 8847
+      "size_bytes": 8843
     },
     {
       "classification": "workflow_file",
@@ -48985,7 +49984,7 @@
       "extension": ".yml",
       "path": ".github/workflows/comment-review-gate.yml",
       "requires_ingestion": false,
-      "size_bytes": 8576
+      "size_bytes": 8601
     },
     {
       "classification": "workflow_file",
@@ -49003,7 +50002,7 @@
       "extension": ".yml",
       "path": ".github/workflows/consolidated-pr-status.yml",
       "requires_ingestion": false,
-      "size_bytes": 2879
+      "size_bytes": 2983
     },
     {
       "classification": "workflow_file",
@@ -49147,7 +50146,7 @@
       "extension": ".yml",
       "path": ".github/workflows/cost-gate.yml",
       "requires_ingestion": false,
-      "size_bytes": 16532
+      "size_bytes": 16440
     },
     {
       "classification": "workflow_file",
@@ -49201,7 +50200,7 @@
       "extension": ".yml",
       "path": ".github/workflows/data-quality-suite.yml",
       "requires_ingestion": false,
-      "size_bytes": 16554
+      "size_bytes": 16558
     },
     {
       "classification": "workflow_file",
@@ -49372,7 +50371,7 @@
       "extension": ".yml",
       "path": ".github/workflows/docker-build-push.yml",
       "requires_ingestion": false,
-      "size_bytes": 12049
+      "size_bytes": 12053
     },
     {
       "classification": "workflow_file",
@@ -49444,7 +50443,7 @@
       "extension": ".yml",
       "path": ".github/workflows/embedding-index-rebuild.yml",
       "requires_ingestion": false,
-      "size_bytes": 7911
+      "size_bytes": 7915
     },
     {
       "classification": "workflow_file",
@@ -50038,7 +51037,7 @@
       "extension": ".yml",
       "path": ".github/workflows/progressive-validation.yml",
       "requires_ingestion": false,
-      "size_bytes": 10295
+      "size_bytes": 10186
     },
     {
       "classification": "workflow_file",
@@ -50146,7 +51145,7 @@
       "extension": ".yml",
       "path": ".github/workflows/release.yml",
       "requires_ingestion": false,
-      "size_bytes": 2931
+      "size_bytes": 2822
     },
     {
       "classification": "workflow_file",
@@ -50254,7 +51253,7 @@
       "extension": ".yml",
       "path": ".github/workflows/rust_swarm_ci.yml",
       "requires_ingestion": false,
-      "size_bytes": 19534
+      "size_bytes": 19538
     },
     {
       "classification": "workflow_file",
@@ -50308,7 +51307,7 @@
       "extension": ".yml",
       "path": ".github/workflows/scheduled-archival.yml",
       "requires_ingestion": false,
-      "size_bytes": 6055
+      "size_bytes": 6059
     },
     {
       "classification": "workflow_file",
@@ -50623,7 +51622,7 @@
       "extension": ".yml",
       "path": ".github/workflows/test-rag.yml",
       "requires_ingestion": false,
-      "size_bytes": 31331
+      "size_bytes": 31356
     },
     {
       "classification": "workflow_file",
@@ -51575,6 +52574,114 @@
       "confidence": 0.75,
       "exception": false,
       "extension": ".json",
+      "path": ".venv_ci/etc/jupyter/nbconfig/notebook.d/jupyterlab-plotly.json",
+      "requires_ingestion": false,
+      "size_bytes": 71
+    },
+    {
+      "classification": "configuration",
+      "confidence": 0.75,
+      "exception": false,
+      "extension": ".json",
+      "path": ".venv_ci/evidently/legacy/ui/assets/manifest.json",
+      "requires_ingestion": false,
+      "size_bytes": 406
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".txt",
+      "path": ".venv_ci/evidently/legacy/ui/assets/robots.txt",
+      "requires_ingestion": true,
+      "size_bytes": 67
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".txt",
+      "path": ".venv_ci/evidently/nbextension/static/index.js.LICENSE.txt",
+      "requires_ingestion": true,
+      "size_bytes": 2238
+    },
+    {
+      "classification": "configuration",
+      "confidence": 0.75,
+      "exception": false,
+      "extension": ".json",
+      "path": ".venv_ci/evidently/ui/service/assets/manifest.json",
+      "requires_ingestion": false,
+      "size_bytes": 406
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".txt",
+      "path": ".venv_ci/evidently/ui/service/assets/robots.txt",
+      "requires_ingestion": true,
+      "size_bytes": 67
+    },
+    {
+      "classification": "repository_readme",
+      "confidence": 0.95,
+      "exception": false,
+      "extension": ".md",
+      "path": ".venv_ci/evidently/ui/service/storage/sql/migrations/README.md",
+      "requires_ingestion": true,
+      "size_bytes": 3693
+    },
+    {
+      "classification": "configuration",
+      "confidence": 0.75,
+      "exception": false,
+      "extension": ".json",
+      "path": ".venv_ci/share/jupyter/labextensions/jupyterlab-plotly/package.json",
+      "requires_ingestion": false,
+      "size_bytes": 2732
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".txt",
+      "path": ".venv_ci/share/jupyter/labextensions/jupyterlab-plotly/static/478.fdc0539db81116781109.js.LICENSE.txt",
+      "requires_ingestion": true,
+      "size_bytes": 1338
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".txt",
+      "path": ".venv_ci/share/jupyter/labextensions/jupyterlab-plotly/static/486.6450efe6168c2f8caddb.js.LICENSE.txt",
+      "requires_ingestion": true,
+      "size_bytes": 336
+    },
+    {
+      "classification": "configuration",
+      "confidence": 0.75,
+      "exception": false,
+      "extension": ".json",
+      "path": ".venv_ci/share/jupyter/labextensions/jupyterlab-plotly/static/third-party-licenses.json",
+      "requires_ingestion": false,
+      "size_bytes": 5802
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".txt",
+      "path": ".venv_ci/share/jupyter/nbextensions/jupyterlab-plotly/index.js.LICENSE.txt",
+      "requires_ingestion": true,
+      "size_bytes": 1675
+    },
+    {
+      "classification": "configuration",
+      "confidence": 0.75,
+      "exception": false,
+      "extension": ".json",
       "path": ".vscode/settings.json",
       "requires_ingestion": false,
       "size_bytes": 75
@@ -51604,7 +52711,7 @@
       "extension": ".md",
       "path": "AGENT_ACCOUNTABILITY_REPORT.md",
       "requires_ingestion": false,
-      "size_bytes": 6275
+      "size_bytes": 18702
     },
     {
       "classification": "exception_candidate",
@@ -51640,7 +52747,7 @@
       "extension": ".md",
       "path": "CHANGELOG.md",
       "requires_ingestion": false,
-      "size_bytes": 1202109
+      "size_bytes": 1231382
     },
     {
       "classification": "exception_candidate",
@@ -51667,7 +52774,7 @@
       "extension": ".json",
       "path": "CODEX_MANIFEST.json",
       "requires_ingestion": false,
-      "size_bytes": 57947
+      "size_bytes": 58096
     },
     {
       "classification": "exception_candidate",
@@ -51805,6 +52912,15 @@
       "size_bytes": 14266
     },
     {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": "ENERGY_CONVERSION_AGENT_DEPRECATION.md",
+      "requires_ingestion": true,
+      "size_bytes": 2255
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -51812,6 +52928,15 @@
       "path": "GEMINI.md",
       "requires_ingestion": false,
       "size_bytes": 160
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": "GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md",
+      "requires_ingestion": true,
+      "size_bytes": 1614
     },
     {
       "classification": "exception_candidate",
@@ -51848,6 +52973,33 @@
       "path": "MUTATION_TESTING_PHASE_B_DAY3_SUMMARY.md",
       "requires_ingestion": false,
       "size_bytes": 9419
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": "P1.4_FINAL_EXECUTION_REPORT.md",
+      "requires_ingestion": true,
+      "size_bytes": 4415
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": "P22_EXECUTIVE_SUMMARY.md",
+      "requires_ingestion": true,
+      "size_bytes": 8751
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": "P22_PHASE6_VALIDATION_REPORT.md",
+      "requires_ingestion": true,
+      "size_bytes": 7457
     },
     {
       "classification": "exception_candidate",
@@ -52102,6 +53254,69 @@
       "size_bytes": 13763
     },
     {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": "PHASE_9_2_9_3_PERFORMANCE_REPORT.md",
+      "requires_ingestion": true,
+      "size_bytes": 20711
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": "PHASE_9_2_LANE_3_COMPLETION_SUMMARY.md",
+      "requires_ingestion": true,
+      "size_bytes": 12430
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": "PHASE_9_2_LANE_3_INFRASTRUCTURE_REPORT.md",
+      "requires_ingestion": true,
+      "size_bytes": 13453
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": "PHASE_9_2_LANE_4_COMPLETION_SUMMARY.md",
+      "requires_ingestion": true,
+      "size_bytes": 14998
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": "PHASE_9_2_LANE_4_GATE_4_VALIDATION.md",
+      "requires_ingestion": true,
+      "size_bytes": 20159
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": "PHASE_9_2_TO_9_3_INTEGRATION_SPECIFICATION.md",
+      "requires_ingestion": true,
+      "size_bytes": 27103
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": "PHASE_9_3_READINESS_GATE.md",
+      "requires_ingestion": true,
+      "size_bytes": 18503
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -52181,6 +53396,15 @@
       "path": "PROMPTS/ZENDESK_QUANTUM_PACKAGING_DEPLOYMENT.md",
       "requires_ingestion": false,
       "size_bytes": 30681
+    },
+    {
+      "classification": "developer_guide",
+      "confidence": 0.85,
+      "exception": false,
+      "extension": ".md",
+      "path": "QUANTUM_COMPLIANCE_TUNING_AGENT_INTEGRATION_GUIDE.md",
+      "requires_ingestion": true,
+      "size_bytes": 13927
     },
     {
       "classification": "exception_candidate",
@@ -53812,6 +55036,15 @@
       "size_bytes": 143
     },
     {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": "artifacts/schemas/JSONL_SCHEMAS.md",
+      "requires_ingestion": true,
+      "size_bytes": 10252
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -53828,6 +55061,15 @@
       "path": "artifacts/security/safety.txt",
       "requires_ingestion": false,
       "size_bytes": 201
+    },
+    {
+      "classification": "configuration",
+      "confidence": 0.75,
+      "exception": false,
+      "extension": ".jsonl",
+      "path": "artifacts/semantic_index.jsonl",
+      "requires_ingestion": false,
+      "size_bytes": 1244062
     },
     {
       "classification": "configuration",
@@ -53882,6 +55124,42 @@
       "path": "audio_cleaner_v1/requirements.txt",
       "requires_ingestion": false,
       "size_bytes": 83
+    },
+    {
+      "classification": "configuration",
+      "confidence": 0.75,
+      "exception": false,
+      "extension": ".json",
+      "path": "audit_artifacts/bundles/bundle_20260701_150210.pointer.json",
+      "requires_ingestion": false,
+      "size_bytes": 497
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".txt",
+      "path": "audit_artifacts/raw/a.txt",
+      "requires_ingestion": true,
+      "size_bytes": 400000
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".txt",
+      "path": "audit_artifacts/raw/b.txt",
+      "requires_ingestion": true,
+      "size_bytes": 400000
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".txt",
+      "path": "audit_artifacts/raw/c.txt",
+      "requires_ingestion": true,
+      "size_bytes": 400000
     },
     {
       "classification": "configuration",
@@ -54699,6 +55977,33 @@
       "exception": false,
       "extension": ".yaml",
       "path": "config/experiment/lambda.yaml",
+      "requires_ingestion": false,
+      "size_bytes": 899
+    },
+    {
+      "classification": "configuration",
+      "confidence": 0.95,
+      "exception": false,
+      "extension": ".yaml",
+      "path": "config_experiments/experiment/debug.yaml",
+      "requires_ingestion": false,
+      "size_bytes": 625
+    },
+    {
+      "classification": "configuration",
+      "confidence": 0.95,
+      "exception": false,
+      "extension": ".yaml",
+      "path": "config_experiments/experiment/fast.yaml",
+      "requires_ingestion": false,
+      "size_bytes": 647
+    },
+    {
+      "classification": "configuration",
+      "confidence": 0.95,
+      "exception": false,
+      "extension": ".yaml",
+      "path": "config_experiments/experiment/lambda.yaml",
       "requires_ingestion": false,
       "size_bytes": 899
     },
@@ -56408,6 +57713,15 @@
       "confidence": 0.75,
       "exception": false,
       "extension": ".json",
+      "path": "coverage.json",
+      "requires_ingestion": false,
+      "size_bytes": 23907
+    },
+    {
+      "classification": "configuration",
+      "confidence": 0.75,
+      "exception": false,
+      "extension": ".json",
       "path": "coverage_reports/coverage.json",
       "requires_ingestion": false,
       "size_bytes": 3565673
@@ -56746,6 +58060,24 @@
       "size_bytes": 35887
     },
     {
+      "classification": "architecture_note",
+      "confidence": 0.9,
+      "exception": false,
+      "extension": ".md",
+      "path": "docs/ARCHITECTURE_DIAGRAMS_INDEX.md",
+      "requires_ingestion": true,
+      "size_bytes": 10102
+    },
+    {
+      "classification": "architecture_note",
+      "confidence": 0.9,
+      "exception": false,
+      "extension": ".md",
+      "path": "docs/ARCHITECTURE_DIAGRAMS_PROGRESS_PHASE1.md",
+      "requires_ingestion": true,
+      "size_bytes": 12680
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -56995,7 +58327,7 @@
       "extension": ".md",
       "path": "docs/CONSISTENCY_CHECKS_SETUP.md",
       "requires_ingestion": false,
-      "size_bytes": 9205
+      "size_bytes": 9425
     },
     {
       "classification": "exception_candidate",
@@ -57925,6 +59257,15 @@
       "size_bytes": 9070
     },
     {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": "docs/REFACTORING_UTILITIES.md",
+      "requires_ingestion": true,
+      "size_bytes": 9973
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -58282,7 +59623,7 @@
       "extension": ".md",
       "path": "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md",
       "requires_ingestion": false,
-      "size_bytes": 438978
+      "size_bytes": 511464
     },
     {
       "classification": "exception_candidate",
@@ -59752,6 +61093,15 @@
       "size_bytes": 848
     },
     {
+      "classification": "architecture_note",
+      "confidence": 0.9,
+      "exception": false,
+      "extension": ".md",
+      "path": "docs/architecture/5_LAYER_ARCHITECTURE.md",
+      "requires_ingestion": true,
+      "size_bytes": 10460
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -59768,6 +61118,42 @@
       "path": "docs/architecture/ARCHITECTURE_LAYERS.md",
       "requires_ingestion": false,
       "size_bytes": 1624
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": "docs/architecture/COMPONENT_DEPENDENCIES.md",
+      "requires_ingestion": true,
+      "size_bytes": 9590
+    },
+    {
+      "classification": "architecture_note",
+      "confidence": 0.9,
+      "exception": false,
+      "extension": ".md",
+      "path": "docs/architecture/DATA_FLOW_ARCHITECTURE.md",
+      "requires_ingestion": true,
+      "size_bytes": 10285
+    },
+    {
+      "classification": "architecture_note",
+      "confidence": 0.9,
+      "exception": false,
+      "extension": ".md",
+      "path": "docs/architecture/DEPLOYMENT_ARCHITECTURE.md",
+      "requires_ingestion": true,
+      "size_bytes": 9996
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": "docs/architecture/E2E_REQUEST_FLOW.md",
+      "requires_ingestion": true,
+      "size_bytes": 9391
     },
     {
       "classification": "exception_candidate",
@@ -59804,6 +61190,15 @@
       "path": "docs/architecture/PHASES_3_4_5_IMPLEMENTATION.md",
       "requires_ingestion": false,
       "size_bytes": 8761
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": "docs/architecture/SYSTEM_CONTEXT.md",
+      "requires_ingestion": true,
+      "size_bytes": 7066
     },
     {
       "classification": "exception_candidate",
@@ -61732,6 +63127,24 @@
       "size_bytes": 13504
     },
     {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": "docs/cli/COMMAND_REFERENCE.md",
+      "requires_ingestion": true,
+      "size_bytes": 23740
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": "docs/cli/DOCUMENTATION_SUMMARY.md",
+      "requires_ingestion": true,
+      "size_bytes": 12224
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -61855,7 +63268,7 @@
       "extension": ".md",
       "path": "docs/cognitive_app.md",
       "requires_ingestion": false,
-      "size_bytes": 8243
+      "size_bytes": 8379
     },
     {
       "classification": "exception_candidate",
@@ -63521,6 +64934,15 @@
       "path": "docs/development/offline_ci.md",
       "requires_ingestion": false,
       "size_bytes": 679
+    },
+    {
+      "classification": "architecture_note",
+      "confidence": 0.9,
+      "exception": false,
+      "extension": ".md",
+      "path": "docs/diagrams/ARCHITECTURE_DIAGRAMS.md",
+      "requires_ingestion": true,
+      "size_bytes": 21572
     },
     {
       "classification": "exception_candidate",
@@ -65764,6 +67186,15 @@
       "size_bytes": 422
     },
     {
+      "classification": "architecture_note",
+      "confidence": 0.9,
+      "exception": false,
+      "extension": ".md",
+      "path": "docs/monitoring/MONITORING_ARCHITECTURE.md",
+      "requires_ingestion": true,
+      "size_bytes": 12084
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -67183,7 +68614,7 @@
       "extension": ".md",
       "path": "docs/plans/README.md",
       "requires_ingestion": false,
-      "size_bytes": 6301
+      "size_bytes": 6602
     },
     {
       "classification": "exception_candidate",
@@ -69490,6 +70921,15 @@
       "size_bytes": 4758
     },
     {
+      "classification": "architecture_note",
+      "confidence": 0.9,
+      "exception": false,
+      "extension": ".md",
+      "path": "docs/security/SECURITY_ARCHITECTURE.md",
+      "requires_ingestion": true,
+      "size_bytes": 10204
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -71305,7 +72745,7 @@
       "extension": ".md",
       "path": "docs/testing/CODEX_MASTER_KEY_TEST_GUIDE.md",
       "requires_ingestion": false,
-      "size_bytes": 10398
+      "size_bytes": 10477
     },
     {
       "classification": "exception_candidate",
@@ -71837,6 +73277,15 @@
       "path": "docs/training/README.md",
       "requires_ingestion": false,
       "size_bytes": 270
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": "docs/training/TRAINING_WORKFLOW.md",
+      "requires_ingestion": true,
+      "size_bytes": 9527
     },
     {
       "classification": "exception_candidate",
@@ -72781,7 +74230,7 @@
       "extension": ".md",
       "path": "docs/workflows/DELEGATED_COMMENT_WORKFLOWS.md",
       "requires_ingestion": false,
-      "size_bytes": 32510
+      "size_bytes": 32738
     },
     {
       "classification": "exception_candidate",
@@ -73195,7 +74644,7 @@
       "extension": ".json",
       "path": "docs-data/generated/candidate-inventory.json",
       "requires_ingestion": false,
-      "size_bytes": 2303594
+      "size_bytes": 2287633
     },
     {
       "classification": "generated_machine_readable_artifact",
@@ -73213,7 +74662,7 @@
       "extension": ".json",
       "path": "docs-data/generated/codebase-discovery-report.json",
       "requires_ingestion": false,
-      "size_bytes": 763859
+      "size_bytes": 414589
     },
     {
       "classification": "generated_machine_readable_artifact",
@@ -73366,7 +74815,7 @@
       "extension": ".json",
       "path": "docs-data/generated/machine-readable-coverage-report.json",
       "requires_ingestion": false,
-      "size_bytes": 648053
+      "size_bytes": 466288
     },
     {
       "classification": "generated_machine_readable_artifact",
@@ -73384,7 +74833,7 @@
       "extension": ".json",
       "path": "docs-data/generated/markdown-inventory.json",
       "requires_ingestion": false,
-      "size_bytes": 1889229
+      "size_bytes": 1873227
     },
     {
       "classification": "generated_machine_readable_artifact",
@@ -73438,7 +74887,7 @@
       "extension": ".json",
       "path": "docs-data/generated/migration-readiness-report.json",
       "requires_ingestion": false,
-      "size_bytes": 158
+      "size_bytes": 156
     },
     {
       "classification": "generated_machine_readable_artifact",
@@ -73582,7 +75031,7 @@
       "extension": ".json",
       "path": "docs-data/generated/unmanaged-candidates-report.json",
       "requires_ingestion": false,
-      "size_bytes": 375281
+      "size_bytes": 111
     },
     {
       "classification": "generated_machine_readable_artifact",
@@ -73600,7 +75049,7 @@
       "extension": ".json",
       "path": "docs-data/machine-readable-policy.json",
       "requires_ingestion": false,
-      "size_bytes": 1643
+      "size_bytes": 1644
     },
     {
       "classification": "canonical_machine_readable_record",
@@ -75445,7 +76894,7 @@
       "extension": ".toml",
       "path": "pyproject.toml",
       "requires_ingestion": false,
-      "size_bytes": 14401
+      "size_bytes": 14859
     },
     {
       "classification": "configuration",
@@ -76759,7 +78208,7 @@
       "extension": ".txt",
       "path": "requirements-dev.txt",
       "requires_ingestion": false,
-      "size_bytes": 1047
+      "size_bytes": 1166
     },
     {
       "classification": "exception_candidate",
@@ -76831,7 +78280,7 @@
       "extension": ".txt",
       "path": "requirements.txt",
       "requires_ingestion": false,
-      "size_bytes": 1618
+      "size_bytes": 1737
     },
     {
       "classification": "exception_candidate",
@@ -77903,51 +79352,6 @@
       "path": "src/codex_ml/safety/default_policy.yaml",
       "requires_ingestion": false,
       "size_bytes": 2595
-    },
-    {
-      "classification": "exception_candidate",
-      "confidence": 1.0,
-      "exception": true,
-      "extension": ".txt",
-      "path": "src/codex_ml.egg-info/SOURCES.txt",
-      "requires_ingestion": false,
-      "size_bytes": 72283
-    },
-    {
-      "classification": "exception_candidate",
-      "confidence": 1.0,
-      "exception": true,
-      "extension": ".txt",
-      "path": "src/codex_ml.egg-info/dependency_links.txt",
-      "requires_ingestion": false,
-      "size_bytes": 1
-    },
-    {
-      "classification": "exception_candidate",
-      "confidence": 1.0,
-      "exception": true,
-      "extension": ".txt",
-      "path": "src/codex_ml.egg-info/entry_points.txt",
-      "requires_ingestion": false,
-      "size_bytes": 3400
-    },
-    {
-      "classification": "exception_candidate",
-      "confidence": 1.0,
-      "exception": true,
-      "extension": ".txt",
-      "path": "src/codex_ml.egg-info/requires.txt",
-      "requires_ingestion": false,
-      "size_bytes": 4371
-    },
-    {
-      "classification": "exception_candidate",
-      "confidence": 1.0,
-      "exception": true,
-      "extension": ".txt",
-      "path": "src/codex_ml.egg-info/top_level.txt",
-      "requires_ingestion": false,
-      "size_bytes": 216
     },
     {
       "classification": "exception_candidate",
@@ -79552,5 +80956,5 @@
       "size_bytes": 6029
     }
   ],
-  "generated_at": "2026-07-01T04:54:13Z"
+  "generated_at": "2026-07-02T00:43:02Z"
 }

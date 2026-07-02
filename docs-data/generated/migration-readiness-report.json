@@ -1,7 +1,7 @@
 {
-  "conversion_ready": 0,
-  "exception_ready": 7494,
-  "generated_at": "2026-07-01T04:54:13Z",
+  "conversion_ready": 133,
+  "exception_ready": 7489,
+  "generated_at": "2026-07-02T00:43:02Z",
   "quarantine_needed": 0,
-  "strict_mode_blocking": false
+  "strict_mode_blocking": true
 }

@@ -681,3 +681,47 @@ class TestManageTenantIndicesError:
             index_dir=str(tmp_path),
         )
         assert result.success is False, "Result must not be empty"
+
+
+# ===========================================================================
+# ingestion/chunker.py — SentenceChunker edge cases
+# ===========================================================================
+
+
+class TestSentenceChunkerEdgeCases:
+    """Cover SentenceChunker edge cases for whitespace-only split results."""
+
+    def test_sentence_chunker_handles_whitespace_only_split(self):
+        """Verify SentenceChunker filters out whitespace-only sentences."""
+        from codex.rag.ingestion.chunker import ChunkingConfig, ChunkingStrategy, SentenceChunker
+
+        config = ChunkingConfig(
+            strategy=ChunkingStrategy.SENTENCE,
+            chunk_size=50,
+            min_chunk_size=5,
+        )
+        chunker = SentenceChunker(config)
+        # Text with excessive whitespace that creates empty splits
+        text = "First sentence.    \n\n\n    Second sentence."
+        chunks = chunker.chunk(text)
+        # All chunks should have non-whitespace content
+        for chunk in chunks:
+            assert chunk.text.strip(), f"Chunk should not be whitespace-only: {chunk.text!r}"
+
+    def test_fixed_size_chunker_min_chunk_size_filter(self):
+        """Cover FixedSizeChunker filtering of sub-minimum chunks."""
+        from codex.rag.ingestion.chunker import ChunkingConfig, ChunkingStrategy, FixedSizeChunker
+
+        config = ChunkingConfig(
+            strategy=ChunkingStrategy.FIXED_SIZE,
+            chunk_size=100,
+            min_chunk_size=50,
+            chunk_overlap=10,
+        )
+        chunker = FixedSizeChunker(config)
+        # Short text that would create a small trailing chunk
+        text = "A" * 120  # Will be split into 100 + 30 (with overlap)
+        chunks = chunker.chunk(text)
+        # The trailing 30-char chunk should be filtered out (< min_chunk_size)
+        for chunk in chunks:
+            assert len(chunk.text) >= config.min_chunk_size, f"Chunk too small: {len(chunk.text)}"
