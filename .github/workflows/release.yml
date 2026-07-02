@@ -43,6 +43,7 @@ jobs:
         }}
   generate-sbom:
     name: Generate SBOM
+    timeout-minutes: 30
     needs: validate
     uses: ./.github/workflows/sbom.yml
     permissions:

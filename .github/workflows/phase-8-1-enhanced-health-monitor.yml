@@ -5,9 +5,17 @@
 name: Phase 8.1 - Enhanced Health Monitor (ARCHIVED)
 on:
   workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   archived:
     runs-on: ubuntu-latest
     permissions: {}
+    timeout-minutes: 10
     steps:
       - run: echo "This workflow has been archived. See Phase 10+ for current monitoring."

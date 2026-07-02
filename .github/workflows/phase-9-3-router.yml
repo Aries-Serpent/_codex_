@@ -35,6 +35,7 @@ env:
 jobs:
   semantic-routing-setup:
     name: Setup Semantic Router
+    timeout-minutes: 30
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -107,6 +108,7 @@ jobs:
 
   semantic-router-index:
     name: Build/Query FAISS Index
+    timeout-minutes: 30
     needs: semantic-routing-setup
     runs-on: ubuntu-latest
     permissions:
@@ -166,6 +168,7 @@ jobs:
 
   workload-balancing:
     name: Workload Balance & Agent Selection
+    timeout-minutes: 30
     needs: [semantic-routing-setup, semantic-router-index]
     runs-on: ubuntu-latest
     permissions:
@@ -276,6 +279,7 @@ jobs:
 
   audit-trail-logging:
     name: Log Routing Decision to Audit Trail
+    timeout-minutes: 30
     needs: [semantic-routing-setup, semantic-router-index, workload-balancing, concurrent-execution]
     runs-on: ubuntu-latest
     permissions: {}
@@ -342,6 +346,7 @@ jobs:
 
   result-summary:
     name: Summarize Routing & Execution
+    timeout-minutes: 10
     needs: [semantic-routing-setup, semantic-router-index, workload-balancing, concurrent-execution, audit-trail-logging]
     runs-on: ubuntu-latest
     if: always()
