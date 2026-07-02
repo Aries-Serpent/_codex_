@@ -47,7 +47,7 @@ import tempfile
 from collections import Counter
 from typing import Any, Optional
 
-logger = logging.getLogger(__name__)
+from codex.logging.structured_logger import logger
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[3]
 REPORT_PATH = REPO_ROOT / "docs" / "accountability" / "AGENT_ACCOUNTABILITY_REPORT.md"
@@ -679,11 +679,11 @@ def run(
     changelog_entry = generate_changelog_entry(metadata, score)
 
     if dry_run:
-        print("--- DRY RUN: Generated accountability entry ---")
-        print(entry)
-        print("--- DRY RUN: Generated changelog entry ---")
-        print(changelog_entry)
-        print(f"--- Score: {score:.4f} | Tokens: {len(tokens)} ---")
+        logger.info("--- DRY RUN: Generated accountability entry ---")
+        logger.info(entry)
+        logger.info("--- DRY RUN: Generated changelog entry ---")
+        logger.info(changelog_entry)
+        logger.info(f"--- Score: {score:.4f} | Tokens: {len(tokens)} ---")
         return {
             "dry_run": True,
             "session_id": sid,
@@ -776,7 +776,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         return 1
 
     if result.get("skipped"):
-        print(f"Skipped: session {result['session_id']} already in report.")
+        logger.info(f"Skipped: session {result['session_id']} already in report.")
     return 0
 
 

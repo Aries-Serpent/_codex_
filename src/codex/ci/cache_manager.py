@@ -21,7 +21,7 @@ Usage:
 
     # For cache validation
     health = manager.validate_cache_health()
-    print(f"Cache health: {health}")
+    logger.info(f"Cache health: {health}")
 """
 
 from __future__ import annotations
@@ -41,7 +41,7 @@ from typing import Any, Optional
 
 from codex.utils.path_utils import windows_safe_timestamp
 
-logger = logging.getLogger(__name__)
+from codex.logging.structured_logger import logger
 
 
 class CacheType(Enum):
@@ -361,29 +361,29 @@ def main() -> None:
 
     if args.command == "validate":
         health = manager.validate_cache_health()
-        print(f"Cache Health: {'CRITICAL' if health.is_critical else 'HEALTHY'}")
-        print(f"Total Size: {health.total_size_gb:.2f} GB")
-        print(f"Total Caches: {health.total_caches}")
+        logger.info(f"Cache Health: {'CRITICAL' if health.is_critical else 'HEALTHY'}")
+        logger.info(f"Total Size: {health.total_size_gb:.2f} GB")
+        logger.info(f"Total Caches: {health.total_caches}")
         sys.exit(1 if health.is_critical else 0)
 
     elif args.command == "generate-key":
         if not args.cache_type:
-            print("Error: --cache-type required", file=sys.stderr)
+            logger.error("Error: --cache-type required")
             sys.exit(1)
 
         cache_type = CacheType(args.cache_type)
         key = manager.generate_cache_key(cache_type, workflow_name=args.workflow)
-        print(key)
+        logger.info(key)
 
     elif args.command == "health":
         health = manager.validate_cache_health()
-        print(f"Cache Health: {'CRITICAL' if health.is_critical else 'HEALTHY'}")
-        print(f"Total Size: {health.total_size_gb:.2f} GB")
-        print(f"Total Caches: {health.total_caches}")
+        logger.info(f"Cache Health: {'CRITICAL' if health.is_critical else 'HEALTHY'}")
+        logger.info(f"Total Size: {health.total_size_gb:.2f} GB")
+        logger.info(f"Total Caches: {health.total_caches}")
         for warning in health.warnings:
-            print(f"Warning: {warning}")
+            logger.info(f"Warning: {warning}")
         for rec in health.recommendations:
-            print(f"Recommendation: {rec}")
+            logger.info(f"Recommendation: {rec}")
 
 
 if __name__ == "__main__":

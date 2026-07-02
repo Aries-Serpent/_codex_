@@ -27,7 +27,7 @@ from __future__ import annotations
 
 import logging
 
-logger = logging.getLogger(__name__)
+from codex.logging.structured_logger import logger
 
 import argparse  # noqa: E402
 import json  # noqa: E402
@@ -47,7 +47,7 @@ else:
         auto_enable_from_env()
     except (IOError, OSError) as exc:  # pragma: no cover
         error_type = type(exc).__name__
-        print("SQLite patch disabled: <ERROR_TYPE>", file=sys.stderr)
+        logger.error("SQLite patch disabled: <ERROR_TYPE>")
 from datetime import datetime  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import Any, Optional  # noqa: E402
@@ -91,7 +91,7 @@ class LogViewer:
                 if row:
                     session_id = row[0]
                 else:
-                    print("No sessions found in database", file=sys.stderr)
+                    logger.error("No sessions found in database")
                     return
 
         # Build args and call main
@@ -264,10 +264,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     root = Path.cwd()
     db_path = Path(resolve_db_path(ns.db)) if ns.db else autodetect_db(root)
     if not db_path:
-        print(
-            "ERROR: SQLite DB not found. Provide --db or place logs.db/logs.sqlite in repo.",
-            file=sys.stderr,
-        )
+        logger.error("ERROR: SQLite DB not found. Provide --db or place logs.db/logs.sqlite in repo.",)
         return 2
     try:
         conn = connect_db(db_path)
@@ -276,7 +273,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         args[0] = ns.session_id
         rows = conn.execute(query, args).fetchall()
         if ns.format == "json":
-            print(json.dumps([dict(r) for r in rows], ensure_ascii=False, indent=2))
+            logger.info(json.dumps([dict(r) for r in rows], ensure_ascii=False, indent=2))
         else:
             for row in rows:
                 d = dict(row)
@@ -284,12 +281,12 @@ def main(argv: Optional[list[str]] = None) -> int:
                 lvl = d.get(schema.get("lvl") or "", "")
                 msg = d.get(schema["msg"], "")
                 prefix = f"[{lvl}] " if lvl else ""
-                print(f"{ts} {prefix}{msg}")
+                logger.info(f"{ts} {prefix}{msg}")
         return 0
     except (IOError, OSError) as exc:
         type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
-        print("ERROR: <ERROR_TYPE>", file=sys.stderr)
+        logger.error("ERROR: <ERROR_TYPE>")
         return 1
 
 

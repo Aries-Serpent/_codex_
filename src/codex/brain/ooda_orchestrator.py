@@ -25,7 +25,7 @@ from .ooda_decider import DecisionDirective, OODADecider
 from .ooda_observer import Observable, OODAObserver
 from .ooda_orienter import OODAOrienter, Orientation
 
-logger = logging.getLogger(__name__)
+from codex.logging.structured_logger import logger
 
 
 @dataclass
@@ -408,25 +408,23 @@ class OODAOrchestrator:
         """Print a metrics dashboard."""
         metrics = self.get_metrics()
 
-        print("\n" + "=" * 60)
-        print("OODA LOOP ORCHESTRATION METRICS")
-        print("=" * 60)
-        print(
-            f"Cycles: {metrics.total_cycles} "
-            f"(✓{metrics.successful_cycles} ✗{metrics.failed_cycles})"
-        )
-        print(f"Uptime: {metrics.uptime_percent:.1f}%")
-        print("\nLatency (ms):")
-        print(f"  Average: {metrics.avg_cycle_latency_ms:.0f}")
-        print(f"  p95: {metrics.p95_cycle_latency_ms:.0f}")
-        print(f"  p99: {metrics.p99_cycle_latency_ms:.0f}")
-        print("\nQuality:")
-        print(f"  Avg Confidence: {metrics.avg_decision_confidence:.2%}")
-        print(f"  Avg Success Rate: {metrics.avg_execution_success_rate:.2%}")
-        print("\nResources:")
-        print(f"  Agents Involved: {metrics.total_agents_invoked}")
-        print(f"  Side Effects: {metrics.total_side_effects}")
-        print("=" * 60 + "\n")
+        logger.info("\n" + "=" * 60)
+        logger.info("OODA LOOP ORCHESTRATION METRICS")
+        logger.info("=" * 60)
+        logger.info(f"Cycles: {metrics.total_cycles} "
+            f"(✓{metrics.successful_cycles} ✗{metrics.failed_cycles})")
+        logger.info(f"Uptime: {metrics.uptime_percent:.1f}%")
+        logger.info("\nLatency (ms):")
+        logger.info(f"  Average: {metrics.avg_cycle_latency_ms:.0f}")
+        logger.info(f"  p95: {metrics.p95_cycle_latency_ms:.0f}")
+        logger.info(f"  p99: {metrics.p99_cycle_latency_ms:.0f}")
+        logger.info("\nQuality:")
+        logger.info(f"  Avg Confidence: {metrics.avg_decision_confidence:.2%}")
+        logger.info(f"  Avg Success Rate: {metrics.avg_execution_success_rate:.2%}")
+        logger.info("\nResources:")
+        logger.info(f"  Agents Involved: {metrics.total_agents_invoked}")
+        logger.info(f"  Side Effects: {metrics.total_side_effects}")
+        logger.info("=" * 60 + "\n")
 
 
 class ParallelOODAOrchestrator(OODAOrchestrator):

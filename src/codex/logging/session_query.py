@@ -26,7 +26,7 @@ from __future__ import annotations
 import argparse
 import logging
 
-logger = logging.getLogger(__name__)
+from codex.logging.structured_logger import logger
 import os  # noqa: E402
 import re  # noqa: E402
 import sqlite3  # noqa: E402
@@ -179,12 +179,12 @@ def fetch_rows(
 
 def print_rows(rows: list[sqlite3.Row], cols: dict[str, str]) -> None:
     if not rows:
-        print("(no rows)", file=sys.stderr)
+        logger.error("(no rows)")
         return
     header_keys = [k for k in ["timestamp", "session_id", "role", "message"] if k in cols]
-    print("\t".join(header_keys))
+    logger.info("\t".join(header_keys))
     for r in rows:
-        print("\t".join("" if r[cols[k]] is None else str(r[cols[k]]) for k in header_keys))
+        logger.info("\t".join("" if r[cols[k]] is None else str(r[cols[k]]) for k in header_keys))
 
 
 def main(argv: Optional[Iterable[str]] = None) -> int:
@@ -210,7 +210,7 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
         return 0
     except (IOError, OSError) as exc:  # pragma: no cover - top-level guard
         type(exc).__name__
-        print("ERROR: <ERROR_TYPE>", file=sys.stderr)
+        logger.error("ERROR: <ERROR_TYPE>")
         return 2
 
 

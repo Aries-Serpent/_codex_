@@ -1,4 +1,5 @@
 """
+from codex.logging.structured_logger import logger
 MCP tool integration and persistence management.
 
 Classes:
@@ -266,13 +267,13 @@ class PersistenceManager:
                             records.append(record)
                             self._cache_record(record)
                         except json.JSONDecodeError as e:
-                            print(f"Error parsing line {line_no}: {e}")
+                            logger.info(f"Error parsing line {line_no}: {e}")
 
             self.loaded_files[filepath] = time.time()
             return records
 
         except IOError as e:
-            print(f"Error reading file: {e}")
+            logger.info(f"Error reading file: {e}")
             return []
 
     def save_jsonl(self, filepath: str, records: List[Dict]) -> int:
@@ -289,7 +290,7 @@ class PersistenceManager:
             return count
 
         except IOError as e:
-            print(f"Error writing file: {e}")
+            logger.info(f"Error writing file: {e}")
             return 0
 
     def _cache_record(self, record: Dict) -> None:

@@ -1,4 +1,5 @@
 """
+from codex.logging.structured_logger import logger
 Command-line interface for parsing and querying AST structures.
 
 Provides commands to parse source files, extract statistics, and query
@@ -58,7 +59,7 @@ def parse_command(args) -> int:
     try:
         file_path = Path(args.file)
         if not file_path.exists():
-            print(f"Error: File not found: {file_path}", file=sys.stderr)
+            logger.error(f"Error: File not found: {file_path}")
             return 1
 
         adapter = get_adapter(args.language)
@@ -68,12 +69,12 @@ def parse_command(args) -> int:
         ast_dict = root.to_dict()
 
         # Output as formatted JSON
-        print(json.dumps(ast_dict, indent=2))
+        logger.info(json.dumps(ast_dict, indent=2))
         return 0
 
     except (IOError, OSError) as e:
         type(e).__name__
-        print("Error parsing file: <ERROR_TYPE>", file=sys.stderr)
+        logger.error("Error parsing file: <ERROR_TYPE>")
         return 1
 
 
@@ -89,7 +90,7 @@ def stats_command(args) -> int:
     try:
         file_path = Path(args.file)
         if not file_path.exists():
-            print(f"Error: File not found: {file_path}", file=sys.stderr)
+            logger.error(f"Error: File not found: {file_path}")
             return 1
 
         adapter = get_adapter(args.language)
@@ -99,12 +100,12 @@ def stats_command(args) -> int:
         stats = adapter.get_stats()
 
         # Output as formatted JSON
-        print(json.dumps(stats, indent=2))
+        logger.info(json.dumps(stats, indent=2))
         return 0
 
     except (IOError, OSError) as e:
         type(e).__name__
-        print("Error getting statistics: <ERROR_TYPE>", file=sys.stderr)
+        logger.error("Error getting statistics: <ERROR_TYPE>")
         return 1
 
 
@@ -120,7 +121,7 @@ def query_command(args) -> int:
     try:
         file_path = Path(args.file)
         if not file_path.exists():
-            print(f"Error: File not found: {file_path}", file=sys.stderr)
+            logger.error(f"Error: File not found: {file_path}")
             return 1
 
         adapter = get_adapter(args.language)
@@ -146,12 +147,12 @@ def query_command(args) -> int:
             result.append(node_info)
 
         # Output as formatted JSON
-        print(json.dumps(result, indent=2))
+        logger.info(json.dumps(result, indent=2))
         return 0
 
     except (IOError, OSError) as e:
         type(e).__name__
-        print("Error querying nodes: <ERROR_TYPE>", file=sys.stderr)
+        logger.error("Error querying nodes: <ERROR_TYPE>")
         return 1
 
 
