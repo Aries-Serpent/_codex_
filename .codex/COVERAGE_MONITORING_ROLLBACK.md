@@ -15,7 +15,7 @@ This document outlines detailed recovery procedures for each failure scenario du
 
 ---
 
-## Severity Levels
+## Severity Levels # pragma: allowlist secret
 
 ### CRITICAL (⛔ Block All Progression)
 - Baseline regression >3% from 34.63%

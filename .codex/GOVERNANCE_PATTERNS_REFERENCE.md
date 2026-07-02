@@ -15,7 +15,7 @@
 3. [Core Governance Patterns (1-50)](#core-governance-patterns-1-50)
 4. [Approval & Workflow Patterns (51-80)](#approval--workflow-patterns-51-80)
 5. [Compliance & Audit Patterns (81-110)](#compliance--audit-patterns-81-110)
-6. [Advanced Integration Patterns (111-133)](#advanced-integration-patterns-111-133)
+6. [Advanced Integration Patterns (111-133)](#advanced-integration-patterns-111-133) # pragma: allowlist secret
 7. [Pattern Interaction Matrix](#pattern-interaction-matrix)
 8. [Decision Flowcharts](#decision-flowcharts)
 
