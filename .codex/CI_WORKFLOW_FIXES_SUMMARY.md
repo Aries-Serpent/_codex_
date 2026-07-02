@@ -15,7 +15,7 @@
 **Severity**: Non-critical (affects performance monitoring only)
 
 The GitHub Actions API returns `null` (Python `None`) for `completed_at` field when a job is still running. The benchmark collector was converting `None` to empty string with `job.get("completed_at", "")`, but the subsequent `.replace("Z", "+00:00")` call could fail on the actual `None` value in edge cases.
-
+ # pragma: allowlist secret # pragma: allowlist secret
 ### Root Cause Analysis
 
 **Why it happens**:
