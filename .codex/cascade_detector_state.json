@@ -33,7 +33,7 @@
     "12:/home/runner/work/_codex_/_codex_/src/codex/brain/memory_sync.py": 4,
     "12:/home/runner/work/_codex_/_codex_/src/codex/cli/__init__.py": 1,
     "13:/home/runner/work/_codex_/_codex_/.codex/PHASE_9_2_SECURITY_TESTS.py": 5,
-    "25:docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md \u2014 not updated in last commit (last touched": 1,
+    "25:docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md \u2014 not updated in last commit (last touched": 3,
     "30:ruff (src/ clean)": 1
   },
   "circuit_state": {
@@ -43,6 +43,7 @@
     "2": "BROKEN",
     "36": "BROKEN",
     "37": "BROKEN",
-    "38": "BROKEN"
+    "38": "BROKEN",
+    "25": "OPEN"
   }
 }
