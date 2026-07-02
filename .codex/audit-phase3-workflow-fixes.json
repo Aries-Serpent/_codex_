@@ -1,0 +1,111 @@
+{
+  "phase": "3.2",
+  "agent": "Workflow CI Fixer",
+  "timestamp": "2026-07-02T23:37:46.354897",
+  "findings": {
+    "yaml_syntax_errors": 0,
+    "action_version_violations": 422,
+    "job_dependency_issues": 220,
+    "step_condition_problems": 561
+  },
+  "violations_by_action": {
+    "actions/checkout": {
+      "count": 306,
+      "required_version": "v5",
+      "workflows_affected": 160,
+      "sample_violations": [
+        {
+          "workflow": "admin_setup_verification.yml",
+          "job": "verify-setup",
+          "step": "step-0",
+          "current": "actions/checkout@v7",
+          "required": "actions/checkout@v5"
+        },
+        {
+          "workflow": "agent-auth-delegation.yml",
+          "job": "pr-body-checkpoint-guardian",
+          "step": "Checkout (needed for session_wrapup_autofix.py)",
+          "current": "actions/checkout@v7",
+          "required": "actions/checkout@v5"
+        }
+      ]
+    },
+    "actions/setup-python": {
+      "count": 97,
+      "required_version": "v6",
+      "workflows_affected": 66,
+      "sample_violations": [
+        {
+          "workflow": "agent-handoff-gate.yml",
+          "job": "validate-handoff",
+          "step": "Set up Python",
+          "current": "./.github/actions/setup-python-cached",
+          "required": "actions/setup-python@v6"
+        },
+        {
+          "workflow": "agent-orchestration-unified.yml",
+          "job": "orchestrate_agent_chain",
+          "step": "Set up Python 3.12",
+          "current": "./.github/actions/setup-python-cached",
+          "required": "actions/setup-python@v6"
+        }
+      ]
+    },
+    "actions/upload-artifact": {
+      "count": 15,
+      "required_version": "v5",
+      "workflows_affected": 13,
+      "sample_violations": [
+        {
+          "workflow": "agent-health-check.yml",
+          "job": "success-rate",
+          "step": "Upload health report",
+          "current": "actions/upload-artifact@v7.0.1",
+          "required": "actions/upload-artifact@v5"
+        },
+        {
+          "workflow": "ci-pass-rate-gate.yml",
+          "job": "pass-rate",
+          "step": "Upload pass-rate report",
+          "current": "actions/upload-artifact@v7.0.1",
+          "required": "actions/upload-artifact@v5"
+        }
+      ]
+    },
+    "actions/setup-node": {
+      "count": 4,
+      "required_version": "v5",
+      "workflows_affected": 4,
+      "sample_violations": [
+        {
+          "workflow": "copilot-evolution-suite.yml",
+          "job": "cascade_review",
+          "step": "Setup Node.js 22",
+          "current": "actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e",
+          "required": "actions/setup-node@v5"
+        },
+        {
+          "workflow": "documentation-link-checker.yml",
+          "job": "check-links",
+          "step": "Set up Node.js",
+          "current": "actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e",
+          "required": "actions/setup-node@v5"
+        }
+      ]
+    }
+  },
+  "job_dependency_summary": {
+    "total_workflows": 212,
+    "workflows_with_dependencies": 109,
+    "total_jobs_with_dependencies": 220,
+    "complex_dependencies": 31
+  },
+  "step_conditions_summary": {
+    "total_conditions": 561,
+    "simple_conditions": 361,
+    "compound_conditions": 143,
+    "negation_conditions": 116
+  },
+  "compliance_status": "\u26a0\ufe0f ACTION REQUIRED",
+  "automation_ready": true
+}
