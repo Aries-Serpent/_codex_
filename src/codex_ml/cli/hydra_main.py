@@ -45,6 +45,7 @@ else:  # pragma: no cover - executed when distributed helpers are available
 
 
 from codex_ml.codex_structured_logging import (
+from codex.logging.structured_logger import logger
     ArgparseJSONParser,
     capture_exceptions,
     init_json_logging,
@@ -291,7 +292,7 @@ def _hydra_missing_main(args: Sequence[str], prog: str) -> int:
             mode="minimal",
             result=result,
         )
-        print(json.dumps({"ok": True, "mode": "minimal", "result": result}))
+        logger.info(json.dumps({"ok": True, "mode": "minimal", "result": result}))
         return 0
 
 
@@ -307,7 +308,7 @@ def main(argv: Optional[Sequence[str]] = None) -> Any:
         logger = init_json_logging()
         with capture_exceptions(logger):
             log_event(logger, "cli.start", prog="codex-train", args=list(argv or []))
-            print(json.dumps(_probe_payload()))
+            logger.info(json.dumps(_probe_payload()))
             log_event(
                 logger,
                 "cli.finish",
@@ -380,7 +381,7 @@ def main(argv: Optional[Sequence[str]] = None) -> Any:
         logger = init_json_logging()
         with capture_exceptions(logger):
             log_event(logger, "cli.start", prog=parser.prog, args=arg_list)
-            print(json.dumps(_probe_payload()))
+            logger.info(json.dumps(_probe_payload()))
             log_event(
                 logger,
                 "cli.finish",
