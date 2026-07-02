@@ -1,10 +1,10 @@
-# Session Context — 2026-07-02T18:50:04Z
+# Session Context — 2026-07-02T19:01:19Z
 **Branch:** `copilot/explore-codebase-implement-tasks`  **PR:** #5194  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `5000` (✅)
-- GraphQL remaining: `4977` (✅)
+- REST remaining: `4733` (✅)
+- GraphQL remaining: `4995` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -12,21 +12,21 @@
 State: `open`  Draft: `False`  Branch: `copilot/explore-codebase-implement-tasks` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **Phase 8.2 Issue Triage** — `failure` on `main` (2026-07-02)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-02)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-02)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-02)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-02)
+- **Unified Governance Check** — `failure` on `copilot/explore-codebase-implement-tasks` (2026-07-02)
+- **Validation Pipeline** — `failure` on `copilot/explore-codebase-implement-tasks` (2026-07-02)
 
 ## 📝 Recent Commits
+- `05dde76e` fix(secrets): annotate doc-example false positives [skip ci] (RP-007) — github-actions[bot] (2026-07-02)
+- `ff95f2b8` Apply remaining changes — copilot-swe-agent[bot] (2026-07-02)
+- `1872231d` fix: Resolve Tier 1 critical workflow failures (Lane 1, 3, 4, 5) — copilot-swe-agent[bot] (2026-07-02)
+- `6187987a` fix: Restore PHASE_9_3_CAPABILITY_INDEX.json for router workflow — copilot-swe-agent[bot] (2026-07-02)
+- `a8de803c` fix(secrets): annotate doc-example false positives [skip ci] (RP-007) — github-actions[bot] (2026-07-02)
+- `4919ec71` docs: Create PR #5194 CI remediation campaign matrix — copilot-swe-agent[bot] (2026-07-02)
 - `81ac7811` Apply remaining changes — copilot-swe-agent[bot] (2026-07-02)
 - `a2c355e7` fix(secrets): annotate doc-example false positives [skip ci] (RP-007) — github-actions[bot] (2026-07-02)
-- `a97d62a5` chore(cascade-detector): remove stale truncated key from cascade_detector_state. — copilot-swe-agent[bot] (2026-07-02)
-- `5ef640b5` fix(compliance): REQ-6 false-positive annotation + REQ-4/REQ-5 compliance refres — copilot-swe-agent[bot] (2026-07-02)
-- `0c84155b` chore: plan blockers fix — copilot-swe-agent[bot] (2026-07-02)
-- `9fd0021b` fix(secrets): annotate doc-example false positives [skip ci] (RP-007) — github-actions[bot] (2026-07-02)
-- `c40ebc8b` Apply remaining changes — copilot-swe-agent[bot] (2026-07-02)
-- `087aa578` chore(pr5194): finalize merge-readiness compliance — copilot-swe-agent[bot] (2026-07-02)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`

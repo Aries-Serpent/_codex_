@@ -96,9 +96,22 @@ class CapabilityIndexLoader:
             with open(self.index_path, 'r') as f:
                 self.index_data = json.load(f)
 
-            # Load agents
-            self.agents = self.index_data.get('agents', {})
-            self.agent_by_id = {agent['agent_id']: agent for agent in self.agents.values()}
+            # Load agents - agents can be either a list or dict
+            agents_data = self.index_data.get('agents', {})
+            
+            # Convert list to dict if needed
+            if isinstance(agents_data, list):
+                self.agents = {agent.get('id', agent.get('agent_id', f"agent_{i}")): agent 
+                              for i, agent in enumerate(agents_data)}
+            else:
+                self.agents = agents_data
+            
+            # Create agent lookup by id
+            self.agent_by_id = {}
+            for agent_key, agent in self.agents.items():
+                # Handle both 'id' and 'agent_id' keys
+                agent_id = agent.get('agent_id') or agent.get('id') or agent_key
+                self.agent_by_id[agent_id] = agent
 
             print(f"✓ Loaded capability index with {len(self.agents)} agents")
         except Exception as e:
