@@ -82,8 +82,10 @@ jobs:
             task_id = "manual-${{ github.run_id }}"
             category = "manual"
           
-          print(f"::set-output name=task_id::{task_id}")
-          print(f"::set-output name=category::{category}")
+          # Write outputs using new GITHUB_OUTPUT format
+          with open(os.environ.get('GITHUB_OUTPUT', '/dev/null'), 'a') as f:
+            f.write(f"task_id={task_id}\n")
+            f.write(f"category={category}\n")
           
           print(f"\n📋 Task Info:")
           print(f"  ID: {task_id}")
@@ -96,7 +98,7 @@ jobs:
           method="semantic"  # Default to semantic routing via FAISS
           
           # Check if forcing FAISS rebuild
-          if "${{ github.event.inputs.force_reindex_faiss }}" == "true"; then
+          if [ "${{ github.event.inputs.force_reindex_faiss }}" = "true" ]; then
             method="rebuild_index"
           fi
           
@@ -145,19 +147,20 @@ jobs:
           # Extract results
           python3 << 'EOF'
           import json
+          import os
           with open('/tmp/routing-decision.json', 'r') as f:
               result = json.load(f)
           
           # Extract top agents
           agents = [a['agent_id'] for a in result['top_agents']]
-          print(f"::set-output name=top_agents::{','.join(agents)}")
           
-          # Extract latency
-          print(f"::set-output name=latency_ms::{result['latency_ms']:.0f}")
-          
-          # Extract confidence
-          confidence = [a['confidence'] for a in result['top_agents']]
-          print(f"::set-output name=confidence::{','.join(map(str, confidence))}")
+          # Write outputs using new GITHUB_OUTPUT format
+          github_output = os.environ.get('GITHUB_OUTPUT', '/dev/null')
+          with open(github_output, 'a') as f:
+            f.write(f"top_agents={','.join(agents)}\n")
+            f.write(f"latency_ms={result['latency_ms']:.0f}\n")
+            confidence = [a['confidence'] for a in result['top_agents']]
+            f.write(f"confidence={','.join(map(str, confidence))}\n")
           EOF
         shell: bash
 
@@ -201,12 +204,16 @@ jobs:
           # Extract results
           python3 << 'EOF'
           import json
+          import os
           with open('/tmp/load-balance.json', 'r') as f:
               result = json.load(f)
           
-          print(f"::set-output name=selected_agents::{','.join(result['selected_agents'])}")
-          print(f"::set-output name=load_status::{json.dumps(result['agent_load'])}")
-          print(f"::set-output name=queue_depth::{sum(a.get('queue_depth', 0) for a in result['agent_load'].values())}")
+          # Write outputs using new GITHUB_OUTPUT format
+          github_output = os.environ.get('GITHUB_OUTPUT', '/dev/null')
+          with open(github_output, 'a') as f:
+            f.write(f"selected_agents={','.join(result['selected_agents'])}\n")
+            f.write(f"load_status={json.dumps(result['agent_load'])}\n")
+            f.write(f"queue_depth={sum(a.get('queue_depth', 0) for a in result['agent_load'].values())}\n")
           EOF
         shell: bash
 
@@ -254,12 +261,16 @@ jobs:
           # Extract results
           python3 << 'EOF'
           import json
+          import os
           with open('/tmp/execution-result.json', 'r') as f:
               result = json.load(f)
           
-          print(f"::set-output name=result::{result['status']}")
-          print(f"::set-output name=duration::{result['total_duration_s']:.1f}")
-          print(f"::set-output name=agents_count::{result['parallel_agents_count']}")
+          # Write outputs using new GITHUB_OUTPUT format
+          github_output = os.environ.get('GITHUB_OUTPUT', '/dev/null')
+          with open(github_output, 'a') as f:
+            f.write(f"result={result['status']}\n")
+            f.write(f"duration={result['total_duration_s']:.1f}\n")
+            f.write(f"agents_count={result['parallel_agents_count']}\n")
           EOF
         shell: bash
 
@@ -316,7 +327,7 @@ jobs:
       - name: Update routing metrics
         run: |
           # Update success metrics
-          if [ "${{ needs.concurrent-execution.outputs.execution_result }}" == "COMPLETED" ]; then
+          if [ "${{ needs.concurrent-execution.outputs.execution_result }}" = "COMPLETED" ]; then
             echo "✅ Task completed successfully"
           else
             echo "⚠️  Task execution status: ${{ needs.concurrent-execution.outputs.execution_result }}"

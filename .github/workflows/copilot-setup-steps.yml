@@ -195,7 +195,9 @@ jobs:
           --output "$SCORER_OUTPUT" \
           --top-k 15 \
           --min-score 0.65 \
-          --json-metadata "{\"task_description\": \"$TASK_DESC\", \"domain\": \"$DOMAIN\", \"agent_types\": [\"$AGENT_TYPES\"]}"; then
+          --task-desc "$TASK_DESC" \
+          --domain "$DOMAIN" \
+          --agent-types "$AGENT_TYPES"; then
           
           SCORER_END=$(date +%s%N)
           SCORER_TIME_MS=$(( (SCORER_END - SCORER_START) / 1000000 ))
@@ -207,7 +209,7 @@ jobs:
           # Extract metrics
           if [ -f "$SCORER_OUTPUT" ]; then
             PATTERN_COUNT=$(python3 -c "import json; data=json.load(open('$SCORER_OUTPUT')); print(data.get('pattern_count', 0))" 2>/dev/null || echo "0")
-            AVG_SCORE=$(python3 -c "import json; data=json.load(open('$SCORER_OUTPUT')); print(f"{data.get('avg_score', 0):.2f}")" 2>/dev/null || echo "0.00")
+            AVG_SCORE=$(python3 -c "import json; data=json.load(open('$SCORER_OUTPUT')); val=data.get('avg_score', 0); print('{:.2f}'.format(val))" 2>/dev/null || echo "0.00")
             
             echo "CONTEXT_PATTERNS_COUNT=${PATTERN_COUNT}" >> "$GITHUB_ENV"
             echo "CONTEXT_PATTERNS_AVG_SCORE=${AVG_SCORE}" >> "$GITHUB_ENV"
@@ -417,10 +419,10 @@ jobs:
             'context_scorer_status': os.environ.get('CONTEXT_SCORER_STATUS', 'unknown'),
             'patterns_injected': int(os.environ.get('CONTEXT_PATTERNS_COUNT', '0') or '0'),
             'avg_relevance_score': float(os.environ.get('CONTEXT_PATTERNS_AVG_SCORE', '0') or '0'),
-            'injection_overhead_ms': int(os.environ.get('CONTEXT_SCORER_TIME_MS', '0') or '0') + 
-                                     int(os.environ.get('CONTEXT_INJECTION_TIME_MS', '0') or '0'),
+            'injection_overhead_ms': (int(os.environ.get('CONTEXT_SCORER_TIME_MS', '0') or '0') + 
+                int(os.environ.get('CONTEXT_INJECTION_TIME_MS', '0') or '0')),
         }
-        
+
         # Append to log
         log_file = os.environ.get('AB_TEST_LOG', '.codex/phase_10_3_ab_test_log.jsonl')
         os.makedirs(os.path.dirname(log_file) or '.', exist_ok=True)
