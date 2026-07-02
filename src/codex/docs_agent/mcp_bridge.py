@@ -8,6 +8,7 @@ Authority: Lane 3 Unified Documentation Agent
 """
 
 from typing import Dict, List, Any, Optional, Callable
+from dataclasses import dataclass
 from enum import Enum
 import logging
 
