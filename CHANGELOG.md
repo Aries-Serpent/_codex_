@@ -1,4 +1,21 @@
-## [Unreleased] 
+## [Unreleased]
+### Added (personalized tips campaign bootstrap)
+- Added Phase 10/11/12 bootstrap commands to `python -m codex.cli chronicle` for:
+  - session checkpoint creation
+  - session restore
+  - task-agent routing guidance
+  - specialized agent-chain recommendations
+  - CI auto-fix diagnostics/remediation wrappers
+- Added `src/codex/copilot_campaign.py` to centralize task-routing and agent-chain decisions.
+- Added `scripts/ci/enhanced_diagnostics.py` and `scripts/ci/bulk_remediation_orchestrator.py` as structured wrappers around `auto_fix_common_issues.py`.
+- Added tracked campaign implementation docs in `.codex/` covering CLI enhancements, task routing, security chains, CI auto-fix integration, and the Phase 11 plan.
+
+### Fixed (checkpoint resume campaign wiring)
+- Fixed `scripts/cognitive/session_resume_engine.py` import behavior so the CLI can load the resume engine through the package facade.
+- Fixed `scripts/cognitive/session_checkpoint_manager.py` lookup behavior by embedding checkpoint IDs in stored filenames and adding backward-compatible ID lookup for restore operations.
+- Added regression coverage in `tests/test_chronicle_campaign_cli.py` for the new chronicle campaign flows.
+
+## [Unreleased]
 ### Fixed (governance compliance remediation — PR #5194 commit 2b75e419)
 - **Governance Compliance Block Recovery**: Resolved Phase 12.2 Compliance BLOCK (41.67% → 95%+) by:
   1. Registering 132 Phase 10-12 governance artifacts as exceptions in `docs-data/allowed-source-exceptions.json` (commit `0d4ecbef`)
@@ -9,7 +26,7 @@
 
 ---
 
-## [Unreleased] 
+## [Unreleased]
 ### Fixed (auto-update — PR #5194)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5194 (SHA `89b6ee52`) at 2026-07-02T20:36Z [auto-generated]
 — 2026-07-02T19:36Z
@@ -1081,7 +1098,7 @@ Fixed all 15 security vulnerabilities from commit d587689 and PR review comments
   - Track 10.2: STM → LTM Integration (memory-sync-agent agent)
   - Track 10.3: Context Injection & OODA Loop (cognitive-ooda-loop-agent agent)
   - 9 deliverables, success metrics, integration gates, deployment validation
-  
+
 - **Phase 12 Implementation Plan (Enterprise Features & Operations):**
   - `.codex/PHASE_12_IMPLEMENTATION_PLAN.md` — Detailed 10-day execution plan with 3 tracks
   - Track 12.1: Role-Based Access Control (unified-governance-gate agent)
@@ -1335,7 +1352,7 @@ Fixed all 15 security vulnerabilities from commit d587689 and PR review comments
 - **Type Annotation Hardening**: 370+ automated fixes from Wave 4 (phases 1-4), 1,130 → 982 errors (13.1% reduction)
   - Pre-execution corrections: 36 files fixed (broken annotations from Phase 4)
   - 5-stage Phase 5 execution strategy ready (1,726+ fixes target)
-- **Cache Optimization Results**: 
+- **Cache Optimization Results**:
   - Docker Build: 18-25 min → <15 min (35% reduction)
   - CI Performance: 34-40 min → <30 min (25% reduction)
   - Cache Hit Rates: Overall 59% → >84% (+25 pts), Runtime 65% → >90% (+25 pts)
@@ -1475,9 +1492,9 @@ Fixed all 15 security vulnerabilities from commit d587689 and PR review comments
 
 ### Review Remediation + PR #5093 Documentation Import — 2026-06-26T18:30Z
 
-**Campaign:** PR #5092 review closure + PR #5093 documentation import  
-**Session:** copilot-pr5092-review-remediation  
-**Date:** 2026-06-26T18:30Z  
+**Campaign:** PR #5092 review closure + PR #5093 documentation import
+**Session:** copilot-pr5092-review-remediation
+**Date:** 2026-06-26T18:30Z
 **Authority:** Copilot Coding Agent (autonomous)
 
 #### Executive Summary
@@ -1508,9 +1525,9 @@ Resolved the remaining bot-review findings called out on PR #5092, fixed the `en
 
 ### CodeQL & Syntax Remediation — 2026-06-26T17:41Z (Final Compliance Fixes)
 
-**Campaign:** PR #5092 CodeQL Alert Resolution  
-**Session:** copilot-codeql-remediation  
-**Date:** 2026-06-26T17:41Z  
+**Campaign:** PR #5092 CodeQL Alert Resolution
+**Session:** copilot-codeql-remediation
+**Date:** 2026-06-26T17:41Z
 **Authority:** Copilot Coding Agent (autonomous)
 
 #### Executive Summary
@@ -1554,9 +1571,9 @@ Resolved the remaining bot-review findings called out on PR #5092, fixed the `en
 
 ### CI Triage #5090 Complete — 2026-06-26T20:10Z (All 85 Failures + 11 Review Findings Resolved)
 
-**Campaign:** Issue #5090 CI Failure Triage (FINAL COMPLETION + QA)  
-**Session:** copilot-ci-triage-complete  
-**Date:** 2026-06-26T20:10Z  
+**Campaign:** Issue #5090 CI Failure Triage (FINAL COMPLETION + QA)
+**Session:** copilot-ci-triage-complete
+**Date:** 2026-06-26T20:10Z
 **Authority:** Copilot CI Failure Resolution Agent (autonomous)
 
 #### Executive Summary
@@ -1645,7 +1662,7 @@ Resolved the remaining bot-review findings called out on PR #5092, fixed the `en
 #### Quality Metrics
 
 - ✅ Python Syntax: 100% valid
-- ✅ YAML Syntax: 100% valid  
+- ✅ YAML Syntax: 100% valid
 - ✅ Test Collection: 6/6 fast-mode passing
 - ✅ Security: No vulnerabilities introduced
 - ✅ Compliance: 100% (all gates passing)
@@ -1665,9 +1682,9 @@ Resolved the remaining bot-review findings called out on PR #5092, fixed the `en
 
 ### CI Triage #5090 Phase 2 Complete — 2026-06-26T19:35Z
 
-**Campaign:** Issue #5090 CI Failure Triage  
-**Session:** copilot-ci-triage-phase-2-complete  
-**Date:** 2026-06-26T19:35Z  
+**Campaign:** Issue #5090 CI Failure Triage
+**Session:** copilot-ci-triage-phase-2-complete
+**Date:** 2026-06-26T19:35Z
 **Authority:** Copilot CI Failure Resolution Agent (autonomous)
 
 #### Executive Summary
@@ -1693,7 +1710,7 @@ Completed Phase 2 of 6-phase parallel CI failure remediation. Resolved 41 valida
 #### Quality Metrics
 
 - ✅ Python Syntax: 100% valid
-- ✅ YAML Syntax: 100% valid  
+- ✅ YAML Syntax: 100% valid
 - ✅ Test Collection: 6/6 fast-mode passing
 - ✅ Security: No vulnerabilities introduced
 - ✅ Compliance: All gates passing (100%)
@@ -1710,8 +1727,8 @@ Completed Phase 2 of 6-phase parallel CI failure remediation. Resolved 41 valida
 
 ### CI Failure Resolution & Validation Fixes — 2026-06-26T17:15Z
 
-**Session:** CI Triage & Fast-Mode Validation Fix  
-**Date:** 2026-06-26T17:15Z  
+**Session:** CI Triage & Fast-Mode Validation Fix
+**Date:** 2026-06-26T17:15Z
 **Authority:** Copilot CI Auto-Healer (autonomous)
 
 #### Work Summary
@@ -1748,8 +1765,8 @@ Fixed 41 critical CI failures across 8 validation/gate workflows blocking PR #50
 
 ### 🚨 Critical Fixes: 3 Main-Branch CI Failures Resolved
 
-**Date:** 2026-06-26T16:49Z  
-**Session:** copilot-main-ci-fixes  
+**Date:** 2026-06-26T16:49Z
+**Session:** copilot-main-ci-fixes
 **Authority:** @mbaetiong D-mode autonomous
 
 #### Issues Addressed
@@ -2035,8 +2052,8 @@ Fixed 41 critical CI failures across 8 validation/gate workflows blocking PR #50
 
 ### 🔧 PR Review Comment Resolution
 
-**Status:** ✅ ALL REVIEW COMMENTS ADDRESSED  
-**Scope:** Address feedback from initial PR submission including code violations, documentation fixes, and policy compliance  
+**Status:** ✅ ALL REVIEW COMMENTS ADDRESSED
+**Scope:** Address feedback from initial PR submission including code violations, documentation fixes, and policy compliance
 
 #### Changes Applied
 
@@ -2065,9 +2082,9 @@ Fixed 41 critical CI failures across 8 validation/gate workflows blocking PR #50
 
 ### 🎯 Phase 9: Multi-Agent Validation Audit Campaign
 
-**Campaign Status:** ✅ AUDIT COMPLETE (Lanes A-D)  
-**Authority:** @mbaetiong (Lane D Execution Authority)  
-**Scope:** Documentation integrity, codebase alignment, consistency validation  
+**Campaign Status:** ✅ AUDIT COMPLETE (Lanes A-D)
+**Authority:** @mbaetiong (Lane D Execution Authority)
+**Scope:** Documentation integrity, codebase alignment, consistency validation
 
 #### Campaign Execution Summary
 
@@ -2106,9 +2123,9 @@ Fixed 41 critical CI failures across 8 validation/gate workflows blocking PR #50
 
 ### 🎉 Production Release: v0.1.0-final
 
-**Release Status:** ✅ Production Ready (32/32 Gates PASSED)  
-**Authority:** @mbaetiong (COPILOT_AGENT_AUTH_ENABLED=true)  
-**Mode:** D (Fully Autonomous)  
+**Release Status:** ✅ Production Ready (32/32 Gates PASSED)
+**Authority:** @mbaetiong (COPILOT_AGENT_AUTH_ENABLED=true)
+**Mode:** D (Fully Autonomous)
 
 #### Major Achievements
 
@@ -2176,11 +2193,11 @@ All 4 specialized agents completed successfully (1,193s total execution):
 
 #### Production Certification: 32/32 Gates PASSED
 
-**Coverage (4/4):** Baseline established, target exceeded, tests generated, distribution verified  
-**Security (5/5):** CodeQL/Semgrep clear, secrets clean, vulnerabilities fixed, remediation complete  
-**CI/CD (5/5):** Success rate exceeds target, workflows compliant, concurrency rules enforced, gates operational  
-**Documentation (8/8):** Links validated, navigation intact, critical path verified, all guides current  
-**Testing (5/5):** Pass rate exceeds minimum, edge cases covered, integration verified, no regressions  
+**Coverage (4/4):** Baseline established, target exceeded, tests generated, distribution verified
+**Security (5/5):** CodeQL/Semgrep clear, secrets clean, vulnerabilities fixed, remediation complete
+**CI/CD (5/5):** Success rate exceeds target, workflows compliant, concurrency rules enforced, gates operational
+**Documentation (8/8):** Links validated, navigation intact, critical path verified, all guides current
+**Testing (5/5):** Pass rate exceeds minimum, edge cases covered, integration verified, no regressions
 **Deployment (5/5):** Runbook verified, rollback tested, monitoring operational, safety enabled
 
 #### Release Assets
@@ -2669,7 +2686,7 @@ python -m codex --version  # Should output: 0.1.0-final
 
 - **Governance Compliance (REQ-4/REQ-5/REQ-14):** All requirements verified passing
   - Accountability report updated with current session entry
-  - CHANGELOG updated with current session entry  
+  - CHANGELOG updated with current session entry
   - Agents Used entry confirmed valid
 
 ### Session Info

@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import logging
-
 from codex.logging.structured_logger import logger
 
 # Monkey-patch stdlib XML to use defusedxml globally (XXE prevention)
@@ -22,9 +20,12 @@ import os  # noqa: E402
 import sqlite3  # noqa: E402
 import subprocess  # noqa: E402
 import sys  # noqa: E402
+from datetime import UTC, datetime  # noqa: E402
 from pathlib import Path  # noqa: E402
 
 import click  # noqa: E402
+
+from codex.copilot_campaign import build_agent_chain, recommend_task_route  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
     import typer as _typer
@@ -63,6 +64,77 @@ except (IOError, OSError):  # pragma: no cover
 
 # Resolve helper scripts relative to this file so the CLI works from any CWD.
 TOOLS_DIR = Path(__file__).resolve().parent.parent.parent / "tools"
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+CAMPAIGN_METRICS_LOG = REPO_ROOT / ".codex" / "campaign_metrics.jsonl"
+
+
+def _utc_timestamp() -> str:
+    """Return a UTC timestamp using the repository-standard format."""
+
+    return datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def _append_campaign_metric(event: str, payload: dict[str, object]) -> None:
+    """Append a small JSONL metric for new campaign-oriented CLI flows."""
+
+    CAMPAIGN_METRICS_LOG.parent.mkdir(parents=True, exist_ok=True)
+    record = {
+        "timestamp": _utc_timestamp(),
+        "event": event,
+        **payload,
+    }
+    with CAMPAIGN_METRICS_LOG.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(record, sort_keys=True) + "\n")
+
+
+def _run_git_capture(args: list[str]) -> str:
+    """Run a small git command and return stdout, degrading to 'unknown'."""
+
+    try:
+        result = subprocess.run(
+            args,
+            cwd=REPO_ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+    except (subprocess.SubprocessError, OSError, ValueError):
+        return "unknown"
+    return result.stdout.strip() or "unknown"
+
+
+def _snapshot_repository_state() -> dict[str, object]:
+    """Capture lightweight repository state for session checkpoints."""
+
+    branch = _run_git_capture(["git", "branch", "--show-current"])
+    commit_sha = _run_git_capture(["git", "rev-parse", "HEAD"])
+    status_output = _run_git_capture(["git", "status", "--short"])
+    uncommitted_changes = (
+        0
+        if status_output == "unknown"
+        else len([line for line in status_output.splitlines() if line.strip()])
+    )
+    return {
+        "branch": branch,
+        "commit_sha": commit_sha,
+        "uncommitted_changes": uncommitted_changes,
+        "cwd": str(REPO_ROOT),
+    }
+
+
+def _parse_tags(tags: tuple[str, ...]) -> dict[str, str]:
+    """Parse repeated KEY=VALUE CLI tags into a dictionary."""
+
+    parsed: dict[str, str] = {}
+    for raw in tags:
+        if "=" not in raw:
+            raise click.ClickException(f"Invalid tag '{raw}'. Expected KEY=VALUE.")
+        key, value = raw.split("=", 1)
+        key = key.strip()
+        if not key:
+            raise click.ClickException(f"Invalid tag '{raw}'. Tag key cannot be empty.")
+        parsed[key] = value.strip()
+    return parsed
 
 
 def _run_ingest() -> None:
@@ -546,6 +618,272 @@ def chronicle_analyze(pattern: str | None, output: str | None) -> None:
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         click.echo(f"❌ Failed to analyze patterns: {exc}", err=True)
         sys.exit(1)
+
+
+@chronicle.command("checkpoint")
+@click.option("--session-id", default=None, help="Logical session identifier")
+@click.option("--agent-id", default="copilot-coding-agent", help="Agent identifier")
+@click.option("--status", default="active", help="Current agent status")
+@click.option("--task", "task_name", default="unspecified", help="Current task summary")
+@click.option(
+    "--tag",
+    "tags",
+    multiple=True,
+    help="Checkpoint metadata tag as KEY=VALUE (repeatable)",
+)
+@click.option(
+    "--format",
+    "output_format",
+    type=click.Choice(["text", "json"]),
+    default="text",
+    help="Output format",
+)
+def chronicle_checkpoint(
+    session_id: str | None,
+    agent_id: str,
+    status: str,
+    task_name: str,
+    tags: tuple[str, ...],
+    output_format: str,
+) -> None:
+    """Create a session checkpoint for long-running Copilot work."""
+
+    try:
+        from scripts.cognitive.session_checkpoint_manager import SessionCheckpointManager
+    except ImportError as exc:
+        raise click.ClickException(f"Checkpoint manager unavailable: {exc}") from exc
+
+    resolved_session_id = session_id or os.getenv(
+        "CODEX_SESSION_ID", f"cli-session-{datetime.now(UTC).strftime('%Y%m%d%H%M%S')}"
+    )
+    metadata_tags = _parse_tags(tags)
+    manager = SessionCheckpointManager(
+        storage_path=str(REPO_ROOT / ".codex" / "checkpoints"),
+        compression_algorithm="gzip",
+        compression_level=9,
+    )
+    repo_state = _snapshot_repository_state()
+    checkpoint_meta = manager.create_checkpoint(
+        session_id=resolved_session_id,
+        agent_state={
+            "agent_id": agent_id,
+            "status": status,
+            "cwd": str(REPO_ROOT),
+        },
+        memory_snapshot={
+            "short_term_memory": [],
+            "long_term_memory": [],
+            "total_patterns": 0,
+        },
+        execution_progress={
+            "current_task": task_name,
+            "completed_tasks": [],
+            "pending_tasks": [],
+            "task_completion_percent": 0.0,
+        },
+        repository_state=repo_state,
+        metadata=metadata_tags,
+        compress=True,
+    )
+    _append_campaign_metric(
+        "checkpoint_created",
+        {
+            "checkpoint_id": checkpoint_meta.checkpoint_id,
+            "session_id": resolved_session_id,
+            "task": task_name,
+        },
+    )
+
+    if output_format == "json":
+        click.echo(json.dumps(checkpoint_meta.to_dict(), indent=2, sort_keys=True))
+        return
+
+    click.echo(f"✅ Checkpoint created: {checkpoint_meta.checkpoint_id}")
+    click.echo(f"   Session: {resolved_session_id}")
+    click.echo(f"   Task: {task_name}")
+    click.echo(f"   Branch: {repo_state['branch']}")
+    click.echo(f"   Compression ratio: {checkpoint_meta.compression_ratio:.2f}:1")
+
+
+@chronicle.command("resume-session")
+@click.argument("checkpoint_id")
+@click.option(
+    "--format",
+    "output_format",
+    type=click.Choice(["text", "json"]),
+    default="text",
+    help="Output format",
+)
+def chronicle_resume_session(checkpoint_id: str, output_format: str) -> None:
+    """Restore a checkpoint and print the execution context summary."""
+
+    try:
+        from scripts.cognitive.session_checkpoint_manager import SessionCheckpointManager
+        from scripts.cognitive.session_resume_engine import SessionResumeEngine
+    except ImportError as exc:
+        raise click.ClickException(f"Resume engine unavailable: {exc}") from exc
+
+    manager = SessionCheckpointManager(
+        storage_path=str(REPO_ROOT / ".codex" / "checkpoints"),
+        compression_algorithm="gzip",
+        compression_level=9,
+    )
+    engine = SessionResumeEngine(checkpoint_manager=manager, enable_warmup=False)
+    context = engine.warm_start(checkpoint_id)
+    _append_campaign_metric(
+        "checkpoint_restored",
+        {
+            "checkpoint_id": checkpoint_id,
+            "session_id": context.session_id,
+            "task": context.execution_progress.get("current_task", "unknown"),
+        },
+    )
+
+    result = {
+        "checkpoint_id": checkpoint_id,
+        "session_id": context.session_id,
+        "agent_id": context.agent_id,
+        "agent_status": context.agent_status,
+        "task": context.execution_progress.get("current_task"),
+        "completed_tasks": context.execution_progress.get("completed_tasks", []),
+        "warmup_complete": context.warmup_complete,
+        "patterns": context.memory_snapshot.get("total_patterns", 0),
+    }
+    if output_format == "json":
+        click.echo(json.dumps(result, indent=2, sort_keys=True))
+        return
+
+    click.echo(f"✅ Restored checkpoint: {checkpoint_id}")
+    click.echo(f"   Session: {context.session_id}")
+    click.echo(f"   Agent: {context.agent_id} ({context.agent_status})")
+    click.echo(f"   Task: {result['task']}")
+    click.echo(f"   Completed tasks: {len(result['completed_tasks'])}")
+
+
+@chronicle.command("route-task")
+@click.argument("command")
+@click.option(
+    "--category",
+    type=click.Choice(
+        ["deterministic", "ci", "validation", "install", "exploration", "research", "general"]
+    ),
+    default=None,
+    help="Optional workflow category hint",
+)
+@click.option("--json", "as_json", is_flag=True, help="Emit JSON instead of text")
+def chronicle_route_task(command: str, category: str | None, as_json: bool) -> None:
+    """Recommend whether to use bash, task, or a general-purpose agent."""
+
+    decision = recommend_task_route(command=command, category=category)
+    _append_campaign_metric(
+        "task_route_recommended",
+        {
+            "runner": decision.recommended_runner,
+            "agent": decision.recommended_agent,
+            "category": decision.category,
+        },
+    )
+
+    if as_json:
+        click.echo(json.dumps(decision.to_dict(), indent=2, sort_keys=True))
+        return
+
+    click.echo(f"Runner: {decision.recommended_runner}")
+    click.echo(f"Agent: {decision.recommended_agent}")
+    click.echo(f"Category: {decision.category}")
+    click.echo(f"Why: {decision.rationale}")
+    click.echo(f"Prompt template: {decision.prompt_template}")
+
+
+@chronicle.command("agent-chain")
+@click.option(
+    "--focus",
+    type=click.Choice(["codeql", "security", "ci", "coverage", "docs", "orchestration"]),
+    required=True,
+    help="Workflow focus to optimize",
+)
+@click.option("--json", "as_json", is_flag=True, help="Emit JSON instead of text")
+def chronicle_agent_chain(focus: str, as_json: bool) -> None:
+    """Show the recommended specialized-agent chain for a workflow."""
+
+    chain = build_agent_chain(focus)
+    _append_campaign_metric(
+        "agent_chain_requested",
+        {"focus": focus, "steps": len(chain.steps)},
+    )
+
+    if as_json:
+        click.echo(json.dumps(chain.to_dict(), indent=2, sort_keys=True))
+        return
+
+    click.echo(chain.summary)
+    for step in chain.steps:
+        click.echo(f"{step.order}. {step.agent} — {step.purpose}")
+        click.echo(f"   Prompt: {step.prompt_template}")
+
+
+@chronicle.command("auto-fix")
+@click.option("--check-only", is_flag=True, help="Run diagnostics without applying fixes")
+@click.option("--pattern", type=int, default=None, help="Optional pattern number")
+@click.option("--pattern-name", default=None, help="Optional pattern-name substring")
+@click.option("--dry-run", is_flag=True, help="Preview remediation without editing files")
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path),
+    default=None,
+    help="Optional JSON output path",
+)
+@click.option("--json", "as_json", is_flag=True, help="Emit JSON instead of text")
+def chronicle_auto_fix(
+    check_only: bool,
+    pattern: int | None,
+    pattern_name: str | None,
+    dry_run: bool,
+    output: Path | None,
+    as_json: bool,
+) -> None:
+    """Run the campaign's CI auto-fix wrappers."""
+
+    if check_only:
+        from scripts.ci.enhanced_diagnostics import run_enhanced_diagnostics
+
+        report = run_enhanced_diagnostics(
+            repo_root=REPO_ROOT,
+            pattern=pattern,
+            pattern_name=pattern_name,
+            output_path=output,
+        )
+    else:
+        from scripts.ci.bulk_remediation_orchestrator import run_bulk_remediation
+
+        report = run_bulk_remediation(
+            repo_root=REPO_ROOT,
+            pattern=pattern,
+            pattern_name=pattern_name,
+            output_path=output,
+            dry_run=dry_run,
+        )
+
+    _append_campaign_metric(
+        "autofix_invoked",
+        {
+            "mode": "diagnostics" if check_only else "remediation",
+            "pattern": pattern or 0,
+            "pattern_name": pattern_name or "",
+            "status": report.get("status", "unknown"),
+        },
+    )
+
+    if as_json:
+        click.echo(json.dumps(report, indent=2, sort_keys=True))
+        return
+
+    click.echo(f"Status: {report.get('status', 'unknown')}")
+    click.echo(f"Total issues: {report.get('total_issues', 0)}")
+    click.echo(f"Auto-fixable: {report.get('auto_fixable', 0)}")
+    click.echo(f"Manual review: {report.get('manual_review', 0)}")
+    for next_step in report.get("next_steps", []):
+        click.echo(f"- {next_step}")
 
 
 @cli.command("train", context_settings={"ignore_unknown_options": True})
