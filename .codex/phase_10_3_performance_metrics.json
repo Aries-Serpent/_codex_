@@ -1,0 +1,11 @@
+{
+  "timestamp": "2026-07-02T21:21:56.449417",
+  "context_scorer_time_ms": 0,
+  "pattern_injection_time_ms": 0,
+  "patterns_count": 0,
+  "avg_relevance_score": 0.0,
+  "total_overhead_ms": 0,
+  "ooda_baseline_ms": 2500,
+  "ooda_improvement_percent": 0,
+  "ooda_with_context_ms": 2500
+}
