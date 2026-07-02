@@ -440,6 +440,114 @@ def logs_export_data(output: str, format: str, db: str) -> None:
         sys.exit(1)
 
 
+@cli.group(invoke_without_command=True, help="Chronicle analytics and personalized tips")
+@click.pass_context
+def chronicle(ctx: click.Context) -> None:
+    """Chronicle: Session history analysis and personalized tips.
+
+    Analyze your session patterns and get personalized recommendations
+    to improve productivity and effectiveness.
+    """
+    if ctx.invoked_subcommand is None:
+        click.echo(ctx.get_help())
+
+
+@chronicle.command("tips")
+@click.option(
+    "--format",
+    type=click.Choice(["text", "json"]),
+    default="text",
+    help="Output format for tips",
+)
+@click.option(
+    "--output",
+    type=click.Path(),
+    default=None,
+    help="Output file path (default: stdout)",
+)
+def chronicle_tips(format: str, output: str | None) -> None:
+    """Get personalized tips based on your session history."""
+    try:
+        from codex.logging.chronicle_analytics import ChronicleAnalytics
+        from codex.logging.session_database import SessionDatabase
+
+        # Initialize database and analytics
+        db_path = ".codex/codex.sqlite"
+        db = SessionDatabase(db_path)
+        analytics = ChronicleAnalytics(db)
+
+        if format == "json":
+            result = analytics.export_json()
+        else:
+            result = analytics.generate_summary()
+
+        if output:
+            Path(output).write_text(result, encoding="utf-8")
+            click.echo(f"✅ Tips exported to {output}")
+        else:
+            click.echo(result)
+
+    except (IOError, OSError) as exc:
+        type(exc).__name__
+        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        click.echo(f"❌ Failed to generate tips: {exc}", err=True)
+        sys.exit(1)
+
+
+@chronicle.command("analyze")
+@click.option(
+    "--pattern",
+    type=click.Choice(["frequency", "tools", "agents", "time", "performance", "trends"]),
+    default=None,
+    help="Analyze specific pattern (default: all)",
+)
+@click.option(
+    "--output",
+    type=click.Path(),
+    default=None,
+    help="Output file path (default: stdout)",
+)
+def chronicle_analyze(pattern: str | None, output: str | None) -> None:
+    """Analyze session patterns in detail."""
+    try:
+        from codex.logging.chronicle_analytics import ChronicleAnalytics
+        from codex.logging.session_database import SessionDatabase
+
+        # Initialize database and analytics
+        db_path = ".codex/codex.sqlite"
+        db = SessionDatabase(db_path)
+        analytics = ChronicleAnalytics(db)
+        patterns = analytics.analyze_patterns()
+
+        if pattern:
+            # Filter to requested pattern
+            pattern_map = {
+                "frequency": "frequency",
+                "tools": "tools",
+                "agents": "agents",
+                "time": "time_patterns",
+                "performance": "performance",
+                "trends": "trends",
+            }
+            result_dict = {pattern: patterns.get(pattern_map[pattern])}
+        else:
+            result_dict = patterns
+
+        result = json.dumps(result_dict, indent=2)
+
+        if output:
+            Path(output).write_text(result, encoding="utf-8")
+            click.echo(f"✅ Analysis exported to {output}")
+        else:
+            click.echo(result)
+
+    except (IOError, OSError) as exc:
+        type(exc).__name__
+        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        click.echo(f"❌ Failed to analyze patterns: {exc}", err=True)
+        sys.exit(1)
+
+
 @cli.command("train", context_settings={"ignore_unknown_options": True})
 @click.option(
     "--engine",

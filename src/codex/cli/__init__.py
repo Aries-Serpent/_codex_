@@ -64,6 +64,7 @@ logs = None
 tokenizer_group = None
 repro_group = None
 auth_group = None
+chronicle = None
 _fix_pool = None
 init_db_cmd = None
 export_env_cmd = None
@@ -85,6 +86,7 @@ if cli is not None:
         tokenizer_group = getattr(_cli_module, "tokenizer_group", None)
         repro_group = getattr(_cli_module, "repro_group", None)
         auth_group = getattr(_cli_module, "auth_group", None)
+        chronicle = getattr(_cli_module, "chronicle", None)
         _fix_pool = getattr(_cli_module, "_fix_pool", None)
         init_db_cmd = getattr(_cli_module, "init_db_cmd", None)
         export_env_cmd = getattr(_cli_module, "export_env_cmd", None)
@@ -105,6 +107,7 @@ __all__ = [
     "ALLOWED_TASKS",
     "app",
     "auth_group",
+    "chronicle",
     "clean_logs_cmd",
     "cli",
     "export_env_cmd",
