@@ -119,6 +119,12 @@ def test_chronicle_autofix_check_only_uses_enhanced_diagnostics(
     assert result.exit_code == 0, result.output
     assert json.loads(result.output)["status"] == "passed"
     mock_run.assert_called_once()
+    assert mock_run.call_args.kwargs == {
+        "repo_root": Path.cwd(),
+        "pattern": None,
+        "pattern_name": None,
+        "output_path": None,
+    }
 
 
 def test_chronicle_autofix_apply_uses_bulk_orchestrator(runner: CliRunner) -> None:

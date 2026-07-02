@@ -34,19 +34,24 @@ def run_enhanced_diagnostics(
         fixer.run_all_patterns()
 
     report = fixer.generate_json_report()
-    errors = sum(1 for issue in report["issues"] if issue["severity"] == "error")
-    warnings = sum(1 for issue in report["issues"] if issue["severity"] == "warning")
+    issues = report.get("issues", [])
+    errors = sum(1 for issue in issues if issue.get("severity") == "error")
+    warnings = sum(1 for issue in issues if issue.get("severity") == "warning")
     report["generated_at"] = _utc_timestamp()
     report["summary"] = {
         "errors": errors,
         "warnings": warnings,
         "blocking_patterns": sorted(
-            {issue["pattern_name"] for issue in report["issues"] if issue["severity"] == "error"}
+            {
+                issue.get("pattern_name", "unknown")
+                for issue in issues
+                if issue.get("severity") == "error"
+            }
         ),
     }
     report["recommended_command"] = (
         "python scripts/ci/bulk_remediation_orchestrator.py"
-        if report["auto_fixable"] > 0
+        if report.get("auto_fixable", 0) > 0
         else "No blocking auto-fixable issues remain."
     )
 

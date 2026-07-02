@@ -133,6 +133,8 @@ def _parse_tags(tags: tuple[str, ...]) -> dict[str, str]:
         key = key.strip()
         if not key:
             raise click.ClickException(f"Invalid tag '{raw}'. Tag key cannot be empty.")
+        if key in parsed:
+            raise click.ClickException(f"Duplicate tag key '{key}' is not allowed.")
         parsed[key] = value.strip()
     return parsed
 

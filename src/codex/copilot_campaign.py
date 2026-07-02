@@ -74,7 +74,7 @@ _CHAIN_LIBRARY: dict[str, AgentChainPlan] = {
                 agent="codeql-alert-resolution-agent",
                 purpose="Fix open CodeQL findings with targeted code changes.",
                 prompt_template=(
-                    "Fix all open CodeQL alerts for this branch and summarize " "each remediation."
+                    "Fix all open CodeQL alerts for this branch and summarize each " "remediation."
                 ),
             ),
             AgentChainStep(

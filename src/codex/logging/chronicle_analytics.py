@@ -10,7 +10,7 @@ Provides:
 
 import json
 from collections import Counter, defaultdict
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Any
 
 from .session_database import SessionDatabase
@@ -38,10 +38,11 @@ class ChronicleAnalytics:
     def _load_sessions(self) -> None:
         """Load all sessions from database."""
         try:
-            with self.db._get_connection() as conn:
+            with self.db.get_connection() as conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    "SELECT id, created_at, status, agent_name, repository FROM sessions ORDER BY created_at DESC"
+                    "SELECT id, created_at, status, agent_name, repository "
+                    "FROM sessions ORDER BY created_at DESC"
                 )
                 self.sessions = [
                     {
@@ -96,7 +97,7 @@ class ChronicleAnalytics:
             return {}
 
         total = len(self.sessions)
-        
+
         # Get date range
         dates = [
             datetime.fromisoformat(s["created_at"].replace("Z", "+00:00")).date()
@@ -109,10 +110,7 @@ class ChronicleAnalytics:
         last_7_days = defaultdict(int)
         for s in self.sessions:
             try:
-                session_date = (
-                    datetime.fromisoformat(s["created_at"].replace("Z", "+00:00"))
-                    .date()
-                )
+                session_date = datetime.fromisoformat(s["created_at"].replace("Z", "+00:00")).date()
                 days_ago = (today - session_date).days
                 if days_ago < 7:
                     last_7_days[f"{days_ago}d_ago"] += 1
@@ -123,7 +121,10 @@ class ChronicleAnalytics:
             "total_sessions": total,
             "date_range": f"{date_range[0]} to {date_range[1]}" if date_range else None,
             "sessions_last_7_days": dict(sorted(last_7_days.items())),
-            "avg_sessions_per_day": round(total / max(1, (date_range[1] - date_range[0]).days + 1), 2)
+            "avg_sessions_per_day": round(
+                total / max(1, (date_range[1] - date_range[0]).days + 1),
+                2,
+            )
             if date_range
             else 0,
         }
@@ -131,23 +132,28 @@ class ChronicleAnalytics:
     def _analyze_tool_usage(self) -> dict[str, Any]:
         """Analyze which tools are most frequently used."""
         try:
-            with self.db._get_connection() as conn:
+            with self.db.get_connection() as conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    "SELECT tool_name, COUNT(*) as count FROM tool_calls GROUP BY tool_name ORDER BY count DESC LIMIT 10"
+                    "SELECT tool_name, COUNT(*) as count "
+                    "FROM tool_calls GROUP BY tool_name "
+                    "ORDER BY count DESC LIMIT 10"
                 )
                 tools = {row[0]: row[1] for row in cursor.fetchall()}
-                
+
                 # Get tool success rates
                 tool_stats = {}
                 for tool in list(tools.keys())[:5]:
                     cursor.execute(
-                        "SELECT COUNT(*) as total, SUM(CASE WHEN success THEN 1 ELSE 0 END) as successful FROM tool_calls WHERE tool_name = ?",
+                        "SELECT COUNT(*) as total, "
+                        "SUM(CASE WHEN success THEN 1 ELSE 0 END) as successful "
+                        "FROM tool_calls WHERE tool_name = ?",
                         (tool,),
                     )
                     result = cursor.fetchone()
                     if result and result[0] > 0:
-                        success_rate = (result[1] or 0) / result[0]
+                        successful = result[1] or 0
+                        success_rate = successful / result[0]
                         tool_stats[tool] = {
                             "usage_count": tools[tool],
                             "success_rate": round(success_rate * 100, 1),
@@ -190,15 +196,11 @@ class ChronicleAnalytics:
     def _analyze_performance(self) -> dict[str, Any]:
         """Analyze success/failure rates."""
         total = len(self.sessions)
-        
+
         # Count by status
         status_counter = Counter(s["status"] for s in self.sessions)
-        success_count = status_counter.get("completed", 0) + status_counter.get(
-            "succeeded", 0
-        )
-        failure_count = status_counter.get("failed", 0) + status_counter.get(
-            "error", 0
-        )
+        success_count = status_counter.get("completed", 0) + status_counter.get("succeeded", 0)
+        failure_count = status_counter.get("failed", 0) + status_counter.get("error", 0)
 
         success_rate = (success_count / total * 100) if total > 0 else 0
 
@@ -227,8 +229,7 @@ class ChronicleAnalytics:
                 for s in recent
             ]
             older_dates = [
-                datetime.fromisoformat(s["created_at"].replace("Z", "+00:00")).date()
-                for s in older
+                datetime.fromisoformat(s["created_at"].replace("Z", "+00:00")).date() for s in older
             ]
 
             recent_range = (max(recent_dates) - min(recent_dates)).days + 1 if recent_dates else 1
@@ -275,7 +276,11 @@ class ChronicleAnalytics:
                 {
                     "category": "productivity",
                     "title": "High Session Activity Detected",
-                    "description": f"You're averaging {avg_per_day} sessions per day. Consider using longer sessions to batch related work together and reduce context switching overhead.",
+                    "description": (
+                        f"You're averaging {avg_per_day} sessions per day. Consider "
+                        "using longer sessions to batch related work together and "
+                        "reduce context switching overhead."
+                    ),
                 }
             )
         elif avg_per_day < 1:
@@ -283,7 +288,10 @@ class ChronicleAnalytics:
                 {
                     "category": "engagement",
                     "title": "Low Session Frequency",
-                    "description": "Your sessions are infrequent. Regular consistent sessions can help build better patterns and outcomes.",
+                    "description": (
+                        "Your sessions are infrequent. Regular consistent sessions "
+                        "can help build better patterns and outcomes."
+                    ),
                 }
             )
 
@@ -299,7 +307,11 @@ class ChronicleAnalytics:
                         {
                             "category": "efficiency",
                             "title": f"Low Success Rate for {top_tool}",
-                            "description": f"Your most-used tool '{top_tool}' has a {success_rate}% success rate. Review error patterns and consider alternative approaches.",
+                            "description": (
+                                f"Your most-used tool '{top_tool}' has a "
+                                f"{success_rate}% success rate. Review error "
+                                "patterns and consider alternative approaches."
+                            ),
                         }
                     )
 
@@ -310,7 +322,12 @@ class ChronicleAnalytics:
                 {
                     "category": "coordination",
                     "title": "Multi-Agent Delegation",
-                    "description": f"You're using {agents['total_agents_used']} different agents. Consider leveraging specialized agents more (like unified-coverage-agent, ci-auto-healer-agent) for focused work.",
+                    "description": (
+                        f"You're using {agents['total_agents_used']} different "
+                        "agents. Consider leveraging specialized agents more "
+                        "(like unified-coverage-agent, ci-auto-healer-agent) "
+                        "for focused work."
+                    ),
                 }
             )
 
@@ -323,7 +340,11 @@ class ChronicleAnalytics:
                 {
                     "category": "scheduling",
                     "title": "Peak Activity Hours",
-                    "description": f"You're most active around {peak_hour}:00. Schedule complex tasks during your peak hours for better performance.",
+                    "description": (
+                        f"You're most active around {peak_hour}:00. Schedule "
+                        "complex tasks during your peak hours for better "
+                        "performance."
+                    ),
                 }
             )
 
@@ -335,7 +356,10 @@ class ChronicleAnalytics:
                 {
                     "category": "recognition",
                     "title": "Excellent Success Rate",
-                    "description": f"Your sessions have a {success_rate}% success rate. Keep up the excellent work!",
+                    "description": (
+                        f"Your sessions have a {success_rate}% success rate. "
+                        "Keep up the excellent work!"
+                    ),
                 }
             )
         elif success_rate < 50:
@@ -343,7 +367,11 @@ class ChronicleAnalytics:
                 {
                     "category": "improvement",
                     "title": "Session Success Rate Below 50%",
-                    "description": "Consider breaking down complex tasks into smaller sessions and using more comprehensive planning before execution.",
+                    "description": (
+                        "Consider breaking down complex tasks into smaller "
+                        "sessions and using more comprehensive planning before "
+                        "execution."
+                    ),
                 }
             )
 
@@ -355,7 +383,10 @@ class ChronicleAnalytics:
                 {
                     "category": "momentum",
                     "title": "Increasing Session Activity",
-                    "description": "Your session frequency is increasing. This momentum is great - maintain consistent engagement patterns.",
+                    "description": (
+                        "Your session frequency is increasing. This momentum is "
+                        "great - maintain consistent engagement patterns."
+                    ),
                 }
             )
         elif trend == "decreasing":
@@ -363,7 +394,10 @@ class ChronicleAnalytics:
                 {
                     "category": "engagement",
                     "title": "Decreasing Session Frequency",
-                    "description": "Your session frequency has been decreasing. Try to establish a regular routine for consistent progress.",
+                    "description": (
+                        "Your session frequency has been decreasing. Try to "
+                        "establish a regular routine for consistent progress."
+                    ),
                 }
             )
 
@@ -374,7 +408,12 @@ class ChronicleAnalytics:
                 {
                     "category": "strategy",
                     "title": "Use Specialized Agents",
-                    "description": "Consider using specialized agents like unified-coverage-agent, ci-failure-resolution-agent, or autonomous-test-healer-agent for focused improvements.",
+                    "description": (
+                        "Consider using specialized agents like "
+                        "unified-coverage-agent, ci-failure-resolution-agent, "
+                        "or autonomous-test-healer-agent for focused "
+                        "improvements."
+                    ),
                 }
             )
 
@@ -392,59 +431,72 @@ class ChronicleAnalytics:
 
         # Frequency section
         freq = patterns.get("frequency", {})
-        summary_lines.extend([
-            f"- **Total Sessions**: {freq.get('total_sessions', 0)}",
-            f"- **Date Range**: {freq.get('date_range', 'N/A')}",
-            f"- **Average Sessions/Day**: {freq.get('avg_sessions_per_day', 0)}\n",
-        ])
+        summary_lines.extend(
+            [
+                f"- **Total Sessions**: {freq.get('total_sessions', 0)}",
+                f"- **Date Range**: {freq.get('date_range', 'N/A')}",
+                f"- **Average Sessions/Day**: {freq.get('avg_sessions_per_day', 0)}\n",
+            ]
+        )
 
         # Performance section
         perf = patterns.get("performance", {})
-        summary_lines.extend([
-            f"- **Success Rate**: {perf.get('success_rate', 0)}%",
-            f"- **Successful**: {perf.get('successful', 0)}",
-            f"- **Failed**: {perf.get('failed', 0)}\n",
-        ])
+        summary_lines.extend(
+            [
+                f"- **Success Rate**: {perf.get('success_rate', 0)}%",
+                f"- **Successful**: {perf.get('successful', 0)}",
+                f"- **Failed**: {perf.get('failed', 0)}\n",
+            ]
+        )
 
         # Personalized Tips section
         summary_lines.append("## 💡 Personalized Tips\n")
         if tips:
             for idx, tip in enumerate(tips, 1):
-                summary_lines.extend([
-                    f"### {idx}. {tip['title']}",
-                    f"**Category**: {tip['category']}",
-                    f"\n{tip['description']}\n",
-                ])
+                summary_lines.extend(
+                    [
+                        f"### {idx}. {tip['title']}",
+                        f"**Category**: {tip['category']}",
+                        f"\n{tip['description']}\n",
+                    ]
+                )
         else:
             summary_lines.append("No specific tips at this time. Keep up the great work!\n")
 
         # Patterns section
         summary_lines.append("## 📈 Usage Patterns\n")
-        
+
         time_patterns = patterns.get("time_patterns", {})
         if time_patterns.get("peak_hours"):
-            summary_lines.append("**Peak Hours**: " + ", ".join(
-                [f"{h}:00" for h in list(time_patterns.get("peak_hours", {}).keys())[:3]]
-            ) + "\n")
+            summary_lines.append(
+                "**Peak Hours**: "
+                + ", ".join(
+                    [f"{h}:00" for h in list(time_patterns.get("peak_hours", {}).keys())[:3]]
+                )
+                + "\n"
+            )
 
         agents = patterns.get("agents", {})
         if agents.get("top_agents"):
-            summary_lines.append("**Top Agents**: " + ", ".join(
-                list(agents.get("top_agents", {}).keys())[:3]
-            ) + "\n")
+            summary_lines.append(
+                "**Top Agents**: " + ", ".join(list(agents.get("top_agents", {}).keys())[:3]) + "\n"
+            )
 
         tools = patterns.get("tools", {})
         if tools.get("top_tools"):
-            summary_lines.append("**Top Tools**: " + ", ".join(
-                list(tools.get("top_tools", {}).keys())[:3]
-            ) + "\n")
+            summary_lines.append(
+                "**Top Tools**: " + ", ".join(list(tools.get("top_tools", {}).keys())[:3]) + "\n"
+            )
 
         return "\n".join(summary_lines)
 
     def export_json(self) -> str:
         """Export analysis results as JSON."""
-        return json.dumps({
-            "timestamp": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
-            "patterns": self.analyze_patterns(),
-            "tips": self.generate_tips(),
-        }, indent=2)
+        return json.dumps(
+            {
+                "timestamp": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+                "patterns": self.analyze_patterns(),
+                "tips": self.generate_tips(),
+            },
+            indent=2,
+        )

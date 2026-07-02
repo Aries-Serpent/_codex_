@@ -703,16 +703,15 @@ class SessionCheckpointManager:
             search_dir = self.storage_path / "v1" / session_id
             if not search_dir.exists():
                 return None
-            files = list(search_dir.glob(f"*{checkpoint_id}*"))
-            fallback_files = list(search_dir.glob("checkpoint_*"))
+            candidates = list(search_dir.glob("checkpoint_*"))
         else:
-            files = list(self.storage_path.glob(f"v1/*/*{checkpoint_id}*"))
-            fallback_files = list(self.storage_path.glob("v1/*/checkpoint_*"))
+            candidates = list(self.storage_path.glob("v1/*/checkpoint_*"))
 
-        if files:
-            return files[0]
+        for candidate in candidates:
+            if checkpoint_id in candidate.name:
+                return candidate
 
-        for candidate in fallback_files:
+        for candidate in candidates:
             if self._checkpoint_file_matches_id(candidate, checkpoint_id):
                 return candidate
 
