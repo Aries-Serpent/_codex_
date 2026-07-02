@@ -77,7 +77,7 @@ from typing import Optional
 # Add parent directory to path for CI execution
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from scripts.ci._token_resolver import get_token
+from scripts.ci._token_resolver import TokenResolutionError, get_token
 
 
 logger = logging.getLogger(__name__)
@@ -1183,11 +1183,13 @@ class CommonIssueFixer:
         issues: list[str] = []
 
         # Determine authentication token (prefer CODEX_MASTER_KEY for full scope)
-        token = (
-            get_token(required_elevated=True)[0]
-            or get_token(required_elevated=False)[0]
-            or os.environ.get("GITHUB_TOKEN")
-        )
+        try:
+            token = get_token(required_elevated=True)[0]
+        except TokenResolutionError:
+            try:
+                token = get_token(required_elevated=False)[0]
+            except TokenResolutionError:
+                token = os.environ.get("GITHUB_TOKEN")
         repo = os.environ.get("GITHUB_REPOSITORY", "")
 
         if not token or not repo:

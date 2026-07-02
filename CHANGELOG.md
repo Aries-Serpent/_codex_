@@ -1,3 +1,18 @@
+## [Unreleased] — 2026-07-02T16:10Z
+
+### 🎯 Objective
+Close the last PR #5194 merge-readiness gaps so the live scorecard can return to ~100%.
+
+### 🔧 Changes
+- Hardened `scripts/ci/auto_fix_common_issues.py` so the GitHub Advanced Security alert check now falls back cleanly when elevated local tokens are unavailable instead of aborting the whole readiness scan.
+- Restored the accidental session-generated artifact churn from the previous planning-only commit so the PR diff stays limited to intentional source and compliance updates.
+- Refreshed the latest-session compliance trail so REQ-4 / REQ-5 can pass in the final commit.
+
+### ✅ Validation
+- `python scripts/ci/enforce_actions_versions.py`
+- `python scripts/ci/auto_fix_common_issues.py --check-only`
+- `python scripts/ci/session_wrapup_autofix.py --check-wec-compliance --pr-number 5194 --merge-target main`
+
 ## [2026-07-02] PR #5194 Merge-Readiness Hardening
 
 ### 🎯 Objective
