@@ -15,14 +15,14 @@ class SQLiteIndexBuilder:
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.db_path = self.output_dir / "docs.sqlite"
-        
+
         # Create/connect database
         self.conn = sqlite3.connect(str(self.db_path))
         self.cursor = self.conn.cursor()
 
     def create_schema(self):
         """Create database schema for campaign data."""
-        
+
         # Use flexible JSON schema approach
         self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS campaign_phases (
@@ -140,7 +140,7 @@ class SQLiteIndexBuilder:
         filepath = self.canonical_dir / jsonl_filename
         if not filepath.exists():
             return 0
-        
+
         count = 0
         with open(filepath) as f:
             for line in f:
@@ -149,10 +149,10 @@ class SQLiteIndexBuilder:
                     record_id = record.get("id")
                     phase_id = record.get("phase_id")
                     track_id = record.get("track_id")
-                    
+
                     # Store record as JSON in data column
                     data_json = json.dumps(record, default=str)
-                    
+
                     if table_name in ["campaign_phases", "decisions"]:
                         sql = f"INSERT OR REPLACE INTO {table_name} (id, data) VALUES (?, ?)"
                         self.cursor.execute(sql, (record_id, data_json))
@@ -167,61 +167,61 @@ class SQLiteIndexBuilder:
                         target_id = record.get("target_id")
                         sql = f"INSERT OR REPLACE INTO {table_name} (id, source_id, target_id, data) VALUES (?, ?, ?, ?)"
                         self.cursor.execute(sql, (record_id, source_id, target_id, data_json))
-                    
+
                     count += 1
-        
+
         self.conn.commit()
         return count
 
     def populate_fts_tables(self):
         """Populate FTS virtual tables from base tables."""
-        
+
         # Build FTS tables - extract searchable fields from JSON
         self.cursor.execute("""
-            INSERT INTO fts_phases(id, name, description) 
-            SELECT id, 
+            INSERT INTO fts_phases(id, name, description)
+            SELECT id,
                    json_extract(data, '$.name') as name,
                    json_extract(data, '$.description') as description
             FROM campaign_phases
         """)
-        
+
         self.cursor.execute("""
-            INSERT INTO fts_tracks(id, name, description) 
+            INSERT INTO fts_tracks(id, name, description)
             SELECT id,
                    json_extract(data, '$.name') as name,
                    json_extract(data, '$.description') as description
             FROM tracks
         """)
-        
+
         self.cursor.execute("""
-            INSERT INTO fts_deliverables(id, name) 
+            INSERT INTO fts_deliverables(id, name)
             SELECT id, json_extract(data, '$.name') as name
             FROM deliverables
         """)
-        
+
         self.cursor.execute("""
-            INSERT INTO fts_decisions(id, description, rationale) 
-            SELECT id, 
+            INSERT INTO fts_decisions(id, description, rationale)
+            SELECT id,
                    json_extract(data, '$.description') as description,
                    json_extract(data, '$.rationale') as rationale
             FROM decisions
         """)
-        
+
         self.cursor.execute("""
-            INSERT INTO fts_metrics(id, metric_name) 
+            INSERT INTO fts_metrics(id, metric_name)
             SELECT id, json_extract(data, '$.metric_name') as metric_name
             FROM metrics
         """)
-        
+
         self.conn.commit()
 
     def build_and_populate(self) -> Dict[str, int]:
         """Build schema and populate from JSONL."""
         results = {}
-        
+
         # Create schema
         self.create_schema()
-        
+
         # Load data
         results["campaign_phases"] = self.load_jsonl_into_table("campaign_phases.jsonl", "campaign_phases")
         results["tracks"] = self.load_jsonl_into_table("campaign_tracks.jsonl", "tracks")
@@ -231,11 +231,11 @@ class SQLiteIndexBuilder:
         results["decisions"] = self.load_jsonl_into_table("decisions.jsonl", "decisions")
         results["requirements"] = self.load_jsonl_into_table("requirements.jsonl", "requirements")
         results["relationships"] = self.load_jsonl_into_table("relationships.jsonl", "relationships")
-        
+
         # Populate FTS
         self.populate_fts_tables()
         results["fts_tables"] = "populated"
-        
+
         self.conn.close()
         return results
 

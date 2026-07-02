@@ -503,13 +503,6 @@ codex_ml = [
     ".stubs/*",
 ]
 
-[tool.pytest.ini_options]
-markers = [
-    "coverage_gap: marks tests for RAG coverage gap remediation",
-    "integration: marks tests as integration tests",
-    "skipif: marks tests to skip conditionally",
-]
-
 [tool.black]
 line-length = 100
 target-version = [

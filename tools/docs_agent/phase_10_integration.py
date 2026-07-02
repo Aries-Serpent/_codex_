@@ -15,7 +15,7 @@ class Phase10SystemIntegration:
     def session_checkpoint_integration(self) -> Dict[str, Any]:
         """Integration: Session checkpoint system uses structured task briefs."""
         context = self.tools.get_agent_context()
-        
+
         checkpoint_data = {
             "checkpoint_type": "session",
             "phase_id": self.phase_10_id,
@@ -37,13 +37,13 @@ class Phase10SystemIntegration:
                 "downstream_dependencies": 2
             }
         }
-        
+
         return checkpoint_data
 
     def memory_consolidation_integration(self) -> Dict[str, Any]:
         """Integration: Memory system stores insights referencing decision/action IDs."""
         decisions = self.tools.list_actions(self.phase_10_id)
-        
+
         memory_integration = {
             "memory_type": "stm_to_ltm_consolidation",
             "structured_reference_pattern": "decisions.jsonl and deliverables.jsonl IDs",
@@ -68,7 +68,7 @@ class Phase10SystemIntegration:
             },
             "search_capability": "FTS over phase descriptions, decision rationales, deliverable names"
         }
-        
+
         return memory_integration
 
     def ooda_loop_integration(self) -> Dict[str, Any]:
@@ -103,7 +103,7 @@ class Phase10SystemIntegration:
                 "store": "update session/memory with record IDs"
             }
         }
-        
+
         return ooda_execution
 
     def generate_integration_guide(self) -> str:
@@ -143,16 +143,16 @@ After each OODA cycle:
 
 if __name__ == "__main__":
     integration = Phase10SystemIntegration()
-    
+
     print("=== Phase 10 System Integration ===\n")
-    
+
     checkpoint = integration.session_checkpoint_integration()
     print(f"Session Integration: {len(checkpoint)} sections defined")
-    
+
     memory = integration.memory_consolidation_integration()
     print(f"Memory Integration: STM and LTM patterns with record ID references")
-    
+
     ooda = integration.ooda_loop_integration()
     print(f"OODA Integration: {len(ooda['ooda_loop_steps'])} steps using structured tools")
-    
+
     print(integration.generate_integration_guide())

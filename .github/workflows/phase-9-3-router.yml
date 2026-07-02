@@ -32,6 +32,10 @@ env:
   AGENT_DISPATCH_TIMEOUT_S: 600
   GLOBAL_EXECUTION_TIMEOUT_S: 900
 
+permissions:
+  contents: read
+  actions: read
+
 jobs:
   semantic-routing-setup:
     name: Setup Semantic Router

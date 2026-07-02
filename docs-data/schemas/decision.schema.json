@@ -1,22 +1,74 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "docs-data/schemas/decision.schema.json",
+  "$id": "file:///docs-data/schemas/decision.schema.json",
   "title": "DecisionRecord",
   "type": "object",
   "additionalProperties": false,
-  "required": ["id", "type", "schema_version", "statement", "status", "source_trace", "discovered_at"],
+  "required": [
+    "id",
+    "type",
+    "schema_version",
+    "statement",
+    "status",
+    "source_trace",
+    "discovered_at"
+  ],
   "properties": {
-    "id": {"type": "string", "pattern": "^dec_[a-f0-9]{12,}$"},
-    "type": {"const": "decision"},
-    "schema_version": {"type": "string"},
-    "statement": {"type": "string", "minLength": 1},
-    "status": {"enum": ["proposed", "accepted", "rejected", "superseded"]},
-    "requirement_ids": {"type": "array", "items": {"type": "string"}},
-    "lifecycle_status": {"enum": ["discovered", "converted_to_jsonl", "validated", "covered"]},
-    "source_trace": {"$ref": "./reference.schema.json#/$defs/source_trace"},
-    "discovered_at": {"type": "string"},
-    "updated_at": {"type": "string"},
-    "tags": {"type": "array", "items": {"type": "string"}},
-    "confidence": {"type": "number", "minimum": 0, "maximum": 1}
+    "id": {
+      "type": "string",
+      "pattern": "^dec_[a-f0-9]{12,}$"
+    },
+    "type": {
+      "const": "decision"
+    },
+    "schema_version": {
+      "type": "string"
+    },
+    "statement": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "enum": [
+        "proposed",
+        "accepted",
+        "rejected",
+        "superseded"
+      ]
+    },
+    "requirement_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "lifecycle_status": {
+      "enum": [
+        "discovered",
+        "converted_to_jsonl",
+        "validated",
+        "covered"
+      ]
+    },
+    "source_trace": {
+      "$ref": "./reference.schema.json#/$defs/source_trace"
+    },
+    "discovered_at": {
+      "type": "string"
+    },
+    "updated_at": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    }
   }
 }
