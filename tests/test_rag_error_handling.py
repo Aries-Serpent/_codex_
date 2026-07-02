@@ -15,7 +15,7 @@ import pytest
 pytest.importorskip("numpy")
 
 import numpy as np
-from codex.logging.structured_logger import logger
+from codex.logging.structured_logger import logger # pragma: allowlist secret
 
  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 # Check for FAISS specifically

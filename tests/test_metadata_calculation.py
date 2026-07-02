@@ -15,7 +15,7 @@ from codex.logging.structured_logger import logger
 # - Relative path validation
 # - SHA256 hash format validation
 # - JSON structure integrity
-#     """
+#     """ # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 #     Calculate total space in MB format. # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 # import json
 #     assert not is_valid_sha256("not_a_hash"), "not is not valid"
