@@ -7,7 +7,7 @@ Classes:
 """
 
 import re
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Any
 
 
 class LinkValidator:

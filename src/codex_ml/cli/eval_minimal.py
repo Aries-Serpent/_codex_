@@ -74,7 +74,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     )
 
     training_loop = _import_training_loop()
-    training_loop.run_minimal_evaluation(
+    training_loop.run_minimal_evaluation(  # type: ignore[attr-defined]
         config=config,
         checkpoint=args.checkpoint,
         run_dir=ctx.run_dir,
