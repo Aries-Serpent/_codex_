@@ -36,18 +36,20 @@ jobs:
   semantic-routing-setup:
     name: Setup Semantic Router
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       task_id: ${{ steps.task-info.outputs.task_id }}
       task_category: ${{ steps.task-info.outputs.category }}
       routing_method: ${{ steps.routing-method.outputs.method }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: '3.11'
           cache: 'pip'
@@ -105,16 +107,18 @@ jobs:
     name: Build/Query FAISS Index
     needs: semantic-routing-setup
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       top_agents: ${{ steps.router-query.outputs.top_agents }}
       routing_latency_ms: ${{ steps.router-query.outputs.latency_ms }}
       confidence_scores: ${{ steps.router-query.outputs.confidence }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: '3.11'
           cache: 'pip'
@@ -161,16 +165,18 @@ jobs:
     name: Workload Balance & Agent Selection
     needs: [semantic-routing-setup, semantic-router-index]
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       selected_agents: ${{ steps.load-balance.outputs.selected_agents }}
       agent_load_status: ${{ steps.load-balance.outputs.load_status }}
       queue_depth: ${{ steps.load-balance.outputs.queue_depth }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: '3.11'
           cache: 'pip'
@@ -208,6 +214,8 @@ jobs:
     name: Execute Task with Selected Agents
     needs: [semantic-routing-setup, semantic-router-index, workload-balancing]
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 20
     outputs:
       execution_result: ${{ steps.concurrent-exec.outputs.result }}
@@ -215,10 +223,10 @@ jobs:
       parallel_agents_count: ${{ steps.concurrent-exec.outputs.agents_count }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: '3.11'
           cache: 'pip'
@@ -259,13 +267,14 @@ jobs:
     name: Log Routing Decision to Audit Trail
     needs: [semantic-routing-setup, semantic-router-index, workload-balancing, concurrent-execution]
     runs-on: ubuntu-latest
+    permissions: {}
     if: always()
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: '3.11'
 

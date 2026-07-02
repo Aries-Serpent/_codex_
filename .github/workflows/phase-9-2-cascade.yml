@@ -8,5 +8,6 @@ on:
 jobs:
   archived:
     runs-on: ubuntu-latest
+    permissions: {}
     steps:
       - run: echo "This workflow has been archived. See Phase 10+ for current healing."

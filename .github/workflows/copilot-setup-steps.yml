@@ -168,11 +168,12 @@ jobs:
         CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
         GITHUB_TOKEN: ${{ github.token }}
         GITHUB_PR_NUMBER: ${{ github.event.pull_request.number }}
+        TASK_DESC_INPUT: ${{ github.event.pull_request.title || github.ref }}
       run: |
         echo "::group::Phase 10.3 Context Scorer"
         
         # Extract session metadata for scoring
-        TASK_DESC="${{ github.event.pull_request.title || github.ref }}"
+        TASK_DESC="$TASK_DESC_INPUT"
         DOMAIN="CI/CD"
         AGENT_TYPES="cognitive-brain-session-injector"
         
@@ -194,7 +195,7 @@ jobs:
           --output "$SCORER_OUTPUT" \
           --top-k 15 \
           --min-score 0.65 \
-          --json-metadata "{"task_description": "${TASK_DESC}", "domain": "${DOMAIN}", "agent_types": ["${AGENT_TYPES}"]}"; then
+          --json-metadata "{\"task_description\": \"$TASK_DESC\", \"domain\": \"$DOMAIN\", \"agent_types\": [\"$AGENT_TYPES\"]}"; then
           
           SCORER_END=$(date +%s%N)
           SCORER_TIME_MS=$(( (SCORER_END - SCORER_START) / 1000000 ))
@@ -301,13 +302,18 @@ jobs:
     - name: "📈 Phase 10.3: Performance Instrumentation (measure OODA improvement)"
       id: performance_instrumentation
       continue-on-error: true
+      env:
+        SCORER_TIME_ENV: ${{ env.CONTEXT_SCORER_TIME_MS }}
+        INJECT_TIME_ENV: ${{ env.CONTEXT_INJECTION_TIME_MS }}
+        PATTERNS_COUNT_ENV: ${{ env.CONTEXT_PATTERNS_COUNT }}
+        PATTERNS_SCORE_ENV: ${{ env.CONTEXT_PATTERNS_AVG_SCORE }}
       run: |
         echo "::group::Performance Instrumentation"
         
-        SCORER_TIME=${{ env.CONTEXT_SCORER_TIME_MS }}
-        INJECT_TIME=${{ env.CONTEXT_INJECTION_TIME_MS }}
-        PATTERNS_COUNT=${{ env.CONTEXT_PATTERNS_COUNT }}
-        PATTERNS_SCORE=${{ env.CONTEXT_PATTERNS_AVG_SCORE }}
+        SCORER_TIME="$SCORER_TIME_ENV"
+        INJECT_TIME="$INJECT_TIME_ENV"
+        PATTERNS_COUNT="$PATTERNS_COUNT_ENV"
+        PATTERNS_SCORE="$PATTERNS_SCORE_ENV"
         
         # Calculate total injection overhead
         TOTAL_OVERHEAD_MS=0
