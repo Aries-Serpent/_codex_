@@ -1,29 +1,29 @@
-# Session Context — 2026-07-02T01:02:20Z
+# Session Context — 2026-07-02T01:15:10Z
 **Branch:** `copilot/post-merge-session-pr-5190`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4418` (✅)
-- GraphQL remaining: `4988` (✅)
+- REST remaining: `4154` (✅)
+- GraphQL remaining: `4983` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **🔐 Secrets Baseline Enforcer** — `failure` on `copilot/post-merge-session-pr-5190` (2026-07-02)
-- **Machine Readable Governance** — `failure` on `main` (2026-07-02)
-- **🔐 Secrets Baseline Enforcer** — `failure` on `main` (2026-07-02)
+- **Phase 8.2 Issue Triage** — `failure` on `main` (2026-07-02)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-02)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-02)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-02)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-02)
 
 ## 📝 Recent Commits
+- `afaaba80` docs(post-merge): Complete Tier 1 validation campaign — governance + CI clean, c — copilot-swe-agent[bot] (2026-07-02)
+- `d28fe2d8` docs(post-merge): Add Tier 1 validation report for PR #5190 — governance ✅, cove — copilot-swe-agent[bot] (2026-07-02)
 - `43ad9353` Apply remaining changes — copilot-swe-agent[bot] (2026-07-02)
 - `bb92c839` Merge pull request #5190 from Aries-Serpent/fix/ci-rag-module-tests-202607020021 — Statix (2026-07-02)
 - `b61a4c26` fix(ci): resolve Machine Readable Governance (133 files) + RAG coverage gap — copilot-swe-agent[bot] (2026-07-02)
 - `9ff4713e` test(rag): finalize targeted coverage regression tests — copilot-swe-agent[bot] (2026-07-02)
 - `9e292017` test(rag): add targeted coverage regression tests — copilot-swe-agent[bot] (2026-07-02)
 - `fee890bf` metric: Approval telemetry for agent-auth-delegation — GitHub Action (2026-07-02)
-- `97eac498` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-07-02)
-- `d5456dac` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-07-02)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
