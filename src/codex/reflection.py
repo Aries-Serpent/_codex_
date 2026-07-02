@@ -9,7 +9,7 @@ Usage (programmatic):
     from codex.reflection import reflect, RecursionGuard
 
     report = reflect("src/codex/cli.py", depth=2)
-    print(report.summary)
+    logger.info(report.summary)
 """
 
 from __future__ import annotations
@@ -19,6 +19,7 @@ import contextvars
 import hashlib
 import json
 import logging
+from codex.logging.structured_logger import logger
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any

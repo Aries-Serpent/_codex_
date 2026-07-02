@@ -19,7 +19,7 @@ from scripts.ci._token_resolver import get_token
 
 from . import url_utils
 
-logger = logging.getLogger(__name__)
+from codex.logging.structured_logger import logger
 
 _GITHUB_API = "https://api.github.com"
 _ACCEPT = "application/vnd.github+json"
@@ -359,11 +359,8 @@ class APIClient:
 
                     if err_type in _RETRYABLE_TYPES and attempt < max_retries:
                         wait = 2 ** (attempt + 1)
-                        print(
-                            f"[mcp_poster] {operation_name} GraphQL {err_type} "
-                            f"(attempt {attempt + 1}/{max_retries + 1}) — retry in {wait}s",
-                            file=sys.stderr,
-                        )
+                        logger.error(f"[mcp_poster] {operation_name} GraphQL {err_type} "
+                            f"(attempt {attempt + 1}/{max_retries + 1}) — retry in {wait}s",)
                         time.sleep(wait)
                         continue
 
@@ -376,11 +373,8 @@ class APIClient:
                 last_exc = exc
                 if attempt < max_retries:
                     wait = 2 ** (attempt + 1)
-                    print(
-                        f"[mcp_poster] {operation_name} network error "
-                        f"(attempt {attempt + 1}/{max_retries + 1}) — retry in {wait}s: {exc}",
-                        file=sys.stderr,
-                    )
+                    logger.error(f"[mcp_poster] {operation_name} network error "
+                        f"(attempt {attempt + 1}/{max_retries + 1}) — retry in {wait}s: {exc}",)
                     time.sleep(wait)
                 else:
                     raise

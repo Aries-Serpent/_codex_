@@ -19,7 +19,7 @@ Usage as a context manager::
     with GracefulDegradation(fallback="default") as dg:
         dg.result = compute_value()
 
-    print(dg.result)   # "default" if compute_value() raised
+    logger.info(dg.result)
 
 Usage without a fallback (re-raises as DegradationError)::
 
@@ -32,7 +32,7 @@ from __future__ import annotations
 import logging
 from typing import Any, Callable
 
-logger = logging.getLogger(__name__)
+from codex.logging.structured_logger import logger
 
 _SENTINEL = object()  # marks "no fallback provided"
 

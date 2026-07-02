@@ -25,7 +25,7 @@ Usage::
         # safe to add new autonomy feature
         ...
     else:
-        print(result.blocking_conditions)
+        logger.info(result.blocking_conditions)
 
 Blueprint: .codex/docs/AUTONOMY_BLUEPRINT.md — Phase 6
 """
@@ -35,7 +35,7 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass, field
 
-logger = logging.getLogger(__name__)
+from codex.logging.structured_logger import logger
 
 # ── Thresholds from the blueprint expansion gate equation ─────────────────────
 _GI_THRESHOLD = 0.80

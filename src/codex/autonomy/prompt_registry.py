@@ -31,7 +31,7 @@ from typing import Any, Optional
 
 from .registry import AutonomyMode, ControlClass
 
-logger = logging.getLogger(__name__)
+from codex.logging.structured_logger import logger
 
 _DEFAULT_REGISTRY_PATH = Path(".codex/prompts/registry.yaml")
 _REGISTRY_PATH_ENV = "CODEX_PROMPT_REGISTRY"
@@ -205,15 +205,15 @@ def _main() -> None:
 
     if args.list or not args.validate:
         for p in reg.all_prompts():
-            print(f"  {p.prompt_id:40s}  {p.risk_class:20s}  {p.type}")
+            logger.info(f"  {p.prompt_id:40s}  {p.risk_class:20s}  {p.type}")
 
     if args.validate:
         errors = reg.validate_all()
         if errors:
             for err in errors:
-                print(f"ERROR: {err}", file=sys.stderr)
+                logger.error(f"ERROR: {err}")
             sys.exit(1)
-        print(f"✅  Prompt registry valid ({len(reg.all_prompts())} prompts)")
+        logger.info(f"✅  Prompt registry valid ({len(reg.all_prompts())} prompts)")
 
 
 if __name__ == "__main__":

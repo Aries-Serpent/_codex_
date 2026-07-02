@@ -1,5 +1,6 @@
 """Codex Agent Observability & Telemetry package.
 
+from codex.logging.structured_logger import logger
 Phase 12.3 — Agent Observability & Telemetry
 
 This package provides structured logging and metrics collection for the Codex
@@ -17,7 +18,7 @@ Quick start::
     logger.log_agent_action("orchestrator", "route_task", "success", latency_ms=1200)
 
     summary = collector.get_ecosystem_summary()
-    print(summary)
+    logger.info(summary)
 """
 
 from __future__ import annotations

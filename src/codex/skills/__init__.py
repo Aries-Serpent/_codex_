@@ -1,5 +1,6 @@
 """Cognitive Brain Skills — Public API.
 
+from codex.logging.structured_logger import logger
 This package provides:
 
 - :class:`~codex.skills.models.SkillManifest` — manifest schema
@@ -20,7 +21,7 @@ Quick start::
 
     env = ExecutionEnvelope(registry)
     result = env.run("doc.retriever.core", {"query": "AAIS scoring"})
-    print(result.status, result.data)
+    logger.info(result.status, result.data)
 """
 
 from __future__ import annotations

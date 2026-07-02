@@ -819,12 +819,12 @@ def main(argv: list[str] | None = None) -> int:
         elif args.command == "post-ci-pattern-summary":
             body = Path(args.body_file).read_text(encoding="utf-8")
             result = poster.post_ci_pattern_summary(args.repo, args.number, body, args.session_id)
-            logger.info(f"✅ CI pattern summary posted to discussion #{args.number}: {result.get('url', result)}"  # noqa: E501)
+            logger.info(f"✅ CI pattern summary posted to discussion #{args.number}: {result.get('url', result)}")  # noqa: E501
 
         elif args.command == "post-continuation":
             body = args.body or Path(args.body_file).read_text(encoding="utf-8")
             result = poster.post_continuation_chain(args.repo, args.number, body)
-            logger.info(f"✅ Continuation chain posted to discussion #{args.number}: {result.get('url', result)}"  # noqa: E501)
+            logger.info(f"✅ Continuation chain posted to discussion #{args.number}: {result.get('url', result)}")  # noqa: E501
 
     except RuntimeError as exc:
         type(exc).__name__

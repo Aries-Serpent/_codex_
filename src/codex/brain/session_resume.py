@@ -30,7 +30,7 @@ Usage:
     if resume_mgr.validate_checkpoint("cp_20260701_001"):
         # Load and restore session
         agent_state = resume_mgr.resume_session("cp_20260701_001")
-        print(f"Resumed session: {agent_state}")
+        logger.info(f"Resumed session: {agent_state}")
 """
 
 from __future__ import annotations
@@ -42,7 +42,7 @@ from typing import Any, Optional
 from codex.brain.checkpoint_manager import CheckpointManager
 from codex.brain.session_serializer import SessionSerializer
 
-logger = logging.getLogger(__name__)
+from codex.logging.structured_logger import logger
 
 
 @dataclass

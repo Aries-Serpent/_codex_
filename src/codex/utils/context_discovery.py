@@ -24,7 +24,7 @@ import shlex
 import subprocess
 from typing import Any, Optional
 
-logger = logging.getLogger(__name__)
+from codex.logging.structured_logger import logger
 
 
 def run_git_command(cmd: str) -> Optional[str]:
@@ -162,4 +162,4 @@ if __name__ == "__main__":
     import json
 
     info = get_session_info()
-    print(json.dumps(info, indent=2))
+    logger.info(json.dumps(info, indent=2))

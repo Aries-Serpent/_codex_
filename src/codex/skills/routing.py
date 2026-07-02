@@ -27,7 +27,7 @@ Usage::
         tags=["docs", "retrieval"],
         constraints={"risk_tier_max": "medium"},
     )
-    print(decision.selected_skill_id)
+    logger.info(decision.selected_skill_id)
 """
 
 from __future__ import annotations
@@ -38,7 +38,7 @@ from typing import Any
 from .models import RegisteredSkill, RoutingDecision, RoutingScore
 from .registry import SkillRegistry
 
-logger = logging.getLogger(__name__)
+from codex.logging.structured_logger import logger
 
 # Default scoring weights (must sum to 1.0)
 _W_MATCH = 0.40

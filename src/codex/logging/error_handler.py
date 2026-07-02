@@ -11,6 +11,7 @@ Provides:
 from __future__ import annotations
 
 import logging
+from codex.logging.structured_logger import logger
 import logging.handlers
 import sys
 import traceback
@@ -144,8 +145,8 @@ class CodexErrorHandler:
             handler.flush()
 
         if fatal:
-            print(f"❌ Fatal error: {error}", file=sys.stderr)
-            print(f"See {self.error_log} for details", file=sys.stderr)
+            logger.error(f"❌ Fatal error: {error}")
+            logger.error(f"See {self.error_log} for details")
             sys.exit(1)
 
     def log_errors(self, func: Callable) -> Callable:

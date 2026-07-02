@@ -1,4 +1,5 @@
 """
+from codex.logging.structured_logger import logger
 Cognitive Brain CLI API Client — Copilot Agent API Request Tool
 ===============================================================
 
@@ -50,7 +51,7 @@ from scripts.ci._token_resolver import get_token
 
     # ── Shell commands ──────────────────────────────────────────────────────
     result = brain.run_command("git log --oneline -5")
-    print(result["stdout"])
+    logger.info(result["stdout"])
 
     # ── Session history ─────────────────────────────────────────────────────
     history = brain.cli_history(limit=10)

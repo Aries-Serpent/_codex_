@@ -44,7 +44,7 @@ except ImportError as e:
     TYPER_AVAILABLE = False
     import argparse
 
-logger = logging.getLogger(__name__)
+from codex.logging.structured_logger import logger
 
 if TYPER_AVAILABLE:
     app = typer.Typer(
@@ -281,10 +281,7 @@ if TYPER_AVAILABLE:
         if _TYPER_IMPORT_ERROR:
             import sys
 
-            print(
-                f"Warning: typer import failed ({_TYPER_IMPORT_ERROR}). Using limited CLI.",
-                file=sys.stderr,
-            )
+            logger.error(f"Warning: typer import failed ({_TYPER_IMPORT_ERROR}). Using limited CLI.",)
         app()
 
 else:
@@ -335,8 +332,8 @@ else:
             parser.print_help()
             sys.exit(1)
 
-        print(f"Command: {args.command}")
-        print("Note: Full CLI requires 'typer' package. Install with: pip install typer")
+        logger.info(f"Command: {args.command}")
+        logger.info("Note: Full CLI requires 'typer' package. Install with: pip install typer")
 
     app = None
 

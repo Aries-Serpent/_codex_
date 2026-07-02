@@ -1,5 +1,6 @@
 """AAIS (Agent-Aligned Information Score) rubric and scorer.
 
+from codex.logging.structured_logger import logger
 Evaluates the quality of documentation or skill content on a 0–1 scale
 across five weighted dimensions:
 
@@ -21,8 +22,8 @@ Usage::
 
     scorer = AAISScorer()
     result = scorer.score(text)
-    print(result.total)          # 0.0–1.0
-    print(result.concision)      # per-dimension
+    logger.info(result.total)
+    logger.info(result.concision)
 """
 
 from __future__ import annotations
