@@ -25,7 +25,7 @@ def run_enhanced_diagnostics(
 ) -> dict[str, Any]:
     """Run detection-only diagnostics and enrich the JSON payload."""
 
-    fixer = CommonIssueFixer(repo_root=repo_root, check_only=True, dry_run=True)
+    fixer = CommonIssueFixer(repo_root=repo_root, check_only=True)
     if pattern is not None:
         fixer.run_all_patterns(pattern_num=pattern)
     elif pattern_name:

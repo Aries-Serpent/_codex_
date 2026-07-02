@@ -22,6 +22,7 @@ import subprocess  # noqa: E402
 import sys  # noqa: E402
 from datetime import UTC, datetime  # noqa: E402
 from pathlib import Path  # noqa: E402
+from uuid import uuid4  # noqa: E402
 
 import click  # noqa: E402
 
@@ -656,7 +657,8 @@ def chronicle_checkpoint(
         raise click.ClickException(f"Checkpoint manager unavailable: {exc}") from exc
 
     resolved_session_id = session_id or os.getenv(
-        "CODEX_SESSION_ID", f"cli-session-{datetime.now(UTC).strftime('%Y%m%d%H%M%S')}"
+        "CODEX_SESSION_ID",
+        f"cli-session-{datetime.now(UTC).strftime('%Y%m%d%H%M%S')}-{uuid4().hex[:8]}",
     )
     metadata_tags = _parse_tags(tags)
     manager = SessionCheckpointManager(
