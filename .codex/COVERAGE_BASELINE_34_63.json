@@ -1,0 +1,162 @@
+{
+  "metadata": {
+    "baseline_name": "Coverage Baseline - 34.63% State",
+    "baseline_locked_date": "2026-07-02T02:22:00Z",
+    "baseline_phase": "BASELINE_PHASE",
+    "repository": "Aries-Serpent/_codex_",
+    "total_statements": 100355,
+    "description": "Baseline snapshot establishing 34.63% coverage as stable reference for monitoring and progressive target improvements"
+  },
+  "coverage_metrics": {
+    "overall_statement_coverage_percent": 34.63,
+    "covered_statements": 34631,
+    "total_statements": 100355,
+    "line_coverage_percent": 34.63,
+    "branch_coverage_percent": 18.2,
+    "function_coverage_percent": 24.3
+  },
+  "test_statistics": {
+    "total_tests": 2467,
+    "test_pass_rate_percent": 100.0,
+    "test_flakiness_percent": 0.0,
+    "test_determinism_percent": 100.0,
+    "regression_rate_percent": 0.0,
+    "tests_by_type": {
+      "happy_path": 1604,
+      "edge_case": 493,
+      "error_path": 370
+    }
+  },
+  "test_distribution": {
+    "security_critical_tests": 287,
+    "authentication_tests": 356,
+    "infrastructure_cli_tests": 192,
+    "extended_coverage_tests": 1440,
+    "other_module_tests": 194
+  },
+  "module_tier_coverage": {
+    "tier_1_security_authentication": {
+      "name": "Security & Authentication Core",
+      "modules": [
+        "security_core",
+        "token_rotation",
+        "scope_validator",
+        "decorators",
+        "cve_monitor"
+      ],
+      "avg_coverage_percent": 92.6,
+      "total_tests": 287,
+      "status": "COMPREHENSIVE",
+      "minimum_enforced": 90.0
+    },
+    "tier_2_auth_systems": {
+      "name": "Authentication Systems",
+      "modules": [
+        "user_store",
+        "mfa_provider",
+        "token_manager",
+        "authenticator",
+        "middleware",
+        "oauth_manager",
+        "github_app",
+        "repositories"
+      ],
+      "avg_coverage_percent": 86.1,
+      "total_tests": 356,
+      "status": "COMPREHENSIVE",
+      "minimum_enforced": 85.0
+    },
+    "tier_3_infrastructure_cli": {
+      "name": "Infrastructure & CLI",
+      "modules": [
+        "cli_core",
+        "codex_ml_cli",
+        "cli_rag",
+        "tokenization_cli",
+        "archive_cli",
+        "quantum_orchestrator_cli"
+      ],
+      "avg_coverage_percent": 76.0,
+      "total_tests": 192,
+      "status": "COMPREHENSIVE",
+      "minimum_enforced": 77.0
+    },
+    "tier_4_extended_coverage": {
+      "name": "Extended Coverage & Capabilities",
+      "modules": [
+        "rag_embeddings",
+        "safety_moderation",
+        "training_systems",
+        "data_handling",
+        "agents_orchestration",
+        "capabilities",
+        "bridge_integration",
+        "other_modules"
+      ],
+      "avg_coverage_percent": 61.0,
+      "total_tests": 1440,
+      "status": "EXTENDED",
+      "minimum_enforced": 62.0
+    }
+  },
+  "quality_metrics": {
+    "pytest_version": "8.4.2",
+    "pytest_fixtures": true,
+    "parametrized_tests_count": 600,
+    "external_dependency_mocks": 150,
+    "test_determinism_percent": 100.0,
+    "test_isolation_percent": 100.0,
+    "no_timing_dependencies": true,
+    "proper_resource_cleanup": true,
+    "all_assertions_documented": true
+  },
+  "stabilization_metrics": {
+    "test_flakiness_percent": 0.0,
+    "regression_rate_percent": 0.0,
+    "determinism_percent": 100.0,
+    "isolation_percent": 100.0,
+    "no_shared_state": true,
+    "no_test_order_dependencies": true
+  },
+  "infrastructure_snapshot": {
+    "branch_tracking_enabled": true,
+    "parallel_testing_enabled": true,
+    "ci_timeout_seconds": 120,
+    "coverage_tool": "coverage.py",
+    "omit_patterns": [
+      "*/__init__.py",
+      "*/tests/*",
+      "*/.venv/*",
+      "*/site-packages/*"
+    ]
+  },
+  "validation_status": {
+    "baseline_confirmed_in_ci": true,
+    "all_tests_passing": true,
+    "dashboard_operational": true,
+    "gaps_identified_and_ranked": true,
+    "reproducible_for_monitoring": true,
+    "baseline_ready_for_progression": true
+  },
+  "zero_coverage_modules": {
+    "total_modules_identified": 120,
+    "total_lines_uncovered": 67000,
+    "priority_categories": {
+      "security_critical": "Prioritize for Phase 1",
+      "high_usage": "Prioritize for Phase 2",
+      "moderate_usage": "Phase 3-4",
+      "utility_modules": "Phase 5+"
+    }
+  },
+  "progression_notes": {
+    "next_phase": "Phase 1 (40% target)",
+    "estimated_phase_1_date": "2026-07-21",
+    "requirements": [
+      "Baseline stable for 30+ days at 34.63% ±1.5%",
+      "All quality metrics maintained",
+      "Test count ≥2,467",
+      "Zero regressions",
+      "Module tier minimums maintained"
+    ]
+  }
+}

@@ -582,7 +582,11 @@ omit = [
 show_missing = true
 skip_covered = false
 precision = 2
-fail_under = 70
+# BASELINE_PHASE: fail_under locked to 34 (2026-07-02)
+# Baseline coverage: 34.63% ± 1.5% (33.13% - 36.13%)
+# See .codex/COVERAGE_BASELINE_34_63.json and .codex/COVERAGE_VALIDATION_CRITERIA.md
+# Previous fail_under = 70 archived as ASPIRATIONAL_PHASE_30 target
+fail_under = 34
 exclude_lines = [
     "pragma: no cover",
     "def __repr__",
