@@ -5,6 +5,7 @@ Close the last PR #5194 merge-readiness gaps so the live scorecard can return to
 
 ### 🔧 Changes
 - Hardened `scripts/ci/auto_fix_common_issues.py` so the GitHub Advanced Security alert check now falls back cleanly when elevated local tokens are unavailable instead of aborting the whole readiness scan.
+- Refined that fallback into a simple sequential token-attempt loop so the final review pass stays readable while preserving the same no-crash behavior in local and sandbox runs.
 - Restored the accidental session-generated artifact churn from the previous planning-only commit so the PR diff stays limited to intentional source and compliance updates.
 - Refreshed the latest-session compliance trail so REQ-4 / REQ-5 can pass in the final commit.
 

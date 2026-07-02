@@ -12,6 +12,7 @@ The PR body still showed the stale **73/100** scorecard even after the workflow 
 ### ACTIONS TAKEN
 
 - Hardened `scripts/ci/auto_fix_common_issues.py` to catch `TokenResolutionError` and fall back cleanly to non-elevated / standard local token paths for the read-only GAS alert scan.
+- Refined the fallback logic into a small sequential loop after final validation feedback so the readiness-fix remains readable without reintroducing the local-token crash.
 - Restored the accidentally committed session artifact churn (`.codex/session_*`, `.codex/rag/session_delta.json`, `.pyc`, and other run-generated files) back to their pre-session state so the final commit remains surgical.
 - Added fresh REQ-4 / REQ-5 entries to `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md` for the final commit.
 
