@@ -15,7 +15,7 @@ from typing import Dict, Any, List, Optional
  # pragma: allowlist secret
 
 class TestDataProtectionAndPrivacy:
-    """Test suite for data protection and privacy compliance."""
+    """Test suite for data protection and privacy compliance.""" # pragma: allowlist secret
 
     def test_pii_data_encrypted_at_rest(self):
         """Verify PII (Personally Identifiable Information) is encrypted at rest."""

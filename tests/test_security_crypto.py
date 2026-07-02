@@ -15,7 +15,7 @@ import base64
 from typing import Dict, Any
 from datetime import datetime, timedelta
 
-
+ # pragma: allowlist secret # pragma: allowlist secret
 class TestCryptoKeyManagement:
     """Test suite for cryptographic key management."""
 

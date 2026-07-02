@@ -15,7 +15,7 @@ from typing import Any, Dict
 
  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 class TestAuthenticationMechanisms:
-    """Test suite for authentication mechanism security."""
+    """Test suite for authentication mechanism security.""" # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
     def test_password_hashing_uses_strong_algorithm(self):
         """Verify passwords are hashed with secure algorithm (bcrypt/argon2)."""

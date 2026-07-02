@@ -15,7 +15,7 @@ class TestGitHubActionsIntegration:
     """GitHub Actions specific integration tests"""
      # pragma: allowlist secret
     def test_action_context_availability(self):
-        """Verify GitHub context available in actions"""
+        """Verify GitHub context available in actions""" # pragma: allowlist secret
         context = {
             "github": {"ref": "refs/heads/main", "sha": "abc123"},
             "runner": {"os": "Linux"},

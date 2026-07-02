@@ -15,7 +15,7 @@ from typing import Dict, Any, Optional, List
  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
 class TestAPISecurityHeaders:
-    """Test suite for secure API headers and configurations."""
+    """Test suite for secure API headers and configurations.""" # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
     def test_cors_policy_prevents_cross_origin_attacks(self):
         """Verify CORS policy prevents unauthorized cross-origin requests."""

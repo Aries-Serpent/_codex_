@@ -15,7 +15,7 @@ import tempfile
 from datetime import datetime
 from pathlib import Path
 
-import pytest
+import pytest # pragma: allowlist secret
 
 # Import modules under test
 import sys

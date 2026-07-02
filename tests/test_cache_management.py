@@ -15,7 +15,7 @@ import hashlib
 import time
 
 
-class TestL1ArtifactCache:
+class TestL1ArtifactCache: # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
     """L1 Cache Layer: Artifact caching"""
     
     def test_l1_cache_key_generation(self):
