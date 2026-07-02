@@ -1,10 +1,10 @@
 {
-  "actions": 0,
-  "blocks": 0,
-  "documents": 0,
-  "fts_rows": 0,
-  "generated_at": "2026-07-01T04:48:16Z",
+  "actions": 1529,
+  "blocks": 31482,
+  "documents": 133,
+  "fts_rows": 37324,
+  "generated_at": "2026-07-02T19:12:10Z",
   "healthy": true,
-  "sections": 0,
+  "sections": 3834,
   "sqlite_exists": true
 }

@@ -1,14 +1,12 @@
 {
   "broken_relationships": [],
   "errors": [],
-  "generated_at": "2026-07-01T04:48:16Z",
+  "generated_at": "2026-07-02T19:12:09Z",
   "orphaned_records": [],
-  "stale_generated_files": [
-    "search-index.jsonl"
-  ],
+  "stale_generated_files": [],
   "stats": {
     "errors": 0,
-    "records": 0,
+    "records": 72678,
     "warnings": 0
   },
   "valid": true,
