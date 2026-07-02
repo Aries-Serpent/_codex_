@@ -1,3 +1,5 @@
+import pytest
+pytest.importorskip("tensorboard")
 #     assert set(train) | set(eval_) == set(ids) or (, "Condition must be true"
 #         # Duplicated IDs: combined count must equal original
 #         len(train) + len(eval_)

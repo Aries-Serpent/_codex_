@@ -8,6 +8,7 @@ import pytest
 from agents.codex_client.codex_client import demo_plan_and_call as demo
 from agents.codex_client.codex_client.bridge import CodexBridgeClient
 from agents.codex_client.codex_client.config import ClientConfig
+pytest.importorskip("tenacity")
 
 
 @dataclass

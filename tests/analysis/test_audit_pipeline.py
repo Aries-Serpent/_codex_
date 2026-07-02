@@ -1,3 +1,5 @@
+import pytest
+pytest.importorskip("parso")
 """
 Test Audit Pipeline
 

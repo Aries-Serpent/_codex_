@@ -1,3 +1,4 @@
+pytest.importorskip("parso")
 """
 Test External Web Search
 

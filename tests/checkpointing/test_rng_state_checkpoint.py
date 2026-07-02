@@ -1,3 +1,4 @@
+pytest.importorskip("tensorboard")
 """
 Test Rng State Checkpoint
 
