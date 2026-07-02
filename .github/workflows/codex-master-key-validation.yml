@@ -22,16 +22,16 @@ jobs:
     permissions:
       contents: read
     timeout-minutes: 30
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
-      
+
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
           python-version: '3.12'
-      
+
       - name: Validate CODEX_MASTER_KEY Scopes
         id: validate
         run: |
@@ -39,7 +39,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         continue-on-error: true
-      
+
       - name: Display scope validation results
         if: always()
         run: |
@@ -49,7 +49,7 @@ jobs:
           else
             echo "WARNING: scope_report.json not found"
           fi
-      
+
       - name: Upload scope report
         uses: actions/upload-artifact@v5
         if: always()
@@ -58,7 +58,7 @@ jobs:
           path: scope_report.json
           retention-days: 30
           if-no-files-found: warn
-      
+
       - name: Check validation status
         if: always()
         run: |

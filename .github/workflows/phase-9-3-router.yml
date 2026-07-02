@@ -75,7 +75,7 @@ jobs:
           import json
           import os
           from pathlib import Path
-          
+
           # Determine task from trigger
           if "${{ github.event_name }}" == "pull_request":
             task_id = "pr-${{ github.event.pull_request.number }}"
@@ -86,12 +86,12 @@ jobs:
           else:
             task_id = "manual-${{ github.run_id }}"
             category = "manual"
-          
+
           # Write outputs using new GITHUB_OUTPUT format
           with open(os.environ.get('GITHUB_OUTPUT', '/dev/null'), 'a') as f:
             f.write(f"task_id={task_id}\n")
             f.write(f"category={category}\n")
-          
+
           print(f"\n📋 Task Info:")
           print(f"  ID: {task_id}")
           print(f"  Category: {category}")
@@ -101,12 +101,12 @@ jobs:
         id: routing-method
         run: |
           method="semantic"  # Default to semantic routing via FAISS
-          
+
           # Check if forcing FAISS rebuild
           if [ "${{ github.event.inputs.force_reindex_faiss }}" = "true" ]; then
             method="rebuild_index"
           fi
-          
+
           echo "method=$method" >> $GITHUB_OUTPUT
           echo "Using routing method: $method"
 
@@ -156,10 +156,10 @@ jobs:
           import os
           with open('/tmp/routing-decision.json', 'r') as f:
               result = json.load(f)
-          
+
           # Extract top agents
           agents = [a['agent_id'] for a in result['top_agents']]
-          
+
           # Write outputs using new GITHUB_OUTPUT format
           github_output = os.environ.get('GITHUB_OUTPUT', '/dev/null')
           with open(github_output, 'a') as f:
@@ -214,7 +214,7 @@ jobs:
           import os
           with open('/tmp/load-balance.json', 'r') as f:
               result = json.load(f)
-          
+
           # Write outputs using new GITHUB_OUTPUT format
           github_output = os.environ.get('GITHUB_OUTPUT', '/dev/null')
           with open(github_output, 'a') as f:
@@ -271,7 +271,7 @@ jobs:
           import os
           with open('/tmp/execution-result.json', 'r') as f:
               result = json.load(f)
-          
+
           # Write outputs using new GITHUB_OUTPUT format
           github_output = os.environ.get('GITHUB_OUTPUT', '/dev/null')
           with open(github_output, 'a') as f:
@@ -303,7 +303,7 @@ jobs:
           import json
           import datetime
           from pathlib import Path
-          
+
           # Helper to safely convert strings to numbers, with defaults
           def safe_float(value, default=None):
               if not value or not str(value).strip():
@@ -312,7 +312,7 @@ jobs:
                   return float(value)
               except (ValueError, TypeError):
                   return default
-          
+
           def safe_int(value, default=None):
               if not value or not str(value).strip():
                   return default
@@ -320,16 +320,16 @@ jobs:
                   return int(value)
               except (ValueError, TypeError):
                   return default
-          
+
           def safe_split(value):
               if not value or not str(value).strip():
                   return []
               return [s.strip() for s in str(value).split(',') if s.strip()]
-          
+
           def safe_float_list(value):
               items = safe_split(value)
               return [safe_float(item) for item in items if safe_float(item) is not None]
-          
+
           # Construct audit entry with safe conversions
           entry = {
               "phase": "9.3",
@@ -346,14 +346,14 @@ jobs:
               "total_duration_s": safe_float("${{ needs.concurrent-execution.outputs.total_duration_s }}", 0.0),
               "parallel_agents_count": safe_int("${{ needs.concurrent-execution.outputs.parallel_agents_count }}", 0)
           }
-          
+
           # Append to audit log
           log_file = Path('.codex/phase_9_3_routing_audit.jsonl')
           log_file.parent.mkdir(exist_ok=True)
-          
+
           with log_file.open('a') as f:
               f.write(json.dumps(entry) + '\n')
-          
+
           print("✅ Routing decision logged to audit trail")
           print(json.dumps(entry, indent=2))
           EOF
@@ -366,7 +366,7 @@ jobs:
           else
             echo "⚠️  Task execution status: ${{ needs.concurrent-execution.outputs.execution_result }}"
           fi
-          
+
           echo ""
           echo "📊 Routing Metrics:"
           echo "  - Routing Latency: ${{ needs.semantic-router-index.outputs.routing_latency_ms }}ms"
@@ -385,13 +385,13 @@ jobs:
       - name: Create execution summary
         run: |
           cat << 'EOF'
-          
+
           ┌─────────────────────────────────────────────────────────────┐
           │           PHASE 9.3 ROUTING & EXECUTION SUMMARY              │
           ├─────────────────────────────────────────────────────────────┤
           │ Task ID:               ${{ needs.semantic-routing-setup.outputs.task_id }}
           │ Task Category:         ${{ needs.semantic-routing-setup.outputs.task_category }}
-          │ 
+          │
           │ 🔍 SEMANTIC ROUTING:
           │   Routing Latency:     ${{ needs.semantic-router-index.outputs.routing_latency_ms }}ms
           │   Top Candidates:      ${{ needs.semantic-router-index.outputs.top_agents }}
@@ -411,7 +411,7 @@ jobs:
           │   File:                .codex/phase_9_3_routing_audit.jsonl
           │
           └─────────────────────────────────────────────────────────────┘
-          
+
           EOF
 
       - name: Check success criteria
