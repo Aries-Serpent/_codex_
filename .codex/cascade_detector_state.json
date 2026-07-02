@@ -14,12 +14,20 @@
     "2:/home/runner/work/_codex_/_codex_/src/codex/docs_agent/cli.py": 3,
     "2:/home/runner/work/_codex_/_codex_/src/codex/docs_agent/document_processor.py": 3,
     "2:/home/runner/work/_codex_/_codex_/src/codex/docs_agent/parser.py": 3,
-    "35:.codex/AUTO_GO_POST_MERGE_PROMPT.md": 1
+    "35:.codex/AUTO_GO_POST_MERGE_PROMPT.md": 1,
+    "36:tests/test_security_crypto.py": 10,
+    "37:tests/skills/test_aais_batch_comprehensive.py": 3,
+    "37:tests/cognitive/test_ooda_executor.py": 12,
+    "38:tests/test_rag_error_handling.py": 8,
+    "38:tests/test_cli_pipeline_gap_fill.py": 2
   },
   "circuit_state": {
     "6": "BROKEN",
     "7": "BROKEN",
     "1": "BROKEN",
-    "2": "OPEN"
+    "2": "OPEN",
+    "36": "BROKEN",
+    "37": "OPEN",
+    "38": "BROKEN"
   }
 }
