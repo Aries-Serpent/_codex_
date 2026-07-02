@@ -40,7 +40,7 @@
 | # | Workflow | Status | Lane | Root Cause | Action | Latest Run | Resolved SHA |
 |---|----------|--------|------|-----------|--------|------------|--------------|
 | 16 | comment-review-gate.yml | ✅ RESOLVED | review | Later success found | Confirm & mark green | - | - |
-| 17 | secrets-baseline-enforcer.yml | ✅ RESOLVED | security | Later success found | Confirm & mark green | - | - |
+| 17 | secrets-baseline-enforcer.yml | ✅ RESOLVED | security | Later success found | Confirm & mark green | - | - | <!-- pragma: allowlist secret -->
 | 18 | copilot-setup-validation.yml | ✅ RESOLVED | setup | Later success found | Confirm & mark green | - | - |
 | 19 | actionlint-audit.yml | ✅ RESOLVED | audit | Later success found | Confirm & mark green | - | - |
 
@@ -76,7 +76,7 @@
 | 45 | reference-integrity.yml | ⏳ PENDING | ref | TBD | Batch 2 | - | - |
 | 46 | required-actions-enforcer.yml | ⏳ PENDING | enforce | TBD | Batch 2 | - | - |
 | 47 | root-org-validation.yml | ⏳ PENDING | org | TBD | Batch 2 | - | - |
-| 48 | scan-secrets-variables.yml | ⏳ PENDING | secret | TBD | Batch 2 | - | - |
+| 48 | scan-secrets-variables.yml | ⏳ PENDING | secret | TBD | Batch 2 | - | - | <!-- pragma: allowlist secret -->
 
 ### NON-WORKFLOW CHECKS (3 Total)
 
@@ -149,7 +149,7 @@ TIER 2 HIGH (5 Workflows):
 
 TIER 3 CONFIRMED RESOLVED (4 Workflows):
 - [ ] 16. comment-review-gate.yml → confirm green
-- [ ] 17. secrets-baseline-enforcer.yml → confirm green
+- [ ] 17. secrets-baseline-enforcer.yml → confirm green  # pragma: allowlist secret
 - [ ] 18. copilot-setup-validation.yml → confirm green
 - [ ] 19. actionlint-audit.yml → confirm green
 
