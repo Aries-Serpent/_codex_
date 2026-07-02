@@ -9,11 +9,9 @@ Test Count: 15 tests
 import pytest
 import hashlib
 import hmac
-import base64
 import secrets
 import string
-from unittest.mock import Mock, patch, MagicMock
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 class TestAuthenticationMechanisms:

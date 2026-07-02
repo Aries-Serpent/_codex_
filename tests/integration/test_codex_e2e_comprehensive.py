@@ -18,14 +18,11 @@ import tempfile
 import threading # pragma: allowlist secret # pragma: allowlist secret
 import time
 from datetime import datetime, timedelta
-from pathlib import Path
 from typing import Generator
-from unittest.mock import MagicMock, patch
 
 import pytest
 
 from codex.logging.session_db import SessionDB
-from codex.logging.session_logger import SessionLogger
 
 
 class TestSessionLifecycleE2E:

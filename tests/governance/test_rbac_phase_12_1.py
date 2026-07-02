@@ -20,8 +20,6 @@ Target: >95% code coverage
 from __future__ import annotations
 
 import pytest
-import time
-import threading
 
 # Simplified test structure (full implementation in actual test file)
 class TestRBACEngine:

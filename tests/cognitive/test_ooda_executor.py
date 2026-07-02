@@ -17,14 +17,10 @@ import asyncio
 import pytest
 import time
 from datetime import datetime
-from unittest.mock import AsyncMock, MagicMock, patch
 from scripts.cognitive.ooda_loop_executor import (
     OODAExecutor,
     OODAPhase,
-    OODAState,
     ObservationData,
-    OrientationData,
-    DecisionData,
     ActionResult,
     ContextData,
     DegradationLevel,

@@ -12,10 +12,8 @@ Strategy:
 4. Skip false positive scripts (those just using elevated APIs)
 """
 
-import ast
 import json
 import logging
-import os
 import re
 import sys
 from dataclasses import dataclass, field

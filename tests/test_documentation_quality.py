@@ -8,7 +8,7 @@ Coverage: Documentation quality dimensions and scoring.
 
 import re
 from pathlib import Path
-from typing import Dict, List
+from typing import List
 
 import pytest
 

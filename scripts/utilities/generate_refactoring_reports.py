@@ -6,8 +6,7 @@ import os
 import re
 from pathlib import Path
 from collections import defaultdict
-from typing import Dict, List, Set, Tuple
-from scripts.ci._token_resolver import get_token
+from typing import Dict, List, Set
 
 
 def find_all_python_scripts(root: str, exclude_dirs: Set[str] = None) -> List[Path]:

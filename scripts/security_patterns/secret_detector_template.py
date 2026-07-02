@@ -25,7 +25,6 @@ Example:
 
 import json
 import re
-import sys
 from typing import List, Dict, Any
 
 
@@ -109,7 +108,6 @@ class SecretDetector:
             List of detection results
         """
         import os
-        from pathlib import Path
 
         results = []
         exclude_dirs = {'.git', '__pycache__', 'node_modules', '.venv'}

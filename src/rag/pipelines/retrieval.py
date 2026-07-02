@@ -197,6 +197,7 @@ class RetrievalResponse:
     search_time_ms: float = 0.0
 
 
+
 class RetrievalPipeline:
     """
     Pipeline for retrieving relevant documents.
@@ -412,3 +413,7 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+
+# Backward-compatibility alias
+Retrieval = RetrievalPipeline

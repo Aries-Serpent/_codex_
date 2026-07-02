@@ -8,12 +8,7 @@ Test Count: 22 tests
 
 import pytest
 import re
-import os
-import json
-import subprocess
-import hashlib
-from typing import Dict, List, Any, Optional
-from unittest.mock import Mock, patch, mock_open
+from typing import Dict, List, Any
 
 
 class TestVulnerabilityPrevention:

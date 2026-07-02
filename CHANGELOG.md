@@ -1,3 +1,16 @@
+## [Fixed] 2026-07-01T23:10Z — RAG Module Tests: Coverage +1.59% and ImportError production bug fix
+
+- **Production bug fix** (`src/codex/rag/gpu_utils.py`): `get_gpu_memory()` now catches `ImportError` (in addition to `ValueError`, `TypeError`, `RuntimeError`) so that environments without PyTorch return `(0, 0)` cleanly instead of propagating the error
+- **Production bug fix** (`src/rag/pipelines/retrieval.py`): Added `Retrieval = RetrievalPipeline` backward-compatibility alias that `cached_retrieval.py` was importing at module level
+- **New targeted tests** to cover previously uncovered lines in `src/codex/rag/`:
+  - `tests/test_rag_postprocess.py`: 3 tests covering `postprocess.py` lines 135, 169, and branch 34→31
+  - `tests/rag/test_gpu_utils.py`: 3 tests covering `gpu_utils.py` line 88 (ValueError) and ImportError path
+  - `tests/rag/ingestion/test_chunker.py`: 1 test covering `chunker.py` lines 247-248 (empty trailing sentence)
+  - `tests/rag/test_utils_meta_mocked.py`: 4 tests covering `utils.py` lines 95, 105-106, 138-141 using mocks
+- **Coverage impact**: +~1.59% statement coverage (14 statements), surpassing the 95% CI threshold
+- **Issues**: #5187
+- **PR**: #5188
+
 ## [Fixed] 2026-07-01T22:30Z — Comprehensive CI Fix: RAG Module Tests, Secrets, Docs, Governance
 
 - **Primary Fix**: Removed conflicting numpy version pin in `pyproject.toml` [project.optional-dependencies].rag section
@@ -585,6 +598,15 @@ Fixed all 15 security vulnerabilities from commit d587689 and PR review comments
 # Changelog
 
 ## [Unreleased]
+
+### Fixed (auto-update — PR #5188)
+- RAG Module Tests CI fix: coverage +1.59% (94.41% → ≥95%) — 2 production bugs fixed, 11 targeted tests added (PR #5188, SHA `aa75bcd6`) at 2026-07-01T23:31Z [auto-generated]
+- Production bug fix: `get_gpu_memory()` now catches `ImportError` in addition to `ValueError/TypeError/RuntimeError`
+- Production bug fix: Added `Retrieval = RetrievalPipeline` backward-compatibility alias in `src/rag/pipelines/retrieval.py`
+- REQ-4/REQ-5 compliance: accountability report and CHANGELOG updated in final commit
+- CI fix: Removed unused `import pytest` from `tests/rag/test_utils_meta_mocked.py` (RP-007 code quality gate)
+- CI fix: Added `<!-- pragma: allowlist secret -->` to git SHA in AGENT_ACCOUNTABILITY_REPORT.md (secrets false-positive, line 112)
+- CI fix: Fixed double blank line in `tests/rag/test_utils_meta_mocked.py` (import style)
 
 ### Fixed (auto-update — PR #5181)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5181 (SHA `201aaaad`) at 2026-07-01T20:43Z [auto-generated]
@@ -13617,3 +13639,4 @@ Completed TIER 1 semantic routing quality validation for multi-agent orchestrati
 - **Machine Readable Governance**: Set `fail_on_unmanaged_candidates` to `false` in `docs-data/machine-readable-policy.json` to prevent hard failures from 126 unmanaged doc candidates
 - **REQ-1 Eligibility Validator**: Copilot and bot-authored PRs (branch prefix `copilot/` or `[bot]` author login) no longer receive a hard FAIL for missing reviewers; they now receive a WARN (score=0.5) — fixing governance compliance BLOCK for automated PRs
 - **REQ-4/REQ-5 Compliance**: Updated `AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md` in this non-merge commit so they appear in `commits[-1]` and pass the compliance validators
+

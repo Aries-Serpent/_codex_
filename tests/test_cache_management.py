@@ -12,11 +12,6 @@ Coverage: 40+ tests for cache management validation
 
 import pytest
 import hashlib
-import json
-import tempfile
-from pathlib import Path
-from typing import Dict, List, Tuple # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
-from unittest.mock import Mock, patch, MagicMock
 import time
 
 

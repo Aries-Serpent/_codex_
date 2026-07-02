@@ -11,11 +11,9 @@ Author: cognitive-brain-session-injector
 Phase: 10.1 - Session Checkpoint/Resume System
 """
 
-import json
 import tempfile
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict # pragma: allowlist secret
 
 import pytest
 
@@ -25,14 +23,10 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "cognitive"))
 
 from session_checkpoint_manager import (
     SessionCheckpointManager,
-    CheckpointMetadata,
-    ValidationResult,
     CheckpointNotFoundError,
-    CheckpointCorruptedError,
 )
 from session_resume_engine import (
     SessionResumeEngine,
-    SessionContext,
     ContextProvider,
 )
 

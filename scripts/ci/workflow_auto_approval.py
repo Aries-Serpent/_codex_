@@ -8,7 +8,6 @@ This script uses CODEX_MASTER_KEY (via gh CLI) to:
 3. Resolve action_required status
 """
 
-import os
 import sys
 import json
 import subprocess

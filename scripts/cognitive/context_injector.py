@@ -17,17 +17,14 @@ Target Performance:
 """
 
 import asyncio
-import json
 import logging
 import time
-from dataclasses import dataclass, asdict, field
+from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple
 from abc import ABC, abstractmethod
-from collections import defaultdict
 import numpy as np
-from scipy.spatial.distance import cosine
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

@@ -13,7 +13,7 @@ import sys
 import json
 import subprocess
 from datetime import datetime
-from typing import List, Dict, Optional
+from typing import List, Dict
 
 # Token chain: CODEX_MASTER_KEY -> CODEX_BACKUP_KEY -> GH_TOKEN
 def get_auth_token() -> str:

@@ -8,8 +8,7 @@ Classes:
 """
 
 import re
-from typing import Dict, List, Optional, Any, Tuple
-from .core import SectionRecord, BlockRecord
+from typing import Dict, List, Any, Tuple
 
 
 class MarkdownParser:

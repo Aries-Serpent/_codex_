@@ -17,7 +17,7 @@ from typing import Any
 
 from scripts.ci._token_resolver import get_token
 
-from . import error_utils, url_utils
+from . import url_utils
 
 logger = logging.getLogger(__name__)
 

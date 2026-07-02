@@ -94,13 +94,6 @@ class TestServicesModuleInitialization:
 
     def test_types_exported(self):
         """Test that workflow types are exported."""
-        from services import (
-            WorkflowDependency,
-            WorkflowInput,
-            WorkflowJob,
-            WorkflowMetadata,
-            WorkflowTrigger,
-        )
         # Fixed malformed assertion: assert all(...)
 
     def test_parser_parse_file_accepts_path(self):

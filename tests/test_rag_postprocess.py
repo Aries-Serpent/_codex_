@@ -305,3 +305,41 @@ def test_postprocess_output_preserves_content():
     processed, _evidence = postprocess_output(output=output, include_citations=False)
 
     assert processed == output.strip(), "processed is not valid"
+
+
+def test_scrub_output_rule_without_pattern():
+    """Test scrubbing when a redaction rule has no 'pattern' key (branch 34->31)."""
+    processor = OutputProcessor()
+    # Rule missing 'pattern' key → pattern is None → if-branch not taken
+    rules = [{"replacement": "[REDACTED]"}]
+    result = processor.scrub_output("Hello world", rules)
+    assert result == "Hello world", "text must be unchanged when no pattern is provided"
+
+
+def test_add_citations_unknown_style_with_evidence():
+    """Test add_citations fallthrough when citation_style is unrecognised (line 135)."""
+    processor = OutputProcessor()
+    evidence = [{"source_id": "doc1", "score": 0.9}]
+    result = processor.add_citations("Some output", evidence, "custom_style")
+    # Should return original output unchanged
+    assert result == "Some output", "output must be unchanged for unknown citation style"
+
+
+def test_postprocess_output_guaranteed_evidence_and_citations():
+    """Test that line 169 is reached: include_citations=True with guaranteed evidence."""
+    # Build output and doc so the phrase overlap is guaranteed:
+    # phrase = "Machine learning works well" (>10 chars, first sentence fragment)
+    # appears verbatim in output → evidence list will be non-empty
+    output = "Machine learning works well"
+    docs = [
+        {
+            "content": "Machine learning works well. Extra context here.",
+            "score": 0.95,
+            "metadata": {"source_id": "src_ml"},
+        }
+    ]
+    processed, evidence = postprocess_output(
+        output=output, retrieved_docs=docs, include_citations=True, citation_style="inline"
+    )
+    assert len(evidence) > 0, "evidence must be non-empty for this input"
+    assert "[Sources: src_ml]" in processed, "citation must be appended"

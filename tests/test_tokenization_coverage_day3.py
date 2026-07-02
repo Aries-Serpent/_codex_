@@ -5,7 +5,6 @@ truncation/padding, vocabulary coverage, and multilingual support.
 """
 
 from pathlib import Path
-import tempfile
 
 import pytest
 

@@ -8,9 +8,7 @@ Coverage: 35+ additional tests to reach 200+ total
 """
 
 import pytest
-import json
 import time
-from typing import Dict, List
 
 
 class TestGitHubActionsIntegration:

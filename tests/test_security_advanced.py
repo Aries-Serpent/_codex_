@@ -7,11 +7,8 @@ Test Count: 18 tests
 """
 
 import pytest
-import time
-import json
-from typing import Dict, List, Any, Callable
-from unittest.mock import Mock, patch, MagicMock
-from datetime import datetime, timedelta
+from typing import Dict, List, Any
+from datetime import datetime
 
 
 class TestThreatModeling:

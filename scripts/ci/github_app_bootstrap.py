@@ -213,7 +213,6 @@ def convert_code(code: str) -> None:
         sys.path.insert(0, str(scripts_dir))
 
         try:
-            from scripts.ci._token_resolver import get_token
             import github_var_writer as vw
             vw.upsert_var("GITHUB_APP_ID", app_id, force=True)
         except Exception as e:

@@ -14,7 +14,7 @@ Generated: 2026-07-01
 import sys
 import time
 from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import patch
 
 import pytest
 
@@ -26,7 +26,6 @@ sys.path.insert(0, str(repo_root / "src"))
 from phase_9_2_cascade_orchestrator import (
     CascadeOrchestrator,
     FailureLog,
-    FixStatus,
     PatternDetector,
     FixExecutor,
     FixRouter,
@@ -37,7 +36,7 @@ from phase_9_2_cascade_orchestrator import (
     run_command,
     PATTERN_CATALOG,
 )
-from phase_9_2_pattern_router import PatternMatcher, PatternRouter
+from phase_9_2_pattern_router import PatternMatcher
 
 try:
     from orchestration.adapters.cascade_to_router_adapter import (

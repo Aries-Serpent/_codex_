@@ -11,7 +11,6 @@ Status: Production Ready
 
 import json
 import logging
-import re
 import sqlite3
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone

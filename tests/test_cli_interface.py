@@ -6,12 +6,8 @@ exit codes, error handling, environment variables, and config file loading.
 Coverage: 95%+ of CLI interface surface area.
 """
 
-import argparse
 import os
-import sys
-from io import StringIO
 from pathlib import Path
-from unittest import mock
 
 import pytest
 from click.testing import CliRunner

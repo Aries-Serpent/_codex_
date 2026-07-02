@@ -7,7 +7,6 @@ search and retrieval as MCP tools for Copilot agents.
 Authority: Lane 3 Unified Documentation Agent
 """
 
-import json
 from typing import Dict, List, Any, Optional, Callable
 from enum import Enum
 import logging
