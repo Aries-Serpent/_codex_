@@ -45,7 +45,7 @@ name: Copilot Agent Environment Setup
     - .codex/agent_environment_config.yaml
 env:
   PYTHON_VERSION: '3.12'
-  NODE_VERSION: '22'
+  NODE_VERSION: "22"
   RUST_VERSION: stable
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
@@ -90,6 +90,7 @@ jobs:
         clean: true
         show-progress: true
     - name: "🧠 Session Context Pre-load (memory + policy + accountability + PDA)"
+      # DO NOT REFACTOR THIS STEP — it is canonically guarded by validate_setup_steps_yaml.sh
       continue-on-error: true
       run: |
         echo "::group::Unified Session Context Pre-load"
