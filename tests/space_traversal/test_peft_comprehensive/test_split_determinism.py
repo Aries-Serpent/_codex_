@@ -1,4 +1,5 @@
 """
+pytest.importorskip("tensorboard")
 Test Split Determinism
 
 Test module for split determinism.

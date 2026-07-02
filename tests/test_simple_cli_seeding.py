@@ -1,4 +1,5 @@
 """
+pytest.importorskip("mlflow")
 Test Simple Cli Seeding
 
 Test module for simple cli seeding.

@@ -1,3 +1,4 @@
+from enum import Enum
 #         assert ", "Condition must be true"
 #         assert "http_requests 100" in output, "Condition must be true"
 

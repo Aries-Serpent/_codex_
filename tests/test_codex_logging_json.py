@@ -1,3 +1,5 @@
+import pytest
+pytest.importorskip("tensorboard")
 """
 Test Codex Logging Json
 

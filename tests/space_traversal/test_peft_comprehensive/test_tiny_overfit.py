@@ -1,4 +1,5 @@
 """
+pytest.importorskip("tensorboard")
 Test Tiny Overfit
 
 Test module for tiny overfit.

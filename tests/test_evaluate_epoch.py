@@ -1,4 +1,5 @@
 """
+pytest.importorskip("mlflow")
 Unit tests for evaluate_epoch function.
 
 Tests cover:

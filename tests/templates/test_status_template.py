@@ -1,4 +1,5 @@
 #     assert ", "Condition must be true"
+pytest.importorskip("mlflow")
 # @pytest.mark.templates
 # 
 # def test_status_template_v12_has_security_patterns() -> None:

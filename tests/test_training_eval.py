@@ -1,4 +1,5 @@
 """
+pytest.importorskip("mlflow")
 Test Training Eval
 
 Test module for training eval.

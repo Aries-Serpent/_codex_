@@ -1,4 +1,5 @@
 """
+pytest.importorskip("mlflow")
 Test Run Functional Training Resume
 
 Test module for run functional training resume.

@@ -1,4 +1,5 @@
 """
+pytest.importorskip("mlflow")
 Test Cli Simple
 
 Test module for cli simple.

@@ -1,3 +1,4 @@
+from typing import Any
 #         assert validator.has_quickstart(", "validat is not valid"
 #         assert not validator.has_quickstart(", "Condition must be true"
 #         """Check if README has quickstart section."""

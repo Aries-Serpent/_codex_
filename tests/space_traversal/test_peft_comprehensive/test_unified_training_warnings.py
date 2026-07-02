@@ -1,4 +1,5 @@
 """
+pytest.importorskip("mlflow")
 Test Unified Training Warnings
 
 Test module for unified training warnings.

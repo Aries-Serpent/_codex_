@@ -1,4 +1,5 @@
 """
+pytest.importorskip("mlflow")
 Test Checkpoint Checksum And Retention
 
 Test module for checkpoint checksum and retention.

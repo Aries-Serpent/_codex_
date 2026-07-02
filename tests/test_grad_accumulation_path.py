@@ -1,4 +1,5 @@
 """
+pytest.importorskip("mlflow")
 Test Grad Accumulation Path
 
 Test module for grad accumulation path.

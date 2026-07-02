@@ -1,4 +1,5 @@
 """
+pytest.importorskip("mlflow")
 Test Sample Rate Gate
 
 Test module for sample rate gate.

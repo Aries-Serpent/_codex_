@@ -1,4 +1,5 @@
 """
+pytest.importorskip("mlflow")
 Test Scheduler Registry
 
 Test module for scheduler registry.

@@ -1,4 +1,5 @@
 """
+pytest.importorskip("tensorboard")
 Test Metrics Writers
 
 Test module for metrics writers.

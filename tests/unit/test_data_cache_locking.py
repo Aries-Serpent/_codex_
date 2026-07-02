@@ -1,4 +1,5 @@
 """
+pytest.importorskip("tensorboard")
 Test Data Cache Locking
 
 Test module for data cache locking.

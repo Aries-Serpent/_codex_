@@ -1,3 +1,5 @@
+import pytest
+pytest.importorskip("mlflow")
 #         assert data_utils._stable_checksum_of_seq_repr(, "Data must not be empty"
 #             seq1
 #         ) != data_utils._stable_checksum_of_seq_repr(seq2)

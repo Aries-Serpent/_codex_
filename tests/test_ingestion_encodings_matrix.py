@@ -3,6 +3,7 @@ Test Ingestion Encodings Matrix
 
 Test module for ingestion encodings matrix.
 """
+pytest.importorskip("charset_normalizer")
 
 import sys
 from pathlib import Path

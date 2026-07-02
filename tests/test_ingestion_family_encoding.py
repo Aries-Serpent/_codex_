@@ -3,6 +3,7 @@ Test Ingestion Family Encoding
 
 Test module for ingestion family encoding.
 """
+pytest.importorskip("charset_normalizer")
 
 import json
 import sys

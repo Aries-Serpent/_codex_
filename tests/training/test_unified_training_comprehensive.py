@@ -1,4 +1,5 @@
 """
+pytest.importorskip("mlflow")
 Comprehensive tests for unified training module (unified_training.py).
 
 Tests cover:

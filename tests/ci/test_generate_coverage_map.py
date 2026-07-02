@@ -1,3 +1,4 @@
+from pathlib import Path
 #         assert not set(entry.covered_lines) & set(, "Condition must be true"
 #             entry.uncovered_lines
 #         ), "A line must not appear in both covered and uncovered"

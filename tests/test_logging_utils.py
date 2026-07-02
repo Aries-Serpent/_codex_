@@ -1,4 +1,5 @@
 """
+pytest.importorskip("tensorboard")
 Test Logging Utils
 
 Test module for logging utils.

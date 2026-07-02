@@ -1,4 +1,5 @@
 """
+pytest.importorskip("mlflow")
 Test Cli Prompt Sanitisation
 
 Test module for cli prompt sanitisation.

@@ -1,4 +1,5 @@
 """
+pytest.importorskip("charset_normalizer")
 Test Streaming Ingest
 
 Test module for streaming ingest.

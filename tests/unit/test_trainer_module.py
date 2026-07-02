@@ -1,4 +1,5 @@
 """
+pytest.importorskip("tensorboard")
 Test Trainer Module
 
 Test module for trainer module.

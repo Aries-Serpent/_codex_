@@ -1,4 +1,5 @@
 """
+pytest.importorskip("tensorboard")
 Test Resume
 
 Test module for resume.

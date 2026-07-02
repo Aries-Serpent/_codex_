@@ -1,3 +1,5 @@
+import pytest
+pytest.importorskip("charset_normalizer")
 """
 Test Ingestion Split Cache
 

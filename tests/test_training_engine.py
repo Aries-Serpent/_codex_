@@ -1,3 +1,5 @@
+import pytest
+pytest.importorskip("mlflow")
 """
 Test Training Engine
 

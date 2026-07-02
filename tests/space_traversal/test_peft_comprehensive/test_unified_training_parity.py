@@ -1,4 +1,5 @@
 """
+pytest.importorskip("mlflow")
 Test Unified Training Parity
 
 Test module for unified training parity.

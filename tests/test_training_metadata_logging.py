@@ -1,4 +1,5 @@
 """
+pytest.importorskip("mlflow")
 Test Training Metadata Logging
 
 Test module for training metadata logging.

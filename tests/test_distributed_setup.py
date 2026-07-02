@@ -1,4 +1,5 @@
 """Tests for distributed training setup."""
+pytest.importorskip("mlflow")
 
 import os
 

@@ -1,4 +1,5 @@
 """
+pytest.importorskip("mlflow")
 Comprehensive test suite for codex_ml.training.strategies module.
 
 This module provides 15+ tests targeting 70%+ coverage of strategies.py.

@@ -1,3 +1,4 @@
+from hypothesis import given
 """
 Comprehensive unit tests for src/tokenization/cli.py
 
