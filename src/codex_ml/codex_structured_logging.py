@@ -300,7 +300,7 @@ class ArgparseJSONParser(argparse.ArgumentParser):
     Mirrors argparse semantics (stderr + exit 2 on invalid args).
     """
 
-    def __init__(self, *a, **k) -> Any:
+    def __init__(self, *a, **k) -> None:
         self._logger = logging.getLogger("codex")
         super().__init__(*a, **k)
 

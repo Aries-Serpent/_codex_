@@ -38,8 +38,8 @@ class MockHTTPServer:
         self.port = port
         self.enable_latency = enable_latency
         self.app = None
-        self.endpoints = {}
-        self.call_count = {}
+        self.endpoints: dict[str, Any] = {}
+        self.call_count: dict[str, int] = {}
         self.error_rate = 0.0  # 0-1, probability of error
         
         self._setup_app()
@@ -75,7 +75,7 @@ class MockHTTPServer:
         self,
         path: str,
         handler: Callable,
-        methods: List[str] = None
+        methods: Optional[List[str]] = None
     ):
         """Register a mock endpoint
         

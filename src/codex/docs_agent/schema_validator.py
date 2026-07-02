@@ -15,7 +15,7 @@ import logging
 
 try:
     import jsonschema
-    from jsonschema import validate, ValidationError, Draft202012Validator
+    from jsonschema import validate, ValidationError as JsonSchemaValidationError, Draft202012Validator
 except ImportError:
     raise ImportError("jsonschema module required. Install with: pip install jsonschema")
 
@@ -116,7 +116,7 @@ class SchemaValidator:
         Returns:
             Dictionary with validation results
         """
-        results = {
+        results: Dict[str, Any] = {
             'total_records': 0,
             'valid_records': 0,
             'invalid_records': 0,

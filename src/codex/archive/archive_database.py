@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import logging
 import sqlite3
-from collections.abc import Callable
+from collections.abc import Callable, Iterator
 from contextlib import contextmanager
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
@@ -75,10 +75,10 @@ class ArchiveDatabase:
         statements = schema.statements_for(self.backend)
         with self._transaction() as execute:
             for statement in statements:
-                execute(statement)  # type: ignore[call-arg]
+                execute(statement)
 
     @contextmanager
-    def _transaction(self) -> Callable[[str, Params | None, bool, bool], Any]:
+    def _transaction(self) -> Iterator[Callable[[str, Params | None, bool, bool], Any]]:
         """Context manager for database transactions.
 
         Yields a callable that executes SQL statements within a transaction.

@@ -26,7 +26,7 @@ class DocumentRecord:
     title: str = ""
     source_file: str = ""
     created_at: str = ""
-    metadata: Dict[str, Any] = None
+    metadata: Optional[Dict[str, Any]] = None
 
     def __post_init__(self):
         if self.metadata is None:
@@ -58,9 +58,9 @@ class BlockRecord:
     section_id: str = ""
     content_type: str = "paragraph"
     content: str = ""
-    line_range: Dict[str, Any] = None
+    line_range: Optional[Dict[str, Any]] = None
     language: Optional[str] = None
-    references: List[str] = None
+    references: Optional[List[str]] = None
 
 
 class MarkdownParser:
@@ -96,10 +96,10 @@ class MarkdownParser:
         doc_rec = self._create_document_record(doc_id)
         section_recs = []
         block_recs = []
-        
-        current_section = None
-        current_content = []
-        line_start = None
+         
+        current_section: Optional[Dict[str, Any]] = None
+        current_content: List[str] = []
+        line_start: Optional[int] = None
         section_order = 0
         
         for line_no, line in enumerate(self.lines, 1):
@@ -107,6 +107,7 @@ class MarkdownParser:
             if line.startswith('#'):
                 # Save previous section if any
                 if current_section and current_content:
+                    assert line_start is not None
                     section_recs.append(current_section)
                     blocks = self._extract_blocks_from_content(
                         current_section['id'],
@@ -139,6 +140,7 @@ class MarkdownParser:
         
         # Save final section
         if current_section and current_content:
+            assert line_start is not None
             section_recs.append(current_section)
             blocks = self._extract_blocks_from_content(
                 current_section['id'],

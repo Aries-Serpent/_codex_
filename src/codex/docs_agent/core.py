@@ -85,7 +85,7 @@ class DocumentRegistry:
         self.documents: Dict[str, DocumentRecord] = {}
         self.sections: Dict[str, SectionRecord] = {}
         self.blocks: Dict[str, BlockRecord] = {}
-        self._index: Dict[str, List[str]] = {
+        self._index: Dict[str, Any] = {
             'by_path': {},
             'by_tag': {},
         }

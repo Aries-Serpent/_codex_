@@ -207,7 +207,14 @@ class GitHubActionsMetricsCollector:
                 # Calculate job duration
                 try:
                     # Skip jobs that don't have both timestamps (e.g., still running)
-                    if not started_at or not completed_at:
+                    # Explicitly check for None (API returns null for running jobs)
+                    # and empty strings (missing data)
+                    if (
+                        started_at is None
+                        or completed_at is None
+                        or not started_at
+                        or not completed_at
+                    ):
                         job_duration_ms = 0
                     else:
                         started = datetime.fromisoformat(started_at.replace("Z", "+00:00"))

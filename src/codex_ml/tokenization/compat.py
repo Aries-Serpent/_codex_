@@ -29,7 +29,7 @@ def _warn_load_tokenizer_deprecated() -> None:
 def load_tokenizer(*args: Any, **kwargs: Any) -> Any:
     """Backwards-compatible load_tokenizer with deprecation warning."""
     _warn_load_tokenizer_deprecated()
-    return _get_api().load_tokenizer(*args, **kwargs)
+    return _get_api().load_tokenizer(*args, **kwargs)  # type: ignore[attr-defined]
 
 
 def __getattr__(name: str) -> Any:

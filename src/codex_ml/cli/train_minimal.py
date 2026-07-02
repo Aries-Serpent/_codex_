@@ -73,7 +73,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     )
 
     training_loop = _import_training_loop()
-    training_loop.run_minimal_training(
+    training_loop.run_minimal_training(  # type: ignore[attr-defined]
         config=config,
         max_steps=args.max_steps,
         run_dir=ctx.run_dir,

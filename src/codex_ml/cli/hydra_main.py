@@ -68,7 +68,7 @@ try:  # pragma: no cover - hydra optional at runtime
     except ImportError as e:
         error_type = type(e).__name__
         logger.debug("hydra not available: <ERROR_TYPE>")
-        import config_legacy as hydra
+        import config_legacy as hydra  # type: ignore[no-redef]
 
     from omegaconf import DictConfig, OmegaConf
 except (ImportError, AttributeError):  # pragma: no cover - degrade gracefully when hydra missing

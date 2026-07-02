@@ -1,0 +1,80 @@
+# Retention Policy Configuration
+# Default configuration for artifact lifecycle management
+# Reference: .codex/RETENTION_POLICY.md
+
+retention:
+  # Session logs (NDJSON format)
+  sessions:
+    window_days: 90
+    archive: true
+    locations:
+      - memory/sessions/
+
+  # SQLite session database
+  database:
+    window_days: 90
+    archive: true
+    paths:
+      - .codex/sessions.db
+
+  # Checkpoint files (YAML, JSON)
+  checkpoints:
+    window_days: 180
+    archive: true
+    archive_after_days: 180
+    locations:
+      - .codex/checkpoints/
+      - .codex/plans/
+
+  # Campaign reports and execution results
+  reports:
+    window_days: 365
+    archive: true
+    archive_after_days: 365
+    locations:
+      - reports/
+      - artifacts/
+
+  # Test skeletons and coverage reports
+  tests:
+    window_days: 365
+    archive: true
+    locations:
+      - coverage_reports/
+      - .codex/test_skeletons/
+
+# Archive configuration
+archive:
+  # Archive format: tar.gz or tar.bz2
+  format: tar.gz
+  
+  # Compression method
+  compression: gzip
+  
+  # Optional S3 upload (requires AWS credentials)
+  s3_enabled: false
+  s3_bucket: codex-archives
+  s3_prefix: retention/
+  
+  # Verify archive integrity via checksums
+  verify_checksums: true
+
+# Cleanup behavior configuration
+cleanup:
+  # Enable dry-run mode (preview without making changes)
+  dry_run: false
+  
+  # Verify artifacts before deletion
+  verify_before_delete: true
+  
+  # Log all cleanup actions to audit trail
+  log_all_actions: true
+  
+  # Number of parallel workers (4-8 recommended)
+  parallelism: 4
+  
+  # Maximum execution time in seconds
+  timeout_seconds: 3600
+  
+  # Log level: DEBUG, INFO, WARNING, ERROR
+  log_level: INFO

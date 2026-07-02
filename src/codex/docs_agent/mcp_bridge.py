@@ -8,6 +8,7 @@ Authority: Lane 3 Unified Documentation Agent
 """
 
 from typing import Dict, List, Any, Optional, Callable
+from dataclasses import dataclass
 from enum import Enum
 import logging
 
@@ -252,7 +253,7 @@ class MCPMessageType(Enum):
 def create_mcp_message(
     message_type: MCPMessageType,
     method: str,
-    params: Dict[str, Any] = None,
+    params: Optional[Dict[str, Any]] = None,
     request_id: Optional[int] = None,
     result: Optional[Dict[str, Any]] = None,
     error: Optional[str] = None,
@@ -270,7 +271,7 @@ def create_mcp_message(
     Returns:
         MCP message dictionary
     """
-    message = {
+    message: Dict[str, Any] = {
         'jsonrpc': '2.0',
         'method': method,
     }
@@ -290,13 +291,4 @@ def create_mcp_message(
     return message
 
 
-from dataclasses import dataclass
-
-@dataclass
-class MCPTool:
-    """Represents an MCP tool definition"""
-    name: str
-    description: str
-    tool_type: str
-    parameters: Dict[str, Any]
-    handler: Callable = None
+# Utility functions and classes

@@ -5,6 +5,9 @@
     "numpy",
     "numpy"
   ],
+  "tests/agents/test_agent_orchestration.py": [
+    "numpy"
+  ],
   "tests/agents/test_edge_cases_phase9_4.py": [
     "numpy",
     "numpy",
@@ -74,6 +77,9 @@
   "tests/agents/test_property_based.py": [
     "hypothesis",
     "hypothesis"
+  ],
+  "tests/agents/test_public_api_phase9_2.py": [
+    "numpy"
   ],
   "tests/agents/test_quantum_game_core_flows.py": [
     "numpy"
@@ -168,6 +174,9 @@
     "typer.testing"
   ],
   "tests/cli/test_cli_tracking_decide.py": [
+    "typer.testing"
+  ],
+  "tests/cli/test_monitoring_cli.py": [
     "typer.testing"
   ],
   "tests/cli/test_plugins_cli.py": [
@@ -270,6 +279,9 @@
     "hypothesis",
     "hypothesis"
   ],
+  "tests/logging/test_cli_logging_integration.py": [
+    "typer.testing"
+  ],
   "tests/logging/test_session_embeddings.py": [
     "numpy"
   ],
@@ -310,11 +322,29 @@
   "tests/quantum_orchestrator/test_mlops_bridge.py": [
     "numpy"
   ],
+  "tests/quantum_orchestrator/test_orchestrator_physics.py": [
+    "numpy"
+  ],
+  "tests/rag/benchmarks/test_embedding_bench.py": [
+    "numpy"
+  ],
+  "tests/rag/providers/test_gpt4all_provider.py": [
+    "numpy"
+  ],
+  "tests/rag/providers/test_llamacpp_provider.py": [
+    "numpy"
+  ],
+  "tests/rag/providers/test_ollama_provider.py": [
+    "numpy"
+  ],
   "tests/rag/test_device_placement.py": [
     "torch"
   ],
   "tests/rag/test_rag_functionality_comprehensive.py": [
     "numpy"
+  ],
+  "tests/repro/test_seed_consistency.py": [
+    "torch"
   ],
   "tests/retrieval/test_optimizations.py": [
     "numpy"

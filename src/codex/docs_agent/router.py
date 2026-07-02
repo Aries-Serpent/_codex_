@@ -347,6 +347,8 @@ class ActionDispatcher:
                 pass
 
         target = action.get('target')
+        if not isinstance(target, str):
+            return None
         handler = self.handlers.get(target)
 
         if handler:

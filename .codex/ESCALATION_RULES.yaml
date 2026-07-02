@@ -1,0 +1,645 @@
+# Escalation Rules & Routing Logic
+# ============================================================================
+# This file defines the escalation trigger logic for all coverage-related
+# issues detected by unified-coverage-agent and integrated CI workflows.
+#
+# Reference: .codex/COVERAGE_VALIDATION_CRITERIA.md (Section 9)
+#            .codex/agent_briefs/UNIFIED_COVERAGE_AGENT_BRIEF.md (Section 7)
+#
+# Created: 2026-07-02T02:22:00Z
+# Last Updated: 2026-07-02T02:22:00Z
+
+# ============================================================================
+# GLOBAL CONFIGURATION
+# ============================================================================
+escalation_system:
+  version: 4.1.0
+  enabled: true
+  baseline_coverage: 34.63
+  baseline_variance_tolerance_pct: 1.5
+  acceptable_range:
+    min: 33.13
+    max: 36.13
+  
+  # Overall timeout for all escalations
+  default_escalation_timeout_hours: 4
+  
+  # Auto-escalate if timeout exceeded
+  auto_escalate_on_timeout: true
+  
+  # Maximum escalation attempts before human review
+  max_escalation_attempts: 3
+  
+  # Tracking & logging
+  escalation_log_enabled: true
+  escalation_log_path: .codex/coverage/ESCALATION_LOG.ndjson
+  tracking_report_path: .codex/coverage/BASELINE_TRACKING_REPORT.json
+
+# ============================================================================
+# ESCALATION LEVELS
+# ============================================================================
+escalation_levels:
+
+  # ============================================================================
+  # LEVEL 1: STABLE (No Action Required)
+  # ============================================================================
+  stable:
+    id: 1
+    name: "STABLE"
+    symbol: "🟢"
+    coverage_range:
+      min: 34.13
+      max: 35.13
+    variance_pct: "±0.5%"
+    action: "Continue monitoring"
+    agent: "none"
+    human_review_required: false
+    blocks_merge: false
+    escalation_timeout_hours: null
+    
+    criteria:
+      - coverage is within ±0.5% of baseline
+      - all quality metrics pass
+      - no module loses >2%
+      - all module tiers meet minimums
+    
+    notification:
+      enabled: true
+      to_agents: []
+      to_humans: []
+      message: "Coverage stable - no action required"
+
+  # ============================================================================
+  # LEVEL 2: ACCEPTABLE (Monitor & Log)
+  # ============================================================================
+  acceptable:
+    id: 2
+    name: "ACCEPTABLE"
+    symbol: "🟡"
+    coverage_range:
+      min: 33.63
+      max: 35.63
+    variance_pct: "±1.0% to ±1.5%"
+    action: "Log and continue monitoring"
+    agent: "unified-coverage-agent"
+    human_review_required: false
+    blocks_merge: false
+    escalation_timeout_hours: 24
+    
+    criteria:
+      - coverage is within ±1.0% to ±1.5% of baseline
+      - coverage has not crossed into regression zone
+      - at least one quality metric in acceptable range
+      - module tier minimums still met
+    
+    notification:
+      enabled: true
+      to_agents:
+        - unified-coverage-agent
+      to_humans: []
+      message: "Coverage in acceptable range - continue monitoring"
+
+  # ============================================================================
+  # LEVEL 3: YELLOW ALERT (Review & Recommend)
+  # ============================================================================
+  yellow_alert:
+    id: 3
+    name: "YELLOW ALERT"
+    symbol: "🟡"
+    coverage_range:
+      min: 33.63
+      max: 34.13
+    variance_pct: "-1.0% to -0.5%"
+    variance_absolute: "-0.5 to 0%"
+    action: "Review and recommend fix"
+    agent: "unified-coverage-agent"
+    human_review_required: false
+    blocks_merge: false
+    escalation_timeout_hours: 6
+    
+    criteria:
+      - coverage loss is -1.0% to -0.5% of baseline
+      - OR single PR causes coverage to drop -0.5% to 0%
+      - no module loses >5%
+      - all module tiers still above minimum
+    
+    notification:
+      enabled: true
+      to_agents:
+        - unified-coverage-agent
+      to_humans: []
+      message: "Coverage drop detected - recommend test additions"
+    
+    actions:
+      - post_pr_comment: "Coverage regression detected (-X.X%). Recommend adding tests to address gap."
+      - flag_module_changes: "Identify modules with >1% change"
+      - generate_recommendation: "Suggest test areas to improve coverage"
+
+  # ============================================================================
+  # LEVEL 4: ORANGE ALERT (Block & Investigate)
+  # ============================================================================
+  orange_alert:
+    id: 4
+    name: "ORANGE ALERT"
+    symbol: "🟠"
+    coverage_range:
+      min: 31.63
+      max: 33.63
+    variance_pct: "-1.5% to -3.0%"
+    action: "Block PR, investigate immediately"
+    agent: "ci-emergency-response-agent"
+    human_review_required: true
+    blocks_merge: true
+    escalation_timeout_hours: 4
+    
+    criteria:
+      - coverage loss is -1.5% to -3.0% of baseline
+      - OR any module loses >5% coverage
+      - OR any Tier 2/3 module loses >1-2% respectively
+    
+    notification:
+      enabled: true
+      to_agents:
+        - ci-emergency-response-agent
+      to_humans:
+        - coverage-reviewers
+      message: "Orange alert: Significant coverage drop - PR blocked"
+    
+    actions:
+      - block_merge: "PR cannot be merged without coverage fix"
+      - escalate_to_agent: "ci-emergency-response-agent"
+      - post_pr_comment: "❌ PR blocked: Coverage drop of X.X% exceeds orange threshold. Investigate and fix before merge."
+      - create_investigation_issue: "Auto-create GitHub issue for investigation"
+
+  # ============================================================================
+  # LEVEL 5: RED ALERT - CRITICAL (Escalate to Human)
+  # ============================================================================
+  red_alert_critical:
+    id: 5
+    name: "RED ALERT (CRITICAL)"
+    symbol: "🔴"
+    coverage_range:
+      min: -100.0
+      max: 31.63
+    variance_pct: "< -3.0%"
+    action: "Escalate immediately to @mbaetiong"
+    agent: "@mbaetiong"
+    human_review_required: true
+    blocks_merge: true
+    escalation_timeout_hours: 1
+    
+    criteria:
+      - coverage loss exceeds -3.0% of baseline
+      - OR any Tier 1 module loses >0.5% coverage
+      - OR any Tier 2 module loses >1.0% coverage
+      - OR total coverage drops below 31.63%
+    
+    notification:
+      enabled: true
+      to_agents:
+        - ci-emergency-response-agent
+      to_humans:
+        - "@mbaetiong"
+      message: "CRITICAL: Major coverage regression - human escalation required"
+    
+    actions:
+      - block_merge: "PR cannot be merged"
+      - escalate_to_human: "@mbaetiong"
+      - post_pr_comment: "🔴 CRITICAL: Coverage drop of X.X% detected. This requires immediate human review. Do not merge."
+      - create_critical_issue: "Create high-priority GitHub issue"
+      - notify_team: "Slack notification to coverage-team"
+
+# ============================================================================
+# PER-TIER ESCALATION RULES
+# ============================================================================
+tier_escalation_rules:
+
+  # ============================================================================
+  # TIER 1: SECURITY & AUTHENTICATION CORE
+  # ============================================================================
+  tier_1:
+    name: "Tier 1: Security & Authentication Core"
+    modules:
+      - security_core
+      - token_rotation
+      - scope_validator
+      - decorators
+      - cve_monitor
+    
+    baseline_coverage: 92.6
+    minimum_enforced: 90.0
+    tolerance: 0.5
+    tolerance_type: "ZERO_LOSS"
+    
+    loss_thresholds:
+      # Loss exceeding this threshold triggers escalation
+      critical: 0.5    # Any loss >0.5% goes to @mbaetiong
+      escalation_level: "red_alert_critical"
+      escalation_agent: "@mbaetiong"
+      blocks_merge: true
+    
+    escalation_rules:
+      - loss: "0.0% to -0.5%"
+        severity: "CRITICAL"
+        action: "Block PR and escalate"
+        agent: "@mbaetiong"
+        message: "Tier 1 security module loss detected - immediate escalation required"
+
+  # ============================================================================
+  # TIER 2: AUTHENTICATION SYSTEMS
+  # ============================================================================
+  tier_2:
+    name: "Tier 2: Authentication Systems"
+    modules:
+      - user_store
+      - mfa_provider
+      - token_manager
+      - authenticator
+      - middleware
+      - oauth_manager
+      - github_app
+      - repositories
+    
+    baseline_coverage: 86.1
+    minimum_enforced: 85.0
+    tolerance: 1.0
+    tolerance_type: "MAINTENANCE"
+    
+    loss_thresholds:
+      critical: 1.0     # Any loss >1% goes to unified-coverage-agent to block PR
+      escalation_level: "orange_alert"
+      escalation_agent: "unified-coverage-agent"
+      blocks_merge: true
+    
+    escalation_rules:
+      - loss: "0.0% to -1.0%"
+        severity: "WARNING"
+        action: "Flag and monitor"
+        agent: "unified-coverage-agent"
+        message: "Tier 2 auth module approaching loss tolerance"
+      
+      - loss: "> -1.0%"
+        severity: "CRITICAL"
+        action: "Block PR"
+        agent: "unified-coverage-agent"
+        message: "Tier 2 auth module loss exceeds tolerance - PR blocked"
+
+  # ============================================================================
+  # TIER 3: INFRASTRUCTURE & CLI
+  # ============================================================================
+  tier_3:
+    name: "Tier 3: Infrastructure & CLI"
+    modules:
+      - cli_core
+      - codex_ml_cli
+      - cli_rag
+      - tokenization_cli
+      - archive_cli
+      - quantum_orchestrator_cli
+    
+    baseline_coverage: 76.0
+    minimum_enforced: 77.0  # Phase 1 target
+    tolerance: 2.0
+    tolerance_type: "GROWTH"
+    
+    loss_thresholds:
+      critical: 2.0      # Any loss >2% goes to unified-coverage-agent to block PR
+      escalation_level: "orange_alert"
+      escalation_agent: "unified-coverage-agent"
+      blocks_merge: true
+    
+    escalation_rules:
+      - loss: "0.0% to -2.0%"
+        severity: "WARNING"
+        action: "Flag and recommend tests"
+        agent: "unified-coverage-agent"
+        message: "Tier 3 infrastructure module loss within tolerance"
+      
+      - loss: "> -2.0%"
+        severity: "CRITICAL"
+        action: "Block PR"
+        agent: "unified-coverage-agent"
+        message: "Tier 3 infrastructure module loss exceeds tolerance - PR blocked"
+
+  # ============================================================================
+  # TIER 4: EXTENDED COVERAGE & CAPABILITIES
+  # ============================================================================
+  tier_4:
+    name: "Tier 4: Extended Coverage & Capabilities"
+    modules:
+      - rag_embeddings
+      - safety_moderation
+      - training_systems
+      - data_handling
+      - agents_orchestration
+      - capabilities
+      - bridge_integration
+      - other_modules
+    
+    baseline_coverage: 61.0
+    minimum_enforced: 62.0  # Baseline minimum
+    tolerance: 3.0
+    tolerance_type: "GROWTH"
+    
+    loss_thresholds:
+      warning: 2.0       # Warning at >2% loss
+      critical: 3.0      # Critical at >3% loss
+      escalation_level: "yellow_alert"
+      escalation_agent: "unified-coverage-agent"
+      blocks_merge: false
+    
+    escalation_rules:
+      - loss: "0.0% to -2.0%"
+        severity: "INFO"
+        action: "Monitor"
+        agent: "none"
+        message: "Tier 4 extended coverage loss within tolerance"
+      
+      - loss: "-2.0% to -3.0%"
+        severity: "WARNING"
+        action: "Recommend test additions"
+        agent: "unified-coverage-agent"
+        message: "Tier 4 loss approaching critical threshold - recommend tests"
+      
+      - loss: "> -3.0%"
+        severity: "CRITICAL"
+        action: "Escalate for review"
+        agent: "unified-coverage-agent"
+        message: "Tier 4 loss exceeds tolerance - recommend gap-fill tests"
+
+# ============================================================================
+# QUALITY METRICS ESCALATION
+# ============================================================================
+quality_metrics_escalation:
+
+  test_pass_rate:
+    name: "Test Pass Rate"
+    baseline: 100.0
+    minimum_enforced: 99.5
+    unit: "%"
+    
+    thresholds:
+      - value: "100.0%"
+        severity: "STABLE"
+        action: "Continue"
+        agent: "none"
+      
+      - value: "99.5% to 100%"
+        severity: "ACCEPTABLE"
+        action: "Monitor"
+        agent: "unified-coverage-agent"
+      
+      - value: "< 99.5%"
+        severity: "CRITICAL"
+        action: "Block PR and escalate"
+        agent: "ci-testing-agent"
+        message: "Test pass rate below threshold - PR blocked"
+
+  test_flakiness:
+    name: "Test Flakiness"
+    baseline: 0.0
+    maximum_allowed: 0.5
+    unit: "%"
+    
+    thresholds:
+      - value: "0.0%"
+        severity: "STABLE"
+        action: "Continue"
+        agent: "none"
+      
+      - value: "0.0% to 0.5%"
+        severity: "ACCEPTABLE"
+        action: "Monitor"
+        agent: "unified-coverage-agent"
+      
+      - value: "> 0.5%"
+        severity: "CRITICAL"
+        action: "Trigger autonomous-test-healer-agent"
+        agent: "autonomous-test-healer-agent"
+        message: "Flaky tests detected - auto-healing triggered"
+
+  test_determinism:
+    name: "Test Determinism"
+    baseline: 100.0
+    minimum_enforced: 100.0
+    unit: "%"
+    
+    thresholds:
+      - value: "100.0%"
+        severity: "STABLE"
+        action: "Continue"
+        agent: "none"
+      
+      - value: "< 100.0%"
+        severity: "CRITICAL"
+        action: "Block PR and escalate"
+        agent: "ci-testing-agent"
+        message: "Non-deterministic tests detected - PR blocked"
+
+  test_isolation:
+    name: "Test Isolation"
+    baseline: 100.0
+    minimum_enforced: 100.0
+    unit: "%"
+    
+    thresholds:
+      - value: "100.0%"
+        severity: "STABLE"
+        action: "Continue"
+        agent: "none"
+      
+      - value: "< 100.0%"
+        severity: "CRITICAL"
+        action: "Block PR and escalate"
+        agent: "ci-testing-agent"
+        message: "Test isolation violation detected - PR blocked"
+
+# ============================================================================
+# MODULE REGRESSION DETECTION
+# ============================================================================
+module_regression_detection:
+  enabled: true
+  
+  # Flag any module losing more than this percentage
+  regression_threshold_pct: 5.0
+  
+  # Check every module against baseline
+  compare_to_baseline: true
+  baseline_file: .codex/COVERAGE_BASELINE_34_63.json
+  
+  # Actions on module regression detection
+  actions:
+    - escalation_level: "orange_alert"
+      escalation_agent: "unified-coverage-agent"
+      blocks_merge: true
+      message: "Module regression detected - PR blocked"
+    
+    - post_pr_comment: "Module X lost Y% coverage - exceeds 5% threshold"
+    
+    - create_tracking_entry: "Log to ESCALATION_LOG.ndjson"
+
+# ============================================================================
+# TEST COUNT REGRESSION
+# ============================================================================
+test_count_regression:
+  enabled: true
+  minimum_required: 2467
+  tolerance: 0
+  
+  thresholds:
+    - count: ">= 2467"
+      severity: "STABLE"
+      action: "Continue"
+      agent: "none"
+    
+    - count: "< 2467"
+      severity: "CRITICAL"
+      action: "Block PR"
+      agent: "ci-testing-agent"
+      message: "Test count regression detected - PR blocked"
+  
+  escalation_level: "red_alert_critical"
+  escalation_agent: "ci-testing-agent"
+  blocks_merge: true
+
+# ============================================================================
+# TIMEOUT HANDLING & AUTO-ESCALATION
+# ============================================================================
+timeout_handling:
+  enabled: true
+  default_timeout_hours: 4
+  
+  escalation_on_timeout:
+    enabled: true
+    
+    escalation_1:
+      timeout_hours: 2
+      action: "Post reminder comment"
+      message: "Escalation pending - reviewing coverage issue"
+    
+    escalation_2:
+      timeout_hours: 4
+      action: "Auto-escalate to next level"
+      message: "Auto-escalated due to timeout"
+    
+    escalation_3:
+      timeout_hours: 6
+      action: "Escalate to human (@mbaetiong)"
+      message: "Human review required - escalation timeout exceeded"
+
+# ============================================================================
+# WEBHOOK & TRIGGER INTEGRATION
+# ============================================================================
+webhooks:
+  enabled: true
+  
+  pull_request:
+    events:
+      - opened
+      - synchronize
+      - reopened
+    
+    triggers:
+      - event: "PR opened/updated"
+        action: "Run baseline tracking report"
+        script: "scripts/ci/generate_baseline_tracking_report.py"
+        post_comment: true
+  
+  push:
+    events:
+      - push_to_main
+    
+    triggers:
+      - event: "Merge to main"
+        action: "Log to tracking history"
+        script: "scripts/ci/generate_baseline_tracking_report.py"
+        update_baseline_history: true
+
+  comment:
+    events:
+      - issue_comment_created
+    
+    triggers:
+      - pattern: "@copilot coverage-report"
+        action: "Run tracking report and post"
+      
+      - pattern: "@copilot phase-1-ready"
+        action: "Check baseline stability for 30+ days"
+        escalation_level: "stable"
+        escalation_agent: "@mbaetiong"
+
+# ============================================================================
+# REPORTING & TRACKING
+# ============================================================================
+reporting:
+  enabled: true
+  
+  per_pr_report:
+    enabled: true
+    format: "markdown"
+    include:
+      - coverage_percentage
+      - variance_from_baseline
+      - module_changes
+      - quality_metrics
+      - escalation_status
+    
+    output: "Posted as PR comment"
+  
+  weekly_report:
+    enabled: true
+    schedule: "Every Monday 09:00 UTC"
+    format: "markdown"
+    path: .codex/coverage/WEEKLY_COVERAGE_REPORT.md
+    include:
+      - average_coverage
+      - trend_analysis
+      - anomalies_detected
+      - module_stability
+      - escalation_summary
+  
+  monthly_report:
+    enabled: true
+    schedule: "First day of month"
+    format: "markdown"
+    path: .codex/coverage/MONTHLY_COVERAGE_REPORT.md
+    include:
+      - coverage_progression
+      - module_tier_analysis
+      - phase_readiness_assessment
+      - recommendations
+  
+  escalation_log:
+    enabled: true
+    format: "ndjson"
+    path: .codex/coverage/ESCALATION_LOG.ndjson
+    entries:
+      - timestamp
+      - escalation_level
+      - agent_assigned
+      - trigger_reason
+      - pr_number
+      - coverage_value
+      - resolution_status
+
+# ============================================================================
+# PHASE PROGRESSION GATES
+# ============================================================================
+phase_progression:
+  baseline_phase:
+    name: "Baseline Phase (34.63%)"
+    stability_requirement_days: 30
+    status_check_interval_days: 1
+    
+    go_live_criteria:
+      - baseline_stable_days_minimum: 30
+      - coverage_variance: "±1.5%"
+      - quality_metrics_pass: true
+      - test_count_minimum: 2467
+      - zero_regressions: true
+      - module_tiers_pass: true
+      - escalation_false_positives: 0
+      - agent_operational: true
+    
+    escalation_on_readiness: "@mbaetiong"
+    message: "Phase 1 baseline stability confirmed. Ready for 40% target initiation."
