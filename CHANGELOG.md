@@ -27,6 +27,7 @@ Explicitly clear the remaining PR #5194 merge blockers after approval dispatch a
 - Added `--autostash` to the remaining workflow `git pull --rebase` lanes so auto-post sessions do not abort on unstaged changes.
 - Reworked `.github/workflows/workflow-restore.yml` to write the commit message to a file and call `git commit -F`, clearing the multi-line bash-string merge-readiness finding.
 - Merged the latest remote PR-branch context commits locally so the final push can fast-forward cleanly.
+- Tightened the final review follow-up by normalizing the `branch-divergence-monitor.yml` rebase line and replacing the session-preload validation regex with YAML-structure inspection.
 
 ## [2026-07-02] CI Rescue: CodeQL Security Remediation & Compliance Fix
 

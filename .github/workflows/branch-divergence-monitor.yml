@@ -272,8 +272,8 @@ jobs:
         \ failed\"; exit 0; }\ngit fetch origin 0D_base_ --depth=20 || { echo \"::warning::fetch\
         \ origin 0D_base_ failed\"; exit 0; }\n\ngit config user.name  \"github-actions[bot]\"\
         \ngit config user.email \"41898282+github-actions[bot]@users.noreply.github.com\"\
-        \n\n# Bring local 0D_base_ up to date\ngit checkout 0D_base_\n        git pull --rebase --autostash\
-        \ --autostash origin 0D_base_ || { echo \"::warning::rebase pull failed; continuing\
+        \n\n# Bring local 0D_base_ up to date\ngit checkout 0D_base_\ngit pull --rebase --autostash\
+        \ origin 0D_base_ || { echo \"::warning::rebase pull failed; continuing\
         \ with local state\"; }\n\n# `git merge-base --is-ancestor A B` returns 0\
         \ (true) if A is an ancestor of B.\n# Here: `is origin/main an ancestor of\
         \ HEAD (0D_base_)?`\n# If YES \u2192 every commit on main is already reachable\

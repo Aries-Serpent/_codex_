@@ -274,36 +274,32 @@ def test_cca_variables(workflow_path: str) -> TestResult:
 def test_session_preload_syntax(workflow_path: str) -> TestResult:
     """Test 4.1: Verify session preload uses block scalar syntax (run: |)."""
     try:
+        import yaml
+
         with open(workflow_path, 'r') as f:
             content = f.read()
+            data = yaml.safe_load(content)
 
-        # Look for session preload step with block scalar
         if 'Session Context Pre-load' in content:
-            # Extract the step
-            pattern = (
-                r'^\s*-\s+name:\s*["\']?🧠 Session Context Pre-load.*?\n(.*?)(?=^\s*-\s+name:|\Z)'
-            )
-            match = re.search(pattern, content, re.DOTALL | re.MULTILINE)
-
-            if match:
-                step_content = match.group(1)
-                if 'run: |' in step_content:
-                    return TestResult(
-                        "Session Preload Block Scalar",
-                        True,
-                        message="Uses correct block scalar syntax (run: |)"
-                    )
-                else:
-                    msg = (
-                        "Session preload does NOT use block scalar (run: |) — "
-                        "uses flow scalar instead"
-                    )
-                    return TestResult(
-                        "Session Preload Block Scalar",
-                        False,
-                        severity="error",
-                        message=msg
-                    )
+            for job in (data or {}).get('jobs', {}).values():
+                for step in job.get('steps', []):
+                    if 'Session Context Pre-load' in str(step.get('name', '')):
+                        if isinstance(step.get('run'), str):
+                            return TestResult(
+                                "Session Preload Block Scalar",
+                                True,
+                                message="Uses correct block scalar syntax (run: |)"
+                            )
+                        msg = (
+                            "Session preload does NOT use block scalar (run: |) — "
+                            "uses flow scalar instead"
+                        )
+                        return TestResult(
+                            "Session Preload Block Scalar",
+                            False,
+                            severity="error",
+                            message=msg
+                        )
 
         return TestResult(
             "Session Preload Block Scalar",
