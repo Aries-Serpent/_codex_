@@ -15,6 +15,7 @@ from pathlib import Path
 
 import pytest
 import yaml
+from codex.logging.structured_logger import logger
 
 # ============================================================================
 # Constants
@@ -443,15 +444,15 @@ class TestAgentSummary:
         total_configs = len(config_files)
         total_docs = len(doc_files)
 
-        print("\n=== Agent Summary ===")
-        print(f"Agent Directories: {total_agents}")
-        print(f"Config Files: {total_configs}")
-        print(f"Documentation Files: {total_docs}")
-        print(f"Total: {total_agents + total_configs}")
+        logger.info("\n=== Agent Summary ===")
+        logger.info(f"Agent Directories: {total_agents}")
+        logger.info(f"Config Files: {total_configs}")
+        logger.info(f"Documentation Files: {total_docs}")
+        logger.info(f"Total: {total_agents + total_configs}")
 
         # Assert minimums
         assert total_agents >= 30, f"Expected 30+ agent dirs, found {total_agents}"
         assert total_configs >= 10, f"Expected 10+ config files, found {total_configs}"
 
         # All tests passed
-        print("\n✅ All custom agents verified functional!")
+        logger.info("\n✅ All custom agents verified functional!")

@@ -104,7 +104,7 @@ assert hasattr(vcf, 'json'), "json module not imported"
 # Verify json.dumps works (this was the failing line)
 result = vcf.json.dumps({{'test': ['value1', 'value2']}})
 assert 'test' in result, "Result must not be empty"
-print("✅ json.dumps works correctly")
+logger.info("✅ json.dumps works correctly")
 """
         result = subprocess.run(
             [sys.executable, "-c", test_code],
@@ -133,10 +133,11 @@ import sys
 sys.path.insert(0, '{SCRIPT_PATH.parent}')
 from validate_cargo_features import validate_cargo_features
 from pathlib import Path
+from codex.logging.structured_logger import logger
 
 is_valid, errors = validate_cargo_features(Path('{invalid_cargo}'))
-print(f"is_valid: {{is_valid}}")
-print(f"errors: {{errors}}")
+logger.info(f"is_valid: {{is_valid}}")
+logger.info(f"errors: {{errors}}")
 sys.exit(0 if not is_valid else 1)  # Expect invalid (is_valid=False)
 """
         result = subprocess.run(

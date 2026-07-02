@@ -18,6 +18,7 @@ import pytest
 
 from agents.agent_memory import AgentMemory, MemoryEntry
 from agents.physics_integration import HybridPhysicsOrchestrator
+from codex.logging.structured_logger import logger
 
 
 class TestConcurrentMemoryAccess:
@@ -429,7 +430,7 @@ class TestPerformanceBenchmarks:
         # Should achieve reasonable throughput
         assert throughput > 10, "throughput must be greater than zero"
 
-        print(f"Orchestration throughput: {throughput:.2f} ops/sec")
+        logger.info(f"Orchestration throughput: {throughput:.2f} ops/sec")
 
 
 class TestScalability:

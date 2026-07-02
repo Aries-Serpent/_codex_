@@ -10,13 +10,14 @@ import sys
 import types
 
 from codex_ml.cli.entrypoints import eval_main
+from codex.logging.structured_logger import logger
 
 
 def test_eval_cli_env_override_and_passthrough(monkeypatch) -> None:
     dummy = types.ModuleType("dummy_eval")
 
     def _main() -> int:
-        print("PASSTHROUGH")
+        logger.info("PASSTHROUGH")
         return 123
 
     dummy.main = _main  # type: ignore[attr-defined]

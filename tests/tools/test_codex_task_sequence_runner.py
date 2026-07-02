@@ -8,6 +8,7 @@ import textwrap
 from pathlib import Path
 
 import tools.codex_task_sequence_runner as runner
+from codex.logging.structured_logger import logger
 
 
 def _write_minimal_sequence(tmp_path: Path) -> Path:
@@ -24,7 +25,7 @@ def _write_minimal_sequence(tmp_path: Path) -> Path:
                     - id: "1.1"
                       description: "Echo hello"
                       actions:
-                        - "python -c \\\"print('hello')\\\""
+                        - "python -c \\\"logger.info('hello')\\\""
                       on_error:
                         strategy: record_and_continue
             """),

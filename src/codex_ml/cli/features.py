@@ -28,6 +28,7 @@ from rich.table import Table
 
 from codex_ml.features.feature_store import FeatureStore
 from codex_ml.features.monitoring import FeatureHealthMonitor
+from codex.logging.structured_logger import logger
 
 app = typer.Typer(help="Feature store management commands")
 console = Console()
@@ -43,17 +44,17 @@ def list_features(
         features = store.list_features()
 
         if not features:
-            console.print("[yellow]No features registered yet[/yellow]")
+            console.logger.info("[yellow]No features registered yet[/yellow]")
             return
 
-        console.print(f"\n[bold]Registered Features ({len(features)}):[/bold]")
+        console.logger.info(f"\n[bold]Registered Features ({len(features)}):[/bold]")
         for name in sorted(features):
-            console.print(f"  • {name}")
+            console.logger.info(f"  • {name}")
         console.print()
     except (ValueError, TypeError, RuntimeError) as e:
         type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
-        console.print("[red]Error: <ERROR_TYPE>[/red]")
+        console.logger.info("[red]Error: <ERROR_TYPE>[/red]")
         raise typer.Exit(1) from e
 
 
@@ -69,7 +70,7 @@ def check_health(
 
         features = store.list_features()
         if not features:
-            console.print("[yellow]No features to check[/yellow]")
+            console.logger.info("[yellow]No features to check[/yellow]")
             return
 
         health_status = monitor.check_all_features(features)
@@ -110,11 +111,11 @@ def check_health(
                 warnings_str,
             )
 
-        console.print(table)
+        console.logger.info(table)
     except (ValueError, TypeError, RuntimeError) as e:
         type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
-        console.print("[red]Error: <ERROR_TYPE>[/red]")
+        console.logger.info("[red]Error: <ERROR_TYPE>[/red]")
         raise typer.Exit(1) from e
 
 
@@ -136,11 +137,11 @@ def export_metadata(
         with open(output, "w") as f:
             json.dump(metadata, f, indent=2)
 
-        console.print(f"✅ Exported metadata for {len(metadata)} features to {output}")
+        console.logger.info(f"✅ Exported metadata for {len(metadata)} features to {output}")
     except (IOError, OSError) as e:
         type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
-        console.print("[red]Error: <ERROR_TYPE>[/red]")
+        console.logger.info("[red]Error: <ERROR_TYPE>[/red]")
         raise typer.Exit(1) from e
 
 
@@ -152,11 +153,11 @@ def clear_cache(
     try:
         store = FeatureStore(store_path)
         store.clear_cache()
-        console.print("✅ Feature cache cleared")
+        console.logger.info("✅ Feature cache cleared")
     except (IOError, OSError) as e:
         type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
-        console.print("[red]Error: <ERROR_TYPE>[/red]")
+        console.logger.info("[red]Error: <ERROR_TYPE>[/red]")
         raise typer.Exit(1) from e
 
 

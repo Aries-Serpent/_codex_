@@ -13,6 +13,7 @@ all tests execute with deterministic behavior.
 import os
 import random
 import sys
+from codex.logging.structured_logger import logger
 
 # Set Python hash seed (should already be set via env, but enforce it)
 os.environ.setdefault("PYTHONHASHSEED", "0")
@@ -51,7 +52,7 @@ except AttributeError:
     pass
 except (IOError, OSError) as e:
     # Some PyTorch operations may not support deterministic mode
-    print(f"⚠ PyTorch determinism partially enabled: {e}", file=sys.stderr)
+    logger.error(f"⚠ PyTorch determinism partially enabled: {e}")
 
 # Try to configure TensorFlow determinism if available
 try:
@@ -64,7 +65,7 @@ try:
 except ImportError:
     _ = None  # suppressed: no action needed
 except (IOError, OSError) as e:
-    print(f"⚠ TensorFlow determinism partially enabled: {e}", file=sys.stderr)
+    logger.error(f"⚠ TensorFlow determinism partially enabled: {e}")
 
 print(
     "✓ Determinism bootstrap complete", file=sys.stderr

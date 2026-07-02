@@ -18,6 +18,7 @@ import argparse
 import json
 import os
 from typing import Any, Optional
+from codex.logging.structured_logger import logger
 
 
 def _enable_mlflow(uri: Optional[str]) -> dict[str, Any]:
@@ -106,7 +107,7 @@ def _cmd_bootstrap(args: argparse.Namespace) -> int:
         payload["mlflow"] = _enable_mlflow(args.mlflow_uri)
     if args.wandb:
         payload["wandb"] = _enable_wandb(args.project, args.mode)
-    print(json.dumps(payload, indent=2, sort_keys=True))
+    logger.info(json.dumps(payload, indent=2, sort_keys=True))
     return 0
 
 

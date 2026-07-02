@@ -16,6 +16,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Optional
 
 from codex_ml.utils.optional import optional_import
+from codex.logging.structured_logger import logger
 
 typer, _HAS_TYPER = optional_import("typer")
 yaml, _HAS_YAML = optional_import("yaml")
@@ -49,7 +50,7 @@ def _echo(message: str) -> None:
     if typer is not None:
         typer.echo(message)
     else:  # pragma: no cover - Typer missing
-        print(message)
+        logger.info(message)
 
 
 def _load_mapping(path: Path) -> dict[str, Any]:

@@ -12,6 +12,7 @@ from dataclasses import dataclass
 from typing import Any
 
 import pytest
+from codex.logging.structured_logger import logger
 
 
 @dataclass
@@ -73,7 +74,7 @@ class TestDocumentIngestion:
         assert metadata["has_code"] is False, "Data must not be empty"
 
         # Test with code block
-        metadata_with_code = extract_metadata("Code: ```python\nprint('test')```", "code.md")
+        metadata_with_code = extract_metadata("Code: ```python\nlogger.info('test')```", "code.md")
         assert metadata_with_code["has_code"] is True, "Data must not be empty"
 
     def test_duplicate_detection(self):

@@ -11,6 +11,7 @@ import logging
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
+from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -383,9 +384,9 @@ def generate_stub_report(output_path: Path | str, source_dirs: Optional[list[Pat
                 f.write("\n")
 
     logger.info(f"Stub report generated: {output_path}")
-    print("\n✓ Stub analysis complete:")
-    print(f"  Total stubs: {summary['total']}")
-    print(f"  P0: {summary['by_priority']['P0']}")
-    print(f"  P1: {summary['by_priority']['P1']}")
-    print(f"  P2: {summary['by_priority']['P2']}")
-    print(f"  Report: {output_path}")
+    logger.info("\n✓ Stub analysis complete:")
+    logger.info(f"  Total stubs: {summary['total']}")
+    logger.info(f"  P0: {summary['by_priority']['P0']}")
+    logger.info(f"  P1: {summary['by_priority']['P1']}")
+    logger.info(f"  P2: {summary['by_priority']['P2']}")
+    logger.info(f"  Report: {output_path}")

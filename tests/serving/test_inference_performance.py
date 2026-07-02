@@ -11,6 +11,7 @@ import pytest
 
 pytest.importorskip("fastapi")
 from fastapi.testclient import TestClient
+from codex.logging.structured_logger import logger
 
 
 @pytest.fixture
@@ -39,7 +40,7 @@ class TestThroughputBenchmarks:
                 request_count += 1
 
         throughput = request_count / duration
-        print(f"\nHealth endpoint throughput: {throughput:.2f} req/s")
+        logger.info(f"\nHealth endpoint throughput: {throughput:.2f} req/s")
 
         # Target: >100 req/s for simple health checks (CI runners are slower than local)
         assert throughput > 100, f"Throughput too low: {throughput:.2f} req/s"
@@ -59,7 +60,7 @@ class TestThroughputBenchmarks:
                 request_count += 1
 
         throughput = request_count / duration
-        print(f"\nInference throughput: {throughput:.2f} req/s")
+        logger.info(f"\nInference throughput: {throughput:.2f} req/s")
 
         # Target: >20 req/s for inference
         assert throughput > 20, f"Inference throughput too low: {throughput:.2f} req/s"
@@ -84,7 +85,7 @@ class TestThroughputBenchmarks:
                 samples_processed += batch_size
 
         throughput = samples_processed / duration
-        print(f"\nBatch inference throughput: {throughput:.2f} samples/s")
+        logger.info(f"\nBatch inference throughput: {throughput:.2f} samples/s")
 
         # Target: >50 samples/s with batching
         assert throughput > 50, f"Batch throughput too low: {throughput:.2f} samples/s"
@@ -109,10 +110,10 @@ class TestLatencyDistribution:
         p95 = statistics.quantiles(latencies, n=20)[18]  # 95th percentile
         p99 = statistics.quantiles(latencies, n=100)[98]  # 99th percentile
 
-        print("\nHealth endpoint latency:")
-        print(f"  P50: {p50:.2f}ms")
-        print(f"  P95: {p95:.2f}ms")
-        print(f"  P99: {p99:.2f}ms")
+        logger.info("\nHealth endpoint latency:")
+        logger.info(f"  P50: {p50:.2f}ms")
+        logger.info(f"  P95: {p95:.2f}ms")
+        logger.info(f"  P99: {p99:.2f}ms")
 
         # Targets: P50<10ms, P95<50ms, P99<100ms
         assert p50 < 100, f"P50 latency too high: {p50:.2f}ms"
@@ -139,10 +140,10 @@ class TestLatencyDistribution:
             p95 = statistics.quantiles(latencies, n=20)[18]
             p99 = statistics.quantiles(latencies, n=100)[98]
 
-            print("\nInference endpoint latency:")
-            print(f"  P50: {p50:.2f}ms")
-            print(f"  P95: {p95:.2f}ms")
-            print(f"  P99: {p99:.2f}ms")
+            logger.info("\nInference endpoint latency:")
+            logger.info(f"  P50: {p50:.2f}ms")
+            logger.info(f"  P95: {p95:.2f}ms")
+            logger.info(f"  P99: {p99:.2f}ms")
 
             # Targets: P50<500ms, P95<2000ms
             assert p50 < 500, f"P50 latency too high: {p50:.2f}ms"
@@ -175,9 +176,9 @@ class TestLatencyDistribution:
         load_p50 = statistics.median(load_latencies)
 
         degradation = ((load_p50 - baseline_p50) / baseline_p50) * 100
-        print(f"\nLatency degradation under load: {degradation:.1f}%")
-        print(f"  Baseline P50: {baseline_p50:.2f}ms")
-        print(f"  Load P50: {load_p50:.2f}ms")
+        logger.info(f"\nLatency degradation under load: {degradation:.1f}%")
+        logger.info(f"  Baseline P50: {baseline_p50:.2f}ms")
+        logger.info(f"  Load P50: {load_p50:.2f}ms")
 
         # Latency should not degrade more than 300% under load
         assert degradation < 300, f"Latency degradation too high: {degradation:.1f}%"
@@ -198,7 +199,7 @@ class TestCachePerformance:
             if response.status_code == 200:
                 success_count += 1
 
-        print(f"\n{success_count}/10 requests succeeded")
+        logger.info(f"\n{success_count}/10 requests succeeded")
         # All 10 requests should be served without error
         assert success_count == 10, f"Only {success_count}/10 requests succeeded"
 
@@ -216,7 +217,7 @@ class TestCachePerformance:
 
         first = latencies[0]
         last = latencies[-1]
-        print(f"\nFirst request: {first:.2f}ms  Last request: {last:.2f}ms")
+        logger.info(f"\nFirst request: {first:.2f}ms  Last request: {last:.2f}ms")
 
         # Guard against per-request accumulation: last must stay within
         # MAX_LATENCY_MULTIPLIER × first + LATENCY_BUFFER_MS.
@@ -263,10 +264,10 @@ class TestResourceUtilization:
         final_memory = process.memory_info().rss / 1024 / 1024  # MB
         memory_growth = final_memory - baseline_memory
 
-        print("\nMemory usage:")
-        print(f"  Baseline: {baseline_memory:.2f} MB")
-        print(f"  After 100 requests: {final_memory:.2f} MB")
-        print(f"  Growth: {memory_growth:.2f} MB")
+        logger.info("\nMemory usage:")
+        logger.info(f"  Baseline: {baseline_memory:.2f} MB")
+        logger.info(f"  After 100 requests: {final_memory:.2f} MB")
+        logger.info(f"  Growth: {memory_growth:.2f} MB")
 
         # Memory growth should be minimal (<100MB for 100 requests)
         assert memory_growth < 200, f"Memory growth too high: {memory_growth:.2f} MB"
@@ -287,9 +288,9 @@ class TestResourceUtilization:
 
         end_cpu = process.cpu_percent(interval=0.1)
 
-        print("\nCPU utilization:")
-        print(f"  Start: {start_cpu:.1f}%")
-        print(f"  End: {end_cpu:.1f}%")
+        logger.info("\nCPU utilization:")
+        logger.info(f"  Start: {start_cpu:.1f}%")
+        logger.info(f"  End: {end_cpu:.1f}%")
 
         # CPU should be utilized but not maxed out
         assert end_cpu < 100, f"CPU maxed out: {end_cpu:.1f}%"
@@ -307,7 +308,7 @@ class TestScalabilityMetrics:
         duration = time.time() - start
 
         throughput = 100 / duration
-        print(f"\nProcessed 100 requests in {duration:.2f}s ({throughput:.1f} req/s)")
+        logger.info(f"\nProcessed 100 requests in {duration:.2f}s ({throughput:.1f} req/s)")
 
         # Should handle 100 requests in reasonable time
         assert duration < 10, f"Request queue too slow: {duration:.2f}s"
@@ -329,7 +330,7 @@ class TestScalabilityMetrics:
         total_requests = 30
         throughput = total_requests / duration
 
-        print(f"\nMulti-model throughput: {throughput:.1f} req/s")
+        logger.info(f"\nMulti-model throughput: {throughput:.1f} req/s")
         assert throughput > 10, f"Multi-model throughput too low: {throughput:.1f} req/s"
 
 

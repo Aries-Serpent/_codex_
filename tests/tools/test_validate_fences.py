@@ -7,6 +7,7 @@ Test module for validate fences.
 from pathlib import Path
 
 from tools import validate_fences
+from codex.logging.structured_logger import logger
 
 
 def write(tmp_path: Path, name: str, content: str) -> Path:
@@ -25,7 +26,7 @@ def test_reports_missing_language_tag(tmp_path: Path) -> None:
 
 def test_reports_nested_fence_when_strict(tmp_path: Path) -> None:
     """GIVEN an inner-run collision; WHEN strict; THEN nonzero errors mentioning 'nested code fence'."""
-    nested = write(tmp_path, "nested.md", '```python\nprint("```")\n```\n')
+    nested = write(tmp_path, "nested.md", '```python\nlogger.info("```")\n```\n')
     errors = validate_fences.validate_file(nested, strict_inner=True)
     assert any("nested code fence" in error.message for error in errors), "Error should be raised or set"
 

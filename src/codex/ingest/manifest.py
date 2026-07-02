@@ -19,6 +19,7 @@ import logging
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Literal, Optional
+from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -193,7 +194,7 @@ def parse_manifest(path: Path) -> IngestManifest:
 
     Example:
         >>> manifest = parse_manifest(Path("manifest.yaml"))
-        >>> print(f"Source: {manifest.source.path}")
+        >>> logger.info(f"Source: {manifest.source.path}")
     """
     if not YAML_AVAILABLE:
         raise ImportError("PyYAML is required for manifest parsing")

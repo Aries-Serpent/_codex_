@@ -10,6 +10,7 @@ import json
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any
+from codex.logging.structured_logger import logger
 
 
 @dataclass
@@ -208,4 +209,4 @@ if __name__ == "__main__":
     }
 
     results = monitor.scan(deps)
-    print(monitor.generate_report(results))
+    logger.info(monitor.generate_report(results))

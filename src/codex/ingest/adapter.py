@@ -30,6 +30,7 @@ from pathlib import Path
 from typing import Any, Optional
 
 from .manifest import IngestManifest, parse_manifest
+from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -297,7 +298,7 @@ def ingest(
 
     Example:
         >>> snapshot = ingest("./my_script.py", manifest_path="manifest.yaml")
-        >>> print(f"Created snapshot: {snapshot.snapshot_id}")
+        >>> logger.info(f"Created snapshot: {snapshot.snapshot_id}")
     """
     source_str = str(source)
     artifacts_base = artifacts_dir or ARTIFACTS_DIR

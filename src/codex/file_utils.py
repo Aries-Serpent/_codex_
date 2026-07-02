@@ -10,6 +10,7 @@ Based on REPO_ADMIN_IMPLEMENTATION_DECISIONS.md Section 4.2.2:
 import logging
 from pathlib import Path
 from typing import Optional
+from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -120,7 +121,7 @@ def read_text_safe_fallback(
 
     Examples:
         >>> content, enc = read_text_safe_fallback(Path("unknown.txt"))
-        >>> print(f"Decoded with {enc}")
+        >>> logger.info(f"Decoded with {enc}")
     """
     if encodings is None:
         encodings = ["utf-8", "latin-1", "cp1252", "utf-16"]

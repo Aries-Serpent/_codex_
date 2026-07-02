@@ -13,11 +13,12 @@ from pathlib import Path
 import pytest
 
 from tools import validate_fences
+from codex.logging.structured_logger import logger
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "tools" / "validate_fences.py"
 FIXTURES = ROOT / "tests" / "fixtures" / "markdown"
-NESTED_SAMPLE = '```python\nprint("```")\n```\n'
+NESTED_SAMPLE = '```python\nlogger.info("```")\n```\n'
 
 
 @pytest.fixture(name="ok_markdown")

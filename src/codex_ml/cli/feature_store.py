@@ -35,6 +35,7 @@ import builtins
 
 from codex_ml.features.feature_store import FeatureGroup, FeatureStore
 from codex_ml.features.monitoring import FeatureHealthMonitor
+from codex.logging.structured_logger import logger
 
 app = typer.Typer(
     name="feature-store",
@@ -142,7 +143,7 @@ def list(
 
             table.add_row(*row)
 
-        console.print(table)  # codeql[py/clear-text-logging-sensitive-data]
+        console.logger.info(table)
         console.print(
             f"\n[dim]Total features: {len(features)}[/dim]"
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -217,7 +218,7 @@ def health(
                 f"[green]✓[/green] Health report written to: {output_file}"
             )  # codeql[py/clear-text-logging-sensitive-data]
         else:
-            console.print(report)  # codeql[py/clear-text-logging-sensitive-data]
+            console.logger.info(report)
 
         # Show summary
         healthy_count = sum(1 for s in health_statuses.values() if s.is_healthy)
@@ -268,10 +269,10 @@ def materialize(
         console.print(
             f"Features to materialize: {', '.join(feature_names)}"
         )  # codeql[py/clear-text-logging-sensitive-data]
-        console.print(f"Output path: {output_path}")  # codeql[py/clear-text-logging-sensitive-data]
+        console.logger.info(f"Output path: {output_path}")
 
         if version:
-            console.print(f"Version: {version}")  # codeql[py/clear-text-logging-sensitive-data]
+            console.logger.info(f"Version: {version}")
 
         console.print(
             "\n[dim]Use Python API for full materialization functionality[/dim]"
@@ -319,7 +320,7 @@ def versions(
             # In real implementation, would fetch timestamp from metadata
             table.add_row(version, "N/A")
 
-        console.print(table)  # codeql[py/clear-text-logging-sensitive-data]
+        console.logger.info(table)
         console.print(
             f"\n[dim]Total versions: {len(versions)}[/dim]"
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -377,7 +378,7 @@ def info(
         )  # codeql[py/clear-text-logging-sensitive-data]
 
         if metadata:
-            console.print("[cyan]Metadata:[/cyan]")  # codeql[py/clear-text-logging-sensitive-data]
+            console.logger.info("[cyan]Metadata:[/cyan]")
             console.print(
                 f"  Version: {metadata.version}"
             )  # codeql[py/clear-text-logging-sensitive-data]
@@ -422,7 +423,7 @@ def info(
                 "\n[yellow]Warnings:[/yellow]"
             )  # codeql[py/clear-text-logging-sensitive-data]
             for warning in health.warnings:
-                console.print(f"  • {warning}")  # codeql[py/clear-text-logging-sensitive-data]
+                console.logger.info(f"  • {warning}")
 
     except (ValueError, TypeError, RuntimeError) as e:
         type(e).__name__

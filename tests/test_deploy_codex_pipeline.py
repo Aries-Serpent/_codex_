@@ -10,6 +10,7 @@ from pathlib import Path
 import pytest
 
 from deploy.deploy_codex_pipeline import main
+from codex.logging.structured_logger import logger
 
 
 def _write_jsonl(path: Path, rows):
@@ -22,7 +23,7 @@ def _basic_files(tmp_path: Path):
     corpus = tmp_path / "corpus.jsonl"
     demos = tmp_path / "demos.jsonl"
     prefs = tmp_path / "prefs.jsonl"
-    _write_jsonl(corpus, ["def add(a,b): return a+b", "print('hi')"])
+    _write_jsonl(corpus, ["def add(a,b): return a+b", "logger.info('hi')"])
     _write_jsonl(demos, [{"prompt": "p1", "completion": "c1"}])
     _write_jsonl(prefs, [["p1", "good", "bad", 1]])
     return corpus, demos, prefs

@@ -16,9 +16,9 @@ Usage example::
     kl_result  = detector.detect_kl(reference, current)
 
     if psi_result.drifted:
-        print(f"PSI drift detected: score={psi_result.score:.4f}")
+        logger.info(f"PSI drift detected: score={psi_result.score:.4f}")
     if kl_result.drifted:
-        print(f"KL  drift detected: score={kl_result.score:.4f}")
+        logger.info(f"KL  drift detected: score={kl_result.score:.4f}")
 
 Implementation notes
 --------------------
@@ -54,6 +54,7 @@ import math
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from typing import Any, Sequence
+from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 

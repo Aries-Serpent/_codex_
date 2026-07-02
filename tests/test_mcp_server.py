@@ -14,6 +14,7 @@ import sys
 from pathlib import Path
 
 import pytest
+from codex.logging.structured_logger import logger
 
 
 def find_repo_root() -> Path:
@@ -144,4 +145,4 @@ def test_invalid_json_rpc(mcp_server):
 
 if __name__ == "__main__":
     # For manual testing outside pytest
-    print("Run with: pytest tests/test_mcp_server.py -v")
+    logger.info("Run with: pytest tests/test_mcp_server.py -v")

@@ -2,6 +2,7 @@
 
 import tempfile
 from pathlib import Path
+from codex.logging.structured_logger import logger
 
 
 def test_normalized_detector_ignores_comments():
@@ -16,13 +17,13 @@ def test_normalized_detector_ignores_comments():
         file1.write_text("""# This is file 1
 def hello():
     # Print hello
-    print('hello')
+    logger.info('hello')
 """)
 
         file2.write_text("""# This is file 2
 def hello():
     # Say hello to the world
-    print('hello')
+    logger.info('hello')
 """)
 
         # Run normalized detector
@@ -48,13 +49,13 @@ def test_normalized_detector_ignores_whitespace():
         file2 = root / "file2.py"
 
         file1.write_text("""def hello():
-    print('hello')
-    print('world')
+    logger.info('hello')
+    logger.info('world')
 """)
 
         file2.write_text("""def hello():
-  print('hello')
-  print('world')
+  logger.info('hello')
+  logger.info('world')
 """)
 
         # Run normalized detector
@@ -113,11 +114,11 @@ def test_normalized_detector_different_logic_not_matched():
         file2 = root / "file2.py"
 
         file1.write_text("""def hello():
-    print('hello')
+    logger.info('hello')
 """)
 
         file2.write_text("""def goodbye():
-    print('goodbye')
+    logger.info('goodbye')
 """)
 
         # Run normalized detector
@@ -139,7 +140,7 @@ def test_normalized_detector_skips_exact_duplicates():
         file1 = root / "file1.py"
         file2 = root / "file2.py"
 
-        content = "print('hello')\n"
+        content = "logger.info('hello')\n"
         file1.write_text(content)
         file2.write_text(content)
 
@@ -161,11 +162,11 @@ def test_python_normalizer_removes_docstrings():
 
     code_with_docstring = '''def hello():
     """This is a docstring."""
-    print('hello')
+    logger.info('hello')
 '''
 
     code_without_docstring = """def hello():
-    print('hello')
+    logger.info('hello')
 """
 
     normalized1 = normalizer.normalize(code_with_docstring)
@@ -243,14 +244,14 @@ if __name__ == "__main__":
     for test_func in test_functions:
         try:
             test_func()
-            print(f"✓ {test_func.__name__}")
+            logger.info(f"✓ {test_func.__name__}")
             passed += 1
         except AssertionError as e:
-            print(f"✗ {test_func.__name__}: {e}")
+            logger.info(f"✗ {test_func.__name__}: {e}")
             failed += 1
         except Exception as e:
-            print(f"✗ {test_func.__name__}: {type(e).__name__}: {e}")
+            logger.info(f"✗ {test_func.__name__}: {type(e).__name__}: {e}")
             failed += 1
 
-    print(f"\n{passed} passed, {failed} failed")
+    logger.info(f"\n{passed} passed, {failed} failed")
     sys.exit(0 if failed == 0 else 1)

@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 
 from collections.abc import Iterable, Sequence
 from typing import Any, Optional
+from codex.logging.structured_logger import logger
 
 _JSON_EPILOG = (
     "JSON schema:\n"
@@ -130,13 +131,13 @@ def _unique(iterables: Iterable[Iterable[str]]) -> list[str]:
 
 def _print_lines(title: str, items: Iterable[str]) -> None:
     header = f"{title}:"
-    print(header)
+    logger.info(header)
     printed = False
     for item in items:
-        print(f"  - {item}")
+        logger.info(f"  - {item}")
         printed = True
     if not printed:
-        print("  (none)")
+        logger.info("  (none)")
 
 
 def _print_programmatic(snapshot: dict[str, Any]) -> None:
@@ -144,9 +145,9 @@ def _print_programmatic(snapshot: dict[str, Any]) -> None:
     discovered = snapshot.get("discovered", []) or []
     _print_lines("Programmatic", names)
     if discovered:
-        print("  discovered:")
+        logger.info("  discovered:")
         for item in discovered:
-            print(f"    - {item}")
+            logger.info(f"    - {item}")
 
 
 def _build_parser():
@@ -256,7 +257,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                     "format": "json",
                 },
             }
-            print(json.dumps(payload, indent=2))
+            logger.info(json.dumps(payload, indent=2))
             if emit_logs:
                 log_event(logger, "cli.finish", prog=parser.prog, status="ok", summary=summary)
             return 0
@@ -273,7 +274,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                 sections.append(datasets)
             names = _unique(sections)
             for name in names:
-                print(name)
+                logger.info(name)
             if emit_logs:
                 log_event(logger, "cli.finish", prog=parser.prog, status="ok", summary=summary)
             return 0

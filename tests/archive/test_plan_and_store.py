@@ -10,13 +10,14 @@ from pathlib import Path
 
 from codex.archive.api import restore, store
 from codex.archive.plan import build_plan
+from codex.logging.structured_logger import logger
 
 
 def test_build_plan_and_store(tmp_path: Path, monkeypatch) -> None:
     f_old = tmp_path / "old.py"
-    f_old.write_text("# DEPRECATED\nprint('x')\n", encoding="utf-8")
+    f_old.write_text("# DEPRECATED\nlogger.info('x')\n", encoding="utf-8")
     f_new = tmp_path / "new.py"
-    f_new.write_text("print('new')\n", encoding="utf-8")
+    f_new.write_text("logger.info('new')\n", encoding="utf-8")
 
     import os
     import time

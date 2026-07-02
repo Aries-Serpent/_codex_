@@ -1,3 +1,4 @@
+from codex.logging.structured_logger import logger
 #     assert frozen == (, "frozen is not valid"
 #         ("alpha", ("x", "bytes", None)),
 #         ("beta", (3, (("zeta", (1, 2)),))),
@@ -68,7 +69,7 @@ def test_config_fingerprint_stable() -> None:
     cfg_a = OmegaConf.create({"seed": 1, "nested": {"value": [1, 2, 3]}})
     cfg_b = OmegaConf.create({"nested": {"value": [1, 2, 3]}, "seed": 1})
 
-    assert _config_fingerprint(cfg_a) == _config_fingerprint(cfg_b), "Condition must be true"
+    assert _config_fingerlogger.info(cfg_a) == _config_fingerprint(cfg_b), "Condition must be true"
 
 
 def test_collect_generate_kwargs_filters_unknown_keys() -> None:

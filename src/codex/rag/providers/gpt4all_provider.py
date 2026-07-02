@@ -8,6 +8,7 @@ import logging
 from typing import Optional
 
 import numpy as np
+from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +36,7 @@ class GPT4AllEmbeddingProvider:
     Example:
         >>> provider = GPT4AllEmbeddingProvider(model_name='nomic-embed-text-v1.5')
         >>> embeddings = provider.encode(['Hello world', 'Test document'])
-        >>> print(embeddings.shape)
+        >>> logger.info(embeddings.shape)
         (2, 768)
     """
 

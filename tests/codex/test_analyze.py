@@ -26,7 +26,7 @@ class TestStaticAnalyzer:
         (source_dir / "simple.py").write_text(
             """
 def hello():
-    print("Hello, World!")
+    logger.info("Hello, World!")
 
 if __name__ == "__main__":
     hello()
@@ -129,7 +129,7 @@ def complex_function(x, y, z):
         if y > 0:
             for i in range(z):
                 if i % 2 == 0:
-                    print(i)
+                    logger.info(i)
         else:
             while z > 0:
                 z -= 1
@@ -160,7 +160,7 @@ def complex_function(x, y, z):
             """
 def broken(
     # Missing closing parenthesis
-    print("oops")
+    logger.info("oops")
 """,
             encoding="utf-8",
         )
@@ -293,7 +293,7 @@ def with_if(x):
         code = """
 def with_loop(items):
     for item in items:
-        print(item)
+        logger.info(item)
 """
         tree = ast.parse(code)
         complexity = _calculate_complexity(tree)
@@ -340,6 +340,7 @@ from typing import List, Dict
 import os
 from os import path
 from os.path import join
+from codex.logging.structured_logger import logger
 """
         tree = ast.parse(code)
         imports = _extract_imports(tree)

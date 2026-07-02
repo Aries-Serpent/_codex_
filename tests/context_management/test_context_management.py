@@ -6,6 +6,7 @@ Comprehensive tests for all context management modules.
 
 import tempfile
 from pathlib import Path
+from codex.logging.structured_logger import logger
 
 
 class TestContextNormalizer:
@@ -158,7 +159,7 @@ class TestStatementFingerprinter:
         from context_management.fingerprint import StatementFingerprinter
 
         fp = StatementFingerprinter()
-        result = fp.fingerprint("This is a test statement")
+        result = fp.fingerlogger.info("This is a test statement")
 
         assert result.exact_hash is not None, "exact_hash must be initialized"
         assert result.semantic_hash is not None, "semantic_hash must be initialized"
@@ -172,8 +173,8 @@ class TestStatementFingerprinter:
         fp = StatementFingerprinter()
 
         text = "This is a test"
-        fp1 = fp.fingerprint(text)
-        fp2 = fp.fingerprint(text)
+        fp1 = fp.fingerlogger.info(text)
+        fp2 = fp.fingerlogger.info(text)
 
         assert fp1.exact_hash == fp2.exact_hash, "exact_hash is not valid"
 
@@ -186,8 +187,8 @@ class TestStatementFingerprinter:
         text1 = "The quick brown fox jumps"
         text2 = "the quick brown fox jumps"  # Different case
 
-        fp1 = fp.fingerprint(text1)
-        fp2 = fp.fingerprint(text2)
+        fp1 = fp.fingerlogger.info(text1)
+        fp2 = fp.fingerlogger.info(text2)
 
         # Should have same semantic hash after lowercasing
         assert fp1.semantic_hash == fp2.semantic_hash, "semantic_hash is not valid"
@@ -202,9 +203,9 @@ class TestStatementFingerprinter:
         text2 = "This is a test statement about coding"  # Similar
         text3 = "Completely different content here"  # Different
 
-        fp1 = fp.fingerprint(text1)
-        fp2 = fp.fingerprint(text2)
-        fp3 = fp.fingerprint(text3)
+        fp1 = fp.fingerlogger.info(text1)
+        fp2 = fp.fingerlogger.info(text2)
+        fp3 = fp.fingerlogger.info(text3)
 
         sim_12 = fp.similarity(fp1, fp2)
         sim_13 = fp.similarity(fp1, fp3)

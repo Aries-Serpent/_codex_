@@ -13,6 +13,7 @@ from datetime import datetime
 from enum import Enum
 from pathlib import Path
 from typing import Any, Optional
+from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -431,7 +432,7 @@ if __name__ == "__main__":
 
         # list models
         models = registry.list_models()
-        print(f"Registered models: {models}")
+        logger.info(f"Registered models: {models}")
 
         # Example: Register a model (requires existing run)
         # model_version = registry.register_model(
@@ -441,4 +442,4 @@ if __name__ == "__main__":
         #     tags={"env": "dev"}
         # )
     else:
-        print("MLflow not installed. Install with: pip install mlflow")
+        logger.info("MLflow not installed. Install with: pip install mlflow")

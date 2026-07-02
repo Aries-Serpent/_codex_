@@ -10,6 +10,7 @@ import json
 from pathlib import Path
 
 from tools import codex_dataset_index, codex_experiment_index, codex_local_gate_runner
+from codex.logging.structured_logger import logger
 
 
 def test_local_gate_runner_uses_default_gate_when_config_missing(
@@ -39,9 +40,9 @@ def test_local_gate_runner_with_custom_config(tmp_path: Path) -> None:
         """
 gates:
   - name: echo-one
-    cmd: [python, -c, "print('one')"]
+    cmd: [python, -c, "logger.info('one')"]
   - name: echo-two
-    cmd: [python, -c, "print('two')"]
+    cmd: [python, -c, "logger.info('two')"]
 """,
         encoding="utf-8",
     )

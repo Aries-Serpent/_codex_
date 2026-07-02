@@ -23,6 +23,7 @@ from typing import Generator
 import pytest
 
 from codex.logging.session_db import SessionDB
+from codex.logging.structured_logger import logger
 
 
 class TestSessionLifecycleE2E:
@@ -88,7 +89,7 @@ class TestSessionLifecycleE2E:
         assert final_session["status"] == "in-progress"
         assert final_session["agent_name"] == "test_agent"
 
-        print(f"✅ Session lifecycle complete: {session_id}")
+        logger.info(f"✅ Session lifecycle complete: {session_id}")
 
     def test_session_state_transitions(self, temp_dir: str):
         """Test session status transitions."""
@@ -115,7 +116,7 @@ class TestSessionLifecycleE2E:
             # For this test, we'll verify the flow
             pass
 
-        print("✅ Session state transitions verified")
+        logger.info("✅ Session state transitions verified")
 
 
 class TestMultiAgentCoordinationE2E:
@@ -188,7 +189,7 @@ class TestMultiAgentCoordinationE2E:
             f"Expected {expected_events} events, got {event_count}"
         )
 
-        print(f"✅ Multi-agent coordination: {num_agents} agents, {event_count} events")
+        logger.info(f"✅ Multi-agent coordination: {num_agents} agents, {event_count} events")
 
     def test_agent_conflict_resolution(self, temp_dir: str):
         """Test conflict resolution between agents."""
@@ -243,7 +244,7 @@ class TestMultiAgentCoordinationE2E:
             assert result is not None, "Final state should exist"
             assert result[0].startswith("agent_"), "Should have valid agent state"
 
-        print(f"✅ Conflict resolution: handled {len(conflicts)} conflicts")
+        logger.info(f"✅ Conflict resolution: handled {len(conflicts)} conflicts")
 
 
 class TestCorruptedStateRecoveryE2E:
@@ -291,7 +292,7 @@ class TestCorruptedStateRecoveryE2E:
         assert "sessions" in tables, "Schema should be recovered"
         assert "session_events" in tables, "All tables should be recovered"
 
-        print("✅ Corruption detection and recovery complete")
+        logger.info("✅ Corruption detection and recovery complete")
 
     def test_partial_recovery_consistency(self, temp_dir: str):
         """Test consistency after partial recovery."""
@@ -317,7 +318,7 @@ class TestCorruptedStateRecoveryE2E:
 
         assert recovered_count == initial_count, "Data should survive recovery"
 
-        print(f"✅ Partial recovery: {recovered_count} sessions verified")
+        logger.info(f"✅ Partial recovery: {recovered_count} sessions verified")
 
 
 class TestConcurrentAccessStressE2E:
@@ -433,7 +434,7 @@ class TestConcurrentAccessStressE2E:
             found_sessions
         ), "All written sessions should be retrievable"
 
-        print(f"✅ No data loss: {len(sessions_written)} sessions verified")
+        logger.info(f"✅ No data loss: {len(sessions_written)} sessions verified")
 
 
 class TestQuantumOrchestratorWorkflowE2E:
@@ -490,7 +491,7 @@ class TestQuantumOrchestratorWorkflowE2E:
             assert result["energy"] > 0
             assert result["speed"] >= 0
 
-        print(f"✅ Quantum workflow: {len(task_ids)} tasks, 10 evolution steps")
+        logger.info(f"✅ Quantum workflow: {len(task_ids)} tasks, 10 evolution steps")
 
     def test_task_dependency_ordering_e2e(self, temp_dir: str):
         """Test E2E task dependency ordering."""
@@ -513,7 +514,7 @@ class TestQuantumOrchestratorWorkflowE2E:
         assert all(
             tid in orch.state.tasks for tid in ["task_a", "task_b", "task_c"]
         )
-        print("✅ Task dependency chain verified")
+        logger.info("✅ Task dependency chain verified")
 
 
 class TestCognitiveBrainTrainingE2E:
@@ -551,7 +552,7 @@ class TestCognitiveBrainTrainingE2E:
                 pass
 
         # Phase 3: Verify brain state
-        print("✅ Brain training workflow executed")
+        logger.info("✅ Brain training workflow executed")
 
     def test_model_adaptation_over_time(self, temp_dir: str):
         """Test model adaptation with multiple feedback cycles."""
@@ -573,7 +574,7 @@ class TestCognitiveBrainTrainingE2E:
                 except (FileNotFoundError, ValueError, RuntimeError):
                     pass
 
-        print("✅ Model adaptation across 5 rounds verified")
+        logger.info("✅ Model adaptation across 5 rounds verified")
 
 
 # Import sqlite3 for the stress test
@@ -635,7 +636,7 @@ class TestCLIIntegrationE2E:
         }
 
         assert export_data["total_sessions"] == 5
-        print(f"✅ CLI workflow: {export_data}")
+        logger.info(f"✅ CLI workflow: {export_data}")
 
     def test_cli_session_filtering_sorting(self, temp_dir: str):
         """Test CLI filtering and sorting capabilities."""
@@ -663,4 +664,4 @@ class TestCLIIntegrationE2E:
         pr_100_sessions = db.query_by_pr_number(100)
         assert len(pr_100_sessions) >= 1
 
-        print(f"✅ CLI filtering: {len(agent_0_sessions)} agent_0 sessions")
+        logger.info(f"✅ CLI filtering: {len(agent_0_sessions)} agent_0 sessions")

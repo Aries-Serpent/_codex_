@@ -16,6 +16,7 @@ import sys
 from dataclasses import dataclass
 from types import ModuleType
 from typing import Final, Optional
+from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -133,6 +134,6 @@ def diagnostic_report(status: Optional[TorchStatus] = None) -> str:
 
 if __name__ == "__main__":  # pragma: no cover - manual diagnostic entry point
     report = diagnostic_report()
-    print(report)
+    logger.info(report)
     if not inspect_torch().ok:
         sys.exit(1)

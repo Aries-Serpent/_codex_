@@ -29,6 +29,7 @@ import runpy
 import sys
 from importlib import import_module
 from typing import Any, NoReturn, Optional
+from codex.logging.structured_logger import logger
 
 try:  # pragma: no cover - structured logging is optional offline
     from codex_ml.codex_structured_logging import (
@@ -233,7 +234,7 @@ def eval_main() -> int:
             )
             return 0
         if namespace.probe_json:
-            print(json.dumps(_probe_payload()))
+            logger.info(json.dumps(_probe_payload()))
             log_event(
                 logger,
                 "cli.finish",

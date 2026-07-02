@@ -16,6 +16,7 @@ from collections.abc import Iterable
 from pathlib import Path
 from types import ModuleType
 from typing import Annotated, Any, Optional
+from codex.logging.structured_logger import logger
 
 yaml: ModuleType | None
 try:  # Optional dependency used for loading curriculum presets
@@ -471,7 +472,7 @@ if typer is not None:
         if "--version" in argv or "-V" in argv:
             from codex import __version__ as codex_version
 
-            print(f"codex-ml-cli {codex_version}")
+            logger.info(f"codex-ml-cli {codex_version}")
             return 0
 
         # Let Typer handle the rest
@@ -594,7 +595,7 @@ else:
             with capture_exceptions(logger):
                 log_event(logger, "cli.start", prog=sys.argv[0], args=arg_list)
                 text = OmegaConf.to_yaml(cfg)
-                print(text)
+                logger.info(text)
                 out_dir = Path(".codex/hydra_last")
                 out_dir.mkdir(parents=True, exist_ok=True)
                 (out_dir / "config.yaml").write_text(text)
@@ -635,7 +636,7 @@ else:
                             log_summary=pipeline_block.get("log_summary"),
                         )
                         if pipeline_block.get("print_summary", True):
-                            print(json.dumps(summary, indent=2))
+                            logger.info(json.dumps(summary, indent=2))
                 log_event(logger, "cli.finish", prog=sys.argv[0], status="ok")
                 sys.exit(0)
 
@@ -656,12 +657,12 @@ else:
             if "--version" in args or "-V" in args:
                 from codex import __version__ as codex_version
 
-                print(f"codex-ml-cli {codex_version}")
+                logger.info(f"codex-ml-cli {codex_version}")
                 log_event(logger, "cli.finish", prog=sys.argv[0], status="ok")
                 return 0
             if "--help" in args or "-h" in args:
-                print("codex_ml.cli.main — Hydra-managed pipeline entrypoint")
-                print("Powered by Hydra (install hydra-core)")
+                logger.info("codex_ml.cli.main — Hydra-managed pipeline entrypoint")
+                logger.info("Powered by Hydra (install hydra-core)")
                 if not _HAS_HYDRA:
                     guidance = (
                         "Codex ML CLI is powered by Hydra but hydra-core is not installed.\n"
@@ -669,7 +670,7 @@ else:
                         "Install it with `pip install hydra-core` to access the managed pipeline."
                     )
                     print("Powered by Hydra (install hydra-core)", file=sys.stderr)
-                    print(guidance, file=sys.stderr)
+                    logger.error(guidance)
                 log_event(logger, "cli.finish", prog=sys.argv[0], status="ok")
                 sys.exit(0)
             if not _HAS_HYDRA:
@@ -678,8 +679,8 @@ else:
                     "codex-ml-cli requires hydra-core for configuration loading.\n"
                     "Install it with `pip install hydra-core` to access the managed pipeline."
                 )
-                print("Powered by Hydra (install hydra-core)")
-                print(guidance, file=sys.stderr)
+                logger.info("Powered by Hydra (install hydra-core)")
+                logger.error(guidance)
                 log_event(
                     logger,
                     "cli.finish",

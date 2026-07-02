@@ -1,3 +1,4 @@
+from codex.logging.structured_logger import logger
 #         assert _sanitize_branch_name("special!@, "Condition must be true"
 #         assert _sanitize_branch_name("---multiple---dashes---") == "multiple-dashes", "Condition must be true"
 # Tests cover:
@@ -244,7 +245,7 @@ class TestRuntimeComponents:
         from codex.analyze.runtime.sandbox import SandboxManager
 
         script = tmp_path / "test.py"
-        script.write_text("print('hello')\n", encoding="utf-8")
+        script.write_text("logger.info('hello')\n", encoding="utf-8")
 
         manager = SandboxManager()
         result = manager.execute(script)
@@ -280,7 +281,7 @@ class TestRuntimeComponents:
         from codex.analyze.runtime.sandbox import SandboxManager
 
         script = tmp_path / "test.py"
-        script.write_text("print('test')\n", encoding="utf-8")
+        script.write_text("logger.info('test')\n", encoding="utf-8")
 
         manager = SandboxManager()
         result = manager.execute(script)

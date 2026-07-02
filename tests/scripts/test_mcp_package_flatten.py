@@ -16,6 +16,7 @@ import tempfile
 from pathlib import Path
 
 import pytest
+from codex.logging.structured_logger import logger
 
 
 @pytest.fixture
@@ -27,7 +28,7 @@ def temp_source_dir():
 
         # Create nested structure
         (base / "src" / "module").mkdir(parents=True)
-        (base / "src" / "module" / "main.py").write_text("print('hello')")
+        (base / "src" / "module" / "main.py").write_text("logger.info('hello')")
         (base / "src" / "utils.py").write_text("# utils")
 
         (base / "docs").mkdir()
@@ -102,8 +103,8 @@ class TestPackageFlattenScript:
 
             # Check exit code
             if result.returncode != 0:
-                print("STDOUT:", result.stdout)
-                print("STDERR:", result.stderr)
+                logger.info("STDOUT:", result.stdout)
+                logger.info("STDERR:", result.stderr)
 
             assert result.returncode == 0, f"Script failed: {result.stderr}"
             assert output_zip.exists(), "Output zip file was not created"

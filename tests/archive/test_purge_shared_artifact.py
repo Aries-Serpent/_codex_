@@ -11,6 +11,7 @@ import json
 from pathlib import Path
 
 from codex.archive.backend import ArchiveConfig, ArchiveDAL
+from codex.logging.structured_logger import logger
 
 
 def _dal(tmp_path: Path) -> ArchiveDAL:
@@ -65,14 +66,14 @@ def test_purge_skips_shared_artifact(tmp_path: Path) -> None:
         repo="example",
         path="src/foo.py",
         tombstone_reason="dead",
-        artifact_content=b"print('hello')\n",
+        artifact_content=b"logger.info('hello')\n",
     )
     second = _record(
         dal,
         repo="example",
         path="src/bar.py",
         tombstone_reason="dead",
-        artifact_content=b"print('hello')\n",
+        artifact_content=b"logger.info('hello')\n",
     )
 
     scrubbed = dal.record_delete_approval(
@@ -112,7 +113,7 @@ def test_purge_scrubs_single_reference(tmp_path: Path) -> None:
         repo="example",
         path="src/single.py",
         tombstone_reason="dead",
-        artifact_content=b"print('bye')\n",
+        artifact_content=b"logger.info('bye')\n",
     )
 
     scrubbed = dal.record_delete_approval(

@@ -11,6 +11,7 @@ Tests cover:
 from pathlib import Path
 
 import pytest
+from codex.logging.structured_logger import logger
 
 
 class TestIngestAdapter:
@@ -22,7 +23,7 @@ class TestIngestAdapter:
 
         # Create test file
         test_file = tmp_path / "test_script.py"
-        test_file.write_text("print('hello')\n", encoding="utf-8")
+        test_file.write_text("logger.info('hello')\n", encoding="utf-8")
 
         # Create artifacts directory
         artifacts_dir = tmp_path / "artifacts"
@@ -64,7 +65,7 @@ class TestIngestAdapter:
 
         # Create test file
         test_file = tmp_path / "script.py"
-        test_file.write_text("print('test')\n", encoding="utf-8")
+        test_file.write_text("logger.info('test')\n", encoding="utf-8")
 
         # Create manifest
         manifest_file = tmp_path / "manifest.yaml"

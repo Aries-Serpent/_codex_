@@ -15,6 +15,7 @@ import logging
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import Any, Optional
+from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -61,7 +62,7 @@ class ConsistentHashRing:
     Example:
         >>> ring = ConsistentHashRing(num_shards=4, virtual_nodes=150)
         >>> shard_id = ring.get_shard("document-12345")
-        >>> print(f"Document maps to shard: {shard_id}")
+        >>> logger.info(f"Document maps to shard: {shard_id}")
     """
 
     def __init__(
@@ -245,7 +246,7 @@ def get_shard_for_id(doc_id: str, total_shards: int, use_consistent_hashing: boo
 
     Example:
         >>> shard = get_shard_for_id("doc-12345", total_shards=4)
-        >>> print(f"Document goes to shard: {shard}")
+        >>> logger.info(f"Document goes to shard: {shard}")
     """
     if use_consistent_hashing:
         # Use consistent hashing for better distribution

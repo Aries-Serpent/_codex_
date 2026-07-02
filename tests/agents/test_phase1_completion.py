@@ -6,6 +6,7 @@ Strategy: Test methods that add coverage efficiently.
 """
 
 import pytest
+from codex.logging.structured_logger import logger
 
 
 class TestPhysicsOrchestratorUncoveredMethods:
@@ -210,7 +211,7 @@ class TestAdvancedPhysicsAdvancedPatterns:
         code_sample = """
 def hello():
     if True:
-        print("Hello")
+        logger.info("Hello")
         """
 
         try:

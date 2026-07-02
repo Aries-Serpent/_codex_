@@ -6,6 +6,7 @@ import tempfile
 from pathlib import Path
 
 import pytest
+from codex.logging.structured_logger import logger
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "analysis"))
 
@@ -26,7 +27,7 @@ class TestASTSignatureSimilarity:
         """Test extracting AST signature from valid Python code."""
         code = """
 def hello():
-    print("Hello, world!")
+    logger.info("Hello, world!")
     return 42
 """
         sig = extract_ast_signature(code)

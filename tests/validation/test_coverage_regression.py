@@ -12,6 +12,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from typing import Any
+from codex.logging.structured_logger import logger
 
 
 class RegressionDetector:
@@ -95,27 +96,27 @@ class RegressionDetector:
         # Check for regression
         is_regression = variance < -variance_tolerance
 
-        print("=" * 70)
-        print("COVERAGE REGRESSION DETECTION")
-        print("=" * 70)
-        print()
-        print(f"Baseline Coverage:        {baseline_coverage:.2f}%")
-        print(f"Current Coverage:         {current_coverage:.2f}%")
-        print(f"Variance:                 {variance:+.2f}%")
-        print(f"Allowed Tolerance:        ±{variance_tolerance}%")
-        print()
+
+        logger.info("COVERAGE REGRESSION DETECTION")
+
+
+        logger.info(f"Baseline Coverage:        {baseline_coverage:.2f}%")
+        logger.info(f"Current Coverage:         {current_coverage:.2f}%")
+        logger.info(f"Variance:                 {variance:+.2f}%")
+        logger.info(f"Allowed Tolerance:        ±{variance_tolerance}%")
+
 
         if is_regression:
-            print(f"🔴 REGRESSION DETECTED: Coverage dropped {abs(variance):.2f}%")
-            print(f"   Exceeds tolerance of {variance_tolerance}%")
+            logger.info(f"🔴 REGRESSION DETECTED: Coverage dropped {abs(variance):.2f}%")
+            logger.info(f"   Exceeds tolerance of {variance_tolerance}%")
         else:
-            print(f"✅ No regression detected")
+            logger.info(f"✅ No regression detected")
             if variance >= 0:
-                print(f"   Coverage improved by {variance:.2f}%")
+                logger.info(f"   Coverage improved by {variance:.2f}%")
             else:
-                print(f"   Coverage variance acceptable ({variance:+.2f}% within ±{variance_tolerance}%)")
+                logger.info(f"   Coverage variance acceptable ({variance:+.2f}% within ±{variance_tolerance}%)")
 
-        print()
+
 
         # Get quality metrics
         quality_metrics = current.get("quality_metrics", {})
@@ -123,11 +124,11 @@ class RegressionDetector:
         flakiness = quality_metrics.get("test_flakiness", 0)
         determinism = quality_metrics.get("test_determinism", 100)
 
-        print(f"Quality Metrics:")
-        print(f"  Pass Rate:              {test_pass_rate:.1f}%")
-        print(f"  Flakiness:              {flakiness:.1f}%")
-        print(f"  Determinism:            {determinism:.1f}%")
-        print()
+        logger.info(f"Quality Metrics:")
+        logger.info(f"  Pass Rate:              {test_pass_rate:.1f}%")
+        logger.info(f"  Flakiness:              {flakiness:.1f}%")
+        logger.info(f"  Determinism:            {determinism:.1f}%")
+
 
         # Validate quality metrics
         quality_valid = (
@@ -159,8 +160,8 @@ class RegressionDetector:
         with open(report_file, "w") as f:
             json.dump(report, f, indent=2)
 
-        print(f"Report written to {report_file}")
-        print()
+        logger.info(f"Report written to {report_file}")
+
 
         return report
 
@@ -182,7 +183,7 @@ class RegressionDetector:
 
         if baseline_tests > 0 and current_tests > 0:
             if current_tests < baseline_tests:
-                print(f"⚠️  Test count decreased: {baseline_tests} → {current_tests}")
+                logger.info(f"⚠️  Test count decreased: {baseline_tests} → {current_tests}")
                 return False
 
         return True

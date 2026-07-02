@@ -16,7 +16,7 @@ Examples:
     >>> manager = MemoryManager(agent_id="assistant-1", session_id="session-123")
     >>> manager.store("User prefers Python over JavaScript", metadata={"importance": "high"})
     >>> memories = manager.recall("programming preferences")
-    >>> print(memories[0].content)
+    >>> logger.info(memories[0].content)
 
     Using JSONL backend for simple file-based storage:
 
@@ -31,6 +31,7 @@ Examples:
 from .backends import JSONLMemoryBackend, SQLiteMemoryBackend
 from .manager import MemoryManager
 from .protocol import MemoryEntry, MemoryProtocol, MemoryQuery
+from codex.logging.structured_logger import logger
 
 __all__ = [
     "JSONLMemoryBackend",

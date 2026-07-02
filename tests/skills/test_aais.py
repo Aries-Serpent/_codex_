@@ -6,6 +6,7 @@ import pytest
 
 from codex.skills.aais import AAISScorer, score_text
 from codex.skills.models import AAISScore
+from codex.logging.structured_logger import logger
 
 
 @pytest.fixture
@@ -95,7 +96,7 @@ class TestStructure:
         assert scorer.score(rich).structure > scorer.score(single).structure, "structure must be greater than zero"
 
     def test_code_block_adds_to_score(self, scorer):
-        with_code = "Example:\n```python\nprint('hello')\n```"
+        with_code = "Example:\n```python\nlogger.info('hello')\n```"
         without_code = "Example: print hello"
         assert scorer.score(with_code).structure > scorer.score(without_code).structure, "structure must be greater than zero"
 

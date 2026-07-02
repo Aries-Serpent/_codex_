@@ -23,7 +23,7 @@ def test_python_adapter_parse_simple_function():
     source = """
 def hello_world():
     \"\"\"A simple function.\"\"\"
-    print("Hello, World!")
+    logger.info("Hello, World!")
 """
 
     adapter = PythonASTAdapter()
@@ -111,6 +111,7 @@ import os
 import sys
 from pathlib import Path
 from typing import Dict, List
+from codex.logging.structured_logger import logger
 """
 
     adapter = PythonASTAdapter()

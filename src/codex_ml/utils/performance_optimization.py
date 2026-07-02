@@ -17,6 +17,7 @@ from typing import Optional
 
 import torch
 import torch.nn as nn
+from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -157,7 +158,7 @@ class MemoryOptimizer:
     def print_memory_summary():
         """Print CUDA memory summary."""
         if torch.cuda.is_available():
-            print(torch.cuda.memory_summary())
+            logger.info(torch.cuda.memory_summary())
 
     @staticmethod
     def clear_cache():

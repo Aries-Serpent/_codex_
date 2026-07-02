@@ -9,7 +9,7 @@ Usage::
     from codex_ml.utils.env import environment_summary, EnvironmentFingerprint
 
     fp = EnvironmentFingerprint.capture()
-    print(fp.to_dict())
+    logger.info(fp.to_dict())
 """
 
 from __future__ import annotations
@@ -24,6 +24,7 @@ import shutil
 import subprocess
 from pathlib import Path
 from typing import Any, Optional
+from codex.logging.structured_logger import logger
 
 LOGGER = logging.getLogger(__name__)
 

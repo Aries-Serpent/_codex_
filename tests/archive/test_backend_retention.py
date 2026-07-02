@@ -12,6 +12,7 @@ import pytest
 
 from codex.archive.backend import ArchiveConfig
 from codex.archive.backend import ArchiveDAL as ArchiveBackend
+from codex.logging.structured_logger import logger
 
 
 @pytest.fixture
@@ -79,7 +80,7 @@ def test_delete_approval_blocked_by_legal_hold(archive_backend: ArchiveBackend) 
         archive_backend,
         repo="acme/example",
         path="src/example.py",
-        content=b"print('under hold')\n",
+        content=b"logger.info('under hold')\n",
         legal_hold=True,
         delete_after=(datetime.now(timezone.utc) + timedelta(days=90)).isoformat(),
     )["tombstone_id"]
@@ -103,7 +104,7 @@ def test_delete_apply_scrubs_only_single_reference(
         archive_backend,
         repo="acme/example",
         path="src/single.py",
-        content=b"print('single')\n",
+        content=b"logger.info('single')\n",
     )
 
     scrubbed = archive_backend.record_delete_approval(
@@ -123,13 +124,13 @@ def test_delete_apply_scrubs_only_single_reference(
         archive_backend,
         repo="acme/example",
         path="src/shared_one.py",
-        content=b"print('shared')\n",
+        content=b"logger.info('shared')\n",
     )
     shared_two = _archive_sample(
         archive_backend,
         repo="acme/example",
         path="src/shared_two.py",
-        content=b"print('shared')\n",
+        content=b"logger.info('shared')\n",
     )
 
     scrubbed_shared = archive_backend.record_delete_approval(
@@ -159,14 +160,14 @@ def test_delete_after_metadata_persisted_and_list_respects_retention(
         archive_backend,
         repo=repo,
         path="src/old.py",
-        content=b"print('old')\n",
+        content=b"logger.info('old')\n",
         delete_after=older_delete_after,
     )
     newer = _archive_sample(
         archive_backend,
         repo=repo,
         path="src/new.py",
-        content=b"print('new')\n",
+        content=b"logger.info('new')\n",
         delete_after=newer_delete_after,
     )
 

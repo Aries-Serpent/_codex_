@@ -20,6 +20,7 @@ from codex_ml.monitoring._logger_types import CodexLoggers, TelemetryComponentSt
 from codex_ml.monitoring.prometheus import fallback_status as prometheus_fallback_status
 from codex_ml.monitoring.system_metrics import sampler_status
 from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
+from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -291,7 +292,7 @@ def _emit_degradation_banner(loggers: CodexLoggers) -> CodexLoggers:
         issues.append("no telemetry sinks enabled")
 
     if issues and _TELEMETRY_BANNER_WARN_KEY not in _LOGGER_WARNING_CONTEXTS:
-        print(f"[telemetry] degraded: {'; '.join(issues)}", file=sys.stderr)
+        logger.error(f"[telemetry] degraded: {'; '.join(issues)}")
         _LOGGER_WARNING_CONTEXTS.add(_TELEMETRY_BANNER_WARN_KEY)
     return loggers
 

@@ -31,6 +31,7 @@ logger = logging.getLogger(__name__)
 
 import inspect  # noqa: E402
 from typing import Any, Optional  # noqa: E402
+from codex.logging.structured_logger import logger
 
 # Optional dependency: peft
 try:  # pragma: no cover - optional dependency
@@ -97,7 +98,7 @@ def apply_lora(model: Any, cfg: Optional[dict[str, Any]] = None, /, **overrides:
     >>> adapted = apply_lora(model, lora_dropout=0.1, bias="lora_only")
 
     >>> # Check applied configuration
-    >>> print(adapted.peft_config)
+    >>> logger.info(adapted.peft_config)
     """
     # Merge defaults + provided config + explicit overrides
     merged: dict[str, Any] = dict(DEFAULT_CFG)

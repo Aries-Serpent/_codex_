@@ -22,6 +22,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Literal, Optional
+from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -261,7 +262,7 @@ def infer_intent(
         >>> with open("static-report.json") as f:
         ...     static = json.load(f)
         >>> intent = infer_intent(static, source_excerpt=source[:500])
-        >>> print(f"Goal: {intent.goal} (confidence: {intent.confidence})")
+        >>> logger.info(f"Goal: {intent.goal} (confidence: {intent.confidence})")
     """
     # Start with heuristic inference
     intent = _infer_heuristic(static_report, source_excerpt)

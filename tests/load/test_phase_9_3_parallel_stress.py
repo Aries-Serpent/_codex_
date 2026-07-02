@@ -35,6 +35,7 @@ import time
 from collections import defaultdict
 from dataclasses import asdict, dataclass, field
 from typing import Dict, List
+from codex.logging.structured_logger import logger
 
 
 @dataclass
@@ -246,7 +247,7 @@ class StressTestRunner:
 
         # Adjust accuracy based on cache hits
         cache_hit_rate_actual = cache_hits / num_tasks
-        print(f"  Cache hit rate: {cache_hit_rate_actual*100:.1f}%")
+        logger.info(f"  Cache hit rate: {cache_hit_rate_actual*100:.1f}%")
 
         return result
 
@@ -316,9 +317,9 @@ class StressTestRunner:
 
     def run_all_scenarios(self) -> Dict:
         """Run all stress test scenarios."""
-        print("\n" + "=" * 80)
-        print("PHASE 9.3 TASK 5: STRESS TEST SUITE")
-        print("=" * 80)
+        logger.info("\n" + "=" * 80)
+        logger.info("PHASE 9.3 TASK 5: STRESS TEST SUITE")
+
 
         scenarios = [
             ("Concurrent Routing", lambda: self.test_concurrent_routing(100, 10)),
@@ -336,15 +337,15 @@ class StressTestRunner:
         }
 
         for scenario_name, test_func in scenarios:
-            print(f"\n[TEST] {scenario_name}...")
+            logger.info(f"\n[TEST] {scenario_name}...")
             result = test_func()
 
             print(
                 f"  Latency (p50/p95/p99): {result.routing_latency_p50:.0f}ms / {result.routing_latency_p95:.0f}ms / {result.routing_latency_p99:.0f}ms"
             )
-            print(f"  Accuracy: {result.routing_accuracy:.1f}%")
-            print(f"  Throughput: {result.throughput_tasks_per_sec:.1f} tasks/sec")
-            print(f"  Status: {'✓ PASS' if result.test_passed else '✗ FAIL'}")
+            logger.info(f"  Accuracy: {result.routing_accuracy:.1f}%")
+            logger.info(f"  Throughput: {result.throughput_tasks_per_sec:.1f} tasks/sec")
+            logger.info(f"  Status: {'✓ PASS' if result.test_passed else '✗ FAIL'}")
 
             if result.test_passed:
                 summary["passed_scenarios"] += 1
@@ -352,20 +353,20 @@ class StressTestRunner:
             summary["results"].append(asdict(result))
 
         # Print summary
-        print("\n" + "=" * 80)
-        print("STRESS TEST SUMMARY")
-        print("=" * 80)
-        print(f"Passed: {summary['passed_scenarios']}/{summary['total_scenarios']}")
+        logger.info("\n" + "=" * 80)
+        logger.info("STRESS TEST SUMMARY")
+
+        logger.info(f"Passed: {summary['passed_scenarios']}/{summary['total_scenarios']}")
 
         success_rate = summary["passed_scenarios"] / summary["total_scenarios"]
         if success_rate == 1.0:
-            print("✓ ALL TESTS PASSED")
+            logger.info("✓ ALL TESTS PASSED")
         elif success_rate >= 0.8:
-            print("⚠ MOST TESTS PASSED (4/6 minimum)")
+            logger.info("⚠ MOST TESTS PASSED (4/6 minimum)")
         else:
-            print("✗ TEST SUITE FAILED")
+            logger.info("✗ TEST SUITE FAILED")
 
-        print("=" * 80)
+
 
         return summary
 
@@ -379,7 +380,7 @@ def main():
     output_path = ".codex/PHASE_9_3_STRESS_TEST_RESULTS.json"
     with open(output_path, "w") as f:
         json.dump(summary, f, indent=2, default=str)
-    print(f"\nResults saved to {output_path}")
+    logger.info(f"\nResults saved to {output_path}")
 
 
 if __name__ == "__main__":

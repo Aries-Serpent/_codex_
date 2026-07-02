@@ -40,6 +40,7 @@ from collections.abc import Callable  # noqa: E402
 from dataclasses import dataclass  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import Any, Optional  # noqa: E402
+from codex.logging.structured_logger import logger
 
 try:
     import torch
@@ -185,7 +186,7 @@ class EvaluationRunner:
                 'timestamp': '2025-12-07T22:30:00Z'
             }
         """
-        print(f"Starting evaluation run with {len(self.metrics)} metrics...")
+        logger.info(f"Starting evaluation run with {len(self.metrics)} metrics...")
 
         # Setup
         if torch and hasattr(self.model, "eval"):
@@ -261,7 +262,7 @@ class EvaluationRunner:
 
                 # Log progress
                 if (batch_idx + 1) % self.config.log_interval == 0:
-                    print(f"  Processed {total_samples} samples...")
+                    logger.info(f"  Processed {total_samples} samples...")
 
         elapsed_time = time.time() - start_time
 
@@ -274,7 +275,7 @@ class EvaluationRunner:
             except (ValueError, TypeError, RuntimeError) as e:
                 type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
-                print(f"Warning: Metric {metric.name} failed: <ERROR_TYPE>")
+                logger.info(f"Warning: Metric {metric.name} failed: <ERROR_TYPE>")
                 metric_results[f"{metric.name}_error"] = str(e)  # type: ignore[assignment]
 
         # Build results
@@ -300,8 +301,8 @@ class EvaluationRunner:
         if self.tracking_writer:
             self._log_to_tracking()
 
-        print(f"Evaluation complete: {total_samples} samples in {elapsed_time:.2f}s")
-        print(f"Results: {metric_results}")
+        logger.info(f"Evaluation complete: {total_samples} samples in {elapsed_time:.2f}s")
+        logger.info(f"Results: {metric_results}")
 
         return self.results
 
@@ -333,7 +334,7 @@ class EvaluationRunner:
         summary_path = self.output_path / "evaluation_summary.json"
         with open(summary_path, "w") as f:
             json.dump(self.results, f, indent=2)
-        print(f"Saved summary to {summary_path}")
+        logger.info(f"Saved summary to {summary_path}")
 
     def _save_predictions(self) -> None:
         """Save predictions to JSON."""
@@ -343,7 +344,7 @@ class EvaluationRunner:
         predictions_path = self.output_path / "predictions.json"
         with open(predictions_path, "w") as f:
             json.dump(self.predictions, f, indent=2)
-        print(f"Saved predictions to {predictions_path}")
+        logger.info(f"Saved predictions to {predictions_path}")
 
     def _log_to_tracking(self) -> None:
         """Log results to tracking writer (MLflow/NDJSON)."""
@@ -364,11 +365,11 @@ class EvaluationRunner:
             if hasattr(self.tracking_writer, "log_artifact"):
                 self.tracking_writer.log_artifact(summary_path)  # type: ignore[union-attr]
 
-            print("Logged results to tracking writer")
+            logger.info("Logged results to tracking writer")
         except (IOError, OSError) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
-            print("Warning: Failed to log to tracking writer: <ERROR_TYPE>")
+            logger.info("Warning: Failed to log to tracking writer: <ERROR_TYPE>")
 
 
 class _nullcontext:

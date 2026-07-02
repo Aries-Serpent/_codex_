@@ -26,6 +26,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Optional
+from codex.logging.structured_logger import logger
 
 LOGGER = logging.getLogger(__name__)
 
@@ -122,7 +123,7 @@ class CausalEventLogger:
         >>> event_2 = logger.log_event("api_call", {"endpoint": "/submit"})
         >>> logger.link_events(event_1, event_2, CausalRelationType.DIRECT_CAUSE)
         >>> chain = logger.get_causal_chain(event_2.event_id)
-        >>> print(f"Causal chain length: {len(chain)}")
+        >>> logger.info(f"Causal chain length: {len(chain)}")
     """
 
     def __init__(self) -> None:

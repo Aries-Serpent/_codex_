@@ -13,9 +13,9 @@ Usage example::
     metrics = {"accuracy": 0.85, "loss": 0.42, "baseline_accuracy": 0.83}
     passed, reasons = gate.evaluate(metrics)
     if passed:
-        print("Model passed eval gate — safe to promote.")
+        logger.info("Model passed eval gate — safe to promote.")
     else:
-        print("Eval gate FAILED:", reasons)
+        logger.info("Eval gate FAILED:", reasons)
 """
 
 from __future__ import annotations
@@ -23,6 +23,7 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass, field
 from typing import Any
+from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 

@@ -11,6 +11,7 @@ from pathlib import Path
 from unittest.mock import Mock
 
 import pytest
+from codex.logging.structured_logger import logger
 
 
 class TestConcurrentDAL:
@@ -199,7 +200,7 @@ class TestStressTiming:
         # Validate functional behavior: loss should decrease
         assert loss < 100.0, "loss is not valid"
         # Log timing for informational purposes (no strict assertion)
-        print(f"Completed 1000 operations in {elapsed:.3f} seconds")
+        logger.info(f"Completed 1000 operations in {elapsed:.3f} seconds")
 
     def test_rapid_file_operations(self):
         """Test rapid file creation/deletion."""

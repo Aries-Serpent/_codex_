@@ -38,6 +38,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from types import ModuleType
 from typing import Any, Optional
+from codex.logging.structured_logger import logger
 
 yaml: ModuleType | None
 try:  # pragma: no cover - handled in tests via importorskip
@@ -375,12 +376,12 @@ def _write_markdown(out_path: Path, audits: Sequence[FileAudit]) -> None:
 
 def cmd_defaults_audit(args: argparse.Namespace) -> int:
     if yaml is None:
-        print("[hydra-audit] PyYAML is required", file=sys.stderr)
+        logger.error("[hydra-audit] PyYAML is required")
         return 4
 
     root = Path(args.config_root).expanduser().resolve()
     if not root.exists():
-        print(f"[hydra-audit] config root not found: {root}", file=sys.stderr)
+        logger.error(f"[hydra-audit] config root not found: {root}")
         return 2
 
     files = _scan_yaml_files(root)
@@ -403,7 +404,7 @@ def cmd_defaults_audit(args: argparse.Namespace) -> int:
     if out_md:
         _write_markdown(out_md, audits)
 
-    print(json.dumps(payload))
+    logger.info(json.dumps(payload))
     return 0 if payload["issues"] == 0 else 3
 
 

@@ -29,6 +29,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple
 from unittest.mock import patch
+from codex.logging.structured_logger import logger
 
 # Import router components (these would be in the actual codebase)
 # from scripts.ci.phase_9_3_semantic_router import SemanticRouter, TaskSpec
@@ -368,12 +369,12 @@ class Phase93StressTest(unittest.TestCase):
         p95 = routing_latencies[int(len(routing_latencies) * 0.95)]
         p99 = routing_latencies[int(len(routing_latencies) * 0.99)]
 
-        print("\n=== 100 CONCURRENT TASK ROUTING RESULTS ===")
-        print("Total tasks: 100")
-        print(f"Total time: {total_time:.2f}ms")
-        print(f"Router calls: {self.router.call_count}")
-        print(f"Routing latency - p50: {p50:.2f}ms, p95: {p95:.2f}ms, p99: {p99:.2f}ms")
-        print(f"Mean agents per task: {sum(selected_agent_counts) / len(selected_agent_counts):.1f}")
+        logger.info("\n=== 100 CONCURRENT TASK ROUTING RESULTS ===")
+        logger.info("Total tasks: 100")
+        logger.info(f"Total time: {total_time:.2f}ms")
+        logger.info(f"Router calls: {self.router.call_count}")
+        logger.info(f"Routing latency - p50: {p50:.2f}ms, p95: {p95:.2f}ms, p99: {p99:.2f}ms")
+        logger.info(f"Mean agents per task: {sum(selected_agent_counts) / len(selected_agent_counts):.1f}")
 
         # Assertions - Success Criteria
         self.assertLess(p50, 20)  # <20ms for p50 (relaxed from 10ms for 100 concurrent)
@@ -427,7 +428,7 @@ class Phase93StressTest(unittest.TestCase):
         # At least 80% should have high confidence (>80%)
         accuracy_pct = (correct_routing_count / 20) * 100
         self.assertGreater(accuracy_pct, 70)
-        print(f"Routing accuracy (20-task sample): {accuracy_pct:.1f}%")
+        logger.info(f"Routing accuracy (20-task sample): {accuracy_pct:.1f}%")
 
     def test_06_latency_under_load(self):
         """Test routing latency remains low under increasing load."""
@@ -452,9 +453,9 @@ class Phase93StressTest(unittest.TestCase):
             p95 = latencies[int(len(latencies) * 0.95)]
             latencies_by_load[load_size] = p95
 
-        print("\nRouting Latency by Load:")
+        logger.info("\nRouting Latency by Load:")
         for load_size, p95_latency in latencies_by_load.items():
-            print(f"  {load_size} tasks: p95 latency = {p95_latency:.2f}ms")
+            logger.info(f"  {load_size} tasks: p95 latency = {p95_latency:.2f}ms")
 
         # Latency should not degrade significantly with load
         # (p95 at 100 tasks should be <2x p95 at 10 tasks)
@@ -485,9 +486,9 @@ class Phase93StressTest(unittest.TestCase):
 
             efficiency_by_count[agent_count] = efficiency
 
-        print("\nParallel Efficiency by Agent Count:")
+        logger.info("\nParallel Efficiency by Agent Count:")
         for agent_count, efficiency in efficiency_by_count.items():
-            print(f"  {agent_count} agents: {efficiency:.1f}% efficiency")
+            logger.info(f"  {agent_count} agents: {efficiency:.1f}% efficiency")
 
         # Parallel execution should be more efficient than sequential
         # (3 agents should have >80% efficiency, 5 agents >60%)
@@ -517,9 +518,9 @@ class Phase93StressTest(unittest.TestCase):
         avg_queue_depth = sum(agent_queue_depth.values()) / len(agent_queue_depth)
         max_observed_depth = max(agent_queue_depth.values())
 
-        print("\nAgent Queue Depth:")
-        print(f"  Average: {avg_queue_depth:.2f}")
-        print(f"  Maximum: {max_observed_depth}")
+        logger.info("\nAgent Queue Depth:")
+        logger.info(f"  Average: {avg_queue_depth:.2f}")
+        logger.info(f"  Maximum: {max_observed_depth}")
 
         # Average should be reasonable
         self.assertLess(avg_queue_depth, max_queue_depth)
@@ -543,9 +544,9 @@ class Phase93StressTest(unittest.TestCase):
         """Run comprehensive stress test and generate summary report."""
         task_descriptions = self.generate_task_descriptions()
 
-        print("\n" + "="*80)
-        print("PHASE 9.3 COMPREHENSIVE STRESS TEST - 100 CONCURRENT TASKS")
-        print("="*80)
+        logger.info("\n" + "="*80)
+        logger.info("PHASE 9.3 COMPREHENSIVE STRESS TEST - 100 CONCURRENT TASKS")
+
 
         task_results = []
         routing_latencies = []
@@ -573,7 +574,7 @@ class Phase93StressTest(unittest.TestCase):
                     routing_latencies.append(latency)
                     parallel_agent_counts.append(len(agents))
                 except Exception as e:
-                    print(f"ERROR: {task_id} routing failed: {e}")
+                    logger.info(f"ERROR: {task_id} routing failed: {e}")
 
         # Execute parallel agents for each task
         parallel_futures = {}
@@ -602,7 +603,7 @@ class Phase93StressTest(unittest.TestCase):
                     result_qualities.append(quality)
 
                 except Exception as e:
-                    print(f"ERROR: {task_id} execution failed: {e}")
+                    logger.info(f"ERROR: {task_id} execution failed: {e}")
 
         end_time = time.time()
         total_test_time = (end_time - start_time) * 1000
@@ -621,28 +622,28 @@ class Phase93StressTest(unittest.TestCase):
         completion_rate = (len(execution_times) / len(task_descriptions)) * 100
         throughput = len(task_descriptions) / (total_test_time / 1000)
 
-        print("\nTest Results Summary:")
-        print(f"  Total tasks: {len(task_descriptions)}")
-        print(f"  Completed: {len(execution_times)}")
-        print(f"  Completion rate: {completion_rate:.1f}%")
-        print(f"  Total test time: {total_test_time:.2f}ms")
-        print(f"  Throughput: {throughput:.2f} tasks/sec")
+        logger.info("\nTest Results Summary:")
+        logger.info(f"  Total tasks: {len(task_descriptions)}")
+        logger.info(f"  Completed: {len(execution_times)}")
+        logger.info(f"  Completion rate: {completion_rate:.1f}%")
+        logger.info(f"  Total test time: {total_test_time:.2f}ms")
+        logger.info(f"  Throughput: {throughput:.2f} tasks/sec")
 
-        print("\nRouting Latency:")
-        print(f"  p50: {p50_routing:.2f}ms")
-        print(f"  p95: {p95_routing:.2f}ms")
-        print(f"  p99: {p99_routing:.2f}ms")
-        print(f"  Mean: {sum(routing_latencies)/len(routing_latencies):.2f}ms")
+        logger.info("\nRouting Latency:")
+        logger.info(f"  p50: {p50_routing:.2f}ms")
+        logger.info(f"  p95: {p95_routing:.2f}ms")
+        logger.info(f"  p99: {p99_routing:.2f}ms")
+        logger.info(f"  Mean: {sum(routing_latencies)/len(routing_latencies):.2f}ms")
 
-        print("\nParallel Execution:")
-        print(f"  Avg agents/task: {sum(parallel_agent_counts)/len(parallel_agent_counts):.1f}")
-        print(f"  p50 exec time: {p50_exec:.2f}ms")
-        print(f"  p95 exec time: {p95_exec:.2f}ms")
+        logger.info("\nParallel Execution:")
+        logger.info(f"  Avg agents/task: {sum(parallel_agent_counts)/len(parallel_agent_counts):.1f}")
+        logger.info(f"  p50 exec time: {p50_exec:.2f}ms")
+        logger.info(f"  p95 exec time: {p95_exec:.2f}ms")
 
-        print("\nResult Quality:")
-        print(f"  Avg quality: {sum(result_qualities)/len(result_qualities):.1f}%")
+        logger.info("\nResult Quality:")
+        logger.info(f"  Avg quality: {sum(result_qualities)/len(result_qualities):.1f}%")
 
-        print("\nSuccess Criteria Check:")
+        logger.info("\nSuccess Criteria Check:")
         success_criteria = [
             ("Routing latency p50 <10ms", p50_routing < 10, p50_routing),
             ("Routing latency p95 <50ms", p95_routing < 50, p95_routing),
@@ -655,11 +656,11 @@ class Phase93StressTest(unittest.TestCase):
         all_passed = True
         for criterion_name, criterion_pass, criterion_value in success_criteria:
             status = "✅ PASS" if criterion_pass else "❌ FAIL"
-            print(f"  {status}: {criterion_name} ({criterion_value:.2f})")
+            logger.info(f"  {status}: {criterion_name} ({criterion_value:.2f})")
             if not criterion_pass:
                 all_passed = False
 
-        print("="*80)
+
 
         # Assertions for success criteria
         # (Relaxed thresholds for stress test under concurrent load)

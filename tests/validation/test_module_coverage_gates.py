@@ -12,6 +12,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from typing import Any
+from codex.logging.structured_logger import logger
 
 
 class ModuleCoverageGates:
@@ -96,46 +97,46 @@ class ModuleCoverageGates:
 
         minimums = self.get_tier_minimums(phase)
 
-        print("=" * 70)
-        print(f"MODULE COVERAGE GATES VALIDATION ({phase.upper()})")
-        print("=" * 70)
-        print()
+
+        logger.info(f"MODULE COVERAGE GATES VALIDATION ({phase.upper()})")
+
+
 
         # Validate Tier 1
-        print("Tier 1: Security & Authentication")
+        logger.info("Tier 1: Security & Authentication")
         tier_1_data = matrix.get("tier_1_security_authentication", {})
         tier_1_modules = tier_1_data.get("modules", [])
         tier_1_min = minimums.get("tier_1", 90.0)
         tier_1_valid = self._validate_tier(tier_1_modules, tier_1_min)
 
-        print()
+
 
         # Validate Tier 2
-        print("Tier 2: Authentication Systems")
+        logger.info("Tier 2: Authentication Systems")
         tier_2_data = matrix.get("tier_2_auth_systems", {})
         tier_2_modules = tier_2_data.get("modules", [])
         tier_2_min = minimums.get("tier_2", 85.0)
         tier_2_valid = self._validate_tier(tier_2_modules, tier_2_min)
 
-        print()
+
 
         # Validate Tier 3
-        print("Tier 3: Infrastructure & CLI")
+        logger.info("Tier 3: Infrastructure & CLI")
         tier_3_data = matrix.get("tier_3_infrastructure_cli", {})
         tier_3_modules = tier_3_data.get("modules", [])
         tier_3_min = minimums.get("tier_3", 77.0)
         tier_3_valid = self._validate_tier(tier_3_modules, tier_3_min)
 
-        print()
+
 
         # Validate Tier 4
-        print("Tier 4: Extended Coverage")
+        logger.info("Tier 4: Extended Coverage")
         tier_4_data = matrix.get("tier_4_extended_coverage", {})
         tier_4_groups = tier_4_data.get("module_groups", [])
         tier_4_min = minimums.get("tier_4", 62.0)
         tier_4_valid = self._validate_tier(tier_4_groups, tier_4_min)
 
-        print()
+
 
         all_valid = tier_1_valid and tier_2_valid and tier_3_valid and tier_4_valid
 
@@ -158,8 +159,8 @@ class ModuleCoverageGates:
         with open(report_file, "w") as f:
             json.dump(report, f, indent=2)
 
-        print(f"Report written to {report_file}")
-        print()
+        logger.info(f"Report written to {report_file}")
+
 
         return report
 
@@ -183,7 +184,7 @@ class ModuleCoverageGates:
             if coverage < minimum:
                 violations.append((module_name, coverage))
             else:
-                print(f"  ✅ {module_name}: {coverage:.1f}% >= {minimum:.1f}%")
+                logger.info(f"  ✅ {module_name}: {coverage:.1f}% >= {minimum:.1f}%")
 
         if violations:
             for name, coverage in violations:

@@ -19,6 +19,7 @@ import json
 from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any, Optional
+from codex.logging.structured_logger import logger
 
 
 def _mlflow_env(root: Path) -> dict[str, str]:
@@ -51,7 +52,7 @@ def _write_env_file(path: Path, env: Mapping[str, str]) -> None:
 
 def _print_exports(env: Mapping[str, str]) -> None:
     for key, value in env.items():
-        print(f'export {key}="{value}"')
+        logger.info(f'export {key}="{value}"')
 
 
 def cmd_bootstrap(args: argparse.Namespace) -> int:
@@ -59,10 +60,10 @@ def cmd_bootstrap(args: argparse.Namespace) -> int:
     root.mkdir(parents=True, exist_ok=True)
 
     if args.backend not in {"mlflow", "wandb", "both"}:
-        print(f"[track-bootstrap] invalid backend: {args.backend}")
+        logger.info(f"[track-bootstrap] invalid backend: {args.backend}")
         return 2
     if args.mode not in {"offline", "disabled"}:
-        print(f"[track-bootstrap] invalid mode: {args.mode}")
+        logger.info(f"[track-bootstrap] invalid mode: {args.mode}")
         return 2
 
     payload: dict[str, Any] = {
@@ -105,7 +106,7 @@ def cmd_bootstrap(args: argparse.Namespace) -> int:
     if args.print_exports:
         _print_exports(exports)
 
-    print(json.dumps(payload))
+    logger.info(json.dumps(payload))
     return 0
 
 

@@ -8,6 +8,7 @@ including cycle detection using Tarjan's algorithm and topological sorting.
 from typing import Any, Optional
 
 from codex_ml.ast.core.exceptions import CycleDetectedError
+from codex.logging.structured_logger import logger
 
 
 class DependencyGraph:
@@ -24,7 +25,7 @@ class DependencyGraph:
 
         if not graph.has_cycle():
             order = graph.topological_sort()
-            print(order)  # ['module_c', 'module_b', 'module_a']
+            logger.info(order)  # ['module_c', 'module_b', 'module_a']
     """
 
     def __init__(self) -> None:

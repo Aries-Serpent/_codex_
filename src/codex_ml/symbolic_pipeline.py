@@ -31,6 +31,7 @@ from dataclasses import dataclass, field
 from typing import Any, Optional
 
 from src.codex_ml.tokenization import TokenizerAdapter
+from codex.logging.structured_logger import logger
 
 __all__ = [
     "ModelHandle",
@@ -497,7 +498,7 @@ def run_codex_symbolic_pipeline(
 if __name__ == "__main__":
     toy_corpus = ["def add(a,b): return a+b", "SELECT * FROM users;", "# docs..."]
     toy_demos = [
-        {"prompt": "Write a CLI that echoes input", "completion": "print(input())"},
+        {"prompt": "Write a CLI that echoes input", "completion": "logger.info(input())"},
         {
             "prompt": "Create a Bash script to gzip a folder",
             "completion": "tar -czf folder.tar.gz folder",
@@ -517,4 +518,4 @@ if __name__ == "__main__":
         rm_cfg=RewardModelCfg(seed=0, lr=0.1, epochs=3),
         rlhf_cfg=RLHFCfg(seed=0, epochs=1, lr=1e-2, ppo_clip=0.2, kl_penalty=0.1),
     )
-    print(json.dumps(summary, indent=2))
+    logger.info(json.dumps(summary, indent=2))

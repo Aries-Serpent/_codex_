@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any, Optional
 
 import torch
+from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -79,7 +80,7 @@ class PerformanceBenchmark:
         >>> with benchmark:
         ...     # Training code here
         ...     pass
-        >>> print(benchmark.result)
+        >>> logger.info(benchmark.result)
     """
 
     def __init__(self, name: str, warmup_iters: int = 0):
@@ -336,16 +337,16 @@ class BenchmarkSuite:
 
     def print_summary(self):
         """Print summary of all benchmarks."""
-        print(f"\n{'=' * 60}")
-        print(f"Benchmark Suite: {self.name}")
-        print(f"{'=' * 60}")
+        logger.info(f"\n{'=' * 60}")
+        logger.info(f"Benchmark Suite: {self.name}")
+        logger.info(f"{'=' * 60}")
 
         for result in self.results:
-            print(f"\n{result}")
+            logger.info(f"\n{result}")
 
-        print(f"\n{'=' * 60}")
-        print(f"Total benchmarks: {len(self.results)}")
-        print(f"{'=' * 60}\n")
+        logger.info(f"\n{'=' * 60}")
+        logger.info(f"Total benchmarks: {len(self.results)}")
+        logger.info(f"{'=' * 60}\n")
 
     def save_results(self, path: str):
         """Save results to JSON file.

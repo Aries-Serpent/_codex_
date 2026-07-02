@@ -26,6 +26,7 @@ from codex_ml.utils.error_log import log_error
 from codex_ml.utils.optional import optional_import
 
 from . import utils
+from codex.logging.structured_logger import logger
 
 click, _HAS_CLICK = optional_import("click")
 yaml, _HAS_YAML = optional_import("yaml")
@@ -148,7 +149,7 @@ def _cmd_ndjson_summary(args: argparse.Namespace) -> int:
             slot["count"] += 1
             slot["min"] = val if slot["min"] is None else min(slot["min"], val)
             slot["max"] = val if slot["max"] is None else max(slot["max"], val)
-        print(_json.dumps({"rows": len(rows), "metrics": metrics_agg}))
+        logger.info(_json.dumps({"rows": len(rows), "metrics": metrics_agg}))
         return 0
 
     ndjson_summary.summarize(run_dir, fmt, dest)

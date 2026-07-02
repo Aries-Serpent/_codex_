@@ -555,7 +555,7 @@ else:
         analyzer = intuitive_aptitude()
         code = """
 result = calculate(10, 20, mode='fast')
-print(result)
+logger.info(result)
 """
         analyzer.ingest(code)
         patterns = analyzer.extract_patterns()
@@ -758,7 +758,7 @@ else:
         """Test _find_calls utility method."""
         code = """
 def test():
-    print("hello")
+    logger.info("hello")
     len([1, 2, 3])
     result = calculate(10)
 """
@@ -1084,7 +1084,7 @@ async with async_context() as ctx:
         analyzer = intuitive_aptitude()
         code = """
 if (n := len(items)) > 10:
-    print(f"Too many items: {n}")
+    logger.info(f"Too many items: {n}")
 """
         result = analyzer.ingest(code)
         # Should handle or gracefully fail based on Python version
@@ -1132,6 +1132,7 @@ from __future__ import annotations
 import os
 import sys
 from typing import List, Dict, Optional
+from codex.logging.structured_logger import logger
 
 __all__ = ["main", "helper"]
 
@@ -1187,7 +1188,7 @@ def helper(items: List[int]) -> Dict[str, int]:
         }
         return result
     except Exception as e:
-        print(f"Error: {e}")
+        logger.info(f"Error: {e}")
         return {}
 
 
@@ -1197,11 +1198,11 @@ def main():
     stats = helper(items)
 
     for key, value in stats.items():
-        print(f"{key}: {value}")
+        logger.info(f"{key}: {value}")
 
     obj = DerivedClass(100)
     result = obj.method()
-    print(f"Result: {result}")
+    logger.info(f"Result: {result}")
 
 
 if __name__ == "__main__":

@@ -27,6 +27,7 @@ from pathlib import Path
 from typing import Any, Optional
 
 from .sandbox import SandboxConfig, SandboxManager
+from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -103,7 +104,7 @@ class RuntimeTracer:
     Example:
         >>> tracer = RuntimeTracer("test-snapshot")
         >>> report = tracer.analyze(Path("source/"), sample_inputs=[Path("input.txt")])
-        >>> print(f"Executed {len(report.execution_results)} samples")
+        >>> logger.info(f"Executed {len(report.execution_results)} samples")
 
     Safeguards:
     - Sandboxed execution with resource limits

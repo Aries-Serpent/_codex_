@@ -15,6 +15,7 @@ from codex_ml.ast.analysis.base_analyzer import (
     UnusedCodeAnalyzer,
 )
 from codex_ml.ast.core.node import Finding, StandardizedASTNode
+from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +33,7 @@ class AnalyzerRegistry:
         findings = registry.analyze_all(tree)
 
         for finding in findings:
-            print(f"{finding.severity}: {finding.message}")
+            logger.info(f"{finding.severity}: {finding.message}")
     """
 
     def __init__(self, register_defaults: bool = True):

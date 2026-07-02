@@ -14,6 +14,7 @@ import logging
 import re
 from dataclasses import dataclass, field
 from typing import Any, Optional
+from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -506,4 +507,4 @@ if __name__ == "__main__":
     ]
 
     metrics = evaluate_reasoning(predictions, references)
-    print(f"Reasoning Metrics: {metrics.to_dict()}")
+    logger.info(f"Reasoning Metrics: {metrics.to_dict()}")

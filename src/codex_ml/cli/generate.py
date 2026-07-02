@@ -47,6 +47,7 @@ from codex_ml.safety import (
 from codex_ml.utils.hf_pinning import load_from_pretrained
 from codex_ml.utils.hf_revision import get_hf_revision
 from codex_ml.utils.optional import optional_import
+from codex.logging.structured_logger import logger
 
 _ = run_cmd
 
@@ -166,7 +167,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                     error_message=str(exc),
                 )
                 raise SystemExit(f"Safety violation (output): {exc}") from exc
-        print(text)
+        logger.info(text)
         log_event(
             logger,
             "cli.finish",
