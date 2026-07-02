@@ -1,9 +1,9 @@
-# Session Context — 2026-07-02T10:34:36Z
+# Session Context — 2026-07-02T15:03:36Z
 **Branch:** `copilot/explore-codebase-implement-tasks`  **PR:** #5194  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4863` (✅)
+- REST remaining: `4862` (✅)
 - GraphQL remaining: `4991` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
@@ -13,20 +13,20 @@ State: `open`  Draft: `False`  Branch: `copilot/explore-codebase-implement-tasks
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-02)
-- **Validate Token Health** — `failure` on `main` (2026-07-02)
-- **Artifact Monitoring** — `failure` on `main` (2026-07-02)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-02)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-02)
+- **Workflow Compliance Gate** — `failure` on `copilot/explore-codebase-implement-tasks` (2026-07-02)
+- **Unified Governance Check** — `failure` on `copilot/explore-codebase-implement-tasks` (2026-07-02)
+- **Copilot Setup Steps Validation** — `failure` on `copilot/explore-codebase-implement-tasks` (2026-07-02)
 
 ## 📝 Recent Commits
+- `d2e96b79` fix(secrets): annotate doc-example false positives [skip ci] (RP-007) — github-actions[bot] (2026-07-02)
+- `d3cd4041` Refactor context scoring and pattern injection workflow — Statix (2026-07-02)
+- `249eb83d` fix(secrets): annotate doc-example false positives [skip ci] (RP-007) — github-actions[bot] (2026-07-02)
+- `55732c73` fix(workflows): resolve all actionlint violations - comply with GitHub Actions b — copilot-swe-agent[bot] (2026-07-02)
+- `6e5b16b4` chore(compliance): update REQ-4/REQ-5 for workflow compliance fixes - actionlint — copilot-swe-agent[bot] (2026-07-02)
+- `1ed89f41` fix(workflows): resolve actionlint violations - shell syntax, deprecated command — copilot-swe-agent[bot] (2026-07-02)
 - `72031d83` fix(secrets): annotate doc-example false positives [skip ci] (RP-007) — github-actions[bot] (2026-07-02)
 - `e5e78899` chore(compliance): update REQ-4/REQ-5 for PR #5194 CI rescue - CodeQL remediatio — copilot-swe-agent[bot] (2026-07-02)
-- `889264e4` fix(secrets): annotate doc-example false positives [skip ci] (RP-007) — github-actions[bot] (2026-07-02)
-- `7e74bcdf` fix(security): remediate CodeQL violations - shell injection, mutable action tag — copilot-swe-agent[bot] (2026-07-02)
-- `05cb75a5` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-07-02)
-- `0091bebd` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-07-02)
-- `d9814185` fix(secrets): annotate doc-example false positives [skip ci] (RP-007) — github-actions[bot] (2026-07-02)
-- `1feb835b` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-07-02)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
