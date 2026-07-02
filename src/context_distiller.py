@@ -326,11 +326,12 @@ class ContextDistiller:
             tokens = sp.encode(content, out_type=str)  # type: ignore[func-returns-value]
 
             # Reconstruct with token IDs for compression
-            compressed = " ".join(tokens[: self.max_tokens])
+            if tokens:
+                compressed = " ".join(tokens[: self.max_tokens])
 
-            logger.info(f"Compressed with sentencepiece: {len(content)} → {len(compressed)} chars")
+                logger.info(f"Compressed with sentencepiece: {len(content)} → {len(compressed)} chars")
 
-            return compressed
+                return compressed
         logger.warning("Sentencepiece model not found, skipping compression")
         return content
 

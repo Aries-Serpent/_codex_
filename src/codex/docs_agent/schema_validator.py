@@ -116,7 +116,7 @@ class SchemaValidator:
         Returns:
             Dictionary with validation results
         """
-        results = {
+        results: Dict[str, Any] = {
             'total_records': 0,
             'valid_records': 0,
             'invalid_records': 0,
