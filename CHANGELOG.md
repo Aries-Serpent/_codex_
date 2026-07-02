@@ -2,6 +2,7 @@
 
 - Added 2 targeted meta-fallback tests in `tests/rag/test_coverage_gaps.py` to cover `_model_utils.py` lines exercised when `SentenceTransformer` falls back from `device="cpu"` to `device="meta"` and then materializes with `to_empty(device="cpu")`
 - Added 1 targeted chunker test in `tests/rag/ingestion/test_chunker.py` to cover `SentenceChunker.chunk()` skipping whitespace-only split sentences (`chunker.py` lines 247-248)
+- Finalized the new chunker regression test to use pytest's injected `monkeypatch` fixture directly after review validation
 - Re-verified `python -m tools.docs_agent.no_unmanaged_candidates --json` returns `{"ok": true, "unmanaged_count": 0}` locally for the machine-readable-governance failure mentioned on PR #5190
 
 ## [Fixed] 2026-07-01T23:10Z — RAG Module Tests: Coverage +1.59% and ImportError production bug fix

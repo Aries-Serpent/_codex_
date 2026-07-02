@@ -176,15 +176,14 @@ class TestSentenceChunker:
         for chunk in chunks:
             assert len(chunk.text) <= 100 or len(chunks) == 1, "Chunks must not be empty"
 
-    def test_chunk_skips_empty_split_sentences(self, chunker):
+    def test_chunk_skips_empty_split_sentences(self, chunker, monkeypatch):
         """Test whitespace-only split sentences are ignored without breaking chunking."""
-        with pytest.MonkeyPatch.context() as mp:
-            mp.setattr(
-                chunker,
-                "_split_sentences",
-                lambda _text: ["First sentence.", "   ", "Second sentence."],
-            )
-            chunks = chunker.chunk("ignored")
+        monkeypatch.setattr(
+            chunker,
+            "_split_sentences",
+            lambda _text: ["First sentence.", "   ", "Second sentence."],
+        )
+        chunks = chunker.chunk("ignored")
 
         assert len(chunks) == 1, "Chunks must not be empty"
         assert "First sentence." in chunks[0].text, "First sentence must be preserved"

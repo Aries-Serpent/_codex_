@@ -13,7 +13,8 @@ Implemented the smallest targeted test-only follow-up on top of the existing RAG
 2. **Chunker coverage gap**: Added 1 test in `tests/rag/ingestion/test_chunker.py` covering `SentenceChunker.chunk()` lines 247-248 for whitespace-only split sentences.
 3. **Governance verification**: Ran `python -m tools.docs_agent.no_unmanaged_candidates --json` locally and confirmed `{"ok": true, "unmanaged_count": 0}` for the machine-readable-governance concern cited on PR #5190.
 4. **Targeted validation**: Ran `PYTHONPATH=src python -m pytest tests/rag/test_coverage_gaps.py tests/rag/ingestion/test_chunker.py -q` successfully.
-5. **Comment follow-up pending after commit**: Will reply to the blocking `@mbaetiong` PR comment with the resolving commit SHA once this change is pushed.
+5. **Post-review cleanup**: Updated the new chunker regression test to use pytest's injected `monkeypatch` fixture directly after review validation.
+6. **Comment follow-up pending after commit**: Will reply to the blocking `@mbaetiong` PR comment with the resolving commit SHA once this change is pushed.
 
 ### Agents Used
 - ✅ `unified-coverage-agent` — validated the targeted coverage fix against the missing CI ranges
