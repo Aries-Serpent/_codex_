@@ -31,8 +31,6 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-import numpy as np
-
 
 @dataclass
 class TaskSpec:
@@ -178,11 +176,12 @@ class RoutingCache:
 class TaskEmbedder:
     """Generate embeddings for tasks (stub for now - will use sentence-transformers)."""
 
-    def embed_task(self, task_spec: TaskSpec) -> np.ndarray:
+    def embed_task(self, task_spec: TaskSpec) -> List[float]:
         """Generate embedding for task specification."""
         # TODO: Use sentence-transformers to embed task description
         # For now, return a placeholder
-        return np.random.randn(384).astype(np.float32)
+        import random
+        return [random.random() for _ in range(384)]
 
 
 class AgentFilterEngine:

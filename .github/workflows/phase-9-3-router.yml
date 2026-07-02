@@ -304,21 +304,47 @@ jobs:
           import datetime
           from pathlib import Path
           
-          # Construct audit entry
+          # Helper to safely convert strings to numbers, with defaults
+          def safe_float(value, default=None):
+              if not value or not str(value).strip():
+                  return default
+              try:
+                  return float(value)
+              except (ValueError, TypeError):
+                  return default
+          
+          def safe_int(value, default=None):
+              if not value or not str(value).strip():
+                  return default
+              try:
+                  return int(value)
+              except (ValueError, TypeError):
+                  return default
+          
+          def safe_split(value):
+              if not value or not str(value).strip():
+                  return []
+              return [s.strip() for s in str(value).split(',') if s.strip()]
+          
+          def safe_float_list(value):
+              items = safe_split(value)
+              return [safe_float(item) for item in items if safe_float(item) is not None]
+          
+          # Construct audit entry with safe conversions
           entry = {
               "phase": "9.3",
               "decision_type": "agent_routing",
               "timestamp": datetime.datetime.utcnow().isoformat(),
-              "task_id": "${{ needs.semantic-routing-setup.outputs.task_id }}",
-              "task_category": "${{ needs.semantic-routing-setup.outputs.task_category }}",
+              "task_id": "${{ needs.semantic-routing-setup.outputs.task_id }}" or "unknown",
+              "task_category": "${{ needs.semantic-routing-setup.outputs.task_category }}" or "unknown",
               "routing_method": "semantic_faiss",
-              "top_candidates": "${{ needs.semantic-router-index.outputs.top_agents }}".split(','),
-              "selected_agents": "${{ needs.workload-balancing.outputs.selected_agents }}".split(','),
-              "confidence_scores": list(map(float, "${{ needs.semantic-router-index.outputs.confidence_scores }}".split(','))),
-              "routing_latency_ms": float("${{ needs.semantic-router-index.outputs.routing_latency_ms }}"),
-              "execution_status": "${{ needs.concurrent-execution.outputs.execution_result }}",
-              "total_duration_s": float("${{ needs.concurrent-execution.outputs.total_duration_s }}"),
-              "parallel_agents_count": int("${{ needs.concurrent-execution.outputs.parallel_agents_count }}")
+              "top_candidates": safe_split("${{ needs.semantic-router-index.outputs.top_agents }}"),
+              "selected_agents": safe_split("${{ needs.workload-balancing.outputs.selected_agents }}"),
+              "confidence_scores": safe_float_list("${{ needs.semantic-router-index.outputs.confidence_scores }}"),
+              "routing_latency_ms": safe_float("${{ needs.semantic-router-index.outputs.routing_latency_ms }}", 0.0),
+              "execution_status": "${{ needs.concurrent-execution.outputs.execution_result }}" or "unknown",
+              "total_duration_s": safe_float("${{ needs.concurrent-execution.outputs.total_duration_s }}", 0.0),
+              "parallel_agents_count": safe_int("${{ needs.concurrent-execution.outputs.parallel_agents_count }}", 0)
           }
           
           # Append to audit log
