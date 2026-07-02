@@ -43,7 +43,7 @@ AUTHORIZATION:
 REFERENCE DOCUMENTS:
 - Master Brief: `.codex/PHASE_12_BRIEFS_FINAL.md`
 - Preparation Checklist: `.codex/PHASE_12_PREPARATION_MASTER_CHECKLIST.md`
-- Risk Register: `.codex/PHASE_12_PREPARATION_RISK_REGISTER.md`
+- Risk Register: `.codex/PHASE_12_PREPARATION_RISK_REGISTER.md`  # pragma: allowlist secret
 - Dashboard: `.codex/PHASE_12_PREPARATION_DASHBOARD.md`
 
 EXPECTED OUTCOME:

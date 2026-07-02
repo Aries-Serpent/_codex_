@@ -13,7 +13,8 @@
     "1:/home/runner/work/_codex_/_codex_/src/codex/brain/__init__.py": 10,
     "2:/home/runner/work/_codex_/_codex_/src/codex/docs_agent/cli.py": 3,
     "2:/home/runner/work/_codex_/_codex_/src/codex/docs_agent/document_processor.py": 3,
-    "2:/home/runner/work/_codex_/_codex_/src/codex/docs_agent/parser.py": 3
+    "2:/home/runner/work/_codex_/_codex_/src/codex/docs_agent/parser.py": 3,
+    "35:.codex/AUTO_GO_POST_MERGE_PROMPT.md": 1
   },
   "circuit_state": {
     "6": "BROKEN",
