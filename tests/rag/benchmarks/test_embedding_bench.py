@@ -10,11 +10,7 @@ Tests the benchmark_embedding_providers function covering:
 - Result aggregation
 """
 
-import logging
-from typing import Any, Optional
-from unittest.mock import MagicMock, Mock, patch
 
-import numpy as np
 import pytest
 
 

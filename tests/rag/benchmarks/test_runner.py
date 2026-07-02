@@ -10,9 +10,6 @@ Tests the BenchmarkRunner class and related utilities covering:
 - Statistics calculation
 """
 
-import logging
-from typing import Any, Callable, Optional
-from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 

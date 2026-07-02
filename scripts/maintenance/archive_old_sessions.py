@@ -17,7 +17,6 @@ Options:
     --preserve PATH        Mark specific artifact for preservation (no deletion)
 """
 
-import os
 import sys
 import json
 import tarfile
@@ -25,9 +24,8 @@ import hashlib
 import logging
 from pathlib import Path
 from datetime import datetime, timedelta
-from typing import List, Dict, Optional, Tuple
+from typing import Dict, Optional, Tuple
 from dataclasses import dataclass
-from concurrent.futures import ThreadPoolExecutor, as_completed
 import argparse
 import yaml
 

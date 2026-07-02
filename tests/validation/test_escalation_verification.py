@@ -11,7 +11,6 @@ Version: 4.1.0
 Reference: .codex/ESCALATION_RULES.yaml
 """
 
-import json
 import sys
 from pathlib import Path
 from datetime import datetime

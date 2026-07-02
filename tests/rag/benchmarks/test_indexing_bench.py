@@ -10,10 +10,6 @@ Tests the benchmark_indexing function covering:
 - Error handling
 """
 
-import logging
-import tempfile
-from typing import Any, Optional
-from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 

@@ -21,10 +21,9 @@ Usage:
 
 import json
 import sys
-import os
 from pathlib import Path
 from datetime import datetime, timedelta
-from typing import Dict, List, Any, Optional, Tuple
+from typing import Dict, List, Any, Tuple
 import argparse
 from collections import defaultdict
 

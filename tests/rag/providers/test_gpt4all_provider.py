@@ -9,11 +9,8 @@ Tests the GPT4AllEmbeddingProvider class covering:
 - Model loading and auto-detection
 """
 
-import logging
-from typing import Optional
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import MagicMock, patch
 
-import numpy as np
 import pytest
 
 

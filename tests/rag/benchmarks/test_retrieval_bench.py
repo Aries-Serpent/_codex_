@@ -10,9 +10,6 @@ Tests the benchmark_retrieval function covering:
 - Error handling
 """
 
-import logging
-from typing import Any, Optional
-from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 

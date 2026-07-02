@@ -10,11 +10,8 @@ Tests the LlamaCppEmbeddingProvider class covering:
 - Error handling and recovery
 """
 
-import logging
-from typing import Optional, Union
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import MagicMock, patch
 
-import numpy as np
 import pytest
 
 
