@@ -19,8 +19,7 @@
     "37:tests/skills/test_aais_batch_comprehensive.py": 4,
     "37:tests/cognitive/test_ooda_executor.py": 16,
     "38:tests/test_rag_error_handling.py": 8,
-    "38:tests/test_cli_pipeline_gap_fill.py": 2,
-    "25:docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md \u2014 not updated in last commit (last touched": 1
+    "38:tests/test_cli_pipeline_gap_fill.py": 2
   },
   "circuit_state": {
     "6": "BROKEN",
