@@ -121,15 +121,39 @@ class CapabilityIndexLoader:
 
     def get_agents_by_category(self, category: str) -> List[str]:
         """Get agents by category."""
+        # Try pre-built indices first if they exist and have data
         indices = self.index_data.get('indices', {})
         by_category = indices.get('by_category', {})
-        return by_category.get(category, [])
+        
+        # Only use pre-built index if it has the category
+        if category in by_category:
+            return by_category.get(category, [])
+        
+        # Build on-the-fly if no pre-built index for this category
+        result = []
+        for agent_key, agent in self.agents.items():
+            if agent.get('category') == category:
+                agent_id = agent.get('agent_id') or agent.get('id') or agent_key
+                result.append(agent_id)
+        return result
 
     def get_agents_by_tag(self, tag: str) -> List[str]:
         """Get agents by capability tag."""
+        # Try pre-built indices first if they exist and have data
         indices = self.index_data.get('indices', {})
         by_tag = indices.get('by_tag', {})
-        return by_tag.get(tag, [])
+        
+        # Only use pre-built index if it has the tag
+        if tag in by_tag:
+            return by_tag.get(tag, [])
+        
+        # Build on-the-fly if no pre-built index for this tag
+        result = []
+        for agent_key, agent in self.agents.items():
+            if tag in agent.get('capability_tags', []) + agent.get('capabilities', []):
+                agent_id = agent.get('agent_id') or agent.get('id') or agent_key
+                result.append(agent_id)
+        return result
 
 
 class RoutingCache:
