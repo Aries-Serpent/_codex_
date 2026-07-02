@@ -20,16 +20,16 @@ class CopilotToolsInterface:
         """Tool 1: Retrieve agent context with campaign state."""
         self.cursor.execute("SELECT COUNT(*) as phase_count FROM campaign_phases")
         phases_count = self.cursor.fetchone()["phase_count"]
-        
+
         self.cursor.execute("SELECT COUNT(*) as track_count FROM tracks")
         tracks_count = self.cursor.fetchone()["track_count"]
-        
+
         self.cursor.execute("SELECT COUNT(*) as deliverable_count FROM deliverables")
         deliverables_count = self.cursor.fetchone()["deliverable_count"]
-        
+
         self.cursor.execute("SELECT COUNT(*) as agent_count FROM agents")
         agents_count = self.cursor.fetchone()["agent_count"]
-        
+
         return {
             "status": "ready",
             "timestamp": datetime.utcnow().isoformat() + "Z",
@@ -50,30 +50,30 @@ class CopilotToolsInterface:
             row = self.cursor.fetchone()
             if not row:
                 return {"error": "No phases found"}
-            
+
             phase_data = json.loads(row["data"])
             return {
                 "current_phase": phase_data,
                 "type": "phase_context",
                 "timestamp": datetime.utcnow().isoformat() + "Z"
             }
-        
+
         # Fetch specific deliverable
         self.cursor.execute("SELECT json(data) as data FROM deliverables WHERE id = ?", (task_id,))
         row = self.cursor.fetchone()
-        
+
         if not row:
             return {"error": f"Task {task_id} not found"}
-        
+
         task_data = json.loads(row["data"])
-        
+
         # Get related requirements
         self.cursor.execute(
             "SELECT json(data) as data FROM requirements WHERE phase_id = ?",
             (task_data.get("phase_id"),)
         )
         requirements = [json.loads(r["data"]) for r in self.cursor.fetchall()]
-        
+
         return {
             "task": task_data,
             "requirements": requirements,
@@ -84,7 +84,7 @@ class CopilotToolsInterface:
     def search_docs(self, query: str) -> Dict[str, Any]:
         """Tool 3: Full-text search across campaign documentation."""
         results = {"phases": [], "tracks": [], "deliverables": [], "decisions": []}
-        
+
         try:
             # Search phases
             self.cursor.execute(
@@ -96,7 +96,7 @@ class CopilotToolsInterface:
                 results["phases"].append(json.loads(self.cursor.fetchone()["data"]))
         except Exception:
             pass
-        
+
         return {"query": query, "results": results}
 
     def get_related_context(self, entity_id: str) -> Dict[str, Any]:
@@ -107,7 +107,7 @@ class CopilotToolsInterface:
             "downstream": [],
             "lateral": []
         }
-        
+
         try:
             # Get relationships where this entity is source
             self.cursor.execute(
@@ -120,13 +120,13 @@ class CopilotToolsInterface:
                 context["downstream"].append(rel_data)
         except Exception:
             pass
-        
+
         return context
 
     def impact_analysis(self, entity_id: str, proposed_changes: Dict[str, Any]) -> Dict[str, Any]:
         """Tool 5: Analyze impact of proposed changes on campaign."""
         context = self.get_related_context(entity_id)
-        
+
         impact = {
             "entity_id": entity_id,
             "proposed_changes": proposed_changes,
@@ -142,7 +142,7 @@ class CopilotToolsInterface:
                 "Validate no broken dependencies introduced"
             ]
         }
-        
+
         return impact
 
     def list_actions(self, phase_id: Optional[str] = None) -> Dict[str, Any]:
@@ -152,11 +152,11 @@ class CopilotToolsInterface:
                 self.cursor.execute("SELECT json(data) as data FROM deliverables WHERE phase_id = ?", (phase_id,))
             else:
                 self.cursor.execute("SELECT json(data) as data FROM deliverables LIMIT 20")
-            
+
             actions = [json.loads(row["data"]) for row in self.cursor.fetchall()]
         except Exception:
             actions = []
-        
+
         return {
             "phase_id": phase_id,
             "actions": actions,
@@ -167,7 +167,7 @@ class CopilotToolsInterface:
     def validate_docs(self) -> Dict[str, Any]:
         """Tool 7: Validate campaign documentation integrity."""
         issues = []
-        
+
         try:
             # Check for orphaned deliverables
             self.cursor.execute("""
@@ -179,7 +179,7 @@ class CopilotToolsInterface:
                 issues.append(f"Found {orphaned} orphaned deliverables")
         except Exception:
             pass
-        
+
         return {
             "status": "valid" if not issues else "has_issues",
             "issues": issues,
@@ -191,21 +191,21 @@ class CopilotToolsInterface:
         try:
             self.cursor.execute("DELETE FROM fts_phases")
             self.cursor.execute("DELETE FROM fts_tracks")
-            
+
             self.cursor.execute("""
                 INSERT INTO fts_phases(id, name, description) 
                 SELECT id, json_extract(data, '$.name'), json_extract(data, '$.description')
                 FROM campaign_phases
             """)
-            
+
             self.cursor.execute("""
                 INSERT INTO fts_tracks(id, name, description) 
                 SELECT id, json_extract(data, '$.name'), json_extract(data, '$.description')
                 FROM tracks
             """)
-            
+
             self.conn.commit()
-            
+
             return {
                 "status": "success",
                 "timestamp": datetime.utcnow().isoformat() + "Z",
@@ -221,16 +221,16 @@ class CopilotToolsInterface:
     def classify_candidate_file(self, file_path: str) -> Dict[str, Any]:
         """Tool 9: Classify whether a file should be managed by system."""
         path = Path(file_path)
-        
+
         managed_patterns = [
             ".codex/*.md",
             "docs-data/canonical/*.jsonl",
             "docs-data/generated/*",
             "tools/docs_agent/*.py"
         ]
-        
+
         is_managed = any(path.match(pattern) for pattern in managed_patterns)
-        
+
         return {
             "file_path": file_path,
             "is_managed": is_managed,
@@ -265,23 +265,23 @@ class CopilotToolsInterface:
 def test_tools():
     """Test all 10 tools."""
     tools = CopilotToolsInterface()
-    
+
     print("=== COPILOT TOOLS TEST ===\n")
-    
+
     result = tools.get_agent_context()
     print("Tool 1 - get_agent_context:")
     print(json.dumps(result, indent=2))
     print()
-    
+
     result = tools.get_task_brief()
     print("Tool 2 - get_task_brief:")
     print(json.dumps(result, indent=2)[:250] + "...\n")
-    
+
     result = tools.validate_docs()
     print("Tool 7 - validate_docs:")
     print(json.dumps(result, indent=2))
     print()
-    
+
     result = tools.list_actions()
     print(f"Tool 6 - list_actions: {result['count']} actions available")
 
