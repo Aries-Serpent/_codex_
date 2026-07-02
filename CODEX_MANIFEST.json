@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-07-02T01:13:07Z",
+  "generated_at": "2026-07-02T06:08:58Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1627,6 +1627,11 @@
       "has_concurrency": true
     },
     {
+      "name": "phase-8-1-enhanced-health-monitor",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": false
+    },
+    {
       "name": "phase-8-1-health-monitor",
       "enforcement_tier": "GROUNDED",
       "has_concurrency": true
@@ -1639,6 +1644,16 @@
     {
       "name": "phase-8-3-perf-monitor",
       "enforcement_tier": "PARTIAL",
+      "has_concurrency": true
+    },
+    {
+      "name": "phase-9-2-cascade",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": false
+    },
+    {
+      "name": "phase-9-3-router",
+      "enforcement_tier": "SOFT",
       "has_concurrency": true
     },
     {
@@ -2401,5 +2416,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "ca255d3d4349a3f98ee80d1bfad429b791d9de5f33b500ec76ce7966e2ea13cc"
+  "integrity_sha256": "4571c64ff6a96a685f8807f84b65489d77ab1d1020780daf8e7e33b2d6802bae"
 }
