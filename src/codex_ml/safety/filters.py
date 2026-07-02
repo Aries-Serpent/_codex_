@@ -44,7 +44,8 @@ from typing import (
 
 yaml: ModuleType | None
 try:  # pragma: no cover - optional dependency
-    import yaml
+    import yaml as _yaml_module
+    yaml = _yaml_module
 except ModuleNotFoundError:  # pragma: no cover - optional dependency
     yaml = None
 
