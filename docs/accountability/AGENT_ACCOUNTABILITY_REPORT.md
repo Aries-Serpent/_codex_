@@ -68,7 +68,7 @@
 - ✅ Import cleanup: remaining `from src.` imports replaced with package-relative imports in the touched modules
 - ✅ Rebase hardening: workflow `git pull --rebase` steps now use `--autostash` in the remaining auto-post lanes
 - ✅ Workflow restore hardening: commit step rewritten to use `git commit -F` instead of a multi-line `-m` payload
-- ⏳ Final step pending in-session: commit the last readiness-hardening changes, push, and reply on the maintainer/bot comments with the resolving SHA
+- ⏳ Final step pending in-session: push the post-sync branch head and reply on the maintainer/bot comments with the resolving SHA after merging the latest remote PR-branch context commit(s)
 
 ---
 
