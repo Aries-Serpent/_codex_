@@ -25,9 +25,9 @@ import json
 import logging
 from typing import Optional
 
-from src.cache.base import CacheBackend, make_cache_key
-from src.cache.local_cache import LocalLRUCache
-from src.cache.metrics import CacheMetrics, CacheMonitor
+from cache.base import CacheBackend, make_cache_key
+from cache.local_cache import LocalLRUCache
+from cache.metrics import CacheMetrics, CacheMonitor
 
 logger = logging.getLogger(__name__)
 

@@ -30,7 +30,7 @@ import re
 from dataclasses import dataclass, field
 from typing import Any, Optional
 
-from src.codex_ml.tokenization import TokenizerAdapter
+from codex_ml.tokenization import TokenizerAdapter
 from codex.logging.structured_logger import logger
 
 __all__ = [

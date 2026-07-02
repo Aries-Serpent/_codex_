@@ -107,8 +107,7 @@ jobs:
         \ cognitive/\n  git add cognitive/\n  git commit -m \"\U0001F9E0 Update cognitive\
         \ learning from aftermath evaluation [automated]\n\n  - Evaluation mode: ${{\
         \ inputs.evaluation_mode || 'full' }}\n  - Triggered by: ${{ github.event_name\
-        \ }}\n  - Timestamp: $(date -u +'%Y-%m-%dT%H:%M:%SZ')\"\n\n  git pull --rebase\
-        \ --autostash origin \"$_TARGET\" || git pull --ff-only origin \"$_TARGET\"\
+        \ }}\n  - Timestamp: $(date -u +'%Y-%m-%dT%H:%M:%SZ')\"\n\n  git pull --rebase --autostash origin \"$_TARGET\" || git pull --ff-only origin \"$_TARGET\"\
         \n  git push origin HEAD:\"$_TARGET\"\n  echo \"✅ Learning updates committed\
         \ to $_TARGET\"\nelse\n  echo \"ℹ️  No learning updates to commit\"\nfi\n"
     - name: Upload evaluation results
@@ -186,8 +185,7 @@ jobs:
         \ \\\n          .codex/cognitive_brain/metadata.json\n  git commit -m \"\U0001F9E0\
         \ Update cognitive brain patterns [automated]\n\n  - Analysis period: ${{\
         \ inputs.days_back || '30' }} days\n  - Triggered by: ${{ github.event_name\
-        \ }}\n  - Timestamp: $(date -u +'%Y-%m-%dT%H:%M:%SZ')\"\n\n  git pull --rebase\
-        \ --autostash origin \"$_TARGET\" || git pull --ff-only origin \"$_TARGET\"\
+        \ }}\n  - Timestamp: $(date -u +'%Y-%m-%dT%H:%M:%SZ')\"\n\n  git pull --rebase --autostash origin \"$_TARGET\" || git pull --ff-only origin \"$_TARGET\"\
         \n  git push origin HEAD:\"$_TARGET\"\n  echo \"✅ Cognitive brain updated\
         \ on $_TARGET\"\nelse\n  echo \"ℹ️  No changes to cognitive brain\"\nfi\n"
     - name: Upload pattern artifacts

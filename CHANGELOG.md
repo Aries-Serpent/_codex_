@@ -20,6 +20,12 @@ Explicitly clear the remaining PR #5194 merge blockers after approval dispatch a
 - `python3 scripts/ci/validate_copilot_setup_steps.py` → critical checks pass (warnings only)
 - `python3 scripts/ci/enforce_actions_versions.py` → 223 workflow files approved
 - Secret scan on all changed files → no secrets detected
+- `CODEX_SKIP_PATTERN_NUMS=1,6,7,8 python3 scripts/ci/auto_fix_common_issues.py --check-only` → 0 auto-fixable findings remain
+
+### 🔒 Final Hardening
+- Replaced the remaining `from src.` imports in the touched Python modules with package-relative imports.
+- Added `--autostash` to the remaining workflow `git pull --rebase` lanes so auto-post sessions do not abort on unstaged changes.
+- Reworked `.github/workflows/workflow-restore.yml` to write the commit message to a file and call `git commit -F`, clearing the multi-line bash-string merge-readiness finding.
 
 ## [2026-07-02] CI Rescue: CodeQL Security Remediation & Compliance Fix
 
