@@ -290,13 +290,4 @@ def create_mcp_message(
     return message
 
 
-from dataclasses import dataclass
-
-@dataclass
-class MCPTool:
-    """Represents an MCP tool definition"""
-    name: str
-    description: str
-    tool_type: str
-    parameters: Dict[str, Any]
-    handler: Callable = None
+# Utility functions and classes

@@ -62,7 +62,7 @@ class ArchiveQuery:
         )
         sql = "\n".join(query_lines)
         with self.database._transaction() as execute:
-            rows = execute(sql, params, fetchall=True)  # type: ignore[call-arg]
+            rows = execute(sql, params, fetchall=True)
         result: list[dict[str, Any]] = []
         for row in rows or []:
             row_dict = dict(row)
@@ -75,7 +75,7 @@ class ArchiveQuery:
             item = self._get_item_by_tombstone(execute, tombstone_id)
             if item is None:
                 raise LookupError(f"Unknown tombstone id: {tombstone_id}")
-            events = execute(  # type: ignore[call-arg]
+            events = execute(
                 (
                     "SELECT action, actor, context, created_at "
                     "FROM event WHERE item_id = :item_id "

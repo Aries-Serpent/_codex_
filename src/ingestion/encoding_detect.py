@@ -33,13 +33,15 @@ except (ImportError, AttributeError):  # pragma: no cover - optional dependency
 # charset-normalizer provides multiple helpers depending on installed version
 _cn_from_bytes: Any
 try:
-    from charset_normalizer import from_bytes as _cn_from_bytes
+    from charset_normalizer import from_bytes as _cn_from_bytes_module
+    _cn_from_bytes = _cn_from_bytes_module
 except (IOError, OSError):  # pragma: no cover - optional dependency
     _cn_from_bytes = None
 
 _cn_from_path: Any
 try:
-    from charset_normalizer import from_path as _cn_from_path
+    from charset_normalizer import from_path as _cn_from_path_module
+    _cn_from_path = _cn_from_path_module
 except (IOError, OSError):  # pragma: no cover - optional dependency
     _cn_from_path = None
 

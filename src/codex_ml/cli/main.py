@@ -19,7 +19,8 @@ from typing import Annotated, Any, Optional
 
 yaml: ModuleType | None
 try:  # Optional dependency used for loading curriculum presets
-    import yaml
+    import yaml as _yaml_module
+    yaml = _yaml_module
 except (IOError, OSError):  # pragma: no cover - PyYAML is optional
     yaml = None
 

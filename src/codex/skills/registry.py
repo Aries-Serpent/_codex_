@@ -32,7 +32,8 @@ except ImportError:  # pragma: no cover - optional but present in dev requiremen
 
 yaml: ModuleType | None
 try:
-    import yaml
+    import yaml as _yaml_module
+    yaml = _yaml_module
 except (ImportError, AttributeError):  # pragma: no cover - optional but present in requirements
     yaml = None
 

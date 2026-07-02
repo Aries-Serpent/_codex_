@@ -15,7 +15,7 @@ import logging
 
 try:
     import jsonschema
-    from jsonschema import validate, ValidationError, Draft202012Validator
+    from jsonschema import validate, ValidationError as JsonSchemaValidationError, Draft202012Validator
 except ImportError:
     raise ImportError("jsonschema module required. Install with: pip install jsonschema")
 

@@ -480,16 +480,6 @@ class DiscussionManager:
     # Response-checking: detect unread maintainer replies
     # ------------------------------------------------------------------
 
-    _BOT_LOGINS: frozenset[str] = frozenset(
-        {
-            "github-actions[bot]",
-            "copilot-swe-agent[bot]",
-            "github-copilot[bot]",
-            "copilot[bot]",
-            "dependabot[bot]",
-        }
-    )
-
     def check_discussion_replies(
         self,
         repo: str,

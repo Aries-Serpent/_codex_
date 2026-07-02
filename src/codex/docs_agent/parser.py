@@ -165,7 +165,7 @@ class MetadataExtractor:
     @classmethod
     def extract_directives(cls, content: str) -> Dict[str, Any]:
         """Extract inline directives from markdown."""
-        directives = {}
+        directives: dict[str, list[str]] = {}
 
         for match in cls.DIRECTIVE_PATTERN.finditer(content):
             key = match.group(1)

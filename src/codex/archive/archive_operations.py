@@ -82,7 +82,7 @@ class ArchiveOperations:
                     **artifact_payload,
                     "created_at": now,
                 }
-                execute(  # type: ignore[call-arg]
+                execute(
                     """
                     INSERT INTO artifact (
                         id, content_sha256, size_bytes, compression, mime_type,
@@ -105,7 +105,7 @@ class ArchiveOperations:
                     for field in ("size_bytes", "compression", "mime_type")
                 )
                 if needs_refresh or metadata_changed:
-                    execute(  # type: ignore[call-arg]
+                    execute(
                         """
                         UPDATE artifact
                         SET size_bytes = :size_bytes,
@@ -137,7 +137,7 @@ class ArchiveOperations:
                 "delete_after": delete_after_value,
                 "restored_at": None,
             }
-            execute(  # type: ignore[call-arg]
+            execute(
                 """
                 INSERT INTO item (
                     id, repo, path, commit_sha, language, kind, reason, artifact_id,
@@ -160,7 +160,7 @@ class ArchiveOperations:
                 "context": json_dumps_sorted(context),
                 "created_at": now,
             }
-            execute(  # type: ignore[call-arg]
+            execute(
                 """
                 INSERT INTO event (id, item_id, action, actor, context, created_at)
                 VALUES (:id, :item_id, :action, :actor, :context, :created_at)
@@ -170,13 +170,13 @@ class ArchiveOperations:
 
             for tag in tags or []:
                 params = {"item_id": item_id, "tag": tag}
-                existing = execute(  # type: ignore[call-arg]
+                existing = execute(
                     "SELECT 1 FROM tag WHERE item_id = :item_id AND tag = :tag",
                     params,
                     fetchone=True,
                 )
                 if existing is None:
-                    execute(  # type: ignore[call-arg]
+                    execute(
                         "INSERT INTO tag (item_id, tag) VALUES (:item_id, :tag)",
                         params,
                     )
@@ -194,7 +194,7 @@ class ArchiveOperations:
             if item is None:
                 raise LookupError(f"Unknown tombstone id: {tombstone_id}")
             now = utcnow()
-            execute(  # type: ignore[call-arg]
+            execute(
                 """
                 UPDATE item SET restored_at = :restored_at WHERE id = :id
                 """,
@@ -208,7 +208,7 @@ class ArchiveOperations:
                 "context": json_dumps_sorted({}),
                 "created_at": now,
             }
-            execute(  # type: ignore[call-arg]
+            execute(
                 """
                 INSERT INTO event (id, item_id, action, actor, context, created_at)
                 VALUES (:id, :item_id, :action, :actor, :context, :created_at)
@@ -230,7 +230,7 @@ class ArchiveOperations:
                 "context": json_dumps_sorted({"reason": reason}),
                 "created_at": utcnow(),
             }
-            execute(  # type: ignore[call-arg]
+            execute(
                 """
                 INSERT INTO event (id, item_id, action, actor, context, created_at)
                 VALUES (:id, :item_id, :action, :actor, :context, :created_at)
@@ -265,7 +265,7 @@ class ArchiveOperations:
             artifact_id = item["artifact_id"]
             blob_scrubbed = False
             if apply:
-                row = execute(  # type: ignore[call-arg]
+                row = execute(
                     """
                     SELECT COUNT(*) AS ref_count
                     FROM item
@@ -300,7 +300,7 @@ class ArchiveOperations:
                     "context": json_dumps_sorted(context_payload),
                     "created_at": now,
                 }
-                execute(  # type: ignore[call-arg]
+                execute(
                     """
                     INSERT INTO event (id, item_id, action, actor, context, created_at)
                     VALUES (:id, :item_id, :action, :actor, :context, :created_at)
@@ -308,7 +308,7 @@ class ArchiveOperations:
                     payload,
                 )
             if blob_scrubbed:
-                execute(  # type: ignore[call-arg]
+                execute(
                     """
                     UPDATE artifact
                     SET blob_bytes = NULL,

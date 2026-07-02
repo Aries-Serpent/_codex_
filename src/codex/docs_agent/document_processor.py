@@ -96,9 +96,9 @@ class MarkdownParser:
         doc_rec = self._create_document_record(doc_id)
         section_recs = []
         block_recs = []
-        
+         
         current_section = None
-        current_content = []
+        current_content: list[str] = []
         line_start = None
         section_order = 0
         

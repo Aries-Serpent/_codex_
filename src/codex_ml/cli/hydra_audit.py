@@ -41,7 +41,8 @@ from typing import Any, Optional
 
 yaml: ModuleType | None
 try:  # pragma: no cover - handled in tests via importorskip
-    import yaml
+    import yaml as _yaml_module
+    yaml = _yaml_module
 except (IOError, OSError):  # pragma: no cover - reported via exit code
     yaml = None
 

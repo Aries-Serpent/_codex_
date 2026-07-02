@@ -54,8 +54,8 @@ class SemanticIndexer:
         self.embedding_dim = 384  # Default for all-MiniLM-L6-v2
         
         self.index = None
-        self.records = {}  # id -> record
-        self.id_to_index = {}  # record_id -> faiss_index
+        self.records: dict[str, Any] = {}  # id -> record
+        self.id_to_index: dict[str, Any] = {}  # record_id -> faiss_index
         self.embeddings = None  # numpy array of embeddings
         
         self._load_model()
