@@ -349,6 +349,7 @@ jobs:
     timeout-minutes: 10
     needs: [semantic-routing-setup, semantic-router-index, workload-balancing, concurrent-execution, audit-trail-logging]
     runs-on: ubuntu-latest
+    permissions: {}
     if: always()
     steps:
       - name: Create execution summary
