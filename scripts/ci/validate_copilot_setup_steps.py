@@ -22,7 +22,7 @@ import logging
 import re
 import subprocess
 import sys
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Dict, List
 
@@ -97,7 +97,7 @@ class TestResult:
         self.passed = passed
         self.severity = severity  # "error", "warning", or "info"
         self.message = message
-        self.timestamp = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+        self.timestamp = datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     def to_dict(self) -> Dict:
         return {
@@ -145,7 +145,7 @@ class TestSuite:
     def to_json(self) -> Dict:
         return {
             "suite": self.name,
-            "timestamp": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "timestamp": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "total": len(self.results),
             "passed": self.passed_count(),
             "failed": len(self.critical_failures()),
@@ -281,10 +281,9 @@ def test_session_preload_syntax(workflow_path: str) -> TestResult:
         if 'Session Context Pre-load' in content:
             # Extract the step
             pattern = (
-                r'- name: ["\']?🧠 Session Context Pre-load.*?\n(.*?)'
-                r'(?=\n      - name:|\nenv:|\njobs:|\Z)'
+                r'^\s*-\s+name:\s*["\']?🧠 Session Context Pre-load.*?\n(.*?)(?=^\s*-\s+name:|\Z)'
             )
-            match = re.search(pattern, content, re.DOTALL)
+            match = re.search(pattern, content, re.DOTALL | re.MULTILINE)
 
             if match:
                 step_content = match.group(1)
@@ -339,23 +338,13 @@ def test_git_diff_protection(workflow_path: str) -> TestResult:
         # Verify protected sections exist
         issues = []
 
-        # Check CCA variables (lines 99-101 area)
-        cca_found = False
-        for _i, line in enumerate(lines[95:105], start=95):
-            if 'COPILOT_AGENT_CCA_VERSION_LOCK' in line:
-                cca_found = True
+        content = ''.join(lines)
 
-        if not cca_found:
-            issues.append("CCA variables section not found around lines 99-101")
+        if 'COPILOT_AGENT_CCA_VERSION_LOCK' not in content:
+            issues.append("CCA variables section not found in workflow env")
 
-        # Check session preload (lines 132-137 area)
-        preload_found = False
-        for _i, line in enumerate(lines[125:145], start=125):
-            if 'Session Context Pre-load' in line:
-                preload_found = True
-
-        if not preload_found:
-            issues.append("Session preload section not found around lines 132-137")
+        if 'Session Context Pre-load' not in content:
+            issues.append("Session preload section not found in workflow steps")
 
         if issues:
             return TestResult(

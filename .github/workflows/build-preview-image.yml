@@ -35,7 +35,6 @@ permissions:
 jobs:
   cost-gate:
     name: 💰 Cost Gate
-    timeout-minutes: 30
     uses: ./.github/workflows/cost-gate.yml
     with:
       workflow_name: Build & Push Preview Image
