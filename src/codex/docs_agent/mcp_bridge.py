@@ -252,7 +252,7 @@ class MCPMessageType(Enum):
 def create_mcp_message(
     message_type: MCPMessageType,
     method: str,
-    params: Dict[str, Any] = None,
+    params: Optional[Dict[str, Any]] = None,
     request_id: Optional[int] = None,
     result: Optional[Dict[str, Any]] = None,
     error: Optional[str] = None,
@@ -270,7 +270,7 @@ def create_mcp_message(
     Returns:
         MCP message dictionary
     """
-    message = {
+    message: Dict[str, Any] = {
         'jsonrpc': '2.0',
         'method': method,
     }

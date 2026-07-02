@@ -109,7 +109,7 @@ class MCPToolBridge:
             'status': 'pass',
         }
 
-    def validate_record(self, record: Dict = None, **kwargs) -> Dict:
+    def validate_record(self, record: Optional[Dict] = None, **kwargs) -> Dict:
         """Validate JSONL record schema."""
         if not record:
             return {'valid': False, 'error': 'No record provided'}
@@ -145,7 +145,7 @@ class MCPToolBridge:
         }
         return schemas.get(schema_name, {})
 
-    def evaluate_decision(self, decision_id: str = '', context: Dict = None, **kwargs) -> Dict:
+    def evaluate_decision(self, decision_id: str = '', context: Optional[Dict] = None, **kwargs) -> Dict:
         """Evaluate decision logic."""
         return {
             'decision_id': decision_id,
@@ -174,7 +174,7 @@ class MCPToolBridge:
             'relevance_scores': {'doc_001': 0.95, 'doc_003': 0.72},
         }
 
-    def verify_references(self, reference_ids: List[str] = None, **kwargs) -> Dict:
+    def verify_references(self, reference_ids: Optional[List[str]] = None, **kwargs) -> Dict:
         """Verify cross-repository references."""
         return {
             'verified': 42,

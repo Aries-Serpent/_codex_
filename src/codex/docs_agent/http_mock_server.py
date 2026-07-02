@@ -75,7 +75,7 @@ class MockHTTPServer:
         self,
         path: str,
         handler: Callable,
-        methods: List[str] = None
+        methods: Optional[List[str]] = None
     ):
         """Register a mock endpoint
         

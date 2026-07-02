@@ -26,7 +26,7 @@ class DocumentRecord:
     title: str = ""
     source_file: str = ""
     created_at: str = ""
-    metadata: Dict[str, Any] = None
+    metadata: Optional[Dict[str, Any]] = None
 
     def __post_init__(self):
         if self.metadata is None:
@@ -58,9 +58,9 @@ class BlockRecord:
     section_id: str = ""
     content_type: str = "paragraph"
     content: str = ""
-    line_range: Dict[str, Any] = None
+    line_range: Optional[Dict[str, Any]] = None
     language: Optional[str] = None
-    references: List[str] = None
+    references: Optional[List[str]] = None
 
 
 class MarkdownParser:
