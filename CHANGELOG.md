@@ -1,3 +1,61 @@
+## [In Progress] 2026-07-02T01:24Z — PR #5190 Post-Merge Remediation: Phase B Agent Delegation (Track 2 - RAG Coverage Fix)
+
+### Decision: TRACK 2 (FIX TRACK) Selected
+- **Rationale**: PR #5190 explicitly states ≥95% RAG coverage objective
+- **Current State**: 34.63% (full module) vs claimed 94.55% (ingestion subset only)
+- **Root Cause**: 94.55% refers to `tests/rag/ingestion/` only (99.20% actual), not entire RAG module
+- **Approach**: Parallel agent delegation to remediate coverage → ≥95% in 5-7 days
+
+### Coverage Gap Summary
+- **Full RAG Module**: 34.63% coverage
+- **Tests**: 576 pass, 0 fail
+- **Critical Gaps** (18 modules <50%):
+  - `cache/*`: 0% (3 modules untested)
+  - `providers/*`: 0% (3 modules untested)
+  - `benchmarks/*`: 0% (5+ modules untested)
+  - `retriever.py`: 2.51%
+  - `indexer.py`: 2.29%
+  - `embeddings.py`: 16.24%
+  - `monitoring.py`: 24.88%
+
+### Phase B: Parallel Agent Delegation (4 Running, 1 Queued)
+
+**Agents Delegated**:
+1. ✅ **unified-coverage-agent**: RAG module gap analysis + priority matrix
+   - Deliverable: `.codex/RAG_COVERAGE_GAP_ANALYSIS.md`
+   - Status: RUNNING (Agent ID: unified-coverage-agent-gap-ana)
+
+2. ✅ **autonomous-test-healer-agent**: Auto-generate test skeleton files
+   - Deliverable: `tests/rag/` + `.codex/RAG_TEST_SKELETONS_CREATED.md`
+   - Status: RUNNING (Agent ID: autonomous-test-healer-rag-ske)
+
+3. ✅ **ci-auto-healer-agent**: Fix remaining CI workflow failures
+   - Issues: Metrics collector NoneType, secrets baseline enforcer (2), admin token scope
+   - Deliverable: `.codex/CI_WORKFLOW_FIXES_SUMMARY.md`
+   - Status: RUNNING (Agent ID: ci-auto-healer-workflow-fixes)
+
+4. ✅ **mypy-manager-agent**: Resolve type error regressions (122 → ≤121)
+   - Deliverable: `.codex/MYPY_REGRESSION_FIXES.md`
+   - Status: RUNNING (Agent ID: mypy-manager-type-errors)
+
+5. ⏳ **link-validator-agent**: Fix broken documentation links
+   - Deliverable: `.codex/LINK_VALIDATION_FIXES.md`
+   - Status: QUEUED (max concurrent limit, will auto-trigger)
+
+### Timeline
+- **Phase B Duration**: 6-8 hours (parallel execution)
+- **Phase C (Validation)**: Upon Phase B completion → 2-3 hours
+- **Phase D (Tier 2 Docs)**: Upon Phase C completion → 1-2 days
+- **Total Campaign Duration**: 5-7 days (vs sequential ~14 days)
+
+### Accountability
+- **Execution Plan**: `.codex/PR5190_REMEDIATION_PHASE_B_EXECUTION.md`
+- **Decision Authority**: @mbaetiong (D-mode GO CONTINUE autonomous)
+- **Branch**: `copilot/post-merge-session-pr-5190`
+- **REQ-4/REQ-5**: Will be updated in Phase C completion commit
+
+---
+
 ## [Fixed] 2026-07-02T00:41Z — PR #5190 Complete: RAG coverage + machine-readable governance
 
 ### Machine Readable Governance (PRIMARY FIX)
