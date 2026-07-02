@@ -1,0 +1,2498 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "generated": "2026-07-02T18:51:15Z",
+    "total_agents": 162,
+    "active_agents": 148,
+    "index_type": "semantic_router",
+    "rebuild_strategy": "lazy"
+  },
+  "agents": [
+    {
+      "id": "github-app-manager",
+      "name": "GitHub App Manager",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "operations",
+      "description": "GitHub App Manager agent",
+      "capabilities": [],
+      "capability_tags": [
+        "github_app_jwt",
+        "installation_tokens",
+        "webhook_verification",
+        "pat_token_fallback",
+        "codex_master_key",
+        "codex_backup_key",
+        "app_manifest",
+        "codespace_config"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "github-guru-agent",
+      "name": "GitHub Guru Agent",
+      "version": "1.1.0",
+      "status": "active",
+      "category": "operations",
+      "description": "Full-spectrum GitHub repository intelligence: PR analysis, issue triage, workflow health monitoring, branch governance, dependency drift detection, repository hygiene reporting, and label taxonomy enforcement.\n",
+      "capabilities": [
+        "pr_analysis",
+        "issue_triage",
+        "workflow_health_monitoring",
+        "branch_governance",
+        "contributor_intelligence",
+        "repository_hygiene_reporting",
+        "codebase_navigation_guidance",
+        "dependency_drift_detection",
+        "stale_resource_detection",
+        "label_taxonomy_enforcement"
+      ],
+      "capability_tags": [
+        "pr_analysis",
+        "issue_triage",
+        "workflow_health_monitoring",
+        "branch_governance",
+        "contributor_intelligence",
+        "repository_hygiene_reporting",
+        "codebase_navigation_guidance",
+        "dependency_drift_detection"
+      ],
+      "primary_skill": "GitHub repository intelligence, PR analysis, issue triage, workflow health",
+      "maturity": "production"
+    },
+    {
+      "id": "ast-analysis-agent",
+      "name": "Ast Analysis Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "quality",
+      "description": "specialist",
+      "capabilities": [],
+      "capability_tags": [
+        "ast_analysis_agent"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "cache-logic-validator",
+      "name": "Cache Logic Validator",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "performance",
+      "description": "specialist",
+      "capabilities": [],
+      "capability_tags": [
+        "cache_logic_validator"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "ci-failure-diagnostician",
+      "name": "Ci Failure Diagnostician",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "ci_cd",
+      "description": "specialist",
+      "capabilities": [],
+      "capability_tags": [
+        "ci_failure_diagnostician"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "ci-optimizer-agent",
+      "name": "Ci Optimizer Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "ci",
+      "description": "specialist",
+      "capabilities": [],
+      "capability_tags": [
+        "ci_optimizer_agent"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "ci-testing-agent",
+      "name": "Ci Testing Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "testing",
+      "description": "Specialized agent for debugging and fixing CI/CD pipeline issues, test failures, and build problems",
+      "capabilities": [
+        "ci_failure_diagnosis",
+        "test_failure_analysis",
+        "build_problem_resolution",
+        "log_analysis"
+      ],
+      "capability_tags": [
+        "ci_failure_diagnosis",
+        "test_failure_analysis",
+        "build_problem_resolution",
+        "log_analysis"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "codex_reviewer",
+      "name": "Codex_Reviewer",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "quality",
+      "description": "specialist",
+      "capabilities": [],
+      "capability_tags": [
+        "codex_reviewer"
+      ],
+      "primary_skill": "",
+      "maturity": "experimental"
+    },
+    {
+      "id": "cognitive-brain-agent",
+      "name": "Cognitive Brain Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "cognitive",
+      "description": "specialist",
+      "capabilities": [],
+      "capability_tags": [
+        "cognitive_brain_agent"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "compliance-checker-agent",
+      "name": "Compliance Checker Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "governance",
+      "description": "utility",
+      "capabilities": [],
+      "capability_tags": [
+        "compliance_checker_agent"
+      ],
+      "primary_skill": "",
+      "maturity": "experimental"
+    },
+    {
+      "id": "dep-upgrade-agent",
+      "name": "Dep Upgrade Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "dependencies",
+      "description": "specialist",
+      "capabilities": [],
+      "capability_tags": [
+        "dep_upgrade_agent"
+      ],
+      "primary_skill": "",
+      "maturity": "experimental"
+    },
+    {
+      "id": "documentation-agent",
+      "name": "Documentation Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "documentation",
+      "description": "specialist",
+      "capabilities": [],
+      "capability_tags": [
+        "documentation_agent"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "ecosystem-coordinator-agent",
+      "name": "Ecosystem Coordinator Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "orchestration",
+      "description": "specialist",
+      "capabilities": [],
+      "capability_tags": [
+        "ecosystem_coordinator_agent"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "emergent-intelligence-agent",
+      "name": "Emergent Intelligence Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "cognitive",
+      "description": "specialist",
+      "capabilities": [],
+      "capability_tags": [
+        "emergent_intelligence_agent"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "flaky-triage-agent",
+      "name": "Flaky Triage Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "testing",
+      "description": "specialist",
+      "capabilities": [],
+      "capability_tags": [
+        "flaky_triage_agent"
+      ],
+      "primary_skill": "",
+      "maturity": "experimental"
+    },
+    {
+      "id": "infra-linter-agent",
+      "name": "Infra Linter Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "infrastructure",
+      "description": "specialist",
+      "capabilities": [],
+      "capability_tags": [
+        "infra_linter_agent"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "performance-monitor-agent",
+      "name": "Performance Monitor Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "monitoring",
+      "description": "utility",
+      "capabilities": [],
+      "capability_tags": [
+        "performance_monitor_agent"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "project-architect-researcher",
+      "name": "Project Architect Researcher",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "operations",
+      "description": "NotebookLM API integration for project research and architecture analysis",
+      "capabilities": [
+        "api_integration",
+        "research_synthesis",
+        "architecture_design",
+        "documentation_analysis"
+      ],
+      "capability_tags": [
+        "api_integration",
+        "research_synthesis",
+        "architecture_design",
+        "documentation_analysis"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "pyo3-integration-tester",
+      "name": "Pyo3 Integration Tester",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "testing",
+      "description": "Tests PyO3 Rust-Python integration and validates bindings",
+      "capabilities": [
+        "pyo3_testing",
+        "rust_python_bindings",
+        "integration_validation"
+      ],
+      "capability_tags": [
+        "pyo3_testing",
+        "rust_python_bindings",
+        "integration_validation"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "reasoning-advisor-agent",
+      "name": "Reasoning Advisor Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "cognitive",
+      "description": "specialist",
+      "capabilities": [],
+      "capability_tags": [
+        "reasoning_advisor_agent"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "release-gate-agent",
+      "name": "Release Gate Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "ci_cd",
+      "description": "utility",
+      "capabilities": [],
+      "capability_tags": [
+        "release_gate_agent"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "rust-error-validator",
+      "name": "Rust Error Validator",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "quality",
+      "description": "Scans Rust code for error handling issues and validates PyResult usage",
+      "capabilities": [
+        "rust_error_detection",
+        "unwrap_validation",
+        "pyresult_checking"
+      ],
+      "capability_tags": [
+        "rust_error_detection",
+        "unwrap_validation",
+        "pyresult_checking"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "security-advisory-resolver",
+      "name": "Security Advisory Resolver",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "security",
+      "description": "specialist",
+      "capabilities": [],
+      "capability_tags": [
+        "security_advisory_resolver"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "security-scan-agent",
+      "name": "Security Scan Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "security",
+      "description": "specialist",
+      "capabilities": [],
+      "capability_tags": [
+        "security_scan_agent"
+      ],
+      "primary_skill": "",
+      "maturity": "experimental"
+    },
+    {
+      "id": "test-assertion-updater",
+      "name": "Test Assertion Updater",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "testing",
+      "description": "Fixes test alignment issues by updating tests to match API changes and ensuring test assertions are correct",
+      "capabilities": [
+        "test_alignment",
+        "assertion_updates",
+        "api_change_tracking"
+      ],
+      "capability_tags": [
+        "test_alignment",
+        "assertion_updates",
+        "api_change_tracking"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "utf8-safety-linter",
+      "name": "Utf8 Safety Linter",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "quality",
+      "description": "specialist",
+      "capabilities": [],
+      "capability_tags": [
+        "utf8_safety_linter"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "test-pattern-guardian",
+      "name": "Test Pattern Guardian",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "testing",
+      "description": "Proactive test quality enforcement through AST-based pattern detection for mock exhaustion, serialization issues, and fixture independence",
+      "capabilities": [
+        "ast_pattern_detection",
+        "mock_exhaustion_prevention",
+        "json_serialization_validation",
+        "fixture_independence_checking",
+        "test_quality_enforcement"
+      ],
+      "capability_tags": [
+        "ast_pattern_detection",
+        "mock_exhaustion_prevention",
+        "json_serialization_validation",
+        "fixture_independence_checking",
+        "test_quality_enforcement"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "config-validator-enhanced",
+      "name": "Config Validator (Enhanced)",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "configuration",
+      "description": "Hydra config integrity and coverage validation, ensures all experiment configs referenced in tests exist and are schema-compliant",
+      "capabilities": [
+        "config_existence_validation",
+        "cross_reference_checking",
+        "schema_compliance",
+        "hydra_integration"
+      ],
+      "capability_tags": [
+        "config_existence_validation",
+        "cross_reference_checking",
+        "schema_compliance",
+        "hydra_integration"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "unified-security-scanner",
+      "name": "Unified Security Scanner",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "security",
+      "description": "Multi-scanner security audit \u2014 CVE detection, secret scanning, GHAS triage, SBOM generation, and unified risk scoring",
+      "capabilities": [
+        "cve_scanning",
+        "secret_detection",
+        "ghas_alert_triage",
+        "sbom_generation",
+        "auto_remediation",
+        "risk_scoring"
+      ],
+      "capability_tags": [
+        "cve_scanning",
+        "secret_detection",
+        "ghas_alert_triage",
+        "sbom_generation",
+        "auto_remediation",
+        "risk_scoring"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "cross-agent-knowledge-graph",
+      "name": "Cross-Agent Knowledge Graph",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "cognitive",
+      "description": "Persistent JSON-LD knowledge graph enabling cross-session pattern sharing, fix pattern deduplication, and semantic blocker querying between agents",
+      "capabilities": [
+        "node_registration",
+        "edge_creation",
+        "semantic_query",
+        "conflict_detection",
+        "staleness_pruning",
+        "snapshot_export",
+        "drq_pattern_sync"
+      ],
+      "capability_tags": [
+        "node_registration",
+        "edge_creation",
+        "semantic_query",
+        "conflict_detection",
+        "staleness_pruning",
+        "snapshot_export",
+        "drq_pattern_sync"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "codeql-alert-resolution-agent",
+      "name": "CodeQL Alert Resolution Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "security",
+      "description": "Autonomous CodeQL alert triage and resolution \u2014 classifies CWE categories, applies fix patterns, dismisses false positives, and contributes to AAIS scoring",
+      "capabilities": [
+        "codeql_alert_ingestion",
+        "cwe_classification",
+        "auto_fix_application",
+        "false_positive_dismissal",
+        "regression_prevention",
+        "audit_trail_logging"
+      ],
+      "capability_tags": [
+        "codeql_alert_ingestion",
+        "cwe_classification",
+        "auto_fix_application",
+        "false_positive_dismissal",
+        "regression_prevention",
+        "audit_trail_logging"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "rag-meta-tensor-regression-agent",
+      "name": "RAG Meta-Tensor Regression Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "ml",
+      "description": "Prevents and resolves meta-tensor initialization regressions in the RAG pipeline \u2014 guards safe_model_to_device() call order (has_meta_tensors before isinstance)",
+      "capabilities": [
+        "meta_tensor_detection",
+        "device_placement_validation",
+        "regression_prevention",
+        "canonical_fix_application",
+        "cognitive_brain_pattern_storage"
+      ],
+      "capability_tags": [
+        "meta_tensor_detection",
+        "device_placement_validation",
+        "regression_prevention",
+        "canonical_fix_application",
+        "cognitive_brain_pattern_storage"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "ci-triage-pipeline-agent",
+      "name": "CI Triage Pipeline Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "ci_cd",
+      "description": "Systematic CI failure triage using GitHub MCP tools \u2014 downloads logs, classifies failures by pattern, applies fix patterns from DRQ library",
+      "capabilities": [
+        "ci_log_retrieval",
+        "failure_classification",
+        "fix_pattern_application",
+        "drq_integration",
+        "cognitive_brain_learning"
+      ],
+      "capability_tags": [
+        "ci_log_retrieval",
+        "failure_classification",
+        "fix_pattern_application",
+        "drq_integration",
+        "cognitive_brain_learning"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "recon-scout-agent",
+      "name": "Recon Scout Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "operations",
+      "description": "Read-only codebase reconnaissance \u2014 walks all files to surface CI blockers, security risks, quality issues, and architecture drift, tagging each as DRQ entries for deep research",
+      "capabilities": [
+        "ci_blocker_detection",
+        "security_tripwire_scan",
+        "code_quality_audit",
+        "documentation_gap_detection",
+        "architecture_drift_analysis",
+        "dependency_risk_assessment",
+        "quick_fix_application",
+        "drq_filing",
+        "knowledge_graph_registration"
+      ],
+      "capability_tags": [
+        "ci_blocker_detection",
+        "security_tripwire_scan",
+        "code_quality_audit",
+        "documentation_gap_detection",
+        "architecture_drift_analysis",
+        "dependency_risk_assessment",
+        "quick_fix_application",
+        "drq_filing"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "policy-coach-agent",
+      "name": "Policy Coach Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "governance",
+      "description": "Monitors Copilot Agent sessions for codebase policy violations and re-aligns behaviour at 3 mandatory checkpoints: plan declaration (T-1), mid-session violation detection (T-2), and pre-close gate (T-3). Contains 14 violation patterns (P-01..P-14) with verbatim re-alignment prompts.\n",
+      "capabilities": [
+        "policy_violation_detection",
+        "session_re_alignment",
+        "pre_close_gate_enforcement",
+        "violation_pattern_matching",
+        "prompt_injection"
+      ],
+      "capability_tags": [
+        "policy_violation_detection",
+        "session_re_alignment",
+        "pre_close_gate_enforcement",
+        "violation_pattern_matching",
+        "prompt_injection"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "python-architect-agent",
+      "name": "Python Architect Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "quality",
+      "description": "Advanced Python architecture design and review \u2014 enforces patterns, refactoring strategies, and module structure compliance for the cognitive brain and ML pipeline",
+      "capabilities": [
+        "architecture_review",
+        "refactoring_guidance",
+        "pattern_enforcement",
+        "module_structure_validation"
+      ],
+      "capability_tags": [
+        "architecture_review",
+        "refactoring_guidance",
+        "pattern_enforcement",
+        "module_structure_validation"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "ci-auto-healer",
+      "name": "CI Auto-Healer Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "ci_cd",
+      "description": "Detects CI failures, matches them to a known pattern library (P-001 to P-029), applies validated fixes, and escalates unrecognized patterns as DRQ entries.\n",
+      "capabilities": [
+        "ci_failure_detection",
+        "pattern_matching",
+        "automated_code_fix",
+        "local_test_validation",
+        "drq_filing",
+        "cognitive_brain_update"
+      ],
+      "capability_tags": [
+        "ci_failure_detection",
+        "pattern_matching",
+        "automated_code_fix",
+        "local_test_validation",
+        "drq_filing",
+        "cognitive_brain_update",
+        "autonomous_ci_failure_detection",
+        "pattern_library_management"
+      ],
+      "primary_skill": "Autonomous CI failure detection, pattern-matching, and self-healing",
+      "maturity": "production"
+    },
+    {
+      "id": "agent-iq-scoring-gate",
+      "name": "Agent IQ Scoring Gate",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "governance",
+      "description": "Evaluates agent IQ and gates deployments based on scoring thresholds.",
+      "capabilities": [],
+      "capability_tags": [
+        "governance"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "agent-orchestrator",
+      "name": "Agent Orchestrator",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "orchestration",
+      "description": "Coordinates multi-agent workflows, routing tasks to specialist agents.",
+      "capabilities": [],
+      "capability_tags": [
+        "orchestration"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "artifact-monitor-agent",
+      "name": "Artifact Monitor Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "ci_cd",
+      "description": "Monitors CI/CD artifact health, detects stale or missing artifacts.",
+      "capabilities": [],
+      "capability_tags": [
+        "ci_cd"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "autonomous-test-healer-agent",
+      "name": "Autonomous Test Healer Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "testing",
+      "description": "Auto-heals failing tests by identifying root causes and applying targeted fixes.",
+      "capabilities": [],
+      "capability_tags": [
+        "testing"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "bridge-security-monitor",
+      "name": "Bridge Security Monitor",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "security",
+      "description": "Monitors IPC bridge security, detects unauthorized access, validates message integrity.",
+      "capabilities": [],
+      "capability_tags": [
+        "security"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "cache-management-agent",
+      "name": "Cache Management Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "ci_cd",
+      "description": "Manages CI/CD caching strategies; prunes stale caches, validates cache keys.",
+      "capabilities": [],
+      "capability_tags": [
+        "ci_cd"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "cache-manager-integration",
+      "name": "Cache Manager Integration",
+      "version": "1.0.0",
+      "status": "archived",
+      "category": "ci_cd",
+      "description": "Integration layer for cache management across workflow and composite actions.",
+      "capabilities": [],
+      "capability_tags": [
+        "ci_cd"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "ci-auto-healer-agent",
+      "name": "CI Auto-Healer Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "ci_cd",
+      "description": "Detects and repairs CI failures using P-001-P-035 pattern library.",
+      "capabilities": [],
+      "capability_tags": [
+        "ci_cd"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "ci-emergency-response-agent",
+      "name": "CI Emergency Response Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "ci_cd",
+      "description": "Emergency response for critical CI pipeline failures requiring immediate action.",
+      "capabilities": [],
+      "capability_tags": [
+        "ci_cd"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "ci-failure-resolution-agent",
+      "name": "CI Failure Resolution Agent",
+      "version": "1.0.0",
+      "status": "archived",
+      "category": "ci_cd",
+      "description": "Resolves CI failures by diagnosing logs and applying structured fix patterns.",
+      "capabilities": [],
+      "capability_tags": [
+        "ci_cd"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "ci-importerror-agent",
+      "name": "CI ImportError Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "ci_cd",
+      "description": "Diagnoses and remediates ImportError/ModuleNotFoundError in test suites.",
+      "capabilities": [],
+      "capability_tags": [
+        "ci_cd"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "ci-log-retrieval-agent",
+      "name": "CI Log Retrieval Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "ci_cd",
+      "description": "Retrieves authenticated GitHub Actions logs and summarizes failures.",
+      "capabilities": [],
+      "capability_tags": [
+        "ci_cd"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "ci-optimization-agent",
+      "name": "CI Optimization Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "ci_cd",
+      "description": "Identifies and applies optimizations to reduce CI pipeline runtime.",
+      "capabilities": [],
+      "capability_tags": [
+        "ci_cd"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "ci-parameter-mismatch-healer",
+      "name": "CI Parameter Mismatch Healer",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "ci_cd",
+      "description": "Detects and corrects parameter/argument mismatches in CI workflow calls.",
+      "capabilities": [],
+      "capability_tags": [
+        "ci_cd"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "ci-resilience-emergency-response-agent",
+      "name": "CI Resilience Emergency Response Agent",
+      "version": "1.0.0",
+      "status": "archived",
+      "category": "ci_cd",
+      "description": "Resilience-focused emergency CI recovery with retry and fallback strategies.",
+      "capabilities": [],
+      "capability_tags": [
+        "ci_cd"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "claim-verification-agent",
+      "name": "Claim Verification Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "documentation",
+      "description": "Verifies factual claims in commit messages and documentation.",
+      "capabilities": [],
+      "capability_tags": [
+        "documentation"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "code-analysis-agent",
+      "name": "Code Analysis Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "quality",
+      "description": "Static code quality analysis with actionable improvement recommendations.",
+      "capabilities": [],
+      "capability_tags": [
+        "quality"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "code-scanning-remediation-agent",
+      "name": "Code Scanning Remediation Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "security",
+      "description": "Remediates code scanning alerts (CodeQL, Semgrep) with minimal-change fixes.",
+      "capabilities": [],
+      "capability_tags": [
+        "security"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "codebase-health-guardian",
+      "name": "Codebase Health Guardian",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "quality",
+      "description": "Continuous monitoring of overall codebase health metrics and trends.",
+      "capabilities": [],
+      "capability_tags": [
+        "quality"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "cognitive-brain-manager",
+      "name": "Cognitive Brain Manager",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "cognitive",
+      "description": "Manages cognitive brain system state, phase transitions, and health scoring.",
+      "capabilities": [],
+      "capability_tags": [
+        "cognitive"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "config-migration-assistant",
+      "name": "Config Migration Assistant",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "configuration",
+      "description": "Migrates legacy configurations to Hydra-based format with validation.",
+      "capabilities": [],
+      "capability_tags": [
+        "configuration"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "config-validator",
+      "name": "Config Validator",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "configuration",
+      "description": "Validates Hydra configuration files for schema compliance and type safety.",
+      "capabilities": [],
+      "capability_tags": [
+        "configuration"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "coverage-gapfill-agent",
+      "name": "Coverage Gapfill Agent",
+      "version": "1.0.0",
+      "status": "archived",
+      "category": "testing",
+      "description": "DEPRECATED (S174): Superseded by unified-coverage-agent. Targets low-coverage modules and generates tests to close coverage gaps.",
+      "capabilities": [],
+      "capability_tags": [
+        "testing"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "coverage-maintenance-agent",
+      "name": "Coverage Maintenance Agent",
+      "version": "1.0.0",
+      "status": "archived",
+      "category": "testing",
+      "description": "DEPRECATED (S174): Superseded by unified-coverage-agent. Maintains test coverage over time; alerts on regressions.",
+      "capabilities": [],
+      "capability_tags": [
+        "testing"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "coverage-roadmap-agent",
+      "name": "Coverage Roadmap Agent",
+      "version": "1.0.0",
+      "status": "archived",
+      "category": "testing",
+      "description": "DEPRECATED (S174): Superseded by unified-coverage-agent. Drives coverage threshold roadmap, tracks phase completion, validates thresholds.",
+      "capabilities": [],
+      "capability_tags": [
+        "testing"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "cpu-only-ci-config-agent",
+      "name": "CPU-Only CI Config Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "ci_cd",
+      "description": "Configures CI workflows for CPU-only environments (no GPU dependencies).",
+      "capabilities": [],
+      "capability_tags": [
+        "ci_cd"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "cross-platform-filename-validator",
+      "name": "Cross-Platform Filename Validator",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "quality",
+      "description": "Validates filenames for cross-platform compatibility; blocks illegal characters.",
+      "capabilities": [],
+      "capability_tags": [
+        "quality"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "datetime-modernizer",
+      "name": "Datetime Modernizer",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "quality",
+      "description": "Migrates datetime.utcnow() to datetime.now(tz=timezone.utc) across codebase.",
+      "capabilities": [],
+      "capability_tags": [
+        "quality"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "dependency-conflict-agent",
+      "name": "Dependency Conflict Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "dependencies",
+      "description": "Diagnoses pip resolver conflicts; recommends compatible version ranges.",
+      "capabilities": [],
+      "capability_tags": [
+        "dependencies"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "dependency-security-review-agent",
+      "name": "Dependency Security Review Agent",
+      "version": "1.0.0",
+      "status": "archived",
+      "category": "security",
+      "description": "Reviews dependency security posture; flags CVEs and outdated packages.",
+      "capabilities": [],
+      "capability_tags": [
+        "security"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "dependency-vulnerability-scanner",
+      "name": "Dependency Vulnerability Scanner",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "security",
+      "description": "Scans dependencies against multiple CVE databases; generates remediation plans.",
+      "capabilities": [],
+      "capability_tags": [
+        "security"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "doc-freshness-checker",
+      "name": "Doc Freshness Checker",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "documentation",
+      "description": "Validates documentation freshness; identifies stale docs and broken links.",
+      "capabilities": [],
+      "capability_tags": [
+        "documentation"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "doc-refactor-test-agent",
+      "name": "Doc Refactor Test Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "documentation",
+      "description": "Refactors documentation tests and validates documentation test infrastructure.",
+      "capabilities": [],
+      "capability_tags": [
+        "documentation"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "documentation-consolidator",
+      "name": "Documentation Consolidator",
+      "version": "1.0.0",
+      "status": "archived",
+      "category": "documentation",
+      "description": "Consolidates fragmented documentation with semantic analysis and content preservation.",
+      "capabilities": [],
+      "capability_tags": [
+        "documentation"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "documentation-quality-agent",
+      "name": "Documentation Quality Agent",
+      "version": "1.0.0",
+      "status": "archived",
+      "category": "documentation",
+      "description": "Automated documentation quality assessment; MkDocs validation; link checking.",
+      "capabilities": [],
+      "capability_tags": [
+        "documentation"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "fragile-test-guardian",
+      "name": "Fragile Test Guardian",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "testing",
+      "description": "Identifies and stabilizes fragile/flaky tests before they cause CI failures.",
+      "capabilities": [],
+      "capability_tags": [
+        "testing"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "github-pages-manager",
+      "name": "GitHub Pages Manager",
+      "version": "4.0.0-production",
+      "status": "active",
+      "category": "documentation",
+      "description": "Manages GitHub Pages deployment, MkDocs builds, documentation validation, cognitive_app accessibility and live site validation. Resolves all scheduled GitHub Pages validation issues.",
+      "capabilities": [],
+      "capability_tags": [
+        "documentation"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "integration-test-runner",
+      "name": "Integration Test Runner",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "testing",
+      "description": "Runs integration tests across services; validates cross-component interactions.",
+      "capabilities": [],
+      "capability_tags": [
+        "testing"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "json-serialization-expert",
+      "name": "JSON Serialization Expert",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "quality",
+      "description": "Diagnoses and fixes JSON serialization issues in API responses and data pipelines.",
+      "capabilities": [],
+      "capability_tags": [
+        "quality"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "link-validator-agent",
+      "name": "Link Validator Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "documentation",
+      "description": "Cross-reference and link validation for documentation; detects broken links.",
+      "capabilities": [],
+      "capability_tags": [
+        "documentation"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "meta-tensor-validator",
+      "name": "Meta Tensor Validator",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "ml",
+      "description": "Validates PyTorch model initialization patterns to prevent meta tensor issues.",
+      "capabilities": [],
+      "capability_tags": [
+        "machine_learning"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "ml-validation-suite-agent",
+      "name": "ML Validation Suite Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "ml",
+      "description": "Comprehensive ML model validation including determinism and reproducibility checks.",
+      "capabilities": [],
+      "capability_tags": [
+        "machine_learning"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "msv-dashboard-monitor",
+      "name": "MSV Dashboard Monitor",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "monitoring",
+      "description": "Monitors MSV dashboard metrics and alerts on regressions.",
+      "capabilities": [],
+      "capability_tags": [
+        "monitoring"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "mutation-testing-agent",
+      "name": "Mutation Testing Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "testing",
+      "description": "Performs mutation testing to evaluate test suite effectiveness.",
+      "capabilities": [],
+      "capability_tags": [
+        "testing"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "owner-approval-guard",
+      "name": "Owner Approval Guard",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "governance",
+      "description": "Enforces owner approval requirements for autonomous operations.",
+      "capabilities": [],
+      "capability_tags": [
+        "governance"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "performance-regression-detector",
+      "name": "Performance Regression Detector",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "performance",
+      "description": "Detects performance regressions by comparing metrics against baselines.",
+      "capabilities": [],
+      "capability_tags": [
+        "performance"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "pii-scrubber",
+      "name": "PII Scrubber",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "security",
+      "description": "Scrubs PII from text content before processing; ensures GDPR/CCPA compliance.",
+      "capabilities": [],
+      "capability_tags": [
+        "security"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "pr-3095-verification-agent",
+      "name": "PR-3095 Verification Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "governance",
+      "description": "Verifies that PR 3095 fixes have been correctly applied across the codebase.",
+      "capabilities": [],
+      "capability_tags": [
+        "governance"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "pr-check-remediation-agent",
+      "name": "PR Check Remediation Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "ci_cd",
+      "description": "Remediates failed PR checks by analyzing failure patterns and applying fixes.",
+      "capabilities": [],
+      "capability_tags": [
+        "ci_cd"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "pr-test-infrastructure-fixer",
+      "name": "PR Test Infrastructure Fixer",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "testing",
+      "description": "Fixes test infrastructure issues introduced by PR changes.",
+      "capabilities": [],
+      "capability_tags": [
+        "testing"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "pypi-publishing-operations-agent",
+      "name": "PyPI Publishing Operations Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "operations",
+      "description": "Manages PyPI package publishing operations and release workflows.",
+      "capabilities": [],
+      "capability_tags": [
+        "operations"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "python-312-type-fixer",
+      "name": "Python 3.12 Type Fixer",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "quality",
+      "description": "Fixes Python 3.12 type annotation incompatibilities across the codebase.",
+      "capabilities": [],
+      "capability_tags": [
+        "quality"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "qa-walkthrough-agent",
+      "name": "QA Walkthrough Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "testing",
+      "description": "Executes repository-wide QA walkthrough with evidence-based audit steps.",
+      "capabilities": [],
+      "capability_tags": [
+        "testing"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "quantum-compliance-tuning-agent",
+      "name": "Quantum Compliance Tuning Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "cognitive",
+      "description": "Tunes quantum-inspired compliance parameters for cognitive brain optimization.",
+      "capabilities": [],
+      "capability_tags": [
+        "cognitive"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "rag-freshness-loop-agent",
+      "name": "RAG Freshness Loop Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "ml",
+      "description": "Maintains RAG index freshness through continuous update and validation loops.",
+      "capabilities": [],
+      "capability_tags": [
+        "machine_learning"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "rag-index-manager",
+      "name": "RAG Index Manager",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "ml",
+      "description": "Manages RAG index operations including building, updating, and querying.",
+      "capabilities": [],
+      "capability_tags": [
+        "machine_learning"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "rag-meta-tensor-guardian",
+      "name": "RAG Meta Tensor Guardian",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "ml",
+      "description": "Guards RAG tensor operations against meta tensor initialization errors.",
+      "capabilities": [],
+      "capability_tags": [
+        "machine_learning"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "rag-module-management-agent",
+      "name": "RAG Module Management Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "ml",
+      "description": "Manages RAG module lifecycle including initialization and hot-swapping.",
+      "capabilities": [],
+      "capability_tags": [
+        "machine_learning"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "reference-updater-agent",
+      "name": "Reference Updater Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "quality",
+      "description": "Atomic reference updates across entire codebase with transaction-like behavior.",
+      "capabilities": [],
+      "capability_tags": [
+        "quality"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "repository-hygiene-agent",
+      "name": "Repository Hygiene Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "operations",
+      "description": "Autonomous repository cleanup, maintenance, and codebase hygiene specialist.",
+      "capabilities": [],
+      "capability_tags": [
+        "operations"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "repository-organization-agent",
+      "name": "Repository Organization Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "operations",
+      "description": "Organizes repository structure per LFS policy and directory conventions.",
+      "capabilities": [],
+      "capability_tags": [
+        "operations"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "root-organizer-agent",
+      "name": "Root Organizer Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "operations",
+      "description": "Safe incremental root folder reorganization; zero-break guarantee.",
+      "capabilities": [],
+      "capability_tags": [
+        "operations"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "rust-config-validator",
+      "name": "Rust Config Validator",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "configuration",
+      "description": "Validates Rust configurations in hybrid Python/Rust swarm components.",
+      "capabilities": [],
+      "capability_tags": [
+        "configuration"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "secret-detection-agent",
+      "name": "Secret Detection Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "security",
+      "description": "Scans codebase for accidentally committed secrets and credentials.",
+      "capabilities": [],
+      "capability_tags": [
+        "security"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "security-alert-verification-agent",
+      "name": "Security Alert Verification Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "security",
+      "description": "Validates GitHub security alerts, triage, and generates remediation plans.",
+      "capabilities": [],
+      "capability_tags": [
+        "security"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "security-audit-agent",
+      "name": "Security Audit Agent",
+      "version": "1.0.0",
+      "status": "archived",
+      "category": "security",
+      "description": "Comprehensive security audits across code, dependencies, and workflows.",
+      "capabilities": [],
+      "capability_tags": [
+        "security"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "semantic-search",
+      "name": "Semantic Search Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "ml",
+      "description": "Semantic search over codebase and documentation using vector embeddings.",
+      "capabilities": [],
+      "capability_tags": [
+        "machine_learning"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "session-analysis-agent",
+      "name": "Session Analysis Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "cognitive",
+      "description": "Analyzes Copilot sessions, verifies commits, extracts patterns for learning.",
+      "capabilities": [],
+      "capability_tags": [
+        "cognitive"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "session-log-retrieval-agent",
+      "name": "Session Log Retrieval Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "cognitive",
+      "description": "Recalls previous Copilot sessions, extracts uncommitted work, searches history.",
+      "capabilities": [],
+      "capability_tags": [
+        "cognitive"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "terminology-consistency-agent",
+      "name": "Terminology Consistency Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "documentation",
+      "description": "Enforces consistent terminology across documentation and code comments.",
+      "capabilities": [],
+      "capability_tags": [
+        "documentation"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "test-alignment-fixer",
+      "name": "Test Alignment Fixer",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "testing",
+      "description": "Fixes test alignment issues by updating tests to match API changes.",
+      "capabilities": [],
+      "capability_tags": [
+        "testing"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "test-alignment-fixer-enhanced",
+      "name": "Test Alignment Fixer Enhanced",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "testing",
+      "description": "Enhanced test alignment fixer with broader coverage and smarter detection.",
+      "capabilities": [],
+      "capability_tags": [
+        "testing"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "test-coverage-agent",
+      "name": "Test Coverage Agent",
+      "version": "1.0.0",
+      "status": "archived",
+      "category": "testing",
+      "description": "DEPRECATED (S174): Superseded by unified-coverage-agent. Drives test coverage improvements; identifies uncovered code paths.",
+      "capabilities": [],
+      "capability_tags": [
+        "testing"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "test-coverage-monitor",
+      "name": "Test Coverage Monitor",
+      "version": "1.0.0",
+      "status": "archived",
+      "category": "testing",
+      "description": "DEPRECATED (S174): Superseded by unified-coverage-agent. Monitors test coverage, enforces thresholds, validates documentation quality.",
+      "capabilities": [],
+      "capability_tags": [
+        "testing"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "unified-coverage-agent",
+      "name": "Test Enhancement Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "testing",
+      "description": "Improves test quality through refactoring, edge case coverage, assertion hardening.",
+      "capabilities": [],
+      "capability_tags": [
+        "testing"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "test-failure-analyzer-agent",
+      "name": "Test Failure Analyzer Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "testing",
+      "description": "Analyzes and diagnoses test failures with root cause classification.",
+      "capabilities": [],
+      "capability_tags": [
+        "testing"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "tokenization-coverage-agent",
+      "name": "Tokenization Coverage Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "testing",
+      "description": "Improves src/tokenization test coverage, CLI validation, and coverage reporting.",
+      "capabilities": [],
+      "capability_tags": [
+        "testing"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "tracking-document-qa-agent",
+      "name": "Tracking Document QA Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "documentation",
+      "description": "QA validation of tracking documents, completion reports, and session summaries.",
+      "capabilities": [],
+      "capability_tags": [
+        "documentation"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "unified-doc-agent",
+      "name": "Unified Doc Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "documentation",
+      "description": "Unified documentation management combining freshness, quality, and consolidation.",
+      "capabilities": [],
+      "capability_tags": [
+        "documentation"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "unified-governance-gate",
+      "name": "Unified Governance Gate",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "governance",
+      "description": "Unified governance enforcement across all operations, merges, and deployments.",
+      "capabilities": [],
+      "capability_tags": [
+        "governance"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "workflow-analytics-agent",
+      "name": "Workflow Analytics Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "ci_cd",
+      "description": "Analyzes workflow performance, detects patterns, and recommends optimizations.",
+      "capabilities": [],
+      "capability_tags": [
+        "ci_cd"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "workflow-ci-fixer",
+      "name": "Workflow CI Fixer",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "ci_cd",
+      "description": "Fixes GitHub Actions workflow syntax errors, permission issues, and CI failures.",
+      "capabilities": [],
+      "capability_tags": [
+        "ci_cd"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "workflow-health-monitor",
+      "name": "Workflow Health Monitor",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "ci_cd",
+      "description": "Real-time workflow health monitoring with alerting and trend analysis.",
+      "capabilities": [],
+      "capability_tags": [
+        "ci_cd"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "workflow-management-agent",
+      "name": "Workflow Management Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "ci_cd",
+      "description": "Orchestrates workflow operations including scheduling, triggers, and lifecycle.",
+      "capabilities": [],
+      "capability_tags": [
+        "ci_cd"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "workflow-optimization-agent",
+      "name": "Workflow Optimization Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "ci_cd",
+      "description": "Identifies and applies workflow optimizations for speed and cost reduction.",
+      "capabilities": [],
+      "capability_tags": [
+        "ci_cd"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "cognitive-brain-cli-agent",
+      "name": "Cognitive Brain CLI Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "operations",
+      "description": "Production agent for operating the Cognitive Brain CLI console. Executes shell commands, HTTP requests, and drives the cognitive_app dev server. Backend: FastAPI :8765 with PTY WebSocket and HTTP proxy.\n",
+      "capabilities": [],
+      "capability_tags": [
+        "operations"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "workflow-compliance-guardian",
+      "name": "Workflow Compliance Guardian",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "ci",
+      "description": "Enforces and auto-heals branch-scoped concurrency + timeout rules across all 91 GitHub Actions workflows. Runs compliance audit on every PR push and self-heals non-compliant files within the session.\n",
+      "capabilities": [],
+      "capability_tags": [
+        "continuous_integration"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "ci-health-alert-agent",
+      "name": "CI Health Alert Agent",
+      "version": "1.1.0",
+      "status": "active",
+      "category": "ci",
+      "description": "Auto-responds to GitHub issues tagged ci-health-alert. Classifies failure patterns (including SELF_HEALING_001 cascade) via ci_failure_patterns.yaml, proposes batch fixes, and updates CODEX_CI_FAILURE_RATE + CODEX_OPEN_*_ALERTS repo variables after remediation.\n",
+      "capabilities": [],
+      "capability_tags": [
+        "continuous_integration",
+        "packaging_validation",
+        "self_healing_cascade_detection"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "repo-var-sync-agent",
+      "name": "Repo Var Sync Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "infrastructure",
+      "description": "Keeps .codex/agent_context.json bidirectionally in sync with GitHub Actions repository variables (COPILOT_* / CODEX_*). Supports both bootstrap sync (vars\u2192file) and propagation (file\u2192vars) with drift detection.\n",
+      "capabilities": [],
+      "capability_tags": [
+        "infrastructure"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "cognitive-ooda-loop-agent",
+      "name": "Cognitive OODA Loop Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "cognitive",
+      "description": "Executes a full OODA loop from a PR comment. Drives the real OODAOrchestrator via POST /api/ooda/process on the CLI API server (:8765). Replaces mock-api-client in AgentOrchestrationPanel. Also exposes GET /api/ooda/metrics for MetricsDashboard K1 factor display.\n",
+      "capabilities": [],
+      "capability_tags": [
+        "cognitive"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "memory-sync-agent",
+      "name": "Memory Sync Agent",
+      "version": "2.1.0",
+      "status": "active",
+      "category": "cognitive",
+      "description": "Syncs SQLiteMemory (STM/LTM) with the cognitive brain pattern library. Consolidates hot STM entries into LTM when capacity exceeds 80%, tags patterns with ImprovementArea, and prunes stale LTM entries.\n",
+      "capabilities": [],
+      "capability_tags": [
+        "cognitive"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "telemetry-classifier-agent",
+      "name": "Telemetry Classifier Agent",
+      "version": "2.1.0",
+      "status": "active",
+      "category": "ci",
+      "description": "Reads CI telemetry artifacts, identifies top-N unknown failure patterns, and generates new classifier entries for collect_telemetry.py. Drives the unknown pattern bucket from ~60% toward <20%.\n",
+      "capabilities": [],
+      "capability_tags": [
+        "continuous_integration"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "admin-automation-agent",
+      "name": "Admin Automation Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "operations",
+      "description": "specialist",
+      "capabilities": [],
+      "capability_tags": [
+        "operations"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "batch-triage-agent",
+      "name": "Batch Triage Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "ci",
+      "description": "specialist",
+      "capabilities": [],
+      "capability_tags": [
+        "continuous_integration"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "ci-diagnostic-agent",
+      "name": "CI Diagnostic Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "ci",
+      "description": "specialist",
+      "capabilities": [],
+      "capability_tags": [
+        "continuous_integration"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "codebase-qa-walkthrough-agent",
+      "name": "Codebase QA Walkthrough Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "quality",
+      "description": "specialist",
+      "capabilities": [],
+      "capability_tags": [
+        "quality"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "cognitive-brain-session-injector",
+      "name": "Cognitive Brain Session Injector",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "cognitive",
+      "description": "specialist",
+      "capabilities": [],
+      "capability_tags": [
+        "cognitive"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "dependency-conflict-resolver",
+      "name": "Dependency Conflict Resolver",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "dependencies",
+      "description": "specialist",
+      "capabilities": [],
+      "capability_tags": [
+        "dependencies"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "doc-test-scribe",
+      "name": "Doc Test Scribe",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "documentation",
+      "description": "specialist",
+      "capabilities": [],
+      "capability_tags": [
+        "documentation"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "documentation-sync-validator",
+      "name": "Documentation Sync Validator",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "documentation",
+      "description": "specialist",
+      "capabilities": [],
+      "capability_tags": [
+        "documentation"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "dynamics365-powerplatform-architect-agent",
+      "name": "Dynamics365 PowerPlatform Architect Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "integration",
+      "description": "specialist",
+      "capabilities": [],
+      "capability_tags": [
+        "integration"
+      ],
+      "primary_skill": "",
+      "maturity": "experimental"
+    },
+    {
+      "id": "github-auth-manager",
+      "name": "GitHub Auth Manager",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "security",
+      "description": "specialist",
+      "capabilities": [],
+      "capability_tags": [
+        "security"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "github-code-reviewer",
+      "name": "GitHub Code Reviewer",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "quality",
+      "description": "specialist",
+      "capabilities": [],
+      "capability_tags": [
+        "quality"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "github-deployment-gatekeeper",
+      "name": "GitHub Deployment Gatekeeper",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "operations",
+      "description": "utility",
+      "capabilities": [],
+      "capability_tags": [
+        "operations"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "github-security-enforcer",
+      "name": "GitHub Security Enforcer",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "security",
+      "description": "specialist",
+      "capabilities": [],
+      "capability_tags": [
+        "security"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "github-security-validator-agent",
+      "name": "GitHub Security Validator Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "security",
+      "description": "specialist",
+      "capabilities": [],
+      "capability_tags": [
+        "security"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "github-test-orchestrator",
+      "name": "GitHub Test Orchestrator",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "testing",
+      "description": "orchestrator",
+      "capabilities": [],
+      "capability_tags": [
+        "testing"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "github-testing-orchestrator-agent",
+      "name": "GitHub Testing Orchestrator Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "testing",
+      "description": "orchestrator",
+      "capabilities": [],
+      "capability_tags": [
+        "testing"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "github-workflow-optimizer",
+      "name": "GitHub Workflow Optimizer",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "operations",
+      "description": "specialist",
+      "capabilities": [],
+      "capability_tags": [
+        "operations"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "ml-threat-detector",
+      "name": "ML Threat Detector",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "security",
+      "description": "specialist",
+      "capabilities": [],
+      "capability_tags": [
+        "security"
+      ],
+      "primary_skill": "",
+      "maturity": "experimental"
+    },
+    {
+      "id": "repo-health-guardian",
+      "name": "Repo Health Guardian",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "operations",
+      "description": "utility",
+      "capabilities": [],
+      "capability_tags": [
+        "operations"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "security-vulnerability-patcher",
+      "name": "Security Vulnerability Patcher",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "security",
+      "description": "specialist",
+      "capabilities": [],
+      "capability_tags": [
+        "security"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "service-integration-tester",
+      "name": "Service Integration Tester",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "testing",
+      "description": "specialist",
+      "capabilities": [],
+      "capability_tags": [
+        "testing"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "test-coverage-enforcer",
+      "name": "Test Coverage Enforcer",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "testing",
+      "description": "specialist",
+      "capabilities": [],
+      "capability_tags": [
+        "testing"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "zendesk-architect-agent",
+      "name": "Zendesk Architect Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "integration",
+      "description": "specialist",
+      "capabilities": [],
+      "capability_tags": [
+        "integration"
+      ],
+      "primary_skill": "",
+      "maturity": "experimental"
+    },
+    {
+      "id": "orchestrator-agent",
+      "name": "Orchestrator Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "operations",
+      "description": "orchestrator",
+      "capabilities": [],
+      "capability_tags": [
+        "operations"
+      ],
+      "primary_skill": "",
+      "maturity": "beta"
+    },
+    {
+      "id": "copilot-session-chain",
+      "name": "Copilot Session Chain",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "ci_cd",
+      "description": "Automates opening the next Copilot Coding Agent sub-PR targeting 0D_base_ (the staging integration branch).  Enforces the sub-PR model: sessions always run on copilot/session-* branches, never on 0D_base_ directly. Triggers on workflow_dispatch or automatically when a sub-PR merges into 0D_base_.\n",
+      "capabilities": [],
+      "capability_tags": [
+        "session_chaining",
+        "integration_branch_enforcement",
+        "sub_pr_creation",
+        "copilot_trigger",
+        "base_staging_integration"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "packaging-validation-agent",
+      "name": "Packaging Validation Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "security",
+      "description": "Validates Python packaging configuration (pyproject.toml, lock files), detects Dependabot vulnerabilities, applies safe upgrades, enforces PEP 621 compliance, and updates AAIS security posture repo variables after remediation.\n",
+      "capabilities": [],
+      "capability_tags": [
+        "packaging_validation",
+        "dependency_management",
+        "security_scanning",
+        "pep621_compliance",
+        "dependabot_remediation"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "energy-conversion-agent",
+      "name": "Energy Conversion Agent",
+      "version": "1.0.0",
+      "status": "archived",
+      "category": "simulation",
+      "description": "AI-enhanced agent skilled in developing programmatic systems for simulating and calculating gas-to-electric energy conversion. Provides compute-regulated power distribution modeling, thermodynamic conversion analysis, grid stability simulation, and AI-driven optimization for integrated energy systems.",
+      "capabilities": [],
+      "capability_tags": [
+        "energy_conversion_simulation",
+        "gas_to_electric",
+        "power_distribution",
+        "thermodynamic_modeling",
+        "ai_optimization",
+        "grid_stability",
+        "demand_forecasting",
+        "anomaly_detection"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "promote-integration-branch",
+      "name": "Promote Integration Branch Workflow",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "ci_cd",
+      "description": "Autonomously creates the 0D_base_ staging integration branch from a given SHA using GitHubMCPPoster.create_ref() and opens the 0D_base_ \u2192 main promotion PR. Uses CODEX_MASTER_KEY. workflow_dispatch only (must be on main).\n",
+      "capabilities": [],
+      "capability_tags": [
+        "branch_creation",
+        "pr_lifecycle",
+        "integration_branch_management",
+        "promotion_workflow",
+        "codex_master_key_ops"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "create-sub-pr-to-0D_base_",
+      "name": "Create Sub-PR to 0D_base_ Workflow",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "ci_cd",
+      "description": "Creates a pull request from any session branch into 0D_base_ (staging integration branch). Verifies 0D_base_ exists, idempotent (skips if PR already open), and uses mcp_poster create-pr CLI. Requires CODEX_MASTER_KEY.\n",
+      "capabilities": [],
+      "capability_tags": [
+        "sub_pr_creation",
+        "session_branch_management",
+        "zero_d_base_routing",
+        "integration_branch_management"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "self-healing-orchestrator-agent",
+      "name": "Self-Healing Orchestrator Agent",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "ci_cd",
+      "description": "Orchestrates autonomous self-healing loops across CI failure patterns (RP-001 through RP-004+). Coordinates pattern recognition, fix application, verification, and escalation across agents.",
+      "capabilities": [],
+      "capability_tags": [
+        "ci_healing",
+        "pattern_orchestration",
+        "cascade_coordination",
+        "autonomous_fix_dispatch"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "branch-divergence-resolution-agent",
+      "name": "Branch Divergence Resolution Agent",
+      "version": "1.1.0",
+      "status": "active",
+      "category": "ci_cd",
+      "description": "Production-ready Copilot custom agent that detects, classifies, and resolves branch divergence between staging (0D_base_) and default (main) branches.",
+      "capabilities": [],
+      "capability_tags": [
+        "branch_divergence_detection",
+        "branch_classification",
+        "auto_merge_resolution",
+        "pipeline_merge_protocol"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "post-accountability-to-discussion",
+      "name": "Post Accountability to Discussion Workflow",
+      "version": "1.0.0",
+      "status": "active",
+      "category": "ci_cd",
+      "description": "Automated workflow that posts session accountability entries to GitHub Discussion #3673 ([Ongoing] Copilot Coding Agent Accountability Report). Triggered when AGENT_ACCOUNTABILITY_REPORT.md is updated. Uses GraphQL to add a dedup-safe comment on the discussion thread. Priority 0 hardened process replacing direct file logging.\n",
+      "capabilities": [],
+      "capability_tags": [
+        "accountability_reporting",
+        "discussion_posting",
+        "governance_automation",
+        "session_documentation"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    },
+    {
+      "id": "google-home-script-agent",
+      "name": "Google Home Script Agent",
+      "version": "1.0.0",
+      "status": "archived",
+      "category": "automation",
+      "description": "DEPRECATED: Smart-home automation agent for Google Home script generation. Archived 2026-07-01 due to zero ecosystem integration and out-of-scope domain.",
+      "capabilities": [],
+      "capability_tags": [
+        "smart_home_automation",
+        "google_home_integration"
+      ],
+      "primary_skill": "",
+      "maturity": "production"
+    }
+  ]
+}
