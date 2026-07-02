@@ -1,0 +1,53 @@
+ID,Key,Name,Pattern_Type,Confidence,Frequency,Success_Rate,Primary_Tags,Policy,Improvement_Areas
+p-001,fix_timeout_http_500,HTTP 500 Timeout Recovery,error,0.876,3,0.92,"ci, network, resilience",standard,"CI_SELF_HEALING, ERROR_RESILIENCE"
+p-002,sql_injection_parameterize,SQL Injection Prevention via Parameterization,error,0.98,5,0.99,"security, critical",evergreen,SECURITY_HARDENING
+p-003,mypy_nullable_guard,MyPy Type Checking - Nullable Guard,success,0.85,4,0.88,"quality, type-safety",standard,COVERAGE_IMPROVEMENT
+p-004,cache_invalidation_strategy,Cache Invalidation Strategy Implementation,performance,0.72,3,0.80,"performance, optimization",standard,PERFORMANCE_OPTIMIZATION
+p-005,exponential_backoff_retry,Exponential Backoff Retry Logic,error,0.89,6,0.94,"ci, resilience, network",standard,"ERROR_RESILIENCE, CI_SELF_HEALING"
+p-006,edge_case_test_assertion,Edge Case Test Assertion Pattern,success,0.78,4,0.85,"testing, coverage",standard,COVERAGE_IMPROVEMENT
+p-007,docstring_type_annotation,Docstring Type Annotation Convention,success,0.81,3,0.87,"documentation, readability",standard,COVERAGE_IMPROVEMENT
+p-008,ci_timeout_recovery,CI Pipeline Timeout Recovery,error,0.84,5,0.91,"ci, heal, critical",standard,CI_SELF_HEALING
+p-009,xss_prevention_sanitization,XSS Prevention via Input Sanitization,error,0.96,4,0.98,"security, critical",evergreen,SECURITY_HARDENING
+p-010,agent_chaining_orchestration,Multi-Agent Chaining Orchestration,decision,0.79,3,0.82,"agent, chain, orchestrat",standard,AGENT_CHAINING
+p-011,memory_consolidation_cycle,STM→LTM Memory Consolidation Cycle,success,0.88,3,0.90,"stm, ltm, memory",standard,ML_PATTERN_FEEDING
+p-012,concurrent_request_throttling,Concurrent Request Throttling,performance,0.75,3,0.83,"performance, latency",standard,PERFORMANCE_OPTIMIZATION
+p-013,database_connection_pooling,Database Connection Pooling,performance,0.82,4,0.89,"performance, optimization",standard,PERFORMANCE_OPTIMIZATION
+p-014,logging_structured_json,Structured JSON Logging Pattern,success,0.80,3,0.86,"logging, observability",standard,ERROR_RESILIENCE
+p-015,exception_handling_graceful,Graceful Exception Handling Strategy,error,0.86,4,0.92,"error, exception, resilience",standard,ERROR_RESILIENCE
+p-016,async_task_coordination,Async Task Coordination Pattern,decision,0.74,3,0.80,"async, coordination",standard,PERFORMANCE_OPTIMIZATION
+p-017,api_versioning_strategy,API Versioning Strategy,success,0.77,3,0.84,"api, design",standard,COVERAGE_IMPROVEMENT
+p-018,rate_limiting_algorithm,Token Bucket Rate Limiting,performance,0.79,3,0.85,"performance, security",standard,"PERFORMANCE_OPTIMIZATION, SECURITY_HARDENING"
+p-019,csrf_token_validation,CSRF Token Validation Pattern,error,0.94,4,0.96,"security, critical",evergreen,SECURITY_HARDENING
+p-020,load_test_stress_scenario,Load Testing Stress Scenario,success,0.73,3,0.79,"test, coverage, performance",standard,"COVERAGE_IMPROVEMENT, PERFORMANCE_OPTIMIZATION"
+p-021,dependency_conflict_resolution,Dependency Conflict Resolution,error,0.82,3,0.88,"dependencies, build",standard,ERROR_RESILIENCE
+p-022,container_image_optimization,Container Image Layer Optimization,performance,0.76,3,0.82,"performance, docker",standard,PERFORMANCE_OPTIMIZATION
+p-023,distributed_tracing_opentelemetry,Distributed Tracing with OpenTelemetry,success,0.81,3,0.87,"observability, tracing",standard,ERROR_RESILIENCE
+p-024,deadlock_avoidance_lock_ordering,Deadlock Avoidance via Lock Ordering,error,0.88,3,0.91,"concurrency, synchronization",standard,ERROR_RESILIENCE
+p-025,mocking_strategy_unittest,Mocking Strategy for Unit Tests,success,0.79,3,0.85,"test, coverage, mocking",standard,COVERAGE_IMPROVEMENT
+p-026,authentication_jwt_refresh,JWT Refresh Token Pattern,error,0.92,4,0.95,"security, authentication",evergreen,SECURITY_HARDENING
+p-027,rollback_strategy_deployment,Blue-Green Deployment Rollback,error,0.87,3,0.90,"ci, deployment, heal",standard,CI_SELF_HEALING
+p-028,circuit_breaker_pattern,Circuit Breaker for Fault Tolerance,error,0.85,4,0.89,"resilience, error",standard,ERROR_RESILIENCE
+p-029,eventualsourcing_event_log,Event Sourcing with Event Log,success,0.74,3,0.81,"design, architecture",standard,ERROR_RESILIENCE
+p-030,observability_metrics_prometheus,Prometheus Metrics Instrumentation,success,0.80,3,0.86,"observability, metrics",standard,ERROR_RESILIENCE
+p-031,caching_ttl_strategy,Cache TTL and Invalidation Strategy,performance,0.77,3,0.84,"performance, caching",standard,PERFORMANCE_OPTIMIZATION
+p-032,pagination_cursor_offset,Cursor-based Pagination Implementation,success,0.76,3,0.83,"api, performance",standard,PERFORMANCE_OPTIMIZATION
+p-033,validation_input_sanitization,Input Validation and Sanitization,error,0.93,4,0.96,"security, validation",evergreen,SECURITY_HARDENING
+p-034,feature_flag_gradual_rollout,Feature Flag Gradual Rollout,decision,0.75,3,0.82,"deployment, feature-flags",standard,CI_SELF_HEALING
+p-035,compression_gzip_content,GZIP Content Compression,performance,0.73,3,0.80,"performance, compression",standard,PERFORMANCE_OPTIMIZATION
+p-036,caching_etag_validation,ETag Caching Validation,performance,0.78,3,0.85,"caching, performance",standard,PERFORMANCE_OPTIMIZATION
+p-037,oauth2_authorization_code,OAuth2 Authorization Code Flow,error,0.91,4,0.94,"security, authentication",evergreen,SECURITY_HARDENING
+p-038,websocket_connection_heartbeat,WebSocket Heartbeat Keep-Alive,error,0.82,3,0.88,"websocket, resilience",standard,ERROR_RESILIENCE
+p-039,json_schema_validation,JSON Schema Validation Pattern,success,0.81,3,0.87,"validation, json",standard,COVERAGE_IMPROVEMENT
+p-040,multipart_form_data_upload,Multipart Form Data Upload Handling,success,0.74,3,0.81,"api, file-upload",standard,COVERAGE_IMPROVEMENT
+p-041,transaction_isolation_serializable,Serializable Transaction Isolation,error,0.86,3,0.90,"database, transactions",standard,ERROR_RESILIENCE
+p-042,index_optimization_query_plan,Database Index Optimization,performance,0.79,3,0.85,"performance, database",standard,PERFORMANCE_OPTIMIZATION
+p-043,notification_delivery_reliability,Reliable Notification Delivery,error,0.83,3,0.89,"messaging, reliability",standard,ERROR_RESILIENCE
+p-044,batch_processing_chunking,Batch Processing with Chunking,performance,0.77,3,0.84,"performance, batch",standard,PERFORMANCE_OPTIMIZATION
+p-045,idempotent_operation_design,Idempotent Operation Design Pattern,success,0.85,3,0.90,"design, reliability",standard,ERROR_RESILIENCE
+p-046,correlation_id_request_tracing,Correlation ID Request Tracing,success,0.79,3,0.85,"observability, tracing",standard,ERROR_RESILIENCE
+p-047,shadow_mode_testing_canary,Shadow Mode Testing with Canary,decision,0.74,3,0.81,"test, deployment",standard,COVERAGE_IMPROVEMENT
+p-048,semantic_versioning_compatibility,Semantic Versioning for Compatibility,success,0.76,3,0.83,"versioning, design",standard,COVERAGE_IMPROVEMENT
+p-049,vendor_lock_in_prevention,Vendor Lock-in Prevention,decision,0.71,3,0.78,"architecture, design",standard,COVERAGE_IMPROVEMENT
+p-050,chaos_engineering_resilience,Chaos Engineering Resilience Testing,error,0.81,3,0.87,"test, resilience",standard,"ERROR_RESILIENCE, COVERAGE_IMPROVEMENT"
+p-051,observability_audit_trail,Audit Trail Observability,success,0.80,3,0.86,"security, observability",standard,SECURITY_HARDENING
+p-052,pattern_consolidation_knowledge_graph,Pattern Consolidation Knowledge Graph,success,0.88,3,0.90,"stm, ltm, consolidat, agent, chain",standard,"ML_PATTERN_FEEDING, AGENT_CHAINING"
