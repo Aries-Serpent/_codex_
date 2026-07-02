@@ -21,6 +21,7 @@ from typing import Optional
 from codex_ml.ast.analysis.registry import AnalyzerRegistry
 from codex_ml.ast.core.config import ASTConfig
 from codex_ml.ast.storage.sqlite_storage import ASTStorage
+from codex.logging.structured_logger import logger
 
 
 def get_storage(db_path: Optional[str] = None) -> ASTStorage:
@@ -48,36 +49,25 @@ def cmd_analyze(args: argparse.Namespace) -> int:
     target_path = Path(args.path)
 
     if not target_path.exists():
-        print(
-            f"Error: Path does not exist: {target_path}", file=sys.stderr
-        )  # codeql[py/clear-text-logging-sensitive-data]
+        logger.info(f"Error: Path does not exist: {target_path}")
         return 1
 
     # Initialize registry with config
     ASTConfig()
     registry = AnalyzerRegistry()
 
-    print(f"Analyzing: {target_path}")  # codeql[py/clear-text-logging-sensitive-data]
-    print(
-        f"Analyzers: {', '.join(registry.list_analyzers())}"
-    )  # codeql[py/clear-text-logging-sensitive-data]
-    print("-" * 60)  # codeql[py/clear-text-logging-sensitive-data]
+    logger.info(f"Analyzing: {target_path}")
+    logger.info(f"Analyzers: {', '.join(registry.list_analyzers())}")
 
     # For now, show a placeholder since we don't have a parser yet
     # In a full implementation, this would parse files and run analysis
-    print(
-        "\nNote: Full parsing requires libcst/tree-sitter integration."
-    )  # codeql[py/clear-text-logging-sensitive-data]
-    print(
-        f"Registry initialized with {len(registry)} analyzers:"
-    )  # codeql[py/clear-text-logging-sensitive-data]
+    logger.info("Note: Full parsing requires libcst/tree-sitter integration.")
+    logger.info(f"Registry initialized with {len(registry)} analyzers:")
 
     for analyzer_type in registry.list_analyzers():
         analyzer = registry.get(analyzer_type)
         if analyzer:
-            print(
-                f"  - {analyzer.get_description()}"
-            )  # codeql[py/clear-text-logging-sensitive-data]
+            logger.info(f"  - {analyzer.get_description()}")
 
     if args.format == "json":
         output = {
@@ -87,7 +77,7 @@ def cmd_analyze(args: argparse.Namespace) -> int:
             "findings": [],
             "status": "pending_parser_integration",
         }
-        print(json.dumps(output, indent=2))  # codeql[py/clear-text-logging-sensitive-data]
+        logger.info(json.dumps(output, indent=2))
 
     return 0
 
@@ -104,26 +94,19 @@ def cmd_audit(args: argparse.Namespace) -> int:
     target_path = Path(args.path)
 
     if not target_path.exists():
-        print(
-            f"Error: Path does not exist: {target_path}", file=sys.stderr
-        )  # codeql[py/clear-text-logging-sensitive-data]
+        logger.error(f"Path does not exist: {target_path}")
         return 1
 
-    print(f"Auditing: {target_path}")  # codeql[py/clear-text-logging-sensitive-data]
-    print(f"Baseline: {args.baseline or 'None'}")  # codeql[py/clear-text-logging-sensitive-data]
-    print("-" * 60)  # codeql[py/clear-text-logging-sensitive-data]
+    logger.info(f"Auditing: {target_path}")
+    logger.info(f"Baseline: {args.baseline or 'None'}")
 
     # Placeholder for audit functionality
-    print(
-        "\nAudit functionality requires full parser integration."
-    )  # codeql[py/clear-text-logging-sensitive-data]
-    print("This will:")  # codeql[py/clear-text-logging-sensitive-data]
-    print("  1. Parse all Python files in the path")  # codeql[py/clear-text-logging-sensitive-data]
-    print("  2. Run all registered analyzers")  # codeql[py/clear-text-logging-sensitive-data]
-    print(
-        "  3. Compare against baseline if provided"
-    )  # codeql[py/clear-text-logging-sensitive-data]
-    print("  4. Generate comprehensive report")  # codeql[py/clear-text-logging-sensitive-data]
+    logger.info("Audit functionality requires full parser integration.")
+    logger.info("This will:")
+    logger.info("  1. Parse all Python files in the path")
+    logger.info("  2. Run all registered analyzers")
+    logger.info("  3. Compare against baseline if provided")
+    logger.info("  4. Generate comprehensive report")
 
     return 0
 
@@ -141,41 +124,33 @@ def cmd_stats(args: argparse.Namespace) -> int:
         storage = get_storage(args.db)
         stats = storage.get_statistics()
 
-        print("=" * 60)  # codeql[py/clear-text-logging-sensitive-data]
-        print("AST ANALYSIS STATISTICS")  # codeql[py/clear-text-logging-sensitive-data]
-        print("=" * 60)  # codeql[py/clear-text-logging-sensitive-data]
+        logger.info("=" * 60)
+        logger.info("AST ANALYSIS STATISTICS")
+        logger.info("=" * 60)
 
-        print(
-            f"\nTotal Analyses: {stats.get('total_analyses', 0)}"
-        )  # codeql[py/clear-text-logging-sensitive-data]
-        print(
-            f"Total Findings: {stats.get('total_findings', 0)}"
-        )  # codeql[py/clear-text-logging-sensitive-data]
+        logger.info(f"Total Analyses: {stats.get('total_analyses', 0)}")
+        logger.info(f"Total Findings: {stats.get('total_findings', 0)}")
 
         if stats.get("findings_by_severity"):
-            print("\nFindings by Severity:")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.info("Findings by Severity:")
             for severity, count in sorted(stats["findings_by_severity"].items()):
-                print(f"  {severity}: {count}")  # codeql[py/clear-text-logging-sensitive-data]
+                logger.info(f"  {severity}: {count}")
 
         if stats.get("top_finding_types"):
-            print("\nTop Finding Types:")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.info("Top Finding Types:")
             for finding_type, count in stats["top_finding_types"].items():
-                print(f"  {finding_type}: {count}")  # codeql[py/clear-text-logging-sensitive-data]
+                logger.info(f"  {finding_type}: {count}")
 
         if stats.get("recent_activity"):
-            print(
-                "\nRecent Activity (last 7 days):"
-            )  # codeql[py/clear-text-logging-sensitive-data]
+            logger.info("Recent Activity (last 7 days):")
             for date, count in stats["recent_activity"].items():
-                print(f"  {date}: {count} analyses")  # codeql[py/clear-text-logging-sensitive-data]
+                logger.info(f"  {date}: {count} analyses")
 
         return 0
 
     except (IOError, OSError) as e:
         type(e).__name__
-        print(
-            "Error getting statistics: <ERROR_TYPE>", file=sys.stderr
-        )  # codeql[py/clear-text-logging-sensitive-data]
+        logger.error("Error getting statistics: <ERROR_TYPE>")
         return 1
 
 
@@ -237,26 +212,20 @@ def cmd_export(args: argparse.Namespace) -> int:
             output = string_buffer.getvalue()
 
         else:
-            print(
-                f"Error: Unknown format '{args.format}'", file=sys.stderr
-            )  # codeql[py/clear-text-logging-sensitive-data]
+            logger.error(f"Error: Unknown format '{args.format}'")
             return 1
 
         if args.output:
             Path(args.output).write_text(output)
-            print(
-                f"Exported {len(findings)} findings to {args.output}"
-            )  # codeql[py/clear-text-logging-sensitive-data]
+            logger.info(f"Exported {len(findings)} findings to {args.output}")
         else:
-            print(output)  # codeql[py/clear-text-logging-sensitive-data]
+            logger.info(output)
 
         return 0
 
     except (IOError, OSError) as e:
         type(e).__name__
-        print(
-            "Error exporting: <ERROR_TYPE>", file=sys.stderr
-        )  # codeql[py/clear-text-logging-sensitive-data]
+        logger.error("Error exporting: <ERROR_TYPE>")
         return 1
 
 
@@ -274,16 +243,13 @@ def cmd_list(args: argparse.Namespace) -> int:
         analyses = storage.list_analyses(limit=args.limit)
 
         if not analyses:
-            print("No analyses found.")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.info("No analyses found.")
             return 0
 
-        print(
-            f"{'ID':<20} {'File':<40} {'Findings':<10} {'Date'}"
-        )  # codeql[py/clear-text-logging-sensitive-data]
-        print("-" * 90)  # codeql[py/clear-text-logging-sensitive-data]
+        logger.info(f"{'ID':<20} {'File':<40} {'Findings':<10} {'Date'}")
 
         for analysis in analyses:
-            print(
+            logger.info(
                 f"{analysis['analysis_id'][:18]:<20} "
                 f"{analysis['file_path'][:38]:<40} "
                 f"{analysis['finding_count']:<10} "
@@ -294,9 +260,7 @@ def cmd_list(args: argparse.Namespace) -> int:
 
     except (IOError, OSError) as e:
         type(e).__name__
-        print(
-            "Error listing analyses: <ERROR_TYPE>", file=sys.stderr
-        )  # codeql[py/clear-text-logging-sensitive-data]
+        logger.error("Error listing analyses: <ERROR_TYPE>")
         return 1
 
 
