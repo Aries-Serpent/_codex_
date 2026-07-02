@@ -9,11 +9,15 @@ Provides:
 """
 
 import json
+import logging
+import sqlite3
 from collections import Counter, defaultdict
 from datetime import datetime
 from typing import Any
 
 from .session_database import SessionDatabase
+
+logger = logging.getLogger(__name__)
 
 
 class ChronicleAnalytics:
@@ -54,7 +58,8 @@ class ChronicleAnalytics:
                     }
                     for row in cursor.fetchall()
                 ]
-        except Exception:
+        except sqlite3.Error as exc:
+            logger.warning("Failed to load chronicle sessions: %s", exc)
             self.sessions = []
 
     def analyze_patterns(self) -> dict[str, Any]:
@@ -143,27 +148,33 @@ class ChronicleAnalytics:
 
                 # Get tool success rates
                 tool_stats = {}
-                for tool in list(tools.keys())[:5]:
+                top_tools = list(tools.keys())[:5]
+                if top_tools:
+                    placeholders = ", ".join("?" for _ in top_tools)
                     cursor.execute(
-                        "SELECT COUNT(*) as total, "
+                        "SELECT tool_name, COUNT(*) as total, "
                         "SUM(CASE WHEN success THEN 1 ELSE 0 END) as successful "
-                        "FROM tool_calls WHERE tool_name = ?",
-                        (tool,),
+                        f"FROM tool_calls WHERE tool_name IN ({placeholders}) "
+                        "GROUP BY tool_name",
+                        top_tools,
                     )
-                    result = cursor.fetchone()
-                    if result and result[0] > 0:
-                        successful = result[1] or 0
-                        success_rate = successful / result[0]
-                        tool_stats[tool] = {
-                            "usage_count": tools[tool],
-                            "success_rate": round(success_rate * 100, 1),
-                        }
+                    for row in cursor.fetchall():
+                        tool_name = row[0]
+                        total_runs = row[1]
+                        successful = row[2] or 0
+                        if total_runs > 0:
+                            success_rate = successful / total_runs
+                            tool_stats[tool_name] = {
+                                "usage_count": tools[tool_name],
+                                "success_rate": round(success_rate * 100, 1),
+                            }
 
                 return {
                     "top_tools": tools,
                     "tool_success_rates": tool_stats,
                 }
-        except Exception:
+        except sqlite3.Error as exc:
+            logger.warning("Failed to analyze chronicle tool usage: %s", exc)
             return {"top_tools": {}, "tool_success_rates": {}}
 
     def _analyze_agent_usage(self) -> dict[str, Any]:

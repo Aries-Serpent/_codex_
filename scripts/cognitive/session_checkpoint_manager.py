@@ -289,9 +289,7 @@ class SessionCheckpointManager:
         session_dir = self.storage_path / "v1" / session_id
         session_dir.mkdir(exist_ok=True, parents=True)
 
-        checkpoint_file = session_dir / (
-            f"checkpoint_{timestamp.strftime('%Y%m%d_%H%M%S')}_{checkpoint_id}{file_ext}"
-        )
+        checkpoint_file = session_dir / f"checkpoint_{checkpoint_id}{file_ext}"
 
         # Write checkpoint file
         try:

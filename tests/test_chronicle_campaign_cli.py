@@ -101,6 +101,7 @@ def test_chronicle_agent_chain_outputs_codeql_chain(runner: CliRunner) -> None:
 
 def test_chronicle_autofix_check_only_uses_enhanced_diagnostics(
     runner: CliRunner,
+    campaign_repo: Path,
 ) -> None:
     """Diagnostics mode should delegate to the enhanced diagnostics wrapper."""
 
@@ -120,11 +121,17 @@ def test_chronicle_autofix_check_only_uses_enhanced_diagnostics(
     assert json.loads(result.output)["status"] == "passed"
     mock_run.assert_called_once()
     assert mock_run.call_args.kwargs == {
-        "repo_root": Path.cwd(),
+        "repo_root": campaign_repo,
         "pattern": None,
         "pattern_name": None,
         "output_path": None,
     }
+    metrics_path = campaign_repo / ".codex" / "campaign_metrics.jsonl"
+    metrics = metrics_path.read_text(encoding="utf-8").strip().splitlines()
+    assert metrics
+    metric_payload = json.loads(metrics[-1])
+    assert metric_payload["event"] == "autofix_invoked"
+    assert metric_payload["mode"] == "diagnostics"
 
 
 def test_chronicle_autofix_apply_uses_bulk_orchestrator(runner: CliRunner) -> None:
