@@ -32,7 +32,7 @@ except ImportError:
 
 
 @pytest.mark.skipif(not INDEXING_BENCH_AVAILABLE, reason="Indexing benchmark not available")
-@pytest.mark.coverage_gap
+
 class TestIndexingBenchmark:
     """Test suite for indexing performance benchmarks."""
 

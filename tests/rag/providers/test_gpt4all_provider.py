@@ -27,7 +27,7 @@ except ImportError:
 
 
 @pytest.mark.skipif(not GPT4ALL_AVAILABLE, reason="GPT4AllEmbeddingProvider not available")
-@pytest.mark.coverage_gap
+
 class TestGPT4AllEmbeddingProvider:
     """Test suite for GPT4AllEmbeddingProvider class."""
 

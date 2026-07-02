@@ -1,0 +1,23 @@
+
+=============================== warnings summary ===============================
+../../../.local/lib/python3.12/site-packages/_pytest/config/__init__.py:1464
+  /home/runner/.local/lib/python3.12/site-packages/_pytest/config/__init__.py:1464: PytestConfigWarning: Unknown config option: asyncio_default_fixture_loop_scope
+  
+    self._warn_or_fail_if_strict(f"Unknown config option: {key}\n")
+
+../../../.local/lib/python3.12/site-packages/_pytest/config/__init__.py:1464
+  /home/runner/.local/lib/python3.12/site-packages/_pytest/config/__init__.py:1464: PytestConfigWarning: Unknown config option: asyncio_mode
+  
+    self._warn_or_fail_if_strict(f"Unknown config option: {key}\n")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+ERROR tests/rag/benchmarks/test_e2e_bench.py - Failed: 'coverage_gap' not found in `markers` configuration option
+ERROR tests/rag/benchmarks/test_embedding_bench.py - Failed: 'coverage_gap' not found in `markers` configuration option
+ERROR tests/rag/benchmarks/test_indexing_bench.py - Failed: 'coverage_gap' not found in `markers` configuration option
+ERROR tests/rag/benchmarks/test_retrieval_bench.py - Failed: 'coverage_gap' not found in `markers` configuration option
+ERROR tests/rag/benchmarks/test_runner.py - Failed: 'coverage_gap' not found in `markers` configuration option
+ERROR tests/rag/providers/test_gpt4all_provider.py - Failed: 'coverage_gap' not found in `markers` configuration option
+ERROR tests/rag/providers/test_llamacpp_provider.py - Failed: 'coverage_gap' not found in `markers` configuration option
+ERROR tests/rag/providers/test_ollama_provider.py - Failed: 'coverage_gap' not found in `markers` configuration option
+!!!!!!!!!!!!!!!!!!! Interrupted: 8 errors during collection !!!!!!!!!!!!!!!!!!!!

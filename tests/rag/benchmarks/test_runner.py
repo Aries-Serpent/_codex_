@@ -27,7 +27,7 @@ except ImportError:
 
 
 @pytest.mark.skipif(not RUNNER_AVAILABLE, reason="BenchmarkRunner not available")
-@pytest.mark.coverage_gap
+
 class TestBenchmarkRunner:
     """Test suite for BenchmarkRunner class."""
 

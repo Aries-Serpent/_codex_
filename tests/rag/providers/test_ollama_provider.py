@@ -27,7 +27,7 @@ except ImportError:
 
 
 @pytest.mark.skipif(not OLLAMA_AVAILABLE, reason="OllamaEmbeddingProvider not available")
-@pytest.mark.coverage_gap
+
 class TestOllamaEmbeddingProvider:
     """Test suite for OllamaEmbeddingProvider class."""
 

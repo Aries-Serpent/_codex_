@@ -27,7 +27,7 @@ except ImportError:
 
 
 @pytest.mark.skipif(not RETRIEVAL_BENCH_AVAILABLE, reason="Retrieval benchmark not available")
-@pytest.mark.coverage_gap
+
 class TestRetrievalBenchmark:
     """Test suite for retrieval performance benchmarks."""
 

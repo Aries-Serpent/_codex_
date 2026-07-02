@@ -28,7 +28,7 @@ except ImportError:
 
 
 @pytest.mark.skipif(not LLAMACPP_AVAILABLE, reason="LlamaCppEmbeddingProvider not available")
-@pytest.mark.coverage_gap
+
 class TestLlamaCppEmbeddingProvider:
     """Test suite for LlamaCppEmbeddingProvider class."""
 

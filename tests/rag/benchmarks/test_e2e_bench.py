@@ -27,7 +27,7 @@ except ImportError:
 
 
 @pytest.mark.skipif(not E2E_BENCH_AVAILABLE, reason="E2E benchmark module not available")
-@pytest.mark.coverage_gap
+
 class TestE2EBenchmark:
     """Test suite for end-to-end RAG pipeline benchmarks."""
 

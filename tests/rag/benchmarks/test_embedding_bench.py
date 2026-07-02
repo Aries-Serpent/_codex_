@@ -31,7 +31,7 @@ except ImportError:
 
 
 @pytest.mark.skipif(not EMBEDDING_BENCH_AVAILABLE, reason="Embedding benchmark not available")
-@pytest.mark.coverage_gap
+
 class TestEmbeddingBenchmark:
     """Test suite for embedding provider benchmarks."""
 
