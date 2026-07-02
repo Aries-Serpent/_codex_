@@ -1,4 +1,5 @@
 """
+pytest.importorskip("tensorboard")
 Test Seed Utils
 
 Test module for seed utils.

@@ -8,6 +8,7 @@ import tempfile
 from pathlib import Path
 
 from scripts.space_traversal.detectors import mcp_security_safeguards
+from codex.logging.structured_logger import logger
 
 
 def test_detect_no_safeguards():
@@ -34,7 +35,7 @@ def test_detect_confirm_keyword():
         py_file.write_text("""
 def delete_resource(resource_id, confirm=False):
     if not confirm:
-        print("Please confirm deletion")
+        logger.info("Please confirm deletion")
         return
     # Delete logic here
 """)
@@ -54,7 +55,7 @@ def test_detect_dry_run_keyword():
         py_file.write_text("""
 def deploy(config, dry_run=False):
     if dry_run:
-        print("DRY RUN: Would deploy...")
+        logger.info("DRY RUN: Would deploy...")
         return
     # Actual deployment
 """)

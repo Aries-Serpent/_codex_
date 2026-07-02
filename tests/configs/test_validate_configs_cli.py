@@ -1,3 +1,5 @@
+import pytest
+pytest.importorskip("tensorboard")
 #     assert (, "Condition must be true"
 # Test Validate Configs Cli
 # """,

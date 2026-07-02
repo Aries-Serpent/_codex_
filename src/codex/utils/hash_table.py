@@ -1,4 +1,5 @@
 """
+from codex.logging.structured_logger import logger
 Improved Hash Table Design with Production-Grade Hash Functions
 
 Implements high-performance hash tables with multiple collision resolution
@@ -458,10 +459,10 @@ def get_aais_contribution(hash_table) -> dict[str, Any]:
 if __name__ == "__main__":
     import time
 
-    print("=== Hash Table Performance Comparison ===\n")
+    logger.info("=== Hash Table Performance Comparison ===\n")
 
     # Test Robin Hood
-    print("Testing Robin Hood Hash Table (10,000 entries)...")
+    logger.info("Testing Robin Hood Hash Table (10,000 entries)...")
     rh_table = RobinHoodHashTable[str, int](initial_capacity=128)
 
     start = time.time()
@@ -475,14 +476,14 @@ if __name__ == "__main__":
     lookup_time = time.time() - start
 
     rh_metrics = rh_table.get_metrics()
-    print(f"  Insert time: {insert_time * 1000:.2f}ms ({insert_time / 10000 * 1e6:.2f}µs avg)")
-    print(f"  Lookup time: {lookup_time * 1000:.2f}ms ({lookup_time / 10000 * 1e6:.2f}µs avg)")
-    print(f"  Load factor: {rh_metrics['load_factor']:.2f}")
-    print(f"  Collision rate: {rh_metrics['collision_rate']:.1%}")
-    print(f"  Avg probes/lookup: {rh_metrics['avg_probes_per_lookup']:.2f}\n")
+    logger.info(f"  Insert time: {insert_time * 1000:.2f}ms ({insert_time / 10000 * 1e6:.2f}µs avg)")
+    logger.info(f"  Lookup time: {lookup_time * 1000:.2f}ms ({lookup_time / 10000 * 1e6:.2f}µs avg)")
+    logger.info(f"  Load factor: {rh_metrics['load_factor']:.2f}")
+    logger.info(f"  Collision rate: {rh_metrics['collision_rate']:.1%}")
+    logger.info(f"  Avg probes/lookup: {rh_metrics['avg_probes_per_lookup']:.2f}\n")
 
     # Test Cuckoo
-    print("Testing Cuckoo Hash Table (10,000 entries)...")
+    logger.info("Testing Cuckoo Hash Table (10,000 entries)...")
     cuckoo_table = CuckooHashTable[str, int](initial_capacity=128)
 
     start = time.time()
@@ -496,11 +497,11 @@ if __name__ == "__main__":
     lookup_time = time.time() - start
 
     cuckoo_metrics = cuckoo_table.get_metrics()
-    print(f"  Insert time: {insert_time * 1000:.2f}ms ({insert_time / 10000 * 1e6:.2f}µs avg)")
-    print(f"  Lookup time: {lookup_time * 1000:.2f}ms ({lookup_time / 10000 * 1e6:.2f}µs avg)")
-    print(f"  Load factor: {cuckoo_metrics['load_factor']:.2f}")
-    print(f"  Evictions/insert: {cuckoo_metrics['evictions_per_insert']:.2f}\n")
+    logger.info(f"  Insert time: {insert_time * 1000:.2f}ms ({insert_time / 10000 * 1e6:.2f}µs avg)")
+    logger.info(f"  Lookup time: {lookup_time * 1000:.2f}ms ({lookup_time / 10000 * 1e6:.2f}µs avg)")
+    logger.info(f"  Load factor: {cuckoo_metrics['load_factor']:.2f}")
+    logger.info(f"  Evictions/insert: {cuckoo_metrics['evictions_per_insert']:.2f}\n")
 
     # AAIS contribution
     aais = get_aais_contribution(rh_table)
-    print(f"AAIS Contribution: +{aais['runtime_introspection']:.1f} points (Runtime Introspection)")
+    logger.info(f"AAIS Contribution: +{aais['runtime_introspection']:.1f} points (Runtime Introspection)")

@@ -17,6 +17,7 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
+from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +49,7 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
 
     Example:
         >>> status = enable_deterministic_training(seed=42, strict=True)
-        >>> print(status['python_random'])  # codeql[py/clear-text-logging-sensitive-data]
+        >>> logger.info(status['python_random'])
         True
     """
     logger.info(
@@ -243,7 +244,7 @@ def save_env_snapshot(output_path: Path | str, include_pip_freeze: bool = True) 
 
     Example:
         >>> snapshot = save_env_snapshot("artifacts/env_snapshot.txt")
-        >>> print(f"Python: {snapshot['python_version']}")  # codeql[py/clear-text-logging-sensitive-data]
+        >>> logger.info(f"Python: {snapshot['python_version']}")
     """  # noqa: E501
     logger.info(
         f"Capturing environment snapshot to {output_path}"

@@ -14,12 +14,13 @@ import pytest
 pytest.importorskip("omegaconf")
 
 from codex_ml.pipeline import run_codex_pipeline_from_config
+from codex.logging.structured_logger import logger
 
 
 @pytest.fixture()
 def sample_config():
     return {
-        "corpus": ["def foo(): return 1", "print('hello')"],
+        "corpus": ["def foo(): return 1", "logger.info('hello')"],
         "demos": [
             {"prompt": "Explain foo", "completion": "Describe the return value."},
             {

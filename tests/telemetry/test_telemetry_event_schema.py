@@ -1,4 +1,5 @@
 """
+pytest.importorskip("mlflow")
 Test Telemetry Event Schema
 
 Test module for telemetry event schema.

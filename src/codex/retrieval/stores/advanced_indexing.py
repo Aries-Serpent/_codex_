@@ -18,6 +18,7 @@ from enum import Enum
 from typing import Any, Optional
 
 import numpy as np
+from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -652,7 +653,7 @@ Parameter Optimization:
 ...     dimension=768,
 ...     target_recall=0.95
 ... )
->>> print(params)
+>>> logger.info(params)
 {'M': 32, 'ef_construction': 200, 'ef_search': 100,
  'estimated_memory_gb': 3.2, 'estimated_build_time': 'medium'}
 """

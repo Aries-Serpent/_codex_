@@ -7,12 +7,13 @@ Test module for tool trace.
 import json
 
 from codex_harness.tool_trace import ToolTraceLogger
+from codex.logging.structured_logger import logger
 
 
 def test_tool_trace_records_invocation(tmp_path):
     log_path = tmp_path / "tool_trace.ndjson"
     tracer = ToolTraceLogger(output_path=log_path)
-    record = tracer.run_tool("python", ["-c", "print('trace-log')"])
+    record = tracer.run_tool("python", ["-c", "logger.info('trace-log')"])
 
     lines = log_path.read_text().splitlines()
     assert len(lines) == 1, "Lines must not be empty"

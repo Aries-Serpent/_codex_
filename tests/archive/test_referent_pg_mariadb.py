@@ -13,6 +13,7 @@ import pytest
 
 from codex.archive.api import refer_dup_to_canonical, store
 from codex.archive.dal import ArchiveDAL
+from codex.logging.structured_logger import logger
 
 BACKEND = os.getenv("CODEX_ARCHIVE_BACKEND", "")
 DSN = os.getenv("CODEX_ARCHIVE_URL", "")
@@ -33,7 +34,7 @@ def test_referent_insert_and_lookup(tmp_path: Path, monkeypatch):
         by="it",
         reason="test",
         commit_sha="HEAD",
-        bytes_in=b"print(1)\n",
+        bytes_in=b"logger.info(1)\n",
         mime="text/x-python",
         lang="python",
     )
@@ -43,7 +44,7 @@ def test_referent_insert_and_lookup(tmp_path: Path, monkeypatch):
         by="it",
         reason="test",
         commit_sha="HEAD",
-        bytes_in=b"print(1)\n",
+        bytes_in=b"logger.info(1)\n",
         mime="text/x-python",
         lang="python",
     )

@@ -29,6 +29,7 @@ from collections.abc import Iterable, Sequence
 from collections.abc import Mapping as MappingABC
 from pathlib import Path
 from typing import Any, Optional
+from codex.logging.structured_logger import logger
 
 FIELDNAMES: Sequence[str] = (
     "run_id",
@@ -365,7 +366,7 @@ def _handle_summarize_cli(args: argparse.Namespace) -> int:
             base_dir = inp if inp.is_dir() else inp.parent
             dest = base_dir / "metrics_summary.csv"
         _write_csv(dest, summary_rows)
-        print(str(dest))
+        logger.info(str(dest))
         return 0
 
     metrics: dict[str, dict[str, Any]] = {}
@@ -383,7 +384,7 @@ def _handle_summarize_cli(args: argparse.Namespace) -> int:
             slot["max"] = (
                 row["max_value"] if current_max is None else max(current_max, row["max_value"])
             )
-    print(json.dumps({"rows": total_rows, "metrics": metrics}, ensure_ascii=False))
+    logger.info(json.dumps({"rows": total_rows, "metrics": metrics}, ensure_ascii=False))
     return 0
 
 

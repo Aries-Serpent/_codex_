@@ -17,6 +17,7 @@ For now, they serve as documentation and will be executed in CI.
 import sys
 import unittest
 from pathlib import Path
+from codex.logging.structured_logger import logger
 
 # Add project to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
@@ -181,13 +182,13 @@ class TestMetricsIntegration(unittest.TestCase):
 
 def main():
     """Run integration test suite."""
-    print("=" * 80)
-    print("Integration Test Suite for Rust-Python Hybrid Swarm")
-    print("=" * 80)
-    print()
-    print("Note: These tests document expected behavior.")
-    print("They will execute once the Rust library is built with maturin.")
-    print()
+
+    logger.info("Integration Test Suite for Rust-Python Hybrid Swarm")
+
+
+    logger.info("Note: These tests document expected behavior.")
+    logger.info("They will execute once the Rust library is built with maturin.")
+
 
     # Run tests
     suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

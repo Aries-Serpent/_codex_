@@ -19,6 +19,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 import pytest
+from codex.logging.structured_logger import logger
 
 # Try to import from main module
 try:
@@ -55,7 +56,7 @@ def sample_snapshot(artifacts_dir):
 
     # Create snapshot structure
     (snapshot_dir / "source").mkdir()
-    (snapshot_dir / "source" / "main.py").write_text("print('hello')")
+    (snapshot_dir / "source" / "main.py").write_text("logger.info('hello')")
 
     # Create metadata
     meta = {

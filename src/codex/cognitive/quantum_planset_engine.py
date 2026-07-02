@@ -1,4 +1,5 @@
 """
+from codex.logging.structured_logger import logger
 Quantum-Inspired Planset Engine for Codebase Improvement.
 
 This module provides ``QuantumPlansetEngine``: a physics-inspired planner that
@@ -48,7 +49,7 @@ Agent integration
     planset = engine.generate("SECURITY_REMEDIATION", context={"open_alerts": 42})
     path    = engine.collapse(planset)           # highest-scoring concrete steps
     for step in path:
-        print(step.agent, "→", step.action)
+        logger.info(step.agent, "→", step.action)
 
     # Serialise for storage / cross-agent handoff
     engine.save(planset, Path(".codex/plans/active_planset.json"))

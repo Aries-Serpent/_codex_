@@ -188,8 +188,7 @@ jobs:
         \ || \\\n  echo \"⚠️  sync_tracked_files non-zero (non-blocking)\"\ngit add\
         \ CODEX_MANIFEST.json .secrets.baseline\nif git diff --cached --quiet; then\n\
         \  echo \"Manifest already up-to-date\"\nelse\n  git commit -m \"chore(manifest):\
-        \ auto-heal C2 — refresh CODEX_MANIFEST.json [skip ci]\"\n  git pull --rebase\
-        \ --autostash origin \"${HEAD_REF}\" 2>/dev/null || true\n  git push origin\
+        \ auto-heal C2 — refresh CODEX_MANIFEST.json [skip ci]\"\n  git pull --rebase --autostash origin \"${HEAD_REF}\" 2>/dev/null || true\n  git push origin\
         \ \"HEAD:${HEAD_REF}\"\n  echo \"✅ CODEX_MANIFEST.json refreshed — C2 will\
         \ pass on re-run\"\nfi\n"
     - name: Post healing notice to PR

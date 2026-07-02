@@ -12,6 +12,7 @@ from typer.testing import CliRunner
 
 import codex_ml.cli.main as cli_main
 import codex_ml.training.unified_training as unified_training
+pytest.importorskip("mlflow")
 
 pytest.importorskip("typer")
 pytest.importorskip("yaml")

@@ -4,6 +4,7 @@ import pytest
 
 from services.ita.app.hygiene import run_hygiene_checks
 from services.ita.app.models import RepoHygieneRequest
+from codex.logging.structured_logger import logger
 
 
 def test_run_hygiene_checks_detects_multiple_issue_types() -> None:
@@ -11,7 +12,7 @@ def test_run_hygiene_checks_detects_multiple_issue_types() -> None:
         [
             "diff --git a/new.py b/new.py",  # pragma: allowlist secret
             "+++ b/new.py",
-            "+print('TODO debug') ",
+            "+logger.info('TODO debug') ",
             "+API_KEY='AWS_SECRET_KEY=ABCDEFGHJKLMNOPQRST'",  # pragma: allowlist secret
         ]
     )
@@ -32,7 +33,7 @@ def test_run_hygiene_checks_only_returns_requested_issue_types() -> None:
         [
             "diff --git a/new.py b/new.py",  # pragma: allowlist secret
             "+++ b/new.py",
-            "+print('TODO debug') ",
+            "+logger.info('TODO debug') ",
             "+API_KEY='AWS_SECRET_KEY=ABCDEFGHJKLMNOPQRST'",  # pragma: allowlist secret
         ]
     )
@@ -48,7 +49,7 @@ def test_run_hygiene_checks_clean_diff_returns_no_issues() -> None:
         [
             "diff --git a/new.py b/new.py",
             "+++ b/new.py",
-            "+print('hello world')",
+            "+logger.info('hello world')",
         ]
     )
     request = RepoHygieneRequest(diff=diff, checks=["format", "lint", "secrets", "license"])

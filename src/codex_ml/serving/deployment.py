@@ -14,6 +14,7 @@ from collections.abc import Callable  # noqa: E402
 from dataclasses import dataclass  # noqa: E402
 from enum import Enum  # noqa: E402
 from typing import Any, Optional  # noqa: E402
+from codex.logging.structured_logger import logger
 
 
 class DeploymentStrategy(Enum):
@@ -180,7 +181,7 @@ class BlueGreenDeployment:
         self.rollback_triggered = False
         self.splitter.reset_stats()
 
-        print(f"Starting rollout: {self.current_blue_version} → {new_model_version}")
+        logger.info(f"Starting rollout: {self.current_blue_version} → {new_model_version}")
 
     def update_rollout(self) -> dict[str, Any]:
         """
@@ -255,7 +256,7 @@ class BlueGreenDeployment:
         Args:
             reason: Reason for rollback
         """
-        print(f"Rollback triggered: {reason}")
+        logger.info(f"Rollback triggered: {reason}")
         self.splitter.set_weights(blue=100, green=0)
         self.rollout_active = False
         self.rollback_triggered = True
@@ -263,7 +264,7 @@ class BlueGreenDeployment:
 
     def complete_rollout(self) -> None:
         """Complete rollout and promote green to blue."""
-        print(f"Rollout complete: {self.current_green_version} promoted to blue")
+        logger.info(f"Rollout complete: {self.current_green_version} promoted to blue")
         self.current_blue_version = self.current_green_version
         self.current_green_version = None
         self.rollout_active = False

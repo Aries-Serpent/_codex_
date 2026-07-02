@@ -23,6 +23,7 @@ pytest.importorskip("hypothesis", reason="hypothesis required for property tests
 
 from hypothesis import given, settings
 from hypothesis import strategies as st
+from codex.logging.structured_logger import logger
 
 # --- Secrets Baseline Enforcement Tests ---
 
@@ -91,7 +92,7 @@ class TestSecretsScanning:
 
     def test_clean_content_no_findings(self):
         """Clean content should have no findings."""
-        content = "def hello():\n    print('Hello, World!')"
+        content = "def hello():\n    logger.info('Hello, World!')"
         findings = scan_for_secrets(content)
         assert len(findings) == 0, "Findings must not be empty"
 

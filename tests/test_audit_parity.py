@@ -25,13 +25,14 @@ import json
 import subprocess
 import sys
 from pathlib import Path
+from codex.logging.structured_logger import logger
 
 ROOT = Path(__file__).resolve().parents[1]
 ARTIFACTS = ROOT / "audit_artifacts"
 
 
 def run(cmd, **kwargs):
-    print(f"+ {' '.join(cmd)}")
+    logger.info(f"+ {' '.join(cmd)}")
     subprocess.run(cmd, check=True, cwd=ROOT, **kwargs)
 
 

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-02T00:43:02Z",
+  "generated_at": "2026-07-02T20:44:01Z",
   "scripts": [
     "tools/codex_ingest_md.py",
     "tools/codex_sqlite_align.py",
@@ -7,7 +7,7 @@
     "scripts/docs_agent/validate_jsonl.py",
     "src/codex/docs_agent/cli.py"
   ],
-  "workflow_count": 209,
+  "workflow_count": 212,
   "workflows": [
     "actionlint-audit.yml",
     "adaptive-agent-delegation.yml",
@@ -139,9 +139,12 @@
     "pages-scheduled-validation.yml",
     "performance-gate.yml",
     "phase-12-2-compliance-check.yml",
+    "phase-8-1-enhanced-health-monitor.yml",
     "phase-8-1-health-monitor.yml",
     "phase-8-2-issue-triage.yml",
     "phase-8-3-perf-monitor.yml",
+    "phase-9-2-cascade.yml",
+    "phase-9-3-router.yml",
     "post-accountability-to-discussion.yml",
     "post-ci-status-to-discussion.yml",
     "post-merge-validation-optimized.yml",

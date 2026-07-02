@@ -14,7 +14,7 @@ from __future__ import annotations
 import logging
 from typing import Optional
 
-from src.rag.pipelines.embedding import EmbeddingConfig, EmbeddingPipeline, EmbeddingResult
+from rag.pipelines.embedding import EmbeddingConfig, EmbeddingPipeline, EmbeddingResult
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +33,7 @@ class CachedEmbeddingPipeline:
         self.pipeline = EmbeddingPipeline(self.config)
 
         # Import cache here to avoid circular imports
-        from src.rag.caching import get_rag_cache
+        from rag.caching import get_rag_cache
 
         self.cache = get_rag_cache()
         logger.info("CachedEmbeddingPipeline initialized with cache")

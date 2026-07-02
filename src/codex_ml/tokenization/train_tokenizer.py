@@ -13,8 +13,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from src.tokenization import train_tokenizer as _legacy_train_tokenizer
-from src.tokenization.train_tokenizer import (
+from tokenization import train_tokenizer as _legacy_train_tokenizer
+from tokenization.train_tokenizer import (
     TrainTokenizerConfig,  # explicit re-export for type checkers
 )
 

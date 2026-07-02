@@ -18,6 +18,7 @@ import json
 from pathlib import Path
 
 import pytest
+from codex.logging.structured_logger import logger
 
 # Import the module to test
 try:
@@ -318,7 +319,7 @@ class TestEdgeCases:
     def test_unicode_content(self, tmp_path: Path) -> None:
         """Test parsing file with unicode content."""
         py_file = tmp_path / "unicode.py"
-        py_file.write_text("# -*- coding: utf-8 -*-\n# 你好世界\nprint('hello')\n")
+        py_file.write_text("# -*- coding: utf-8 -*-\n# 你好世界\nlogger.info('hello')\n")
 
         try:
             adapter = ast_cli.get_adapter('python')

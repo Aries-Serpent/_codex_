@@ -23,6 +23,7 @@ from codex_ml.eval import evaluator
 from codex_ml.modeling import model_factory
 from codex_ml.tracking import mlflow_wrapper
 from codex_ml.training import loop as training_loop
+from codex.logging.structured_logger import logger
 
 
 @dataclass
@@ -72,9 +73,9 @@ def run_minimal(experiment_name: Optional[str] = None) -> MinimalRunResult:
 
 def main() -> None:
     result = run_minimal(experiment_name=None)
-    print("loss_before:", result.loss_before)
-    print("loss_after:", result.loss_after)
-    print("score:", result.score)
+    logger.info("loss_before:", result.loss_before)
+    logger.info("loss_after:", result.loss_after)
+    logger.info("score:", result.score)
 
 
 if __name__ == "__main__":  # pragma: no cover

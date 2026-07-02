@@ -28,6 +28,7 @@ from typing import Any, Optional
 
 from ..security_utils import sanitize_log_message
 from .token_manager import TokenClaims, TokenManager
+from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -107,7 +108,7 @@ class APIKeyValidator:
                 else:
                     raise ValueError(
                         "AUTH_SECRET_KEY environment variable must be set in production. "
-                        "Generate a secure random key: python -c 'import secrets; print(secrets.token_urlsafe(32))'"  # noqa: E501
+                        "Generate a secure random key: python -c 'import secrets; logger.info(secrets.token_urlsafe(32))'"  # noqa: E501
                     )
 
     def _compute_hmac(self, api_key: str) -> str:

@@ -166,7 +166,7 @@ class CampaignIngester:
     def ingest_deliverables(self) -> List[Dict[str, Any]]:
         """Extract deliverable metadata."""
         deliverables = []
-        
+
         # Phase 10 deliverables
         for track_num in ["10.1", "10.2", "10.3"]:
             phase_id = self.generate_deterministic_id("phase", "10")
@@ -185,7 +185,7 @@ class CampaignIngester:
                     "completed_at": "2026-06-30T17:30:00Z",
                     "source_trace": f".codex/PHASE_10_{track_num[-1]}_DELIVERABLE_{i}.md"
                 })
-        
+
         # Phase 12 deliverables
         for track_num in ["12.1", "12.2", "12.3"]:
             phase_id = self.generate_deterministic_id("phase", "12")
@@ -204,7 +204,7 @@ class CampaignIngester:
                     "completed_at": "2026-06-30T19:00:00Z",
                     "source_trace": f".codex/PHASE_12_{track_num[-1]}_DELIVERABLE_{i}.md"
                 })
-        
+
         return deliverables
 
     def ingest_agents(self) -> List[Dict[str, Any]]:
@@ -397,26 +397,26 @@ class CampaignIngester:
     def ingest_all(self) -> Dict[str, int]:
         """Execute complete ingestion pipeline."""
         results = {}
-        
+
         # Phase 1: Extract and write records
         phases = self.ingest_campaign_phases()
         results["campaign_phases"] = self.write_jsonl("campaign_phases.jsonl", phases)
-        
+
         tracks = self.ingest_campaign_tracks()
         results["campaign_tracks"] = self.write_jsonl("campaign_tracks.jsonl", tracks)
-        
+
         deliverables = self.ingest_deliverables()
         results["deliverables"] = self.write_jsonl("deliverables.jsonl", deliverables)
-        
+
         agents = self.ingest_agents()
         results["agents"] = self.write_jsonl("agents.jsonl", agents)
-        
+
         metrics = self.ingest_metrics()
         results["metrics"] = self.write_jsonl("metrics.jsonl", metrics)
-        
+
         decisions = self.ingest_decisions()
         results["decisions"] = self.write_jsonl("decisions.jsonl", decisions)
-        
+
         return results
 
 

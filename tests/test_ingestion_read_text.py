@@ -1,4 +1,5 @@
 """
+pytest.importorskip("charset_normalizer")
 Test Ingestion Read Text
 
 Test module for ingestion read text.

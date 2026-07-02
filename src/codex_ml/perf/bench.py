@@ -31,6 +31,7 @@ import time  # noqa: E402
 from collections.abc import Callable  # noqa: E402
 from dataclasses import dataclass  # noqa: E402
 from typing import Any  # noqa: E402
+from codex.logging.structured_logger import logger
 
 
 def _maybe_cuda_sync() -> None:
@@ -152,9 +153,9 @@ def main(argv: list[str] | None = None) -> int:
     res = run_bench(fn, warmup=args.warmup, iters=args.iters, cuda_sync=not args.no_cuda_sync)
 
     if args.json:
-        print(json.dumps(res.as_dict(), indent=2))
+        logger.info(json.dumps(res.as_dict(), indent=2))
     else:
-        print(f"n={len(res.samples_ms)}  median={res.median_ms:.2f} ms  p95={res.p95_ms:.2f} ms")
+        logger.info(f"n={len(res.samples_ms)}  median={res.median_ms:.2f} ms  p95={res.p95_ms:.2f} ms")
 
     if args.mlflow:
         try:
@@ -182,7 +183,7 @@ def main(argv: list[str] | None = None) -> int:
         except (ValueError, TypeError, RuntimeError) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
-            print("[mlflow] skipped: <ERROR_TYPE>")
+            logger.info("[mlflow] skipped: <ERROR_TYPE>")
     return 0
 
 

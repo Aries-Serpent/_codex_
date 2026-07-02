@@ -33,6 +33,7 @@ from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
 from typing import Any, Optional
+from codex.logging.structured_logger import logger
 
 LOGGER = logging.getLogger(__name__)
 
@@ -245,7 +246,7 @@ class DeterritorializationEngine:
         >>> detections = engine.detect_rigidity("src/codex/")
         >>> lines_of_flight = engine.propose_lines_of_flight()
         >>> for line in lines_of_flight:
-        ...     print(line)
+        ...     logger.info(line)
     """
 
     def __init__(self) -> None:

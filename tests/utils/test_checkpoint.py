@@ -1,4 +1,5 @@
 """Lightweight coverage for :mod:`utils.checkpoint` legacy helpers."""
+pytest.importorskip("tensorboard")
 
 from __future__ import annotations
 

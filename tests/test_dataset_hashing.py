@@ -1,4 +1,5 @@
 """
+pytest.importorskip("tensorboard")
 Test Dataset Hashing
 
 Test module for dataset hashing.

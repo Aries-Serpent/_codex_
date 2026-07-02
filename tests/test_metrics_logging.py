@@ -1,4 +1,5 @@
 """
+pytest.importorskip("tensorboard")
 Test Metrics Logging
 
 Test module for metrics logging.

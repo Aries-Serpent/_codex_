@@ -1,4 +1,5 @@
 """
+pytest.importorskip("tensorboard")
 Test Metrics Tb
 
 Test module for metrics tb.

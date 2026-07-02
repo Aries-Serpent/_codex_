@@ -1,4 +1,5 @@
 """
+pytest.importorskip("charset_normalizer")
 Test Train Tokenizer Streaming
 
 Test module for train tokenizer streaming.

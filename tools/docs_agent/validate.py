@@ -4,8 +4,11 @@ import argparse
 import json
 from pathlib import Path
 from typing import Any
+from urllib.parse import urljoin
+from urllib.request import pathname2url
 
 import jsonschema
+from jsonschema import RefResolver
 
 from .utils import CANONICAL_JSONL_FILES, parse_common_args, read_jsonl, utc_now, write_json
 
@@ -18,8 +21,35 @@ def _load_schemas(repo_root: Path) -> dict[str, dict[str, Any]]:
     return schemas
 
 
+def _create_resolver(repo_root: Path) -> RefResolver:
+    """Create a RefResolver that can handle relative schema references."""
+    schema_dir = repo_root / "docs-data" / "schemas"
+
+    # Load all schemas into a store for resolution
+    store: dict[str, dict[str, Any]] = {}
+
+    # First pass: load all schemas with their correct URIs
+    for p in sorted(schema_dir.glob("*.schema.json")):
+        schema_content = json.loads(p.read_text(encoding="utf-8"))
+        filename = p.name
+
+        # Store the schema under its canonical filename (e.g., "reference.schema.json")
+        store[filename] = schema_content
+
+        # Also store under the file:// URL form that's used in the $id field
+        # This allows resolution of references like "./reference.schema.json#/$defs/source_trace"
+        store[f"file:///docs-data/schemas/{filename}"] = schema_content
+
+    # Create a base URL that matches the schema directory
+    # This is important so relative references work correctly
+    base_url = "file:///docs-data/schemas/"
+
+    return RefResolver(base_url, {}, store=store)
+
+
 def run_validation(repo_root: Path) -> dict[str, Any]:
     schemas = _load_schemas(repo_root)
+    resolver = _create_resolver(repo_root)
     errors: list[dict[str, Any]] = []
     warnings: list[dict[str, Any]] = []
 
@@ -39,7 +69,8 @@ def run_validation(repo_root: Path) -> dict[str, Any]:
             schema = schemas.get(key.rstrip("s"))
             if schema:
                 try:
-                    jsonschema.validate(row, schema)
+                    validator = jsonschema.Draft202012Validator(schema, resolver=resolver)
+                    validator.validate(row)
                 except jsonschema.ValidationError as exc:
                     errors.append(
                         {

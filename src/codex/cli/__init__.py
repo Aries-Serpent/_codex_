@@ -19,6 +19,7 @@ from pathlib import Path
 from typing import Any
 
 from .main import app, main
+from codex.logging.structured_logger import logger
 
 # Deterministically load Click CLI group from src/codex/cli.py without shadowing/circular imports.
 _codex_root = Path(__file__).resolve().parent.parent  # src/codex
@@ -127,7 +128,7 @@ if cli is None:
         f"Click CLI group 'cli' could not be loaded from {_click_cli_path}. "
         "IMPACT: All CLI commands (e.g., 'codex run', 'codex analyze') will be unavailable. "
         "RESOLUTION: Ensure src/codex/cli.py exists and exports a Click 'cli' group. "
-        "Check for import errors with: python -c 'from src.codex.cli import cli; print(cli)'. "
+        "Check for import errors with: python -c 'from src.codex.cli import cli; logger.info(cli)'. "
         f"Underlying error: {_cli_load_error!r}",
         ImportWarning,
         stacklevel=2,

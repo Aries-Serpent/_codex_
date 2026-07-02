@@ -24,7 +24,7 @@ except ImportError:
     pd = None
     pq = None
 
-logger = logging.getLogger(__name__)
+from codex.logging.structured_logger import logger
 
 
 class SessionDB:
@@ -357,4 +357,4 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     db = SessionDB()
     stats = db.get_archive_stats()
-    print(f"Archive Stats: {json.dumps(stats, indent=2, default=str)}")
+    logger.info(f"Archive Stats: {json.dumps(stats, indent=2, default=str)}")

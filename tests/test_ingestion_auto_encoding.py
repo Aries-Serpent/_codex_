@@ -3,6 +3,7 @@ Test Ingestion Auto Encoding
 
 Test module for ingestion auto encoding.
 """
+pytest.importorskip("charset_normalizer")
 
 import sys
 from pathlib import Path

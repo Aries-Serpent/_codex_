@@ -18,6 +18,7 @@ from typing import Optional
 import numpy as np
 
 import torch
+from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -68,7 +69,7 @@ class AttentionScorer:
         >>>
         >>> # Get most important tokens
         >>> important_indices = np.argsort(analysis.token_importance)[-5:]
-        >>> print([analysis.tokens[i] for i in important_indices])
+        >>> logger.info([analysis.tokens[i] for i in important_indices])
     """
 
     def __init__(

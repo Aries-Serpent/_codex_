@@ -9,7 +9,7 @@
     "requirements": "/home/runner/work/_codex_/_codex_/docs-data/requirements.jsonl",
     "sections": "/home/runner/work/_codex_/_codex_/docs-data/sections.jsonl"
   },
-  "generated_at": "2026-07-01T04:48:16Z",
+  "generated_at": "2026-07-02T19:12:10Z",
   "generated_files": [
     "docs.sqlite",
     "manifest.json",

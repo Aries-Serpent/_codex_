@@ -21,6 +21,7 @@ import pytest
 from unittest.mock import Mock, patch
 from pathlib import Path
 import tempfile
+from codex.logging.structured_logger import logger
 
 
 class TestTrainLoopExceptionHandlers:
@@ -335,5 +336,5 @@ class TestExceptionCoverageMetrics:
         # We've created 12+ tests, targeting the major exception types
         assert len(test_methods) >= 12
         
-        print(f"\nException handler test coverage: {len(test_methods)} tests created")
-        print("Coverage improvement: 0% → ~85%")
+        logger.info(f"\nException handler test coverage: {len(test_methods)} tests created")
+        logger.info("Coverage improvement: 0% → ~85%")

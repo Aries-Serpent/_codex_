@@ -28,6 +28,7 @@ from codex_ml.registry.models import get_model
 from codex_ml.utils.checkpoint import load_checkpoint
 from codex_ml.utils.optional import optional_import
 from codex_ml.utils.yaml_support import MissingPyYAMLError, YAMLErrorType, safe_load
+from codex.logging.structured_logger import logger
 
 try:
     from codex_ml.safety import SafetyConfig, sanitize_prompt
@@ -436,7 +437,7 @@ if _HAS_HYDRA:
                     checkpoint_dir=checkpoint_dir, model_name=model_name, device=device
                 )
 
-            print(json.dumps(result, indent=2))
+            logger.info(json.dumps(result, indent=2))
             status = result.get("status", "error") if isinstance(result, dict) else "error"
             log_event(
                 logger,
@@ -506,7 +507,7 @@ else:
         with capture_exceptions(logger):
             log_event(logger, "cli.start", prog=sys.argv[0], args=arg_list)
             result = _run_non_hydra_main(arg_list)
-            print(json.dumps(result, indent=2))
+            logger.info(json.dumps(result, indent=2))
             status = result.get("status", "error") if isinstance(result, dict) else "error"
             log_event(
                 logger,

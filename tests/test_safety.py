@@ -1,4 +1,5 @@
 """
+pytest.importorskip("mlflow")
 Test Safety
 
 Test module for safety.

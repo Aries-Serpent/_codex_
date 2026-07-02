@@ -10,6 +10,7 @@ import types
 from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
+from codex.logging.structured_logger import logger
 
 
 def _load_module(path: Path, name: str) -> types.ModuleType:
@@ -174,7 +175,7 @@ class TestFalsePositiveFiltering:
     def test_no_safeguards_file(self, tmp_path: Path):
         """Test file with no safeguards returns empty evidence."""
         test_file = tmp_path / "simple.py"
-        test_file.write_text("x = 1 + 2\nprint(x)\n", encoding="utf-8")
+        test_file.write_text("x = 1 + 2\nlogger.info(x)\n", encoding="utf-8")
 
         detector_path = Path("scripts/space_traversal/detectors/detector_safeguards.py")
         module = _load_module(detector_path, "detector_safeguards")

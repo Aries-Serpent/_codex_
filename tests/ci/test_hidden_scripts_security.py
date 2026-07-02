@@ -126,7 +126,7 @@ class TestIntegrityVerification(unittest.TestCase):
 
         Tampered scripts should be rejected with checksum mismatch.
         """
-        script_content = "print('test')"
+        script_content = "logger.info('test')"
 
         # Calculate expected checksum
         expected_checksum = self.manager._calculate_checksum(script_content)
@@ -153,7 +153,7 @@ class TestIntegrityVerification(unittest.TestCase):
         self.assertTrue(is_valid)
 
         # Validate integrity with tampered content
-        tampered_content = "print('tampered')"
+        tampered_content = "logger.info('tampered')"
         is_valid, msg = self.manager.validate_script_integrity(
             "test_script", tampered_content
         )
@@ -287,7 +287,7 @@ class TestEncryptionDecryption(unittest.TestCase):
         Script content and metadata should survive base64 encoding/decoding
         without corruption.
         """
-        original_content = "print('Hello, World!')"
+        original_content = "logger.info('Hello, World!')"
         metadata = {
             "name": "test",
             "version": "1.0.0",
@@ -348,6 +348,7 @@ class TestScenario8bIntegration(unittest.TestCase):
         vulnerability_detector = """
 import json
 import sys
+from codex.logging.structured_logger import logger
 
 # Simulated vulnerability detection logic
 vulnerabilities = [
@@ -355,7 +356,7 @@ vulnerabilities = [
     {"id": "CVE-2024-002", "severity": "CRITICAL", "package": "flask"},
 ]
 
-print(json.dumps({"vulnerabilities": vulnerabilities, "scan_time": 1234}))
+logger.info(json.dumps({"vulnerabilities": vulnerabilities, "scan_time": 1234}))
 sys.exit(0)
 """
 

@@ -1,4 +1,5 @@
 """
+pytest.importorskip("tensorboard")
 Test Train Smoke
 
 Test module for train smoke.

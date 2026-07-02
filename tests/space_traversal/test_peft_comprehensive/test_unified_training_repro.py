@@ -1,3 +1,5 @@
+import pytest
+pytest.importorskip("mlflow")
 """
 Test Unified Training Repro
 

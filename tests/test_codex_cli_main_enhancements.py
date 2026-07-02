@@ -15,6 +15,7 @@ import json
 from unittest.mock import MagicMock, patch
 
 import pytest
+from codex.logging.structured_logger import logger
 
 try:
     import typer
@@ -501,7 +502,7 @@ class TestEdgeCases:
         """Test with special characters in path."""
         special_dir = tmp_path / "dir with spaces & special-chars"
         special_dir.mkdir()
-        (special_dir / "test.py").write_text("print('test')")
+        (special_dir / "test.py").write_text("logger.info('test')")
 
         with patch("codex.ingest.ingest"):
             cli_runner.invoke(app, ["ingest", str(special_dir)])

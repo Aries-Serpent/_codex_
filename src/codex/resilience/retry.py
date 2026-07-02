@@ -40,7 +40,7 @@ from typing import Any, TypeVar
 
 __all__ = ["RetryExhausted", "retry_with_backoff"]
 
-logger = logging.getLogger(__name__)
+from codex.logging.structured_logger import logger
 
 F = TypeVar("F", bound=Callable[..., Any])
 
@@ -57,7 +57,7 @@ class RetryExhausted(Exception):
         try:
             flaky()
         except RetryExhausted as exc:
-            print(f"Gave up after {exc.attempts} attempts; last error: {exc.__cause__}")
+            logger.info(f"Gave up after {exc.attempts} attempts; last error: {exc.__cause__}")
     """
 
     def __init__(self, message: str, attempts: int) -> None:

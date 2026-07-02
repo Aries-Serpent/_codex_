@@ -25,6 +25,7 @@ pytestmark = pytest.mark.usefixtures("disable_torch_profiler")
 import os
 import sys
 import unittest
+from codex.logging.structured_logger import logger
 
 # Add src to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "src"))
@@ -394,12 +395,12 @@ def run_multi_gpu_tests():
 
 if __name__ == "__main__":
     # Print GPU availability info
-    print(f"PyTorch Available: {TORCH_AVAILABLE}")
+    logger.info(f"PyTorch Available: {TORCH_AVAILABLE}")
     if TORCH_AVAILABLE:
-        print(f"CUDA Available: {torch.cuda.is_available()}")
-        print(f"Number of GPUs: {harness.num_gpus}")
-        print(f"Distributed Available: {harness.distributed_available}")
-    print()
+        logger.info(f"CUDA Available: {torch.cuda.is_available()}")
+        logger.info(f"Number of GPUs: {harness.num_gpus}")
+        logger.info(f"Distributed Available: {harness.distributed_available}")
+
 
     # Run tests
     result = run_multi_gpu_tests()

@@ -1,4 +1,5 @@
 """
+pytest.importorskip("mlflow")
 Test Ndjson Disable Env
 
 Test module for ndjson disable env.

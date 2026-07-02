@@ -13,7 +13,7 @@ Usage::
     reg.discover()
 
     skill = reg.resolve("doc.retriever.core")
-    print(skill.manifest.name)
+    logger.info(skill.manifest.name)
 """
 
 from __future__ import annotations
@@ -41,7 +41,7 @@ from typing import Any
 
 from .models import RegisteredSkill, SkillManifest
 
-logger = logging.getLogger(__name__)
+from codex.logging.structured_logger import logger
 
 # Default scan root relative to the installed package location
 _DEFAULT_SKILLS_ROOT = Path(__file__).parent

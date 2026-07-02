@@ -14,6 +14,7 @@ from typing import Optional
 import torch.distributed as dist
 
 import torch
+from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -263,7 +264,7 @@ def gather_tensor(tensor: torch.Tensor, dst: int = 0):
         >>> predictions = torch.tensor([1, 2, 3])
         >>> all_preds = gather_tensor(predictions, dst=0)
         >>> if is_main_process():
-        ...     print(all_preds)  # List of tensors from all ranks
+        ...     logger.info(all_preds)  # List of tensors from all ranks
     """
     if not is_distributed():
         return [tensor]
@@ -286,7 +287,7 @@ def print_once(message: str, rank: int = 0):
         rank: Rank to print on (default: 0)
     """
     if get_rank() == rank:
-        print(message)
+        logger.info(message)
 
 
 def log_once(message: str, level: str = "info", rank: int = 0):

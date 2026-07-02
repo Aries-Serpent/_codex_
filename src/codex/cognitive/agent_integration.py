@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Agent integration module for Cognitive Brain Phase 1.2.
 
+from codex.logging.structured_logger import logger
 This module provides utilities for integrating agents with the cognitive brain,
 including pattern querying, learning feedback, and session state management.
 
@@ -414,7 +415,7 @@ brain = AgentBrainInterface(agent_id="{agent_id}")
 # 1. Query patterns before diagnosis
 patterns = brain.query_patterns("symptom keywords here")
 for pattern in patterns:
-    print(f"Pattern: {{pattern['id']}} (success: {{pattern['success_rate']}})")
+    logger.info(f"Pattern: {{pattern['id']}} (success: {{pattern['success_rate']}})")
 
 # 2. Check objective alignment
 alignment = brain.check_alignment("proposed action description")
@@ -475,26 +476,26 @@ if __name__ == "__main__":
 
     if len(sys.argv) > 1 and sys.argv[1] == "--integrate-core":
         agents = integrate_core_agents()
-        print(f"Integrated {len(agents)} core agents:")
+        logger.info(f"Integrated {len(agents)} core agents:")
         for agent in agents:
-            print(f"  - {agent.agent_id} ({agent.category.value})")
+            logger.info(f"  - {agent.agent_id} ({agent.category.value})")
     elif len(sys.argv) > 1 and sys.argv[1] == "--integrate-extended":
         agents = integrate_extended_agents()
-        print(f"Integrated {len(agents)} extended agents:")
+        logger.info(f"Integrated {len(agents)} extended agents:")
         for agent in agents:
-            print(f"  - {agent.agent_id} ({agent.category.value})")
+            logger.info(f"  - {agent.agent_id} ({agent.category.value})")
     elif len(sys.argv) > 1 and sys.argv[1] == "--integrate-all":
         agents = integrate_all_agents()
-        print(f"Integrated {len(agents)} total agents:")
+        logger.info(f"Integrated {len(agents)} total agents:")
         for agent in agents:
-            print(f"  - {agent.agent_id} ({agent.category.value})")
+            logger.info(f"  - {agent.agent_id} ({agent.category.value})")
     elif len(sys.argv) > 1 and sys.argv[1] == "--stats":
         registry = AgentIntegrationRegistry()
         stats = registry.get_stats()
-        print(json.dumps(stats, indent=2))
+        logger.info(json.dumps(stats, indent=2))
     else:
-        print("Usage:")
-        print("  python -m codex.cognitive.agent_integration --integrate-core")
-        print("  python -m codex.cognitive.agent_integration --integrate-extended")
-        print("  python -m codex.cognitive.agent_integration --integrate-all")
-        print("  python -m codex.cognitive.agent_integration --stats")
+        logger.info("Usage:")
+        logger.info("  python -m codex.cognitive.agent_integration --integrate-core")
+        logger.info("  python -m codex.cognitive.agent_integration --integrate-extended")
+        logger.info("  python -m codex.cognitive.agent_integration --integrate-all")
+        logger.info("  python -m codex.cognitive.agent_integration --stats")

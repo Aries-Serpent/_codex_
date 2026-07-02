@@ -1,4 +1,5 @@
 """
+pytest.importorskip("mlflow")
 Comprehensive test suite for codex_ml.training.early_stopping module.
 
 This module provides 10+ tests targeting 70%+ coverage of early_stopping.py.

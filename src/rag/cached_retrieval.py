@@ -14,8 +14,8 @@ from __future__ import annotations
 import logging
 from typing import Optional
 
-from src.rag.pipelines.embedding import EmbeddingPipeline
-from src.rag.pipelines.retrieval import InMemoryVectorStore, Retrieval  # type: ignore[attr-defined]
+from rag.pipelines.embedding import EmbeddingPipeline
+from rag.pipelines.retrieval import InMemoryVectorStore, Retrieval  # type: ignore[attr-defined]
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +43,7 @@ class CachedRetrieval:
         )
 
         # Import cache here to avoid circular imports
-        from src.rag.caching import get_rag_cache
+        from rag.caching import get_rag_cache
 
         self.cache = get_rag_cache()
         logger.info("CachedRetrieval initialized with cache")

@@ -31,7 +31,7 @@ import sys
 from collections.abc import Iterable
 from typing import Any, Optional
 
-logger = logging.getLogger(__name__)
+from codex.logging.structured_logger import logger
 
 try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
@@ -116,7 +116,7 @@ def main(argv: Iterable[str] | None = None) -> int:
     parser.add_argument("--format", choices=["json", "text"], default="json", help="Output format")
     parser.add_argument("--db", help="Path to SQLite DB", default=None)
     args = parser.parse_args(list(argv) if argv is not None else None)
-    print(export_session(args.session_id, args.format, args.db))
+    logger.info(export_session(args.session_id, args.format, args.db))
     return 0
 
 

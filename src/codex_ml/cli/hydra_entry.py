@@ -34,6 +34,7 @@ if TYPE_CHECKING:
     from codex_ml.training.unified_training import UnifiedTrainingConfig
 
 from codex_ml.data.reasoning_manifest import list_reasoning_corpora
+from codex.logging.structured_logger import logger
 
 _CURRICULUM_PRESETS = {
     "rehearsal": "rehearsal",
@@ -50,7 +51,7 @@ def _print_missing(pkg: str) -> int:
         "reason": f"'{pkg}' is not installed; install to use Hydra-driven training.",
         "hint": "pip install hydra-core omegaconf",
     }
-    print(json.dumps(msg))
+    logger.info(json.dumps(msg))
     return 0
 
 
@@ -144,7 +145,7 @@ def main(argv=None) -> int:
     def _entry(cfg: DictConfig) -> int:
         show_cfg = os.environ.get("CODEX_SHOW_CFG", "0")
         if show_cfg.lower() in {"1", "true", "yes"}:
-            print(OmegaConf.to_yaml(cfg, resolve=True))
+            logger.info(OmegaConf.to_yaml(cfg, resolve=True))
             return 0
 
         cfg_dict = OmegaConf.to_container(cfg, resolve=True)
@@ -157,7 +158,7 @@ def main(argv=None) -> int:
             callbacks=None,
             ndjson_log_path=str(ndjson_path),
         )
-        print(json.dumps({"ok": True, "train_result": result, "config": asdict(utc)}))
+        logger.info(json.dumps({"ok": True, "train_result": result, "config": asdict(utc)}))
         return 0
 
     overrides = _inject_curriculum_flags(list(argv or sys.argv[1:]))

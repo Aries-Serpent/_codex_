@@ -10,6 +10,7 @@ Tests avoid slow subprocess calls that can timeout in parallel test execution.
 from pathlib import Path
 
 import pytest
+from codex.logging.structured_logger import logger
 
 # ============================================================================
 # PHASE 1: Configuration Loading Tests
@@ -328,14 +329,14 @@ class TestValidationSummary:
         )
         assert docs_ok, "Documentation files missing"
 
-        print("\n" + "=" * 60)
-        print("✓ Cleanup Validation Infrastructure Ready")
-        print("=" * 60)
-        print("✓ 30+ validation tests created")
-        print("✓ 3 validation scripts ready")
-        print("✓ Complete documentation provided")
-        print("✓ Zero breaking changes guaranteed")
-        print("=" * 60)
+        logger.info("\n" + "=" * 60)
+        logger.info("✓ Cleanup Validation Infrastructure Ready")
+
+        logger.info("✓ 30+ validation tests created")
+        logger.info("✓ 3 validation scripts ready")
+        logger.info("✓ Complete documentation provided")
+        logger.info("✓ Zero breaking changes guaranteed")
+
 
 
 if __name__ == "__main__":

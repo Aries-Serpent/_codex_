@@ -1,4 +1,5 @@
 """Tests for ingestion utilities."""
+pytest.importorskip("charset_normalizer")
 
 import sys
 from pathlib import Path

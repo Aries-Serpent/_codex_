@@ -108,7 +108,7 @@ class SandboxManager:
     Example:
         >>> manager = SandboxManager(SandboxConfig(timeout_seconds=30))
         >>> result = manager.execute(Path("script.py"))
-        >>> print(f"Exit code: {result.exit_code}")
+        >>> logger.info(f"Exit code: {result.exit_code}")
 
     Safeguards:
     - All executions run with strict timeout
@@ -327,6 +327,7 @@ class SandboxManager:
             wrapper = f"""
 import sys
 import trace
+from codex.logging.structured_logger import logger
 
 tracer = trace.Trace(
     count=False,

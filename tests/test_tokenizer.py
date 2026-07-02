@@ -49,6 +49,7 @@ if "transformers" not in sys.modules:
     sys.modules["transformers"] = transformers_stub
 
 from codex_ml.tokenization.adapter import HFTokenizerAdapter, WhitespaceTokenizer
+from codex.logging.structured_logger import logger
 
 
 @pytest.mark.tokenizer
@@ -131,7 +132,7 @@ def test_whitespace_tokenizer_deterministic():
         "\nfrom codex_ml.tokenization.adapter import WhitespaceTokenizer; "
         f"text = {text!r}; "
         "tok = WhitespaceTokenizer(); "
-        "print(json.dumps(tok.encode(text)))"
+        "logger.info(json.dumps(tok.encode(text)))"
     )
     result = subprocess.run(
         [sys.executable, "-c", script], capture_output=True, check=True, text=True

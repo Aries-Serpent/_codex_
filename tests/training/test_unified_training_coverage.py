@@ -1,4 +1,5 @@
 """
+pytest.importorskip("mlflow")
 Comprehensive test suite for codex_ml.training.unified_training module.
 
 This module provides 25+ tests targeting 70%+ coverage of unified_training.py.

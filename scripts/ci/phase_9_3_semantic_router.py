@@ -31,8 +31,6 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-import numpy as np
-
 
 @dataclass
 class TaskSpec:
@@ -96,9 +94,22 @@ class CapabilityIndexLoader:
             with open(self.index_path, 'r') as f:
                 self.index_data = json.load(f)
 
-            # Load agents
-            self.agents = self.index_data.get('agents', {})
-            self.agent_by_id = {agent['agent_id']: agent for agent in self.agents.values()}
+            # Load agents - agents can be either a list or dict
+            agents_data = self.index_data.get('agents', {})
+            
+            # Convert list to dict if needed
+            if isinstance(agents_data, list):
+                self.agents = {agent.get('id', agent.get('agent_id', f"agent_{i}")): agent 
+                              for i, agent in enumerate(agents_data)}
+            else:
+                self.agents = agents_data
+            
+            # Create agent lookup by id
+            self.agent_by_id = {}
+            for agent_key, agent in self.agents.items():
+                # Handle both 'id' and 'agent_id' keys
+                agent_id = agent.get('agent_id') or agent.get('id') or agent_key
+                self.agent_by_id[agent_id] = agent
 
             print(f"✓ Loaded capability index with {len(self.agents)} agents")
         except Exception as e:
@@ -110,15 +121,39 @@ class CapabilityIndexLoader:
 
     def get_agents_by_category(self, category: str) -> List[str]:
         """Get agents by category."""
+        # Try pre-built indices first if they exist and have data
         indices = self.index_data.get('indices', {})
         by_category = indices.get('by_category', {})
-        return by_category.get(category, [])
+        
+        # Only use pre-built index if it has the category
+        if category in by_category:
+            return by_category.get(category, [])
+        
+        # Build on-the-fly if no pre-built index for this category
+        result = []
+        for agent_key, agent in self.agents.items():
+            if agent.get('category') == category:
+                agent_id = agent.get('agent_id') or agent.get('id') or agent_key
+                result.append(agent_id)
+        return result
 
     def get_agents_by_tag(self, tag: str) -> List[str]:
         """Get agents by capability tag."""
+        # Try pre-built indices first if they exist and have data
         indices = self.index_data.get('indices', {})
         by_tag = indices.get('by_tag', {})
-        return by_tag.get(tag, [])
+        
+        # Only use pre-built index if it has the tag
+        if tag in by_tag:
+            return by_tag.get(tag, [])
+        
+        # Build on-the-fly if no pre-built index for this tag
+        result = []
+        for agent_key, agent in self.agents.items():
+            if tag in agent.get('capability_tags', []) + agent.get('capabilities', []):
+                agent_id = agent.get('agent_id') or agent.get('id') or agent_key
+                result.append(agent_id)
+        return result
 
 
 class RoutingCache:
@@ -165,11 +200,12 @@ class RoutingCache:
 class TaskEmbedder:
     """Generate embeddings for tasks (stub for now - will use sentence-transformers)."""
 
-    def embed_task(self, task_spec: TaskSpec) -> np.ndarray:
+    def embed_task(self, task_spec: TaskSpec) -> List[float]:
         """Generate embedding for task specification."""
         # TODO: Use sentence-transformers to embed task description
         # For now, return a placeholder
-        return np.random.randn(384).astype(np.float32)
+        import random
+        return [random.random() for _ in range(384)]
 
 
 class AgentFilterEngine:

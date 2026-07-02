@@ -1,14 +1,15 @@
+from codex.logging.structured_logger import logger
 #     assert not is_valid_sha256(, "not is not valid"
 # Test Metadata Calculation
 #     """Run all tests."""
-#     print("Running property-based tests for metadata calculations...\n")
+#     logger.info("Running property-based tests for metadata calculations...\n")
 # 
 # #!/usr/bin/env python3
 #     assert not is_valid_sha256("not_a_hash"), "not is not valid"
 #     assert not is_valid_sha256(, "not is not valid"
 # Property-Based Tests for Metadata Calculations
 #     """Run all tests."""
-#     print("Running property-based tests for metadata calculations...\n")
+#     logger.info("Running property-based tests for metadata calculations...\n")
 # Tests:
 # - total_space_archived calculation
 # - Relative path validation
@@ -158,7 +159,7 @@
 #     """Test actual metadata.json if it exists."""
 #     metadata_path = Path(__file__).parent.parent / "misc" / "repo-owner-review" / "metadata.json"
 #     if not metadata_path.exists():
-#         print(f"⚠️  Metadata file not found: {metadata_path}")
+#         logger.info(f"⚠️  Metadata file not found: {metadata_path}")
 #         return
 # 
 #     with open(metadata_path) as f:
@@ -198,32 +199,32 @@
 
 def run_tests():
     """Run all tests."""
-    print("Running property-based tests for metadata calculations...\n")
+    logger.info("Running property-based tests for metadata calculations...\n")
 
     if not HYP_AVAILABLE:
-        print("⚠️  Hypothesis not installed - property-based tests will be skipped")
-        print("   Install with: pip install hypothesis\n")
+        logger.info("⚠️  Hypothesis not installed - property-based tests will be skipped")
+        logger.info("   Install with: pip install hypothesis\n")
 
     # Run property-based tests
     if HYP_AVAILABLE:
-        print("Running property-based tests...")
+        logger.info("Running property-based tests...")
         test_total_space_calculation()
         test_total_space_non_negative()
         test_total_space_additive()
-        print("✅ Property-based tests passed\n")
+        logger.info("✅ Property-based tests passed\n")
 
     # Run standard tests
-    print("Running standard tests...")
+    logger.info("Running standard tests...")
     test_relative_path_validation()
-    print("✅ Relative path validation passed")
+    logger.info("✅ Relative path validation passed")
 
     test_sha256_validation()
-    print("✅ SHA256 validation passed")
+    logger.info("✅ SHA256 validation passed")
 
     test_metadata_json_structure()
-    print("✅ Metadata JSON structure validated")
+    logger.info("✅ Metadata JSON structure validated")
 
-    print("\n✅ All tests passed!")
+    logger.info("\n✅ All tests passed!")
 
 
 if __name__ == "__main__":

@@ -16,9 +16,9 @@ Usage
 
     tracker = OKRTracker()
     summary = tracker.get_summary()
-    print(summary.aais_score)         # e.g. "74/100"
-    print(summary.objectives_complete)  # 2
-    print(summary.tasks_remaining)      # list of incomplete tasks
+    logger.info(summary.aais_score)
+    logger.info(summary.objectives_complete)
+    logger.info(summary.tasks_remaining)
 
     # Update a task status
     tracker.mark_task_complete("OBJ-001", "T-002", notes="23 tests added")
@@ -35,7 +35,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Any
 
-logger = logging.getLogger(__name__)
+from codex.logging.structured_logger import logger
 
 _CONTEXT_PATH = Path(".codex/agent_context.json")
 _PROGRESS_PATH = Path(".codex/okr/progress.json")

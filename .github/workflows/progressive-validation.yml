@@ -19,10 +19,85 @@ permissions:
   contents: read
 jobs:
   analyze:
-    uses: ./.github/workflows/pr-size-analyzer.yml
+    timeout-minutes: 30
     permissions:
       contents: read
       pull-requests: write
+    runs-on: ubuntu-latest
+    outputs:
+      pr_size: ${{ steps.analyze.outputs.pr_size }}
+      changed_files_count: ${{ steps.analyze.outputs.changed_files_count }}
+      validation_strategy: ${{ steps.analyze.outputs.validation_strategy }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v7
+      with:
+        fetch-depth: 0
+    - name: Analyze PR Size
+      id: analyze
+      run: |
+        # Count changed files between base and head
+        # Support both direct PR trigger and workflow_dispatch fallback
+        if [ -n "${{ github.event.pull_request.base.sha }}" ]; then
+          BASE_SHA="${{ github.event.pull_request.base.sha }}"
+        else
+          BASE_SHA="${{ github.event.before || 'HEAD~1' }}"
+        fi
+        HEAD_SHA="${{ github.sha }}"
+
+        echo "Comparing $BASE_SHA...$HEAD_SHA"
+
+        git fetch origin "$BASE_SHA" 2>/dev/null || true
+
+        CHANGED_FILES=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" 2>/dev/null | wc -l)
+        if [ "$CHANGED_FILES" -eq 0 ]; then
+          CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD | wc -l)
+        fi
+
+        echo "changed_files_count=$CHANGED_FILES" >> "$GITHUB_OUTPUT"
+
+        if [ "$CHANGED_FILES" -lt 20 ]; then
+          echo "pr_size=small" >> "$GITHUB_OUTPUT"
+          echo "validation_strategy=full_validation" >> "$GITHUB_OUTPUT"
+        elif [ "$CHANGED_FILES" -lt 100 ]; then
+          echo "pr_size=medium" >> "$GITHUB_OUTPUT"
+          echo "validation_strategy=targeted_tests" >> "$GITHUB_OUTPUT"
+        elif [ "$CHANGED_FILES" -lt 500 ]; then
+          echo "pr_size=large" >> "$GITHUB_OUTPUT"
+          echo "validation_strategy=smoke_tests" >> "$GITHUB_OUTPUT"
+        else
+          echo "pr_size=refactor" >> "$GITHUB_OUTPUT"
+          echo "validation_strategy=import_validation" >> "$GITHUB_OUTPUT"
+        fi
+    - name: Report PR Size
+      run: |
+        echo "### PR Size Analysis Results" >> "$GITHUB_STEP_SUMMARY"
+        echo "" >> "$GITHUB_STEP_SUMMARY"
+        echo "**PR Size:** ${{ steps.analyze.outputs.pr_size }}" >> "$GITHUB_STEP_SUMMARY"
+        echo "**Changed Files:** ${{ steps.analyze.outputs.changed_files_count }}" >> "$GITHUB_STEP_SUMMARY"
+        echo "**Validation Strategy:** ${{ steps.analyze.outputs.validation_strategy }}" >> "$GITHUB_STEP_SUMMARY"
+        echo "" >> "$GITHUB_STEP_SUMMARY"
+        echo "================================"
+        echo "PR Size: ${{ steps.analyze.outputs.pr_size }}"
+        echo "Changed Files: ${{ steps.analyze.outputs.changed_files_count }}"
+        echo "Strategy: ${{ steps.analyze.outputs.validation_strategy }}"
+        echo "================================"
+    - name: Post to PR Status Dashboard
+      if: github.event_name == 'pull_request'
+      uses: ./.github/actions/post-pr-summary
+      with:
+        workflow-name: PR Size Analysis
+        status: info
+        summary: '${{ steps.analyze.outputs.pr_size }} PR — ${{ steps.analyze.outputs.changed_files_count }} files — strategy: ${{ steps.analyze.outputs.validation_strategy }}'
+        details: |
+          | Field | Value |
+          |-------|-------|
+          | Size Category | `${{ steps.analyze.outputs.pr_size }}` (${{ steps.analyze.outputs.changed_files_count }} files) |
+          | Validation Strategy | ${{ steps.analyze.outputs.validation_strategy }} |
+
+          **Size Thresholds:** Small (<20) → Full validation · Medium (20-99) → Targeted validation · Large (100-499) → Smoke · Refactor (500+) → Import-only
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
   smoke-tests:
     needs: analyze
     runs-on: ubuntu-latest

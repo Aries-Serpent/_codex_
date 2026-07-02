@@ -21,6 +21,7 @@ from pathlib import Path
 from unittest.mock import Mock
 
 import pytest
+from codex.logging.structured_logger import logger
 
 
 class TestFileIOEdgeCases:
@@ -463,7 +464,7 @@ class TestIOEdgeCases:
         """Test stdout redirection."""
         f = io.StringIO()
         with redirect_stdout(f):
-            print("test output")
+            logger.info("test output")
         output = f.getvalue()
         assert "test output" in output, "Condition must be true"
 
@@ -471,7 +472,7 @@ class TestIOEdgeCases:
         """Test stderr redirection."""
         f = io.StringIO()
         with redirect_stderr(f):
-            print("error", file=sys.stderr)
+            logger.error("error")
         output = f.getvalue()
         assert "error" in output, "Error should be raised or set"
 

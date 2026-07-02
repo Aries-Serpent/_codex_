@@ -1,4 +1,5 @@
 """
+pytest.importorskip("tensorboard")
 Test Env Logging
 
 Test module for env logging.

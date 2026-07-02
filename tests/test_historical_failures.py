@@ -12,6 +12,7 @@ import sys
 from pathlib import Path
 
 import pytest
+from codex.logging.structured_logger import logger
 
 # Add agent to path
 agent_path = Path(__file__).parent.parent / ".github" / "agents" / "ci-diagnostic-agent" / "src"
@@ -306,4 +307,4 @@ def test_accuracy_benchmark():
 
     # Assert 85%+ accuracy
     assert accuracy >= 0.85, f"Accuracy {accuracy:.1%} below 85% threshold"
-    print(f"✅ Accuracy: {accuracy:.1%} ({correct}/{total})")
+    logger.info(f"✅ Accuracy: {accuracy:.1%} ({correct}/{total})")

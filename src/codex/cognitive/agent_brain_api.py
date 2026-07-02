@@ -30,9 +30,9 @@ Usage
     ctx = api.get_session_context(
         session_context={"open_alerts": 120, "coverage_pct": 45}
     )
-    print(ctx.continuation_prompt)   # paste into @copilot comment
+    logger.info(ctx.continuation_prompt)
     for action in ctx.next_actions[:3]:
-        print(f"[{action.step_id}] {action.agent}: {action.prompt[:80]}")
+        logger.info(f"[{action.step_id}] {action.agent}: {action.prompt[:80]}")
 
     # 2. After completing a step, report back
     api.report_completion(
@@ -66,7 +66,7 @@ from codex.cognitive.brain_interface import AgentBrainInterface, LearningFeedbac
 from codex.cognitive.planset_orchestrator import PlansetOrchestrator, PromptSet
 from codex.cognitive.quantum_planset_engine import ImprovementArea, QuantumPlansetEngine
 
-logger = logging.getLogger(__name__)
+from codex.logging.structured_logger import logger
 
 # ---------------------------------------------------------------------------
 # Agent → ImprovementArea capability map
@@ -577,9 +577,9 @@ class CognitiveBrain:
     --------------
     ::
 
-        print(brain.help())        # complete usage guide
-        print(brain.discover())    # JSON map of all capabilities
-        print(brain.health())      # live health status dict
+        logger.info(brain.help())
+        logger.info(brain.discover())
+        logger.info(brain.health())
 
     Architecture (Mermaid)
     ----------------------

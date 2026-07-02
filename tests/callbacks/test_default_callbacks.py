@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from codex_ml.callbacks.base import Callback
 from codex_ml.training import unified_training
+import pytest
+pytest.importorskip("mlflow")
 
 
 class SpyCallback(Callback):

@@ -15,6 +15,7 @@ import pytest
 pytest.importorskip("numpy")
 
 import numpy as np
+from codex.logging.structured_logger import logger
 
  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 # Check for FAISS specifically
@@ -381,7 +382,7 @@ class TestConcurrentAccess:
                     )
                     return True
                 except (IOError, OSError) as e:
-                    print(f"Error in thread {index_id}: {e}")
+                    logger.info(f"Error in thread {index_id}: {e}")
                     return False
 
             # Build 3 indices concurrently
@@ -417,7 +418,7 @@ class TestConcurrentAccess:
                     cached.encode([f"test {thread_id}"], cache_key=f"key_{thread_id % 2}")
                     return True
                 except (IOError, OSError) as e:
-                    print(f"Error in thread {thread_id}: {e}")
+                    logger.info(f"Error in thread {thread_id}: {e}")
                     return False
 
             threads = []

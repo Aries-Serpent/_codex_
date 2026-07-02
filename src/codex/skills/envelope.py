@@ -22,7 +22,7 @@ Usage::
         payload={"query": "cognitive brain"},
         caller_id="copilot-agent",
     )
-    print(result.status, result.data)
+    logger.info(result.status, result.data)
 """
 
 from __future__ import annotations
@@ -43,7 +43,7 @@ from .models import (
 from .registry import SkillRegistry
 from .telemetry import emit_event
 
-logger = logging.getLogger(__name__)
+from codex.logging.structured_logger import logger
 
 
 class PolicyViolation(Exception):

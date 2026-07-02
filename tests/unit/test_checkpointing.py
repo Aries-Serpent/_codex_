@@ -1,4 +1,5 @@
 """
+pytest.importorskip("mlflow")
 Unit tests for codex_ml.checkpointing module.
 
 Tests checkpoint save/load, versioning, and metadata handling.

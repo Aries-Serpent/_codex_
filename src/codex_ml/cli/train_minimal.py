@@ -8,6 +8,7 @@ from typing import Any, Optional
 
 from codex_ml.cli import utils as cli_utils  # type: ignore[attr-defined]
 from codex_ml.logging.experiment import ExperimentTracker
+from codex.logging.structured_logger import logger
 
 
 def _import_training_loop() -> object:
@@ -79,7 +80,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         run_dir=ctx.run_dir,
     )
 
-    print(f"[train_minimal] Completed run in {ctx.run_dir}")
+    logger.info(f"[train_minimal] Completed run in {ctx.run_dir}")
     return 0
 
 

@@ -11,6 +11,7 @@ from time import time
 from typing import Any, Optional
 
 import numpy as np
+from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -460,7 +461,7 @@ class CachedRetriever(Retriever):
         ... )
         >>> results = cached.query_with_cache("how to use API")
         >>> stats = cached.get_cache_stats()
-        >>> print(f"Hit rate: {stats['hit_rate']:.2%}")
+        >>> logger.info(f"Hit rate: {stats['hit_rate']:.2%}")
     """
 
     def __init__(

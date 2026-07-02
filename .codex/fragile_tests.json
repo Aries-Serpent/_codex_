@@ -325,18 +325,6 @@
   "tests/quantum_orchestrator/test_orchestrator_physics.py": [
     "numpy"
   ],
-  "tests/rag/benchmarks/test_embedding_bench.py": [
-    "numpy"
-  ],
-  "tests/rag/providers/test_gpt4all_provider.py": [
-    "numpy"
-  ],
-  "tests/rag/providers/test_llamacpp_provider.py": [
-    "numpy"
-  ],
-  "tests/rag/providers/test_ollama_provider.py": [
-    "numpy"
-  ],
   "tests/rag/test_device_placement.py": [
     "torch"
   ],

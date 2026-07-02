@@ -13,6 +13,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
 from typing import Any, Optional
+from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -465,4 +466,4 @@ if __name__ == "__main__":
         curriculum_name="example_curriculum",
     )
 
-    print(f"Summary: {scheduler.get_summary()}")
+    logger.info(f"Summary: {scheduler.get_summary()}")

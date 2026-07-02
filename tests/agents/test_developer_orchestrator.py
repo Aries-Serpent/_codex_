@@ -6,6 +6,7 @@ and related classes for physics-inspired software development guidance.
 """
 
 from unittest.mock import patch
+from codex.logging.structured_logger import logger
 
 
 class TestRequirementVariable:
@@ -90,7 +91,7 @@ class TestCodeComponent:
             priority=0.8,
             complexity=1.5,
             implementation_status="in_progress",
-            code="print('hello')",
+            code="logger.info('hello')",
         )
 
         result = component.to_dict()

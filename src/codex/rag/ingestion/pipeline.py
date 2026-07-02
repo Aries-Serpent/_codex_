@@ -34,7 +34,7 @@ from .validator import (
     ValidationResult,
 )
 
-logger = logging.getLogger(__name__)
+from codex.logging.structured_logger import logger
 
 
 class IngestionStatus(Enum):
@@ -177,7 +177,7 @@ class IngestionPipeline:
 
         # Batch processing
         batch_result = pipeline.ingest_files(["/path/to/doc1.txt", "/path/to/doc2.md"])
-        print(batch_result.summary())
+        logger.info(batch_result.summary())
     """
 
     def __init__(self, config: Optional[IngestionConfig] = None):

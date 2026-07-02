@@ -1,3 +1,4 @@
+from codex.logging.structured_logger import logger
 """
 Tests for codex.archive.detect module.
 
@@ -36,7 +37,7 @@ class TestSlocOfBytes:
         """Test SLOC counting for simple code."""
         from codex.archive.detect import _sloc_of_bytes
 
-        code = b"def foo():\n    return 1\n\nprint(foo())"
+        code = b"def foo():\n    return 1\n\nlogger.info(foo())"
 
         result = _sloc_of_bytes(code)
 

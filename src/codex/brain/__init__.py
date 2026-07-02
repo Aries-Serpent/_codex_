@@ -1,12 +1,16 @@
-"""Brain module — Session checkpoint and recovery framework.
+"""Brain module — Cognitive agent framework with memory and orchestration.
 
-Phase 10.1: Provides checkpoint management, session serialization, and
-recovery capabilities for autonomous agent persistence.
-
-Components:
+Phase 10.1: Session checkpoint and recovery framework.
 - CheckpointManager: Manages checkpoint lifecycle
 - SessionSerializer: Serializes/deserializes session state
 - SessionResume: Restores sessions from checkpoints
+
+Phase 10.2: STM→LTM Memory Consolidation & Pattern Discovery.
+- MemorySyncEngine: STM→LTM consolidation with pattern scoring
+- Pattern discovery and automatic ImprovementArea tagging
+- Safe deletion audit trail and retention policies
+
+Phase 10.3: OODA Orchestration (optional).
 """
 
 from __future__ import annotations
@@ -28,6 +32,22 @@ from codex.brain.session_serializer import (
     create_memory_snapshot,
     create_repository_state_snapshot,
 )
+
+# Phase 10.2: Memory Synchronization
+try:
+    from codex.brain.memory_sync import (
+        ConsolidationMetrics,
+        DuplicateMatch,
+        ImprovementArea,
+        MemorySyncEngine,
+        PatternEntry,
+        PatternType,
+        RetentionPolicy,
+    )
+
+    MEMORY_SYNC_AVAILABLE = True
+except ImportError:
+    MEMORY_SYNC_AVAILABLE = False
 
 # Phase 10.3: OODA Orchestration
 try:
@@ -84,7 +104,21 @@ __all__ = [
     "create_context_snapshot",
 ]
 
-# Add OODA components if available
+# Phase 10.2: Memory Synchronization (if available)
+if MEMORY_SYNC_AVAILABLE:
+    __all__.extend(
+        [
+            "MemorySyncEngine",
+            "PatternEntry",
+            "PatternType",
+            "RetentionPolicy",
+            "ImprovementArea",
+            "ConsolidationMetrics",
+            "DuplicateMatch",
+        ]
+    )
+
+# Phase 10.3: OODA Orchestration
 if OODA_AVAILABLE:
     __all__.extend(
         [

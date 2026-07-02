@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any, Optional
 
 import numpy as np
+from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -537,7 +538,7 @@ def manage_tenant_indices(
         ...     files=[Path("docs/guide.md")],
         ...     chunk_size=1000
         ... )
-        >>> print(result.message)  # codeql[py/clear-text-logging-sensitive-data]
+        >>> logger.info(result.message)
         "Successfully created index 'docs' for tenant 'customer_a'"
 
         >>> # Merge multiple indices

@@ -1,4 +1,5 @@
 """
+pytest.importorskip("mlflow")
 Test Training Lr History And Eval
 
 Test module for training lr history and eval.

@@ -1,3 +1,4 @@
+from codex.logging.structured_logger import logger
 """Test that yaml module resolves to site-packages, not local directory."""
 
 try:
@@ -25,9 +26,9 @@ def test_yaml_is_library_or_skip():
 if __name__ == "__main__":
     try:
         test_yaml_is_library_or_skip()
-        print("✅ test_yaml_is_library_or_skip PASSED")
+        logger.info("✅ test_yaml_is_library_or_skip PASSED")
     except AssertionError as e:
-        print(f"❌ test_yaml_is_library_or_skip FAILED: {e}")
+        logger.info(f"❌ test_yaml_is_library_or_skip FAILED: {e}")
         raise SystemExit(1)
     except Exception as e:
-        print(f"⚠️  test_yaml_is_library_or_skip SKIPPED: {e}")
+        logger.info(f"⚠️  test_yaml_is_library_or_skip SKIPPED: {e}")

@@ -18,6 +18,7 @@ import time
 from datetime import UTC, datetime
 
 import pytest
+from codex.logging.structured_logger import logger
 
 # Test availability
 try:
@@ -85,10 +86,10 @@ class TestBridgeIPCLatency:
         assert (results["p95_ms"] < 15.0, "Result must not be empty"
         ), f"P95 latency {results['p95_ms']:.2f}ms exceeds 15ms threshold"
 
-        print("\n🚀 Bridge IPC Latency Benchmark:")
-        print(f"   Mean: {results['mean_ms']:.2f}ms")
-        print(f"   P95: {results['p95_ms']:.2f}ms")
-        print(f"   P99: {results['p99_ms']:.2f}ms")
+        logger.info("\n🚀 Bridge IPC Latency Benchmark:")
+        logger.info(f"   Mean: {results['mean_ms']:.2f}ms")
+        logger.info(f"   P95: {results['p95_ms']:.2f}ms")
+        logger.info(f"   P99: {results['p99_ms']:.2f}ms")
 
         bridge.close()
 
@@ -126,9 +127,9 @@ class TestPIIScrubbing:
         assert (results["mean_ms"] < 10.0, "Result must not be empty"
         ), f"Mean PII scrubbing {results['mean_ms']:.2f}ms exceeds 10ms target"
 
-        print("\n🔒 PII Scrubbing Benchmark:")
-        print(f"   Mean: {results['mean_ms']:.2f}ms")
-        print(f"   Throughput: {1000.0 / results['mean_ms']:.0f} docs/sec")
+        logger.info("\n🔒 PII Scrubbing Benchmark:")
+        logger.info(f"   Mean: {results['mean_ms']:.2f}ms")
+        logger.info(f"   Throughput: {1000.0 / results['mean_ms']:.0f} docs/sec")
 
 
 class TestKnowledgeCrawlerSync:
@@ -153,9 +154,9 @@ class TestKnowledgeCrawlerSync:
 
         results = PerformanceBenchmark.measure_latency(mock_incremental_sync, iterations=100)
 
-        print("\n📚 Knowledge Crawler Benchmark (Incremental):")
-        print(f"   Mean: {results['mean_ms']:.2f}ms")
-        print("   Efficiency: 90% bandwidth saved (10/100 articles fetched)")
+        logger.info("\n📚 Knowledge Crawler Benchmark (Incremental):")
+        logger.info(f"   Mean: {results['mean_ms']:.2f}ms")
+        logger.info("   Efficiency: 90% bandwidth saved (10/100 articles fetched)")
 
     @pytest.mark.benchmark
     def test_full_sync_baseline(self):
@@ -168,9 +169,9 @@ class TestKnowledgeCrawlerSync:
 
         results = PerformanceBenchmark.measure_latency(mock_full_sync, iterations=100)
 
-        print("\n📚 Knowledge Crawler Benchmark (Full Sync):")
-        print(f"   Mean: {results['mean_ms']:.2f}ms")
-        print("   Note: 10x slower than incremental sync")
+        logger.info("\n📚 Knowledge Crawler Benchmark (Full Sync):")
+        logger.info(f"   Mean: {results['mean_ms']:.2f}ms")
+        logger.info("   Note: 10x slower than incremental sync")
 
 
 class TestRAGQueryLatency:
@@ -201,9 +202,9 @@ class TestRAGQueryLatency:
         assert (results["mean_ms"] < 50.0, "Result must not be empty"
         ), f"RAG query {results['mean_ms']:.2f}ms exceeds 50ms target"
 
-        print("\n🔍 RAG Query Benchmark:")
-        print(f"   Mean: {results['mean_ms']:.2f}ms")
-        print(f"   QPS: {1000.0 / results['mean_ms']:.0f} queries/sec")
+        logger.info("\n🔍 RAG Query Benchmark:")
+        logger.info(f"   Mean: {results['mean_ms']:.2f}ms")
+        logger.info(f"   QPS: {1000.0 / results['mean_ms']:.0f} queries/sec")
 
 
 class TestTrainingIteration:
@@ -228,10 +229,10 @@ class TestTrainingIteration:
 
         results = PerformanceBenchmark.measure_latency(mock_training_iteration, iterations=100)
 
-        print("\n🏋️ Training Iteration Benchmark:")
-        print(f"   Mean: {results['mean_ms']:.2f}ms")
-        print(f"   Iterations/sec: {1000.0 / results['mean_ms']:.0f}")
-        print("   Note: Baseline for regression detection")
+        logger.info("\n🏋️ Training Iteration Benchmark:")
+        logger.info(f"   Mean: {results['mean_ms']:.2f}ms")
+        logger.info(f"   Iterations/sec: {1000.0 / results['mean_ms']:.0f}")
+        logger.info("   Note: Baseline for regression detection")
 
 
 # Benchmark summary report
@@ -240,17 +241,17 @@ def benchmark_summary(request):
     """Generate benchmark summary report"""
     yield
 
-    print("\n" + "=" * 60)
-    print("📊 Performance Benchmark Summary")
-    print("=" * 60)
-    print("\nTargets:")
-    print("  ✅ Bridge IPC: <10ms (PASSED)")
-    print("  ✅ PII Scrubbing: <10ms per doc (PASSED)")
-    print("  ✅ RAG Query: <50ms end-to-end (PASSED)")
-    print("\nBaselines Established:")
-    print("  📈 Knowledge Crawler: Incremental vs Full sync")
-    print("  📈 Training Iteration: Regression detection baseline")
-    print("=" * 60)
+    logger.info("\n" + "=" * 60)
+    logger.info("📊 Performance Benchmark Summary")
+
+    logger.info("\nTargets:")
+    logger.info("  ✅ Bridge IPC: <10ms (PASSED)")
+    logger.info("  ✅ PII Scrubbing: <10ms per doc (PASSED)")
+    logger.info("  ✅ RAG Query: <50ms end-to-end (PASSED)")
+    logger.info("\nBaselines Established:")
+    logger.info("  📈 Knowledge Crawler: Incremental vs Full sync")
+    logger.info("  📈 Training Iteration: Regression detection baseline")
+
 
 
 if __name__ == "__main__":

@@ -16,6 +16,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
+from codex.logging.structured_logger import logger
 
 # Import the module to test
 try:
@@ -35,7 +36,7 @@ class TestValidateFileStructureBasic:
     def test_validate_python_file_valid(self, tmp_path: Path) -> None:
         """Test validation of a valid Python file."""
         test_file = tmp_path / "test.py"
-        test_file.write_text("#!/usr/bin/env python\nprint('hello')\n")
+        test_file.write_text("#!/usr/bin/env python\nlogger.info('hello')\n")
         result = validate_file_structure(str(test_file))
         assert isinstance(result, dict)
         assert "balanced_braces" in result, "Result must not be empty"
@@ -119,7 +120,7 @@ class TestValidateFileStructureBasic:
     def test_validate_valid_python_syntax(self, tmp_path: Path) -> None:
         """Test validation of valid Python syntax."""
         test_file = tmp_path / "test.py"
-        test_file.write_text("def hello():\n    print('world')\n")
+        test_file.write_text("def hello():\n    logger.info('world')\n")
         result = validate_file_structure(str(test_file))
         # For .py files, should validate syntax
         assert isinstance(result["valid_syntax"], bool)
@@ -127,7 +128,7 @@ class TestValidateFileStructureBasic:
     def test_validate_invalid_python_syntax(self, tmp_path: Path) -> None:
         """Test detection of invalid Python syntax."""
         test_file = tmp_path / "test.py"
-        test_file.write_text("def hello(\n    print('world')\n")
+        test_file.write_text("def hello(\n    logger.info('world')\n")
         result = validate_file_structure(str(test_file))
         # Should detect syntax error
         assert isinstance(result["valid_syntax"], bool)
@@ -354,7 +355,7 @@ class DataProcessor:
     def test_quality_unicode_file(self, tmp_path: Path) -> None:
         """Test quality check with unicode content."""
         test_file = tmp_path / "unicode.py"
-        test_file.write_text("# -*- coding: utf-8 -*-\n# Comment: 你好\nprint('世界')\n")
+        test_file.write_text("# -*- coding: utf-8 -*-\n# Comment: 你好\nlogger.info('世界')\n")
         result = validate_code_quality(str(test_file))
         assert isinstance(result, dict)
 

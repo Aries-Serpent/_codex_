@@ -245,7 +245,7 @@ def compare(
 
     Example:
         >>> result = compare(Path("baseline/"), Path("patched/"))
-        >>> print(f"Result: {result.result}")
+        >>> logger.info(f"Result: {result.result}")
     """
     comparisons: list[ComparisonDetail] = []
     all_baseline_output = ""
@@ -400,6 +400,7 @@ import pytest
 from pathlib import Path
 import subprocess
 import os
+from codex.logging.structured_logger import logger
 
 class TestBehaviorSnapshots:
     @pytest.fixture

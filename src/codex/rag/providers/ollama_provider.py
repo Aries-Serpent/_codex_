@@ -8,6 +8,7 @@ import logging
 from typing import Union
 
 import numpy as np
+from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +39,7 @@ class OllamaEmbeddingProvider:
     Example:
         >>> provider = OllamaEmbeddingProvider(model_name='nomic-embed-text')
         >>> embeddings = provider.encode(['Hello world', 'Test document'])
-        >>> print(embeddings.shape)
+        >>> logger.info(embeddings.shape)
         (2, 768)
     """
 

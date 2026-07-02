@@ -1,4 +1,5 @@
 """
+pytest.importorskip("msgpack")
 Comprehensive Test Suite for Phase 10.2: STM → LTM Memory Consolidation
 
 Tests cover:

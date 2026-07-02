@@ -42,6 +42,7 @@ from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
 from typing import Any, Optional
+from codex.logging.structured_logger import logger
 
 # Setup logging
 logging.basicConfig(
@@ -252,7 +253,7 @@ class AgentBrainInterface:
         >>> # Query patterns for a symptom
         >>> patterns = brain.query_patterns("pytest collection error")
         >>> for pattern in patterns:
-        ...     print(f"{pattern.pattern_id}: {pattern.solutions[0]}")
+        ...     logger.info(f"{pattern.pattern_id}: {pattern.solutions[0]}")
         >>>
         >>> # Check objective alignment
         >>> aligned = brain.check_alignment("run additional tests")
@@ -493,7 +494,7 @@ class AgentBrainInterface:
         Example:
             >>> patterns = brain.query_patterns("pytest collection error")
             >>> for p in patterns:
-            ...     print(f"{p.pattern_id}: {p.confidence.value}")
+            ...     logger.info(f"{p.pattern_id}: {p.confidence.value}")
         """
         if isinstance(symptoms, str):
             symptoms = [symptoms]

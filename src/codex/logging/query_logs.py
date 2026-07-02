@@ -30,7 +30,7 @@ from __future__ import annotations
 
 import logging
 
-logger = logging.getLogger(__name__)
+from codex.logging.structured_logger import logger
 
 import argparse  # noqa: E402
 import json  # noqa: E402
@@ -204,7 +204,7 @@ def _print_rich(rows: list[sqlite3.Row], mapcol: dict[str, Optional[str]], show_
         raise ValueError("Required columns missing")
     sid = mapcol.get("session_id")
     if Console is None or Table is None:  # pragma: no cover - fallback
-        print(format_text(rows, mapcol, show_meta))
+        logger.info(format_text(rows, mapcol, show_meta))
         return
     table = Table(show_header=True, header_style="bold")
     table.add_column("timestamp")
@@ -308,18 +308,18 @@ def main(argv: Optional[list[str]] = None) -> int:
             if args.tail is not None:
                 rows.reverse()
             if args.format == "json":
-                print(json.dumps([dict(r) for r in rows], ensure_ascii=False, indent=2))
+                logger.info(json.dumps([dict(r) for r in rows], ensure_ascii=False, indent=2))
             else:
                 _print_rich(rows, mapcol, args.show_meta)
         return 0
     except (ValueError, SystemExit) as exc:
         type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
-        print(str(exc), file=sys.stderr)
+        logger.error(str(exc))
         return 2
     except (IOError, OSError) as exc:  # pragma: no cover - top-level guard
         type(exc).__name__
-        print("Unexpected error: <ERROR_TYPE>", file=sys.stderr)
+        logger.error("Unexpected error: <ERROR_TYPE>")
         return 1
 
 

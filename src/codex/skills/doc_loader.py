@@ -14,7 +14,7 @@ Usage::
 
     skills = load_agent_docs_as_skills()
     for s in skills:
-        print(s.manifest.id, s.manifest.capability_tags)
+        logger.info(s.manifest.id, s.manifest.capability_tags)
 """
 
 from __future__ import annotations
@@ -27,7 +27,7 @@ from typing import Any, Literal
 
 from .models import BudgetConfig, DocMeta, PolicyConfig, RegisteredSkill, SkillManifest
 
-logger = logging.getLogger(__name__)
+from codex.logging.structured_logger import logger
 
 yaml: ModuleType | None
 try:

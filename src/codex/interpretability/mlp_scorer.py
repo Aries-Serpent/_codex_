@@ -18,6 +18,7 @@ from typing import Optional
 import numpy as np
 
 import torch
+from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -66,7 +67,7 @@ class MLPScorer:
         >>> # Get top activated neurons in each layer
         >>> top_neurons = scorer.get_top_neurons(analysis, top_k=10)
         >>> for layer_idx, neurons in top_neurons.items():
-        ...     print(f"Layer {layer_idx}: {neurons}")
+        ...     logger.info(f"Layer {layer_idx}: {neurons}")
     """
 
     def __init__(

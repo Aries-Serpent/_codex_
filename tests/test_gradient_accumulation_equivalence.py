@@ -1,4 +1,5 @@
 """
+pytest.importorskip("mlflow")
 Test Gradient Accumulation Equivalence
 
 Test module for gradient accumulation equivalence.

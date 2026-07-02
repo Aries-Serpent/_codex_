@@ -1,0 +1,428 @@
+name: Phase 9.3 Semantic Router & Multi-Agent Orchestration
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
+    paths:
+      - '.github/agents/AGENT_REGISTRY.yaml'
+      - '.github/workflows/phase-9-3-router.yml'
+      - 'scripts/ci/phase_9_3_*.py'
+  issues:
+    types: [opened, labeled]
+  workflow_dispatch:
+    inputs:
+      debug_routing:
+        description: 'Enable debug routing logs'
+        required: false
+        default: 'false'
+      force_reindex_faiss:
+        description: 'Force FAISS index rebuild'
+        required: false
+        default: 'false'
+
+concurrency:
+  group: phase-9-3-router-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  PHASE_9_3_ENABLED: true
+  ROUTING_DECISION_TIMEOUT_S: 30
+  AGENT_DISPATCH_TIMEOUT_S: 600
+  GLOBAL_EXECUTION_TIMEOUT_S: 900
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  semantic-routing-setup:
+    name: Setup Semantic Router
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      task_id: ${{ steps.task-info.outputs.task_id }}
+      task_category: ${{ steps.task-info.outputs.category }}
+      routing_method: ${{ steps.routing-method.outputs.method }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -q \
+            pyyaml \
+            networkx \
+            sentence-transformers \
+            faiss-cpu \
+            python-dotenv
+
+      - name: Extract task information
+        id: task-info
+        run: |
+          import json
+          import os
+          from pathlib import Path
+
+          # Determine task from trigger
+          if "${{ github.event_name }}" == "pull_request":
+            task_id = "pr-${{ github.event.pull_request.number }}"
+            category = "ci_cd"
+          elif "${{ github.event_name }}" == "issues":
+            task_id = "issue-${{ github.event.issue.number }}"
+            category = "maintenance"
+          else:
+            task_id = "manual-${{ github.run_id }}"
+            category = "manual"
+
+          # Write outputs using new GITHUB_OUTPUT format
+          with open(os.environ.get('GITHUB_OUTPUT', '/dev/null'), 'a') as f:
+            f.write(f"task_id={task_id}\n")
+            f.write(f"category={category}\n")
+
+          print(f"\n📋 Task Info:")
+          print(f"  ID: {task_id}")
+          print(f"  Category: {category}")
+        shell: python
+
+      - name: Determine routing method
+        id: routing-method
+        run: |
+          method="semantic"  # Default to semantic routing via FAISS
+
+          # Check if forcing FAISS rebuild
+          if [ "${{ github.event.inputs.force_reindex_faiss }}" = "true" ]; then
+            method="rebuild_index"
+          fi
+
+          echo "method=$method" >> $GITHUB_OUTPUT
+          echo "Using routing method: $method"
+
+  semantic-router-index:
+    name: Build/Query FAISS Index
+    timeout-minutes: 30
+    needs: semantic-routing-setup
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      top_agents: ${{ steps.router-query.outputs.top_agents }}
+      routing_latency_ms: ${{ steps.router-query.outputs.latency_ms }}
+      confidence_scores: ${{ steps.router-query.outputs.confidence }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install semantic router dependencies
+        run: |
+          pip install -q \
+            pyyaml \
+            sentence-transformers \
+            faiss-cpu \
+            numpy \
+            python-dotenv
+
+      - name: Query FAISS index for agent routing
+        id: router-query
+        run: |
+          python3 scripts/ci/phase_9_3_semantic_router.py \
+            --task-id "${{ needs.semantic-routing-setup.outputs.task_id }}" \
+            --task-category "${{ needs.semantic-routing-setup.outputs.task_category }}" \
+            --top-k 5 \
+            --output-format json \
+            --log-file /tmp/routing-decision.json
+
+          # Extract results
+          python3 << 'EOF'
+          import json
+          import os
+          with open('/tmp/routing-decision.json', 'r') as f:
+              result = json.load(f)
+
+          # Extract top agents
+          agents = [a['agent_id'] for a in result['top_agents']]
+
+          # Write outputs using new GITHUB_OUTPUT format
+          github_output = os.environ.get('GITHUB_OUTPUT', '/dev/null')
+          with open(github_output, 'a') as f:
+            f.write(f"top_agents={','.join(agents)}\n")
+            f.write(f"latency_ms={result['latency_ms']:.0f}\n")
+            confidence = [a['confidence'] for a in result['top_agents']]
+            f.write(f"confidence={','.join(map(str, confidence))}\n")
+          EOF
+        shell: bash
+
+  workload-balancing:
+    name: Workload Balance & Agent Selection
+    timeout-minutes: 30
+    needs: [semantic-routing-setup, semantic-router-index]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      selected_agents: ${{ steps.load-balance.outputs.selected_agents }}
+      agent_load_status: ${{ steps.load-balance.outputs.load_status }}
+      queue_depth: ${{ steps.load-balance.outputs.queue_depth }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install workload balancer dependencies
+        run: |
+          pip install -q \
+            pyyaml \
+            python-dotenv \
+            requests
+
+      - name: Check agent load and select optimal agents
+        id: load-balance
+        run: |
+          python3 scripts/ci/phase_9_3_workload_balancer.py \
+            --candidate-agents "${{ needs.semantic-router-index.outputs.top_agents }}" \
+            --task-priority 5 \
+            --max-load-percent 80 \
+            --output-format json \
+            --log-file /tmp/load-balance.json
+
+          # Extract results
+          python3 << 'EOF'
+          import json
+          import os
+          with open('/tmp/load-balance.json', 'r') as f:
+              result = json.load(f)
+
+          # Write outputs using new GITHUB_OUTPUT format
+          github_output = os.environ.get('GITHUB_OUTPUT', '/dev/null')
+          with open(github_output, 'a') as f:
+            f.write(f"selected_agents={','.join(result['selected_agents'])}\n")
+            f.write(f"load_status={json.dumps(result['agent_load'])}\n")
+            f.write(f"queue_depth={sum(a.get('queue_depth', 0) for a in result['agent_load'].values())}\n")
+          EOF
+        shell: bash
+
+  concurrent-execution:
+    name: Execute Task with Selected Agents
+    needs: [semantic-routing-setup, semantic-router-index, workload-balancing]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 20
+    outputs:
+      execution_result: ${{ steps.concurrent-exec.outputs.result }}
+      total_duration_s: ${{ steps.concurrent-exec.outputs.duration }}
+      parallel_agents_count: ${{ steps.concurrent-exec.outputs.agents_count }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install concurrent executor dependencies
+        run: |
+          pip install -q \
+            networkx \
+            pyyaml \
+            python-dotenv \
+            requests
+
+      - name: Execute task concurrently across selected agents
+        id: concurrent-exec
+        run: |
+          python3 scripts/ci/phase_9_3_concurrent_executor.py \
+            --task-id "${{ needs.semantic-routing-setup.outputs.task_id }}" \
+            --task-category "${{ needs.semantic-routing-setup.outputs.task_category }}" \
+            --agent-ids "${{ needs.workload-balancing.outputs.selected_agents }}" \
+            --max-concurrent-agents 5 \
+            --global-timeout-s 900 \
+            --output-format json \
+            --log-file /tmp/execution-result.json
+
+          # Extract results
+          python3 << 'EOF'
+          import json
+          import os
+          with open('/tmp/execution-result.json', 'r') as f:
+              result = json.load(f)
+
+          # Write outputs using new GITHUB_OUTPUT format
+          github_output = os.environ.get('GITHUB_OUTPUT', '/dev/null')
+          with open(github_output, 'a') as f:
+            f.write(f"result={result['status']}\n")
+            f.write(f"duration={result['total_duration_s']:.1f}\n")
+            f.write(f"agents_count={result['parallel_agents_count']}\n")
+          EOF
+        shell: bash
+
+  audit-trail-logging:
+    name: Log Routing Decision to Audit Trail
+    timeout-minutes: 30
+    needs: [semantic-routing-setup, semantic-router-index, workload-balancing, concurrent-execution]
+    runs-on: ubuntu-latest
+    permissions: {}
+    if: always()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Log routing decision to audit trail
+        run: |
+          python3 << 'EOF'
+          import json
+          import datetime
+          from pathlib import Path
+
+          # Helper to safely convert strings to numbers, with defaults
+          def safe_float(value, default=None):
+              if not value or not str(value).strip():
+                  return default
+              try:
+                  return float(value)
+              except (ValueError, TypeError):
+                  return default
+
+          def safe_int(value, default=None):
+              if not value or not str(value).strip():
+                  return default
+              try:
+                  return int(value)
+              except (ValueError, TypeError):
+                  return default
+
+          def safe_split(value):
+              if not value or not str(value).strip():
+                  return []
+              return [s.strip() for s in str(value).split(',') if s.strip()]
+
+          def safe_float_list(value):
+              items = safe_split(value)
+              return [safe_float(item) for item in items if safe_float(item) is not None]
+
+          # Construct audit entry with safe conversions
+          entry = {
+              "phase": "9.3",
+              "decision_type": "agent_routing",
+              "timestamp": datetime.datetime.utcnow().isoformat(),
+              "task_id": "${{ needs.semantic-routing-setup.outputs.task_id }}" or "unknown",
+              "task_category": "${{ needs.semantic-routing-setup.outputs.task_category }}" or "unknown",
+              "routing_method": "semantic_faiss",
+              "top_candidates": safe_split("${{ needs.semantic-router-index.outputs.top_agents }}"),
+              "selected_agents": safe_split("${{ needs.workload-balancing.outputs.selected_agents }}"),
+              "confidence_scores": safe_float_list("${{ needs.semantic-router-index.outputs.confidence_scores }}"),
+              "routing_latency_ms": safe_float("${{ needs.semantic-router-index.outputs.routing_latency_ms }}", 0.0),
+              "execution_status": "${{ needs.concurrent-execution.outputs.execution_result }}" or "unknown",
+              "total_duration_s": safe_float("${{ needs.concurrent-execution.outputs.total_duration_s }}", 0.0),
+              "parallel_agents_count": safe_int("${{ needs.concurrent-execution.outputs.parallel_agents_count }}", 0)
+          }
+
+          # Append to audit log
+          log_file = Path('.codex/phase_9_3_routing_audit.jsonl')
+          log_file.parent.mkdir(exist_ok=True)
+
+          with log_file.open('a') as f:
+              f.write(json.dumps(entry) + '\n')
+
+          print("✅ Routing decision logged to audit trail")
+          print(json.dumps(entry, indent=2))
+          EOF
+
+      - name: Update routing metrics
+        run: |
+          # Update success metrics
+          if [ "${{ needs.concurrent-execution.outputs.execution_result }}" = "COMPLETED" ]; then
+            echo "✅ Task completed successfully"
+          else
+            echo "⚠️  Task execution status: ${{ needs.concurrent-execution.outputs.execution_result }}"
+          fi
+
+          echo ""
+          echo "📊 Routing Metrics:"
+          echo "  - Routing Latency: ${{ needs.semantic-router-index.outputs.routing_latency_ms }}ms"
+          echo "  - Selected Agents: ${{ needs.workload-balancing.outputs.selected_agents }}"
+          echo "  - Total Duration: ${{ needs.concurrent-execution.outputs.total_duration_s }}s"
+          echo "  - Parallel Agents: ${{ needs.concurrent-execution.outputs.parallel_agents_count }}"
+
+  result-summary:
+    name: Summarize Routing & Execution
+    timeout-minutes: 10
+    needs: [semantic-routing-setup, semantic-router-index, workload-balancing, concurrent-execution, audit-trail-logging]
+    runs-on: ubuntu-latest
+    permissions: {}
+    if: always()
+    steps:
+      - name: Create execution summary
+        run: |
+          cat << 'EOF'
+
+          ┌─────────────────────────────────────────────────────────────┐
+          │           PHASE 9.3 ROUTING & EXECUTION SUMMARY              │
+          ├─────────────────────────────────────────────────────────────┤
+          │ Task ID:               ${{ needs.semantic-routing-setup.outputs.task_id }}
+          │ Task Category:         ${{ needs.semantic-routing-setup.outputs.task_category }}
+          │
+          │ 🔍 SEMANTIC ROUTING:
+          │   Routing Latency:     ${{ needs.semantic-router-index.outputs.routing_latency_ms }}ms
+          │   Top Candidates:      ${{ needs.semantic-router-index.outputs.top_agents }}
+          │   Confidence Scores:   ${{ needs.semantic-router-index.outputs.confidence_scores }}
+          │
+          │ ⚖️  WORKLOAD BALANCING:
+          │   Selected Agents:     ${{ needs.workload-balancing.outputs.selected_agents }}
+          │   Queue Depth:         ${{ needs.workload-balancing.outputs.queue_depth }} tasks
+          │
+          │ 🚀 CONCURRENT EXECUTION:
+          │   Status:              ${{ needs.concurrent-execution.outputs.execution_result }}
+          │   Duration:            ${{ needs.concurrent-execution.outputs.total_duration_s }}s
+          │   Parallel Agents:     ${{ needs.concurrent-execution.outputs.parallel_agents_count }}
+          │
+          │ 📋 AUDIT TRAIL:
+          │   Status:              Logged
+          │   File:                .codex/phase_9_3_routing_audit.jsonl
+          │
+          └─────────────────────────────────────────────────────────────┘
+
+          EOF
+
+      - name: Check success criteria
+        if: needs.concurrent-execution.outputs.execution_result == 'COMPLETED'
+        run: |
+          echo "✅ Phase 9.3 routing completed successfully"
+          exit 0
+
+      - name: Check failure conditions
+        if: needs.concurrent-execution.outputs.execution_result != 'COMPLETED'
+        run: |
+          echo "⚠️  Phase 9.3 routing encountered issues"
+          echo "Status: ${{ needs.concurrent-execution.outputs.execution_result }}"
+          exit 0  # Non-fatal for now, monitoring only

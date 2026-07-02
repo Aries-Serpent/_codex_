@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 
-logger = logging.getLogger(__name__)
+from codex.logging.structured_logger import logger
 
 # Monkey-patch stdlib XML to use defusedxml globally (XXE prevention)
 try:
@@ -70,10 +70,10 @@ def _run_ingest() -> None:
     src = Path("data/example.jsonl")
     dst = Path("data/ingested.jsonl")
     if not src.exists():
-        print(f"No source data found at {src}")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.info(f"No source data found at {src}")
         return
     dst.write_text(src.read_text(), encoding="utf-8")
-    print(f"Ingested {src} -> {dst}")  # codeql[py/clear-text-logging-sensitive-data]
+    logger.info(f"Ingested {src} -> {dst}")
 
 
 def _run_ci() -> None:
@@ -83,7 +83,7 @@ def _run_ci() -> None:
     except (ValueError, TypeError, RuntimeError) as exc:
         type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
-        print("CI failed: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.info("CI failed: <ERROR_TYPE>")
         _log_error("STEP CI", "nox -s tests", str(exc), "running local CI")
         raise SystemExit(1) from exc
 
@@ -139,9 +139,7 @@ def _fix_pool(max_workers: int | None = None) -> None:
             _log_error("POOL", "warm connection", str(exc), f"db={db}")
             break
 
-    print(
-        f"enabled SQLite pooling (warm={workers}) for {db}"
-    )  # codeql[py/clear-text-logging-sensitive-data]
+    logger.info(f"enabled SQLite pooling (warm={workers}) for {db}")
 
 
 ALLOWED_TASKS = {

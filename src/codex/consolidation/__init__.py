@@ -23,7 +23,7 @@ Modules:
   - async_utils: Async context managers (MRC-005)
 """
 
-from src.codex.consolidation.async_utils import (
+from codex.consolidation.async_utils import (
     AsyncContextBase,
     AsyncPoolManager,
     AsyncResourceManager,
@@ -33,19 +33,19 @@ from src.codex.consolidation.async_utils import (
     async_pool_connection,
     async_timeout_context,
 )
-from src.codex.consolidation.config import (
+from codex.consolidation.config import (
     BaseConfig,
     ConfigParser,
     ConfigValidator,
     DefaultConfig,
 )
-from src.codex.consolidation.decorators import (
+from codex.consolidation.decorators import (
     handle_async_errors,
     handle_errors,
     require_auth,
     validate,
 )
-from src.codex.consolidation.errors import (
+from codex.consolidation.errors import (
     AsyncErrorHandler,
     AuthenticationError,
     ErrorHandler,
@@ -55,14 +55,14 @@ from src.codex.consolidation.errors import (
     wrap_async_with_error_handling,
     wrap_with_error_handling,
 )
-from src.codex.consolidation.logging_bootstrap import (
+from codex.consolidation.logging_bootstrap import (
     ContextLogger,
     LogFormats,
     LoggerBootstrap,
     LoggingConfig,
     LogLevel,
 )
-from src.codex.consolidation.mocks import (
+from codex.consolidation.mocks import (
     AsyncFakeServiceFactory,
     AsyncMockClientFactory,
     FakeModel,
@@ -72,7 +72,7 @@ from src.codex.consolidation.mocks import (
     ObjectFactory,
     StubDataFactory,
 )
-from src.codex.consolidation.test_fixtures import (
+from codex.consolidation.test_fixtures import (
     AsyncFixture,
     DatabaseFixture,
     FixtureFactory,

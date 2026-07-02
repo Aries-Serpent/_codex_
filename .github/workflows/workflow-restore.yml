@@ -133,47 +133,33 @@ jobs:
         \ SHA256**: $(sha256sum \"$SOURCE_FILE\" | awk '{print $1}')\nREPORT_FINAL\n\
         \ncat /tmp/restoration-report.md\n"
     - name: Commit changes
-      run: 'WORKFLOW="${{ github.event.inputs.workflow_file }}"
-
+      run: |
+        WORKFLOW="${{ github.event.inputs.workflow_file }}"
 
         git config user.name "github-actions[bot]"
-
         git config user.email "github-actions[bot]@users.noreply.github.com"
 
-
         git add .github/workflows/"$WORKFLOW"
-
         git add .github/workflow-archive/WORKFLOW_INVENTORY.yaml
-
         git add .github/workflow-archive/INVENTORY_SUMMARY.md
 
-
-        STATUS="${{ github.event.inputs.enable_immediately == ''true'' && ''enabled''
-        || ''disabled'' }}"
-
-
-        git commit -m "restore(ci): restore $WORKFLOW from ${{ github.event.inputs.restore_source
-        }} ($STATUS)
-
+        STATUS="${{ github.event.inputs.enable_immediately == 'true' && 'enabled' || 'disabled' }}"
+        COMMIT_MSG_FILE="/tmp/workflow-restore-commit-msg.txt"
+        cat > "$COMMIT_MSG_FILE" <<EOF
+        restore(ci): restore $WORKFLOW from ${{ github.event.inputs.restore_source }} ($STATUS)
 
         Workflow restored via automated restoration tool.
 
-
         - Source: ${{ steps.locate.outputs.source_file }}
-
         - Status: $STATUS
-
         - Triggered by: @${{ github.actor }}
-
         - Restore method: ${{ github.event.inputs.restore_source }}
 
+        Ref: workflow-restore-${{ github.run_id }}
+        EOF
 
-        Ref: workflow-restore-${{ github.run_id }}"
-
-
+        git commit -F "$COMMIT_MSG_FILE"
         git push
-
-        '
     - name: Summary
       run: 'echo "✅ Workflow restoration complete!"
 

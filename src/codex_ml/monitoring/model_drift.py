@@ -15,7 +15,7 @@ Usage
 >>> detector.update_baseline(reference_probs)       # call once on baseline epoch
 >>> result = detector.check(current_probs)          # call every post-epoch
 >>> if result.drift_detected:
-...     print(result.summary())
+...     logger.info(result.summary())
 
 Classes
 -------
@@ -30,6 +30,7 @@ import logging
 import math
 from dataclasses import dataclass, field
 from typing import Any, Optional
+from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 

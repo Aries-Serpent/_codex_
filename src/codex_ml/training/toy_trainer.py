@@ -16,6 +16,7 @@ import argparse
 import random
 import time
 from pathlib import Path
+from codex.logging.structured_logger import logger
 
 
 def train(epochs: int, batch_size: int, log_path: Path) -> None:
@@ -52,7 +53,7 @@ def main(argv=None) -> int:
     args = ap.parse_args(argv)
 
     train(args.epochs, args.batch_size, Path(args.log))
-    print(f"[OK] Wrote training log to {args.log}")
+    logger.info(f"[OK] Wrote training log to {args.log}")
     return 0
 
 

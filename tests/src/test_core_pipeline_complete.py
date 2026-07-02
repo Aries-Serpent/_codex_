@@ -16,6 +16,7 @@ import tempfile
 from pathlib import Path
 
 import pytest
+from codex.logging.structured_logger import logger
 
 # ============================================================================
 # CODE INGESTION TESTS (20 tests)
@@ -156,7 +157,7 @@ class TestCodeIngestion:
         """Test ingesting file without extension"""
         with tempfile.TemporaryDirectory() as tmpdir:
             noext = Path(tmpdir) / "script"
-            noext.write_text("#!/usr/bin/env python3\nprint('hi')")
+            noext.write_text("#!/usr/bin/env python3\nlogger.info('hi')")
             assert noext.exists(), "Condition must be true"
             assert noext.suffix == "", "suffix is not valid"
 

@@ -40,7 +40,7 @@ app = FastAPI(
 _RAG_FILES_BASE: Path = Path(os.environ.get("RAG_FILES_BASE_DIR", str(Path.cwd()))).resolve()
 _SAFE_PATH_SEGMENT = re.compile(r"^[A-Za-z0-9._-]{1,128}$")
 
-logger = logging.getLogger(__name__)
+from codex.logging.structured_logger import logger
 
 
 def _validate_path_segment(value: str, field_name: str) -> str:
@@ -621,7 +621,7 @@ async def startup_event() -> None:
 @app.on_event("shutdown")
 async def shutdown_event() -> None:
     """Cleanup on shutdown."""
-    print("👋 RAG API Server shutting down...")
+    logger.info("👋 RAG API Server shutting down...")
 
 
 if __name__ == "__main__":

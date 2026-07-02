@@ -10,6 +10,7 @@ from io import StringIO
 from unittest.mock import patch
 
 import pytest
+from codex.logging.structured_logger import logger
 
 # Import CLI modules
 try:
@@ -129,8 +130,8 @@ class TestCLIEdgeCases:
         captured_output = StringIO()
 
         with patch("sys.stdout", captured_output):
-            print("Test output line 1")
-            print("Test output line 2")
+            logger.info("Test output line 1")
+            logger.info("Test output line 2")
             sys.stdout.flush()
 
             output = captured_output.getvalue()
@@ -145,8 +146,8 @@ class TestCLIEdgeCases:
         captured_errors = StringIO()
 
         with patch("sys.stderr", captured_errors):
-            print("Error message 1", file=sys.stderr)
-            print("Error message 2", file=sys.stderr)
+            logger.error("Error message 1")
+            logger.error("Error message 2")
             sys.stderr.flush()
 
             errors = captured_errors.getvalue()

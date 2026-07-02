@@ -24,6 +24,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Optional
+from codex.logging.structured_logger import logger
 
 LOGGER = logging.getLogger(__name__)
 
@@ -111,7 +112,7 @@ class WhiteheadianSessionManager:
         >>> manager.prehend(session, ["session-456", "session-789"])
         >>> manager.concresce(session)
         >>> satisfaction = manager.achieve_satisfaction(session)
-        >>> print(f"Session satisfaction: {satisfaction:.2%}")
+        >>> logger.info(f"Session satisfaction: {satisfaction:.2%}")
     """
 
     def __init__(self) -> None:

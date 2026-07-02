@@ -17,9 +17,9 @@ Usage
         tags=["ci_failure", "python_version"],
         urgency="high",
     ))
-    print(result.selected_agent)   # "ci-testing-agent"
-    print(result.confidence)       # 0.95
-    print(result.reasoning)        # "Matched 2/2 capability_tags..."
+    logger.info(result.selected_agent)
+    logger.info(result.confidence)
+    logger.info(result.reasoning)
 """
 
 from __future__ import annotations
@@ -30,7 +30,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-logger = logging.getLogger(__name__)
+from codex.logging.structured_logger import logger
 
 _REGISTRY_PATH = Path(".github/agents/AGENT_REGISTRY.yaml")
 _PATTERN_STORE = Path(".codex/cognitive_brain/pattern_learning_store.json")

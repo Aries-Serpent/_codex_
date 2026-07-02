@@ -14,6 +14,7 @@ Authority: Lane 3 Unified Documentation Agent
 """
 
 import pytest
+from codex.logging.structured_logger import logger
 
 
 # Fixtures for common test data
@@ -482,7 +483,7 @@ class TestBlock:
             "type": "block",
             "section_id": "sec-001",
             "content_type": "code",
-            "content": "print('hello')",
+            "content": "logger.info('hello')",
             "line_range": {
                 "start": 5,
                 "end": 7,

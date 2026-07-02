@@ -16,6 +16,7 @@ from typing import Any, Dict, Generator, List, Optional, Tuple
 import pytest
 
 from scripts.ci._token_resolver import get_token
+from codex.logging.structured_logger import logger
 
 # ============================================================================
 # ENVIRONMENT ISOLATION FIXTURES
@@ -406,7 +407,7 @@ def sample_python_file() -> Generator[str, None, None]:
 
 def hello_world():
     """Print a greeting."""
-    print("Hello, World!")
+    logger.info("Hello, World!")
 
 class TestClass:
     """Test class for validation."""

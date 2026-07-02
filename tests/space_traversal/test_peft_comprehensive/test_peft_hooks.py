@@ -126,7 +126,7 @@ class TestEdgeCases:
     def test_no_peft_code(self, tmp_path: Path):
         """Test file without PEFT code."""
         test_file = tmp_path / "plain.py"
-        test_file.write_text("x = 1 + 2\nprint(x)\n", encoding="utf-8")
+        test_file.write_text("x = 1 + 2\nlogger.info(x)\n", encoding="utf-8")
 
         detector_path = Path("scripts/space_traversal/detectors/detector_peft.py")
         module = _load_module(detector_path, "detector_peft")
@@ -254,6 +254,7 @@ class TestIntegration:
 import torch
 from transformers import AutoModelForCausalLM
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
+from codex.logging.structured_logger import logger
 
 # Load base model
 model = AutoModelForCausalLM.from_pretrained("model_name")

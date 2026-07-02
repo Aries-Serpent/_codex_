@@ -7,7 +7,7 @@ import logging
 from enum import Enum
 from typing import Any, Optional
 
-logger = logging.getLogger(__name__)
+from codex.logging.structured_logger import logger
 
 
 class VectorStoreType(Enum):
@@ -272,13 +272,13 @@ def create_auto_store(
 
 if __name__ == "__main__":
     # Example usage
-    print("Registered vector stores:", VectorStoreRegistry.list_types())
+    logger.info("Registered vector stores:", VectorStoreRegistry.list_types())
 
     # Create FAISS store via factory
     store = VectorStoreFactory.create(store_type="faiss", index_name="example", dimension=768)
-    print(f"Created store: {store}")
+    logger.info(f"Created store: {store}")
 
     # Create from config
     config = {"type": "faiss", "index_name": "config_example", "dimension": 384}
     store2 = VectorStoreFactory.create_from_config(config)
-    print(f"Created from config: {store2}")
+    logger.info(f"Created from config: {store2}")

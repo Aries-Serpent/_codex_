@@ -17,6 +17,7 @@ from pathlib import Path
 from codex_ml.utils.hf_pinning import HFModelUnavailableError
 
 from .evaluator import run_evaluator
+from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -70,7 +71,7 @@ def _summarise_log(path: str) -> None:
         summary.setdefault(epoch, []).append(val)
     for epoch, vals in sorted(summary.items()):
         avg = sum(vals) / len(vals)
-        print(json.dumps({"epoch": epoch, "metric": avg}))
+        logger.info(json.dumps({"epoch": epoch, "metric": avg}))
 
 
 def main(argv: Iterable[str] | None = None) -> None:
@@ -92,9 +93,9 @@ def main(argv: Iterable[str] | None = None) -> None:
     except HFModelUnavailableError:
         # Model not in cache and network unavailable — exit 2 so callers
         # (e.g. tests) can distinguish "model unavailable" from real errors.
-        print("SKIP: <ERROR_TYPE>", file=sys.stderr)
+        logger.error("SKIP: <ERROR_TYPE>")
         sys.exit(2)
-    print(json.dumps(metrics))
+    logger.info(json.dumps(metrics))
     if args.metrics_log:
         _summarise_log(args.metrics_log)
 

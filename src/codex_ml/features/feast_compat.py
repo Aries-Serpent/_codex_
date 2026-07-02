@@ -26,6 +26,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional, Protocol, runtime_checkable
+from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -123,7 +124,7 @@ class FeastCompatibleStore:
             features=["user_profile:age", "user_profile:plan_tier"],
             entity_rows=[{"user_id": "u-001"}],
         )
-        print(result.feature_values)
+        logger.info(result.feature_values)
 
     Migration path to real Feast:
       1. ``pip install feast``

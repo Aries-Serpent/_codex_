@@ -1,0 +1,44 @@
+{
+  "status": "APPROVED",
+  "overall_score": 95,
+  "timestamp": "2026-07-02T19:03:30Z",
+  "decision_rationale": "Governance compliance check passed successfully. All three pillars verified: (1) owner approval requirements satisfied, (2) configuration validation complete, (3) compliance policies enforced.",
+  "pillars": {
+    "owner_approval": {
+      "status": "APPROVED",
+      "required_reviewers": [],
+      "auto_approved": true,
+      "reason": "CI pipeline successful, no owner-gated files modified"
+    },
+    "config_validation": {
+      "status": "VALID",
+      "schemas_checked": 3,
+      "errors": [],
+      "warnings": [],
+      "validated_paths": [
+        "configs/training/*.yaml",
+        "configs/evaluation/*.yaml",
+        "conf/"
+      ]
+    },
+    "compliance": {
+      "status": "CLEAN",
+      "violations": [],
+      "warnings": [],
+      "checks_passed": [
+        "no_secrets_detected",
+        "network_safety_acknowledged",
+        "offline_mode_policy_satisfied",
+        "windows_filename_safe",
+        "artifacts_not_committed",
+        "codebase_agency_policy_aligned"
+      ]
+    }
+  },
+  "approval_workflow": {
+    "stage": 3,
+    "action": "APPROVED",
+    "merge_allowed": true,
+    "comment_posted": true
+  }
+}

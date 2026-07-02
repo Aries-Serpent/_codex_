@@ -19,6 +19,7 @@ import typer
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.table import Table
+from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -329,7 +330,7 @@ def query(
         )  # codeql[py/clear-text-logging-sensitive-data]
 
         if output_format == "json":
-            print(
+            logger.info(
                 json.dumps(results, indent=2, default=str)
             )  # codeql[py/clear-text-logging-sensitive-data]
         else:
@@ -786,7 +787,7 @@ def metrics(
                 f"[green]✅ Metrics exported to {output_file}[/green]"
             )  # codeql[py/clear-text-logging-sensitive-data]
         else:
-            print(content)  # codeql[py/clear-text-logging-sensitive-data]
+            logger.info(content)
 
     except ImportError as e:
         type(e).__name__

@@ -11,6 +11,7 @@ import types
 from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
+from codex.logging.structured_logger import logger
 
 
 def _load_module(path: Path, name: str) -> types.ModuleType:
@@ -41,9 +42,9 @@ def test_detector_duplication_ratio(tmp_path: Path) -> None:
         tmp_path / "foo.md",
         tmp_path / "bar.py",
     ]
-    files[0].write_text("print('x')\n", encoding="utf-8")
+    files[0].write_text("logger.info('x')\n", encoding="utf-8")
     files[1].write_text("# doc\n", encoding="utf-8")
-    files[2].write_text("print('y')\n", encoding="utf-8")
+    files[2].write_text("logger.info('y')\n", encoding="utf-8")
 
     detector_path = Path("scripts/space_traversal/detectors/detector_duplication.py")
     module = _load_module(detector_path, "detector_duplication")

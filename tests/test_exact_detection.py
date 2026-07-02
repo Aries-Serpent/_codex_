@@ -4,6 +4,7 @@ import tempfile
 from pathlib import Path
 
 import pytest
+from codex.logging.structured_logger import logger
 
 
 def test_exact_detector_finds_identical_files():
@@ -16,7 +17,7 @@ def test_exact_detector_finds_identical_files():
         file2 = root / "subdir" / "file2.py"
         file2.parent.mkdir()
 
-        content = "print('hello world')\n"
+        content = "logger.info('hello world')\n"
         file1.write_text(content)
         file2.write_text(content)
 
@@ -42,8 +43,8 @@ def test_exact_detector_ignores_different_files():
         file1 = root / "file1.py"
         file2 = root / "file2.py"
 
-        file1.write_text("print('hello')\n")
-        file2.write_text("print('world')\n")
+        file1.write_text("logger.info('hello')\n")
+        file2.write_text("logger.info('world')\n")
 
         # Run detector
         from tools.dupinv.exact_detector import ExactDetector
@@ -89,7 +90,7 @@ def test_exact_detector_language_detection():
         file1 = root / "file1.py"
         file2 = root / "file2.py"
 
-        content = "print('test')\n"
+        content = "logger.info('test')\n"
         file1.write_text(content)
         file2.write_text(content)
 

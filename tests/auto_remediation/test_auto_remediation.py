@@ -14,6 +14,7 @@ from auto_remediation.fix_generator import (
     IntelligentFixGenerator,
 )
 from auto_remediation.verifier import FixVerifier
+from codex.logging.structured_logger import logger
 
 
 class TestFixGenerator:
@@ -134,10 +135,10 @@ class TestFixGenerator:
     def test_syntax_validation(self):
         """Test syntax validation of generated fixes."""
         # Valid Python code
-        assert self.generator._validate_syntax("x = 1\nprint(x)") is True, "Condition must be true"
+        assert self.generator._validate_syntax("x = 1\nlogger.info(x)") is True, "Condition must be true"
 
         # Invalid Python code
-        assert self.generator._validate_syntax("x = 1\nprint(x") is False, "Condition must be true"
+        assert self.generator._validate_syntax("x = 1\nlogger.info(x") is False, "Condition must be true"
 
     def test_strategy_selection(self):
         """Test correct strategy selection."""

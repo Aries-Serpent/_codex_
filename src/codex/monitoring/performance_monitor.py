@@ -1,5 +1,6 @@
 """Performance degradation monitor with configurable thresholds and alerting.
 
+from codex.logging.structured_logger import logger
 Monitors training metrics (loss, throughput, latency) and fires alerts
 via TrainingAlertManager when anomalies exceed configured thresholds.
 """
@@ -59,7 +60,7 @@ class PerformanceMonitor:
             loss = train_one_epoch(...)
             anomalies = monitor.record(PerformanceSnapshot(epoch=epoch, loss=loss))
             if anomalies:
-                print("Degradation detected:", anomalies)
+                logger.info("Degradation detected:", anomalies)
     """
 
     def __init__(

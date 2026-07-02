@@ -23,6 +23,7 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
+from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -196,7 +197,7 @@ class PROperator:
     Example:
         >>> operator = PROperator(PRConfig(owner="org", repo="repo"))
         >>> result = operator.create_pr(content, artifacts_dir)
-        >>> print(f"Created PR #{result.pr_number}")
+        >>> logger.info(f"Created PR #{result.pr_number}")
 
     Note:
         Requires GitHub API access. In environments without API access,

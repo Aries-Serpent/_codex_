@@ -1,4 +1,5 @@
 """Tests for MLflow integration."""
+pytest.importorskip("mlflow")
 
 import os
 import tempfile

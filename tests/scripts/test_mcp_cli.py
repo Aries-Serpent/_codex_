@@ -1,3 +1,4 @@
+from codex.logging.structured_logger import logger
 #         )
 # Test module for mcp cli.
 # 
@@ -59,7 +60,7 @@
 #     topics = {"test_topic": ["**/*.py"], "docs": ["**/*.md"]}
 #     (scripts_mcp / "topics.json").write_text(json.dumps(topics))
 #     # Create select_components.py placeholder
-#     (scripts_mcp / "select_components.py").write_text("#!/usr/bin/env python3\nprint('mock')")
+#     (scripts_mcp / "select_components.py").write_text("#!/usr/bin/env python3\nlogger.info('mock')")
 # 
 #     # Create package_flatten.sh placeholder
 #     (scripts_mcp / "package_flatten.sh").write_text("#!/bin/bash\necho 'mock'")

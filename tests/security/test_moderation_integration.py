@@ -1,3 +1,4 @@
+from codex.logging.structured_logger import logger
 #             assert call_order.index("moderation") < call_order.index(, "call_ is not valid"
 # Integration tests for Gap 27: ModerationAdapter wired to all LLM entry points.
 # - EP-03: codex_ml.cli.simple_cli — rejected input raises ClickException / exits non-zero
@@ -325,7 +326,7 @@
 #             mock_cls.return_value = mock_adapter
 # 
 #             with pytest.raises(ModerationRejection):
-#                 llm.summarize_code("import os\nprint(os.getenv('SECRET'))")
+#                 llm.summarize_code("import os\nlogger.info(os.getenv('SECRET'))")
 # 
 #     def test_moderation_called_before_api_call(self) -> None:
 #     def test_moderation_called_before_api_call(self) -> None:

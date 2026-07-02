@@ -1,5 +1,6 @@
 """
 from __future__ import annotations
+from codex.logging.structured_logger import logger
 
 Audit Pipeline Module
 
@@ -249,7 +250,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         )
         report["files"] = sorted(report["files"], key=lambda x: x.get("file", ""))
         Path(args.out).write_text(json.dumps(report, indent=2), encoding="utf-8")
-        print(
+        logger.info(
             json.dumps(
                 {
                     "summary": {

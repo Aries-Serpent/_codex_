@@ -1,5 +1,6 @@
 """Metrics collection system for the Codex agent ecosystem.
 
+from codex.logging.structured_logger import logger
 Phase 12.3 — Agent Observability & Telemetry
 
 ``MetricsCollector`` tracks per-agent and ecosystem-wide metrics using an
@@ -32,10 +33,10 @@ Usage::
     collector.record_agent_execution("ci-auto-healer", duration_ms=8400.0, success=False)
 
     metrics = collector.get_agent_metrics("orchestrator")
-    print(metrics.latency_p99_ms)
+    logger.info(metrics.latency_p99_ms)
 
     summary = collector.get_ecosystem_summary()
-    print(collector.export_prometheus_format())
+    logger.info(collector.export_prometheus_format())
 """
 
 from __future__ import annotations
@@ -271,7 +272,7 @@ class MetricsCollector:
         Example::
 
             summary = collector.get_ecosystem_summary()
-            print(f"Active agents: {summary['active_agents']}")
+            logger.info(f"Active agents: {summary['active_agents']}")
         """
         with self._lock:
             agent_ids = list(self._windows.keys())
@@ -321,7 +322,7 @@ class MetricsCollector:
 
         Example::
 
-            print(collector.export_prometheus_format())
+            logger.info(collector.export_prometheus_format())
         """
         summary = self.get_ecosystem_summary()
         lines: list[str] = []

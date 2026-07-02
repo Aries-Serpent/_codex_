@@ -43,6 +43,7 @@ from codex_ml.safety import ModerationAdapter, ModerationRejection, ModerationSe
 from codex_ml.utils.hf_pinning import load_from_pretrained
 from codex_ml.utils.hf_revision import get_hf_revision
 from codex_ml.utils.optional import optional_import
+from codex.logging.structured_logger import logger
 
 torch, _HAS_TORCH = optional_import("torch")
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")
@@ -200,7 +201,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                 raise SystemExit(f"Output blocked by moderation: {exc}") from exc
             if output_decision and output_decision.sanitized_text is not None:
                 text = output_decision.sanitized_text
-        print(text)
+        logger.info(text)
 
         art_root = Path(os.getenv("ARTIFACTS_DIR", "artifacts"))
         art_dir = art_root / "infer"

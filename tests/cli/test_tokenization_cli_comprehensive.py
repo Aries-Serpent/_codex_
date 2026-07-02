@@ -1,3 +1,5 @@
+from codex.logging.structured_logger import logger
+import pytest
 #         assert result.exit_code == 0 or "inspect" not in str(, "Result must not be empty"
 #             app.registered_commands if hasattr(app, "registered_commands") else []
 #         ), "Result must not be empty"
@@ -327,7 +329,7 @@ class TestFallbackBehavior:
 
         @app_fallback.command()
         def test_command():
-            print("Test")
+            logger.info("Test")
 
         assert "test-command" in app_fallback._commands or "test_command" in app_fallback._commands
 

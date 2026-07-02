@@ -1,4 +1,5 @@
 """
+pytest.importorskip("mlflow")
 Test Gradient Accumulation Tail Flush
 
 Test module for gradient accumulation tail flush.

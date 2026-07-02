@@ -29,6 +29,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
+from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -456,7 +457,7 @@ def analyze(
 
     Example:
         >>> report = analyze(Path("source/"), "20251217-abc123")
-        >>> print(f"Analyzed {len(report.files)} files")
+        >>> logger.info(f"Analyzed {len(report.files)} files")
     """
     now = datetime.now(timezone.utc)
     files: list[FileAnalysis] = []

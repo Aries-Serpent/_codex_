@@ -14,6 +14,7 @@ import subprocess
 import sys
 from pathlib import Path
 from typing import Any
+from codex.logging.structured_logger import logger
 
 
 class DeterminismValidator:
@@ -117,14 +118,14 @@ class DeterminismValidator:
         Returns:
             True if determinism validated, False otherwise
         """
-        print("=" * 70)
-        print("COVERAGE DETERMINISM VALIDATION")
-        print("=" * 70)
-        print()
+
+        logger.info("COVERAGE DETERMINISM VALIDATION")
+
+
 
         runs = []
         for run_num in range(1, 4):
-            print(f"Run {run_num}/3: Executing test suite...")
+            logger.info(f"Run {run_num}/3: Executing test suite...")
             result = self.run_test_suite(run_num)
             runs.append(result)
 
@@ -132,14 +133,14 @@ class DeterminismValidator:
             coverage = result.get("total_coverage", 0)
             test_count = result.get("test_count", 0)
 
-            print(f"  Exit Code: {exit_code}")
-            print(f"  Coverage: {coverage:.2f}%")
-            print(f"  Tests: {test_count}")
-            print()
+            logger.info(f"  Exit Code: {exit_code}")
+            logger.info(f"  Coverage: {coverage:.2f}%")
+            logger.info(f"  Tests: {test_count}")
+
 
         # Validate consistency
-        print("Validating determinism across runs...")
-        print()
+        logger.info("Validating determinism across runs...")
+
 
         all_passed = all(r.get("exit_code") == 0 for r in runs)
         coverages = [r.get("total_coverage", 0) for r in runs]
@@ -149,10 +150,10 @@ class DeterminismValidator:
         all_coverage_match = coverage_variance < 0.1
         all_tests_match = all(tc == test_counts[0] for tc in test_counts)
 
-        print(f"✓ All runs passed: {all_passed}")
-        print(f"✓ Coverage variance < 0.1%: {all_coverage_match} (variance: {coverage_variance:.3f}%)")
-        print(f"✓ Test count consistent: {all_tests_match} (counts: {test_counts})")
-        print()
+        logger.info(f"✓ All runs passed: {all_passed}")
+        logger.info(f"✓ Coverage variance < 0.1%: {all_coverage_match} (variance: {coverage_variance:.3f}%)")
+        logger.info(f"✓ Test count consistent: {all_tests_match} (counts: {test_counts})")
+
 
         # Generate report
         report = {
@@ -174,8 +175,8 @@ class DeterminismValidator:
         with open(report_file, "w") as f:
             json.dump(report, f, indent=2)
 
-        print(f"Report written to {report_file}")
-        print()
+        logger.info(f"Report written to {report_file}")
+
 
         return report["summary"]["determinism_validated"]
 

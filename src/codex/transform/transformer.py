@@ -29,6 +29,7 @@ from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
 from typing import Any, Optional
+from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -268,7 +269,7 @@ def transform(
 
     Example:
         >>> result = transform(Path("source/"), "20251217-abc123", auto_apply=True)
-        >>> print(f"Generated {len(result.tier_a_patches)} Tier A patches")
+        >>> logger.info(f"Generated {len(result.tier_a_patches)} Tier A patches")
     """
     now = datetime.now(timezone.utc)
     result = TransformResult(snapshot_id=snapshot_id, timestamp=now)

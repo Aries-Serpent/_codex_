@@ -1,4 +1,5 @@
 """
+pytest.importorskip("mlflow")
 Test Resume Training
 
 Test module for resume training.

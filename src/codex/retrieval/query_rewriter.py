@@ -17,7 +17,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Optional
 
-logger = logging.getLogger(__name__)
+from codex.logging.structured_logger import logger
 
 
 class QueryRewriteStrategy(Enum):
@@ -404,8 +404,8 @@ class QueryRewriter:
         rewriter = QueryRewriter(config)
 
         rewritten = rewriter.rewrite("find quick function")
-        print(rewritten.rewritten_query)
-        print(rewritten.expansions)
+        logger.info(rewritten.rewritten_query)
+        logger.info(rewritten.expansions)
     """
 
     STRATEGY_MAP = {

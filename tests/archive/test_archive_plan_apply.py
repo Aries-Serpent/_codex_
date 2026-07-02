@@ -1,3 +1,4 @@
+from codex.logging.structured_logger import logger
 #     assert f", "Condition must be true"
 #     assert f", "Condition must be true"
 # Test module for archive plan apply.
@@ -124,7 +125,7 @@
 #     cli_archive, archive_api = _reload_archive_cli()
 # 
 #     targets = {
-#         tmp_path / "legacy_one.py": "print('legacy-one')\n",
+#         tmp_path / "legacy_one.py": "logger.info('legacy-one')\n",
 #         tmp_path / "pkg" / "legacy_two.py": "value = 42\n",
 #     }
 # 

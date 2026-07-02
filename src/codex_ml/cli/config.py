@@ -13,6 +13,7 @@ import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Optional
+from codex.logging.structured_logger import logger
 
 
 @dataclass
@@ -268,7 +269,7 @@ def _audit_defaults(text: str, mode: str) -> tuple[int, dict[str, Any]]:
 def cmd_audit(args: argparse.Namespace) -> int:
     cfg_path = Path(args.path or _DEFAULT_CONFIG_PATH).expanduser().resolve()
     if not cfg_path.exists():
-        print("[config] configs/base/hydra.yaml not found", file=sys.stderr)
+        logger.error("[config] configs/base/hydra.yaml not found")
         print(
             json.dumps(
                 {
@@ -283,7 +284,7 @@ def cmd_audit(args: argparse.Namespace) -> int:
 
     text = cfg_path.read_text(encoding="utf-8")
     code, payload = _audit_defaults(text, args.audit)
-    print(json.dumps(payload))
+    logger.info(json.dumps(payload))
     return code
 
 

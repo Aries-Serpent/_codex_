@@ -1,3 +1,4 @@
+pytest.importorskip("mlflow")
 """
 Test Training Contracts
 

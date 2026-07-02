@@ -16,7 +16,7 @@ from collections import OrderedDict
 from dataclasses import dataclass, field
 from typing import Any, Optional
 
-logger = logging.getLogger(__name__)
+from codex.logging.structured_logger import logger
 
 
 @dataclass
@@ -113,7 +113,7 @@ class QueryCache:
 
         # Get stats
         stats = cache.get_stats()
-        print(f"Hit rate: {stats.hit_rate:.2%}")
+        logger.info(f"Hit rate: {stats.hit_rate:.2%}")
     """
 
     def __init__(

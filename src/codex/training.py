@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import logging
 
-logger = logging.getLogger(__name__)
+from codex.logging.structured_logger import logger
 
 import argparse  # noqa: E402
 import hashlib  # noqa: E402
@@ -556,10 +556,7 @@ def _run_minilm_training(
                 )
                 system_metrics_logger.start()  # codeql[py/clear-text-logging-sensitive-data]
             except (IOError, OSError) as exc:  # pragma: no cover - monitoring optional
-                print(
-                    f"[monitoring-error] failed to start system metrics logger: {exc}",
-                    file=sys.stderr,
-                )
+                logger.error(f"[monitoring-error] failed to start system metrics logger: {exc}",)
     # Prepare tokenizer/encoding
     if tokenizer is None:
         vocab = sorted({ch for text in corpus for ch in text})
@@ -618,7 +615,7 @@ def _run_minilm_training(
         max_seq_len=data.size(1),
     )
     dev = torch.device(device or ("cuda" if torch.cuda.is_available() else "cpu"))
-    print(f"Using device: {dev}")  # codeql[py/clear-text-logging-sensitive-data]
+    logger.info(f"Using device: {dev}")
     model = model_override.to(dev) if model_override is not None else MiniLM(cfg).to(dev)
     opt = torch.optim.AdamW(model.parameters(), lr=1e-3)
 
@@ -663,18 +660,14 @@ def _run_minilm_training(
                 if load_info and load_info.get("meta"):
                     epoch = load_info["meta"].get("epoch")
                     if epoch is not None:
-                        print(
-                            f"Resumed training from checkpoint epoch {epoch}"
-                        )  # codeql[py/clear-text-logging-sensitive-data]
+                        logger.info(f"Resumed training from checkpoint epoch {epoch}")
             except (ValueError, TypeError, RuntimeError) as e:
                 type(e).__name__
                 logger.debug(
                     "Exception: <ERROR_TYPE>"
                 )  # codeql[py/clear-text-logging-sensitive-data]
                 # Non-fatal: continue training anew if resume fails
-                print(
-                    f"Warning: failed to resume from {resume_from}: <ERROR_TYPE>"
-                )  # codeql[py/clear-text-logging-sensitive-data]
+                logger.info(f"Warning: failed to resume from {resume_from}: <ERROR_TYPE>")
 
     inputs = data[:, :-1].to(dev)
     targets = data[:, 1:].to(dev)
@@ -779,9 +772,7 @@ def _run_minilm_training(
         except (IOError, OSError) as exc:
             type(exc).__name__
             logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
-            print(
-                "[monitoring-error] <ERROR_TYPE>", file=sys.stderr
-            )  # codeql[py/clear-text-logging-sensitive-data]
+            logger.error("[monitoring-error] <ERROR_TYPE>")
 
         if mgr:
             try:
@@ -798,9 +789,7 @@ def _run_minilm_training(
                 logger.debug(
                     "Exception: <ERROR_TYPE>"
                 )  # codeql[py/clear-text-logging-sensitive-data]
-                print(
-                    f"Warning: checkpoint save failed at epoch {epoch + 1}: <ERROR_TYPE>"
-                )  # codeql[py/clear-text-logging-sensitive-data]
+                logger.info(f"Warning: checkpoint save failed at epoch {epoch + 1}: <ERROR_TYPE>")
 
         if writer:
             writer.add_scalar("loss", loss_val, epoch)
@@ -846,9 +835,7 @@ def _run_minilm_training(
                 logger.debug(
                     "Exception: <ERROR_TYPE>"
                 )  # codeql[py/clear-text-logging-sensitive-data]
-                print(
-                    "[monitoring-error] <ERROR_TYPE>", file=sys.stderr
-                )  # codeql[py/clear-text-logging-sensitive-data]
+                logger.error("[monitoring-error] <ERROR_TYPE>")
             emit_validation_metric_record(
                 str(metrics_file),
                 {
@@ -871,9 +858,7 @@ def _run_minilm_training(
         except (IOError, OSError) as exc:
             type(exc).__name__
             logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
-            print(
-                "[monitoring-error] <ERROR_TYPE>", file=sys.stderr
-            )  # codeql[py/clear-text-logging-sensitive-data]
+            logger.error("[monitoring-error] <ERROR_TYPE>")
 
     if system_metrics_logger is not None:
         system_metrics_logger.stop()  # codeql[py/clear-text-logging-sensitive-data]
@@ -1146,9 +1131,7 @@ def main(argv: Optional[list[Any]] = None) -> None:  # pragma: no cover - conven
         return
 
     if not args.use_deeplearning:
-        print(
-            "Symbolic pipeline is not wired for CLI; use programmatic API instead."
-        )  # codeql[py/clear-text-logging-sensitive-data]
+        logger.info("Symbolic pipeline is not wired for CLI; use programmatic API instead.")
         return
 
     run_functional_training(
