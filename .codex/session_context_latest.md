@@ -1,10 +1,10 @@
-# Session Context — 2026-07-02T17:58:48Z
+# Session Context — 2026-07-02T18:11:53Z
 **Branch:** `copilot/explore-codebase-implement-tasks`  **PR:** #5194  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4890` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `4553` (✅)
+- GraphQL remaining: `4986` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -12,21 +12,21 @@
 State: `open`  Draft: `False`  Branch: `copilot/explore-codebase-implement-tasks` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **.github/workflows/release.yml** — `failure` on `copilot/explore-codebase-implement-tasks` (2026-07-02)
-- **.github/workflows/embedding-index-rebuild.yml** — `failure` on `copilot/explore-codebase-implement-tasks` (2026-07-02)
-- **.github/workflows/build-preview-image.yml** — `failure` on `copilot/explore-codebase-implement-tasks` (2026-07-02)
-- **.github/workflows/admin-action-t03.yml** — `failure` on `copilot/explore-codebase-implement-tasks` (2026-07-02)
-- **.github/workflows/progressive-validation.yml** — `failure` on `copilot/explore-codebase-implement-tasks` (2026-07-02)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-02)
+- **Pre-Flight CI Validation** — `failure` on `copilot/explore-codebase-implement-tasks` (2026-07-02)
+- **Machine Readable Governance** — `failure` on `copilot/explore-codebase-implement-tasks` (2026-07-02)
+- **Workflow Compliance Gate** — `failure` on `copilot/explore-codebase-implement-tasks` (2026-07-02)
+- **Unified Governance Check** — `failure` on `copilot/explore-codebase-implement-tasks` (2026-07-02)
 
 ## 📝 Recent Commits
+- `a2c355e7` fix(secrets): annotate doc-example false positives [skip ci] (RP-007) — github-actions[bot] (2026-07-02)
+- `a97d62a5` chore(cascade-detector): remove stale truncated key from cascade_detector_state. — copilot-swe-agent[bot] (2026-07-02)
+- `5ef640b5` fix(compliance): REQ-6 false-positive annotation + REQ-4/REQ-5 compliance refres — copilot-swe-agent[bot] (2026-07-02)
+- `0c84155b` chore: plan blockers fix — copilot-swe-agent[bot] (2026-07-02)
 - `9fd0021b` fix(secrets): annotate doc-example false positives [skip ci] (RP-007) — github-actions[bot] (2026-07-02)
 - `c40ebc8b` Apply remaining changes — copilot-swe-agent[bot] (2026-07-02)
 - `087aa578` chore(pr5194): finalize merge-readiness compliance — copilot-swe-agent[bot] (2026-07-02)
 - `13164564` fix(pr5194): restore merge-readiness scoring — copilot-swe-agent[bot] (2026-07-02)
-- `e0c48f8b` chore: outline PR5194 merge-readiness plan — copilot-swe-agent[bot] (2026-07-02)
-- `89c61ae8` fix(pr5194): address final review feedback — copilot-swe-agent[bot] (2026-07-02)
-- `c8ad2712` chore(pr5194): finalize post-sync compliance markers — copilot-swe-agent[bot] (2026-07-02)
-- `9873199d` Merge remote-tracking branch 'origin/copilot/explore-codebase-implement-tasks' i — copilot-swe-agent[bot] (2026-07-02)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
