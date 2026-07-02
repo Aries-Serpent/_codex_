@@ -564,7 +564,7 @@ class TestModelUtilsSafeLoad:
                 safe_load_sentence_transformer("nonexistent-model-xyz", None)
 
     def test_raises_attributeerror_on_missing_to_empty(self):
-        """When ST raises NotImplementedError (meta tensor) and model has no to_empty, raise RuntimeError."""
+        """Raise RuntimeError when meta fallback returns a model without to_empty()."""
         pytest.importorskip(
             "sentence_transformers",
             reason="sentence_transformers not installed — skipping meta-tensor load tests",
@@ -583,6 +583,51 @@ class TestModelUtilsSafeLoad:
             pytest.raises(RuntimeError, match="to_empty"),
         ):
             _mu.safe_load_sentence_transformer("test-model", None)
+
+    def test_meta_fallback_materializes_and_returns_model(self, monkeypatch):
+        """Meta fallback should materialize to CPU and verify all params are non-meta."""
+        from codex.rag._model_utils import safe_load_sentence_transformer
+
+        fake_st_module = SimpleNamespace()
+        materialized_model = MagicMock()
+        materialized_model.named_parameters.return_value = [
+            ("encoder.weight", SimpleNamespace(is_meta=False))
+        ]
+        meta_model = MagicMock()
+        meta_model.to_empty.return_value = materialized_model
+
+        fake_constructor = MagicMock(
+            side_effect=[NotImplementedError("meta tensor"), meta_model]
+        )
+        fake_st_module.SentenceTransformer = fake_constructor
+        monkeypatch.setitem(sys.modules, "sentence_transformers", fake_st_module)
+
+        result = safe_load_sentence_transformer("test-model", None)
+
+        assert result is materialized_model
+        meta_model.to_empty.assert_called_once_with(device="cpu")
+        materialized_model.eval.assert_called_once_with()
+
+    def test_meta_fallback_raises_when_meta_params_remain(self, monkeypatch):
+        """Meta fallback should fail if any parameter remains on the meta device."""
+        from codex.rag._model_utils import safe_load_sentence_transformer
+
+        fake_st_module = SimpleNamespace()
+        materialized_model = MagicMock()
+        materialized_model.named_parameters.return_value = [
+            ("encoder.weight", SimpleNamespace(is_meta=True))
+        ]
+        meta_model = MagicMock()
+        meta_model.to_empty.return_value = materialized_model
+
+        fake_constructor = MagicMock(
+            side_effect=[NotImplementedError("meta tensor"), meta_model]
+        )
+        fake_st_module.SentenceTransformer = fake_constructor
+        monkeypatch.setitem(sys.modules, "sentence_transformers", fake_st_module)
+
+        with pytest.raises(RuntimeError, match="Meta tensors still present"):
+            safe_load_sentence_transformer("test-model", None)
 
 
 # ===========================================================================
@@ -636,3 +681,47 @@ class TestManageTenantIndicesError:
             index_dir=str(tmp_path),
         )
         assert result.success is False, "Result must not be empty"
+
+
+# ===========================================================================
+# ingestion/chunker.py — SentenceChunker edge cases
+# ===========================================================================
+
+
+class TestSentenceChunkerEdgeCases:
+    """Cover SentenceChunker edge cases for whitespace-only split results."""
+
+    def test_sentence_chunker_handles_whitespace_only_split(self):
+        """Verify SentenceChunker filters out whitespace-only sentences."""
+        from codex.rag.ingestion.chunker import ChunkingConfig, ChunkingStrategy, SentenceChunker
+
+        config = ChunkingConfig(
+            strategy=ChunkingStrategy.SENTENCE,
+            chunk_size=50,
+            min_chunk_size=5,
+        )
+        chunker = SentenceChunker(config)
+        # Text with excessive whitespace that creates empty splits
+        text = "First sentence.    \n\n\n    Second sentence."
+        chunks = chunker.chunk(text)
+        # All chunks should have non-whitespace content
+        for chunk in chunks:
+            assert chunk.text.strip(), f"Chunk should not be whitespace-only: {chunk.text!r}"
+
+    def test_fixed_size_chunker_min_chunk_size_filter(self):
+        """Cover FixedSizeChunker filtering of sub-minimum chunks."""
+        from codex.rag.ingestion.chunker import ChunkingConfig, ChunkingStrategy, FixedSizeChunker
+
+        config = ChunkingConfig(
+            strategy=ChunkingStrategy.FIXED_SIZE,
+            chunk_size=100,
+            min_chunk_size=50,
+            chunk_overlap=10,
+        )
+        chunker = FixedSizeChunker(config)
+        # Short text that would create a small trailing chunk
+        text = "A" * 120  # Will be split into 100 + 30 (with overlap)
+        chunks = chunker.chunk(text)
+        # The trailing 30-char chunk should be filtered out (< min_chunk_size)
+        for chunk in chunks:
+            assert len(chunk.text) >= config.min_chunk_size, f"Chunk too small: {len(chunk.text)}"
