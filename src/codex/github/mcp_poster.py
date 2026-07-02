@@ -59,7 +59,7 @@ AfterMath session-completion cycle.
 from __future__ import annotations
 
 import argparse
-import logging
+from codex.logging.structured_logger import logger
 import sys
 import urllib.error
 import urllib.request
@@ -645,8 +645,7 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "post-comment":
             body = args.body or Path(args.body_file).read_text()
             result = poster.post_pr_comment(args.repo, args.pr, body)
-            print(
-                f"✅ Comment posted: {result.get('html_url', result)}"
+            logger.error(f"✅ Comment posted: {result.get('html_url', result)}"
             )  # codeql[py/clear-text-logging-sensitive-data]
 
         elif args.command == "set-variable":
@@ -762,7 +761,7 @@ def main(argv: list[str] | None = None) -> int:
                 print(
                     f"## Discussion #{disc['number']}: {disc['title']}"
                 )  # codeql[py/clear-text-logging-sensitive-data]
-                print(f"   URL: {disc['url']}")  # codeql[py/clear-text-logging-sensitive-data]
+                logger.info(f"   URL: {disc['url']}")  # codeql[py/clear-text-logging-sensitive-data]
                 print(
                     f"   Category: {disc.get('category', {}).get('name', '?')}"
                 )  # codeql[py/clear-text-logging-sensitive-data]
@@ -904,7 +903,7 @@ def main(argv: list[str] | None = None) -> int:
 
     except RuntimeError as exc:
         type(exc).__name__
-        print("❌ <ERROR_TYPE>", file=sys.stderr)  # codeql[py/clear-text-logging-sensitive-data]
+        print("❌ <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         return 1
     except urllib.error.HTTPError as exc:
         print(
