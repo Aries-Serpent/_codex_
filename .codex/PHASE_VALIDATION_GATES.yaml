@@ -1,0 +1,397 @@
+# Phase Validation Gates
+# This file defines the specific validation criteria for each phase progression
+# from 34.63% baseline to ≥95% target coverage.
+#
+# Reference: .codex/COVERAGE_VALIDATION_CRITERIA.md (Section 3.2)
+# Last Updated: 2026-07-02T02:22:00Z
+
+# ============================================================================
+# BASELINE_PHASE - Current State (Day 0+)
+# ============================================================================
+baseline_phase:
+  coverage_target: 34.63
+  tolerance_pct: 1.5
+  acceptable_range:
+    min: 33.13
+    max: 36.13
+  test_count_min: 2467
+  test_count_min_required: true
+  
+  # Tier-level minimums
+  tier_1_min: 90.0  # Security - maintain
+  tier_2_min: 85.0  # Auth - maintain
+  tier_3_min: 77.0  # Infrastructure - minimum target
+  tier_4_min: 62.0  # Extended - minimum target
+  
+  # Quality metrics - all must pass
+  quality_metrics:
+    test_pass_rate_min: 99.5
+    test_flakiness_max: 1.0
+    regression_rate_max: 1.0
+    test_determinism_min: 99.5
+  
+  # Module-level stability
+  module_loss_tolerance:
+    tier_1: 0.5  # Security can't lose more than 0.5%
+    tier_2: 1.0  # Auth can't lose more than 1.0%
+    tier_3: 2.0  # Infrastructure can't lose more than 2.0%
+    tier_4: 3.0  # Extended can't lose more than 3.0%
+  
+  # Validation duration
+  stability_verification_days: 30
+  approval_required: false
+  escalation_on_breach: unified-coverage-agent
+  
+  success_criteria:
+    - Coverage maintains 34.63% ±1.5% for 30 days
+    - All 2,467+ tests pass consistently
+    - Zero regressions detected
+    - Module tiers maintain minimums
+    - All quality metrics pass
+
+# ============================================================================
+# PHASE_1 - 40% Coverage (Days 3-15)
+# ============================================================================
+phase_1_40_percent:
+  coverage_target: 40.0
+  tolerance_pct: 0.5
+  acceptable_range:
+    min: 39.5
+    max: 40.5
+  test_count_min: 2800
+  test_count_min_required: true
+  delta_from_baseline: 5.37
+  
+  # Tier-level targets
+  tier_1_min: 92.0  # Maintain
+  tier_2_min: 85.0  # Maintain
+  tier_3_min: 77.0  # New minimum (from infrastructure raise)
+  tier_4_min: 70.0  # Raise from 62% to 70% (+8%)
+  
+  # Quality gates - stricter than baseline
+  quality_metrics:
+    test_pass_rate_min: 99.5
+    test_flakiness_max: 0.5
+    regression_rate_max: 0.5
+    test_determinism_min: 100.0
+  
+  # Module-level stability (stricter)
+  module_loss_tolerance:
+    tier_1: 0.3
+    tier_2: 0.5
+    tier_3: 1.0
+    tier_4: 2.0
+  
+  module_gain_expectation:
+    tier_1: 0.0  # Maintain
+    tier_2: 0.0  # Maintain
+    tier_3: 1.0  # Small gain
+    tier_4: 9.0  # Large gain
+  
+  # Priority modules for Phase 1
+  priority_modules:
+    - group: zero_coverage_tier_a_critical
+      count: 8
+      target_gain: "3.5%"
+      test_target: 600
+    - group: zero_coverage_tier_b_high_usage
+      count: 24
+      target_gain: "1.5%"
+      test_target: 550
+    - group: tier_3_cli_modules
+      count: 2
+      target_gain: "0.37%"
+      test_target: 100
+  
+  # Approval requirements
+  approval_required: true
+  approval_body: unified-coverage-agent + human reviewer
+  escalation_on_breach: unified-coverage-agent
+  escalation_timeout_hours: 4
+  
+  success_criteria:
+    - Coverage reaches 40.0% ±0.5%
+    - Zero regressions in existing modules
+    - Tier 4 modules gain +8% on average
+    - All 2,800+ tests pass with ≤0.5% flakiness
+    - Quality metrics all pass
+
+# ============================================================================
+# PHASE_2 - 50% Coverage (Days 16-25)
+# ============================================================================
+phase_2_50_percent:
+  coverage_target: 50.0
+  tolerance_pct: 0.75
+  acceptable_range:
+    min: 49.25
+    max: 50.75
+  test_count_min: 3500
+  test_count_min_required: true
+  delta_from_baseline: 15.37
+  
+  # Tier-level targets
+  tier_1_min: 92.0  # Maintain
+  tier_2_min: 85.0  # Maintain
+  tier_3_min: 80.0  # Incremental raise
+  tier_4_min: 75.0  # Continue raise
+  
+  quality_metrics:
+    test_pass_rate_min: 99.5
+    test_flakiness_max: 0.5
+    regression_rate_max: 0.5
+    test_determinism_min: 100.0
+  
+  module_loss_tolerance:
+    tier_1: 0.3
+    tier_2: 0.5
+    tier_3: 1.0
+    tier_4: 2.0
+  
+  approval_required: true
+  escalation_on_breach: unified-coverage-agent
+  
+  success_criteria:
+    - Coverage reaches 50.0% ±0.75%
+    - Tier 3 gains +4% to reach 80%
+    - Tier 4 gains +5% to reach 75%
+    - 3,500+ tests with stable pass rate
+
+# ============================================================================
+# PHASE_3 - 60% Coverage (Days 26-35)
+# ============================================================================
+phase_3_60_percent:
+  coverage_target: 60.0
+  tolerance_pct: 1.0
+  acceptable_range:
+    min: 59.0
+    max: 61.0
+  test_count_min: 4200
+  test_count_min_required: true
+  delta_from_baseline: 25.37
+  
+  # Tier-level targets
+  tier_1_min: 92.0  # Maintain
+  tier_2_min: 85.0  # Maintain
+  tier_3_min: 85.0  # Continue raise
+  tier_4_min: 80.0  # Continue raise
+  
+  quality_metrics:
+    test_pass_rate_min: 99.0
+    test_flakiness_max: 1.0
+    regression_rate_max: 1.0
+    test_determinism_min: 99.5
+  
+  approval_required: true
+  escalation_on_breach: unified-coverage-agent
+
+# ============================================================================
+# PHASE_4 - 70% Coverage (Days 36-45)
+# ============================================================================
+phase_4_70_percent:
+  coverage_target: 70.0
+  tolerance_pct: 1.0
+  acceptable_range:
+    min: 69.0
+    max: 71.0
+  test_count_min: 5000
+  test_count_min_required: true
+  delta_from_baseline: 35.37
+  
+  # Tier-level targets
+  tier_1_min: 92.0  # Maintain
+  tier_2_min: 85.0  # Maintain
+  tier_3_min: 90.0  # Major milestone reached
+  tier_4_min: 85.0  # Continue raise
+  
+  quality_metrics:
+    test_pass_rate_min: 99.0
+    test_flakiness_max: 1.0
+    regression_rate_max: 1.0
+    test_determinism_min: 99.5
+  
+  approval_required: true
+  escalation_on_breach: ci-emergency-response-agent
+
+# ============================================================================
+# PHASE_5 - 75% Coverage (Days 46-55)
+# ============================================================================
+phase_5_75_percent:
+  coverage_target: 75.0
+  tolerance_pct: 1.0
+  acceptable_range:
+    min: 74.0
+    max: 76.0
+  test_count_min: 5500
+  test_count_min_required: true
+  delta_from_baseline: 40.37
+  
+  # Tier-level targets
+  tier_1_min: 92.0  # Maintain
+  tier_2_min: 85.0  # Maintain
+  tier_3_min: 90.0  # Maintain
+  tier_4_min: 88.0  # High bar
+  
+  approval_required: true
+  escalation_on_breach: ci-emergency-response-agent
+
+# ============================================================================
+# PHASE_6 - 80% Coverage (Days 56-65)
+# ============================================================================
+phase_6_80_percent:
+  coverage_target: 80.0
+  tolerance_pct: 1.0
+  acceptable_range:
+    min: 79.0
+    max: 81.0
+  test_count_min: 6000
+  test_count_min_required: true
+  delta_from_baseline: 45.37
+  
+  # Tier-level targets - all tiers now at high bar
+  tier_1_min: 92.0  # Maintain
+  tier_2_min: 85.0  # Maintain
+  tier_3_min: 92.0  # Maintain high level
+  tier_4_min: 90.0  # High bar
+  
+  approval_required: true
+  escalation_on_breach: ci-emergency-response-agent
+
+# ============================================================================
+# PHASE_7 - 85% Coverage (Days 66-75)
+# ============================================================================
+phase_7_85_percent:
+  coverage_target: 85.0
+  tolerance_pct: 1.0
+  acceptable_range:
+    min: 84.0
+    max: 86.0
+  test_count_min: 6500
+  test_count_min_required: true
+  delta_from_baseline: 50.37
+  
+  # Tier-level targets
+  tier_1_min: 92.0  # Maintain
+  tier_2_min: 85.0  # Maintain
+  tier_3_min: 92.0  # Maintain
+  tier_4_min: 92.0  # High bar
+  
+  approval_required: true
+  escalation_on_breach: ci-emergency-response-agent
+
+# ============================================================================
+# PHASE_8 - 90% Coverage (Days 76-85)
+# ============================================================================
+phase_8_90_percent:
+  coverage_target: 90.0
+  tolerance_pct: 1.0
+  acceptable_range:
+    min: 89.0
+    max: 91.0
+  test_count_min: 7000
+  test_count_min_required: true
+  delta_from_baseline: 55.37
+  
+  # Tier-level targets - all tiers near maximum
+  tier_1_min: 92.0  # Maintain
+  tier_2_min: 85.0  # Maintain
+  tier_3_min: 92.0  # Maintain
+  tier_4_min: 94.0  # Very high bar
+  
+  approval_required: true
+  escalation_on_breach: "@mbaetiong (direct escalation)"
+
+# ============================================================================
+# PHASE_9 - 93% Coverage (Days 86-93)
+# ============================================================================
+phase_9_93_percent:
+  coverage_target: 93.0
+  tolerance_pct: 0.5
+  acceptable_range:
+    min: 92.5
+    max: 93.5
+  test_count_min: 7300
+  test_count_min_required: true
+  delta_from_baseline: 58.37
+  
+  # Tier-level targets - elite bar
+  tier_1_min: 92.0  # Maintain
+  tier_2_min: 85.0  # Maintain
+  tier_3_min: 92.0  # Maintain
+  tier_4_min: 95.0  # Elite bar
+  
+  approval_required: true
+  approval_body: unified-coverage-agent + mutation-testing-agent + @mbaetiong
+  escalation_on_breach: "@mbaetiong (immediate escalation)"
+
+# ============================================================================
+# FINAL_TARGET - ≥95% Coverage (Days 94+)
+# ============================================================================
+final_target_95_percent:
+  coverage_target: 95.0
+  tolerance_pct: 0.5
+  acceptable_range:
+    min: 94.5
+    max: 100.0
+  test_count_min: 7500
+  test_count_min_required: true
+  delta_from_baseline: 60.37
+  
+  # Final tier targets
+  tier_1_min: 92.0  # Maintain
+  tier_2_min: 85.0  # Maintain
+  tier_3_min: 92.0  # Maintain
+  tier_4_min: 95.0  # Maintain
+  
+  quality_metrics:
+    test_pass_rate_min: 99.5
+    test_flakiness_max: 0.0
+    regression_rate_max: 0.0
+    test_determinism_min: 100.0
+  
+  approval_required: true
+  approval_body: unified-coverage-agent + mutation-testing-agent + skills-master-agent + @mbaetiong
+  escalation_on_breach: "@mbaetiong (immediate escalation)"
+  
+  success_criteria:
+    - Coverage reaches and maintains ≥95%
+    - All 7,500+ tests pass with 100% determinism
+    - Zero regressions in any tier
+    - All quality metrics at maximum
+    - Enterprise-grade testing maturity achieved
+
+# ============================================================================
+# Validation Gates - Global Rules
+# ============================================================================
+validation_gates:
+  baseline_comparison:
+    enabled: true
+    check_variance: true
+    check_regression: true
+    check_module_tiers: true
+  
+  test_quality:
+    enabled: true
+    check_pass_rate: true
+    check_flakiness: true
+    check_determinism: true
+    check_isolation: true
+  
+  module_stability:
+    enabled: true
+    track_per_module: true
+    flag_regression: true
+    flag_gains: true
+  
+  escalation:
+    enabled: true
+    levels:
+      - variance: "-1.5 to 0%"
+        action: "Log and continue monitoring"
+      - variance: "-3.0 to -1.5%"
+        action: "Escalate to unified-coverage-agent"
+      - variance: "< -3.0%"
+        action: "Block merge + escalate to @mbaetiong"
+    
+    timeout_hours: 4
+    max_retries: 2
+    auto_escalate_on_timeout: true

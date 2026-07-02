@@ -1,0 +1,248 @@
+{
+  "metadata": {
+    "generated_date": "2026-07-02T02:22:00Z",
+    "baseline_phase": "BASELINE_PHASE",
+    "baseline_coverage": 34.63,
+    "total_modules_tracked": 175,
+    "tier_structure": "4 tiers (Security, Auth, Infrastructure, Extended)"
+  },
+  "tier_1_security_authentication": {
+    "tier_name": "Security & Authentication Core",
+    "status": "COMPREHENSIVE",
+    "target_coverage": 92.6,
+    "minimum_enforced": 90.0,
+    "total_tests": 287,
+    "modules": [
+      {
+        "module": "security_core",
+        "coverage_percent": 92.8,
+        "tests": 35,
+        "status": "STABLE"
+      },
+      {
+        "module": "token_rotation",
+        "coverage_percent": 94.2,
+        "tests": 42,
+        "status": "STABLE"
+      },
+      {
+        "module": "scope_validator",
+        "coverage_percent": 91.5,
+        "tests": 38,
+        "status": "STABLE"
+      },
+      {
+        "module": "decorators",
+        "coverage_percent": 89.6,
+        "tests": 68,
+        "status": "WARN"
+      },
+      {
+        "module": "cve_monitor",
+        "coverage_percent": 94.1,
+        "tests": 104,
+        "status": "STABLE"
+      }
+    ]
+  },
+  "tier_2_auth_systems": {
+    "tier_name": "Authentication Systems",
+    "status": "COMPREHENSIVE",
+    "target_coverage": 86.1,
+    "minimum_enforced": 85.0,
+    "total_tests": 356,
+    "modules": [
+      {
+        "module": "user_store",
+        "coverage_percent": 87.2,
+        "tests": 45,
+        "status": "STABLE"
+      },
+      {
+        "module": "mfa_provider",
+        "coverage_percent": 85.8,
+        "tests": 52,
+        "status": "STABLE"
+      },
+      {
+        "module": "token_manager",
+        "coverage_percent": 86.3,
+        "tests": 48,
+        "status": "STABLE"
+      },
+      {
+        "module": "authenticator",
+        "coverage_percent": 84.9,
+        "tests": 51,
+        "status": "WARN"
+      },
+      {
+        "module": "middleware",
+        "coverage_percent": 88.1,
+        "tests": 55,
+        "status": "STABLE"
+      },
+      {
+        "module": "oauth_manager",
+        "coverage_percent": 85.2,
+        "tests": 60,
+        "status": "STABLE"
+      },
+      {
+        "module": "github_app",
+        "coverage_percent": 86.5,
+        "tests": 25,
+        "status": "STABLE"
+      },
+      {
+        "module": "repositories",
+        "coverage_percent": 85.7,
+        "tests": 20,
+        "status": "STABLE"
+      }
+    ]
+  },
+  "tier_3_infrastructure_cli": {
+    "tier_name": "Infrastructure & CLI",
+    "status": "EXTENDED",
+    "target_coverage": 76.0,
+    "minimum_enforced": 77.0,
+    "total_tests": 192,
+    "modules": [
+      {
+        "module": "cli_core",
+        "coverage_percent": 72.3,
+        "tests": 28,
+        "status": "BELOW_TARGET",
+        "action": "Phase 1 gap-fill needed"
+      },
+      {
+        "module": "codex_ml_cli",
+        "coverage_percent": 75.8,
+        "tests": 32,
+        "status": "STABLE"
+      },
+      {
+        "module": "cli_rag",
+        "coverage_percent": 78.4,
+        "tests": 25,
+        "status": "STABLE"
+      },
+      {
+        "module": "tokenization_cli",
+        "coverage_percent": 76.9,
+        "tests": 35,
+        "status": "STABLE"
+      },
+      {
+        "module": "archive_cli",
+        "coverage_percent": 75.1,
+        "tests": 41,
+        "status": "STABLE"
+      },
+      {
+        "module": "quantum_orchestrator_cli",
+        "coverage_percent": 77.5,
+        "tests": 31,
+        "status": "STABLE"
+      }
+    ]
+  },
+  "tier_4_extended_coverage": {
+    "tier_name": "Extended Coverage & Capabilities",
+    "status": "EXTENDED",
+    "target_coverage": 61.0,
+    "minimum_enforced": 62.0,
+    "total_tests": 1440,
+    "module_groups": [
+      {
+        "group": "rag_embeddings",
+        "coverage_percent": 42.3,
+        "tests": 128,
+        "status": "BELOW_TARGET",
+        "phase_1_goal": 70,
+        "tests_needed": 250
+      },
+      {
+        "group": "safety_moderation",
+        "coverage_percent": 55.8,
+        "tests": 112,
+        "status": "BELOW_TARGET",
+        "phase_1_goal": 70,
+        "tests_needed": 200
+      },
+      {
+        "group": "training_systems",
+        "coverage_percent": 64.2,
+        "tests": 198,
+        "status": "STABLE",
+        "phase_1_goal": 75,
+        "tests_needed": 300
+      },
+      {
+        "group": "data_handling",
+        "coverage_percent": 58.1,
+        "tests": 145,
+        "status": "BELOW_TARGET",
+        "phase_1_goal": 70,
+        "tests_needed": 250
+      },
+      {
+        "group": "agents_orchestration",
+        "coverage_percent": 51.6,
+        "tests": 162,
+        "status": "BELOW_TARGET",
+        "phase_1_goal": 75,
+        "tests_needed": 400
+      },
+      {
+        "group": "capabilities",
+        "coverage_percent": 67.3,
+        "tests": 134,
+        "status": "STABLE",
+        "phase_1_goal": 75,
+        "tests_needed": 150
+      },
+      {
+        "group": "bridge_integration",
+        "coverage_percent": 62.5,
+        "tests": 97,
+        "status": "STABLE",
+        "phase_1_goal": 75,
+        "tests_needed": 200
+      },
+      {
+        "group": "other_modules",
+        "coverage_percent": 68.1,
+        "tests": 464,
+        "status": "STABLE",
+        "phase_1_goal": 75,
+        "tests_needed": 250
+      }
+    ]
+  },
+  "summary": {
+    "total_modules": 175,
+    "coverage_by_tier": {
+      "tier_1": 92.6,
+      "tier_2": 86.1,
+      "tier_3": 76.0,
+      "tier_4": 61.0,
+      "overall": 34.63
+    },
+    "overall_status": "STABLE",
+    "modules_at_minimum": 168,
+    "modules_below_minimum": 7,
+    "modules_needing_phase_1_attention": 12
+  },
+  "phase_1_targets": {
+    "tier_1": "≥92.0% (maintain)",
+    "tier_2": "≥85.0% (maintain)",
+    "tier_3": "77.0% (+1.0%)",
+    "tier_4": "70.0% (+9.0%)",
+    "overall": "40.0% ±0.5%",
+    "test_count": "≥2,800 (+333 tests)"
+  },
+  "last_updated": "2026-07-02T02:22:00Z",
+  "next_review": "2026-07-09T00:00:00Z"
+}
