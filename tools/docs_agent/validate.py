@@ -4,8 +4,11 @@ import argparse
 import json
 from pathlib import Path
 from typing import Any
+from urllib.parse import urljoin
+from urllib.request import pathname2url
 
 import jsonschema
+from jsonschema import RefResolver
 
 from .utils import CANONICAL_JSONL_FILES, parse_common_args, read_jsonl, utc_now, write_json
 
@@ -18,8 +21,29 @@ def _load_schemas(repo_root: Path) -> dict[str, dict[str, Any]]:
     return schemas
 
 
+def _create_resolver(repo_root: Path) -> RefResolver:
+    """Create a RefResolver that can handle relative schema references."""
+    schema_dir = repo_root / "docs-data" / "schemas"
+    
+    # Load all schemas into a store for resolution
+    store: dict[str, dict[str, Any]] = {}
+    for p in sorted(schema_dir.glob("*.schema.json")):
+        schema_content = json.loads(p.read_text(encoding="utf-8"))
+        # Use both the filename and the file:// URL as keys
+        name = p.name.replace(".schema.json", "")
+        store[name] = schema_content
+        # Also store with .schema.json extension
+        store[f"{name}.schema.json"] = schema_content
+    
+    # Create a base URL for the schemas directory
+    base_url = urljoin("file:", pathname2url(str(schema_dir))) + "/"
+    
+    return RefResolver(base_url, {}, store=store)
+
+
 def run_validation(repo_root: Path) -> dict[str, Any]:
     schemas = _load_schemas(repo_root)
+    resolver = _create_resolver(repo_root)
     errors: list[dict[str, Any]] = []
     warnings: list[dict[str, Any]] = []
 
@@ -39,7 +63,8 @@ def run_validation(repo_root: Path) -> dict[str, Any]:
             schema = schemas.get(key.rstrip("s"))
             if schema:
                 try:
-                    jsonschema.validate(row, schema)
+                    validator = jsonschema.Draft202012Validator(schema, resolver=resolver)
+                    validator.validate(row)
                 except jsonschema.ValidationError as exc:
                     errors.append(
                         {
