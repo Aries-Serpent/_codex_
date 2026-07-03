@@ -45,6 +45,7 @@ jobs:
       - name: Add severity and category labels
         uses: actions/github-script@v8
         with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY }}
           script: |
             const issue = context.payload.issue;
             const body = (issue.title + ' ' + (issue.body || '')).toLowerCase();
