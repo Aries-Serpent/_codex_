@@ -9,7 +9,7 @@ from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
-from codex.auth.oauth_manager import (
+from src.codex.auth.oauth_manager import (
     OAuthConfig,
     OAuthManager,
     OAuthToken,

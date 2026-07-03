@@ -1,17 +1,6 @@
-import sys
-
 import pytest
 
-from src.codex.utils.path_extended import get_repo_root
-"""
-
-import sys
-
-import pytest
-
-sys.path.insert(0, str(get_repo_root() / "src"))
-
-from codex.auth.exceptions import (
+from src.codex.auth.exceptions import (
     APIKeyError,
     APIKeyRevokedError,
     AuthenticationError,

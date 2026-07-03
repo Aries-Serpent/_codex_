@@ -265,7 +265,7 @@ jobs:
         \ -1 | cut -d= -f2)\necho \"| Auto-fixable | \\`${FIXABLE}\\` |\"        \
         \               >> \"$GITHUB_STEP_SUMMARY\"\n"
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
   heal:
     name: Auto-heal (iter ${{ matrix.iteration }})
     runs-on: ubuntu-latest
@@ -551,7 +551,7 @@ jobs:
 
         '
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
   baseline-sweep:
     name: 🔄 Universal baseline sweep
     runs-on: ubuntu-latest
@@ -681,7 +681,7 @@ jobs:
         echo \"✅ Sweep commit pushed to ${HEAD_BRANCH}\" >> \"$GITHUB_STEP_SUMMARY\"\
         \n"
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
   escalate:
     name: Escalate to human
     runs-on: ubuntu-latest
@@ -723,7 +723,7 @@ jobs:
 
         '
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
   copilot-escalation:
     name: 🤖 Copilot escalation
     runs-on: ubuntu-latest
@@ -877,4 +877,4 @@ jobs:
         \ \"| PR | #${PR_NUMBER} |\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"| Run | [${RUN_ID}](${RUN_URL})\
         \ |\" >> \"$GITHUB_STEP_SUMMARY\"\n"
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
