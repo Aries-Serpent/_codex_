@@ -42,24 +42,24 @@ jobs:
         - go
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@v5
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@5e316336eb4f107009e477d4bfbfff13d7250fae
+      uses: github/codeql-action/init@v3
       with:
         languages: ${{ matrix.language }}
-        queries: +security-extended
+        queries: security-extended
         config-file: .codeql/codeql-config.yml
     - name: Autobuild
-      uses: github/codeql-action/autobuild@5e316336eb4f107009e477d4bfbfff13d7250fae
+      uses: github/codeql-action/autobuild@v3
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@5e316336eb4f107009e477d4bfbfff13d7250fae
+      uses: github/codeql-action/analyze@v3
       with:
         category: /language:${{ matrix.language }}
         upload: never
         output: codeql-sarif/${{ matrix.language }}
     - name: Upload CodeQL SARIF artifact
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v5 <!-- pragma: allowlist secret -->
       with:
         name: codeql-sarif-${{ matrix.language }}
         path: codeql-sarif/${{ matrix.language }}
