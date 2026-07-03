@@ -541,7 +541,7 @@ class SuccessPredictor:
             all_features.update(sample.features.keys())
 
         # Initialize weights
-        self._weights = {f: 0.0 for f in all_features}
+        self._weights = dict.fromkeys(all_features, 0.0)
         self._bias = 0.0
 
         # Training loop (simple gradient descent)

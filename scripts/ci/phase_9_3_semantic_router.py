@@ -225,7 +225,7 @@ class AgentFilterEngine:
         Returns (filtered_agent_ids, capability_match_ratios).
         """
         if not required_capabilities:
-            return agent_ids, {aid: 1.0 for aid in agent_ids}
+            return agent_ids, dict.fromkeys(agent_ids, 1.0)
 
         match_ratios = {}
         filtered = []
@@ -320,7 +320,7 @@ class SemanticRouter:
                 task_spec.required_capabilities
             )
         else:
-            capability_scores = {aid: 1.0 for aid in candidate_agents}
+            capability_scores = dict.fromkeys(candidate_agents, 1.0)
 
         # Filter by maturity
         candidate_agents = self.filter_engine.filter_by_maturity(

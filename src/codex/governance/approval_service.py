@@ -563,7 +563,7 @@ class ApprovalService:
                 self._audit_event(
                     req,
                     AuditCode.SLA_EXTENSION_LIMIT_REACHED,
-                    f"Extension limit reached, escalating"
+                    "Extension limit reached, escalating"
                 )
                 self.logger.info(f"Extension limit reached for {request_id}, escalating")
                 return req

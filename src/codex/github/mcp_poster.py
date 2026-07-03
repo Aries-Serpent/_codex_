@@ -59,6 +59,7 @@ AfterMath session-completion cycle.
 from __future__ import annotations
 
 import argparse
+import logging
 import sys
 import urllib.error
 import urllib.request

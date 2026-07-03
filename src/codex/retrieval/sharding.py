@@ -178,7 +178,7 @@ class ConsistentHashRing:
         Returns:
             Dictionary mapping shard_id to count
         """
-        distribution: dict[int, int] = {i: 0 for i in range(self.num_shards)}
+        distribution: dict[int, int] = dict.fromkeys(range(self.num_shards), 0)
 
         for key in keys:
             shard_id = self.get_shard(key)
