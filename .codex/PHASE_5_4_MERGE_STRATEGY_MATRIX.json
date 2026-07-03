@@ -1,0 +1,683 @@
+{
+  "metadata": {
+    "campaign": "Phase 3-5 Multi-Agent Deployment",
+    "phase": "Phase 5 - Repository Organization (Agent 4)",
+    "document": "Merge Strategy Matrix",
+    "version": "1.0.0",
+    "created": "2026-02-17",
+    "total_targets": 25,
+    "priority_categories": 6
+  },
+
+  "category_A_architecture_docs": {
+    "description": "Consolidate architecture documentation (5 targets)",
+    "targets": [
+      {
+        "id": "A1",
+        "name": "Architecture Documentation Master Consolidation",
+        "priority": "CRITICAL",
+        "target_files": 29,
+        "expected_result_files": 8,
+        "reduction_percentage": 72,
+        "source_locations": [
+          "docs/arch/",
+          "docs/architecture/",
+          "docs/ARCHITECTURE.md",
+          "docs/Architecture.md",
+          "docs/ARCHITECTURE_*.md"
+        ],
+        "target_location": "docs/architecture/",
+        "merge_strategy": "hierarchical_consolidation",
+        "merge_steps": [
+          "1. Identify all ARCHITECTURE*.md files at root and subdirectories",
+          "2. Create unified architecture/ARCHITECTURE.md with v1.0.0 content",
+          "3. Move specialized architectures to subdirectories (ast/, cognitive_brain/, etc.)",
+          "4. Create architecture/INDEX.md with navigation",
+          "5. Archive docs/arch/ completely to docs/archive/arch_v1/",
+          "6. Create redirects in docs/arch/README.md"
+        ],
+        "content_mapping": {
+          "ARCHITECTURE.md": "→ architecture/ARCHITECTURE.md (primary)",
+          "ARCHITECTURE_BLUEPRINT.md": "→ architecture/BLUEPRINT.md (version history)",
+          "ARCHITECTURE_CONSOLIDATED.md": "→ archive/ (merged into primary)",
+          "AST_ARCHITECTURE.md": "→ architecture/ast/ARCHITECTURE.md",
+          "docs/arch/*": "→ docs/archive/arch_v1/"
+        },
+        "merge_precedence": [
+          "1. Primary: docs/architecture/ARCHITECTURE.md (if exists)",
+          "2. Secondary: Latest dated ARCHITECTURE_*.md",
+          "3. Tertiary: docs/ARCHITECTURE.md at root",
+          "4. Archive: All earlier versions"
+        ],
+        "metadata_preservation": {
+          "created_dates": "Include in frontmatter as version history",
+          "authors": "Consolidate author lists",
+          "versions": "Add version history section"
+        },
+        "link_updates_required": 15,
+        "archive_location": "docs/archive/pre_consolidation_backups/architecture/",
+        "rollback_procedure": "restore_from_backup('architecture')",
+        "dependencies": ["Week 1 schema finalized"],
+        "risk_level": "HIGH",
+        "risk_mitigation": "Manual review for conflicting sections, preserve version history"
+      },
+
+      {
+        "id": "A2",
+        "name": "Cognitive Brain Documentation Consolidation",
+        "priority": "HIGH",
+        "target_files": 8,
+        "expected_result_files": 3,
+        "source_locations": [
+          "docs/cognitive_brain/",
+          "docs/COGNITIVE_BRAIN_*.md",
+          ".codex/COGNITIVE_BRAIN*.md"
+        ],
+        "target_location": "docs/cognitive_brain/",
+        "merge_strategy": "version_consolidation",
+        "content_mapping": {
+          "COGNITIVE_BRAIN_STATUS_V*.md": "→ cognitive_brain/STATUS.md with version history",
+          "COGNITIVE_BRAIN_PHASE_*.md": "→ cognitive_brain/PHASE_REFERENCE.md",
+          "COGNITIVE_BRAIN_ARCHITECTURE.md": "→ cognitive_brain/ARCHITECTURE.md (primary)"
+        },
+        "merge_precedence": ["Latest version first", "Older versions in changelog section"],
+        "link_updates_required": 8,
+        "archive_location": "docs/archive/pre_consolidation_backups/cognitive_brain/",
+        "rollback_procedure": "restore_from_backup('cognitive_brain')"
+      },
+
+      {
+        "id": "A3",
+        "name": "Codebase Cognitive Map Consolidation",
+        "priority": "MEDIUM",
+        "target_files": 4,
+        "expected_result_files": 1,
+        "source_locations": [
+          "docs/system/CODEBASE_COGNITIVE_MAP.md",
+          ".codex/CODEBASE_COGNITIVE_MAP*.md",
+          "docs/CODEBASE_COGNITIVE_MAP.md"
+        ],
+        "target_location": "docs/system/CODEBASE_COGNITIVE_MAP.md",
+        "merge_strategy": "version_consolidation_single_file",
+        "content_mapping": {
+          "Latest dated version": "→ Primary CODEBASE_COGNITIVE_MAP.md",
+          "Older versions": "→ Archive with redirects"
+        },
+        "merge_precedence": ["Most recent version with date"],
+        "link_updates_required": 5,
+        "archive_location": "docs/archive/cognitive_maps/"
+      },
+
+      {
+        "id": "A4",
+        "name": "Roadmap Documentation Consolidation",
+        "priority": "HIGH",
+        "target_files": 12,
+        "expected_result_files": 4,
+        "source_locations": [
+          "docs/ROADMAP.md",
+          "docs/roadmap/",
+          "docs/plans/ROADMAP*.md",
+          "docs/plans/*_ROADMAP*.md"
+        ],
+        "target_location": "docs/roadmap/",
+        "merge_strategy": "hierarchical_by_cycle",
+        "content_mapping": {
+          "docs/ROADMAP.md": "→ roadmap/INDEX.md (current overview)",
+          "docs/roadmap/*": "→ roadmap/ROADMAP.md (primary)",
+          "Cycle-specific": "→ roadmap/cycles/CYCLE_*.md",
+          "Completed cycles": "→ docs/archive/roadmap_cycles/"
+        },
+        "structure_after_merge": [
+          "docs/roadmap/",
+          "├── INDEX.md (overview + latest cycle)",
+          "├── ROADMAP.md (current cycle detail)",
+          "├── cycles/",
+          "│   ├── CYCLE_1.md",
+          "│   ├── CYCLE_2.md",
+          "│   └── ...",
+          "├── archive/ (completed cycles)"
+        ],
+        "link_updates_required": 12,
+        "rollback_procedure": "restore_from_backup('roadmap')"
+      },
+
+      {
+        "id": "A5",
+        "name": "System Documentation Consolidation",
+        "priority": "MEDIUM",
+        "target_files": 5,
+        "expected_result_files": 3,
+        "source_locations": [
+          "docs/system/",
+          "docs/codex/",
+          "docs/SYSTEM*.md"
+        ],
+        "target_location": "docs/system/",
+        "merge_strategy": "topical_organization",
+        "content_mapping": {
+          "CODEBASE_DASHBOARD.md": "→ system/DASHBOARD.md",
+          "System*.md": "→ system/OVERVIEW.md (consolidated)"
+        },
+        "merge_precedence": ["Most recent, most comprehensive"]
+      }
+    ],
+    "category_completion_criteria": [
+      "All architecture docs have canonical location",
+      "Redirect files in place for old locations",
+      "Index files created for new structure",
+      "YAML frontmatter added to all files",
+      "Link validation passed for 100% of references"
+    ]
+  },
+
+  "category_B_agent_docs": {
+    "description": "Consolidate agent documentation (6 targets)",
+    "targets": [
+      {
+        "id": "B1",
+        "name": "Agent Directory Consolidation",
+        "priority": "CRITICAL",
+        "target_files": 20,
+        "expected_result_files": 12,
+        "reduction_percentage": 40,
+        "source_locations": [
+          "docs/agent/ (14 files)",
+          "docs/agents/ (6 files)",
+          "docs/agents.md"
+        ],
+        "target_location": "docs/agents/",
+        "merge_strategy": "directory_merger_with_reorganization",
+        "new_structure": {
+          "docs/agents/": {
+            "INDEX.md": "Master index for all agent docs",
+            "README.md": "Agent system overview",
+            "custom-agents/": {
+              "ARCHITECTURE.md": "Agent architecture overview",
+              "DEVELOPMENT_GUIDE.md": "How to develop custom agents",
+              "CATALOG.md": "Available agents and their capabilities",
+              "TEMPLATES.md": "Code and prompt templates"
+            },
+            "quick-reference/": {
+              "TOKEN_QUICK_REFERENCE.md": "Token usage at a glance",
+              "MCP_QUICK_START.md": "MCP integration quick start",
+              "SELECTION_FRAMEWORK.md": "How to choose the right agent"
+            },
+            "workflows/": {
+              "INTERACTION_PROTOCOL.md": "How to interact with agents",
+              "COORDINATION_WORKFLOWS.md": "Multi-agent coordination patterns",
+              "REPEATABLE_PROCESSES.md": "Agent-powered processes"
+            },
+            "setup/": {
+              "COPILOT_SETUP_COMPLETE_GUIDE.md": "Full setup instructions",
+              "COPILOT_VALIDATION.md": "Verify setup is correct",
+              "TOKEN_GUIDE.md": "Understanding and managing tokens",
+              "COGNITIVE_APP_CONNECTION.md": "Connect to cognitive app"
+            },
+            "archive/": {
+              "_description": "Old agent docs with redirects"
+            }
+          }
+        },
+        "source_to_target_mapping": {
+          "docs/agent/AGENT_MERGE_READINESS_INTEGRATION.md": "→ custom-agents/DEVELOPMENT_GUIDE.md",
+          "docs/agent/AI_AGENT_WORKFLOW_INTEGRATION.md": "→ workflows/INTERACTION_PROTOCOL.md",
+          "docs/agent/CUSTOM_AGENT_SELECTION_FRAMEWORK.md": "→ quick-reference/SELECTION_FRAMEWORK.md",
+          "docs/agent/CUSTOM_AGENT_INTERACTION_PROTOCOL.md": "→ workflows/INTERACTION_PROTOCOL.md (merge with B1)",
+          "docs/agent/CUSTOM_AGENT_COORDINATION_WORKFLOWS.md": "→ workflows/COORDINATION_WORKFLOWS.md",
+          "docs/agent/CUSTOM_AGENT_REPEATABLE_PROCESSES.md": "→ workflows/REPEATABLE_PROCESSES.md",
+          "docs/agent/GITHUB_COPILOT_AGENTS_PRODUCTION_SPECIFICATION.md": "→ custom-agents/ARCHITECTURE.md",
+          "docs/agents/MCP_IMPLEMENTATION_GUIDE.md": "→ quick-reference/MCP_QUICK_START.md",
+          "docs/agents/CUSTOM_AGENT_TOKEN_QUICK_REFERENCE.md": "→ quick-reference/TOKEN_QUICK_REFERENCE.md",
+          "docs/agents.md": "→ agents/INDEX.md (merge content)"
+        },
+        "merge_strategy_details": [
+          "1. Create new docs/agents/ directory structure",
+          "2. For overlapping content (INTERACTION_PROTOCOL): merge docs/agent/ + docs/agents/ versions",
+          "3. Preserve all unique content from both locations",
+          "4. Create proper YAML frontmatter for all files",
+          "5. Move docs/agent/* to docs/archive/agent_docs_v1/",
+          "6. Update all references to point to new docs/agents/ locations"
+        ],
+        "merge_precedence": [
+          "INTERACTION_PROTOCOL: Combine both versions, keep most comprehensive",
+          "TOKEN_GUIDE: Keep latest version",
+          "Other files: Move to appropriate subdirectory"
+        ],
+        "link_updates_required": 25,
+        "archive_location": "docs/archive/pre_consolidation_backups/agent_docs/",
+        "rollback_procedure": "restore_from_backup('agent_docs') && mv docs/agent back",
+        "risk_level": "CRITICAL",
+        "risk_mitigation": "Manual merge of overlapping INTERACTION_PROTOCOL docs, comprehensive testing of links"
+      },
+
+      {
+        "id": "B2",
+        "name": "Copilot Setup Documentation Consolidation",
+        "priority": "HIGH",
+        "target_files": 4,
+        "expected_result_files": 1,
+        "source_locations": [
+          "docs/agent/COPILOT_SETUP_VALIDATION.md",
+          "docs/agent/COPILOT_SETUP_STEPS_GUARD.md",
+          "docs/agent/COPILOT_TOKEN_GUIDE.md",
+          "docs/setup/COPILOT_SETUP.md"
+        ],
+        "target_location": "docs/agents/setup/COPILOT_SETUP_COMPLETE_GUIDE.md",
+        "merge_strategy": "section_consolidation",
+        "content_sections": [
+          "Introduction: Overview of Copilot setup process",
+          "Prerequisites: What's needed before starting",
+          "Step-by-step: Setup steps from COPILOT_SETUP_STEPS_GUARD.md",
+          "Token management: Token guide from COPILOT_TOKEN_GUIDE.md",
+          "Validation: Validation checks from COPILOT_SETUP_VALIDATION.md",
+          "Troubleshooting: Common setup issues",
+          "See also: Related setup guides"
+        ],
+        "merge_precedence": [
+          "1. Use most recent version as base",
+          "2. Append any unique sections from other versions",
+          "3. Preserve version history in changelog"
+        ],
+        "archive_location": "docs/archive/copilot_setup_guides/",
+        "link_updates_required": 8
+      },
+
+      {
+        "id": "B3",
+        "name": "Custom Agent Development Documentation",
+        "priority": "HIGH",
+        "target_files": 3,
+        "expected_result_files": 1,
+        "source_locations": [
+          "docs/agents/CUSTOM_AGENT_SELECTION_FRAMEWORK.md",
+          "docs/agent/AGENT_MERGE_READINESS_INTEGRATION.md",
+          "docs/agent/CUSTOM_AGENT_DOCUMENTATION_INDEX.md"
+        ],
+        "target_location": "docs/agents/custom-agents/DEVELOPMENT_GUIDE.md",
+        "merge_strategy": "linear_consolidation",
+        "structure": [
+          "Overview: What are custom agents",
+          "Selection framework: How to choose right agent type",
+          "Development guide: Building custom agents",
+          "Merge readiness: Integration patterns",
+          "See also: Related guides"
+        ]
+      },
+
+      {
+        "id": "B4",
+        "name": "GitHub Copilot Integration Documentation",
+        "priority": "MEDIUM",
+        "target_files": 3,
+        "expected_result_files": 2,
+        "source_locations": [
+          "docs/agent/GITHUB_COPILOT_AGENTS_PRODUCTION_SPECIFICATION.md",
+          "docs/agent/CODESPACE_COPILOT_AGENT_GUIDE.md",
+          "docs/agent/GITHUB_APP_CLI_MAPPING.md"
+        ],
+        "target_location": "docs/agents/custom-agents/",
+        "merge_strategy": "topic_split",
+        "topic_breakdown": {
+          "ARCHITECTURE.md": "From GITHUB_COPILOT_AGENTS_PRODUCTION_SPECIFICATION.md",
+          "CODESPACE_INTEGRATION.md": "From CODESPACE_COPILOT_AGENT_GUIDE.md"
+        }
+      },
+
+      {
+        "id": "B5",
+        "name": "Agent Code and Prompt Templates Consolidation",
+        "priority": "MEDIUM",
+        "target_files": 2,
+        "expected_result_files": 1,
+        "source_locations": [
+          "docs/agents/CODE_TEMPLATES.md",
+          "docs/agents/PROMPT_TEMPLATES.md"
+        ],
+        "target_location": "docs/agents/custom-agents/TEMPLATES.md",
+        "merge_strategy": "combined_reference",
+        "sections": [
+          "Code templates: From CODE_TEMPLATES.md",
+          "Prompt templates: From PROMPT_TEMPLATES.md",
+          "Best practices: Combined insights"
+        ]
+      },
+
+      {
+        "id": "B6",
+        "name": "Agent Continuation and Post-Merge Documentation",
+        "priority": "MEDIUM",
+        "target_files": 2,
+        "expected_result_files": 1,
+        "source_locations": [
+          "docs/agents/POST_MERGE_ALIGNMENT_PROMPT.md",
+          "docs/plans/AGENT_CONTINUATION_PROMPT.md"
+        ],
+        "target_location": "docs/agents/workflows/CONTINUATION_PROTOCOL.md",
+        "merge_strategy": "workflow_documentation"
+      }
+    ]
+  },
+
+  "category_C_phase_planning": {
+    "description": "Consolidate Phase and Planning docs (7 targets)",
+    "targets": [
+      {
+        "id": "C1",
+        "name": "Phase Documentation Master Consolidation",
+        "priority": "CRITICAL",
+        "target_files": 19,
+        "expected_result_files": 8,
+        "source_locations": [
+          "docs/PHASE*.md (11 files at root)",
+          "docs/plans/PHASE_*.md (8 files)",
+          "docs/archive/phases/ (historical)"
+        ],
+        "target_location": "docs/phases/",
+        "merge_strategy": "chronological_organization_by_status",
+        "new_structure": {
+          "docs/phases/": {
+            "PHASE_HISTORY_TIMELINE.md": "Master index and phase overview",
+            "active/": {
+              "PHASE_1.md": "Current/active Phase 1",
+              "PHASE_2.md": "Current/active Phase 2",
+              "_description": "Active phases 1-12"
+            },
+            "completed/": {
+              "PHASE_0.md": "Completed Phase 0 (kickoff)",
+              "_description": "Archive of completed phases"
+            },
+            "archive/": {
+              "_description": "Old versions and deprecated phases"
+            }
+          }
+        },
+        "merge_precedence": [
+          "1. Categorize by phase number and completion status",
+          "2. For each phase: keep latest version only",
+          "3. Archive all prior versions with dates"
+        ],
+        "link_updates_required": 30,
+        "rollback_procedure": "restore_from_backup('phases')"
+      },
+
+      {
+        "id": "C2",
+        "name": "Continuation Prompts Consolidation",
+        "priority": "HIGH",
+        "target_files": 5,
+        "expected_result_files": 1,
+        "source_locations": [
+          "docs/CONTINUATION_PROMPT_*.md",
+          "docs/plans/CONTINUATION_PROMPT_*.md",
+          "docs/AUTONOMOUS_CONTINUATION_PROMPT*.md",
+          "docs/COGNITIVE_BRAIN_CONTINUATION*.md"
+        ],
+        "target_location": "docs/phases/CONTINUATION_PROMPTS.md",
+        "merge_strategy": "section_by_phase",
+        "structure": [
+          "## Phase 1 Continuation Prompt",
+          "## Phase 2 Continuation Prompt",
+          "## ...",
+          "## Version History"
+        ],
+        "merge_notes": "Consolidate all continuation prompts into single document with sections per phase"
+      },
+
+      {
+        "id": "C3",
+        "name": "Plans Directory Reorganization",
+        "priority": "HIGH",
+        "target_files": 93,
+        "expected_result_files": 50,
+        "source_locations": [
+          "docs/plans/ (93 files)"
+        ],
+        "target_location": "docs/plans/ (reorganized)",
+        "merge_strategy": "archive_completed_plans_and_consolidate_active",
+        "implementation_steps": [
+          "1. Audit all 93 files for completion status",
+          "2. Identify 'active' plans (status=draft OR status=in_progress OR updated within 6 months)",
+          "3. Move completed plans to docs/archive/plans/completed/",
+          "4. Move obsolete plans to docs/archive/plans/obsolete/",
+          "5. Group remaining active plans by category:",
+          "   - AST_*.md → docs/plans/ast/ (20 files → 5)",
+          "   - AUTONOMOUS_*.md → docs/plans/autonomous/ (10 files → 3)",
+          "   - etc.",
+          "6. Create docs/plans/INDEX.md (master index of active plans)"
+        ],
+        "expected_reduction": "93 → 50 files (46% reduction in active docs)",
+        "archive_location": "docs/archive/plans/",
+        "link_updates_required": 20,
+        "risk_level": "MEDIUM",
+        "risk_mitigation": "Clear status field in YAML frontmatter, manual review of uncertain plans"
+      }
+    ]
+  },
+
+  "category_D_configuration": {
+    "description": "Consolidate Configuration documentation (3 targets)",
+    "targets": [
+      {
+        "id": "D1",
+        "name": "Configuration Documentation Master Consolidation",
+        "priority": "CRITICAL",
+        "target_files": 45,
+        "expected_result_files": 12,
+        "reduction_percentage": 73,
+        "source_locations": [
+          "docs/config/ (unknown count)",
+          "docs/configs/ (unknown count)",
+          "docs/configuration/ (primary)"
+        ],
+        "target_location": "docs/configuration/",
+        "merge_strategy": "canonical_location_with_subdirectories",
+        "new_structure": {
+          "docs/configuration/": {
+            "INDEX.md": "Configuration master index",
+            "README.md": "Configuration overview",
+            "guides/": {
+              "HYDRA_QUICK_START.md": "5-minute hydra start",
+              "HYDRA_ADVANCED.md": "Advanced hydra features",
+              "OMEGACONF_SCHEMA.md": "OmegaConf schema reference",
+              "MIGRATION_GUIDE.md": "Migrating configurations"
+            },
+            "reference/": {
+              "ENVIRONMENT_VARIABLES.md": "All env vars",
+              "HYDRA_REFERENCE.md": "Complete hydra spec",
+              "SCHEMA_REFERENCE.md": "Config schema reference",
+              "TROUBLESHOOTING.md": "Configuration issues"
+            },
+            "patterns/": {
+              "CONVENTIONS.md": "Config naming conventions",
+              "BEST_PRACTICES.md": "Config best practices"
+            },
+            "archive/": {
+              "_description": "Old config docs with redirects"
+            }
+          }
+        },
+        "consolidation_plan": [
+          "1. List all files in docs/config/, docs/configs/, docs/configuration/",
+          "2. Identify content overlaps",
+          "3. Merge overlapping content preserving both perspectives",
+          "4. Organize into guides/, reference/, patterns/ structure",
+          "5. Create proper INDEX.md for navigation",
+          "6. Archive docs/config/ and docs/configs/ completely"
+        ],
+        "merge_precedence": [
+          "1. docs/configuration/ files (already canonical)",
+          "2. Merge with docs/configs/ files (check for more recent versions)",
+          "3. Archive docs/config/ files"
+        ],
+        "link_updates_required": 18,
+        "archive_location": "docs/archive/pre_consolidation_backups/config/",
+        "rollback_procedure": "restore_from_backup('config') && mv docs/{configs,config} back"
+      }
+    ]
+  },
+
+  "category_E_indices": {
+    "description": "Consolidate Index and Navigation documentation (4 targets)",
+    "targets": [
+      {
+        "id": "E1",
+        "name": "Master Index Consolidation",
+        "priority": "HIGH",
+        "target_files": 4,
+        "expected_result_files": 2,
+        "source_locations": [
+          "docs/MASTER_INDEX.md",
+          "docs/DOCUMENTATION_INDEX.md",
+          "docs/ARCHITECTURE_INDEX.md",
+          "docs/quality/DOCUMENTATION_AUDIT_INDEX.md"
+        ],
+        "target_location": "docs/INDEX.md",
+        "merge_strategy": "unified_topical_index",
+        "structure": {
+          "docs/INDEX.md": {
+            "sections": [
+              "Quick Start Links (from MASTER_INDEX)",
+              "Architecture & System Design (from ARCHITECTURE_INDEX)",
+              "Agent System (merged from all)",
+              "Development & Testing",
+              "CI/CD & Operations",
+              "Configuration",
+              "Advanced Topics",
+              "Archive & History"
+            ]
+          }
+        },
+        "merge_strategy_details": [
+          "1. Start with docs/MASTER_INDEX.md as primary",
+          "2. Merge architecture links from ARCHITECTURE_INDEX.md",
+          "3. Merge topic organization from DOCUMENTATION_INDEX.md",
+          "4. Add audit findings index from DOCUMENTATION_AUDIT_INDEX.md",
+          "5. Remove redundant links",
+          "6. Create unified navigation structure"
+        ],
+        "keep_specialized_indices": [
+          "docs/agents/INDEX.md (agent-specific)",
+          "docs/configuration/INDEX.md (config-specific)",
+          "Other category-specific indices"
+        ],
+        "link_updates_required": 10,
+        "archive_location": "docs/archive/pre_consolidation_backups/indices/"
+      },
+
+      {
+        "id": "E2",
+        "name": "Missing Index/README File Creation",
+        "priority": "HIGH",
+        "target_files": 0,
+        "expected_result_files": 12,
+        "affected_directories": [
+          "docs/admin/",
+          "docs/ci/",
+          "docs/cli/",
+          "docs/compliance/",
+          "docs/database/",
+          "docs/infrastructure/",
+          "docs/deployment/",
+          "docs/monitoring/",
+          "docs/security/",
+          "docs/testing/",
+          "docs/validation/",
+          "docs/templates/"
+        ],
+        "create_strategy": "use_standard_index_template",
+        "template_structure": [
+          "# [Category] Documentation",
+          "",
+          "**Purpose**: [Brief description of category]",
+          "**Last Updated**: [Date]",
+          "",
+          "## Quick Links",
+          "- [Primary Guide](primary.md)",
+          "- [Reference](reference.md)",
+          "- [Troubleshooting](troubleshooting.md)",
+          "",
+          "## Contents",
+          "- [File 1](file1.md) - Description",
+          "- [File 2](file2.md) - Description",
+          "",
+          "## See Also",
+          "- [Related Category](../related/)"
+        ]
+      }
+    ]
+  },
+
+  "category_F_status_archive": {
+    "description": "Consolidate Status and Audit documentation (3 targets)",
+    "targets": [
+      {
+        "id": "F1",
+        "name": "Status Updates Consolidation",
+        "priority": "MEDIUM",
+        "target_files": 43,
+        "expected_result_files": 2,
+        "source_locations": [
+          "docs/status_updates/ (43 files - cluttering docs)"
+        ],
+        "target_location": "docs/archive/status_updates/",
+        "merge_strategy": "archive_with_summary",
+        "consolidation_plan": [
+          "1. Create docs/status/CURRENT_STATUS.md (summary of current state)",
+          "2. Move all docs/status_updates/*.md to docs/archive/status_updates/",
+          "3. Create index of archived status files for reference",
+          "4. Maintain redirect in docs/status_updates/ if referenced"
+        ],
+        "archive_location": "docs/archive/status_updates/",
+        "note": "Not consolidating content, just archiving time-series status files"
+      },
+
+      {
+        "id": "F2",
+        "name": "Audit Reports Consolidation",
+        "priority": "MEDIUM",
+        "target_files": 8,
+        "expected_result_files": 3,
+        "source_locations": [
+          "docs/quality/DOCUMENTATION_AUDIT*.md",
+          "DOCUMENTATION_AUDIT*.md (root)",
+          "docs/quality/EXECUTIVE_SUMMARY*.md"
+        ],
+        "target_location": "docs/quality/",
+        "merge_strategy": "archive_with_summary",
+        "consolidation_plan": [
+          "1. Keep docs/quality/DOCUMENTATION_AUDIT_INDEX.md as current",
+          "2. Archive DOCUMENTATION_AUDIT_REPORT.json to docs/archive/audits/",
+          "3. Archive old versions with dates",
+          "4. Create docs/quality/AUDIT_SUMMARY.md (current summary)"
+        ],
+        "archive_location": "docs/archive/audits/"
+      }
+    ]
+  },
+
+  "consolidation_summary": {
+    "total_targets": 25,
+    "estimated_file_reduction": {
+      "before": 1655,
+      "after": 1400,
+      "reduction_percentage": 15,
+      "duplicate_files_removed": 180,
+      "archive_files_maintained": 155
+    },
+    "timeline_summary": {
+      "weeks": 6,
+      "critical_path_items": 3,
+      "parallelizable_items": 8,
+      "estimated_total_effort": "240-300 person-hours"
+    },
+    "success_criteria": [
+      "100% of 25 high-priority targets consolidated",
+      "100% content preservation (zero information loss)",
+      "<20 duplicate content files remaining",
+      "All redirects working properly",
+      "100% YAML schema compliance",
+      "Link validation >99.5%"
+    ]
+  }
+}
