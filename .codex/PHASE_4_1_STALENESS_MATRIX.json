@@ -1,0 +1,205 @@
+{
+  "audit_timestamp": "2026-07-03T04:16:00Z",
+  "audit_scope": {
+    "total_files": 3334,
+    "docs_directory_files": 1788,
+    "codex_directory_files": 1546,
+    "total_lines": 476738,
+    "quality_rubric_version": "1.0"
+  },
+  "quality_scores": {
+    "overall": 0.68,
+    "accuracy": 0.75,
+    "completeness": 0.65,
+    "freshness": 0.70,
+    "link_health": 0.60,
+    "structure": 0.62
+  },
+  "staleness_metrics": {
+    "files_fresh_7_days": 3334,
+    "files_stale_30_90_days": 0,
+    "files_very_stale_90_plus_days": 0,
+    "average_age_days": 1.0,
+    "critical_docs_status": "ALL_FRESH"
+  },
+  "critical_documentation": [
+    {
+      "path": "README.md",
+      "priority": "CRITICAL",
+      "lines": 500,
+      "staleness_days": 1,
+      "quality_score": 0.85,
+      "status": "FRESH",
+      "action_required": "NONE"
+    },
+    {
+      "path": "docs/ARCHITECTURE.md",
+      "priority": "CRITICAL",
+      "lines": 2449,
+      "staleness_days": 1,
+      "quality_score": 0.72,
+      "status": "REVIEW_NEEDED",
+      "action_required": "UPDATE_DIAGRAMS"
+    },
+    {
+      "path": "docs/API_REFERENCE.md",
+      "priority": "CRITICAL",
+      "lines": 1999,
+      "staleness_days": 1,
+      "quality_score": 0.55,
+      "status": "STALE",
+      "action_required": "CONSOLIDATE_FIX-016"
+    },
+    {
+      "path": "docs/configuration/README.md",
+      "priority": "HIGH",
+      "lines": 450,
+      "staleness_days": 1,
+      "quality_score": 0.70,
+      "status": "FRESH",
+      "action_required": "NONE"
+    }
+  ],
+  "consolidation_severity": {
+    "high_severity": {
+      "PHASE_docs": {
+        "count": 132,
+        "duplication_ratio": 0.85,
+        "potential_savings_pct": "40-50",
+        "recommendation": "ARCHIVE_OLD_CREATE_INDEX"
+      },
+      "AGENT_docs": {
+        "count": 61,
+        "duplication_ratio": 0.72,
+        "potential_savings_pct": "35-40",
+        "recommendation": "CONSOLIDATE_INTO_HIERARCHY"
+      },
+      "INDEX_docs": {
+        "count": 129,
+        "duplication_ratio": 0.88,
+        "potential_savings_pct": "30-40",
+        "recommendation": "CREATE_MASTER_INDEX"
+      }
+    },
+    "medium_severity": {
+      "STATUS_docs": {
+        "count": 72,
+        "duplication_ratio": 0.65,
+        "potential_savings_pct": "25-35",
+        "recommendation": "CONSOLIDATE_WITH_SCHEMA"
+      },
+      "GUIDE_docs": {
+        "count": 117,
+        "duplication_ratio": 0.58,
+        "potential_savings_pct": "30-40",
+        "recommendation": "REORGANIZE_WITH_TEMPLATE"
+      },
+      "README_docs": {
+        "count": 55,
+        "duplication_ratio": 0.72,
+        "potential_savings_pct": "20-30",
+        "recommendation": "MERGE_PARENT_LEVEL"
+      },
+      "CONFIG_docs": {
+        "count": 20,
+        "duplication_ratio": 0.60,
+        "potential_savings_pct": "25-35",
+        "recommendation": "MERGE_CONFIGURATION"
+      }
+    },
+    "low_severity": {
+      "PLAN_docs": {
+        "count": 44,
+        "duplication_ratio": 0.40,
+        "potential_savings_pct": "20-30",
+        "recommendation": "ARCHIVE_INACTIVE"
+      }
+    }
+  },
+  "broken_links": {
+    "total_broken": 13,
+    "severity_p0": 6,
+    "severity_p1": 7,
+    "examples": [
+      {
+        "source_file": "docs/API_REFERENCE.md",
+        "target": "./docs/guides/QUICKSTART.md",
+        "issue": "File not found",
+        "severity": "P0",
+        "fix_id": "FIX-004"
+      },
+      {
+        "source_file": "docs/CONFIGURATION_GUIDE.md",
+        "target": "./QUICKSTART.md",
+        "issue": "File not found",
+        "severity": "P0",
+        "fix_id": "FIX-004"
+      }
+    ]
+  },
+  "code_quality_issues": {
+    "total_issues": 10,
+    "todo_fixme_markers": 5,
+    "deprecated_patterns": 3,
+    "outdated_examples": 2,
+    "examples": [
+      {
+        "file": "docs/CODEBASE_MERMAID_MAPS.md",
+        "issue": "TODO/FIXME markers",
+        "lines_affected": 150,
+        "severity": "LOW",
+        "fix_id": "FIX-013"
+      }
+    ]
+  },
+  "monolithic_documents": [
+    {
+      "path": "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md",
+      "lines": 10864,
+      "quality_score": 0.58,
+      "action": "SPLIT_INTO_5_DOCS",
+      "expected_impact": "50-60% improvement",
+      "fix_id": "FIX-007"
+    },
+    {
+      "path": "docs/plans/copilot-directives-to-implementation-plan.md",
+      "lines": 3689,
+      "quality_score": 0.65,
+      "action": "SPLIT_INTO_3_DOCS",
+      "expected_impact": "40-50% improvement",
+      "fix_id": "FIX-008"
+    },
+    {
+      "path": "docs/plans/Agentic_AI_System/soft_to_GROUNDED.md",
+      "lines": 3472,
+      "quality_score": 0.62,
+      "action": "SPLIT_INTO_3_DOCS",
+      "expected_impact": "40-50% improvement",
+      "fix_id": "FIX-009"
+    }
+  ],
+  "external_links": {
+    "total_external": 110,
+    "status_valid": 105,
+    "status_stale": 5,
+    "recommended_action": "ANNUAL_AUDIT_WITH_ARCHIVE_ORG_LINKS"
+  },
+  "before_after": {
+    "before_consolidation": {
+      "total_files": 3334,
+      "total_lines": 476738,
+      "broken_links": 13,
+      "quality_score": 0.68,
+      "monolithic_docs": 5
+    },
+    "after_consolidation": {
+      "total_files": 1900,
+      "total_lines": 300000,
+      "broken_links": 0,
+      "quality_score": 0.85,
+      "monolithic_docs": 0,
+      "estimated_file_reduction_pct": "43%",
+      "estimated_line_reduction_pct": "37%"
+    }
+  }
+}
