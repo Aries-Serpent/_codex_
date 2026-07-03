@@ -17,10 +17,25 @@ from pathlib import Path
 from datetime import datetime
 
 def run_command(cmd, description):
-    """Run shell command and return output"""
+    """Run command safely without shell interpretation
+    
+    Security: Always uses list-based subprocess call (shell=False) to prevent
+    command injection attacks. Shell metacharacters in cmd are treated as
+    literal arguments, not executed.
+    """
     print(f"📋 {description}...")
+    
+    # Validate cmd is a list to prevent shell injection
+    if not isinstance(cmd, list):
+        raise ValueError(
+            f"SECURITY: Command must be a list, not {type(cmd).__name__}. "
+            f"Received: {cmd!r}. This prevents shell injection."
+        )
+    
     try:
-        result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+        # shell=False (default) prevents command injection by passing arguments
+        # directly to the executable without shell interpretation
+        result = subprocess.run(cmd, capture_output=True, text=True, shell=False)
         if result.returncode != 0:
             print(f"⚠️  Warning: {description} returned non-zero exit code")
             if result.stderr:

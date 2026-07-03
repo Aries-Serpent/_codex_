@@ -6,6 +6,7 @@ This script checks that all required pytest plugins are installed and
 accessible before running the test suite.
 """
 
+import importlib
 import importlib.util
 import subprocess
 import sys
@@ -17,20 +18,48 @@ def check_plugin(name: str, import_name: str) -> tuple[bool, str]:
     Check if a pytest plugin is available.
 
     Args:
-        name: Human-readable plugin name
-        import_name: Python import name for the plugin
+        name: Human-readable plugin name (e.g., 'pytest-cov')
+        import_name: Python import name for the plugin (e.g., 'pytest_cov')
+                    These must be pre-defined plugin names, not user input.
 
     Returns:
         Tuple of (success: bool, message: str) where message contains
         status information and version details for display purposes.
         Success is True if plugin is importable, False otherwise.
+        
+    Security:
+        Uses importlib.import_module() with a whitelist of allowed plugins
+        instead of __import__() to prevent arbitrary code execution.
     """
+    # Whitelist of allowed plugins - prevents injection attacks
+    ALLOWED_PLUGINS = {
+        "pytest_cov": "pytest-cov",
+        "xdist": "pytest-xdist",
+        "pytest_timeout": "pytest-timeout",
+        "pytest_rerunfailures": "pytest-rerunfailures",
+        "pytest_randomly": "pytest-randomly",
+        "pytest": "pytest",
+    }
+    
+    # Validate import_name is in whitelist
+    if import_name not in ALLOWED_PLUGINS:
+        return False, f"✗ {name} - BLOCKED: '{import_name}' is not in allowed plugins"
+    
     try:
-        module = __import__(import_name)
-        version = getattr(module, "__version__", "unknown")
+        # Use importlib.import_module() instead of __import__()
+        # This is safer and more readable
+        module = importlib.util.find_spec(import_name)
+        if module is None:
+            return False, f"✗ {name} ({import_name}) - NOT FOUND"
+        
+        # Import module to get version
+        mod = importlib.import_module(import_name)
+        version = getattr(mod, "__version__", "unknown")
         return True, f"✓ {name} ({import_name}) version {version}"
     except ImportError as e:
         return False, f"✗ {name} ({import_name}) - NOT FOUND: {e}"
+    except Exception as e:
+        return False, f"✗ {name} ({import_name}) - ERROR: {type(e).__name__}: {e}"
 
 
 def check_pytest_args(args: list[str]) -> tuple[bool, str]:

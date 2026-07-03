@@ -12,19 +12,42 @@ from pathlib import Path
 
 
 def run_command(cmd):
-    """Run a shell command and return output"""
+    """Run a command safely without shell interpretation
+    
+    Security: Always uses list-based subprocess call (shell=False) to prevent
+    command injection attacks. Shell metacharacters are treated as literal
+    arguments, not executed by shell.
+    
+    Args:
+        cmd: Command as a list of strings (e.g., ['python', 'script.py', 'arg'])
+             NOT as a single string which would require shell=True
+    
+    Returns:
+        stdout string if successful, None on error
+    """
+    # Validate cmd is a list to prevent shell injection
+    if not isinstance(cmd, list):
+        raise ValueError(
+            f"SECURITY: Command must be a list of strings, not {type(cmd).__name__}. "
+            f"String commands would require shell=True which enables injection. "
+            f"Received: {cmd!r}"
+        )
+    
     try:
         result = subprocess.run(
-            cmd, shell=True, capture_output=True, text=True, check=True
+            cmd, capture_output=True, text=True, check=True, shell=False
         )
         return result.stdout.strip()
     except subprocess.CalledProcessError as e:
         print(f"Error running command: {e}", file=sys.stderr)
         return None
+    except (TypeError, ValueError) as e:
+        print(f"SECURITY ERROR: Invalid command format: {e}", file=sys.stderr)
+        return None
 
 def get_recovery_metrics():
     """Get session recovery metrics"""
-    return run_command("python scripts/ci/session_recovery.py metrics")
+    return run_command(["python", "scripts/ci/session_recovery.py", "metrics"])
 
 def check_recent_failures():
     """Check for recent session failures"""
