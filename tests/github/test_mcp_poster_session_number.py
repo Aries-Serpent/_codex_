@@ -85,7 +85,7 @@ def test_set_session_number_creates_on_404(poster, monkeypatch):
     result = poster.set_repo_variable(
         "Aries-Serpent/_codex_", "COGNITIVE_BRAIN_SESSION_NUMBER", "109"
     )
-    assert result is not None, "result must be initialized"
+    assert result.get("name") == "COGNITIVE_BRAIN_SESSION_NUMBER", "name must match"
     assert call_count["n"] == 2, "Count must be greater than zero"
 
 
@@ -103,7 +103,8 @@ def test_set_allowed_actors_patch(poster, monkeypatch):
     result = poster.set_repo_variable(
         "Aries-Serpent/_codex_", "COGNITIVE_BRAIN_ALLOWED_ACTORS", new_value
     )
-    assert result is not None, "result must be initialized"
+    assert result.get("name") == "COGNITIVE_BRAIN_ALLOWED_ACTORS", "name must match variable key"
+    assert result.get("value") == new_value, "returned value must match the value we set"
 
 
 def test_set_injection_enabled_true(poster, monkeypatch):
@@ -119,7 +120,8 @@ def test_set_injection_enabled_true(poster, monkeypatch):
     result = poster.set_repo_variable(
         "Aries-Serpent/_codex_", "COGNITIVE_BRAIN_INJECTION_ENABLED", "true"
     )
-    assert result is not None, "result must be initialized"
+    assert result.get("name") == "COGNITIVE_BRAIN_INJECTION_ENABLED", "name must match variable key"
+    assert result.get("value") == "true", "value must match the enabled flag"
 
 
 def test_set_variable_requires_token(monkeypatch):

@@ -108,8 +108,7 @@ class TestObjective:
             obj_id="OBJ-TEST",
             title="Test Objective",
             description="For unit tests",
-            tasks=[],
-            key_results=[],
+            deadline="2099-12-31",
         )
 
     @pytest.fixture()
@@ -122,15 +121,15 @@ class TestObjective:
             obj_id="OBJ-WT",
             title="With Tasks",
             description="Testing task completion",
+            deadline="2099-12-31",
             tasks=tasks,
-            key_results=[],
         )
 
     def test_pct_complete_no_tasks(self, obj_no_tasks: Objective) -> None:
-        assert obj_no_tasks.pct_complete() == 0.0
+        assert obj_no_tasks.pct_complete == 0.0
 
     def test_pct_complete_partial(self, obj_with_tasks: Objective) -> None:
-        assert obj_with_tasks.pct_complete() == 50.0
+        assert obj_with_tasks.pct_complete == 50.0
 
     def test_pct_complete_all_done(self) -> None:
         tasks = [
@@ -141,13 +140,13 @@ class TestObjective:
             obj_id="OBJ-ALL",
             title="All done",
             description="",
+            deadline="2099-12-31",
             tasks=tasks,
-            key_results=[],
         )
-        assert obj.pct_complete() == 100.0
+        assert obj.pct_complete == 100.0
 
     def test_is_complete_false_when_pending(self, obj_with_tasks: Objective) -> None:
-        assert obj_with_tasks.is_complete() is False
+        assert obj_with_tasks.is_complete is False
 
     def test_is_complete_true_when_all_done(self) -> None:
         tasks = [OKRTask("T-X", "done", TaskStatus.COMPLETE)]
@@ -155,14 +154,14 @@ class TestObjective:
             obj_id="OBJ-DONE",
             title="Complete",
             description="",
+            deadline="2099-12-31",
             tasks=tasks,
-            key_results=[],
         )
-        assert obj.is_complete() is True
+        assert obj.is_complete is True
 
     def test_is_complete_no_tasks(self, obj_no_tasks: Objective) -> None:
         # vacuously True: all() over empty iterable
-        assert obj_no_tasks.is_complete() is True
+        assert obj_no_tasks.is_complete is True
 
 
 # ---------------------------------------------------------------------------
@@ -177,6 +176,8 @@ class TestOKRSummary:
             generated_at="2026-01-01T00:00:00+00:00",
             aais_score="B+",
             session_number=42,
+            last_green_sha="abc123",
+            objectives_total=4,
             objectives_complete=1,
             tasks_total=10,
             tasks_complete=8,
@@ -185,20 +186,22 @@ class TestOKRSummary:
         )
 
     def test_pct_complete(self, summary: OKRSummary) -> None:
-        assert summary.pct_complete() == 80.0
+        assert summary.pct_complete == 80.0
 
     def test_pct_complete_zero_total(self) -> None:
         s = OKRSummary(
             generated_at="",
             aais_score="N/A",
             session_number=0,
+            last_green_sha="",
+            objectives_total=0,
             objectives_complete=0,
             tasks_total=0,
             tasks_complete=0,
             tasks_remaining=[],
             next_admin_actions=[],
         )
-        assert s.pct_complete() == 0.0
+        assert s.pct_complete == 0.0
 
     def test_tasks_remaining_list(self, summary: OKRSummary) -> None:
         assert len(summary.tasks_remaining) == 1
@@ -274,5 +277,5 @@ class TestOKRTracker:
 
     def test_pct_complete_float(self, tracker: OKRTracker) -> None:
         summary = tracker.get_summary()
-        assert isinstance(summary.pct_complete(), float)
-        assert 0.0 <= summary.pct_complete() <= 100.0
+        assert isinstance(summary.pct_complete, float)
+        assert 0.0 <= summary.pct_complete <= 100.0
