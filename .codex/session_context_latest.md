@@ -1,10 +1,10 @@
-# Session Context — 2026-07-03T19:27:00Z
+# Session Context — 2026-07-03T19:42:51Z
 **Branch:** `copilot/multi-agent-campaign-plan`  **PR:** #5214  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4405` (✅)
-- GraphQL remaining: `4986` (✅)
+- REST remaining: `4923` (✅)
+- GraphQL remaining: `4978` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -12,25 +12,25 @@
 State: `open`  Draft: `False`  Branch: `copilot/multi-agent-campaign-plan` → `main`
 
 ### ❌ 2 Failing CI Check(s)
-- `Semgrep OSS` (failure)
+- `Semgrep SAST Scanning` (failure)
 - `CodeQL` (failure)
 
 ## 🚨 Recent CI Failures (last 5 runs)
+- **🔐 Secrets Baseline Enforcer** — `failure` on `copilot/multi-agent-campaign-plan` (2026-07-03)
 - **Artifact Monitoring** — `failure` on `main` (2026-07-03)
 - **🔍 Proactive CI Monitor** — `failure` on `main` (2026-07-03)
+- **Machine Readable Governance** — `failure` on `copilot/multi-agent-campaign-plan` (2026-07-03)
 - **Tiered Approval Gate** — `failure` on `copilot/multi-agent-campaign-plan` (2026-07-03)
-- **PR Comment Review Gate** — `failure` on `copilot/multi-agent-campaign-plan` (2026-07-03)
-- **🩹 Secrets False-Positive Healer** — `failure` on `copilot/multi-agent-campaign-plan` (2026-07-03)
 
 ## 📝 Recent Commits
+- `5964784a` fix: resolve semgrep parse errors and document alert baseline (PR #5214) — copilot-swe-agent[bot] (2026-07-03)
+- `28b46b65` refactor(codeql): migrate config to standard GitHub location — copilot-swe-agent[bot] (2026-07-03)
+- `a4e500e4` fix(codeql): resolve invalid YAML syntax in workflow - fix 'configuration not fo — copilot-swe-agent[bot] (2026-07-03)
+- `9f091b83` fix(ci): resolve CodeQL action version & update Semgrep baseline (PR #5214) — copilot-swe-agent[bot] (2026-07-03)
+- `c9ba92b1` Apply remaining changes — copilot-swe-agent[bot] (2026-07-03)
 - `34d3805a` fix(compliance): resolve REQ-6 secret false positive & update accountability rep — copilot-swe-agent[bot] (2026-07-03)
 - `9398e416` docs(phase-9-3): visual execution scorecard — 4/4 tracks complete, 9.77/10 avg q — Copilot (2026-07-03)
 - `fe7ca238` docs(phase-9-3): final Session 3 execution summary — 4/4 tracks complete, 9.77/1 — Copilot (2026-07-03)
-- `cae451e3` docs(phase-9-3): Tracks 3-4 completion reports — Track 3 framework complete (9.8 — Copilot (2026-07-03)
-- `ea29bd4b` Track 4: Add comprehensive deployment activation & execution documentation — Copilot (2026-07-03)
-- `d887a187` Phase 9.3 Track 9.3.3: Build comprehensive test framework + baseline execution — Copilot (2026-07-03)
-- `662a2eb1` docs(phase-9-3): comprehensive Session 3 execution status — Track 1 complete (10 — Copilot (2026-07-03)
-- `add8985e` Update Phase 9.3 execution status: Track 2 prep complete (9.67/10 quality), Trac — Copilot (2026-07-03)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
