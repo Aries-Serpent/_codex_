@@ -426,7 +426,7 @@ Common issues and solutions:
 | Test failures | Check if optional deps installed or mocked |
 | Database lock errors | Set `CODEX_SQLITE_POOL=1` |
 
-See [docs/troubleshooting.md](./troubleshooting.md) for more.
+See [docs/troubleshooting.md](patch-troubleshooting.md) for more.
 
 ### Environment Variables
 

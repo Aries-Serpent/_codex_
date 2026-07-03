@@ -163,13 +163,13 @@ Branch name pattern: main
 
 Rules:
   - ✅ Require a pull request before merging
-    - ✅ Require approvals: 1
-    - ✅ Dismiss stale pull request approvals when new commits are pushed
-    - ✅ Require review from Code Owners
+  - ✅ Require approvals: 1
+  - ✅ Dismiss stale pull request approvals when new commits are pushed
+  - ✅ Require review from Code Owners
 
   - ✅ Require status checks to pass before merging
-    - ✅ Require branches to be up to date before merging
-    - Required checks:
+  - ✅ Require branches to be up to date before merging
+  - Required checks:
       - test (Python 3.12)
       - security-scan
       - codeql
@@ -190,10 +190,10 @@ Branch name pattern: 0D_base_
 
 Rules:
   - ✅ Require a pull request before merging
-    - Require approvals: 0 (for rapid iteration)
+  - Require approvals: 0 (for rapid iteration)
 
   - ✅ Require status checks to pass before merging
-    - Required checks:
+  - Required checks:
       - test
       - security-scan
 
@@ -216,20 +216,20 @@ name: CodeQL
 
 on:
   push:
-    branches: [main, 0D_base_]
+  branches: [main, 0D_base_]
   pull_request:
-    branches: [main]
+  branches: [main]
   schedule:
-    - cron: '0 6 * * 1'  # Weekly Monday 6am
+  - cron: '0 6 * * 1'  # Weekly Monday 6am
 
 jobs:
   analyze:
-    runs-on: ubuntu-latest
-    permissions:
+  runs-on: ubuntu-latest
+  permissions:
       security-events: write
       contents: read
 
-    steps:
+  steps:
       - uses: actions/checkout@v4
       - uses: github/codeql-action/init@v3
         with:
@@ -263,22 +263,22 @@ File: `.github/dependabot.yml`
 version: 2
 updates:
   - package-ecosystem: "pip"
-    directory: "/"
-    schedule:
+  directory: "/"
+  schedule:
       interval: "per-phase"
       day: "monday"
-    open-pull-requests-limit: 10
-    reviewers:
+  open-pull-requests-limit: 10
+  reviewers:
       - "security-team"
-    labels:
+  labels:
       - "dependencies"
       - "security"
 
   - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
+  directory: "/"
+  schedule:
       interval: "per-phase"
-    labels:
+  labels:
       - "github-actions"
 ```
 
@@ -346,19 +346,19 @@ Ensure these hooks are present:
 ```yaml
 repos:
   - repo: https://github.com/Yelp/detect-secrets
-    hooks:
+  hooks:
       - id: detect-secrets
 
   - repo: https://github.com/gitleaks/gitleaks
-    hooks:
+  hooks:
       - id: gitleaks
 
   - repo: https://github.com/PyCQA/bandit
-    hooks:
+  hooks:
       - id: bandit
 
   - repo: https://github.com/pypa/pip-audit
-    hooks:
+  hooks:
       - id: pip-audit
 ```
 
@@ -431,7 +431,7 @@ Add webhook to `.github/workflows/security-scan.yml`:
 - name: Notify Slack on Failure
   if: failure()
   run: |
-    curl -X POST ${{ secrets.SLACK_WEBHOOK_URL }} \
+  curl -X POST ${{ secrets.SLACK_WEBHOOK_URL }} \
       -H 'Content-Type: application/json' \
       -d '{
         "text": "🚨 Security scan failed in _codex_",
@@ -521,8 +521,8 @@ git commit --no-verify
 # In .github/workflows/codeql-analysis.yml
 - uses: github/codeql-action/init@v3
   with:
-    languages: python
-    queries: security-only  # Changed from security-and-quality
+  languages: python
+  queries: security-only  # Changed from security-and-quality
 ```
 
 ## Issue: Dependabot PRs Not Auto-Merging
@@ -537,11 +537,11 @@ git commit --no-verify
 version: 2
 updates:
   - package-ecosystem: "pip"
-    directory: "/"
-    schedule:
+  directory: "/"
+  schedule:
       interval: "per-phase"
-    auto-merge: true  # Add this
-    auto-merge-patch: true
+  auto-merge: true  # Add this
+  auto-merge-patch: true
 ```
 
 ---
