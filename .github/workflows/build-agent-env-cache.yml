@@ -66,7 +66,7 @@ jobs:
       with:
         name: agent-env-health-${{ github.run_id }}
         path: /tmp/agent-env-health.json
-        retention-days: 14
+        retention-days: 30
     - name: Write job summary
       run: "python - << 'PYEOF'\nimport json, os\nfrom pathlib import Path\n\ntry:\n\
         \    report = json.loads(Path(\"/tmp/agent-env-health.json\").read_text())\n\

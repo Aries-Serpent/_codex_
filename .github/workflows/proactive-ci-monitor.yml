@@ -85,7 +85,7 @@ jobs:
       with:
         name: proactive-ci-monitor-report-${{ github.run_id }}
         path: /tmp/proactive_report.json
-        retention-days: 14
+        retention-days: 30
     - name: Write job summary
       if: always()
       env:

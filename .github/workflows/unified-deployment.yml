@@ -118,7 +118,7 @@ jobs:
       with:
         name: cognitive-app-dist-${{ github.sha }}
         path: cognitive_app/dist
-        retention-days: 7
+        retention-days: 14
   pre_release_build:
     name: Build Pre-Release Package
     runs-on: ubuntu-latest

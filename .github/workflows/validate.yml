@@ -93,7 +93,7 @@ jobs:
       with:
         name: hook-failures-fast-${{ github.run_id }}
         path: hook_failures.json
-        retention-days: 14
+        retention-days: 30
         if-no-files-found: warn
     - name: Upload validation log (fast)
       uses: actions/upload-artifact@v5
@@ -101,7 +101,7 @@ jobs:
       with:
         name: validation-log-fast-${{ github.run_id }}
         path: validation.log
-        retention-days: 14
+        retention-days: 30
         if-no-files-found: warn
     - name: Upload JUnit XML
       uses: actions/upload-artifact@v5
@@ -109,7 +109,7 @@ jobs:
       with:
         name: validation-junit-fast-${{ github.run_id }}
         path: validation-junit.xml
-        retention-days: 14
+        retention-days: 30
         if-no-files-found: warn
     - name: Upload JSON summary
       uses: actions/upload-artifact@v5
@@ -117,7 +117,7 @@ jobs:
       with:
         name: validation-summary-fast-${{ github.run_id }}
         path: validation_summary.json
-        retention-days: 14
+        retention-days: 30
         if-no-files-found: warn
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
