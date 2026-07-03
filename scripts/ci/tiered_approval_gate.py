@@ -1,0 +1,97 @@
+#!/usr/bin/env python3
+import os
+import sys
+import json
+import subprocess
+from typing import List, Dict, Tuple
+
+def run_gh_command(cmd: List[str]) -> Tuple[bool, str]:
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+        return True, result.stdout
+    except subprocess.CalledProcessError as e:
+        return False, e.stderr or e.stdout
+
+def get_pr_files(pr_number: int) -> List[str]:
+    success, output = run_gh_command(['gh', 'pr', 'view', str(pr_number), '--json', 'files'])
+    if not success:
+        return []
+    try:
+        data = json.loads(output)
+        return [f['path'] for f in data.get('files', [])]
+    except Exception:
+        return []
+
+def determine_risk_tier(files: List[str]) -> str:
+    high_risk_prefixes = ['src/core/', 'src/api/', 'codex_ml/core/']
+    medium_risk_prefixes = ['src/', 'scripts/', '.github/workflows/']
+    
+    tier = 'low'
+    for f in files:
+        if any(f.startswith(prefix) for prefix in high_risk_prefixes):
+            return 'high'
+        elif any(f.startswith(prefix) for prefix in medium_risk_prefixes):
+            tier = 'medium'
+            
+    return tier
+
+def get_approvals(pr_number: int) -> int:
+    success, output = run_gh_command(['gh', 'pr', 'reviews', str(pr_number), '--json', 'state'])
+    if not success:
+        return 0
+    try:
+        reviews = json.loads(output)
+        return sum(1 for r in reviews if r.get('state') == 'APPROVED')
+    except Exception:
+        return 0
+
+def check_manager_override(pr_number: int) -> bool:
+    # Check if PR has manager override label
+    success, output = run_gh_command(['gh', 'pr', 'view', str(pr_number), '--json', 'labels'])
+    if success:
+        try:
+            data = json.loads(output)
+            labels = [l['name'] for l in data.get('labels', [])]
+            if 'manager-override' in labels or 'hotfix' in labels:
+                return True
+        except Exception:
+            pass
+    return False
+
+def main():
+    if len(sys.argv) < 2:
+        print("Usage: tiered_approval_gate.py <pr_number>")
+        sys.exit(1)
+        
+    pr_number = int(sys.argv[1])
+    files = get_pr_files(pr_number)
+    risk_tier = determine_risk_tier(files)
+    approvals = get_approvals(pr_number)
+    is_hotfix = check_manager_override(pr_number)
+    
+    required_approvals = {'low': 1, 'medium': 2, 'high': 3}[risk_tier]
+    
+    print(f"PR {pr_number} files changed: {len(files)}")
+    print(f"Risk Tier: {risk_tier.upper()}")
+    print(f"Current Approvals: {approvals}")
+    print(f"Required Approvals: {required_approvals}")
+    
+    if is_hotfix:
+        print("HOTFIX/MANAGER OVERRIDE ACTIVE. Bot auto-approving.")
+        run_gh_command(['gh', 'pr', 'review', str(pr_number), '--approve', '--body', 'Auto-approved via manager hotfix override'])
+        sys.exit(0)
+        
+    if approvals >= required_approvals:
+        print("Requirements met.")
+        sys.exit(0)
+        
+    if risk_tier == 'low' and approvals == 0:
+        print("Low risk changes detected. Bot auto-approving trivial changes.")
+        run_gh_command(['gh', 'pr', 'review', str(pr_number), '--approve', '--body', 'Auto-approved low-risk changes'])
+        sys.exit(0)
+        
+    print(f"Pending approvals. Need {required_approvals}, have {approvals}.")
+    sys.exit(1)
+
+if __name__ == '__main__':
+    main()
