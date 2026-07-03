@@ -43,7 +43,7 @@ from codex.github.url_utils import (  # noqa: E402
 # ---------------------------------------------------------------------------
 
 
-class TestGitHubAPIAuthentication:
+class TestGitHubAPIAuthenticationBasic:
     """Tests for GitHub API authentication."""
 
     def test_github_token_validation(self):
@@ -112,7 +112,7 @@ class TestGitHubAPIAuthentication:
 # ---------------------------------------------------------------------------
 
 
-class TestGitHubActionsWorkflows:
+class TestGitHubActionsWorkflowOperations:
     """Tests for GitHub Actions workflow integration."""
 
     def test_workflow_dispatch(self):
@@ -177,7 +177,7 @@ class TestGitHubActionsWorkflows:
 # ---------------------------------------------------------------------------
 
 
-class TestRepositoryOperations:
+class TestRepositoryOperationsPhase7A:
     """Tests for repository operations."""
 
     def test_get_repository_metadata(self):
@@ -260,7 +260,7 @@ class TestRepositoryOperations:
 # ---------------------------------------------------------------------------
 
 
-class TestPRIssueOperations:
+class TestPRIssueOperationsAdditional:
     """Tests for PR and issue operations."""
 
     def test_get_pr_metadata(self):
@@ -379,7 +379,7 @@ class TestPRIssueOperations:
 # ---------------------------------------------------------------------------
 
 
-class TestWebhookHandling:
+class TestWebhookHandlingCore:
     """Tests for webhook handling."""
 
     def _sign(self, secret: str, payload: bytes) -> str:
@@ -478,7 +478,7 @@ class TestWebhookHandling:
 # ---------------------------------------------------------------------------
 
 
-class TestGitHubRateLimiting:
+class TestGitHubRateLimitingPhase7A:
     """Tests for GitHub API rate limiting."""
 
     def test_rate_limit_header_parsing_exhausted(self):
@@ -538,7 +538,7 @@ class TestGitHubRateLimiting:
 # ---------------------------------------------------------------------------
 
 
-class TestGitHubAPIErrorHandling:
+class TestGitHubAPIErrorHandlingPhase7A:
     """Tests for GitHub API error handling."""
 
     def test_should_retry_500(self):
@@ -609,7 +609,7 @@ class TestGitHubAPIErrorHandling:
 # ---------------------------------------------------------------------------
 
 
-class TestGitHubAPIDataConsistency:
+class TestGitHubAPIDataConsistencyBasic:
     """Tests for data consistency."""
 
     def test_pr_data_consistency(self):
@@ -647,7 +647,7 @@ class TestGitHubAPIDataConsistency:
 # ---------------------------------------------------------------------------
 
 
-class TestGitHubAPIPagination:
+class TestGitHubAPIPaginationBasics:
     """Tests for API pagination."""
 
     def test_paginated_list_repositories(self):
@@ -690,7 +690,7 @@ class TestGitHubAPIPagination:
 # ---------------------------------------------------------------------------
 
 
-class TestGitHubAPIConcurrency:
+class TestGitHubAPIConcurrencyWave2:
     """Tests for concurrent GitHub API calls."""
 
     def test_concurrent_repository_fetches(self):
