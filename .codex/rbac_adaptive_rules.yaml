@@ -1,0 +1,22 @@
+adaptive_rules:
+  - name: "delegate_requires_high_confidence"
+    condition: "action == 'delegate'"
+    rule:
+      - "ooda_context.confidence >= 0.95"
+      - "ooda_context.risk_score <= 0.3"
+    action: "require_both"
+    reason: "Only grant temporary elevation when ML model is confident and risk is low"
+    
+  - name: "secret_rotation_during_incidents"
+    condition: "action == 'approve' AND resource == 'secrets'"
+    rule:
+      - "ooda_context.incident_id is None OR incident_severity < 'CRITICAL'"
+    action: "require"
+    reason: "Prevent secret rotation during active critical incidents"
+    
+  - name: "high_confidence_auto_approve"
+    condition: "action == 'approve' AND ooda_context.pattern_match == 'safe_pattern'"
+    rule:
+      - "ooda_context.confidence >= 0.98"
+    action: "grant_auto"
+    reason: "Auto-approve when model has near-certain pattern match"

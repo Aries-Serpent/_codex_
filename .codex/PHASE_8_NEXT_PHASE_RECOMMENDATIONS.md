@@ -33,14 +33,14 @@
 
 #### Sub-Phase 9.1.1: Approval Gate Review (0.5-1 hour)
 **Tasks:**
-- [ ] Audit current approval gate rules
-- [ ] Identify blocking conditions causing 73% failure rate
-- [ ] Implement tiered approval system:
+- [x] Audit current approval gate rules
+- [x] Identify blocking conditions causing 73% failure rate
+- [x] Implement tiered approval system:
   - Low-risk (docs, tests): 1 approval
   - Medium-risk (features): 2 approvals
   - High-risk (core, API): 3 approvals
-- [ ] Add bot auto-approval for trivial changes
-- [ ] Create hot-fix escalation path (manager override)
+- [x] Add bot auto-approval for trivial changes
+- [x] Create hot-fix escalation path (manager override)
 
 **Success Criteria:** Success rate >85%  
 **Effort:** 0.5-1 hour  
@@ -48,11 +48,11 @@
 
 #### Sub-Phase 9.1.2: Rust-Python Environment Isolation (1-2 hours)
 **Tasks:**
-- [ ] Separate build containers for Rust and Python
-- [ ] Implement isolated dependency caches
-- [ ] Document environment setup per language
-- [ ] Test cross-language workflows (if any)
-- [ ] Optimize dependency layer caching
+- [x] Separate build containers for Rust and Python
+- [x] Implement isolated dependency caches
+- [x] Document environment setup per language
+- [x] Test cross-language workflows (if any)
+- [x] Optimize dependency layer caching
 
 **Success Criteria:** No Rust-Python conflicts reported  
 **Effort:** 1-2 hours  

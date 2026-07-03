@@ -39,7 +39,8 @@
     "35:.codex/CAMPAIGN_LIVE_STATUS.md": 1,
     "35:.codex/CAMPAIGN_VERIFICATION_CHECKLIST.md": 1,
     "35:.codex/PHASE_8_3_3_PHASE_1_COMPLETION.md": 2,
-    "35:.codex/PHASE_8_4_3_IMPLEMENTATION_COMPLETE.md": 1
+    "35:.codex/PHASE_8_4_3_IMPLEMENTATION_COMPLETE.md": 1,
+    "21:.github/workflows/tiered-approval-gate.yml": 1
   },
   "circuit_state": {
     "6": "BROKEN",

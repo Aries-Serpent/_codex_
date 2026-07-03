@@ -15,7 +15,7 @@
 ---
 
 ## REMEDIATION TASKS
- # pragma: allowlist secret
+ # pragma: allowlist secret # pragma: allowlist secret
 ### PHASE 1: ENVIRONMENT RECOVERY (30 minutes)
 
 #### Task 1.1: Backup Current State
@@ -191,7 +191,7 @@ except Exception as e:
 # Test 2: JWT operations work
 try:
     import jwt
-    secret = "test-secret"
+    secret = "test-secret"  # pragma: allowlist secret
     token = jwt.encode({"test": "data"}, secret, algorithm="HS256")
     decoded = jwt.decode(token, secret, algorithms=["HS256"])
     print("✅ PyJWT encode/decode works")

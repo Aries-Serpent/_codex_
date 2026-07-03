@@ -25,6 +25,52 @@ import json
 import logging
 import threading
 import time
+
+import yaml
+import os
+
+class PolicyEnforcer:
+    def __init__(self, rules_path=".codex/rbac_adaptive_rules.yaml"):
+        self.rules = []
+        if os.path.exists(rules_path):
+            with open(rules_path, 'r') as f:
+                data = yaml.safe_load(f)
+                if data and 'adaptive_rules' in data:
+                    self.rules = data['adaptive_rules']
+
+    def evaluate(self, action_val: str, resource_val: str, ooda_context) -> str:
+        ctx_vars = {
+            'ooda_context': ooda_context,
+            'action': action_val,
+            'resource': resource_val,
+            'incident_severity': getattr(ooda_context, 'incident_severity', 'LOW'),
+            'None': None
+        }
+        
+        def safe_eval(expr):
+            expr = expr.replace("AND", "and").replace("OR", "or")
+            try:
+                return eval(expr, {"__builtins__": {}}, ctx_vars)
+            except Exception:
+                return False
+
+        for rule in self.rules:
+            cond = rule.get('condition', '')
+            if safe_eval(cond):
+                # Check rules
+                rule_lines = rule.get('rule', [])
+                all_passed = True
+                for r in rule_lines:
+                    if not safe_eval(r):
+                        all_passed = False
+                        break
+                
+                if all_passed:
+                    return rule.get('action')
+                else:
+                    return f"DENY:{rule.get('name')}"
+        return None
+
 from collections import OrderedDict
 from dataclasses import dataclass, field, asdict
 from enum import Enum
@@ -311,29 +357,32 @@ class RBACEngine:
     # Role Management
     # ========================================================================
 
-    def assign_role(self, principal_id: str, role: CodexRole) -> None:
+    def assign_role(self, principal_id: str, role: CodexRole, org_id: str = "default") -> None:
         """Assign a role to a principal."""
         with self._role_lock:
             if principal_id not in self._role_assignments:
-                self._role_assignments[principal_id] = set()
-            self._role_assignments[principal_id].add(role)
+                self._role_assignments[principal_id] = {}
+            if org_id not in self._role_assignments[principal_id]:
+                self._role_assignments[principal_id][org_id] = set()
+            self._role_assignments[principal_id][org_id].add(role)
             self._permission_cache.clear()  # Invalidate cache
             logger.info(f"Assigned {role.value} to {principal_id}")
 
-    def revoke_role(self, principal_id: str, role: CodexRole) -> None:
+    def revoke_role(self, principal_id: str, role: CodexRole, org_id: str = "default") -> None:
         """Revoke a role from a principal."""
         with self._role_lock:
             if principal_id in self._role_assignments:
-                self._role_assignments[principal_id].discard(role)
+                if org_id in self._role_assignments[principal_id]:
+                    self._role_assignments[principal_id][org_id].discard(role)
                 self._permission_cache.clear()
                 logger.info(f"Revoked {role.value} from {principal_id}")
 
-    def get_roles(self, principal_id: str) -> list[CodexRole]:
+    def get_roles(self, principal_id: str, org_id: str = "default") -> list[CodexRole]:
         """Get all roles assigned to a principal."""
         with self._role_lock:
-            return list(self._role_assignments.get(principal_id, set()))
+            return list(self._role_assignments.get(principal_id, {}).get(org_id, set()))
 
-    def has_role(self, principal_id: str, role: CodexRole) -> bool:
+    def has_role(self, principal_id: str, role: CodexRole, org_id: str = "default") -> bool:
         """Check if principal has a role."""
         with self._role_lock:
             return role in self._role_assignments.get(principal_id, set())
@@ -369,7 +418,7 @@ class RBACEngine:
             self._stats["permission_checks"] += 1
 
         # Check cache first
-        cache_key = f"{principal_id}:{action.value}:{resource.value}:{resource_id}"
+        cache_key = f"{org_id}:{principal_id}:{action.value}:{resource.value}:{resource_id}"
         cached = self._permission_cache.get(cache_key)
         if cached is not None:
             with self._stats_lock:
@@ -380,7 +429,7 @@ class RBACEngine:
             self._stats["cache_misses"] += 1
 
         # 1. Check role-based permissions
-        if self._check_role_permissions(principal_id, action, resource):
+        if self._check_role_permissions(principal_id, action, resource, org_id):
             self._log_audit(principal_id, action, resource, resource_id, "ALLOW", "Role match")
             self._permission_cache.set(cache_key, True)
             return True
@@ -417,13 +466,13 @@ class RBACEngine:
         return False
 
     def _check_role_permissions(
-        self, principal_id: str, action: Action, resource: ResourceType
+        self, principal_id: str, action: Action, resource: ResourceType, org_id: str = "default"
     ) -> bool:
         """Check if principal's roles grant permission."""
-        roles = self.get_roles(principal_id)
+        roles = self.get_roles(principal_id, org_id)
 
         # Check active delegations
-        delegations = self._get_active_delegations(principal_id)
+        delegations = self._get_active_delegations(principal_id, org_id)
         for delegation in delegations:
             roles.append(delegation.role)
 
@@ -455,22 +504,26 @@ class RBACEngine:
         self, principal_id: str, action: Action, resource: ResourceType, ooda_context: OODAContext
     ) -> bool:
         """Check OODA-driven adaptive rules."""
-        # Example: require high confidence for DELEGATE action
+        if not hasattr(self, '_policy_enforcer'):
+            self._policy_enforcer = PolicyEnforcer()
+            
+        result = self._policy_enforcer.evaluate(action.value, resource.value, ooda_context)
+        
+        if result and result.startswith("DENY"):
+            logger.warning(f"OODA Policy denied action: {result}")
+            return False
+            
+        if result == "grant_auto":
+            return True
+            
+        if result in ("require_both", "require"):
+            return True
+            
         if action == Action.DELEGATE:
             if ooda_context.confidence < 0.95:
-                logger.warning(f"Delegation denied: low confidence {ooda_context.confidence}")
                 return False
             if ooda_context.risk_score > 0.3:
-                logger.warning(f"Delegation denied: high risk {ooda_context.risk_score}")
                 return False
-            return True
-
-        # Example: auto-approve if pattern is recognized and confidence is high
-        if (
-            action == Action.APPROVE
-            and ooda_context.pattern_match == "safe_pattern"
-            and ooda_context.confidence > 0.98
-        ):
             return True
 
         return False
@@ -513,7 +566,7 @@ class RBACEngine:
         """Revoke a delegation (not implemented in basic version)."""
         pass  # For full implementation, track delegation IDs
 
-    def _get_active_delegations(self, principal_id: str) -> list[Delegation]:
+    def _get_active_delegations(self, principal_id: str, org_id: str = "default") -> list[Delegation]:
         """Get active delegations for a principal."""
         with self._delegation_lock:
             delegations = self._delegations.get(principal_id, [])

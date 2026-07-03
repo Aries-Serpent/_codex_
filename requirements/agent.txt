@@ -57,7 +57,7 @@ mkdocs-mermaid2-plugin>=1.1
 # ── CI tooling & scripts ──────────────────────────────────────────────────────
 nox>=2026.4.10
 pyyaml>=6.0
-requests>=2.31
+requests>=2.34.2
 httpx>=0.27
 pydantic>=2.7
 

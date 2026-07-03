@@ -1,0 +1,293 @@
+{
+  "dashboard": {
+    "title": "Approval SLA & Governance Dashboard",
+    "description": "Real-time monitoring of approval workflow SLAs, escalations, and compliance (Phase 12.2 Integration)",
+    "tags": ["approval", "governance", "sla", "phase-12"],
+    "timezone": "browser",
+    "schemaVersion": 38,
+    "version": 1,
+    "refresh": "30s",
+    "panels": [
+      {
+        "title": "Approval SLA Compliance by Policy Category",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, approval_request_latency_seconds)",
+            "legendFormat": "{{policy_category}} p95",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "s",
+            "label": "Latency (seconds)",
+            "min": 0
+          }
+        ],
+        "thresholds": [
+          {
+            "value": 14400,
+            "color": "red",
+            "op": "gt",
+            "fill": true,
+            "line": true
+          }
+        ]
+      },
+      {
+        "title": "SLA Breach Count (24h)",
+        "type": "stat",
+        "gridPos": {"h": 4, "w": 6, "x": 12, "y": 0},
+        "targets": [
+          {
+            "expr": "increase(approval_sla_breached_total[24h])",
+            "refId": "A"
+          }
+        ],
+        "thresholds": {
+          "mode": "absolute",
+          "steps": [
+            {"color": "green", "value": null},
+            {"color": "red", "value": 1}
+          ]
+        }
+      },
+      {
+        "title": "SLA Met Percentage by Category",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8},
+        "targets": [
+          {
+            "expr": "100 - (increase(approval_sla_breached_total[1h]) / (increase(approval_request_submitted_total[1h]) + 1) * 100)",
+            "legendFormat": "{{policy_category}} SLA %",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "percent",
+            "label": "SLA Met %",
+            "min": 0,
+            "max": 100
+          }
+        ]
+      },
+      {
+        "title": "Approval Request Volume by Category",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8},
+        "targets": [
+          {
+            "expr": "increase(approval_request_submitted_total[1h])",
+            "legendFormat": "{{policy_category}}",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "short",
+            "label": "Requests/hour"
+          }
+        ]
+      },
+      {
+        "title": "Decision Latency p50/p95/p99 (Deployment)",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 16},
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.50, approval_decision_time_seconds{policy_category='D'})",
+            "legendFormat": "p50",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.95, approval_decision_time_seconds{policy_category='D'})",
+            "legendFormat": "p95 (4h SLA)",
+            "refId": "B"
+          },
+          {
+            "expr": "histogram_quantile(0.99, approval_decision_time_seconds{policy_category='D'})",
+            "legendFormat": "p99",
+            "refId": "C"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "s",
+            "label": "Latency (seconds)",
+            "min": 0
+          }
+        ],
+        "thresholds": [
+          {
+            "value": 14400,
+            "color": "red",
+            "op": "gt"
+          }
+        ]
+      },
+      {
+        "title": "Escalation Rate & Resolution Time",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16},
+        "targets": [
+          {
+            "expr": "increase(escalation_triggered_total[1h])",
+            "legendFormat": "Escalations/hour",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.95, escalation_time_to_resolution_seconds) / 3600",
+            "legendFormat": "Resolution p95 (hours)",
+            "refId": "B"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "short",
+            "label": "Count/Hours"
+          }
+        ]
+      },
+      {
+        "title": "Approval Rejection Rate by Policy",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 24},
+        "targets": [
+          {
+            "expr": "rate(approval_rejection_count_total[1h])",
+            "legendFormat": "{{policy_id}} rejections/sec",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "short",
+            "label": "Rejections/sec"
+          }
+        ]
+      },
+      {
+        "title": "Delegation & Authorization Activity",
+        "type": "table",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 24},
+        "targets": [
+          {
+            "expr": "topk(10, increase(approval_delegation_count_total[1h]))",
+            "format": "table",
+            "instant": true,
+            "refId": "A"
+          }
+        ]
+      },
+      {
+        "title": "Unauthorized Access Attempts (Security)",
+        "type": "stat",
+        "gridPos": {"h": 4, "w": 6, "x": 0, "y": 32},
+        "targets": [
+          {
+            "expr": "increase(approval_unauthorized_attempt_count_total[1h])",
+            "refId": "A"
+          }
+        ],
+        "thresholds": {
+          "mode": "absolute",
+          "steps": [
+            {"color": "green", "value": null},
+            {"color": "yellow", "value": 1},
+            {"color": "red", "value": 5}
+          ]
+        }
+      },
+      {
+        "title": "Policy Violations (24h)",
+        "type": "stat",
+        "gridPos": {"h": 4, "w": 6, "x": 6, "y": 32},
+        "targets": [
+          {
+            "expr": "increase(approval_policy_violation_count_total[24h])",
+            "refId": "A"
+          }
+        ],
+        "thresholds": {
+          "mode": "absolute",
+          "steps": [
+            {"color": "green", "value": null},
+            {"color": "red", "value": 1}
+          ]
+        }
+      },
+      {
+        "title": "Timeseries Cardinality Check",
+        "type": "stat",
+        "gridPos": {"h": 4, "w": 6, "x": 12, "y": 32},
+        "targets": [
+          {
+            "expr": "count(count by (__name__) (approval_.*{}))",
+            "refId": "A"
+          }
+        ],
+        "thresholds": {
+          "mode": "absolute",
+          "steps": [
+            {"color": "green", "value": null},
+            {"color": "yellow", "value": 600},
+            {"color": "red", "value": 900}
+          ]
+        }
+      },
+      {
+        "title": "Approval Request Resolution Status (Last 24h)",
+        "type": "pieChart",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 36},
+        "targets": [
+          {
+            "expr": "increase(approval_request_resolved_total[24h])",
+            "legendFormat": "{{resolution_status}}",
+            "refId": "A"
+          }
+        ]
+      },
+      {
+        "title": "Authority Decision Latency by Role",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 36},
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, approval_authority_decision_latency_seconds)",
+            "legendFormat": "{{approver_role}} p95",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "s",
+            "label": "Latency (seconds)"
+          }
+        ]
+      }
+    ],
+    "templating": {
+      "list": [
+        {
+          "name": "policy_category",
+          "type": "query",
+          "datasource": "Prometheus",
+          "query": "label_values(approval_request_latency_seconds, policy_category)",
+          "multi": true,
+          "includeAll": true
+        },
+        {
+          "name": "approver_role",
+          "type": "query",
+          "datasource": "Prometheus",
+          "query": "label_values(approval_authority_decision_latency_seconds, approver_role)",
+          "multi": true,
+          "includeAll": true
+        }
+      ]
+    }
+  }
+}

@@ -1,18 +1,20 @@
 {
-  "generated_at": "2026-07-03T11:11:40.649554+00:00",
+  "generated_at": "2026-07-03T15:53:16.657510+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 4794,
+  "rest_remaining": 4388,
   "graphql_available": true,
-  "graphql_remaining": 4990,
+  "graphql_remaining": 4970,
   "gh_cli_available": true,
   "codeql_available": false,
   "best_token_var": "GITHUB_TOKEN",
-  "open_prs": [],
-  "branch": "copilot/phase-8-planning-structure-audit",
+  "open_prs": [
+    5211
+  ],
+  "branch": "copilot/execute-phase-12-deployment",
   "recommendation": "Use REST for data fetches. "
 }
