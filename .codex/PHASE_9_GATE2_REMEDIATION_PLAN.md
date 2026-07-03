@@ -15,7 +15,7 @@
 ---
 
 ## REMEDIATION TASKS
- # pragma: allowlist secret
+ # pragma: allowlist secret # pragma: allowlist secret
 ### PHASE 1: ENVIRONMENT RECOVERY (30 minutes)
 
 #### Task 1.1: Backup Current State
