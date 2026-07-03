@@ -176,7 +176,7 @@ Add session entry:
 
 ### Key Commits:
 - 5806cc1eb: Fix exponential backoff in baseline sweep
-- 1e412767f: Update Phase 8.2 to use CODEX_MASTER_KEY for GitHub API
+- 1e412767f: Update Phase 8.2 to use CODEX_MASTER_KEY for GitHub API  <!-- pragma: allowlist secret -->
 - 719c35907: Complete Phase 2 remediation documentation
 
 ### Campaign Status:
@@ -197,7 +197,7 @@ Add session entry:
 
 - **F-003 (Phase 8.2 Issue Triage):** Fixed by Phase 2 remediation
   - Root Cause: GitHub API missing read:security_events scope
-  - Solution: Elevated token to CODEX_MASTER_KEY
+  - Solution: Elevated token to CODEX_MASTER_KEY  <!-- pragma: allowlist secret -->
   - Commit: 1e412767f
 
 - **F-004 (Copilot Session):** Monitoring complete by T+42 min
@@ -215,7 +215,7 @@ Add entry:
 
 ### Fixed
 - **CI Baseline Sweep (F-002):** Added exponential backoff (5s, 10s, 20s delays) to git retry logic in iterative-self-healing-ci.yml to handle concurrent pushes (#5142, commit 5806cc1eb)
-- **Phase 8.2 Issue Triage (F-003):** Updated GitHub token to CODEX_MASTER_KEY for proper API scope (read:security_events) in phase-8-2-issue-triage.yml (#5142, commit 1e412767f)
+- **Phase 8.2 Issue Triage (F-003):** Updated GitHub token to CODEX_MASTER_KEY for proper API scope (read:security_events) in phase-8-2-issue-triage.yml (#5142, commit 1e412767f)  <!-- pragma: allowlist secret -->
 
 ### Validated
 - F-001: Pre-existing YAML syntax error already resolved by commit 65ea7e3b1
@@ -290,7 +290,7 @@ Add entry:
 
 2. **Applied Targeted Fixes (Phase 2)**
    - F-002-2: Exponential backoff (5s, 10s, 20s) in baseline sweep
-   - F-003: Token elevated to CODEX_MASTER_KEY in Phase 8.2
+   - F-003: Token elevated to CODEX_MASTER_KEY in Phase 8.2  <!-- pragma: allowlist secret -->
    - Both fixes committed, validation deployed
 
 3. **Initiated Validation (Phase 3)**
@@ -394,7 +394,7 @@ Actual vs Planned: ON SCHEDULE ✅
 4. Authorize next iteration if needed
 
 **Authority Given:**
-- ✅ Full CODEX_MASTER_KEY access for token operations
+- ✅ Full CODEX_MASTER_KEY access for token operations  <!-- pragma: allowlist secret -->
 - ✅ Full authorization to apply fixes across workflows
 - ✅ Full D-tier autonomy for decision-making
 - ✅ Proceed with next iteration if validation fails (GO CONTINUE)

@@ -152,10 +152,10 @@ These are appropriate for the admin-action-notifier reusable workflow to:
 ### Token Usage (Correct)
 ```yaml
 env:
-  GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+  GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}  <!-- pragma: allowlist secret -->
 ```
 
-The workflow correctly falls back from `CODEX_MASTER_KEY` → `CODEX_BACKUP_KEY` → `github.token`.
+The workflow correctly falls back from `CODEX_MASTER_KEY` → `CODEX_BACKUP_KEY` → `github.token`.  <!-- pragma: allowlist secret -->
 
 ---
 

@@ -63,7 +63,7 @@ The baseline sweep workflow is ready for deployment. All fixes verified and YAML
 
 #### **What Was Validated**
 1. GitHub token scope elevation
-2. CODEX_MASTER_KEY implementation
+2. CODEX_MASTER_KEY implementation  <!-- pragma: allowlist secret -->
 3. OAuth2 authentication syntax
 4. Workflow execution readiness
 5. Secondary git push command token usage
@@ -71,7 +71,7 @@ The baseline sweep workflow is ready for deployment. All fixes verified and YAML
 #### **Critical Discovery During Validation**
 
 **Original Phase 2 Fix (Commit 1e412767f):**
-- ✅ Updated `actions/github-script` step (line 48) to use CODEX_MASTER_KEY
+- ✅ Updated `actions/github-script` step (line 48) to use CODEX_MASTER_KEY  <!-- pragma: allowlist secret -->
 - ❌ **MISSED:** `git push` command (line 124) still using default GITHUB_TOKEN
 - **Impact:** Workflow would partially work (API calls succeed) but fail on push (403 error)
 
@@ -85,15 +85,15 @@ The baseline sweep workflow is ready for deployment. All fixes verified and YAML
 **Secondary Fix Commit: 6222f8f8d**
 
 **Changes:**
-1. **Line 48 (actions/github-script step):** ✅ Already had CODEX_MASTER_KEY (from Phase 2)
-2. **Line 124 (git push command):** ✅ Added CODEX_MASTER_KEY via OAuth2 URL
+1. **Line 48 (actions/github-script step):** ✅ Already had CODEX_MASTER_KEY (from Phase 2)  <!-- pragma: allowlist secret -->
+2. **Line 124 (git push command):** ✅ Added CODEX_MASTER_KEY via OAuth2 URL  <!-- pragma: allowlist secret -->
    ```bash
    # Before:
    git push origin HEAD:refs/heads/dashboard
    # (Used default token context - insufficient scopes)
    
    # After:
-   git push https://oauth2:${{ secrets.CODEX_MASTER_KEY }}@github.com/Aries-Serpent/_codex_.git HEAD:refs/heads/dashboard
+   git push https://oauth2:${{ secrets.CODEX_MASTER_KEY }}@github.com/Aries-Serpent/_codex_.git HEAD:refs/heads/dashboard  <!-- pragma: allowlist secret -->
    # (Explicit OAuth2 with full scopes)
    ```
 
@@ -101,8 +101,8 @@ The baseline sweep workflow is ready for deployment. All fixes verified and YAML
 
 | Item | Status | Details |
 |------|--------|---------|
-| **Token at Line 48** | ✅ VERIFIED | CODEX_MASTER_KEY in github-script step |
-| **Token at Line 124** | ✅ VERIFIED | CODEX_MASTER_KEY in OAuth2 URL for git push |
+| **Token at Line 48** | ✅ VERIFIED | CODEX_MASTER_KEY in github-script step |  <!-- pragma: allowlist secret -->
+| **Token at Line 124** | ✅ VERIFIED | CODEX_MASTER_KEY in OAuth2 URL for git push |  <!-- pragma: allowlist secret -->
 | **OAuth2 Syntax** | ✅ CORRECT | `******github.com/...` format |
 | **YAML Syntax** | ✅ VALID | No parsing errors after complete fix |
 | **Scope Coverage** | ✅ COMPLETE | read:security_events available for both API and git ops |
@@ -113,8 +113,8 @@ The baseline sweep workflow is ready for deployment. All fixes verified and YAML
 **Original Problem:** GitHub API returns 403 Permission Denied (missing read:security_events scope)
 
 **Issues Fixed:**
-1. **API Calls (line 48):** Now use CODEX_MASTER_KEY with read:security_events scope
-2. **Git Push (line 124):** Now use CODEX_MASTER_KEY with full repo access
+1. **API Calls (line 48):** Now use CODEX_MASTER_KEY with read:security_events scope  <!-- pragma: allowlist secret -->
+2. **Git Push (line 124):** Now use CODEX_MASTER_KEY with full repo access  <!-- pragma: allowlist secret -->
 
 **Outcome:** All authenticated operations (API + git) now have proper OAuth scopes
 
@@ -135,9 +135,9 @@ The Phase 8.2 Issue Triage workflow is now fully remediated with complete token 
 6. Analyzed git history for baseline updates
 
 ### **F-003 Validation Approach**
-1. Located github-script step using CODEX_MASTER_KEY (line 48) ✅
+1. Located github-script step using CODEX_MASTER_KEY (line 48) ✅  <!-- pragma: allowlist secret -->
 2. **Discovered incomplete fix:** git push still using default token (line 124) ❌
-3. Applied complete fix: Added CODEX_MASTER_KEY to git push command
+3. Applied complete fix: Added CODEX_MASTER_KEY to git push command  <!-- pragma: allowlist secret -->
 4. Committed corrected fix (6222f8f8d)
 5. Validated YAML syntax after changes
 6. Verified OAuth2 URL format correctness
@@ -244,13 +244,13 @@ The Phase 8.2 Issue Triage workflow is now fully remediated with complete token 
 ### **Phase 2 Fixes (for reference)**
 ```
 5806cc1eb - fix(ci): add exponential backoff to baseline sweep git push retry logic [F-002-2]
-1e412767f - fix(ci): update phase-8-2-issue-triage to use CODEX_MASTER_KEY for GitHub API scope [F-003-primary]
+1e412767f - fix(ci): update phase-8-2-issue-triage to use CODEX_MASTER_KEY for GitHub API scope [F-003-primary]  <!-- pragma: allowlist secret -->
 ```
 
 ### **Phase 3 Discoveries & Fixes**
 ```
 e60957193 - fix(workflows): restore correct YAML syntax 'on:' [F-002 secondary]
-6222f8f8d - fix(ci): add CODEX_MASTER_KEY to git push authentication in phase-8-2-issue-triage [F-003-secondary]
+6222f8f8d - fix(ci): add CODEX_MASTER_KEY to git push authentication in phase-8-2-issue-triage [F-003-secondary]  <!-- pragma: allowlist secret -->
 ```
 
 ---

@@ -5,9 +5,9 @@
 
 ## 🎯 PRIMARY INTENT — After this PR merges
 
-> **⚠️ CRITICAL HUMAN ACTION:** Add `security_events` scope to `CODEX_MASTER_KEY` at  
+> **⚠️ CRITICAL HUMAN ACTION:** Add `security_events` scope to `CODEX_MASTER_KEY` at  <!-- pragma: allowlist secret -->
 > https://github.com/settings/tokens → update the org secret at  
-> https://github.com/organizations/Aries-Serpent/settings/secrets/actions/CODEX_MASTER_KEY  
+> https://github.com/organizations/Aries-Serpent/settings/secrets/actions/CODEX_MASTER_KEY  <!-- pragma: allowlist secret -->
 >
 > **Why:** All CI code fixes in this PR are already live. The final unblock for CodeQL alert  
 > automation is the PAT scope — once rotated, `codeql-alert-fetcher.yml` and OBJ-B will  
@@ -20,7 +20,7 @@
 | Phase | Name | Status | Agents | Score |
 |-------|------|--------|--------|-------|
 | Phase 0 | Blocker Remediation (F-001/F-002) | ✅ COMPLETE | 4 | 100% |
-| Phase 0+ | Token Fallback (CODEX_MASTER_KEY\|\|CODEX_BACKUP_KEY) | ✅ COMPLETE | - | 98.9% workflows |
+| Phase 0+ | Token Fallback (CODEX_MASTER_KEY\|\|CODEX_BACKUP_KEY) | ✅ COMPLETE | - | 98.9% workflows |  <!-- pragma: allowlist secret -->
 | Phase 1 | Wave 6 Code Quality + Test Enhancement | ✅ COMPLETE | 2 | 9.5/10 quality · 152 assert True eliminated |
 | Phase 2 | P0 Coverage + QA Sign-off | ✅ COMPLETE | 2 | 9.6/10 QA · 144 new tests |
 | Phase 3 | Wave 8 Security Audit | ✅ COMPLETE | 1 | 9/10 CLEAN |
@@ -34,7 +34,7 @@
 - **Root Cause (code bug):** Duplicate concurrency group in `admin-action-notifier.yml` caused the callee to self-cancel the caller in all 21,116 historical runs — the notifier **never fired once**
 - **Code Fix:** ✅ APPLIED — removed duplicate `concurrency` block from `admin-action-notifier.yml` + exported `RESPONSE_FILE` for Python subprocess (ci-log-retrieval-agent)
 - **Report:** `.codex/F001_DIAGNOSTIC_REPORT.md`
-- **Remaining (human action required):** `CODEX_MASTER_KEY` still needs `security_events` OAuth scope added
+- **Remaining (human action required):** `CODEX_MASTER_KEY` still needs `security_events` OAuth scope added  <!-- pragma: allowlist secret -->
   - Token settings: https://github.com/settings/tokens (add `security_events`, update org secret)
   - After rotation: next T-03 run will probe → create issue → auto-close once scope confirmed
 - **Blocking:** YES — CodeQL alert automation blocked until token rotated
@@ -65,7 +65,7 @@
 ### Phase 0+ — ✅ COMPLETE (new requirement)
 | Change | Files | Replacements |
 |--------|-------|-------------|
-| `CODEX_MASTER_KEY \|\| CODEX_BACKUP_KEY` fallback | 92 workflows | 182 |
+| `CODEX_MASTER_KEY \|\| CODEX_BACKUP_KEY` fallback | 92 workflows | 182 |  <!-- pragma: allowlist secret -->
 
 ### Phase 1 — ✅ COMPLETE
 | Agent ID | Agent Type | Task | Status | Result |
@@ -93,7 +93,7 @@
 ### Overall Campaign (100% Target)
 - [x] F-001 resolved — concurrency self-cancel bug fixed in `admin-action-notifier.yml`
 - [x] F-002 resolved — heal job exponential backoff (dd55e355)
-- [x] Token fallback: `CODEX_MASTER_KEY || CODEX_BACKUP_KEY` across 92 workflow files
+- [x] Token fallback: `CODEX_MASTER_KEY || CODEX_BACKUP_KEY` across 92 workflow files  <!-- pragma: allowlist secret -->
 - [x] Wave 6 Phase 1 complete — code quality 9.2→9.5/10
 - [x] Wave 6 test enhancement — 152 `assert True` eliminated · `mcp_poster.py` import bug fixed
 - [x] Codex module coverage gap-fill — 144 new tests, 5 zero-coverage modules addressed
@@ -103,7 +103,7 @@
 - [x] REQ-5 compliance (CHANGELOG.md updated)
 - [x] Code Review: **CLEAN** (0 comments)
 - [x] CodeQL: **0 alerts**
-- [ ] **HUMAN: add `security_events` scope to `CODEX_MASTER_KEY`** — final unblock for CodeQL automation
+- [ ] **HUMAN: add `security_events` scope to `CODEX_MASTER_KEY`** — final unblock for CodeQL automation  <!-- pragma: allowlist secret -->
 
 ### Code Quality Standards
 - [ ] Black format compliance
@@ -127,14 +127,14 @@
 | 2026-07-03T17:19Z | Dashboard initialized | ✅ |
 | 2026-07-03T17:19Z | Phase 0: 4 agents delegated (ci-log-retrieval, ci-testing, code-analysis, unified-coverage) | ✅ |
 | 2026-07-03T17:24Z | F-002 resolved — ci-testing-agent: exponential backoff on heal job (dd55e355) | ✅ |
-| 2026-07-03T17:29Z | New requirement applied: CODEX_MASTER_KEY \|\| CODEX_BACKUP_KEY across 92 files, 182 replacements | ✅ |
+| 2026-07-03T17:29Z | New requirement applied: CODEX_MASTER_KEY \|\| CODEX_BACKUP_KEY across 92 files, 182 replacements | ✅ |  <!-- pragma: allowlist secret -->
 | 2026-07-03T17:29Z | phase1-test-enhancement-1 launched | ✅ |
 | 2026-07-03T17:39Z | F-001 resolved — ci-log-retrieval-agent: concurrency self-cancel bug fixed in admin-action-notifier.yml | ✅ |
 | 2026-07-03T17:39Z | phase3-security-scan-1 launched (Wave 8 security audit) | ✅ |
 | 2026-07-03T17:49Z | Wave 6 code quality complete — 9.2→9.5/10, 4 fix commits (C420/E741/C414/F821) | ✅ |
 | 2026-07-03T17:49Z | phase2-qa-walkthrough-1 launched (Phase 2 production QA) | ✅ |
 | 2026-07-03T17:49Z | PR #5214 created — `copilot/multi-agent-campaign-plan` → `main` | ✅ |
-| 2026-07-03T17:51Z | New requirement: PR primary intent = CODEX_MASTER_KEY security_events scope unblock | ✅ |
+| 2026-07-03T17:51Z | New requirement: PR primary intent = CODEX_MASTER_KEY security_events scope unblock | ✅ |  <!-- pragma: allowlist secret -->
 | 2026-07-03T17:51Z | phase3-security-scan-1 COMPLETE — 9/10 CLEAN · artifact-monitoring.yml dedup fix (a36c3b1a) | ✅ |
 | 2026-07-03T17:51Z | phase2-coverage-gap-fill COMPLETE — 144 new tests · 5 modules · P0 gap-fill delivered | ✅ |
 | 2026-07-03T17:51Z | phase2-qa-walkthrough-1 COMPLETE — 9.6/10 APPROVED WITH CONDITIONS (non-blocking) | ✅ |
@@ -149,8 +149,8 @@
 **All 7 agents delivered. All phases validated. PR #5214 ready to merge.**
 
 **One remaining human action:**
-👉 Add `security_events` scope to `CODEX_MASTER_KEY` at https://github.com/settings/tokens
-👉 Update org secret: https://github.com/organizations/Aries-Serpent/settings/secrets/actions/CODEX_MASTER_KEY
+👉 Add `security_events` scope to `CODEX_MASTER_KEY` at https://github.com/settings/tokens  <!-- pragma: allowlist secret -->
+👉 Update org secret: https://github.com/organizations/Aries-Serpent/settings/secrets/actions/CODEX_MASTER_KEY  <!-- pragma: allowlist secret -->
 
 ---
 
@@ -163,7 +163,7 @@
 5. **Escalation:** Failure blocks >2 phases → Auto-escalate with diagnostic
 
 **Decision Mode:** GO CONTINUE — Never hold/await signals  
-**Authority:** CODEX_MASTER_KEY (use MCP first, then CODEX_MASTER_KEY for elevated ops)
+**Authority:** CODEX_MASTER_KEY (use MCP first, then CODEX_MASTER_KEY for elevated ops)  <!-- pragma: allowlist secret -->
 
 ---
 

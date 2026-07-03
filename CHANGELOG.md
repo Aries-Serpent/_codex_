@@ -20,7 +20,7 @@
 **Campaign:** Complete 4-phase campaign (Root Cause Analysis → Remediation → Validation → Documentation) to identify and fix all critical failures from 3 recent commits using 8 parallel custom agents  
 **Status:** ✅ COMPLETE  
 **Duration:** 59 minutes (full allocation)  
-**Authority:** @mbaetiong (D-tier autonomous, CODEX_MASTER_KEY authorization)  
+**Authority:** @mbaetiong (D-tier autonomous, CODEX_MASTER_KEY authorization)  <!-- pragma: allowlist secret -->
 **Agents Deployed:** 8 total (6 unique types) across 4 phases
 
 **Failures Resolved:**
@@ -37,7 +37,7 @@
 
 3. **F-003 (Phase 8.2 Issue Triage):** ✅ FIXED
    - Root Cause: Missing read:security_events GitHub API scope
-   - Solution: Elevated authentication token to CODEX_MASTER_KEY in both API calls and git push operations
+   - Solution: Elevated authentication token to CODEX_MASTER_KEY in both API calls and git push operations  <!-- pragma: allowlist secret -->
    - Initial Fix: 1e412767f (actions/github-script token elevation)
    - Secondary Fix: 6222f8f8d (git push OAuth2 URL authentication - discovered during validation)
    - Validation: ✅ PASSED - Complete token scope coverage verified, both API and git operations authenticated
@@ -684,7 +684,7 @@ Achieve ≥95% operational readiness for Phase 12 enterprise governance deployme
    - Fixes Applied:
      - Metrics collector NoneType: Added null-check on `.completed_at` field
      - Secrets baseline false positives: Verified safe (tracked in baseline)
-     - Admin token scope: CODEX_MASTER_KEY already has `security_events` scope
+     - Admin token scope: CODEX_MASTER_KEY already has `security_events` scope  <!-- pragma: allowlist secret -->
    - Deliverable: `.codex/CI_WORKFLOW_FIXES_SUMMARY.md`
 
 4. 🔄 **mypy-manager-agent** (Running - 14+ min elapsed)
@@ -997,16 +997,16 @@ Implemented comprehensive Phase 9.3 campaign framework for SemanticRouter deploy
 - ✅ Authority: @mbaetiong D-tier autonomy confirmed
 - ✅ Timeline: 9-day campaign (2026-07-07 → 2026-07-15)
 
-## [Fixed] 2026-07-01T15:50Z — Workflow Auto-Approval Infrastructure with CODEX_MASTER_KEY
+## [Fixed] 2026-07-01T15:50Z — Workflow Auto-Approval Infrastructure with CODEX_MASTER_KEY  <!-- pragma: allowlist secret -->
 
 ### Summary
-Implemented comprehensive programmatic workflow auto-approval infrastructure with explicit CODEX_MASTER_KEY integration for secure, automated PR and workflow approval.
+Implemented comprehensive programmatic workflow auto-approval infrastructure with explicit CODEX_MASTER_KEY integration for secure, automated PR and workflow approval.  <!-- pragma: allowlist secret -->
 
 **New Scripts**:
 1. `scripts/ci/auto_approve_workflows.py` — PR review approval orchestration
    - Auto-approve pending PR reviews
    - Fetch PR status via GitHub API
-   - Support for CODEX_MASTER_KEY authentication
+   - Support for CODEX_MASTER_KEY authentication  <!-- pragma: allowlist secret -->
 
 2. `scripts/ci/workflow_auto_approval.py` — Comprehensive workflow status checking
    - List and analyze open PRs
@@ -1014,13 +1014,13 @@ Implemented comprehensive programmatic workflow auto-approval infrastructure wit
    - Integrate with gh CLI for secure token handling
 
 3. `scripts/ci/codex_master_key_auto_approver.py` — Complete approval engine
-   - Explicit CODEX_MASTER_KEY token handling
+   - Explicit CODEX_MASTER_KEY token handling  <!-- pragma: allowlist secret -->
    - Generate comprehensive approval reports
    - Workflow dispatch capability via GitHub API
    - Secure credential management with token priority chain
 
 **Features**:
-- ✅ Secure token handling: CODEX_MASTER_KEY → CODEX_BACKUP_KEY → GH_TOKEN
+- ✅ Secure token handling: CODEX_MASTER_KEY → CODEX_BACKUP_KEY → GH_TOKEN  <!-- pragma: allowlist secret -->
 - ✅ GitHub API integration for workflow management
 - ✅ gh CLI authentication support
 - ✅ Comprehensive status reporting and approval tracking
@@ -1030,7 +1030,7 @@ Implemented comprehensive programmatic workflow auto-approval infrastructure wit
 - PR #5176 status: 85/100 merge-readiness (REQ-4/REQ-5 ✅ PASS)
 - Active workflows: 20 total (1 in_progress, 19 completed, 0 failed)
 - Automated approval processing: All pending workflows handled
-- Token authentication: CODEX_MASTER_KEY explicitly integrated
+- Token authentication: CODEX_MASTER_KEY explicitly integrated  <!-- pragma: allowlist secret -->
 
 **Affected Files**: 3 new files created
 - `scripts/ci/auto_approve_workflows.py` (137 lines)
@@ -1077,14 +1077,14 @@ Resolved 8 concurrent CI failures across validation pipeline, governance checks,
 
 ## [Fixed] 2026-07-01T08:15Z — PR #5167: actionlint Workflow Compliance Fix
 
-**Root Cause**: GitHub Actions reusable workflow call jobs (`uses:`) do not support the `env:` key at the job level. Having `env: GH_TOKEN: ...` in these jobs triggered actionlint `[syntax-check]` errors. Additionally, `consolidated-pr-status.yml` referenced `secrets.CODEX_MASTER_KEY` and `secrets.CODEX_BACKUP_KEY` without declaring them in the `on.workflow_call.secrets:` block, triggering actionlint `[expression]` errors.
+**Root Cause**: GitHub Actions reusable workflow call jobs (`uses:`) do not support the `env:` key at the job level. Having `env: GH_TOKEN: ...` in these jobs triggered actionlint `[syntax-check]` errors. Additionally, `consolidated-pr-status.yml` referenced `secrets.CODEX_MASTER_KEY` and `secrets.CODEX_BACKUP_KEY` without declaring them in the `on.workflow_call.secrets:` block, triggering actionlint `[expression]` errors.  <!-- pragma: allowlist secret -->
 
 **Fix Applied**:
 - Removed invalid `env: GH_TOKEN` blocks from reusable workflow call jobs in:
   `admin-action-t03.yml`, `build-preview-image.yml`, `data-quality-suite.yml`,
   `docker-build-push.yml`, `embedding-index-rebuild.yml`, `progressive-validation.yml`,
   `release.yml`, `rust_swarm_ci.yml`, `scheduled-archival.yml`
-- Added `CODEX_MASTER_KEY` and `CODEX_BACKUP_KEY` to `on.workflow_call.secrets:` in `consolidated-pr-status.yml`
+- Added `CODEX_MASTER_KEY` and `CODEX_BACKUP_KEY` to `on.workflow_call.secrets:` in `consolidated-pr-status.yml`  <!-- pragma: allowlist secret -->
 
 **Result**: `actionlint` now reports 0 errors across all workflow files.
 
@@ -1424,7 +1424,7 @@ Fixed all 15 security vulnerabilities from commit d587689 and PR review comments
   - **GitHub Actions versions:** Updated `actions/checkout@v7` → `actions/checkout@v5` (2 occurrences) to match repository standards (required versions: checkout@v5, setup-python@v6, github-script@v8, upload-artifact@v5)
   - **Workflow YAML syntax:** Fixed corrupted trigger key in `ci-health-monitor.yml` — changed `true:` → `on:` at line 2; resolves actionlint YAML parse failures
 - **4 code review comments addressed (commit 3167020):**
-  - `CODEX_MASTER_KEY_TEST_GUIDE.md line 303`: Changed `result.status_code` → `result.status` to match mock_response helper behavior
+  - `CODEX_MASTER_KEY_TEST_GUIDE.md line 303`: Changed `result.status_code` → `result.status` to match mock_response helper behavior  <!-- pragma: allowlist secret -->
   - `HIDDEN_SCRIPTS_SECURITY.md lines 504-529`: Corrected Python function indentation (removed leading indent from function body)
   - `ci-health-monitor.yml lines 62-63`: Refactored METRICS assignment to prevent bash comment interference with pipeline
 - **Zero regressions:** All pre-existing passing tests, workflows, and checks remain passing
@@ -2655,7 +2655,7 @@ python -m codex --version  # Should output: 0.1.0-final
   - Root cause: Manual exceptions requiring domain expertise
   - Status: Delegated to codeql-alert-resolution-agent for CodeQL-based analysis
 - **Issue #5073 Analysis & Escalation:** CI failure "Admin Action — T-03 security_events Scope Gate"
-  - Root cause: CODEX_MASTER_KEY token lacks `security_events` OAuth scope
+  - Root cause: CODEX_MASTER_KEY token lacks `security_events` OAuth scope  <!-- pragma: allowlist secret -->
   - Documentation: Created comprehensive `.codex/T03_ADMIN_ACTION_ESCALATION.md` with step-by-step fix instructions
   - Status: Non-blocking admin action; workflow will auto-close on token rotation
   - Enhanced workflow: ci-failure-resolution-agent improved admin-action-notifier error messaging
@@ -4078,7 +4078,7 @@ Executed Phase 3 of the coverage optimization campaign with 4 parallel coverage 
 - **5-tier approval priority system**: force-deny (tier 1) → persistent label (tier 2) → TTL-based (tier 3) → maintainer (tier 4) → low-risk (tier 5)
 - **Comprehensive approval security framework**: RBAC + audit logging + approval trail tracking
 - **Automatic PR discovery**: For push events with label-based opt-in controls
-- **Token chain resolution**: CODEX_MASTER_KEY → CODEX_BACKUP_KEY → github.token fallback
+- **Token chain resolution**: CODEX_MASTER_KEY → CODEX_BACKUP_KEY → github.token fallback  <!-- pragma: allowlist secret -->
 - **High-volume batch approval**: 6-pass approach for handling 10+ pending runs simultaneously
 - **Session-scoped one-time approval**: Automatic cleanup after single Copilot session
 
@@ -4478,7 +4478,7 @@ Executed Phase 3 of the coverage optimization campaign with 4 parallel coverage 
 
 ### Changed (CI — auto-fix-pr-check.yml — Phase 2)
 - Upgraded `check-and-report` job `contents: read` → `contents: write` to enable push-back of heal commits.
-- Checkout step now uses branch ref (not SHA) + CODEX_MASTER_KEY token for push-back.
+- Checkout step now uses branch ref (not SHA) + CODEX_MASTER_KEY token for push-back.  <!-- pragma: allowlist secret -->
 
 ### Fixed (auto-update — PR #4836)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4836 (SHA `6b6528ba`) at 2026-06-11T03:43Z [auto-generated]
@@ -5814,14 +5814,14 @@ All 25 Wave 3/4 gaps implemented via workflow-dispatch agent batches (no in-sess
   timeboxing and rate-limit guidance for Copilot agents.
 - Recorded live workflow-disable API attempts for orphan workflows returning
   `HTTP 403 Resource not accessible by integration` under `github.token`, confirming that
-  workflow state changes still require `CODEX_MASTER_KEY` or `CODEX_BACKUP_KEY`.
+  workflow state changes still require `CODEX_MASTER_KEY` or `CODEX_BACKUP_KEY`.  <!-- pragma: allowlist secret -->
 
 - Hardened `scripts/ci/wec_enforcer.py` to validate GitHub Actions workflow state integrity:
   - checked WEC workflows must be `active`,
   - merge-required workflows must be `active`,
   - validation now emits explicit non-active workflow/state findings.
 - Hardened `.github/workflows/workflow-execution-gate.yml` token usage for WEC parsing/summarization steps to use:
-  - `CODEX_MASTER_KEY || CODEX_BACKUP_KEY || github.token`
+  - `CODEX_MASTER_KEY || CODEX_BACKUP_KEY || github.token`  <!-- pragma: allowlist secret -->
 - Updated `.github/copilot-prompts/active/PR-4470-followup.md` with a tailored iterative execution prompt aligned to WEC approval flow and live non-active WEC workflow inventory.
 - Recorded live enable-attempt outcome: GitHub API workflow-enable calls returned `HTTP 403 Resource not accessible by integration` under default installation token, confirming `actions:write` token requirement for workflow state enablement.
 
@@ -7654,7 +7654,7 @@ All 25 Wave 3/4 gaps implemented via workflow-dispatch agent batches (no in-sess
 - **subprocess.py overload**: Added explicit `text: Literal[True] = True` to first overload signature; expanded docstring with `text`-default note and formal `shell` parameter section.
 - **Test logic fixes**: Removed `or True` no-op from `test_phase2_deep_coverage_batch4.py` energy conservation assert; removed unreachable `assert not new_violations` after `pytest.skip` in `test_mypy_type_coverage.py`.
 - **Inference test hardening**: Added `isinstance(data["request_count"], int) and >= 0` type assertion on `/metrics`; fixed redundant `as CircuitBreaker` alias; corrected patch path to `src.codex_ml.serving.inference_server.CircuitBreaker`; added `# noqa: F401` to availability-probe import.
-- **T-01 token chain fix**: `workflow-link-validation.yml` checkout token upgraded to canonical `CODEX_MASTER_KEY || CODEX_BACKUP_KEY || github.token` chain.
+- **T-01 token chain fix**: `workflow-link-validation.yml` checkout token upgraded to canonical `CODEX_MASTER_KEY || CODEX_BACKUP_KEY || github.token` chain.  <!-- pragma: allowlist secret -->
 - **Rate-limit orchestrator robustness**: `int()` parsing of env vars wrapped in descriptive try/except; backoff exponent capped at `min(attempt, 6)`; `run_number` fallback unified to integer `0`.
 
 - **`docs/plans/AUTONOMOUS_PRIVILEGE_ARCHITECTURE.md`**: Master privilege routing map covering all 5 autonomy surfaces (PR template, WEC, Workflows, Discussions, Webhooks); full mermaid diagrams for token tier hierarchy, WEC controller, workflow matrix, end-to-end autonomy loop, and updated decision tree with no human gates.
@@ -7714,7 +7714,7 @@ All 25 Wave 3/4 gaps implemented via workflow-dispatch agent batches (no in-sess
   - `.github/workflows/admin-action-t03.yml` — T-03 caller; fires on `workflow_run` when PR workflows are approved; uses reusable engine; `# pragma: allowlist secret` on `secrets: inherit` YAML keyword.
   - `scripts/ci/admin_action_probe.py` — CLI probe script; exit codes 0/1/2/3; `--probe-only`, `--close-if-ok`, `--dry-run`; 0 mypy errors.
   - `.codex/docs/ADMIN_ACTION_WORKFLOW_PATTERN.md` — pattern guide, gap registry, how-to for new gaps.
-  - `.codex/pending_ops/variable_set_master_key_rotated.json` — OBJ-D: `CODEX_MASTER_KEY_LAST_VERIFIED` intent placeholder for post-rotation update.
+  - `.codex/pending_ops/variable_set_master_key_rotated.json` — OBJ-D: `CODEX_MASTER_KEY_LAST_VERIFIED` intent placeholder for post-rotation update.  <!-- pragma: allowlist secret -->
 - `.mypy_baseline`: updated 126 → 130 to absorb 4 pre-existing errors in `subprocess.py` + `sql_adapter.py` surfaced by version drift.
 - `.secrets.baseline`: updated to include `admin-action-t03.yml:51` line-number tracking (pragma allowlist handles FP).
 
@@ -7730,8 +7730,8 @@ All 25 Wave 3/4 gaps implemented via workflow-dispatch agent batches (no in-sess
 - `.github/workflows/cleanup-stale-branches.yml`: removed contradictory `cache: pip` on a stdlib-only Python step (now consistent with the `# No pip cache` comment).
 - `.github/workflows/token-probe.yml`, `auto-approve-workflows.yml`, `actionlint-audit.yml`, `pr-size-analyzer.yml`: corrected misleading `# aais-cache: none` rationale from "Python referenced in template/doc strings only" to accurate "No pip install — Python uses stdlib only / inline data processing only".
 
-- `.github/workflows/token-expiry-monitor.yml`: new daily PAT expiry monitor (closes T-02 gap). Runs at 09:00 UTC, warns at 14 days, creates GitHub issue at 7 days / on expiry. Reads `CODEX_MASTER_KEY_EXPIRY_DATE` and `CODEX_BACKUP_KEY_EXPIRY_DATE` repo variables.
-- `.codex/pending_ops/variable_set_c1–c7.json`: 7 governance variable intent files — `CODEX_MASTER_KEY_LAST_VERIFIED`, `CODEX_MASTER_KEY_EXPIRY_DATE`, `CODEX_BACKUP_KEY_EXPIRY_DATE`, `CODEX_AAIS_LAST_SCORE`, `CODEX_AAIS_LAST_SCORED_SHA`, `CODEX_WEC_TEMPLATE_VERSION`, `CODEX_SECRETS_BASELINE_SHA`.
+- `.github/workflows/token-expiry-monitor.yml`: new daily PAT expiry monitor (closes T-02 gap). Runs at 09:00 UTC, warns at 14 days, creates GitHub issue at 7 days / on expiry. Reads `CODEX_MASTER_KEY_EXPIRY_DATE` and `CODEX_BACKUP_KEY_EXPIRY_DATE` repo variables.  <!-- pragma: allowlist secret -->
+- `.codex/pending_ops/variable_set_c1–c7.json`: 7 governance variable intent files — `CODEX_MASTER_KEY_LAST_VERIFIED`, `CODEX_MASTER_KEY_EXPIRY_DATE`, `CODEX_BACKUP_KEY_EXPIRY_DATE`, `CODEX_AAIS_LAST_SCORE`, `CODEX_AAIS_LAST_SCORED_SHA`, `CODEX_WEC_TEMPLATE_VERSION`, `CODEX_SECRETS_BASELINE_SHA`.  <!-- pragma: allowlist secret -->
 - `.codex/pending_ops/variable_set_c7.json`: `COPILOT_MAX_CONCURRENT_SESSIONS=1`.
 - `.codex/pending_ops/variable_set_rl_*.json`: 6 `CODEX_RL_*` rate-limit monitoring variables — `POLITE_SLEEP_DEFAULT`, `MIN_REMAINING_DEFAULT`, `MAX_WAIT_DEFAULT`, `CIRCUIT_BREAKER_ENABLED`, `LAST_EXHAUSTION_TIME`, `EXHAUSTION_COUNT_7D`.
 - `workflow-execution-gate.yml`: Pattern A pre-call rate-limit check before `detect-wec-changes` API steps; job-level `GH_TRICKLE_POLITE_SLEEP: "0.3"` and `GH_TRICKLE_MIN_REMAINING: "50"`.
@@ -7769,8 +7769,8 @@ All 25 Wave 3/4 gaps implemented via workflow-dispatch agent batches (no in-sess
 ### Fixed (2026-05-08 — [auto-sync])
 - Auto-sync placeholder added by sync_tracked_files.py
 
-- `docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md`: added **Section 9 — Token Refresh Alignment Guide** (10 sub-sections, 4 Mermaid diagrams). Covers: why alignment matters, master refresh checklist for all three token types (CODEX_MASTER_KEY, CODEX_BACKUP_KEY, GitHub App key), full table of repo variables that must stay in sync after rotation, list of in-repo files to check (.codex/agent_context.json, agent_auth_session.json, .secrets.baseline), scope requirements reference, post-rotation state diagram, simultaneous multi-token rotation order, and impact summary showing which CI workflows break when each token fails.
-- `scripts/ci/post_rotation_verify.sh`: new standalone shell script that runs a 7-step post-rotation alignment check (Variables API access, OAuth scope validation, embedded-token variable scan, agent_context.json/agent_auth_session.json clean-field checks, detect-secrets scan, and CODEX_MASTER_KEY_LAST_VERIFIED timestamp reminder). Exits non-zero on any failure.
+- `docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md`: added **Section 9 — Token Refresh Alignment Guide** (10 sub-sections, 4 Mermaid diagrams). Covers: why alignment matters, master refresh checklist for all three token types (CODEX_MASTER_KEY, CODEX_BACKUP_KEY, GitHub App key), full table of repo variables that must stay in sync after rotation, list of in-repo files to check (.codex/agent_context.json, agent_auth_session.json, .secrets.baseline), scope requirements reference, post-rotation state diagram, simultaneous multi-token rotation order, and impact summary showing which CI workflows break when each token fails.  <!-- pragma: allowlist secret -->
+- `scripts/ci/post_rotation_verify.sh`: new standalone shell script that runs a 7-step post-rotation alignment check (Variables API access, OAuth scope validation, embedded-token variable scan, agent_context.json/agent_auth_session.json clean-field checks, detect-secrets scan, and CODEX_MASTER_KEY_LAST_VERIFIED timestamp reminder). Exits non-zero on any failure.  <!-- pragma: allowlist secret -->
 
 
 ## [S859-v3] — 2026-05-08T01:55Z — PR #4346 (final wrap-up)
@@ -7778,7 +7778,7 @@ All 25 Wave 3/4 gaps implemented via workflow-dispatch agent batches (no in-sess
 ### Fixed
 - `.github/workflows/self-healing.yml`: restructured to remove `workflow_run` trigger (was causing double-execution with `iterative-self-healing-ci.yml`) and replaced `uses:` reusable-workflow call (which requires `workflow_call` in the target — not present) with a `gh workflow run` dispatch step. Resolves actionlint error "workflow_call event trigger is not found". Added `permissions: {}` at workflow-level and `permissions: actions: write` at job-level — closes CodeQL `Workflow does not contain permissions` alert #13408.
 - `.github/workflows/trigger-on-approval.yml`: moved `github.event.pull_request.head.ref` and `github.event.review.user.login` out of inline `run:` script into `env:` block — eliminates actionlint "potentially untrusted" warning and closes script injection CodeQL finding on L60.
-- `scripts/ci/wec_enforcer.py`: added `_find_and_approve_dispatched_run()` and `_approve_run()` helpers. After dispatching a WEC-checked workflow, `cmd_dispatch_checked()` now polls GitHub Actions API (up to 45 s, 5 s interval) for the newly-created run in `action_required` state and immediately calls `POST /runs/{id}/approve` using `CODEX_MASTER_KEY`. Falls back gracefully to the existing `auto-approve-workflows.yml` 5-min schedule sweep if approval times out.
+- `scripts/ci/wec_enforcer.py`: added `_find_and_approve_dispatched_run()` and `_approve_run()` helpers. After dispatching a WEC-checked workflow, `cmd_dispatch_checked()` now polls GitHub Actions API (up to 45 s, 5 s interval) for the newly-created run in `action_required` state and immediately calls `POST /runs/{id}/approve` using `CODEX_MASTER_KEY`. Falls back gracefully to the existing `auto-approve-workflows.yml` 5-min schedule sweep if approval times out.  <!-- pragma: allowlist secret -->
 - `.github/workflows/workflow-execution-gate.yml`: `dispatch-checked` job timeout increased from 10 → 15 min to accommodate post-dispatch approval polling; step annotated with inline documentation of the approve flow.
 
 ### Improved
@@ -7925,12 +7925,12 @@ All 25 Wave 3/4 gaps implemented via workflow-dispatch agent batches (no in-sess
 - **validate.yml**: Added `pull_request_review: types: [submitted]` + explicit `types: [opened, synchronize, reopened]` to `pull_request` trigger. Ensures Fast Validation re-runs when a PR is approved (catches stale/missed runs per Copilot.md research).
 - **pre-merge-validation.yml**: Added `workflow_dispatch` trigger — allows manual re-trigger for missed runs after approval on new HEAD (per Copilot.md recommendation).
 - **trigger-on-approval.yml — full maintainer implementation (admin-approved 2026-05-07)**:
-  - Step 1: `approve_pending_runs.py` auto-approves all `action_required` workflow runs for PR HEAD SHA (CODEX_MASTER_KEY `actions:write`)
+  - Step 1: `approve_pending_runs.py` auto-approves all `action_required` workflow runs for PR HEAD SHA (CODEX_MASTER_KEY `actions:write`)  <!-- pragma: allowlist secret -->
   - Step 2: Dispatches `validate.yml` (fast mode) for PR HEAD
   - Step 3: Dispatches `pre-merge-validation.yml` for PR HEAD
-  - Step 4: Dispatches `codeql-alert-fetcher.yml` (CODEX_MASTER_KEY `security_events` scope)
+  - Step 4: Dispatches `codeql-alert-fetcher.yml` (CODEX_MASTER_KEY `security_events` scope)  <!-- pragma: allowlist secret -->
   - Step 5: Posts `@copilot continue` PR comment to resume agent session as maintainer
-  - Token chain: `CODEX_MASTER_KEY || CODEX_BACKUP_KEY || github.token` (same as `agent-auth-delegation.yml`)
+  - Token chain: `CODEX_MASTER_KEY || CODEX_BACKUP_KEY || github.token` (same as `agent-auth-delegation.yml`)  <!-- pragma: allowlist secret -->
   - Admin override: AGENTS.md §prohibited bypassed per explicit admin grant 2026-05-07
 - Pattern 25 satisfied: CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated.
 
@@ -8090,7 +8090,7 @@ All 25 Wave 3/4 gaps implemented via workflow-dispatch agent batches (no in-sess
 - **Blocking comments** (`#4393054901`, `#4393056983`, `#4393060343`, `#4393062419`) replied to.
 
 ### Fixed (session 2026-05-07T01:05Z — PR #4323 Session 7: scope-constraint confirmed + living docs)
-- **Critical finding documented**: Copilot sandbox tokens (`GITHUB_TOKEN`, `AGENT_GITHUB_TOKEN`) permanently lack `security_events` scope — `list_code_scanning_alerts` MCP tool always returns 403 regardless of rate limits. Only `CODEX_MASTER_KEY` can access `/code-scanning/alerts`. Documented in `whats_next.md` with exact fix path (GitHub Actions workflow or local shell) and in `.codex/docs/RATE_LIMIT_AWARENESS.md`.
+- **Critical finding documented**: Copilot sandbox tokens (`GITHUB_TOKEN`, `AGENT_GITHUB_TOKEN`) permanently lack `security_events` scope — `list_code_scanning_alerts` MCP tool always returns 403 regardless of rate limits. Only `CODEX_MASTER_KEY` can access `/code-scanning/alerts`. Documented in `whats_next.md` with exact fix path (GitHub Actions workflow or local shell) and in `.codex/docs/RATE_LIMIT_AWARENESS.md`.  <!-- pragma: allowlist secret -->
 - **Living docs updated**: `whats_next.md` has "Critical Finding" constraint table + confirmed fix path; `PR4323_session_diagram.md` has S7 session block + updated CI/statistics table.
 - **`store_memory`**: Scope constraint stored for all future sessions.
 - **Blocking comments**: All 4 new blocking comments (`#4392725862`, `#4392837532`, `#4392846671`, `#4392864410`) replied to.
@@ -8106,7 +8106,7 @@ All 25 Wave 3/4 gaps implemented via workflow-dispatch agent batches (no in-sess
 - **Workflows approved**: All pending GitHub Actions workflow runs approved by owner; CI monitoring active.
 - **CodeQL AST sweep (extended)**: `py/missing-equals` — confirmed all 4 `__hash__`-defining classes in `src/` also define `__eq__`; no violation found locally. `py/unexpected-raise-in-special-method` — all restricted special methods (`__repr__`, `__str__`, `__del__`, `__len__`, `__bool__`, `__iter__`, `__next__`, `__hash__`, `__format__`, `__contains__`, `__getattr__`) scan clean in all production directories.
 - **Living docs refreshed**: `docs/roadmap/PR4323_whats_next.md` (S5 header, API command with `jq` filter, detailed priority ordering); `docs/sessions/PR4323_session_diagram.md` (S5 session block, CI status table updated).
-- **Confirmed blockers**: 49 remaining CodeQL alerts (7 rules) require `GH_TOKEN=$CODEX_MASTER_KEY gh api` — rate-limited during this session window.
+- **Confirmed blockers**: 49 remaining CodeQL alerts (7 rules) require `GH_TOKEN=$CODEX_MASTER_KEY gh api` — rate-limited during this session window.  <!-- pragma: allowlist secret -->
 
 ### Fixed (session 2026-05-07T00:00Z — PR #4323 Session 4: CodeQL AST sweep + living docs)
 - **CodeQL local AST sweep**: Searched all of `src/`, `services/`, `cognitive_app/`, `scripts/`, `tools/` for remaining CodeQL rule patterns via local AST analysis. Findings:
@@ -8496,13 +8496,13 @@ All 25 Wave 3/4 gaps implemented via workflow-dispatch agent batches (no in-sess
 - **`scripts/ci/approve_via_playwright.py`** — `approve_via_browser()`: same `sys.exit(1)` → `raise SystemExit(1)` fix.
 - **`.github/workflows/self-approve-pending-runs.yml`** — Added job-level `if:` guard that skips execution when `github.event.workflow_run.name == '⚡ Self-Approve Pending Workflow Runs'`. Without this guard the `workflow_run: workflows: ["*"]` trigger fires on the workflow's own completion, creating an infinite cascade loop that would exhaust Actions minutes.
 
-- **`scripts/ci/approve_pending_runs.py`** — New Python script (mirrors `post_rescue_comment.py` pattern) that uses the Cognitive Brain GitHub App installation token (primary), CODEX_MASTER_KEY PAT (secondary), or CODEX_BACKUP_KEY (tertiary) to call `POST /repos/{owner}/{repo}/actions/runs/{run_id}/approve` on every `action_required` workflow run for a given SHA or across all open PRs (sweep mode). Enables the full autonomous loop.
+- **`scripts/ci/approve_pending_runs.py`** — New Python script (mirrors `post_rescue_comment.py` pattern) that uses the Cognitive Brain GitHub App installation token (primary), CODEX_MASTER_KEY PAT (secondary), or CODEX_BACKUP_KEY (tertiary) to call `POST /repos/{owner}/{repo}/actions/runs/{run_id}/approve` on every `action_required` workflow run for a given SHA or across all open PRs (sweep mode). Enables the full autonomous loop.  <!-- pragma: allowlist secret -->
 - **`.github/workflows/self-approve-pending-runs.yml`** — Dedicated lightweight workflow triggered by `schedule` (every 2 minutes) and `workflow_run` (cascade after any workflow completes). Both triggers run from the default-branch context and are **never** `action_required`, breaking the push→block cycle. Uses CB App token (full-admin, no restrictions) as primary.
 - **`scripts/ci/approve_via_playwright.py`** — Playwright-based browser fallback for cases where the REST API returns non-2xx. Navigates to each run URL and clicks "Approve and run" using the maintainer's token identity.
 
 ### Changed (S178e — 2026-04-29 — autonomous loop hardening)
 - **`.github/workflows/agent-auth-delegation.yml`** — Added `self-approve-after-delegation` job (runs after `activate-delegation`) that calls `approve_pending_runs.py` using the CB App token. Guarantees an approval sweep on every session-start delegation event.
-- **`.github/workflows/auto-approve-workflows.yml`** — Added `actions/create-github-app-token@v3` step as primary token source (CB App token, full-admin) before CODEX_MASTER_KEY. Cascaded App token through all token-consuming steps. Reduced schedule from `*/5` to `*/2` (every 2 minutes) for faster unblock.
+- **`.github/workflows/auto-approve-workflows.yml`** — Added `actions/create-github-app-token@v3` step as primary token source (CB App token, full-admin) before CODEX_MASTER_KEY. Cascaded App token through all token-consuming steps. Reduced schedule from `*/5` to `*/2` (every 2 minutes) for faster unblock.  <!-- pragma: allowlist secret -->
 
 ### Fixed (S178d — 2026-04-29 — ROADMAP consistency, test determinism, RP-007 variant, ruff F401)
 - **`docs/ROADMAP.md`** — Documentation current value corrected `85%` → `95%` to match the 95% completion status stated on line 43 of the same file.
@@ -8766,8 +8766,8 @@ All 25 Wave 3/4 gaps implemented via workflow-dispatch agent batches (no in-sess
 - **Pattern 31 (RP-MYPY-UNUSED-IGNORE)**: Added to `auto_fix_common_issues.py` — auto-removes stale `# type: ignore` via `mypy --warn-unused-ignores` (recurred 15 times)
 - **Pattern 32 (RP-MYPY-OPT-IMPORT)**: Added to `auto_fix_common_issues.py` — auto-adds `[assignment]` to bare `# type: ignore` on optional-import fallbacks (recurred 14 times); 14 instances fixed in `src/`
 - **tests/rag/conftest.py**: New `rag_mock_model` fixture correctly configures `.to/.to_empty/.eval` mock chain for `safe_model_to_device` (RP-RAG-MOCK-CHAIN — recurred 13 times)
-- **GAP-033 (`mcp_poster.py`)**: `GitHubMCPPoster.check_token_health()` added — verifies CODEX_MASTER_KEY scopes (repo+workflow), warns on expiry/rotation, `_token_source` tracking
-- **`scripts/security/bulk_dismiss_all_alerts.py`**: New script to bulk-dismiss 5k+ code-scanning alerts (requires CODEX_MASTER_KEY with `security_events` scope)
+- **GAP-033 (`mcp_poster.py`)**: `GitHubMCPPoster.check_token_health()` added — verifies CODEX_MASTER_KEY scopes (repo+workflow), warns on expiry/rotation, `_token_source` tracking  <!-- pragma: allowlist secret -->
+- **`scripts/security/bulk_dismiss_all_alerts.py`**: New script to bulk-dismiss 5k+ code-scanning alerts (requires CODEX_MASTER_KEY with `security_events` scope)  <!-- pragma: allowlist secret -->
 
 
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4074 (SHA `7bdf405a`) at 2026-04-26T18:48Z [auto-generated]
@@ -8830,7 +8830,7 @@ All 25 Wave 3/4 gaps implemented via workflow-dispatch agent batches (no in-sess
 - `requirements/dev.txt`: Added `types-PyYAML>=6.0.12` and `types-requests>=2.31.0` type stubs so `mypy` no longer emits `[import-untyped]` errors for `yaml`/`requests` imports; mypy error count dropped **104 → 57** (improvement of 47 errors).
 - `tests/api/test_rag_api_validation.py`: Added `pytest.importorskip("slowapi")` guard so the test skips gracefully when `slowapi` is not installed.
 - `.mypy_baseline`: Updated from `104` → `57` to lock in the improvement from installing type stubs.
-- `.github/workflows/iterative-self-healing-ci.yml`: Added `continue-on-error: true` to "Append escalation" step and updated token chain to `CODEX_MASTER_KEY || CODEX_BACKUP_KEY || github.token`.
+- `.github/workflows/iterative-self-healing-ci.yml`: Added `continue-on-error: true` to "Append escalation" step and updated token chain to `CODEX_MASTER_KEY || CODEX_BACKUP_KEY || github.token`.  <!-- pragma: allowlist secret -->
 - `.github/workflows/agent-auth-delegation.yml`: Added `github.actor != 'dependabot[bot]'` condition to `Activate token delegation` job; added bot-actor skip in accountability report check; added `CODEX_BACKUP_KEY || github.token` fallback to checkout `token:`.
 - `scripts/ci/wec_enforcer.py`: Inline retry with `GITHUB_TOKEN` fallback on 403/401 in `--validate-body` mode; exit 0 (soft fail) on persistent auth errors.
 - `.github/workflows/auto-approve-workflows.yml`: Added `continue-on-error: true` to approve step; wrapped `getHeadSha()` in try/catch with safe error access.
@@ -8866,7 +8866,7 @@ pip-audit false-positive `GHSA-58qw-9mgm-455v` (pip 26.x ZIP/tar confusion) adde
 
 ### Fixed (2026-04-24 — PR #4039 review-comment remediation)
 - `pyproject.toml`: corrected stale inline comment on `packaging>=26.1,<27.0` (both `dev` and `test` dependency sections) — comment previously read `Pin to <26` which contradicted the actual constraint
-- `.github/workflows/agent-auth-delegation.yml`: standardised all `GH_TOKEN` fallback chains from `CODEX_MASTER_KEY || secrets.GITHUB_TOKEN` to the repo-standard three-part chain `CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token` (4 steps: lines 84, 98, 127, 2202)
+- `.github/workflows/agent-auth-delegation.yml`: standardised all `GH_TOKEN` fallback chains from `CODEX_MASTER_KEY || secrets.GITHUB_TOKEN` to the repo-standard three-part chain `CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token` (4 steps: lines 84, 98, 127, 2202)  <!-- pragma: allowlist secret -->
 
 ### Fixed (auto-update — PR #4039)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4039 (SHA `2f9ca793`) at 2026-04-24T11:50Z [auto-generated]
@@ -9101,8 +9101,8 @@ Files updated: `Dockerfile`, `pyproject.toml`, `requirements/lock.txt`,
 
 - **`docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md`** *(new — 464 lines)*: Comprehensive verified reference covering all 7 upstream sources: REST API for Actions Secrets, Actions Variables, Dependabot Secrets, Codespaces Secrets; GitHub CLI Manual; GitHub MCP Server README; MCP Server Configuration guide. Includes: scope coverage matrix (repo/org/env/user × all types), complete REST API endpoint tables for all scopes, canonical `curl` and `gh` patterns used in this repo, MCP server gap analysis (no secret/variable CRUD via MCP), PAT scopes by operation, libsodium encryption pattern. Verified against live upstream docs 2026-04-05.
 - **`.codex/docs/GITHUB_API_AND_MCP_REFERENCE.md`** *(new)*: Cognitive Brain knowledge entry — quick-access summary of token chain, scope matrix, API snippet table, and wiring map to full reference docs. Loaded by CB session injector on every agent session start.
-- **`scripts/ci/test_variables_api.py`** *(new — 310 lines)*: End-to-end live test for GitHub Variables API. Tests `TOKEN VALIDATION → LIST → CREATE → GET → UPDATE → DELETE` for both repository scope and organization scope. Graceful handling of 403 when token lacks required scopes. Local dry run executed: `GITHUB_TOKEN` (installation token, no OAuth scopes) → correctly returns HTTP 403; documented as expected behavior. Requires `CODEX_MASTER_KEY` (`repo` PAT) for successful CRUD operations.
-- **`.github/workflows/test-variables-api.yml`** *(new)*: `workflow_dispatch` workflow to run `test_variables_api.py` with `CODEX_MASTER_KEY`. Jobs: `validate-token` (scope check via `X-OAuth-Scopes` header), `test-repo-variables` (CREATE/GET/UPDATE/DELETE), `test-org-variables` (optional, gated on `admin:org` scope), `summary` (GitHub Step Summary with results). Ready to dispatch after merge to `main`.
+- **`scripts/ci/test_variables_api.py`** *(new — 310 lines)*: End-to-end live test for GitHub Variables API. Tests `TOKEN VALIDATION → LIST → CREATE → GET → UPDATE → DELETE` for both repository scope and organization scope. Graceful handling of 403 when token lacks required scopes. Local dry run executed: `GITHUB_TOKEN` (installation token, no OAuth scopes) → correctly returns HTTP 403; documented as expected behavior. Requires `CODEX_MASTER_KEY` (`repo` PAT) for successful CRUD operations.  <!-- pragma: allowlist secret -->
+- **`.github/workflows/test-variables-api.yml`** *(new)*: `workflow_dispatch` workflow to run `test_variables_api.py` with `CODEX_MASTER_KEY`. Jobs: `validate-token` (scope check via `X-OAuth-Scopes` header), `test-repo-variables` (CREATE/GET/UPDATE/DELETE), `test-org-variables` (optional, gated on `admin:org` scope), `summary` (GitHub Step Summary with results). Ready to dispatch after merge to `main`.  <!-- pragma: allowlist secret -->
 
 ### Changed (PR #3876 — GitHub Variables & Secrets comprehensive reference + live test, 2026-04-05)
 - **`docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md`**: Added §"SECRETS & VARIABLES — ALL SCOPES" section with scope matrix, 403 explanation (why `GITHUB_TOKEN` fails), environment variable endpoint pattern, MCP server gap note. Updated header with cross-links to new reference docs and CB knowledge entry.
@@ -9202,15 +9202,15 @@ Files updated: `Dockerfile`, `pyproject.toml`, `requirements/lock.txt`,
 - **pr_lifecycle_improvements.md**: P2-A (session-done dedup) → ✅ Done S299; P5-C (TTL 4h→1h) → ✅ Done S300.
 
 ### Fixed (S303 — PR #3854 — CB App token for post-accountability-to-discussion.yml + webhook/infra context)
-- **`post-accountability-to-discussion.yml` CB App token**: Added `🔑 Resolve auth token for discussions:write` step (same pattern as S302 `discussion-cleanup.yml`) — mints GitHub App installation token using `_GITHUB_APP_*` secrets before falling back to `CODEX_MASTER_KEY` / `CODEX_BACKUP_KEY` / `github.token`. The "Post to GitHub Discussion" step now uses `${{ steps.auth.outputs.resolved_token }}` instead of bare `${{ secrets.GITHUB_TOKEN }}`, resolving `discussions:write` failures when the standard workflow token is used. `api.github.com/installation/token` confirmed in network allowlist.
+- **`post-accountability-to-discussion.yml` CB App token**: Added `🔑 Resolve auth token for discussions:write` step (same pattern as S302 `discussion-cleanup.yml`) — mints GitHub App installation token using `_GITHUB_APP_*` secrets before falling back to `CODEX_MASTER_KEY` / `CODEX_BACKUP_KEY` / `github.token`. The "Post to GitHub Discussion" step now uses `${{ steps.auth.outputs.resolved_token }}` instead of bare `${{ secrets.GITHUB_TOKEN }}`, resolving `discussions:write` failures when the standard workflow token is used. `api.github.com/installation/token` confirmed in network allowlist.  <!-- pragma: allowlist secret -->
 - **Infra context ingested**: CB GitHub App has full repository + org permissions (Discussions R/W, Issues R/W, Contents R/W, Checks R/W, Code scanning R/W, Secrets R/W, Workflows R/W, etc.) with event subscriptions covering all relevant webhook events. Only 1 active webhook (push-only → `api.github.com/repos/Aries-Serpent/_codex_`). All other event routing handled natively via GitHub Actions triggers. New webhooks, if needed, will be configured via explicit UI guidance.
 
 ### Fixed (S302 — PR #3854 — post-accountability-to-discussion.yml duplicate prRef SyntaxError + discussion-cleanup App token)
 - **`post-accountability-to-discussion.yml` SyntaxError**: Fixed `Identifier 'prRef' has already been declared` — RC-4 (S300) introduced a second `const prRef` (numeric) that collided with the existing `const prRef` (string, used for the comment header). Renamed the numeric variable to `prNum` throughout the RC-4 lookup block. This was causing `📋 Post Accountability Report to Discussion` job to fail on every push.
-- **`discussion-cleanup.yml` GitHub App token support**: Added `🔑 Resolve auth token` step that mints a GitHub App installation token using `_GITHUB_APP_*` secrets (has `discussions:write`) before falling back to `CODEX_MASTER_KEY` / `CODEX_BACKUP_KEY` / `github.token`. Now that `api.github.com/installation/token` is in the network allowlist, the App token will be used when `_GITHUB_APP_PRIVATE_KEY` is injected, resolving the `deleteDiscussionComment` permission error (RP-DISCUSSION-DELETE-PERM). All execute steps updated to use `${{ steps.auth.outputs.resolved_token }}`.
+- **`discussion-cleanup.yml` GitHub App token support**: Added `🔑 Resolve auth token` step that mints a GitHub App installation token using `_GITHUB_APP_*` secrets (has `discussions:write`) before falling back to `CODEX_MASTER_KEY` / `CODEX_BACKUP_KEY` / `github.token`. Now that `api.github.com/installation/token` is in the network allowlist, the App token will be used when `_GITHUB_APP_PRIVATE_KEY` is injected, resolving the `deleteDiscussionComment` permission error (RP-DISCUSSION-DELETE-PERM). All execute steps updated to use `${{ steps.auth.outputs.resolved_token }}`.  <!-- pragma: allowlist secret -->
 
 ### Fixed (S301 — PR #3854 — PDA logging, manifest refresh, discussion-cleanup UI, validation)
-- **PDA Loop + AfterMath**: Logged `RP-DISCUSSION-DELETE-PERM` failure pattern — `deleteDiscussionComment` GraphQL mutation blocked for all 5 token methods tried (GITHUB_TOKEN, gh-auth-token ghu_, CB API proxy, CB CLI env, CB CLI file). Root cause: `CODEX_BACKUP_KEY`/`CODEX_MASTER_KEY` declared in CB server env but values empty (secrets not injected at CB server startup). Fix path documented: restart CB server with secrets injected OR trigger `discussion-cleanup.yml` via GitHub Actions UI where repo secrets are properly injected.
+- **PDA Loop + AfterMath**: Logged `RP-DISCUSSION-DELETE-PERM` failure pattern — `deleteDiscussionComment` GraphQL mutation blocked for all 5 token methods tried (GITHUB_TOKEN, gh-auth-token ghu_, CB API proxy, CB CLI env, CB CLI file). Root cause: `CODEX_BACKUP_KEY`/`CODEX_MASTER_KEY` declared in CB server env but values empty (secrets not injected at CB server startup). Fix path documented: restart CB server with secrets injected OR trigger `discussion-cleanup.yml` via GitHub Actions UI where repo secrets are properly injected.  <!-- pragma: allowlist secret -->
 - **Discussion cleanup manifest**: Refreshed `.codex/cleanup/discussion_cleanup_manifest.json` — 538 duplicates identified (525 in #3756 + 13 in #3673, up from 526 due to new duplicates accumulated since S297).
 - **Validation clean**: ruff F401/F841/E402 — no issues; CodeQL Pattern 8 — no issues; pre-commit hooks pass.
 
@@ -9257,7 +9257,7 @@ Files updated: `Dockerfile`, `pyproject.toml`, `requirements/lock.txt`,
 ### Fixed (S293 — PR #3854 — SC2269, RAG meta-tensor, rescue identity)
 - **actionlint SC2269**: `workflow-execution-gate.yml` — removed redundant `PR="${PR}"` self-assignment
 - **RAG meta-tensor**: `torch.nn.Linear` test isolation — use `device="cpu"` constructor argument; no `.to()` call needed
-- **Rescue identity**: `actionlint-audit.yml` — explicitly set `github-token: CODEX_MASTER_KEY` to ensure rescue comments post as `@mbaetiong`, not `github-actions[bot]`
+- **Rescue identity**: `actionlint-audit.yml` — explicitly set `github-token: CODEX_MASTER_KEY` to ensure rescue comments post as `@mbaetiong`, not `github-actions[bot]`  <!-- pragma: allowlist secret -->
 
 ### Fixed (S292 — PR #3854 — CB-003/005/006, RAG coverage, actionlint, PR template WEC overhaul)
 - **CB-003**: actionlint `expression-in-script` violations fixed in `iterative-self-healing-ci.yml` and `workflow-execution-gate.yml` — all `${{ }}` expressions moved to `env:` blocks
@@ -9580,7 +9580,7 @@ Files updated: `Dockerfile`, `pyproject.toml`, `requirements/lock.txt`,
 
 ### Fixed (S214 — PR #3748)
 - **fix(ci/workflows):** `agent-auth-delegation.yml` — removed `vars.COPILOT_AGENT_AUTH_ENABLED != 'true'` guard from `detect-checkbox` job (caused it to be skipped when delegation was already active, silently breaking all re-delegation and session starts). Moved guard to `await-approval` only; updated `activate-delegation` to use `always()` with explicit result conditions so it runs for both fresh approvals and re-delegation (upserts existing `@copilot continue` comment, no Copilot loop). Added dedup to session concurrency gate notification.
-- **fix(ci/workflows):** `copilot-agent-session-done.yml` — changed PATH A/B post token from `GITHUB_TOKEN` (posts as `github-actions[bot]`, ignored by Copilot) to `CODEX_MASTER_KEY || CODEX_BACKUP_KEY || GITHUB_TOKEN` (posts as @mbaetiong, triggers Copilot sessions correctly).
+- **fix(ci/workflows):** `copilot-agent-session-done.yml` — changed PATH A/B post token from `GITHUB_TOKEN` (posts as `github-actions[bot]`, ignored by Copilot) to `CODEX_MASTER_KEY || CODEX_BACKUP_KEY || GITHUB_TOKEN` (posts as @mbaetiong, triggers Copilot sessions correctly).  <!-- pragma: allowlist secret -->
 
 ### Fixed (auto-update — PR #3750)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3750 (SHA `3a5da563`) at 2026-03-25T23:49Z [auto-generated]
@@ -9800,7 +9800,7 @@ Files updated: `Dockerfile`, `pyproject.toml`, `requirements/lock.txt`,
 - **`tests/github/test_mcp_poster.py`**: Added 42 new tests covering `create_ref` (ref normalisation variants), `create_pull_request`, `list_pull_requests` (filters, pagination cap, error handling), `merge_branch`, `create_discussion`, `_request` retry logic (429, 403 rate-limit, 403 permission), CLI new subcommands, and CB lifecycle hooks. Coverage: 50.56% → 95.83% (+45 pp).
 - **`.github/copilot-cascade/tests/test_cascade.py`**: Added 7 tests for new `_execute_real()` JSON-RPC transport (success, JSON-RPC error body, CODEX_MCP_ENDPOINT override, HTTP error, non-HTTP scheme guard, `_http_post_json` header verification, `_http_post_json` URL scheme rejection).
 
-- **`.github/workflows/create-sub-pr-to-0D_base_.yml`**: NEW — autonomous sub-PR creation from any session branch into `0D_base_`; idempotent, uses `mcp_poster create-pr` + `CODEX_MASTER_KEY`.
+- **`.github/workflows/create-sub-pr-to-0D_base_.yml`**: NEW — autonomous sub-PR creation from any session branch into `0D_base_`; idempotent, uses `mcp_poster create-pr` + `CODEX_MASTER_KEY`.  <!-- pragma: allowlist secret -->
 - **`.codex/docs/COGNITIVE_BRAIN_STATUS_S174.md`**: NEW — full S174 cognitive brain status with AAIS scores, architecture diagram, memory tiers, next-phase plan.
 - **`.github/copilot-prompts/active/S174-followup.md`**: NEW — comprehensive follow-up prompt with owner actions, next @copilot session tasks, production-ready agent designs.
 - **`AGENT_REGISTRY.yaml`**: Added `promote-integration-branch` + `create-sub-pr-to-0D_base_` agents; `total_agents` 157→159.
@@ -10069,7 +10069,7 @@ Files updated: `Dockerfile`, `pyproject.toml`, `requirements/lock.txt`,
 - **`docs/ops/` (24), `docs/mcp/`, `docs/ci/`**: Updated 24 stale date headers via `update_doc_freshness.py`.
 - **`docs/plans/` (28), `docs/archive/` (9)**: Added archive-notice / archive-header-only banners to historical docs.
 
-- **`docs/admin/TOKEN_ROTATION_GUIDE.md`** *(new)*: Full human-admin guide for rotating `CODEX_MASTER_KEY` and `CODEX_BACKUP_KEY` — step-by-step with Mermaid flowchart, permission table, emergency rotation procedure, troubleshooting, and rotation calendar.
+- **`docs/admin/TOKEN_ROTATION_GUIDE.md`** *(new)*: Full human-admin guide for rotating `CODEX_MASTER_KEY` and `CODEX_BACKUP_KEY` — step-by-step with Mermaid flowchart, permission table, emergency rotation procedure, troubleshooting, and rotation calendar.  <!-- pragma: allowlist secret -->
 - **`docs/DOC_FRESHNESS_AUDIT_2026-03-17.md`** *(new)*: Comprehensive doc staleness audit — 533/1381 docs identified, categorized P0–P3, with action plan and phase assignment.
 - **`scripts/ci/update_doc_freshness.py`** *(new)*: Reusable script for bulk date-header refresh, archive-notice injection, and CI check-only mode.
 - **`.github/workflows/doc-freshness-check.yml`** *(new)*: Non-blocking weekly CI workflow that warns when admin/agent docs exceed 90 days without update.
@@ -10123,7 +10123,7 @@ Files updated: `Dockerfile`, `pyproject.toml`, `requirements/lock.txt`,
 ### Fixed (S129 — 2026-03-17 — PR #3604)
 - **`agents/advanced_physics_calculators.py`**: Added 19 missing NumpyStub methods (`mean`, `abs`, `sum`, `std`, `var`, `sqrt`, `sin`, `clip`, `min`, `linspace`, `meshgrid`, `gradient`, `convolve`, `roll`, `delete`, `argsort`, `argwhere`) + `pi` constant + `linalg.norm`
 - **`agents/developer_orchestrator.py`**: Added `_NpStubDev` fallback class so tests patching `NUMPY_AVAILABLE=True` don't crash with `NameError`
-- **`tests/agents/test_brain_client.py`**: Fixed auth env var leak — `_auth_header()` checks 4 env vars (`CODEX_MASTER_KEY`, `CODEX_BACKUP_KEY`, `AGENT_GITHUB_TOKEN`, `GITHUB_TOKEN`); tests now exclude all 4 via `_AUTH_ENV_VARS` constant
+- **`tests/agents/test_brain_client.py`**: Fixed auth env var leak — `_auth_header()` checks 4 env vars (`CODEX_MASTER_KEY`, `CODEX_BACKUP_KEY`, `AGENT_GITHUB_TOKEN`, `GITHUB_TOKEN`); tests now exclude all 4 via `_AUTH_ENV_VARS` constant  <!-- pragma: allowlist secret -->
 
 ### Fixed (S129 — 2026-03-17 — PR #3604, auto-generated)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3604 (SHA `3e7012b8`) at 2026-03-17T00:00Z [auto-generated]
@@ -10875,7 +10875,7 @@ python scripts/ci/mypy_baseline.py          # 1113 ≤ 1113 ✅
 - **Deferral scanner — equality comparison**: Changed `pattern is _FUTURE_WORK_PATTERN` → `pattern == _FUTURE_WORK_PATTERN` in `scan()` (value equality, robust against list rebuilds/copies).
 - **Deferral scanner — copilot-prompts exemption anchor**: Tightened to `\.github/copilot-prompts/\S+$` (path must extend to end of line, blocking bypass attempts).
 - **`scripts/ci/session_wrapup_autofix.py` (NEW)**: Self-healing script that auto-updates `AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md` when REQ-4/REQ-5 cognitive preflight checks fail. Idempotent, fully offline, supports `--check`, `--dry-run`, `--fix-all`.
-- **`agent-auth-delegation.yml` — Auto-Fix Step (NEW)**: Added `Auto-fix: self-heal accountability report and CHANGELOG (REQ-4/5)` step in the `cognitive-preflight` job. When REQ-4 or REQ-5 fails and Agent Token Delegation is enabled, this step runs `session_wrapup_autofix.py`, then commits and pushes the fix back to the PR branch using `CODEX_MASTER_KEY`. Uses `[skip ci]` to avoid infinite loops.
+- **`agent-auth-delegation.yml` — Auto-Fix Step (NEW)**: Added `Auto-fix: self-heal accountability report and CHANGELOG (REQ-4/5)` step in the `cognitive-preflight` job. When REQ-4 or REQ-5 fails and Agent Token Delegation is enabled, this step runs `session_wrapup_autofix.py`, then commits and pushes the fix back to the PR branch using `CODEX_MASTER_KEY`. Uses `[skip ci]` to avoid infinite loops.  <!-- pragma: allowlist secret -->
 - **`CODEBASE_AGENCY_POLICY.md` §0 — Mandatory Pre-Session Review (NEW rule)**: Added §0 "Mandatory Pre-Session Review" as the first core principle. Every Copilot coding agent session MUST begin by: (a) reviewing ALL bot-posted comments on the PR, and (b) fixing ALL code-fixable failing CI checks — before making any file changes. Enforced via cognitive-preflight checklist items 0a/0b.
 - **`agent-auth-delegation.yml` checklist items 0a/0b (NEW)**: Preflight mandatory checklist now includes "Review ALL bot-posted comments" (0a) and "Fix ALL failing CI checks" (0b) as explicit pre-session requirements posted to each PR.
 - **`ci_failure_patterns.yaml` — Patterns #24 and #25 (NEW)**: `PREFLIGHT_001` (accountability report not updated, auto-fixable) and `DEFERRAL_001` (doc-example false positives, backtick/HTML-comment fix).
@@ -11097,7 +11097,7 @@ All 11 copilot-pull-request-reviewer (review #3947215064) threads confirmed addr
 - **`.github/workflows/consolidated-pr-status.yml`**: Added `.github/actions/post-pr-summary/` to sparse-checkout list so the local composite action can be resolved at runtime.
 - **`scripts/stale_session_detector.py`**: Fixed docstring ("GitHub Copilot Tasks API" → "GitHub Pull Requests REST API"); removed unused `SESSION_DIR`, `_load_json`, `STATUS_ACTIVE`, and `session_id` references; added `verbose` parameter to `archive_stale_sessions()` — defaults `False` for library callers, `True` in CLI.
 
-- **`scripts/stale_session_detector.py`**: `--check-prs` now auto-enables when `GITHUB_TOKEN` (or `CODEX_MASTER_KEY`) is detected in the environment — unblocked by `COPILOT_AGENT_AUTH_ENABLED=true` token delegation.
+- **`scripts/stale_session_detector.py`**: `--check-prs` now auto-enables when `GITHUB_TOKEN` (or `CODEX_MASTER_KEY`) is detected in the environment — unblocked by `COPILOT_AGENT_AUTH_ENABLED=true` token delegation.  <!-- pragma: allowlist secret -->
 - **`.github/workflows/copilot-setup-steps.yml`**: Added "📊 Session Lifecycle Metrics" step — runs `session_tracker.py metrics --format json` and writes output to `$GITHUB_STEP_SUMMARY` for every Copilot agent session.
 - **`scripts/ci/rotate_cognitive_brain_status.py`**: New script for rotating `.codex/cognitive_brain/status/` files — moves oldest files to `archive/` when count exceeds threshold (default: threshold=60, keep=50). Writes a rotation manifest JSON.
 - **`.github/workflows/copilot-setup-steps.yml`**: Added "🔄 Rotate Cognitive Brain Status Files" step — runs rotation script automatically with `continue-on-error: true`.
@@ -11341,7 +11341,7 @@ All 11 copilot-pull-request-reviewer (review #3947215064) threads confirmed addr
 
 ### Fixed (PR #3514 — 2026-03-10 session 2)
 - **Issue #3530 (CI health alert — auto-fix failures)**: `auto-fix-common-issues.yml`
-  now falls back to `github.token` when `CODEX_MASTER_KEY` / `CODEX_BACKUP_KEY` secrets
+  now falls back to `github.token` when `CODEX_MASTER_KEY` / `CODEX_BACKUP_KEY` secrets  <!-- pragma: allowlist secret -->
   are absent; added a repository-ownership guard on the push step so the workflow no
   longer fails in fork contexts where push rights are unavailable.
 - **Agent Token Delegation re-confirmed ×5** (workflow run 22889389811).
@@ -11423,7 +11423,7 @@ All 11 copilot-pull-request-reviewer (review #3947215064) threads confirmed addr
 ### Updated (S116 variable audit sync)
 - **`GITHUB_VARIABLES_MASTER_GUIDE.md` v1.6.0:** Reconciled with live variable export from @mbaetiong.
   **SAR-G01 COMPLETE** — all 9 Codespace secrets confirmed set (as user-level secrets 2026-03-06/07):
-  `CODEX_MASTER_KEY` ✅, `CODEX_BACKUP_KEY` ✅, `CODEX_ADMIN_KEY` ✅, `_GITHUB_APP_ID` ✅,
+  `CODEX_MASTER_KEY` ✅, `CODEX_BACKUP_KEY` ✅, `CODEX_ADMIN_KEY` ✅, `_GITHUB_APP_ID` ✅,  <!-- pragma: allowlist secret -->
   `_GITHUB_APP_PRIVATE_KEY` ✅, `_GITHUB_APP_INSTALLATION_ID` ✅, `_GITHUB_APP_CLIENT_SECRET` ✅,
   `WEBHOOK_SECRET` ✅, `WEBHOOK_RECEIVER_URL` ✅.
   **§6h all 8 autonomous agent vars confirmed provisioned** with actual live values:
@@ -11588,7 +11588,7 @@ All 11 copilot-pull-request-reviewer (review #3947215064) threads confirmed addr
 
 ### Fixed (W-137 — PR review 3902237330, 13 comments)
 - `Dockerfile.preview` lines 58 + 91: removed `2>/dev/null || true` from both `pip install -e .` calls — build now fails fast on packaging errors instead of silently producing a broken image.
-- `docs/ops/WEBHOOK_REGISTRY.md` line 282: clarified that `CODEX_MASTER_KEY` (PAT with `repo` scope) is required for `gh variable set`; removed misleading "or `GITHUB_TOKEN` if available" note (GITHUB_TOKEN always 403s on Variables API). Also updated port visibility note: `public` → `org`.
+- `docs/ops/WEBHOOK_REGISTRY.md` line 282: clarified that `CODEX_MASTER_KEY` (PAT with `repo` scope) is required for `gh variable set`; removed misleading "or `GITHUB_TOKEN` if available" note (GITHUB_TOKEN always 403s on Variables API). Also updated port visibility note: `public` → `org`.  <!-- pragma: allowlist secret -->
 - `.github/workflows/agent-registry-validation.yml` line 60: removed `cache: 'pip'` from `actions/setup-python` — was redundant with the manual `actions/cache@v5` step immediately after; prevents conflicting cache keys/saves.
 - `.github/workflows/build-preview-image.yml` line 90: `${{ inputs.image_tag }}` → `${{ github.event.inputs.image_tag }}` (explicit `workflow_dispatch` input source).
 - `.github/workflows/build-preview-image.yml` line 77+107: gated GHCR login + `push:` on `github.ref == 'refs/heads/main'` OR `workflow_dispatch` with `push_image == 'true'`; `push_image` input now actually controls pushing.
@@ -11600,18 +11600,18 @@ All 11 copilot-pull-request-reviewer (review #3947215064) threads confirmed addr
 - `.codex/qa_walkthrough/security_audit.json` line 119: `PasswordHasher` iterations corrected `100k` → `600k` (matches `_PBKDF2_ITERATIONS = 600_000` in `user_store.py`).
 - `.devcontainer/scripts/post-start.sh` line 139: `public` → `org` port visibility for Codespace port 8765 — prevents unauthenticated internet access to `/api/cli/run` and `/api/request` endpoints.
 
-- `scripts/tools/variable_intent_writer.py`: intent-file mailbox writer. Queues variable `set`/`delete` operations to `.codex/pending_ops/variable_*.json` when direct API access is blocked (e.g., `CODEX_MASTER_KEY` not in agent env).
-- `.github/workflows/process-variable-intents.yml`: on-push workflow that reads intent files and executes them using `CODEX_MASTER_KEY` (org secret available in Actions). Self-cleaning — commits deletion of processed intent files. Supports `dry_run` input for testing.
+- `scripts/tools/variable_intent_writer.py`: intent-file mailbox writer. Queues variable `set`/`delete` operations to `.codex/pending_ops/variable_*.json` when direct API access is blocked (e.g., `CODEX_MASTER_KEY` not in agent env).  <!-- pragma: allowlist secret -->
+- `.github/workflows/process-variable-intents.yml`: on-push workflow that reads intent files and executes them using `CODEX_MASTER_KEY` (org secret available in Actions). Self-cleaning — commits deletion of processed intent files. Supports `dry_run` input for testing.  <!-- pragma: allowlist secret -->
 - `.codex/pending_ops/variable_set_COPILOT_ACCESS_TEST_*.json`: queued intent to create `COPILOT_ACCESS_TEST` repo variable — will be processed on next push by the above workflow.
 
 
 
 ### Fixed (W-136)
 - `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md` v1.3.0 → v1.4.0:
-  - §3: `CODEX_MASTER_KEY` rotation timestamp updated to "now" (re-rotated by @mbaetiong 2026-03-06, third rotation of this session).
-  - §8: `CODEX_MASTER_KEY` status updated from "❌ Not confirmed" to "✅ Confirmed (org-level)". The repo-level Codespace override was removed by @mbaetiong — the org-level Codespace secret now applies directly. Remaining blockers: 7 (was 8).
-  - §8 CLI block + §13 CLI block: `CODEX_MASTER_KEY` marked as already-set (skip comment added).
-  - §13 source-values table: `CODEX_MASTER_KEY` row struck through as ✅ completed.
+  - §3: `CODEX_MASTER_KEY` rotation timestamp updated to "now" (re-rotated by @mbaetiong 2026-03-06, third rotation of this session).  <!-- pragma: allowlist secret -->
+  - §8: `CODEX_MASTER_KEY` status updated from "❌ Not confirmed" to "✅ Confirmed (org-level)". The repo-level Codespace override was removed by @mbaetiong — the org-level Codespace secret now applies directly. Remaining blockers: 7 (was 8).  <!-- pragma: allowlist secret -->
+  - §8 CLI block + §13 CLI block: `CODEX_MASTER_KEY` marked as already-set (skip comment added).  <!-- pragma: allowlist secret -->
+  - §13 source-values table: `CODEX_MASTER_KEY` row struck through as ✅ completed.  <!-- pragma: allowlist secret -->
   - Summary Checklist: blocker count updated from 8 → 7.
 
 
@@ -11621,7 +11621,7 @@ All 11 copilot-pull-request-reviewer (review #3947215064) threads confirmed addr
 ### Fixed (W-135)
 - `.devcontainer/scripts/post-start.sh`: step 4b refactored — now updates both `WEBHOOK_RECEIVER_URL` and new `CODEX_ACTIVE_CODESPACE` in a single auth token resolution block; error messages include manual-fix commands for both variables.
 - `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md` v1.2.0 → v1.3.0:
-  - §3: `CODEX_MASTER_KEY` + `CODEX_BACKUP_KEY` re-rotation timestamps updated (rotated 2026-03-06); `_GITHUB_APP_*` timestamps updated (8 h ago); rotation note updated to next-due 2026-06-04.
+  - §3: `CODEX_MASTER_KEY` + `CODEX_BACKUP_KEY` re-rotation timestamps updated (rotated 2026-03-06); `_GITHUB_APP_*` timestamps updated (8 h ago); rotation note updated to next-due 2026-06-04.  <!-- pragma: allowlist secret -->
   - §4: `_CODEX_BOT_RUNNER` ⚠️ 7-months → ✅ rotated 45 min ago.
   - §5: All 3 env runner secrets ⚠️ 7-months → ✅ rotated 48–50 min ago.
   - §6a: `COGNITIVE_BRAIN_SESSION_NUMBER` 118 → 120.
@@ -11692,7 +11692,7 @@ All 11 copilot-pull-request-reviewer (review #3947215064) threads confirmed addr
 
 ### Changed (W-130)
 
-- `.devcontainer/scripts/post-start.sh` — added step 4b: auto-updates `WEBHOOK_RECEIVER_URL` repo variable on every Codespace start/resume using `gh variable set`. Uses `CODEX_MASTER_KEY` or `GITHUB_TOKEN`. Also attempts `gh codespace ports visibility 8765:public` for webhook delivery.
+- `.devcontainer/scripts/post-start.sh` — added step 4b: auto-updates `WEBHOOK_RECEIVER_URL` repo variable on every Codespace start/resume using `gh variable set`. Uses `CODEX_MASTER_KEY` or `GITHUB_TOKEN`. Also attempts `gh codespace ports visibility 8765:public` for webhook delivery.  <!-- pragma: allowlist secret -->
 - `.devcontainer/scripts/post-start.sh` — step 5 GitHub App JWT check now reads `_GITHUB_APP_ID` / `_GITHUB_APP_PRIVATE_KEY` (correct `_GITHUB_APP_*` naming, was `GITHUB_APP_ID` / `GITHUB_APP_PRIVATE_KEY`)
 - `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md` (v1.1.0 → v1.2.0):
   - **§6g** `WEBHOOK_RECEIVER_URL` row: ❌ Missing → ✅ Auto-set by Codespace. URL: `https://${CODESPACE_NAME}-8765.preview.app.github.dev/webhook/github`
@@ -11722,7 +11722,7 @@ All 11 copilot-pull-request-reviewer (review #3947215064) threads confirmed addr
   - **§7 Env Variables:** `CODEX_ENV_NODE_VERSION` row updated ⚠️→✅ (Issue 1 resolved). `CODEX_ENV_PYTHON_VERSION` updated `3.11`→`3.12` and ⚠️→✅ (Issue 2 resolved).
   - **§8 Codespace Secrets:** Expanded table to 9 rows (added `GITHUB_APP_CLIENT_SECRET`). Added "Actions Org Secret Equivalent" column cross-referencing `_GITHUB_APP_*`. Added CLI/UI setup instructions block.
   - **§9 Workflow env:** `CODEX_SESSION_ID` note updated to reflect dual storage (workflow + repo var).
-  - **§10 Known Issues:** Issues 1, 2, 5 marked ✅ RESOLVED with resolution details. Issue 4 stale secrets updated: `CODEX_MASTER_KEY` now ✅ rotated.
+  - **§10 Known Issues:** Issues 1, 2, 5 marked ✅ RESOLVED with resolution details. Issue 4 stale secrets updated: `CODEX_MASTER_KEY` now ✅ rotated.  <!-- pragma: allowlist secret -->
   - **§11 Troubleshooting:** Python version and Node.js version entries updated to reflect resolved status.
   - **§13 (new):** "⛔ Still Missing — Variables/Secrets Not Yet Provided" — consolidates `WEBHOOK_RECEIVER_URL` and all 9 Codespace secrets into a single actionable section with CLI commands, UI paths, and source-value mapping table.
   - **Summary Checklist:** Resolved items moved to ✅ Resolved section. Blockers updated to link §13. Rotation schedule updated.
@@ -11735,7 +11735,7 @@ All 11 copilot-pull-request-reviewer (review #3947215064) threads confirmed addr
 
 ### Fixed (W-128)
 
-- Identified and documented 7 actionable configuration issues: `CODEX_ENV_NODE_VERSION` stored as secret (should be variable), Python version conflict (`3.11` env vs `3.12` repo), missing `CODEX_ADMIN_KEY` org secret, missing `WEBHOOK_RECEIVER_URL` repo variable, unconfirmed Codespace secrets blocking agent Codespace sessions, duplicate `D365_SLA_POLICY_PATH` variable, and approaching `CODEX_MASTER_KEY` rotation window.
+- Identified and documented 7 actionable configuration issues: `CODEX_ENV_NODE_VERSION` stored as secret (should be variable), Python version conflict (`3.11` env vs `3.12` repo), missing `CODEX_ADMIN_KEY` org secret, missing `WEBHOOK_RECEIVER_URL` repo variable, unconfirmed Codespace secrets blocking agent Codespace sessions, duplicate `D365_SLA_POLICY_PATH` variable, and approaching `CODEX_MASTER_KEY` rotation window.  <!-- pragma: allowlist secret -->
 
 ### Changed (W-128)
 
@@ -11778,7 +11778,7 @@ All 11 copilot-pull-request-reviewer (review #3947215064) threads confirmed addr
 ## [Session — W-125: add webhook token requirements to COPILOT_TOKEN_GUIDE.md (PR #3499, 2026-03-05)]
 
 
-- `docs/agent/COPILOT_TOKEN_GUIDE.md` — Add `CODEX_ADMIN_KEY` note to Token Priority section (fine-grained PAT with Webhooks:write, highest-priority for `webhook_configurator.py`). Add two webhook rows to the Permission Matrix (list; create/update/delete) documenting that `GITHUB_TOKEN` returns 403. Add dedicated webhook token hierarchy note block explaining `CODEX_ADMIN_KEY` → `CODEX_MASTER_KEY` resolution order and `WEBHOOK_RECEIVER_URL` repo variable.
+- `docs/agent/COPILOT_TOKEN_GUIDE.md` — Add `CODEX_ADMIN_KEY` note to Token Priority section (fine-grained PAT with Webhooks:write, highest-priority for `webhook_configurator.py`). Add two webhook rows to the Permission Matrix (list; create/update/delete) documenting that `GITHUB_TOKEN` returns 403. Add dedicated webhook token hierarchy note block explaining `CODEX_ADMIN_KEY` → `CODEX_MASTER_KEY` resolution order and `WEBHOOK_RECEIVER_URL` repo variable.  <!-- pragma: allowlist secret -->
 
 ### Fixed (CI auto-fix)
 
@@ -11844,19 +11844,19 @@ All 11 copilot-pull-request-reviewer (review #3947215064) threads confirmed addr
 
 
 
-- `scripts/tools/variable_manager.py` — Complete CRUD tool for GitHub Actions repo / env / org variables. Implements 3-tier mechanism: BrainClient secondary → direct urllib fallback. Auto-resolves best available token (CODEX_MASTER_KEY → CODEX_BACKUP_KEY → AGENT_GITHUB_TOKEN → GITHUB_TOKEN). Full CLI interface and Python API.
+- `scripts/tools/variable_manager.py` — Complete CRUD tool for GitHub Actions repo / env / org variables. Implements 3-tier mechanism: BrainClient secondary → direct urllib fallback. Auto-resolves best available token (CODEX_MASTER_KEY → CODEX_BACKUP_KEY → AGENT_GITHUB_TOKEN → GITHUB_TOKEN). Full CLI interface and Python API.  <!-- pragma: allowlist secret -->
 - `tests/agents/test_variable_management.py` — 26-test suite covering: token priority resolution, repo/env/org variable CRUD, BrainClient secondary mechanism, urllib fallback, full create→verify→update→verify→delete lifecycle (mocked), graceful 403 handling. All 26 pass.
-- `docs/agent/COPILOT_TOKEN_GUIDE.md` — Complete Copilot Coding Agent token reference: token priority table, how each token reaches the agent session, accurate permission matrix (key: `GITHUB_TOKEN` CANNOT access variables API — requires `CODEX_MASTER_KEY`), usage examples (BrainClient / VariableManager / CLI / curl), Agent Token Delegation section, troubleshooting guide, quick verification script.
+- `docs/agent/COPILOT_TOKEN_GUIDE.md` — Complete Copilot Coding Agent token reference: token priority table, how each token reaches the agent session, accurate permission matrix (key: `GITHUB_TOKEN` CANNOT access variables API — requires `CODEX_MASTER_KEY`), usage examples (BrainClient / VariableManager / CLI / curl), Agent Token Delegation section, troubleshooting guide, quick verification script.  <!-- pragma: allowlist secret -->
 
 ### Fixed (W-118)
 
-- `copilot-setup-steps.yml` — Added "🔑 Export Auth Tokens to Agent Environment" step (after "Set Codex Environment Variables") that explicitly writes `CODEX_MASTER_KEY`, `CODEX_BACKUP_KEY`, and `AGENT_GITHUB_TOKEN` to `GITHUB_ENV`. Previously these were only job-level env vars (available to setup steps) but never persisted to the Copilot agent process. Also: CLI server startup now explicitly `export`s all three tokens to the uvicorn process; startup log now reports which auth token is active and its capability; permissions block updated to `actions: write` with accurate comment noting variables API still requires `CODEX_MASTER_KEY`.
-- `cognitive_app/src/server/cli_api_server.py` — Auto-inject logic now resolves tokens in priority order: `CODEX_MASTER_KEY` → `CODEX_BACKUP_KEY` → `AGENT_GITHUB_TOKEN` → `GITHUB_TOKEN`; logs source name for each injected call.
+- `copilot-setup-steps.yml` — Added "🔑 Export Auth Tokens to Agent Environment" step (after "Set Codex Environment Variables") that explicitly writes `CODEX_MASTER_KEY`, `CODEX_BACKUP_KEY`, and `AGENT_GITHUB_TOKEN` to `GITHUB_ENV`. Previously these were only job-level env vars (available to setup steps) but never persisted to the Copilot agent process. Also: CLI server startup now explicitly `export`s all three tokens to the uvicorn process; startup log now reports which auth token is active and its capability; permissions block updated to `actions: write` with accurate comment noting variables API still requires `CODEX_MASTER_KEY`.  <!-- pragma: allowlist secret -->
+- `cognitive_app/src/server/cli_api_server.py` — Auto-inject logic now resolves tokens in priority order: `CODEX_MASTER_KEY` → `CODEX_BACKUP_KEY` → `AGENT_GITHUB_TOKEN` → `GITHUB_TOKEN`; logs source name for each injected call.  <!-- pragma: allowlist secret -->
 - `src/codex/agents/brain_client.py` — `_auth_header()` updated with same 4-token priority chain and comprehensive docstring.
 
 ### Constraint documented (W-118)
 
-GitHub Actions Variables API requires a classic PAT with `repo` scope or Fine-Grained PAT with `Variables: write`. **`GITHUB_TOKEN` cannot access the variables API** regardless of `actions:` permission level. `CODEX_MASTER_KEY` must be configured as an org/repo secret for live variable management. Unit tests (26/26) confirm all tooling works correctly via mock; live test will pass once `CODEX_MASTER_KEY` secret is populated.
+GitHub Actions Variables API requires a classic PAT with `repo` scope or Fine-Grained PAT with `Variables: write`. **`GITHUB_TOKEN` cannot access the variables API** regardless of `actions:` permission level. `CODEX_MASTER_KEY` must be configured as an org/repo secret for live variable management. Unit tests (26/26) confirm all tooling works correctly via mock; live test will pass once `CODEX_MASTER_KEY` secret is populated.  <!-- pragma: allowlist secret -->
 
 ## [Session — W-117 Correct agent API hierarchy + variable management docs (PR #3497, 2026-03-05)]
 
@@ -12423,7 +12423,7 @@ New §8 behavior:
 
 ### Root Cause Fixed (S116)
 
-`admin_setup_verification.yml` verified CODEX_MASTER_KEY/BACKUP_KEY as functional but never
+`admin_setup_verification.yml` verified CODEX_MASTER_KEY/BACKUP_KEY as functional but never  <!-- pragma: allowlist secret -->
 autonomously posted the `@copilot continue` prompt because:
 1. The only posting step had `if: inputs.pr_number != ''` (workflow_dispatch-only gate)
 2. That step posted a generic summary, not a `@copilot continue` command
@@ -12604,7 +12604,7 @@ bash -n scripts/ci/owner_approval_guard.sh  # → OK
 
 - `src/codex/github/mcp_poster.py` — `GitHubMCPPoster`: `post_pr_comment()`,
   `create_discussion()` (GraphQL), `post_session_summary_discussion()`, `set_repo_variable()`.
-  Auth chain: `CODEX_MASTER_KEY` → `CODEX_BACKUP_KEY` → `GITHUB_TOKEN`. Zero external deps.
+  Auth chain: `CODEX_MASTER_KEY` → `CODEX_BACKUP_KEY` → `GITHUB_TOKEN`. Zero external deps.  <!-- pragma: allowlist secret -->
   CLI: `python -m codex.github.mcp_poster post-comment|set-variable|create-discussion`.
 
 **Admin Infrastructure & Documentation**
@@ -12838,7 +12838,7 @@ bash -n scripts/ci/owner_approval_guard.sh  # → OK
 - `tests/benchmark/test_cpu_baseline.py` — NEW: 18 tests covering all suites, compare logic, CLI
 
 **P10-06 — Secrets Rotation Runbook**
-- `docs/ops/secrets_rotation_runbook.md` — NEW: Complete `CODEX_MASTER_KEY` / `CODEX_BACKUP_KEY` lifecycle — generate, stage backup, rotate, validate, close grace window; emergency rotation; code-side consumption pattern
+- `docs/ops/secrets_rotation_runbook.md` — NEW: Complete `CODEX_MASTER_KEY` / `CODEX_BACKUP_KEY` lifecycle — generate, stage backup, rotate, validate, close grace window; emergency rotation; code-side consumption pattern  <!-- pragma: allowlist secret -->
 
 **P10-07 — SBOM CI Pipeline Completed**
 - `.github/workflows/sbom.yml` — Completed stub: added `cyclonedx-bom` + `pip-licenses` generation; CycloneDX JSON artifact uploaded with 90-day retention; validation step ensures non-empty output
@@ -14008,7 +14008,7 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 
 **Phase 2.1 Results:**
 - Token Broker Enhancement: Enhanced token_broker.py with health checks, circuit breaker, rotation scheduler (5 new classes, 30+ tests)
-- Secret Injection Workflow: Step-by-step procedures for CODEX_MASTER_KEY/CODEX_BACKUP_KEY injection with validation script
+- Secret Injection Workflow: Step-by-step procedures for CODEX_MASTER_KEY/CODEX_BACKUP_KEY injection with validation script  <!-- pragma: allowlist secret -->
 - Compliance Framework: 6 compliance validators (REQ-1 through REQ-6) with master orchestrator and pre-merge blocker
 - Completion: 18 hours ahead of schedule with zero emergency rollbacks
 - Stabilization: 48-hour monitoring running successfully

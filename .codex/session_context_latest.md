@@ -20,8 +20,8 @@ State: `open`  Draft: `True`  Branch: `copilot/multi-agent-campaign-plan` → `m
 
 ## 📝 Recent Commits
 - `936248bb` chore: remove 23 processed variable intent(s) [skip ci] — github-actions[bot] (2026-07-03)
-- `d2003455` chore(token-rotation): queue CODEX_MASTER_KEY/BACKUP_KEY expiry date variable in — copilot-swe-agent[bot] (2026-07-03)
-- `3b5c0ade` chore: add variable intent files for token expiry dates after CODEX_MASTER_KEY r — copilot-swe-agent[bot] (2026-07-03)
+- `d2003455` chore(token-rotation): queue CODEX_MASTER_KEY/BACKUP_KEY expiry date variable in — copilot-swe-agent[bot] (2026-07-03)  <!-- pragma: allowlist secret -->
+- `3b5c0ade` chore: add variable intent files for token expiry dates after CODEX_MASTER_KEY r — copilot-swe-agent[bot] (2026-07-03)  <!-- pragma: allowlist secret -->
 - `b1e28e2f` Apply remaining changes — copilot-swe-agent[bot] (2026-07-03)
 - `6870e81f` chore: campaign complete — all 7 agents done, Phase 4 validation clean, dashboar — copilot-swe-agent[bot] (2026-07-03)
 - `0359af01` chore: update dashboard — Phase 2+3 complete, PR intent = security_events scope  — copilot-swe-agent[bot] (2026-07-03)

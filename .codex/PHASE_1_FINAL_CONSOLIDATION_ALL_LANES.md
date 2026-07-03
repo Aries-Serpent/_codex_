@@ -190,8 +190,8 @@ Find the step that fails (GitHub API call for security events):
 # Add read:security_events scope to token
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # (needs scope)
-  # OR better: use CODEX_MASTER_KEY which has proper scopes
-  GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+  # OR better: use CODEX_MASTER_KEY which has proper scopes  <!-- pragma: allowlist secret -->
+  GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}  <!-- pragma: allowlist secret -->
 ```
 
 Or update the github/script action call:
@@ -200,7 +200,7 @@ Or update the github/script action call:
 - name: Post security dashboard
   uses: actions/github-script@v8
   with:
-    github-token: ${{ secrets.CODEX_MASTER_KEY }}  # Token with read:security_events
+    github-token: ${{ secrets.CODEX_MASTER_KEY }}  # Token with read:security_events  <!-- pragma: allowlist secret -->
     script: |
       // Dashboard push operation
 ```

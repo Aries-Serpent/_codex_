@@ -124,14 +124,14 @@ Key dependencies:
 ### 4.1 Summary Statistics
 ```
 Total workflow files:          213
-Workflows with CODEX_MASTER_KEY: 187
+Workflows with CODEX_MASTER_KEY: 187  <!-- pragma: allowlist secret -->
 Workflows with proper fallback:  185  (98.9%)
 ```
 
 ### 4.2 Spot Check (10 files — all PASS)
 | Workflow | Fallback Present |
 |---|---|
-| `pages-health-guard.yml` | ✅ `CODEX_MASTER_KEY \|\| secrets.CODEX_BACKUP_KEY` |
+| `pages-health-guard.yml` | ✅ `CODEX_MASTER_KEY \|\| secrets.CODEX_BACKUP_KEY` |  <!-- pragma: allowlist secret -->
 | `deferral-language-gate.yml` | ✅ |
 | `promote-integration-branch.yml` | ✅ |
 | `chatops_copilot_trigger.yml` | ✅ |
@@ -147,8 +147,8 @@ Two workflows flagged as missing fallback — both are **false positives**:
 
 | Workflow | Reason |
 |---|---|
-| `admin-action-t03.yml` | References `CODEX_MASTER_KEY` only in issue body text (documentation). Uses `secrets: inherit`. No direct secret usage. |
-| `consolidated-pr-status.yml` | Declares `CODEX_MASTER_KEY` as a reusable workflow input secret (interface declaration). Both `CODEX_MASTER_KEY` and `CODEX_BACKUP_KEY` are declared as inputs. Caller decides values. |
+| `admin-action-t03.yml` | References `CODEX_MASTER_KEY` only in issue body text (documentation). Uses `secrets: inherit`. No direct secret usage. |  <!-- pragma: allowlist secret -->
+| `consolidated-pr-status.yml` | Declares `CODEX_MASTER_KEY` as a reusable workflow input secret (interface declaration). Both `CODEX_MASTER_KEY` and `CODEX_BACKUP_KEY` are declared as inputs. Caller decides values. |  <!-- pragma: allowlist secret -->
 
 **Token Fallback Verification: PASS ✅**
 
@@ -162,13 +162,13 @@ Two workflows flagged as missing fallback — both are **false positives**:
 
 **Before:**
 ```yaml
-CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_MASTER_KEY
+CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_MASTER_KEY  <!-- pragma: allowlist secret -->
   || secrets.CODEX_BACKUP_KEY }}
 ```
 
 **After:**
 ```yaml
-CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}  <!-- pragma: allowlist secret -->
 ```
 
 **Impact:** Low — the redundant expression was functionally correct but confusing. Fixed to canonical form.
@@ -183,12 +183,12 @@ Two workflows use `github.token` for GitHub Discussions write operations:
 - `post-phase-4-5-to-discussion.yml`
 - `post-accountability-to-discussion.yml`
 
-Both contain explicit warning comments acknowledging the limitation. These are discussion write operations (not repository write), and `github.token` is the appropriate token for this use case since `CODEX_MASTER_KEY` may not have `discussions:write` scope.
+Both contain explicit warning comments acknowledging the limitation. These are discussion write operations (not repository write), and `github.token` is the appropriate token for this use case since `CODEX_MASTER_KEY` may not have `discussions:write` scope.  <!-- pragma: allowlist secret -->
 
 **Action:** None required.
 
-### INFO-6.2 — `copilot-setup-steps.yml` Bare `CODEX_MASTER_KEY` Assignments
-Lines 68, 154, 169, 185 assign `CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}` (without fallback) — but these are **exposing the key as an environment variable to scripts**, not using it as a GH_TOKEN for write operations. The adjacent `CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}` is also set, and the scripts can implement their own fallback logic.
+### INFO-6.2 — `copilot-setup-steps.yml` Bare `CODEX_MASTER_KEY` Assignments  <!-- pragma: allowlist secret -->
+Lines 68, 154, 169, 185 assign `CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}` (without fallback) — but these are **exposing the key as an environment variable to scripts**, not using it as a GH_TOKEN for write operations. The adjacent `CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}` is also set, and the scripts can implement their own fallback logic.  <!-- pragma: allowlist secret -->
 
 **Action:** None required — this is the correct pattern for multi-key availability.
 
@@ -239,7 +239,7 @@ grep -rn "password\s*=\s*[\"']...[\"']\|api_key\s*=\s*[\"']...[\"']" src/codex/
 cat requirements.txt pyproject.toml
 
 # 6. Token fallback count
-python3 -c "... workflows with CODEX_MASTER_KEY vs fallback ..."
+python3 -c "... workflows with CODEX_MASTER_KEY vs fallback ..."  <!-- pragma: allowlist secret -->
 
 # 7. Bare github.token for write ops
 grep -rn "github\.token" .github/workflows/ | grep -i "write\|push\|create"

@@ -67,13 +67,13 @@
 
 **Fix: Update GitHub Token Scope**
 - Target: `.github/workflows/phase-8-2-issue-triage.yml`
-- Change: Replace `secrets.GITHUB_TOKEN` with `secrets.CODEX_MASTER_KEY`
+- Change: Replace `secrets.GITHUB_TOKEN` with `secrets.CODEX_MASTER_KEY`  <!-- pragma: allowlist secret -->
 - Expected Time: 5 min (T+32 to T+35)
 - Current Status: Agent deployed, awaiting F-002 completion
 
 **Validation:**
 - [ ] YAML syntax valid
-- [ ] Token changed to CODEX_MASTER_KEY
+- [ ] Token changed to CODEX_MASTER_KEY  <!-- pragma: allowlist secret -->
 - [ ] Ready for Phase 3 re-run
 
 ---
@@ -149,7 +149,7 @@ T+35 min [17:16:07Z] : PHASE 2 COMPLETE (TARGET)
 ### F-003 Remediation Success Criteria
 
 - [ ] Workflow file identified correctly
-- [ ] GitHub token changed to CODEX_MASTER_KEY
+- [ ] GitHub token changed to CODEX_MASTER_KEY  <!-- pragma: allowlist secret -->
 - [ ] YAML syntax valid
 - [ ] Commit created with clear message
 - [ ] No unintended changes made

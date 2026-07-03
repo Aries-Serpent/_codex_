@@ -69,7 +69,7 @@ jobs:
    - Problem is in the caller, not the called workflow
 
 5. **No Token/Auth Issues**
-   - CODEX_MASTER_KEY scope is appropriate (repo + workflow + actions:write)
+   - CODEX_MASTER_KEY scope is appropriate (repo + workflow + actions:write)  <!-- pragma: allowlist secret -->
    - Token validation not the root cause
    - GitHub Actions version is correct
 

@@ -62,11 +62,11 @@
 
 ## 2. Workflow YAML Quality Check (9.5/10)
 
-### Token Fallback (`CODEX_MASTER_KEY || CODEX_BACKUP_KEY`)
+### Token Fallback (`CODEX_MASTER_KEY || CODEX_BACKUP_KEY`)  <!-- pragma: allowlist secret -->
 
 | Check | Result |
 |-------|--------|
-| Correct pattern count in .github/workflows/ | ✅ **811 occurrences** matching `secrets.CODEX_MASTER_KEY \|\| secrets.CODEX_BACKUP_KEY` |
+| Correct pattern count in .github/workflows/ | ✅ **811 occurrences** matching `secrets.CODEX_MASTER_KEY \|\| secrets.CODEX_BACKUP_KEY` |  <!-- pragma: allowlist secret -->
 | Typos: `CODEX_BACKUP` without `_KEY` suffix | ✅ NONE FOUND |
 | Pattern without `secrets.` prefix leak | ✅ NONE FOUND |
 | `copilot-setup-steps.yml` unchanged vs main | ✅ CONFIRMED — 0 lines changed on branch vs `origin/main` |
@@ -85,15 +85,15 @@
 
 ### QA Fix Applied During This Pass
 
-**`artifact-monitoring.yml`** — Removed duplicate `|| secrets.CODEX_MASTER_KEY` in fallback chain:
+**`artifact-monitoring.yml`** — Removed duplicate `|| secrets.CODEX_MASTER_KEY` in fallback chain:  <!-- pragma: allowlist secret -->
 ```yaml
 # Before (redundant):
-CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}  <!-- pragma: allowlist secret -->
 
 # After (correct):
-CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}  <!-- pragma: allowlist secret -->
 ```
-Committed as: `chore: QA validation fixes — remove duplicate CODEX_MASTER_KEY in artifact-monitoring.yml fallback chain`
+Committed as: `chore: QA validation fixes — remove duplicate CODEX_MASTER_KEY in artifact-monitoring.yml fallback chain`  <!-- pragma: allowlist secret -->
 
 ---
 
@@ -106,9 +106,9 @@ Committed as: `chore: QA validation fixes — remove duplicate CODEX_MASTER_KEY 
 | `CODEX_BACKUP_KEY` spelling consistent | ✅ No typos (`CODEX_BACKUP` without `_KEY`) found |
 | `copilot-setup-steps.yml` protected | ✅ UNCHANGED vs origin/main |
 | New test files introduce secrets | ✅ NONE — test data uses mock/fake values |
-| `agent_infrastructure_manager.yml` inline curl uses `${{ secrets.CODEX_MASTER_KEY }}` | ✅ In env block (not exposed in logs) |
+| `agent_infrastructure_manager.yml` inline curl uses `${{ secrets.CODEX_MASTER_KEY }}` | ✅ In env block (not exposed in logs) |  <!-- pragma: allowlist secret -->
 
-**Minor Note:** `agent-task-janitor.yml` contains inline Python referencing `"CODEX_MASTER_KEY"` as a string literal (for token-source detection logic) — this is expected behavior, not a leak.
+**Minor Note:** `agent-task-janitor.yml` contains inline Python referencing `"CODEX_MASTER_KEY"` as a string literal (for token-source detection logic) — this is expected behavior, not a leak.  <!-- pragma: allowlist secret -->
 
 ---
 
@@ -143,7 +143,7 @@ Committed as: `chore: QA validation fixes — remove duplicate CODEX_MASTER_KEY 
 
 | ID | File | Issue | Fix |
 |----|------|-------|-----|
-| QA-P2-001 | `.github/workflows/artifact-monitoring.yml` | Duplicate `\|\| secrets.CODEX_MASTER_KEY` in fallback chain | Removed redundant term — committed `ccfa429a` |
+| QA-P2-001 | `.github/workflows/artifact-monitoring.yml` | Duplicate `\|\| secrets.CODEX_MASTER_KEY` in fallback chain | Removed redundant term — committed `ccfa429a` |  <!-- pragma: allowlist secret -->
 
 ---
 
@@ -169,7 +169,7 @@ Committed as: `chore: QA validation fixes — remove duplicate CODEX_MASTER_KEY 
 | `99a70eec` | fix(code) | C414/E731: Remove unnecessary list() + lambda→def |
 | `14136957` | fix(code) | F401/docstring: Remove misplaced import from docstring |
 | `880ee326` | fix(code) | Wave 6 Phase 1: F811/E741/C401/C414/C420/E731/F821 |
-| `ccfa429a` | chore | **QA fix**: Remove duplicate CODEX_MASTER_KEY in artifact-monitoring.yml |
+| `ccfa429a` | chore | **QA fix**: Remove duplicate CODEX_MASTER_KEY in artifact-monitoring.yml |  <!-- pragma: allowlist secret -->
 
 ---
 

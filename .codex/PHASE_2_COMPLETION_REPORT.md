@@ -10,7 +10,7 @@
 All 3 critical failures have been remediated with minimal, targeted fixes. Both remediation agents executed flawlessly, applying precisely scoped changes to address root causes identified in Phase 1.
 
 - **F-002 Remediation:** ✅ COMPLETE (2 fixes applied: chmod + exponential backoff)
-- **F-003 Remediation:** ✅ COMPLETE (token scope elevated to CODEX_MASTER_KEY)
+- **F-003 Remediation:** ✅ COMPLETE (token scope elevated to CODEX_MASTER_KEY)  <!-- pragma: allowlist secret -->
 - **F-004 Monitoring:** 🟡 IN PROGRESS (expected completion within 5 minutes)
 
 ---
@@ -95,11 +95,11 @@ done
 - name: Add severity and category labels
   uses: actions/github-script@v8
   with:
-    github-token: ${{ secrets.CODEX_MASTER_KEY }}  # ✅ Full scopes
+    github-token: ${{ secrets.CODEX_MASTER_KEY }}  # ✅ Full scopes  <!-- pragma: allowlist secret -->
     script: |
 ```
 
-**Root Cause Fixed:** Installation tokens lack `read:security_events` scope. CODEX_MASTER_KEY provides full OAuth scopes needed for security API calls.
+**Root Cause Fixed:** Installation tokens lack `read:security_events` scope. CODEX_MASTER_KEY provides full OAuth scopes needed for security API calls.  <!-- pragma: allowlist secret -->
 
 **Benefit:** Phase 8.2 workflow can now successfully query and process GitHub security events without 403 Permission errors.
 
@@ -124,9 +124,9 @@ done
 ### **F-003: Token Scope Elevation**
 - [x] File identified: `.github/workflows/phase-8-2-issue-triage.yml`
 - [x] Token reference found: Line 48
-- [x] Token changed: `secrets.GITHUB_TOKEN` → `secrets.CODEX_MASTER_KEY`
+- [x] Token changed: `secrets.GITHUB_TOKEN` → `secrets.CODEX_MASTER_KEY`  <!-- pragma: allowlist secret -->
 - [x] YAML syntax valid: Verified with PyYAML
-- [x] Scope verified: CODEX_MASTER_KEY includes `read:security_events`
+- [x] Scope verified: CODEX_MASTER_KEY includes `read:security_events`  <!-- pragma: allowlist secret -->
 - [x] Commit created: SHA 1e412767f with clear message
 - [x] No unintended changes: Only token reference modified
 
@@ -169,7 +169,7 @@ done
 
 **Why it will succeed:**
 1. ✅ GitHub token now has proper OAuth scopes
-2. ✅ CODEX_MASTER_KEY includes `read:security_events`
+2. ✅ CODEX_MASTER_KEY includes `read:security_events`  <!-- pragma: allowlist secret -->
 3. ✅ API calls to security endpoints will receive 200 OK
 4. ✅ Dashboard generation can complete normally
 5. ✅ All changes committed and deployed
@@ -217,9 +217,9 @@ Changes: Retry delays 5s → 10s → 20s, added re-sync, added logging
 ### **Commit 2: F-003 Token Scope Fix**
 ```
 SHA: 1e412767f
-Message: fix(ci): update phase-8-2-issue-triage to use CODEX_MASTER_KEY for GitHub API scope [F-003]
+Message: fix(ci): update phase-8-2-issue-triage to use CODEX_MASTER_KEY for GitHub API scope [F-003]  <!-- pragma: allowlist secret -->
 Files: .github/workflows/phase-8-2-issue-triage.yml
-Changes: Updated github-token to use CODEX_MASTER_KEY
+Changes: Updated github-token to use CODEX_MASTER_KEY  <!-- pragma: allowlist secret -->
 ```
 
 ---

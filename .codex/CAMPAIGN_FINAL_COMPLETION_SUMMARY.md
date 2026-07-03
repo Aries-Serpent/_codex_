@@ -57,7 +57,7 @@ e60957193 - YAML syntax correction (F-002-2)
 
 **Phase 2 Agents (Remediation)**
 - ✅ autonomous-test-healer-agent — F-002 fixes, 151 sec, chmod + backoff applied
-- ✅ ci-failure-resolution-agent — F-003 token scope, 82 sec, CODEX_MASTER_KEY applied
+- ✅ ci-failure-resolution-agent — F-003 token scope, 82 sec, CODEX_MASTER_KEY applied  <!-- pragma: allowlist secret -->
 
 **Phase 3 Agents (Validation)**
 - ✅ workflow-ci-fixer — F-002 validation, 146 sec, exponential backoff verified
@@ -213,7 +213,7 @@ Total Allocation         ██████████████████�
 
 **Authority Granted by @mbaetiong:**
 - ✅ D-tier autonomous decision-making
-- ✅ Full CODEX_MASTER_KEY access
+- ✅ Full CODEX_MASTER_KEY access  <!-- pragma: allowlist secret -->
 - ✅ Multi-agent delegation approval
 - ✅ GO CONTINUE authorization for all phases
 

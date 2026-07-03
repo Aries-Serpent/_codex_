@@ -41,7 +41,7 @@
 
 **Investigation Required:**
 1. Verify GitHub token permissions in `.github/workflows/admin-action-t03.yml`
-2. Check `CODEX_MASTER_KEY` secret validity and scope (requires `repo + workflow + actions:write`)
+2. Check `CODEX_MASTER_KEY` secret validity and scope (requires `repo + workflow + actions:write`)  <!-- pragma: allowlist secret -->
 3. Validate workflow job permissions block compliance
 4. Audit scope-gate conditional logic for cascading failures
 
@@ -91,7 +91,7 @@
 - **Task ID:** `fix-f001-security-gate-auth`
 - **Actions:**
   1. Inspect `.github/workflows/admin-action-t03.yml` for token/permission issues
-  2. Verify `CODEX_MASTER_KEY` secret scope in workflow context
+  2. Verify `CODEX_MASTER_KEY` secret scope in workflow context  <!-- pragma: allowlist secret -->
   3. Check for cascading failure root cause (permissions, conditional logic, missing env vars)
   4. Generate diagnostic report with remediation steps
   
@@ -270,7 +270,7 @@ If F-002 is missing file issue:
 ### Token Requirements
 
 All agents authorized to use:
-- ✅ `CODEX_MASTER_KEY` for elevated operations (repo + workflow + actions:write)
+- ✅ `CODEX_MASTER_KEY` for elevated operations (repo + workflow + actions:write)  <!-- pragma: allowlist secret -->
 - ✅ Direct commits to current PR branch
 - ✅ Workflow re-trigger operations
 - ✅ Job log access
@@ -357,7 +357,7 @@ Examples:
 
 1. **Authority Granted:** D-tier autonomy with GO CONTINUE decision mode activated
 2. **Session Allocation:** 59 minutes approved for complete analysis + remediation
-3. **Token Usage:** CODEX_MASTER_KEY authorized for all elevated operations
+3. **Token Usage:** CODEX_MASTER_KEY authorized for all elevated operations  <!-- pragma: allowlist secret -->
 4. **Lane Parallelization:** 3 concurrent lanes executing independently with synchronization points
 5. **Escalation Path:** Direct notification if failures persist after 2 attempts
 

@@ -17,7 +17,7 @@
 | Does the workflow execute any jobs? | **NO** — all 21,116 runs show 0 jobs (see §3) |
 | Has a T-03 admin-action issue ever been created on GitHub? | **NO** — the issue-creation step never fires |
 | Is there a code-fixable bug causing this? | **YES** — duplicate concurrency group causes self-cancellation |
-| Admin action still required after code fixes? | **YES** — `CODEX_MASTER_KEY` needs `security_events` scope |
+| Admin action still required after code fixes? | **YES** — `CODEX_MASTER_KEY` needs `security_events` scope |  <!-- pragma: allowlist secret -->
 | Is this blocking other phases? | **YES** — CodeQL alert automation blocked |
 
 ---
@@ -27,9 +27,9 @@
 `admin-action-t03.yml` is a **notifier workflow** designed to:
 
 1. Fire when `⚡ Auto-Approve Pending Workflow Runs` completes.
-2. Probe `GET /repos/{repo}/code-scanning/alerts?per_page=1` using `CODEX_MASTER_KEY`.
+2. Probe `GET /repos/{repo}/code-scanning/alerts?per_page=1` using `CODEX_MASTER_KEY`.  <!-- pragma: allowlist secret -->
 3. If the probe returns HTTP 403 (scope missing):
-   - Create / update a GitHub issue `[T-03] CODEX_MASTER_KEY missing security_events scope…`
+   - Create / update a GitHub issue `[T-03] CODEX_MASTER_KEY missing security_events scope…`  <!-- pragma: allowlist secret -->
    - Write a CI step summary with click-by-click admin fix instructions.
 4. If the probe returns HTTP 200 (scope present):
    - Auto-close the open T-03 issue.
@@ -148,7 +148,7 @@ non-functional.
 | YAML syntax valid | ✅ Pass | Both files parse without errors |
 | Required inputs all provided | ✅ Pass | `gap_id`, `probe_url`, `issue_title`, `issue_body_md` all set |
 | Permissions block correct | ✅ Pass | `issues: write` enables issue creation; `security-events: read` is present |
-| `secrets: inherit` usage | ✅ Pass | Correctly propagates `CODEX_MASTER_KEY` to notifier |
+| `secrets: inherit` usage | ✅ Pass | Correctly propagates `CODEX_MASTER_KEY` to notifier |  <!-- pragma: allowlist secret -->
 | `probe_url` expression | ✅ Pass | `${{ github.repository }}` in `with:` is valid for `uses:` jobs |
 | `workflow_run` trigger | ✅ Pass | Correct trigger on both trigger workflows |
 | Step-level `if:` conditions | ✅ Pass | `scope_ok == 'false'` / `scope_ok == 'true'` branching is correct |
@@ -189,11 +189,11 @@ Replaced with a comment explaining why it's absent.
 
 > **This section requires human admin action — cannot be automated.**
 
-### Step-by-Step Fix for `CODEX_MASTER_KEY`
+### Step-by-Step Fix for `CODEX_MASTER_KEY`  <!-- pragma: allowlist secret -->
 
 1. **Open the token settings:**
    → [github.com/settings/tokens](https://github.com/settings/tokens)
-   Find the PAT that backs `CODEX_MASTER_KEY` and click **Edit**.
+   Find the PAT that backs `CODEX_MASTER_KEY` and click **Edit**.  <!-- pragma: allowlist secret -->
 
 2. **Add the `security_events` scope:**
    Keep existing scopes: `repo`, `workflow`
@@ -202,7 +202,7 @@ Replaced with a comment explaining why it's absent.
    Click **"Update token"** → copy the new value.
 
 3. **Update the org secret:**
-   → [Organization Settings → Secrets → CODEX_MASTER_KEY](https://github.com/organizations/Aries-Serpent/settings/secrets/actions/CODEX_MASTER_KEY)
+   → [Organization Settings → Secrets → CODEX_MASTER_KEY](https://github.com/organizations/Aries-Serpent/settings/secrets/actions/CODEX_MASTER_KEY)  <!-- pragma: allowlist secret -->
    Paste the new token value and save.
 
 4. **Verify** by running the token probe:
@@ -249,7 +249,7 @@ workflow run will create the T-03 GitHub issue, surfacing the token problem corr
 
 | Finding | Classification | Resolution |
 |---|---|---|
-| `CODEX_MASTER_KEY` lacks `security_events` scope | By design (intentional gate) | Human admin |
+| `CODEX_MASTER_KEY` lacks `security_events` scope | By design (intentional gate) | Human admin |  <!-- pragma: allowlist secret -->
 | All runs show 0 jobs (notifier never fires) | **Bug** — self-cancellation | Fixed this session |
 | Python `RESPONSE_FILE` not exported | Minor bug | Fixed this session |
 | `force_create_issue` input unused | Dead code | No action needed |
