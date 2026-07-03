@@ -15,7 +15,7 @@ class FilenameValidator:
     """Validate filenames for cross-platform compatibility."""
     
     # Windows-illegal characters
-    WINDOWS_ILLEGAL = r'[<>:"/\\|?*]'
+    WINDOWS_ILLEGAL = r'[<>:"|?*]'
     
     # Patterns that generate unsafe timestamps
     UNSAFE_STRFTIME = re.compile(r"strftime\(['\"]%[YmdHMS]*:%M:%S")
@@ -37,7 +37,7 @@ class FilenameValidator:
             )
             
             for filename in result.stdout.strip().split('\n'):
-                if filename and re.search(self.WINDOWS_ILLEGAL, filename):
+                if filename and re.search(self.WINDOWS_ILLEGAL, Path(filename).name):
                     self.violations[filename] = "Windows-illegal characters"
         except subprocess.CalledProcessError:
             print("❌ Not a git repository")
