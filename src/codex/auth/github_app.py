@@ -33,7 +33,7 @@ Webhook security::
 
     X-Hub-Signature-256: sha256=<HMAC-SHA256(secret, body)>
 
-    verifier = WebhookVerifier(secret="webhook-secret")
+    verifier = WebhookVerifier(secret="webhook-secret")  <!-- pragma: allowlist secret -->
     verifier.verify(request_body_bytes, signature_header)
 
 Required dependency (already in pyproject.toml)::
