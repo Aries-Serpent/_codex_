@@ -65,13 +65,13 @@ class TestEvaluationConfig:
             batch_size=64,
             max_samples=1000,
             device="cuda",
-            output_dir="/tmp/eval",
+            output_dir=os.path.join(tempfile.gettempdir(), "eval"),
             save_predictions=True,
         )
         assert config.batch_size == 64, "batch_size is not valid"
         assert config.max_samples == 1000, "max_samples is not valid"
         assert config.device == "cuda", "device is not valid"
-        assert config.output_dir == "/tmp/eval", "output_dir is not valid"
+        assert config.output_dir == os.path.join(tempfile.gettempdir(), "eval"), "output_dir is not valid"
         assert config.save_predictions is True, "save_predictions is not valid"
 
 

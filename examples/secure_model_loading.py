@@ -25,6 +25,7 @@ Example of safe save/load pattern:
     model = torch.load('model.pth')  # Vulnerable to RCE attacks
 """
 import logging
+import tempfile
 from pathlib import Path
 from typing import Optional
 
@@ -152,7 +153,7 @@ def main():
 
     # Create and save a test model
     test_model = SimpleModel()
-    test_checkpoint_path = "/tmp/test_secure_model.pth"
+    test_checkpoint_path = os.path.join(tempfile.gettempdir(), "test_secure_model.pth")
 
     logger.info("Saving test model...")
     # SECURITY NOTE: We save the state_dict (not the full model object)

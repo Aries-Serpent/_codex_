@@ -5,15 +5,16 @@ Test module for run logger.
 """
 
 import os
+import tempfile
 from pathlib import Path
 
 from codex_ml.logging import run_logger
 
 
 def test_jsonify_handles_paths_and_mappings():
-    data = {"path": Path("/tmp/test"), "nested": {"num": 1, "list": [Path("/a"), 2]}}
+    data = {"path": Path(os.path.join(tempfile.gettempdir(), "test")), "nested": {"num": 1, "list": [Path("/a"), 2]}}
     normalized = run_logger._jsonify(data)
-    assert normalized["path"] == "/tmp/test", "n is not valid"
+    assert normalized["path"] == os.path.join(tempfile.gettempdir(), "test"), "n is not valid"
     assert normalized["nested"]["list"][0] == "/a", "n is not valid"
 
 

@@ -5,6 +5,7 @@ Test module for accelerate shim.
 """
 
 import importlib
+import tempfile
 import sys
 
 import pytest
@@ -30,7 +31,7 @@ def test_accelerate_shim_prints_path(capsys, monkeypatch):
         dispatch_batches=True,
         split_batches=True,
         even_batches=True,
-        logging_dir="/tmp/logs",
+        logging_dir=os.path.join(tempfile.gettempdir(), "logs"),
     )
     out = capsys.readouterr().out
 
@@ -61,12 +62,12 @@ def test_accelerate_shim_handles_new_kwargs_on_legacy(capsys, monkeypatch):
         split_batches = False
         even_batches = True
 
-    acc = eng._make_accelerator(project_dir="/tmp/logs", dataloader_config=DummyDLC())
+    acc = eng._make_accelerator(project_dir=os.path.join(tempfile.gettempdir(), "logs"), dataloader_config=DummyDLC())
     out = capsys.readouterr().out
     assert "mapped project_dir -> logging_dir" in out, "Condition must be true"
     assert "translated dataloader_config -> legacy kwargs" in out, "Data must not be empty"
     assert "v<0.30: using legacy kwargs path" in out, "Condition must be true"
-    assert acc.kwargs["logging_dir"] == "/tmp/logs", "Condition must be true"
+    assert acc.kwargs["logging_dir"] == os.path.join(tempfile.gettempdir(), "logs"), "Condition must be true"
     assert acc.kwargs["dispatch_batches"] is True, "Condition must be true"
     assert acc.kwargs["split_batches"] is False, "Condition must be true"
     assert acc.kwargs["even_batches"] is True, "Condition must be true"

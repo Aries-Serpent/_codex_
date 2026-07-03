@@ -13,6 +13,7 @@ Tests cover:
 from __future__ import annotations
 
 import json
+import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -123,7 +124,7 @@ class TestBuildCommand:
     @patch("codex.rag.build_index_from_files")
     def test_build_basic(self, mock_build_index, runner: CliRunner, temp_test_files: Path):
         """Verify basic build command execution."""
-        mock_build_index.return_value = Path("/tmp/test_index")
+        mock_build_index.return_value = Path(os.path.join(tempfile.gettempdir(), "test_index"))
 
         result = runner.invoke(
             app, ["build", "--files", str(temp_test_files / "*.md"), "--index-name", "test_index"]
@@ -135,7 +136,7 @@ class TestBuildCommand:
     @patch("codex.rag.build_index_from_files")
     def test_build_with_tenant(self, mock_build_index, runner: CliRunner, temp_test_files: Path):
         """Verify build with tenant ID."""
-        mock_build_index.return_value = Path("/tmp/test_index")
+        mock_build_index.return_value = Path(os.path.join(tempfile.gettempdir(), "test_index"))
 
         result = runner.invoke(
             app, ["build", "--files", str(temp_test_files / "*.md"), "--tenant-id", "tenant_123"]
@@ -148,7 +149,7 @@ class TestBuildCommand:
         self, mock_build_index, runner: CliRunner, temp_test_files: Path
     ):
         """Verify build with custom chunk size."""
-        mock_build_index.return_value = Path("/tmp/test_index")
+        mock_build_index.return_value = Path(os.path.join(tempfile.gettempdir(), "test_index"))
 
         result = runner.invoke(
             app, ["build", "--files", str(temp_test_files / "*.md"), "--chunk-size", "500"]

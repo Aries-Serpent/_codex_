@@ -316,7 +316,7 @@ check_5_telemetry() {
   fi
 
   # Simulate extraction against a known payload
-  local tmp_json="/tmp/_ci_triage_repro_telemetry_$$.json"
+  local tmp_json="${TMPDIR:-/tmp}/_ci_triage_repro_telemetry_$$.json"
   echo '{"summary":{"total_runs":180,"failed_runs":21,"failure_rate":0.117}}' > "$tmp_json"
   local patched_script result
   patched_script=$(echo "$decoded" \

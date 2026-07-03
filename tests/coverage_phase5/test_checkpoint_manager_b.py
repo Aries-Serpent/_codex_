@@ -31,8 +31,8 @@ class CheckpointManager:
 
 def test_checkpoint_manager_1_init():
     """Test checkpoint manager initialization."""
-    manager = CheckpointManager("/tmp/ckpts")
-    assert manager.base_dir == "/tmp/ckpts", "base_dir is not valid"
+    manager = CheckpointManager(os.path.join(tempfile.gettempdir(), "ckpts"))
+    assert manager.base_dir == os.path.join(tempfile.gettempdir(), "ckpts"), "base_dir is not valid"
 
 
 def test_checkpoint_manager_1_save():

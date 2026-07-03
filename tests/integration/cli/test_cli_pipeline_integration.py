@@ -1,6 +1,7 @@
 """CLI pipeline integration tests (Phase 23 Week 2)."""
 
 import pytest
+import tempfile
 
 from omegaconf import OmegaConf
 
@@ -54,7 +55,7 @@ def test_cli_pipeline_override_forwarding():
 @pytest.mark.integration
 def test_cli_pipeline_checkpoint_config():
     """Test CLI configures checkpointing."""
-    _make_config(trainer={"checkpoint": {"every": 5, "path": "/tmp/ckpt"}})
+    _make_config(trainer={"checkpoint": {"every": 5, "path": os.path.join(tempfile.gettempdir(), "ckpt")}})
     # Verify checkpoint config is passed
 
 

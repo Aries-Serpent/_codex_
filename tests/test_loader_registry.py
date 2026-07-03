@@ -7,6 +7,7 @@ Test module for loader registry.
 from __future__ import annotations
 
 import pytest
+import tempfile
 
 
 def test_register_and_get_model():
@@ -107,7 +108,7 @@ def test_loader_prefers_registry_kwargs():
             dtype="fp16",
             device_map="cpu",
             lora_enabled=True,
-            lora_path="/tmp/adapter",
+            lora_path=os.path.join(tempfile.gettempdir(), "adapter"),
             lora_r=4,
             extra_flag=True,
         )

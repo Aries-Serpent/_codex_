@@ -1,4 +1,5 @@
 import pytest
+import tempfile
 #             assert required.issubset(, "Condition must be true"
 #                 result.keys()
 #             ), f"Missing keys for dist={dist}: {required - result.keys()}"
@@ -284,7 +285,7 @@ import pytest
 #         """Test that telemetry report has correct structure."""
 #         # Create minimal mock data
 #         with patch.object(collector, "collect_workflow_runs", return_value=[]):
-#             report = collector.generate_report("main", output="/tmp/test.json")
+#             report = collector.generate_report("main", output=os.path.join(tempfile.gettempdir(), "test.json"))
 #         required_keys = [
 #         required_keys = [
 #             "generated_at",

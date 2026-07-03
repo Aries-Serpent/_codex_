@@ -212,10 +212,10 @@ class TestGetDbPath:
     def test_get_db_path_with_env_var(self):
         """Test get_db_path with environment variable."""
         with tempfile.TemporaryDirectory():
-            os.environ["TEST_DB_PATH"] = "/tmp/test.db"
+            os.environ["TEST_DB_PATH"] = os.path.join(tempfile.gettempdir(), "test.db")
             try:
                 path = get_db_path("test_db", "TEST_DB_PATH")
-                assert str(path) == "/tmp/test.db", "Condition must be true"
+                assert str(path) == os.path.join(tempfile.gettempdir(), "test.db"), "Condition must be true"
             finally:
                 del os.environ["TEST_DB_PATH"]
 
@@ -383,28 +383,28 @@ class TestEnvironmentVariableHandling:
 
     def test_codex_log_db_path_env(self):
         """Test CODEX_LOG_DB_PATH environment variable."""
-        os.environ["CODEX_LOG_DB_PATH"] = "/tmp/custom_logs.db"
+        os.environ["CODEX_LOG_DB_PATH"] = os.path.join(tempfile.gettempdir(), "custom_logs.db")
         try:
             path = get_session_logs_db()
-            assert str(path) == "/tmp/custom_logs.db", "Condition must be true"
+            assert str(path) == os.path.join(tempfile.gettempdir(), "custom_logs.db"), "Condition must be true"
         finally:
             del os.environ["CODEX_LOG_DB_PATH"]
 
     def test_codex_analysis_db_path_env(self):
         """Test CODEX_ANALYSIS_DB_PATH environment variable."""
-        os.environ["CODEX_ANALYSIS_DB_PATH"] = "/tmp/custom_analysis.db"
+        os.environ["CODEX_ANALYSIS_DB_PATH"] = os.path.join(tempfile.gettempdir(), "custom_analysis.db")
         try:
             path = get_analysis_db()
-            assert str(path) == "/tmp/custom_analysis.db", "Condition must be true"
+            assert str(path) == os.path.join(tempfile.gettempdir(), "custom_analysis.db"), "Condition must be true"
         finally:
             del os.environ["CODEX_ANALYSIS_DB_PATH"]
 
     def test_codex_metrics_db_path_env(self):
         """Test CODEX_METRICS_DB_PATH environment variable."""
-        os.environ["CODEX_METRICS_DB_PATH"] = "/tmp/custom_metrics.db"
+        os.environ["CODEX_METRICS_DB_PATH"] = os.path.join(tempfile.gettempdir(), "custom_metrics.db")
         try:
             path = get_metrics_db()
-            assert str(path) == "/tmp/custom_metrics.db", "Condition must be true"
+            assert str(path) == os.path.join(tempfile.gettempdir(), "custom_metrics.db"), "Condition must be true"
         finally:
             del os.environ["CODEX_METRICS_DB_PATH"]
 

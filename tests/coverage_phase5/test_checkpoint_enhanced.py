@@ -18,6 +18,7 @@ from typing import (  # pragma: allowlist secret # pragma: allowlist secret # pr
 
 # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 import pytest
+import tempfile
 
 
 @dataclass
@@ -130,11 +131,11 @@ class TestCheckpointManagerInitialization:
 
     def test_default_initialization(self):
         """✅ PATTERN: Complete initialization assertions."""
-        manager = CheckpointManager("/tmp/checkpoints")
+        manager = CheckpointManager(os.path.join(tempfile.gettempdir(), "checkpoints"))
 
         assert manager is not None, "manager must be initialized"
         assert isinstance(manager, CheckpointManager)
-        assert manager.storage_path == "/tmp/checkpoints", "storage_path is not valid"
+        assert manager.storage_path == os.path.join(tempfile.gettempdir(), "checkpoints"), "storage_path is not valid"
         assert manager.checkpoints == {}, "checkpoints is not valid"
         assert isinstance(manager.checkpoints, dict)
         assert manager.current_checkpoint_id is None, "current_checkpoint_id is not valid"
@@ -146,7 +147,7 @@ class TestCheckpointManagerInitialization:
         manager = CheckpointManager("/data/ckpts")
 
         assert manager.storage_path == "/data/ckpts", "Data must not be empty"
-        assert manager.storage_path != "/tmp/checkpoints", "storage_path is not valid"
+        assert manager.storage_path != os.path.join(tempfile.gettempdir(), "checkpoints"), "storage_path is not valid"
 
     def test_empty_storage_path_rejected(self):
         """✅ PATTERN: Edge case - empty path."""
@@ -166,7 +167,7 @@ class TestCheckpointSaving:
 
     def test_save_single_checkpoint(self):
         """✅ PATTERN: Single checkpoint save."""
-        manager = CheckpointManager("/tmp/ckpts")
+        manager = CheckpointManager(os.path.join(tempfile.gettempdir(), "ckpts"))
 
         result = manager.save_checkpoint("ckpt_1", epoch=10, loss=0.5)
 
@@ -179,7 +180,7 @@ class TestCheckpointSaving:
 
     def test_save_multiple_checkpoints(self):
         """✅ PATTERN: Multiple saves with counter."""
-        manager = CheckpointManager("/tmp/ckpts")
+        manager = CheckpointManager(os.path.join(tempfile.gettempdir(), "ckpts"))
 
         for i in range(5):
             result = manager.save_checkpoint(f"ckpt_{i}", epoch=i, loss=1.0 - (i * 0.1))
@@ -191,7 +192,7 @@ class TestCheckpointSaving:
 
     def test_save_empty_id_rejected(self):
         """✅ PATTERN: Edge case - empty checkpoint ID."""
-        manager = CheckpointManager("/tmp/ckpts")
+        manager = CheckpointManager(os.path.join(tempfile.gettempdir(), "ckpts"))
 
         with pytest.raises(ValueError) as exc_info:
             manager.save_checkpoint("", epoch=1, loss=0.5)
@@ -201,7 +202,7 @@ class TestCheckpointSaving:
 
     def test_save_negative_epoch_rejected(self):
         """✅ PATTERN: Edge case - negative epoch."""
-        manager = CheckpointManager("/tmp/ckpts")
+        manager = CheckpointManager(os.path.join(tempfile.gettempdir(), "ckpts"))
 
         with pytest.raises(ValueError) as exc_info:
             manager.save_checkpoint("ckpt_1", epoch=-1, loss=0.5)
@@ -210,14 +211,14 @@ class TestCheckpointSaving:
 
     def test_save_negative_loss_rejected(self):
         """✅ PATTERN: Edge case - negative loss."""
-        manager = CheckpointManager("/tmp/ckpts")
+        manager = CheckpointManager(os.path.join(tempfile.gettempdir(), "ckpts"))
 
         with pytest.raises(ValueError):
             manager.save_checkpoint("ckpt_1", epoch=1, loss=-0.5)
 
     def test_save_epoch_zero_allowed(self):
         """✅ PATTERN: Boundary - zero epoch."""
-        manager = CheckpointManager("/tmp/ckpts")
+        manager = CheckpointManager(os.path.join(tempfile.gettempdir(), "ckpts"))
 
         result = manager.save_checkpoint("ckpt_0", epoch=0, loss=1.0)
 
@@ -226,7 +227,7 @@ class TestCheckpointSaving:
 
     def test_save_loss_zero_allowed(self):
         """✅ PATTERN: Boundary - zero loss."""
-        manager = CheckpointManager("/tmp/ckpts")
+        manager = CheckpointManager(os.path.join(tempfile.gettempdir(), "ckpts"))
 
         result = manager.save_checkpoint("ckpt_0", epoch=0, loss=0.0)
 
@@ -235,7 +236,7 @@ class TestCheckpointSaving:
 
     def test_save_exceeds_limit(self):
         """✅ PATTERN: Boundary - exceeds max checkpoints."""
-        manager = CheckpointManager("/tmp/ckpts")
+        manager = CheckpointManager(os.path.join(tempfile.gettempdir(), "ckpts"))
         manager.max_checkpoints = 3
 
         manager.save_checkpoint("ckpt_0", epoch=0, loss=0.5)
@@ -259,7 +260,7 @@ class TestCheckpointLoading:
 
     def test_load_existing_checkpoint(self):
         """✅ PATTERN: Load valid checkpoint."""
-        manager = CheckpointManager("/tmp/ckpts")
+        manager = CheckpointManager(os.path.join(tempfile.gettempdir(), "ckpts"))
         manager.save_checkpoint("ckpt_1", epoch=10, loss=0.5)
 
         ckpt = manager.load_checkpoint("ckpt_1")
@@ -273,7 +274,7 @@ class TestCheckpointLoading:
 
     def test_load_nonexistent_checkpoint(self):
         """✅ PATTERN: Edge case - missing checkpoint."""
-        manager = CheckpointManager("/tmp/ckpts")
+        manager = CheckpointManager(os.path.join(tempfile.gettempdir(), "ckpts"))
 
         ckpt = manager.load_checkpoint("nonexistent")
 
@@ -281,14 +282,14 @@ class TestCheckpointLoading:
 
     def test_load_invalid_id_type(self):
         """✅ PATTERN: Edge case - wrong type."""
-        manager = CheckpointManager("/tmp/ckpts")
+        manager = CheckpointManager(os.path.join(tempfile.gettempdir(), "ckpts"))
 
         with pytest.raises(TypeError):
             manager.load_checkpoint(123)
 
     def test_list_empty_checkpoints(self):
         """✅ PATTERN: Edge case - empty list."""
-        manager = CheckpointManager("/tmp/ckpts")
+        manager = CheckpointManager(os.path.join(tempfile.gettempdir(), "ckpts"))
 
         result = manager.list_checkpoints()
 
@@ -298,7 +299,7 @@ class TestCheckpointLoading:
 
     def test_list_multiple_checkpoints(self):
         """✅ PATTERN: Multiple checkpoints listing."""
-        manager = CheckpointManager("/tmp/ckpts")
+        manager = CheckpointManager(os.path.join(tempfile.gettempdir(), "ckpts"))
 
         for i in range(3):
             manager.save_checkpoint(f"ckpt_{i}", epoch=i, loss=0.5)
@@ -322,7 +323,7 @@ class TestCheckpointDeletion:
 
     def test_delete_existing_checkpoint(self):
         """✅ PATTERN: Delete valid checkpoint."""
-        manager = CheckpointManager("/tmp/ckpts")
+        manager = CheckpointManager(os.path.join(tempfile.gettempdir(), "ckpts"))
         manager.save_checkpoint("ckpt_1", epoch=1, loss=0.5)
 
         result = manager.delete_checkpoint("ckpt_1")
@@ -333,7 +334,7 @@ class TestCheckpointDeletion:
 
     def test_delete_nonexistent_rejected(self):
         """✅ PATTERN: Edge case - missing checkpoint."""
-        manager = CheckpointManager("/tmp/ckpts")
+        manager = CheckpointManager(os.path.join(tempfile.gettempdir(), "ckpts"))
 
         with pytest.raises(KeyError):
             manager.delete_checkpoint("nonexistent")
@@ -448,7 +449,7 @@ class TestOperatorMutationDefense:
 
     def test_epoch_non_negative(self):
         """✅ PATTERN: >= operator verification."""
-        manager = CheckpointManager("/tmp/ckpts")
+        manager = CheckpointManager(os.path.join(tempfile.gettempdir(), "ckpts"))
         manager.save_checkpoint("ckpt_0", epoch=0, loss=0.5)
 
         assert manager.checkpoints["ckpt_0"].epoch >= 0, "epoch must be greater than zero"
@@ -456,7 +457,7 @@ class TestOperatorMutationDefense:
 
     def test_loss_non_negative(self):
         """✅ PATTERN: >= operator verification."""
-        manager = CheckpointManager("/tmp/ckpts")
+        manager = CheckpointManager(os.path.join(tempfile.gettempdir(), "ckpts"))
         manager.save_checkpoint("ckpt_0", epoch=1, loss=0.0)
 
         assert manager.checkpoints["ckpt_0"].loss >= 0, "loss must be greater than zero"

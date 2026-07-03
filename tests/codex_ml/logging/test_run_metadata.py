@@ -67,13 +67,13 @@ def test_log_run_metadata_invokes_logger(monkeypatch):
 
 def test_build_run_metadata_handles_non_path_inputs(monkeypatch):
     payload = build_run_metadata(
-        dataset_source=SimpleNamespace(path="/tmp/path"),
+        dataset_source=SimpleNamespace(path=os.path.join(tempfile.gettempdir(), "path")),
         train_examples=None,
         eval_examples="invalid",
         extras={"value": 0},
     )
 
-    assert payload.get("dataset_source") == "namespace(path='/tmp/path')", "Data must not be empty"
+    assert payload.get("dataset_source") == "namespace(path=os.path.join(tempfile.gettempdir(), 'path'))", "Data must not be empty"
     assert "train_examples" not in payload, "Condition must be true"
     assert "eval_examples" not in payload, "Condition must be true"
     assert payload["value"] == 0, "Value must be initialized"

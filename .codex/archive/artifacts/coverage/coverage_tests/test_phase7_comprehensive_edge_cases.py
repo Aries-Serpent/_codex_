@@ -6,6 +6,7 @@ Generated: 2026-06-20
 Target: 100+ additional tests for comprehensive edge-case coverage
 """
 import sys
+import tempfile
 from pathlib import Path
 
 import pytest
@@ -189,7 +190,7 @@ class TestMemoryAndResourceHandling:
             # Multiple file operations
             for i in range(100):
                 try:
-                    write_file(f"/tmp/test_{i}.txt", f"content {i}")
+                    write_file(fos.path.join(tempfile.gettempdir(), "test_{i}.txt"), f"content {i}")
                 except:
                     pass
         except ImportError:

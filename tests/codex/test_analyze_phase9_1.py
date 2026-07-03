@@ -14,6 +14,7 @@ Tests cover:
 from __future__ import annotations
 
 import json
+import tempfile
 from pathlib import Path
 from unittest.mock import Mock, patch
 
@@ -406,7 +407,7 @@ class TestToolResolution:
 
     def test_resolve_tool_untrusted_location(self) -> None:
         """Test tool in untrusted location returns None."""
-        with patch("shutil.which", return_value="/tmp/untrusted/tool"):
+        with patch("shutil.which", return_value=os.path.join(tempfile.gettempdir(), "untrusted/tool")):
             result = _resolve_tool("tool", trusted_dirs=["/usr/bin"])
 
             assert result is None, "Result must not be empty"

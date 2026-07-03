@@ -11,6 +11,7 @@ Tests cover:
 from __future__ import annotations
 
 import sys
+import tempfile
 from pathlib import Path
 from unittest.mock import Mock, patch
 
@@ -31,7 +32,7 @@ def mock_hydra_config():
         "training": {"epochs": 5, "batch_size": 16, "learning_rate": 1e-4},
         "data": {"train_path": "/data/train.jsonl", "val_path": "/data/val.jsonl"},
         "seed": 42,
-        "output_dir": "/tmp/output",
+        "output_dir": os.path.join(tempfile.gettempdir(), "output"),
     }
 
 
@@ -63,13 +64,13 @@ class TestToPath:
     def test_to_path_with_string(self):
         """Test _to_path with string returns Path."""
         if hasattr(train, "_to_path"):
-            result = train._to_path("/tmp/test")
+            result = train._to_path(os.path.join(tempfile.gettempdir(), "test"))
             assert isinstance(result, Path)
 
     def test_to_path_with_path(self):
         """Test _to_path with Path returns Path."""
         if hasattr(train, "_to_path"):
-            result = train._to_path(Path("/tmp/test"))
+            result = train._to_path(Path(os.path.join(tempfile.gettempdir(), "test")))
             assert isinstance(result, Path)
 
 

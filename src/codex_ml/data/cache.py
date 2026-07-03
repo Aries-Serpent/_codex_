@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import tempfile
 import json
 import time
 from collections.abc import Iterable, Mapping
@@ -137,7 +138,7 @@ def cache_records(records: Iterable[dict[str, Any]], *, cache_dir: str | Path, k
     >>> from pathlib import Path
     >>> records = [{"text": "hello"}, {"text": "world"}]
     >>> key = derive_key("test", "v1")
-    >>> path = cache_records(records, cache_dir="/tmp/cache", key=key)
+    >>> path = cache_records(records, cache_dir=os.path.join(tempfile.gettempdir(), "cache"), key=key)
     >>> path.exists()
     True
     >>> path.name.endswith('.jsonl')
@@ -173,7 +174,7 @@ def load_cached_records(cache_dir: str | Path, key: str) -> list[dict[str, Any]]
     Examples
     --------
     >>> key = derive_key("test", "v1")
-    >>> records = load_cached_records("/tmp/cache", key)
+    >>> records = load_cached_records(os.path.join(tempfile.gettempdir(), "cache"), key)
     >>> records is None or isinstance(records, list)
     True
     """

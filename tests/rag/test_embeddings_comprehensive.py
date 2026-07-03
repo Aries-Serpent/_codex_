@@ -1,6 +1,7 @@
 """Comprehensive tests for RAG embeddings module."""
 
 import os
+import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -462,11 +463,11 @@ class TestEmbeddingModel:
         model = EmbeddingModel(
             model_name="sentence-transformers/paraphrase-MiniLM-L6-v2",
             device="cpu",
-            cache_dir="/tmp/cache",
+            cache_dir=os.path.join(tempfile.gettempdir(), "cache"),
         )
         assert model.model_name == "sentence-transformers/paraphrase-MiniLM-L6-v2", "model_name is not valid"
         assert model.device == "cpu", "device is not valid"
-        assert model.cache_dir == "/tmp/cache", "cache_dir is not valid"
+        assert model.cache_dir == os.path.join(tempfile.gettempdir(), "cache"), "cache_dir is not valid"
 
     def test_encode_triggers_lazy_loading(self, mock_sentence_transformer):
         """Test that encode lazy-loads the underlying provider."""
@@ -579,7 +580,7 @@ class TestCreateEmbeddingProvider:
             ),
         ):
             provider = create_embedding_provider(
-                provider_type="auto", use_cache=False, model_path="/tmp/model.gguf"
+                provider_type="auto", use_cache=False, model_path=os.path.join(tempfile.gettempdir(), "model.gguf")
             )
         assert provider is mock_llamacpp_instance, "provider is not valid"
 
@@ -693,7 +694,7 @@ class TestCreateEmbeddingProvider:
             sys.modules, {"codex.rag.providers.llamacpp_provider": mock_llamacpp_module}
         ):
             provider = create_embedding_provider(
-                provider_type="llamacpp", use_cache=False, model_path="/tmp/model.gguf"
+                provider_type="llamacpp", use_cache=False, model_path=os.path.join(tempfile.gettempdir(), "model.gguf")
             )
         assert provider is mock_llamacpp_instance, "provider is not valid"
 

@@ -38,7 +38,7 @@ class TestModelConfig:
             revision="main",
             device="cuda",
             quantization="int8",
-            cache_dir="/tmp/cache",
+            cache_dir=os.path.join(tempfile.gettempdir(), "cache"),
             trust_remote_code=True,
             torch_dtype="float16",
         )
@@ -46,7 +46,7 @@ class TestModelConfig:
         assert config.revision == "main", "revision is not valid"
         assert config.device == "cuda", "device is not valid"
         assert config.quantization == "int8", "quantization is not valid"
-        assert config.cache_dir == "/tmp/cache", "cache_dir is not valid"
+        assert config.cache_dir == os.path.join(tempfile.gettempdir(), "cache"), "cache_dir is not valid"
         assert config.trust_remote_code is True, "trust_remote_code is not valid"
         assert config.torch_dtype == "float16", "torch_dtype is not valid"
 

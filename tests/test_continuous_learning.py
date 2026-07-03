@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import sys
+import tempfile
 from pathlib import Path
 from typing import Any
 
@@ -45,7 +46,7 @@ def test_model_comparison_and_rollback(tmp_path):
     )
 
     v1 = ModelVersion(
-        version="v1", model_path=Path("/tmp/model1"), metrics={"accuracy": 0.8}, trained_at="now"
+        version="v1", model_path=Path(os.path.join(tempfile.gettempdir(), "model1")), metrics={"accuracy": 0.8}, trained_at="now"
     )
     pipeline.registry.register(v1)
     v2 = pipeline.retrain(_train_fn, {"acc": 0.82}, dataset_hash=None, drift_score=0.3)

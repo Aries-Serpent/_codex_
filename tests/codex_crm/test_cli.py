@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import tempfile
 from pathlib import Path
 from unittest.mock import patch
 
@@ -113,27 +114,27 @@ class TestMainFunction:
         """Test main with apply-zd command."""
         from codex_crm.cli import main
 
-        result = main(["apply-zd", "--out", "/tmp/zd"])
+        result = main(["apply-zd", "--out", os.path.join(tempfile.gettempdir(), "zd")])
         assert result == 0, "Result must not be empty"
-        mock_emit.assert_called_once_with("/tmp/zd")
+        mock_emit.assert_called_once_with(os.path.join(tempfile.gettempdir(), "zd"))
 
     @patch("codex_crm.cli.emit_d365_config")
     def test_main_apply_d365(self, mock_emit):
         """Test main with apply-d365 command."""
         from codex_crm.cli import main
 
-        result = main(["apply-d365", "--out", "/tmp/d365"])
+        result = main(["apply-d365", "--out", os.path.join(tempfile.gettempdir(), "d365")])
         assert result == 0, "Result must not be empty"
-        mock_emit.assert_called_once_with("/tmp/d365")
+        mock_emit.assert_called_once_with(os.path.join(tempfile.gettempdir(), "d365"))
 
     @patch("codex_crm.cli.write_evidence")
     def test_main_evidence_pack(self, mock_write):
         """Test main with evidence-pack command."""
         from codex_crm.cli import main
 
-        result = main(["evidence-pack", "--out", "/tmp/evidence"])
+        result = main(["evidence-pack", "--out", os.path.join(tempfile.gettempdir(), "evidence")])
         assert result == 0, "Result must not be empty"
-        mock_write.assert_called_once_with("/tmp/evidence")
+        mock_write.assert_called_once_with(os.path.join(tempfile.gettempdir(), "evidence"))
 
     @patch("codex_crm.cli.flow_to_mermaid")
     def test_main_gen_diagram(self, mock_flow, tmp_path):

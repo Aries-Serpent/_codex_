@@ -225,7 +225,7 @@ class TestTokenizationTraining:
         def save_model(model, path):
             return {"saved": True, "path": path}
 
-        result = save_model({"vocab": 100}, "/tmp/model.pkl")
+        result = save_model({"vocab": 100}, os.path.join(tempfile.gettempdir(), "model.pkl"))
         assert result["saved"] is True, "Result must not be empty"
 
 

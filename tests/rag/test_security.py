@@ -9,6 +9,7 @@ Coverage Target: src/rag 33% → 50%+
 """
 
 import pytest
+import tempfile
 
 
 class TestRAGInputSanitization:
@@ -217,7 +218,7 @@ class TestIndexSecurity:
             validate_index_path("../../../etc/passwd")
 
         with pytest.raises(ValueError):
-            validate_index_path("/tmp/malicious")
+            validate_index_path(os.path.join(tempfile.gettempdir(), "malicious"))
 
         assert validate_index_path("/data/indices/my_index"), "Data must not be empty"
 

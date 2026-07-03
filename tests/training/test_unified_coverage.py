@@ -17,6 +17,7 @@ from typing import TYPE_CHECKING
 from unittest.mock import MagicMock
 
 import pytest
+import tempfile
 
 if TYPE_CHECKING:
     pass
@@ -70,7 +71,7 @@ def sample_training_config():
             batch_size=4,
             learning_rate=1e-4,
             seed=42,
-            output_dir="/tmp/test_output",
+            output_dir=os.path.join(tempfile.gettempdir(), "test_output"),
         )
     except (ImportError, TypeError) as e:
         pytest.skip(f"UnifiedTrainingConfig not available: {e}")

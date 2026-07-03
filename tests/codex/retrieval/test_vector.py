@@ -3,6 +3,7 @@
 from unittest.mock import patch
 
 import pytest
+import tempfile
 
 
 class TestRetrievalVectorImports:
@@ -87,7 +88,7 @@ class TestRetrievalVectorIndexing:
                 if hasattr(store, "save"):
                     with patch.object(store, "save") as mock_save:
                         mock_save.return_value = True
-                        result = store.save("/tmp/index.bin")
+                        result = store.save(os.path.join(tempfile.gettempdir(), "index.bin"))
                         assert result is True, "Result must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("VectorStore.save not available")

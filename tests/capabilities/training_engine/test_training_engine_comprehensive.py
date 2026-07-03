@@ -14,6 +14,7 @@ from enum import Enum
 from typing import Any
 
 import pytest
+import tempfile
 
 pytest.importorskip("hypothesis")
 
@@ -268,7 +269,7 @@ class TestResumeLogic:
 
     def test_save_checkpoint(self):
         """Save training checkpoint."""
-        manager = ResumeManager("/tmp/checkpoints")
+        manager = ResumeManager(os.path.join(tempfile.gettempdir(), "checkpoints"))
         state = TrainingState()
         state.epoch = 5
         state.global_step = 1000
@@ -277,7 +278,7 @@ class TestResumeLogic:
 
     def test_can_resume(self):
         """Check if can resume."""
-        manager = ResumeManager("/tmp/checkpoints")
+        manager = ResumeManager(os.path.join(tempfile.gettempdir(), "checkpoints"))
         assert not manager.can_resume(), "Condition must be true"
         manager.save_checkpoint(TrainingState())
         assert manager.can_resume(), "Condition must be true"

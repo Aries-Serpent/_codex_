@@ -13,6 +13,7 @@ Example:
 """
 
 import os
+import tempfile
 from pathlib import Path
 from typing import Optional, List, Pattern
 
@@ -44,8 +45,8 @@ def safe_path(path_str: str) -> Path:
         Path object
 
     Example:
-        >>> safe_path('/tmp/file.txt')
-        PosixPath('/tmp/file.txt')
+        >>> safe_path(os.path.join(tempfile.gettempdir(), 'file.txt'))
+        PosixPath(os.path.join(tempfile.gettempdir(), 'file.txt'))
     """
     if not path_str:
         raise PathError("Path string cannot be empty")

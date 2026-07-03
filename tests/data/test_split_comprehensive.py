@@ -13,6 +13,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
+import tempfile
 
 # Import module under test
 try:
@@ -115,9 +116,9 @@ class TestJsonReady:
     def test_json_ready_with_path(self):
         """Test _json_ready with Path object."""
         if hasattr(split, "_json_ready"):
-            result = split._json_ready(Path("/tmp/test"))
+            result = split._json_ready(Path(os.path.join(tempfile.gettempdir(), "test")))
             assert isinstance(result, str)
-            assert result == "/tmp/test", "Result must not be empty"
+            assert result == os.path.join(tempfile.gettempdir(), "test"), "Result must not be empty"
 
     def test_json_ready_with_dict(self):
         """Test _json_ready with dict."""

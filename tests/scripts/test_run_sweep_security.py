@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import pytest
+import tempfile
 from run_sweep import _validate_override
 
 
@@ -27,7 +28,7 @@ class TestOverrideValidation:
         _validate_override("name", "model-v1")
         _validate_override("rate", 0.001)
         _validate_override("flag", True)
-        _validate_override("path", "/tmp/data")
+        _validate_override("path", os.path.join(tempfile.gettempdir(), "data"))
 
     def test_reject_non_string_key(self) -> None:
         """Reject non-string keys."""
@@ -82,7 +83,7 @@ class TestOverrideValidation:
 
     def test_allow_safe_special_chars(self) -> None:
         """Allow safe special characters in values."""
-        _validate_override("path", "/tmp/data/file.txt")
+        _validate_override("path", os.path.join(tempfile.gettempdir(), "data/file.txt"))
         _validate_override("expr", "x+y")
         _validate_override("ratio", "1:2")
         _validate_override("email", "test@example.com")

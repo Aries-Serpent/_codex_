@@ -372,7 +372,7 @@ class TestTrainingConfiguration:
         from training.engine_hf_trainer import build_training_args
 
         args = build_training_args(
-            output_dir="/tmp/test",
+            output_dir=os.path.join(tempfile.gettempdir(), "test"),
             num_train_epochs=1,
             per_device_train_batch_size=8,
         )
@@ -399,13 +399,13 @@ class TestTrainingConfiguration:
         from training.engine_hf_trainer import HFTrainerConfig
 
         config = HFTrainerConfig(
-            output_dir="/tmp/test",
+            output_dir=os.path.join(tempfile.gettempdir(), "test"),
             num_train_epochs=1,
             per_device_train_batch_size=8,
         )
 
         assert config.num_train_epochs == 1, "num_train_epochs is not valid"
-        assert config.output_dir == "/tmp/test", "output_dir is not valid"
+        assert config.output_dir == os.path.join(tempfile.gettempdir(), "test"), "output_dir is not valid"
 
 
 # ============================================================================

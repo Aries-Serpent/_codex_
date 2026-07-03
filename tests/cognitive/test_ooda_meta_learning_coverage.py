@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import tempfile
 import sys
 import types
 from dataclasses import dataclass
@@ -48,7 +49,7 @@ def test_ooda_orchestrator_execute_and_metrics(monkeypatch):
 
     module = _load_module(
         "cognitive_app_orchestrator_under_test",
-        Path("/tmp/workspace/Aries-Serpent/_codex_/cognitive_app/src/orchestrator.py"),
+        Path(os.path.join(tempfile.gettempdir(), "workspace/Aries-Serpent/_codex_/cognitive_app/src/orchestrator.py")),
     )
 
     stores: list[tuple[str, dict, dict]] = []
@@ -96,7 +97,7 @@ def test_ooda_orchestrator_failure_path(monkeypatch):
 
     module = _load_module(
         "cognitive_app_orchestrator_failure_under_test",
-        Path("/tmp/workspace/Aries-Serpent/_codex_/cognitive_app/src/orchestrator.py"),
+        Path(os.path.join(tempfile.gettempdir(), "workspace/Aries-Serpent/_codex_/cognitive_app/src/orchestrator.py")),
     )
 
     class MemoryImpl:
@@ -111,7 +112,7 @@ def test_ooda_orchestrator_failure_path(monkeypatch):
 def test_meta_learning_shared_memory_and_pattern_library(tmp_path):
     module = _load_module(
         "meta_learning_engine_under_test",
-        Path("/tmp/workspace/Aries-Serpent/_codex_/scripts/cognitive/meta_learning_engine.py"),
+        Path(os.path.join(tempfile.gettempdir(), "workspace/Aries-Serpent/_codex_/scripts/cognitive/meta_learning_engine.py")),
     )
 
     shared = module.SharedMemory(tmp_path / "shared")

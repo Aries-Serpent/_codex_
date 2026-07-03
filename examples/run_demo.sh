@@ -12,8 +12,8 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 export PYTHONPATH="$REPO_ROOT/src:${PYTHONPATH:-}"
 
-INPUT_PATH="/tmp/restore_demo_input.png"
-OUTPUT_DIR="/tmp/restore_demo_output"
+INPUT_PATH="${TMPDIR:-/tmp}/restore_demo_input.png"
+OUTPUT_DIR="${TMPDIR:-/tmp}/restore_demo_output"
 
 echo "── restore_pipeline demo ─────────────────────────────────────"
 echo "Repo root: $REPO_ROOT"
@@ -36,8 +36,8 @@ img[..., 2] = 0.5
 noisy = random_noise(img, mode="gaussian", var=0.01**2, rng=42).astype(np.float32)
 noisy_u8 = (np.clip(noisy, 0, 1) * 255).astype("uint8")
 
-Path("/tmp/restore_demo_input.png").parent.mkdir(parents=True, exist_ok=True)
-iio.imwrite("/tmp/restore_demo_input.png", noisy_u8)
+Path("${TMPDIR:-/tmp}/restore_demo_input.png").parent.mkdir(parents=True, exist_ok=True)
+iio.imwrite("${TMPDIR:-/tmp}/restore_demo_input.png", noisy_u8)
 print(f"Synthetic noisy image written → /tmp/restore_demo_input.png  shape={noisy_u8.shape}")
 EOF
 

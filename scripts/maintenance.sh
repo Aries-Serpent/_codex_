@@ -457,7 +457,7 @@ attempt_lock_prune(){
   export LOCK_PRUNE_ACTION LOCK_PRUNE_REMOVED
 }
 sanitize_uninstall_stream(){
-  sed -r \
+  sed -E \
     -e 's/\x1B\[[0-9;]*[A-Za-z]//g' \
     -e '/^\+\+/d' \
     -e '/^[[:space:]]*$/d'

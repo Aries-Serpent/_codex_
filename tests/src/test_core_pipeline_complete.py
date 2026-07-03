@@ -589,7 +589,7 @@ class TestConfiguration:
 
     def test_config_special_characters(self):
         """Test special characters in values"""
-        config = {"path": "/tmp/test@file#1.txt"}
+        config = {"path": os.path.join(tempfile.gettempdir(), "test@file#1.txt")}
         assert "@" in config["path"], "Condition must be true"
 
     def test_config_unicode(self):

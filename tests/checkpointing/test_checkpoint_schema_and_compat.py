@@ -7,6 +7,7 @@ Test module for checkpoint schema and compat.
 from __future__ import annotations
 
 import warnings
+import tempfile
 
 from codex_ml.checkpointing import compat, schema_v2
 
@@ -53,6 +54,6 @@ def test_checkpoint_compat_emits_warning(monkeypatch) -> None:
 
     with warnings.catch_warnings(record=True) as captured:
         warnings.simplefilter("always")
-        compat.save_checkpoint("/tmp/ckpt", state={}, meta={})
+        compat.save_checkpoint(os.path.join(tempfile.gettempdir(), "ckpt"), state={}, meta={})
     assert calls, "calls is not valid"
     assert any("deprecated" in str(w.message) for w in captured), "Condition must be true"

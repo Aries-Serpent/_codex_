@@ -105,7 +105,7 @@ class LinkChecker:
         categories = defaultdict(list)
 
         for source, text, link in self.broken_links:
-            if '/tmp/' in link or link.startswith('/tmp/'):  # nosec B108 — string comparison, not a file path
+            if os.path.join(tempfile.gettempdir(), '') in link or link.startswith(os.path.join(tempfile.gettempdir(), '')):  # nosec B108 — string comparison, not a file path
                 categories['tmp_violations'].append((source, text, link))
             elif link.startswith('../'):
                 categories['relative_up'].append((source, text, link))
