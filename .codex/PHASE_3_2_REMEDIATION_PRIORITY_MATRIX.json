@@ -1,0 +1,235 @@
+{
+  "metadata": {
+    "total_issues": 419,
+    "critical_count": 8,
+    "high_count": 207,
+    "total_workflows": 419,
+    "audit_date": "2026-01-23",
+    "campaign": "Phase 3-5 Multi-Agent Deployment"
+  },
+  "priority_tiers": {
+    "TIER_1_CRITICAL": {
+      "description": "Must fix immediately (0-24 hours)",
+      "count": 8,
+      "total_time": "40 minutes",
+      "items": [
+        {
+          "rank": 1,
+          "file": "automated-release-creation.yml",
+          "issue": "Invalid permission: discussions",
+          "type": "permissions",
+          "severity": "CRITICAL",
+          "difficulty": "EASY",
+          "estimated_time": "5 min",
+          "risk_level": "MINIMAL",
+          "fix_pattern": "Delete line 16: discussions: write",
+          "validation": "yaml.safe_load()",
+          "rollback": "git checkout",
+          "notes": "8 files share this pattern"
+        },
+        {
+          "rank": 1.1,
+          "file": "copilot-agent-checkin.yml",
+          "issue": "Invalid permission: discussions",
+          "type": "permissions",
+          "severity": "CRITICAL",
+          "difficulty": "EASY",
+          "estimated_time": "5 min",
+          "risk_level": "MINIMAL",
+          "fix_pattern": "Delete line 39: discussions: write"
+        },
+        {
+          "rank": 1.2,
+          "file": "discussion-cleanup.yml",
+          "issue": "Invalid permission: discussions",
+          "type": "permissions",
+          "severity": "CRITICAL",
+          "difficulty": "EASY",
+          "estimated_time": "5 min",
+          "risk_level": "MINIMAL",
+          "fix_pattern": "Delete line 43: discussions: write"
+        },
+        {
+          "rank": 1.3,
+          "file": "discussion-response-bridge.yml",
+          "issue": "Invalid permission: discussions",
+          "type": "permissions",
+          "severity": "CRITICAL",
+          "difficulty": "EASY",
+          "estimated_time": "5 min",
+          "risk_level": "MINIMAL",
+          "fix_pattern": "Delete discussions: write"
+        },
+        {
+          "rank": 1.4,
+          "file": "post-accountability-to-discussion.yml",
+          "issue": "Invalid permission: discussions",
+          "type": "permissions",
+          "severity": "CRITICAL",
+          "difficulty": "EASY",
+          "estimated_time": "5 min",
+          "risk_level": "MINIMAL",
+          "fix_pattern": "Delete discussions: write"
+        },
+        {
+          "rank": 1.5,
+          "file": "post-ci-status-to-discussion.yml",
+          "issue": "Invalid permission: discussions",
+          "type": "permissions",
+          "severity": "CRITICAL",
+          "difficulty": "EASY",
+          "estimated_time": "5 min",
+          "risk_level": "MINIMAL",
+          "fix_pattern": "Delete discussions: write"
+        },
+        {
+          "rank": 1.6,
+          "file": "post-phase-4-5-to-discussion.yml",
+          "issue": "Invalid permission: discussions",
+          "type": "permissions",
+          "severity": "CRITICAL",
+          "difficulty": "EASY",
+          "estimated_time": "5 min",
+          "risk_level": "MINIMAL",
+          "fix_pattern": "Delete discussions: write"
+        },
+        {
+          "rank": 1.7,
+          "file": "post-phase-update-to-discussion.yml",
+          "issue": "Invalid permission: discussions",
+          "type": "permissions",
+          "severity": "CRITICAL",
+          "difficulty": "EASY",
+          "estimated_time": "5 min",
+          "risk_level": "MINIMAL",
+          "fix_pattern": "Delete discussions: write"
+        }
+      ]
+    },
+    "TIER_2_HIGH": {
+      "description": "Should fix within 1 week",
+      "count": 207,
+      "total_time": "1-2 weeks (20+ workflows)",
+      "pattern": "Heredoc with special characters",
+      "items": [
+        {
+          "rank": 2.1,
+          "priority_group": "HIGH_PRIORITY_HEREDOCS",
+          "description": "20 workflows with emoji/special chars in heredocs",
+          "estimated_time": "10 min each",
+          "total_time": "200 minutes",
+          "risk_level": "MEDIUM",
+          "fix_pattern": "Replace heredoc with echo groups or printf",
+          "example_files": [
+            "adaptive-agent-delegation.yml",
+            "admin_setup_verification.yml",
+            "agent-health-check.yml"
+          ],
+          "validation": "Run workflow, verify output",
+          "rollback": "Restore heredoc syntax"
+        },
+        {
+          "rank": 2.2,
+          "priority_group": "MEDIUM_PRIORITY_HEREDOCS",
+          "description": "50 workflows with Python/YAML heredocs",
+          "estimated_time": "15 min each",
+          "total_time": "750 minutes",
+          "risk_level": "MEDIUM",
+          "fix_pattern": "Consider moving to separate script files",
+          "validation": "Full workflow test required",
+          "rollback": "Moderate complexity"
+        },
+        {
+          "rank": 2.3,
+          "priority_group": "LOW_PRIORITY_HEREDOCS",
+          "description": "137 workflows with simple shell heredocs",
+          "estimated_time": "5 min each",
+          "total_time": "685 minutes",
+          "risk_level": "LOW",
+          "fix_pattern": "Optimize for readability, consider echo groups",
+          "validation": "Basic syntax check",
+          "rollback": "Simple"
+        }
+      ]
+    },
+    "TIER_3_MEDIUM": {
+      "description": "Should fix within 2 weeks",
+      "count": 0,
+      "items": []
+    },
+    "TIER_4_LOW": {
+      "description": "Monitor, document, no urgent action",
+      "count": 4,
+      "items": [
+        {
+          "rank": 4.1,
+          "file": "validate-token-health.yml",
+          "issue": "Potential hardcoded secrets (regex validation)",
+          "type": "security_warning",
+          "severity": "LOW",
+          "status": "APPEARS SAFE - Verify validation only",
+          "estimated_time": "5 min review"
+        }
+      ]
+    }
+  },
+  "fix_scenarios": {
+    "scenario_1_quick_win": {
+      "name": "Quick Win: Fix All Critical Permissions",
+      "duration": "40 minutes",
+      "files_affected": 8,
+      "risk": "MINIMAL",
+      "steps": [
+        "Run sed script to remove 'discussions: write' from all 8 files",
+        "Validate YAML syntax",
+        "Run workflow tests",
+        "Commit and push"
+      ]
+    },
+    "scenario_2_phase_1": {
+      "name": "Phase 1: Critical Fixes + Top 20 Heredocs",
+      "duration": "4-5 hours",
+      "files_affected": 28,
+      "risk": "LOW-MEDIUM",
+      "steps": [
+        "Fix 8 critical permission issues",
+        "Refactor 20 high-priority heredocs",
+        "Test each refactored workflow",
+        "Create PR with all changes"
+      ]
+    },
+    "scenario_3_complete": {
+      "name": "Complete Audit Remediation",
+      "duration": "2-3 weeks",
+      "files_affected": 230,
+      "risk": "MEDIUM",
+      "phases": [
+        "Week 1: Fix critical + high-priority (28 files)",
+        "Week 2: Refactor medium-priority heredocs (50 files)",
+        "Week 3: Optimize low-priority heredocs (137 files)",
+        "Week 4: Final validation + documentation"
+      ]
+    }
+  },
+  "success_criteria": {
+    "minimal": [
+      "All 8 critical permission errors fixed",
+      "All YAML validates without errors",
+      "No new workflow failures introduced"
+    ],
+    "optimal": [
+      "All 8 critical issues fixed",
+      "Top 30 heredocs refactored",
+      "Workflow linting enabled in CI",
+      "All workflows pass actionlint",
+      "Documentation updated"
+    ],
+    "complete": [
+      "All 230+ issues resolved",
+      "All heredocs refactored or validated",
+      "Workflow best practices enforced",
+      "Automated validation in CI/CD",
+      "Team training on patterns"
+    ]
+  }
+}
