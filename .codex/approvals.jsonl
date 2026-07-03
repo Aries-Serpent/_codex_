@@ -6,3 +6,4 @@
 {"approval_id":"43430ddf-8629-4dc9-8d33-1fc43a544b75","timestamp":"2026-07-02T19:17:09.569Z","run_id":"","pr_number":"5194","approval_source":"agent-auth-delegation","rule_matched":"persistent_label_rule","confidence":1.0}
 {"approval_id":"cba50cfb-4573-4d34-9128-0408b0ff14c9","timestamp":"2026-07-03T15:31:08.214Z","run_id":"","pr_number":"5211","approval_source":"agent-auth-delegation","rule_matched":"persistent_label_rule","confidence":1.0}
 {"approval_id":"6e4d8740-273a-49a2-b006-137d3cc73d16","timestamp":"2026-07-03T15:39:53.584Z","run_id":"","pr_number":"5211","approval_source":"agent-auth-delegation","rule_matched":"persistent_label_rule","confidence":1.0}
+{"approval_id":"8e03a2f9-4462-43e0-afa2-154a1f5a979f","timestamp":"2026-07-03T18:35:23.848Z","run_id":"","pr_number":"5214","approval_source":"agent-auth-delegation","rule_matched":"persistent_label_rule","confidence":1.0}
