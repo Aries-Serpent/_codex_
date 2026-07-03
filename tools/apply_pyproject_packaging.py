@@ -110,7 +110,7 @@ CANONICAL_OPTIONAL_DEPENDENCIES = OrderedDict(
             ],
         ),
         ("monitoring", ["prometheus-client>=0.14", "psutil>=5.9", "pynvml>=11.5"]),
-        ("ops", ["requests>=2.31"]),
+        ("ops", ["requests>=2.34.2"]),
         ("symbolic", ["sentencepiece>=0.1.99", "tokenizers>=0.14"]),
         ("tracking", ["mlflow>=2.9", "wandb>=0.15"]),
     ]
@@ -198,7 +198,7 @@ ml = [
   "transformers>=4.30",
 ]
 monitoring = ["prometheus-client>=0.14", "psutil>=5.9", "pynvml>=11.5"]
-ops = ["requests>=2.31"]
+ops = ["requests>=2.34.2"]
 symbolic = ["sentencepiece>=0.1.99", "tokenizers>=0.14"]
 tracking = ["mlflow>=2.9", "wandb>=0.15"]
 """

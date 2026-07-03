@@ -213,7 +213,7 @@ pyyaml==6.0.3
     #   transformers
 regex==2026.6.28
     # via transformers
-requests==2.33.0
+requests==2.34.2
     # via datasets
 rich==15.0.0
     # via typer
