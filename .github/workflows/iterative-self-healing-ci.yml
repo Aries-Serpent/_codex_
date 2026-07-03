@@ -525,8 +525,10 @@ jobs:
         \ 2>&1) || \\\n    echo \"::warning::git pull attempt ${_attempt} non-zero:\
         \ ${_pull_err}\"\n  if _push_err=$(git push origin \"HEAD:refs/heads/${TARGET_BRANCH}\"\
         \ 2>&1); then\n    _pushed=true\n    break\n  else\n    echo \"::warning::Push\
-        \ attempt ${_attempt} failed — retrying in 5s: ${_push_err}\"\n    sleep 5\n\
-        \  fi\ndone\nif [ \"${_pushed}\" != \"true\" ]; then\n  echo \"::error::Heal\
+        \ attempt ${_attempt} failed — retrying with exponential backoff: ${_push_err}\"\n\
+        \    _backoff=$((5 * 2 ** (_attempt - 1)))\n    echo \"::info::Exponential\
+        \ backoff: sleeping ${_backoff}s before retry\"\n    sleep $_backoff\n  fi\n\
+        done\nif [ \"${_pushed}\" != \"true\" ]; then\n  echo \"::error::Heal\
         \ push failed after 3 attempts — concurrent push race detected\"\n  exit 1\n\
         fi\n"
     - name: Report iteration
