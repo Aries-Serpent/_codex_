@@ -125,7 +125,7 @@
 #         enforcer = DenylistEnforcer(rules)
 #         assert enforcer.is_prompt_allowed("The $secret is here") is False, "secret is not valid"
 #         assert enforcer.is_prompt_allowed("Use api@key for access") is False, "enf is not valid"
-#         assert enforcer.is_prompt_allowed("Enter pass, "enf is not valid"
+#         assert enforcer.is_prompt_allowed("Enter pass#word") is False, "pass is not valid"
 # 
 #     def test_empty_string_prompt(self):
 #     def test_empty_string_prompt(self):
