@@ -17,7 +17,9 @@
 | 3 | Each agent begins Workstream 1 (audit) | ✅ COMPLETE |
 | 4 | Create live activation dashboard | ✅ COMPLETE |
 | 5 | Produce Day-1 checkpoint report | ✅ COMPLETE (this doc) |
-| 6 | Collect Week-1 audit deliverables | 🟡 IN PROGRESS |
+| 6 | Collect Week-1 audit deliverables | ✅ COMPLETE — all 4 reports delivered |
+| 7 | Satisfy Week-1 Audit Gate | ✅ COMPLETE (ahead of schedule) |
+| 8 | Stage Workstream 2 (Planning) briefs | ✅ COMPLETE |
 
 ---
 
@@ -73,11 +75,22 @@ These baselines seed the Week-1 audit targets and later success-metric deltas.
 
 ## ➡️ NEXT ACTIONS
 
-1. Collect the 4 audit deliverables as agents complete.
-2. Update `PHASE_8_ACTIVATION_DASHBOARD.md` track statuses to 🟢 COMPLETE.
-3. On all 4 audits complete → Week-1 Audit Gate satisfied → stage Workstream 2
-   (Planning) briefs for each track.
-4. 6-hour checkpoint follow-up: 2026-07-03T07:36Z.
+1. ✅ Collected all 4 audit deliverables (agents committed them).
+2. ✅ Updated `PHASE_8_ACTIVATION_DASHBOARD.md` — all tracks 🟢 COMPLETE + findings summary.
+3. ✅ Week-1 Audit Gate SATISFIED → staged Workstream 2 (Planning) in
+   `PHASE_8_WORKSTREAM_2_STAGING_BRIEF.md`.
+4. Next session: deploy 4 planning-phase agents in parallel per the staging brief.
+
+---
+
+## 📦 WORKSTREAM 1 DELIVERABLES (all ✅)
+
+| Track | Deliverable | Headline Finding |
+|-------|-------------|------------------|
+| 8.1 | `PHASE_8_1_DOC_AUDIT_REPORT.md` | ~47% content-stale; 1,547 report-sprawl files; ~9.4% broken links |
+| 8.2 | `PHASE_8_2_STRUCTURE_AUDIT.md` | 17,081 files; `.codex/`=25%; ~715 committed venv files |
+| 8.3 | `PHASE_8_3_PLATFORM_AUDIT_REPORT.md` | 13 case-collision groups (BLOCKING); inactive `.gitattributes` |
+| 8.4 | `PHASE_8_4_DEPENDENCY_AUDIT.md` | 101 pkgs; 18 unpinned; 3 hard version conflicts |
 
 ---
 
