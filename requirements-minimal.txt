@@ -9,8 +9,8 @@ pytest-randomly>=3.15
 
 # Code quality tools
 ruff>=0.15.15
-black>=24.10.0
-isort>=5.13.0
+black>=24.0  # CVE fixes in latest
+isort>=5.13  # CVE fixes
 mypy>=2.1.0,<3.0.0
 
 # Security tools
@@ -18,9 +18,9 @@ pip-audit>=2.10.1
 bandit>=1.7.5
 
 # Type stubs
-types-jsonschema
-types-PyYAML
-types-requests
+types-jsonschema>=2024.2.0
+types-PyYAML>=6.0.12
+types-requests>=2.33.0
 
 # CLI tools
 typer>=0.12.5
