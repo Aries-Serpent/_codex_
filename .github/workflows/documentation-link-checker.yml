@@ -71,7 +71,7 @@ jobs:
     if: needs.wec-gate.outputs.skip != 'true'
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
       with:
         fetch-depth: 0
     - name: Compute files to check
@@ -189,7 +189,7 @@ jobs:
         files_checked\": \"${CHANGED:-0}\"\n}\nEOFREPORT\n"
     - name: Upload link check report
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
       with:
         name: link-check-report
         path: link-check-report.json
@@ -220,7 +220,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
         fetch-depth: 1

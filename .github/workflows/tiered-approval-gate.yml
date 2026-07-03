@@ -18,12 +18,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
       - name: Setup Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b
         with:
           python-version: '3.12'
       - name: Run Tiered Approval Check
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python scripts/ci/tiered_approval_gate.py ${{ github.event.pull_request.number }}
+        run: |
+          PR_NUMBER="${{ github.event.pull_request.number || github.event.number }}"
+          python scripts/ci/tiered_approval_gate.py "$PR_NUMBER"

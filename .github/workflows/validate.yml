@@ -54,7 +54,7 @@ jobs:
     timeout-minutes: 15
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
       with:
         fetch-depth: 0
     - name: Set up Python with shared cache
@@ -88,7 +88,7 @@ jobs:
       run: bash scripts/ci/emit_precommit_summary.sh validation.log "validation-log-fast-${{
         github.run_id }}"
     - name: Upload hook failures JSON (OBJ-001-F)
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
       if: failure()
       with:
         name: hook-failures-fast-${{ github.run_id }}
@@ -96,7 +96,7 @@ jobs:
         retention-days: 30
         if-no-files-found: warn
     - name: Upload validation log (fast)
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
       if: always()
       with:
         name: validation-log-fast-${{ github.run_id }}
@@ -104,7 +104,7 @@ jobs:
         retention-days: 30
         if-no-files-found: warn
     - name: Upload JUnit XML
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
       if: always()
       with:
         name: validation-junit-fast-${{ github.run_id }}
@@ -112,7 +112,7 @@ jobs:
         retention-days: 30
         if-no-files-found: warn
     - name: Upload JSON summary
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
       if: always()
       with:
         name: validation-summary-fast-${{ github.run_id }}
@@ -141,7 +141,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || github.token }}
         fetch-depth: 1
@@ -174,7 +174,7 @@ jobs:
     timeout-minutes: 60
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
       with:
         fetch-depth: 0
     - name: Set up Python with shared cache
@@ -193,7 +193,7 @@ jobs:
       run: bash scripts/ci/emit_precommit_summary.sh validation.log "validation-log-full-${{
         github.run_id }}"
     - name: Upload hook failures JSON (OBJ-001-F)
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
       if: failure()
       with:
         name: hook-failures-full-${{ github.run_id }}
@@ -201,7 +201,7 @@ jobs:
         retention-days: 30
         if-no-files-found: warn
     - name: Upload validation log (full)
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
       if: always()
       with:
         name: validation-log-full-${{ github.run_id }}
@@ -209,7 +209,7 @@ jobs:
         retention-days: 30
         if-no-files-found: warn
     - name: Upload JUnit XML
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
       if: always()
       with:
         name: validation-junit-full-${{ github.run_id }}
@@ -217,7 +217,7 @@ jobs:
         retention-days: 30
         if-no-files-found: warn
     - name: Upload coverage report
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
       if: always()
       with:
         name: validation-coverage-${{ github.run_id }}
@@ -259,7 +259,7 @@ jobs:
         \ \\\n      --repo \"${GITHUB_REPOSITORY}\" --body-file \"${BODY_FILE}\" 2>/dev/null\
         \ || echo \"⚠ Could not post coverage delta comment\"\n  fi\nfi\n"
     - name: Upload JSON summary
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
       if: always()
       with:
         name: validation-summary-full-${{ github.run_id }}

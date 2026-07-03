@@ -25,11 +25,11 @@ jobs:
       checks: write
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
       with:
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b
       with:
         python-version: '3.12'
     - name: Install dependencies
@@ -71,7 +71,7 @@ jobs:
         GH_TOKEN: ${{ github.token }}
     - name: Comment on PR
       if: always()
-      uses: actions/github-script@v8
+      uses: actions/github-script@b4b1acc6e9e3ae2fac2b8d85e0e5e0c0e8e67de6
       with:
         script: "const fs = require('fs');\nlet report = {};\ntry {\n  report = JSON.parse(fs.readFileSync('.codex/compliance/report.json',\
           \ 'utf8'));\n} catch (e) {\n  console.error('Failed to parse report:', e);\n\
@@ -102,7 +102,7 @@ jobs:
           \ not post governance comment: ${error.message}`);\n}\n"
     - name: Set PR status
       if: always()
-      uses: actions/github-script@v8
+      uses: actions/github-script@b4b1acc6e9e3ae2fac2b8d85e0e5e0c0e8e67de6
       with:
         script: "const fs = require('fs');\nlet report = {};\ntry {\n  report = JSON.parse(fs.readFileSync('.codex/compliance/report.json',\
           \ 'utf8'));\n} catch (e) {\n  console.log('Warning: Could not parse compliance\
