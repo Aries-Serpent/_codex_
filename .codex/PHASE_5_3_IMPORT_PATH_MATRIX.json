@@ -1,0 +1,213 @@
+{
+  "metadata": {
+    "report_type": "Import Path Matrix",
+    "date": "2026-07-03T04:29:28Z",
+    "repository": "Aries-Serpent/_codex_",
+    "total_modules": 363,
+    "total_imports": 2819
+  },
+  "import_categories": {
+    "internal_codex": {
+      "description": "Internal codex module imports",
+      "count": 2340,
+      "examples": [
+        {
+          "module": "codex.logging.structured_logger",
+          "occurrences": 83,
+          "import_type": "from codex.logging.structured_logger import logger"
+        },
+        {
+          "module": "codex_ml.tokenization",
+          "occurrences": 69,
+          "import_type": "from codex_ml.tokenization import get_tokenizer"
+        },
+        {
+          "module": "codex.logging.db_manager",
+          "occurrences": 38,
+          "import_type": "from codex.logging.db_manager import DBManager"
+        },
+        {
+          "module": "codex.cli",
+          "occurrences": 34,
+          "import_type": "from codex.cli import cli"
+        },
+        {
+          "module": "codex.auth.token_manager",
+          "occurrences": 33,
+          "import_type": "from codex.auth.token_manager import TokenManager"
+        }
+      ],
+      "validation_status": "PASS",
+      "broken_count": 0
+    },
+    "script_imports": {
+      "description": "Script-to-script module imports",
+      "count": 127,
+      "examples": [
+        {
+          "module": "scripts.ci._token_resolver",
+          "occurrences": 42,
+          "import_type": "from scripts.ci._token_resolver import get_token"
+        },
+        {
+          "module": "scripts.session_tracker",
+          "occurrences": 15,
+          "import_type": "from scripts.session_tracker import SessionTracker"
+        }
+      ],
+      "validation_status": "PASS",
+      "broken_count": 0
+    },
+    "external_dependencies": {
+      "description": "Third-party package imports",
+      "count": 352,
+      "categories": [
+        {
+          "name": "ML Frameworks",
+          "imports": [
+            "torch",
+            "tensorflow",
+            "transformers"
+          ],
+          "total": 145,
+          "validation_status": "PASS"
+        },
+        {
+          "name": "Utilities",
+          "imports": [
+            "pydantic",
+            "yaml",
+            "aiohttp",
+            "requests"
+          ],
+          "total": 127,
+          "validation_status": "PASS"
+        },
+        {
+          "name": "Testing",
+          "imports": [
+            "pytest",
+            "pytest_cov",
+            "unittest"
+          ],
+          "total": 80,
+          "validation_status": "PASS"
+        }
+      ],
+      "validation_status": "PASS"
+    }
+  },
+  "circular_import_check": {
+    "status": "PASS",
+    "direct_cycles": 0,
+    "indirect_cycles": 0,
+    "details": "No circular imports detected in codebase"
+  },
+  "module_structure": {
+    "root_modules": [
+      {
+        "path": "src/codex/",
+        "type": "primary_namespace",
+        "python_files": 450,
+        "validation": "PASS"
+      },
+      {
+        "path": "src/codex_ml/",
+        "type": "ml_subproject",
+        "python_files": 320,
+        "validation": "PASS"
+      },
+      {
+        "path": "src/codex_utils/",
+        "type": "utilities",
+        "python_files": 80,
+        "validation": "PASS"
+      },
+      {
+        "path": "src/codex_crm/",
+        "type": "crm_subsystem",
+        "python_files": 95,
+        "validation": "PASS"
+      },
+      {
+        "path": "scripts/ci/",
+        "type": "ci_scripts",
+        "python_files": 145,
+        "validation": "PASS"
+      }
+    ]
+  },
+  "cross_repository_references": {
+    "primary_repo": {
+      "url": "https://github.com/Aries-Serpent/_codex_",
+      "references_found": 839,
+      "validation_status": "PASS",
+      "examples": [
+        "docs/onboarding/QUICK_START.md:49",
+        "docs/status/GITHUB_PAGES_STATUS.md:11",
+        ".devcontainer/devcontainer.json:160"
+      ]
+    },
+    "external_repos": {
+      "count": 0,
+      "validation_status": "PASS"
+    }
+  },
+  "deprecated_imports": {
+    "total": 55,
+    "by_module": {
+      "src/utils/checkpoint.py": {
+        "deprecated_symbols": [
+          "save_checkpoint",
+          "load_checkpoint"
+        ],
+        "replacement": "codex.checkpoint module",
+        "migration_required": true
+      },
+      "src/tokenization/__init__.py": {
+        "deprecated_symbols": [
+          "legacy_tokenizer"
+        ],
+        "replacement": "codex_ml.tokenization.TokenizerAdapter",
+        "migration_required": true
+      },
+      "src/codex_init.py": {
+        "deprecated_symbols": [
+          "load_from_deprecated"
+        ],
+        "replacement": "Standard config loader",
+        "migration_required": false
+      }
+    }
+  },
+  "validation_summary": {
+    "total_validated": 2819,
+    "successful": 2816,
+    "warnings": 3,
+    "errors": 0,
+    "success_rate": "99.96%"
+  },
+  "recommendations": [
+    {
+      "priority": "HIGH",
+      "category": "Deprecation",
+      "description": "Update deprecated checkpoint imports",
+      "files_affected": 5,
+      "effort_hours": 2
+    },
+    {
+      "priority": "HIGH",
+      "category": "Modernization",
+      "description": "Migrate legacy tokenization API",
+      "files_affected": 3,
+      "effort_hours": 3
+    },
+    {
+      "priority": "MEDIUM",
+      "category": "Documentation",
+      "description": "Update code examples with new import paths",
+      "files_affected": 12,
+      "effort_hours": 4
+    }
+  ]
+}

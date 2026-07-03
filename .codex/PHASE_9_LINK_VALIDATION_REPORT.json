@@ -1,0 +1,108 @@
+{
+  "checked": 2289,
+  "warnings_count": 0,
+  "errors_count": 20,
+  "warnings": [],
+  "errors": [
+    {
+      "file": ".github/agents/google-home-script-agent.md",
+      "link": "../../GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md",
+      "message": "File not found: ../../GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md"
+    },
+    {
+      "file": ".github/agents/energy-conversion-agent.md",
+      "link": "../../ENERGY_CONVERSION_AGENT_DEPRECATION.md",
+      "message": "File not found: ../../ENERGY_CONVERSION_AGENT_DEPRECATION.md"
+    },
+    {
+      "file": ".github/agents/security-vulnerability-patcher/README.md",
+      "link": "../.codex/PHASE_9_1_IMPLEMENTATION_GROUNDWORK.md",
+      "message": "File not found: ../.codex/PHASE_9_1_IMPLEMENTATION_GROUNDWORK.md"
+    },
+    {
+      "file": "docs/RETENTION_POLICY_OPERATIONS_GUIDE.md",
+      "link": "../.codex/ARCHIVE_RECOVERY_PROCEDURES.md",
+      "message": "File not found: ../.codex/ARCHIVE_RECOVERY_PROCEDURES.md"
+    },
+    {
+      "file": "docs/API_REFERENCE.md",
+      "link": "./docs/guides/QUICKSTART.md",
+      "message": "File not found: ./docs/guides/QUICKSTART.md"
+    },
+    {
+      "file": "docs/INGESTION_API_REFERENCE.md",
+      "link": "./docs/guides/QUICKSTART.md",
+      "message": "File not found: ./docs/guides/QUICKSTART.md"
+    },
+    {
+      "file": "docs/FAQ.md",
+      "link": "./docs/guides/QUICKSTART.md",
+      "message": "File not found: ./docs/guides/QUICKSTART.md"
+    },
+    {
+      "file": "docs/CONFIGURATION_GUIDE.md",
+      "link": "./QUICKSTART.md",
+      "message": "File not found: ./QUICKSTART.md"
+    },
+    {
+      "file": "docs/TROUBLESHOOTING.md",
+      "link": "./QUICKSTART.md",
+      "message": "File not found: ./QUICKSTART.md"
+    },
+    {
+      "file": "docs/LEARNING_PATHS.md",
+      "link": "./CI.md",
+      "message": "File not found: ./CI.md"
+    },
+    {
+      "file": "docs/RAG_API_REFERENCE.md",
+      "link": "./QUICKSTART.md",
+      "message": "File not found: ./QUICKSTART.md"
+    },
+    {
+      "file": "docs/index.md",
+      "link": "guides/quickstart.md",
+      "message": "File not found: guides/quickstart.md"
+    },
+    {
+      "file": "docs/INTEGRATION_GUIDE.md",
+      "link": "./QUICKSTART.md",
+      "message": "File not found: ./QUICKSTART.md"
+    },
+    {
+      "file": "docs/api/cli.md",
+      "link": "../cli.md",
+      "message": "File not found: ../cli.md"
+    },
+    {
+      "file": "docs/api/cli.md",
+      "link": "../cli.md",
+      "message": "File not found: ../cli.md"
+    },
+    {
+      "file": "docs/validation/INDEX.md",
+      "link": "Tokenization_Validation.md",
+      "message": "File not found: Tokenization_Validation.md"
+    },
+    {
+      "file": "docs/ci/README.md",
+      "link": "../CI.md",
+      "message": "File not found: ../CI.md"
+    },
+    {
+      "file": "docs/admin/REPOSITORY_SECURITY_SETUP.md",
+      "link": "../security/INCIDENT_RESPONSE.md",
+      "message": "File not found: ../security/INCIDENT_RESPONSE.md"
+    },
+    {
+      "file": "docs/guides/examples.md",
+      "link": "../docs/human-facing/architecture.md",
+      "message": "File not found: ../docs/human-facing/architecture.md"
+    },
+    {
+      "file": "docs/tutorials/quickstart.md",
+      "link": "../architecture.md",
+      "message": "File not found: ../architecture.md"
+    }
+  ]
+}

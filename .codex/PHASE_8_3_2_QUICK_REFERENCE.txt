@@ -1,0 +1,184 @@
+================================================================================
+PHASE 8.3 WS2.3 — QUICK REFERENCE CHECKLIST
+================================================================================
+
+13 CASE-COLLISION GROUPS TO REMEDIATE
+
+GROUP  │ FILES                                        │ PRIORITY │ ACTION
+───────┼──────────────────────────────────────────────┼──────────┼────────
+1      │ docs/ARCHITECTURE.md                         │ P1       │ Delete
+       │ docs/Architecture.md                         │ P1       │ Rename
+       │ docs/architecture.md                         │ P1       │ Keep
+───────┼──────────────────────────────────────────────┼──────────┼────────
+2      │ docs/CI.md                                   │ P1       │ Delete
+       │ docs/ci.md                                   │ P1       │ Keep
+───────┼──────────────────────────────────────────────┼──────────┼────────
+3      │ docs/CLI.md                                  │ P1       │ Delete
+       │ docs/cli.md                                  │ P1       │ Keep
+───────┼──────────────────────────────────────────────┼──────────┼────────
+4      │ docs/QUALITY_GATES.md                        │ P2       │ Delete
+       │ docs/quality_gates.md                        │ P2       │ Keep
+───────┼──────────────────────────────────────────────┼──────────┼────────
+5      │ docs/QUICKSTART.md                           │ P1       │ Delete
+       │ docs/quickstart.md                           │ P1       │ Keep
+───────┼──────────────────────────────────────────────┼──────────┼────────
+6      │ docs/TROUBLESHOOTING.md                      │ P2       │ Delete
+       │ docs/troubleshooting.md                      │ P2       │ Keep
+───────┼──────────────────────────────────────────────┼──────────┼────────
+7      │ docs/agent/INDEX.md                          │ P2       │ Delete
+       │ docs/agent/index.md                          │ P2       │ Keep
+───────┼──────────────────────────────────────────────┼──────────┼────────
+8      │ docs/guides/INDEX.md                         │ P2       │ Delete
+       │ docs/guides/index.md                         │ P2       │ Keep
+───────┼──────────────────────────────────────────────┼──────────┼────────
+9      │ docs/guides/QUICKSTART.md                    │ P1       │ Delete
+       │ docs/guides/quickstart.md                    │ P1       │ Keep
+───────┼──────────────────────────────────────────────┼──────────┼────────
+10     │ docs/security/INCIDENT_RESPONSE.md           │ P1       │ Delete
+       │ docs/security/incident_response.md           │ P1       │ Keep
+───────┼──────────────────────────────────────────────┼──────────┼────────
+11     │ docs/validation/Tokenization_Validation.md   │ P3       │ Review
+       │ docs/validation/tokenization_Validation.md   │ P3       │ Delete
+───────┼──────────────────────────────────────────────┼──────────┼────────
+12     │ .codex/reports/EXECUTIVE_SUMMARY.md          │ P2       │ Delete
+       │ .codex/reports/executive_summary.md          │ P2       │ Keep
+───────┼──────────────────────────────────────────────┼──────────┼────────
+13     │ reports/EXECUTIVE_SUMMARY.md                 │ P1       │ Delete
+       │ reports/executive_summary.md                 │ P1       │ Keep
+───────┴──────────────────────────────────────────────┴──────────┴────────
+
+PHASE 1: GOVERNANCE (2 hours)
+─────────────────────────────
+☐ Task 1.1: Migrate .gitattributes to repo root (30 min)
+  ☐ Copy .config/.gitattributes → ./.gitattributes
+  ☐ Add case-sensitive config
+  ☐ Verify syntax
+  ☐ Delete .config/.gitattributes
+  ☐ Commit
+
+☐ Task 1.2: Document naming conventions (30 min)
+  ☐ Create .codex/NAMING_CONVENTIONS.md
+  ☐ Document standards
+  ☐ Include Windows/macOS restrictions
+  ☐ Commit
+
+PHASE 2: REMEDIATION (8 hours)
+──────────────────────────────
+☐ Task 2.1: ARCHITECTURE.md (3-file) - 1.5 hours
+  ☐ Audit references to all variants
+  ☐ Update all links to lowercase
+  ☐ Delete ARCHITECTURE.md
+  ☐ Delete Architecture.md (overwrite with architecture.md)
+  ☐ Test build
+  ☐ Commit
+
+☐ Task 2.2: docs/guides/QUICKSTART.md - 1 hour
+  ☐ Find all references
+  ☐ Update config files
+  ☐ Delete QUICKSTART.md
+  ☐ Test build
+  ☐ Commit
+
+☐ Task 2.3: docs/security/INCIDENT_RESPONSE.md - 1 hour
+  ☐ Find all references
+  ☐ Update links
+  ☐ Delete INCIDENT_RESPONSE.md
+  ☐ Security team review
+  ☐ Commit
+
+☐ Task 2.4: CI.md & CLI.md collisions - 1 hour
+  ☐ For each: find references
+  ☐ Update config
+  ☐ Delete UPPERCASE variant
+  ☐ Test
+  ☐ Commit
+
+☐ Task 2.5: QUALITY_GATES.md & TROUBLESHOOTING.md - 1 hour
+  ☐ Find references
+  ☐ Update navigation
+  ☐ Delete UPPERCASE variants
+  ☐ Test
+  ☐ Commit
+
+☐ Task 2.6: Remaining 5 collisions - 2 hours
+  ☐ INDEX.md variants (docs/agent/, docs/guides/)
+  ☐ EXECUTIVE_SUMMARY variants (.codex/reports/, reports/)
+  ☐ Tokenization_Validation.md
+  ☐ All: search refs → update → delete → test → commit
+
+PHASE 3: VALIDATION (3 hours)
+─────────────────────────────
+☐ Task 3.1: Windows checkout validation - 1 hour
+  ☐ Fresh clone on Windows 10/11 NTFS
+  ☐ Verify all 26 files present
+  ☐ Build documentation
+  ☐ No errors
+  ☐ Test on GitHub Actions Windows runner
+
+☐ Task 3.2: macOS checkout validation - 1 hour
+  ☐ Fresh clone on macOS 12+ HFS+/APFS
+  ☐ Verify all 26 files present
+  ☐ Build documentation
+  ☐ No errors
+  ☐ Test on GitHub Actions macOS runner
+
+☐ Task 3.3: Documentation build test - 1 hour
+  ☐ MkDocs build succeeds
+  ☐ No warnings
+  ☐ Navigation correct
+  ☐ Search works
+  ☐ Static site clean
+
+VALIDATION CHECKLIST
+════════════════════
+Pre-Merge:
+☐ All 13 collision groups resolved
+☐ No UPPERCASE filenames in docs/
+☐ All internal links updated
+☐ .gitattributes in repo root (not .config/)
+
+Post-Merge:
+☐ Windows CI passes (checkout succeeds)
+☐ macOS CI passes (build clean)
+☐ Linux CI passes (baseline)
+☐ Documentation builds without warnings
+☐ No platform-specific diffs in git
+
+SUCCESS CRITERIA
+════════════════
+Must Haves:
+☑ All 13 case-collision groups eliminated
+☑ No UPPERCASE variants in primary directories
+☑ .gitattributes active in repo root
+☑ Windows checkout succeeds without errors
+☑ Documentation builds on all platforms
+
+Should Haves:
+☑ Naming conventions documented
+☑ All internal references updated
+☑ CI/CD green on Windows/macOS/Linux
+☑ Zero breaking changes
+
+IMPLEMENTATION TIMELINE
+══════════════════════
+Start:  2026-01-23T20:30:00Z
+Phase 1: 2 hours  → 22:30
+Phase 2: 8 hours  → 06:30 next day
+Phase 3: 3 hours  → 09:30 next day
+
+Total: 13 hours
+Target Completion: 2026-01-24T09:30:00Z
+
+CRITICAL PATH
+═════════════
+Task 1.1 (migrate .gitattributes)
+    ↓
+Task 1.2 (document conventions)
+    ↓ (enables all Phase 2 tasks)
+Tasks 2.1-2.6 (parallel: resolve collisions)
+    ↓
+Tasks 3.1-3.3 (parallel: validate on 3 platforms)
+    ↓
+Merge-ready (all gates cleared)
+
+================================================================================

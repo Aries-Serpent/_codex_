@@ -1,0 +1,713 @@
+{
+  "docs/ARCHITECTURE_DIAGRAMS_INDEX.md": [
+    {
+      "link_text": "docs/CODEBASE_MERMAID_MAPS.md",
+      "target": "CODEBASE_MERMAID_MAPS.md#ci-cd-pipeline",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "docs/CODEBASE_MERMAID_MAPS.md",
+      "target": "CODEBASE_MERMAID_MAPS.md#pr-lifecycle",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "docs/CODEBASE_MERMAID_MAPS.md",
+      "target": "CODEBASE_MERMAID_MAPS.md#agent-interaction",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "docs/CODEBASE_MERMAID_MAPS.md",
+      "target": "CODEBASE_MERMAID_MAPS.md#cognitive-brain",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "docs/CODEBASE_MERMAID_MAPS.md",
+      "target": "CODEBASE_MERMAID_MAPS.md#self-healing",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "docs/CODEBASE_MERMAID_MAPS.md",
+      "target": "CODEBASE_MERMAID_MAPS.md#pda-loop",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "docs/CODEBASE_MERMAID_MAPS.md",
+      "target": "CODEBASE_MERMAID_MAPS.md#session-handoff",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "docs/CODEBASE_MERMAID_MAPS.md",
+      "target": "CODEBASE_MERMAID_MAPS.md#rate-limit",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "CI/CD Pipeline",
+      "target": "CODEBASE_MERMAID_MAPS.md#ci-cd-pipeline",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "Agent Interaction Map",
+      "target": "CODEBASE_MERMAID_MAPS.md#agent-interaction",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "Cognitive Brain OODA",
+      "target": "CODEBASE_MERMAID_MAPS.md#cognitive-brain",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "CI/CD Pipeline",
+      "target": "CODEBASE_MERMAID_MAPS.md#ci-cd-pipeline",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "Self-Healing Loop",
+      "target": "CODEBASE_MERMAID_MAPS.md#self-healing",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "Agent Interaction Map",
+      "target": "CODEBASE_MERMAID_MAPS.md#agent-interaction",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "Session Management",
+      "target": "CODEBASE_MERMAID_MAPS.md#session-handoff",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "Cognitive Brain OODA",
+      "target": "CODEBASE_MERMAID_MAPS.md#cognitive-brain",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "PDA Loop + Aftermath",
+      "target": "CODEBASE_MERMAID_MAPS.md#pda-loop",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "Rate Limiting",
+      "target": "CODEBASE_MERMAID_MAPS.md#rate-limit",
+      "type": "missing_file"
+    }
+  ],
+  "docs/ONBOARDING_QUICKSTART.md": [
+    {
+      "link_text": "Navigate the Codebase",
+      "target": "./LEARNING_PATHS.md#beginner-path",
+      "type": "missing_file"
+    }
+  ],
+  "docs/CONSISTENCY_CHECKS_SETUP.md": [
+    {
+      "link_text": "text",
+      "target": "docs/file.md",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "text",
+      "target": "docs/file.md#anchor",
+      "type": "missing_file"
+    }
+  ],
+  "docs/RETENTION_POLICY_OPERATIONS_GUIDE.md": [
+    {
+      "link_text": "Archive & Recovery Procedures",
+      "target": "../.codex/ARCHIVE_RECOVERY_PROCEDURES.md",
+      "type": "missing_file"
+    }
+  ],
+  "docs/API_REFERENCE.md": [
+    {
+      "link_text": "Quickstart Guide",
+      "target": "./docs/guides/QUICKSTART.md",
+      "type": "missing_file"
+    }
+  ],
+  "docs/INGESTION_API_REFERENCE.md": [
+    {
+      "link_text": "Quickstart Guide",
+      "target": "./docs/guides/QUICKSTART.md",
+      "type": "missing_file"
+    }
+  ],
+  "docs/FAQ.md": [
+    {
+      "link_text": "Quick Start Guide",
+      "target": "./docs/guides/QUICKSTART.md",
+      "type": "missing_file"
+    }
+  ],
+  "docs/GITHUB_AGENT_PR_REVIEWER_IMPLEMENTATION.md": [
+    {
+      "link_text": "\"\\'",
+      "target": "[^\"\\']+",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "\"\\'",
+      "target": "[^\"\\']+",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "\"\\'",
+      "target": "[^\"\\']+",
+      "type": "missing_file"
+    }
+  ],
+  "docs/PHASE_6_CONSISTENCY_CHECKS_REPORT.md": [
+    {
+      "link_text": "docs",
+      "target": "docs/file.md",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "docs",
+      "target": "/docs/file.md",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "missing",
+      "target": "docs/nonexistent.md",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "bad-anchor",
+      "target": "file.md#missing",
+      "type": "missing_file"
+    }
+  ],
+  "docs/CONFIGURATION_GUIDE.md": [
+    {
+      "link_text": "Quickstart Guide",
+      "target": "./QUICKSTART.md",
+      "type": "missing_file"
+    }
+  ],
+  "docs/TROUBLESHOOTING.md": [
+    {
+      "link_text": "Quickstart Guide",
+      "target": "./QUICKSTART.md",
+      "type": "missing_file"
+    }
+  ],
+  "docs/PR_TEMPLATE_COMPREHENSIVE.md": [
+    {
+      "link_text": "Testing Guidelines",
+      "target": "./CONTRIBUTING.md#testing-requirements",
+      "type": "missing_file"
+    }
+  ],
+  "docs/usage.md": [
+    {
+      "link_text": "shellcheck integration",
+      "target": "checks.md#check-shellcheck-integ",
+      "type": "missing_file"
+    }
+  ],
+  "docs/ROADMAP.md": [
+    {
+      "link_text": "SAR_METHODOLOGY.md \u00a710",
+      "target": "ops/SAR_METHODOLOGY.md#10-gap-registry--roadmap",
+      "type": "missing_file"
+    }
+  ],
+  "docs/LEARNING_PATHS.md": [
+    {
+      "link_text": "Hyperparameter Tuning",
+      "target": "./configuration/hydra_quickstart.md#sweeps",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "CI/CD Pipelines",
+      "target": "./CI.md",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "Memory Systems",
+      "target": "./cognitive_brain/INDEX.md#memory",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "Agent Orchestration",
+      "target": "./agent/OPERATIONAL_GUIDELINES.md#orchestration",
+      "type": "missing_file"
+    }
+  ],
+  "docs/GITHUB_PAGES_MANAGER_IMPLEMENTATION.md": [
+    {
+      "link_text": "User Guide",
+      "target": "../guides/user-guide.md",
+      "type": "missing_file"
+    }
+  ],
+  "docs/RAG_API_REFERENCE.md": [
+    {
+      "link_text": "Quickstart Guide",
+      "target": "./QUICKSTART.md",
+      "type": "missing_file"
+    }
+  ],
+  "docs/index.md": [
+    {
+      "link_text": "Getting Started",
+      "target": "guides/quickstart.md",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "`README_ROOT.md`",
+      "target": "README_ROOT.md#training-quickstart",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "CONTRIBUTING",
+      "target": "../CONTRIBUTING.md#using-operational-templates",
+      "type": "missing_file"
+    }
+  ],
+  "docs/INTEGRATION_GUIDE.md": [
+    {
+      "link_text": "Quickstart Guide",
+      "target": "./QUICKSTART.md",
+      "type": "missing_file"
+    }
+  ],
+  "docs/reporting/copilot_agent_session_standard_operation.md": [
+    {
+      "link_text": "`workflow_portfolio_7d_analysis.md \u2192 Branch-Update",
+      "target": "workflow_portfolio_7d_analysis.md#-branch-update-conflict-dashboard",
+      "type": "missing_file"
+    }
+  ],
+  "docs/quality/BROKEN_LINKS_REPORT.md": [
+    {
+      "link_text": "\"\\'",
+      "target": "[^\"\\']+",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "GitHub\\`\n  - Status: not_found: /home/runner/work/",
+      "target": "state[\"inputs\"]",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "\"criterion\"",
+      "target": "outputs, state[\"targets\"]",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "\"\\'",
+      "target": "[^\"\\']+",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "GitHub\\`\n  - Status: not_found: /home/runner/work/",
+      "target": "state[\"inputs\"]",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "\"criterion\"",
+      "target": "outputs, state[\"targets\"]",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "\"\\'",
+      "target": "[^\"\\']+",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "\"\\'",
+      "target": "[^\"\\']+",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "\"\\'",
+      "target": "[^\"\\']+",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "\"\\'",
+      "target": "[^\"\\']+",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "\"\\'",
+      "target": "[^\"\\']+",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "\"\\'",
+      "target": "[^\"\\']+",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "\"\\'",
+      "target": "[^\"\\']+",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "\"\\'",
+      "target": "[^\"\\']+",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "`README_ROOT.md`",
+      "target": "../README_ROOT.md#training-quickstart",
+      "type": "missing_file"
+    }
+  ],
+  "docs/api/cli.md": [
+    {
+      "link_text": "CLI Module",
+      "target": "../cli.md",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "CLI Implementation",
+      "target": "../cli.md",
+      "type": "missing_file"
+    }
+  ],
+  "docs/analysis/WORKFLOW_LINK_VALIDATION_FINAL_REPORT.md": [
+    {
+      "link_text": "\"\\'",
+      "target": "[^\"\\']+",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "\"model\"",
+      "target": "state[\"inputs\"]",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "T",
+      "target": "items: list[T]",
+      "type": "missing_file"
+    }
+  ],
+  "docs/analysis/LINK_VALIDATION_FIX_SUMMARY.md": [
+    {
+      "link_text": "\"\\'",
+      "target": "[^\"\\']+",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "\"model\"",
+      "target": "state[\"inputs\"]",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "!\\[GitHub\\",
+      "target": "blob:https://chatgpt.com/...",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "T",
+      "target": "items: list[T]",
+      "type": "missing_file"
+    }
+  ],
+  "docs/accountability/README.md": [
+    {
+      "link_text": "\ud83d\udcc4 Group 11-21 (Sessions 101-210)",
+      "target": "./AGENT_ACCOUNTABILITY_REPORT.md#all-groups-1-32",
+      "type": "missing_file"
+    }
+  ],
+  "docs/system/CODEBASE_DASHBOARD.md": [
+    {
+      "link_text": "usage map",
+      "target": "../SECRETS_AND_ENVIRONMENT_VARIABLES.md#\ud83d\uddfa\ufe0f-workflow--agent-variable-usage-map",
+      "type": "missing_file"
+    }
+  ],
+  "docs/validation/Windows_Filename_Remediation.md": [
+    {
+      "link_text": "AGENTS.md - Cross-Platform Guidelines",
+      "target": "../../AGENTS.md#-cross-platform-filename-requirements",
+      "type": "missing_file"
+    }
+  ],
+  "docs/validation/INDEX.md": [
+    {
+      "link_text": "Tokenization_Validation",
+      "target": "Tokenization_Validation.md",
+      "type": "missing_file"
+    }
+  ],
+  "docs/ci/README.md": [
+    {
+      "link_text": "CI Overview",
+      "target": "../CI.md",
+      "type": "missing_file"
+    }
+  ],
+  "docs/admin/PYTHON_3.11_TO_3.12_MIGRATION_AUDIT.md": [
+    {
+      "link_text": "T",
+      "target": "items: list[T]",
+      "type": "missing_file"
+    }
+  ],
+  "docs/admin/REPOSITORY_SECURITY_SETUP.md": [
+    {
+      "link_text": "Runbook",
+      "target": "../security/INCIDENT_RESPONSE.md",
+      "type": "missing_file"
+    }
+  ],
+  "docs/admin/HUMAN_ADMIN_REPO_VARIABLES_SETUP.md": [
+    {
+      "link_text": "Implementation Guide \u00a76",
+      "target": "./REPO_VARIABLES_IMPLEMENTATION_GUIDE.md#6-session-number-auto-increment",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "Implementation Guide \u00a76",
+      "target": "./REPO_VARIABLES_IMPLEMENTATION_GUIDE.md#6-session-number-auto-increment",
+      "type": "missing_file"
+    }
+  ],
+  "docs/guides/examples.md": [
+    {
+      "link_text": "Architecture \u2192",
+      "target": "../docs/human-facing/architecture.md",
+      "type": "missing_file"
+    }
+  ],
+  "docs/guides/local-development-setup.md": [
+    {
+      "link_text": "Repository Structure",
+      "target": "../ARCHITECTURE_BLUEPRINT.md#repository-structure",
+      "type": "missing_file"
+    }
+  ],
+  "docs/templates/PR_BODY_TEMPLATE_MERGE_READINESS.md": [
+    {
+      "link_text": "WEC_PR_BODY_CONFLICTS.md",
+      "target": "docs/workflows/WEC_PR_BODY_CONFLICTS.md",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "WEC_PR_BODY_CONFLICTS.md",
+      "target": "docs/workflows/WEC_PR_BODY_CONFLICTS.md",
+      "type": "missing_file"
+    }
+  ],
+  "docs/troubleshooting/API_Docs_Troubleshooting.md": [
+    {
+      "link_text": "Build Script Documentation",
+      "target": "../api/index.md#building-api-documentation",
+      "type": "missing_file"
+    }
+  ],
+  "docs/cognitive_brain/INDEX.md": [
+    {
+      "link_text": "Phase 9 \u2014 Autonomous Ops 95% Complete",
+      "target": "../evolution/EVOLUTION_TIMELINE.md#phase-9",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "Phase 9 Deliverables",
+      "target": "../evolution/PLANSET_REGISTRY.md#phase-9",
+      "type": "missing_file"
+    }
+  ],
+  "docs/zendesk/README.md": [
+    {
+      "link_text": "ZENDESK_NEWCOMER_GUIDE.md#troubleshooting",
+      "target": "ZENDESK_NEWCOMER_GUIDE.md#troubleshooting",
+      "type": "missing_file"
+    }
+  ],
+  "docs/status_updates/survey-0D_base_-and-1926-2025-10-30.md": [
+    {
+      "link_text": "`README_ROOT.md`",
+      "target": "../README_ROOT.md#training-quickstart",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "`guides/reasoning_overview.md`",
+      "target": "./guides/reasoning_overview.md#evaluation-readiness",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "`docs/CONTRIBUTING.md`",
+      "target": "./CONTRIBUTING.md#using-operational-templates",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "`docs/CONTRIBUTING.md`",
+      "target": "./CONTRIBUTING.md#using-operational-templates",
+      "type": "missing_file"
+    }
+  ],
+  "docs/tutorials/quickstart.md": [
+    {
+      "link_text": "Architecture",
+      "target": "../architecture.md",
+      "type": "missing_file"
+    }
+  ],
+  "docs/capabilities/functional_training.md": [
+    {
+      "link_text": "\"model\"",
+      "target": "state[\"inputs\"]",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "\"criterion\"",
+      "target": "outputs, state[\"targets\"]",
+      "type": "missing_file"
+    }
+  ],
+  "docs/tokens/INDEX.md": [
+    {
+      "link_text": "CI/CD Troubleshooting",
+      "target": "CI_CD_TROUBLESHOOTING.md#diagnosing-403-errors",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "Token Regeneration Guide",
+      "target": "TOKEN_REGENERATION_GUIDE.md#zero-downtime-rotation",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "Token Usage Audit",
+      "target": "TOKEN_USAGE_AUDIT.md#generating-audit-reports",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "Token Hierarchy Guide",
+      "target": "TOKEN_HIERARCHY_GUIDE.md#scope-hierarchy",
+      "type": "missing_file"
+    }
+  ],
+  "docs/plans/README.md": [
+    {
+      "link_text": "Plan Name",
+      "target": "./plans/PLAN_TITLE.md",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "Plan Name",
+      "target": "./docs/plans/PLAN_TITLE.md",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "Plan Name",
+      "target": "./plans/archive/PLAN_TITLE.md",
+      "type": "missing_file"
+    }
+  ],
+  "docs/plans/copilot-directives-to-implementation-plan.md": [
+    {
+      "link_text": "\"\\'",
+      "target": ".+?",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "\"\\'",
+      "target": "[^\"\\']+",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "\"\\'",
+      "target": "[^\"\\']+",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "\"\\'",
+      "target": "[^\"\\']+",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "\"\\'",
+      "target": "[^\"\\']+",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "\"\\'",
+      "target": "[^\"\\']+",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "\"\\'",
+      "target": "[^\"\\']+",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "\"\\'",
+      "target": "[^\"\\']+",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "\"\\'",
+      "target": "[^\"\\']+",
+      "type": "missing_file"
+    }
+  ],
+  "docs/maintenance/LINK_VALIDATION_TODO.md": [
+    {
+      "link_text": "Documentation Standards",
+      "target": "../MASTER_INDEX.md#documentation-standards",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "Maintenance Process",
+      "target": "../MASTER_INDEX.md#maintenance",
+      "type": "missing_file"
+    }
+  ],
+  "docs/maintenance/LINK_VALIDATION_REPORT.md": [
+    {
+      "link_text": "\"\\'",
+      "target": "[^\"\\']+",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "\"\\'",
+      "target": "[^\"\\']+",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "GitHub\\` \u2192 No suggestion\n- `!\\[GitHub\\` \u2192 No sugge",
+      "target": "state[\"inputs\"]",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "\"criterion\"",
+      "target": "outputs, state[\"targets\"]",
+      "type": "missing_file"
+    }
+  ],
+  "docs/roadmap/PR4346_whats_next.md": [
+    {
+      "link_text": "Token Refresh Alignment Guide",
+      "target": "../reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md#9-token-refresh-alignment-guide",
+      "type": "missing_file"
+    }
+  ],
+  "docs/tech_debt/research_queue/questions_for_research.md": [
+    {
+      "link_text": "src/codex_init.py:15",
+      "target": "../../../src/codex_init.py#L15",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "tools/validate.py:25",
+      "target": "../../../tools/validate.py#L25",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "src/codex_ml/training/unified_training.py:42",
+      "target": "../../../src/codex_ml/training/unified_training.py#L42",
+      "type": "missing_file"
+    },
+    {
+      "link_text": "src/codex_ml/training/unified_training.py:43",
+      "target": "../../../src/codex_ml/training/unified_training.py#L43",
+      "type": "missing_file"
+    }
+  ]
+}

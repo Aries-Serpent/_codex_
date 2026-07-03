@@ -1,84 +1,56 @@
-agent_name: test-coverage-enforcer
-version: 1.0.0
+---
+name: Dependency Conflict Resolver Agent
+description: Detects, diagnoses, and resolves Python dependency conflicts with schema validation
+version: 1.0.0-phase-9.1
+updated: 2026-07-03
+cognitive_integration_level: 1
+aais_contribution: +1.0 points
+batch: phase-9-1
 
-description: >
-  Enforces test coverage thresholds, identifies uncovered code paths, and automatically
-  generates missing tests to maintain quality standards.
+runner_compatibility:
+  default: ubuntu-latest
+  large: ubuntu-latest-large
 
-capabilities:
-  - coverage_tracking
-  - threshold_enforcement
-  - test_generation
-  - trend_analysis
-
-# Coverage thresholds (percentage)
-thresholds:
-  line: 80          # Minimum line coverage required
-  branch: 70        # Minimum branch coverage required
-  function: 85      # Minimum function coverage required
-
-# Test generation settings
-auto_generate_tests: false      # Automatically generate test templates for uncovered code
-fail_build_below_threshold: true  # Fail CI/CD builds when coverage is below threshold
-
-# Reporting options
-reporting:
-  formats:
-    - text
-    - json
-    - html
-  output_directory: .coverage_reports
-  include_trends: true
-
-# Cognitive Brain Integration
-cognitive_brain:
+conflict_detection:
   enabled: true
-  metrics:
-    - coverage_percentage     # Overall coverage percentage
-    - gap_count              # Number of coverage gaps found
-    - tests_generated        # Number of test templates generated
-    - enforcement_actions    # Actions taken during enforcement
-  reporting_interval: daily
-  storage:
-    type: sqlite
-    path: .codex/sessions/agent_metrics.db
-  alerts:
-    - type: coverage_drop
-      threshold: 5  # Alert if coverage drops by 5% or more
-    - type: critical_severity
-      immediate: true
+  severity_threshold: LOW
+  detection_modes:
+    - version_incompatibility
+    - circular_dependency
+    - missing_dependency
+    - conflicting_pins
+    - platform_mismatch
+    - deprecated_version
+    - schema_incompatibility
 
-# File patterns to include/exclude
-patterns:
-  include:
-    - "src/**/*.py"
-    - "lib/**/*.py"
-  exclude:
-    - "**/__pycache__/**"
-    - "**/test_*.py"
-    - "**/*_test.py"
-    - "**/conftest.py"
-    - "**/.venv/**"
-    - "**/node_modules/**"
+schema_validation:
+  enabled: true
+  strict_mode: false
+  supported_schemas:
+    - docs_agent_v1
+    - ml_pipeline_v1
+    - ci_config_v1
 
-# Priority calculation weights
-priority_weights:
-  coverage_level: 0.5    # Weight for current coverage level
-  function_complexity: 0.3  # Weight for function complexity
-  file_importance: 0.2   # Weight for file importance
+version_matrix:
+  generate_on_conflict: true
+  matrix_depth: 5
+  analyze_compatibility_across_versions: true
 
-# Component reuse strategy (from test-coverage-monitor)
-component_reuse:
-  base_agent: test-coverage-monitor
-  reuse_percentage: 80
-  extensions:
-    - test-alignment-fixer  # For auto-test generation
-    - integration-test-runner  # For enforcement workflows
+auto_resolution: false
+confidence_scoring: true
+min_confidence_for_execution: 0.85
 
-# Advanced settings
-advanced:
-  parallel_analysis: true
-  cache_coverage_data: true
-  cache_ttl_seconds: 3600
-  max_suggestions_per_file: 10
-  min_confidence_threshold: 0.8
+analysis:
+  include_circular_deps: true
+  include_deprecated_versions: true
+  include_deprecated_warnings: true
+  max_analysis_depth: 10
+
+output:
+  formats:
+    - json
+    - text
+    - html
+  default_format: json
+  include_recommendations: true
+  include_version_matrices: true

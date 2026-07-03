@@ -1,8 +1,33 @@
-"""Test Coverage Enforcer Agent - Enforces test coverage thresholds and generates missing tests"""
+#!/usr/bin/env python3
+"""
+__init__.py for dependency-conflict-resolver agent
+"""
+
+from src.agent import (
+    ConflictIssue,
+    ConflictSeverity,
+    ConflictType,
+    DependencyConflictResolver,
+    DependencyNode,
+    PipResolverAnalyzer,
+    ResolutionResult,
+    SchemaCompatibility,
+    SchemaValidator,
+    VersionMatrix,
+    VersionMatrixGenerator,
+)
 
 __version__ = "1.0.0"
-__agent_name__ = "test-coverage-enforcer"
-
-from .agent import TestCoverageEnforcer
-
-__all__ = ["TestCoverageEnforcer"]
+__all__ = [
+    "DependencyConflictResolver",
+    "PipResolverAnalyzer",
+    "VersionMatrixGenerator",
+    "SchemaValidator",
+    "ConflictSeverity",
+    "ConflictType",
+    "ConflictIssue",
+    "VersionMatrix",
+    "SchemaCompatibility",
+    "ResolutionResult",
+    "DependencyNode",
+]
