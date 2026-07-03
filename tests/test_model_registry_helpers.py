@@ -6,8 +6,8 @@ Test module for model registry helpers.
 
 from __future__ import annotations
 
-import types
 import tempfile
+import types
 from collections.abc import Sequence
 
 import pytest

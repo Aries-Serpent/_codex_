@@ -15,7 +15,7 @@ import logging
 from typing import Optional
 
 from rag.pipelines.embedding import EmbeddingPipeline
-from rag.pipelines.retrieval import InMemoryVectorStore, Retrieval  # type: ignore[attr-defined]
+from rag.pipelines.retrieval import InMemoryVectorStore, Retrieval
 
 logger = logging.getLogger(__name__)
 

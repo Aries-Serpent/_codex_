@@ -242,7 +242,7 @@ if __name__ == "__main__":
     scanner = UnifiedSecurityScanner()
     result = scanner.run_unified_security_scan("owner/repo")
     
-    print(f"Scan Results:")
+    print("Scan Results:")
     print(f"  Total: {result.total_alerts}")
     print(f"  By Tool: {result.by_tool}")
     print(f"  By Severity: {result.by_severity}")

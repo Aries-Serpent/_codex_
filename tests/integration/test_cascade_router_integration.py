@@ -12,28 +12,29 @@ Author: Phase 9.2 ↔ 9.3 Integration Tests
 Date: 2026-06-26
 """
 
-import pytest
-import time
-from datetime import datetime
 import logging
+import os
 
 # Import adapter components
 import sys
-import os
+import time
+from datetime import datetime
+
+import pytest
 
 # Add src to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../src"))
 
 from orchestration.adapters.cascade_to_router_adapter import (
-    CascadeToRouterAdapter,
-    PatternMatch,
-    CascadeContext,
-    SemanticTask,
     AgentAssignment,
-    RoutingDecision,
-    ExecutionStrategy,
-    EscalationMetadata,
+    CascadeContext,
     CascadeEscalationHandler,
+    CascadeToRouterAdapter,
+    EscalationMetadata,
+    ExecutionStrategy,
+    PatternMatch,
+    RoutingDecision,
+    SemanticTask,
 )
 
 logger = logging.getLogger(__name__)

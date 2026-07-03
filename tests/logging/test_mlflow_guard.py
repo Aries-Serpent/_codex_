@@ -6,8 +6,8 @@ Test module for mlflow guard.
 
 from __future__ import annotations
 
-import types
 import tempfile
+import types
 from unittest import mock
 
 import pytest

@@ -10,11 +10,11 @@ Tests cover:
 
 from __future__ import annotations
 
+import tempfile
 from enum import Enum
 from typing import Any
 
 import pytest
-import tempfile
 
 pytest.importorskip("hypothesis")
 

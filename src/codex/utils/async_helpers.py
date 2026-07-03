@@ -9,7 +9,7 @@ Example:
 """
 
 import asyncio
-from typing import Any, Callable, TypeVar, List, Optional, Coroutine
+from typing import Any, Callable, Coroutine, List, TypeVar
 
 __all__ = [
     "gather_with_timeout",

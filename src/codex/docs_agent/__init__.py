@@ -11,12 +11,14 @@ Status: Task 3.2 Implementation
 __version__ = "1.0.0"
 __author__ = "Unified Documentation Agent"
 
-from . import schema_validator
-from . import document_processor
-from . import semantic_indexer
-from . import mcp_bridge
-from . import http_mock_server
-from . import cli
+from . import (
+    cli,
+    document_processor,
+    http_mock_server,
+    mcp_bridge,
+    schema_validator,
+    semantic_indexer,
+)
 
 __all__ = [
     "schema_validator",

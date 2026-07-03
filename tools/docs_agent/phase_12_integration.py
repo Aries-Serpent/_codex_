@@ -217,7 +217,7 @@ if __name__ == "__main__":
     print(f"RBAC Integration: {len(rbac['role_definitions'])} roles with entity-level permissions")
 
     governance = integration.governance_integration()
-    print(f"Governance Integration: Approval workflows reference structured decision and deliverable IDs")
+    print("Governance Integration: Approval workflows reference structured decision and deliverable IDs")
 
     observability = integration.observability_integration()
     print(f"Observability Integration: {len(observability['key_metrics'])} dashboard metrics via SQLite")

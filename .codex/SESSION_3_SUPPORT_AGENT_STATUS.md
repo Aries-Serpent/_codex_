@@ -184,7 +184,7 @@
 ```
 83ae3e08 Phase 8.4: Final validation complete - all configs verified, 0 critical issues, deployment approved
 0bc9156c Phase 8.4: Initial validation pass - Hydra, CI/CD, Python env all passing
-c855e6f5 fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [skip ci]
+c855e6f5 fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [skip ci]  # pragma: allowlist secret
 e73d9efe Sessions 2-4 continuation campaign plan staged for execution
 ```
 

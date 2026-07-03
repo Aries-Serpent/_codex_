@@ -11,7 +11,6 @@ Provides:
 from __future__ import annotations
 
 import logging
-from codex.logging.structured_logger import logger
 import logging.handlers
 import sys
 import traceback
@@ -19,6 +18,8 @@ from collections.abc import Callable
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
+
+from codex.logging.structured_logger import logger
 
 
 class CodexErrorHandler:

@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import pytest
 
+
 # Simplified test structure (full implementation in actual test file)
 class TestRBACEngine:
     """Basic RBAC engine tests."""

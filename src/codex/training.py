@@ -6,7 +6,6 @@
 
 from __future__ import annotations
 
-import logging
 
 from codex.logging.structured_logger import logger
 
@@ -14,7 +13,6 @@ import argparse  # noqa: E402
 import hashlib  # noqa: E402
 import json  # noqa: E402
 import os  # noqa: E402
-import sys  # noqa: E402
 import time  # noqa: E402
 from collections.abc import Sequence  # noqa: E402
 from datetime import UTC, datetime  # noqa: E402

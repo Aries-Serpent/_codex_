@@ -18,8 +18,9 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from .main import app, main
 from codex.logging.structured_logger import logger
+
+from .main import app, main
 
 # Deterministically load Click CLI group from src/codex/cli.py without shadowing/circular imports.
 _codex_root = Path(__file__).resolve().parent.parent  # src/codex

@@ -9,17 +9,15 @@ Phase 4B Deliverable: Quality Tests
 """
 
 import json
-import pytest
 import time
-from typing import Any, Dict, List
-from unittest.mock import Mock
+from typing import Any, Dict
+
+import pytest
 
 from tests.agents.test_harness import (
     AgentTestHarness,
     ExecutionContext,
-    ExecutionStatus,
 )
-
 
 # ============================================================================
 # MOCK AGENTS FOR QUALITY TESTING

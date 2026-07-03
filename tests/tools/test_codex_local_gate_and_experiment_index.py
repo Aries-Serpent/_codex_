@@ -10,7 +10,6 @@ import json
 from pathlib import Path
 
 from tools import codex_dataset_index, codex_experiment_index, codex_local_gate_runner
-from codex.logging.structured_logger import logger
 
 
 def test_local_gate_runner_uses_default_gate_when_config_missing(

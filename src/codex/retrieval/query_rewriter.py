@@ -9,7 +9,6 @@ Provides query optimization capabilities:
 """
 
 import hashlib
-import logging
 import re
 from abc import ABC, abstractmethod
 from collections.abc import Sequence

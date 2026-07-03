@@ -1,4 +1,3 @@
-from codex.logging.structured_logger import logger
 #     assert (, "Condition must be true"
 # Test Codex Secret Scan Stub
 # """

@@ -1,4 +1,5 @@
 import pytest
+
 pytest.importorskip("psutil")
 """
 Test Metrics Logger

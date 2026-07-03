@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from src.codex.utils.path_extended import get_repo_root
+
 """
 PHASE 9.2 CRITICAL GAP-FILL TEST SUITE
 
@@ -30,9 +31,9 @@ from phase_9_2_cascade_orchestrator import (
     CascadeOrchestrator,
     FailureLog,
     FixAttempt,
-    FixStatus,
     FixExecutor,
     FixRouter,
+    FixStatus,
     Pattern,
     PatternConfidence,
     PatternDetector,
@@ -40,12 +41,10 @@ from phase_9_2_cascade_orchestrator import (
     get_confidence_level,
     run_command,
 )
-
 from phase_9_2_pattern_router import (
     PatternMatcher,
     PatternRouter,
 )
-
 
 # ============================================================================
 # TEST FIXTURES

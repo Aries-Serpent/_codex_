@@ -32,12 +32,12 @@ logger = logging.getLogger(__name__)
 import argparse
 import json
 import re
-import sys
 from collections.abc import Iterable, Sequence
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from types import ModuleType
 from typing import Any, Optional
+
 from codex.logging.structured_logger import logger
 
 yaml: ModuleType | None

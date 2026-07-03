@@ -15,19 +15,17 @@ Tests for:
 - Performance overhead (<100ms)
 """
 
-import json
+# Import the context scorer
+import sys
 import time
 from datetime import datetime, timedelta
 from pathlib import Path
 
 import pytest
 
-# Import the context scorer
-import sys
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from scripts.ci.phase_10_3_context_scorer import (
     ContextScorer,
-    ScoredPattern,
     TFIDFScorer,
 )
 

@@ -71,7 +71,7 @@
 | Component | Result | Issues | Details |
 |-----------|--------|--------|---------|
 | Dependency Security | ⚠️ CONDITIONAL | 27 CVEs | Clear remediation path available |
-| Secret Scanning | ✅ PASS | 0 secrets | Clean baseline; no exposure |
+| Secret Scanning | ✅ PASS | 0 secrets | Clean baseline; no exposure | <!-- pragma: allowlist secret -->
 | Code Quality | ⚠️ CONDITIONAL | 2 high, 8 medium | Bandit findings need review |
 | License Compliance | ✅ PASS | 0 blocking | LGPL disclosure recommended |
 

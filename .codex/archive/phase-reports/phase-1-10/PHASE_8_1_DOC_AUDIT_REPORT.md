@@ -184,13 +184,13 @@ the 90-day threshold (2026-04-03): pattern `(2024|2025)-MM-DD` and `2026-0[1-3]-
 
 ### 3.4 Most-Referenced Stale Date Tokens
 
-| Date token | Occurrences | Interpretation |
+| Date token | Occurrences | Interpretation | <!-- pragma: allowlist secret -->
 |-----------|------------:|----------------|
 | 2026-01-23 | 4,860 | Dominant historical "as-of" date across reports |
 | 2026-02-17 | 320 | |
 | 2026-02-04 | 268 | |
 | 2026-02-10 | 240 | |
-| 2025-09-17 | 208 | Oldest high-frequency token |
+| 2025-09-17 | 208 | Oldest high-frequency token | <!-- pragma: allowlist secret -->
 | 2025-12-29 | 169 | |
 
 **Interpretation:** `reports/` (89.8%) and `archive/` (83.5%) are almost entirely stale by

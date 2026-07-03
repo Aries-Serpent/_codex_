@@ -6,9 +6,11 @@ duplicate urllib patterns from mcp_poster.py.
 Test coverage targets: URL validation, request building, error handling
 """
 
-import pytest
 import urllib.error
 from unittest.mock import Mock, patch
+
+import pytest
+
 from codex.github.http_client import (
     GitHubHTTPClient,
     redact_url_for_log,

@@ -9,7 +9,6 @@ Provides in-memory caching for query results with:
 """
 
 import hashlib
-import logging
 import threading
 import time
 from collections import OrderedDict

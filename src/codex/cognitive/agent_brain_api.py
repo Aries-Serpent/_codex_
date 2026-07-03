@@ -56,7 +56,6 @@ See :class:`AgentBrainAPI` docstring for embedded Mermaid diagram.
 from __future__ import annotations
 
 import json
-import logging
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -65,7 +64,6 @@ from typing import Any, Optional
 from codex.cognitive.brain_interface import AgentBrainInterface, LearningFeedback
 from codex.cognitive.planset_orchestrator import PlansetOrchestrator, PromptSet
 from codex.cognitive.quantum_planset_engine import ImprovementArea, QuantumPlansetEngine
-
 from codex.logging.structured_logger import logger
 
 # ---------------------------------------------------------------------------

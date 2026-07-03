@@ -13,6 +13,7 @@ all tests execute with deterministic behavior.
 import os
 import random
 import sys
+
 from codex.logging.structured_logger import logger
 
 # Set Python hash seed (should already be set via env, but enforce it)

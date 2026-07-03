@@ -35,13 +35,11 @@ Usage:
 
 from __future__ import annotations
 
-import logging
 from dataclasses import dataclass
 from typing import Any, Optional
 
 from codex.brain.checkpoint_manager import CheckpointManager
 from codex.brain.session_serializer import SessionSerializer
-
 from codex.logging.structured_logger import logger
 
 

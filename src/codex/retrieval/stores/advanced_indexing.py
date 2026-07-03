@@ -18,6 +18,7 @@ from enum import Enum
 from typing import Any, Optional
 
 import numpy as np
+
 from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)

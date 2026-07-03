@@ -10,7 +10,7 @@ Author: Phase 8.1 Monitoring System
 import json
 import os
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -338,12 +338,12 @@ class EnhancedMetricsCollector:
 
         print("SIGNAL BREAKDOWN:")
         print(f"  Workflow Metrics: {len(self.metrics['signals']['workflow_metrics'])} signals")
-        print(f"  Infrastructure Metrics: 5 signals")
-        print(f"  Error Tracking Metrics: 5 signals")
-        print(f"  SLA Compliance Metrics: 5 signals")
-        print(f"  Dependency Health Metrics: 5 signals")
-        print(f"  Cache/Optimization Metrics: 4 signals")
-        print(f"  Total Metrics: 28+ signals")
+        print("  Infrastructure Metrics: 5 signals")
+        print("  Error Tracking Metrics: 5 signals")
+        print("  SLA Compliance Metrics: 5 signals")
+        print("  Dependency Health Metrics: 5 signals")
+        print("  Cache/Optimization Metrics: 4 signals")
+        print("  Total Metrics: 28+ signals")
         print()
 
         print("INFRASTRUCTURE HEALTH:")

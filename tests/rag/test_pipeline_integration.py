@@ -12,7 +12,6 @@ from dataclasses import dataclass
 from typing import Any
 
 import pytest
-from codex.logging.structured_logger import logger
 
 
 @dataclass

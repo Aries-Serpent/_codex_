@@ -12,6 +12,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from typing import Any
+
 from codex.logging.structured_logger import logger
 
 
@@ -110,7 +111,7 @@ class QualityMetricsValidator:
         pass_rate_min = requirements.get("test_pass_rate_min", 99.5)
         pass_rate_valid = pass_rate >= pass_rate_min
 
-        logger.info(f"Test Pass Rate:")
+        logger.info("Test Pass Rate:")
         logger.info(f"  Current:  {pass_rate:.1f}%")
         logger.info(f"  Required: ≥{pass_rate_min:.1f}%")
         logger.info(f"  Status:   {'✅ PASS' if pass_rate_valid else '🔴 FAIL'}")
@@ -121,7 +122,7 @@ class QualityMetricsValidator:
         flakiness_max = requirements.get("test_flakiness_max", 1.0)
         flakiness_valid = flakiness <= flakiness_max
 
-        logger.info(f"Test Flakiness:")
+        logger.info("Test Flakiness:")
         logger.info(f"  Current:  {flakiness:.1f}%")
         logger.info(f"  Max:      ≤{flakiness_max:.1f}%")
         logger.info(f"  Status:   {'✅ PASS' if flakiness_valid else '🔴 FAIL'}")
@@ -132,7 +133,7 @@ class QualityMetricsValidator:
         determinism_min = requirements.get("test_determinism_min", 99.5)
         determinism_valid = determinism >= determinism_min
 
-        logger.info(f"Test Determinism:")
+        logger.info("Test Determinism:")
         logger.info(f"  Current:  {determinism:.1f}%")
         logger.info(f"  Required: ≥{determinism_min:.1f}%")
         logger.info(f"  Status:   {'✅ PASS' if determinism_valid else '🔴 FAIL'}")
@@ -142,9 +143,9 @@ class QualityMetricsValidator:
         isolation = current.get("test_isolation", 100.0)
         isolation_valid = isolation >= 99.5  # Always require high isolation
 
-        logger.info(f"Test Isolation:")
+        logger.info("Test Isolation:")
         logger.info(f"  Current:  {isolation:.1f}%")
-        logger.info(f"  Required: ≥99.5%")
+        logger.info("  Required: ≥99.5%")
         logger.info(f"  Status:   {'✅ PASS' if isolation_valid else '🔴 FAIL'}")
 
 
@@ -153,7 +154,7 @@ class QualityMetricsValidator:
         regression_max = requirements.get("regression_rate_max", 1.0)
         regression_valid = regression_rate <= regression_max
 
-        logger.info(f"Regression Rate:")
+        logger.info("Regression Rate:")
         logger.info(f"  Current:  {regression_rate:.1f}%")
         logger.info(f"  Max:      ≤{regression_max:.1f}%")
         logger.info(f"  Status:   {'✅ PASS' if regression_valid else '🔴 FAIL'}")

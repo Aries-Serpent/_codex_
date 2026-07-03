@@ -12,8 +12,9 @@ Reference: .codex/ESCALATION_RULES.yaml
 """
 
 import sys
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
+
 from codex.logging.structured_logger import logger
 
 # ============================================================================
@@ -407,7 +408,7 @@ def test_pr_validation_flow_complete():
     
     # Verify decision tree exists
     assert "Decision Tree" in content
-    logger.info(f"  ✅ Decision tree documented")
+    logger.info("  ✅ Decision tree documented")
     
     logger.info("  ✓ PASS - PR validation flow complete")
 

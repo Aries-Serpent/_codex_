@@ -315,6 +315,12 @@
   "tests/production/test_performance_benchmarks.py": [
     "numpy"
   ],
+  "tests/property/test_property_ab_testing.py": [
+    "hypothesis"
+  ],
+  "tests/property/test_property_drift.py": [
+    "hypothesis"
+  ],
   "tests/property/test_property_resilience.py": [
     "hypothesis",
     "hypothesis"

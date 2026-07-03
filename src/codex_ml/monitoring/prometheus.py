@@ -23,6 +23,7 @@ import sys  # noqa: E402
 from datetime import datetime, timezone  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import Any, Optional  # noqa: E402
+
 from codex.logging.structured_logger import logger
 
 _FALLBACK_ACTIVE: bool = False

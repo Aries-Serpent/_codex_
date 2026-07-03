@@ -6,12 +6,14 @@ OWASP Coverage: A02 (Cryptographic Failures), A05 (Misconfiguration), A09 (Loggi
 Test Count: 16 tests
 """
 
-import pytest
-import json
 import hashlib
+import json
 import re
 from datetime import datetime, timedelta
-from typing import Dict, Any, List, Optional
+from typing import Any, Dict, List, Optional
+
+import pytest
+
  # pragma: allowlist secret
 
 class TestDataProtectionAndPrivacy:

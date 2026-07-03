@@ -15,8 +15,8 @@ import shutil
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Optional
 
-from codex_ml.utils.optional import optional_import
 from codex.logging.structured_logger import logger
+from codex_ml.utils.optional import optional_import
 
 typer, _HAS_TYPER = optional_import("typer")
 yaml, _HAS_YAML = optional_import("yaml")

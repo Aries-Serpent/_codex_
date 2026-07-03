@@ -20,7 +20,6 @@ Commands:
 from __future__ import annotations
 
 import json
-import logging
 import sys
 from pathlib import Path
 from typing import Optional
@@ -279,7 +278,6 @@ if TYPER_AVAILABLE:
         """Main entry point."""
         # Emit typer import error warning if it occurred
         if _TYPER_IMPORT_ERROR:
-            import sys
 
             logger.error(f"Warning: typer import failed ({_TYPER_IMPORT_ERROR}). Using limited CLI.",)
         app()

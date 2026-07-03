@@ -8,7 +8,6 @@ import platform
 from unittest.mock import MagicMock, patch
 
 from codex_ml.utils.env import EnvironmentFingerprint, environment_summary
-from codex.logging.structured_logger import logger
 
 # ---------------------------------------------------------------------------
 # EnvironmentFingerprint.capture()

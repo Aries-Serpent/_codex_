@@ -16,11 +16,11 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Optional
 from urllib.parse import urlparse
 
+from codex.logging.structured_logger import logger
 from codex_ml.monitoring._logger_types import CodexLoggers, TelemetryComponentStatus
 from codex_ml.monitoring.prometheus import fallback_status as prometheus_fallback_status
 from codex_ml.monitoring.system_metrics import sampler_status
 from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
-from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 

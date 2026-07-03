@@ -13,7 +13,6 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-
 # Import the provider (may be optional if requests not available)
 try:
     from codex.rag.providers.ollama_provider import OllamaEmbeddingProvider

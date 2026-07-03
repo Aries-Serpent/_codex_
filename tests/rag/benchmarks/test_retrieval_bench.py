@@ -13,7 +13,6 @@ Tests the benchmark_retrieval function covering:
 
 import pytest
 
-
 # Import benchmark module
 try:
     from codex.rag.benchmarks.retrieval_bench import benchmark_retrieval

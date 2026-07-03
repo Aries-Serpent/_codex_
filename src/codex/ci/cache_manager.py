@@ -28,7 +28,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-import logging
 import os
 import platform
 import subprocess
@@ -39,9 +38,8 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Optional
 
-from codex.utils.path_utils import windows_safe_timestamp
-
 from codex.logging.structured_logger import logger
+from codex.utils.path_utils import windows_safe_timestamp
 
 
 class CacheType(Enum):

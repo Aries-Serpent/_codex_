@@ -6,12 +6,14 @@ OWASP Coverage: A01 (Broken Access Control), A07 (Authentication Failures)
 Test Count: 15 tests
 """
 
-import pytest
 import hashlib
 import hmac
 import secrets
 import string
 from typing import Any, Dict
+
+import pytest
+
 
  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 class TestAuthenticationMechanisms:

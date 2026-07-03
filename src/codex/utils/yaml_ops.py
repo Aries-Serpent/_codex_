@@ -8,9 +8,10 @@ Example:
     config = load_yaml('config.yml', default={})
 """
 
-import yaml
 from pathlib import Path
 from typing import Any, Optional
+
+import yaml
 
 __all__ = [
     "load_yaml",

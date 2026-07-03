@@ -143,7 +143,7 @@
 | **Critical Issues** | 0 | ✅ |
 | **Breaking Changes** | 0 | ✅ |
 | **Success Rate** | 100% | ✅ |
-| **Token Usage** | ~80K of 200K (40%) | ✅ |
+| **Token Usage** | ~80K of 200K (40%) | ✅ | <!-- pragma: allowlist secret -->
 | **Time Elapsed** | ~3 hours | ✅ |
 
 ---

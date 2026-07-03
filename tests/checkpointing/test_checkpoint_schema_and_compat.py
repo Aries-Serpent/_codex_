@@ -6,8 +6,8 @@ Test module for checkpoint schema and compat.
 
 from __future__ import annotations
 
-import warnings
 import tempfile
+import warnings
 
 from codex_ml.checkpointing import compat, schema_v2
 

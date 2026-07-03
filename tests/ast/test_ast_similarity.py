@@ -6,7 +6,6 @@ import tempfile
 from pathlib import Path
 
 import pytest
-from codex.logging.structured_logger import logger
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "analysis"))
 

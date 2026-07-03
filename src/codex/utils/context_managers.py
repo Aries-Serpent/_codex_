@@ -9,8 +9,8 @@ Example:
         use_resource()
 """
 
-from typing import Any, Callable, Optional, List, TypeVar
 from contextlib import contextmanager
+from typing import Any, Callable, List, TypeVar
 
 __all__ = [
     "cleanup_on_exit",

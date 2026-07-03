@@ -5,8 +5,8 @@ Test module for accelerate shim.
 """
 
 import importlib
-import tempfile
 import sys
+import tempfile
 
 import pytest
 

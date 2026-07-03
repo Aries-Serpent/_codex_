@@ -144,7 +144,7 @@ class TokenPatternValidator:
         )
         
         if not has_elevated_op:
-            self.log(f"  ✓ Rule 1: No elevated operations detected")
+            self.log("  ✓ Rule 1: No elevated operations detected")
             return
         
         # Found elevated operation, check token
@@ -395,7 +395,7 @@ Examples:
     
     # Print summary
     print(f"\n{'='*60}")
-    print(f"Workflow Token Pattern Validation Report")
+    print("Workflow Token Pattern Validation Report")
     print(f"{'='*60}")
     print(f"Timestamp:      {report['timestamp']}")
     print(f"Total Workflows: {report['total_workflows']}")

@@ -514,20 +514,20 @@ class TokenAdoptionValidator:
         )
         print(f"Target Met: {'✅ YES' if report.meets_target else '❌ NO'}")
 
-        print(f"\nViolations by Rule:")
+        print("\nViolations by Rule:")
         for rule_id in sorted(report.violations_by_rule.keys()):
             count = report.violations_by_rule[rule_id]
             print(f"  {rule_id}: {count} violations")
 
         if report.anti_patterns_summary:
-            print(f"\nAnti-Patterns Found:")
+            print("\nAnti-Patterns Found:")
             for pattern, count in sorted(
                 report.anti_patterns_summary.items(), key=lambda x: x[1], reverse=True
             ):
                 print(f"  {pattern}: {count} occurrences")
 
         if show_violations:
-            print(f"\n" + "-" * 80)
+            print("\n" + "-" * 80)
             print("DETAILED VIOLATIONS")
             print("-" * 80)
 

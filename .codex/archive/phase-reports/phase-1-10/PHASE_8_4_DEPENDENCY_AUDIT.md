@@ -88,7 +88,7 @@ perf, sharding, plugins, rag, symbolic, test-core, tokenizer, tokenizers, tracki
 | `requirements-minimal.txt` | Baseline | 0 | 23 | 3 | ruff>=0.15.15, pip-audit>=2.10.1 |
 | `requirements-optional.txt` | Feature extras | 0 | 13 | 0 | nltk>=3.9.3, twisted>=24.7.0, configobj>=5.0.9 |
 | `requirements-eval.txt` | Eval stack | 7 | 1 | 0 | scikit-learn==1.9.0, lm-eval==0.4.12, nltk==3.9.4 |
-| `requirements-ml-cpu.txt` | CPU ML | 4 | 3 | 0 | torch==2.11.0+cpu, tokenizers==0.22.1 |
+| `requirements-ml-cpu.txt` | CPU ML | 4 | 3 | 0 | torch==2.11.0+cpu, tokenizers==0.22.1 | <!-- pragma: allowlist secret -->
 | `requirements-ml-lite.txt` | Lite CPU ML | 0 | 4 | 0 | torch>=2.6.1,<3, numpy>=2.4.6,<3 |
 | `requirements-notebook.txt` | Notebook | 4 | 0 | 0 | jupyterlab==4.5.9, matplotlib==3.10.9 |
 | `requirements-audio-transcription.txt` | Audio | 3 | 0 | 0 | faster-whisper==1.2.1, pyannote.audio==3.3.2 |
@@ -127,7 +127,7 @@ perf, sharding, plugins, rag, symbolic, test-core, tokenizer, tokenizers, tracki
 
 | File | Unpinned packages |
 |------|-------------------|
-| `requirements/dev.txt` | black, isort, flake8, mypy, bandit, defusedxml, semgrep, detect-secrets, yamllint, shellcheck-py, pip-audit, pandas, pyarrow, zstandard (**14**) |
+| `requirements/dev.txt` | black, isort, flake8, mypy, bandit, defusedxml, semgrep, detect-secrets, yamllint, shellcheck-py, pip-audit, pandas, pyarrow, zstandard (**14**) | <!-- pragma: allowlist secret -->
 | `requirements-minimal.txt` | types-jsonschema, types-PyYAML, types-requests (3) |
 | `requirements.txt` | nox (1) |
 

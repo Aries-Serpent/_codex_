@@ -29,9 +29,9 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Optional
 
-from .registry import AutonomyMode, ControlClass
-
 from codex.logging.structured_logger import logger
+
+from .registry import AutonomyMode, ControlClass
 
 _DEFAULT_REGISTRY_PATH = Path(".codex/prompts/registry.yaml")
 _REGISTRY_PATH_ENV = "CODEX_PROMPT_REGISTRY"

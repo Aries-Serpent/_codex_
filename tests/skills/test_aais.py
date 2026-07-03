@@ -6,7 +6,6 @@ import pytest
 
 from codex.skills.aais import AAISScorer, score_text
 from codex.skills.models import AAISScore
-from codex.logging.structured_logger import logger
 
 
 @pytest.fixture

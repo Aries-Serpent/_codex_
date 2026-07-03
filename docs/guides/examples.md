@@ -48,10 +48,10 @@ from github.agents.core.universal_intelligence import MetaPolicyRouter
 router = MetaPolicyRouter(seed=12345)
 
 # Prepare task data
-task_data = [(x, x**2) for x in range(10)]
+task_data = [(x, x**2) for x in range(10)]  # pragma: allowlist secret
 
 # Adapt with MAML
-adapted = router.adapt_with_maml("regression_task", task_data)
+adapted = router.adapt_with_maml("regression_task", task_data)  # pragma: allowlist secret
 
 # Use adapted parameters
 print(f"Adapted params: {adapted}")
@@ -61,7 +61,7 @@ print(f"Adapted params: {adapted}")
 
 ```python
 # Adapt with Reptile (simpler, more stable)
-adapted = router.adapt_with_reptile("regression_task", task_data)
+adapted = router.adapt_with_reptile("regression_task", task_data)  # pragma: allowlist secret
 ```
 
 ## Strategy Selection

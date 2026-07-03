@@ -43,7 +43,6 @@ from codex_ml.safety import ModerationAdapter, ModerationRejection, ModerationSe
 from codex_ml.utils.hf_pinning import load_from_pretrained
 from codex_ml.utils.hf_revision import get_hf_revision
 from codex_ml.utils.optional import optional_import
-from codex.logging.structured_logger import logger
 
 torch, _HAS_TORCH = optional_import("torch")
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")

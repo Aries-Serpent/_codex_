@@ -76,7 +76,7 @@
 | **Critical Issues** | 0 | ✅ |
 | **Blockers** | 0 | ✅ |
 | **Success Rate** | 100% | ✅ |
-| **Token Usage** | ~70K of 200K | ✅ (35% used) |
+| **Token Usage** | ~70K of 200K | ✅ (35% used) | <!-- pragma: allowlist secret -->
 | **Time Elapsed** | ~3 hours (including restarts) | ✅ |
 | **Remaining Est.** | ~1.5 hours | On track |
 

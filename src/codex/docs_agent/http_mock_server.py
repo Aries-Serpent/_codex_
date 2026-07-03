@@ -7,16 +7,16 @@ real API responses with realistic latency and error patterns.
 Authority: Lane 3 Unified Documentation Agent
 """
 
-import time
-import random
-from typing import Dict, List, Any, Optional, Callable
-from datetime import datetime, timedelta
 import logging
+import random
+import time
+from datetime import datetime, timedelta
+from typing import Any, Callable, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
 try:
-    from flask import Flask, request, jsonify
+    from flask import Flask, jsonify, request
     FLASK_AVAILABLE = True
 except ImportError:
     FLASK_AVAILABLE = False

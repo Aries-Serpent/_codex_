@@ -1,4 +1,5 @@
 import pytest
+
 pytest.importorskip("tensorboard")
 """Lightweight coverage for training.functional_training helpers."""
 

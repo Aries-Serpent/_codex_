@@ -12,7 +12,6 @@ import pytest
 
 from codex.archive.backend import ArchiveConfig
 from codex.archive.backend import ArchiveDAL as ArchiveBackend
-from codex.logging.structured_logger import logger
 
 
 @pytest.fixture

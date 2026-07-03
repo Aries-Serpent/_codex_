@@ -2,8 +2,8 @@
 Tests for Vector Store Factory and Registry
 """
 
-import types
 import tempfile
+import types
 from unittest.mock import Mock
 
 import pytest

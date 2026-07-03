@@ -1,4 +1,5 @@
 from codex.logging.structured_logger import logger
+
 """Test that yaml module resolves to site-packages, not local directory."""
 
 try:

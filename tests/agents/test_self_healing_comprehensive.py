@@ -6,10 +6,10 @@ Strategy: Test all main classes and their core methods
 Focus: DetectedIssue, RemediationAction, DiagnosticResult, SelfHealingEngine
 """
 
+import tempfile
 from pathlib import Path
 
 import pytest
-import tempfile
 
 try:
     from agents.self_healing import RemediationAction

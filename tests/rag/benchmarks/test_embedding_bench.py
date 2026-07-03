@@ -13,12 +13,11 @@ Tests the benchmark_embedding_providers function covering:
 
 import pytest
 
-
 # Import benchmark module
 try:
     from codex.rag.benchmarks.embedding_bench import (
-        benchmark_embedding_providers,
         _get_provider,
+        benchmark_embedding_providers,
     )
 
     EMBEDDING_BENCH_AVAILABLE = True

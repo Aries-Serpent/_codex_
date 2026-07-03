@@ -19,7 +19,7 @@
 ✅ APPROVED: D-mode autonomous execution across ALL agents
 ✅ APPROVED: GO CONTINUE for all decision points  
 ✅ APPROVED: Multi-agent delegation and parallel execution
-✅ APPROVED: Full token access for elevated operations
+✅ APPROVED: Full token access for elevated operations  # pragma: allowlist secret
 ```
 
 ---

@@ -26,9 +26,9 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
+from codex.logging.structured_logger import logger
 from codex_ml.features.feature_store import FeatureStore
 from codex_ml.features.monitoring import FeatureHealthMonitor
-from codex.logging.structured_logger import logger
 
 app = typer.Typer(help="Feature store management commands")
 console = Console()

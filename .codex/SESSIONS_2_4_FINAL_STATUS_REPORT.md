@@ -151,7 +151,7 @@ Stage 4: Full Validation 🟡 STANDBY (optional, if time permits)
 | **Critical Issues** | 0 | ✅ |
 | **Success Rate** | 100% | ✅ |
 | **Blockers** | 0 | ✅ |
-| **Token Usage** | ~50K of 200K | ✅ (25% used) |
+| **Token Usage** | ~50K of 200K | ✅ (25% used) | <!-- pragma: allowlist secret -->
 | **Time Elapsed** | ~3.5 hours | On track |
 | **Remaining Est.** | ~1-2 hours | On track |
 

@@ -8,7 +8,6 @@ import textwrap
 from pathlib import Path
 
 import tools.codex_task_sequence_runner as runner
-from codex.logging.structured_logger import logger
 
 
 def _write_minimal_sequence(tmp_path: Path) -> Path:

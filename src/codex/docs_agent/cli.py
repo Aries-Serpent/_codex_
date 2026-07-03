@@ -8,10 +8,10 @@ Authority: Lane 3 Unified Documentation Agent
 """
 
 import json
+import logging
 import sys
 from pathlib import Path
 from typing import Optional
-import logging
 
 import click
 
@@ -161,7 +161,7 @@ def validate(
                 click.echo(f"  {rtype}: {count}")
         
         if results['errors']:
-            click.echo(f"\nFirst 5 errors:")
+            click.echo("\nFirst 5 errors:")
             for error in results['errors'][:5]:
                 click.echo(f"  Line {error.get('line')}: {error['message']}")
         
@@ -300,7 +300,7 @@ def search(index_path: str, query: Optional[str], limit: int, threshold: float, 
             sys.exit(1)
         
         stats = indexer.get_statistics()
-        click.echo(f"\nIndex Statistics:")
+        click.echo("\nIndex Statistics:")
         click.echo(f"  Model: {stats['model_name']}")
         click.echo(f"  Records: {stats['total_records']}")
         click.echo(f"  Indexed: {stats['indexed_records']}")

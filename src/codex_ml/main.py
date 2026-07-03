@@ -16,6 +16,7 @@ import argparse  # noqa: E402
 import importlib  # noqa: E402
 import sys  # noqa: E402
 from collections.abc import Sequence  # noqa: E402
+
 from codex.logging.structured_logger import logger
 
 _HELP_EPILOG = "Run `python -m codex_ml.cli --help` for full subcommands."

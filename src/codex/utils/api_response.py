@@ -11,8 +11,8 @@ Example:
     handle_response(response, expected_status=200)
 """
 
-from typing import Any, Dict, Optional, List, Union
 import json
+from typing import Any, Dict, List, Optional, Union
 
 __all__ = [
     "handle_response",

@@ -15,7 +15,7 @@ Example:
     value = coalesce(x, y, z, "default")
 """
 
-from typing import TypeVar, Optional, List, Callable, Any
+from typing import Any, Callable, Optional, TypeVar
 
 __all__ = [
     "ensure_not_none",

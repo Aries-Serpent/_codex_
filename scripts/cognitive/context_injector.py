@@ -581,11 +581,11 @@ async def demo():
     # Inject context
     context, confidence, metadata = await injector.inject_context(observation)
     
-    print(f"\nContext retrieved:")
+    print("\nContext retrieved:")
     print(f"- Patterns: {len(context['patterns'])}")
     print(f"- Sessions: {len(context['sessions'])}")
     print(f"- External context: {len(context['external'])} fields")
-    print(f"\nConfidence Metrics:")
+    print("\nConfidence Metrics:")
     print(f"- Overall: {confidence.overall_confidence:.2f}")
     print(f"- Pattern similarity: {confidence.pattern_similarity_score:.2f}")
     print(f"- Session recency: {confidence.session_recency_score:.2f}")

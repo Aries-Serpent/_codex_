@@ -32,13 +32,12 @@ Usage::
 
 from __future__ import annotations
 
-import logging
 from typing import Any
+
+from codex.logging.structured_logger import logger
 
 from .models import RegisteredSkill, RoutingDecision, RoutingScore
 from .registry import SkillRegistry
-
-from codex.logging.structured_logger import logger
 
 # Default scoring weights (must sum to 1.0)
 _W_MATCH = 0.40

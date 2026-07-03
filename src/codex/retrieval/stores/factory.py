@@ -3,7 +3,6 @@ Vector Store Factory and Registry Pattern
 Provides centralized management and creation of vector stores
 """
 
-import logging
 from enum import Enum
 from typing import Any, Optional
 

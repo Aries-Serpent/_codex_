@@ -9,7 +9,6 @@ Based on REPO_ADMIN_IMPLEMENTATION_DECISIONS.md Section 4.3.3:
 
 import logging
 import os
-import tempfile
 
 logger = logging.getLogger(__name__)
 from pathlib import Path  # noqa: E402

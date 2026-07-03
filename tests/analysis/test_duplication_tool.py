@@ -7,7 +7,6 @@ Test module for duplication tool.
 from pathlib import Path
 
 from codex.analysis.duplication import analyze_duplication
-from codex.logging.structured_logger import logger
 
 
 def test_duplication_detects_duplicate_files(tmp_path: Path):

@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 
 from collections.abc import Iterable, Sequence
 from typing import Any, Optional
+
 from codex.logging.structured_logger import logger
 
 _JSON_EPILOG = (

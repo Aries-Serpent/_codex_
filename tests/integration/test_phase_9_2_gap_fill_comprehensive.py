@@ -24,28 +24,28 @@ sys.path.insert(0, str(repo_root / "scripts" / "ci"))
 sys.path.insert(0, str(repo_root / "src"))
 
 from phase_9_2_cascade_orchestrator import (
+    PATTERN_CATALOG,
     CascadeOrchestrator,
     FailureLog,
-    PatternDetector,
     FixExecutor,
     FixRouter,
     Pattern,
-    PatternMatch,
     PatternConfidence,
+    PatternDetector,
+    PatternMatch,
     get_confidence_level,
     run_command,
-    PATTERN_CATALOG,
 )
 from phase_9_2_pattern_router import PatternMatcher
 
 try:
     from orchestration.adapters.cascade_to_router_adapter import (
-        CascadeToRouterAdapter,
         CascadeContext,
-        SemanticTask,
-        TaskType,
+        CascadeToRouterAdapter,
         ExecutionStrategy,
         PatternID,
+        SemanticTask,
+        TaskType,
     )
     HAS_ADAPTER = True
 except ImportError:

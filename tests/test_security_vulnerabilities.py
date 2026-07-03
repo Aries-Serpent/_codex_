@@ -6,9 +6,10 @@ OWASP Coverage: A01-A10 (comprehensive coverage)
 Test Count: 22 tests
 """
 
-import pytest
 import re
-from typing import Dict, List, Any
+from typing import Any, Dict, List
+
+import pytest
 
 
 class TestVulnerabilityPrevention:

@@ -9,23 +9,16 @@ Phase 4B Deliverable: Control Flow Tests
 """
 
 import json
+from typing import Any, Dict
+
 import pytest
-from typing import Any, Dict, List
-from unittest.mock import Mock, MagicMock, patch
 
 from tests.agents.test_harness import (
     AgentTestHarness,
+    AgentTestPattern,
     ExecutionContext,
     ExecutionStatus,
-    TestResult,
-    AgentTestPattern,
 )
-from tests.agents.fixtures.sample_inputs import CONTROL_FLOW_INPUTS
-from tests.agents.fixtures.output_templates import (
-    SUCCESS_OUTPUT_TEMPLATE,
-    ERROR_OUTPUT_TEMPLATE,
-)
-
 
 # ============================================================================
 # MOCK AGENT IMPLEMENTATIONS FOR TESTING

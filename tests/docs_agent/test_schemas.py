@@ -14,7 +14,6 @@ Authority: Lane 3 Unified Documentation Agent
 """
 
 import pytest
-from codex.logging.structured_logger import logger
 
 
 # Fixtures for common test data

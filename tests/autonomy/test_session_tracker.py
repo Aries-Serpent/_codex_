@@ -15,7 +15,6 @@ from unittest.mock import patch
 
 import pytest
 
-
 SCRIPTS_DIR = Path(__file__).resolve().parents[2] / "scripts"
 
 

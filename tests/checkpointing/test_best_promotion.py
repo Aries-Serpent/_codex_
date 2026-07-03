@@ -1,4 +1,5 @@
 import pytest
+
 pytest.importorskip("tensorboard")
 """
 Test Best Promotion

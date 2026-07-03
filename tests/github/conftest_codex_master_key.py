@@ -15,7 +15,10 @@ import time
 import unittest.mock as mock
 from datetime import datetime, timezone
 from io import BytesIO
-from typing import Any, Optional  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+from typing import (  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+    Any,
+    Optional,
+)
 from urllib.error import HTTPError
 
 import pytest

@@ -5,8 +5,8 @@ meta-tensor safety, recovery mechanisms, index freshness, and retrieval metrics.
 """
 
 import tempfile
-from pathlib import Path
 import time
+from pathlib import Path
 
 import pytest
 
@@ -307,8 +307,9 @@ class TestMetaTensorSafety:
     def test_rag_embeddings_not_meta(self):
         """RAG embeddings should not be on meta device."""
         try:
-            import torch
             from codex_ml.rag import RAGIndexer
+
+            import torch
         except (ImportError, AttributeError):
             pytest.skip("RAG indexer not available")
 
@@ -327,8 +328,9 @@ class TestMetaTensorSafety:
     def test_rag_model_parameters_device(self):
         """RAG model parameters should be on valid device."""
         try:
-            import torch
             from codex_ml.rag import RAGRetriever
+
+            import torch
         except (ImportError, AttributeError):
             pytest.skip("RAG retriever not available")
 

@@ -1,3 +1,4 @@
+# Import the modules we're testing
 import sys
 import time
 from unittest.mock import MagicMock
@@ -5,12 +6,6 @@ from unittest.mock import MagicMock
 import pytest
 
 from src.codex.utils.path_extended import get_repo_root
-# Import the modules we're testing
-import sys
-import time
-from unittest.mock import MagicMock
-
-import pytest
 
 sys.path.insert(0, str(get_repo_root() / "src"))
 

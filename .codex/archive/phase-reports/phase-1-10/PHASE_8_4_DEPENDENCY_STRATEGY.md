@@ -178,7 +178,7 @@ Query current stable versions and pin them. Recommended approach:
 | bandit | unpinned | >=1.7.5 | Latest stable; used in CI. |
 | defusedxml | unpinned | >=0.7.1,<1.0.0 | Matches requirements.txt. |
 | semgrep | unpinned | >=1.45.0 | Latest stable; no CVEs. |
-| detect-secrets | unpinned | >=1.4.0 | Latest stable. |
+| detect-secrets | unpinned | >=1.4.0 | Latest stable. | <!-- pragma: allowlist secret -->
 | yamllint | unpinned | >=1.34 | Latest stable. |
 | shellcheck-py | unpinned | >=0.10 | Latest stable. |
 | pip-audit | unpinned | >=2.10.1 | Audit tool; pin conservatively. |

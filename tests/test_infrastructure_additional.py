@@ -6,8 +6,9 @@ Tests for workflow analytics, performance monitoring, and deployment infrastruct
 Coverage: 60+ additional tests
 """
 
-import pytest
 import time
+
+import pytest
 
 
 class TestWorkflowAnalytics:

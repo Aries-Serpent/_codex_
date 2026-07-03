@@ -19,7 +19,6 @@ import contextvars
 import hashlib
 import json
 import logging
-from codex.logging.structured_logger import logger
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any

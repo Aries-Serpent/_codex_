@@ -16,7 +16,6 @@ from typing import Any, Dict, Generator, List, Optional, Tuple
 import pytest
 
 from scripts.ci._token_resolver import get_token
-from codex.logging.structured_logger import logger
 
 # ============================================================================
 # ENVIRONMENT ISOLATION FIXTURES

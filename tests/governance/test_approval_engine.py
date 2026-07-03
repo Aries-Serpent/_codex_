@@ -6,11 +6,12 @@ Target: >95% coverage, all success criteria validated
 """
 
 import pytest
+
 from scripts.governance.approval_engine import (
     ApprovalWorkflowEngine,
+    AuditEventType,
     AuditLogger,
     WorkflowStatus,
-    AuditEventType,
 )
 
 

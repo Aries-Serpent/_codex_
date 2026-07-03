@@ -7,10 +7,10 @@ search and retrieval as MCP tools for Copilot agents.
 Authority: Lane 3 Unified Documentation Agent
 """
 
-from typing import Dict, List, Any, Optional, Callable
+import logging
 from dataclasses import dataclass
 from enum import Enum
-import logging
+from typing import Any, Callable, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 

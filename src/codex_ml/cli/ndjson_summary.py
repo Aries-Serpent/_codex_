@@ -29,6 +29,7 @@ from collections.abc import Iterable, Sequence
 from collections.abc import Mapping as MappingABC
 from pathlib import Path
 from typing import Any, Optional
+
 from codex.logging.structured_logger import logger
 
 FIELDNAMES: Sequence[str] = (

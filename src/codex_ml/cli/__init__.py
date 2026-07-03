@@ -22,11 +22,11 @@ import os
 import sys
 from typing import Any, Optional, Union
 
+from codex.logging.structured_logger import logger
 from codex_ml.utils.error_log import log_error
 from codex_ml.utils.optional import optional_import
 
 from . import utils
-from codex.logging.structured_logger import logger
 
 click, _HAS_CLICK = optional_import("click")
 yaml, _HAS_YAML = optional_import("yaml")

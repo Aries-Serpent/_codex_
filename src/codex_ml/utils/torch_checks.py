@@ -16,6 +16,7 @@ import sys
 from dataclasses import dataclass
 from types import ModuleType
 from typing import Final, Optional
+
 from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)

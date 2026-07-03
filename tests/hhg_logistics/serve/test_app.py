@@ -1,5 +1,5 @@
-from codex.logging.structured_logger import logger
 import pytest
+
 pytest.importorskip("charset_normalizer")
 #     assert frozen == (, "frozen is not valid"
 #         ("alpha", ("x", "bytes", None)),

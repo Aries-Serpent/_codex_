@@ -101,7 +101,7 @@ hazard.
 | 8 | `docs/guides/INDEX.md` \| `docs/guides/index.md` |
 | 9 | `docs/guides/QUICKSTART.md` \| `docs/guides/quickstart.md` |
 | 10 | `docs/security/INCIDENT_RESPONSE.md` \| `docs/security/incident_response.md` |
-| 11 | `docs/validation/Tokenization_Validation.md` \| `docs/validation/tokenization_Validation.md` |
+| 11 | `docs/validation/Tokenization_Validation.md` \| `docs/validation/tokenization_Validation.md` | <!-- pragma: allowlist secret -->
 | 12 | `.codex/reports/EXECUTIVE_SUMMARY.md` \| `.codex/reports/executive_summary.md` |
 | 13 | `reports/EXECUTIVE_SUMMARY.md` \| `reports/executive_summary.md` |
 

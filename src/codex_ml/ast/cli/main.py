@@ -18,10 +18,10 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Optional
 
+from codex.logging.structured_logger import logger
 from codex_ml.ast.analysis.registry import AnalyzerRegistry
 from codex_ml.ast.core.config import ASTConfig
 from codex_ml.ast.storage.sqlite_storage import ASTStorage
-from codex.logging.structured_logger import logger
 
 
 def get_storage(db_path: Optional[str] = None) -> ASTStorage:

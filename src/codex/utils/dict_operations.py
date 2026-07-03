@@ -12,7 +12,7 @@ Example:
     host = nested_get(config, 'db.host', default='localhost')
 """
 
-from typing import Any, Dict, Optional, TypeVar, List, Callable, Union
+from typing import Any, Dict, Optional, TypeVar, Union
 
 __all__ = [
     "safe_get",

@@ -7,6 +7,7 @@ Provides registration and execution of multiple analyzers on AST trees.
 import logging
 from typing import Any, Optional
 
+from codex.logging.structured_logger import logger
 from codex_ml.ast.analysis.base_analyzer import (
     ASTAnalyzer,
     ComplexityAnalyzer,
@@ -15,7 +16,6 @@ from codex_ml.ast.analysis.base_analyzer import (
     UnusedCodeAnalyzer,
 )
 from codex_ml.ast.core.node import Finding, StandardizedASTNode
-from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 

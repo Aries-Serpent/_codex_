@@ -13,10 +13,9 @@ Tests the BenchmarkRunner class and related utilities covering:
 
 import pytest
 
-
 # Import benchmark module
 try:
-    from codex.rag.benchmarks.runner import BenchmarkRunner, BenchmarkResult
+    from codex.rag.benchmarks.runner import BenchmarkResult, BenchmarkRunner
 
     RUNNER_AVAILABLE = True
 except ImportError:

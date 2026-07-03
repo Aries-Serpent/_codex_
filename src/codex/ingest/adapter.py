@@ -29,8 +29,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
 
-from .manifest import IngestManifest, parse_manifest
 from codex.logging.structured_logger import logger
+
+from .manifest import IngestManifest, parse_manifest
 
 logger = logging.getLogger(__name__)
 

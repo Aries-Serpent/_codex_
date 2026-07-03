@@ -60,7 +60,7 @@ Group 7          docs/agent/INDEX.md | docs/agent/index.md
 Group 8          docs/guides/INDEX.md | docs/guides/index.md
 Group 9          docs/guides/QUICKSTART.md | docs/guides/quickstart.md
 Group 10         docs/security/INCIDENT_RESPONSE.md | docs/security/incident_response.md
-Group 11         docs/validation/Tokenization_Validation.md | docs/validation/tokenization_Validation.md
+Group 11         docs/validation/Tokenization_Validation.md | docs/validation/tokenization_Validation.md  # pragma: allowlist secret
 Group 12         .codex/reports/EXECUTIVE_SUMMARY.md | .codex/reports/executive_summary.md
 Group 13         reports/EXECUTIVE_SUMMARY.md | reports/executive_summary.md
 ```

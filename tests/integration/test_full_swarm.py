@@ -17,6 +17,7 @@ For now, they serve as documentation and will be executed in CI.
 import sys
 import unittest
 from pathlib import Path
+
 from codex.logging.structured_logger import logger
 
 # Add project to path

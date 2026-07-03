@@ -9,7 +9,6 @@ Provides end-to-end document ingestion with:
 """
 
 import hashlib
-import logging
 import time
 from collections.abc import Callable, Sequence
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -17,6 +16,8 @@ from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
 from typing import Any, Optional
+
+from codex.logging.structured_logger import logger
 
 from .chunker import (
     Chunk,
@@ -33,8 +34,6 @@ from .validator import (
     ValidationConfig,
     ValidationResult,
 )
-
-from codex.logging.structured_logger import logger
 
 
 class IngestionStatus(Enum):

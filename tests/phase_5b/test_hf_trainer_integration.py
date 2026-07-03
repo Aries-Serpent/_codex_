@@ -16,8 +16,8 @@ Part of Phase 5B-II: Integration Test Development
 from __future__ import annotations
 
 import json
-import tempfile
 import logging
+import tempfile
 from unittest.mock import Mock, patch
 
 import pytest

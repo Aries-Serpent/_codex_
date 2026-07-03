@@ -7,8 +7,9 @@ and integration with the codebase automation.
 Coverage: 35+ additional tests to reach 200+ total
 """
 
-import pytest
 import time
+
+import pytest
 
 
 class TestGitHubActionsIntegration:

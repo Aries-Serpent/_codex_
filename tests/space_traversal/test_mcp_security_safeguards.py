@@ -8,7 +8,6 @@ import tempfile
 from pathlib import Path
 
 from scripts.space_traversal.detectors import mcp_security_safeguards
-from codex.logging.structured_logger import logger
 
 
 def test_detect_no_safeguards():

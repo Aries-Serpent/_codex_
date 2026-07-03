@@ -99,7 +99,7 @@ class GitHubHTTPClient:
 
         # Prepare headers
         headers = {
-            "Authorization": f"******",
+            "Authorization": "******",
             "Accept": _ACCEPT,
             "X-GitHub-Api-Version": _API_VERSION,
         }

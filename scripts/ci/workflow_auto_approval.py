@@ -139,7 +139,7 @@ def check_workflow_approvals() -> int:
             failed_count += 1
     
     print("\n" + "=" * 80)
-    print(f"WORKFLOW APPROVAL SUMMARY")
+    print("WORKFLOW APPROVAL SUMMARY")
     print(f"  ✓ Checked: {len(prs)} PRs")
     print(f"  ✓ Ready: {approved_count}")
     print(f"  ⚠ Action Required: {failed_count}")

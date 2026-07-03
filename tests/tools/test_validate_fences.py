@@ -7,7 +7,6 @@ Test module for validate fences.
 from pathlib import Path
 
 from tools import validate_fences
-from codex.logging.structured_logger import logger
 
 
 def write(tmp_path: Path, name: str, content: str) -> Path:

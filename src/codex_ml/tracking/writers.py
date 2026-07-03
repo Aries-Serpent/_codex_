@@ -21,7 +21,6 @@ import contextlib
 import json
 import logging
 import os
-import sys
 import threading
 import time
 from abc import ABC, abstractmethod
@@ -35,6 +34,7 @@ from typing import Any, Optional
 from urllib.parse import urlparse
 from uuid import uuid4
 
+from codex.logging.structured_logger import logger
 from codex_ml.logging.ndjson_logger import (
     DEFAULT_BACKUP_COUNT,
     DEFAULT_MAX_AGE_S,
@@ -45,7 +45,6 @@ from codex_ml.logging.ndjson_logger import (
 from codex_ml.logging.permissions import get_log_file_mode
 from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking_decision
 from codex_ml.utils.optional_dependencies import format_optional_dependency_error
-from codex.logging.structured_logger import logger
 
 DEFAULT_METRIC_SCHEMA_URI = "https://codexml.ai/schemas/run_metrics.schema.json"
 SUMMARY_SCHEMA_URI = "https://codexml.ai/schemas/tracking_component.schema.json"

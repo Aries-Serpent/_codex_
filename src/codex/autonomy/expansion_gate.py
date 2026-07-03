@@ -32,7 +32,6 @@ Blueprint: .codex/docs/AUTONOMY_BLUEPRINT.md — Phase 6
 
 from __future__ import annotations
 
-import logging
 from dataclasses import dataclass, field
 
 from codex.logging.structured_logger import logger

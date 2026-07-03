@@ -14,7 +14,6 @@ from pathlib import Path
 from typer.testing import CliRunner
 
 from codex.ast.cli import app
-from codex.logging.structured_logger import logger
 
 
 def test_ast_cli_help():

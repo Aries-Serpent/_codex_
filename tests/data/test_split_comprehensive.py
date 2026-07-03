@@ -10,10 +10,10 @@ Tests cover:
 
 from __future__ import annotations
 
+import tempfile
 from pathlib import Path
 
 import pytest
-import tempfile
 
 # Import module under test
 try:

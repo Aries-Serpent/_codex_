@@ -13,12 +13,12 @@ Use @pytest.mark.requires_torch for tests that need PyTorch.
 
 from __future__ import annotations
 
+import tempfile
 from pathlib import Path
 from typing import Any
 from unittest.mock import MagicMock
 
 import pytest
-import tempfile
 
 
 # Conditional imports for optional dependencies

@@ -16,6 +16,7 @@ import argparse
 import random
 import time
 from pathlib import Path
+
 from codex.logging.structured_logger import logger
 
 

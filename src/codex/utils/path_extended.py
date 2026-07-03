@@ -12,10 +12,8 @@ Example:
     ensure_path_exists(path)
 """
 
-import os
-import tempfile
 from pathlib import Path
-from typing import Optional, List, Pattern
+from typing import List, Optional
 
 __all__ = [
     "safe_path",

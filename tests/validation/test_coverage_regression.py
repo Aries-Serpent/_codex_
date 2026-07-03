@@ -12,6 +12,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from typing import Any
+
 from codex.logging.structured_logger import logger
 
 
@@ -110,7 +111,7 @@ class RegressionDetector:
             logger.info(f"🔴 REGRESSION DETECTED: Coverage dropped {abs(variance):.2f}%")
             logger.info(f"   Exceeds tolerance of {variance_tolerance}%")
         else:
-            logger.info(f"✅ No regression detected")
+            logger.info("✅ No regression detected")
             if variance >= 0:
                 logger.info(f"   Coverage improved by {variance:.2f}%")
             else:
@@ -124,7 +125,7 @@ class RegressionDetector:
         flakiness = quality_metrics.get("test_flakiness", 0)
         determinism = quality_metrics.get("test_determinism", 100)
 
-        logger.info(f"Quality Metrics:")
+        logger.info("Quality Metrics:")
         logger.info(f"  Pass Rate:              {test_pass_rate:.1f}%")
         logger.info(f"  Flakiness:              {flakiness:.1f}%")
         logger.info(f"  Determinism:            {determinism:.1f}%")

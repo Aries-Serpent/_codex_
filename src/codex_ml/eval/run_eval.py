@@ -14,10 +14,10 @@ import sys
 from collections.abc import Iterable
 from pathlib import Path
 
+from codex.logging.structured_logger import logger
 from codex_ml.utils.hf_pinning import HFModelUnavailableError
 
 from .evaluator import run_evaluator
-from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 

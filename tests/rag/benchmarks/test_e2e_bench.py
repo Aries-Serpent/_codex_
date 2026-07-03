@@ -13,10 +13,9 @@ Tests the benchmark_e2e_pipeline function and related utilities covering:
 
 import pytest
 
-
 # Import benchmark module
 try:
-    from codex.rag.benchmarks.e2e_bench import benchmark_e2e_pipeline, _run_complete_pipeline
+    from codex.rag.benchmarks.e2e_bench import _run_complete_pipeline, benchmark_e2e_pipeline
 
     E2E_BENCH_AVAILABLE = True
 except ImportError:

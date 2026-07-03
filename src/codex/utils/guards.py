@@ -11,7 +11,7 @@ Example:
     require_truthy(value, "config")
 """
 
-from typing import Any, Optional, Callable
+from typing import Any, Optional
 
 __all__ = [
     "require_not_empty",

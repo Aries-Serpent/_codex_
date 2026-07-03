@@ -11,13 +11,13 @@ AI Agency Policy Compliance: ✅
 
 from __future__ import annotations
 
+import tempfile
 from dataclasses import asdict
 from pathlib import Path
 from typing import TYPE_CHECKING
 from unittest.mock import MagicMock
 
 import pytest
-import tempfile
 
 if TYPE_CHECKING:
     pass

@@ -6,7 +6,6 @@ Strategy: Test methods that add coverage efficiently.
 """
 
 import pytest
-from codex.logging.structured_logger import logger
 
 
 class TestPhysicsOrchestratorUncoveredMethods:

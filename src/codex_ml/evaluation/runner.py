@@ -40,6 +40,7 @@ from collections.abc import Callable  # noqa: E402
 from dataclasses import dataclass  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import Any, Optional  # noqa: E402
+
 from codex.logging.structured_logger import logger
 
 try:

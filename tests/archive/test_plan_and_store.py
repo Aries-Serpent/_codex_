@@ -10,7 +10,6 @@ from pathlib import Path
 
 from codex.archive.api import restore, store
 from codex.archive.plan import build_plan
-from codex.logging.structured_logger import logger
 
 
 def test_build_plan_and_store(tmp_path: Path, monkeypatch) -> None:

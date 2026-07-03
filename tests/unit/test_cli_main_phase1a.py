@@ -19,7 +19,6 @@ from pathlib import Path
 from unittest.mock import patch
 
 import pytest
-from codex.logging.structured_logger import logger
 
 # Try to import from main module
 try:

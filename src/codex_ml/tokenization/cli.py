@@ -24,8 +24,8 @@ from collections.abc import Sequence
 from datetime import datetime, timezone
 from pathlib import Path
 
-from codex_ml.tokenization import sentencepiece_adapter
 from codex.logging.structured_logger import logger
+from codex_ml.tokenization import sentencepiece_adapter
 
 SentencePieceAdapter = sentencepiece_adapter.SentencePieceAdapter
 

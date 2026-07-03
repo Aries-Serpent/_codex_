@@ -8,14 +8,15 @@ Authority: Lane 3 Unified Documentation Agent
 """
 
 import json
-from pathlib import Path
-from typing import Dict, List, Tuple, Any, Optional
-from dataclasses import dataclass
 import logging
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 try:
     import jsonschema
-    from jsonschema import validate, ValidationError as JsonSchemaValidationError, Draft202012Validator
+    from jsonschema import Draft202012Validator, validate
+    from jsonschema import ValidationError as JsonSchemaValidationError
 except ImportError:
     raise ImportError("jsonschema module required. Install with: pip install jsonschema")
 

@@ -6,7 +6,6 @@ Comprehensive tests for all context management modules.
 
 import tempfile
 from pathlib import Path
-from codex.logging.structured_logger import logger
 
 
 class TestContextNormalizer:

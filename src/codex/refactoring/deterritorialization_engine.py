@@ -33,7 +33,6 @@ from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
 from typing import Any, Optional
-from codex.logging.structured_logger import logger
 
 LOGGER = logging.getLogger(__name__)
 

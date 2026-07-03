@@ -21,20 +21,25 @@
     "38:tests/test_rag_error_handling.py": 8,
     "38:tests/test_cli_pipeline_gap_fill.py": 2,
     "35:.codex/PR_5194_CI_REMEDIATION_MATRIX.md": 3,
-    "8:scripts/ci/phase_10_3_context_scorer.py": 4,
-    "8:scripts/ci/phase_8_1_enhanced_metrics_collector.py": 2,
-    "8:scripts/ci/phase_9_3_concurrent_executor.py": 4,
+    "8:scripts/ci/phase_10_3_context_scorer.py": 6,
+    "8:scripts/ci/phase_8_1_enhanced_metrics_collector.py": 3,
+    "8:scripts/ci/phase_9_3_concurrent_executor.py": 6,
     "9:/home/runner/work/_codex_/_codex_/.codex/PHASE_9_2_SECURITY_TESTS.py": 8,
     "9:/home/runner/work/_codex_/_codex_/.codex/ai_agent_toolkit.py": 2,
-    "11:/home/runner/work/_codex_/_codex_/.codex/phase_9_3_report_generator.py": 2,
-    "11:/home/runner/work/_codex_/_codex_/.codex/phase_9_3_routing_validator.py": 2,
-    "11:/home/runner/work/_codex_/_codex_/docs/agents/token_integration_examples/unified_security_scanner_example.py": 2,
-    "11:/home/runner/work/_codex_/_codex_/scripts/ci/codex_master_key_auto_approver.py": 4,
+    "11:/home/runner/work/_codex_/_codex_/.codex/phase_9_3_report_generator.py": 3,
+    "11:/home/runner/work/_codex_/_codex_/.codex/phase_9_3_routing_validator.py": 3,
+    "11:/home/runner/work/_codex_/_codex_/docs/agents/token_integration_examples/unified_security_scanner_example.py": 3,
+    "11:/home/runner/work/_codex_/_codex_/scripts/ci/codex_master_key_auto_approver.py": 5,
     "12:/home/runner/work/_codex_/_codex_/src/codex/brain/memory_sync.py": 8,
     "12:/home/runner/work/_codex_/_codex_/src/codex/cli/__init__.py": 2,
     "13:/home/runner/work/_codex_/_codex_/.codex/PHASE_9_2_SECURITY_TESTS.py": 10,
     "25:docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md \u2014 not updated in last commit (last touched": 4,
-    "30:ruff (src/ clean)": 1
+    "30:ruff (src/ clean)": 2,
+    "11:/home/runner/work/_codex_/_codex_/examples/chronicle_tips_example.py": 1,
+    "35:.codex/CAMPAIGN_LIVE_STATUS.md": 1,
+    "35:.codex/CAMPAIGN_VERIFICATION_CHECKLIST.md": 1,
+    "35:.codex/PHASE_8_3_3_PHASE_1_COMPLETION.md": 2,
+    "35:.codex/PHASE_8_4_3_IMPLEMENTATION_COMPLETE.md": 1
   },
   "circuit_state": {
     "6": "BROKEN",
@@ -45,10 +50,11 @@
     "37": "BROKEN",
     "38": "BROKEN",
     "25": "BROKEN",
-    "8": "OPEN",
+    "8": "BROKEN",
     "9": "BROKEN",
     "11": "OPEN",
     "12": "BROKEN",
-    "13": "BROKEN"
+    "13": "BROKEN",
+    "30": "OPEN"
   }
 }

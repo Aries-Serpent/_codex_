@@ -7,11 +7,11 @@ Classes:
   - SemanticIndexer: Build semantic indexes from documents
 """
 
-import json
 import hashlib
+import json
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
-from typing import Dict, List, Optional, Any
-from dataclasses import dataclass, field, asdict
+from typing import Any, Dict, List, Optional
 
 
 @dataclass

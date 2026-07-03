@@ -19,7 +19,6 @@ Level 4 MLOps gap closure:
 from __future__ import annotations
 
 import json
-import tempfile
 import logging
 import sqlite3
 import threading
@@ -27,6 +26,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional, Protocol, runtime_checkable
+
 from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)

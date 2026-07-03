@@ -6,8 +6,8 @@ PS-02 Enhancement: Tests for advanced bridge features:
 - Protocol encoding/decoding
 """
 
-import time
 import tempfile
+import time
 
 import pytest
 

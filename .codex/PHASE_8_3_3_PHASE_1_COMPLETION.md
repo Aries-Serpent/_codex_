@@ -48,7 +48,7 @@ Group 7:          docs/agent/INDEX.md | docs/agent/index.md
 Group 8:          docs/guides/INDEX.md | docs/guides/index.md
 Group 9:          docs/guides/QUICKSTART.md | docs/guides/quickstart.md
 Group 10:         docs/security/INCIDENT_RESPONSE.md | docs/security/incident_response.md
-Group 11:         docs/validation/Tokenization_Validation.md | docs/validation/tokenization_Validation.md
+Group 11:         docs/validation/Tokenization_Validation.md | docs/validation/tokenization_Validation.md  # pragma: allowlist secret
 Group 12:         .codex/reports/EXECUTIVE_SUMMARY.md | .codex/reports/executive_summary.md
 Group 13:         reports/EXECUTIVE_SUMMARY.md | reports/executive_summary.md
 ```
@@ -79,7 +79,7 @@ Group 7:  docs/agent/INDEX.md (4.8 KB) — kept over index.md (1.4 KB)
 Group 8:  docs/guides/INDEX.md (1.2 KB) — kept over index.md (1.1 KB)
 Group 9:  docs/guides/QUICKSTART.md (18.0 KB) — kept over quickstart.md (3.6 KB)
 Group 10: docs/security/incident_response.md (1.6 KB) — kept over INCIDENT_RESPONSE.md (202 B)
-Group 11: docs/validation/tokenization_Validation.md (1.3 KB) — kept over Tokenization_Validation.md (652 B)
+Group 11: docs/validation/tokenization_Validation.md (1.3 KB) — kept over Tokenization_Validation.md (652 B)  # pragma: allowlist secret
 Group 12: .codex/reports/EXECUTIVE_SUMMARY.md (4.6 KB) — kept over executive_summary.md (3.9 KB)
 Group 13: reports/EXECUTIVE_SUMMARY.md (4.6 KB) — kept over executive_summary.md (3.9 KB)
 ```

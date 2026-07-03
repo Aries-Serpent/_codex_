@@ -28,12 +28,13 @@ Usage::
 from __future__ import annotations
 
 import importlib
-import logging
 import threading
 import time
 import traceback
 import uuid
 from typing import Any
+
+from codex.logging.structured_logger import logger
 
 from .models import (
     BudgetUsed,
@@ -42,8 +43,6 @@ from .models import (
 )
 from .registry import SkillRegistry
 from .telemetry import emit_event
-
-from codex.logging.structured_logger import logger
 
 
 class PolicyViolation(Exception):

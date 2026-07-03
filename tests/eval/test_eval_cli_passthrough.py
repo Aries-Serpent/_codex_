@@ -9,8 +9,8 @@ from __future__ import annotations
 import sys
 import types
 
-from codex_ml.cli.entrypoints import eval_main
 from codex.logging.structured_logger import logger
+from codex_ml.cli.entrypoints import eval_main
 
 
 def test_eval_cli_env_override_and_passthrough(monkeypatch) -> None:

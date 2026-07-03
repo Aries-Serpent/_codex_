@@ -15,6 +15,7 @@ import re
 from typing import Any
 
 import pytest
+
  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 pytest.importorskip("hypothesis")
 
@@ -23,7 +24,6 @@ pytest.importorskip("hypothesis", reason="hypothesis required for property tests
 
 from hypothesis import given, settings
 from hypothesis import strategies as st
-from codex.logging.structured_logger import logger
 
 # --- Secrets Baseline Enforcement Tests ---
 

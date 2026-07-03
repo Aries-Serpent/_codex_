@@ -46,19 +46,19 @@ Top Vulnerable Packages:
 
 ### Results
 ```
-✓ Baseline secret scan clean
-  - .secrets.baseline: Present and maintained
-  - .secrets.new.baseline: Empty (no new secrets detected)
+✓ Baseline secret scan clean  # pragma: allowlist secret
+  - .secrets.baseline: Present and maintained  # pragma: allowlist secret
+  - .secrets.new.baseline: Empty (no new secrets detected)  # pragma: allowlist secret
   - Git history: No exposed credentials in commits
 
 ✓ No accidental commits
   - API keys: Not found in source code
-  - Tokens: Properly handled via environment variables
+  - Tokens: Properly handled via environment variables  # pragma: allowlist secret
   - Database credentials: Using config management
 
 ✓ Pre-commit hooks configured
-  - detect-secrets: Enabled in .pre-commit-*.yaml
-  - Secret detection: Active on commits
+  - detect-secrets: Enabled in .pre-commit-*.yaml  # pragma: allowlist secret
+  - Secret detection: Active on commits  # pragma: allowlist secret
 ```
 
 **Gate Status**: ✅ PASS
@@ -129,7 +129,7 @@ Top Vulnerable Packages:
 | Component | Status | Issues | Notes |
 |-----------|--------|--------|-------|
 | Dependency Security | ⚠️ CONDITIONAL | 27 CVEs | Immediate upgrade path available |
-| Secret Scanning | ✅ PASS | 0 secrets | Clean baseline; no new issues |
+| Secret Scanning | ✅ PASS | 0 secrets | Clean baseline; no new issues | <!-- pragma: allowlist secret -->
 | Code Quality | ⚠️ CONDITIONAL | 2 high, 8 medium | Bandit issues need review |
 | License Compliance | ✅ PASS | 0 blocking | LGPL disclosure recommended |
 | **Overall** | **⚠️ CONDITIONAL** | **Critical CVEs require remediation** | **Remediation path clear** |

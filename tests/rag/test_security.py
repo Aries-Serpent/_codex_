@@ -8,8 +8,9 @@ Phase 54: HIGH Priority Module Tests
 Coverage Target: src/rag 33% → 50%+
 """
 
-import pytest
 import tempfile
+
+import pytest
 
 
 class TestRAGInputSanitization:

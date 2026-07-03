@@ -15,7 +15,7 @@ import time
 import pytest
 
 from codex.auth.authenticator import Authenticator
-from codex.auth.exceptions import ( # pragma: allowlist secret
+from codex.auth.exceptions import (  # pragma: allowlist secret
     InvalidCredentialsError,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 )
 from codex.auth.token_manager import TokenManager

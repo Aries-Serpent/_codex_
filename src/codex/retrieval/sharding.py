@@ -15,6 +15,7 @@ import logging
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import Any, Optional
+
 from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)

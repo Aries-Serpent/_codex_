@@ -4,10 +4,10 @@ Tests for codex.archive.batch module.
 This module contains tests for batch restoration utilities.
 """
 
+import tempfile
 from pathlib import Path
 
 import pytest
-import tempfile
 
 
 class TestBatchItem:

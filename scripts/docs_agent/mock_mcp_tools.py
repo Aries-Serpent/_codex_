@@ -60,7 +60,7 @@ class SearchCodeMockGenerator(MockDataGenerator):
             "matches": random.randint(1, 5),
             "text_matches": [
                 {
-                    "object_url": f"https://api.github.com/repos/org/repo/code-search/1",
+                    "object_url": "https://api.github.com/repos/org/repo/code-search/1",
                     "object_type": "CodeSearchResultItem",
                     "property": "content",
                     "fragment": "def authenticate(username, password):\n    return oauth.validate(username, password)",
@@ -383,8 +383,8 @@ class ListWorkflowsMockGenerator(MockDataGenerator):
             "created_at": ListWorkflowsMockGenerator.random_iso_date(days_ago=random.randint(0, 365)),
             "updated_at": ListWorkflowsMockGenerator.random_iso_date(days_ago=random.randint(0, 30)),
             "url": f"https://api.github.com/repos/org/repo/actions/workflows/{random.randint(1000000, 9999999)}",
-            "html_url": f"https://github.com/org/repo/blob/main/.github/workflows/test.yml",
-            "badge_url": f"https://github.com/org/repo/workflows/CI/badge.svg",
+            "html_url": "https://github.com/org/repo/blob/main/.github/workflows/test.yml",
+            "badge_url": "https://github.com/org/repo/workflows/CI/badge.svg",
         }
     
     @staticmethod
@@ -412,7 +412,7 @@ class GetWorkflowRunMockGenerator(MockDataGenerator):
         return {
             "id": run_id,
             "name": random.choice(["CI Pipeline", "Tests", "Build & Deploy"]),
-            "node_id": f"MDg6Q2hlY2tSdW57MzEwMDF9",
+            "node_id": "MDg6Q2hlY2tSdW57MzEwMDF9",
             "head_branch": "main",
             "head_sha": GetWorkflowRunMockGenerator.random_sha(),
             "path": ".github/workflows/ci.yml",
@@ -498,7 +498,7 @@ class SearchRepositoriesMockGenerator(MockDataGenerator):
         """Generate repository item"""
         return {
             "id": random.randint(1000000, 999999999),
-            "node_id": f"MDEwOlJlcG9zaXRvcnkxMjk2MjY5",
+            "node_id": "MDEwOlJlcG9zaXRvcnkxMjk2MjY5",
             "name": f"repo-{random.randint(1, 1000)}",
             "full_name": f"org/repo-{random.randint(1, 1000)}",
             "private": False,

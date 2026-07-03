@@ -10,10 +10,10 @@ Phase: 3.2 - Safety Module Testing
 
 from __future__ import annotations
 
+import tempfile
 from unittest.mock import MagicMock, patch
 
 import pytest
-import tempfile
 
 try:
     from codex_ml.safety.moderation import (

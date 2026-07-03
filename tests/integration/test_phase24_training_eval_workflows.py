@@ -1,7 +1,8 @@
 """Phase 24 training/evaluation workflow tests."""
 
-import pytest
 import tempfile
+
+import pytest
 
 
 @pytest.mark.integration

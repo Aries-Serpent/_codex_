@@ -15,7 +15,6 @@ import json
 from unittest.mock import MagicMock, patch
 
 import pytest
-from codex.logging.structured_logger import logger
 
 try:
     import typer

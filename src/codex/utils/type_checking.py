@@ -13,7 +13,7 @@ Example:
         ...
 """
 
-from typing import TypeVar, Type, Union, Tuple, Optional, Any, Dict, Callable
+from typing import Any, Callable, Dict, Optional, Type, TypeVar
 
 __all__ = [
     "is_type",

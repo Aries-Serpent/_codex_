@@ -16,6 +16,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Optional
+
 from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)

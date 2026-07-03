@@ -9,16 +9,14 @@ Phase 4B Deliverable: Regression Tests
 """
 
 import json
-import pytest
 from typing import Any, Dict
-from unittest.mock import Mock
+
+import pytest
 
 from tests.agents.test_harness import (
     AgentTestHarness,
     ExecutionContext,
-    ExecutionStatus,
 )
-
 
 # ============================================================================
 # REGRESSION TEST AGENTS

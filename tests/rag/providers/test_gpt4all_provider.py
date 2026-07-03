@@ -13,7 +13,6 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-
 # Import the provider (may be optional if gpt4all not available)
 try:
     from codex.rag.providers.gpt4all_provider import GPT4AllEmbeddingProvider

@@ -7,7 +7,6 @@ Test module for tool trace.
 import json
 
 from codex_harness.tool_trace import ToolTraceLogger
-from codex.logging.structured_logger import logger
 
 
 def test_tool_trace_records_invocation(tmp_path):

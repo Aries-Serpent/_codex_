@@ -8,7 +8,6 @@ including cycle detection using Tarjan's algorithm and topological sorting.
 from typing import Any, Optional
 
 from codex_ml.ast.core.exceptions import CycleDetectedError
-from codex.logging.structured_logger import logger
 
 
 class DependencyGraph:

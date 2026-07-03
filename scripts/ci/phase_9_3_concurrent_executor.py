@@ -14,13 +14,11 @@ import asyncio
 import json
 import logging
 import time
-import uuid
 from dataclasses import dataclass, field, asdict
 from enum import Enum
-from typing import Dict, List, Optional, Set, Tuple, Any
-from datetime import datetime, timedelta
+from typing import Dict, List, Optional, Tuple, Any
+from datetime import datetime
 import networkx as nx
-from pathlib import Path
 
 # Configure logging
 logging.basicConfig(
@@ -551,7 +549,6 @@ class ConcurrentExecutor:
 
 def main():
     """Main entry point for testing"""
-    import sys
 
     # Create test task
     task = TaskMetadata(

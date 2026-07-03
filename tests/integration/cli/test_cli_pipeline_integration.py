@@ -1,7 +1,8 @@
 """CLI pipeline integration tests (Phase 23 Week 2)."""
 
-import pytest
 import tempfile
+
+import pytest
 
 from omegaconf import OmegaConf
 

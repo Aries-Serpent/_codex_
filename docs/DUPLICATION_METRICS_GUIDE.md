@@ -321,7 +321,7 @@ from codex.metrics.duplication import DuplicationDetector
 # Create detector with custom settings
 detector = DuplicationDetector(
     min_lines=6,           # Higher threshold
-    min_tokens=100,        # Token-based minimum
+    min_tokens=100,        # Token-based minimum  # pragma: allowlist secret
     ignore_trivial=True,   # Filter imports, empty classes
 )
 

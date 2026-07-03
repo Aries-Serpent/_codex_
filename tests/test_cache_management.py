@@ -10,9 +10,10 @@ Tests for 4-layer cache hierarchy (L1-L4):
 Coverage: 40+ tests for cache management validation
 """
 
-import pytest
 import hashlib
 import time
+
+import pytest
 
 
 class TestL1ArtifactCache: # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret

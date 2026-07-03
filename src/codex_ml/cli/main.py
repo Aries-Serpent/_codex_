@@ -16,6 +16,7 @@ from collections.abc import Iterable
 from pathlib import Path
 from types import ModuleType
 from typing import Annotated, Any, Optional
+
 from codex.logging.structured_logger import logger
 
 yaml: ModuleType | None

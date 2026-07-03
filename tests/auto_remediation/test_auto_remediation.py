@@ -14,7 +14,6 @@ from auto_remediation.fix_generator import (
     IntelligentFixGenerator,
 )
 from auto_remediation.verifier import FixVerifier
-from codex.logging.structured_logger import logger
 
 
 class TestFixGenerator:

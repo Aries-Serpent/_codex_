@@ -151,7 +151,7 @@ Session 4: Full Validation 🟡 STANDBY (optional, if time)
 | **Critical Issues Found** | 0 (all pre-validated or fixed) | ✅ |
 | **Success Rate** | 100% | ✅ |
 | **Blockers** | 0 | ✅ |
-| **Token Usage** | ~40K of 200K | ✅ (20% used) |
+| **Token Usage** | ~40K of 200K | ✅ (20% used) | <!-- pragma: allowlist secret -->
 | **Time Elapsed** | ~2 hours | On track |
 | **Remaining Estimate** | ~1.5–2.5 hours (Sessions 3–4) | On track |
 

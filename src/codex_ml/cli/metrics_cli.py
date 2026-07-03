@@ -16,6 +16,7 @@ import time
 from collections.abc import Iterable
 from pathlib import Path
 from typing import Any, Optional
+
 from codex.logging.structured_logger import logger
 
 Row = dict[str, Any]

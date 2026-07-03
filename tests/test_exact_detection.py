@@ -4,7 +4,6 @@ import tempfile
 from pathlib import Path
 
 import pytest
-from codex.logging.structured_logger import logger
 
 
 def test_exact_detector_finds_identical_files():

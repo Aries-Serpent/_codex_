@@ -18,7 +18,6 @@ import json
 from pathlib import Path
 
 import pytest
-from codex.logging.structured_logger import logger
 
 # Import the module to test
 try:

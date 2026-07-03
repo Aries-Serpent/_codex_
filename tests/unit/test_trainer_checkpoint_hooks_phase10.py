@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 pytest.importorskip("tensorboard")
 
 import json

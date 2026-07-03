@@ -33,8 +33,8 @@ from typing import TYPE_CHECKING, Any
 if TYPE_CHECKING:
     from codex_ml.training.unified_training import UnifiedTrainingConfig
 
-from codex_ml.data.reasoning_manifest import list_reasoning_corpora
 from codex.logging.structured_logger import logger
+from codex_ml.data.reasoning_manifest import list_reasoning_corpora
 
 _CURRICULUM_PRESETS = {
     "rehearsal": "rehearsal",

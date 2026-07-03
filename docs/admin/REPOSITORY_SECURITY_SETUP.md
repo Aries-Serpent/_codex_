@@ -130,10 +130,10 @@ Navigate to: **Settings** → **Secrets and variables** → **Actions**
 
 ### Required Secrets
 
-| Secret Name | Description | How to Generate |
+| Secret Name | Description | How to Generate | <!-- pragma: allowlist secret -->
 |-------------|-------------|-----------------|
 | `ENCRYPTION_KEY` | Fernet encryption key for CI/CD | See above |
-| `CODECOV_TOKEN` | Code coverage reporting (optional) | From codecov.io |
+| `CODECOV_TOKEN` | Code coverage reporting (optional) | From codecov.io | <!-- pragma: allowlist secret -->
 | `SLACK_WEBHOOK_URL` | Security alert notifications (optional) | From Slack workspace |
 
 ### Add Secret via CLI:
@@ -455,7 +455,7 @@ Navigate to: **Settings** → **Collaborators and teams**
 
 | Team | Role | Access Level | Responsibilities |
 |------|------|--------------|------------------|
-| Admins | Admin | Write + Admin | Repository settings, secret management |
+| Admins | Admin | Write + Admin | Repository settings, secret management | <!-- pragma: allowlist secret -->
 | Security Team | Maintain | Write | Security reviews, vulnerability response |
 | Developers | Write | Write | Code contributions, PR reviews |
 | Bots | Write | Write | Copilot, Dependabot, automated PRs |
@@ -703,7 +703,7 @@ For questions or updates, contact: security@localhost
 | Critical Vulnerability SLA | <24h response | <24h | 🟢 |
 | High Vulnerability SLA | <48h response | <48h | 🟢 |
 | Pre-commit Hook Adoption | Team-wide | 100% | 🟢 |
-| Secret Detection Rate | 100% | 100% | 🟢 |
+| Secret Detection Rate | 100% | 100% | 🟢 | <!-- pragma: allowlist secret -->
 | Encryption Algorithm Support | 3 algorithms | ≥3 | 🟢 |
 | Branch Protection Compliance | main + 0D_base_ | 100% critical branches | 🟢 |
 | Quarterly Security Audit | Scheduled | 4/year | 🟢 |
@@ -714,10 +714,10 @@ For questions or updates, contact: security@localhost
 
 | Principle | Application | Implementation |
 |-----------|-------------|----------------|
-| Path 🛤️ | Systematic security hardening progression | 10-phase setup: Settings → Secrets → Branch Protection → Scanning → Monitoring |
-| Fields 🔄 | Repository state transformation to secure baseline | Unsecured → Monitoring enabled → Secrets protected → Compliance enforced |
+| Path 🛤️ | Systematic security hardening progression | 10-phase setup: Settings → Secrets → Branch Protection → Scanning → Monitoring | <!-- pragma: allowlist secret -->
+| Fields 🔄 | Repository state transformation to secure baseline | Unsecured → Monitoring enabled → Secrets protected → Compliance enforced | <!-- pragma: allowlist secret -->
 | Patterns 👁️ | Continuous security posture observation | Iteration-cycle scans, continuous alert monitoring, milestone audits |
-| Redundancy 🔀 | Multi-layer security defense | Pre-commit hooks + CI scans + CodeQL + Dependabot + Secret scanning |
+| Redundancy 🔀 | Multi-layer security defense | Pre-commit hooks + CI scans + CodeQL + Dependabot + Secret scanning | <!-- pragma: allowlist secret -->
 | Balance ⚖️ | Security rigor vs developer velocity | Automated security checks with clear bypass procedures for emergencies |
 
 ---
@@ -730,7 +730,7 @@ For questions or updates, contact: security@localhost
 | Encryption Key Generation | ⚡⚡⚡⚡⚡ | Critical - protects all encrypted data at rest |
 | Branch Protection Setup | ⚡⚡⚡⚡⚡ | Essential - prevents unauthorized/unreviewed changes to production |
 | Security Scanning Configuration | ⚡⚡⚡⚡ | High priority - automated detection of vulnerabilities |
-| Pre-commit Hook Deployment | ⚡⚡⚡⚡ | Important - prevents secrets from entering repository |
+| Pre-commit Hook Deployment | ⚡⚡⚡⚡ | Important - prevents secrets from entering repository | <!-- pragma: allowlist secret -->
 | Monitoring & Alerting | ⚡⚡⚡⚡ | Critical for incident response |
 | Team Permissions & CODEOWNERS | ⚡⚡⚡⚡ | Ensures human oversight of sensitive changes |
 | Dependency Management | ⚡⚡⚡ | Ongoing maintenance task |

@@ -32,7 +32,6 @@ Quick start::
 from __future__ import annotations
 
 import functools
-import logging
 import random
 import time
 from collections.abc import Callable

@@ -7,19 +7,16 @@ token validation, and rate-limit handling.
 from __future__ import annotations
 
 import json
-import logging
 import os
-import sys
 import time
 import urllib.error
 import urllib.request
 from typing import Any
 
+from codex.logging.structured_logger import logger
 from scripts.ci._token_resolver import get_token
 
 from . import url_utils
-
-from codex.logging.structured_logger import logger
 
 _GITHUB_API = "https://api.github.com"
 _ACCEPT = "application/vnd.github+json"
@@ -121,7 +118,7 @@ class APIClient:
             req = urllib.request.Request(
                 _validated_github_api_url(f"{_GITHUB_API}/user"),
                 headers={
-                    "Authorization": f"******",
+                    "Authorization": "******",
                     "Accept": "application/vnd.github+json",
                     "X-GitHub-Api-Version": _API_VERSION,
                 },
@@ -198,7 +195,7 @@ class APIClient:
         req = urllib.request.Request(
             url,
             headers={
-                "Authorization": f"******",
+                "Authorization": "******",
                 "Accept": _ACCEPT,
                 "X-GitHub-Api-Version": _API_VERSION,
             },
@@ -252,7 +249,7 @@ class APIClient:
                 data=data,
                 method=method,
                 headers={
-                    "Authorization": f"******",
+                    "Authorization": "******",
                     "Accept": _ACCEPT,
                     "X-GitHub-Api-Version": _API_VERSION,
                     "Content-Type": "application/json",

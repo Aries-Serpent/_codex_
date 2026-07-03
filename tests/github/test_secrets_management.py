@@ -15,6 +15,7 @@ from __future__ import annotations
 import base64
 
 import pytest
+
  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
   # pragma: allowlist secret
 # ─────────────────────────────────────────────────────────────────────────────

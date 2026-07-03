@@ -126,7 +126,7 @@
 | Resource | Budget | Used | Remaining |
 |----------|--------|------|-----------|
 | **Session Time** | 59 min | 51 min | 8 min |
-| **Token Budget** | 200K | ~60K | 140K |
+| **Token Budget** | 200K | ~60K | 140K | <!-- pragma: allowlist secret -->
 | **Agents Deployed** | 4 | 4 | — |
 | **Agents Complete** | — | 3 | 1 |
 

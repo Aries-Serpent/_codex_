@@ -8,12 +8,12 @@ Authority: Lane 3 Unified Documentation Agent
 """
 
 import json
+import logging
 import re
-from pathlib import Path
-from typing import Dict, List, Tuple, Any, Optional
 from dataclasses import dataclass
 from datetime import datetime
-import logging
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 logger = logging.getLogger(__name__)
 

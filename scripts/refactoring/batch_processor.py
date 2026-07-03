@@ -13,12 +13,10 @@ from __future__ import annotations
 
 import json
 import logging
-import subprocess
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 import sys
-import os
 
 logging.basicConfig(
     level=logging.INFO,
@@ -173,7 +171,7 @@ class BatchProcessor:
         # - pytest tests/
         # - circular import check
         
-        logger.info(f"  ✓ Validation passed")
+        logger.info("  ✓ Validation passed")
         return True
 
     def generate_report(self, phase: int) -> str:

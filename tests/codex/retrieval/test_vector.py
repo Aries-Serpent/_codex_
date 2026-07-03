@@ -1,9 +1,9 @@
 """Tests for codex/retrieval/vector.py module."""
 
+import tempfile
 from unittest.mock import patch
 
 import pytest
-import tempfile
 
 
 class TestRetrievalVectorImports:

@@ -12,7 +12,6 @@ Target test count: 100+ tests
 
 import io
 import os
-import sys
 import tempfile
 import threading
 import time
@@ -21,6 +20,7 @@ from pathlib import Path
 from unittest.mock import Mock
 
 import pytest
+
 from codex.logging.structured_logger import logger
 
 

@@ -10,7 +10,7 @@ Example:
         ...
 """
 
-from typing import Any, Callable, TypeVar, Optional
+from typing import Any, Callable, TypeVar
 
 __all__ = [
     "default_factory",

@@ -298,7 +298,7 @@ def generate_edge_case_analysis(results: Dict) -> str:
                 edge_case_map[result['edge_case_type']] = []
             edge_case_map[result['edge_case_type']].append(result)
     
-    report = f"""# EDGE CASE ANALYSIS
+    report = """# EDGE CASE ANALYSIS
 **Phase 9.3 TIER 1 Semantic Routing Validation**  
 Generated: 2026-07-07T14:30:00Z
 

@@ -24,7 +24,6 @@ import shutil
 import subprocess
 from pathlib import Path
 from typing import Any, Optional
-from codex.logging.structured_logger import logger
 
 LOGGER = logging.getLogger(__name__)
 

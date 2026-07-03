@@ -8,7 +8,7 @@ Example:
     validate_config(config, {'db': (dict, True), 'port': (int, False)})
 """
 
-from typing import Any, Dict, Type, Tuple, Optional, List
+from typing import Any, Dict, List, Tuple, Type
 
 __all__ = [
     "validate_config",

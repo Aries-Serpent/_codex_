@@ -13,7 +13,6 @@ from __future__ import annotations
 
 import ast
 import logging
-import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
@@ -182,30 +181,30 @@ class ModuleRefactorer:
                 f.write(f"from .{class_name.lower()} import {class_name}\n")
             f.write(f"\n__all__ = {created_modules}\n")
         
-        logger.info(f"  Created: __init__.py")
+        logger.info("  Created: __init__.py")
         return True
 
     def _refactor_functional_modules(self) -> bool:
         """Group functions by concern/feature."""
-        logger.info(f"  Strategy: Functional modules (group by concern)")
+        logger.info("  Strategy: Functional modules (group by concern)")
         # Implementation would group functions intelligently
         return True
 
     def _refactor_hybrid_split(self) -> bool:
         """Create separate directories for classes and functions."""
-        logger.info(f"  Strategy: Hybrid split (classes + functions)")
+        logger.info("  Strategy: Hybrid split (classes + functions)")
         # Implementation would create models/ and handlers/ directories
         return True
 
     def _refactor_test_split(self) -> bool:
         """Split test file by test class."""
-        logger.info(f"  Strategy: Test split (by test class)")
+        logger.info("  Strategy: Test split (by test class)")
         # Implementation would group test classes
         return True
 
     def _refactor_split_by_size(self) -> bool:
         """Split file arbitrarily to meet size constraint."""
-        logger.info(f"  Strategy: Split by size")
+        logger.info("  Strategy: Split by size")
         # Implementation would split file proportionally
         return True
 
@@ -244,10 +243,10 @@ def main():
         refactorer = ModuleRefactorer(filepath, output_dir)
         success = refactorer.refactor()
         if success:
-            print(f"✓ Refactoring completed successfully")
+            print("✓ Refactoring completed successfully")
             print(f"  Output: {output_dir}")
         else:
-            print(f"✗ Refactoring failed")
+            print("✗ Refactoring failed")
             sys.exit(1)
 
 

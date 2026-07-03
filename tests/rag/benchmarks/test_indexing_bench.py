@@ -13,13 +13,12 @@ Tests the benchmark_indexing function covering:
 
 import pytest
 
-
 # Import benchmark module
 try:
     from codex.rag.benchmarks.indexing_bench import (
-        benchmark_indexing,
-        _generate_test_corpus,
         _build_index,
+        _generate_test_corpus,
+        benchmark_indexing,
     )
 
     INDEXING_BENCH_AVAILABLE = True

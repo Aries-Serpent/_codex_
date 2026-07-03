@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import hashlib
-import tempfile
 import json
 import time
 from collections.abc import Iterable, Mapping

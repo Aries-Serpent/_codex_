@@ -14,7 +14,6 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-
 # Import the provider (may be optional if llama-cpp-python not available)
 try:
     from codex.rag.providers.llamacpp_provider import LlamaCppEmbeddingProvider

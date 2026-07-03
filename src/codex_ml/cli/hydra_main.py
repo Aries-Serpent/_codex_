@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+
 from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)

@@ -14,19 +14,21 @@ Test Categories:
 """
 
 import asyncio
-import pytest
 import time
 from datetime import datetime
+
+import pytest
+
 from scripts.cognitive.ooda_loop_executor import (
-    OODAExecutor,
-    OODAPhase,
-    ObservationData,
     ActionResult,
     ContextData,
+    ContextProvider,
     DegradationLevel,
+    ObservationData,
+    OODAExecutor,
+    OODAPhase,
     RiskLevel,
     StateProvider,
-    ContextProvider,
 )
 
 

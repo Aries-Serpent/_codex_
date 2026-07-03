@@ -29,6 +29,7 @@ import runpy
 import sys
 from importlib import import_module
 from typing import Any, NoReturn, Optional
+
 from codex.logging.structured_logger import logger
 
 try:  # pragma: no cover - structured logging is optional offline

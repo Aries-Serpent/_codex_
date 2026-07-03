@@ -1,4 +1,3 @@
-from codex.logging.structured_logger import logger
 """
 Tests for codex.archive.detect module.
 

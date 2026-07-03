@@ -59,7 +59,6 @@ AfterMath session-completion cycle.
 from __future__ import annotations
 
 import argparse
-from codex.logging.structured_logger import logger
 import sys
 import urllib.error
 import urllib.request
@@ -71,6 +70,7 @@ from codex.github.cognitive_brain_integration import CognitiveBrainIntegration
 from codex.github.discussion_manager import DiscussionManager
 from codex.github.git_operations import GitOperations
 from codex.github.pull_request_manager import PullRequestManager
+from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 

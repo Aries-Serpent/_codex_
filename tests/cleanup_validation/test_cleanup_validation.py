@@ -10,6 +10,7 @@ Tests avoid slow subprocess calls that can timeout in parallel test execution.
 from pathlib import Path
 
 import pytest
+
 from codex.logging.structured_logger import logger
 
 # ============================================================================

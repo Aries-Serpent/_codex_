@@ -17,13 +17,13 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Optional
 
+from codex.logging.structured_logger import logger
 from codex_ml.config import load as cfg_load
 from codex_ml.data.simple_dataset import Sample, SimpleDataset
 from codex_ml.eval import evaluator
 from codex_ml.modeling import model_factory
 from codex_ml.tracking import mlflow_wrapper
 from codex_ml.training import loop as training_loop
-from codex.logging.structured_logger import logger
 
 
 @dataclass

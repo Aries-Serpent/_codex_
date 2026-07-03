@@ -101,7 +101,7 @@
 
 ✓ GitHub Actions workflow references
   - Actions used: Standard GitHub-verified actions
-  - Secrets handling: Using GITHUB_TOKEN appropriately
+  - Secrets handling: Using GITHUB_TOKEN appropriately  # pragma: allowlist secret
   - Permissions: Properly scoped in workflow files
 
 ✓ Session 2 & 3 workflow integrity
@@ -126,7 +126,7 @@ Deployment Checklist:
   ✅ Documentation: Comprehensive and accurate
   ✅ CI/CD pipelines: All workflows valid
   ✅ Git state: Clean working directory
-  ✅ Secret scanning: No exposed credentials
+  ✅ Secret scanning: No exposed credentials  # pragma: allowlist secret
 
 ⚠️ BLOCKERS FOR PRODUCTION:
   ⚠️ 27 CVEs in dependencies (CRITICAL - must remediate)

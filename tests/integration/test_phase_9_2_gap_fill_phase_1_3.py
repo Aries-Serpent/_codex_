@@ -20,10 +20,10 @@ sys.path.insert(0, str(repo_root / "scripts" / "ci"))
 from phase_9_2_cascade_orchestrator import (
     CascadeOrchestrator,
     FailureLog,
-    FixStatus,
-    PatternDetector,
     FixExecutor,
+    FixStatus,
     Pattern,
+    PatternDetector,
 )
 from phase_9_2_pattern_router import PatternRouter
 
@@ -335,7 +335,7 @@ class TestErrorPathsCoverage:
         duration = time.time() - start_time
         
         # Should evaluate all 12 patterns quickly
-        assert duration < 0.5, f"Should complete <500ms with 12 patterns"
+        assert duration < 0.5, "Should complete <500ms with 12 patterns"
 
 
 class TestAdvancedScenarios:

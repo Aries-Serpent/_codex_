@@ -22,8 +22,8 @@ from .github_client import (
     cache_get,
     cache_set,
     code_search,
-    gh_get,
     get_text,
+    gh_get,
     list_branches,
     most_recent_branch,
 )

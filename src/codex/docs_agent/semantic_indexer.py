@@ -8,11 +8,12 @@ Authority: Lane 3 Unified Documentation Agent
 """
 
 import json
-import numpy as np
-from pathlib import Path
-from typing import Dict, List, Any, Optional
-from dataclasses import dataclass
 import logging
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+import numpy as np
 
 logger = logging.getLogger(__name__)
 
@@ -314,7 +315,7 @@ class SemanticIndexer:
         metadata_file = input_path.with_suffix('.json')
         
         if not index_file.exists() or not metadata_file.exists():
-            logger.error(f"Index files not found")
+            logger.error("Index files not found")
             return False
         
         try:

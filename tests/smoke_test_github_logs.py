@@ -6,6 +6,7 @@ Tests basic functionality without requiring actual GitHub API access.
 
 import os
 import sys
+
 from codex.logging.structured_logger import logger
 
 # Add src to path

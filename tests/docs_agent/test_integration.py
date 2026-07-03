@@ -8,14 +8,15 @@ Target: 100+ integration tests
 Authority: Lane 3 Unified Documentation Agent
 """
 
-import pytest
 import json
+
+import pytest
 
 # Import docs_agent modules
 from codex.docs_agent import (
     document_processor,
-    semantic_indexer,
     mcp_bridge,
+    semantic_indexer,
 )
 
 

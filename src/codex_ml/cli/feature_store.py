@@ -33,9 +33,9 @@ except ImportError as e:
 
 import builtins
 
+from codex.logging.structured_logger import logger
 from codex_ml.features.feature_store import FeatureGroup, FeatureStore
 from codex_ml.features.monitoring import FeatureHealthMonitor
-from codex.logging.structured_logger import logger
 
 app = typer.Typer(
     name="feature-store",

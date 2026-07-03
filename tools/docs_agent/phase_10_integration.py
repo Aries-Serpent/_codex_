@@ -150,7 +150,7 @@ if __name__ == "__main__":
     print(f"Session Integration: {len(checkpoint)} sections defined")
 
     memory = integration.memory_consolidation_integration()
-    print(f"Memory Integration: STM and LTM patterns with record ID references")
+    print("Memory Integration: STM and LTM patterns with record ID references")
 
     ooda = integration.ooda_loop_integration()
     print(f"OODA Integration: {len(ooda['ooda_loop_steps'])} steps using structured tools")

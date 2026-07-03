@@ -8,7 +8,6 @@ Provides RESTful API endpoints for RAG operations:
 - Get statistics and metrics
 """
 
-import logging
 import os
 import re
 from datetime import datetime, timezone

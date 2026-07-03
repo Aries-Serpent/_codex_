@@ -11,7 +11,6 @@ import json
 from pathlib import Path
 
 from codex.archive.backend import ArchiveConfig, ArchiveDAL
-from codex.logging.structured_logger import logger
 
 
 def _dal(tmp_path: Path) -> ArchiveDAL:

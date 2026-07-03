@@ -19,6 +19,7 @@ import json
 from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any, Optional
+
 from codex.logging.structured_logger import logger
 
 

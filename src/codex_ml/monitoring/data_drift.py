@@ -54,6 +54,7 @@ import math
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from typing import Any, Sequence
+
 from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)

@@ -13,10 +13,10 @@ Tests cover:
 
 from __future__ import annotations
 
+import tempfile
 from unittest.mock import Mock, patch
 
 import pytest
-import tempfile
 
 from codex_ml.training.unified_training import (
     ContinualPhase,

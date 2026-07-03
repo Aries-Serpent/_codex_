@@ -510,7 +510,7 @@ For each script in the refactoring list:
     print("\n" + "="*80)
     print("PHASE 4.1 ANALYSIS COMPLETE")
     print("="*80)
-    print(f"\n📊 Summary Statistics:")
+    print("\n📊 Summary Statistics:")
     print(f"  Total Python Scripts: {summary['total_scripts_in_repo']:,}")
     print(f"  Scripts Needing Refactoring: {summary['scripts_needing_refactoring']}")
     print(f"  Already Using Utility: {summary['scripts_already_refactored']}")
@@ -518,15 +518,15 @@ For each script in the refactoring list:
     print(f"  Estimated Effort: {summary['estimated_effort_hours']:.1f} hours")
     print(f"  Coverage: {summary['coverage_percentage']:.2f}%")
     
-    print(f"\n📋 Refactoring Breakdown:")
+    print("\n📋 Refactoring Breakdown:")
     print(f"  Add Utility Basic: {refactoring_breakdown['add_utility_basic']['count']}")
     print(f"  Add Utility Elevated: {refactoring_breakdown['add_utility_elevated']['count']}")
     print(f"  Replace Inline Chains: {refactoring_breakdown['replace_inline_chains']['count']}")
     print(f"  Replace Hardcoded: {refactoring_breakdown['replace_hardcoded']['count']}")
     
-    print(f"\n✅ Reports generated successfully!")
-    print(f"  📄 JSON: .codex/PHASE_4_SCRIPT_REFACTORING.json")
-    print(f"  📄 Markdown: .codex/PHASE_4_SCRIPT_REFACTORING.md")
+    print("\n✅ Reports generated successfully!")
+    print("  📄 JSON: .codex/PHASE_4_SCRIPT_REFACTORING.json")
+    print("  📄 Markdown: .codex/PHASE_4_SCRIPT_REFACTORING.md")
 
 if __name__ == '__main__':
     main()

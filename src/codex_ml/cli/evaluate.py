@@ -11,6 +11,7 @@ from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
+from codex.logging.structured_logger import logger
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,
     capture_exceptions,
@@ -28,7 +29,6 @@ from codex_ml.registry.models import get_model
 from codex_ml.utils.checkpoint import load_checkpoint
 from codex_ml.utils.optional import optional_import
 from codex_ml.utils.yaml_support import MissingPyYAMLError, YAMLErrorType, safe_load
-from codex.logging.structured_logger import logger
 
 try:
     from codex_ml.safety import SafetyConfig, sanitize_prompt

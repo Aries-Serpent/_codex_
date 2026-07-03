@@ -8,7 +8,7 @@ import re
 import sys
 from pathlib import Path
 from collections import defaultdict
-from typing import List, Tuple, Dict
+from typing import Dict
 
 class TestPatternValidator:
     def __init__(self, test_dir: Path = Path("tests")):

@@ -8,6 +8,7 @@ Modules: checkpoint_manager, saas_integration
 Pattern: 100% semantic assertions, 5+ per test, comprehensive edge cases
 """
 
+import tempfile
 from dataclasses import dataclass
 from datetime import datetime
 from typing import (  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
@@ -18,7 +19,6 @@ from typing import (  # pragma: allowlist secret # pragma: allowlist secret # pr
 
 # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 import pytest
-import tempfile
 
 
 @dataclass

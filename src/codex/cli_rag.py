@@ -19,6 +19,7 @@ import typer
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.table import Table
+
 from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)

@@ -1,4 +1,3 @@
-from codex.logging.structured_logger import logger
 #         )
 # Test module for mcp cli.
 # 

@@ -11,7 +11,6 @@ Output: Continuous OODA loop execution with metrics
 """
 
 import json
-import logging
 import time
 import uuid
 from concurrent.futures import ThreadPoolExecutor
@@ -20,12 +19,12 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional
 
+from codex.logging.structured_logger import logger
+
 from .ooda_actor import ExecutionReport, OODAactor
 from .ooda_decider import DecisionDirective, OODADecider
 from .ooda_observer import Observable, OODAObserver
 from .ooda_orienter import OODAOrienter, Orientation
-
-from codex.logging.structured_logger import logger
 
 
 @dataclass

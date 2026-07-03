@@ -29,9 +29,9 @@ import sqlite3
 import sys
 import time
 from dataclasses import dataclass, asdict
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 from collections import Counter
 import re
 
@@ -477,10 +477,10 @@ def main():
         logger.info(f"Loaded session metadata from {args.session_metadata}")
     elif args.json_metadata:
         session_metadata = json.loads(args.json_metadata)
-        logger.info(f"Using inline JSON metadata")
+        logger.info("Using inline JSON metadata")
     else:
         session_metadata = extract_session_metadata()
-        logger.info(f"Extracted session metadata from environment")
+        logger.info("Extracted session metadata from environment")
 
     # Initialize scorer
     scorer = ContextScorer(ltm_db_path=args.ltm_db, pattern_file=args.patterns)

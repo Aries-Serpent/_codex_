@@ -14,6 +14,7 @@ import subprocess
 import sys
 from pathlib import Path
 from typing import Any
+
 from codex.logging.structured_logger import logger
 
 
@@ -48,7 +49,7 @@ class DeterminismValidator:
                 "tests/",
                 "--cov=src",
                 "--cov-report=json",
-                f"--cov-report=term-missing",
+                "--cov-report=term-missing",
                 "-v",
                 "--tb=short",
                 "-x",

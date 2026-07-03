@@ -14,8 +14,8 @@ Example:
 """
 
 import logging
-from typing import Any, Optional, Callable, Type, TypeVar, Tuple
 from contextlib import contextmanager
+from typing import Callable, Optional, Tuple, TypeVar
 
 __all__ = [
     "log_error",

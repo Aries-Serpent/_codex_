@@ -6,7 +6,6 @@ and related classes for physics-inspired software development guidance.
 """
 
 from unittest.mock import patch
-from codex.logging.structured_logger import logger
 
 
 class TestRequirementVariable:

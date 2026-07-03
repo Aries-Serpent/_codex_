@@ -6,8 +6,9 @@ Test module for loader registry.
 
 from __future__ import annotations
 
-import pytest
 import tempfile
+
+import pytest
 
 
 def test_register_and_get_model():

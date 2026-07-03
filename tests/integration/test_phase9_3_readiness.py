@@ -9,8 +9,9 @@ Authority: Copilot Agent (D-tier autonomy)
 Status: Production test suite
 """
 
-import pytest
 from pathlib import Path
+
+import pytest
 
 
 class TestPhase92Deliverables:

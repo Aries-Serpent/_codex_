@@ -14,12 +14,10 @@ import json
 import logging
 import time
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from enum import Enum
 from typing import Any, Callable, Dict, List, Optional, Tuple
-from unittest.mock import Mock
-
 
 logger = logging.getLogger(__name__)
 

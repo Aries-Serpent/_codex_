@@ -10,7 +10,6 @@ Tests cover:
 
 import json
 from pathlib import Path
-from codex.logging.structured_logger import logger
 
 
 class TestBehaviorComparator:

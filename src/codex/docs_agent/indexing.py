@@ -7,9 +7,9 @@ Classes:
   - HistoryTracker: Track schema migrations and versioning
 """
 
-from typing import Dict, List, Set, Optional, Tuple
-from collections import defaultdict
 import re
+from collections import defaultdict
+from typing import Dict, List, Optional, Set, Tuple
 
 
 class FullTextIndexer:

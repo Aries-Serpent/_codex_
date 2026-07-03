@@ -344,7 +344,7 @@ class SemanticRoutingValidator:
             'name': 'Deprecated agent handling',
             'severity': 'high',
             'description': f'Found {len(self.archived_agents)} archived agents still in registry',
-            'example': f'Agents like energy-conversion-agent are archived but queryable',
+            'example': 'Agents like energy-conversion-agent are archived but queryable',
             'impact': 'Queries may route to unavailable agents; users get errors',
             'mitigation': 'Filter archived agents from routing; redirect to active replacements',
         })

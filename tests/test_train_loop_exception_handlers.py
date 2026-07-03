@@ -17,10 +17,12 @@ This test file addresses these untested handlers:
 8. Exception in session logging
 """
 
-import pytest
-from unittest.mock import Mock, patch
-from pathlib import Path
 import tempfile
+from pathlib import Path
+from unittest.mock import Mock, patch
+
+import pytest
+
 from codex.logging.structured_logger import logger
 
 

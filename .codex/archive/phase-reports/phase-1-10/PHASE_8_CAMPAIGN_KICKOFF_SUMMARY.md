@@ -336,7 +336,7 @@ unified-doc   repository-org   cross-platform   packaging-
 ```
 Campaign Authority: @mbaetiong (ORG/REPO Owner)
 Authorization Level: FULL D-TIER AUTONOMY
-Token Access: CODEX_MASTER_KEY + CODEX_BACKUP_KEY (unrestricted)
+Token Access: CODEX_MASTER_KEY + CODEX_BACKUP_KEY (unrestricted)  # pragma: allowlist secret
 Decision Authority: GO CONTINUE on all gates
 Multi-Agent Delegation: APPROVED for all 4 tracks
 Parallel Execution: APPROVED (maximum parallelization)

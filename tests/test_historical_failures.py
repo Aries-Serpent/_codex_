@@ -12,6 +12,7 @@ import sys
 from pathlib import Path
 
 import pytest
+
 from codex.logging.structured_logger import logger
 
 # Add agent to path

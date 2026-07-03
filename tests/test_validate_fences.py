@@ -13,7 +13,6 @@ from pathlib import Path
 import pytest
 
 from tools import validate_fences
-from codex.logging.structured_logger import logger
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "tools" / "validate_fences.py"

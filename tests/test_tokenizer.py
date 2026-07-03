@@ -49,7 +49,6 @@ if "transformers" not in sys.modules:
     sys.modules["transformers"] = transformers_stub
 
 from codex_ml.tokenization.adapter import HFTokenizerAdapter, WhitespaceTokenizer
-from codex.logging.structured_logger import logger
 
 
 @pytest.mark.tokenizer

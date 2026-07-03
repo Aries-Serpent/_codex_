@@ -25,16 +25,13 @@ Notes:
 
 from __future__ import annotations
 
-import logging
-
-from codex.logging.structured_logger import logger
-
 import argparse  # noqa: E402
 import json  # noqa: E402
 import os  # noqa: E402
 import re  # noqa: E402
 import sqlite3  # noqa: E402
-import sys  # noqa: E402
+
+from codex.logging.structured_logger import logger
 
 try:
     from codex.db.sqlite_patch import auto_enable_from_env

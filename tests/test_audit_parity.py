@@ -25,6 +25,7 @@ import json
 import subprocess
 import sys
 from pathlib import Path
+
 from codex.logging.structured_logger import logger
 
 ROOT = Path(__file__).resolve().parents[1]

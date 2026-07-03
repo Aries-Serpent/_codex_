@@ -1,4 +1,3 @@
-from codex.logging.structured_logger import logger
 #     assert f", "Condition must be true"
 #     assert f", "Condition must be true"
 # Test module for archive plan apply.

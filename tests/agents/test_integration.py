@@ -9,21 +9,14 @@ Phase 4B Deliverable: Integration Tests
 """
 
 import json
-import pytest
 from typing import Any, Dict, List
-from unittest.mock import Mock, MagicMock
+
+import pytest
 
 from tests.agents.test_harness import (
     AgentTestHarness,
     ExecutionContext,
-    ExecutionStatus,
 )
-from tests.agents.fixtures.sample_inputs import INTEGRATION_INPUTS
-from tests.agents.fixtures.output_templates import (
-    ORCHESTRATION_OUTPUT_TEMPLATE,
-    HANDOFF_OUTPUT_TEMPLATE,
-)
-
 
 # ============================================================================
 # MOCK MULTI-AGENT ORCHESTRATOR

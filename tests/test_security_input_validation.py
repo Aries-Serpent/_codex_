@@ -6,13 +6,15 @@ OWASP Coverage: A03 (Injection), A02 (Cryptographic Failures)
 Test Count: 18 tests
 """
 
-import pytest
-import re
-import urllib.parse
-import secrets
 import hashlib
 import os
+import re
+import secrets
+import urllib.parse
 from typing import List
+
+import pytest
+
 
  # pragma: allowlist secret
 class TestInputValidation:

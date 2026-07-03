@@ -188,7 +188,7 @@ def generate_coverage_report():
     with open(report_path, "w") as f:
         json.dump(coverage_matrix, f, indent=2)
     
-    print(f"✅ Coverage matrix saved to .codex/coverage_matrix.json")
+    print("✅ Coverage matrix saved to .codex/coverage_matrix.json")
     
     # Display summary
     print("\n📈 SCOPE COVERAGE MATRIX")
@@ -230,7 +230,7 @@ def generate_endpoint_coverage():
     with open(report_path, "w") as f:
         json.dump(endpoints, f, indent=2)
     
-    print(f"✅ Endpoint coverage saved to .codex/endpoint_coverage.json")
+    print("✅ Endpoint coverage saved to .codex/endpoint_coverage.json")
     
     # Display summary
     print("\n📊 ENDPOINT COVERAGE TABLE")
@@ -287,14 +287,14 @@ def generate_final_report():
     with open(report_path, "w") as f:
         json.dump(report, f, indent=2)
     
-    print(f"✅ Final report saved to .codex/final_implementation_report.json")
+    print("✅ Final report saved to .codex/final_implementation_report.json")
     
     # Display summary
     print("\n📊 PROJECT COMPLETION SUMMARY")
     print("-" * 70)
     total_deliverables = sum(report["deliverables"].values())
     print(f"Total Deliverables: {total_deliverables}")
-    print(f"Total Duration: ~60 minutes")
+    print("Total Duration: ~60 minutes")
     print(f"Scopes Covered: {report['coverage']['scopes_covered']}/10 (100%)")
     print(f"Processes Tested: {report['coverage']['processes_tested']}/10 (100%)")
     print(f"Test Cases: {report['coverage']['test_cases']}")

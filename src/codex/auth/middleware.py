@@ -26,9 +26,10 @@ from enum import Enum
 from functools import wraps
 from typing import Any, Optional
 
+from codex.logging.structured_logger import logger
+
 from ..security_utils import sanitize_log_message
 from .token_manager import TokenClaims, TokenManager
-from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 

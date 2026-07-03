@@ -7,7 +7,6 @@ path traversal and other security vulnerabilities.
 from __future__ import annotations
 
 import os
-import tempfile
 import tarfile
 from pathlib import Path
 from typing import Optional

@@ -14,11 +14,13 @@ from typing import Any, Optional
 
 from .pattern_event_recorder import PatternEventRecorder
 from .session_analytics import SessionAnalytics
-from .session_database import SessionDatabase
-from .session_query_builder import SessionQueryBuilder
 
 # Re-export CacheEntry for backward compatibility
-from .session_database import CacheEntry  # noqa: F401
+from .session_database import (
+    CacheEntry,  # noqa: F401
+    SessionDatabase,
+)
+from .session_query_builder import SessionQueryBuilder
 
 
 class SessionDB:

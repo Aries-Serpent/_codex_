@@ -186,14 +186,14 @@ class WorkflowAutoApprover:
         
         # Workflow status
         if workflows:
-            report.append(f"\n🔄 WORKFLOW STATUS")
+            report.append("\n🔄 WORKFLOW STATUS")
             report.append(f"  Total runs: {workflows.get('total', 0)}")
             report.append(f"  In Progress: {workflows.get('in_progress', 0)}")
             report.append(f"  Completed: {workflows.get('completed', 0)}")
             report.append(f"  Failed: {workflows.get('failed', 0)}")
             
             # Show recent runs
-            report.append(f"\n  Recent Runs:")
+            report.append("\n  Recent Runs:")
             for run in workflows.get('runs', [])[:5]:
                 status_emoji = "⏳" if run['status'] == 'in_progress' else "✅" if run['conclusion'] != 'failure' else "❌"
                 report.append(f"    {status_emoji} #{run['number']}: {run['name']} ({run['status']})")

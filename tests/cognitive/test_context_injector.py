@@ -14,20 +14,22 @@ Test Categories:
 """
 
 import asyncio
-import pytest
 import time
-import numpy as np
 from datetime import datetime, timedelta
+
+import numpy as np
+import pytest
+
 from scripts.cognitive.context_injector import (
-    ContextInjector,
-    ContextFusionEngine,
-    VectorEncoder,
-    PatternStore,
-    SessionStore,
     ConfidenceMetrics,
+    ContextFusionEngine,
+    ContextInjector,
     ContextMetadata,
     MockPatternStore,
     MockSessionStore,
+    PatternStore,
+    SessionStore,
+    VectorEncoder,
 )
 
 

@@ -4,7 +4,6 @@ import pytest
 
 from services.ita.app.hygiene import run_hygiene_checks
 from services.ita.app.models import RepoHygieneRequest
-from codex.logging.structured_logger import logger
 
 
 def test_run_hygiene_checks_detects_multiple_issue_types() -> None:

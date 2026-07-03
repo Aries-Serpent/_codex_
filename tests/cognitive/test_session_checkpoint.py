@@ -11,25 +11,24 @@ Author: cognitive-brain-session-injector
 Phase: 10.1 - Session Checkpoint/Resume System
 """
 
+# Import modules under test
+import sys
 import tempfile
 from datetime import datetime
 from pathlib import Path
 
-import pytest # pragma: allowlist secret
+import pytest  # pragma: allowlist secret
 
-# Import modules under test
-import sys
 sys.path.insert(0, str(Path(__file__).parent.parent / "cognitive"))
 
 from session_checkpoint_manager import (
-    SessionCheckpointManager,
     CheckpointNotFoundError,
+    SessionCheckpointManager,
 )
 from session_resume_engine import (
-    SessionResumeEngine,
     ContextProvider,
+    SessionResumeEngine,
 )
-
 
 # ============================================================================
 # Fixtures

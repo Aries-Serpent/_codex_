@@ -10,8 +10,9 @@ Tests for CI/CD infrastructure components:
 Coverage: 50+ tests for infrastructure integration
 """
 
-import pytest
 import time
+
+import pytest
 
 
 class TestWorkflowDispatch:

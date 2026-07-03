@@ -16,17 +16,19 @@ Test Coverage:
 - Exception handling and recovery
 """
 
-import pytest
 import tempfile
 from pathlib import Path
 from unittest.mock import Mock, patch
+
+import pytest
+
 from codex.cli_handlers import (
-    CommandResult,
     CLICommandHandler,
     CommandRegistry,
+    CommandResult,
+    HelpCommand,
     IngestionCommand,
     ValidationCommand,
-    HelpCommand,
 )
 
 

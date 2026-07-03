@@ -13,7 +13,7 @@ Example:
 """
 
 import os
-from typing import Optional, List, TypeVar, Type
+from typing import List, Optional, TypeVar
 
 __all__ = [
     "get_env",

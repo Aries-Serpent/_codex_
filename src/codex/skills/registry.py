@@ -20,7 +20,6 @@ from __future__ import annotations
 
 import importlib
 import importlib.metadata
-import logging
 import threading
 from pathlib import Path
 from types import ModuleType
@@ -39,9 +38,9 @@ except (ImportError, AttributeError):  # pragma: no cover - optional but present
 
 from typing import Any
 
-from .models import RegisteredSkill, SkillManifest
-
 from codex.logging.structured_logger import logger
+
+from .models import RegisteredSkill, SkillManifest
 
 # Default scan root relative to the installed package location
 _DEFAULT_SKILLS_ROOT = Path(__file__).parent

@@ -28,10 +28,11 @@ Examples:
     >>> manager.store({"user_id": "alice", "preference": "dark_mode"})
 """
 
+from codex.logging.structured_logger import logger
+
 from .backends import JSONLMemoryBackend, SQLiteMemoryBackend
 from .manager import MemoryManager
 from .protocol import MemoryEntry, MemoryProtocol, MemoryQuery
-from codex.logging.structured_logger import logger
 
 __all__ = [
     "JSONLMemoryBackend",

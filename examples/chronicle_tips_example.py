@@ -120,7 +120,7 @@ def example_filter_by_category():
             by_category[category] = []
         by_category[category].append(tip)
     
-    print(f"\nTips by category:\n")
+    print("\nTips by category:\n")
     for category, category_tips in sorted(by_category.items()):
         print(f"  {category.upper()} ({len(category_tips)})")
         for tip in category_tips:

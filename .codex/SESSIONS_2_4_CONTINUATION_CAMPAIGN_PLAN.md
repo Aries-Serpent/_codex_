@@ -489,7 +489,7 @@ Validation:    All 4 track leads (parallel)
 | Path length compliance | 100% | All artifact paths ≤260 chars |
 | Cross-platform validation | PASS | Windows, macOS, Linux all validate |
 | Git commits | 3–5 | Clean, atomic commits per phase |
-| Token usage | <100K | Plan is conservative; token usage monitoring |
+| Token usage | <100K | Plan is conservative; token usage monitoring | <!-- pragma: allowlist secret -->
 
 ### Session 3 Metrics (Expected)
 

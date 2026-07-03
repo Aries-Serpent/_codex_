@@ -13,7 +13,6 @@ import pytest
 
 from codex.archive.api import refer_dup_to_canonical, store
 from codex.archive.dal import ArchiveDAL
-from codex.logging.structured_logger import logger
 
 BACKEND = os.getenv("CODEX_ARCHIVE_BACKEND", "")
 DSN = os.getenv("CODEX_ARCHIVE_URL", "")

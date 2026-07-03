@@ -11,7 +11,6 @@ import types
 from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
-from codex.logging.structured_logger import logger
 
 
 def _load_module(path: Path, name: str) -> types.ModuleType:

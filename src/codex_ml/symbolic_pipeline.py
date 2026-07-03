@@ -30,8 +30,8 @@ import re
 from dataclasses import dataclass, field
 from typing import Any, Optional
 
-from codex_ml.tokenization import TokenizerAdapter
 from codex.logging.structured_logger import logger
+from codex_ml.tokenization import TokenizerAdapter
 
 __all__ = [
     "ModelHandle",
