@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-07-03T14:57:27Z",
+  "generated_at": "2026-07-03T16:09:52Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1959,7 +1959,7 @@
     {
       "name": "tiered-approval-gate",
       "enforcement_tier": "SOFT",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "token-expiry-monitor",
@@ -2421,5 +2421,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "472b5df889757a1bf79e830bd68cf4f765dca863f1c96ca0f33ce00760adacc2"
+  "integrity_sha256": "e819924d899c1d1a895e609b6718ae909ba190fa1875d105f76dd42bf3d426c3"
 }
