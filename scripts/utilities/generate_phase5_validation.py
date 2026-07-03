@@ -1,5 +1,6 @@
-"""Generate validation report for Phase 5 coverage tests."""
+from pathlib import Path
 
+from src.codex.utils.path_extended import get_repo_root
 from pathlib import Path
 
 # Create validation report
@@ -312,7 +313,7 @@ validation_report = {
 }
 
 # Output validation report
-report_path = Path("/home/runner/work/_codex_/_codex_/.codex/PHASE_5_COVERAGE_VALIDATION.md")
+report_path = Path(str(get_repo_root() / ".codex/PHASE_5_COVERAGE_VALIDATION.md"))
 
 validation_md = f"""# Phase 5 Coverage Campaign: Validation Report
 

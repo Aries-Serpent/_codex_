@@ -1,0 +1,42 @@
+#!/bin/bash
+# Post-checkout hook for creating symlinks on Unix systems
+# Automatically run after git checkout to ensure symlinks exist
+
+# Get the repository root
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "$REPO_ROOT"
+
+# Only run on Unix-like systems
+if [[ "$OSTYPE" != "msys" && "$OSTYPE" != "win32" && "$OSTYPE" != "cygwin" ]]; then
+    # Create symlinks if they don't exist (from scripts/setup/create_symlinks.sh)
+    
+    if [ ! -e ".codex/security_vulnerability_scan_latest.md" ] && [ -f ".codex/security_vulnerability_scan_2025-12-26.md" ]; then
+        ln -s security_vulnerability_scan_2025-12-26.md .codex/security_vulnerability_scan_latest.md
+    fi
+    
+    if [ ! -e "configs/data" ] && [ -d "training/data" ]; then
+        ln -s training/data configs/data
+    fi
+    
+    if [ ! -e "configs/model" ] && [ -d "training/model" ]; then
+        ln -s training/model configs/model
+    fi
+    
+    if [ ! -e "configs/tracking" ] && [ -d "training/tracking" ]; then
+        ln -s training/tracking configs/tracking
+    fi
+    
+    if [ ! -e "configs/train" ] && [ -d "training/profiles" ]; then
+        ln -s training/profiles configs/train
+    fi
+    
+    if [ ! -e "scripts/audit_pipeline.py" ] && [ -f "src/codex_ml/cli/audit_pipeline.py" ]; then
+        ln -s ../src/codex_ml/cli/audit_pipeline.py scripts/audit_pipeline.py
+    fi
+    
+    if [ ! -e "scripts/ci/session_preload.py" ] && [ -f ".github/scripts/session_preload.py" ]; then
+        ln -s ../../.github/scripts/session_preload.py scripts/ci/session_preload.py
+    fi
+fi
+
+exit 0

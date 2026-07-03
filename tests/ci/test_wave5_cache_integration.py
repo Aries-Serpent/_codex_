@@ -28,7 +28,7 @@
 #     def test_dockerfile_optimized_exists(self) -> None:
 #     def test_dockerfile_optimized_exists(self) -> None:
 #         """Verify Dockerfile.optimized exists with required structure."""
-#         dockerfile = Path("/home/runner/work/_codex_/_codex_/Dockerfile.optimized")
+#         dockerfile = Path(str(get_repo_root() / "Dockerfile.optimized"))
 #         assert dockerfile.exists(), "Dockerfile.optimized not found"
 #         content = dockerfile.read_text()
 #         # Verify multi-stage structure
@@ -40,7 +40,7 @@
 #     def test_dockerfile_layer_ordering(self) -> None:
 #     def test_dockerfile_layer_ordering(self) -> None:
 #         """Verify optimal layer ordering (stable -> frequently changing)."""
-#         dockerfile = Path("/home/runner/work/_codex_/_codex_/Dockerfile.optimized")
+#         dockerfile = Path(str(get_repo_root() / "Dockerfile.optimized"))
 #         content = dockerfile.read_text()
 #         lines = content.split("\n")
 #         base_idx = next(i for i, l in enumerate(lines) if "base-deps" in l or "base" in l.lower())
@@ -55,7 +55,7 @@
 #     def test_docker_buildkit_config(self) -> None:
 #     def test_docker_buildkit_config(self) -> None:
 #         """Verify Docker BuildKit configuration."""
-#         dockerfile = Path("/home/runner/work/_codex_/_codex_/Dockerfile.optimized")
+#         dockerfile = Path(str(get_repo_root() / "Dockerfile.optimized"))
 #         content = dockerfile.read_text()
 #         assert ", "Condition must be true"
 #         # BuildKit features to check
@@ -68,7 +68,7 @@
 #     def test_cache_layer_strategy_defined(self) -> None:
 #     def test_cache_layer_strategy_defined(self) -> None:
 #         """Verify 7-layer cache strategy is documented."""
-#         brief = Path("/home/runner/work/_codex_/_codex_/.codex/AGENT_BRIEF_STAGE_5_WAVE5_CACHE.md")
+#         brief = Path(str(get_repo_root() / ".codex/AGENT_BRIEF_STAGE_5_WAVE5_CACHE.md"))
 #         assert brief.exists(), "Brief file not found"
 #         content = brief.read_text()
 #         assert "7-layer" in content or "Layer" in content, "Content must not be empty"
@@ -77,7 +77,7 @@
 #     def test_cache_layer_configs_exist(self) -> None:
 #     def test_cache_layer_configs_exist(self) -> None:
 #         """Verify GitHub Actions workflow cache configs exist."""
-#         workflows_dir = Path("/home/runner/work/_codex_/_codex_/.github/workflows")
+#         workflows_dir = Path(str(get_repo_root() / ".github/workflows"))
 #         pr_checks = workflows_dir / "pr-checks.yml"
 #         if pr_checks.exists():
 #             content = pr_checks.read_text()
@@ -89,7 +89,7 @@
 #     def test_cache_key_strategy(self) -> None:
 #     def test_cache_key_strategy(self) -> None:
 #         """Verify cache key includes workflow and hash."""
-#         workflows_dir = Path("/home/runner/work/_codex_/_codex_/.github/workflows")
+#         workflows_dir = Path(str(get_repo_root() / ".github/workflows"))
 #         pr_checks = workflows_dir / "pr-checks.yml"
 #         if pr_checks.exists():
 #             content = pr_checks.read_text()
@@ -248,7 +248,7 @@
 #     def test_cache_metrics_available(self) -> None:
 #     def test_cache_metrics_available(self) -> None:
 #         """Verify cache metrics file can be generated."""
-#         metrics_file = Path("/home/runner/work/_codex_/_codex_/.codex/WAVE_5_CACHE_METRICS.json")
+#         metrics_file = Path(str(get_repo_root() / ".codex/WAVE_5_CACHE_METRICS.json"))
 #         metrics = {
 #         # Create test metrics
 #         metrics = {
@@ -294,7 +294,7 @@
 #     def test_cache_strategy_guide_exists(self) -> None:
 #     def test_cache_strategy_guide_exists(self) -> None:
 #         """Verify cache strategy guide documentation exists."""
-#         guide = Path("/home/runner/work/_codex_/_codex_/.codex/WAVE_5_CACHE_STRATEGY_GUIDE.md")
+#         guide = Path(str(get_repo_root() / ".codex/WAVE_5_CACHE_STRATEGY_GUIDE.md"))
 #         assert guide.exists(), "Cache strategy guide not found"
 #         content = guide.read_text()
 #         assert "Layer" in content or "layer" in content, "Content must not be empty"
@@ -303,7 +303,7 @@
 #     def test_final_report_exists(self) -> None:
 #     def test_final_report_exists(self) -> None:
 #         """Verify Wave 5 final report exists."""
-#         report = Path("/home/runner/work/_codex_/_codex_/.codex/PHASE_6_WAVE_5_FINAL_REPORT.md")
+#         report = Path(str(get_repo_root() / ".codex/PHASE_6_WAVE_5_FINAL_REPORT.md"))
 #         assert report.exists(), "Final report not found"
 #         content = report.read_text()
 #         # Check for key report indicators
@@ -314,7 +314,7 @@
 #     def test_optimization_rationale_documented(self) -> None:
 #     def test_optimization_rationale_documented(self) -> None:
 #         """Verify optimization rationale is documented."""
-#         guide = Path("/home/runner/work/_codex_/_codex_/.codex/WAVE_5_CACHE_STRATEGY_GUIDE.md")
+#         guide = Path(str(get_repo_root() / ".codex/WAVE_5_CACHE_STRATEGY_GUIDE.md"))
 #         if guide.exists():
 #             content = guide.read_text()
 #             # Check for key optimization strategies

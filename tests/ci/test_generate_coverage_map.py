@@ -1,4 +1,5 @@
 from pathlib import Path
+from src.codex.utils.path_extended import get_repo_root
 #         assert not set(entry.covered_lines) & set(, "Condition must be true"
 #             entry.uncovered_lines
 #         ), "A line must not appear in both covered and uncovered"
@@ -131,7 +132,7 @@ from pathlib import Path
 #     def test_absolute_filename_normalised(self, tmp_path):
 #     def test_absolute_filename_normalised(self, tmp_path):
 #         """Absolute filename in coverage.xml must be normalised to repo-relative path."""
-#         abs_filename = "/home/runner/work/_codex_/_codex_/src/codex/utils.py"
+#         abs_filename = str(get_repo_root() / "src/codex/utils.py")
 #         xml = _write_coverage_xml(
 #             tmp_path,
 #             _minimal_xml(abs_filename, 0.5, [1], [2]),

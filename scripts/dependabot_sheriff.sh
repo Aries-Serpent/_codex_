@@ -13,7 +13,10 @@ set -e
 # ============================================================================
 
 # Define log file location (in .codex/ to follow repo conventions)
-LOG_DIR="/home/runner/work/_codex_/_codex_/.codex/logs"
+# Use dynamic path discovery instead of hardcoding repo path
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+REPO_ROOT="$( cd "$SCRIPT_DIR/../.." && pwd )"
+LOG_DIR="$REPO_ROOT/.codex/logs"
 mkdir -p "$LOG_DIR"
 LOG_FILE="$LOG_DIR/dependabot_sheriff_$(date +%Y%m%d_%H%M%S).log"
 

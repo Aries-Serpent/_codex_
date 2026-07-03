@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from src.codex.utils.path_extended import get_repo_root
 """Batch Processor for Phase 1B Refactoring - Process 674 monolithic files.
 
 This tool processes multiple files in batches with:
@@ -224,9 +225,9 @@ def main():
     
     # Example file list for demonstration
     demo_files = [
-        ("/home/runner/work/_codex_/_codex_/analysis/intuitive_aptitude.py", 722),
-        ("/home/runner/work/_codex_/_codex_/src/codex/autonomy/token_broker.py", 720),
-        ("/home/runner/work/_codex_/_codex_/tests/cli/test_cli_edge_cases_phase26.py", 745),
+        (str(get_repo_root() / "analysis/intuitive_aptitude.py"), 722),
+        (str(get_repo_root() / "src/codex/autonomy/token_broker.py"), 720),
+        (str(get_repo_root() / "tests/cli/test_cli_edge_cases_phase26.py"), 745),
     ]
     
     print(f"\n{'='*70}")

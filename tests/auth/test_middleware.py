@@ -1,9 +1,10 @@
-"""
-Tests for production authentication middleware.
+import sys
+import time
+from unittest.mock import MagicMock
 
-Tests the AuthMiddleware, APIKeyValidator, RateLimiter, and related components.
-"""
+import pytest
 
+from src.codex.utils.path_extended import get_repo_root
 # Import the modules we're testing
 import sys
 import time
@@ -11,7 +12,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-sys.path.insert(0, "/home/runner/work/_codex_/_codex_/src")
+sys.path.insert(0, str(get_repo_root() / "src"))
 
 from codex.auth.middleware import (
     APIKeyValidator,

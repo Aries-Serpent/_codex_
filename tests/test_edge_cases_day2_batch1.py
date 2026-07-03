@@ -1,7 +1,8 @@
-"""
-Comprehensive Edge Case Tests - Day 2 Lane 3.1
-Target: 200-300 edge case tests covering agent_memory, physics_orchestrator, mental_mapping, cognitive_adapter
-Module Allocation: agent_memory (40%), physics/mental_mapping (40%), cognitive_adapter (20%)
+import sys
+
+import pytest
+
+from src.codex.utils.path_extended import get_repo_root
 Focus: Boundary conditions, exception handling, state transitions, integration scenarios
 """
 
@@ -10,7 +11,7 @@ import sys
 import pytest
 
 # Add project paths
-sys.path.insert(0, "/home/runner/work/_codex_/_codex_/src")
+sys.path.insert(0, str(get_repo_root() / "src"))
 sys.path.insert(0, "/home/runner/work/_codex_/_codex_")
 
 # Import target modules

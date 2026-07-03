@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from src.codex.utils.path_extended import get_repo_root
 """
 Analyze PR #2449 commits to extract objectives and build trace matrix.
 """
@@ -115,7 +116,7 @@ for commit in commits_list:
     )
 
 # Save as CSV
-output_dir = Path("/home/runner/work/_codex_/_codex_/.github/audit_artifacts_output")
+output_dir = Path(str(get_repo_root() / ".github/audit_artifacts_output"))
 output_dir.mkdir(exist_ok=True, parents=True)
 
 csv_path = output_dir / "objectives_trace_matrix.csv"

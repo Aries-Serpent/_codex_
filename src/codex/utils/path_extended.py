@@ -12,6 +12,7 @@ Example:
     ensure_path_exists(path)
 """
 
+import os
 from pathlib import Path
 from typing import Optional, List, Pattern
 
@@ -20,6 +21,8 @@ __all__ = [
     "path_exists",
     "ensure_path_exists",
     "find_files",
+    "get_repo_root",
+    "windows_safe_timestamp",
     "PathError",
 ]
 
@@ -125,3 +128,67 @@ def find_files(
         return list(root.glob(glob_pattern))
     except (OSError, ValueError):
         return []
+
+
+def get_repo_root() -> Path:
+    """
+    Get the repository root directory.
+    
+    Searches upward from current directory for .git directory.
+    Falls back to current working directory if not found.
+
+    Returns:
+        Path to repository root
+
+    Example:
+        >>> repo_root = get_repo_root()
+        >>> config_file = repo_root / "pyproject.toml"
+    """
+    current = Path.cwd()
+    
+    # Search upward for .git directory
+    while current != current.parent:
+        if (current / ".git").exists():
+            return current
+        current = current.parent
+    
+    # Fallback to current working directory
+    return Path.cwd()
+
+
+def windows_safe_timestamp(fmt: str = "iso") -> str:
+    """
+    Generate a Windows-safe timestamp for filenames.
+    
+    Windows filesystems prohibit these characters in filenames: < > : " / \\ | ? *
+    This function generates timestamps without colons (which break filenames).
+
+    Args:
+        fmt: Format type - 'iso', 'compact', or 'readable'
+             - 'iso': 2026-01-23T14-30-45Z (ISO format with hyphens instead of colons)
+             - 'compact': 20260123_143045 (YYYYMMdd_HHmmss)
+             - 'readable': 2026-01-23-14-30-45-UTC (human-readable with hyphens)
+
+    Returns:
+        Formatted timestamp string safe for Windows filenames
+
+    Example:
+        >>> timestamp = windows_safe_timestamp(fmt="compact")
+        >>> filename = f"log_{timestamp}.txt"  # log_20260123_143045.txt
+    """
+    from datetime import datetime, timezone
+    
+    now = datetime.now(timezone.utc)
+    
+    if fmt == "iso":
+        # ISO format: 2026-01-23T14-30-45Z (colons replaced with hyphens)
+        return now.strftime("%Y-%m-%dT%H-%M-%SZ")
+    elif fmt == "compact":
+        # Compact format: 20260123_143045
+        return now.strftime("%Y%m%d_%H%M%S")
+    elif fmt == "readable":
+        # Readable format: 2026-01-23-14-30-45-UTC
+        return now.strftime("%Y-%m-%d-%H-%M-%S-UTC")
+    else:
+        # Default to compact if unknown format
+        return now.strftime("%Y%m%d_%H%M%S")
