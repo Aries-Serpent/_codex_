@@ -807,6 +807,105 @@ class TestGitHubAPISecurity:
         assert result == url
 
 
+
+
+# ---------------------------------------------------------------------------
+# New Edge Case Tests — url_utils and error_utils boundary cases
+# ---------------------------------------------------------------------------
+
+
+class TestURLUtilsEdgeCases:
+    """New edge-case tests for url_utils module."""
+
+    def test_redact_url_strips_query_params(self):
+        """redact_url_for_log removes query parameters."""
+        url = "https://api.github.com/repos?access_token=secret"
+        redacted = redact_url_for_log(url)
+        assert "access_token" not in redacted
+        assert "secret" not in redacted
+
+    def test_redact_url_strips_fragment(self):
+        """redact_url_for_log removes URL fragments."""
+        url = "https://api.github.com/repos/owner/repo#readme"
+        redacted = redact_url_for_log(url)
+        assert "#readme" not in redacted
+
+    def test_redact_url_preserves_path(self):
+        """redact_url_for_log preserves the URL path."""
+        url = "https://api.github.com/repos/owner/my-repo"
+        redacted = redact_url_for_log(url)
+        assert "/repos/owner/my-repo" in redacted
+
+    def test_validate_github_url_rejects_non_api_host(self):
+        """validate_github_api_url rejects URLs targeting non-api.github.com."""
+        with pytest.raises(ValueError):
+            validate_github_api_url("https://github.com/repos/owner/repo")
+
+    def test_validate_github_url_accepts_valid(self):
+        """validate_github_api_url accepts a properly formed HTTPS URL."""
+        url = "https://api.github.com/repos/owner/repo/pulls"
+        assert validate_github_api_url(url) == url
+
+    def test_get_url_for_display_truncates_long_url(self):
+        """get_url_for_display truncates URLs longer than max_length."""
+        url = "https://api.github.com/" + "a" * 200
+        display = get_url_for_display(url, max_length=50)
+        assert len(display) <= 50
+        assert display.endswith("...")
+
+    def test_get_url_for_display_short_url_unchanged(self):
+        """get_url_for_display leaves short URLs intact."""
+        url = "https://api.github.com/repos"
+        display = get_url_for_display(url, max_length=100)
+        assert "api.github.com/repos" in display
+
+
+class TestErrorUtilsBoundaries:
+    """New edge-case tests for error_utils boundary conditions."""
+
+    def test_backoff_delay_attempt_zero(self):
+        """Backoff at attempt 0 equals base value."""
+        assert get_backoff_delay(0, base=2.0) == pytest.approx(2.0)
+
+    def test_backoff_delay_exact_cap(self):
+        """Backoff stops increasing once it hits max_delay."""
+        delay_high = get_backoff_delay(20, base=1.0, max_delay=30.0)
+        delay_very_high = get_backoff_delay(30, base=1.0, max_delay=30.0)
+        assert delay_high == pytest.approx(30.0)
+        assert delay_very_high == pytest.approx(30.0)
+
+    def test_should_retry_respects_max_retries_boundary(self):
+        """should_retry is False exactly at max_retries, True just below."""
+        assert should_retry(503, attempt=4, max_retries=5) is True
+        assert should_retry(503, attempt=5, max_retries=5) is False
+
+    def test_is_rate_limited_missing_headers(self):
+        """is_rate_limited returns False when relevant headers are absent."""
+        assert is_rate_limited({}) is False
+
+    def test_format_error_message_with_context(self):
+        """format_error_message includes context key-value pairs."""
+        msg = format_error_message(
+            "ParseError",
+            "bad JSON",
+            context={"url": "https://api.github.com/repos", "attempt": "2"},
+        )
+        assert "ParseError" in msg
+        assert "bad JSON" in msg
+        assert "url" in msg
+
+    def test_rate_limit_error_has_reset_at(self):
+        """RateLimitError stores the reset_at timestamp."""
+        exc = RateLimitError("Rate limit exceeded", reset_at=1700000000)
+        assert exc.reset_at == 1700000000
+        assert "Rate limit exceeded" in str(exc)
+
+    def test_rate_limit_error_without_reset_at(self):
+        """RateLimitError reset_at is None when not provided."""
+        exc = RateLimitError("Rate limit exceeded")
+        assert exc.reset_at is None
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
 

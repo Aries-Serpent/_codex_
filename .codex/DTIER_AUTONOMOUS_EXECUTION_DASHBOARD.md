@@ -9,10 +9,11 @@
 
 | Phase | Name | Status | Agents | Start | ETA |
 |-------|------|--------|--------|-------|-----|
-| Phase 0 | Blocker Remediation (F-001/F-002) | 🟡 IN PROGRESS | 4 | T+0 | T+30m |
-| Phase 1 | Wave 6+ Campaign Continuation | 🟡 QUEUED | 4 | T+30m | T+60m |
-| Phase 2 | P0 Blocker Completion + QA | 🟡 QUEUED | 3 | T+60m | T+120m |
-| Phase 3 | Wave 7-9 Advancement (12 agents) | ⏳ STANDBY | 12 | T+120m | T+180m |
+| Phase 0 | Blocker Remediation (F-001/F-002) | ✅ COMPLETE | 4 | T+0 | T+30m |
+| Phase 0+ | Token Fallback (CODEX_MASTER_KEY\|\|CODEX_BACKUP_KEY) | ✅ COMPLETE | - | T+10m | T+20m |
+| Phase 1 | Wave 6 Code Quality + Test Enhancement | 🟡 IN PROGRESS | 2 | T+30m | T+60m |
+| Phase 2 | P0 Coverage + QA Sign-off | 🟡 IN PROGRESS | 2 | T+60m | T+120m |
+| Phase 3 | Wave 7-9 Advancement | 🟡 IN PROGRESS | 1 (security) | T+120m | T+180m |
 | Phase 4 | Final Validation + Deployment | ⏳ STANDBY | - | T+180m | T+240m |
 
 ---
@@ -20,19 +21,18 @@
 ## 🔴 ACTIVE BLOCKERS
 
 ### F-001: Admin Action T-03 — security_events Scope Gate
-- **Root Cause:** `CODEX_MASTER_KEY` missing `security_events` OAuth scope
-- **Status:** 🔴 REQUIRES HUMAN TOKEN ACTION
-- **Impact:** Cascading failures in CodeQL alert workflows
-- **Fix:** Regenerate CODEX_MASTER_KEY PAT with `security_events` scope added
-  - Token settings: https://github.com/settings/tokens
-  - Secret update: https://github.com/organizations/Aries-Serpent/settings/secrets/actions/CODEX_MASTER_KEY
-- **Workaround:** Proceeding with Phases 1-4 in parallel (non-blocking for other phases)
+- **Root Cause (code bug):** Duplicate concurrency group in `admin-action-notifier.yml` caused the callee to self-cancel the caller in all 21,116 historical runs — the notifier **never fired once**
+- **Code Fix:** ✅ APPLIED — removed duplicate `concurrency` block from `admin-action-notifier.yml` + exported `RESPONSE_FILE` for Python subprocess (ci-log-retrieval-agent)
+- **Report:** `.codex/F001_DIAGNOSTIC_REPORT.md`
+- **Remaining (human action required):** `CODEX_MASTER_KEY` still needs `security_events` OAuth scope added
+  - Token settings: https://github.com/settings/tokens (add `security_events`, update org secret)
+  - After rotation: next T-03 run will probe → create issue → auto-close once scope confirmed
+- **Blocking:** YES — CodeQL alert automation blocked until token rotated
 
 ### F-002: Iterative Self-Healing CI — Baseline Sweep
-- **Root Cause:** Git race condition during concurrent pushes
-- **Status:** ✅ FIX APPLIED (commit 5806cc1eb — exponential backoff added)
-- **Validation:** Commit e60957193 — YAML syntax restored; monitoring for CI green
-- **Next:** Monitor workflow run results; escalate if failure persists
+- **Root Cause:** Git race condition — heal job used fixed `sleep 5` while sweep job had exponential backoff
+- **Status:** ✅ RESOLVED — heal job now uses `_backoff=$((5 * 2 ** (_attempt - 1)))` (commit dd55e355)
+- **Report:** `.codex/F002_VALIDATION_REPORT.md` — Status: RESOLVED, Confidence: 97%
 
 ### F-003: Phase 8.2 Issue Triage
 - **Status:** 🟢 MONITORING (in-progress workflow)
@@ -46,42 +46,35 @@
 
 ## 🤖 AGENTS DEPLOYED
 
-### Phase 0 — Active
+### Phase 0 — ✅ COMPLETE
+| Agent ID | Agent Type | Task | Status | Commit |
+|----------|-----------|------|--------|--------|
+| `p0-ci-log-001` | ci-log-retrieval-agent | F-001 concurrency bug + diagnostic | ✅ DONE | code fix in `admin-action-notifier.yml` |
+| `p0-ci-test-001` | ci-testing-agent | F-002 heal job exponential backoff | ✅ DONE | dd55e355 |
+
+### Phase 0+ — ✅ COMPLETE (new requirement)
+| Change | Files | Replacements |
+|--------|-------|-------------|
+| `CODEX_MASTER_KEY \|\| CODEX_BACKUP_KEY` fallback | 92 workflows | 182 |
+
+### Phase 1 — 🟡 IN PROGRESS
+| Agent ID | Agent Type | Task | Status | Result |
+|----------|-----------|------|--------|--------|
+| `p1-code-001` | code-analysis-agent | Wave 6 code quality (C420/E741/F821) | ✅ DONE | 9.2→9.5/10 · `.codex/WAVE6_CODE_QUALITY_REPORT.md` |
+| `p1-test-001` | test-enhancement-agent | Wave 6 test assertion quality | 🟡 RUNNING | 79 tool calls |
+
+### Phase 2 — 🟡 IN PROGRESS
 | Agent ID | Agent Type | Task | Status |
 |----------|-----------|------|--------|
-| `p0-ci-log-001` | ci-log-retrieval-agent | F-001 scope gate investigation | 🟡 RUNNING |
-| `p0-ci-test-001` | ci-testing-agent | F-002 baseline sweep root cause | 🟡 RUNNING |
-| `p0-wf-fix-001` | workflow-ci-fixer | YAML + scope gate fixes | 🟡 RUNNING |
-| `p0-ci-fix-001` | ci-failure-resolution-agent | F-001 token elevation fixes | 🟡 RUNNING |
+| `p2-cov-001` | unified-coverage-agent | Codex module 80% coverage | 🟡 RUNNING (92 tool calls) |
+| `p2-qa-001` | qa-walkthrough-agent | Production QA sign-off | 🟡 RUNNING |
 
-### Phase 1 — Wave 6 (Queued)
-| Agent ID | Agent Type | Task | Status |
-|----------|-----------|------|--------|
-| `p1-code-001` | code-analysis-agent | Static code quality analysis | ⏳ QUEUED |
-| `p1-test-001` | test-enhancement-agent | Improve test assertions + depth | ⏳ QUEUED |
-| `p1-scan-001` | code-scanning-remediation-agent | Fix CodeQL alerts | ⏳ QUEUED |
-| `p1-perf-001` | performance-regression-detector | Identify perf bottlenecks | ⏳ QUEUED |
-
-### Phase 2 — P0 Completion (Queued)
-| Agent ID | Agent Type | Task | Status |
-|----------|-----------|------|--------|
-| `p2-cov-001` | unified-coverage-agent | Codex module 80% coverage gap-fill | ⏳ QUEUED |
-| `p2-code-001` | code-analysis-agent | Production readiness certification | ⏳ QUEUED |
-| `p2-qa-001` | qa-walkthrough-agent | Full production QA walkthrough | ⏳ QUEUED |
-
-### Phase 3 — Wave 7-9 (Standby)
+### Phase 3 — 🟡 LAUNCHED
 | Agent ID | Agent Type | Wave | Status |
 |----------|-----------|------|--------|
-| `p3-perf-001` | performance-monitor-agent | Wave 6 Ph2 | ⏳ STANDBY |
-| `p3-health-001` | codebase-health-guardian | Wave 6 Ph2 | ⏳ STANDBY |
-| `p3-doc-001` | unified-doc-agent | Wave 7 | ⏳ STANDBY |
-| `p3-link-001` | link-validator-agent | Wave 7 | ⏳ STANDBY |
-| `p3-term-001` | terminology-consistency-agent | Wave 7 | ⏳ STANDBY |
-| `p3-sec-001` | unified-security-scanner | Wave 8 | ⏳ STANDBY |
-| `p3-dep-001` | dependency-vulnerability-scanner | Wave 8 | ⏳ STANDBY |
-| `p3-secret-001` | secret-detection-agent | Wave 8 | ⏳ STANDBY |
-| `p3-wfc-001` | workflow-compliance-guardian | Wave 9 | ⏳ STANDBY |
-| `p3-ciopt-001` | ci-optimization-agent | Wave 9 | ⏳ STANDBY |
+| `p3-sec-001` | unified-security-scanner | Wave 8 security audit | 🟡 RUNNING |
+| `p3-doc-001` | unified-doc-agent | Wave 7 documentation | ⏳ QUEUED |
+| `p3-wfc-001` | workflow-compliance-guardian | Wave 9 CI compliance | ⏳ QUEUED |
 
 ---
 
@@ -119,10 +112,14 @@
 | Timestamp | Event | Status |
 |-----------|-------|--------|
 | 2026-07-03T17:19Z | Dashboard initialized | ✅ |
-| 2026-07-03T17:19Z | Phase 0 agents delegated (4 parallel) | 🟡 |
-| 2026-07-03T17:19Z | Phase 1 agents queued (4 agents) | ⏳ |
-| 2026-07-03T17:19Z | Phase 2 agents queued (3 agents) | ⏳ |
-| 2026-07-03T17:19Z | Phase 3 agents on standby (10 agents) | ⏳ |
+| 2026-07-03T17:19Z | Phase 0: 4 agents delegated (ci-log-retrieval, ci-testing, code-analysis, unified-coverage) | ✅ |
+| 2026-07-03T17:24Z | F-002 resolved — ci-testing-agent: exponential backoff on heal job (dd55e355) | ✅ |
+| 2026-07-03T17:29Z | New requirement applied: CODEX_MASTER_KEY \|\| CODEX_BACKUP_KEY across 92 files, 182 replacements | ✅ |
+| 2026-07-03T17:29Z | phase1-test-enhancement-1 launched | ✅ |
+| 2026-07-03T17:39Z | F-001 resolved — ci-log-retrieval-agent: concurrency self-cancel bug fixed in admin-action-notifier.yml | ✅ |
+| 2026-07-03T17:39Z | phase3-security-scan-1 launched (Wave 8 security audit) | ✅ |
+| 2026-07-03T17:49Z | Wave 6 code quality complete — 9.2→9.5/10, 4 fix commits (C420/E741/C414/F821) | ✅ |
+| 2026-07-03T17:49Z | phase2-qa-walkthrough-1 launched (Phase 2 production QA) | ✅ |
 
 ---
 
