@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-03T14:41:33.550644+00:00",
+  "generated_at": "2026-07-03T15:13:34.420948+00:00",
   "rag_delta": {
     "updated": 0,
     "skipped": 0,
@@ -10,6 +10,6 @@
     "graphql",
     "gh_cli"
   ],
-  "rest_remaining": 4961,
-  "graphql_remaining": 4995
+  "rest_remaining": 4462,
+  "graphql_remaining": 4967
 }
