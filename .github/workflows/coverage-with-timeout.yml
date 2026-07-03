@@ -110,7 +110,7 @@ jobs:
           .coverage
 
           '
-        retention-days: 7
+        retention-days: 14
     - name: Upload timeout logs
       if: steps.coverage.outputs.coverage_failed == 'true'
       uses: actions/upload-artifact@v5
@@ -121,7 +121,7 @@ jobs:
           *.log
 
           '
-        retention-days: 7
+        retention-days: 14
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}

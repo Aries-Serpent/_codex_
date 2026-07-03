@@ -79,6 +79,13 @@ class SessionDatabase:
         finally:
             conn.close()
 
+    @contextmanager
+    def get_connection(self) -> Generator[sqlite3.Connection, None, None]:
+        """Public context manager for safe database access."""
+
+        with self._get_connection() as conn:
+            yield conn
+
     def _ensure_schema(self) -> None:
         """
         Create database schema if it doesn't exist.

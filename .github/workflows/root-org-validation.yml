@@ -129,7 +129,7 @@ jobs:
       with:
         name: validation-baseline
         path: .codex/validation/baseline.txt
-        retention-days: 7
+        retention-days: 14
         if-no-files-found: warn
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

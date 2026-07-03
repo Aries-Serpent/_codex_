@@ -776,7 +776,7 @@ jobs:
       with:
         name: copilot-agent-environment-report
         path: ${{ steps.gen_report.outputs.REPORT_PATH }}
-        retention-days: 7
+        retention-days: 14
         if-no-files-found: warn
   rescue-comment:
     name: Post rescue comment on failure

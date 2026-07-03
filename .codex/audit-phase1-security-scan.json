@@ -1,0 +1,1034 @@
+{
+  "metadata": {
+    "timestamp": "2026-07-02T22:45:42.072557",
+    "repository": "Aries-Serpent/_codex_",
+    "audit_type": "comprehensive_security_audit",
+    "version": "1.0.0",
+    "tools_used": [
+      "pip-audit",
+      "bandit",
+      "mypy",
+      "pattern_detection"
+    ]
+  },
+  "audit_statistics": {
+    "total_scanned": 353,
+    "actual_findings": 98,
+    "false_positives_filtered": 255,
+    "filtering_rate": "72.2%"
+  },
+  "summary": {
+    "total_findings": 98,
+    "by_severity": {
+      "critical": 0,
+      "high": 98,
+      "medium": 0,
+      "low": 0
+    }
+  },
+  "findings": [
+    {
+      "type": "config_exposure",
+      "severity": "high",
+      "source": "config_scanner",
+      "file": ".env",
+      "description": "Sensitive plaintext env file found in repository",
+      "remediation": "Move to .gitignore and use environment variables"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "conftest.py",
+      "line": 24,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "conftest.py",
+      "line": 83,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "conftest.py",
+      "line": 216,
+      "description": "Unsafe import: eval - Code injection vulnerability",
+      "remediation": "Avoid using eval, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "conftest.py",
+      "line": 232,
+      "description": "Unsafe import: eval - Code injection vulnerability",
+      "remediation": "Avoid using eval, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "configs/sitecustomize.py",
+      "line": 38,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "configs/sitecustomize.py",
+      "line": 51,
+      "description": "Unsafe import: __import__ - Dynamic import vulnerability",
+      "remediation": "Avoid using __import__, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/copilot_session_log_retriever.py",
+      "line": 118,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/copilot_session_log_retriever.py",
+      "line": 128,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/copilot_session_log_retriever.py",
+      "line": 161,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/copilot_session_log_retriever.py",
+      "line": 208,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/collect_pr3248_final.py",
+      "line": 142,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/agent_runner.py",
+      "line": 66,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/agent_runner.py",
+      "line": 71,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/agent_runner.py",
+      "line": 81,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/agent_runner.py",
+      "line": 176,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/validate_workflows.py",
+      "line": 341,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/phase3_stage3_github_refs.py",
+      "line": 68,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/nox_enhancements.py",
+      "line": 63,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/nox_enhancements.py",
+      "line": 224,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/deep_research_task_process.py",
+      "line": 5,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/deep_research_task_process.py",
+      "line": 673,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/deep_research_task_process.py",
+      "line": 756,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/deep_research_task_process.py",
+      "line": 830,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/deep_research_task_process.py",
+      "line": 1080,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/deep_research_task_process.py",
+      "line": 1154,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/deep_research_task_process.py",
+      "line": 1165,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/deep_research_task_process.py",
+      "line": 1171,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/noxfile.security_additions.py",
+      "line": 17,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/quantum_test_prioritizer.py",
+      "line": 268,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/phase_7a_batch_generator.py",
+      "line": 20,
+      "description": "Unsafe import: eval - Code injection vulnerability",
+      "remediation": "Avoid using eval, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/phase_7a_batch_generator.py",
+      "line": 21,
+      "description": "Unsafe import: eval - Code injection vulnerability",
+      "remediation": "Avoid using eval, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/security_audit.py",
+      "line": 6,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/verify_dependency_hygiene.py",
+      "line": 6,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/archive_maintenance.py",
+      "line": 59,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/run_codex_workflow.py",
+      "line": 107,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/complex_anchor_resolver.py",
+      "line": 365,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/migrate_d365_sla_csv.py",
+      "line": 127,
+      "description": "Unsafe import: eval - Code injection vulnerability",
+      "remediation": "Avoid using eval, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/phase4_toc_placeholder_fixer.py",
+      "line": 103,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/launch_distributed.py",
+      "line": 56,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/check_dependency_evidence.py",
+      "line": 6,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/complex_anchor_fixer.py",
+      "line": 166,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/check_py312_deps.py",
+      "line": 94,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/check_py312_deps.py",
+      "line": 114,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/export_env.py",
+      "line": 85,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/generate_workflow_docs.py",
+      "line": 196,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/fix_security_issues.py",
+      "line": 115,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/fix_security_issues.py",
+      "line": 116,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/codex_ready_execution.py",
+      "line": 1,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/codex_ready_execution.py",
+      "line": 124,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/codex_end_to_end.py",
+      "line": 6,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/codex_end_to_end.py",
+      "line": 55,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/phase4_embeddings_fast.py",
+      "line": 395,
+      "description": "Unsafe import: eval - Code injection vulnerability",
+      "remediation": "Avoid using eval, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/empty_toc_resolver.py",
+      "line": 224,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/refresh_requirements_lock.py",
+      "line": 254,
+      "description": "Unsafe import: eval - Code injection vulnerability",
+      "remediation": "Avoid using eval, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/refresh_requirements_lock.py",
+      "line": 272,
+      "description": "Unsafe import: eval - Code injection vulnerability",
+      "remediation": "Avoid using eval, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/refresh_requirements_lock.py",
+      "line": 273,
+      "description": "Unsafe import: eval - Code injection vulnerability",
+      "remediation": "Avoid using eval, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/refresh_requirements_lock.py",
+      "line": 287,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/manual_review_decision_logger.py",
+      "line": 214,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/expanded_context_audit.py",
+      "line": 72,
+      "description": "Unsafe import: eval - Code injection vulnerability",
+      "remediation": "Avoid using eval, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/auto_document_python.py",
+      "line": 6,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/auto_document_python.py",
+      "line": 179,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/generate_preflight.py",
+      "line": 121,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/generate_preflight.py",
+      "line": 137,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/generate_preflight.py",
+      "line": 138,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/codex_ready_task_runner.py",
+      "line": 97,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/codex_ready_task_runner.py",
+      "line": 216,
+      "description": "Unsafe import: eval - Code injection vulnerability",
+      "remediation": "Avoid using eval, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/codex_ready_task_runner.py",
+      "line": 230,
+      "description": "Unsafe import: eval - Code injection vulnerability",
+      "remediation": "Avoid using eval, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/codex_ready_task_runner.py",
+      "line": 233,
+      "description": "Unsafe import: eval - Code injection vulnerability",
+      "remediation": "Avoid using eval, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/codex_ready_task_runner.py",
+      "line": 244,
+      "description": "Unsafe import: eval - Code injection vulnerability",
+      "remediation": "Avoid using eval, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/codex_ready_task_runner.py",
+      "line": 250,
+      "description": "Unsafe import: eval - Code injection vulnerability",
+      "remediation": "Avoid using eval, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/codex_ready_task_runner.py",
+      "line": 254,
+      "description": "Unsafe import: eval - Code injection vulnerability",
+      "remediation": "Avoid using eval, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/codex_ready_task_runner.py",
+      "line": 261,
+      "description": "Unsafe import: eval - Code injection vulnerability",
+      "remediation": "Avoid using eval, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/codex_ready_task_runner.py",
+      "line": 269,
+      "description": "Unsafe import: eval - Code injection vulnerability",
+      "remediation": "Avoid using eval, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/codex_ready_task_runner.py",
+      "line": 292,
+      "description": "Unsafe import: eval - Code injection vulnerability",
+      "remediation": "Avoid using eval, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/codex_ready_task_runner.py",
+      "line": 397,
+      "description": "Unsafe import: eval - Code injection vulnerability",
+      "remediation": "Avoid using eval, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/codex_ready_task_runner.py",
+      "line": 398,
+      "description": "Unsafe import: eval - Code injection vulnerability",
+      "remediation": "Avoid using eval, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/codex_ready_task_runner.py",
+      "line": 398,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/codex_ready_task_runner.py",
+      "line": 401,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/track_progress.py",
+      "line": 6,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/track_progress.py",
+      "line": 165,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/torch_policy_check.py",
+      "line": 6,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/generate_sbom.py",
+      "line": 56,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/generate_sbom.py",
+      "line": 83,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/phase2d_disambiguator.py",
+      "line": 339,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/phase4_embeddings_integrator.py",
+      "line": 100,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/phase4_embeddings_integrator.py",
+      "line": 525,
+      "description": "Unsafe import: eval - Code injection vulnerability",
+      "remediation": "Avoid using eval, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/phase3_stage2_medium_priority.py",
+      "line": 117,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/benchmark_logging.py",
+      "line": 48,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/benchmark_logging.py",
+      "line": 58,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/phase3_categorization.py",
+      "line": 93,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/phase3_categorization.py",
+      "line": 115,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/phase3_categorization.py",
+      "line": 151,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/phase3_categorization.py",
+      "line": 177,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/phase3_categorization.py",
+      "line": 197,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/phase3_categorization.py",
+      "line": 243,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/phase2d_targeted_fixes.py",
+      "line": 211,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    },
+    {
+      "type": "unsafe_import",
+      "severity": "high",
+      "source": "import_scanner",
+      "file": "scripts/phase3_stage4_archive.py",
+      "line": 87,
+      "description": "Unsafe import: exec - Code injection vulnerability",
+      "remediation": "Avoid using exec, use safer alternatives"
+    }
+  ],
+  "false_positives_sample": [
+    {
+      "type": "potential_secret",
+      "severity": "critical",
+      "source": "pattern_detection",
+      "file": "scripts/validate_workflows.py",
+      "line": 184,
+      "pattern": "token",
+      "description": "Potential token detected in code",
+      "remediation": "Remove sensitive data, use environment variables instead",
+      "false_positive": true
+    },
+    {
+      "type": "potential_secret",
+      "severity": "critical",
+      "source": "pattern_detection",
+      "file": "scripts/validate_workflows.py",
+      "line": 186,
+      "pattern": "token",
+      "description": "Potential token detected in code",
+      "remediation": "Remove sensitive data, use environment variables instead",
+      "false_positive": true
+    },
+    {
+      "type": "potential_secret",
+      "severity": "critical",
+      "source": "pattern_detection",
+      "file": "scripts/validate_workflows.py",
+      "line": 193,
+      "pattern": "token",
+      "description": "Potential token detected in code",
+      "remediation": "Remove sensitive data, use environment variables instead",
+      "false_positive": true
+    },
+    {
+      "type": "potential_secret",
+      "severity": "critical",
+      "source": "pattern_detection",
+      "file": "scripts/validate_workflows.py",
+      "line": 194,
+      "pattern": "token",
+      "description": "Potential token detected in code",
+      "remediation": "Remove sensitive data, use environment variables instead",
+      "false_positive": true
+    },
+    {
+      "type": "potential_secret",
+      "severity": "critical",
+      "source": "pattern_detection",
+      "file": "scripts/deep_research_task_process.py",
+      "line": 476,
+      "pattern": "token",
+      "description": "Potential token detected in code",
+      "remediation": "Remove sensitive data, use environment variables instead",
+      "false_positive": true
+    },
+    {
+      "type": "potential_secret",
+      "severity": "critical",
+      "source": "pattern_detection",
+      "file": "scripts/deep_research_task_process.py",
+      "line": 502,
+      "pattern": "token",
+      "description": "Potential token detected in code",
+      "remediation": "Remove sensitive data, use environment variables instead",
+      "false_positive": true
+    },
+    {
+      "type": "potential_secret",
+      "severity": "critical",
+      "source": "pattern_detection",
+      "file": "scripts/pr3248_comprehensive_collector.py",
+      "line": 89,
+      "pattern": "token",
+      "description": "Potential token detected in code",
+      "remediation": "Remove sensitive data, use environment variables instead",
+      "false_positive": true
+    },
+    {
+      "type": "potential_secret",
+      "severity": "critical",
+      "source": "pattern_detection",
+      "file": "scripts/pr3248_comprehensive_collector.py",
+      "line": 90,
+      "pattern": "token",
+      "description": "Potential token detected in code",
+      "remediation": "Remove sensitive data, use environment variables instead",
+      "false_positive": true
+    },
+    {
+      "type": "potential_secret",
+      "severity": "critical",
+      "source": "pattern_detection",
+      "file": "scripts/stale_session_detector.py",
+      "line": 67,
+      "pattern": "token",
+      "description": "Potential token detected in code",
+      "remediation": "Remove sensitive data, use environment variables instead",
+      "false_positive": true
+    },
+    {
+      "type": "potential_secret",
+      "severity": "critical",
+      "source": "pattern_detection",
+      "file": "scripts/stale_session_detector.py",
+      "line": 68,
+      "pattern": "token",
+      "description": "Potential token detected in code",
+      "remediation": "Remove sensitive data, use environment variables instead",
+      "false_positive": true
+    }
+  ],
+  "recommendations": [
+    {
+      "priority": "P1_HIGH",
+      "count": 98,
+      "action": "URGENT - Schedule remediation",
+      "timeline": "Within 7 days",
+      "details": "98 high-severity issues require attention in next sprint",
+      "typical_issues": "Unsafe imports (exec, eval, pickle), shell injection risks"
+    }
+  ]
+}

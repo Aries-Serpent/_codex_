@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-07-02T06:08:58Z",
+  "generated_at": "2026-07-03T00:53:46Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1244,7 +1244,7 @@
     {
       "name": "codex-master-key-validation",
       "enforcement_tier": "SOFT",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "cognitive-action-decision",
@@ -1539,12 +1539,12 @@
     {
       "name": "machine-readable-governance",
       "enforcement_tier": "SOFT",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "machine-readable-maintenance-pr",
       "enforcement_tier": "SOFT",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "maturity-check",
@@ -1629,7 +1629,7 @@
     {
       "name": "phase-8-1-enhanced-health-monitor",
       "enforcement_tier": "SOFT",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "phase-8-1-health-monitor",
@@ -1649,7 +1649,7 @@
     {
       "name": "phase-9-2-cascade",
       "enforcement_tier": "SOFT",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "phase-9-3-router",
@@ -2416,5 +2416,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "4571c64ff6a96a685f8807f84b65489d77ab1d1020780daf8e7e33b2d6802bae"
+  "integrity_sha256": "c3e321b3122d9793cb1cf3e4aaec1fc3cd06cd0c7d7426a6a6f1859b66db0ccd"
 }

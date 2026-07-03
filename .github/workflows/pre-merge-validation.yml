@@ -105,7 +105,7 @@ jobs:
 
           '
         if-no-files-found: ignore
-        retention-days: 7
+        retention-days: 14
     - name: Post validation summary
       if: always()
       continue-on-error: true
