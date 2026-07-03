@@ -1,168 +1,163 @@
 # 🚀 AUTO-GO POST-MERGE DEPLOYMENT PROMPT
 
-**Status**: Ready for immediate Phase 12 deployment  
+**Status**: Ready for post-merge Phase 12 execution after verified Phase 10 launch/completion  
 **Authority**: @mbaetiong (D-tier autonomous)  
-**Activation Time**: Immediately upon merge to main  
-**Timeline**: Phase 12 deployment in parallel across 3 tracks (10-13 days to production)
+**Activation Time**: Immediately after merge to `main` is confirmed on the target SHA  
+**Current Focus**: Preserve verified completed work, then execute only the remaining `main` post-merge actions
 
 ---
 
-## 🎯 IMMEDIATE POST-MERGE ACTIONS (Next Session)
+## ✅ VERIFIED COMPLETE BEFORE POST-MERGE EXECUTION
 
-### ✅ Trigger Phase 12 Deployment
+The following items are already complete and do **not** need to be repeated after merge:
 
-When merged to main, activate Phase 12 enterprise governance deployment:
+- [x] **Phase 10 launch approved and activated**
+  - Evidence: `.codex/archive/phase-reports/phase-1-10/PHASE_10_ACTIVATION_NOTICE_2026_07_02.md`
+- [x] **Phase 10 delivery completed across all 3 tracks**
+  - Evidence: `.codex/archive/phase-reports/phase-1-10/PHASE_10_FINAL_COMPLETION_REPORT.md`
+- [x] **Phase 10 gate prerequisites satisfied for Phase 12**
+  - Evidence: `.codex/archive/phase-reports/phase-1-10/PHASE_10_COMPLETE.md`
+- [x] **Phase 12 preparation artifacts already exist**
+  - Evidence: `.codex/archive/phase-reports/phase-11-20/PHASE_12_BRIEFS_FINAL.md`, `.codex/archive/phase-reports/phase-11-20/PHASE_12_PREPARATION_MASTER_CHECKLIST.md`, `.codex/archive/phase-reports/phase-11-20/PHASE_12_PREPARATION_DASHBOARD.md`
+- [x] **Autonomy / session context prerequisites verified**
+  - Evidence: `.codex/AGENTIC_REPO_STATE.md`, `.codex/agent_context.json`
 
-```
-"Execute Phase 12 Deployment: Enterprise Governance & Operations
+### Phase 10 Completion Snapshot
 
-CONTEXT:
-- ✅ Pre-requisites complete: Phases 1-10+ deployed
-- ✅ Operational readiness: ≥95% achieved
-- ✅ CI health: Restored and healthy
-- ✅ Phase 12 briefs: Final and ready for activation
+| Track | Status | Verified Outcome |
+|---|---|---|
+| 10.1 Session Checkpoint/Resume | ✅ Complete | Session restore delivered and validated |
+| 10.2 STM→LTM Consolidation | ✅ Complete | Memory sync delivered and validated |
+| 10.3 Context Injection & OODA | ✅ Complete | Context scoring/injection delivered and validated |
 
-IMMEDIATE TASKS:
-1. Activate agent-orchestrator for Phase 12 coordination
-2. Deploy Track 12.1: unified-governance-gate (RBAC & governance)
-3. Deploy Track 12.2: owner-approval-guard (Governance & compliance)
-4. Deploy Track 12.3: workflow-health-monitor (Observability & monitoring)
+### What changed from the prior version of this prompt
 
-DEPLOYMENT SEQUENCE:
-- Wave 1 (Day 1-2): Track 12.1 RBAC framework + Track 12.2 approval engine
-- Wave 2 (Day 3-5): Track 12.3 observability + integration testing
-- Wave 3 (Day 6-10): Production hardening, performance tuning, SLA validation
-- Gate 1 (Day 10): Validation that all 3 tracks are operational and integrated
+The earlier prompt assumed only a pre-deployment state. Repository records now show:
 
-AUTHORIZATION:
-- Level D enabled (COPILOT_AGENT_AUTH_ENABLED=true)
-- Full agent orchestration authorized
-- Zero approval gates for Phase 12 execution
-- 4+ agents can run in parallel
-
-REFERENCE DOCUMENTS:
-- Master Brief: `.codex/PHASE_12_BRIEFS_FINAL.md`
-- Preparation Checklist: `.codex/PHASE_12_PREPARATION_MASTER_CHECKLIST.md`
-- Risk Register: `.codex/PHASE_12_PREPARATION_RISK_REGISTER.md`  # pragma: allowlist secret
-- Dashboard: `.codex/PHASE_12_PREPARATION_DASHBOARD.md`
-
-EXPECTED OUTCOME:
-- 3 enterprise systems deployed and tested
-- RBAC engine: <10ms permission checks, 100+ concurrent
-- Approval engine: <100ms p99 latency, 40+ policies
-- Observability: 54+ metrics, <500ms dashboard refresh, 100% accuracy
-- All success criteria met (18/18 for Phase 12)
-- Production-ready for v1.0.0-enterprise release (2026-07-11)
-
-Begin with Wave 1 track activation."
-```
+1. Phase 10 has already been launched.
+2. Phase 10 has already been completed.
+3. The remaining work is the **post-merge-on-`main` execution path**, not another Phase 10 launch.
 
 ---
 
-## 📋 POST-MERGE CHECKLIST (For Next Session)
+## 🎯 REMAINING POST-MERGE WORK ON `main`
 
-- [ ] Verify merge to main successful
-- [ ] Confirm Phase 12 briefs finalized
-- [ ] Activate agent-orchestrator for Phase 12 coordination
-- [ ] Deploy 3 tracks in Wave 1 sequence
-- [ ] Monitor first 24-hour execution
-- [ ] Report daily progress via PHASE_12_DAILY_PROGRESS reports
+When the branch is merged to `main`, execute only the remaining items below:
+
+1. **Verify the merge event on `main`**
+   - Confirm the merge SHA
+   - Confirm the Phase 10 completion artifacts are present on `main`
+   - Confirm no drift between branch docs and `main`
+
+2. **Activate Phase 12 from the verified Phase 10 baseline**
+   - Start `agent-orchestrator` for Phase 12 coordination
+   - Launch Track 12.1 `unified-governance-gate`
+   - Launch Track 12.2 `owner-approval-guard`
+   - Launch Track 12.3 `workflow-health-monitor`
+
+3. **Run the first post-merge validation cycle**
+   - Validate Wave 1 startup on `main`
+   - Verify integration points against Phase 10 outputs
+   - Confirm no regressions in the merged branch state
+
+4. **Record post-merge operational tracking**
+   - Publish first `PHASE_12_DAILY_PROGRESS` update
+   - Post Wave 1 status summary
+   - Capture any new blockers or follow-up work specific to `main`
+
+---
+
+## 📋 POST-MERGE CHECKLIST
+
+### Already completed / verified
+- [x] Phase 10 launch verified from repository records
+- [x] Phase 10 completion verified from repository records
+- [x] Phase 12 briefs finalized
+- [x] Phase 12 preparation dashboard/checklist exists
+- [x] Authority and autonomy state verified
+
+### Still required after merge to `main`
+- [ ] Verify merge to `main` succeeded on the intended SHA
+- [ ] Confirm Phase 10 completion artifacts are present on `main`
+- [ ] Reconcile any branch-to-main documentation drift
+- [ ] Activate `agent-orchestrator` for Phase 12 coordination
+- [ ] Deploy Wave 1 across Tracks 12.1, 12.2, and 12.3
+- [ ] Monitor the first 24 hours of execution on `main`
+- [ ] Publish first Phase 12 daily progress report
 - [ ] Post Wave 1 completion summary
 
 ---
 
 ## 🔐 AUTHORIZATION STATUS
 
-```
+```text
 COPILOT_AGENT_AUTH_ENABLED=true         ✅ Level D autonomy active
 COPILOT_AGENT_MAX_AUTONOMY_LEVEL=D      ✅ Full autonomous operations
 COGNITIVE_BRAIN_INJECTION_ENABLED=true  ✅ Session memory active
-COPILOT_AGENT_CCA_VERSION_LOCK=stable   ✅ Duplicate function call fix active
+COPILOT_AGENT_CCA_VERSION_LOCK=stable   ✅ Stable CCA lock active
+COPILOT_AGENT_DEDUPLICATION_ENABLED=true ✅ Payload deduplication active
+COPILOT_AGENT_TURN_ISOLATION_ENABLED=true ✅ Turn isolation active
 ```
 
-**Authorization Note**: This session was executed under D-tier autonomy with explicit authority from @mbaetiong (2026-06-27 memo: "for any and all decision always GO continue"). No further approval gates required for Phase 12 execution.
+**Authorization Note**: Post-merge execution remains authorized under @mbaetiong's standing GO-CONTINUE direction. No additional approval gate is required for the Phase 12 post-merge start sequence.
 
 ---
 
-## 📊 PRE-PHASE-12 METRICS
+## 📊 VERIFIED READINESS BASELINE
 
-**Current State (Post-AUTO-GO)**:
-- ✅ Code Coverage: 95%+ (across all modules)
-- ✅ Test Success: 100% (all tests passing)
-- ✅ CI Health: Healthy (2 Phase 8/9 workflows archived, Phase 10+ operational)
-- ✅ Documentation: Current (Phase 12 briefs, risk register, preparation dashboard)
-- ✅ Operational Readiness: **≥95% ACHIEVED**
+**Ready now:**
+- ✅ Phase 10 artifacts exist and are marked complete
+- ✅ Gate condition for proceeding beyond Phase 10 is documented as satisfied
+- ✅ Phase 12 preparation documents are available
+- ✅ Campaign authority remains active
 
-**Phase 12 Targets**:
-- RBAC Permission Latency: <10ms (target met in design)
-- Approval Workflow Latency: <100ms p99 (target met in design)
-- Dashboard Refresh: <500ms (target met in design)
-- Metric Accuracy: 100% (target met in design)
-- Test Coverage: >95% (target met)
+**To verify only after merge to `main`:**
+- [ ] Merged SHA on `main`
+- [ ] Final on-`main` artifact consistency
+- [ ] Immediate Wave 1 execution health on `main`
 
 ---
 
-## 🎯 SUCCESS CRITERIA FOR PHASE 12
+## 🚀 POST-MERGE EXECUTION PROMPT
 
-Phase 12 is complete when:
+When the merge to `main` is complete, use:
 
-1. **Track 12.1 (RBAC)**: 
-   - ✅ RBAC engine deployed and tested
-   - ✅ Permission checks <10ms latency
-   - ✅ Support for 100+ concurrent requests
-   - ✅ 100% test coverage
+```text
+Execute post-merge Phase 12 deployment from verified Phase 10 completion.
 
-2. **Track 12.2 (Governance)**:
-   - ✅ Approval workflow engine deployed
-   - ✅ <100ms p99 latency on approvals
-   - ✅ 40+ policies defined and enforced
-   - ✅ 99%+ compliance rate
+CONTEXT:
+- Phase 10 launch already completed and verified.
+- Phase 10 completion already verified from repository records.
+- Phase 12 preparation artifacts already exist.
+- Remaining work is limited to the post-merge-on-main execution path.
 
-3. **Track 12.3 (Observability)**:
-   - ✅ Metrics collection: 54+ signals
-   - ✅ Dashboard refresh: <500ms
-   - ✅ Alert latency: <2s
-   - ✅ 100% metric accuracy
+IMMEDIATE TASKS:
+1. Verify the merge SHA on main.
+2. Confirm Phase 10 completion artifacts are present on main.
+3. Start Phase 12 coordination with agent-orchestrator.
+4. Deploy Tracks 12.1, 12.2, and 12.3.
+5. Monitor first-wave execution and publish the initial Phase 12 progress update.
 
-4. **Integration**:
-   - ✅ Phase 10+ session context integrated
-   - ✅ RBAC policies govern all approvals
-   - ✅ Observability dashboard active
-   - ✅ Zero defects (all tests pass)
-
----
-
-## 🚀 PHASE 12 → PRODUCTION RELEASE
-
-Upon Phase 12 completion (Day 10-13):
-1. Execute final Gate 1 validation
-2. Tag release as v1.0.0-enterprise
-3. Deploy to production branch
-4. Post release announcement with metrics
-5. Begin Phase 13 (next operational phase)
-
----
-
-## 📝 FOLLOW-UP PROMPT FOR NEXT SESSION
-
-When you're ready to execute Phase 12:
-
-```
-"Deploy Phase 12: Enterprise Governance & Operations
-
-ACTIVATION TRIGGER: Post-merge to main (SHA: {last_merge_sha})
-AUTHORITY: @mbaetiong D-tier (COPILOT_AGENT_AUTH_ENABLED=true)
-TIMELINE: 10-13 days to production-ready state
-
-Execute Wave 1 of Phase 12 deployment (Track 12.1 RBAC + Track 12.2 Approval Engine).
-Coordinate with agent-orchestrator for 3-track parallel execution.
-Report daily progress and activate feedback loops.
-
-Reference: .codex/PHASE_12_BRIEFS_FINAL.md"
+REFERENCE DOCUMENTS:
+- `.codex/archive/phase-reports/phase-1-10/PHASE_10_ACTIVATION_NOTICE_2026_07_02.md`
+- `.codex/archive/phase-reports/phase-1-10/PHASE_10_FINAL_COMPLETION_REPORT.md`
+- `.codex/archive/phase-reports/phase-1-10/PHASE_10_COMPLETE.md`
+- `.codex/archive/phase-reports/phase-11-20/PHASE_12_BRIEFS_FINAL.md`
+- `.codex/archive/phase-reports/phase-11-20/PHASE_12_PREPARATION_MASTER_CHECKLIST.md`
+- `.codex/archive/phase-reports/phase-11-20/PHASE_12_PREPARATION_DASHBOARD.md`
 ```
 
 ---
 
-**Prepared**: 2026-07-02T06:03Z  
-**For Activation**: Immediately upon merge to main  
+## 📝 REMAINING FOLLOW-UP NOTES
+
+- Do **not** relaunch Phase 10.
+- Do **not** treat Phase 10 as pending work.
+- Use the merge-to-`main` event as the trigger for the remaining Phase 12 execution sequence.
+- Any newly discovered issues after merge should be recorded as `main`-specific post-merge follow-up items.
+
+---
+
+**Prepared**: 2026-07-03T12:14Z  
+**Updated For**: Verified Phase 10 launch/completion + remaining `main` post-merge work  
 **Authority**: @mbaetiong (D-tier autonomy)
