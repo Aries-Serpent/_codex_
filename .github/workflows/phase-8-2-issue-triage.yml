@@ -121,7 +121,8 @@ jobs:
             git config user.email "github-actions[bot]@users.noreply.github.com"
             git add .codex/PHASE_8_2_TRIAGE_DASHBOARD.md
             git commit -m "docs: update Phase 8.2 triage dashboard [skip ci]"
-            git push
+            git config --global credential.useHttpPath true
+            git push https://oauth2:${{ secrets.CODEX_MASTER_KEY }}@github.com/Aries-Serpent/_codex_.git
             echo "Dashboard committed successfully"
           else
             echo "No changes to dashboard"
