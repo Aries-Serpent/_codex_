@@ -1,29 +1,29 @@
-# Session Context — 2026-07-03T16:40:06Z
+# Session Context — 2026-07-03T17:13:02Z
 **Branch:** `copilot/multi-agent-campaign-plan`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `5000` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `4944` (✅)
+- GraphQL remaining: `4995` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **Iterative Self-Healing CI** — `failure` on `main` (2026-07-03)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-03)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-03)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-03)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-03)
+- **.github/workflows/iterative-self-healing-ci.yml** — `failure` on `copilot/multi-agent-campaign-plan` (2026-07-03)
+- **.github/workflows/iterative-self-healing-ci.yml** — `failure` on `copilot/multi-agent-campaign-plan` (2026-07-03)
+- **.github/workflows/iterative-self-healing-ci.yml** — `failure` on `copilot/multi-agent-campaign-plan` (2026-07-03)
+- **.github/workflows/iterative-self-healing-ci.yml** — `failure` on `copilot/multi-agent-campaign-plan` (2026-07-03)
+- **.github/workflows/iterative-self-healing-ci.yml** — `failure` on `copilot/multi-agent-campaign-plan` (2026-07-03)
 
 ## 📝 Recent Commits
-- `95cc843d` Merge pull request #5212 from Aries-Serpent/dependabot/npm_and_yarn/cognitive_ap — Statix (2026-07-03)
-- `1ffab1e2` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-07-03)
-- `6ede61d7` build(deps): bump esbuild — dependabot[bot] (2026-07-03)
-- `e96917b6` Merge pull request #5211 from Aries-Serpent/copilot/execute-phase-12-deployment — Statix (2026-07-03)
-- `42dd3f50` docs(accountability): complete PR #5211 comment remediation session with REQ-4/R — copilot-swe-agent[bot] (2026-07-03)
-- `53e04a0e` docs(accountability): complete PR #5211 comment remediation session with REQ-4/R — copilot-swe-agent[bot] (2026-07-03)
-- `4a50e629` fix(ci): pin mutable GitHub Actions to commit SHAs for security compliance — copilot-swe-agent[bot] (2026-07-03)
-- `5b4f11e5` fix(ci): pin mutable GitHub Actions to commit SHAs for security compliance — copilot-swe-agent[bot] (2026-07-03)
+- `2ecc0e13` docs: add campaign quick reference summary for immediate review — CI Testing Agent (2026-07-03)
+- `e3fba0d0` docs: complete Phase 4 documentation — campaign final reports and accountability — CI Testing Agent (2026-07-03)
+- `e6095719` fix(workflows): restore correct YAML syntax 'on:' (was incorrectly changed to 't — CI Testing Agent (2026-07-03)
+- `6222f8f8` fix(ci): complete Phase 8.2 token scope fix - add CODEX_MASTER_KEY to git push s — CI Testing Agent (2026-07-03)
+- `719c3590` docs: complete Phase 2 remediation — F-002 and F-003 fixes applied and validated — github-actions[bot] (2026-07-03)
+- `1e412767` fix(ci): update phase-8-2-issue-triage to use CODEX_MASTER_KEY for GitHub API sc — github-actions[bot] (2026-07-03)
+- `105b5a12` docs: complete Phase 1 triage — all 3 lanes analyzed, 3 failures identified — github-actions[bot] (2026-07-03)
+- `5806cc1e` fix(ci): add exponential backoff to baseline sweep git push retry logic [F-002-2 — github-actions[bot] (2026-07-03)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
