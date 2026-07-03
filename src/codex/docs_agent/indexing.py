@@ -50,7 +50,7 @@ class FullTextIndexer:
             results = result_sets[0]
             for token_set in result_sets[1:]:
                 results = results & token_set
-            return sorted(list(results))
+            return sorted(results)
 
         return []
 
