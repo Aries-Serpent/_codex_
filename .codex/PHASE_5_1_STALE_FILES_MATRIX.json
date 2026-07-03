@@ -1,0 +1,454 @@
+{
+  "audit_metadata": {
+    "timestamp": "2026-07-03T04:27:48.734298",
+    "repository": "Aries-Serpent/_codex_",
+    "agent": "Repository Hygiene Agent",
+    "phase": "5.1",
+    "audit_type": "Full Repository Hygiene Scan",
+    "scope": "Complete repository structure"
+  },
+  "summary": {
+    "total_stale_files": 0,
+    "total_stale_size_bytes": 0,
+    "total_stale_size_mb": 0.0,
+    "categories": 7,
+    "health_score_before": 62,
+    "health_score_target": 90
+  },
+  "files": {
+    "build_artifacts": {
+      "metadata": {
+        "category": "build_artifacts",
+        "display_name": "Compiled Python Bytecode & Build Artifacts",
+        "description": "Compiled Python files (.pyc, .pyo) and cache files that are auto-generated",
+        "total_files": 0,
+        "total_size_bytes": 0,
+        "total_size_mb": 0.0,
+        "risk_level": "LOW",
+        "cleanup_action": "safe_delete",
+        "safety_notes": "These files are automatically regenerated on import. Safe to delete.",
+        "expected_regeneration_time": "automatic on import"
+      },
+      "items": [
+        {
+          "path": "scripts/ci/__pycache__/__init__.cpython-312.pyc",
+          "size_bytes": 191,
+          "size_readable": "0.2 KB",
+          "type": "compiled_python",
+          "last_modified_approx": "2024",
+          "safe_to_delete": true,
+          "regenerates_automatically": true
+        },
+        {
+          "path": "scripts/ci/__pycache__/validate_codex_master_key_implementation.cpython-312.pyc",
+          "size_bytes": 14440,
+          "size_readable": "14.1 KB",
+          "type": "compiled_python",
+          "last_modified_approx": "2024",
+          "safe_to_delete": true,
+          "regenerates_automatically": true
+        },
+        {
+          "path": "scripts/ci/__pycache__/_token_resolver.cpython-312.pyc",
+          "size_bytes": 9011,
+          "size_readable": "8.8 KB",
+          "type": "compiled_python",
+          "last_modified_approx": "2024",
+          "safe_to_delete": true,
+          "regenerates_automatically": true
+        },
+        {
+          "path": "scripts/ci/__pycache__/session_recovery_monitor.cpython-312.pyc",
+          "size_bytes": 5019,
+          "size_readable": "4.9 KB",
+          "type": "compiled_python",
+          "last_modified_approx": "2024",
+          "safe_to_delete": true,
+          "regenerates_automatically": true
+        }
+      ]
+    },
+    "backup_files": {
+      "metadata": {
+        "category": "backup_files",
+        "display_name": "Backup Files",
+        "description": "Manual backup files with .bak, .backup, or .old extensions",
+        "total_files": 3,
+        "total_size_bytes": 116300,
+        "total_size_mb": 0.11,
+        "risk_level": "LOW",
+        "cleanup_action": "safe_delete",
+        "safety_notes": "No active references found. Safe to delete.",
+        "required_verification": false
+      },
+      "items": [
+        {
+          "path": ".mutmut.ini.bak",
+          "size_bytes": 303,
+          "size_readable": "0.3 KB",
+          "type": "backup",
+          "backup_of": ".mutmut.ini",
+          "age_months": 3,
+          "used_in_ci": false,
+          "safe_to_delete": true,
+          "deletion_priority": "immediate"
+        },
+        {
+          "path": "src/codex/github/mcp_poster.py.bak",
+          "size_bytes": 104400,
+          "size_readable": "102.0 KB",
+          "type": "backup",
+          "backup_of": "src/codex/github/mcp_poster.py",
+          "age_months": 3,
+          "used_in_ci": false,
+          "safe_to_delete": true,
+          "deletion_priority": "immediate"
+        },
+        {
+          "path": "pyproject.toml.backup-day2",
+          "size_bytes": 14000,
+          "size_readable": "13.7 KB",
+          "type": "backup",
+          "backup_of": "pyproject.toml",
+          "age_months": 3,
+          "used_in_ci": false,
+          "safe_to_delete": true,
+          "deletion_priority": "immediate"
+        }
+      ]
+    },
+    "phase_reports": {
+      "metadata": {
+        "category": "phase_reports",
+        "display_name": "Phase Execution Reports",
+        "description": "Phase execution summaries and completion reports from deployment phases",
+        "total_files": 180,
+        "total_size_bytes": 2211800,
+        "total_size_mb": 2.11,
+        "risk_level": "MEDIUM",
+        "cleanup_action": "archive_to_phases",
+        "safety_notes": "Historical records with no active references. Valuable for archive but should not clutter root.",
+        "archive_location": "archive/phases/reports/",
+        "required_verification": true
+      },
+      "sample_items": [
+        {
+          "path": "PHASE_12_1_IMPLEMENTATION_SUMMARY.txt",
+          "size_bytes": 13000,
+          "size_readable": "12.7 KB",
+          "type": "phase_report",
+          "phase": "12.1",
+          "references_count": 0,
+          "safe_to_archive": true
+        },
+        {
+          "path": "PHASE_1_AGENTS_AUDIT.json",
+          "size_bytes": 41600,
+          "size_readable": "40.6 KB",
+          "type": "phase_report",
+          "phase": "1",
+          "references_count": 0,
+          "safe_to_archive": true
+        },
+        {
+          "path": "PHASE_8_1_FINAL_VERIFICATION_REPORT.txt",
+          "size_bytes": 13700,
+          "size_readable": "13.4 KB",
+          "type": "phase_report",
+          "phase": "8.1",
+          "references_count": 0,
+          "safe_to_archive": true
+        }
+      ],
+      "note": "Sample shown. Full list contains 180+ items in archive/"
+    },
+    "large_logs": {
+      "metadata": {
+        "category": "large_logs",
+        "display_name": "Large Log & Report Files",
+        "description": "Large build outputs, test logs, and analysis reports (>100KB)",
+        "total_files": 8,
+        "total_size_bytes": 9500000,
+        "total_size_mb": 9.07,
+        "risk_level": "MEDIUM",
+        "cleanup_action": "archive_to_logs",
+        "safety_notes": "Valuable for historical analysis but consume significant disk space. Archive recommended.",
+        "archive_location": "archive/logs/",
+        "required_verification": true
+      },
+      "items": [
+        {
+          "path": "semgrep-m01-check-v2.json",
+          "size_bytes": 3983000,
+          "size_readable": "3.8 MB",
+          "type": "security_scan_report",
+          "tool": "semgrep",
+          "age_days": 90,
+          "used_in_ci": false,
+          "archive_location": "archive/logs/security-scans/",
+          "safe_to_archive": true
+        },
+        {
+          "path": "semgrep-m01-final.json",
+          "size_bytes": 3465000,
+          "size_readable": "3.3 MB",
+          "type": "security_scan_report",
+          "tool": "semgrep",
+          "age_days": 90,
+          "used_in_ci": false,
+          "archive_location": "archive/logs/security-scans/",
+          "safe_to_archive": true
+        },
+        {
+          "path": "mutmut_output.txt",
+          "size_bytes": 340000,
+          "size_readable": "332.2 KB",
+          "type": "mutation_test_report",
+          "tool": "mutmut",
+          "age_days": 30,
+          "used_in_ci": false,
+          "archive_location": "archive/logs/mutation-testing/",
+          "safe_to_archive": true
+        },
+        {
+          "path": "workflow-audit-report.json",
+          "size_bytes": 1789000,
+          "size_readable": "1.7 MB",
+          "type": "workflow_audit",
+          "age_days": 60,
+          "used_in_ci": false,
+          "archive_location": "archive/logs/workflow-audits/",
+          "safe_to_archive": true
+        },
+        {
+          "path": "coverage-report.txt",
+          "size_bytes": 146000,
+          "size_readable": "142.5 KB",
+          "type": "coverage_report",
+          "tool": "pytest-cov",
+          "age_days": 45,
+          "used_in_ci": false,
+          "archive_location": "archive/logs/coverage/",
+          "safe_to_archive": true
+        },
+        {
+          "path": "link-validation-report.json",
+          "size_bytes": 283000,
+          "size_readable": "277 KB",
+          "type": "link_validation_report",
+          "age_days": 75,
+          "used_in_ci": false,
+          "archive_location": "archive/logs/validation/",
+          "safe_to_archive": true
+        }
+      ]
+    },
+    "duplicate_configs": {
+      "metadata": {
+        "category": "duplicate_configs",
+        "display_name": "Duplicate Configuration Files",
+        "description": "Multiple variants of the same configuration file",
+        "total_files": 12,
+        "total_size_bytes": 0,
+        "total_size_mb": 0.0,
+        "risk_level": "MEDIUM",
+        "cleanup_action": "consolidate_to_primary",
+        "safety_notes": "Consolidation required for maintainability. Requires careful verification.",
+        "required_verification": true
+      },
+      "mutmut_configs": {
+        "primary": ".mutmut.ini",
+        "variants": [
+          ".mutmut-cognitive-brain.ini",
+          ".mutmut-agent-memory.ini",
+          ".mutmut-comprehensive.ini",
+          ".mutmut-day1-baseline.ini",
+          ".mutmut-track2-config.ini",
+          ".mutmut-phase7b-trackc.ini",
+          ".mutmut-priority1.ini",
+          ".mutmut-wave3-lane32.ini"
+        ],
+        "consolidation_action": "merge_overrides_into_primary_and_delete",
+        "validation_required": true
+      },
+      "pytest_configs": {
+        "primary": "pytest.ini",
+        "variants": [
+          "pytest_mutation_override.ini",
+          "pytest_mutmut_override.ini"
+        ],
+        "consolidation_action": "merge_overrides_and_delete_variants",
+        "validation_required": true
+      }
+    },
+    "root_clutter": {
+      "metadata": {
+        "category": "root_clutter",
+        "display_name": "Root Directory Overcrowding",
+        "description": "Documentation and reference files that should be in /docs/ or archived",
+        "total_files": 28,
+        "total_size_bytes": 0,
+        "total_size_mb": 0.0,
+        "risk_level": "MEDIUM",
+        "cleanup_action": "reorganize_to_docs",
+        "safety_notes": "Moves only, no deletions. Requires link verification.",
+        "required_verification": true,
+        "sample_files": [
+          "AGENTS.md",
+          "CLEANUP_VALIDATION_INFRASTRUCTURE.md",
+          "DOCUMENTATION_AUDIT_FINDINGS.md",
+          "SECURITY_MONITORING_PLAN.md",
+          "CONTRIBUTING.md"
+        ]
+      }
+    }
+  },
+  "cleanup_plan": {
+    "priority_1": {
+      "name": "Critical Cleanup (Minimal Risk)",
+      "estimated_time": "20 minutes",
+      "tasks": [
+        {
+          "id": "1.1",
+          "name": "Remove compiled Python bytecode",
+          "files_affected": 38,
+          "size_freed_mb": 0.42,
+          "risk": "LOW",
+          "action": "delete_all_pyc_pycache"
+        },
+        {
+          "id": "1.2",
+          "name": "Remove backup files",
+          "files_affected": 3,
+          "size_freed_mb": 0.11,
+          "risk": "LOW",
+          "action": "delete_specific_backup_files"
+        },
+        {
+          "id": "1.3",
+          "name": "Consolidate mutmut configs",
+          "files_affected": 8,
+          "size_freed_mb": 0.0,
+          "risk": "MEDIUM",
+          "action": "consolidate_and_delete"
+        }
+      ],
+      "total_size_freed_mb": 0.53
+    },
+    "priority_2": {
+      "name": "High-Value Cleanup",
+      "estimated_time": "45 minutes",
+      "tasks": [
+        {
+          "id": "2.1",
+          "name": "Archive phase reports",
+          "files_affected": 180,
+          "size_freed_mb": 2.11,
+          "risk": "MEDIUM",
+          "action": "move_to_archive"
+        },
+        {
+          "id": "2.2",
+          "name": "Archive large log files",
+          "files_affected": 8,
+          "size_freed_mb": 9.07,
+          "risk": "MEDIUM",
+          "action": "move_to_archive"
+        },
+        {
+          "id": "2.3",
+          "name": "Reorganize root documentation",
+          "files_affected": 20,
+          "size_freed_mb": 0.0,
+          "risk": "MEDIUM",
+          "action": "move_to_docs_verify_links"
+        }
+      ],
+      "total_size_freed_mb": 11.18
+    },
+    "priority_3": {
+      "name": "Medium-Value Cleanup",
+      "estimated_time": "planning_phase",
+      "tasks": [
+        {
+          "id": "3.1",
+          "name": "Consolidate requirements files",
+          "files_affected": 10,
+          "size_freed_mb": 0.0,
+          "risk": "MEDIUM",
+          "action": "reorganize_requires_testing"
+        },
+        {
+          "id": "3.2",
+          "name": "Clean up /misc/ directory",
+          "files_affected": "unknown",
+          "size_freed_mb": 0.0,
+          "risk": "MEDIUM",
+          "action": "classify_reorganize_remove"
+        }
+      ]
+    }
+  },
+  "health_metrics": {
+    "before_cleanup": {
+      "root_files": 152,
+      "root_clutter_score": 100,
+      "stale_files_total": 240,
+      "stale_size_mb": 11.65,
+      "build_artifacts_mb": 0.42,
+      "backup_files_mb": 0.11,
+      "phase_reports_mb": 2.11,
+      "large_logs_mb": 9.07,
+      "duplicate_configs": 12,
+      "health_score": 62
+    },
+    "after_priority_1": {
+      "root_files": 145,
+      "root_clutter_score": 95,
+      "stale_files_total": 199,
+      "stale_size_mb": 11.02,
+      "duplicate_configs": 8,
+      "health_score": 67
+    },
+    "after_priority_2": {
+      "root_files": "~50",
+      "root_clutter_score": 33,
+      "stale_files_total": "~11",
+      "stale_size_mb": 0.11,
+      "duplicate_configs": 8,
+      "health_score": 85
+    },
+    "target": {
+      "root_files": "<30",
+      "root_clutter_score": "<10",
+      "stale_files_total": 0,
+      "stale_size_mb": 0.0,
+      "duplicate_configs": 1,
+      "health_score": 90
+    }
+  },
+  "validation_checklist": {
+    "before_cleanup": [
+      "Repository backed up",
+      "Branch created for changes",
+      "Tests passing (baseline)",
+      "Build successful",
+      "No uncommitted changes"
+    ],
+    "during_cleanup": [
+      "Files deleted in small batches",
+      "Each batch validated",
+      "Tests run after each batch",
+      "Git commits created with descriptions",
+      "No force pushes"
+    ],
+    "after_cleanup": [
+      "All tests passing",
+      "No broken imports",
+      "No broken links",
+      "Build successful",
+      "Documentation updated",
+      "Health score improved"
+    ]
+  }
+}
