@@ -1,5 +1,5 @@
 # Workflow Compliance Matrix
-> Generated: Phase 0 audit (WU-0.1) | 212 workflows scanned
+> Generated: Phase 0 audit (WU-0.1) | 213 workflows scanned
 
 | Workflow | Concurrency | Timeout | Cascade Risk | Base-Ref Fetch | Enforcement Tier | Notes |
 |----------|:-----------:|:-------:|:------------:|:--------------:|:----------------:|-------|
@@ -36,7 +36,7 @@
 | `branch-divergence-monitor` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
 | `branch-rebase-gate` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `build-agent-env-cache` | ✅ | ✅ | ✅ | N/A | SOFT | — |
-| `build-preview-image` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
+| `build-preview-image` | ✅ | ❌ | ✅ | N/A | GROUNDED | — |
 | `cache-health-monitor` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `cache-pruning` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `cache-validation` | ✅ | ✅ | ✅ | N/A | SOFT | — |
@@ -85,7 +85,7 @@
 | `coverage-with-timeout` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
 | `create-sub-pr-to-0D_base_` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `d-capable-promotion-gate` | ✅ | ✅ | ✅ | N/A | SOFT | — |
-| `data-quality-suite` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
+| `data-quality-suite` | ✅ | ❌ | ✅ | N/A | GROUNDED | — |
 | `deferral-language-gate` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `dependabot-auto-absorb` | ✅ | ✅ | ✅ | ✅ | SOFT | — |
 | `dependabot-preflight` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
@@ -97,13 +97,13 @@
 | `discussion-response-bridge` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
 | `doc-freshness-check` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
 | `doc-refresh-gate` | ✅ | ✅ | ✅ | N/A | SOFT | — |
-| `docker-build-push` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
+| `docker-build-push` | ✅ | ❌ | ✅ | N/A | GROUNDED | — |
 | `docs-code-alignment` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
 | `docs-health` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `documentation-link-checker` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `documentation-quality-check` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `e-to-d-transition-gate` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
-| `embedding-index-rebuild` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
+| `embedding-index-rebuild` | ✅ | ❌ | ✅ | N/A | GROUNDED | — |
 | `fast-forward-safe-files` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `flush-queued-runs` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `forward-sync-autogen` | ✅ | ✅ | ✅ | N/A | SOFT | — |
@@ -162,7 +162,7 @@
 | `rag-quality-nightly` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
 | `ratelimit_history_prune` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `reference-integrity` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
-| `release` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
+| `release` | ✅ | ❌ | ✅ | N/A | GROUNDED | — |
 | `repo-organization` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `repo-var-sync-schedule` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `repository-health-monitoring` | ✅ | ✅ | ✅ | N/A | SOFT | — |
@@ -172,10 +172,10 @@
 | `root-org-validation` | ✅ | ✅ | ✅ | N/A | GROUNDED | ⚠️ Cross-branch diff without explicit base-ref fetch |
 | `runner-diagnostics` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `rust-error-validator-observation` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
-| `rust_swarm_ci` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
+| `rust_swarm_ci` | ✅ | ❌ | ✅ | N/A | GROUNDED | — |
 | `sbom` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `scan-secrets-variables` | ✅ | ✅ | ✅ | N/A | SOFT | — |
-| `scheduled-archival` | ✅ | ✅ | ✅ | N/A | SOFT | — |
+| `scheduled-archival` | ✅ | ❌ | ✅ | N/A | SOFT | — |
 | `scheduled-dependency-audit` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `secrets-baseline-enforcer` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `secrets-false-positive-healer` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
@@ -199,6 +199,7 @@
 | `test-pyramid-report` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
 | `test-rag` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `test-variables-api` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
+| `tiered-approval-gate` | ❌ | ❌ | ✅ | N/A | SOFT | — |
 | `token-expiry-monitor` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `token-probe` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `trigger-on-approval` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
@@ -221,7 +222,7 @@
 |-----|-------|
 | GROUNDED workflows     | 67 |
 | PARTIAL workflows      | 45 |
-| SOFT workflows         | 100 |
+| SOFT workflows         | 101 |
 | Cascade risk           | 0 |
-| Missing concurrency    | 0 |
-| Missing timeout        | 0 |
+| Missing concurrency    | 1 |
+| Missing timeout        | 8 |
