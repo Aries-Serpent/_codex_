@@ -1,10 +1,7 @@
 import re
 
-content = open('src/codex/governance/approval_service.py').read()
-
-new_imports = """
-from ...scripts.governance.rbac_engine import get_default_engine, Action, ResourceType
-"""
+with open('src/codex/governance/approval_service.py', 'r') as f:
+    content = f.read()
 
 # Let's just use the direct import instead
 new_imports = """

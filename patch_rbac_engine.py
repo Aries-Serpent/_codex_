@@ -1,6 +1,7 @@
 import re
 
-content = open('scripts/governance/rbac_engine.py').read()
+with open('scripts/governance/rbac_engine.py', 'r') as f:
+    content = f.read()
 
 new_imports = """
 import yaml
