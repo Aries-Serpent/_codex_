@@ -179,6 +179,8 @@ def _heuristic_secret_scan_diff() -> tuple[bool, str]:
     for i, line in enumerate(diff.splitlines(), 1):
         if not line.startswith("+"):
             continue
+        if "pragma: allowlist secret" in line:
+            continue
         for pattern in _SECRET_HEURISTIC_PATTERNS:
             if pattern.search(line):
                 # Truncate the line so we never log the actual secret value
