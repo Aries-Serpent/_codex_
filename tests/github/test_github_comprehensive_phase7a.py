@@ -15,7 +15,7 @@ Categories:
 
 from __future__ import annotations
 
-import hashlib
+import hashlib # pragma: allowlist secret # pragma: allowlist secret
 import hmac
 import urllib.error
 
