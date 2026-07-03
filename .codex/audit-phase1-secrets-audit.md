@@ -15,7 +15,7 @@
 | **Real secrets exposed** | 0 |
 | **False positives (documented)** | 15,813+ |
 | **True positives (baseline)** | ~200 (all in vendor/generated/test) |
-| **Risk Status** | ✅ **LOW** |
+| **Risk Status** | ✅ **LOW** | # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
 ### Key Finding: Zero Active Secrets
 

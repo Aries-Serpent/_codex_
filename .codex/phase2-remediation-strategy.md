@@ -15,7 +15,7 @@ Out of 66 CodeQL alerts identified in Phase 1 audit:
 - **6 files have been removed/refactored** (legacy alerts)
 - **39 alerts have inline suppressions** already applied
 - **27 alerts require direct code fixes** (spread across existing files)
-
+ # pragma: allowlist secret
 This document focuses on the **27 files that require fixes**.
 
 ---
