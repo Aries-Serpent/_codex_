@@ -45,7 +45,7 @@ jobs:
       - name: Add severity and category labels
         uses: actions/github-script@v8
         with:
-          github-token: ${{ secrets.CODEX_MASTER_KEY }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |
             const issue = context.payload.issue;
             const body = (issue.title + ' ' + (issue.body || '')).toLowerCase();
@@ -122,7 +122,7 @@ jobs:
             git add .codex/PHASE_8_2_TRIAGE_DASHBOARD.md
             git commit -m "docs: update Phase 8.2 triage dashboard [skip ci]"
             git config --global credential.useHttpPath true
-            git push https://oauth2:${{ secrets.CODEX_MASTER_KEY }}@github.com/Aries-Serpent/_codex_.git
+            git push https://oauth2:${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}@github.com/Aries-Serpent/_codex_.git
             echo "Dashboard committed successfully"
           else
             echo "No changes to dashboard"

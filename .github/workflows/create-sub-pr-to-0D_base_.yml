@@ -36,7 +36,7 @@ jobs:
       with:
         fetch-depth: 1
         ref: ${{ inputs.session_branch }}
-        token: ${{ secrets.CODEX_MASTER_KEY }}
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
@@ -47,7 +47,7 @@ jobs:
     - name: Verify 0D_base_ exists
       id: verify_base
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
       run: "if ! gh api \"repos/${{ github.repository }}/git/ref/heads/0D_base_\"\
         \ > /dev/null 2>&1; then\n  echo \"\u274C 0D_base_ does not exist on GitHub.\"\
         \n  echo \"   Run: gh workflow run promote-integration-branch.yml to create\
@@ -57,7 +57,7 @@ jobs:
     - name: Check for existing sub-PR
       id: check_existing
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
       run: "EXISTING=$(gh pr list \\\n  --repo \"${{ github.repository }}\" \\\n \
         \ --head \"${{ inputs.session_branch }}\" \\\n  --base \"0D_base_\" \\\n \
         \ --state open \\\n  --json number \\\n  --jq '.[0].number' 2>/dev/null ||\
@@ -88,7 +88,7 @@ jobs:
       if: steps.check_existing.outputs.existing_pr == ''
       id: create_pr
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         SESSION_BRANCH: ${{ inputs.session_branch }}
         PR_TITLE: ${{ steps.build_title.outputs.title }}
         SHA: ${{ steps.commit_info.outputs.sha }}
@@ -121,7 +121,7 @@ jobs:
         $'\\n'\nPR_BODY+=\"- [x] \U0001F510 Enable Agent Token Delegation (\\`COPILOT_AGENT_AUTH_ENABLED\\\
         `)\"$'\\n'\nPR_BODY+=\"- [ ] \U0001F4B0 Cost Proposal Approved\"$'\\n'\nPR_BODY+=\"\
         - [ ] \U0001F504 Auto-Post @copilot review After Agent Session\"$'\\n'\n\n\
-        GH_TOKEN=\"${{ secrets.CODEX_MASTER_KEY }}\" gh pr create \\\n  --repo \"\
+        GH_TOKEN=\"${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}\" gh pr create \\\n  --repo \"\
         ${{ github.repository }}\" \\\n  --title \"${PR_TITLE}\" \\\n  --body \"${PR_BODY}\"\
         \ \\\n  --head \"${SESSION_BRANCH}\" \\\n  --base \"0D_base_\" \\\n  $(if\
         \ [ \"${{ inputs.draft }}\" = \"true\" ]; then echo \"--draft\"; fi)\n"

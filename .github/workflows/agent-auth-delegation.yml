@@ -1117,7 +1117,7 @@ jobs:
       id: cb_patterns
       continue-on-error: true
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
       run: "CB_BLOCK=$(python -m codex.github.mcp_poster retrieve-patterns --limit\
         \ 8 2>/dev/null || true)\n# Escape for multiline GitHub output\n{\n  echo\
         \ 'cb_markdown<<CB_EOF'\n  echo \"$CB_BLOCK\"\n  echo 'CB_EOF'\n} >> \"$GITHUB_OUTPUT\"\
@@ -1291,7 +1291,7 @@ jobs:
     - name: Increment COGNITIVE_BRAIN_SESSION_NUMBER
       if: steps.session_gate.outputs.acquired == 'true'
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
       run: "CURRENT=\"${{ vars.COGNITIVE_BRAIN_SESSION_NUMBER }}\"\nif [ -z \"${GH_TOKEN}\"\
         \ ]; then\n  echo \"\u26A0\uFE0F CODEX_MASTER_KEY not available \u2014 session\
         \ number increment skipped\"\n  exit 0\nfi\nNEXT=$((CURRENT + 1))\nif gh api\

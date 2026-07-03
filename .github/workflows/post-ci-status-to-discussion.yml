@@ -84,7 +84,7 @@ jobs:
 
         '
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
       run: "UPSERT=\"${{ github.event.inputs.upsert || 'true' }}\"\nUPSERT_FLAG=\"\
         \"\nif [ \"$UPSERT\" = \"true\" ]; then\n  UPSERT_FLAG=\"--upsert\"\nfi\n\
@@ -131,7 +131,7 @@ jobs:
 
         '
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
       run: "python -m codex.github.mcp_poster post-ci-pattern-summary \\\n  --repo\
         \ \"$REPO\" \\\n  --number \"$DISCUSSION_NUMBER\" \\\n  --body-file /tmp/pattern_summary.md\
@@ -162,7 +162,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v7
       with:
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         fetch-depth: 1
     - name: Post or update rescue comment
       env:

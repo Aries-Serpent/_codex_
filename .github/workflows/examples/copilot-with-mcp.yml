@@ -44,7 +44,7 @@ jobs:
         env:
           CODEX_GHP_TOKEN_BASE64: ${{ secrets.CODEX_GHP_TOKEN_BASE64 }}
           CODEX_GHP_TOKEN_CONFIG: ${{ secrets.CODEX_GHP_TOKEN_CONFIG }}
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           MCP_CACHE_DIR: /tmp/mcp-cache
           PLAYWRIGHT_BROWSERS_PATH: /opt/playwright
         options: >-
@@ -86,7 +86,7 @@ jobs:
         env:
           CODEX_GHP_TOKEN_BASE64: ${{ secrets.CODEX_GHP_TOKEN_BASE64 }}
           CODEX_GHP_TOKEN_CONFIG: ${{ secrets.CODEX_GHP_TOKEN_CONFIG }}
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
           python3 << 'EOF'
           import os
@@ -111,7 +111,7 @@ jobs:
         env:
           CODEX_GHP_TOKEN_BASE64: ${{ secrets.CODEX_GHP_TOKEN_BASE64 }}
           CODEX_GHP_TOKEN_CONFIG: ${{ secrets.CODEX_GHP_TOKEN_CONFIG }}
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
           python3 << 'EOF'
           import requests
@@ -156,7 +156,7 @@ jobs:
           MCP_ENABLED: ${{ github.event.inputs.mcp_enabled }}
           CODEX_GHP_TOKEN_BASE64: ${{ secrets.CODEX_GHP_TOKEN_BASE64 }}
           CODEX_GHP_TOKEN_CONFIG: ${{ secrets.CODEX_GHP_TOKEN_CONFIG }}
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
           echo "🤖 Executing Copilot task: $COPILOT_TASK"
           echo ""

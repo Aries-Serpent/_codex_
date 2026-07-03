@@ -43,7 +43,7 @@ jobs:
       uses: actions/checkout@v7
       with:
         fetch-depth: 0
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
     - name: Measure divergence
       id: measure
       env:
@@ -214,7 +214,7 @@ jobs:
       with:
         ref: 0D_base_
         fetch-depth: 5
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
     - name: "Forward auto-gen file versions from main \u2192 0D_base_"
       id: forward
       if: (needs.detect.outputs.autogen_count != '' && needs.detect.outputs.autogen_count
@@ -321,7 +321,7 @@ jobs:
     - name: Ensure required labels exist
       uses: actions/github-script@v8
       with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         script: "const required = [\n  { name: 'branch-divergence', color: 'e4e669',\
           \ description: 'Branch divergence tracking between 0D_base_ and main' },\n\
           \  { name: 'automated',         color: '0075ca', description: 'Automated\
@@ -350,7 +350,7 @@ jobs:
         AUTO_CORRECT_RESULT: ${{ needs.auto-correct.result }}
         DRY_RUN: ${{ inputs.dry_run || 'false' }}
       with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         script: "const behind        = parseInt(process.env.BEHIND_COUNT)        \
           \ || 0;\nconst ahead         = parseInt(process.env.AHEAD_COUNT)       \
           \   || 0;\nconst autogen       = parseInt(process.env.AUTOGEN_COUNT)   \
@@ -451,7 +451,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v7
       with:
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         fetch-depth: 1
     - name: Post or update rescue comment
       env:

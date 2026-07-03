@@ -53,7 +53,7 @@ jobs:
     - name: Reject unauthorized actor
       if: steps.parse.outputs.AUTHORIZED != 'true'
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
         REPO: ${{ github.repository }}
         PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
@@ -112,7 +112,7 @@ jobs:
 
         '
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
         REPO: ${{ github.repository }}
         PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
@@ -147,7 +147,7 @@ jobs:
       if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD ==
         'status'
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
         REPO: ${{ github.repository }}
         PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
@@ -175,7 +175,7 @@ jobs:
       if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD ==
         'verify'
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         REPO: ${{ github.repository }}
         PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
       run: "# Trigger admin_setup_verification via repository_dispatch\nDISPATCH_STATUS=$(curl\
@@ -199,7 +199,7 @@ jobs:
 
         '
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
         REPO: ${{ github.repository }}
         PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
@@ -225,7 +225,7 @@ jobs:
       if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD ==
         'help'
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
         REPO: ${{ github.repository }}
         PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
@@ -251,7 +251,7 @@ jobs:
       if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD ==
         'fix'
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
         REPO: ${{ github.repository }}
         PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
@@ -271,7 +271,7 @@ jobs:
       if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD ==
         'review'
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
         REPO: ${{ github.repository }}
         PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
@@ -291,7 +291,7 @@ jobs:
       if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD ==
         'coverage'
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
         REPO: ${{ github.repository }}
         PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
@@ -312,7 +312,7 @@ jobs:
       if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD ==
         'security'
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
         REPO: ${{ github.repository }}
         PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
@@ -332,7 +332,7 @@ jobs:
     - name: Increment COGNITIVE_BRAIN_SESSION_NUMBER
       if: steps.parse.outputs.AUTHORIZED == 'true'
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
       run: "CURRENT=\"${{ vars.COGNITIVE_BRAIN_SESSION_NUMBER }}\"\nif [ -z \"${GH_TOKEN}\"\
         \ ]; then\n  echo \"\u26A0\uFE0F CODEX_MASTER_KEY not available \u2014 session\
         \ number increment skipped\"\n  exit 0\nfi\nNEXT=$((CURRENT + 1))\nif ! gh\

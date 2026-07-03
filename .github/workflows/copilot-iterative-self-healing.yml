@@ -103,7 +103,7 @@ jobs:
       id: triage
       if: env.RATE_LIMITED != 'true'
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         CONCLUSION: ${{ github.event.workflow_run.conclusion }}
         HEAD_BRANCH: ${{ github.event.workflow_run.head_branch || github.ref_name
           }}
@@ -281,7 +281,7 @@ jobs:
       if: needs.should-escalate.outputs.pr_number != ''
       continue-on-error: true
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         PR_NUMBER: ${{ needs.should-escalate.outputs.pr_number }}
         PROMPT_FILE: ${{ steps.build_prompt.outputs.prompt_file }}
         CATEGORY: ${{ steps.build_prompt.outputs.category }}
@@ -340,7 +340,7 @@ jobs:
       if: needs.should-escalate.outputs.pr_number == ''
       continue-on-error: true
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         HEAD_BRANCH: ${{ needs.should-escalate.outputs.head_branch }}
         WORKFLOW_NAME: ${{ needs.should-escalate.outputs.workflow_name }}
         RUN_URL: ${{ needs.should-escalate.outputs.run_url }}
@@ -360,7 +360,7 @@ jobs:
     - name: Increment COGNITIVE_BRAIN_SESSION_NUMBER
       if: always()
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         CURRENT: ${{ vars.COGNITIVE_BRAIN_SESSION_NUMBER || '0' }}
       run: "if [ -z \"${GH_TOKEN}\" ]; then\n  echo \"\u26A0\uFE0F  CODEX_MASTER_KEY\
         \ not set \u2014 session number increment skipped\"\n  exit 0\nfi\nNEXT=$((CURRENT\

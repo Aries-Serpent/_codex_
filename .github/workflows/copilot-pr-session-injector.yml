@@ -62,8 +62,8 @@ jobs:
       continue-on-error: true
       uses: mvkaran/gh-copilot@5694b7d7a242d1c025e40d0965a0c5c5e68f5fba
       with:
-        copilot-token: ${{ secrets.CODEX_MASTER_KEY }}
-        github-mcp-token: ${{ secrets.CODEX_MASTER_KEY }}
+        copilot-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        github-mcp-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         timeout: '5'
         output-format: json
         output-schema: "{\n  \"risk_level\": \"critical|high|medium|low\",\n  \"affected_components\"\
@@ -99,7 +99,7 @@ jobs:
         BRAIN_TOUCHED: ${{ steps.meta.outputs.brain_touched }}
         CI_TOUCHED: ${{ steps.meta.outputs.ci_touched }}
       with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY }}
+        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         script: "const analysis = JSON.parse(process.env.ANALYSIS_JSON);\nconst brainTouched\
           \ = parseInt(process.env.BRAIN_TOUCHED || '0') > 0;\nconst ciTouched   \
           \ = parseInt(process.env.CI_TOUCHED    || '0') > 0;\n\nconst riskEmoji =\
@@ -174,7 +174,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v7
       with:
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         fetch-depth: 1
     - name: Post or update rescue comment
       env:

@@ -31,7 +31,7 @@ jobs:
         fetch-depth: 1
     - name: Read repo variables and write agent context
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         DRY_RUN: ${{ inputs.dry_run || 'false' }}
         COPILOT_AGENT_AUTH_ENABLED: ${{ vars.COPILOT_AGENT_AUTH_ENABLED }}
         COPILOT_AGENT_SESSION_EXPIRES: ${{ vars.COPILOT_AGENT_SESSION_EXPIRES }}
@@ -110,7 +110,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v7
       with:
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         fetch-depth: 1
     - name: Post or update rescue comment
       env:

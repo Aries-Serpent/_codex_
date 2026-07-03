@@ -55,7 +55,7 @@ jobs:
       uses: actions/checkout@v7
       with:
         fetch-depth: 1
-        token: ${{ secrets.CODEX_MASTER_KEY }}
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
@@ -66,7 +66,7 @@ jobs:
     - name: Resolve source SHA
       id: resolve_sha
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         SOURCE_SHA: ${{ inputs.source_sha }}
         SOURCE_BRANCH: ${{ inputs.source_branch }}
       run: "if [ -n \"${SOURCE_SHA}\" ]; then\n  echo \"sha=${SOURCE_SHA}\" >> \"\
@@ -80,7 +80,7 @@ jobs:
     - name: Delete existing target branch (force recreate)
       if: inputs.force_recreate
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
       run: "TARGET_BRANCH=\"${{ inputs.target_branch }}\"\nif gh api \"repos/${{ github.repository\
         \ }}/git/ref/heads/${TARGET_BRANCH}\" > /dev/null 2>&1; then\n  gh api \"\
         repos/${{ github.repository }}/git/refs/heads/${TARGET_BRANCH}\" \\\n    --method\
@@ -90,8 +90,8 @@ jobs:
     - name: Create or update target branch
       id: create_branch
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         SHA: ${{ steps.resolve_sha.outputs.sha }}
       run: "# Pattern C: retry with exponential backoff for PATCH ref updates\n_api_with_retry()\
         \ {\n  local attempt=0\n  local max_attempts=3\n  while [ $attempt -lt $max_attempts\
@@ -117,7 +117,7 @@ jobs:
       id: check_pr
       if: inputs.create_or_update_pr
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
       run: "TARGET_BRANCH=\"${{ inputs.target_branch }}\"\nBASE_BRANCH=\"${{ inputs.pr_base_branch\
         \ }}\"\nEXISTING=$(gh pr list \\\n  --repo \"${{ github.repository }}\" \\\
         \n  --head \"${TARGET_BRANCH}\" \\\n  --base \"${BASE_BRANCH}\" \\\n  --state\
@@ -130,7 +130,7 @@ jobs:
       if: inputs.create_or_update_pr && steps.check_pr.outputs.existing_pr == ''
       id: create_pr
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         SHA: ${{ steps.resolve_sha.outputs.sha }}
         PR_TITLE: ${{ inputs.pr_title }}
         SESSION_LABEL: ${{ inputs.session_label }}
@@ -163,7 +163,7 @@ jobs:
     - name: Update existing promotion PR (title + body)
       if: inputs.create_or_update_pr && steps.check_pr.outputs.existing_pr != ''
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         SHA: ${{ steps.resolve_sha.outputs.sha }}
         PR_TITLE: ${{ inputs.pr_title }}
         SESSION_LABEL: ${{ inputs.session_label }}

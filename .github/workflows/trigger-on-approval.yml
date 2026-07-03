@@ -31,7 +31,7 @@ jobs:
         \ }}\"\nPR_REF=\"$PR_HEAD_REF\"\nREVIEWER=\"$REVIEWER_LOGIN\"\necho \"pr_sha=${PR_SHA}\"\
         \   >> \"$GITHUB_OUTPUT\"\necho \"pr_num=${PR_NUM}\"   >> \"$GITHUB_OUTPUT\"\
         \necho \"pr_ref=${PR_REF}\"   >> \"$GITHUB_OUTPUT\"\necho \"reviewer=${REVIEWER}\"\
-        \ >> \"$GITHUB_OUTPUT\"\nif [ -z \"${{ secrets.CODEX_MASTER_KEY }}\" ]; then\n\
+        \ >> \"$GITHUB_OUTPUT\"\nif [ -z \"${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}\" ]; then\n\
         \  echo \"::warning::CODEX_MASTER_KEY not set \u2014 workflow dispatch and\
         \ auto-approve will use github.token fallback (may 403)\"\n  echo \"token_tier=fallback\"\
         \ >> \"$GITHUB_OUTPUT\"\nelse\n  echo \"token_tier=master\"  >> \"$GITHUB_OUTPUT\"\
