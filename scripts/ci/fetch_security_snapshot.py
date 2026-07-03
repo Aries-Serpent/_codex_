@@ -829,12 +829,12 @@ def main(argv: list[str] | None = None) -> int:
     else:
         types = {t.strip() for t in types_raw.split(",")}
 
-    common = dict(
-        cache_dir=cache_dir,
-        cache_ttl=args.cache_ttl,
-        page_sleep=args.page_sleep,
-        min_remaining=args.min_remaining,
-    )
+    common = {
+        "cache_dir": cache_dir,
+        "cache_ttl": args.cache_ttl,
+        "page_sleep": args.page_sleep,
+        "min_remaining": args.min_remaining,
+    }
 
     summaries: dict[str, Any] = {}
 

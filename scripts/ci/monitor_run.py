@@ -186,7 +186,7 @@ class PollSnapshot:
 
     @classmethod
     def from_dict(cls, d: dict) -> PollSnapshot:
-        known = {f for f in cls.__dataclass_fields__}   # type: ignore[attr-defined]
+        known = set(cls.__dataclass_fields__)   # type: ignore[attr-defined]
         return cls(**{k: v for k, v in d.items() if k in known})
 
 

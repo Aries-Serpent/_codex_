@@ -332,7 +332,7 @@ class AutoFixWithRollback:
                 return True  # No issues
 
             issues = json.loads(result.stdout)
-            affected_files = set(issue["filename"] for issue in issues)
+            affected_files = {issue["filename"] for issue in issues}
 
             for file_path_str in affected_files:
                 file_path = Path(file_path_str)

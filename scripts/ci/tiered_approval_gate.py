@@ -25,14 +25,14 @@ def get_pr_files(pr_number: int) -> List[str]:
 def determine_risk_tier(files: List[str]) -> str:
     high_risk_prefixes = ['src/core/', 'src/api/', 'codex_ml/core/']
     medium_risk_prefixes = ['src/', 'scripts/', '.github/workflows/']
-    
+
     tier = 'low'
     for f in files:
         if any(f.startswith(prefix) for prefix in high_risk_prefixes):
             return 'high'
         elif any(f.startswith(prefix) for prefix in medium_risk_prefixes):
             tier = 'medium'
-            
+
     return tier
 
 def get_approvals(pr_number: int) -> int:
@@ -62,34 +62,34 @@ def main():
     if len(sys.argv) < 2:
         print("Usage: tiered_approval_gate.py <pr_number>")
         sys.exit(1)
-        
+
     pr_number = int(sys.argv[1])
     files = get_pr_files(pr_number)
     risk_tier = determine_risk_tier(files)
     approvals = get_approvals(pr_number)
     is_hotfix = check_manager_override(pr_number)
-    
+
     required_approvals = {'low': 1, 'medium': 2, 'high': 3}[risk_tier]
-    
+
     print(f"PR {pr_number} files changed: {len(files)}")
     print(f"Risk Tier: {risk_tier.upper()}")
     print(f"Current Approvals: {approvals}")
     print(f"Required Approvals: {required_approvals}")
-    
+
     if is_hotfix:
         print("HOTFIX/MANAGER OVERRIDE ACTIVE. Bot auto-approving.")
         run_gh_command(['gh', 'pr', 'review', str(pr_number), '--approve', '--body', 'Auto-approved via manager hotfix override'])
         sys.exit(0)
-        
+
     if approvals >= required_approvals:
         print("Requirements met.")
         sys.exit(0)
-        
+
     if risk_tier == 'low' and approvals == 0:
         print("Low risk changes detected. Bot auto-approving trivial changes.")
         run_gh_command(['gh', 'pr', 'review', str(pr_number), '--approve', '--body', 'Auto-approved low-risk changes'])
         sys.exit(0)
-        
+
     print(f"Pending approvals. Need {required_approvals}, have {approvals}.")
     sys.exit(1)
 

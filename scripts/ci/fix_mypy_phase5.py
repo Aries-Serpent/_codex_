@@ -83,7 +83,7 @@ class MypyPhase5Fixer:
                     return True
 
                 # For regular functions, add -> None (conservative approach)
-                if not 'def ' in func_line.split('(')[0]:
+                if 'def ' not in func_line.split('(')[0]:
                     return False
 
                 # Try to infer return type from function body (conservative)

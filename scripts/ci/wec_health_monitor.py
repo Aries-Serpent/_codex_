@@ -4,7 +4,7 @@ wec_health_monitor.py — WEC Compliance Health Monitoring Dashboard
 
 Purpose
 -------
-Provides real-time health monitoring of WEC (Workflow Execution Checklist) 
+Provides real-time health monitoring of WEC (Workflow Execution Checklist)
 compliance across open PRs. Tracks:
 
   1. WEC compliance rate across all open PRs
@@ -133,7 +133,7 @@ def check_wec_compliance(pr_number: int) -> bool:
 
 def check_req_compliance(pr_number: int) -> tuple[bool, bool]:
     """Check if PR has REQ-4 and REQ-5 compliance.
-    
+
     Returns (req4_ok, req5_ok).
     """
     try:
@@ -156,7 +156,7 @@ def check_req_compliance(pr_number: int) -> tuple[bool, bool]:
 
 def get_workflow_metrics(pr_number: int) -> tuple[int, float]:
     """Get workflow count and pass rate for PR.
-    
+
     Returns (workflow_count, pass_rate).
     """
     try:

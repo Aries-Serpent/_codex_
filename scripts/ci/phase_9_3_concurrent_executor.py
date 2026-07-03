@@ -434,7 +434,7 @@ class ConcurrentExecutor:
                 subtask_results={id: asdict(st) for id, st in self.subtask_results.items()},
                 aggregated_result=aggregated,
                 total_duration_s=elapsed,
-                parallel_agents_count=len(set(st.agent_id for st in subtasks if st.agent_id)),
+                parallel_agents_count=len({st.agent_id for st in subtasks if st.agent_id}),
                 execution_log=execution_log
             )
 

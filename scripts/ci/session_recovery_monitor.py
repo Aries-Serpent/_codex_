@@ -13,15 +13,15 @@ from pathlib import Path
 
 def run_command(cmd):
     """Run a command safely without shell interpretation
-    
+
     Security: Always uses list-based subprocess call (shell=False) to prevent
     command injection attacks. Shell metacharacters are treated as literal
     arguments, not executed by shell.
-    
+
     Args:
         cmd: Command as a list of strings (e.g., ['python', 'script.py', 'arg'])
              NOT as a single string which would require shell=True
-    
+
     Returns:
         stdout string if successful, None on error
     """
@@ -32,7 +32,7 @@ def run_command(cmd):
             f"String commands would require shell=True which enables injection. "
             f"Received: {cmd!r}"
         )
-    
+
     try:
         result = subprocess.run(
             cmd, capture_output=True, text=True, check=True, shell=False

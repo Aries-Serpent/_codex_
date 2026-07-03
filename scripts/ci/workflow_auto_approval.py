@@ -28,10 +28,10 @@ def get_pr_status(pr_number: int) -> Dict:
         'gh', 'pr', 'view', str(pr_number),
         '--json', 'number,title,state,reviewDecision,statusCheckRollup'
     ])
-    
+
     if not success:
         return {}
-    
+
     try:
         data = json.loads(output)
         return data
@@ -45,10 +45,10 @@ def check_workflow_runs_for_pr(pr_number: int) -> List[Dict]:
         '--json', 'number,name,status,conclusion,event',
         '--limit', '50'
     ])
-    
+
     if not success:
         return []
-    
+
     try:
         runs = json.loads(output)
         # Filter to runs from this PR's branch
@@ -59,29 +59,29 @@ def check_workflow_runs_for_pr(pr_number: int) -> List[Dict]:
 def approve_pr_reviews(pr_number: int) -> bool:
     """Approve pending reviews on a PR."""
     print(f"\n📋 Checking PR #{pr_number} for pending reviews...")
-    
+
     pr_data = get_pr_status(pr_number)
-    
+
     if not pr_data:
         print(f"  ✗ Could not fetch PR #{pr_number} status")
         return False
-    
+
     title = pr_data.get('title', 'Unknown')
     state = pr_data.get('state', 'unknown')
     review_decision = pr_data.get('reviewDecision', 'PENDING')
-    
+
     print(f"  Title: {title}")
     print(f"  State: {state}")
     print(f"  Review Decision: {review_decision}")
-    
+
     if review_decision == 'APPROVED':
         print(f"  ✓ PR #{pr_number} is already approved")
         return True
-    
+
     if review_decision == 'PENDING' or review_decision == 'REVIEW_REQUIRED':
         print(f"  ℹ PR #{pr_number} requires review - cannot auto-approve without admin approval")
         return False
-    
+
     return True
 
 def check_workflow_approvals() -> int:
@@ -90,61 +90,61 @@ def check_workflow_approvals() -> int:
     print("AUTO-APPROVE PENDING WORKFLOWS")
     print(f"Timestamp: {datetime.utcnow().isoformat()}Z")
     print("=" * 80)
-    
+
     # Get list of open PRs
     success, output = run_gh_command([
         'gh', 'pr', 'list',
         '--state', 'open',
         '--json', 'number,title,headRefName'
     ])
-    
+
     if not success:
         print("✗ Failed to list open PRs")
         return 1
-    
+
     try:
         prs = json.loads(output)
     except json.JSONDecodeError:
         print("✗ Failed to parse PR list")
         return 1
-    
+
     if not prs:
         print("✓ No open PRs found")
         return 0
-    
+
     print(f"\nFound {len(prs)} open PRs:")
-    
+
     approved_count = 0
     failed_count = 0
-    
+
     for pr in prs:
         pr_number = pr.get('number')
         title = pr.get('title')
         branch = pr.get('headRefName')
-        
+
         print(f"\n  PR #{pr_number}: {branch}")
         print(f"    Title: {title}")
-        
+
         # Check workflow runs for this PR
         runs = check_workflow_runs_for_pr(pr_number)
-        
+
         if runs:
             print(f"    Found {len(runs)} workflow runs")
             for run in runs[:3]:
                 print(f"      - {run.get('name')} ({run.get('status')})")
-        
+
         if approve_pr_reviews(pr_number):
             approved_count += 1
         else:
             failed_count += 1
-    
+
     print("\n" + "=" * 80)
     print("WORKFLOW APPROVAL SUMMARY")
     print(f"  ✓ Checked: {len(prs)} PRs")
     print(f"  ✓ Ready: {approved_count}")
     print(f"  ⚠ Action Required: {failed_count}")
     print("=" * 80)
-    
+
     return 0
 
 if __name__ == '__main__':

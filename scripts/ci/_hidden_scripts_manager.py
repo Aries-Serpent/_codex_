@@ -14,14 +14,14 @@ Core Components:
 Usage Example:
     >>> from scripts.ci._hidden_scripts_manager import HiddenScriptsManager
     >>> manager = HiddenScriptsManager()
-    >>> 
+    >>>
     >>> # Store a security script
     >>> manager.store_hidden_script(
     ...     name="vulnerability_detector",
     ...     script_content="# Python code here",
     ...     security_level=1  # CRITICAL
     ... )
-    >>> 
+    >>>
     >>> # Retrieve and execute
     >>> result = manager.execute_hidden_script(
     ...     name="vulnerability_detector",

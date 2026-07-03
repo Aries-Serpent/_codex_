@@ -96,14 +96,14 @@ class CapabilityIndexLoader:
 
             # Load agents - agents can be either a list or dict
             agents_data = self.index_data.get('agents', {})
-            
+
             # Convert list to dict if needed
             if isinstance(agents_data, list):
-                self.agents = {agent.get('id', agent.get('agent_id', f"agent_{i}")): agent 
+                self.agents = {agent.get('id', agent.get('agent_id', f"agent_{i}")): agent
                               for i, agent in enumerate(agents_data)}
             else:
                 self.agents = agents_data
-            
+
             # Create agent lookup by id
             self.agent_by_id = {}
             for agent_key, agent in self.agents.items():
@@ -124,11 +124,11 @@ class CapabilityIndexLoader:
         # Try pre-built indices first if they exist and have data
         indices = self.index_data.get('indices', {})
         by_category = indices.get('by_category', {})
-        
+
         # Only use pre-built index if it has the category
         if category in by_category:
             return by_category.get(category, [])
-        
+
         # Build on-the-fly if no pre-built index for this category
         result = []
         for agent_key, agent in self.agents.items():
@@ -142,11 +142,11 @@ class CapabilityIndexLoader:
         # Try pre-built indices first if they exist and have data
         indices = self.index_data.get('indices', {})
         by_tag = indices.get('by_tag', {})
-        
+
         # Only use pre-built index if it has the tag
         if tag in by_tag:
             return by_tag.get(tag, [])
-        
+
         # Build on-the-fly if no pre-built index for this tag
         result = []
         for agent_key, agent in self.agents.items():
@@ -453,19 +453,19 @@ def example_routing():
 if __name__ == "__main__":
     import argparse
     import sys
-    
+
     parser = argparse.ArgumentParser(description="Phase 9.3 Semantic Routing Engine")
     parser.add_argument("--task-id", default="pr-5211", help="Task ID")
     parser.add_argument("--task-category", default="ci_cd", help="Task category")
     parser.add_argument("--top-k", type=int, default=5, help="Top K candidates to return")
     parser.add_argument("--output-format", default="json", help="Output format (json or text)")
     parser.add_argument("--log-file", default=None, help="Output file path")
-    
+
     args = parser.parse_args()
-    
+
     # Initialize router
     router = SemanticRouter()
-    
+
     # Example task specifications
     task_specs = [
         TaskSpec(
@@ -490,18 +490,18 @@ if __name__ == "__main__":
             required_capabilities=["test_generation", "coverage_analysis"],
         ),
     ]
-    
+
     print("\n" + "=" * 80)
     print("PHASE 9.3 TASK 2: SEMANTIC ROUTING ENGINE")
     print("=" * 80)
     print(f"✓ Loaded capability index with {len(router.index_loader.agents)} agents\n")
     print("Routing tasks...\n")
-    
+
     results = []
     for task_spec in task_specs:
         decision = router.route_task(task_spec)
         results.append(decision)
-        
+
         print(f"Task: {task_spec.description}")
         print(f"  Primary Agent: {decision.primary_agent.agent_name if decision.primary_agent else 'N/A'}")
         if decision.primary_agent:
@@ -510,7 +510,7 @@ if __name__ == "__main__":
         print(f"  Fallback Chain: {[a.agent_id for a in decision.fallback_chain]}")
         print(f"  Latency: {decision.latency_ms:.1f}ms")
         print()
-    
+
     # Write output if log_file specified
     if args.log_file and args.output_format == "json":
         output_data = {
@@ -533,7 +533,7 @@ if __name__ == "__main__":
                 for r in results
             ]
         }
-        
+
         try:
             with open(args.log_file, 'w') as f:
                 json.dump(output_data, f, indent=2)

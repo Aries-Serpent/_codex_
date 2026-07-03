@@ -24,7 +24,7 @@ Reporting:
 Usage
 -----
     python scripts/ci/test_codex_master_key_scopes.py
-    
+
     Or in CI/CD:
         export GH_TOKEN=<CODEX_MASTER_KEY>
         python scripts/ci/test_codex_master_key_scopes.py --report-json scopes.json
@@ -80,7 +80,7 @@ SUPPLEMENTARY_SCOPES = {
 def resolve_token() -> str | None:
     """
     Resolve GitHub token from environment.
-    
+
     Checks in order: CODEX_MASTER_KEY, CODEX_BACKUP_KEY, GH_TOKEN, GITHUB_TOKEN
     """
     for envvar in ("CODEX_MASTER_KEY", "CODEX_BACKUP_KEY", "GH_TOKEN", "GITHUB_TOKEN"):
@@ -88,19 +88,19 @@ def resolve_token() -> str | None:
         if token:
             log.info("Using token from %s", envvar)
             return token
-    
+
     return None
 
 
 def get_scopes_from_header(token: str) -> set[str]:
     """
     Fetch scopes from GitHub /user endpoint.
-    
+
     The X-OAuth-Scopes header lists all scopes granted to the PAT.
-    
+
     Args:
         token: GitHub PAT
-    
+
     Returns:
         Set of scope strings (e.g., {"repo", "workflow", "admin:org"})
     """
@@ -110,22 +110,22 @@ def get_scopes_from_header(token: str) -> set[str]:
         "Authorization": f"token {token}",
         "X-GitHub-Api-Version": API_VERSION,
     }
-    
+
     try:
         req = urllib.request.Request(url, headers=headers)
         with urllib.request.urlopen(req) as response:
             # Get scopes from response header
             scopes_header = response.headers.get("X-OAuth-Scopes", "")
-            
+
             if scopes_header:
                 # Parse comma-separated scopes
                 scopes = {s.strip() for s in scopes_header.split(",") if s.strip()}
                 log.info("Detected scopes from X-OAuth-Scopes header")
                 return scopes
-            
+
             log.warning("X-OAuth-Scopes header not found in response")
             return set()
-    
+
     except urllib.error.HTTPError as err:
         if err.code == 401:
             log.error("Unauthorized: Invalid or expired token")
@@ -139,17 +139,17 @@ def get_scopes_from_header(token: str) -> set[str]:
 def infer_scopes_from_api_tests(token: str) -> set[str]:
     """
     Infer scopes by testing specific API endpoints.
-    
+
     This is a fallback when X-OAuth-Scopes header is not available.
-    
+
     Args:
         token: GitHub PAT
-    
+
     Returns:
         Set of inferred scopes
     """
     scopes = set()
-    
+
     # Test for 'repo' scope
     try:
         url = f"{GH_API}/repos/Aries-Serpent/_codex_"
@@ -162,7 +162,7 @@ def infer_scopes_from_api_tests(token: str) -> set[str]:
             scopes.add("repo")
     except (urllib.error.HTTPError, urllib.error.URLError):
         log.debug("Could not infer 'repo' scope from API test")
-    
+
     # Test for 'admin:org' scope
     try:
         url = f"{GH_API}/orgs/Aries-Serpent"
@@ -175,7 +175,7 @@ def infer_scopes_from_api_tests(token: str) -> set[str]:
             scopes.add("admin:org")
     except (urllib.error.HTTPError, urllib.error.URLError):
         log.debug("Could not infer 'admin:org' scope from API test")
-    
+
     # Test for 'workflow' scope
     try:
         url = f"{GH_API}/repos/Aries-Serpent/_codex_/actions/workflows"
@@ -188,32 +188,32 @@ def infer_scopes_from_api_tests(token: str) -> set[str]:
             scopes.add("workflow")
     except (urllib.error.HTTPError, urllib.error.URLError):
         log.debug("Could not infer 'workflow' scope from API test")
-    
+
     return scopes
 
 
 def check_scopes(token: str) -> dict[str, Any]:
     """
     Check token scopes and generate coverage report.
-    
+
     Args:
         token: GitHub PAT
-    
+
     Returns:
         Report dict with scopes, missing requirements, etc.
     """
     # Get scopes from header (primary method)
     present_scopes = get_scopes_from_header(token)
-    
+
     # Fallback to API testing if header not available
     if not present_scopes:
         log.info("Attempting to infer scopes via API tests...")
         present_scopes = infer_scopes_from_api_tests(token)
-    
+
     # Build coverage report
     coverage = {}
     missing_scopes = set()
-    
+
     for process_name, required in REQUIRED_SCOPES.items():
         process_coverage = {
             "required": required,
@@ -222,10 +222,10 @@ def check_scopes(token: str) -> dict[str, Any]:
             "satisfied": all(s in present_scopes for s in required),
         }
         coverage[process_name] = process_coverage
-        
+
         if not process_coverage["satisfied"]:
             missing_scopes.update(process_coverage["missing"])
-    
+
     return {
         "timestamp": datetime.now(tz=timezone.utc).isoformat(),
         "present_scopes": sorted(present_scopes),
@@ -240,31 +240,31 @@ def print_report(report: dict[str, Any]) -> None:
     print("\n" + "=" * 80)
     print("CODEX_MASTER_KEY Scope Coverage Report")
     print("=" * 80)
-    
+
     print(f"\nTimestamp: {report['timestamp']}")
     print(f"\nPresent Scopes: {len(report['present_scopes'])} scope(s)")
-    
+
     if report["missing_scopes"]:
         print(f"\n⚠️  Missing Scopes: {len(report['missing_scopes'])} scope(s) not configured")
     else:
         print("\n✅ All required scopes present!")
-    
+
     print("\nProcess Coverage:")
     print("-" * 80)
-    
+
     for process_name, coverage in report["coverage"].items():
         status = "✅" if coverage["satisfied"] else "❌"
         print(f"\n{status} {process_name}")
         print(f"   Required: {len(coverage['required'])} scope(s)")
-        
+
         if coverage["present"]:
             print(f"   Present:  {len(coverage['present'])} scope(s)")
-        
+
         if coverage["missing"]:
             print(f"   Missing:  {len(coverage['missing'])} scope(s)")
-    
+
     print("\n" + "=" * 80)
-    
+
     if report["all_processes_covered"]:
         print("✅ All 10 processes can be tested with current token!")
     else:
@@ -272,7 +272,7 @@ def print_report(report: dict[str, Any]) -> None:
             f"❌ {len([p for p in report['coverage'].values() if not p['satisfied']])} "
             "processes missing required scopes."
         )
-    
+
     print("=" * 80 + "\n")
 
 
@@ -289,31 +289,31 @@ def main() -> int:
         "--token",
         help="GitHub PAT (overrides environment)",
     )
-    
+
     args = parser.parse_args()
-    
+
     # Get token
     token = args.token or resolve_token()
     if not token:
         log.error("No GitHub token found. Set CODEX_MASTER_KEY or GH_TOKEN.")
         return 1
-    
+
     # Check scopes
     try:
         report = check_scopes(token)
     except Exception as err:
         log.error("Failed to check scopes: %s", err)
         return 1
-    
+
     # Print report
     print_report(report)
-    
+
     # Write JSON report if requested
     if args.report_json:
         with open(args.report_json, "w") as f:
             json.dump(report, f, indent=2)
         print(f"✅ JSON report written to {args.report_json}")
-    
+
     # Exit code based on coverage
     return 0 if report["all_processes_covered"] else 1
 

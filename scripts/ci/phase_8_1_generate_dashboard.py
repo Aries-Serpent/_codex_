@@ -72,7 +72,7 @@ Next update: {(datetime.utcnow().timestamp() + 3600):.0f} (UTC timestamp)
 
         print("✓ Comprehensive dashboard generated")
         return 0
-        
+
     except FileNotFoundError as e:
         print(f"✗ Error: {e}")
         return 1

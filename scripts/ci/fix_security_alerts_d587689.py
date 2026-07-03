@@ -51,26 +51,26 @@ def fix_shell_injection_in_run(content: str, file_path: Path) -> str:
                 while j < len(lines) and (lines[j].startswith("        ") or lines[j].strip() == ""):
                     j += 1
                 run_block = "\n".join(lines[i:j])
-                
+
                 if "${{ inputs.source-path }}" in run_block and "env:" not in "\n".join(lines[max(0, i-10):i]):
                     # Insert env: section before this run:
                     indent = len(line) - len(line.lstrip())
                     env_line = " " * indent + "env:\n"
                     env_line += " " * (indent + 2) + "SOURCE_PATH: ${{ inputs.source-path }}\n"
                     new_lines.append(env_line.rstrip())
-                    
+
                     # Replace ${{ inputs.source-path }} with $SOURCE_PATH in run block
                     for k in range(i, j):
                         lines[k] = lines[k].replace("${{ inputs.source-path }}", "$SOURCE_PATH")
-                
+
                 new_lines.append(lines[i])
                 i += 1
             else:
                 new_lines.append(line)
                 i += 1
-        
+
         content = "\n".join(new_lines)
-    
+
     return content
 
 def fix_github_script_injection(content: str) -> str:
@@ -81,10 +81,10 @@ def fix_github_script_injection(content: str) -> str:
     lines = content.split("\n")
     new_lines = []
     i = 0
-    
+
     while i < len(lines):
         line = lines[i]
-        
+
         # Look for github-script step
         if "uses: actions/github-script@" in line:
             # Find the script: section
@@ -93,7 +93,7 @@ def fix_github_script_injection(content: str) -> str:
                 if "script: |" in lines[j]:
                     script_start = j
                     break
-            
+
             if script_start:
                 # Check if script has ${{ ... }} interpolation
                 script_block = []
@@ -102,41 +102,41 @@ def fix_github_script_injection(content: str) -> str:
                         if k > script_start:
                             break
                     script_block.append(lines[k])
-                
+
                 script_text = "\n".join(script_block)
-                
+
                 if "${{ steps." in script_text or "${{ inputs." in script_text:
                     # Insert env: section before script:
                     indent = len(lines[script_start]) - len(lines[script_start].lstrip())
-                    
+
                     # Collect variables to move to env
                     env_vars = {}
                     for match in re.finditer(r'\$\{\{\s*steps\.(\w+)\.outputs\.(\w+)\s*\}\}', script_text):
                         var_name = match.group(2).upper()
                         env_vars[var_name] = match.group(0)
-                    
+
                     for match in re.finditer(r'\$\{\{\s*inputs\.(\w+)\s*\}\}', script_text):
                         var_name = match.group(1).upper().replace("-", "_")
                         env_vars[var_name] = match.group(0)
-                    
+
                     if env_vars:
                         # Insert env: before script_start
                         env_lines = [" " * indent + "env:"]
                         for var_name, var_value in env_vars.items():
                             env_lines.append(" " * (indent + 2) + f"{var_name}: {var_value}")
-                        
+
                         # Insert env lines
                         for env_line in env_lines:
                             new_lines.append(env_line)
-                        
+
                         # Update script block to use process.env
                         for k in range(script_start, script_start + len(script_block)):
                             for var_name, var_value in env_vars.items():
                                 lines[k] = lines[k].replace(var_value, f"process.env.{var_name}")
-        
+
         new_lines.append(lines[i])
         i += 1
-    
+
     return "\n".join(new_lines)
 
 def main():
@@ -148,30 +148,30 @@ def main():
         ".github/workflows/machine-readable-governance.yml",
         ".github/workflows/machine-readable-maintenance-pr.yml",
     ]
-    
+
     repo_root = Path(__file__).parent.parent.parent
-    
+
     for file_path in files_to_fix:
         full_path = repo_root / file_path
         if not full_path.exists():
             print(f"⚠️  File not found: {file_path}")
             continue
-        
+
         print(f"🔧 Fixing {file_path}...")
         content = full_path.read_text()
-        
+
         # Fix mutable action tags
         content = pin_action_tags(content)
-        
+
         # Fix shell injection in run: steps
         content = fix_shell_injection_in_run(content, full_path)
-        
+
         # Fix github-script injection
         content = fix_github_script_injection(content)
-        
+
         full_path.write_text(content)
         print(f"✅ Fixed {file_path}")
-    
+
     print("\n✅ All security alerts fixed!")
 
 if __name__ == "__main__":

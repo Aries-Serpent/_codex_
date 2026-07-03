@@ -367,7 +367,7 @@ def format_csv_output(data: List[Dict[str, Any]]) -> str:
     for row in data:
         fieldnames.update(row.keys())
 
-    fieldnames = sorted(list(fieldnames))
+    fieldnames = sorted(fieldnames)
 
     # Write CSV
     import io

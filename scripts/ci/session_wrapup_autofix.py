@@ -369,7 +369,7 @@ def _record_agent_wec_write(
     data = _read_wec_state_file()
     entries = data.setdefault("pr_entries", {})
     pr_entry = entries.setdefault(str(pr_number), {})
-    pr_entry["last_agent_write"] = {k: v for k, v in agent_state.items()}
+    pr_entry["last_agent_write"] = dict(agent_state.items())
     pr_entry["last_write_ts"] = now_ts
     pr_entry["last_write_sha"] = head_sha
     if human_grants:

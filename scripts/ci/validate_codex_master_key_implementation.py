@@ -18,20 +18,20 @@ from datetime import datetime
 
 def run_command(cmd, description):
     """Run command safely without shell interpretation
-    
+
     Security: Always uses list-based subprocess call (shell=False) to prevent
     command injection attacks. Shell metacharacters in cmd are treated as
     literal arguments, not executed.
     """
     print(f"📋 {description}...")
-    
+
     # Validate cmd is a list to prevent shell injection
     if not isinstance(cmd, list):
         raise ValueError(
             f"SECURITY: Command must be a list, not {type(cmd).__name__}. "
             f"Received: {cmd!r}. This prevents shell injection."
         )
-    
+
     try:
         # shell=False (default) prevents command injection by passing arguments
         # directly to the executable without shell interpretation
@@ -49,7 +49,7 @@ def validate_test_files():
     """Verify all test files exist and are valid Python"""
     print("\n🧪 TEST FILES VALIDATION")
     print("=" * 70)
-    
+
     test_files = [
         "tests/github/test_variables_comprehensive.py",
         "tests/github/test_secrets_management_comprehensive.py",
@@ -57,10 +57,10 @@ def validate_test_files():
         "tests/github/test_webhook_management.py",
         "tests/github/test_audit_log_access.py",
     ]
-    
+
     # Derive repo root from __file__
     repo_root = Path(__file__).resolve().parent.parent.parent
-    
+
     all_exist = True
     for test_file in test_files:
         path = repo_root / test_file
@@ -70,20 +70,20 @@ def validate_test_files():
         else:
             print(f"❌ {test_file:50} MISSING")
             all_exist = False
-    
+
     return all_exist
 
 def validate_helper_scripts():
     """Verify all helper scripts exist and can be imported"""
     print("\n🔧 HELPER SCRIPTS VALIDATION")
     print("=" * 70)
-    
+
     scripts = [
         "scripts/ci/_secrets_encryption_helper.py",
         "scripts/ci/_webhook_signature_validator.py",
         "scripts/ci/test_codex_master_key_scopes.py",
     ]
-    
+
     all_exist = True
     for script in scripts:
         path = Path("/home/runner/work/_codex_/_codex_") / script
@@ -93,21 +93,21 @@ def validate_helper_scripts():
         else:
             print(f"❌ {script:50} MISSING")
             all_exist = False
-    
+
     return all_exist
 
 def validate_documentation():
     """Verify all documentation files exist"""
     print("\n📚 DOCUMENTATION VALIDATION")
     print("=" * 70)
-    
+
     docs = [
         "docs/testing/CODEX_MASTER_KEY_TESTING_GUIDE.md",
         "docs/reference/GITHUB_API_SCOPE_MATRIX.md",
         "docs/examples/GITHUB_API_USAGE_PATTERNS.md",
         "docs/deployment/CODEX_MASTER_KEY_INTEGRATION_DEPLOYMENT.md",
     ]
-    
+
     all_exist = True
     for doc in docs:
         path = Path("/home/runner/work/_codex_/_codex_") / doc
@@ -117,19 +117,19 @@ def validate_documentation():
         else:
             print(f"❌ {doc:50} MISSING")
             all_exist = False
-    
+
     return all_exist
 
 def validate_workflows():
     """Verify workflow files exist and are valid YAML"""
     print("\n⚙️  WORKFLOW VALIDATION")
     print("=" * 70)
-    
+
     workflows = [
         ".github/workflows/auth-tests.yml",
         ".github/workflows/codex-master-key-validation.yml",
     ]
-    
+
     all_exist = True
     for workflow in workflows:
         path = Path("/home/runner/work/_codex_/_codex_") / workflow
@@ -139,14 +139,14 @@ def validate_workflows():
         else:
             print(f"❌ {workflow:50} MISSING")
             all_exist = False
-    
+
     return all_exist
 
 def generate_coverage_report():
     """Generate scope coverage matrix"""
     print("\n📊 COVERAGE MATRIX GENERATION")
     print("=" * 70)
-    
+
     coverage_matrix = {
         "timestamp": datetime.utcnow().isoformat() + "Z",
         "scopes": {
@@ -196,15 +196,15 @@ def generate_coverage_report():
             "error_scenarios": 54
         }
     }
-    
+
     # Save report
     report_path = Path(str(get_repo_root() / ".codex/coverage_matrix.json"))
     report_path.parent.mkdir(parents=True, exist_ok=True)
     with open(report_path, "w") as f:
         json.dump(coverage_matrix, f, indent=2)
-    
+
     print("✅ Coverage matrix saved to .codex/coverage_matrix.json")
-    
+
     # Display summary
     print("\n📈 SCOPE COVERAGE MATRIX")
     print("-" * 70)
@@ -214,14 +214,14 @@ def generate_coverage_report():
         print(f"{scope:<30} {len(data['processes']):<20} {data['coverage_percentage']:>6}%")
     print("-" * 70)
     print(f"{'TOTAL':<30} {'10':<20} {'100':>6}%")
-    
+
     return coverage_matrix
 
 def generate_endpoint_coverage():
     """Generate API endpoint coverage report"""
     print("\n🔗 API ENDPOINT COVERAGE")
     print("=" * 70)
-    
+
     endpoints = {
         "timestamp": datetime.utcnow().isoformat() + "Z",
         "categories": {
@@ -236,17 +236,17 @@ def generate_endpoint_coverage():
             "Audit Log": {"count": 3, "tested": 3},
         }
     }
-    
+
     total_count = sum(cat["count"] for cat in endpoints["categories"].values())
     total_tested = sum(cat["tested"] for cat in endpoints["categories"].values())
-    
+
     # Save report
     report_path = Path(str(get_repo_root() / ".codex/endpoint_coverage.json"))
     with open(report_path, "w") as f:
         json.dump(endpoints, f, indent=2)
-    
+
     print("✅ Endpoint coverage saved to .codex/endpoint_coverage.json")
-    
+
     # Display summary
     print("\n📊 ENDPOINT COVERAGE TABLE")
     print("-" * 50)
@@ -257,14 +257,14 @@ def generate_endpoint_coverage():
     print("-" * 50)
     print(f"{'TOTAL':<25} {total_count:<10} {total_tested:<10}")
     print(f"Coverage: {total_tested}/{total_count} = {100*total_tested/total_count:.1f}%")
-    
+
     return endpoints
 
 def generate_final_report():
     """Generate comprehensive final implementation report"""
     print("\n📋 FINAL IMPLEMENTATION REPORT")
     print("=" * 70)
-    
+
     report = {
         "timestamp": datetime.utcnow().isoformat() + "Z",
         "project": "CODEX_MASTER_KEY Testing Framework",
@@ -296,14 +296,14 @@ def generate_final_report():
             "permissions_audit": "PASS",
         }
     }
-    
+
     # Save report
     report_path = Path(str(get_repo_root() / ".codex/final_implementation_report.json"))
     with open(report_path, "w") as f:
         json.dump(report, f, indent=2)
-    
+
     print("✅ Final report saved to .codex/final_implementation_report.json")
-    
+
     # Display summary
     print("\n📊 PROJECT COMPLETION SUMMARY")
     print("-" * 70)
@@ -314,7 +314,7 @@ def generate_final_report():
     print(f"Processes Tested: {report['coverage']['processes_tested']}/10 (100%)")
     print(f"Test Cases: {report['coverage']['test_cases']}")
     print(f"API Endpoints Covered: {report['coverage']['api_endpoints']}")
-    
+
     return report
 
 def main():
@@ -322,20 +322,20 @@ def main():
     print("🚀 CODEX_MASTER_KEY IMPLEMENTATION VALIDATION")
     print("=" * 70)
     print(f"Started: {datetime.utcnow().isoformat()}Z\n")
-    
+
     all_valid = True
-    
+
     # Run validations
     all_valid &= validate_helper_scripts()
     all_valid &= validate_test_files()
     all_valid &= validate_documentation()
     all_valid &= validate_workflows()
-    
+
     # Generate reports
     generate_coverage_report()
     generate_endpoint_coverage()
     generate_final_report()
-    
+
     # Final summary
     print("\n" + "=" * 70)
     if all_valid:
