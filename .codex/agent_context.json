@@ -26,6 +26,9 @@
   "COPILOT_AGENT_CCA_VERSION_LOCK": "stable",
   "COPILOT_AGENT_DEDUPLICATION_ENABLED": "true",
   "COPILOT_AGENT_TURN_ISOLATION_ENABLED": "true",
+  "CODEX_MASTER_KEY_EXPIRY_DATE": "2026-10-01",
+  "CODEX_BACKUP_KEY_EXPIRY_DATE": "2027-07-03",
+  "CODEX_MASTER_KEY_LAST_VERIFIED": "2026-07-03T17:53:58Z:ok",
   "_meta": {
     "generated_at": "2026-07-03T08:50:59.188459+00:00",
     "workflow": "repo-var-sync-schedule",
@@ -33,7 +36,8 @@
     "ref": "refs/heads/main",
     "actor": "mbaetiong",
     "run_id": "28649564597",
-    "repo_variables_count": 27,
-    "drift_entries": 3
+    "repo_variables_count": 30,
+    "drift_entries": 3,
+    "local_patch": "S1472-token-rotation — added CODEX_MASTER_KEY_EXPIRY_DATE, CODEX_BACKUP_KEY_EXPIRY_DATE, CODEX_MASTER_KEY_LAST_VERIFIED; pending_ops intents queued for live variable update"
   }
 }
