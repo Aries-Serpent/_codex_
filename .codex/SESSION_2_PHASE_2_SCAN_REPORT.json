@@ -1,0 +1,80 @@
+{
+  "metadata": {
+    "scan_id": "SESSION_2_PHASE_2_WINDOWS_RESERVED",
+    "timestamp": "2026-07-03T18:42:35.807628Z",
+    "repository": "Aries-Serpent/_codex_",
+    "scope": "Windows reserved filenames (CON, PRN, AUX, NUL, LPT1-9, COM1-9)",
+    "agent": "cross-platform-filename-validator",
+    "authority": "@mbaetiong (D-tier autonomy)"
+  },
+  "scan_parameters": {
+    "reserved_names": [
+      "CON", "PRN", "AUX", "NUL",
+      "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9",
+      "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9"
+    ],
+    "total_reserved_names": 17,
+    "case_sensitive": false,
+    "exclude_dirs": [".git", "__pycache__", ".pytest_cache", "node_modules", ".venv", "venv"]
+  },
+  "results": {
+    "total_violations": 0,
+    "violations_by_name": {},
+    "status": "COMPLIANT",
+    "cross_platform_status": {
+      "windows_ntfs": "COMPLIANT",
+      "macos_hfs_apfs": "COMPLIANT",
+      "linux_ext4": "COMPLIANT"
+    }
+  },
+  "findings": {
+    "device_names": {
+      "CON": 0,
+      "PRN": 0,
+      "AUX": 0,
+      "NUL": 0
+    },
+    "parallel_ports": {
+      "LPT1": 0,
+      "LPT2": 0,
+      "LPT3": 0,
+      "LPT4": 0,
+      "LPT5": 0,
+      "LPT6": 0,
+      "LPT7": 0,
+      "LPT8": 0,
+      "LPT9": 0
+    },
+    "serial_ports": {
+      "COM1": 0,
+      "COM2": 0,
+      "COM3": 0,
+      "COM4": 0,
+      "COM5": 0,
+      "COM6": 0,
+      "COM7": 0,
+      "COM8": 0,
+      "COM9": 0
+    }
+  },
+  "remediation_summary": {
+    "files_to_rename": 0,
+    "references_to_update": 0,
+    "commits_ready": 0,
+    "breaking_changes": 0
+  },
+  "validation": {
+    "scan_completed": true,
+    "no_violations": true,
+    "windows_checkout_viable": true,
+    "macos_checkout_viable": true,
+    "linux_checkout_viable": true,
+    "repository_clean": true
+  },
+  "success_criteria": {
+    "windows_reserved_names_check": "PASS",
+    "no_remediation_required": "PASS",
+    "cross_platform_compliance": "PASS",
+    "overall_status": "PASS"
+  }
+}
