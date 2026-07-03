@@ -5,7 +5,7 @@ Consolidates 2,145 occurrences of type hint patterns.
 
 Example:
     from codex.utils.type_aliases import JSONValue, OptionalStr
-    
+
     def process(value: JSONValue) -> OptionalStr:
         ...
 """

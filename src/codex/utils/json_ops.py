@@ -6,7 +6,7 @@ Consolidates 897 occurrences of json.load/dump patterns.
 Example:
     # Instead of: json.load(open('file.json'))
     data = load_json('file.json', default={})
-    
+
     # Instead of: json.dumps(data)
     json_str = dump_json(data, pretty=True)
 """

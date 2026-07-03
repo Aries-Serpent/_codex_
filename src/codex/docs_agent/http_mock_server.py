@@ -28,7 +28,7 @@ class MockHTTPServer:
 
     def __init__(self, host: str = "127.0.0.1", port: int = 5000, enable_latency: bool = True):
         """Initialize mock server
-        
+
         Args:
             host: Server host
             port: Server port
@@ -41,7 +41,7 @@ class MockHTTPServer:
         self.endpoints: dict[str, Any] = {}
         self.call_count: dict[str, int] = {}
         self.error_rate = 0.0  # 0-1, probability of error
-        
+
         self._setup_app()
 
     def _setup_app(self):
@@ -49,22 +49,22 @@ class MockHTTPServer:
         if not FLASK_AVAILABLE:
             logger.warning("Flask not available, mock server features limited")
             return
-        
+
         self.app = Flask(__name__)
-        
+
         # Register default endpoints
         self.register_endpoint(
             '/api/v1/docs/search',
             self._handle_search,
             methods=['POST']
         )
-        
+
         self.register_endpoint(
             '/api/v1/docs/<doc_id>',
             self._handle_get_doc,
             methods=['GET']
         )
-        
+
         self.register_endpoint(
             '/api/v1/docs',
             self._handle_list_docs,
@@ -78,7 +78,7 @@ class MockHTTPServer:
         methods: Optional[List[str]] = None
     ):
         """Register a mock endpoint
-        
+
         Args:
             path: URL path
             handler: Handler function
@@ -86,19 +86,19 @@ class MockHTTPServer:
         """
         if methods is None:
             methods = ['GET']
-        
+
         self.endpoints[path] = {
             'handler': handler,
             'methods': methods,
         }
-        
+
         logger.debug(f"Registered endpoint: {path}")
 
     def _simulate_latency(self):
         """Simulate network latency"""
         if not self.enable_latency:
             return
-        
+
         # Simulate latency: 50ms baseline + 20-100ms random
         latency = 0.05 + random.uniform(0.02, 0.1)
         time.sleep(latency)
@@ -117,17 +117,17 @@ class MockHTTPServer:
     def _handle_search(self) -> Dict[str, Any]:
         """Handle search endpoint"""
         self._simulate_latency()
-        
+
         # Check error condition
         error = self._check_error_condition()
         if error:
             return jsonify({'error': error['message']}), error['status']
-        
+
         query = request.get_json().get('query', '')
         limit = request.get_json().get('limit', 10)
-        
+
         self.call_count['search'] = self.call_count.get('search', 0) + 1
-        
+
         # Return mock search results
         results = [
             {
@@ -139,7 +139,7 @@ class MockHTTPServer:
             }
             for i in range(min(limit, 10))
         ]
-        
+
         return jsonify({
             'query': query,
             'results': results,
@@ -149,13 +149,13 @@ class MockHTTPServer:
     def _handle_get_doc(self, doc_id: str) -> Dict[str, Any]:
         """Handle get document endpoint"""
         self._simulate_latency()
-        
+
         error = self._check_error_condition()
         if error:
             return jsonify({'error': error['message']}), error['status']
-        
+
         self.call_count['get_doc'] = self.call_count.get('get_doc', 0) + 1
-        
+
         return jsonify({
             'id': doc_id,
             'type': 'document',
@@ -167,15 +167,15 @@ class MockHTTPServer:
     def _handle_list_docs(self) -> Dict[str, Any]:
         """Handle list documents endpoint"""
         self._simulate_latency()
-        
+
         error = self._check_error_condition()
         if error:
             return jsonify({'error': error['message']}), error['status']
-        
+
         limit = request.args.get('limit', 50, type=int)
-        
+
         self.call_count['list_docs'] = self.call_count.get('list_docs', 0) + 1
-        
+
         docs = [
             {
                 'id': f'doc-{i}',
@@ -184,7 +184,7 @@ class MockHTTPServer:
             }
             for i in range(min(limit, 50))
         ]
-        
+
         return jsonify({
             'documents': docs,
             'total': len(docs),
@@ -192,7 +192,7 @@ class MockHTTPServer:
 
     def set_error_rate(self, rate: float):
         """Set error rate (0.0 - 1.0)
-        
+
         Args:
             rate: Error probability
         """
@@ -201,7 +201,7 @@ class MockHTTPServer:
 
     def get_statistics(self) -> Dict[str, Any]:
         """Get server statistics
-        
+
         Returns:
             Server statistics
         """
@@ -216,14 +216,14 @@ class MockHTTPServer:
 
     def run(self, debug: bool = False):
         """Run the mock server
-        
+
         Args:
             debug: Enable Flask debug mode
         """
         if not FLASK_AVAILABLE:
             logger.error("Flask not available, cannot start server")
             return
-        
+
         logger.info(f"Starting mock server on {self.host}:{self.port}")
         self.app.run(host=self.host, port=self.port, debug=debug)
 
@@ -238,12 +238,12 @@ class MockResponseBuilder:
         include_errors: bool = False
     ) -> Dict[str, Any]:
         """Build mock search response
-        
+
         Args:
             query: Search query
             results: Number of results
             include_errors: Include error scenarios
-            
+
         Returns:
             Mock response
         """
@@ -258,7 +258,7 @@ class MockResponseBuilder:
             }
             for i in range(results)
         ]
-        
+
         response = {
             'status': 'success',
             'query': query,
@@ -266,22 +266,22 @@ class MockResponseBuilder:
             'total': len(items),
             'timestamp': datetime.now().isoformat(),
         }
-        
+
         if include_errors and random.random() < 0.1:
             response['warnings'] = [
                 "Query took longer than usual to process",
                 "Some results may be stale",
             ]
-        
+
         return response
 
     @staticmethod
     def document_response(doc_id: str) -> Dict[str, Any]:
         """Build mock document response
-        
+
         Args:
             doc_id: Document ID
-            
+
         Returns:
             Mock response
         """
@@ -313,12 +313,12 @@ class MockResponseBuilder:
         details: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
         """Build error response
-        
+
         Args:
             error_code: Error code
             message: Error message
             details: Additional details
-            
+
         Returns:
             Error response
         """
@@ -330,8 +330,8 @@ class MockResponseBuilder:
             },
             'timestamp': datetime.now().isoformat(),
         }
-        
+
         if details:
             response['error']['details'] = details
-        
+
         return response

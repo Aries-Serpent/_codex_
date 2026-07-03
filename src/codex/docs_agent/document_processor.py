@@ -68,7 +68,7 @@ class MarkdownParser:
 
     def __init__(self, source_file: Path):
         """Initialize with source Markdown file
-        
+
         Args:
             source_file: Path to Markdown file
         """
@@ -76,7 +76,7 @@ class MarkdownParser:
         self.content = source_file.read_text(encoding='utf-8')
         self.lines = self.content.split('\n')
         self.title = self._extract_title()
-        
+
     def _extract_title(self) -> str:
         """Extract title from first H1 heading or filename"""
         for line in self.lines:
@@ -86,22 +86,22 @@ class MarkdownParser:
 
     def parse(self, doc_id: str) -> Tuple[DocumentRecord, List[SectionRecord], List[BlockRecord]]:
         """Parse Markdown file into records
-        
+
         Args:
             doc_id: Document ID
-            
+
         Returns:
             Tuple of (document, sections, blocks)
         """
         doc_rec = self._create_document_record(doc_id)
         section_recs = []
         block_recs = []
-         
+
         current_section: Optional[Dict[str, Any]] = None
         current_content: List[str] = []
         line_start: Optional[int] = None
         section_order = 0
-        
+
         for line_no, line in enumerate(self.lines, 1):
             # Check for heading
             if line.startswith('#'):
@@ -115,12 +115,12 @@ class MarkdownParser:
                         line_start
                     )
                     block_recs.extend(blocks)
-                
+
                 # Create new section
                 level = len(line) - len(line.lstrip('#'))
                 title = line.lstrip('#').strip()
                 section_id = f"sec-{doc_id}-{section_order}"
-                
+
                 current_section = {
                     'id': section_id,
                     'type': 'section',
@@ -134,10 +134,10 @@ class MarkdownParser:
                 current_content = []
                 line_start = line_no
                 section_order += 1
-            
+
             elif current_section:
                 current_content.append(line)
-        
+
         # Save final section
         if current_section and current_content:
             assert line_start is not None
@@ -148,13 +148,13 @@ class MarkdownParser:
                 line_start
             )
             block_recs.extend(blocks)
-        
+
         # Update section content and compute stats
         for section in section_recs:
             section['content'] = '\n'.join(current_content)
             section['word_count'] = len(section['content'].split())
             section['code_blocks'] = len(re.findall(r'```', section['content']))
-        
+
         return doc_rec, section_recs, block_recs
 
     def _create_document_record(self, doc_id: str) -> Dict[str, Any]:
@@ -178,12 +178,12 @@ class MarkdownParser:
         start_line: int
     ) -> List[Dict[str, Any]]:
         """Extract content blocks from section content
-        
+
         Args:
             section_id: Parent section ID
             content_lines: Lines of content
             start_line: Starting line number
-            
+
         Returns:
             List of block records
         """
@@ -191,7 +191,7 @@ class MarkdownParser:
         current_block = None
         block_start = 0
         block_order = 0
-        
+
         for line_idx, line in enumerate(content_lines):
             # Detect code blocks
             if line.strip().startswith('```'):
@@ -208,7 +208,7 @@ class MarkdownParser:
                     # End code block
                     content_text = '\n'.join(current_block['lines'])
                     block_id = f"blk-{section_id}-{block_order}"
-                    
+
                     blocks.append({
                         'id': block_id,
                         'type': 'block',
@@ -224,10 +224,10 @@ class MarkdownParser:
                     })
                     current_block = None
                     block_order += 1
-            
+
             elif current_block:
                 current_block['lines'].append(line)
-        
+
         return blocks
 
 
@@ -242,71 +242,71 @@ class DocumentProcessor:
 
     def process_file(self, source_file: Path, doc_id: str) -> int:
         """Process a single Markdown file
-        
+
         Args:
             source_file: Path to Markdown file
             doc_id: Document ID to assign
-            
+
         Returns:
             Number of records created
         """
         logger.info(f"Processing: {source_file}")
-        
+
         parser = MarkdownParser(source_file)
         doc, sections, blocks = parser.parse(doc_id)
-        
+
         self.documents.append(doc)
         self.sections.extend(sections)
         self.blocks.extend(blocks)
-        
+
         count = 1 + len(sections) + len(blocks)
         logger.info(f"  Created {count} records (1 doc, {len(sections)} sections, {len(blocks)} blocks)")
-        
+
         return count
 
     def process_directory(self, docs_dir: Path, prefix: str = "doc") -> int:
         """Process all Markdown files in directory
-        
+
         Args:
             docs_dir: Path to directory
             prefix: ID prefix (default: "doc")
-            
+
         Returns:
             Total number of records created
         """
         total = 0
         doc_count = 0
-        
+
         for md_file in docs_dir.rglob("*.md"):
             doc_id = f"{prefix}-{doc_count}"
             total += self.process_file(md_file, doc_id)
             doc_count += 1
-        
+
         logger.info(f"Processed {doc_count} files, created {total} total records")
         return total
 
     def to_jsonl(self) -> str:
         """Export all records as JSONL string
-        
+
         Returns:
             JSONL formatted string
         """
         lines = []
-        
+
         for doc in self.documents:
             lines.append(json.dumps(doc))
-        
+
         for section in self.sections:
             lines.append(json.dumps(section))
-        
+
         for block in self.blocks:
             lines.append(json.dumps(block))
-        
+
         return '\n'.join(lines)
 
     def write_jsonl(self, output_file: Path):
         """Write records to JSONL file
-        
+
         Args:
             output_file: Path to output file
         """
@@ -315,7 +315,7 @@ class DocumentProcessor:
 
     def get_statistics(self) -> Dict[str, Any]:
         """Get processing statistics
-        
+
         Returns:
             Dictionary with statistics
         """

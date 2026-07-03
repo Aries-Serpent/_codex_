@@ -6,7 +6,7 @@ Consolidates 291 occurrences of HTTP/API response handling patterns.
 Example:
     # Instead of: response.json() with error handling
     data = get_json_response(response)
-    
+
     # Instead of: check response.status_code manually
     handle_response(response, expected_status=200)
 """

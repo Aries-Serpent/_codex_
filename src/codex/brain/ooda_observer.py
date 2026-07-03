@@ -198,8 +198,8 @@ class RepositoryObserver:
                 timeout=5,
             )
             lines = status_result.stdout.strip().split("\n") if status_result.stdout else []
-            uncommitted = len([l for l in lines if l and not l.startswith("??")]) or 0
-            staged = len([l for l in lines if l and l.startswith(" M")]) or 0
+            uncommitted = len([ln for ln in lines if ln and not ln.startswith("??")]) or 0
+            staged = len([ln for ln in lines if ln and ln.startswith(" M")]) or 0
 
             # Get recent commits
             log_result = subprocess.run(

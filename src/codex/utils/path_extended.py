@@ -7,7 +7,7 @@ Example:
     # Instead of: Path(path).exists()
     if path_exists(path):
         ...
-    
+
     # Instead of: os.path.exists(path) or os.path.is_dir(path)
     ensure_path_exists(path)
 """
@@ -132,7 +132,7 @@ def find_files(
 def get_repo_root() -> Path:
     """
     Get the repository root directory.
-    
+
     Searches upward from current directory for .git directory.
     Falls back to current working directory if not found.
 
@@ -144,13 +144,13 @@ def get_repo_root() -> Path:
         >>> config_file = repo_root / "pyproject.toml"
     """
     current = Path.cwd()
-    
+
     # Search upward for .git directory
     while current != current.parent:
         if (current / ".git").exists():
             return current
         current = current.parent
-    
+
     # Fallback to current working directory
     return Path.cwd()
 
@@ -158,7 +158,7 @@ def get_repo_root() -> Path:
 def windows_safe_timestamp(fmt: str = "iso") -> str:
     """
     Generate a Windows-safe timestamp for filenames.
-    
+
     Windows filesystems prohibit these characters in filenames: < > : " / \\ | ? *
     This function generates timestamps without colons (which break filenames).
 
@@ -176,9 +176,9 @@ def windows_safe_timestamp(fmt: str = "iso") -> str:
         >>> filename = f"log_{timestamp}.txt"  # log_20260123_143045.txt
     """
     from datetime import datetime, timezone
-    
+
     now = datetime.now(timezone.utc)
-    
+
     if fmt == "iso":
         # ISO format: 2026-01-23T14-30-45Z (colons replaced with hyphens)
         return now.strftime("%Y-%m-%dT%H-%M-%SZ")

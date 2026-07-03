@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class CommandResult:
     """Result of a command execution.
-    
+
     Provides consistent return value for all command handlers.
     """
     success: bool
@@ -42,19 +42,19 @@ class CommandResult:
 
 class CLICommandHandler(ABC):
     """Base class for CLI command handlers.
-    
+
     Extracted from cli.py to replace procedural functions with
     organized, testable command objects.
-    
+
     Usage:
         class IngestionCommand(CLICommandHandler):
             name = "ingest"
             help = "Ingest data into Codex"
-            
+
             def execute(self, *args, **kwargs) -> CommandResult:
                 # Command logic here
                 return CommandResult(success=True)
-        
+
         handler = IngestionCommand()
         result = handler.execute()
     """
@@ -69,10 +69,10 @@ class CLICommandHandler(ABC):
 
     def execute(self, *args, **kwargs) -> CommandResult:
         """Execute the command.
-        
+
         Returns:
             CommandResult with success/failure status and data
-            
+
         Raises:
             SystemExit: On fatal errors (exit_code != 0)
         """
@@ -90,7 +90,7 @@ class CLICommandHandler(ABC):
     @abstractmethod
     def _execute_impl(self, *args, **kwargs) -> CommandResult:
         """Implement the actual command logic.
-        
+
         Subclasses override this method to provide command functionality.
         Exception handling is delegated to execute().
         """
@@ -98,7 +98,7 @@ class CLICommandHandler(ABC):
 
     def log_result(self, result: CommandResult) -> None:
         """Log command result appropriately.
-        
+
         Args:
             result: CommandResult to log
         """
@@ -109,7 +109,7 @@ class CLICommandHandler(ABC):
 
     def exit(self, result: CommandResult) -> None:
         """Exit with appropriate exit code.
-        
+
         Args:
             result: CommandResult containing exit_code
         """
@@ -119,15 +119,15 @@ class CLICommandHandler(ABC):
 
 class CommandRegistry:
     """Registry for CLI command handlers.
-    
+
     Replaces the procedural command dispatch in cli.py with
     a structured registry pattern.
-    
+
     Usage:
         registry = CommandRegistry()
         registry.register(IngestionCommand())
         registry.register(ValidationCommand())
-        
+
         # Execute a command
         result = registry.execute("ingest", arg1, arg2)
     """
@@ -140,10 +140,10 @@ class CommandRegistry:
 
     def register(self, handler: CLICommandHandler) -> None:
         """Register a command handler.
-        
+
         Args:
             handler: CLICommandHandler instance
-            
+
         Raises:
             ValueError: If command name is already registered
         """
@@ -162,12 +162,12 @@ class CommandRegistry:
 
     def execute(self, command_name: str, *args, **kwargs) -> CommandResult:
         """Execute a registered command.
-        
+
         Args:
             command_name: Name of the command (or alias)
             *args: Positional arguments for the command
             **kwargs: Keyword arguments for the command
-            
+
         Returns:
             CommandResult from command execution
         """
@@ -188,7 +188,7 @@ class CommandRegistry:
 
     def list_commands(self) -> list[tuple[str, str]]:
         """List all registered commands.
-        
+
         Returns:
             List of (name, help) tuples
         """
@@ -196,10 +196,10 @@ class CommandRegistry:
 
     def get_handler(self, command_name: str) -> Optional[CLICommandHandler]:
         """Get a command handler by name.
-        
+
         Args:
             command_name: Name of the command (or alias)
-            
+
         Returns:
             CLICommandHandler or None if not found
         """
@@ -211,7 +211,7 @@ class CommandRegistry:
 
 class IngestionCommand(CLICommandHandler):
     """Ingest example data into the Codex environment.
-    
+
     Extracted from _run_ingest() in cli.py
     """
 
@@ -220,7 +220,7 @@ class IngestionCommand(CLICommandHandler):
 
     def _execute_impl(self, src: Optional[Path] = None, dst: Optional[Path] = None) -> CommandResult:
         """Ingest data from source to destination.
-        
+
         Args:
             src: Source file path (default: data/example.jsonl)
             dst: Destination file path (default: data/ingested.jsonl)
@@ -256,7 +256,7 @@ class IngestionCommand(CLICommandHandler):
 
 class ValidationCommand(CLICommandHandler):
     """Run local validation checks (lint + tests).
-    
+
     Extracted from _run_ci() in cli.py
     """
 
@@ -266,7 +266,7 @@ class ValidationCommand(CLICommandHandler):
 
     def _execute_impl(self, session: str = "tests") -> CommandResult:
         """Run validation using nox.
-        
+
         Args:
             session: Nox session to run (default: tests)
         """
@@ -303,7 +303,7 @@ class ValidationCommand(CLICommandHandler):
 
 class HelpCommand(CLICommandHandler):
     """Display help for registered commands.
-    
+
     Replaces procedural help printing with structured handler.
     """
 
@@ -313,7 +313,7 @@ class HelpCommand(CLICommandHandler):
 
     def __init__(self, registry: CommandRegistry):
         """Initialize help command with command registry.
-        
+
         Args:
             registry: CommandRegistry to list commands from
         """
@@ -322,7 +322,7 @@ class HelpCommand(CLICommandHandler):
 
     def _execute_impl(self, command_name: Optional[str] = None) -> CommandResult:
         """Display help for a command or all commands.
-        
+
         Args:
             command_name: Specific command to show help for (optional)
         """

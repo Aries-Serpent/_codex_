@@ -395,7 +395,7 @@ class ResolutionRecommender:
             List of resolutions.
         """
         samples = self._index.get_by_pattern(pattern_id)
-        return list(set(s.resolution for s in samples))
+        return list({s.resolution for s in samples})
 
     def get_categories(self) -> list[str]:
         """Get available categories."""

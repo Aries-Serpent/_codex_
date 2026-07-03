@@ -23,7 +23,7 @@ class RoutingResult:
 
 class SemanticRouter:
     """Route documentation queries to semantic index.
-    
+
     Supports:
       - Keyword-based routing
       - Tag-based filtering
@@ -37,10 +37,10 @@ class SemanticRouter:
 
     def route_query(self, query: str) -> RoutingResult:
         """Route a documentation query.
-        
+
         Args:
             query: Natural language query or keyword search
-            
+
         Returns:
             RoutingResult with matched documents and scores
         """
@@ -50,7 +50,7 @@ class SemanticRouter:
 
         # Search documents and sections
         docs = self.registry.search_documents(query)
-        
+
         relevance_scores = {}
         matched_sections = []
 
@@ -75,7 +75,7 @@ class SemanticRouter:
     def route_by_tag(self, tag: str) -> RoutingResult:
         """Route by document tag."""
         docs = self.registry.find_by_tag(tag)
-        
+
         return RoutingResult(
             matched_docs=[doc.id for doc in docs],
             matched_sections=[],
@@ -113,7 +113,7 @@ class SemanticRouter:
 
 class DecisionEvaluator:
     """Evaluate decision logic based on criteria and branches.
-    
+
     Supports:
       - Weighted deterministic evaluation
       - Probabilistic branching
@@ -134,11 +134,11 @@ class DecisionEvaluator:
         context: Dict[str, Any],
     ) -> Optional[str]:
         """Evaluate a decision and return action ID.
-        
+
         Args:
             decision_id: Decision record ID
             context: Context data for criteria evaluation
-            
+
         Returns:
             Action ID to execute, or None if no match
         """
@@ -188,34 +188,34 @@ class DecisionEvaluator:
     @staticmethod
     def _safe_eval_expression(expression: str) -> bool:
         """Safely evaluate a boolean expression using AST inspection.
-        
+
         Only allows safe operations:
         - Comparison operators: ==, !=, <, >, <=, >=
         - Logical operators: and, or, not
         - Literals and variable references (already substituted)
-        
+
         Args:
             expression: A boolean expression string
-            
+
         Returns:
             The evaluated result
-            
+
         Raises:
             ValueError: If expression contains unsafe operations
         """
         try:
             # Parse the expression into an AST
             tree = ast.parse(expression, mode='eval')
-            
+
             # Use a visitor to safely evaluate
             return DecisionEvaluator._visit_expr(tree.body)
         except Exception:
             return False
-    
+
     @staticmethod
     def _visit_expr(node: Any) -> Any:
         """Safely visit and evaluate AST nodes.
-        
+
         Only allows safe node types for boolean expressions.
         """
         if isinstance(node, ast.Constant):
@@ -277,7 +277,7 @@ class DecisionEvaluator:
     @staticmethod
     def _match_condition(condition: str, context: Dict[str, Any]) -> bool:
         """Evaluate a condition against context.
-        
+
         Supports simple boolean logic:
           - Variable comparisons: field == value, field >= value
           - Logical operators: &&, ||, !
@@ -302,7 +302,7 @@ class DecisionEvaluator:
 
 class ActionDispatcher:
     """Dispatch machine-readable actions.
-    
+
     Supports:
       - Action registration and execution
       - Parameter substitution
@@ -328,11 +328,11 @@ class ActionDispatcher:
         context: Optional[Dict[str, Any]] = None,
     ) -> Any:
         """Dispatch and execute an action.
-        
+
         Args:
             action_id: Action record ID
             context: Context data for parameter substitution
-            
+
         Returns:
             Action result or None
         """

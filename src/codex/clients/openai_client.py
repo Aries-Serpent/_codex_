@@ -308,7 +308,7 @@ Execute the user's request autonomously, following _codex_ patterns and best pra
             "successful_requests": sum(1 for e in self.audit_log if e.success),
             "total_tokens": sum(e.tokens_used for e in self.audit_log),
             "total_cost": sum(e.estimated_cost for e in self.audit_log),
-            "models_used": list(set(e.model for e in self.audit_log)),
+            "models_used": list({e.model for e in self.audit_log}),
             "avg_duration_ms": sum(e.duration_ms for e in self.audit_log) // len(self.audit_log),
         }
 

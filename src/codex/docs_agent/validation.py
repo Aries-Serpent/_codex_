@@ -12,7 +12,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 class LinkValidator:
     """Validate links in documentation.
-    
+
     Supports:
       - Internal link checking
       - External link verification
@@ -27,7 +27,7 @@ class LinkValidator:
 
     def validate_document_links(self, doc_id: str) -> Tuple[int, int, int]:
         """Validate all links in a document.
-        
+
         Returns:
             (valid_count, broken_count, external_count)
         """
@@ -39,7 +39,7 @@ class LinkValidator:
             return 0, 0, 0
 
         sections = self.registry.get_sections(doc_id)
-        
+
         valid_count = 0
         broken_count = 0
         external_count = 0
@@ -47,10 +47,10 @@ class LinkValidator:
         for section in sections:
             # Extract links from section content
             links = self._extract_links(section.content)
-            
+
             for link in links:
                 url = link['url']
-                
+
                 if link['type'] == 'external':
                     external_count += 1
                 elif link['type'] == 'internal':
@@ -116,7 +116,7 @@ class LinkValidator:
             return True
 
         sections = self.registry.get_sections(doc_id)
-        
+
         for section in sections:
             # Generate anchor from section title
             section_anchor = section.metadata.get('heading_anchor', '')
@@ -128,7 +128,7 @@ class LinkValidator:
 
 class ComplianceChecker:
     """Audit compliance with requirements.
-    
+
     Checks:
       - Documentation coverage (REQ-1)
       - API documentation (REQ-2, REQ-3)
@@ -143,7 +143,7 @@ class ComplianceChecker:
 
     def audit_all_requirements(self) -> Dict[str, Dict]:
         """Run full compliance audit.
-        
+
         Returns:
             {requirement_id: {status, details, ...}}
         """
@@ -196,7 +196,7 @@ class ComplianceChecker:
     def _audit_link_health(self) -> Dict:
         """REQ-004: No broken links in documentation."""
         validator = LinkValidator(self.registry)
-        
+
         total_broken = 0
         if self.registry:
             for doc in self.registry.list_documents():
@@ -225,7 +225,7 @@ class ComplianceChecker:
             try:
                 updated = datetime.fromisoformat(doc.updated_at.replace('Z', '+00:00'))
                 age = current_time - updated
-                
+
                 if age > freshness_threshold:
                     stale_docs.append({
                         'id': doc.id,

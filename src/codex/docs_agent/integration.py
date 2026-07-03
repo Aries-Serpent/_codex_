@@ -16,7 +16,7 @@ from typing import Any, Callable, Dict, List, Optional
 
 class MCPToolBridge:
     """Bridge to MCP tools for documentation operations.
-    
+
     Exposes 12 tool interfaces:
       1. list_documentation
       2. search_documentation
@@ -195,7 +195,7 @@ class MCPToolBridge:
 
 class CognitiveBrainIntegration:
     """Integration with Phase 9.3 cognitive brain orchestrator.
-    
+
     Provides:
       - Session context injection
       - Pattern extraction
@@ -241,7 +241,7 @@ class CognitiveBrainIntegration:
 
 class PersistenceManager:
     """Manage JSONL file I/O and caching.
-    
+
     Provides:
       - Load/save JSONL index
       - Caching layer

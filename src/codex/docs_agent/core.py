@@ -73,7 +73,7 @@ class BlockRecord:
 
 class DocumentRegistry:
     """Manage document index and metadata.
-    
+
     Provides:
       - Document registration and indexing
       - Metadata management
@@ -113,7 +113,7 @@ class DocumentRegistry:
 
         self.documents[doc_id] = doc
         self._index['by_path'][path] = doc_id
-        
+
         for tag in doc.metadata.get('tags', []):
             if tag not in self._index['by_tag']:
                 self._index['by_tag'][tag] = []
@@ -165,7 +165,7 @@ class DocumentRegistry:
 
 class SchemaValidator:
     """Validate JSONL record schemas.
-    
+
     Validates:
       - Type consistency
       - Required fields
@@ -202,12 +202,12 @@ class SchemaValidator:
 
     def validate_record(self, record: Dict) -> tuple[bool, Optional[str]]:
         """Validate a single JSONL record.
-        
+
         Returns:
             (is_valid, error_message)
         """
         record_type = record.get('type')
-        
+
         if not record_type:
             return False, "Missing required 'type' field"
 
@@ -245,7 +245,7 @@ class SchemaValidator:
 
     def validate_file(self, filepath: str) -> tuple[int, int, List[str]]:
         """Validate a JSONL file.
-        
+
         Returns:
             (valid_count, invalid_count, error_messages)
         """
@@ -277,7 +277,7 @@ class SchemaValidator:
 
 class SemanticIndexer:
     """Build semantic indexes from documents.
-    
+
     Creates:
       - Full-text indexes
       - Section hierarchies
@@ -347,7 +347,7 @@ class SemanticIndexer:
 
     def export_jsonl(self, filepath: str) -> int:
         """Export index as JSONL format.
-        
+
         Returns:
             Number of records exported
         """

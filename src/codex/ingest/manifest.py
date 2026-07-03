@@ -20,7 +20,6 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Literal, Optional
 
-from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 

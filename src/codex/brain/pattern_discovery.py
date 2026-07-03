@@ -401,7 +401,7 @@ class MetricsCalculator:
             ),
             "outcome_distribution": dict(outcome_counts),
             "unique_contexts": len(
-                set(json.dumps(o.context, sort_keys=True) for o in pattern.occurrences)  # type: ignore[attr-defined]
+                {json.dumps(o.context, sort_keys=True) for o in pattern.occurrences}  # type: ignore[attr-defined]
             ),
         }
 
@@ -425,6 +425,6 @@ class MetricsCalculator:
             "average_success_rate": sum(p.success_rate for p in patterns) / len(patterns),
             "type_distribution": dict(type_counts),
             "improvement_areas": list(
-                set(area.value for p in patterns for area in p.improvement_areas)
+                {area.value for p in patterns for area in p.improvement_areas}
             ),
         }
