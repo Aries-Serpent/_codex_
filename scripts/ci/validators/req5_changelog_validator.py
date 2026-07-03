@@ -124,8 +124,8 @@ class REQ5ChangelogValidator(RequirementValidator):
             # Look for at least some content after the marker
             lines_after = unreleased_section.split("\n")[1:]  # Skip the marker line
             content_lines = [
-                l for l in lines_after
-                if l.strip() and not l.startswith("#")  # Skip empty/heading lines
+                ln for ln in lines_after
+                if ln.strip() and not ln.startswith("#")  # Skip empty/heading lines
             ]
 
             if not content_lines:

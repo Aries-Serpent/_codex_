@@ -51,7 +51,7 @@ def check_manager_override(pr_number: int) -> bool:
     if success:
         try:
             data = json.loads(output)
-            labels = [l['name'] for l in data.get('labels', [])]
+            labels = [lbl['name'] for lbl in data.get('labels', [])]
             if 'manager-override' in labels or 'hotfix' in labels:
                 return True
         except Exception:
