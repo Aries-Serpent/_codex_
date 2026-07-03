@@ -191,7 +191,7 @@ except Exception as e:
 # Test 2: JWT operations work
 try:
     import jwt
-    secret = "test-secret"
+    secret = "test-secret"  # pragma: allowlist secret
     token = jwt.encode({"test": "data"}, secret, algorithm="HS256")
     decoded = jwt.decode(token, secret, algorithms=["HS256"])
     print("✅ PyJWT encode/decode works")
