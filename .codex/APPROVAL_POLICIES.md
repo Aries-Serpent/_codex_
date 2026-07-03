@@ -493,87 +493,307 @@ Escalation automatically occurs when:
    └─ Security review flags concern → escalate to Security Lead
 ```
 
-### E.3 Deadline Enforcement Mechanisms
+### E.3 SLA Escalation & State Transition Rules
 
-**Automated deadline enforcement:**
+**CRITICAL CLARIFICATION: Auto-approval and SLA escalation are independent processes with explicit precedence rules (see E.4).**
+
+**SLA-based escalation mechanism:**
+
+Auto-escalation occurs when the current approver does not respond within their SLA window. The escalation chain proceeds through approval authority levels:
+
+```
+Level 1 Approver [SLA: policy-dependent, typically 4-8h]
+    ↓ (if SLA exceeded)
+Level 2 Approver [SLA: policy-dependent, typically 4-8h]
+    ↓ (if SLA exceeded)
+Level 3 (Owner) [SLA: 4h]
+    ↓ (if SLA exceeded AND no manual decision)
+Auto-Approval (state dependent - see E.4)
+```
+
+**Automated escalation enforcement:**
 
 ```yaml
 approval_deadline_checker:
-  - run_every: 5 minutes
-  - check_criteria:
-      - SLA elapsed (current_time > deadline)
-      - Approval still pending (status = "awaiting_approval")
-      - No recent activity (>10 min)
-  - action_on_match:
-      - Log escalation event
-      - Assign to next level
-      - Notify new approver
-      - Reset 4h timer
-  - max_escalations: 3 (then auto-approve with Owner notification)
+  run_every: 5 minutes
+  check_criteria:
+    - SLA timer expired: (current_time > deadline) AND (status = "awaiting_approval")
+    - Escalation chain not exhausted: (escalation_count < max_escalations)
+    - No pending manual escalation from approver
+  action_on_escalation:
+    - Increment escalation_count by 1
+    - Log escalation event with timestamp and reason
+    - Assign to next level in approval hierarchy
+    - Notify new approver
+    - Reset SLA timer to policy-specific interval
+    - Do NOT trigger auto-approval; leave that to E.4 rules
+  max_escalations_per_policy: [See E.1 table for policy-specific values]
+    - Most policies: 3 escalations before Owner fallback
+    - Critical policies: 2 escalations before Owner fallback
+    - Non-critical policies: 4 escalations before Owner fallback
 ```
 
 **Manual deadline enforcement:**
 
-- Approver can extend SLA by 4h with documented reason
-- Extensions logged in audit trail
-- Maximum 2 extensions per request
-- After 2 extensions, must escalate to Owner
+- Approver can extend SLA by 4h with documented reason (subject to policy)
+- Extensions logged in audit trail with reason code
+- Maximum extensions per request: 2 (prevents indefinite delay)
+- After 2 extensions used, must escalate to Owner (not extend further)
 
-### E.4 Auto-Approval Fallback Conditions
+---
 
-Auto-approval (request granted without explicit approval) occurs when:
+### E.4 Auto-Approval Fallback Conditions & Precedence Rules
 
-**Condition 1: Max escalation reached**
-- Request escalated 3 times
-- No approver willing to decide
-- After 24h total time
+**IMPORTANT: Auto-approval is the FALLBACK when escalation chain exhausted. Read precedence rules in E.4a.**
+
+Auto-approval (request granted without explicit human approval) occurs only when:
+1. SLA escalation chain is exhausted AND
+2. One of the conditions below is met AND
+3. All safeguards documented (see E.4c)
+
+**E.4a: PRECEDENCE RULES (EXPLICIT)** ⚠️
+
+These rules eliminate all ambiguity between auto-approval timeout and SLA escalation:
+
+| Scenario | SLA Timer Status | Auto-Approval Eligible? | Action | Final State |
+|----------|------------------|------------------------|--------|-------------|
+| **Scenario A** | Not yet expired | No | Continue waiting | `pending` |
+| **Scenario B** | Expired, escalation available | No | Escalate to next level | `escalated` (→ new approver) |
+| **Scenario C** | Expired 3+ times (max escalations reached), Owner level, Owner unavailable >4h | **Yes** | Trigger auto-approval (Condition 2) | `escalated_auto_approved` |
+| **Scenario D** | Incident mode active, SLA expired (30 min) | **Yes** | Trigger auto-approval (Condition 3) | `escalated_auto_approved` |
+| **Scenario E** | Owner explicitly authorizes emergency override | **Yes** | Trigger auto-approval (Condition 4) | `auto_approved` |
+| **Scenario F** | Multiple approvals required, 2+ unavailable, SLA exceeded | **Yes** | Escalate to Owner; if Owner unavailable, auto-approve (Condition 2) | `escalated_auto_approved` |
+
+**KEY PRECEDENCE RULE:**
+> **SLA Escalation has PRIORITY over Auto-Approval timeout.** If both SLA and auto-approval timers expire simultaneously, the system MUST escalate first. Auto-approval only triggers AFTER escalation chain is exhausted or blocked by unavailability.
+
+---
+
+**E.4b: Auto-Approval Trigger Conditions**
+
+Auto-approval activates under these and ONLY these conditions (all others → escalate):
+
+**Condition 1: Max Escalation Chain Exhausted + Owner Decision Blocked**
+- Request escalated to all approval levels (3+ escalations)
+- Current approver is Owner
+- Owner marked unavailable for >4h
+- Total elapsed time ≥ 24h
 - Action: Auto-approve with Owner notification + audit log entry
+- Final state: `escalated_auto_approved`
+- Audit reason: `AUTO_APPROVAL_MAX_ESCALATION_OWNER_UNAVAILABLE`
 
-**Condition 2: All approvers unavailable**
-- Request requires 3 approvals
-- 2+ approvers marked "out of office"
-- SLA exceeded by 4h
-- Action: Escalate to Owner; if Owner unavailable, auto-approve
+**Condition 2: Quorum Unavailable (Multi-Approver Requests)**
+- Request requires 2+ concurrent approvals
+- 2+ of N approvers marked "out of office"
+- Quorum cannot be met (remaining approvers < required_approvers)
+- SLA exceeded by 4h+ at Owner level
+- Action: Escalate to Owner; if Owner unavailable for >2h, auto-approve
+- Final state: `escalated_auto_approved`
+- Audit reason: `AUTO_APPROVAL_QUORUM_UNAVAILABLE`
 
-**Condition 3: Incident mode override**
+**Condition 3: Incident Mode Emergency Override**
 - Incident declared (via incident-commander workflow)
 - Request is incident-related (tagged with incident ID)
-- SLA reduced to 30 min for I-series policies
-- If not approved in 30 min: auto-approve by Incident Commander
+- SLA reduced to 30 min for I-series policies (see E.1)
+- If not approved in 30 min AND Incident Commander available: Incident Commander auto-approves
+- If Incident Commander also unavailable: Escalate to Owner
+- Final state: `escalated_auto_approved` or `auto_approved` (depending on approval chain)
+- Audit reason: `AUTO_APPROVAL_INCIDENT_OVERRIDE`
 
-**Condition 4: Emergency authorization**
-- Owner explicitly authorizes emergency override
-- Logged as manual exception
-- Post-incident audit required
+**Condition 4: Emergency Authorization (Manual Exception)**
+- Owner explicitly authorizes emergency override (via documented exception request)
+- Exception reason logged
+- Post-incident audit required before closure
+- Action: Owner approves with emergency flag
+- Final state: `approved` (manual, not auto)
+- Audit reason: `MANUAL_EMERGENCY_EXCEPTION`
 
-**Auto-approval safeguards:**
+---
+
+**E.4c: Auto-Approval Safeguards & State Management**
+
+Auto-approval MUST NOT occur without these safeguards:
 
 ```python
+def should_auto_approve(request):
+    """
+    Determine if request is eligible for auto-approval.
+    Returns: (eligible: bool, reason: str, audit_context: dict)
+    """
+    
+    # GUARD 1: Only auto-approve if escalation chain exhausted
+    if request.escalation_count < request.max_escalations:
+        return False, "Escalation chain not exhausted", {}
+    
+    # GUARD 2: Verify SLA actually exceeded (not just timeout logic error)
+    if request.current_time <= request.sla_deadline:
+        return False, "SLA not yet exceeded", {}
+    
+    # GUARD 3: Check one of the 4 conditions
+    condition_met = (
+        is_condition_1_met(request) or
+        is_condition_2_met(request) or
+        is_condition_3_met(request) or
+        is_condition_4_met(request)
+    )
+    
+    if not condition_met:
+        return False, "No auto-approval condition satisfied", {}
+    
+    # GUARD 4: Verify request is not already approved
+    if request.status in ["approved", "rejected", "cancelled"]:
+        return False, "Request already has final status", {}
+    
+    # GUARD 5: Reject auto-approval for destructive operations without explicit Owner pre-authorization
+    if request.policy.is_destructive and request.policy.code in ["R-006", "I-002"]:
+        # Destructive ops (DB deletion, data purge) require Owner manual decision
+        # Can only auto-approve if Owner pre-authorized emergency mode
+        if not request.has_owner_emergency_pre_auth:
+            return False, "Destructive operation requires Owner decision", {}
+    
+    return True, "Eligible for auto-approval", audit_context
+
+
 def auto_approve_request(request_id, fallback_reason):
-    # Never auto-approve without safeguards
+    """
+    Execute auto-approval with all safety checks and audit logging.
+    CRITICAL: This is a last-resort fallback, not a normal approval path.
+    """
+    request = load_request(request_id)
     
-    # 1. Require Owner notification
-    notify_owner(request_id, fallback_reason)
+    # Double-check eligibility before proceeding
+    eligible, reason, audit_ctx = should_auto_approve(request)
+    if not eligible:
+        raise ApprovalError(f"Cannot auto-approve: {reason}")
     
-    # 2. Log as exception (not normal approval)
-    audit_log.record("auto_approval_fallback", {
+    # 1. Require Owner notification (not optional)
+    notify_owner(
+        request_id, 
+        fallback_reason,
+        escalation_count=request.escalation_count,
+        sla_exceeded_by=request.current_time - request.sla_deadline
+    )
+    
+    # 2. Log as exception (tagged differently from normal approvals)
+    audit_log.record("AUTO_APPROVAL_TRIGGERED", {
         "request_id": request_id,
-        "reason": fallback_reason,
+        "condition": fallback_reason,
         "timestamp": now(),
         "escalation_count": request.escalation_count,
+        "sla_exceeded_minutes": (request.current_time - request.sla_deadline).total_seconds() / 60,
+        "approval_authority": "SYSTEM_AUTO_APPROVAL",
+        "requires_post_approval_review": True,
     })
     
-    # 3. Require post-incident review
+    # 3. For incident-related requests: create post-incident review
     if request.is_incident_related:
-        create_post_incident_review(request_id)
+        create_post_incident_review(
+            request_id,
+            reason="Auto-approval during incident mode",
+            due_date=now() + timedelta(days=3)
+        )
     else:
-        create_governance_audit_ticket(request_id, "auto_approval_review")
+        # For non-incident: create governance audit ticket (Owner reviews later)
+        create_governance_audit_ticket(
+            request_id,
+            ticket_type="auto_approval_review",
+            priority="high",
+            assigned_to="Owner",
+            due_date=now() + timedelta(days=7)
+        )
     
-    # 4. Finally approve
-    request.status = "auto_approved"
+    # 4. Update request status
+    request.status = "escalated_auto_approved"  # Preserve escalation context
     request.approved_by = "SYSTEM_AUTO_APPROVAL"
+    request.auto_approval_reason = fallback_reason
+    request.auto_approval_timestamp = now()
+    
+    # 5. Trigger downstream workflows
+    notify_implementer(request_id, approval_type="auto_approval")
+    
     return request
+
+
+def handle_simultaneous_timers(request):
+    """
+    EXPLICIT PRECEDENCE: If SLA timer and auto-approval timer expire simultaneously,
+    escalation takes priority.
+    
+    Context: This handles the edge case where both timers expire in same 5-min check window.
+    """
+    # Precedence: Escalation > Auto-Approval
+    # Even if auto-approval conditions are met, escalate first if escalation chain not exhausted
+    
+    if request.escalation_count < request.max_escalations:
+        # Escalation chain still available → ESCALATE (don't auto-approve yet)
+        return escalate_request(request)
+    else:
+        # Escalation chain exhausted AND one of 4 conditions met → AUTO-APPROVE
+        return auto_approve_request(request)
 ```
+
+---
+
+**E.4d: State Machine Diagram (Complete)**
+
+```mermaid
+graph TD
+    A["📥 Request Submitted<br/>(status: pending)"] -->|Manual approval arrives| B["✅ Approved<br/>(status: approved)"]
+    A -->|Rejection submitted| C["❌ Rejected<br/>(status: rejected)"]
+    A -->|Requester cancels| D["🚫 Cancelled<br/>(status: cancelled)"]
+    
+    A -->|SLA timer expires<br/>escalation_count &lt; max| E["📤 Escalated L1→L2<br/>(status: escalated<br/>escalation_count: 1)"]
+    E -->|Manual approval arrives| B
+    E -->|SLA timer expires| F["📤 Escalated L2→L3 Owner<br/>(status: escalated<br/>escalation_count: 2)"]
+    F -->|Manual approval arrives| B
+    
+    F -->|SLA timer expires<br/>escalation_count == max<br/>Owner unavailable &gt;4h| G["🤖 Auto-Approved L3<br/>(status: escalated_auto_approved<br/>approved_by: SYSTEM)"]
+    
+    F -->|Quorum unavailable<br/>SLA exceeded 4h+<br/>Owner unavailable 2h+| G
+    
+    A -->|Incident mode active<br/>30min SLA expired<br/>Incident Commander available| H["🚨 Auto-Approved Incident<br/>(status: escalated_auto_approved<br/>escalation_count: 0)"]
+    
+    A -->|Owner emergency<br/>pre-authorization| I["⚡ Manual Emergency Approval<br/>(status: approved<br/>flag: emergency)"]
+    
+    G -->|Post-incident review<br/>completed| J["✅ Final Approved<br/>(status: approved)"]
+    B --> K["🎯 Implement<br/>(status: approved)"]
+    G --> K
+    I --> K
+    
+    style A fill:#e1f5ff
+    style B fill:#c8e6c9
+    style C fill:#ffccbc
+    style D fill:#ffccbc
+    style E fill:#fff9c4
+    style F fill:#fff9c4
+    style G fill:#ffccbc,stroke:#d32f2f,stroke-width:3px
+    style H fill:#ffccbc,stroke:#d32f2f,stroke-width:3px
+    style I fill:#c8e6c9
+    style J fill:#c8e6c9
+    style K fill:#a5d6a7
+```
+
+---
+
+**E.4e: Scenario Resolution Table (Eliminates All Ambiguity)**
+
+| # | Scenario | Request State | Auto-Approval Eligible? | SLA Escalation? | System Action | Final State | Audit Entry |
+|---|----------|---------------|------------------------|-----------------|---------------|-------------|------------|
+| **1** | Manual approval arrives before any timeout | `pending` | N/A | No | Approve | `approved` | MANUAL_APPROVAL |
+| **2** | SLA expires L1→L2, Approver present | `awaiting_approval` | No | **Yes** | Escalate to L2 | `escalated` (L2) | SLA_ESCALATION_L1_L2 |
+| **3** | SLA expires L2→L3, Owner present | `awaiting_approval` | No | **Yes** | Escalate to Owner | `escalated` (Owner) | SLA_ESCALATION_L2_L3 |
+| **4** | SLA expires at Owner L3, Owner unavailable >4h | `awaiting_approval` | **Yes** (Cond 1) | Yes | Auto-approve | `escalated_auto_approved` | AUTO_APPROVAL_OWNER_UNAVAILABLE |
+| **5** | Approver extends SLA (1st extension) | `pending` | No | No | Reset timer +4h | `pending` (extended) | SLA_EXTENSION_APPROVED |
+| **6** | Approver requests 3rd extension | N/A | No | **Yes** | Escalate (no more extensions) | `escalated` (Owner) | SLA_EXTENSION_LIMIT_REACHED |
+| **7** | Multi-approval required; 2+ approvers OOO | `awaiting_approval` | **Yes** (Cond 2) | Yes | Try Owner; if unavailable, auto-approve | `escalated_auto_approved` | AUTO_APPROVAL_QUORUM_UNAVAILABLE |
+| **8** | Incident declared, I-series policy, 30min SLA expired | `pending` | **Yes** (Cond 3) | **Yes** | Auto-approve if Incident Commander available | `escalated_auto_approved` | AUTO_APPROVAL_INCIDENT_MODE |
+| **9** | Owner authorizes emergency override (pre-incident) | `pending` | **Yes** (Cond 4) | No | Approve with emergency flag | `approved` (emergency) | MANUAL_EMERGENCY_EXCEPTION |
+| **10** | Both timers expire simultaneously | `awaiting_approval` | Conditional | **Yes (Priority)** | Escalate first; auto-approve only if chain exhausted | `escalated` or `escalated_auto_approved` | Depends on escalation_count |
+| **11** | Request already approved, escalation timer fires | `approved` | N/A | No | Ignore timer | `approved` | N/A |
+| **12** | Destructive operation (DB deletion) SLA expired, Owner unavailable | `awaiting_approval` | **No** (Cond 1 blocked) | **Yes** | Escalate; block auto-approval | `escalated` (Owner escalation) | SLA_ESCALATION_DESTRUCTIVE_OP |
+| **13** | Post-auto-approval Owner review disagrees | `escalated_auto_approved` | N/A | No | Create audit ticket (Owner decision documented) | `escalated_auto_approved` (reviewed) | GOVERNANCE_AUDIT_AUTO_APPROVAL |
+
+---
 
 ---
 
