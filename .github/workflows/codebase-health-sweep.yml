@@ -44,7 +44,7 @@ jobs:
       with:
         ref: refs/heads/main
         fetch-depth: 10
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
     - name: "Rate gate \u2014 skip if swept within 6 hours"
       id: rate
       run: "# Check the last [skip ci] sweep commit on this branch\nLAST_SWEEP=$(git\
@@ -164,7 +164,7 @@ jobs:
     - name: Check if 0D_base_ exists
       id: branch_check
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
       run: "if gh api \"repos/${{ github.repository }}/branches/0D_base_\" --silent\
         \ 2>/dev/null; then\n  echo \"exists=true\" >> \"$GITHUB_OUTPUT\"\nelse\n\
         \  echo \"exists=false\" >> \"$GITHUB_OUTPUT\"\n  echo \"\u23ED\uFE0F 0D_base_\
@@ -175,7 +175,7 @@ jobs:
       with:
         ref: refs/heads/0D_base_
         fetch-depth: 10
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
     - name: Set up Python
       if: steps.branch_check.outputs.exists == 'true'
       uses: ./.github/actions/setup-python-cached
@@ -248,7 +248,7 @@ jobs:
       with:
         ref: refs/heads/main
         fetch-depth: 1
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
     - name: Set up Python
       uses: ./.github/actions/setup-python-cached
       with:
@@ -282,7 +282,7 @@ jobs:
         MANUAL: ${{ steps.manual_check.outputs.manual_review }}
         AUTO: ${{ steps.manual_check.outputs.auto_fixable }}
       with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         script: "const MARKER = '<!-- codebase-health-sweep-tracking -->';\nconst\
           \ date = new Date().toISOString().split('T')[0];\nconst body = `${MARKER}\n\
           ## \U0001F9F9 Codebase Health Sweep \u2014 Manual Issues Requiring Attention\n\

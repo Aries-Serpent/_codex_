@@ -1,0 +1,314 @@
+{
+  "version": "1.0.0",
+  "total_tools": 12,
+  "tool_agent_mappings": {
+    "playwright-browser_click": {
+      "tool_id": "playwright-browser_click",
+      "tool_name": "Playwright Click",
+      "tool_type": "browser_interaction",
+      "capabilities": [
+        "web_testing",
+        "ui_automation",
+        "form_interaction"
+      ],
+      "compatible_agent_count": 20,
+      "primary_categories": [
+        "testing",
+        "quality",
+        "operations"
+      ],
+      "status": "active"
+    },
+    "playwright-browser_snapshot": {
+      "tool_id": "playwright-browser_snapshot",
+      "tool_name": "Playwright Snapshot",
+      "tool_type": "browser_interaction",
+      "capabilities": [
+        "ui_testing",
+        "visual_regression",
+        "accessibility"
+      ],
+      "compatible_agent_count": 20,
+      "primary_categories": [
+        "testing",
+        "quality"
+      ],
+      "status": "active"
+    },
+    "playwright-browser_evaluate": {
+      "tool_id": "playwright-browser_evaluate",
+      "tool_name": "Playwright Evaluate",
+      "tool_type": "browser_scripting",
+      "capabilities": [
+        "javascript_execution",
+        "dom_manipulation",
+        "dynamic_testing"
+      ],
+      "compatible_agent_count": 20,
+      "primary_categories": [
+        "testing",
+        "quality",
+        "cognitive"
+      ],
+      "status": "active"
+    },
+    "playwright-browser_type": {
+      "tool_id": "playwright-browser_type",
+      "tool_name": "Playwright Type",
+      "tool_type": "browser_interaction",
+      "capabilities": [
+        "form_input",
+        "text_entry",
+        "ui_interaction"
+      ],
+      "compatible_agent_count": 20,
+      "primary_categories": [
+        "testing",
+        "quality"
+      ],
+      "status": "active"
+    },
+    "playwright-browser_navigate": {
+      "tool_id": "playwright-browser_navigate",
+      "tool_name": "Playwright Navigate",
+      "tool_type": "browser_navigation",
+      "capabilities": [
+        "page_navigation",
+        "url_handling",
+        "routing_validation"
+      ],
+      "compatible_agent_count": 20,
+      "primary_categories": [
+        "testing",
+        "operations"
+      ],
+      "status": "active"
+    },
+    "playwright-browser_press_key": {
+      "tool_id": "playwright-browser_press_key",
+      "tool_name": "Playwright Press Key",
+      "tool_type": "browser_interaction",
+      "capabilities": [
+        "keyboard_input",
+        "shortcut_execution",
+        "ui_navigation"
+      ],
+      "compatible_agent_count": 20,
+      "primary_categories": [
+        "testing",
+        "quality"
+      ],
+      "status": "active"
+    },
+    "playwright-browser_select_option": {
+      "tool_id": "playwright-browser_select_option",
+      "tool_name": "Playwright Select Option",
+      "tool_type": "browser_interaction",
+      "capabilities": [
+        "form_selection",
+        "dropdown_handling",
+        "option_selection"
+      ],
+      "compatible_agent_count": 20,
+      "primary_categories": [
+        "testing",
+        "quality"
+      ],
+      "status": "active"
+    },
+    "playwright-browser_file_upload": {
+      "tool_id": "playwright-browser_file_upload",
+      "tool_name": "Playwright File Upload",
+      "tool_type": "browser_interaction",
+      "capabilities": [
+        "file_upload",
+        "file_handling",
+        "form_submission"
+      ],
+      "compatible_agent_count": 20,
+      "primary_categories": [
+        "testing",
+        "quality"
+      ],
+      "status": "active"
+    },
+    "github-mcp-server-search_code": {
+      "tool_id": "github-mcp-server-search_code",
+      "tool_name": "GitHub Search Code",
+      "tool_type": "code_search",
+      "capabilities": [
+        "code_search",
+        "symbol_lookup",
+        "pattern_matching"
+      ],
+      "compatible_agent_count": 14,
+      "primary_categories": [
+        "operations",
+        "quality",
+        "security"
+      ],
+      "status": "active"
+    },
+    "github-mcp-server-get_file_contents": {
+      "tool_id": "github-mcp-server-get_file_contents",
+      "tool_name": "GitHub Get File",
+      "tool_type": "file_retrieval",
+      "capabilities": [
+        "file_reading",
+        "content_retrieval",
+        "version_control"
+      ],
+      "compatible_agent_count": 14,
+      "primary_categories": [
+        "operations",
+        "documentation",
+        "testing"
+      ],
+      "status": "active"
+    },
+    "github-mcp-server-list_pull_requests": {
+      "tool_id": "github-mcp-server-list_pull_requests",
+      "tool_name": "GitHub List PRs",
+      "tool_type": "pr_management",
+      "capabilities": [
+        "pr_listing",
+        "pull_request_search",
+        "pr_analysis"
+      ],
+      "compatible_agent_count": 14,
+      "primary_categories": [
+        "operations",
+        "testing",
+        "ci_cd"
+      ],
+      "status": "active"
+    },
+    "github-mcp-server-get_commit": {
+      "tool_id": "github-mcp-server-get_commit",
+      "tool_name": "GitHub Get Commit",
+      "tool_type": "commit_retrieval",
+      "capabilities": [
+        "commit_search",
+        "history_tracking",
+        "change_analysis"
+      ],
+      "compatible_agent_count": 14,
+      "primary_categories": [
+        "operations",
+        "quality",
+        "security"
+      ],
+      "status": "active"
+    }
+  },
+  "capability_tool_mappings": {
+    "web_testing": [
+      "playwright-browser_click"
+    ],
+    "ui_automation": [
+      "playwright-browser_click"
+    ],
+    "form_interaction": [
+      "playwright-browser_click"
+    ],
+    "ui_testing": [
+      "playwright-browser_snapshot"
+    ],
+    "visual_regression": [
+      "playwright-browser_snapshot"
+    ],
+    "accessibility": [
+      "playwright-browser_snapshot"
+    ],
+    "javascript_execution": [
+      "playwright-browser_evaluate"
+    ],
+    "dom_manipulation": [
+      "playwright-browser_evaluate"
+    ],
+    "dynamic_testing": [
+      "playwright-browser_evaluate"
+    ],
+    "form_input": [
+      "playwright-browser_type"
+    ],
+    "text_entry": [
+      "playwright-browser_type"
+    ],
+    "ui_interaction": [
+      "playwright-browser_type"
+    ],
+    "page_navigation": [
+      "playwright-browser_navigate"
+    ],
+    "url_handling": [
+      "playwright-browser_navigate"
+    ],
+    "routing_validation": [
+      "playwright-browser_navigate"
+    ],
+    "keyboard_input": [
+      "playwright-browser_press_key"
+    ],
+    "shortcut_execution": [
+      "playwright-browser_press_key"
+    ],
+    "ui_navigation": [
+      "playwright-browser_press_key"
+    ],
+    "form_selection": [
+      "playwright-browser_select_option"
+    ],
+    "dropdown_handling": [
+      "playwright-browser_select_option"
+    ],
+    "option_selection": [
+      "playwright-browser_select_option"
+    ],
+    "file_upload": [
+      "playwright-browser_file_upload"
+    ],
+    "file_handling": [
+      "playwright-browser_file_upload"
+    ],
+    "form_submission": [
+      "playwright-browser_file_upload"
+    ],
+    "code_search": [
+      "github-mcp-server-search_code"
+    ],
+    "symbol_lookup": [
+      "github-mcp-server-search_code"
+    ],
+    "pattern_matching": [
+      "github-mcp-server-search_code"
+    ],
+    "file_reading": [
+      "github-mcp-server-get_file_contents"
+    ],
+    "content_retrieval": [
+      "github-mcp-server-get_file_contents"
+    ],
+    "version_control": [
+      "github-mcp-server-get_file_contents"
+    ],
+    "pr_listing": [
+      "github-mcp-server-list_pull_requests"
+    ],
+    "pull_request_search": [
+      "github-mcp-server-list_pull_requests"
+    ],
+    "pr_analysis": [
+      "github-mcp-server-list_pull_requests"
+    ],
+    "commit_search": [
+      "github-mcp-server-get_commit"
+    ],
+    "history_tracking": [
+      "github-mcp-server-get_commit"
+    ],
+    "change_analysis": [
+      "github-mcp-server-get_commit"
+    ]
+  }
+}

@@ -6,7 +6,7 @@ Consolidates 1,307 occurrences of input validation guard patterns.
 Example:
     # Instead of: if not value: raise ValueError(...)
     require_not_empty(value, "username")
-    
+
     # Instead of: if value is None: return
     require_truthy(value, "config")
 """

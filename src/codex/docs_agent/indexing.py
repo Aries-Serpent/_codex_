@@ -14,7 +14,7 @@ from typing import Dict, List, Optional, Set, Tuple
 
 class FullTextIndexer:
     """Build and search inverted indexes.
-    
+
     Supports:
       - Keyword indexing
       - Phrase search
@@ -29,7 +29,7 @@ class FullTextIndexer:
     def index_document(self, doc_id: str, content: str) -> None:
         """Index document content for full-text search."""
         self.documents[doc_id] = content
-        
+
         # Tokenize and index
         tokens = self._tokenize(content)
         for token in tokens:
@@ -39,25 +39,25 @@ class FullTextIndexer:
         """Search for documents matching query."""
         # Parse query into tokens
         tokens = self._tokenize(query)
-        
+
         if not tokens:
             return []
 
         # AND operation: intersection of all token results
         result_sets = [self.index[token] for token in tokens]
-        
+
         if result_sets:
             results = result_sets[0]
             for token_set in result_sets[1:]:
                 results = results & token_set
-            return sorted(list(results))
+            return sorted(results)
 
         return []
 
     def search_phrase(self, phrase: str) -> List[str]:
         """Search for exact phrase."""
         results = []
-        
+
         for doc_id, content in self.documents.items():
             if phrase.lower() in content.lower():
                 results.append(doc_id)
@@ -76,7 +76,7 @@ class FullTextIndexer:
 
 class SemanticEmbeddings:
     """Embedding-based semantic search.
-    
+
     Supports:
       - Vector representation of documents
       - Cosine similarity ranking
@@ -89,20 +89,20 @@ class SemanticEmbeddings:
 
     def embed_document(self, doc_id: str, content: str) -> List[float]:
         """Create embedding for document (simplified).
-        
+
         In a real implementation, would use a language model.
         Here we use a simple TF-IDF-like approach.
         """
         self.document_text[doc_id] = content
-        
+
         # Tokenize
         tokens = self._get_tokens(content)
-        
+
         # Create simple embedding (one dimension per token)
         # In practice would use pre-trained embeddings
-        embedding = [float(tokens.count(token)) / len(tokens) 
+        embedding = [float(tokens.count(token)) / len(tokens)
                      for token in sorted(set(tokens))]
-        
+
         self.embeddings[doc_id] = embedding
         return embedding
 
@@ -113,7 +113,7 @@ class SemanticEmbeddings:
                           for token in sorted(set(query_tokens))]
 
         similarities = []
-        
+
         for doc_id, doc_embedding in self.embeddings.items():
             # Cosine similarity (simplified)
             score = self._cosine_similarity(query_embedding, doc_embedding)
@@ -148,7 +148,7 @@ class SemanticEmbeddings:
 
 class HistoryTracker:
     """Track schema migrations and versioning.
-    
+
     Maintains:
       - Schema versions
       - Migration log

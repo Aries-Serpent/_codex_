@@ -837,7 +837,7 @@ def consolidate(
             if _OTEL_AVAILABLE and sections:
                 actual_outcomes   = {n: "success" if v.get("status") == "success" else "failure"
                                      for n, v in sections.items()}
-                expected_outcomes = {n: "success" for n in sections}
+                expected_outcomes = dict.fromkeys(sections, "success")
                 try:
                     coherence = compute_coherence(actual_outcomes, expected_outcomes)
                     workflow_coherence_score.observe(coherence)

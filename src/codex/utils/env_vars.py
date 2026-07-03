@@ -7,7 +7,7 @@ consistent, well-tested utility functions with type support.
 Example:
     # Instead of: os.environ.get('DEBUG', 'false')
     debug = get_env_bool('DEBUG', default=False)
-    
+
     # Instead of: os.environ.get('PORT')
     port = get_env_int('PORT', required=True)
 """

@@ -78,8 +78,7 @@ jobs:
       id: monitor
       env:
         GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_MASTER_KEY
-          || secrets.CODEX_BACKUP_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
         WORKFLOW_FILTER: ${{ github.event.inputs.workflow_filter || '' }}
       run: "# Determine dry-run flag\nDRY_RUN_FLAG=\"\"\nif [ \"$DRY_RUN\" = \"true\"\

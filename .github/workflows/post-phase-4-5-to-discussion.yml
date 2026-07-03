@@ -52,7 +52,7 @@ jobs:
         GITHUB_APP_PRIVATE_KEY: ${{ secrets._GITHUB_APP_PRIVATE_KEY }}
         GITHUB_APP_ID: ${{ secrets._GITHUB_APP_ID }}
         GITHUB_APP_INSTALLATION_ID: ${{ secrets._GITHUB_APP_INSTALLATION_ID }}
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
         GITHUB_TOKEN_FALLBACK: ${{ github.token }}
       run: "pip install \"PyJWT==2.8.0\" \"cryptography==44.0.2\" --quiet\nRESOLVED_TOKEN=\"\

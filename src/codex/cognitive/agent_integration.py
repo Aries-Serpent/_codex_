@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Agent integration module for Cognitive Brain Phase 1.2.
 
-from codex.logging.structured_logger import logger
 This module provides utilities for integrating agents with the cognitive brain,
 including pattern querying, learning feedback, and session state management.
 
@@ -15,11 +14,14 @@ Example:
 from __future__ import annotations
 
 import json
+import logging
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 
 class AgentCategory(Enum):

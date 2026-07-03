@@ -102,8 +102,8 @@ jobs:
         \  --class INFRA_WRITE \\\n  --actor \"${{ github.actor }}\" || true\n"
     - name: Run variable writer
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
-        CODEX_ADMIN_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        CODEX_ADMIN_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         GITHUB_REPOSITORY: ${{ github.repository }}
         EXTRA_ARGS: ${{ needs.auth-check.outputs.extra_args }}
       run: "pip install -q requests 2>/dev/null || true\nif [ -f \".codex/pending_var_updates.json\"\
@@ -113,7 +113,7 @@ jobs:
     - name: Post result to PR
       if: needs.auth-check.outputs.pr_number != ''
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         REPO: ${{ github.repository }}
         PR_NUMBER: ${{ needs.auth-check.outputs.pr_number }}
       run: "STATUS=$(tail -n 5 .codex/evidence/var_write_audit.jsonl 2>/dev/null ||\
@@ -140,7 +140,7 @@ jobs:
     - uses: actions/checkout@v7
     - name: Configure webhooks
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
         GITHUB_REPOSITORY: ${{ github.repository }}
         WEBHOOK_RECEIVER_URL: ${{ vars.WEBHOOK_RECEIVER_URL }}
@@ -162,7 +162,7 @@ jobs:
     - uses: actions/checkout@v7
     - name: List variables and post to PR
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         GITHUB_REPOSITORY: ${{ github.repository }}
         PR_NUMBER: ${{ needs.auth-check.outputs.pr_number }}
         REPO: ${{ github.repository }}
@@ -192,7 +192,7 @@ jobs:
     - uses: actions/checkout@v7
     - name: List webhooks
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         GITHUB_REPOSITORY: ${{ github.repository }}
       run: python scripts/ci/webhook_configurator.py --list
   app-status:
@@ -217,7 +217,7 @@ jobs:
     - name: Post result to PR
       if: needs.auth-check.outputs.pr_number != ''
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         REPO: ${{ github.repository }}
         PR_NUMBER: ${{ needs.auth-check.outputs.pr_number }}
         OPERATION: ${{ needs.auth-check.outputs.operation }}

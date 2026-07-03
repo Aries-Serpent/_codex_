@@ -691,7 +691,7 @@ jobs:
         fetch-depth: 1
     - name: "Open check-in \u2014 post Q&A and research topics to Discussion #3756"
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
         PR_NUMBER: ${{ github.event.issue.number }}
       run: "SESSION_ID=\"auto-open-pr${PR_NUMBER}-$(date +%Y%m%d)\"\npython3 scripts/cognitive/agent_checkin.py\
@@ -720,7 +720,7 @@ jobs:
         fetch-depth: 1
     - name: "Close check-in \u2014 poll Discussion for responses and post AfterMath"
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
         HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
         PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}

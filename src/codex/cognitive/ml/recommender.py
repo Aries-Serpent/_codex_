@@ -395,7 +395,7 @@ class ResolutionRecommender:
             List of resolutions.
         """
         samples = self._index.get_by_pattern(pattern_id)
-        return list(set(s.resolution for s in samples))
+        return list({s.resolution for s in samples})
 
     def get_categories(self) -> list[str]:
         """Get available categories."""
@@ -541,7 +541,7 @@ class SuccessPredictor:
             all_features.update(sample.features.keys())
 
         # Initialize weights
-        self._weights = {f: 0.0 for f in all_features}
+        self._weights = dict.fromkeys(all_features, 0.0)
         self._bias = 0.0
 
         # Training loop (simple gradient descent)

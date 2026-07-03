@@ -467,7 +467,7 @@ class TransactionalTaskGroup:
         # All tasks in PHI_PLUS chain get same outcome
         outcome = result.get("outcome_a", False)
 
-        return {tid: outcome for tid in task_ids}
+        return dict.fromkeys(task_ids, outcome)
 
     def rollback(
         self,

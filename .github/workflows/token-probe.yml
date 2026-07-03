@@ -35,7 +35,7 @@ jobs:
     - name: "\xA73a \u2014 Read + write probe"
       id: probe
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         PR_NUMBER: ${{ github.event.inputs.pr_number }}
         REPO: ${{ github.repository }}
       run: "echo \"## \U0001F511 CODEX_MASTER_KEY Probe\" >> \"$GITHUB_STEP_SUMMARY\"\

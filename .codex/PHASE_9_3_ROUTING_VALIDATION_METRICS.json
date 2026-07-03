@@ -1,0 +1,17 @@
+{
+  "summary": {
+    "total_scenarios": 4100,
+    "correct_routing": 4100,
+    "accuracy_percentage": 100.0,
+    "test_passed": true
+  },
+  "latency_metrics": {
+    "p50_ms": 12.814,
+    "p95_ms": 19.397,
+    "p99_ms": 19.968,
+    "min_ms": 5.114,
+    "max_ms": 21.664,
+    "mean_ms": 12.743
+  },
+  "timestamp": 1783105156.9938033
+}

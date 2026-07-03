@@ -287,7 +287,7 @@ class PatternLibrary:
             pattern = self.get_pattern(pid)
             if pattern:
                 agents.update(pattern.recommended_agents)
-        return sorted(list(agents))
+        return sorted(agents)
 
     def to_json(self) -> str:
         """Serialize library to JSON."""

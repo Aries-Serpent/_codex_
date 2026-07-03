@@ -21,7 +21,7 @@ Functions
 Usage
 -----
     from pr_description_helper import build_pr_description_with_wec
-    
+
     # Implement the read-before-write pattern
     pr_description = build_pr_description_with_wec(
         checklist_text=my_progress_checklist,
@@ -29,7 +29,7 @@ Usage
         repo_owner="Aries-Serpent",
         repo_name="_codex_"
     )
-    
+
     # Pass to report_progress
     engine_tools_report_progress(
         prDescription=pr_description,
@@ -340,7 +340,7 @@ def build_pr_description_with_wec(
         Complete PR description ready for report_progress():
         ```
         {checklist_text}
-        
+
         {wec_block}
         ```
 
@@ -350,19 +350,19 @@ def build_pr_description_with_wec(
     Example:
         ```python
         from pr_description_helper import build_pr_description_with_wec
-        
+
         checklist = '''## ✅ Progress
         - [x] Phase 1: PR body preparation
         - [x] Phase 2: Validation gates
         - [ ] Phase 3: WEC management'''
-        
+
         pr_description = build_pr_description_with_wec(
             checklist_text=checklist,
             pr_number=4662,
             session_id="S12345",
             turn_number=1
         )
-        
+
         engine_tools_report_progress(
             prDescription=pr_description,
             commitMessage="Progress: Implementing merge readiness framework"
@@ -419,7 +419,7 @@ if __name__ == "__main__":
     # Test read-before-write pattern
     test_checklist = """## 📊 Merge Readiness Progress
 - [x] Phase 1: PR body preparation
-- [x] Phase 2: Validation gates  
+- [x] Phase 2: Validation gates
 - [ ] Phase 3: WEC management"""
 
     try:

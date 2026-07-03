@@ -99,8 +99,8 @@ class TestLoadCheckpoint:
         cp_path.write_text(json.dumps({"pr_number": 4389, "resolution": "pending"}))
         monkeypatch.setattr(rlh, "CHECKPOINT_FILE", cp_path)
         result = rlh.load_checkpoint()
-        assert result is not None, "result must be initialized"
-        assert result["pr_number"] == 4389, "Result must not be empty"
+        assert result["pr_number"] == 4389, "pr_number must round-trip from file"
+        assert result["resolution"] == "pending", "resolution must round-trip from file"
 
     def test_returns_none_on_corrupt_json(self, tmp_path, monkeypatch):
         cp_path = tmp_path / "cp.json"

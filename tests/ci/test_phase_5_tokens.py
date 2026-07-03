@@ -69,7 +69,7 @@ class TestScenario1MasterKeyNormal:
         - Token never exposed in logs
         """
         master_key = get_token(required_elevated=True)[0]
-        assert master_key is not None, "Master key not set"
+        assert isinstance(master_key, str) and len(master_key) > 0, "master_key must be a non-empty string"
 
         # Test 1: get_token retrieves the correct token
         token, source = get_token(required_elevated=False)
@@ -128,7 +128,7 @@ class TestScenario2BackupKeyFallback:
         - Token never exposed in logs
         """
         backup_key = get_token(required_elevated=True)[0]
-        assert backup_key is not None, "Backup key not set"
+        assert isinstance(backup_key, str) and len(backup_key) > 0, "backup_key must be a non-empty string"
 
         # Verify CODEX_MASTER_KEY is not set
         assert get_token(required_elevated=True)[0] is None, "Master key should be unset"
@@ -183,7 +183,7 @@ class TestScenario3GHTokenFallback:
         - Token never exposed in logs
         """
         gh_token = get_token(required_elevated=False)[0]
-        assert gh_token is not None, "GH_TOKEN not set"
+        assert isinstance(gh_token, str) and len(gh_token) > 0, "gh_token must be a non-empty string"
 
         # Verify CODEX_* keys are not set
         assert get_token(required_elevated=True)[0] is None, "Master key should be unset"
@@ -239,7 +239,7 @@ class TestScenario4GitHubTokenFallback:
         - Token never exposed in logs
         """
         github_token = os.environ.get("GITHUB_TOKEN")
-        assert github_token is not None, "GITHUB_TOKEN not set"
+        assert isinstance(github_token, str) and len(github_token) > 0, "github_token must be a non-empty string"
 
         # Verify all other tokens are unset
         for var in ["CODEX_MASTER_KEY", "CODEX_BACKUP_KEY", "GH_TOKEN"]:
@@ -294,7 +294,7 @@ class TestScenario5ElevatedDeny:
         - get_token(required_elevated=True) succeeds with appropriate token
         """
         gh_token = get_token(required_elevated=False)[0]
-        assert gh_token is not None, "GH_TOKEN not set"
+        assert isinstance(gh_token, str) and len(gh_token) > 0, "gh_token must be a non-empty string"
 
         # Test 1: get_token(required_elevated=True) should fail
         with pytest.raises(
@@ -316,7 +316,7 @@ class TestScenario5ElevatedDeny:
         - Only CODEX_* keys are acceptable for elevated operations
         """
         github_token = os.environ.get("GITHUB_TOKEN")
-        assert github_token is not None, "GITHUB_TOKEN not set"
+        assert isinstance(github_token, str) and len(github_token) > 0, "github_token must be a non-empty string"
 
         # Test: get_token(required_elevated=True) should fail
         with pytest.raises(TokenResolutionError):
@@ -332,7 +332,7 @@ class TestScenario5ElevatedDeny:
         - Elevated operations can use backup key
         """
         backup_key = get_token(required_elevated=True)[0]
-        assert backup_key is not None, "Backup key not set"
+        assert isinstance(backup_key, str) and len(backup_key) > 0, "backup_key must be a non-empty string"
 
         # Test: get_token(required_elevated=True) should succeed
         token, source = get_token(required_elevated=True)
@@ -361,7 +361,7 @@ class TestScenario6ScopeValidation:
         - scope_validation passes for all master key scopes
         """
         master_key = get_token(required_elevated=True)[0]
-        assert master_key is not None, "Master key not set"
+        assert isinstance(master_key, str) and len(master_key) > 0, "master_key must be a non-empty string"
 
         # Test all master key scopes
         required_scopes = [
@@ -383,7 +383,7 @@ class TestScenario6ScopeValidation:
         - CODEX_BACKUP_KEY missing actions:write and security_events
         """
         backup_key = get_token(required_elevated=True)[0]
-        assert backup_key is not None, "Backup key not set"
+        assert isinstance(backup_key, str) and len(backup_key) > 0, "backup_key must be a non-empty string"
 
         # Test backup key has repo + workflow
         is_valid, msg = validate_token_scope(backup_key, ["repo", "workflow"])
@@ -406,7 +406,7 @@ class TestScenario6ScopeValidation:
         - GH_TOKEN missing workflow and actions:write
         """
         gh_token = get_token(required_elevated=False)[0]
-        assert gh_token is not None, "GH_TOKEN not set"
+        assert isinstance(gh_token, str) and len(gh_token) > 0, "gh_token must be a non-empty string"
 
         # Test GH_TOKEN has repo
         is_valid, msg = validate_token_scope(gh_token, ["repo"])
@@ -441,7 +441,7 @@ class TestScenario7AuditLogging:
         - Context message is preserved
         """
         master_key = get_token(required_elevated=True)[0]
-        assert master_key is not None, "Master key not set"
+        assert isinstance(master_key, str) and len(master_key) > 0, "master_key must be a non-empty string"
 
         with token_log_capture as capture:
             log_token_usage("Testing elevated operation", required_elevated=False)
@@ -467,7 +467,7 @@ class TestScenario7AuditLogging:
         - Token value is not exposed
         """
         backup_key = get_token(required_elevated=True)[0]
-        assert backup_key is not None, "Backup key not set"
+        assert isinstance(backup_key, str) and len(backup_key) > 0, "backup_key must be a non-empty string"
 
         with token_log_capture as capture:
             log_token_usage("Backup key test", required_elevated=False)
@@ -524,7 +524,7 @@ class TestScenario8Base64RoundTrip:
         - Cleanup removes test variable
         """
         master_key = get_token(required_elevated=True)[0]
-        assert master_key is not None, "Master key not set"
+        assert isinstance(master_key, str) and len(master_key) > 0, "master_key must be a non-empty string"
 
         # Step 1: Encode Python content
         original_content = sample_python_file
@@ -579,7 +579,7 @@ class TestScenario8Base64RoundTrip:
         - Round-trip works with backup key
         """
         backup_key = get_token(required_elevated=True)[0]
-        assert backup_key is not None, "Backup key not set"
+        assert isinstance(backup_key, str) and len(backup_key) > 0, "backup_key must be a non-empty string"
 
         # Encode, write, retrieve, decode
         original_content = sample_python_file

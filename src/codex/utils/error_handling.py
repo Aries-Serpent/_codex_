@@ -1,14 +1,14 @@
 """
 P003/P004: Error Handling & Logging Utilities
 
-Consolidates 4,545 occurrences of exception handling and 
+Consolidates 4,545 occurrences of exception handling and
 1,706 occurrences of error logging patterns.
 
 Example:
     # Instead of: try/except/log pattern
     with error_context("loading config"):
         config = load_config()
-    
+
     # Instead of: logger.error(...) scattered everywhere
     log_error(exc, "config loading failed")
 """

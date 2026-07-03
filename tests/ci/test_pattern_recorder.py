@@ -209,10 +209,9 @@ class TestResolveAcctDiffBase:
         # HEAD~2   = agent work        ← this is the agent commit
         # HEAD~3   = init              ← parent of agent commit
         base = mod._resolve_acct_diff_base(repo)
-        assert base is not None, "base must be initialized"
         # Confirm the SHA returned is the parent of the agent commit.
         expected_parent = self._git(repo, "rev-parse", "HEAD~3").strip()
-        assert base == expected_parent, "base is not valid"
+        assert base == expected_parent, f"expected parent SHA {expected_parent!r}, got {base!r}"
 
     def test_skips_skip_ci_subjects_regardless_of_author(self, tmp_path):
         mod = _load_auto_fix()
@@ -222,11 +221,8 @@ class TestResolveAcctDiffBase:
         # Even when authored by a non-bot, [skip ci] subject marks it as infra.
         self._commit(repo, "chore: bump [skip ci]", "alice", "v2\n")
         base = mod._resolve_acct_diff_base(repo)
-        assert base is not None, "base must be initialized"
         expected_parent = self._git(repo, "rev-parse", "HEAD~2").strip()
-        assert base == expected_parent, "base is not valid"
-
-    def test_returns_none_when_all_commits_are_infra(self, tmp_path):
+        assert base == expected_parent, f"expected parent SHA {expected_parent!r}, got {base!r}"
         mod = _load_auto_fix()
         repo = self._mkrepo(tmp_path)
         self._commit(
@@ -265,9 +261,8 @@ class TestResolveAcctDiffBase:
         # HEAD~1   = agent work        ← first non-infra commit
         # HEAD~2   = init              ← parent of agent commit
         base = mod._resolve_acct_diff_base(repo)
-        assert base is not None, "base must be initialized"
         expected_parent = self._git(repo, "rev-parse", "HEAD~2").strip()
-        assert base == expected_parent, "base is not valid"
+        assert base == expected_parent, f"expected parent SHA {expected_parent!r} for rebase commit, got {base!r}"
 
     def test_skips_dependabot_deps_bump_commits(self, tmp_path):
         """``chore(deps): bump`` commit subjects (dependabot PR creation commits)
@@ -287,9 +282,8 @@ class TestResolveAcctDiffBase:
         # HEAD~1   = agent work        ← first non-infra commit
         # HEAD~2   = init              ← parent
         base = mod._resolve_acct_diff_base(repo)
-        assert base is not None, "base must be initialized"
         expected_parent = self._git(repo, "rev-parse", "HEAD~2").strip()
-        assert base == expected_parent, "base is not valid"
+        assert base == expected_parent, f"expected parent SHA {expected_parent!r} for deps-bump commit, got {base!r}"
 
 
 class TestFindKwargRemovalSpan:
@@ -319,7 +313,7 @@ class TestFindKwargRemovalSpan:
         # Second kwarg named 'x'
         kw = call.keywords[1]
         span = fixer._find_kwarg_removal_span("f(x=1, x=2)", kw)
-        assert span is not None, "span must be initialized"
+        assert span is not None, "_find_kwarg_removal_span must return a (start, end) tuple for a valid kwarg"
         start, end = span
         result = "f(x=1, x=2)"[:start] + "f(x=1, x=2)"[end:]
         assert "x=2" not in result, "Result must not be empty"

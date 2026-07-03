@@ -116,7 +116,7 @@ class IssueClassifier:
         if "performance" in score.category.value.lower():
             labels.append("performance")
 
-        return [l for l in labels if l not in current_labels]
+        return [lbl for lbl in labels if lbl not in current_labels]
 
     def _get_routing_target(self, score: SeverityScore) -> str:
         """Determine routing target based on severity and category."""
@@ -222,7 +222,7 @@ def main():
                 issue_number=issue["number"],
                 title=issue["title"],
                 body=issue["body"],
-                labels=[l.get("name", "") for l in issue.get("labels", [])],
+                labels=[lbl.get("name", "") for lbl in issue.get("labels", [])],
             )
             print(f"\n{'=' * 60}")
             print(f"Issue #{result.issue_number}: {result.issue_title}")

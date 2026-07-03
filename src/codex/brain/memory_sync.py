@@ -265,7 +265,7 @@ class MemorySyncEngine:
 
             hot_entries = conn.execute(
                 f"""
-                SELECT key, value, pattern_type, frequency, success_rate, 
+                SELECT key, value, pattern_type, frequency, success_rate,
                        confidence, last_accessed, created_at, metadata, tags
                 FROM stm_entries
                 WHERE frequency >= {frequency_threshold}
@@ -445,7 +445,7 @@ class MemorySyncEngine:
                 conn.execute(
                     """
                     INSERT OR REPLACE INTO ltm_entries
-                    (key, value, pattern_type, frequency, success_rate, 
+                    (key, value, pattern_type, frequency, success_rate,
                      confidence, created_at, last_accessed, metadata, tags, policy, improvement_areas)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,

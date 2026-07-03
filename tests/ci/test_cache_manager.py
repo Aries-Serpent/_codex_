@@ -278,7 +278,7 @@ class TestCacheManager:
                 continue
 
             paths = manager.CACHE_PATHS.get(cache_type)
-            assert paths is not None, "paths must be initialized"
+            assert paths is not None, f"CACHE_PATHS must define paths for {cache_type}"
             assert len(paths) > 0, "Paths must not be empty"
 
     def test_dependency_files_defined(self, manager):
@@ -287,7 +287,7 @@ class TestCacheManager:
 
         for cache_type in key_types:
             files = manager.DEPENDENCY_FILES.get(cache_type)
-            assert files is not None, "files must be initialized"
+            assert files is not None, f"DEPENDENCY_FILES must define files for {cache_type}"
             assert len(files) > 0, "Files must not be empty"
 
 

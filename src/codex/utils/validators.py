@@ -52,7 +52,7 @@ def validate_file_structure(file_path: str) -> dict[str, bool]:
     path = Path(file_path)
     if not path.exists():
         logger.error(f"File not found: {file_path}")
-        return {key: False for key in issues}
+        return dict.fromkeys(issues, False)
 
     try:
         content = path.read_text()

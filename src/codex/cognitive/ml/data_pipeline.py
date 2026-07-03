@@ -470,8 +470,8 @@ class DataPipeline:
             "total_raw_records": len(self._raw_data),
             "total_samples": len(self._samples),
             "samples_by_category": category_counts,
-            "data_sources": list(set(r.source_type.value for r in self._raw_data)),
-            "unique_patterns": len(set(s.pattern_id for s in self._samples)),
+            "data_sources": list({r.source_type.value for r in self._raw_data}),
+            "unique_patterns": len({s.pattern_id for s in self._samples}),
             "success_samples": sum(1 for s in self._samples if s.success),
             "failure_samples": sum(1 for s in self._samples if not s.success),
         }
@@ -623,7 +623,7 @@ class PatternDataset:
 
     def get_categories(self) -> list[str]:
         """Get list of unique categories."""
-        return list(set(s.category for s in self._samples))
+        return list({s.category for s in self._samples})
 
     def get_category_distribution(self) -> dict[str, int]:
         """Get distribution of categories."""

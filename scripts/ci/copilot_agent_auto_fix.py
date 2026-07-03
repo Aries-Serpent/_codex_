@@ -106,11 +106,11 @@ def main():
         sys.exit(0)
 
     # Get unique auto-fixable patterns
-    patterns = sorted(set(
+    patterns = sorted({
         issue['pattern']
         for issue in report['issues']
         if issue['auto_fix_available']
-    ))
+    })
 
     print(f"\n🎯 Patterns to fix: {', '.join(map(str, patterns))}")
 

@@ -10,7 +10,7 @@ reusable, well-tested utility functions.
 Example:
     # Instead of: if value is None: ...
     value = ensure_not_none(value, "my_param")
-    
+
     # Instead of: value = x if x is not None else y
     value = coalesce(x, y, z, "default")
 """

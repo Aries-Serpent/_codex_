@@ -34,13 +34,20 @@
     "12:/home/runner/work/_codex_/_codex_/src/codex/cli/__init__.py": 2,
     "13:/home/runner/work/_codex_/_codex_/.codex/PHASE_9_2_SECURITY_TESTS.py": 10,
     "25:docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md \u2014 not updated in last commit (last touched": 4,
-    "30:ruff (src/ clean)": 2,
+    "30:ruff (src/ clean)": 3,
     "11:/home/runner/work/_codex_/_codex_/examples/chronicle_tips_example.py": 1,
     "35:.codex/CAMPAIGN_LIVE_STATUS.md": 1,
     "35:.codex/CAMPAIGN_VERIFICATION_CHECKLIST.md": 1,
     "35:.codex/PHASE_8_3_3_PHASE_1_COMPLETION.md": 2,
     "35:.codex/PHASE_8_4_3_IMPLEMENTATION_COMPLETE.md": 1,
-    "21:.github/workflows/tiered-approval-gate.yml": 1
+    "21:.github/workflows/tiered-approval-gate.yml": 1,
+    "11:/home/runner/work/_codex_/_codex_/scripts/observability/core_telemetry_collector.py": 1,
+    "11:/home/runner/work/_codex_/_codex_/tests/test_edge_cases_day2_batch1.py": 4,
+    "15:.mypy_baseline is 383 but live count is 187 (196 lower \u2014 update recommended via 'python scripts/ci/mypy_baseline.py --update' in isolated-venv)": 1,
+    "31:src/hhg_logistics/train.py": 1,
+    "31:src/hhg_logistics/eval/harness.py": 1,
+    "31:src/codex_ml/utils/tensorboard_logger.py": 2,
+    "31:src/codex_ml/utils/config_loader.py": 1
   },
   "circuit_state": {
     "6": "BROKEN",

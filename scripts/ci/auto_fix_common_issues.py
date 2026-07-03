@@ -3854,7 +3854,7 @@ class CommonIssueFixer:
     # ------------------------------------------------------------------
     def fix_assert_messages(self) -> list[str]:
         """Pattern 36: Detect and auto-fix assertions without descriptive messages.
-        
+
         Assertions without messages make debugging difficult. This pattern detects
         assertions with missing or trivial messages and injects contextual descriptions.
         """
@@ -3966,7 +3966,7 @@ class CommonIssueFixer:
     # ------------------------------------------------------------------
     def fix_async_tests_without_timeout(self) -> list[str]:
         """Pattern 37: Detect and auto-fix async tests missing timeout decorators.
-        
+
         Async tests without timeouts can hang indefinitely, blocking the entire
         CI pipeline. This pattern injects @pytest.mark.timeout(30) decorator.
         """
@@ -4038,7 +4038,7 @@ class CommonIssueFixer:
     # ------------------------------------------------------------------
     def fix_mock_cleanup(self) -> list[str]:
         """Pattern 38: Detect and auto-fix mock objects missing cleanup.
-        
+
         Mock objects that are not properly cleaned up between tests can cause
         state leakage and flaky test failures. This pattern injects cleanup code.
         """

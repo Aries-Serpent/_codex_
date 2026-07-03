@@ -13,7 +13,7 @@ from typing import Any, Dict, List, Tuple
 
 class MarkdownParser:
     """Parse markdown files into sections and blocks.
-    
+
     Supports:
       - H1-H6 heading hierarchy
       - Code blocks with language tags
@@ -32,7 +32,7 @@ class MarkdownParser:
 
     def parse_file(self, filepath: str) -> Tuple[Dict, List[Dict]]:
         """Parse markdown file into sections and metadata.
-        
+
         Returns:
             (metadata, sections_list)
         """
@@ -79,7 +79,7 @@ class MarkdownParser:
 
 class CodeBlockExtractor:
     """Extract code blocks from markdown content.
-    
+
     Identifies:
       - Language tags
       - Executable vs non-executable
@@ -134,7 +134,7 @@ class CodeBlockExtractor:
 
 class MetadataExtractor:
     """Extract metadata from markdown documents.
-    
+
     Handles:
       - YAML frontmatter (--- delimited)
       - Inline directives (!directive: value)

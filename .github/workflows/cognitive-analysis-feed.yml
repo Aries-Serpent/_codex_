@@ -227,7 +227,7 @@ jobs:
       id: cb_patterns
       continue-on-error: true
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
       run: "CB_BLOCK=$(python -m codex.github.mcp_poster retrieve-patterns --limit\
         \ 8 \\\n  2>/dev/null)\n{\n  echo 'cb_markdown<<CB_EOF'\n  echo \"$CB_BLOCK\"\
         \n  echo 'CB_EOF'\n} >> \"$GITHUB_OUTPUT\"\n"

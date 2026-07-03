@@ -53,13 +53,13 @@ class SessionDB:
             sqlite3.Error: If schema initialization fails.
         """
         self.db_path = db_path
-        
+
         # Initialize specialized modules
         self._database = SessionDatabase(db_path)
         self._query_builder = SessionQueryBuilder(self._database)
         self._analytics = SessionAnalytics(self._database)
         self._recorder = PatternEventRecorder(self._database)
-        
+
         # Expose internal references for backward compatibility
         self._lock = self._database._lock
         self._cache = self._database._cache

@@ -1,5 +1,4 @@
 """
-from codex.logging.structured_logger import logger
 Command-line interface for parsing and querying AST structures.
 
 Provides commands to parse source files, extract statistics, and query
@@ -8,6 +7,7 @@ specific node types across Python, YAML, JSON, and SQL languages.
 
 import argparse
 import json
+import logging
 import sys
 from pathlib import Path
 from typing import Any, Optional
@@ -18,6 +18,8 @@ from codex.ast_adapters import (
     SQLASTAdapter,
     YAMLASTAdapter,
 )
+
+logger = logging.getLogger(__name__)
 
 
 def get_adapter(language: str) -> Any:

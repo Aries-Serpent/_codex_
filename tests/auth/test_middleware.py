@@ -1,15 +1,10 @@
 # Import the modules we're testing
-import sys
 import time
 from unittest.mock import MagicMock
 
 import pytest
 
-from src.codex.utils.path_extended import get_repo_root
-
-sys.path.insert(0, str(get_repo_root() / "src"))
-
-from codex.auth.middleware import (
+from src.codex.auth.middleware import (
     APIKeyValidator,
     AuthConfig,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
     AuthMethod,
@@ -19,7 +14,7 @@ from codex.auth.middleware import (
     get_current_scopes,
     get_current_user,
 )
-from codex.auth.token_manager import TokenManager
+from src.codex.auth.token_manager import TokenManager
 
 
 class TestAuthConfig:

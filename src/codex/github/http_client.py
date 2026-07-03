@@ -48,14 +48,14 @@ def validated_github_api_url(url: str) -> str:
 
 class GitHubHTTPClient:
     """Encapsulates GitHub API HTTP operations.
-    
+
     Extracted from GitHubMCPPoster to reduce God Class complexity.
     Consolidates all urllib.request patterns and error handling.
     """
 
     def __init__(self, token: str | None = None) -> None:
         """Initialize HTTP client with authentication token.
-        
+
         Args:
             token: GitHub API token. If None, operations will fail without token.
         """
@@ -69,18 +69,18 @@ class GitHubHTTPClient:
         timeout: int = 10,
     ) -> dict[str, Any]:
         """Make a GitHub API request.
-        
+
         Consolidates duplicate urllib patterns from mcp_poster.py.
-        
+
         Args:
             method: HTTP method (GET, POST, PATCH, DELETE, etc.)
             url: API endpoint URL (auto-prefixed with GITHUB_API)
             data: Request body as dictionary (auto-JSON encoded)
             timeout: Request timeout in seconds
-            
+
         Returns:
             Parsed JSON response
-            
+
         Raises:
             RuntimeError: If no token is configured
             urllib.error.HTTPError: On API errors
@@ -118,13 +118,13 @@ class GitHubHTTPClient:
                 headers=headers,
                 method=method,
             )
-            
+
             with urllib.request.urlopen(req, timeout=timeout) as resp:
                 response_body = resp.read().decode("utf-8")
                 if response_body:
                     return json.loads(response_body)
                 return {}
-                
+
         except urllib.error.HTTPError as e:
             # Log safe error details
             logger.error(
@@ -146,11 +146,11 @@ class GitHubHTTPClient:
         timeout: int = 10,
     ) -> dict[str, Any]:
         """Make a GET request.
-        
+
         Args:
             url: API endpoint URL
             timeout: Request timeout in seconds
-            
+
         Returns:
             Parsed JSON response
         """
@@ -163,12 +163,12 @@ class GitHubHTTPClient:
         timeout: int = 10,
     ) -> dict[str, Any]:
         """Make a POST request.
-        
+
         Args:
             url: API endpoint URL
             data: Request body
             timeout: Request timeout in seconds
-            
+
         Returns:
             Parsed JSON response
         """
@@ -181,12 +181,12 @@ class GitHubHTTPClient:
         timeout: int = 10,
     ) -> dict[str, Any]:
         """Make a PATCH request.
-        
+
         Args:
             url: API endpoint URL
             data: Request body
             timeout: Request timeout in seconds
-            
+
         Returns:
             Parsed JSON response
         """
@@ -198,11 +198,11 @@ class GitHubHTTPClient:
         timeout: int = 10,
     ) -> dict[str, Any]:
         """Make a DELETE request.
-        
+
         Args:
             url: API endpoint URL
             timeout: Request timeout in seconds
-            
+
         Returns:
             Parsed JSON response (usually empty)
         """

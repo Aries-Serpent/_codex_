@@ -7,7 +7,7 @@ access patterns into safe, tested utility functions.
 Example:
     # Instead of: config.get('database', {})
     db_config = safe_get(config, 'database', default={})
-    
+
     # Instead of: config['db']['host'] with error handling
     host = nested_get(config, 'db.host', default='localhost')
 """

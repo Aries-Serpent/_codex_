@@ -29,7 +29,7 @@ jobs:
     - name: Identify available token and scopes
       id: check
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
       run: "# Determine best available token\nif [ -n \"$CODEX_MASTER_KEY\" ]; then\n\
         \  TOKEN=\"$CODEX_MASTER_KEY\"\n  SOURCE=\"CODEX_MASTER_KEY\"\nelif [ -n \"\
@@ -74,7 +74,7 @@ jobs:
         python-version: 3.12.13
     - name: Run repo variable tests
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
         REPO: ${{ github.repository }}
         ORG: ${{ github.repository_owner }}
@@ -112,7 +112,7 @@ jobs:
         python-version: 3.12.13
     - name: Run org variable tests
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
         REPO: ${{ github.repository }}
         ORG: ${{ github.repository_owner }}

@@ -466,7 +466,7 @@ class CacheOptimizer:
             recommendations.append(
                 OptimizationRecommendation(
                     optimization_type=OptimizationType.CACHING,
-                    target_workflows=list(set(w for wl in shared.values() for w in wl))[:5],
+                    target_workflows=list({w for wl in shared.values() for w in wl})[:5],
                     description="Optimize shared cache keys for better hit rates",
                     estimated_savings_min=3,
                     priority=3,

@@ -59,6 +59,7 @@ AfterMath session-completion cycle.
 from __future__ import annotations
 
 import argparse
+import logging
 import sys
 import urllib.error
 import urllib.request
@@ -70,7 +71,6 @@ from codex.github.cognitive_brain_integration import CognitiveBrainIntegration
 from codex.github.discussion_manager import DiscussionManager
 from codex.github.git_operations import GitOperations
 from codex.github.pull_request_manager import PullRequestManager
-from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -94,7 +94,7 @@ class GitHubMCPPoster:
     3. ``GITHUB_TOKEN`` (fallback — likely read-only for branch/PR write ops)
 
     If none of these are set, all write operations raise ``RuntimeError``.
-    
+
     **Note:** This class delegates to specialized modules (APIClient, DiscussionManager,
     PullRequestManager, GitOperations, CognitiveBrainIntegration) for specific operations.
     The public API remains unchanged for backward compatibility.
@@ -102,7 +102,7 @@ class GitHubMCPPoster:
 
     def __init__(self, token: str | None = None) -> None:
         """Initialize the MCP poster with all specialized managers.
-        
+
         Parameters
         ----------
         token:
@@ -110,13 +110,13 @@ class GitHubMCPPoster:
         """
         # Initialize the base API client
         self._api = APIClient(token)
-        
+
         # Initialize all specialized managers
         self._discussions = DiscussionManager(self._api)
         self._prs = PullRequestManager(self._api)
         self._git = GitOperations(self._api)
         self._cb = CognitiveBrainIntegration(self._api)
-        
+
         # Expose token source for compatibility
         self._token_source = self._api._token_source
 
@@ -183,7 +183,7 @@ class GitHubMCPPoster:
         self, repo: str, discussion_number: int, summary_md: str, session_id: str = ""
     ) -> dict[str, Any]:
         """Post a CI pattern summary to a Discussion.
-        
+
         Uses upsert_discussion_comment to replace previous summary.
         """
         marker = (

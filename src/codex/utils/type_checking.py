@@ -7,7 +7,7 @@ checking into consistent, well-tested utility functions.
 Example:
     # Instead of: if not isinstance(value, str):
     value = require_type(value, str, "username")
-    
+
     # Instead of: isinstance(x, (int, float))
     if is_type(x, int, float):
         ...

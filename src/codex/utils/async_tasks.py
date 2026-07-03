@@ -1,5 +1,5 @@
 """
-P010: Async Task Management Utilities  
+P010: Async Task Management Utilities
 
 Consolidates async task coordination patterns.
 

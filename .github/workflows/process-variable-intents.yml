@@ -31,7 +31,7 @@ jobs:
       uses: actions/checkout@v7
       with:
         fetch-depth: 1
-        token: ${{ secrets.CODEX_MASTER_KEY || github.token }}
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
     - name: Generate Cognitive Brain App token
       id: app-token
       uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1
@@ -43,9 +43,9 @@ jobs:
       id: token
       run: "if [ -n \"${{ steps.app-token.outputs.token }}\" ]; then\n  echo \"source=cognitive-brain-app\"\
         \ >> \"$GITHUB_OUTPUT\"\n  echo \"token=${{ steps.app-token.outputs.token\
-        \ }}\" >> \"$GITHUB_OUTPUT\"\nelif [ -n \"${{ secrets.CODEX_MASTER_KEY }}\"\
+        \ }}\" >> \"$GITHUB_OUTPUT\"\nelif [ -n \"${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}\"\
         \ ]; then\n  echo \"source=CODEX_MASTER_KEY\" >> \"$GITHUB_OUTPUT\"\n  echo\
-        \ \"token=${{ secrets.CODEX_MASTER_KEY }}\" >> \"$GITHUB_OUTPUT\"\nelif [\
+        \ \"token=${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}\" >> \"$GITHUB_OUTPUT\"\nelif [\
         \ -n \"${{ secrets.CODEX_BACKUP_KEY }}\" ]; then\n  echo \"source=CODEX_BACKUP_KEY\"\
         \ >> \"$GITHUB_OUTPUT\"\n  echo \"token=${{ secrets.CODEX_BACKUP_KEY }}\"\
         \ >> \"$GITHUB_OUTPUT\"\nelse\n  echo \"source=github.token\" >> \"$GITHUB_OUTPUT\"\

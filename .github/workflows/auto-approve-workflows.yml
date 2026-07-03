@@ -345,7 +345,7 @@ jobs:
       run: "set -euo pipefail\n\n# Tier 1: Cognitive Brain App token (not available\
         \ in this job context)\n# (available in approve-original job via step id \"\
         app-token\")\n\n# Tier 2: CODEX_MASTER_KEY (primary PAT)\nif [ -n \"${{ secrets.CODEX_MASTER_KEY\
-        \ || '' }}\" ]; then\n  echo \"token=${{ secrets.CODEX_MASTER_KEY }}\" >>\
+        \ || '' }}\" ]; then\n  echo \"token=${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}\" >>\
         \ $GITHUB_OUTPUT\n  echo \"token_source=CODEX_MASTER_KEY\" >> $GITHUB_OUTPUT\n\
         \  echo \"Resolved: Using CODEX_MASTER_KEY (Tier 2)\"\n  exit 0\nfi\n\n# Tier\
         \ 3: CODEX_BACKUP_KEY (fallback PAT)\nif [ -n \"${{ secrets.CODEX_BACKUP_KEY\

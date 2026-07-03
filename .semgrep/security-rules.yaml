@@ -119,51 +119,11 @@ rules:
   # The rule triggers on legitimate non-user-input substring checks (code analysis,
   # error handling, config checking, etc). Suppression rules handle safe patterns.
   # Actual user input validation should use urllib.parse.urlparse() or regex patterns.
-  - id: url-substring-check
-    patterns:
-      - pattern-either:
-         # Only flag in function parameters marked as handling user input
-         - pattern: |
-             def validate_user_$FUNC($USER_URL):
-                 ...
-                 if $DOMAIN in $USER_URL:
-                     ...
-         - pattern: |
-             @user_input_validator
-             def $FUNC(...):
-                 ...
-                 if $DOMAIN in $VAR:
-                     ...
-      - metavariable-pattern:
-         metavariable: $DOMAIN
-         pattern: '"..."'
-      # Exclude all legitimate patterns
-      - pattern-not-inside: |
-         for $VAR in $COLLECTION:
-             ...
-      - pattern-not-inside: |
-         if $VAR in $DICT:
-             ...
-      - pattern-not-inside: |
-         if "$STR" in str($ERR):
-             ...
-      - pattern-not-inside: |
-         # Any loop iteration
-         for ... in ...:
-             ...
-      - pattern-not-inside: |
-         # Any try/except
-         try:
-             ...
-         except:
-             ...
-    message: "DISABLED: This rule had too many false positives. Use urllib.parse.urlparse() for user URL validation with explicit scheme/netloc checks, or use regex with word boundaries. Non-user-input substring checks are safe."
-    severity: INFO
-    languages: [python]
-    metadata:
-      cwe: "CWE-20: Improper Input Validation"
-      status: "disabled-m01"
-      comment: "Rule disabled in M-01 remediation due to false positive rate > 99%"
+  # NOTE: url-substring-check rule disabled in M-01 remediation
+  # Reason: Had 99%+ false positive rate on legitimate URL validation code
+  # Alternative: Use urllib.parse.urlparse() for user URL validation with explicit
+  #             scheme/netloc checks, or use regex with word boundaries
+  # See: .semgrep/rules/suppress-utility-scripts.yaml for suppression patterns
 
 
 

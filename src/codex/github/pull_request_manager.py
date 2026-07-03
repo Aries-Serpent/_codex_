@@ -162,9 +162,9 @@ class PullRequestManager:
             params["head"] = head
         if base:
             params["base"] = base
-        
+
         # Build URL with query params
         param_str = "&".join(f"{k}={v}" for k, v in params.items())
         full_url = f"{url}?{param_str}"
-        
+
         return self._api._get(full_url)

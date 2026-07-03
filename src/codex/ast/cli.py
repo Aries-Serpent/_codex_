@@ -27,7 +27,7 @@ def _collect_py_files(path: Path) -> list[Path]:
     if path.is_file() and path.suffix == ".py":
         return [path]
     if path.is_dir():
-        return [p for p in path.rglob("*.py")]
+        return list(path.rglob("*.py"))
     return []
 
 

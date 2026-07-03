@@ -43,7 +43,7 @@ jobs:
       id: master-validation
       continue-on-error: true
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
       run: "echo \"Testing CODEX_MASTER_KEY...\"\n\n# Test 1: Check token format\n\
         if [[ -z \"$GH_TOKEN\" ]]; then\n  echo \"\u274C CODEX_MASTER_KEY not found\
         \ in secrets\"\n  exit 1\nfi\n\nif [[ ! \"$GH_TOKEN\" =~ ^github_pat_ ]];\
@@ -90,7 +90,7 @@ jobs:
       id: script-validation
       continue-on-error: true
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: "echo \"Running comprehensive validation script...\"\npython scripts/ci/validate_token_setup.py\

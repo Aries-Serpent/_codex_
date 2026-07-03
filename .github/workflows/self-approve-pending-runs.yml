@@ -53,9 +53,9 @@ jobs:
       id: token
       run: "if [ -n \"${{ steps.app-token.outputs.token }}\" ]; then\n  echo \"source=cognitive-brain-app\"\
         \  >> \"$GITHUB_OUTPUT\"\n  echo \"token=${{ steps.app-token.outputs.token\
-        \ }}\" >> \"$GITHUB_OUTPUT\"\nelif [ -n \"${{ secrets.CODEX_MASTER_KEY }}\"\
+        \ }}\" >> \"$GITHUB_OUTPUT\"\nelif [ -n \"${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}\"\
         \ ]; then\n  echo \"source=CODEX_MASTER_KEY\" >> \"$GITHUB_OUTPUT\"\n  echo\
-        \ \"token=${{ secrets.CODEX_MASTER_KEY }}\" >> \"$GITHUB_OUTPUT\"\nelif [\
+        \ \"token=${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}\" >> \"$GITHUB_OUTPUT\"\nelif [\
         \ -n \"${{ secrets.CODEX_BACKUP_KEY }}\" ]; then\n  echo \"source=CODEX_BACKUP_KEY\"\
         \ >> \"$GITHUB_OUTPUT\"\n  echo \"token=${{ secrets.CODEX_BACKUP_KEY }}\"\
         \ >> \"$GITHUB_OUTPUT\"\nelse\n  echo \"source=github.token\"     >> \"$GITHUB_OUTPUT\"\

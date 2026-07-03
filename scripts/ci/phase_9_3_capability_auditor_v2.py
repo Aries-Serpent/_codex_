@@ -191,11 +191,11 @@ def build_capability_index_json(
             "id_to_agent": {idx: agent.agent_id for idx, agent in enumerate(agents)},
         },
         "capabilities": {
-            "categories": sorted(list(set(a.category for a in agents))),
-            "subcategories": sorted(list(set(f"{a.category}/{a.subcategory}" for a in agents))),
-            "all_tags": sorted(list(set([tag for a in agents for tag in a.capability_tags if tag]))),
-            "autonomy_models": sorted(list(set(a.autonomy_model for a in agents))),
-            "maturity_levels": sorted(list(set(a.maturity for a in agents))),
+            "categories": sorted({a.category for a in agents}),
+            "subcategories": sorted({f"{a.category}/{a.subcategory}" for a in agents}),
+            "all_tags": sorted({tag for a in agents for tag in a.capability_tags if tag}),
+            "autonomy_models": sorted({a.autonomy_model for a in agents}),
+            "maturity_levels": sorted({a.maturity for a in agents}),
         },
         "search_hints": {
             "query_examples": [

@@ -78,9 +78,14 @@ on:
         description: 'GitHub issue number created/updated (empty if none)'
         value: ${{ jobs.probe-and-notify.outputs.issue_number }}
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
+# NOTE: Concurrency is intentionally NOT set here.
+# The caller workflow (e.g. admin-action-t03.yml) owns the concurrency group.
+# Duplicating the same group in the callee causes self-cancellation: in a
+# workflow_call context github.workflow resolves to the *calling* workflow's
+# name, so both expressions produce the same group string. With
+# cancel-in-progress: true that cancels the in-flight job before any steps
+# run, resulting in 0 jobs executed on every run.
+# See .codex/F001_DIAGNOSTIC_REPORT.md §4.1 for full analysis.
 
 permissions:
   contents: read
@@ -120,6 +125,7 @@ jobs:
           echo "http_status=${HTTP_STATUS}"  >> "$GITHUB_OUTPUT"
 
           RESPONSE_FILE="${RUNNER_TEMP}/admin_probe_response.json"
+          export RESPONSE_FILE  # must be exported so the Python subprocess can read os.environ
           RESPONSE_MSG=$(python3 -c \
             "import json,sys,os; d=json.load(open(os.environ['RESPONSE_FILE'])); print(d.get('message','(no message)'))" \
             2>/dev/null || echo "(no message)")
