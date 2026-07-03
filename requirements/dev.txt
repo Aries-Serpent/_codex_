@@ -18,7 +18,7 @@ jsonschema>=4.26.0
 shellcheck-py
 pip-audit
 cyclonedx-bom>=4.0.0
-pandas>=3.0.3,<4
+pandas
 pyarrow>=14.0.1
 zstandard>=0.23.0
 mlflow>=2.4
