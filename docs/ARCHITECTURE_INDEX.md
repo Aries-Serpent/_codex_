@@ -18,8 +18,8 @@ The _codex_ repository implements a Level 4 MLOps-certified, production-grade ML
 |----------|---------|----------|------|
 | [ARCHITECTURE_BLUEPRINT.md](./ARCHITECTURE_BLUEPRINT.md) | Comprehensive repository blueprint | Developers, Architects | 1162 lines |
 | [ARCHITECTURE.md](./ARCHITECTURE.md) | ML framework architecture overview | ML Engineers | 642 lines |
-| [Architecture.md](./Architecture.md) | Import shim governance & policy | Developers | 177 lines |
-| [architecture.md](./architecture.md) | Quick runtime flow diagrams | Quick Reference | 55 lines |
+| [Architecture.md](./docs/human-facing/architecture.md) | Import shim governance & policy | Developers | 177 lines |
+| [architecture.md](./docs/human-facing/architecture.md) | Quick runtime flow diagrams | Quick Reference | 55 lines |
 
 ### Supporting Architecture Documents
 
@@ -325,7 +325,7 @@ data:
 
 - [ARCHITECTURE_BLUEPRINT.md](./ARCHITECTURE_BLUEPRINT.md) - Full blueprint
 - [ARCHITECTURE.md](./ARCHITECTURE.md) - ML architecture
-- [Architecture.md](./Architecture.md) - Import governance
+- [Architecture.md](./docs/human-facing/architecture.md) - Import governance
 - [docs/architecture/](./architecture/) - Architecture directory
 
 ### Other Key Docs
@@ -355,7 +355,7 @@ The system includes native support for AI agents:
 ### Common Issues
 
 **Q: Which architecture document should I read?**  
-A: Start with [architecture.md](./architecture.md) for quick overview, then [ARCHITECTURE_BLUEPRINT.md](./ARCHITECTURE_BLUEPRINT.md) for detailed information.
+A: Start with [architecture.md](./docs/human-facing/architecture.md) for quick overview, then [ARCHITECTURE_BLUEPRINT.md](./ARCHITECTURE_BLUEPRINT.md) for detailed information.
 
 **Q: How is the data flow organized?**  
 A: See [Runtime Data Flow](#-runtime-data-flow) section above.
