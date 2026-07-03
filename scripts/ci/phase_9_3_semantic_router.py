@@ -451,4 +451,95 @@ def example_routing():
 
 
 if __name__ == "__main__":
-    example_routing()
+    import argparse
+    import sys
+    
+    parser = argparse.ArgumentParser(description="Phase 9.3 Semantic Routing Engine")
+    parser.add_argument("--task-id", default="pr-5211", help="Task ID")
+    parser.add_argument("--task-category", default="ci_cd", help="Task category")
+    parser.add_argument("--top-k", type=int, default=5, help="Top K candidates to return")
+    parser.add_argument("--output-format", default="json", help="Output format (json or text)")
+    parser.add_argument("--log-file", default=None, help="Output file path")
+    
+    args = parser.parse_args()
+    
+    # Initialize router
+    router = SemanticRouter()
+    
+    # Example task specifications
+    task_specs = [
+        TaskSpec(
+            id="task-001",
+            description="Fix CI test failures in import resolution",
+            task_type="ci_fix",
+            priority="high",
+            required_capabilities=["test_execution", "error_analysis"],
+        ),
+        TaskSpec(
+            id="task-002",
+            description="Scan for security vulnerabilities in dependencies",
+            task_type="security_scan",
+            priority="high",
+            required_capabilities=["security_scanning", "dependency_analysis"],
+        ),
+        TaskSpec(
+            id="task-003",
+            description="Improve test coverage for module X",
+            task_type="test_enhancement",
+            priority="medium",
+            required_capabilities=["test_generation", "coverage_analysis"],
+        ),
+    ]
+    
+    print("\n" + "=" * 80)
+    print("PHASE 9.3 TASK 2: SEMANTIC ROUTING ENGINE")
+    print("=" * 80)
+    print(f"✓ Loaded capability index with {len(router.index_loader.agents)} agents\n")
+    print("Routing tasks...\n")
+    
+    results = []
+    for task_spec in task_specs:
+        decision = router.route_task(task_spec)
+        results.append(decision)
+        
+        print(f"Task: {task_spec.description}")
+        print(f"  Primary Agent: {decision.primary_agent.agent_name if decision.primary_agent else 'N/A'}")
+        if decision.primary_agent:
+            print(f"    - Confidence: {decision.primary_agent.confidence:.1f}%")
+            print(f"    - Similarity: {decision.primary_agent.similarity_score:.2f}")
+        print(f"  Fallback Chain: {[a.agent_id for a in decision.fallback_chain]}")
+        print(f"  Latency: {decision.latency_ms:.1f}ms")
+        print()
+    
+    # Write output if log_file specified
+    if args.log_file and args.output_format == "json":
+        output_data = {
+            "task_category": args.task_category,
+            "top_agents": [
+                {
+                    "agent_id": a.primary_agent.agent_id if a.primary_agent else None,
+                    "confidence": a.primary_agent.confidence if a.primary_agent else 0.0
+                }
+                for a in results if a.primary_agent
+            ],
+            "latency_ms": sum(r.latency_ms for r in results) / len(results) if results else 0,
+            "routing_decisions": [
+                {
+                    "task_id": r.task_id,
+                    "primary_agent": r.primary_agent.agent_id if r.primary_agent else None,
+                    "fallback_chain": [a.agent_id for a in r.fallback_chain],
+                    "confidence": r.confidence_score
+                }
+                for r in results
+            ]
+        }
+        
+        try:
+            with open(args.log_file, 'w') as f:
+                json.dump(output_data, f, indent=2)
+            print(f"✓ Routing decision written to {args.log_file}")
+        except Exception as e:
+            print(f"ERROR: Could not write to {args.log_file}: {e}", file=sys.stderr)
+            sys.exit(1)
+    else:
+        example_routing()
