@@ -1,0 +1,225 @@
+{
+  "audit_metadata": {
+    "phase": "Phase 3.7",
+    "agent": "Workflow Compliance & Governance Guardian",
+    "agent_number": "7 of 7",
+    "total_workflows_analyzed": 212,
+    "audit_date": "2026-03-15",
+    "authority": "Full D-mode autonomy"
+  },
+  "overall_compliance": {
+    "compliance_rate": 89.6,
+    "passing_workflows": 190,
+    "failing_workflows": 22,
+    "compliance_status": "NEEDS_IMPROVEMENT"
+  },
+  "violations_by_severity": {
+    "critical": {
+      "count": 10,
+      "workflows": []
+    },
+    "high": {
+      "count": 34,
+      "workflows": []
+    },
+    "medium": {
+      "count": 184,
+      "workflows": []
+    }
+  },
+  "rule_compliance": {
+    "concurrency": {
+      "rule": "Branch-scoped concurrency group",
+      "compliance_rate": 98.6,
+      "passing": 209,
+      "failing": 3,
+      "failures": [
+        "ci-pattern-healer.yml",
+        "copilot-agent-session-done.yml",
+        "phase-8-3-perf-monitor.yml"
+      ]
+    },
+    "timeout": {
+      "rule": "All jobs have timeout-minutes",
+      "compliance_rate": 96.7,
+      "passing": 205,
+      "failing": 7,
+      "failures": [
+        "build-preview-image.yml",
+        "data-quality-suite.yml",
+        "docker-build-push.yml",
+        "embedding-index-rebuild.yml",
+        "release.yml",
+        "rust_swarm_ci.yml",
+        "scheduled-archival.yml"
+      ]
+    },
+    "token_scope": {
+      "rule": "CODEX_MASTER_KEY scope appropriate",
+      "compliance_rate": 100.0,
+      "passing": 212,
+      "failing": 0,
+      "failures": []
+    },
+    "action_version": {
+      "rule": "Actions pinned to v4+",
+      "compliance_rate": 69.3,
+      "passing": 147,
+      "failing": 65,
+      "top_issues": [
+        {
+          "action": "actions/setup-rust-toolchain",
+          "count": 7,
+          "issue": "SHA-pinned"
+        },
+        {
+          "action": "actions/checkout",
+          "count": 6,
+          "issue": "SHA-pinned"
+        },
+        {
+          "action": "create-github-app-token",
+          "count": 4,
+          "issue": "SHA-pinned"
+        },
+        {
+          "action": "codecov-action",
+          "count": 4,
+          "issue": "Old version"
+        },
+        {
+          "action": "setup-buildx-action",
+          "count": 4,
+          "issue": "SHA-pinned"
+        }
+      ]
+    },
+    "approval_chain": {
+      "rule": "Approval gates for production",
+      "compliance_rate": 13.2,
+      "passing": 28,
+      "failing": 184,
+      "note": "Mostly by design - standard CI workflows don't need approval"
+    },
+    "wec_checkpoint": {
+      "rule": "WEC checkpoint patterns present",
+      "compliance_rate": 5.2,
+      "passing": 11,
+      "failing": 201
+    },
+    "matrix_consistency": {
+      "rule": "Matrix strategies consistent",
+      "compliance_rate": 100.0,
+      "passing": 212,
+      "failing": 0
+    }
+  },
+  "workflow_categorization": {
+    "deployment": {
+      "count": 7,
+      "workflows": [
+        "pypi-publish.yml",
+        "docker-build-push.yml",
+        "release.yml",
+        "publish_dashboard_release.yml",
+        "unified-deployment.yml",
+        "automated-release-creation.yml",
+        "automated-post-deployment-verification.yml"
+      ]
+    },
+    "ci_workflows": {
+      "count": 202,
+      "categories": {
+        "agent_coordination": 31,
+        "security_compliance": 24,
+        "testing_quality": 28,
+        "ci_cd_infrastructure": 42,
+        "documentation_analytics": 19,
+        "governance_gates": 29,
+        "monitoring_observability": 16,
+        "other": 23
+      }
+    },
+    "scheduled": {
+      "count": 3,
+      "workflows": []
+    }
+  },
+  "remediation_plan": {
+    "phase_1_critical": {
+      "timeline": "2 hours",
+      "issues": [
+        {
+          "type": "Concurrency violations",
+          "count": 3,
+          "effort": "Low",
+          "workflows": [
+            "ci-pattern-healer.yml",
+            "copilot-agent-session-done.yml",
+            "phase-8-3-perf-monitor.yml"
+          ]
+        },
+        {
+          "type": "Timeout violations",
+          "count": 7,
+          "effort": "Low",
+          "workflows": [
+            "build-preview-image.yml",
+            "data-quality-suite.yml",
+            "docker-build-push.yml",
+            "embedding-index-rebuild.yml",
+            "release.yml",
+            "rust_swarm_ci.yml",
+            "scheduled-archival.yml"
+          ]
+        }
+      ]
+    },
+    "phase_2_high": {
+      "timeline": "4 hours",
+      "issue": "Action version updates",
+      "count": 65,
+      "effort": "Medium"
+    },
+    "phase_3_medium": {
+      "timeline": "3 hours",
+      "issue": "Approval gates for production workflows",
+      "count": 5,
+      "effort": "Low"
+    },
+    "phase_4_wec": {
+      "timeline": "2 hours",
+      "issue": "WEC integration",
+      "count": 201,
+      "effort": "Medium"
+    }
+  },
+  "security_audit": {
+    "codex_master_key_usage": {
+      "total_workflows": 46,
+      "status": "COMPLIANT",
+      "notes": [
+        "All uses in secrets.* context",
+        "Appropriate scope enforcement",
+        "90-day rotation enforced",
+        "No token exposure in logs"
+      ]
+    },
+    "token_health": {
+      "status": "HEALTHY",
+      "last_validated": "2026-03-01",
+      "next_rotation_due": "2026-06-01"
+    },
+    "cascade_prevention": {
+      "status": "PASS",
+      "workflows_checked": 2,
+      "exponential_cascades_detected": 0
+    }
+  },
+  "deliverables": {
+    "audit_report": "\u2705 .codex/PHASE_3_7_WORKFLOW_COMPLIANCE_AUDIT.md (570 lines)",
+    "compliance_checklist": "\u2705 .codex/PHASE_3_7_COMPLIANCE_CHECKLIST.md",
+    "json_report": "\u2705 .codex/PHASE_3_7_AUDIT_FINDINGS.json",
+    "remediation_scripts": "\u2705 Included in checklist"
+  }
+}
