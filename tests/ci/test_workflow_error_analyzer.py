@@ -363,9 +363,14 @@ class TestAnalysisResult:
         """Test that analyzed_at is set automatically."""
         result = AnalysisResult()
 
-        assert result.analyzed_at is not None, "analyzed_at must be initialized"
-        # Should be ISO format
-        assert "T" in result.analyzed_at, "Result must not be empty"
+        assert result.analyzed_at is not None, "analyzed_at must be set on construction"
+        # Should be ISO format containing 'T' separator
+        assert "T" in result.analyzed_at, "analyzed_at must be ISO 8601 (contains 'T')"
+        # Must also contain a date component: 4-digit year
+        import re
+        assert re.search(r"\d{4}-\d{2}-\d{2}", result.analyzed_at), (
+            "analyzed_at must include a YYYY-MM-DD date component"
+        )
 
 
 class TestEdgeCases:

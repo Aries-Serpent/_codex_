@@ -244,8 +244,8 @@ class TestTokenChainResolution:
     def test_tier4_github_token_fallback(self):
         """Test: Tier 4 (github.token) fallback."""
         token, source = self._resolve_token_chain()
-        assert source == "github_token", "source is not valid"
-        assert token is not None, "token must be initialized"
+        assert source == "github_token", "source must be 'github_token' when all other tiers absent"
+        assert isinstance(token, str) and len(token) > 0, "token must be a non-empty string"
 
     def _resolve_token_chain(self):
         """Resolve token from 4-tier chain."""

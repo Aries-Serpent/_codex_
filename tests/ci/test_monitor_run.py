@@ -116,9 +116,8 @@ class TestStateFile:
         )
         _write_state(snap)
         restored = _read_state(42)
-        assert restored is not None, "restored must be initialized"
-        assert restored.run_id == 42, "run_id is not valid"
-        assert restored.status == "in_progress", "status is not valid"
+        assert restored.run_id == 42, "run_id must round-trip correctly"
+        assert restored.status == "in_progress", "status must round-trip correctly"
 
     def test_read_nonexistent_returns_none(self, tmp_path, monkeypatch):
         monkeypatch.setattr(mr, "MONITOR_DIR", tmp_path / "monitor")
@@ -140,8 +139,8 @@ class TestStateFile:
         )
         _write_state(snap)
         result = poll_status(12345)
-        assert result is not None, "result must be initialized"
-        assert result.conclusion == "success", "Result must not be empty"
+        assert result.conclusion == "success", "conclusion must match the written snapshot"
+        assert result.status == "completed", "status must match the written snapshot"
 
 
 # ---------------------------------------------------------------------------
@@ -335,8 +334,7 @@ class TestStartBackgroundMonitor:
         assert isinstance(handle, MonitorThread
         )  # start_background_monitor must return a MonitorThread
         handle.join(timeout=5)
-        assert handle.result is not None, "result must be initialized"
-        assert handle.result.conclusion == "success", "Result must not be empty"
+        assert handle.result.conclusion == "success", "background monitor conclusion must be success"
 
 
 # ---------------------------------------------------------------------------
