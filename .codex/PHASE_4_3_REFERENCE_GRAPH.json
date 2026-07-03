@@ -1,0 +1,47 @@
+{
+  "phase": "4.3",
+  "summary": {
+    "total_files_scanned": 2183,
+    "total_links_found": 10639,
+    "link_types": {
+      "internal_file": 3190,
+      "internal_anchor": 6165,
+      "external_url": 1266,
+      "code_reference": 18
+    },
+    "files_with_links": 813,
+    "broken_links_detected": 0
+  },
+  "top_referenced_files": {
+    "INDEX.md": 97,
+    "../INDEX.md": 67,
+    "docs/plans/AST_PHASE0_COMPLETION_GUIDE.md#": 22,
+    "../README.md": 19,
+    "docs/tech_debt/research_queue/questions_for_research.md#context": 17,
+    "../CONTRIBUTING.md": 16,
+    "../../agents/AGENT_CONSOLIDATION_MATRIX.md": 16,
+    "[^\"\\']+": 14,
+    "../ROADMAP.md": 14,
+    "docs/tech_debt/research_queue/questions_for_research.md#the-question": 14,
+    "./ARCHITECTURE.md": 13,
+    "./ARCHITECTURE_BLUEPRINT.md": 12,
+    "architecture/E2E_REQUEST_FLOW.md": 11,
+    "README.md": 11,
+    "../configuration/": 11,
+    "docs/tech_debt/research_queue/questions_for_research.md#why-this-needs-research": 11,
+    "docs/tech_debt/research_queue/questions_for_research.md#current-hypothesis": 11,
+    "CHANGELOG.md": 10,
+    "../archive/INDEX.md": 10,
+    "ZENDESK_NEWCOMER_GUIDE.md": 10,
+    "checkpointing.md": 10,
+    "docs/tech_debt/research_queue/questions_for_research.md#acceptance-criteria": 10,
+    "CONTRIBUTING.md": 9,
+    "./agents.md": 9,
+    "./README.md": 9,
+    "TROUBLESHOOTING.md": 9,
+    "../operations/": 9,
+    "../security/": 9,
+    "../ARCHITECTURE.md": 9,
+    "./chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_32.md": 9
+  }
+}

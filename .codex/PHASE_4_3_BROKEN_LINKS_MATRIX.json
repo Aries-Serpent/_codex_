@@ -1,0 +1,183 @@
+{
+  "phase": "4.3",
+  "generated": "2026-02-25",
+  "total_broken_links": 19,
+  "total_warnings": 0,
+  "error_breakdown": {
+    "missing_quickstart": 8,
+    "missing_deprecation": 2,
+    "missing_archive": 1,
+    "path_errors": 6,
+    "other_missing": 2
+  },
+  "priority_fixes": [
+    {
+      "priority": "P0_CRITICAL",
+      "issue_id": "BROKEN_LINKS_001",
+      "category": "Missing Quickstart Guide References",
+      "affected_files": 8,
+      "total_broken_links": 8,
+      "resolution": "Create docs/QUICKSTART.md or update all references to point to guides/quickstart.md",
+      "impact": "HIGH - Breaks documentation for 7+ files",
+      "recommendation": "\n1. Check if quickstart.md exists elsewhere (docs/guides/quickstart.md)\n2. Create stub file docs/QUICKSTART.md if needed\n3. Update all references to use relative path ./QUICKSTART.md\n4. Or: Update all references to point to existing ./guides/quickstart.md\n        ",
+      "example_files": [
+        "docs/API_REFERENCE.md",
+        "docs/INGESTION_API_REFERENCE.md",
+        "docs/FAQ.md"
+      ]
+    },
+    {
+      "priority": "P1_HIGH",
+      "issue_id": "BROKEN_LINKS_002",
+      "category": "Missing Deprecation Notice Files",
+      "affected_files": 2,
+      "total_broken_links": 2,
+      "resolution": "Create DEPRECATION notice files for google-home-script-agent and energy-conversion-agent",
+      "impact": "MEDIUM - Agent documentation incomplete",
+      "recommendation": "\n1. Create GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md in repo root\n2. Create ENERGY_CONVERSION_AGENT_DEPRECATION.md in repo root\n3. Include agent name, deprecation date, reason, and migration path\n        ",
+      "example_files": [
+        ".github/agents/google-home-script-agent.md",
+        ".github/agents/energy-conversion-agent.md"
+      ]
+    },
+    {
+      "priority": "P1_HIGH",
+      "issue_id": "BROKEN_LINKS_003",
+      "category": "Missing Archive Recovery Documentation",
+      "affected_files": 1,
+      "total_broken_links": 1,
+      "resolution": "Create .codex/ARCHIVE_RECOVERY_PROCEDURES.md",
+      "impact": "MEDIUM - Operational documentation incomplete",
+      "recommendation": "\n1. Create .codex/ARCHIVE_RECOVERY_PROCEDURES.md\n2. Document: Archive structure, recovery process, common issues\n3. Include examples of recovering specific archive types\n        ",
+      "example_files": [
+        "docs/RETENTION_POLICY_OPERATIONS_GUIDE.md"
+      ]
+    },
+    {
+      "priority": "P1_HIGH",
+      "issue_id": "BROKEN_LINKS_004",
+      "category": "Relative Path Resolution Issues",
+      "affected_files": 5,
+      "total_broken_links": 6,
+      "resolution": "Fix relative path references for CI.md, cli.md, and other docs",
+      "impact": "MEDIUM - Multiple documentation files have broken links",
+      "recommendation": "\n1. docs/api/cli.md: Update ../cli.md to point to actual CLI docs location\n2. docs/LEARNING_PATHS.md: Update ./CI.md reference\n3. docs/tutorials/quickstart.md: Update ../architecture.md reference\n4. docs/guides/examples.md: Fix ../docs/human-facing/architecture.md path\n        ",
+      "example_files": [
+        "docs/api/cli.md",
+        "docs/api/cli.md",
+        "docs/ci/README.md"
+      ]
+    },
+    {
+      "priority": "P2_MEDIUM",
+      "issue_id": "BROKEN_LINKS_005",
+      "category": "Missing Referenced Files",
+      "affected_files": 2,
+      "total_broken_links": 2,
+      "resolution": "Create missing files or fix references",
+      "impact": "MEDIUM - Ad-hoc broken references",
+      "recommendation": "Review each broken reference individually and create missing files or fix paths",
+      "example_files": [
+        "docs/LEARNING_PATHS.md",
+        "docs/validation/INDEX.md"
+      ]
+    }
+  ],
+  "all_broken_links": [
+    {
+      "file": ".github/agents/google-home-script-agent.md",
+      "link": "../../GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md",
+      "message": "File not found: ../../GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md"
+    },
+    {
+      "file": ".github/agents/energy-conversion-agent.md",
+      "link": "../../ENERGY_CONVERSION_AGENT_DEPRECATION.md",
+      "message": "File not found: ../../ENERGY_CONVERSION_AGENT_DEPRECATION.md"
+    },
+    {
+      "file": "docs/RETENTION_POLICY_OPERATIONS_GUIDE.md",
+      "link": "../.codex/ARCHIVE_RECOVERY_PROCEDURES.md",
+      "message": "File not found: ../.codex/ARCHIVE_RECOVERY_PROCEDURES.md"
+    },
+    {
+      "file": "docs/API_REFERENCE.md",
+      "link": "./docs/guides/QUICKSTART.md",
+      "message": "File not found: ./docs/guides/QUICKSTART.md"
+    },
+    {
+      "file": "docs/INGESTION_API_REFERENCE.md",
+      "link": "./docs/guides/QUICKSTART.md",
+      "message": "File not found: ./docs/guides/QUICKSTART.md"
+    },
+    {
+      "file": "docs/FAQ.md",
+      "link": "./docs/guides/QUICKSTART.md",
+      "message": "File not found: ./docs/guides/QUICKSTART.md"
+    },
+    {
+      "file": "docs/CONFIGURATION_GUIDE.md",
+      "link": "./QUICKSTART.md",
+      "message": "File not found: ./QUICKSTART.md"
+    },
+    {
+      "file": "docs/TROUBLESHOOTING.md",
+      "link": "./QUICKSTART.md",
+      "message": "File not found: ./QUICKSTART.md"
+    },
+    {
+      "file": "docs/LEARNING_PATHS.md",
+      "link": "./CI.md",
+      "message": "File not found: ./CI.md"
+    },
+    {
+      "file": "docs/RAG_API_REFERENCE.md",
+      "link": "./QUICKSTART.md",
+      "message": "File not found: ./QUICKSTART.md"
+    },
+    {
+      "file": "docs/index.md",
+      "link": "guides/quickstart.md",
+      "message": "File not found: guides/quickstart.md"
+    },
+    {
+      "file": "docs/INTEGRATION_GUIDE.md",
+      "link": "./QUICKSTART.md",
+      "message": "File not found: ./QUICKSTART.md"
+    },
+    {
+      "file": "docs/api/cli.md",
+      "link": "../cli.md",
+      "message": "File not found: ../cli.md"
+    },
+    {
+      "file": "docs/api/cli.md",
+      "link": "../cli.md",
+      "message": "File not found: ../cli.md"
+    },
+    {
+      "file": "docs/validation/INDEX.md",
+      "link": "Tokenization_Validation.md",
+      "message": "File not found: Tokenization_Validation.md"
+    },
+    {
+      "file": "docs/ci/README.md",
+      "link": "../CI.md",
+      "message": "File not found: ../CI.md"
+    },
+    {
+      "file": "docs/admin/REPOSITORY_SECURITY_SETUP.md",
+      "link": "../security/INCIDENT_RESPONSE.md",
+      "message": "File not found: ../security/INCIDENT_RESPONSE.md"
+    },
+    {
+      "file": "docs/guides/examples.md",
+      "link": "../docs/human-facing/architecture.md",
+      "message": "File not found: ../docs/human-facing/architecture.md"
+    },
+    {
+      "file": "docs/tutorials/quickstart.md",
+      "link": "../architecture.md",
+      "message": "File not found: ../architecture.md"
+    }
+  ]
+}

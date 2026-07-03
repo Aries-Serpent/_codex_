@@ -1,0 +1,212 @@
+[
+  {
+    "priority": "P1",
+    "file": "docs/ARCHITECTURE_DIAGRAMS_INDEX.md",
+    "issue": "18 broken links",
+    "fix": "Fix 18 internal link references",
+    "estimate": "15 minutes"
+  },
+  {
+    "priority": "P1",
+    "file": "docs/quality/BROKEN_LINKS_REPORT.md",
+    "issue": "15 broken links",
+    "fix": "Fix 15 internal link references",
+    "estimate": "15 minutes"
+  },
+  {
+    "priority": "P1",
+    "file": "docs/plans/copilot-directives-to-implementation-plan.md",
+    "issue": "9 broken links",
+    "fix": "Fix 9 internal link references",
+    "estimate": "15 minutes"
+  },
+  {
+    "priority": "P2",
+    "file": "docs/PHASE_6_CONSISTENCY_CHECKS_REPORT.md",
+    "issue": "4 broken links",
+    "fix": "Fix 4 internal link references",
+    "estimate": "15 minutes"
+  },
+  {
+    "priority": "P2",
+    "file": "docs/LEARNING_PATHS.md",
+    "issue": "4 broken links",
+    "fix": "Fix 4 internal link references",
+    "estimate": "15 minutes"
+  },
+  {
+    "priority": "P2",
+    "file": "docs/analysis/LINK_VALIDATION_FIX_SUMMARY.md",
+    "issue": "4 broken links",
+    "fix": "Fix 4 internal link references",
+    "estimate": "15 minutes"
+  },
+  {
+    "priority": "P2",
+    "file": "docs/status_updates/survey-0D_base_-and-1926-2025-10-30.md",
+    "issue": "4 broken links",
+    "fix": "Fix 4 internal link references",
+    "estimate": "15 minutes"
+  },
+  {
+    "priority": "P2",
+    "file": "docs/tokens/INDEX.md",
+    "issue": "4 broken links",
+    "fix": "Fix 4 internal link references",
+    "estimate": "15 minutes"
+  },
+  {
+    "priority": "P2",
+    "file": "docs/maintenance/LINK_VALIDATION_REPORT.md",
+    "issue": "4 broken links",
+    "fix": "Fix 4 internal link references",
+    "estimate": "15 minutes"
+  },
+  {
+    "priority": "P2",
+    "file": "docs/tech_debt/research_queue/questions_for_research.md",
+    "issue": "4 broken links",
+    "fix": "Fix 4 internal link references",
+    "estimate": "15 minutes"
+  },
+  {
+    "priority": "P2",
+    "file": "docs/GITHUB_AGENT_PR_REVIEWER_IMPLEMENTATION.md",
+    "issue": "3 broken links",
+    "fix": "Fix 3 internal link references",
+    "estimate": "15 minutes"
+  },
+  {
+    "priority": "P2",
+    "file": "docs/index.md",
+    "issue": "3 broken links",
+    "fix": "Fix 3 internal link references",
+    "estimate": "15 minutes"
+  },
+  {
+    "priority": "P2",
+    "file": "docs/analysis/WORKFLOW_LINK_VALIDATION_FINAL_REPORT.md",
+    "issue": "3 broken links",
+    "fix": "Fix 3 internal link references",
+    "estimate": "15 minutes"
+  },
+  {
+    "priority": "P2",
+    "file": "docs/plans/README.md",
+    "issue": "3 broken links",
+    "fix": "Fix 3 internal link references",
+    "estimate": "15 minutes"
+  },
+  {
+    "priority": "P2",
+    "file": "docs/CONSISTENCY_CHECKS_SETUP.md",
+    "issue": "2 broken links",
+    "fix": "Fix 2 internal link references",
+    "estimate": "15 minutes"
+  },
+  {
+    "priority": "P2",
+    "file": "docs/api/cli.md",
+    "issue": "2 broken links",
+    "fix": "Fix 2 internal link references",
+    "estimate": "15 minutes"
+  },
+  {
+    "priority": "P2",
+    "file": "docs/admin/HUMAN_ADMIN_REPO_VARIABLES_SETUP.md",
+    "issue": "2 broken links",
+    "fix": "Fix 2 internal link references",
+    "estimate": "15 minutes"
+  },
+  {
+    "priority": "P2",
+    "file": "docs/templates/PR_BODY_TEMPLATE_MERGE_READINESS.md",
+    "issue": "2 broken links",
+    "fix": "Fix 2 internal link references",
+    "estimate": "15 minutes"
+  },
+  {
+    "priority": "P2",
+    "file": "docs/cognitive_brain/INDEX.md",
+    "issue": "2 broken links",
+    "fix": "Fix 2 internal link references",
+    "estimate": "15 minutes"
+  },
+  {
+    "priority": "P2",
+    "file": "docs/capabilities/functional_training.md",
+    "issue": "2 broken links",
+    "fix": "Fix 2 internal link references",
+    "estimate": "15 minutes"
+  },
+  {
+    "priority": "P2",
+    "file": "docs/maintenance/LINK_VALIDATION_TODO.md",
+    "issue": "2 broken links",
+    "fix": "Fix 2 internal link references",
+    "estimate": "15 minutes"
+  },
+  {
+    "priority": "P2",
+    "file": "docs/cognitive_brain_integration_master_plan.md",
+    "issue": "References v1.0.0, current is v0.1.0",
+    "fix": "Update version references from 1.0.0 to 0.1.0",
+    "estimate": "5 minutes"
+  },
+  {
+    "priority": "P2",
+    "file": "docs/TESTING.md",
+    "issue": "References v4.1.0, current is v0.1.0",
+    "fix": "Update version references from 4.1.0 to 0.1.0",
+    "estimate": "5 minutes"
+  },
+  {
+    "priority": "P2",
+    "file": "docs/PR_AUDIT_CHECKLISTS.md",
+    "issue": "References v1.3.0, current is v0.1.0",
+    "fix": "Update version references from 1.3.0 to 0.1.0",
+    "estimate": "5 minutes"
+  },
+  {
+    "priority": "P2",
+    "file": "docs/docker_optimization_guide.md",
+    "issue": "References v1.0.0, current is v0.1.0",
+    "fix": "Update version references from 1.0.0 to 0.1.0",
+    "estimate": "5 minutes"
+  },
+  {
+    "priority": "P2",
+    "file": "docs/status_update_outstanding_questions.md",
+    "issue": "References v7.0.0, current is v0.1.0",
+    "fix": "Update version references from 7.0.0 to 0.1.0",
+    "estimate": "5 minutes"
+  },
+  {
+    "priority": "P2",
+    "file": "docs/quantum_orchestrator_cli.md",
+    "issue": "References v0.3.0, current is v0.1.0",
+    "fix": "Update version references from 0.3.0 to 0.1.0",
+    "estimate": "5 minutes"
+  },
+  {
+    "priority": "P2",
+    "file": "docs/codex_env_snapshot.md",
+    "issue": "References v6.0.3, current is v0.1.0",
+    "fix": "Update version references from 6.0.3 to 0.1.0",
+    "estimate": "5 minutes"
+  },
+  {
+    "priority": "P2",
+    "file": "docs/configuration/MIGRATION_MAPPING.md",
+    "issue": "References v1.0.0, current is v0.1.0",
+    "fix": "Update version references from 1.0.0 to 0.1.0",
+    "estimate": "5 minutes"
+  },
+  {
+    "priority": "P2",
+    "file": "docs/configuration/HYDRA_MIGRATION_GUIDE.md",
+    "issue": "References v1.0.0, current is v0.1.0",
+    "fix": "Update version references from 1.0.0 to 0.1.0",
+    "estimate": "5 minutes"
+  }
+]
