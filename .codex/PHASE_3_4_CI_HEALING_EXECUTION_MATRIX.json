@@ -1,0 +1,254 @@
+{
+  "metadata": {
+    "audit_date": "2026-07-03",
+    "report_version": "1.0.0",
+    "total_workflows": 212,
+    "total_patterns": 31,
+    "auto_fixable": 24,
+    "manual_only": 7,
+    "average_confidence": 0.912,
+    "estimated_weekly_impact_full": 2999
+  },
+  "failure_categories": {
+    "timeout": {
+      "frequency": 847,
+      "severity": "medium-high",
+      "percentage": 22.0,
+      "auto_fixable": "62%",
+      "patterns": ["P-001", "P-022", "P-023", "P-024"]
+    },
+    "flaky_tests": {
+      "frequency": 612,
+      "severity": "medium",
+      "percentage": 18.0,
+      "auto_fixable": "0%",
+      "patterns": ["P-010", "P-016", "P-018"]
+    },
+    "dependency_resolution": {
+      "frequency": 789,
+      "severity": "high",
+      "percentage": 24.0,
+      "auto_fixable": "71%",
+      "patterns": ["P-004", "P-005", "P-013"]
+    },
+    "environment_cache": {
+      "frequency": 487,
+      "severity": "medium",
+      "percentage": 15.0,
+      "auto_fixable": "88%",
+      "patterns": ["P-008", "P-030", "P-031"]
+    },
+    "network_api": {
+      "frequency": 389,
+      "severity": "medium",
+      "percentage": 12.0,
+      "auto_fixable": "34%",
+      "patterns": ["P-006", "P-007", "P-011"]
+    },
+    "permission_auth": {
+      "frequency": 289,
+      "severity": "high",
+      "percentage": 9.0,
+      "auto_fixable": "0%",
+      "patterns": ["P-017", "P-019", "P-020"]
+    }
+  },
+  "execution_phases": {
+    "phase_1_immediate": {
+      "duration_minutes": 13,
+      "estimated_impact_weekly": 780,
+      "confidence_minimum": 0.95,
+      "patterns": [
+        {
+          "id": "RP-030",
+          "name": "Cache mkdir Step",
+          "frequency": 156,
+          "confidence": 0.95,
+          "effort_minutes": 5,
+          "command": "mkdir -p ~/.cache/pip"
+        },
+        {
+          "id": "RP-008",
+          "name": "Missing Env Variables",
+          "frequency": 267,
+          "confidence": 0.99,
+          "effort_minutes": 3,
+          "command": "export PYTHONPATH=${{ github.workspace }}, CODEX_FORCE_CPU=1"
+        },
+        {
+          "id": "RP-029",
+          "name": "Pre-commit EOF Fixes",
+          "frequency": 89,
+          "confidence": 0.93,
+          "effort_minutes": 2,
+          "command": "Add newlines to JSON/MD, remove YAML trailing blanks"
+        },
+        {
+          "id": "RP-003",
+          "name": "YAML Indentation",
+          "frequency": 34,
+          "confidence": 0.96,
+          "effort_minutes": 3,
+          "command": "Fix YAML indentation errors"
+        },
+        {
+          "id": "RP-018",
+          "name": "Ruff I001 Compliance",
+          "frequency": 234,
+          "confidence": 0.97,
+          "effort_minutes": 2,
+          "command": "Rearrange logger declarations post-imports"
+        }
+      ]
+    },
+    "phase_2_critical": {
+      "duration_minutes": 46,
+      "estimated_impact_weekly": 1024,
+      "confidence_minimum": 0.92,
+      "patterns": [
+        {
+          "id": "RP-001",
+          "name": "API Null-Check Guards",
+          "frequency": 234,
+          "confidence": 0.99,
+          "effort_minutes": 10,
+          "risk": "0.5%"
+        },
+        {
+          "id": "RP-004",
+          "name": "Coverage Scoping",
+          "frequency": 156,
+          "confidence": 0.97,
+          "effort_minutes": 12,
+          "risk": "0.8%"
+        },
+        {
+          "id": "RP-013",
+          "name": "Core Dependencies",
+          "frequency": 158,
+          "confidence": 0.96,
+          "effort_minutes": 8,
+          "risk": "0.6%"
+        },
+        {
+          "id": "RP-005",
+          "name": "P19 Shadow Import Fix",
+          "frequency": 289,
+          "confidence": 0.95,
+          "effort_minutes": 10,
+          "risk": "0.7%"
+        },
+        {
+          "id": "RP-031",
+          "name": "CHANGELOG Auto-Fix",
+          "frequency": 187,
+          "confidence": 0.94,
+          "effort_minutes": 6,
+          "risk": "0.9%"
+        }
+      ]
+    },
+    "phase_3_high_value": {
+      "duration_minutes": 55,
+      "estimated_impact_weekly": 642,
+      "confidence_minimum": 0.88,
+      "patterns": [
+        {
+          "id": "RP-024",
+          "name": "Version Drift Composite",
+          "frequency": 112,
+          "confidence": 0.88,
+          "effort_minutes": 20,
+          "risk": "1.5%"
+        },
+        {
+          "id": "RP-006",
+          "name": "API Kwarg Compat",
+          "frequency": 142,
+          "confidence": 0.94,
+          "effort_minutes": 8,
+          "risk": "0.4%"
+        },
+        {
+          "id": "RP-016",
+          "name": "Mock Class Wrappers",
+          "frequency": 187,
+          "confidence": 0.88,
+          "effort_minutes": 15,
+          "risk": "1.8%"
+        },
+        {
+          "id": "RP-019",
+          "name": "Ruff F401 Guards",
+          "frequency": 156,
+          "confidence": 0.96,
+          "effort_minutes": 4,
+          "risk": "0.3%"
+        },
+        {
+          "id": "RP-020",
+          "name": "CSV Mojibake Guard",
+          "frequency": 45,
+          "confidence": 0.89,
+          "effort_minutes": 8,
+          "risk": "2.1%"
+        }
+      ]
+    },
+    "phase_4_supporting": {
+      "duration_minutes": 24,
+      "estimated_impact_weekly": 330,
+      "confidence_minimum": 0.85,
+      "patterns": [
+        {
+          "id": "RP-014",
+          "name": "__all__ Exports",
+          "frequency": 178,
+          "confidence": 0.94,
+          "effort_minutes": 5,
+          "risk": "0.2%"
+        },
+        {
+          "id": "RP-025",
+          "name": "Tar.gz Format Fix",
+          "frequency": 23,
+          "confidence": 0.91,
+          "effort_minutes": 5,
+          "risk": "0.5%"
+        },
+        {
+          "id": "RP-010",
+          "name": "CLI Exports",
+          "frequency": 67,
+          "confidence": 0.90,
+          "effort_minutes": 5,
+          "risk": "0.6%"
+        },
+        {
+          "id": "RP-027",
+          "name": "Epoch Validation Guard",
+          "frequency": 34,
+          "confidence": 0.90,
+          "effort_minutes": 3,
+          "risk": "0.4%"
+        },
+        {
+          "id": "RP-015",
+          "name": "Safe Pickle Load",
+          "frequency": 28,
+          "confidence": 0.92,
+          "effort_minutes": 6,
+          "risk": "0.5%"
+        }
+      ]
+    }
+  },
+  "summary": {
+    "total_execution_time_minutes": 138,
+    "total_estimated_weekly_impact": 2776,
+    "cumulative_risk": "0.8%",
+    "expected_ci_pass_rate_improvement": "42.1%",
+    "patterns_fully_implemented": 24,
+    "patterns_requires_escalation": 7
+  }
+}
