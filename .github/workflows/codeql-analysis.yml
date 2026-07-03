@@ -59,7 +59,8 @@ jobs:
         output: codeql-sarif/${{ matrix.language }}
     - name: Upload CodeQL SARIF artifact
       if: always()
-      uses: actions/upload-artifact@v5 <!-- pragma: allowlist secret -->
+      # pragma: allowlist secret
+      uses: actions/upload-artifact@v5
       with:
         name: codeql-sarif-${{ matrix.language }}
         path: codeql-sarif/${{ matrix.language }}
