@@ -1,0 +1,1662 @@
+{
+  "version": "1.0.0",
+  "timestamp": 1783105058.707866,
+  "total_agents": 148,
+  "categories": 17,
+  "capabilities": 160,
+  "category_routing": {
+    "operations": [
+      "github-app-manager",
+      "github-guru-agent",
+      "project-architect-researcher",
+      "recon-scout-agent",
+      "pypi-publishing-operations-agent",
+      "repository-hygiene-agent",
+      "repository-organization-agent",
+      "root-organizer-agent",
+      "cognitive-brain-cli-agent",
+      "admin-automation-agent",
+      "github-deployment-gatekeeper",
+      "github-workflow-optimizer",
+      "repo-health-guardian",
+      "orchestrator-agent"
+    ],
+    "quality": [
+      "ast-analysis-agent",
+      "codex_reviewer",
+      "rust-error-validator",
+      "utf8-safety-linter",
+      "python-architect-agent",
+      "code-analysis-agent",
+      "codebase-health-guardian",
+      "cross-platform-filename-validator",
+      "datetime-modernizer",
+      "json-serialization-expert",
+      "python-312-type-fixer",
+      "reference-updater-agent",
+      "codebase-qa-walkthrough-agent",
+      "github-code-reviewer"
+    ],
+    "performance": [
+      "cache-logic-validator",
+      "performance-regression-detector"
+    ],
+    "ci_cd": [
+      "ci-failure-diagnostician",
+      "release-gate-agent",
+      "ci-triage-pipeline-agent",
+      "ci-auto-healer",
+      "artifact-monitor-agent",
+      "cache-management-agent",
+      "ci-auto-healer-agent",
+      "ci-emergency-response-agent",
+      "ci-importerror-agent",
+      "ci-log-retrieval-agent",
+      "ci-optimization-agent",
+      "ci-parameter-mismatch-healer",
+      "cpu-only-ci-config-agent",
+      "pr-check-remediation-agent",
+      "workflow-analytics-agent",
+      "workflow-ci-fixer",
+      "workflow-health-monitor",
+      "workflow-management-agent",
+      "workflow-optimization-agent",
+      "copilot-session-chain",
+      "promote-integration-branch",
+      "create-sub-pr-to-0D_base_",
+      "self-healing-orchestrator-agent",
+      "branch-divergence-resolution-agent",
+      "post-accountability-to-discussion"
+    ],
+    "ci": [
+      "ci-optimizer-agent",
+      "workflow-compliance-guardian",
+      "ci-health-alert-agent",
+      "telemetry-classifier-agent",
+      "batch-triage-agent",
+      "ci-diagnostic-agent"
+    ],
+    "testing": [
+      "ci-testing-agent",
+      "flaky-triage-agent",
+      "pyo3-integration-tester",
+      "test-assertion-updater",
+      "test-pattern-guardian",
+      "autonomous-test-healer-agent",
+      "fragile-test-guardian",
+      "integration-test-runner",
+      "mutation-testing-agent",
+      "pr-test-infrastructure-fixer",
+      "qa-walkthrough-agent",
+      "test-alignment-fixer",
+      "test-alignment-fixer-enhanced",
+      "unified-coverage-agent",
+      "test-failure-analyzer-agent",
+      "tokenization-coverage-agent",
+      "github-test-orchestrator",
+      "github-testing-orchestrator-agent",
+      "service-integration-tester",
+      "test-coverage-enforcer"
+    ],
+    "cognitive": [
+      "cognitive-brain-agent",
+      "emergent-intelligence-agent",
+      "reasoning-advisor-agent",
+      "cross-agent-knowledge-graph",
+      "cognitive-brain-manager",
+      "quantum-compliance-tuning-agent",
+      "session-analysis-agent",
+      "session-log-retrieval-agent",
+      "cognitive-ooda-loop-agent",
+      "memory-sync-agent",
+      "cognitive-brain-session-injector"
+    ],
+    "governance": [
+      "compliance-checker-agent",
+      "policy-coach-agent",
+      "agent-iq-scoring-gate",
+      "owner-approval-guard",
+      "pr-3095-verification-agent",
+      "unified-governance-gate"
+    ],
+    "dependencies": [
+      "dep-upgrade-agent",
+      "dependency-conflict-agent",
+      "dependency-conflict-resolver"
+    ],
+    "documentation": [
+      "documentation-agent",
+      "claim-verification-agent",
+      "doc-freshness-checker",
+      "doc-refactor-test-agent",
+      "github-pages-manager",
+      "link-validator-agent",
+      "terminology-consistency-agent",
+      "tracking-document-qa-agent",
+      "unified-doc-agent",
+      "doc-test-scribe",
+      "documentation-sync-validator"
+    ],
+    "orchestration": [
+      "ecosystem-coordinator-agent",
+      "agent-orchestrator"
+    ],
+    "infrastructure": [
+      "infra-linter-agent",
+      "repo-var-sync-agent"
+    ],
+    "monitoring": [
+      "performance-monitor-agent",
+      "msv-dashboard-monitor"
+    ],
+    "security": [
+      "security-advisory-resolver",
+      "security-scan-agent",
+      "unified-security-scanner",
+      "codeql-alert-resolution-agent",
+      "bridge-security-monitor",
+      "code-scanning-remediation-agent",
+      "dependency-vulnerability-scanner",
+      "pii-scrubber",
+      "secret-detection-agent",
+      "security-alert-verification-agent",
+      "github-auth-manager",
+      "github-security-enforcer",
+      "github-security-validator-agent",
+      "ml-threat-detector",
+      "security-vulnerability-patcher",
+      "packaging-validation-agent"
+    ],
+    "configuration": [
+      "config-validator-enhanced",
+      "config-migration-assistant",
+      "config-validator",
+      "rust-config-validator"
+    ],
+    "ml": [
+      "rag-meta-tensor-regression-agent",
+      "meta-tensor-validator",
+      "ml-validation-suite-agent",
+      "rag-freshness-loop-agent",
+      "rag-index-manager",
+      "rag-meta-tensor-guardian",
+      "rag-module-management-agent",
+      "semantic-search"
+    ],
+    "integration": [
+      "dynamics365-powerplatform-architect-agent",
+      "zendesk-architect-agent"
+    ]
+  },
+  "capability_routing": {
+    "github_app_jwt": [
+      "github-app-manager"
+    ],
+    "installation_tokens": [
+      "github-app-manager"
+    ],
+    "webhook_verification": [
+      "github-app-manager"
+    ],
+    "pat_token_fallback": [
+      "github-app-manager"
+    ],
+    "codex_master_key": [
+      "github-app-manager"
+    ],
+    "codex_backup_key": [
+      "github-app-manager"
+    ],
+    "app_manifest": [
+      "github-app-manager"
+    ],
+    "codespace_config": [
+      "github-app-manager"
+    ],
+    "pr_analysis": [
+      "github-guru-agent"
+    ],
+    "issue_triage": [
+      "github-guru-agent"
+    ],
+    "workflow_health_monitoring": [
+      "github-guru-agent"
+    ],
+    "branch_governance": [
+      "github-guru-agent"
+    ],
+    "contributor_intelligence": [
+      "github-guru-agent"
+    ],
+    "repository_hygiene_reporting": [
+      "github-guru-agent"
+    ],
+    "codebase_navigation_guidance": [
+      "github-guru-agent"
+    ],
+    "dependency_drift_detection": [
+      "github-guru-agent"
+    ],
+    "ast_analysis_agent": [
+      "ast-analysis-agent"
+    ],
+    "cache_logic_validator": [
+      "cache-logic-validator"
+    ],
+    "ci_failure_diagnostician": [
+      "ci-failure-diagnostician"
+    ],
+    "ci_optimizer_agent": [
+      "ci-optimizer-agent"
+    ],
+    "ci_failure_diagnosis": [
+      "ci-testing-agent"
+    ],
+    "test_failure_analysis": [
+      "ci-testing-agent"
+    ],
+    "build_problem_resolution": [
+      "ci-testing-agent"
+    ],
+    "log_analysis": [
+      "ci-testing-agent"
+    ],
+    "codex_reviewer": [
+      "codex_reviewer"
+    ],
+    "cognitive_brain_agent": [
+      "cognitive-brain-agent"
+    ],
+    "compliance_checker_agent": [
+      "compliance-checker-agent"
+    ],
+    "dep_upgrade_agent": [
+      "dep-upgrade-agent"
+    ],
+    "documentation_agent": [
+      "documentation-agent"
+    ],
+    "ecosystem_coordinator_agent": [
+      "ecosystem-coordinator-agent"
+    ],
+    "emergent_intelligence_agent": [
+      "emergent-intelligence-agent"
+    ],
+    "flaky_triage_agent": [
+      "flaky-triage-agent"
+    ],
+    "infra_linter_agent": [
+      "infra-linter-agent"
+    ],
+    "performance_monitor_agent": [
+      "performance-monitor-agent"
+    ],
+    "api_integration": [
+      "project-architect-researcher"
+    ],
+    "research_synthesis": [
+      "project-architect-researcher"
+    ],
+    "architecture_design": [
+      "project-architect-researcher"
+    ],
+    "documentation_analysis": [
+      "project-architect-researcher"
+    ],
+    "pyo3_testing": [
+      "pyo3-integration-tester"
+    ],
+    "rust_python_bindings": [
+      "pyo3-integration-tester"
+    ],
+    "integration_validation": [
+      "pyo3-integration-tester"
+    ],
+    "reasoning_advisor_agent": [
+      "reasoning-advisor-agent"
+    ],
+    "release_gate_agent": [
+      "release-gate-agent"
+    ],
+    "rust_error_detection": [
+      "rust-error-validator"
+    ],
+    "unwrap_validation": [
+      "rust-error-validator"
+    ],
+    "pyresult_checking": [
+      "rust-error-validator"
+    ],
+    "security_advisory_resolver": [
+      "security-advisory-resolver"
+    ],
+    "security_scan_agent": [
+      "security-scan-agent"
+    ],
+    "test_alignment": [
+      "test-assertion-updater"
+    ],
+    "assertion_updates": [
+      "test-assertion-updater"
+    ],
+    "api_change_tracking": [
+      "test-assertion-updater"
+    ],
+    "utf8_safety_linter": [
+      "utf8-safety-linter"
+    ],
+    "ast_pattern_detection": [
+      "test-pattern-guardian"
+    ],
+    "mock_exhaustion_prevention": [
+      "test-pattern-guardian"
+    ],
+    "json_serialization_validation": [
+      "test-pattern-guardian"
+    ],
+    "fixture_independence_checking": [
+      "test-pattern-guardian"
+    ],
+    "test_quality_enforcement": [
+      "test-pattern-guardian"
+    ],
+    "config_existence_validation": [
+      "config-validator-enhanced"
+    ],
+    "cross_reference_checking": [
+      "config-validator-enhanced"
+    ],
+    "schema_compliance": [
+      "config-validator-enhanced"
+    ],
+    "hydra_integration": [
+      "config-validator-enhanced"
+    ],
+    "cve_scanning": [
+      "unified-security-scanner"
+    ],
+    "secret_detection": [
+      "unified-security-scanner"
+    ],
+    "ghas_alert_triage": [
+      "unified-security-scanner"
+    ],
+    "sbom_generation": [
+      "unified-security-scanner"
+    ],
+    "auto_remediation": [
+      "unified-security-scanner"
+    ],
+    "risk_scoring": [
+      "unified-security-scanner"
+    ],
+    "node_registration": [
+      "cross-agent-knowledge-graph"
+    ],
+    "edge_creation": [
+      "cross-agent-knowledge-graph"
+    ],
+    "semantic_query": [
+      "cross-agent-knowledge-graph"
+    ],
+    "conflict_detection": [
+      "cross-agent-knowledge-graph"
+    ],
+    "staleness_pruning": [
+      "cross-agent-knowledge-graph"
+    ],
+    "snapshot_export": [
+      "cross-agent-knowledge-graph"
+    ],
+    "drq_pattern_sync": [
+      "cross-agent-knowledge-graph"
+    ],
+    "codeql_alert_ingestion": [
+      "codeql-alert-resolution-agent"
+    ],
+    "cwe_classification": [
+      "codeql-alert-resolution-agent"
+    ],
+    "auto_fix_application": [
+      "codeql-alert-resolution-agent"
+    ],
+    "false_positive_dismissal": [
+      "codeql-alert-resolution-agent"
+    ],
+    "regression_prevention": [
+      "codeql-alert-resolution-agent",
+      "rag-meta-tensor-regression-agent"
+    ],
+    "audit_trail_logging": [
+      "codeql-alert-resolution-agent"
+    ],
+    "meta_tensor_detection": [
+      "rag-meta-tensor-regression-agent"
+    ],
+    "device_placement_validation": [
+      "rag-meta-tensor-regression-agent"
+    ],
+    "canonical_fix_application": [
+      "rag-meta-tensor-regression-agent"
+    ],
+    "cognitive_brain_pattern_storage": [
+      "rag-meta-tensor-regression-agent"
+    ],
+    "ci_log_retrieval": [
+      "ci-triage-pipeline-agent"
+    ],
+    "failure_classification": [
+      "ci-triage-pipeline-agent"
+    ],
+    "fix_pattern_application": [
+      "ci-triage-pipeline-agent"
+    ],
+    "drq_integration": [
+      "ci-triage-pipeline-agent"
+    ],
+    "cognitive_brain_learning": [
+      "ci-triage-pipeline-agent"
+    ],
+    "ci_blocker_detection": [
+      "recon-scout-agent"
+    ],
+    "security_tripwire_scan": [
+      "recon-scout-agent"
+    ],
+    "code_quality_audit": [
+      "recon-scout-agent"
+    ],
+    "documentation_gap_detection": [
+      "recon-scout-agent"
+    ],
+    "architecture_drift_analysis": [
+      "recon-scout-agent"
+    ],
+    "dependency_risk_assessment": [
+      "recon-scout-agent"
+    ],
+    "quick_fix_application": [
+      "recon-scout-agent"
+    ],
+    "drq_filing": [
+      "recon-scout-agent",
+      "ci-auto-healer"
+    ],
+    "policy_violation_detection": [
+      "policy-coach-agent"
+    ],
+    "session_re_alignment": [
+      "policy-coach-agent"
+    ],
+    "pre_close_gate_enforcement": [
+      "policy-coach-agent"
+    ],
+    "violation_pattern_matching": [
+      "policy-coach-agent"
+    ],
+    "prompt_injection": [
+      "policy-coach-agent"
+    ],
+    "architecture_review": [
+      "python-architect-agent"
+    ],
+    "refactoring_guidance": [
+      "python-architect-agent"
+    ],
+    "pattern_enforcement": [
+      "python-architect-agent"
+    ],
+    "module_structure_validation": [
+      "python-architect-agent"
+    ],
+    "ci_failure_detection": [
+      "ci-auto-healer"
+    ],
+    "pattern_matching": [
+      "ci-auto-healer"
+    ],
+    "automated_code_fix": [
+      "ci-auto-healer"
+    ],
+    "local_test_validation": [
+      "ci-auto-healer"
+    ],
+    "cognitive_brain_update": [
+      "ci-auto-healer"
+    ],
+    "autonomous_ci_failure_detection": [
+      "ci-auto-healer"
+    ],
+    "pattern_library_management": [
+      "ci-auto-healer"
+    ],
+    "governance": [
+      "unified-governance-gate",
+      "owner-approval-guard",
+      "pr-3095-verification-agent",
+      "agent-iq-scoring-gate"
+    ],
+    "orchestration": [
+      "agent-orchestrator"
+    ],
+    "ci_cd": [
+      "workflow-optimization-agent",
+      "workflow-management-agent",
+      "pr-check-remediation-agent",
+      "ci-importerror-agent",
+      "ci-log-retrieval-agent",
+      "ci-optimization-agent",
+      "artifact-monitor-agent",
+      "cache-management-agent",
+      "ci-emergency-response-agent",
+      "cpu-only-ci-config-agent",
+      "ci-parameter-mismatch-healer",
+      "workflow-analytics-agent",
+      "workflow-ci-fixer",
+      "workflow-health-monitor",
+      "ci-auto-healer-agent"
+    ],
+    "testing": [
+      "pr-test-infrastructure-fixer",
+      "github-testing-orchestrator-agent",
+      "test-coverage-enforcer",
+      "mutation-testing-agent",
+      "integration-test-runner",
+      "github-test-orchestrator",
+      "tokenization-coverage-agent",
+      "qa-walkthrough-agent",
+      "test-alignment-fixer",
+      "service-integration-tester",
+      "test-failure-analyzer-agent",
+      "fragile-test-guardian",
+      "autonomous-test-healer-agent",
+      "unified-coverage-agent",
+      "test-alignment-fixer-enhanced"
+    ],
+    "security": [
+      "github-security-validator-agent",
+      "github-auth-manager",
+      "security-vulnerability-patcher",
+      "dependency-vulnerability-scanner",
+      "code-scanning-remediation-agent",
+      "ml-threat-detector",
+      "secret-detection-agent",
+      "pii-scrubber",
+      "security-alert-verification-agent",
+      "github-security-enforcer",
+      "bridge-security-monitor"
+    ],
+    "documentation": [
+      "doc-refactor-test-agent",
+      "terminology-consistency-agent",
+      "unified-doc-agent",
+      "link-validator-agent",
+      "doc-test-scribe",
+      "tracking-document-qa-agent",
+      "github-pages-manager",
+      "documentation-sync-validator",
+      "claim-verification-agent",
+      "doc-freshness-checker"
+    ],
+    "quality": [
+      "datetime-modernizer",
+      "python-312-type-fixer",
+      "code-analysis-agent",
+      "json-serialization-expert",
+      "codebase-qa-walkthrough-agent",
+      "github-code-reviewer",
+      "cross-platform-filename-validator",
+      "reference-updater-agent",
+      "codebase-health-guardian"
+    ],
+    "cognitive": [
+      "quantum-compliance-tuning-agent",
+      "memory-sync-agent",
+      "session-log-retrieval-agent",
+      "cognitive-brain-session-injector",
+      "cognitive-brain-manager",
+      "cognitive-ooda-loop-agent",
+      "session-analysis-agent"
+    ],
+    "configuration": [
+      "rust-config-validator",
+      "config-migration-assistant",
+      "config-validator"
+    ],
+    "dependencies": [
+      "dependency-conflict-resolver",
+      "dependency-conflict-agent"
+    ],
+    "machine_learning": [
+      "ml-validation-suite-agent",
+      "rag-meta-tensor-guardian",
+      "rag-freshness-loop-agent",
+      "meta-tensor-validator",
+      "semantic-search",
+      "rag-index-manager",
+      "rag-module-management-agent"
+    ],
+    "monitoring": [
+      "msv-dashboard-monitor"
+    ],
+    "performance": [
+      "performance-regression-detector"
+    ],
+    "operations": [
+      "repository-organization-agent",
+      "github-deployment-gatekeeper",
+      "repo-health-guardian",
+      "cognitive-brain-cli-agent",
+      "root-organizer-agent",
+      "admin-automation-agent",
+      "repository-hygiene-agent",
+      "pypi-publishing-operations-agent",
+      "orchestrator-agent",
+      "github-workflow-optimizer"
+    ],
+    "continuous_integration": [
+      "telemetry-classifier-agent",
+      "ci-health-alert-agent",
+      "workflow-compliance-guardian",
+      "batch-triage-agent",
+      "ci-diagnostic-agent"
+    ],
+    "packaging_validation": [
+      "ci-health-alert-agent",
+      "packaging-validation-agent"
+    ],
+    "self_healing_cascade_detection": [
+      "ci-health-alert-agent"
+    ],
+    "infrastructure": [
+      "repo-var-sync-agent"
+    ],
+    "integration": [
+      "dynamics365-powerplatform-architect-agent",
+      "zendesk-architect-agent"
+    ],
+    "session_chaining": [
+      "copilot-session-chain"
+    ],
+    "integration_branch_enforcement": [
+      "copilot-session-chain"
+    ],
+    "sub_pr_creation": [
+      "create-sub-pr-to-0D_base_",
+      "copilot-session-chain"
+    ],
+    "copilot_trigger": [
+      "copilot-session-chain"
+    ],
+    "base_staging_integration": [
+      "copilot-session-chain"
+    ],
+    "dependency_management": [
+      "packaging-validation-agent"
+    ],
+    "security_scanning": [
+      "packaging-validation-agent"
+    ],
+    "pep621_compliance": [
+      "packaging-validation-agent"
+    ],
+    "dependabot_remediation": [
+      "packaging-validation-agent"
+    ],
+    "branch_creation": [
+      "promote-integration-branch"
+    ],
+    "pr_lifecycle": [
+      "promote-integration-branch"
+    ],
+    "integration_branch_management": [
+      "promote-integration-branch",
+      "create-sub-pr-to-0D_base_"
+    ],
+    "promotion_workflow": [
+      "promote-integration-branch"
+    ],
+    "codex_master_key_ops": [
+      "promote-integration-branch"
+    ],
+    "session_branch_management": [
+      "create-sub-pr-to-0D_base_"
+    ],
+    "zero_d_base_routing": [
+      "create-sub-pr-to-0D_base_"
+    ],
+    "ci_healing": [
+      "self-healing-orchestrator-agent"
+    ],
+    "pattern_orchestration": [
+      "self-healing-orchestrator-agent"
+    ],
+    "cascade_coordination": [
+      "self-healing-orchestrator-agent"
+    ],
+    "autonomous_fix_dispatch": [
+      "self-healing-orchestrator-agent"
+    ],
+    "branch_divergence_detection": [
+      "branch-divergence-resolution-agent"
+    ],
+    "branch_classification": [
+      "branch-divergence-resolution-agent"
+    ],
+    "auto_merge_resolution": [
+      "branch-divergence-resolution-agent"
+    ],
+    "pipeline_merge_protocol": [
+      "branch-divergence-resolution-agent"
+    ],
+    "accountability_reporting": [
+      "post-accountability-to-discussion"
+    ],
+    "discussion_posting": [
+      "post-accountability-to-discussion"
+    ],
+    "governance_automation": [
+      "post-accountability-to-discussion"
+    ],
+    "session_documentation": [
+      "post-accountability-to-discussion"
+    ]
+  },
+  "agent_scores": {
+    "github-app-manager": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 8
+    },
+    "github-guru-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 8
+    },
+    "ast-analysis-agent": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "cache-logic-validator": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "ci-failure-diagnostician": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "ci-optimizer-agent": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "ci-testing-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 4
+    },
+    "codex_reviewer": {
+      "maturity": "experimental",
+      "score": 0.35,
+      "capabilities": 1
+    },
+    "cognitive-brain-agent": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "compliance-checker-agent": {
+      "maturity": "experimental",
+      "score": 0.35,
+      "capabilities": 1
+    },
+    "dep-upgrade-agent": {
+      "maturity": "experimental",
+      "score": 0.35,
+      "capabilities": 1
+    },
+    "documentation-agent": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "ecosystem-coordinator-agent": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "emergent-intelligence-agent": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "flaky-triage-agent": {
+      "maturity": "experimental",
+      "score": 0.35,
+      "capabilities": 1
+    },
+    "infra-linter-agent": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "performance-monitor-agent": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "project-architect-researcher": {
+      "maturity": "beta",
+      "score": 0.8999999999999999,
+      "capabilities": 4
+    },
+    "pyo3-integration-tester": {
+      "maturity": "beta",
+      "score": 0.85,
+      "capabilities": 3
+    },
+    "reasoning-advisor-agent": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "release-gate-agent": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "rust-error-validator": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 3
+    },
+    "security-advisory-resolver": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "security-scan-agent": {
+      "maturity": "experimental",
+      "score": 0.35,
+      "capabilities": 1
+    },
+    "test-assertion-updater": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 3
+    },
+    "utf8-safety-linter": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "test-pattern-guardian": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 5
+    },
+    "config-validator-enhanced": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 4
+    },
+    "unified-security-scanner": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 6
+    },
+    "cross-agent-knowledge-graph": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 7
+    },
+    "codeql-alert-resolution-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 6
+    },
+    "rag-meta-tensor-regression-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 5
+    },
+    "ci-triage-pipeline-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 5
+    },
+    "recon-scout-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 8
+    },
+    "policy-coach-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 5
+    },
+    "python-architect-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 4
+    },
+    "ci-auto-healer": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 8
+    },
+    "agent-iq-scoring-gate": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "agent-orchestrator": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "artifact-monitor-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "autonomous-test-healer-agent": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "bridge-security-monitor": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "cache-management-agent": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "ci-auto-healer-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "ci-emergency-response-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "ci-importerror-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "ci-log-retrieval-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "ci-optimization-agent": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "ci-parameter-mismatch-healer": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "claim-verification-agent": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "code-analysis-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "code-scanning-remediation-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "codebase-health-guardian": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "cognitive-brain-manager": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "config-migration-assistant": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "config-validator": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "cpu-only-ci-config-agent": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "cross-platform-filename-validator": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "datetime-modernizer": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "dependency-conflict-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "dependency-vulnerability-scanner": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "doc-freshness-checker": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "doc-refactor-test-agent": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "fragile-test-guardian": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "github-pages-manager": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "integration-test-runner": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "json-serialization-expert": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "link-validator-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "meta-tensor-validator": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "ml-validation-suite-agent": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "msv-dashboard-monitor": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "mutation-testing-agent": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "owner-approval-guard": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "performance-regression-detector": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "pii-scrubber": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "pr-3095-verification-agent": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "pr-check-remediation-agent": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "pr-test-infrastructure-fixer": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "pypi-publishing-operations-agent": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "python-312-type-fixer": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "qa-walkthrough-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "quantum-compliance-tuning-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "rag-freshness-loop-agent": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "rag-index-manager": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "rag-meta-tensor-guardian": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "rag-module-management-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "reference-updater-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "repository-hygiene-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "repository-organization-agent": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "root-organizer-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "rust-config-validator": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "secret-detection-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "security-alert-verification-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "semantic-search": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "session-analysis-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "session-log-retrieval-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "terminology-consistency-agent": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "test-alignment-fixer": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "test-alignment-fixer-enhanced": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "unified-coverage-agent": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "test-failure-analyzer-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "tokenization-coverage-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "tracking-document-qa-agent": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "unified-doc-agent": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "unified-governance-gate": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "workflow-analytics-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "workflow-ci-fixer": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "workflow-health-monitor": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "workflow-management-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "workflow-optimization-agent": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "cognitive-brain-cli-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "workflow-compliance-guardian": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "ci-health-alert-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 3
+    },
+    "repo-var-sync-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "cognitive-ooda-loop-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "memory-sync-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "telemetry-classifier-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "admin-automation-agent": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "batch-triage-agent": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "ci-diagnostic-agent": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "codebase-qa-walkthrough-agent": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "cognitive-brain-session-injector": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 1
+    },
+    "dependency-conflict-resolver": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "doc-test-scribe": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "documentation-sync-validator": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "dynamics365-powerplatform-architect-agent": {
+      "maturity": "experimental",
+      "score": 0.35,
+      "capabilities": 1
+    },
+    "github-auth-manager": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "github-code-reviewer": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "github-deployment-gatekeeper": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "github-security-enforcer": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "github-security-validator-agent": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "github-test-orchestrator": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "github-testing-orchestrator-agent": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "github-workflow-optimizer": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "ml-threat-detector": {
+      "maturity": "experimental",
+      "score": 0.35,
+      "capabilities": 1
+    },
+    "repo-health-guardian": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "security-vulnerability-patcher": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "service-integration-tester": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "test-coverage-enforcer": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "zendesk-architect-agent": {
+      "maturity": "experimental",
+      "score": 0.35,
+      "capabilities": 1
+    },
+    "orchestrator-agent": {
+      "maturity": "beta",
+      "score": 0.75,
+      "capabilities": 1
+    },
+    "copilot-session-chain": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 5
+    },
+    "packaging-validation-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 5
+    },
+    "promote-integration-branch": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 5
+    },
+    "create-sub-pr-to-0D_base_": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 4
+    },
+    "self-healing-orchestrator-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 4
+    },
+    "branch-divergence-resolution-agent": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 4
+    },
+    "post-accountability-to-discussion": {
+      "maturity": "production",
+      "score": 1.0,
+      "capabilities": 4
+    }
+  },
+  "faiss_config": {
+    "agent_ids": [
+      "admin-automation-agent",
+      "agent-iq-scoring-gate",
+      "agent-orchestrator",
+      "artifact-monitor-agent",
+      "ast-analysis-agent",
+      "autonomous-test-healer-agent",
+      "batch-triage-agent",
+      "branch-divergence-resolution-agent",
+      "bridge-security-monitor",
+      "cache-logic-validator",
+      "cache-management-agent",
+      "ci-auto-healer",
+      "ci-auto-healer-agent",
+      "ci-diagnostic-agent",
+      "ci-emergency-response-agent",
+      "ci-failure-diagnostician",
+      "ci-health-alert-agent",
+      "ci-importerror-agent",
+      "ci-log-retrieval-agent",
+      "ci-optimization-agent",
+      "ci-optimizer-agent",
+      "ci-parameter-mismatch-healer",
+      "ci-testing-agent",
+      "ci-triage-pipeline-agent",
+      "claim-verification-agent",
+      "code-analysis-agent",
+      "code-scanning-remediation-agent",
+      "codebase-health-guardian",
+      "codebase-qa-walkthrough-agent",
+      "codeql-alert-resolution-agent",
+      "codex_reviewer",
+      "cognitive-brain-agent",
+      "cognitive-brain-cli-agent",
+      "cognitive-brain-manager",
+      "cognitive-brain-session-injector",
+      "cognitive-ooda-loop-agent",
+      "compliance-checker-agent",
+      "config-migration-assistant",
+      "config-validator",
+      "config-validator-enhanced",
+      "copilot-session-chain",
+      "cpu-only-ci-config-agent",
+      "create-sub-pr-to-0D_base_",
+      "cross-agent-knowledge-graph",
+      "cross-platform-filename-validator",
+      "datetime-modernizer",
+      "dep-upgrade-agent",
+      "dependency-conflict-agent",
+      "dependency-conflict-resolver",
+      "dependency-vulnerability-scanner",
+      "doc-freshness-checker",
+      "doc-refactor-test-agent",
+      "doc-test-scribe",
+      "documentation-agent",
+      "documentation-sync-validator",
+      "dynamics365-powerplatform-architect-agent",
+      "ecosystem-coordinator-agent",
+      "emergent-intelligence-agent",
+      "flaky-triage-agent",
+      "fragile-test-guardian",
+      "github-app-manager",
+      "github-auth-manager",
+      "github-code-reviewer",
+      "github-deployment-gatekeeper",
+      "github-guru-agent",
+      "github-pages-manager",
+      "github-security-enforcer",
+      "github-security-validator-agent",
+      "github-test-orchestrator",
+      "github-testing-orchestrator-agent",
+      "github-workflow-optimizer",
+      "infra-linter-agent",
+      "integration-test-runner",
+      "json-serialization-expert",
+      "link-validator-agent",
+      "memory-sync-agent",
+      "meta-tensor-validator",
+      "ml-threat-detector",
+      "ml-validation-suite-agent",
+      "msv-dashboard-monitor",
+      "mutation-testing-agent",
+      "orchestrator-agent",
+      "owner-approval-guard",
+      "packaging-validation-agent",
+      "performance-monitor-agent",
+      "performance-regression-detector",
+      "pii-scrubber",
+      "policy-coach-agent",
+      "post-accountability-to-discussion",
+      "pr-3095-verification-agent",
+      "pr-check-remediation-agent",
+      "pr-test-infrastructure-fixer",
+      "project-architect-researcher",
+      "promote-integration-branch",
+      "pyo3-integration-tester",
+      "pypi-publishing-operations-agent",
+      "python-312-type-fixer",
+      "python-architect-agent",
+      "qa-walkthrough-agent",
+      "quantum-compliance-tuning-agent",
+      "rag-freshness-loop-agent",
+      "rag-index-manager",
+      "rag-meta-tensor-guardian",
+      "rag-meta-tensor-regression-agent",
+      "rag-module-management-agent",
+      "reasoning-advisor-agent",
+      "recon-scout-agent",
+      "reference-updater-agent",
+      "release-gate-agent",
+      "repo-health-guardian",
+      "repo-var-sync-agent",
+      "repository-hygiene-agent",
+      "repository-organization-agent",
+      "root-organizer-agent",
+      "rust-config-validator",
+      "rust-error-validator",
+      "secret-detection-agent",
+      "security-advisory-resolver",
+      "security-alert-verification-agent",
+      "security-scan-agent",
+      "security-vulnerability-patcher",
+      "self-healing-orchestrator-agent",
+      "semantic-search",
+      "service-integration-tester",
+      "session-analysis-agent",
+      "session-log-retrieval-agent",
+      "telemetry-classifier-agent",
+      "terminology-consistency-agent",
+      "test-alignment-fixer",
+      "test-alignment-fixer-enhanced",
+      "test-assertion-updater",
+      "test-coverage-enforcer",
+      "test-failure-analyzer-agent",
+      "test-pattern-guardian",
+      "tokenization-coverage-agent",
+      "tracking-document-qa-agent",
+      "unified-coverage-agent",
+      "unified-doc-agent",
+      "unified-governance-gate",
+      "unified-security-scanner",
+      "utf8-safety-linter",
+      "workflow-analytics-agent",
+      "workflow-ci-fixer",
+      "workflow-compliance-guardian",
+      "workflow-health-monitor",
+      "workflow-management-agent",
+      "workflow-optimization-agent",
+      "zendesk-architect-agent"
+    ],
+    "index_type": "IndexFlatL2",
+    "dimension": 384,
+    "total_agents": 148
+  }
+}
