@@ -7,6 +7,7 @@ Test module for mlflow guard.
 from __future__ import annotations
 
 import types
+import tempfile
 from unittest import mock
 
 import pytest
@@ -33,7 +34,7 @@ def test_init_mlflow_success(monkeypatch: pytest.MonkeyPatch) -> None:
         assert mlflow_guard.init_mlflow_safe(offline_mode=False), "Condition must be true"
         mlflow_guard.log_metric_safe("loss", 0.1, step=1)
         mlflow_guard.log_params_safe({"lr": 1e-3})
-        mlflow_guard.log_artifact_safe("/tmp/path")
+        mlflow_guard.log_artifact_safe(os.path.join(tempfile.gettempdir(), "path"))
 
 
 def test_init_mlflow_failure(monkeypatch: pytest.MonkeyPatch) -> None:

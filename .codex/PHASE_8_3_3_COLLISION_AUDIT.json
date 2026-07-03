@@ -1,0 +1,94 @@
+{
+  "1": {
+    "count": 3,
+    "files": [
+      "docs/ARCHITECTURE.md",
+      "docs/Architecture.md",
+      "docs/architecture.md"
+    ]
+  },
+  "2": {
+    "count": 2,
+    "files": [
+      "docs/CI.md",
+      "docs/ci.md"
+    ]
+  },
+  "3": {
+    "count": 2,
+    "files": [
+      "docs/CLI.md",
+      "docs/cli.md"
+    ]
+  },
+  "4": {
+    "count": 2,
+    "files": [
+      "docs/QUALITY_GATES.md",
+      "docs/quality_gates.md"
+    ]
+  },
+  "5": {
+    "count": 2,
+    "files": [
+      "docs/QUICKSTART.md",
+      "docs/quickstart.md"
+    ]
+  },
+  "6": {
+    "count": 2,
+    "files": [
+      "docs/TROUBLESHOOTING.md",
+      "docs/troubleshooting.md"
+    ]
+  },
+  "7": {
+    "count": 2,
+    "files": [
+      "docs/agent/INDEX.md",
+      "docs/agent/index.md"
+    ]
+  },
+  "8": {
+    "count": 2,
+    "files": [
+      "docs/guides/INDEX.md",
+      "docs/guides/index.md"
+    ]
+  },
+  "9": {
+    "count": 2,
+    "files": [
+      "docs/guides/QUICKSTART.md",
+      "docs/guides/quickstart.md"
+    ]
+  },
+  "10": {
+    "count": 2,
+    "files": [
+      "docs/security/INCIDENT_RESPONSE.md",
+      "docs/security/incident_response.md"
+    ]
+  },
+  "11": {
+    "count": 2,
+    "files": [
+      "docs/validation/Tokenization_Validation.md",
+      "docs/validation/tokenization_Validation.md"
+    ]
+  },
+  "12": {
+    "count": 2,
+    "files": [
+      ".codex/reports/EXECUTIVE_SUMMARY.md",
+      ".codex/reports/executive_summary.md"
+    ]
+  },
+  "13": {
+    "count": 2,
+    "files": [
+      "reports/EXECUTIVE_SUMMARY.md",
+      "reports/executive_summary.md"
+    ]
+  }
+}

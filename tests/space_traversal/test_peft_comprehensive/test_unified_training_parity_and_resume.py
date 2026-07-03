@@ -1,4 +1,5 @@
 import pytest
+import tempfile
 pytest.importorskip("mlflow")
 """
 Test Unified Training Parity And Resume
@@ -124,12 +125,12 @@ def test_unified_training_resume_flow(monkeypatch, tmp_path) -> None:
     cfg = unified_training.UnifiedTrainingConfig(
         output_dir=str(tmp_path / "run"),
         epochs=2,
-        resume_from="/tmp/resume",
+        resume_from=os.path.join(tempfile.gettempdir(), "resume"),
     )
     result = unified_training.run_unified_training(cfg, callbacks=[callback])
 
     assert result["status"] == "ok", "Result must not be empty"
-    assert saved["loaded"] == "/tmp/resume", "Condition must be true"
+    assert saved["loaded"] == os.path.join(tempfile.gettempdir(), "resume"), "Condition must be true"
     assert saved["out_dir"].name == "epoch-2", "name is not valid"
     assert saved["metadata"]["metrics"] == {"final_status": 1.0}, "Data must not be empty"
     assert callback.checkpoints, "Condition must be true"

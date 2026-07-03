@@ -3,6 +3,7 @@ Tests for Vector Store Factory and Registry
 """
 
 import types
+import tempfile
 from unittest.mock import Mock
 
 import pytest
@@ -84,7 +85,7 @@ class TestVectorStoreFactory:
     def test_create_faiss_store(self):
         """Test creating FAISS store"""
         store = VectorStoreFactory.create(
-            store_type="faiss", index_name="test_index", index_dir="/tmp/test_faiss"
+            store_type="faiss", index_name="test_index", index_dir=os.path.join(tempfile.gettempdir(), "test_faiss")
         )
 
         assert store is not None, "store must be initialized"
@@ -103,7 +104,7 @@ class TestVectorStoreFactory:
             "type": "faiss",
             "index_name": "config_test",
             "dimension": 768,
-            "index_dir": "/tmp/test_config",
+            "index_dir": os.path.join(tempfile.gettempdir(), "test_config"),
         }
 
         store = VectorStoreFactory.create_from_config(config)
@@ -211,7 +212,7 @@ class TestFactoryIntegration:
         """Test full factory workflow with FAISS"""
         # Create store
         store = VectorStoreFactory.create(
-            store_type="faiss", index_name="integration_test", index_dir="/tmp/integration"
+            store_type="faiss", index_name="integration_test", index_dir=os.path.join(tempfile.gettempdir(), "integration")
         )
 
         # Create index
@@ -232,11 +233,11 @@ class TestFactoryIntegration:
     def test_multiple_stores(self):
         """Test creating multiple different stores"""
         store1 = VectorStoreFactory.create(
-            store_type="faiss", index_name="store1", index_dir="/tmp/store1"
+            store_type="faiss", index_name="store1", index_dir=os.path.join(tempfile.gettempdir(), "store1")
         )
 
         store2 = VectorStoreFactory.create(
-            store_type="faiss", index_name="store2", index_dir="/tmp/store2"
+            store_type="faiss", index_name="store2", index_dir=os.path.join(tempfile.gettempdir(), "store2")
         )
 
         assert store1 is not None, "store1 must be initialized"
@@ -251,7 +252,7 @@ class TestFactoryIntegration:
             "type": "faiss",
             "index_name": "config_workflow",
             "dimension": 256,
-            "index_dir": "/tmp/config_workflow",
+            "index_dir": os.path.join(tempfile.gettempdir(), "config_workflow"),
         }
 
         store = VectorStoreFactory.create_from_config(config)

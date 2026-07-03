@@ -11,6 +11,7 @@ Tests:
 from __future__ import annotations
 
 import os
+import tempfile
 from unittest.mock import patch
 
 import pytest
@@ -518,7 +519,7 @@ class TestEdgeCases:
         from codex.logging.error_handler import CodexErrorHandler
 
         # Non-existent path should be created
-        fake_path = Path("/tmp/codex_test_nonexistent_" + str(time.time()))
+        fake_path = Path(os.path.join(tempfile.gettempdir(), "codex_test_nonexistent_") + str(time.time()))
         CodexErrorHandler(log_dir=fake_path)
 
         assert fake_path.exists(), "Condition must be true"

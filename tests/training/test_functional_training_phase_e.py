@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import sys
+import tempfile
 from pathlib import Path
 
 import pytest
@@ -45,8 +46,8 @@ class TestNormalizeIdentifier:
         assert self.ft._normalize_identifier("some/model") == "some/model", "Condition must be true"
 
     def test_pathlike_conversion(self):
-        result = self.ft._normalize_identifier(Path("/tmp/model"))
-        assert result == "/tmp/model", "Result must not be empty"
+        result = self.ft._normalize_identifier(Path(os.path.join(tempfile.gettempdir(), "model")))
+        assert result == os.path.join(tempfile.gettempdir(), "model"), "Result must not be empty"
 
     def test_os_fspath_used_for_pathlike(self):
         class FakePath:

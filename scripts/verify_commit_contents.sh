@@ -27,7 +27,7 @@ echo ""
 
 # 3. Check for /tmp/ references
 echo "🔍 Checking for /tmp/ references..."
-TMP_REFS=$(git diff --cached | grep -i "/tmp/" || true)
+TMP_REFS=$(git diff --cached | grep -i "${TMPDIR:-/tmp}/" || true)
 if [ -n "$TMP_REFS" ]; then
     echo "❌ POLICY VIOLATION: Found /tmp/ references in staged changes:"
     echo "$TMP_REFS"

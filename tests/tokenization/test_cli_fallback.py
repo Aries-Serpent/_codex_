@@ -6,6 +6,7 @@ These tests work with the real typer implementation.
 """
 
 import json
+import tempfile
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -97,7 +98,7 @@ def test_resolve_root_directory():
 
     from src.tokenization.cli import _resolve_root
 
-    test_dir = Path("/tmp/tokenizer")
+    test_dir = Path(os.path.join(tempfile.gettempdir(), "tokenizer"))
     result = _resolve_root(test_dir)
 
     # Should return the parent if it's a file, or the dir itself if it exists
@@ -111,7 +112,7 @@ def test_resolve_root_file():
 
     from src.tokenization.cli import _resolve_root
 
-    test_file = Path("/tmp/tokenizer/model.bin")
+    test_file = Path(os.path.join(tempfile.gettempdir(), "tokenizer/model.bin"))
     result = _resolve_root(test_file)
 
     # Should return the parent directory

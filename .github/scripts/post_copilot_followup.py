@@ -25,7 +25,7 @@ def validate_prompt_file(filepath: str) -> Path:
     path = Path(filepath)
 
     # Check if file is in /tmp/
-    if str(path.absolute()).startswith('/tmp/'):
+    if str(path.absolute()).startswith(os.path.join(tempfile.gettempdir(), '')):
         raise ValueError(
             f"MANDATE VIOLATION: Prompt file cannot be in /tmp/. "
             f"File: {filepath}\n"

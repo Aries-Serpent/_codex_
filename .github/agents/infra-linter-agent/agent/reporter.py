@@ -10,6 +10,7 @@ in the cognitive brain for continuous improvement of IaC scanning policies.
 """
 
 import os
+import tempfile
 from collections import Counter
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -75,7 +76,7 @@ class IaCReporter:
             db_path: Path to cognitive brain database (default: CODEX_DB_PATH env var)
         """
         if db_path is None:
-            db_path = os.getenv("CODEX_DB_PATH", "/tmp/codex_brain.db")
+            db_path = os.getenv("CODEX_DB_PATH", os.path.join(tempfile.gettempdir(), "codex_brain.db"))
 
         self.brain = CognitiveBrain(db_path)
 

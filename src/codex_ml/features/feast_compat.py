@@ -19,6 +19,7 @@ Level 4 MLOps gap closure:
 from __future__ import annotations
 
 import json
+import tempfile
 import logging
 import sqlite3
 import threading
@@ -551,7 +552,7 @@ class DuckDBBackend:
         backend = create_backend("duckdb", db_path=".features/store.duckdb")
         backend.write("user_features", "user_42", {"age": 30, "score": 0.9})
         assert backend.read("user_features", "user_42")["age"] == 30
-        parquet_path = backend.materialize_to_parquet("user_features", "/tmp/uf.parquet")
+        parquet_path = backend.materialize_to_parquet("user_features", os.path.join(tempfile.gettempdir(), "uf.parquet"))
     """
 
     def __init__(

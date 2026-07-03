@@ -7,6 +7,7 @@ PS-02 Enhancement: Tests for advanced bridge features:
 """
 
 import time
+import tempfile
 
 import pytest
 
@@ -220,7 +221,7 @@ class TestClientInfo:
         """Test creating client info."""
         client = ClientInfo(
             client_id="client-1",
-            socket_path="/tmp/client1.sock",
+            socket_path=os.path.join(tempfile.gettempdir(), "client1.sock"),
             priority=5,
         )
 
@@ -232,7 +233,7 @@ class TestClientInfo:
         """Test heartbeat update."""
         client = ClientInfo(
             client_id="client-1",
-            socket_path="/tmp/client1.sock",
+            socket_path=os.path.join(tempfile.gettempdir(), "client1.sock"),
         )
 
         old_heartbeat = client.last_heartbeat
@@ -245,7 +246,7 @@ class TestClientInfo:
         """Test client alive check."""
         client = ClientInfo(
             client_id="client-1",
-            socket_path="/tmp/client1.sock",
+            socket_path=os.path.join(tempfile.gettempdir(), "client1.sock"),
         )
 
         assert client.is_alive(timeout=60.0) is True, "Condition must be true"
@@ -255,7 +256,7 @@ class TestClientInfo:
         """Test serialization to dict."""
         client = ClientInfo(
             client_id="client-1",
-            socket_path="/tmp/client1.sock",
+            socket_path=os.path.join(tempfile.gettempdir(), "client1.sock"),
         )
 
         d = client.to_dict()
@@ -273,7 +274,7 @@ class TestMultiClientBridge:
 
         success = bridge.register_client(
             client_id="client-1",
-            socket_path="/tmp/client1.sock",
+            socket_path=os.path.join(tempfile.gettempdir(), "client1.sock"),
             priority=10,
         )
 
@@ -284,9 +285,9 @@ class TestMultiClientBridge:
         """Test registration at capacity."""
         bridge = MultiClientBridge(max_clients=2)
 
-        bridge.register_client("client-1", "/tmp/c1.sock")
-        bridge.register_client("client-2", "/tmp/c2.sock")
-        success = bridge.register_client("client-3", "/tmp/c3.sock")
+        bridge.register_client("client-1", os.path.join(tempfile.gettempdir(), "c1.sock"))
+        bridge.register_client("client-2", os.path.join(tempfile.gettempdir(), "c2.sock"))
+        success = bridge.register_client("client-3", os.path.join(tempfile.gettempdir(), "c3.sock"))
 
         assert success is False, "success is not valid"
         assert len(bridge.clients) == 2, "Collection must not be empty"
@@ -294,7 +295,7 @@ class TestMultiClientBridge:
     def test_unregister_client(self):
         """Test unregistering a client."""
         bridge = MultiClientBridge()
-        bridge.register_client("client-1", "/tmp/c1.sock")
+        bridge.register_client("client-1", os.path.join(tempfile.gettempdir(), "c1.sock"))
 
         success = bridge.unregister_client("client-1")
 
@@ -304,7 +305,7 @@ class TestMultiClientBridge:
     def test_heartbeat(self):
         """Test heartbeat update."""
         bridge = MultiClientBridge()
-        bridge.register_client("client-1", "/tmp/c1.sock")
+        bridge.register_client("client-1", os.path.join(tempfile.gettempdir(), "c1.sock"))
 
         success = bridge.heartbeat("client-1")
 
@@ -321,18 +322,18 @@ class TestMultiClientBridge:
     def test_route_by_priority(self):
         """Test priority-based routing."""
         bridge = MultiClientBridge()
-        bridge.register_client("low", "/tmp/low.sock", priority=1)
-        bridge.register_client("high", "/tmp/high.sock", priority=10)
+        bridge.register_client("low", os.path.join(tempfile.gettempdir(), "low.sock"), priority=1)
+        bridge.register_client("high", os.path.join(tempfile.gettempdir(), "high.sock"), priority=10)
 
         socket = bridge.route_by_priority()
 
-        assert socket == "/tmp/high.sock", "socket is not valid"
+        assert socket == os.path.join(tempfile.gettempdir(), "high.sock"), "socket is not valid"
 
     def test_route_round_robin(self):
         """Test round-robin routing."""
         bridge = MultiClientBridge()
-        bridge.register_client("client-1", "/tmp/c1.sock")
-        bridge.register_client("client-2", "/tmp/c2.sock")
+        bridge.register_client("client-1", os.path.join(tempfile.gettempdir(), "c1.sock"))
+        bridge.register_client("client-2", os.path.join(tempfile.gettempdir(), "c2.sock"))
 
         sockets = set()
         for _ in range(4):
@@ -345,19 +346,19 @@ class TestMultiClientBridge:
     def test_broadcast_targets(self):
         """Test getting broadcast targets."""
         bridge = MultiClientBridge()
-        bridge.register_client("client-1", "/tmp/c1.sock")
-        bridge.register_client("client-2", "/tmp/c2.sock")
+        bridge.register_client("client-1", os.path.join(tempfile.gettempdir(), "c1.sock"))
+        bridge.register_client("client-2", os.path.join(tempfile.gettempdir(), "c2.sock"))
 
         targets = bridge.broadcast_targets()
 
         assert len(targets) == 2, "Targets must not be empty"
-        assert "/tmp/c1.sock" in targets, "Condition must be true"
-        assert "/tmp/c2.sock" in targets, "Condition must be true"
+        assert os.path.join(tempfile.gettempdir(), "c1.sock") in targets, "Condition must be true"
+        assert os.path.join(tempfile.gettempdir(), "c2.sock") in targets, "Condition must be true"
 
     def test_get_stats(self):
         """Test getting bridge statistics."""
         bridge = MultiClientBridge(max_clients=10)
-        bridge.register_client("client-1", "/tmp/c1.sock")
+        bridge.register_client("client-1", os.path.join(tempfile.gettempdir(), "c1.sock"))
 
         stats = bridge.get_stats()
 

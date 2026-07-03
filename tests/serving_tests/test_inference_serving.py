@@ -27,7 +27,7 @@ class TestModelLoading:
 
     def test_model_cache_config(self):
         """Test model cache configuration."""
-        config = {"cache_dir": "/tmp/models", "device": "cpu"}
+        config = {"cache_dir": os.path.join(tempfile.gettempdir(), "models"), "device": "cpu"}
         assert "cache_dir" in config, "Condition must be true"
         assert config["device"] in ["cpu", "cuda"]
 

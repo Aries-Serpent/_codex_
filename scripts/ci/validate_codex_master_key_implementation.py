@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from src.codex.utils.path_extended import get_repo_root
 """
 Final validation script for CODEX_MASTER_KEY implementation
 
@@ -182,7 +183,7 @@ def generate_coverage_report():
     }
     
     # Save report
-    report_path = Path("/home/runner/work/_codex_/_codex_/.codex/coverage_matrix.json")
+    report_path = Path(str(get_repo_root() / ".codex/coverage_matrix.json"))
     report_path.parent.mkdir(parents=True, exist_ok=True)
     with open(report_path, "w") as f:
         json.dump(coverage_matrix, f, indent=2)
@@ -225,7 +226,7 @@ def generate_endpoint_coverage():
     total_tested = sum(cat["tested"] for cat in endpoints["categories"].values())
     
     # Save report
-    report_path = Path("/home/runner/work/_codex_/_codex_/.codex/endpoint_coverage.json")
+    report_path = Path(str(get_repo_root() / ".codex/endpoint_coverage.json"))
     with open(report_path, "w") as f:
         json.dump(endpoints, f, indent=2)
     
@@ -282,7 +283,7 @@ def generate_final_report():
     }
     
     # Save report
-    report_path = Path("/home/runner/work/_codex_/_codex_/.codex/final_implementation_report.json")
+    report_path = Path(str(get_repo_root() / ".codex/final_implementation_report.json"))
     with open(report_path, "w") as f:
         json.dump(report, f, indent=2)
     

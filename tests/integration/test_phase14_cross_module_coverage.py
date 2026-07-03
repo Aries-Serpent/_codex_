@@ -43,7 +43,7 @@ class TestCLIToCoreIntegration:
         cli_args = {
             "seed": 42,
             "epochs": 10,
-            "output_dir": "/tmp/test_output",
+            "output_dir": os.path.join(tempfile.gettempdir(), "test_output"),
         }
 
         # Verify training module would receive correct config
@@ -122,7 +122,7 @@ class TestTrainingEvaluationIntegration:
         """Test training output can be evaluated."""
         # Mock training output
         training_result = {
-            "model_path": "/tmp/model.pt",
+            "model_path": os.path.join(tempfile.gettempdir(), "model.pt"),
             "metrics": {"loss": 0.5, "accuracy": 0.85},
             "epoch": 10,
         }
@@ -450,7 +450,7 @@ class TestEndToEndWorkflows:
         config = {
             "model": "test",
             "epochs": 1,
-            "output_dir": "/tmp/test",
+            "output_dir": os.path.join(tempfile.gettempdir(), "test"),
         }
 
         # 2. Data preparation (mocked)

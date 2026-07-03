@@ -7,6 +7,7 @@ Test module for resume and retention.
 from __future__ import annotations
 
 import json
+import tempfile
 from pathlib import Path
 
 from codex_ml.training.rng_checkpoint import RNGState
@@ -132,10 +133,10 @@ def test_run_unified_training_resume_flow(monkeypatch, tmp_path: Path) -> None:
     )
 
     cfg = UnifiedTrainingConfig(
-        output_dir=str(tmp_path), epochs=1, resume_from="/tmp/ckpt", keep_last=1
+        output_dir=str(tmp_path), epochs=1, resume_from=os.path.join(tempfile.gettempdir(), "ckpt"), keep_last=1
     )
     result = run_unified_training(cfg, callbacks=[])
 
-    assert seen["resume_path"] == "/tmp/ckpt", "Condition must be true"
+    assert seen["resume_path"] == os.path.join(tempfile.gettempdir(), "ckpt"), "Condition must be true"
     assert result["status"] == "ok", "Result must not be empty"
-    assert result["resume_from"] == "/tmp/ckpt", "Result must not be empty"
+    assert result["resume_from"] == os.path.join(tempfile.gettempdir(), "ckpt"), "Result must not be empty"

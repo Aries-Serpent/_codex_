@@ -21,8 +21,8 @@ awk 'NR==1{sub(/^\xEF\xBB\xBF/,"")}1' "$PATCH" > "$PATCH.tmp" && mv "$PATCH.tmp"
 command -v dos2unix >/dev/null 2>&1 && dos2unix -q "$PATCH" || true
 
 # If color codes appear, strip them
-if grep -Pq "\x1B\[[0-9;]*[mK]" "$PATCH" 2>/dev/null; then
-  sed -r 's/\x1B\[[0-9;]*[mK]//g' "$PATCH" > "$PATCH.tmp" && mv "$PATCH.tmp" "$PATCH"
+if grepq "\x1B\[[0-9;]*[mK]" "$PATCH" 2>/dev/null; then
+  sed -E 's/\x1B\[[0-9;]*[mK]//g' "$PATCH" > "$PATCH.tmp" && mv "$PATCH.tmp" "$PATCH"
 fi
 
 # Already applied?

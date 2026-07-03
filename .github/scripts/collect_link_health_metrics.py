@@ -58,13 +58,13 @@ class LinkHealthMetrics:
         try:
             result = subprocess.run(
                 ['python', '.github/scripts/validate-links.py',
-                 '--report-file', '/tmp/link_report_metrics.json'],
+                 '--report-file', os.path.join(tempfile.gettempdir(), 'link_report_metrics.json')],
                 capture_output=True,
                 text=True,
                 timeout=300
             )
 
-            report = json.loads(Path('/tmp/link_report_metrics.json').read_text())
+            report = json.loads(Path(os.path.join(tempfile.gettempdir(), 'link_report_metrics.json')).read_text())
 
             total = report.get('checked', 0)
             errors = report.get('errors_count', 0)
@@ -95,13 +95,13 @@ class LinkHealthMetrics:
             result = subprocess.run(
                 ['python', '.github/scripts/validate_doc_anchors.py',
                  '--directory', 'docs',
-                 '--report-file', '/tmp/anchor_report_metrics.json'],
+                 '--report-file', os.path.join(tempfile.gettempdir(), 'anchor_report_metrics.json')],
                 capture_output=True,
                 text=True,
                 timeout=300
             )
 
-            report = json.loads(Path('/tmp/anchor_report_metrics.json').read_text())
+            report = json.loads(Path(os.path.join(tempfile.gettempdir(), 'anchor_report_metrics.json')).read_text())
 
             stats = report.get('statistics', {})
             errors = stats.get('errors', 0)

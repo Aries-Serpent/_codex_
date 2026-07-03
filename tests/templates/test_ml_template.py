@@ -18,6 +18,7 @@ from typing import Any
 from unittest.mock import MagicMock
 
 import pytest
+import tempfile
 
 
 # Conditional imports for optional dependencies
@@ -85,7 +86,7 @@ def sample_training_config() -> dict[str, Any]:
         "learning_rate": 1e-4,
         "batch_size": 8,
         "max_epochs": 3,
-        "output_dir": "/tmp/output",
+        "output_dir": os.path.join(tempfile.gettempdir(), "output"),
         "seed": 42,
     }
 

@@ -5,6 +5,7 @@ Tests end-to-end retrieval workflows with query processing and ranking.
 """
 
 import importlib.util
+import tempfile
 from unittest.mock import MagicMock, Mock, patch
 
 import pytest
@@ -46,9 +47,9 @@ class TestRetrieverInitialization:
         mock_st.return_value = mock_model
 
         with patch.object(Retriever, "_load_index"):
-            retriever = Retriever(index_dir="/tmp/test", model_name="test-model")
+            retriever = Retriever(index_dir=os.path.join(tempfile.gettempdir(), "test"), model_name="test-model")
 
-            assert retriever.index_dir == "/tmp/test", "index_dir is not valid"
+            assert retriever.index_dir == os.path.join(tempfile.gettempdir(), "test"), "index_dir is not valid"
             assert retriever.model_name == "test-model", "model_name is not valid"
 
     def test_retriever_has_required_attributes(self):

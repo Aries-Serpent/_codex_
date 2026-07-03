@@ -7,6 +7,7 @@ This module contains tests for batch restoration utilities.
 from pathlib import Path
 
 import pytest
+import tempfile
 
 
 class TestBatchItem:
@@ -16,10 +17,10 @@ class TestBatchItem:
         """Test BatchItem basic creation."""
         from codex.archive.batch import BatchItem
 
-        item = BatchItem(tombstone="ts_123", output=Path("/tmp/output"), actor="user@example.com")
+        item = BatchItem(tombstone="ts_123", output=Path(os.path.join(tempfile.gettempdir(), "output")), actor="user@example.com")
 
         assert item.tombstone == "ts_123", "Item must not be empty"
-        assert item.output == Path("/tmp/output"), "Item must not be empty"
+        assert item.output == Path(os.path.join(tempfile.gettempdir(), "output")), "Item must not be empty"
         assert item.actor == "user@example.com", "Item must not be empty"
 
     def test_from_dict_valid(self, tmp_path):

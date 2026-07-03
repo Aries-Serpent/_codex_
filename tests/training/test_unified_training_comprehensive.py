@@ -16,6 +16,7 @@ from __future__ import annotations
 from unittest.mock import Mock, patch
 
 import pytest
+import tempfile
 
 from codex_ml.training.unified_training import (
     ContinualPhase,
@@ -183,9 +184,9 @@ class TestUnifiedTrainingConfig:
     def test_config_with_checkpoint_dir(self):
         """Verify checkpoint directory config."""
         config = UnifiedTrainingConfig(
-            model_name="test", epochs=1, checkpoint_dir="/tmp/checkpoints"
+            model_name="test", epochs=1, checkpoint_dir=os.path.join(tempfile.gettempdir(), "checkpoints")
         )
-        assert config.checkpoint_dir == "/tmp/checkpoints", "checkpoint_dir is not valid"
+        assert config.checkpoint_dir == os.path.join(tempfile.gettempdir(), "checkpoints"), "checkpoint_dir is not valid"
 
     def test_config_with_resume_path(self):
         """Verify resume path configuration."""

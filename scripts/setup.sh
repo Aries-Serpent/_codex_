@@ -326,7 +326,7 @@ vendor_residue(){ python -c "$VENDOR_HELPER_PY" residue; }
 vendor_hash_json(){ python -c "$VENDOR_HELPER_PY" hash; }
 
 # 5) Uninstall & Parsing
-sanitize_uninstall_stream(){ sed -r -e 's/\x1B\[[0-9;]*[A-Za-z]//g' -e '/^\+\+/d' -e '/^[[:space:]]*$/d'; }
+sanitize_uninstall_stream(){ sed -E -e 's/\x1B\[[0-9;]*[A-Za-z]//g' -e '/^\+\+/d' -e '/^[[:space:]]*$/d'; }
 uv_uninstall_noninteractive(){
   [[ $# -eq 0 ]] && return 0
   local had_xtrace=0; case "$-" in *x*) had_xtrace=1; set +x ;; esac

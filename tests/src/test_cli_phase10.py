@@ -10,6 +10,7 @@ NOTE: This test module may be skipped if required dependencies are unavailable.
 from __future__ import annotations
 
 import pytest
+import tempfile
 
 try:
     import click
@@ -113,20 +114,20 @@ class TestLogsGroup:
     def test_logs_init_invokes_script(self, runner):
         with patch("codex._cli_click.subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(returncode=0)
-            result = runner.invoke(cli, ["logs", "init", "--db", "/tmp/test.sqlite"])
+            result = runner.invoke(cli, ["logs", "init", "--db", os.path.join(tempfile.gettempdir(), "test.sqlite")])
         assert result.exit_code == 0, "Result must not be empty"
         mock_run.assert_called_once()
 
     def test_logs_init_failure_reports_error(self, runner):
         with patch("codex._cli_click.subprocess.run", side_effect=RuntimeError("boom")):
-            result = runner.invoke(cli, ["logs", "init", "--db", "/tmp/test.sqlite"])
+            result = runner.invoke(cli, ["logs", "init", "--db", os.path.join(tempfile.gettempdir(), "test.sqlite")])
         assert result.exit_code != 0, "Result must not be empty"
 
     def test_logs_query_invokes_script(self, runner):
         with patch("codex._cli_click.subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(returncode=0)
             result = runner.invoke(
-                cli, ["logs", "query", "--sql", "SELECT 1", "--db", "/tmp/test.sqlite"]
+                cli, ["logs", "query", "--sql", "SELECT 1", "--db", os.path.join(tempfile.gettempdir(), "test.sqlite")]
             )
         assert result.exit_code == 0, "Result must not be empty"
         mock_run.assert_called_once()
@@ -134,7 +135,7 @@ class TestLogsGroup:
     def test_logs_query_failure_reports_error(self, runner):
         with patch("codex._cli_click.subprocess.run", side_effect=RuntimeError("db error")):
             result = runner.invoke(
-                cli, ["logs", "query", "--sql", "SELECT 1", "--db", "/tmp/test.sqlite"]
+                cli, ["logs", "query", "--sql", "SELECT 1", "--db", os.path.join(tempfile.gettempdir(), "test.sqlite")]
             )
         assert result.exit_code != 0, "Result must not be empty"
 

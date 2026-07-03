@@ -1,6 +1,7 @@
 """Phase 24 training/evaluation workflow tests."""
 
 import pytest
+import tempfile
 
 
 @pytest.mark.integration
@@ -15,8 +16,8 @@ def test_phase24_checkpoint_config_validation():
     """Test Phase 24 CheckpointConfig validation."""
     from src.training.trainer import CheckpointConfig
 
-    config = CheckpointConfig(directory="/tmp/ckpt", best_k=5, monitor="val_loss")
-    assert config.directory == "/tmp/ckpt", "directory is not valid"
+    config = CheckpointConfig(directory=os.path.join(tempfile.gettempdir(), "ckpt"), best_k=5, monitor="val_loss")
+    assert config.directory == os.path.join(tempfile.gettempdir(), "ckpt"), "directory is not valid"
     assert config.best_k == 5, "best_k is not valid"
     assert config.monitor == "val_loss", "monitor is not valid"
 

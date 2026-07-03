@@ -35,7 +35,7 @@ set -euo pipefail
 
 # ── Config ─────────────────────────────────────────────────────────────────
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-MYPY_VENV="/tmp/mypy-ci-sim-venv"
+MYPY_VENV="${TMPDIR:-/tmp}/mypy-ci-sim-venv"
 PASS=0
 FAIL=1
 RESULTS=()     # "check_name:PASS|FAIL" pairs

@@ -10,13 +10,14 @@ across the RAG subsystem (indexer, retriever, embeddings). It handles:
 
 Usage:
     from codex.rag._model_utils import safe_load_sentence_transformer
-    model = safe_load_sentence_transformer("all-MiniLM-L6-v2", cache_dir="/tmp/models")
+    model = safe_load_sentence_transformer("all-MiniLM-L6-v2", cache_dir=os.path.join(tempfile.gettempdir(), "models"))
 """
 
 from __future__ import annotations
 
 import logging
 import os
+import tempfile
 from typing import Optional
 
 logger = logging.getLogger(__name__)

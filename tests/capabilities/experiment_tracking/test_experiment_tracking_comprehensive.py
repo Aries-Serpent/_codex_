@@ -11,6 +11,7 @@ Tests cover:
 from __future__ import annotations
 
 import hashlib
+import tempfile
 import time
 from enum import Enum
 from typing import Any
@@ -141,13 +142,13 @@ class TestOfflineMode:
 
     def test_create_offline_run(self):
         """Create run in offline mode."""
-        tracker = OfflineTracker("/tmp/mlruns")
+        tracker = OfflineTracker(os.path.join(tempfile.gettempdir(), "mlruns"))
         run = tracker.create_run("exp-001")
         assert run.run_id.startswith("offline-"), "Condition must be true"
 
     def test_sync_pending(self):
         """Sync pending data."""
-        tracker = OfflineTracker("/tmp/mlruns")
+        tracker = OfflineTracker(os.path.join(tempfile.gettempdir(), "mlruns"))
         tracker.pending_uploads.append({"type": "metric", "data": {}})
         synced = tracker.sync()
         assert synced == 1, "synced is not valid"

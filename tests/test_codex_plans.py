@@ -261,7 +261,7 @@ class TestListPlanDocumentsEdgeCases:
 
     def test_base_dir_nonexistent(self):
         """Test behavior when base_dir doesn't exist."""
-        nonexistent = Path("/tmp/nonexistent_test_dir_" + str(id(None)))
+        nonexistent = Path(os.path.join(tempfile.gettempdir(), "nonexistent_test_dir_") + str(id(None)))
 
         try:
             result = list_plan_documents(base_dir=nonexistent)

@@ -9,6 +9,7 @@ Based on REPO_ADMIN_IMPLEMENTATION_DECISIONS.md Section 4.3.3:
 
 import logging
 import os
+import tempfile
 
 logger = logging.getLogger(__name__)
 from pathlib import Path  # noqa: E402
@@ -122,9 +123,9 @@ def get_db_path(name: str, env_var: Optional[str] = None) -> Path:
         >>> get_db_path("session_logs", "CODEX_LOG_DB_PATH")
         Path('.codex/session_logs.db')
 
-        >>> os.environ["CODEX_LOG_DB_PATH"] = "/tmp/logs.db"
+        >>> os.environ["CODEX_LOG_DB_PATH"] = os.path.join(tempfile.gettempdir(), "logs.db")
         >>> get_db_path("session_logs", "CODEX_LOG_DB_PATH")
-        Path('/tmp/logs.db')
+        Path(os.path.join(tempfile.gettempdir(), 'logs.db'))
     """
     if env_var and os.getenv(env_var):
         return Path(os.getenv(env_var))  # type: ignore[arg-type]

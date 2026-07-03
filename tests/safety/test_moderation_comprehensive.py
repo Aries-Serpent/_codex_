@@ -13,6 +13,7 @@ from __future__ import annotations
 from unittest.mock import MagicMock, patch
 
 import pytest
+import tempfile
 
 try:
     from codex_ml.safety.moderation import (
@@ -580,7 +581,7 @@ class TestAuditLogging:
 
     def test_audit_log_setting(self):
         """Test audit log setting configuration."""
-        audit_path = "/tmp/test_audit.jsonl"
+        audit_path = os.path.join(tempfile.gettempdir(), "test_audit.jsonl")
         settings = ModerationSettings(
             enabled=True,
             audit_log=audit_path,
@@ -593,7 +594,7 @@ class TestAuditLogging:
         """Test that audit logging doesn't interfere when moderation disabled."""
         settings = ModerationSettings(
             enabled=False,
-            audit_log="/tmp/audit.jsonl",
+            audit_log=os.path.join(tempfile.gettempdir(), "audit.jsonl"),
         )
         adapter = ModerationAdapter(settings)
 

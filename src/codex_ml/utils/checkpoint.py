@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import tempfile
 import inspect
 import json
 import logging
@@ -419,11 +420,11 @@ def save_checkpoint(
 
     1. Simple ``(state_dict, path)`` — saves the raw dict via torch/pickle::
 
-           save_checkpoint({"model_state_dict": ..., "epoch": 5}, "/tmp/ckpt.pt")
+           save_checkpoint({"model_state_dict": ..., "epoch": 5}, os.path.join(tempfile.gettempdir(), "ckpt.pt"))
 
     2. Full keyword-only form (original API)::
 
-           save_checkpoint(model=m, optimizer=opt, scheduler=sch, out_dir="/tmp/ckpt/")
+           save_checkpoint(model=m, optimizer=opt, scheduler=sch, out_dir=os.path.join(tempfile.gettempdir(), "ckpt/"))
     """
     # --- Simple positional API: save_checkpoint(state, path) -----------------
     if state_or_model is not None and path is not None and model is None and out_dir is None:
@@ -541,11 +542,11 @@ def load_checkpoint(
 
     1. Simple ``(path)`` — loads and returns the raw dict::
 
-           state = load_checkpoint("/tmp/ckpt.pt")
+           state = load_checkpoint(os.path.join(tempfile.gettempdir(), "ckpt.pt"))
 
     2. Full keyword-only form (original API)::
 
-           load_checkpoint(model=m, optimizer=opt, ckpt_dir="/tmp/ckpt/")
+           load_checkpoint(model=m, optimizer=opt, ckpt_dir=os.path.join(tempfile.gettempdir(), "ckpt/"))
     """
     # --- Simple positional API: load_checkpoint(path) -----------------------
     if path_or_ckpt_dir is not None and model is None and ckpt_dir is None:

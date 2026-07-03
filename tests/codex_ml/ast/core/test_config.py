@@ -8,6 +8,7 @@ serialization/deserialization, validation, and edge cases.
 from pathlib import Path
 
 import pytest
+import tempfile
 
 from src.codex_ml.ast.core.config import ASTConfig
 
@@ -221,9 +222,9 @@ class TestEnvironmentVariableOverrides:
 
     def test_env_output_path(self, monkeypatch):
         """Test AST_OUTPUT_PATH override."""
-        monkeypatch.setenv("AST_OUTPUT_PATH", "/tmp/ast_output")
+        monkeypatch.setenv("AST_OUTPUT_PATH", os.path.join(tempfile.gettempdir(), "ast_output"))
         config = ASTConfig()
-        assert config.output_path == Path("/tmp/ast_output"), "output_path is not valid"
+        assert config.output_path == Path(os.path.join(tempfile.gettempdir(), "ast_output")), "output_path is not valid"
 
     def test_env_max_parallel(self, monkeypatch):
         """Test AST_MAX_PARALLEL override."""
@@ -275,15 +276,15 @@ class TestEnvironmentVariableOverrides:
 
     def test_env_cache_path(self, monkeypatch):
         """Test AST_CACHE_PATH override."""
-        monkeypatch.setenv("AST_CACHE_PATH", "/tmp/custom_cache")
+        monkeypatch.setenv("AST_CACHE_PATH", os.path.join(tempfile.gettempdir(), "custom_cache"))
         config = ASTConfig()
-        assert config.cache_path == Path("/tmp/custom_cache"), "cache_path is not valid"
+        assert config.cache_path == Path(os.path.join(tempfile.gettempdir(), "custom_cache")), "cache_path is not valid"
 
     def test_env_db_path(self, monkeypatch):
         """Test AST_DB_PATH override."""
-        monkeypatch.setenv("AST_DB_PATH", "/tmp/ast.db")
+        monkeypatch.setenv("AST_DB_PATH", os.path.join(tempfile.gettempdir(), "ast.db"))
         config = ASTConfig()
-        assert config.db_path == Path("/tmp/ast.db"), "db_path is not valid"
+        assert config.db_path == Path(os.path.join(tempfile.gettempdir(), "ast.db")), "db_path is not valid"
 
 
 class TestSerializationDeserialization:

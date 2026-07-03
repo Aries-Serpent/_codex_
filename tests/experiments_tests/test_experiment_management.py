@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import tempfile
 
 
 class TestMLflowTracking:
@@ -20,7 +21,7 @@ class TestMLflowTracking:
 
     def test_mlflow_params_logging(self, monkeypatch):
         """Test parameter logging pattern."""
-        monkeypatch.setenv("MLFLOW_TRACKING_URI", "/tmp/mlruns")
+        monkeypatch.setenv("MLFLOW_TRACKING_URI", os.path.join(tempfile.gettempdir(), "mlruns"))
         params = {"learning_rate": 0.001, "batch_size": 32}
         assert all(isinstance(v, (int, float)) for v in params.values())
 

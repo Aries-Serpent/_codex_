@@ -14,6 +14,7 @@ Tests cover:
 from __future__ import annotations
 
 import json
+import tempfile
 import zipfile
 from pathlib import Path
 from unittest.mock import MagicMock, patch
@@ -42,14 +43,14 @@ class TestSnapshot:
 
         snapshot = Snapshot(
             snapshot_id="20251217-abc123",
-            source_path="/tmp/source",
+            source_path=os.path.join(tempfile.gettempdir(), "source"),
             snapshot_dir=tmp_path / "snap",
             content_hash="deadbeef",
             created_at=datetime.now(timezone.utc),
         )
 
         assert snapshot.snapshot_id == "20251217-abc123", "snapshot_id is not valid"
-        assert snapshot.source_path == "/tmp/source", "source_path is not valid"
+        assert snapshot.source_path == os.path.join(tempfile.gettempdir(), "source"), "source_path is not valid"
         assert snapshot.content_hash == "deadbeef", "Content must not be empty"
 
     def test_get_source_dir(self, tmp_path: Path) -> None:
@@ -58,7 +59,7 @@ class TestSnapshot:
 
         snapshot = Snapshot(
             snapshot_id="test",
-            source_path="/tmp/test",
+            source_path=os.path.join(tempfile.gettempdir(), "test"),
             snapshot_dir=tmp_path,
             content_hash="hash",
             created_at=datetime.now(timezone.utc),
@@ -72,7 +73,7 @@ class TestSnapshot:
 
         snapshot = Snapshot(
             snapshot_id="test",
-            source_path="/tmp/test",
+            source_path=os.path.join(tempfile.gettempdir(), "test"),
             snapshot_dir=tmp_path,
             content_hash="hash",
             created_at=datetime.now(timezone.utc),
@@ -88,7 +89,7 @@ class TestSnapshot:
         now = datetime.now(timezone.utc)
         snapshot = Snapshot(
             snapshot_id="test",
-            source_path="/tmp/test",
+            source_path=os.path.join(tempfile.gettempdir(), "test"),
             snapshot_dir=tmp_path,
             content_hash="hash123",
             created_at=now,
@@ -97,7 +98,7 @@ class TestSnapshot:
 
         data = snapshot.to_dict()
         assert data["snapshot_id"] == "test", "Data must not be empty"
-        assert data["source_path"] == "/tmp/test", "Data must not be empty"
+        assert data["source_path"] == os.path.join(tempfile.gettempdir(), "test"), "Data must not be empty"
         assert data["content_hash"] == "hash123", "Data must not be empty"
         assert data["metadata"] == {"key": "value"}, "Data must not be empty"
         assert data["created_at"] == now.isoformat(), "Data must not be empty"

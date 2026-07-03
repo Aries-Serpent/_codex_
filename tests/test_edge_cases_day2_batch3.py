@@ -1,15 +1,16 @@
-"""
-Edge Case Test Batch 3 - Final Comprehensive Tests
-Corrected with actual API signatures
-Target: 120+ additional tests
-"""
+import sys
+from datetime import datetime
+
+import pytest
+
+from src.codex.utils.path_extended import get_repo_root
 
 import sys
 from datetime import datetime
 
 import pytest
 
-sys.path.insert(0, "/home/runner/work/_codex_/_codex_/src")
+sys.path.insert(0, str(get_repo_root() / "src"))
 sys.path.insert(0, "/home/runner/work/_codex_/_codex_")
 
 try:

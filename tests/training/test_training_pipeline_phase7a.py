@@ -286,7 +286,7 @@ class TestTrainerConfiguration:
         from training.engine_hf_trainer import HFTrainerConfig
 
         config = HFTrainerConfig(
-            output_dir="/tmp/test",
+            output_dir=os.path.join(tempfile.gettempdir(), "test"),
             num_train_epochs=3,
             per_device_train_batch_size=8,
             per_device_eval_batch_size=8,
@@ -305,7 +305,7 @@ class TestTrainerConfiguration:
         from training.engine_hf_trainer import build_training_args
 
         args = build_training_args(
-            output_dir="/tmp/test",
+            output_dir=os.path.join(tempfile.gettempdir(), "test"),
             num_train_epochs=1,
             per_device_train_batch_size=16,
         )
@@ -373,13 +373,13 @@ class TestTrainingLoopControl:
         from training.trainer import CheckpointConfig
 
         config = CheckpointConfig(
-            dir="/tmp/checkpoints",
+            dir=os.path.join(tempfile.gettempdir(), "checkpoints"),
             save_total_limit=3,
             save_strategy="steps",
             save_steps=500,
         )
 
-        assert config.dir == "/tmp/checkpoints", "dir is not valid"
+        assert config.dir == os.path.join(tempfile.gettempdir(), "checkpoints"), "dir is not valid"
         assert config.save_total_limit == 3, "save_total_limit is not valid"
 
     def test_trainer_initialization(self):

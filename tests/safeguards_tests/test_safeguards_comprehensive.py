@@ -112,7 +112,7 @@ class TestOfflineMode:
 
     def test_offline_data_path(self, monkeypatch):
         """Test offline data path configuration."""
-        test_path = "/tmp/offline_data"
+        test_path = os.path.join(tempfile.gettempdir(), "offline_data")
         monkeypatch.setenv("OFFLINE_DATA_PATH", test_path)
 
         data_path = os.getenv("OFFLINE_DATA_PATH")
@@ -120,7 +120,7 @@ class TestOfflineMode:
 
     def test_offline_model_cache(self, monkeypatch):
         """Test offline model cache configuration."""
-        cache_dir = "/tmp/model_cache"
+        cache_dir = os.path.join(tempfile.gettempdir(), "model_cache")
         monkeypatch.setenv("HF_HOME", cache_dir)
         monkeypatch.setenv("TRANSFORMERS_OFFLINE", "1")
 

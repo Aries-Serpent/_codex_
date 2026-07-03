@@ -71,8 +71,8 @@ class TestSkillRegistryRegister:
 
     def test_register_records_source_path(self, simple_manifest):
         reg = SkillRegistry()
-        skill = reg.register(simple_manifest, source_path="/tmp/test/manifest.yaml")
-        assert skill.source_path == "/tmp/test/manifest.yaml", "source_path is not valid"
+        skill = reg.register(simple_manifest, source_path=os.path.join(tempfile.gettempdir(), "test/manifest.yaml"))
+        assert skill.source_path == os.path.join(tempfile.gettempdir(), "test/manifest.yaml"), "source_path is not valid"
 
 
 class TestSkillRegistryResolve:

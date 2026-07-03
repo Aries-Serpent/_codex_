@@ -6,6 +6,7 @@ all expected files from the action log are staged for commit.
 """
 
 import json
+import tempfile
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -28,7 +29,7 @@ class TestShouldIgnoreFile:
 
     def test_ignores_tmp_files(self):
         """Test that /tmp/ files are ignored."""
-        assert should_ignore_file("/tmp/test.txt") is True, "should_ign is not valid"
+        assert should_ignore_file(os.path.join(tempfile.gettempdir(), "test.txt")) is True, "should_ign is not valid"
         assert should_ignore_file("tmp/test.txt") is True, "should_ign is not valid"
 
     def test_ignores_pycache(self):
@@ -147,7 +148,7 @@ class TestExtractExpectedFiles:
     def test_ignores_tmp_files(self, tmp_path):
         """Test that /tmp/ files are ignored."""
         operations = [
-            {"path": "/tmp/test.py", "action": "created"},
+            {"path": os.path.join(tempfile.gettempdir(), "test.py"), "action": "created"},
         ]
 
         result = extract_expected_files(operations, tmp_path)

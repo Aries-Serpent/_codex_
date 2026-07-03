@@ -7,6 +7,7 @@ Test module for model registry helpers.
 from __future__ import annotations
 
 import types
+import tempfile
 from collections.abc import Sequence
 
 import pytest
@@ -57,9 +58,9 @@ def test_get_model_applies_device_and_dtype(dummy_registration: types.SimpleName
 
 
 def test_get_model_activates_lora_adapter(dummy_registration: types.SimpleNamespace) -> None:
-    model = get_model(dummy_registration.name, lora_adapter="/tmp/adapter")
+    model = get_model(dummy_registration.name, lora_adapter=os.path.join(tempfile.gettempdir(), "adapter"))
     assert "test-adapter" in model.loaded_adapters, "Condition must be true"
-    assert "/tmp/adapter" in model.loaded_adapters, "Condition must be true"
+    assert os.path.join(tempfile.gettempdir(), "adapter") in model.loaded_adapters, "Condition must be true"
 
 
 def test_get_model_applies_lora_config(

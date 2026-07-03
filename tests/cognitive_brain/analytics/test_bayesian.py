@@ -8,6 +8,7 @@ Validates the BayesianAssessor API:
 """
 
 import json
+import tempfile
 
 import pytest
 
@@ -103,7 +104,7 @@ class TestBayesianAssessorConstruction:
 
     def test_from_json_missing_file_raises(self):
         with pytest.raises(FileNotFoundError):
-            BayesianAssessor.from_json("/tmp/nonexistent_network.json")
+            BayesianAssessor.from_json(os.path.join(tempfile.gettempdir(), "nonexistent_network.json"))
 
 
 # ---------------------------------------------------------------------------

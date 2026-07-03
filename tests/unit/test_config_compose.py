@@ -5,6 +5,7 @@ Test module for config compose.
 """
 
 import os
+import tempfile
 from pathlib import Path
 
 import pytest
@@ -32,7 +33,7 @@ def test_compose_overrides(monkeypatch):
     can resolve successfully. This test validates the override mechanism and config structure
     with a fully resolved configuration.
     """
-    monkeypatch.setenv("DATA_DIR", "/tmp/data")
+    monkeypatch.setenv("DATA_DIR", os.path.join(tempfile.gettempdir(), "data"))
     with initialize_config_dir(version_base="1.3", config_dir=str(CONF_DIR)):
         cfg = compose(config_name="config", overrides=["train.epochs=2"])
     container = cfg if isinstance(cfg, dict) else OmegaConf.to_container(cfg)

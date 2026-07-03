@@ -130,7 +130,7 @@ class TestWorkflowParserFileHandling:
         from services import WorkflowParser
 
         parser = WorkflowParser()
-        result = parser.parse_file(Path("/tmp/nonexistent_workflow_test_file.yml"))
+        result = parser.parse_file(Path(os.path.join(tempfile.gettempdir(), "nonexistent_workflow_test_file.yml")))
         assert result is None, "Result must not be empty"
 
     def test_parse_file_valid_file(self, temp_workflow_file):

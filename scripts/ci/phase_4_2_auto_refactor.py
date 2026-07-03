@@ -19,6 +19,7 @@ Exit codes:
 """
 
 import json
+import tempfile
 import logging
 import re
 import sys
@@ -266,7 +267,7 @@ class TokenRefactorer:
 def main():
     """Main entry point."""
     # Load pre-refactor analysis
-    validator_output = Path("/tmp/pre_refactor.json")
+    validator_output = Path(os.path.join(tempfile.gettempdir(), "pre_refactor.json"))
     if not validator_output.exists():
         logger.error("Pre-refactor analysis not found. Run validator first.")
         return 1

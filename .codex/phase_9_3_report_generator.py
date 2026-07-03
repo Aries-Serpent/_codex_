@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from src.codex.utils.path_extended import get_repo_root
 """
 Phase 9.3 TIER 1: Routing Validation Report Generator
 ======================================================
@@ -12,13 +13,13 @@ import yaml
 
 def load_validation_results() -> Dict[str, Any]:
     """Load validation results from JSON file."""
-    results_file = Path("/home/runner/work/_codex_/_codex_/.codex/phase_9_3_routing_validation_results.json")
+    results_file = Path(str(get_repo_root() / ".codex/phase_9_3_routing_validation_results.json"))
     with open(results_file, 'r') as f:
         return json.load(f)
 
 def load_agent_registry() -> Dict[str, Any]:
     """Load AGENT_REGISTRY.yaml."""
-    registry_path = Path("/home/runner/work/_codex_/_codex_/.github/agents/AGENT_REGISTRY.yaml")
+    registry_path = Path(str(get_repo_root() / ".github/agents/AGENT_REGISTRY.yaml"))
     with open(registry_path, 'r') as f:
         return yaml.safe_load(f)
 
@@ -237,7 +238,7 @@ Each agent has a 2-3 agent fallback chain:
 def generate_fallback_chain_validation(results: Dict) -> str:
     """Generate FALLBACK_CHAIN_VALIDATION.json (45-60 KB)."""
     fallback_chains = results['fallback_chains']
-    registry_path = Path("/home/runner/work/_codex_/_codex_/.github/agents/AGENT_REGISTRY.yaml")
+    registry_path = Path(str(get_repo_root() / ".github/agents/AGENT_REGISTRY.yaml"))
     
     with open(registry_path, 'r') as f:
         registry = yaml.safe_load(f)
@@ -546,7 +547,7 @@ def main():
     # Generate reports
     print("2️⃣  Generating ROUTING_QUALITY_REPORT.md...")
     quality_report = generate_routing_quality_report(results, registry)
-    output_dir = Path("/home/runner/work/_codex_/_codex_/.codex")
+    output_dir = Path(str(get_repo_root() / ".codex"))
     
     quality_file = output_dir / "ROUTING_QUALITY_REPORT.md"
     with open(quality_file, 'w') as f:

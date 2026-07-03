@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from src.codex.utils.path_extended import get_repo_root
 """
 PHASE 9.2 CRITICAL GAP-FILL TEST SUITE
 
@@ -23,7 +24,7 @@ from unittest import mock
 import pytest
 
 # Import the modules to test
-sys.path.insert(0, '/home/runner/work/_codex_/_codex_/scripts/ci')
+sys.path.insert(0, str(get_repo_root() / 'scripts/ci'))
 
 from phase_9_2_cascade_orchestrator import (
     CascadeOrchestrator,

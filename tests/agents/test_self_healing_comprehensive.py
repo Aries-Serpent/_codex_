@@ -9,6 +9,7 @@ Focus: DetectedIssue, RemediationAction, DiagnosticResult, SelfHealingEngine
 from pathlib import Path
 
 import pytest
+import tempfile
 
 try:
     from agents.self_healing import RemediationAction
@@ -227,7 +228,7 @@ class TestSelfHealingEngineCore:
         """Test SelfHealingEngine with custom repo root."""
         from agents.self_healing import SelfHealingEngine
 
-        custom_path = Path("/tmp/test_repo")
+        custom_path = Path(os.path.join(tempfile.gettempdir(), "test_repo"))
         engine = SelfHealingEngine(repo_root=custom_path)
 
         assert engine.repo_root == custom_path, "repo_root is not valid"

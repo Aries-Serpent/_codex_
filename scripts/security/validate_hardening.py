@@ -10,6 +10,7 @@ Run with: python scripts/security/validate_hardening.py
 from __future__ import annotations
 
 import sys
+import tempfile
 import traceback
 from pathlib import Path
 from typing import Any
@@ -274,7 +275,7 @@ def test_layer3_path_validation() -> None:
     print("=" * 70)  # codeql[py/clear-text-logging-sensitive-data]
 
     # Create temp directory for testing
-    test_dir = Path("/tmp/codex_security_test")
+    test_dir = Path(os.path.join(tempfile.gettempdir(), "codex_security_test"))
     test_dir.mkdir(exist_ok=True)
     test_file = test_dir / "test.txt"
     test_file.write_text("test")
@@ -516,7 +517,7 @@ def test_file_validation() -> None:
     print("=" * 70)  # codeql[py/clear-text-logging-sensitive-data]
 
     # Create test directory
-    test_dir = Path("/tmp/codex_file_test")
+    test_dir = Path(os.path.join(tempfile.gettempdir(), "codex_file_test"))
     test_dir.mkdir(exist_ok=True)
 
     # Test 1: File type validation

@@ -92,3 +92,21 @@ data/checkpoints/
 .dmypy.json
 dmypy.json
 .ruff_cache/
+
+# Batch 0 cleanup: Hardened venv patterns
+venv_test/
+.venv_ci/
+venv_*/
+.venv_*/
+env_*/
+.env_*/
+
+# Local symlinks (Windows-incompatible tracked symlinks removed)
+# See .codex/WINDOWS_SYMLINK_SETUP.md for manual setup instructions
+.codex/security_vulnerability_scan_latest.md
+configs/data
+configs/model
+configs/tracking
+configs/train
+scripts/audit_pipeline.py
+scripts/ci/session_preload.py

@@ -16,6 +16,7 @@ Part of Phase 5B-II: Integration Test Development
 from __future__ import annotations
 
 import json
+import tempfile
 import logging
 from unittest.mock import Mock, patch
 
@@ -473,7 +474,7 @@ class TestHFTrainerEndToEnd:
             trainer = mock_trainer_cls()
             train_result = trainer.train()
             eval_result = trainer.evaluate()
-            trainer.save_model("/tmp/model")
+            trainer.save_model(os.path.join(tempfile.gettempdir(), "model"))
 
             # Assert: All steps executed
             assert train_result["training_loss"] == 0.45, "Result must not be empty"

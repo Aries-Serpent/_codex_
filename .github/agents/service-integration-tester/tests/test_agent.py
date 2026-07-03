@@ -84,7 +84,7 @@ class TestAgentInitialization:
 
     def test_initialization_with_missing_config(self):
         """Test agent falls back to defaults when config doesn't exist"""
-        non_existent = Path('/tmp/nonexistent_config.yaml')
+        non_existent = Path(os.path.join(tempfile.gettempdir(), 'nonexistent_config.yaml'))
         agent = TestCoverageEnforcer(config_path=non_existent)
 
         # Should use default values
@@ -174,7 +174,7 @@ class TestCoverageReportCreation:
         """Test creating coverage report with empty data"""
         agent = TestCoverageEnforcer()
 
-        report = agent._create_coverage_report('/tmp/test.py', {})
+        report = agent._create_coverage_report(os.path.join(tempfile.gettempdir(), 'test.py'), {})
 
         assert report.total_lines == 0
         assert report.covered_lines == 0
@@ -191,7 +191,7 @@ class TestCoverageReportCreation:
             'excluded_lines': []
         }
 
-        report = agent._create_coverage_report('/tmp/test.py', data)
+        report = agent._create_coverage_report(os.path.join(tempfile.gettempdir(), 'test.py'), data)
 
         assert report.line_coverage == 100.0
         assert len(report.missing_lines) == 0
@@ -249,7 +249,7 @@ class MyClass:
     def test_extract_functions_from_nonexistent_file(self):
         """Test extracting functions from nonexistent file returns empty"""
         agent = TestCoverageEnforcer()
-        functions = agent._extract_functions(Path('/tmp/nonexistent.py'))
+        functions = agent._extract_functions(Path(os.path.join(tempfile.gettempdir(), 'nonexistent.py')))
         assert functions == []
 
 
@@ -262,7 +262,7 @@ class TestCoverageThresholdChecking:
         agent.line_threshold = 80
 
         report = CoverageReport(
-            file_path=Path('/tmp/test.py'),
+            file_path=Path(os.path.join(tempfile.gettempdir(), 'test.py')),
             line_coverage=70.0,
             branch_coverage=70.0,
             function_coverage=90.0,
@@ -287,7 +287,7 @@ class TestCoverageThresholdChecking:
         agent.function_threshold = 85
 
         report = CoverageReport(
-            file_path=Path('/tmp/test.py'),
+            file_path=Path(os.path.join(tempfile.gettempdir(), 'test.py')),
             line_coverage=90.0,
             branch_coverage=90.0,
             function_coverage=70.0,
@@ -311,7 +311,7 @@ class TestCoverageThresholdChecking:
         agent = TestCoverageEnforcer()
 
         report = CoverageReport(
-            file_path=Path('/tmp/test.py'),
+            file_path=Path(os.path.join(tempfile.gettempdir(), 'test.py')),
             line_coverage=95.0,
             branch_coverage=90.0,
             function_coverage=95.0,
@@ -434,7 +434,7 @@ def large_func():
         agent = TestCoverageEnforcer()
 
         report = CoverageReport(
-            file_path=Path('/tmp/nonexistent.py'),
+            file_path=Path(os.path.join(tempfile.gettempdir(), 'nonexistent.py')),
             line_coverage=50.0,
             branch_coverage=50.0,
             function_coverage=50.0,
@@ -457,7 +457,7 @@ class TestPriorityCalculation:
         agent = TestCoverageEnforcer()
 
         report = CoverageReport(
-            file_path=Path('/tmp/test.py'),
+            file_path=Path(os.path.join(tempfile.gettempdir(), 'test.py')),
             line_coverage=40.0,
             branch_coverage=40.0,
             function_coverage=40.0,
@@ -476,7 +476,7 @@ class TestPriorityCalculation:
         agent = TestCoverageEnforcer()
 
         report = CoverageReport(
-            file_path=Path('/tmp/test.py'),
+            file_path=Path(os.path.join(tempfile.gettempdir(), 'test.py')),
             line_coverage=75.0,
             branch_coverage=75.0,
             function_coverage=75.0,
@@ -495,7 +495,7 @@ class TestPriorityCalculation:
         agent = TestCoverageEnforcer()
 
         report = CoverageReport(
-            file_path=Path('/tmp/test.py'),
+            file_path=Path(os.path.join(tempfile.gettempdir(), 'test.py')),
             line_coverage=85.0,
             branch_coverage=85.0,
             function_coverage=85.0,
@@ -518,8 +518,8 @@ class TestReportGeneration:
         agent = TestCoverageEnforcer()
 
         # Add some test data
-        agent.reports[Path('/tmp/test.py')] = CoverageReport(
-            file_path=Path('/tmp/test.py'),
+        agent.reports[Path(os.path.join(tempfile.gettempdir(), 'test.py'))] = CoverageReport(
+            file_path=Path(os.path.join(tempfile.gettempdir(), 'test.py')),
             line_coverage=85.0,
             branch_coverage=80.0,
             function_coverage=90.0,
@@ -534,15 +534,15 @@ class TestReportGeneration:
 
         assert 'Test Coverage Enforcement Report' in report
         assert 'Total files analyzed: 1' in report
-        assert '/tmp/test.py' in report
+        assert os.path.join(tempfile.gettempdir(), 'test.py') in report
         assert '85.0%' in report
 
     def test_generate_json_report(self):
         """Test generating JSON format report"""
         agent = TestCoverageEnforcer()
 
-        agent.reports[Path('/tmp/test.py')] = CoverageReport(
-            file_path=Path('/tmp/test.py'),
+        agent.reports[Path(os.path.join(tempfile.gettempdir(), 'test.py'))] = CoverageReport(
+            file_path=Path(os.path.join(tempfile.gettempdir(), 'test.py')),
             line_coverage=85.0,
             branch_coverage=80.0,
             function_coverage=90.0,
@@ -566,8 +566,8 @@ class TestReportGeneration:
         """Test generating HTML format report"""
         agent = TestCoverageEnforcer()
 
-        agent.reports[Path('/tmp/test.py')] = CoverageReport(
-            file_path=Path('/tmp/test.py'),
+        agent.reports[Path(os.path.join(tempfile.gettempdir(), 'test.py'))] = CoverageReport(
+            file_path=Path(os.path.join(tempfile.gettempdir(), 'test.py')),
             line_coverage=85.0,
             branch_coverage=80.0,
             function_coverage=90.0,
@@ -582,7 +582,7 @@ class TestReportGeneration:
 
         assert '<!DOCTYPE html>' in report
         assert 'Coverage Enforcement Report' in report
-        assert '/tmp/test.py' in report
+        assert os.path.join(tempfile.gettempdir(), 'test.py') in report
         assert '85.0%' in report
         assert '<table>' in report
 
@@ -598,8 +598,8 @@ class TestEnforcementWorkflow:
 
         # Mock successful coverage
         mock_analyze.return_value = {
-            Path('/tmp/test.py'): CoverageReport(
-                file_path=Path('/tmp/test.py'),
+            Path(os.path.join(tempfile.gettempdir(), 'test.py')): CoverageReport(
+                file_path=Path(os.path.join(tempfile.gettempdir(), 'test.py')),
                 line_coverage=85.0,
                 branch_coverage=85.0,
                 function_coverage=90.0,
@@ -626,8 +626,8 @@ class TestEnforcementWorkflow:
 
         # Mock insufficient coverage
         mock_analyze.return_value = {
-            Path('/tmp/test.py'): CoverageReport(
-                file_path=Path('/tmp/test.py'),
+            Path(os.path.join(tempfile.gettempdir(), 'test.py')): CoverageReport(
+                file_path=Path(os.path.join(tempfile.gettempdir(), 'test.py')),
                 line_coverage=70.0,
                 branch_coverage=70.0,
                 function_coverage=70.0,
@@ -700,8 +700,8 @@ def another_uncovered():
         agent.line_threshold = 80
 
         reports = {
-            Path('/tmp/test.py'): CoverageReport(
-                file_path=Path('/tmp/test.py'),
+            Path(os.path.join(tempfile.gettempdir(), 'test.py')): CoverageReport(
+                file_path=Path(os.path.join(tempfile.gettempdir(), 'test.py')),
                 line_coverage=95.0,
                 branch_coverage=95.0,
                 function_coverage=100.0,

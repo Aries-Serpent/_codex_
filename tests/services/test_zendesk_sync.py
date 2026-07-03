@@ -94,10 +94,10 @@ class TestSyncResult:
             failed=0,
             skipped=25,
             timestamp="2026-01-09T12:00:00+00:00",
-            dataset_path="/tmp/dataset.json",
+            dataset_path=os.path.join(tempfile.gettempdir(), "dataset.json"),
         )
 
-        assert result.dataset_path == "/tmp/dataset.json", "Result must not be empty"
+        assert result.dataset_path == os.path.join(tempfile.gettempdir(), "dataset.json"), "Result must not be empty"
 
 
 class TestZendeskKnowledgeSyncService:

@@ -1,6 +1,7 @@
 """Comprehensive tests for RAG indexer module."""
 
 import json
+import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -227,7 +228,7 @@ class TestEmbedChunks:
 
         model_profile = {
             "model_name": "sentence-transformers/paraphrase-MiniLM-L6-v2",
-            "cache_dir": "/tmp/cache",
+            "cache_dir": os.path.join(tempfile.gettempdir(), "cache"),
         }
 
         with patch("sentence_transformers.SentenceTransformer", return_value=mock_model) as mock_st:

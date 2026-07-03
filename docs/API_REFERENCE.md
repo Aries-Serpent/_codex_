@@ -1996,4 +1996,4 @@ if not result.success:
 
 - [RAG Pipeline API Reference](./RAG_API_REFERENCE.md)
 - [Configuration Guide](./CONFIGURATION_GUIDE.md)
-- [Quickstart Guide](./QUICKSTART.md)
+- [Quickstart Guide](./docs/guides/QUICKSTART.md)

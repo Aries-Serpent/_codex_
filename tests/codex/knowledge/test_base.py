@@ -3,6 +3,7 @@
 from unittest.mock import patch
 
 import pytest
+import tempfile
 
 
 class TestKnowledgeBaseImports:
@@ -72,7 +73,7 @@ class TestKnowledgeBasePersistence:
                 if hasattr(kb, "save"):
                     with patch.object(kb, "save") as mock_save:
                         mock_save.return_value = True
-                        result = kb.save("/tmp/kb.json")
+                        result = kb.save(os.path.join(tempfile.gettempdir(), "kb.json"))
                         assert result is True, "Result must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("KnowledgeBase.save not available")
@@ -85,7 +86,7 @@ class TestKnowledgeBasePersistence:
             if hasattr(base, "KnowledgeBase") and hasattr(base.KnowledgeBase, "load"):
                 with patch.object(base.KnowledgeBase, "load") as mock_load:
                     mock_load.return_value = base.KnowledgeBase()
-                    kb = base.KnowledgeBase.load("/tmp/kb.json")
+                    kb = base.KnowledgeBase.load(os.path.join(tempfile.gettempdir(), "kb.json"))
                     assert kb is not None, "kb must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("KnowledgeBase.load not available")

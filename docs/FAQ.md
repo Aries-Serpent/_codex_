@@ -750,7 +750,7 @@ python -m codex_ml.serving.cli serve \
 
 ### Documentation
 - 📖 [Main Documentation](./README.md)
-- 🚀 [Quick Start Guide](./QUICKSTART.md)
+- 🚀 [Quick Start Guide](./docs/guides/QUICKSTART.md)
 - ⚙️ [Configuration Guide](./configuration/)
 - 📊 [Evaluation Guide](./evaluation/README.md)
 - 🚢 [Deployment Guide](./guides/production_deployment.md)

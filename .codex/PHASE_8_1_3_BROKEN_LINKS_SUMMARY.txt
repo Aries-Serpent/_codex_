@@ -1,0 +1,234 @@
+================================================================================
+COMPREHENSIVE LINK VALIDATION REPORT
+Aries-Serpent/_codex_ Repository
+Generated: 2026-01-23T20:15:00Z
+================================================================================
+
+SCAN PARAMETERS
+================================================================================
+Directories Scanned:
+  ✓ docs/
+  ✓ .github/agents/
+  ✓ Root-level critical docs (README.md, CONTRIBUTING.md, SECURITY.md, etc.)
+
+Total Markdown Files: 1,996
+Exclusions: Archive directories, code blocks (triple backticks)
+External Links: Spot-checked (sample validation)
+
+================================================================================
+EXECUTIVE SUMMARY
+================================================================================
+
+Total Links Checked:        9,711
+Broken Links Found:         3,278
+Documentation Health Score: 66.24%
+Broken Link Rate:          33.76%
+
+Files with Issues:          223
+Average Issues per File:    14.7
+
+================================================================================
+ERROR BREAKDOWN
+================================================================================
+
+Category                          Count    Percentage
+─────────────────────────────────────────────────────
+Internal Anchor Missing           3,050      93.0%
+Internal File Missing               221       6.7%
+External URL 404                      7       0.2%
+Template Placeholders                 0       0.0%
+─────────────────────────────────────────────────────
+TOTAL                             3,278     100.0%
+
+================================================================================
+TOP 10 FILES WITH MOST BROKEN LINKS
+================================================================================
+
+Rank  File                                              Issues    Breakdown
+────  ────────────────────────────────────────────────  ────────  ─────────────────
+  1.  docs/reference/ELEVATED_PRIVILEGES_TOKEN_...       175      174 anchors, 1 ext
+  2.  docs/plans/Agentic_AI_System/soft_to_GROUNDED     157      157 anchors
+  3.  docs/plans/AST_Standardization_Requirements       93       93 anchors
+  4.  docs/plans/fix_falied_workflows_2025-12-22        88       88 anchors
+  5.  docs/Copy_of_Repository Secrets and Vars Inv      81       81 anchors
+  6.  docs/cognitive_brain/status/COGNI...STATUS_SR     67       67 anchors
+  7.  docs/plans/AST_PHASE0_COMPLETION_GUIDE            65       65 anchors
+  8.  docs/tech_debt/research_queue/questions_for       64       64 anchors
+  9.  docs/cognitive_brain/status/COGNITIVE_BRAIN_...   59       59 anchors
+ 10.  docs/mcp/ADVANCED_FEATURES_PLANSET                56       56 anchors
+
+(+ 213 more files with issues)
+
+================================================================================
+KEY FINDINGS
+================================================================================
+
+🔴 CRITICAL - ANCHOR ISSUES (93% of broken links)
+   ─────────────────────────────────────────────────
+   These self-referential links (#section) or cross-file anchor references
+   point to non-existent headings. Root causes:
+   
+   • Heading format inconsistency (markdown format vs actual headings)
+   • Generated/auto-anchors that don't exist in source files
+   • Missing headings for planned but unwritten sections
+   • Case sensitivity mismatches
+   
+   Impact: High - Breaks table of contents, navigation, and internal references
+   Remediation: 8-12 hours estimated for automated fixes + validation
+
+🟠 MEDIUM - FILE NOT FOUND (6.7% of broken links)
+   ─────────────────────────────────────────────────
+   Links pointing to markdown files that don't exist. Root causes:
+   
+   • Archived documentation (moved to archive/ or deleted)
+   • Placeholder paths in templates/examples
+   • Unimplemented features with documentation references
+   • Incorrect relative paths
+   
+   Impact: Medium - Users encounter "file not found" errors
+   Remediation: 4-6 hours estimated for audit + fixes
+
+🟡 LOW - EXTERNAL LINKS (0.2% of broken links)
+   ─────────────────────────────────────────────────
+   External URLs returning 404 or unreachable. Examples:
+   
+   • GitHub API/settings endpoints (6 links)
+   • Security scanning URLs (1 link)
+   
+   Impact: Low - Stale external references
+   Remediation: 1-2 hours estimated for review + updates
+
+================================================================================
+RECOMMENDATIONS BY PRIORITY
+================================================================================
+
+IMMEDIATE (This Week)
+  ☐ Generate detailed CSV export for manual review
+  ☐ Identify top 20 files with most issues (COMPLETE - see above)
+  ☐ Create automated anchor validation script
+  ☐ Plan anchor fix strategy (remove vs create missing headings)
+
+SHORT TERM (Next 2 Weeks)
+  ☐ Execute automated anchor fixes
+  ☐ Manually review and validate file not found issues
+  ☐ Create missing documentation files/stubs as needed
+  ☐ Fix incorrect relative paths
+  ☐ Verify external link accessibility
+
+MEDIUM TERM (Month 1)
+  ☐ Implement pre-commit hook validation
+  ☐ Update CI/CD pipeline to enforce link checks
+  ☐ Establish link validation baseline in workflows
+  ☐ Document link validation process and best practices
+
+ONGOING (Month 2+)
+  ☐ Weekly link health checks
+  ☐ Target: Reduce to <5% broken link rate
+  ☐ Monthly documentation audits
+  ☐ Enforce link validation on all PRs
+
+================================================================================
+VALIDATION SCRIPT USAGE
+================================================================================
+
+Location: .github/scripts/validate-links.py
+
+Standard validation:
+  $ python .github/scripts/validate-links.py
+
+Strict mode (fails on errors):
+  $ python .github/scripts/validate-links.py --fail-on-errors
+
+Generate report file:
+  $ python .github/scripts/validate-links.py --report-file output.json
+
+Pre-commit hook (auto-validation on .md changes):
+  Added to .pre-commit-config.yaml
+
+================================================================================
+REPORT ARTIFACTS
+================================================================================
+
+Location: .codex/
+
+Files Generated:
+  ✓ PHASE_8_1_3_BROKEN_LINKS_REPORT.json        (662.6 KB)
+    → Complete JSON report with all 3,278 broken links
+
+  ✓ PHASE_8_1_3_BROKEN_LINKS_REPORT.csv         (461.0 KB)
+    → CSV export for filtering and batch analysis
+
+  ✓ PHASE_8_1_3_BROKEN_LINKS_SUMMARY.md
+    → Detailed markdown summary with analysis
+
+Usage:
+  • Import JSON to dashboards or CI systems
+  • Filter CSV by error type or file for targeted fixes
+  • Share markdown summary with team
+
+================================================================================
+NEXT STEPS
+================================================================================
+
+1. REVIEW THIS REPORT
+   ☐ Review key findings and recommendations
+   ☐ Validate findings against critical documentation
+   ☐ Plan team approach to remediation
+
+2. EXPORT FOR ANALYSIS
+   ☐ Import JSON into analysis tools
+   ☐ Filter CSV by priority and error type
+   ☐ Create detailed fix checklist
+
+3. IMPLEMENT FIXES
+   ☐ Automated anchor removals
+   ☐ Manual file path corrections
+   ☐ Create missing documentation stubs
+   ☐ Verify external URLs
+
+4. PREVENT REGRESSIONS
+   ☐ Implement pre-commit validation
+   ☐ Add CI/CD link checks
+   ☐ Update documentation guidelines
+   ☐ Train contributors on link best practices
+
+5. TRACK PROGRESS
+   ☐ Re-run scan after fixes
+   ☐ Monitor link health metrics
+   ☐ Adjust SLAs as needed
+
+================================================================================
+METRICS DASHBOARD
+================================================================================
+
+Current State:
+  Health Score:         66.24%
+  Broken Link Rate:     33.76%
+  Files with Issues:    223 / 1,996
+  Average Issues:       14.7 per file
+
+Target State (Month 1):
+  Health Score:         >95%
+  Broken Link Rate:     <5%
+  Files with Issues:    <25
+  Average Issues:       <1 per file
+
+Success Criteria:
+  ✓ <100 broken links remaining
+  ✓ All high-priority files fixed
+  ✓ Pre-commit validation active
+  ✓ Zero new broken links in PRs
+
+================================================================================
+QUESTIONS?
+================================================================================
+
+For detailed analysis or custom filtering, see:
+  • .codex/PHASE_8_1_3_BROKEN_LINKS_REPORT.json
+  • .codex/PHASE_8_1_3_BROKEN_LINKS_SUMMARY.md
+  • .codex/PHASE_8_1_3_BROKEN_LINKS_REPORT.csv
+
+Generated by: Link Validator Agent
+Timestamp: 2026-01-23T20:15:00Z
+Scan Duration: ~90 seconds
+================================================================================

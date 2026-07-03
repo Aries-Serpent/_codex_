@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from src.codex.utils.path_extended import get_repo_root
 """
 Phase 9.3 TIER 1: Semantic Routing Quality Validator
 =====================================================
@@ -463,13 +464,13 @@ class SemanticRoutingValidator:
 
 def main():
     """Main entry point."""
-    registry_path = Path("/home/runner/work/_codex_/_codex_/.github/agents/AGENT_REGISTRY.yaml")
+    registry_path = Path(str(get_repo_root() / ".github/agents/AGENT_REGISTRY.yaml"))
     
     validator = SemanticRoutingValidator(str(registry_path))
     validation_results = validator.validate_all()
     
     # Save results
-    output_dir = Path("/home/runner/work/_codex_/_codex_/.codex")
+    output_dir = Path(str(get_repo_root() / ".codex"))
     output_dir.mkdir(parents=True, exist_ok=True)
     
     # Save raw results

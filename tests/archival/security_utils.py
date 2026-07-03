@@ -7,6 +7,7 @@ path traversal and other security vulnerabilities.
 from __future__ import annotations
 
 import os
+import tempfile
 import tarfile
 from pathlib import Path
 from typing import Optional
@@ -32,7 +33,7 @@ def safe_extract_tarfile(
         ValueError: If any member path attempts to traverse outside extract directory
 
     Example:
-        >>> safe_extract_tarfile(Path("archive.tar.gz"), Path("/tmp/extract"))
+        >>> safe_extract_tarfile(Path("archive.tar.gz"), Path(os.path.join(tempfile.gettempdir(), "extract")))
     """
     extract_to = extract_to.resolve()
 

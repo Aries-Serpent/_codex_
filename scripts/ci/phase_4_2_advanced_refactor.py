@@ -13,6 +13,7 @@ Strategy:
 """
 
 import json
+import tempfile
 import logging
 import re
 import sys
@@ -218,7 +219,7 @@ class AdvancedTokenRefactorer:
 
 def main():
     """Main entry point for advanced refactoring."""
-    validator_output = Path("/tmp/post_refactor_1.json")
+    validator_output = Path(os.path.join(tempfile.gettempdir(), "post_refactor_1.json"))
     if not validator_output.exists():
         logger.error("Post-refactor 1 analysis not found")
         return 1

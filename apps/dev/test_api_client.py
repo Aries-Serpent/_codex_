@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from src.codex.utils.path_extended import get_repo_root
 """
 Test script for Zendesk Voice Lines API Client (non-GUI components).
 
@@ -11,7 +12,7 @@ import json
 import sys
 from dataclasses import dataclass, field
 
-sys.path.insert(0, '/home/runner/work/_codex_/_codex_/apps/dev')
+sys.path.insert(0, str(get_repo_root() / 'apps/dev'))
 
 
 @dataclass

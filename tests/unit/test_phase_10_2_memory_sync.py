@@ -1,8 +1,9 @@
-"""
-pytest.importorskip("msgpack")
-Comprehensive Test Suite for Phase 10.2: STM → LTM Memory Consolidation
+import sys
+from datetime import datetime, timedelta, timezone
 
-Tests cover:
+import pytest
+
+from src.codex.utils.path_extended import get_repo_root
 - Memory consolidation logic
 - Pattern discovery and classification
 - LTM retention policies
@@ -19,7 +20,7 @@ from datetime import datetime, timedelta, timezone
 
 import pytest
 
-sys.path.insert(0, '/home/runner/work/_codex_/_codex_/src')
+sys.path.insert(0, str(get_repo_root() / 'src'))
 
 from codex.brain.ltm_retention import (
     ArchivedPolicy,
