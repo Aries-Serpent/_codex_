@@ -1,0 +1,36 @@
+name: premerge-triage-gate
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, labeled, unlabeled, ready_for_review]
+
+permissions:
+  contents: read
+
+jobs:
+  triage-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Enforce no unresolved triage markers
+        run: |
+          set -euo pipefail
+
+          BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+
+          git diff --unified=0 "$BASE_SHA" "$HEAD_SHA" > /tmp/pr.diff
+
+          if grep -E 'UNABLE_TO_CLASSIFY|AUTO-FIX AVAILABLE:\s*false|Confidence:\s*0%' /tmp/pr.diff >/dev/null; then
+            echo "::error::PR contains unresolved triage indicators (0% confidence / unclassified failure)."
+            exit 1
+          fi
+
+          echo "No unresolved triage markers detected."
