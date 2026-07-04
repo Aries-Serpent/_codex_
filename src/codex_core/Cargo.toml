@@ -1,0 +1,21 @@
+[package]
+name = "codex_core"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "codex_core"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.21", features = ["extension-module"] }
+pyo3-async-runtimes = { version = "0.21", features = ["tokio-runtime"] }
+tokio = { version = "1", features = ["full"] }
+futures = "0.3"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["fmt", "env-filter"] }
+pyo3-log = "0.11"
+
+[package.metadata.maturin]
+python-source = "python"
+module-name = "codex_core"
