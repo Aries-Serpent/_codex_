@@ -1,0 +1,72 @@
+name: manifest-drift-guard
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  validate-manifest-drift:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify CODEX_MANIFEST references resolve
+        run: |
+          set -euo pipefail
+
+          if [ ! -f CODEX_MANIFEST ]; then
+            echo "::warning::CODEX_MANIFEST not present at repo root; skipping strict path validation."
+            exit 0
+          fi
+
+          echo "Validating CODEX_MANIFEST path references..."
+          python - <<'PY'
+import json
+import os
+import re
+import sys
+from pathlib import Path
+
+manifest = Path("CODEX_MANIFEST")
+raw = manifest.read_text(encoding="utf-8")
+
+# Supports either JSON manifest or simple line-based "path: ..."
+paths = []
+
+try:
+    data = json.loads(raw)
+    def walk(v):
+        if isinstance(v, dict):
+            for k, vv in v.items():
+                if k.lower() in {"path", "file", "filepath"} and isinstance(vv, str):
+                    paths.append(vv)
+                walk(vv)
+        elif isinstance(v, list):
+            for i in v:
+                walk(i)
+    walk(data)
+except Exception:
+    for line in raw.splitlines():
+        m = re.search(r'(?:^|\s)(?:path|file|filepath)\s*[:=]\s*["\']?([^"\']+)["\']?', line, re.I)
+        if m:
+            paths.append(m.group(1).strip())
+
+missing = []
+for p in sorted(set(paths)):
+    # Ignore obvious URLs
+    if p.startswith("http://") or p.startswith("https://"):
+        continue
+    if not os.path.exists(p):
+        missing.append(p)
+
+if missing:
+    print("Missing manifest-referenced paths:")
+    for p in missing:
+        print(f" - {p}")
+    sys.exit(1)
+
+print(f"Manifest validation passed. Checked {len(set(paths))} referenced path(s).")
+PY

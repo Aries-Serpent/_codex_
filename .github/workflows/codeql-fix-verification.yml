@@ -1,0 +1,53 @@
+name: codeql-fix-verification
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+jobs:
+  enforce-codeql-fix-discipline:
+    runs-on: ubuntu-latest
+    if: contains(join(github.event.pull_request.labels.*.name, ','), 'codeql')
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate repro-test presence for CodeQL PRs
+        run: |
+          set -euo pipefail
+
+          BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+          CHANGED="$(git diff --name-only "$BASE_SHA" "$HEAD_SHA")"
+
+          echo "Changed files:"
+          echo "$CHANGED"
+
+          if ! echo "$CHANGED" | grep -E '(^tests/|_test\.py$|\.spec\.)' >/dev/null; then
+            echo "::error::CodeQL-labeled PR must include a repro/validation test (tests/*, *_test.py, or *.spec.*)."
+            exit 1
+          fi
+
+      - name: Install dependencies for validation
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          # Hard requirement for CodeQL validation
+          python -m pip install pytest
+
+      - name: Verify pytest presence
+        run: |
+          set -euo pipefail
+          if ! python -c "import pytest" 2>/dev/null; then
+            echo "::error::pytest is required for CodeQL validation but was not found."
+            exit 1
+          fi
+
+      - name: Run focused test suite
+        run: |
+          set -euo pipefail
+          pytest -q

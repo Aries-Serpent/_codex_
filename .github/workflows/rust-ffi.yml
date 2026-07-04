@@ -1,0 +1,67 @@
+name: rust-ffi
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-wheel:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.11", "3.12"]
+
+    runs-on: ${{ matrix.os }}
+
+    env:
+      CARGO_TERM_COLOR: always
+      RUST_LOG: info
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build wheel with maturin + sccache
+        uses: PyO3/maturin-action@v1
+        with:
+          command: build
+          args: --release --out dist --manifest-path src/codex_core/Cargo.toml
+          sccache: "true"
+
+      - name: Install wheel and run integration harness
+        run: |
+          python -m pip install --upgrade pip
+          pip install codex_core --no-index --find-links dist --force-reinstall
+          python scripts/test_orchestrator.py
+
+      - name: Write artifact metadata
+        run: |
+          cat > dist/ARTIFACT_METADATA.json <<EOF
+          {
+            "workflow": "rust-ffi",
+            "os": "${{ matrix.os }}",
+            "python_version": "${{ matrix.python-version }}",
+            "sha": "${{ github.sha }}",
+            "ref": "${{ github.ref }}",
+            "created_at_utc": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          }
+          EOF
+
+      - name: Upload built wheel artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: codex-core-wheel-${{ matrix.os }}-py${{ matrix.python-version }}
+          path: dist/*
+          if-no-files-found: error
