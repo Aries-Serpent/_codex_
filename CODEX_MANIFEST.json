@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-07-04T03:53:07Z",
+  "generated_at": "2026-07-04T08:48:00Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1042,6 +1042,11 @@
       "has_concurrency": true
     },
     {
+      "name": "agentic-diff-guard",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": false
+    },
+    {
       "name": "api-documentation",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1230,6 +1235,11 @@
       "name": "codeql-analysis",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
+    },
+    {
+      "name": "codeql-fix-verification",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": false
     },
     {
       "name": "codeql",
@@ -1547,6 +1557,11 @@
       "has_concurrency": true
     },
     {
+      "name": "manifest-drift-guard",
+      "enforcement_tier": "PARTIAL",
+      "has_concurrency": false
+    },
+    {
       "name": "maturity-check",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1712,6 +1727,11 @@
       "has_concurrency": true
     },
     {
+      "name": "premerge-triage-gate",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": false
+    },
+    {
       "name": "proactive-ci-monitor",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1820,6 +1840,11 @@
       "name": "rust-error-validator-observation",
       "enforcement_tier": "PARTIAL",
       "has_concurrency": true
+    },
+    {
+      "name": "rust-ffi",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": false
     },
     {
       "name": "rust_swarm_ci",
@@ -2421,5 +2446,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "4e484d6a4ab71431c054cf6de3b5e7549a9fc82789b77e8286d1b1f4481acc62"
+  "integrity_sha256": "3458e97a1c016a90ee6ed1a643c6f6317afb9bfc71484268ad0650e1e06016a5"
 }
