@@ -1,0 +1,82 @@
+name: CI Failure Manual Intervention
+description: Enriched fallback issue for triage failures with low confidence or unclassified failures.
+title: "[CI Failure] Manual Intervention Required - <workflow/job>"
+labels:
+  - ci-failure
+  - needs-investigation
+  - manual-intervention
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This issue is auto-generated when autonomous triage confidence is 0% or classification fails.
+        Provide concrete evidence and keep remediation deterministic.
+
+  - type: input
+    id: workflow_name
+    attributes:
+      label: Workflow Name
+      description: Source workflow that failed
+      placeholder: rust-ffi / build-wheel
+    validations:
+      required: true
+
+  - type: input
+    id: run_url
+    attributes:
+      label: Run URL
+      description: Link to failed workflow run
+      placeholder: https://github.com/owner/repo/actions/runs/...
+    validations:
+      required: true
+
+  - type: textarea
+    id: failing_step
+    attributes:
+      label: Failing Step
+      description: Exact failing step name and command
+      placeholder: Install wheel and run integration harness
+    validations:
+      required: true
+
+  - type: textarea
+    id: log_excerpt
+    attributes:
+      label: Exact Log Excerpt
+      description: Paste exact error lines (no paraphrase)
+      placeholder: |
+        error: ...
+        traceback: ...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: classification_confidence
+    attributes:
+      label: Classification Confidence
+      options:
+        - 0%
+        - 1-30%
+        - 31-60%
+        - 61-90%
+        - 91-100%
+    validations:
+      required: true
+
+  - type: textarea
+    id: root_cause_hypothesis
+    attributes:
+      label: Root Cause Hypothesis
+      description: Context-gathering output (no speculative fix)
+      placeholder: Soft gate: dependency index timeout while resolving wheel metadata...
+    validations:
+      required: true
+
+  - type: textarea
+    id: impact_assessment
+    attributes:
+      label: Impact Assessment
+      description: Affected workflows/systems and blast radius
+      placeholder: Blocks PR merges for Rust FFI paths only.
+    validations:
+      required: true
