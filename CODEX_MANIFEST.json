@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-07-03T16:09:52Z",
+  "generated_at": "2026-07-04T03:53:07Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -989,7 +989,7 @@
     {
       "name": "admin-action-notifier",
       "enforcement_tier": "PARTIAL",
-      "has_concurrency": true
+      "has_concurrency": false
     },
     {
       "name": "admin-action-t03",
@@ -2421,5 +2421,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "e819924d899c1d1a895e609b6718ae909ba190fa1875d105f76dd42bf3d426c3"
+  "integrity_sha256": "4e484d6a4ab71431c054cf6de3b5e7549a9fc82789b77e8286d1b1f4481acc62"
 }
