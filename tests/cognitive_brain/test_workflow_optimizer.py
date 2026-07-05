@@ -15,12 +15,11 @@ import pytest
 
 from codex.cognitive.workflow_optimizer import (
     CacheOptimizer,
-    CheckpointManager, # pragma: allowlist secret
+    CheckpointManager,  # pragma: allowlist secret
     ImmutableComponent,
     ImmutableRegistry,
     OptimizationType,
     RedundancyDetector,
-    WorkflowAnalyzer,
     WorkflowCategorizer,
     WorkflowCategory,
     WorkflowCheckpoint,
@@ -29,7 +28,6 @@ from codex.cognitive.workflow_optimizer import (
     WorkflowRun,
     WorkflowStatus,
 )
-
 
 # ---------------------------------------------------------------------------
 # Enums

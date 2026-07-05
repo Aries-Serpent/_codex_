@@ -370,4 +370,4 @@ if __name__ == "__main__":
     
     snapshot = collector.get_metrics_snapshot()
     print(f"Metrics snapshot:\n{json.dumps(snapshot, indent=2)}")
-    print(f"Total metrics implemented: 25")
+    print("Total metrics implemented: 25")

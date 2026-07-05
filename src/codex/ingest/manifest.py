@@ -20,7 +20,6 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Literal, Optional
 
-
 logger = logging.getLogger(__name__)
 
 # Try to import YAML parser
