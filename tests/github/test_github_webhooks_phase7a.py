@@ -16,7 +16,6 @@ import pytest
 
 from codex.auth.github_app import WebhookVerifier
 
-
 # ---------------------------------------------------------------------------
 # WebhookVerifier initialisation
 # ---------------------------------------------------------------------------

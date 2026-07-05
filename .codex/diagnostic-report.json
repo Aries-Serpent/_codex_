@@ -1,0 +1,213 @@
+{
+  "timestamp": "2026-07-05T03:51:03.094231+00:00",
+  "status": "failed",
+  "total_issues": 18,
+  "auto_fixable": 5,
+  "manual_review": 3,
+  "issues": [
+    {
+      "pattern": 3,
+      "pattern_name": "YAML Indentation",
+      "type": "yaml_indentation",
+      "severity": "warning",
+      "file": "manifest-drift-guard.yml",
+      "line": 0,
+      "message": "manifest-drift-guard.yml: while scanning a simple key\n  in \"<unicode string>\", line 27, column 1:\n    import json\n    ^\ncould not find expected ':'\n  in \"<unicode string>\", line 28, column 1:\n    import os\n    ^",
+      "auto_fix_available": false,
+      "suggested_fix": "Run: python scripts/ci/auto_fix_common_issues.py --pattern 3"
+    },
+    {
+      "pattern": 11,
+      "pattern_name": "F-String Placeholders",
+      "type": "f-string_placeholders",
+      "severity": "error",
+      "file": "/home/runner/work/_codex_/_codex_/scripts/observability/core_telemetry_collector.py",
+      "line": 373,
+      "message": "f-string without any placeholders",
+      "auto_fix_available": true,
+      "suggested_fix": "Run: python scripts/ci/auto_fix_common_issues.py --pattern 11"
+    },
+    {
+      "pattern": 17,
+      "pattern_name": "CI SHA Drift",
+      "type": "ci_sha_drift",
+      "severity": "warning",
+      "file": "SHA drift detected",
+      "line": 0,
+      "message": "SHA drift detected: GITHUB_SHA=7676d004efea but git HEAD=db5f2a9f55b6. CI likely ran on a GitHub merge commit (PR merge preview). This can cause mypy/ruff counts to diverge from local runs. See .github/workflows/mypy-baseline.yml SHA-drift diagnostic step.",
+      "auto_fix_available": false,
+      "suggested_fix": "Run: python scripts/ci/auto_fix_common_issues.py --pattern 17"
+    },
+    {
+      "pattern": 21,
+      "pattern_name": "Node.js 20 Actions",
+      "type": "node.js_20_actions",
+      "severity": "warning",
+      "file": ".github/workflows/agentic-diff-guard.yml",
+      "line": 0,
+      "message": ".github/workflows/agentic-diff-guard.yml: 2 Node.js 20 action ref(s): actions/checkout@v4, actions/setup-python@v5",
+      "auto_fix_available": false,
+      "suggested_fix": "Run: python scripts/ci/auto_fix_common_issues.py --pattern 21"
+    },
+    {
+      "pattern": 21,
+      "pattern_name": "Node.js 20 Actions",
+      "type": "node.js_20_actions",
+      "severity": "warning",
+      "file": ".github/workflows/codeql-fix-verification.yml",
+      "line": 0,
+      "message": ".github/workflows/codeql-fix-verification.yml: 1 Node.js 20 action ref(s): actions/checkout@v4",
+      "auto_fix_available": false,
+      "suggested_fix": "Run: python scripts/ci/auto_fix_common_issues.py --pattern 21"
+    },
+    {
+      "pattern": 21,
+      "pattern_name": "Node.js 20 Actions",
+      "type": "node.js_20_actions",
+      "severity": "warning",
+      "file": ".github/workflows/manifest-drift-guard.yml",
+      "line": 0,
+      "message": ".github/workflows/manifest-drift-guard.yml: 1 Node.js 20 action ref(s): actions/checkout@v4",
+      "auto_fix_available": false,
+      "suggested_fix": "Run: python scripts/ci/auto_fix_common_issues.py --pattern 21"
+    },
+    {
+      "pattern": 21,
+      "pattern_name": "Node.js 20 Actions",
+      "type": "node.js_20_actions",
+      "severity": "warning",
+      "file": "\u2026and 2 more workflow(s) (8 total refs)",
+      "line": 0,
+      "message": "\u2026and 2 more workflow(s) (8 total refs)",
+      "auto_fix_available": false,
+      "suggested_fix": "Run: python scripts/ci/auto_fix_common_issues.py --pattern 21"
+    },
+    {
+      "pattern": 22,
+      "pattern_name": "Tracked File Sync",
+      "type": "tracked_file_sync",
+      "severity": "warning",
+      "file": "CODEX_MANIFEST / CHANGELOG / accountability drift detected",
+      "line": 0,
+      "message": "CODEX_MANIFEST / CHANGELOG / accountability drift detected",
+      "auto_fix_available": false,
+      "suggested_fix": "Run: python scripts/ci/auto_fix_common_issues.py --pattern 22"
+    },
+    {
+      "pattern": 28,
+      "pattern_name": "Copilot Sandbox Guard",
+      "type": "copilot_sandbox_guard",
+      "severity": "warning",
+      "file": "Copilot cloud agent sandbox detected",
+      "line": 0,
+      "message": "Copilot cloud agent sandbox detected: GITHUB_SHA=7676d004efea is a synthetic merge commit not present in local history (HEAD=db5f2a9f55b6). Pattern 17 (CI SHA Drift) will fire as a known false positive \u2014 safe to ignore. All other patterns (1-16, 18-27, 29-30) run normally and are unaffected.",
+      "auto_fix_available": false,
+      "suggested_fix": "Run: python scripts/ci/auto_fix_common_issues.py --pattern 28"
+    },
+    {
+      "pattern": 30,
+      "pattern_name": "Merge Readiness Dims",
+      "type": "merge_readiness_dims",
+      "severity": "error",
+      "file": "sync_tracked_files",
+      "line": 0,
+      "message": "sync_tracked_files: \u274c stale",
+      "auto_fix_available": true,
+      "suggested_fix": "Run: python scripts/ci/auto_fix_common_issues.py --pattern 30"
+    },
+    {
+      "pattern": 30,
+      "pattern_name": "Merge Readiness Dims",
+      "type": "merge_readiness_dims",
+      "severity": "error",
+      "file": "action_versions (all approved)",
+      "line": 0,
+      "message": "action_versions (all approved): \u274c violations",
+      "auto_fix_available": true,
+      "suggested_fix": "Run: python scripts/ci/auto_fix_common_issues.py --pattern 30"
+    },
+    {
+      "pattern": 30,
+      "pattern_name": "Merge Readiness Dims",
+      "type": "merge_readiness_dims",
+      "severity": "error",
+      "file": "ruff (src/ clean)",
+      "line": 0,
+      "message": "ruff (src/ clean): \u274c lint violations",
+      "auto_fix_available": true,
+      "suggested_fix": "Run: python scripts/ci/auto_fix_common_issues.py --pattern 30"
+    },
+    {
+      "pattern": 30,
+      "pattern_name": "Merge Readiness Dims",
+      "type": "merge_readiness_dims",
+      "severity": "error",
+      "file": "PDA entry today",
+      "line": 0,
+      "message": "PDA entry today: \u26a0\ufe0f no entry today",
+      "auto_fix_available": true,
+      "suggested_fix": "Run: python scripts/ci/auto_fix_common_issues.py --pattern 30"
+    },
+    {
+      "pattern": 0,
+      "pattern_name": "Missing Newline at EOF",
+      "type": "missing_newline_at_eof",
+      "severity": "warning",
+      "file": "Would fix missing newline in .github/scripts/agentic_diff_guard.py",
+      "line": 0,
+      "message": "Would fix missing newline in .github/scripts/agentic_diff_guard.py",
+      "auto_fix_available": false,
+      "suggested_fix": "Run: python scripts/ci/auto_fix_common_issues.py --pattern 0"
+    },
+    {
+      "pattern": 0,
+      "pattern_name": "Missing Newline at EOF",
+      "type": "missing_newline_at_eof",
+      "severity": "warning",
+      "file": "Would fix missing newline in scripts/test_orchestrator.py",
+      "line": 0,
+      "message": "Would fix missing newline in scripts/test_orchestrator.py",
+      "auto_fix_available": false,
+      "suggested_fix": "Run: python scripts/ci/auto_fix_common_issues.py --pattern 0"
+    },
+    {
+      "pattern": 0,
+      "pattern_name": "Markdown FP Secrets",
+      "type": "markdown_fp_secrets",
+      "severity": "warning",
+      "file": "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md",
+      "line": 68,
+      "message": "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md:68: secret-like pattern in doc (table)",
+      "auto_fix_available": false,
+      "suggested_fix": "Run: python scripts/ci/auto_fix_common_issues.py --pattern 0"
+    },
+    {
+      "pattern": 0,
+      "pattern_name": "Markdown FP Secrets",
+      "type": "markdown_fp_secrets",
+      "severity": "warning",
+      "file": "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md",
+      "line": 141,
+      "message": "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md:141: secret-like pattern in doc (table)",
+      "auto_fix_available": false,
+      "suggested_fix": "Run: python scripts/ci/auto_fix_common_issues.py --pattern 0"
+    },
+    {
+      "pattern": 0,
+      "pattern_name": "Markdown FP Secrets",
+      "type": "markdown_fp_secrets",
+      "severity": "warning",
+      "file": "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md",
+      "line": 189,
+      "message": "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md:189: secret-like pattern in doc (table)",
+      "auto_fix_available": false,
+      "suggested_fix": "Run: python scripts/ci/auto_fix_common_issues.py --pattern 0"
+    }
+  ],
+  "fixes_applied": {},
+  "next_steps": [
+    "Run: python scripts/ci/auto_fix_common_issues.py",
+    "Or use Copilot Agent: @workspace Fix all auto-fixable CI issues",
+    "Patterns to fix: 30, 11"
+  ]
+}
