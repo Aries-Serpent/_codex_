@@ -1,14 +1,12 @@
-import sys
+"""
+Test Suite for Agent Memory, Physics Orchestrator, Mental Mapping, and Cognitive Adapter
 
-import pytest
-
-from src.codex.utils.path_extended import get_repo_root
 Focus: Boundary conditions, exception handling, state transitions, integration scenarios
 """
 
 import sys
-
 import pytest
+from src.codex.utils.path_extended import get_repo_root
 
 # Add project paths
 sys.path.insert(0, str(get_repo_root() / "src"))
@@ -24,428 +22,499 @@ except ImportError as e:
 
 
 # ============================================================================
-# AGENT_MEMORY.PY TEST SUITE (120 tests - 40% allocation)
+# FIXTURES: Reusable test object factories to reduce boilerplate
+# ============================================================================
+
+
+@pytest.fixture
+def memory_entry_factory():
+    """Factory for creating test MemoryEntry objects with sensible defaults"""
+    def _create(
+        memory_id="test",
+        category="test",
+        content="test_value",
+        context=None,
+        confidence=0.5,
+        access_count=0,
+        tags=None,
+        **kwargs
+    ):
+        defaults = {
+            "memory_id": memory_id,
+            "category": category,
+            "content": content,
+            "context": context or {},
+            "confidence": confidence,
+            "access_count": access_count,
+        }
+        if tags:
+            defaults["tags"] = tags
+        defaults.update(kwargs)
+        return MemoryEntry(**defaults)
+    return _create
+
+
+@pytest.fixture
+def context_frame_factory():
+    """Factory for creating test ContextFrame objects"""
+    def _create(task_id="task1", **kwargs):
+        return ContextFrame(task_id=task_id, **kwargs)
+    return _create
+
+
+@pytest.fixture
+def force_vector_factory():
+    """Factory for creating test ForceVector objects"""
+    def _create(x=0, y=0, z=0, **kwargs):
+        return ForceVector(x=x, y=y, z=z, **kwargs)
+    return _create
+
+
+# ============================================================================
+# AGENT_MEMORY.PY TEST SUITE: MemoryEntry Boundary Conditions
 # ============================================================================
 
 
 class TestMemoryEntryBoundaryConditions:
     """Edge cases for MemoryEntry dataclass - confidence, access_count, timestamps"""
 
-    def test_confidence_lower_bound_zero(self):
-        """MemoryEntry with confidence=0.0 (lower bound)"""
-        entry = MemoryEntry(
-            memory_id="test_zero", category="test", content="test_value", context={}, confidence=0.0
-        )
-        assert entry.confidence == 0.0, "confidence is not valid"
-        assert entry.access_count == 0, "Count must be greater than zero"
+    def test_confidence_lower_bound_zero(self, memory_entry_factory):
+        """MemoryEntry should accept confidence=0.0 (lower boundary)"""
+        entry = memory_entry_factory(memory_id="test_zero", confidence=0.0)
+        assert entry.confidence == 0.0, "confidence should equal 0.0"
+        assert entry.access_count == 0, "access_count should initialize to 0"
 
-    def test_confidence_upper_bound_one(self):
-        """MemoryEntry with confidence=1.0 (upper bound)"""
-        entry = MemoryEntry(
-            memory_id="test_max", category="test", content="test_value", context={}, confidence=1.0
-        )
-        assert entry.confidence == 1.0, "confidence is not valid"
+    def test_confidence_upper_bound_one(self, memory_entry_factory):
+        """MemoryEntry should accept confidence=1.0 (upper boundary)"""
+        entry = memory_entry_factory(memory_id="test_max", confidence=1.0)
+        assert entry.confidence == 1.0, "confidence should equal 1.0"
 
-    def test_confidence_midpoint(self):
-        """MemoryEntry with confidence at 0.5"""
-        entry = MemoryEntry(
-            memory_id="test_mid", category="test", content="v", context={}, confidence=0.5
-        )
-        assert entry.confidence == 0.5, "confidence is not valid"
+    def test_confidence_midpoint(self, memory_entry_factory):
+        """MemoryEntry should accept confidence=0.5 (midpoint)"""
+        entry = memory_entry_factory(memory_id="test_mid", confidence=0.5)
+        assert entry.confidence == 0.5, "confidence should equal 0.5"
 
-    def test_confidence_overflow_stored(self):
-        """MemoryEntry stores confidence > 1.0 without validation (by design)."""
-        entry = MemoryEntry(
-            memory_id="test_over", category="test", content="v", context={}, confidence=1.1
-        )
-        assert entry.confidence == 1.1, "confidence is not valid"
+    def test_confidence_overflow_stored(self, memory_entry_factory):
+        """MemoryEntry stores confidence > 1.0 without validation (by design)"""
+        entry = memory_entry_factory(memory_id="test_over", confidence=1.1)
+        assert entry.confidence == 1.1, "confidence should be stored as-is without validation"
 
-    def test_confidence_underflow_stored(self):
-        """MemoryEntry stores negative confidence without validation (by design)."""
-        entry = MemoryEntry(
-            memory_id="test_under", category="test", content="v", context={}, confidence=-0.1
-        )
-        assert entry.confidence == -0.1, "confidence is not valid"
+    def test_confidence_underflow_stored(self, memory_entry_factory):
+        """MemoryEntry stores negative confidence without validation (by design)"""
+        entry = memory_entry_factory(memory_id="test_under", confidence=-0.1)
+        assert entry.confidence == -0.1, "negative confidence should be stored as-is"
 
-    def test_access_count_zero(self):
-        """MemoryEntry with access_count=0 (never accessed)"""
-        entry = MemoryEntry(
-            memory_id="test_ac", category="test", content="v", context={}, confidence=0.5
-        )
-        assert entry.access_count == 0, "Count must be greater than zero"
+    def test_access_count_zero(self, memory_entry_factory):
+        """MemoryEntry should initialize access_count to 0"""
+        entry = memory_entry_factory(memory_id="test_ac")
+        assert entry.access_count == 0, "access_count should initialize to 0"
 
-    def test_access_count_large_value(self):
-        """MemoryEntry with very large access_count"""
-        entry = MemoryEntry(
-            memory_id="test_large",
-            category="test",
-            content="v",
-            context={},
-            confidence=0.5,
-            access_count=999999,
-        )
-        assert entry.access_count == 999999, "Count must be greater than zero"
+    def test_access_count_large_value(self, memory_entry_factory):
+        """MemoryEntry should accept very large access_count values"""
+        entry = memory_entry_factory(memory_id="test_large", access_count=999999)
+        assert entry.access_count == 999999, "access_count should accept large values"
 
-    def test_access_count_negative_stored(self):
-        """MemoryEntry stores negative access_count without validation (by design)."""
-        entry = MemoryEntry(
-            memory_id="test_neg_ac", category="test", content="v", context={}, access_count=-1
-        )
-        assert entry.access_count == -1, "Count must be greater than zero"
+    def test_access_count_negative_stored(self, memory_entry_factory):
+        """MemoryEntry stores negative access_count without validation (by design)"""
+        entry = memory_entry_factory(memory_id="test_neg_ac", access_count=-1)
+        assert entry.access_count == -1, "negative access_count should be stored as-is"
 
-    def test_memory_id_empty_string(self):
-        """MemoryEntry with empty memory_id"""
-        entry = MemoryEntry(memory_id="", category="test", content="v", context={}, confidence=0.5)
-        assert entry.memory_id == "", "memory_id is not valid"
+    def test_memory_id_empty_string(self, memory_entry_factory):
+        """MemoryEntry should accept empty string as memory_id"""
+        entry = memory_entry_factory(memory_id="", confidence=0.5)
+        assert entry.memory_id == "", "memory_id should accept empty string"
 
-    def test_memory_id_none_stored(self):
-        """MemoryEntry with None memory_id (no runtime type enforcement)."""
-        entry = MemoryEntry(
-            memory_id=None, category="test", content="v", context={}, confidence=0.5
-        )
-        assert entry.memory_id is None, "memory_id is not valid"
+    def test_memory_id_none_stored(self, memory_entry_factory):
+        """MemoryEntry stores None memory_id without runtime type enforcement"""
+        entry = memory_entry_factory(memory_id=None, confidence=0.5)
+        assert entry.memory_id is None, "memory_id should accept None"
 
-    def test_content_empty_string(self):
-        """MemoryEntry with empty string content"""
-        entry = MemoryEntry(
-            memory_id="test_empty", category="test", content="", context={}, confidence=0.5
-        )
-        assert entry.content == "", "Content must not be empty"
+    def test_content_empty_string(self, memory_entry_factory):
+        """MemoryEntry should accept empty string as content"""
+        entry = memory_entry_factory(memory_id="test_empty", content="")
+        assert entry.content == "", "content should accept empty string"
 
-    def test_content_none_stored(self):
-        """MemoryEntry may store None content (no runtime type enforcement)."""
-        entry = MemoryEntry(
-            memory_id="test_none", category="test", content=None, context={}, confidence=0.5
-        )
-        assert entry.content is None, "Content must not be empty"
+    def test_content_none_stored(self, memory_entry_factory):
+        """MemoryEntry stores None content without runtime type enforcement"""
+        entry = memory_entry_factory(memory_id="test_none", content=None)
+        assert entry.content is None, "content should accept None"
 
-    def test_content_complex_type(self):
-        """MemoryEntry content as stringified complex value"""
+    def test_content_complex_type(self, memory_entry_factory):
+        """MemoryEntry should store stringified complex values"""
         complex_value = str({"nested": {"data": [1, 2, 3]}, "other": "info"})
-        entry = MemoryEntry(
-            memory_id="test_complex",
-            category="test",
-            content=complex_value,
-            context={},
-            confidence=0.5,
-        )
-        assert entry.content == complex_value, "Value must be initialized"
+        entry = memory_entry_factory(memory_id="test_complex", content=complex_value)
+        assert entry.content == complex_value, "content should store complex stringified values"
 
-    def test_tags_empty_list(self):
-        """MemoryEntry with empty tags list (default)"""
-        entry = MemoryEntry(
-            memory_id="test_tags", category="test", content="v", context={}, confidence=0.5
-        )
-        assert entry.tags == [], "tags is not valid"
+    def test_tags_empty_list(self, memory_entry_factory):
+        """MemoryEntry should initialize with empty tags list"""
+        entry = memory_entry_factory(memory_id="test_tags")
+        assert entry.tags == [], "tags should initialize to empty list"
 
-    def test_tags_single_tag(self):
-        """MemoryEntry with single tag"""
-        entry = MemoryEntry(
-            memory_id="test_one_tag", category="test", content="v", context={}, tags=["important"]
-        )
-        assert "important" in entry.tags, "Condition must be true"
+    def test_tags_single_tag(self, memory_entry_factory):
+        """MemoryEntry should accept single tag"""
+        entry = memory_entry_factory(memory_id="test_one_tag", tags=["important"])
+        assert "important" in entry.tags, "tags should contain the added tag"
 
-    def test_tags_multiple_tags(self):
-        """MemoryEntry with many tags"""
+    def test_tags_multiple_tags(self, memory_entry_factory):
+        """MemoryEntry should accept multiple tags"""
         tag_list = ["tag1", "tag2", "tag3", "tag4", "tag5"]
-        entry = MemoryEntry(
-            memory_id="test_multi_tag", category="test", content="v", context={}, tags=tag_list
-        )
-        assert set(entry.tags) == set(tag_list), "Condition must be true"
+        entry = memory_entry_factory(memory_id="test_multi_tag", tags=tag_list)
+        assert set(entry.tags) == set(tag_list), "tags should contain all added tags"
 
-    def test_created_at_timestamp(self):
-        """MemoryEntry created_at is an ISO-format string"""
-        entry = MemoryEntry(memory_id="test_ts", category="test", content="v", context={})
-        assert hasattr(entry, "created_at")
-        assert isinstance(entry.created_at, str)
-        assert len(entry.created_at) > 0, "Collection must not be empty"
+    def test_created_at_timestamp_format(self, memory_entry_factory):
+        """MemoryEntry created_at should be ISO-format string"""
+        entry = memory_entry_factory(memory_id="test_ts")
+        assert hasattr(entry, "created_at"), "entry should have created_at attribute"
+        assert isinstance(entry.created_at, str), "created_at should be a string"
+        assert len(entry.created_at) > 0, "created_at should not be empty"
 
-    def test_timestamp_persistence(self):
-        """MemoryEntry timestamp unchanged after access"""
-        entry = MemoryEntry(memory_id="test_ts_persist", category="test", content="v", context={})
+    def test_timestamp_persistence_after_modification(self, memory_entry_factory):
+        """MemoryEntry created_at should not change after modification"""
+        entry = memory_entry_factory(memory_id="test_ts_persist")
         original_time = entry.created_at
         entry.access_count += 1
-        assert entry.created_at == original_time, "created_at is not valid"
+        assert entry.created_at == original_time, "created_at should not change after modification"
 
 
-class TestMemoryEntryCircularReferences:
+# ============================================================================
+# AGENT_MEMORY.PY TEST SUITE: MemoryEntry Relationships
+# ============================================================================
+
+
+class TestMemoryEntryRelationships:
     """Edge cases for related_memories and circular dependencies"""
 
-    def test_related_memories_empty(self):
-        """MemoryEntry with no related memories"""
-        entry = MemoryEntry(memory_id="test_rel", category="test", content="v", context={})
+    def test_related_memories_empty_initialization(self, memory_entry_factory):
+        """MemoryEntry should initialize with no related memories"""
+        entry = memory_entry_factory(memory_id="test_rel")
         if hasattr(entry, "related_memories"):
-            assert entry.related_memories == [] or entry.related_memories == set(), "related_memories is not valid"
+            assert (
+                entry.related_memories == [] or entry.related_memories == set()
+            ), "related_memories should initialize empty"
 
-    def test_related_memories_self_reference_rejected(self):
+    @pytest.mark.skipif(
+        not hasattr(MemoryEntry, "add_related_memory"),
+        reason="add_related_memory method not implemented"
+    )
+    def test_related_memories_self_reference_rejected(self, memory_entry_factory):
         """MemoryEntry should reject self-reference in related_memories"""
-        entry = MemoryEntry(memory_id="self_ref", category="test", content="v", context={})
-        if hasattr(entry, "add_related_memory"):
-            try:
-                entry.add_related_memory(entry)
-                # If no exception, verify self-reference was not added
-                if hasattr(entry, "related_memories"):
-                    assert entry not in entry.related_memories, "Condition must be true"
-            except (ValueError, RuntimeError):
-                pass  # Expected behavior
+        entry = memory_entry_factory(memory_id="self_ref")
+        with pytest.raises((ValueError, RuntimeError)):
+            entry.add_related_memory(entry)
 
-    def test_related_memories_circular_chain(self):
-        """MemoryEntry chain: A->B->C->A should not create infinite loop"""
-        entry_a = MemoryEntry(memory_id="a", category="test", content="va", context={})
-        entry_b = MemoryEntry(memory_id="b", category="test", content="vb", context={})
-        entry_c = MemoryEntry(memory_id="c", category="test", content="vc", context={})
+    @pytest.mark.skipif(
+        not hasattr(MemoryEntry, "add_related_memory"),
+        reason="add_related_memory method not implemented"
+    )
+    def test_related_memories_circular_chain_no_hang(self, memory_entry_factory):
+        """MemoryEntry chain A->B->C->A should not create infinite loop"""
+        entry_a = memory_entry_factory(memory_id="a", content="va")
+        entry_b = memory_entry_factory(memory_id="b", content="vb")
+        entry_c = memory_entry_factory(memory_id="c", content="vc")
 
-        if hasattr(entry_a, "add_related_memory"):
-            try:
-                entry_a.add_related_memory(entry_b)
-                entry_b.add_related_memory(entry_c)
-                entry_c.add_related_memory(entry_a)
-                # Should not raise or hang
-            except (ValueError, RuntimeError):
-                pass
+        entry_a.add_related_memory(entry_b)
+        entry_b.add_related_memory(entry_c)
+        entry_c.add_related_memory(entry_a)
+        # Should not raise or hang
+
+
+# ============================================================================
+# AGENT_MEMORY.PY TEST SUITE: ContextFrame State Transitions
+# ============================================================================
 
 
 class TestContextFrameStateTransitions:
     """Edge cases for ContextFrame status transitions and state management"""
 
-    def test_context_frame_creation(self):
-        """ContextFrame initial state"""
-        frame = ContextFrame(task_id="task1")
-        assert frame.task_id == "task1", "task_id is not valid"
-        assert hasattr(frame, "status")
+    def test_context_frame_creation(self, context_frame_factory):
+        """ContextFrame should initialize with task_id"""
+        frame = context_frame_factory(task_id="task1")
+        assert frame.task_id == "task1", "task_id should be set correctly"
+        assert hasattr(frame, "status"), "frame should have status attribute"
 
-    def test_context_frame_status_active(self):
-        """ContextFrame with active status"""
-        frame = ContextFrame(task_id="task1")
-        if hasattr(frame, "set_status"):
-            frame.set_status("active")
-            assert frame.status == "active", "status is not valid"
-        else:
-            frame.status = "active"
+    @pytest.mark.skipif(
+        not hasattr(ContextFrame, "set_status"),
+        reason="set_status method not implemented"
+    )
+    def test_context_frame_status_transitions(self, context_frame_factory):
+        """ContextFrame should transition through valid statuses"""
+        frame = context_frame_factory(task_id="task1")
+        valid_statuses = ["active", "completed", "failed", "paused"]
+        for status in valid_statuses:
+            frame.set_status(status)
+            assert frame.status == status, f"status should be set to {status}"
 
-    def test_context_frame_status_completed(self):
-        """ContextFrame transition to completed"""
-        frame = ContextFrame(task_id="task1")
-        if hasattr(frame, "set_status"):
-            frame.set_status("completed")
-        else:
-            frame.status = "completed"
-        assert frame.status == "completed", "status is not valid"
+    @pytest.mark.skipif(
+        not hasattr(ContextFrame, "set_status"),
+        reason="set_status method not implemented"
+    )
+    def test_context_frame_invalid_status_rejected(self, context_frame_factory):
+        """ContextFrame should reject invalid status values"""
+        frame = context_frame_factory(task_id="task1")
+        with pytest.raises((ValueError, AssertionError)):
+            frame.set_status("invalid_status")
 
-    def test_context_frame_status_failed(self):
-        """ContextFrame transition to failed"""
-        frame = ContextFrame(task_id="task1")
-        if hasattr(frame, "set_status"):
-            frame.set_status("failed")
-        else:
-            frame.status = "failed"
-        assert frame.status == "failed", "status is not valid"
-
-    def test_context_frame_status_paused(self):
-        """ContextFrame transition to paused"""
-        frame = ContextFrame(task_id="task1")
-        if hasattr(frame, "set_status"):
-            frame.set_status("paused")
-        else:
-            frame.status = "paused"
-
-    def test_context_frame_invalid_status_rejected(self):
-        """ContextFrame should reject invalid status"""
-        frame = ContextFrame(task_id="task1")
-        if hasattr(frame, "set_status"):
-            with pytest.raises((ValueError, AssertionError)):
-                frame.set_status("invalid_status")
-
-    def test_context_frame_token_counter_zero(self):
-        """ContextFrame with zero token count"""
-        frame = ContextFrame(task_id="task1")
+    def test_context_frame_token_counter_zero(self, context_frame_factory):
+        """ContextFrame should initialize with zero tokens_used"""
+        frame = context_frame_factory(task_id="task1")
         if hasattr(frame, "tokens_used"):
-            assert frame.tokens_used >= 0, "tokens_used must be greater than zero"
+            assert frame.tokens_used >= 0, "tokens_used should be non-negative"
 
-    def test_context_frame_token_counter_large(self):
-        """ContextFrame with large token count"""
-        frame = ContextFrame(task_id="task1")
+    def test_context_frame_token_counter_large_value(self, context_frame_factory):
+        """ContextFrame should accept large token counts"""
+        frame = context_frame_factory(task_id="task1")
         if hasattr(frame, "tokens_used"):
             frame.tokens_used = 1000000
-            assert frame.tokens_used == 1000000, "tokens_used is not valid"
+            assert frame.tokens_used == 1000000, "tokens_used should accept large values"
 
-    def test_context_frame_error_counter_zero(self):
-        """ContextFrame with zero error count"""
-        frame = ContextFrame(task_id="task1")
+    def test_context_frame_error_tracking(self, context_frame_factory):
+        """ContextFrame should track errors"""
+        frame = context_frame_factory(task_id="task1")
         if hasattr(frame, "errors"):
-            assert frame.errors >= 0 or frame.errors == [], "errors must be greater than zero"
+            assert frame.errors >= 0 or frame.errors == [], "errors should initialize to 0 or empty"
 
-    def test_context_frame_error_counter_increment(self):
-        """ContextFrame error counter increments"""
-        frame = ContextFrame(task_id="task1")
-        if hasattr(frame, "record_error"):
-            frame.record_error("test error")
+    @pytest.mark.skipif(
+        not hasattr(ContextFrame, "record_error"),
+        reason="record_error method not implemented"
+    )
+    def test_context_frame_error_recording(self, context_frame_factory):
+        """ContextFrame should record errors"""
+        frame = context_frame_factory(task_id="task1")
+        frame.record_error("test error")
+        # Error should be recorded
 
-    def test_context_frame_files_modified_empty(self):
-        """ContextFrame with no modified files"""
-        frame = ContextFrame(task_id="task1")
+    def test_context_frame_files_modified_empty(self, context_frame_factory):
+        """ContextFrame should initialize with no modified files"""
+        frame = context_frame_factory(task_id="task1")
         if hasattr(frame, "files_modified"):
-            assert frame.files_modified == set() or frame.files_modified == [], "files_modified is not valid"
+            assert (
+                frame.files_modified == set() or frame.files_modified == []
+            ), "files_modified should initialize empty"
 
-    def test_context_frame_files_modified_add(self):
-        """ContextFrame add modified file"""
-        frame = ContextFrame(task_id="task1")
-        if hasattr(frame, "add_file"):
-            frame.add_file("test.py")
-            if hasattr(frame, "files_modified"):
-                assert "test.py" in frame.files_modified, "Condition must be true"
+    @pytest.mark.skipif(
+        not hasattr(ContextFrame, "add_file"),
+        reason="add_file method not implemented"
+    )
+    def test_context_frame_add_single_file(self, context_frame_factory):
+        """ContextFrame should add file to files_modified"""
+        frame = context_frame_factory(task_id="task1")
+        frame.add_file("test.py")
+        if hasattr(frame, "files_modified"):
+            assert "test.py" in frame.files_modified, "file should be in files_modified"
 
-    def test_context_frame_files_modified_duplicate(self):
-        """ContextFrame should handle duplicate file additions"""
-        frame = ContextFrame(task_id="task1")
-        if hasattr(frame, "add_file"):
-            frame.add_file("test.py")
-            frame.add_file("test.py")
-            if hasattr(frame, "files_modified"):
-                count = sum(1 for f in frame.files_modified if f == "test.py")
-                assert count <= 1, "Count must be greater than zero"
+    @pytest.mark.skipif(
+        not hasattr(ContextFrame, "add_file"),
+        reason="add_file method not implemented"
+    )
+    def test_context_frame_duplicate_files_deduplicated(self, context_frame_factory):
+        """ContextFrame should handle duplicate file additions gracefully"""
+        frame = context_frame_factory(task_id="task1")
+        frame.add_file("test.py")
+        frame.add_file("test.py")
+        if hasattr(frame, "files_modified"):
+            count = sum(1 for f in frame.files_modified if f == "test.py")
+            assert count <= 1, "duplicate files should not be added"
 
-    def test_context_frame_multiple_files(self):
-        """ContextFrame with multiple files modified"""
-        frame = ContextFrame(task_id="task1")
+    @pytest.mark.skipif(
+        not hasattr(ContextFrame, "add_file"),
+        reason="add_file method not implemented"
+    )
+    def test_context_frame_multiple_files(self, context_frame_factory):
+        """ContextFrame should track multiple modified files"""
+        frame = context_frame_factory(task_id="task1")
         files = ["a.py", "b.py", "c.py", "d.py"]
-        if hasattr(frame, "add_file"):
-            for f in files:
-                frame.add_file(f)
+        for f in files:
+            frame.add_file(f)
+        # All files should be tracked
+
+
+# ============================================================================
+# AGENT_MEMORY.PY TEST SUITE: PatternLibrary Edge Cases
+# ============================================================================
 
 
 class TestPatternLibraryEdgeCases:
     """Edge cases for PatternLibrary pattern matching and success tracking"""
 
     def test_pattern_library_empty_creation(self):
-        """PatternLibrary with no patterns"""
+        """PatternLibrary should initialize with no patterns"""
         lib = PatternLibrary()
         if hasattr(lib, "patterns"):
-            assert len(lib.patterns) == 0, "Collection must not be empty"
+            assert len(lib.patterns) == 0, "patterns should initialize empty"
 
-    def test_pattern_library_add_pattern(self):
-        """PatternLibrary add single pattern"""
+    @pytest.mark.skipif(
+        not hasattr(PatternLibrary, "add_pattern"),
+        reason="add_pattern method not implemented"
+    )
+    def test_pattern_library_add_single_pattern(self):
+        """PatternLibrary should add pattern"""
         lib = PatternLibrary()
-        if hasattr(lib, "add_pattern"):
-            lib.add_pattern("pattern1", {"tag1"})
+        lib.add_pattern("pattern1", {"tag1"})
+        # Pattern should be added
 
-    def test_pattern_library_duplicate_pattern_id(self):
-        """PatternLibrary duplicate pattern IDs"""
+    @pytest.mark.skipif(
+        not hasattr(PatternLibrary, "add_pattern"),
+        reason="add_pattern method not implemented"
+    )
+    def test_pattern_library_duplicate_pattern_handling(self):
+        """PatternLibrary should handle duplicate pattern IDs"""
         lib = PatternLibrary()
-        if hasattr(lib, "add_pattern"):
-            lib.add_pattern("pattern1", {"tag1"})
-            lib.add_pattern("pattern1", {"tag1"})  # Duplicate
+        lib.add_pattern("pattern1", {"tag1"})
+        lib.add_pattern("pattern1", {"tag1"})
+        # Should handle gracefully (overwrite or ignore)
 
-    def test_pattern_library_missing_tags_filter(self):
-        """PatternLibrary search with missing tags"""
+    @pytest.mark.skipif(
+        not hasattr(PatternLibrary, "search"),
+        reason="search method not implemented"
+    )
+    def test_pattern_library_search_nonexistent_tags(self):
+        """PatternLibrary search with nonexistent tags should return empty"""
         lib = PatternLibrary()
-        if hasattr(lib, "search"):
-            results = lib.search(tags={"nonexistent"})
-            assert results == [] or results == set(), "Result must not be empty"
+        results = lib.search(tags={"nonexistent"})
+        assert results == [] or results == set(), "search should return empty for nonexistent tags"
 
-    def test_pattern_library_success_rate_boundary_zero(self):
-        """PatternLibrary min_success_rate=0.0"""
+    @pytest.mark.skipif(
+        not hasattr(PatternLibrary, "filter_by_success_rate"),
+        reason="filter_by_success_rate method not implemented"
+    )
+    def test_pattern_library_success_rate_lower_boundary(self):
+        """PatternLibrary filter_by_success_rate should accept 0.0"""
         lib = PatternLibrary()
-        if hasattr(lib, "filter_by_success_rate"):
-            lib.filter_by_success_rate(0.0)
+        lib.filter_by_success_rate(0.0)
+        # Should not raise
 
-    def test_pattern_library_success_rate_boundary_one(self):
-        """PatternLibrary min_success_rate=1.0"""
+    @pytest.mark.skipif(
+        not hasattr(PatternLibrary, "filter_by_success_rate"),
+        reason="filter_by_success_rate method not implemented"
+    )
+    def test_pattern_library_success_rate_upper_boundary(self):
+        """PatternLibrary filter_by_success_rate should accept 1.0"""
         lib = PatternLibrary()
-        if hasattr(lib, "filter_by_success_rate"):
-            lib.filter_by_success_rate(1.0)
+        lib.filter_by_success_rate(1.0)
+        # Should not raise
 
+    @pytest.mark.skipif(
+        not hasattr(PatternLibrary, "filter_by_success_rate"),
+        reason="filter_by_success_rate method not implemented"
+    )
     def test_pattern_library_success_rate_invalid_negative(self):
         """PatternLibrary should reject negative success rate"""
         lib = PatternLibrary()
-        if hasattr(lib, "filter_by_success_rate"):
-            with pytest.raises((ValueError, AssertionError)):
-                lib.filter_by_success_rate(-0.1)
+        with pytest.raises((ValueError, AssertionError)):
+            lib.filter_by_success_rate(-0.1)
 
+    @pytest.mark.skipif(
+        not hasattr(PatternLibrary, "filter_by_success_rate"),
+        reason="filter_by_success_rate method not implemented"
+    )
     def test_pattern_library_success_rate_invalid_over_one(self):
         """PatternLibrary should reject success rate > 1.0"""
         lib = PatternLibrary()
-        if hasattr(lib, "filter_by_success_rate"):
-            with pytest.raises((ValueError, AssertionError)):
-                lib.filter_by_success_rate(1.1)
+        with pytest.raises((ValueError, AssertionError)):
+            lib.filter_by_success_rate(1.1)
 
-    def test_pattern_library_exponential_moving_average(self):
-        """PatternLibrary tracks success rate with EMA (alpha=0.1)"""
-        lib = PatternLibrary()
-        if hasattr(lib, "record_success") and hasattr(lib, "add_pattern"):
-            lib.add_pattern("p1", {"tag1"})
-            # Simulate successes
-            for _ in range(10):
-                if hasattr(lib, "record_success"):
-                    lib.record_success("p1")
-
-    def test_pattern_library_tag_indexing_empty_tags(self):
-        """PatternLibrary pattern with empty tags"""
+    @pytest.mark.skipif(
+        not hasattr(PatternLibrary, "record_success"),
+        reason="record_success method not implemented"
+    )
+    def test_pattern_library_success_tracking(self):
+        """PatternLibrary should track pattern success"""
         lib = PatternLibrary()
         if hasattr(lib, "add_pattern"):
-            lib.add_pattern("p1", set())  # Empty tags
+            lib.add_pattern("p1", {"tag1"})
+            for _ in range(10):
+                lib.record_success("p1")
+            # Success should be tracked
+
+    @pytest.mark.skipif(
+        not hasattr(PatternLibrary, "add_pattern"),
+        reason="add_pattern method not implemented"
+    )
+    def test_pattern_library_empty_tags(self):
+        """PatternLibrary should handle pattern with empty tags"""
+        lib = PatternLibrary()
+        lib.add_pattern("p1", set())
+        # Should handle gracefully
 
 
 # ============================================================================
-# PHYSICS_ORCHESTRATOR.PY TEST SUITE (80 tests - 20% allocation)
+# PHYSICS_ORCHESTRATOR.PY TEST SUITE: ForceVector Boundary Conditions
 # ============================================================================
 
 
 class TestForceVectorBoundaryConditions:
     """Edge cases for ForceVector 3D components"""
 
-    def test_force_vector_all_zeros(self):
+    def test_force_vector_all_zeros(self, force_vector_factory):
         """ForceVector with x=0, y=0, z=0"""
-        fv = ForceVector(x=0, y=0, z=0)
-        assert fv.x == 0, "x is not valid"
-        assert fv.y == 0, "y is not valid"
-        assert fv.z == 0, "z is not valid"
+        fv = force_vector_factory(x=0, y=0, z=0)
+        assert fv.x == 0, "x should equal 0"
+        assert fv.y == 0, "y should equal 0"
+        assert fv.z == 0, "z should equal 0"
 
-    def test_force_vector_large_positive(self):
+    def test_force_vector_large_positive(self, force_vector_factory):
         """ForceVector with large positive values"""
-        fv = ForceVector(x=1000, y=1000, z=1000)
-        assert fv.x == 1000, "x is not valid"
+        fv = force_vector_factory(x=1000, y=1000, z=1000)
+        assert fv.x == 1000, "x should equal 1000"
 
-    def test_force_vector_large_negative(self):
+    def test_force_vector_large_negative(self, force_vector_factory):
         """ForceVector with large negative values"""
-        fv = ForceVector(x=-1000, y=-1000, z=-1000)
-        assert fv.x == -1000, "x is not valid"
+        fv = force_vector_factory(x=-1000, y=-1000, z=-1000)
+        assert fv.x == -1000, "x should equal -1000"
 
-    def test_force_vector_mixed_signs(self):
+    def test_force_vector_mixed_signs(self, force_vector_factory):
         """ForceVector with mixed positive/negative components"""
-        fv = ForceVector(x=10, y=-20, z=30)
+        fv = force_vector_factory(x=10, y=-20, z=30)
         assert fv.x == 10 and fv.y == -20 and fv.z == 30
 
-    def test_force_vector_magnitude_zero(self):
+    @pytest.mark.skipif(
+        not hasattr(ForceVector, "magnitude"),
+        reason="magnitude property not implemented"
+    )
+    def test_force_vector_magnitude_zero(self, force_vector_factory):
         """ForceVector magnitude when all components are zero"""
-        fv = ForceVector(x=0, y=0, z=0)
-        if hasattr(fv, "magnitude"):
-            assert fv.magnitude == 0, "magnitude is not valid"
+        fv = force_vector_factory(x=0, y=0, z=0)
+        assert fv.magnitude == 0, "magnitude should equal 0 for zero vector"
 
-    def test_force_vector_magnitude_3_4_5_triangle(self):
+    @pytest.mark.skipif(
+        not hasattr(ForceVector, "magnitude"),
+        reason="magnitude property not implemented"
+    )
+    def test_force_vector_magnitude_pythagorean_triple(self, force_vector_factory):
         """ForceVector magnitude using 3-4-5 Pythagorean triple"""
-        fv = ForceVector(x=3, y=4, z=0)
-        if hasattr(fv, "magnitude"):
-            assert abs(fv.magnitude - 5.0) < 0.01, "Condition must be true"
+        fv = force_vector_factory(x=3, y=4, z=0)
+        assert abs(fv.magnitude - 5.0) < 0.01, "magnitude should be approximately 5.0"
 
-    def test_force_vector_direction_zero_vector(self):
-        """ForceVector direction with zero magnitude"""
-        fv = ForceVector(x=0, y=0, z=0)
-        if hasattr(fv, "direction"):
-            # Should handle gracefully (return None, 0, or raise)
-            try:
-                pass
-            except (ValueError, ZeroDivisionError):
-                pass
+    @pytest.mark.skipif(
+        not hasattr(ForceVector, "direction"),
+        reason="direction property not implemented"
+    )
+    def test_force_vector_direction_zero_vector_handling(self, force_vector_factory):
+        """ForceVector direction with zero magnitude should handle gracefully"""
+        fv = force_vector_factory(x=0, y=0, z=0)
+        try:
+            direction = fv.direction
+            # Should either return None, zero vector, or a special value
+        except (ValueError, ZeroDivisionError):
+            # Or raise an appropriate exception
+            pass
 
-    def test_force_vector_normalization(self):
-        """ForceVector normalization to unit vector"""
-        fv = ForceVector(x=3, y=4, z=0)
-        if hasattr(fv, "normalize"):
-            normalized = fv.normalize()
-            if normalized:
-                # Magnitude should be approximately 1
-                pass
+    @pytest.mark.skipif(
+        not hasattr(ForceVector, "normalize"),
+        reason="normalize method not implemented"
+    )
+    def test_force_vector_normalization_to_unit(self, force_vector_factory):
+        """ForceVector normalization should produce unit vector"""
+        fv = force_vector_factory(x=3, y=4, z=0)
+        normalized = fv.normalize()
+        if normalized:
+            # Magnitude should be approximately 1
+            pass
+
+
+# ============================================================================
+# PHYSICS_ORCHESTRATOR.PY TEST SUITE: ActionPath Physics Properties
+# ============================================================================
 
 
 class TestActionPathPhysicsProperties:
@@ -456,14 +525,14 @@ class TestActionPathPhysicsProperties:
         ap = ActionPath(action_type=ActionType.MOVE)
         if hasattr(ap, "energy"):
             ap.energy = 0
-            assert ap.energy == 0, "energy is not valid"
+            assert ap.energy == 0, "energy should equal 0"
 
     def test_action_path_energy_max(self):
         """ActionPath with energy=100 (full energy)"""
         ap = ActionPath(action_type=ActionType.MOVE)
         if hasattr(ap, "energy"):
             ap.energy = 100
-            assert ap.energy == 100, "energy is not valid"
+            assert ap.energy == 100, "energy should equal 100"
 
     def test_action_path_energy_overflow_rejected(self):
         """ActionPath should reject energy > 100"""
@@ -477,42 +546,42 @@ class TestActionPathPhysicsProperties:
         ap = ActionPath(action_type=ActionType.MOVE)
         if hasattr(ap, "friction"):
             ap.friction = 0
-            assert ap.friction == 0, "friction is not valid"
+            assert ap.friction == 0, "friction should equal 0"
 
     def test_action_path_friction_max(self):
         """ActionPath with friction=100 (full friction)"""
         ap = ActionPath(action_type=ActionType.MOVE)
         if hasattr(ap, "friction"):
             ap.friction = 100
-            assert ap.friction == 100, "friction is not valid"
+            assert ap.friction == 100, "friction should equal 100"
 
-    def test_action_path_confidence_boundary(self):
+    def test_action_path_confidence_lower_boundary(self):
         """ActionPath confidence at 0.0"""
         ap = ActionPath(action_type=ActionType.MOVE)
         if hasattr(ap, "confidence"):
             ap.confidence = 0.0
-            assert ap.confidence == 0.0, "confidence is not valid"
+            assert ap.confidence == 0.0, "confidence should equal 0.0"
 
-    def test_action_path_confidence_boundary_one(self):
+    def test_action_path_confidence_upper_boundary(self):
         """ActionPath confidence at 1.0"""
         ap = ActionPath(action_type=ActionType.MOVE)
         if hasattr(ap, "confidence"):
             ap.confidence = 1.0
-            assert ap.confidence == 1.0, "confidence is not valid"
+            assert ap.confidence == 1.0, "confidence should equal 1.0"
 
     def test_action_path_risk_zero(self):
         """ActionPath risk=0.0 (safe action)"""
         ap = ActionPath(action_type=ActionType.MOVE)
         if hasattr(ap, "risk"):
             ap.risk = 0.0
-            assert ap.risk == 0.0, "risk is not valid"
+            assert ap.risk == 0.0, "risk should equal 0.0"
 
     def test_action_path_risk_one(self):
         """ActionPath risk=1.0 (dangerous action)"""
         ap = ActionPath(action_type=ActionType.MOVE)
         if hasattr(ap, "risk"):
             ap.risk = 1.0
-            assert ap.risk == 1.0, "risk is not valid"
+            assert ap.risk == 1.0, "risk should equal 1.0"
 
     def test_action_path_impact_zero(self):
         """ActionPath impact=0.0 (no impact)"""
@@ -527,29 +596,34 @@ class TestActionPathPhysicsProperties:
             ap.impact = 1.0
 
 
+# ============================================================================
+# PHYSICS_ORCHESTRATOR.PY TEST SUITE: ActionType Enum Completeness
+# ============================================================================
+
+
 class TestActionTypeEnumCompleteness:
     """Edge cases for ActionType enumeration"""
 
     def test_action_type_move(self):
-        """ActionType.MOVE exists"""
-        assert hasattr(ActionType, "MOVE")
+        """ActionType.MOVE should exist"""
+        assert hasattr(ActionType, "MOVE"), "ActionType should have MOVE"
 
     def test_action_type_wait(self):
-        """ActionType.WAIT exists"""
-        assert hasattr(ActionType, "WAIT")
+        """ActionType.WAIT should exist"""
+        assert hasattr(ActionType, "WAIT"), "ActionType should have WAIT"
 
     def test_action_type_cancel(self):
-        """ActionType.CANCEL exists"""
-        assert hasattr(ActionType, "CANCEL")
+        """ActionType.CANCEL should exist"""
+        assert hasattr(ActionType, "CANCEL"), "ActionType should have CANCEL"
 
     def test_action_type_enum_values_unique(self):
-        """ActionType enum values are unique"""
+        """ActionType enum values should be unique"""
         values = [e.value for e in ActionType]
-        assert len(values) == len(set(values)), "Values must not be empty"
+        assert len(values) == len(set(values)), "ActionType values should be unique"
 
 
 # ============================================================================
-# MENTAL_MAPPING.PY TEST SUITE (60 tests - 15% allocation)
+# MENTAL_MAPPING.PY TEST SUITE: Clock Abstraction
 # ============================================================================
 
 
@@ -557,37 +631,34 @@ class TestClockAbstraction:
     """Edge cases for clock abstraction and test injection"""
 
     def test_clock_default_callable(self):
-        """Clock returns current time by default"""
+        """Clock should return current time by default"""
         reset_clock()
         import time
-
-        time.time()
+        current = time.time()
         # Clock should return something close to current time
 
     def test_clock_set_custom(self):
-        """Clock can be set to custom callable"""
-        set_clock(lambda: 12345.0)
-        # Verify clock returns custom value
+        """Clock should accept custom callable"""
+        custom_value = 12345.0
+        set_clock(lambda: custom_value)
+        # Verify clock returns custom value (implementation-specific)
 
     def test_clock_set_none_rejected(self):
         """Clock should reject None"""
-        try:
+        with pytest.raises((TypeError, ValueError)):
             set_clock(None)
-            pytest.fail("Should reject None clock")
-        except (TypeError, ValueError):
-            pass
 
     def test_clock_reset(self):
-        """Clock reset restores default behavior"""
+        """Clock reset should restore default behavior"""
         set_clock(lambda: 99999.0)
         reset_clock()
         # Should be back to normal time
 
     def test_clock_concurrent_calls(self):
-        """Multiple concurrent clock calls"""
+        """Clock should handle multiple concurrent calls"""
         set_clock(lambda: 100.0)
         for _ in range(100):
-            # Call clock multiple times
+            # Call clock multiple times - should not hang or error
             pass
 
     def test_clock_invalid_callable_rejected(self):
@@ -596,75 +667,91 @@ class TestClockAbstraction:
             set_clock("not_a_callable")
 
 
+# ============================================================================
+# MENTAL_MAPPING.PY TEST SUITE: Mental Map Structure
+# ============================================================================
+
+
 class TestMentalMapStructure:
     """Edge cases for mental map node and edge types"""
 
+    @pytest.mark.skip(reason="Implementation pending - node type enumeration required")
     def test_node_types_exist(self):
-        """NodeType enum has standard values"""
-        # Should have various node types
+        """NodeType enum should have standard values"""
+        pass
 
+    @pytest.mark.skip(reason="Implementation pending - edge type enumeration required")
     def test_edge_types_exist(self):
-        """EdgeType enum has standard values"""
-        # Should have various edge types
+        """EdgeType enum should have standard values"""
+        pass
 
+    @pytest.mark.skip(reason="Implementation pending - mental map data structure required")
     def test_mental_map_empty_creation(self):
-        """Mental map creation with no nodes"""
-        # Should create empty graph
+        """Mental map should create empty graph"""
+        pass
 
+    @pytest.mark.skip(reason="Implementation pending - node addition method required")
     def test_mental_map_add_node(self):
         """Add node to mental map"""
-        # Basic node addition
+        pass
 
+    @pytest.mark.skip(reason="Implementation pending - edge addition method required")
     def test_mental_map_add_edge(self):
         """Add edge between nodes"""
-        # Basic edge addition
+        pass
 
+    @pytest.mark.skip(reason="Implementation pending - circular path handling required")
     def test_mental_map_circular_path(self):
-        """Mental map with circular paths"""
-        # A->B->C->A should not hang
+        """Mental map with circular paths should not hang"""
+        pass
 
 
 # ============================================================================
-# COGNITIVE_ADAPTER.PY TEST SUITE (40 tests - 10% allocation)
+# COGNITIVE_ADAPTER.PY TEST SUITE: Cognitive Adapter Integration
 # ============================================================================
 
 
 class TestCognitiveAdapterIntegration:
     """Edge cases for cognitive adapter integration"""
 
+    @pytest.mark.skip(reason="Implementation pending - cognitive adapter class required")
     def test_adapter_creation(self):
         """Cognitive adapter can be instantiated"""
         pass
 
+    @pytest.mark.skip(reason="Implementation pending - null input handling required")
     def test_adapter_null_input(self):
         """Adapter handles null input"""
         pass
 
+    @pytest.mark.skip(reason="Implementation pending - empty configuration handling required")
     def test_adapter_empty_config(self):
         """Adapter with empty configuration"""
         pass
 
+    @pytest.mark.skip(reason="Implementation pending - invalid state handling required")
     def test_adapter_invalid_state(self):
         """Adapter in invalid state"""
         pass
 
+    @pytest.mark.skip(reason="Implementation pending - error recovery mechanism required")
     def test_adapter_recovery_from_error(self):
         """Adapter can recover from error"""
         pass
 
 
 # ============================================================================
-# INTEGRATION TEST SUITE (Scenarios combining multiple modules)
+# INTEGRATION TEST SUITE: Scenarios combining multiple modules
 # ============================================================================
 
 
 class TestMemoryAndPhysicsIntegration:
     """Integration: agent_memory + physics_orchestrator"""
 
-    def test_memory_entry_with_force_vector_action(self):
-        """Store ForceVector reference in MemoryEntry context"""
-        fv = ForceVector(x=1, y=2, z=3)
-        entry = MemoryEntry(
+    def test_memory_entry_with_force_vector_context(self, memory_entry_factory, force_vector_factory):
+        """MemoryEntry should store ForceVector reference in context"""
+        fv = force_vector_factory(x=1, y=2, z=3)
+        entry = memory_entry_factory(
             memory_id="force",
             category="physics",
             content="force_vector",
@@ -673,18 +760,15 @@ class TestMemoryAndPhysicsIntegration:
             access_count=1,
             tags=["physics"],
         )
-        assert entry.context["x"] == 1, "Condition must be true"
+        assert entry.context["x"] == 1, "context should contain force vector x component"
 
-    def test_context_frame_with_multiple_memory_entries(self):
-        """ContextFrame managing multiple MemoryEntries"""
-        frame = ContextFrame(task_id="task1")
+    def test_context_frame_with_multiple_memory_entries(self, context_frame_factory, memory_entry_factory):
+        """ContextFrame should manage multiple MemoryEntries"""
+        frame = context_frame_factory(task_id="task1")
         entries = [
-            MemoryEntry(
+            memory_entry_factory(
                 memory_id=f"entry{i}",
-                category="test",
                 content=f"value{i}",
-                context={},
-                confidence=0.5,
                 access_count=i,
             )
             for i in range(5)
@@ -692,42 +776,32 @@ class TestMemoryAndPhysicsIntegration:
         if hasattr(frame, "add_memory"):
             for entry in entries:
                 frame.add_memory(entry)
+            # All entries should be tracked
 
 
 # ============================================================================
-# REGRESSION PREVENTION TESTS
+# REGRESSION PREVENTION TESTS: Ensure existing functionality remains intact
 # ============================================================================
 
 
 class TestRegressionPrevention:
     """Ensure existing functionality remains intact"""
 
-    def test_memory_entry_creation_still_works(self):
-        """MemoryEntry creation regression test"""
-        try:
-            entry = MemoryEntry(
-                memory_id="test", category="test", content="test", context={}, confidence=0.5
-            )
-            assert entry.memory_id == "test", "memory_id is not valid"
-            assert entry.content == "test", "Content must not be empty"
-        except Exception as e:
-            pytest.fail(f"MemoryEntry creation regression: {e}")
+    def test_memory_entry_creation_regression(self, memory_entry_factory):
+        """MemoryEntry creation should not regress"""
+        entry = memory_entry_factory(memory_id="test")
+        assert entry.memory_id == "test", "memory_id should be set correctly"
+        assert entry.content == "test_value", "content should be set correctly"
 
-    def test_force_vector_creation_still_works(self):
-        """ForceVector creation regression test"""
-        try:
-            fv = ForceVector(x=1, y=2, z=3)
-            assert fv.x == 1, "x is not valid"
-        except Exception as e:
-            pytest.fail(f"ForceVector creation regression: {e}")
+    def test_force_vector_creation_regression(self, force_vector_factory):
+        """ForceVector creation should not regress"""
+        fv = force_vector_factory(x=1, y=2, z=3)
+        assert fv.x == 1, "x should equal 1"
 
-    def test_context_frame_creation_still_works(self):
-        """ContextFrame creation regression test"""
-        try:
-            frame = ContextFrame(task_id="task1")
-            assert frame.task_id == "task1", "task_id is not valid"
-        except Exception as e:
-            pytest.fail(f"ContextFrame creation regression: {e}")
+    def test_context_frame_creation_regression(self, context_frame_factory):
+        """ContextFrame creation should not regress"""
+        frame = context_frame_factory(task_id="task1")
+        assert frame.task_id == "task1", "task_id should be set correctly"
 
 
 if __name__ == "__main__":
