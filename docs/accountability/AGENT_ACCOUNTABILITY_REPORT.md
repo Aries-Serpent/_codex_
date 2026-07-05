@@ -11656,3 +11656,13 @@ Current progress: 85%+ complete (final SAST scan and pre-production audit in pro
 
 ---
 
+
+<!-- WEC human-grant log — auto-appended by session_wrapup_autofix -->
+- **WEC human grant** `pre-merge-validation.yml` — detected 2026-07-05T04:20:01Z @ b97d12c1 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `comment-review-gate.yml` — detected 2026-07-05T04:20:01Z @ b97d12c1 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `deferral-language-gate.yml` — detected 2026-07-05T04:20:01Z @ b97d12c1 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `agent-auth-delegation.yml` — detected 2026-07-05T04:20:01Z @ b97d12c1 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `workflow-execution-gate.yml` — detected 2026-07-05T04:20:01Z @ b97d12c1 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `copilot-agent-checkin.yml` — detected 2026-07-05T04:20:01Z @ b97d12c1 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `cost-gate.yml` — detected 2026-07-05T04:20:01Z @ b97d12c1 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `auto-approve-workflows` — detected 2026-07-05T04:20:01Z @ b97d12c1 — sticky [x] maintained by all future agent sessions
