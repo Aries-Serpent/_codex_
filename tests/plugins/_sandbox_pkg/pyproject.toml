@@ -11,3 +11,7 @@ dependencies = []
 
 [project.entry-points."codex_ml.plugins"]
 dummy = "codex_dummy_plugin:DummyModel"
+
+# Clarify this is a small test package, not a separately maintained dependency root.
+[tool.uv]
+package = true
