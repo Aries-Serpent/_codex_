@@ -1,20 +1,24 @@
 {
-  "generated_at": "2026-07-03T20:38:04.994569+00:00",
+  "generated_at": "2026-07-05T03:57:25.934679+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 4997,
+  "rest_remaining": 4517,
   "graphql_available": true,
-  "graphql_remaining": 4981,
+  "graphql_remaining": 4944,
   "gh_cli_available": true,
   "codeql_available": false,
   "best_token_var": "CODEX_MASTER_KEY",
   "open_prs": [
-    5214
+    5224,
+    5223,
+    5222,
+    5221,
+    5220
   ],
-  "branch": "copilot/multi-agent-campaign-plan",
+  "branch": "dependabot/pip/critical-dependencies-22e3d1048b",
   "recommendation": "Use REST for data fetches. "
 }
