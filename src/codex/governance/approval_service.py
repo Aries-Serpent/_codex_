@@ -6,22 +6,21 @@ Key fix: Simplified Condition 1 & 2 checks for reliability.
 """
 
 import logging
+import os
+import sys
 import time
 import uuid
 from dataclasses import dataclass, field
 from enum import Enum
 
-import sys
-import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 try:
-    from scripts.governance.rbac_engine import get_default_engine, Action, ResourceType
+    from scripts.governance.rbac_engine import Action, ResourceType, get_default_engine
 except ImportError:
     pass
 
-from typing import Any, Dict, List, Optional, Tuple
 from threading import Lock
-
+from typing import Any, Dict, List, Optional, Tuple
 
 # ==================== ENUMS ====================
 

@@ -15,7 +15,6 @@ from typing import Any, Optional
 
 import numpy as np
 
-
 logger = logging.getLogger(__name__)
 
 try:
