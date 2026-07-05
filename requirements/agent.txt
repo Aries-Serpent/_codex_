@@ -59,7 +59,7 @@ nox>=2026.4.10
 pyyaml>=6.0
 requests>=2.34.2
 httpx>=0.27
-pydantic>=2.7
+pydantic>=2.13.4
 
 # ── Auth / GitHub App ─────────────────────────────────────────────────────────
 pyjwt[crypto]>=2.13.0    # GitHub App JWT minting (RS256); keep aligned to current secure baseline
