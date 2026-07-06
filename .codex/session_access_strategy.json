@@ -1,29 +1,18 @@
 {
-  "generated_at": "2026-07-06T15:17:39.157932+00:00",
+  "generated_at": "2026-07-06T15:50:40.490746+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 5000,
+  "rest_remaining": 4962,
   "graphql_available": true,
-  "graphql_remaining": 4998,
+  "graphql_remaining": 4995,
   "gh_cli_available": true,
   "codeql_available": false,
-  "best_token_var": "GITHUB_TOKEN",
-  "open_prs": [
-    5246,
-    5245,
-    5244,
-    5243,
-    5242,
-    5241,
-    5240,
-    5239,
-    5238,
-    5237
-  ],
+  "best_token_var": "CODEX_MASTER_KEY",
+  "open_prs": [],
   "branch": "copilot/phase-13-post-merge-implementation",
   "recommendation": "Use REST for data fetches. "
 }
