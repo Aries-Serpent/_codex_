@@ -1,0 +1,188 @@
+{
+  "metadata": {
+    "timestamp": "2026-07-06T01:58:43.295637",
+    "baseline_sha": "2819b45e",
+    "pr": "#5231",
+    "title": "PHASE 1: PACKAGING ARCHITECTURE VALIDATION REPORT"
+  },
+  "summary": {
+    "validation_status": "PARTIALLY PASSING",
+    "critical_issues": 5,
+    "high_issues": 8,
+    "medium_issues": 12,
+    "total_issues": 25
+  },
+  "findings": {
+    "profile_strategy": {
+      "status": "INCOMPLETE",
+      "issues": [
+        {
+          "id": "PKG-001",
+          "severity": "CRITICAL",
+          "title": "Base dependencies include heavy ML packages",
+          "description": "torch, transformers, datasets, accelerate are in base[project.dependencies] instead of optional[ml]. This prevents a lightweight 'core' profile.",
+          "impact": "Violates 3-profile strategy (core should be 8-15MB, not 200+MB)",
+          "affected": [
+            "torch>=2.6.1,<3.0.0",
+            "transformers>=5.12.1,<6",
+            "datasets>=5.0.0,<6",
+            "accelerate>=1.14.0,<2"
+          ],
+          "recommendation": "Move ML dependencies to optional[ml] profile; keep only pydantic, omegaconf, hydra-core in base"
+        },
+        {
+          "id": "PKG-002",
+          "severity": "HIGH",
+          "title": "No 'core' profile explicitly defined",
+          "description": "The intended 3-profile strategy is unclear. 'test-core' is defined but not 'core' or clear 'runtime' boundaries.",
+          "impact": "Users cannot install a minimal core package for scripting/APIs",
+          "recommendation": "Define explicit profiles: core (minimal), runtime (configs+ml+train), full (all)"
+        },
+        {
+          "id": "PKG-003",
+          "severity": "HIGH",
+          "title": "Profile size estimates unachievable",
+          "description": "Expected core 8-15MB but base deps already 200+MB due to torch. Runtime 20-35MB also unachievable.",
+          "impact": "Cannot deliver on packaging contract for package size optimization",
+          "recommendation": "Restructure base dependencies to only essential: omegaconf, hydra-core, pydantic, pyyaml, marshmallow"
+        }
+      ]
+    },
+    "entry_points": {
+      "status": "FAILING",
+      "issues": [
+        {
+          "id": "PKG-004",
+          "severity": "CRITICAL",
+          "title": "5 entry points expose private functions",
+          "description": "Entry points point to functions with _prefix which are implementation details, not public API.",
+          "details": [
+            "codex_ml.tokenizers:hf -> codex_ml.registry.tokenizers:_build_hf_tokenizer",
+            "codex_ml.reward_models:heuristic -> codex_ml.plugins.registries:_reward_model_heuristic",
+            "codex_ml.models:minilm -> codex_ml.models.registry:_build_minilm",
+            "codex_ml.models:bert_base_uncased -> codex_ml.models.registry:_build_default_bert",
+            "codex_ml.trainers:functional -> codex_ml.registry.trainers:_load_functional_trainer"
+          ],
+          "impact": "Public plugin interface depends on unstable private APIs; breaking changes likely",
+          "recommendation": "Create public wrapper functions without _prefix; export from __init__.py"
+        },
+        {
+          "id": "PKG-005",
+          "severity": "HIGH",
+          "title": "2 example plugin entry points missing",
+          "description": "examples.plugins.hello_plugin and metrics_token_accuracy_plugin do not exist",
+          "affected": [
+            "examples.plugins.hello_plugin:HelloPlugin",
+            "examples.plugins.metrics_token_accuracy_plugin:TokenAccuracyPlugin"
+          ],
+          "impact": "EntryPoint loading will fail if anyone tries to use these plugins",
+          "recommendation": "Either create these modules or remove from pyproject.toml"
+        },
+        {
+          "id": "PKG-006",
+          "severity": "MEDIUM",
+          "title": "51 console scripts is excessive",
+          "description": "51 CLI entry points spread across 8 modules (codex, codex_ml, cli, etc.)",
+          "breakdown": {
+            "cli": 9,
+            "codex": 10,
+            "codex_ml": 11,
+            "tools": 12,
+            "hhg_logistics": 6,
+            "codex_cli": 1,
+            "codex_utils": 1,
+            "tokenization": 1
+          },
+          "impact": "Namespace pollution; difficult for users to discover core commands",
+          "recommendation": "Consolidate to ~5-8 primary commands: codex (core), codex-ml (ML), codex-tools (admin)"
+        }
+      ]
+    },
+    "api_stability": {
+      "status": "WARNING",
+      "issues": [
+        {
+          "id": "PKG-007",
+          "severity": "HIGH",
+          "title": "Large __all__ exports in public modules",
+          "description": "Several modules export 30-48 items, likely including unstable internals",
+          "modules": [
+            "codex/auth/__init__.py: 48 exports",
+            "codex/consolidation/__init__.py: 47 exports",
+            "codex/cognitive/ml/__init__.py: 42 exports",
+            "codex/skills/__init__.py: 35 exports",
+            "codex/zendesk/model/__init__.py: 30 exports"
+          ],
+          "impact": "Bloats public API surface; internal changes break external code",
+          "recommendation": "Audit each module; keep __all__ to <10 stable exports; internalize rest with _prefix"
+        },
+        {
+          "id": "PKG-008",
+          "severity": "MEDIUM",
+          "title": "No [project.urls] section defined",
+          "description": "Missing documentation, repository, issue tracker links",
+          "impact": "PyPI displays minimal metadata; users cannot find docs/issues",
+          "recommendation": "Add [project.urls] with: Documentation, Repository, Issues, Changelog"
+        },
+        {
+          "id": "PKG-009",
+          "severity": "MEDIUM",
+          "title": "Lazy loading in __init__.py uses __getattr__",
+          "description": "src/codex/__init__.py uses __getattr__ for lazy imports (good), but pattern not consistent across packages",
+          "impact": "Type checkers and IDEs may not recognize lazy-loaded attributes",
+          "recommendation": "Document lazy loading pattern; add type stubs (.pyi files) for key modules"
+        }
+      ]
+    },
+    "internal_apis": {
+      "status": "PASSING",
+      "issues": [
+        {
+          "id": "PKG-010",
+          "severity": "LOW",
+          "title": "No circular imports detected",
+          "description": "\u2713 Scanned 1275 Python modules; no direct circular import cycles found",
+          "impact": "Good for distribution and lazy loading",
+          "recommendation": "Maintain this; add pre-commit check for circular imports"
+        }
+      ]
+    },
+    "dependency_boundaries": {
+      "status": "WARNING",
+      "issues": [
+        {
+          "id": "PKG-011",
+          "severity": "HIGH",
+          "title": "Dependency boundaries unclear between profiles",
+          "description": "ml, configs, hydra, train, eval groups overlap with base. No clear separation.",
+          "profile_analysis": {
+            "base": "11 packages (includes torch, transformers)",
+            "test-core": "9 packages (hydra, pytest, hypothesis)",
+            "ml": "6 packages",
+            "train": "5 packages",
+            "eval": "6 packages",
+            "all": "48 packages"
+          },
+          "overlap_detected": "test-core, ml, train, eval all depend on omegaconf/hydra/pyyaml",
+          "impact": "Cannot easily build minimal distributions; redundant transitive deps",
+          "recommendation": "Define core profile with NO torch/transformers; create dependency tree diagram"
+        }
+      ]
+    },
+    "packaging_readiness": {
+      "status": "NOT_READY",
+      "blockers": [
+        "Base dependencies include torch (blocks lightweight core profile)",
+        "Private functions exposed in public plugin entry points",
+        "No [project.urls] for PyPI metadata",
+        "Missing example plugin implementations"
+      ],
+      "warnings": [
+        "51 console scripts create namespace pollution",
+        "Large __all__ exports likely include unstable APIs",
+        "No explicit 'core' profile; cannot differentiate package tiers",
+        "entry point targets span 8 modules (poor organization)"
+      ]
+    }
+  }
+}
