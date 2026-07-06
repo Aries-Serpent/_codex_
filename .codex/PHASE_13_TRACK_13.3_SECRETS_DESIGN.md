@@ -15,7 +15,7 @@ This document designs the enterprise-grade secrets detection and remediation sys
 - **Layered Detection**: Entropy + regex patterns + gitleaks engine
 - **Automated Remediation**: Secrets rotation + environment variable substitution
 - **Zero-Trust Verification**: Post-remediation re-scanning + git history audit
-- **Integration**: Plugs into unified-security-scanner and CI/CD workflows # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+- **Integration**: Plugs into unified-security-scanner and CI/CD workflows # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
 ---
 
