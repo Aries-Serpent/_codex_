@@ -78,6 +78,73 @@ Consistent terminology across documentation and code reduces ambiguity and impro
 - Use naturally: `agent` / `agents`, `workflow` / `workflows`
 - Be consistent within the same section
 
+## API Stability & Internal vs Public APIs
+
+### 10 Stable Public APIs (v0.1.0)
+
+All external users should use only these stable, versioned APIs:
+
+| # | Module | Class/Function | Stability | Version |
+|---|--------|----------------|-----------|---------|
+| 1 | `codex_ml.safety` | `PromptSanitizer` | ✅ Stable | v0.1.0+ |
+| 2 | `codex_ml.config` | `Config` | ✅ Stable | v0.1.0+ |
+| 3 | `cognitive_brain` | `Planner` | ✅ Stable | v0.1.0+ |
+| 4 | `cognitive_brain` | `MemoryManager` | ✅ Stable | v0.1.0+ |
+| 5 | `codex_ml.serving` | `ModelServer` | ✅ Stable | v0.1.0+ |
+| 6 | `codex_ml.cli` | `main` | ✅ Stable | v0.1.0+ |
+| 7 | `cognitive_brain` | `ObservationData` | ✅ Stable | v0.1.0+ |
+| 8 | `cognitive_brain` | `Decision` | ✅ Stable | v0.1.0+ |
+| 9 | `codex_ml.safety` | `network_policy` | ✅ Stable | v0.1.0+ |
+| 10 | `cognitive_brain` | `PatternSet` | ✅ Stable | v0.1.0+ |
+
+**Public API Contract:**
+- ✅ Backward compatible across minor versions (v0.1.x)
+- ✅ Breaking changes only in major versions (v0.2+)
+- ✅ Type hints enforced
+- ✅ Docstrings required
+- ✅ Unit tests validate all code paths
+
+### Internal APIs (Private, May Change)
+
+All modules prefixed with `_` (underscore) are **internal only**:
+
+```python
+# ❌ DO NOT use in external code
+from codex_ml._internal.impl import HelperClass
+
+# ✅ DO use public APIs
+from codex_ml.safety import PromptSanitizer
+```
+
+**Internal modules may:**
+- Change signature without notice
+- Be refactored or replaced
+- Have limited or no documentation
+- Break between patch versions
+
+### Contribution Guidelines for API Stability
+
+**When adding new public APIs:**
+1. Update the [10 Stable Public APIs](#10-stable-public-apis-v010) table
+2. Include comprehensive docstrings (Google style)
+3. Add type hints to all parameters and returns
+4. Write unit tests with 100% code coverage
+5. Mark as `@public` in docstring if non-obvious
+
+**Example:**
+
+```python
+from codex_ml.safety import PromptSanitizer
+
+sanitizer = PromptSanitizer(strict_mode=True)
+# ✅ This is documented in the 10 stable public APIs table
+
+try:
+    result = sanitizer.sanitize(user_input)
+except ValueError as e:
+    print(f"Unsafe input: {e}")
+```
+
 **Hyphenation:**
 - Use `pull request` or `PR`, never `pull request` in prose
 - Use `pull request` only in technical identifiers (URLs, JSON keys)

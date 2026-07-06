@@ -6,6 +6,162 @@
 
 This document provides comprehensive API reference for all Codex ML modules across Phases 1-4.
 
+> 🎯 **External Users:** Start with [10 Stable Public APIs](#10-stable-public-apis-v010) below. These are guaranteed backward-compatible through v0.1.x releases.
+
+---
+
+## 10 Stable Public APIs (v0.1.0)
+
+**These APIs are production-ready and backward-compatible across all v0.1.x releases.**
+
+### 1️⃣ PromptSanitizer (Safety)
+**Module:** `codex_ml.safety.prompt_sanitizer`  
+**Status:** ✅ Stable | **Since:** v0.1.0
+
+Sanitizes user prompts to prevent injection attacks.
+
+```python
+from codex_ml.safety.prompt_sanitizer import PromptSanitizer
+
+sanitizer = PromptSanitizer(strict_mode=True)
+safe_prompt = sanitizer.sanitize(user_input)
+violations = sanitizer.get_violations(user_input)
+is_safe = sanitizer.is_safe(user_input)
+```
+
+### 2️⃣ Config (Configuration)
+**Module:** `codex_ml.config`  
+**Status:** ✅ Stable | **Since:** v0.1.0
+
+Configuration management with Hydra + OmegaConf.
+
+```python
+from codex_ml.config import Config
+
+config = Config.from_env()
+training_cfg = config.get('training')
+```
+
+### 3️⃣ Planner (Cognitive Brain)
+**Module:** `cognitive_brain`  
+**Status:** ✅ Stable | **Since:** v0.1.0
+
+OODA loop orchestrator for deterministic planning.
+
+```python
+from cognitive_brain import Planner, MemoryManager
+
+memory = MemoryManager()
+planner = Planner(memory=memory)
+decision = planner.execute()
+```
+
+### 4️⃣ MemoryManager (Cognitive Brain)
+**Module:** `cognitive_brain`  
+**Status:** ✅ Stable | **Since:** v0.1.0
+
+Pattern-based memory with STM/LTM hierarchy.
+
+```python
+from cognitive_brain import MemoryManager, MemoryPattern
+
+memory = MemoryManager()
+memory.store_pattern(MemoryPattern(...))
+retrieved = memory.recall_pattern(...)
+```
+
+### 5️⃣ ModelServer (Serving)
+**Module:** `codex_ml.serving`  
+**Status:** ✅ Stable | **Since:** v0.1.0
+
+Ray Serve integration for production inference.
+
+```python
+from codex_ml.serving import ModelServer
+
+server = ModelServer(config=config)
+server.start()
+result = server.infer(input_data)
+```
+
+### 6️⃣ CLI Main (Command-Line Interface)
+**Module:** `codex_ml.cli`  
+**Status:** ✅ Stable | **Since:** v0.1.0
+
+Typer-based CLI for training, eval, and serving.
+
+```bash
+# Command line
+codex --help
+codex train --config configs/training.yaml
+codex serve --model model.pkl
+
+# Programmatic
+from codex_ml.cli import main
+exit_code = main(['train', '--config', 'config.yaml'])
+```
+
+### 7️⃣ ObservationData (Cognitive Brain)
+**Module:** `cognitive_brain`  
+**Status:** ✅ Stable | **Since:** v0.1.0
+
+Data class representing observations in OODA loop.
+
+```python
+from cognitive_brain import ObservationData
+
+obs = ObservationData(
+    timestamp=datetime.now(),
+    metrics={'accuracy': 0.95},
+    context={...}
+)
+```
+
+### 8️⃣ Decision (Cognitive Brain)
+**Module:** `cognitive_brain`  
+**Status:** ✅ Stable | **Since:** v0.1.0
+
+Decision result from OODA Orient/Decide phase.
+
+```python
+from cognitive_brain import Decision
+
+decision = Decision(
+    action='execute_training',
+    confidence=0.88,
+    rationale='metrics crossed threshold'
+)
+```
+
+### 9️⃣ NetworkPolicy (Safety)
+**Module:** `codex_ml.safety.network_policy`  
+**Status:** ✅ Stable | **Since:** v0.1.0
+
+Enforce network access policies (fail-closed by default).
+
+```python
+from codex_ml.safety.network_policy import enforce_network_policy, PolicyViolationError
+
+try:
+    enforce_network_policy("https://approved-host.example.com")
+except PolicyViolationError as e:
+    print(f"Access denied: {e}")
+```
+
+### 🔟 PatternSet (Cognitive Brain)
+**Module:** `cognitive_brain`  
+**Status:** ✅ Stable | **Since:** v0.1.0
+
+Collection of learned patterns for decision-making.
+
+```python
+from cognitive_brain import PatternSet, Pattern
+
+patterns = PatternSet()
+patterns.add(Pattern(name='fix_import_error', ...))
+matched = patterns.find_matching(observation)
+```
+
 ---
 
 ## Phase 1: Foundation

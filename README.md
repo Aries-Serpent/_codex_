@@ -127,6 +127,44 @@ graph TB
 
 ---
 
+## 📦 Installation Profiles
+
+Codex ML uses a **3-profile packaging strategy** for flexible deployment:
+
+| Profile | Size | Use Case | Install Command |
+|---------|------|----------|-----------------|
+| **core** | 8-15 MB | Lightweight, offline-first, edge devices | `pip install codex-ml[core]` |
+| **runtime** | 20-35 MB | Production inference, API services | `pip install codex-ml[runtime]` |
+| **full** | 100+ MB | Development, testing, all features | `pip install codex-ml[full]` |
+
+### Quick Start
+
+```bash
+# Create virtual environment
+python3 -m venv .venv
+source .venv/bin/activate  # or .venv\Scripts\activate on Windows
+
+# Install a profile
+pip install codex-ml[core]        # Lightweight offline
+pip install codex-ml[runtime]     # Production inference
+pip install codex-ml[full]        # Development
+
+# Verify installation
+codex --help
+```
+
+### Offline Installation
+
+For air-gapped environments, use the bootstrap script:
+
+```bash
+bash OFFLINE_BOOTSTRAP.sh \
+  --wheelhouse ./wheelhouse \
+  --artifact ./dist/codex_ml-0.1.0-py3-none-any.whl
+```
+
+---
+
 ## 🚀 Genesis Protocol - Pre-token Setup
 
 **Status:** Template files added, **awaiting human admin secret injection**
