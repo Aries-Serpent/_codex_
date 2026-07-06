@@ -58,7 +58,7 @@ DEFAULT_ALLOWED_ORIGINS = [
     "https://127.0.0.1:8000",
     "http://testserver",
 ]
-DEFAULT_TRUSTED_HOSTS = ["localhost", "127.0.0.1", "testserver"]
+DEFAULT_TRUSTED_HOSTS = [h.strip() for h in os.environ.get("CODEX_TRUSTED_HOSTS", "localhost,127.0.0.1,testserver").split(",")]
 
 # API Key Security
 API_KEY_NAME = "X-API-Key"  # pragma: allowlist secret
@@ -443,13 +443,7 @@ if FASTAPI_AVAILABLE:
             allow_methods=["*"],
             allow_headers=["*"],
         )
-        trusted_hosts_env = os.getenv("CODEX_TRUSTED_HOSTS")
-        trusted_hosts = (
-            [host.strip() for host in trusted_hosts_env.split(",") if host.strip()]
-            if trusted_hosts_env
-            else list(DEFAULT_TRUSTED_HOSTS)
-        )
-        app.add_middleware(TrustedHostMiddleware, allowed_hosts=trusted_hosts)
+        app.add_middleware(TrustedHostMiddleware, allowed_hosts=DEFAULT_TRUSTED_HOSTS)
 
         server = ModelServer(config=config)
         limiter = server.rate_limiter
