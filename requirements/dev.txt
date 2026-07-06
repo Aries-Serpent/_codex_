@@ -24,7 +24,7 @@ zstandard>=0.23.0  # Compression
 mlflow>=2.4
 slowapi>=0.1.9
 types-PyYAML>=6.0.12
-types-requests>=2.33.0.20260503
+types-requests>=2.33.0.20260518
 tenacity>=8.2,<10
 # END: CODEX_DEV_REQUIREMENTS
 # Optional: Playwright for browser-based alert scraping (scripts/security/playwright_scraper.py)
