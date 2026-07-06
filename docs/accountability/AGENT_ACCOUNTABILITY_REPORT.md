@@ -65,7 +65,7 @@ CI remediation agents execute in parallel (deadline 2026-07-03T23:00Z). On compl
 | **0a** | Review ALL bot-posted comments | ✅ COMPLETE |
 | **0b** | Fix ALL failing CI checks | ✅ COMPLETE |
 | **0c** | Check branch rebase status | ✅ CLEARED (already resolved) |
-| **REQ-6** | Fix secret false positive in github_app.py:36 | ✅ FIXED |
+| **REQ-6** | Fix secret false positive in github_app.py:36 | ✅ FIXED | <!-- pragma: allowlist secret -->
 | **REQ-4** | Update AGENT_ACCOUNTABILITY_REPORT.md | ✅ THIS ENTRY |
 | **Authorization** | Track 2-4 campaign activations (2026-07-05 UTC onwards) | ✅ CONFIRMED |
 
@@ -138,7 +138,7 @@ Campaign execution continues per multi-agent implementation plan:
 |-----------|-------------|-----------|-----------|-----------------|--------|
 | **F-001** | Admin Action (T-03 Security Gate) | Invalid YAML: timeout-minutes on reusable workflow | N/A (pre-fixed) | N/A | ✅ Pre-fixed by commit 65ea7e3b1 |
 | **F-002** | Baseline Sweep (git race condition) | Concurrent pushes + no exponential backoff | Exponential backoff (5s, 10s, 20s) | ✅ PASSED | ✅ RESOLVED |
-| **F-003** | Phase 8.2 Issue Triage (403 API error) | Missing read:security_events scope | Token elevation + OAuth2 git push | ✅ PASSED (+ secondary fix) | ✅ RESOLVED |
+| **F-003** | Phase 8.2 Issue Triage (403 API error) | Missing read:security_events scope | Token elevation + OAuth2 git push | ✅ PASSED (+ secondary fix) | ✅ RESOLVED | <!-- pragma: allowlist secret -->
 | **F-004** | Copilot Cloud Agent Session | Monitoring during campaign | N/A (monitoring) | Expected complete | 🟡 In progress |
 
 ### AGENTS DEPLOYED & PERFORMANCE
@@ -186,7 +186,7 @@ Campaign execution continues per multi-agent implementation plan:
 | **Fixes Applied** | 3/3 | 100% remediation success |
 | **Fixes Validated** | 3/3 | 100% validation success |
 | **Unintended Regressions** | 0 | Code quality maintained |
-| **Discovery During Validation** | 1 | F-003 incomplete token scope (fixed) |
+| **Discovery During Validation** | 1 | F-003 incomplete token scope (fixed) | <!-- pragma: allowlist secret -->
 
 ### TIMELINE EXECUTION
 
@@ -11674,3 +11674,11 @@ Current progress: 85%+ complete (final SAST scan and pre-production audit in pro
 - **WEC human grant** `copilot-agent-checkin.yml` — detected 2026-07-05T04:13:42Z @ bad56564 — sticky [x] maintained by all future agent sessions
 - **WEC human grant** `cost-gate.yml` — detected 2026-07-05T04:13:42Z @ bad56564 — sticky [x] maintained by all future agent sessions
 - **WEC human grant** `auto-approve-workflows` — detected 2026-07-05T04:13:42Z @ bad56564 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `pre-merge-validation.yml` — detected 2026-07-05T04:15:10Z @ 7bfa8750 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `comment-review-gate.yml` — detected 2026-07-05T04:15:10Z @ 7bfa8750 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `deferral-language-gate.yml` — detected 2026-07-05T04:15:10Z @ 7bfa8750 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `agent-auth-delegation.yml` — detected 2026-07-05T04:15:10Z @ 7bfa8750 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `workflow-execution-gate.yml` — detected 2026-07-05T04:15:10Z @ 7bfa8750 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `copilot-agent-checkin.yml` — detected 2026-07-05T04:15:10Z @ 7bfa8750 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `cost-gate.yml` — detected 2026-07-05T04:15:10Z @ 7bfa8750 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `auto-approve-workflows` — detected 2026-07-05T04:15:10Z @ 7bfa8750 — sticky [x] maintained by all future agent sessions

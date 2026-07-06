@@ -20,7 +20,6 @@ from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.table import Table
 
-
 logger = logging.getLogger(__name__)
 
 # Re-export RAGIndexer so tests can patch codex.cli_rag.RAGIndexer

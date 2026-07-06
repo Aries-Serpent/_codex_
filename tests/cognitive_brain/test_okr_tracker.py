@@ -5,19 +5,16 @@ Covers TaskStatus, OKRTask, KeyResult, Objective, OKRSummary, and OKRTracker.
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
-
 import pytest
 
 from codex.cognitive.okr_tracker import (
     KeyResult,
+    Objective,
     OKRSummary,
     OKRTask,
     OKRTracker,
-    Objective,
     TaskStatus,
 )
-
 
 # ---------------------------------------------------------------------------
 # Enums
