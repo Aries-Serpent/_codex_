@@ -17,7 +17,7 @@ cryptography>=49.0.0,<50.0.0  # Security: keep development installs on published
 PyJWT>=2.13.0,<3.0.0  # Security: CVE fixes (2.7.0 had 7 CVEs)
 PyNaCl>=1.5.0,<2.0.0  # Security: Cryptographic library
 numpy>=2.4.6,<3  # Security: Updated to 2.4.6+ for compatibility with pandas 3.0.3
-tenacity>=8.2,<10  # Required by agents/codex_client/codex_client/bridge.py (test_codex_client_bridge_and_demo)
+tenacity>=9.1.4,<10  # Required by agents/codex_client/codex_client/bridge.py (test_codex_client_bridge_and_demo)
 pre-commit>=3,<5
 nox>=2026.4.10,<2027
 
