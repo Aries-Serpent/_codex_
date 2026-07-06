@@ -78,7 +78,7 @@ def generate_python_sbom() -> list[Component]:
         if result.returncode == 0:
             packages = json.loads(result.stdout)
             
-            for pkg in packages[:50]:  # Limit for demo
+            for pkg in packages:  # Include all packages in the SBOM
                 name = pkg.get("name", "unknown")
                 version = pkg.get("version", "unknown")
                 
@@ -189,7 +189,7 @@ def generate_cyclonedx_sbom(components: list[Component]) -> str:
     # Metadata
     metadata = ET.SubElement(sbom, "metadata")
     timestamp = ET.SubElement(metadata, "timestamp")
-    timestamp.text = datetime.utcnow().isoformat() + "Z"
+    timestamp.text = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
     
     tools = ET.SubElement(metadata, "tools")
     tool = ET.SubElement(tools, "tool")
@@ -234,15 +234,15 @@ def validate_sbom(sbom_xml: str) -> bool:
         assert root.get("version"), "Version attribute required"
         
         # Check components
-        components = root.findall(".//component", {
-            "http://cyclonedx.org/schema/bom/1.4": "component"
-        })
+        ns = {"": "http://cyclonedx.org/schema/bom/1.4"}
+        components = root.findall(".//{http://cyclonedx.org/schema/bom/1.4}component")
         
-        if len(root) > 0:
+        if len(components) > 0:
             logger.info(f"✅ SBOM schema valid")
             logger.info(f"   - Root element: bom")
             logger.info(f"   - Version: {root.get('version')}")
-            logger.info(f"   - Contains metadata: {root.find('.//metadata') is not None}")
+            logger.info(f"   - Contains metadata: {root.find('{http://cyclonedx.org/schema/bom/1.4}metadata') is not None}")
+            logger.info(f"   - Components: {len(components)}")
             return True
         
         return False

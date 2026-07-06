@@ -19,7 +19,7 @@ jobs:
       matrix:
         language: ['python', 'javascript']
     steps:
-      - uses: actions/checkout@v5  # nosemgrep: yaml.github-actions.security.github-actions-mutable-action-tag
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
 
       - uses: github/codeql-action/init@v4
         with:
@@ -35,9 +35,9 @@ jobs:
     runs-on: ubuntu-latest
     name: Bandit Security Scan
     steps:
-      - uses: actions/checkout@v5  # nosemgrep: yaml.github-actions.security.github-actions-mutable-action-tag
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
       
-      - uses: actions/setup-python@v6  # nosemgrep: yaml.github-actions.security.github-actions-mutable-action-tag
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
         with:
           python-version: '3.12'
       
@@ -45,7 +45,7 @@ jobs:
         run: pip install bandit
       
       - name: Run Bandit scan
-        run: bandit -r src -f json -c .bandit.yaml -o bandit-report.json || true
+        run: bandit -r src -f sarif -c .bandit.yaml -o bandit-report.json || true
       
       - name: Upload Bandit results
         if: always()
@@ -57,14 +57,14 @@ jobs:
     runs-on: ubuntu-latest
     name: Semgrep Custom Rules
     steps:
-      - uses: actions/checkout@v5  # nosemgrep: yaml.github-actions.security.github-actions-mutable-action-tag
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
       
       - name: Install Semgrep
         run: pip install semgrep
       
       - name: Run Semgrep
         run: |
-          semgrep --config .semgrep/semgrep.yml src --json > semgrep-report.json || true
+          semgrep --config .semgrep/semgrep.yml src --sarif > semgrep-report.json || true
       
       - name: Upload Semgrep results
         if: always()
@@ -78,7 +78,7 @@ jobs:
     name: Generate Compliance Report
     if: always()
     steps:
-      - uses: actions/checkout@v5  # nosemgrep: yaml.github-actions.security.github-actions-mutable-action-tag
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
       
       - name: Create compliance dashboard
         run: |

@@ -19,13 +19,10 @@ from __future__ import annotations
 import gc
 import logging
 import os
-import sys
-import traceback
 from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime, UTC
 from enum import Enum
-from pathlib import Path
 from typing import Any, Callable, Generator, Optional
 
 logger = logging.getLogger(__name__)

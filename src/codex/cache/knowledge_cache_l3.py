@@ -14,10 +14,8 @@ Max Size: 10GB per cache tier
 
 from __future__ import annotations
 
-import hashlib
 import json
 import logging
-import os
 import sqlite3
 import threading
 import time
@@ -293,19 +291,26 @@ class L3KnowledgeCache:
 
                 # If still over limit, evict by LRU
                 target_size = int(self.max_size * 0.8)
+                current_size = cursor.fetchone()[0]
                 if current_size > target_size:
+                    # Get LRU entries to delete, ordered by access time
                     cursor = conn.execute(
                         """
-                        SELECT key FROM cache_entries
+                        SELECT key, size_bytes FROM cache_entries
                         ORDER BY last_accessed ASC
-                        LIMIT (
-                            SELECT COUNT(*) FROM cache_entries
-                            WHERE (SELECT SUM(size_bytes) FROM cache_entries) > ?
-                        )
-                        """,
-                        (target_size,),
+                        """
                     )
-                    keys_to_delete = [row[0] for row in cursor.fetchall()]
+                    size_to_free = current_size - target_size
+                    freed_size = 0
+                    keys_to_delete = []
+                    
+                    for key, size_bytes in cursor.fetchall():
+                        if freed_size >= size_to_free:
+                            break
+                        keys_to_delete.append(key)
+                        freed_size += size_bytes
+                    
+                    # Delete the selected keys
                     for key in keys_to_delete:
                         conn.execute("DELETE FROM cache_entries WHERE key = ?", (key,))
 

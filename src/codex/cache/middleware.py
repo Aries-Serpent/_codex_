@@ -11,7 +11,6 @@ Automatically:
 from __future__ import annotations
 
 import hashlib
-import json
 import logging
 import time
 from typing import Any, Callable
@@ -21,7 +20,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.types import ASGIApp
 
 from .orchestrator import get_cache_orchestrator
-from .request_cache import get_l1_cache, reset_l1_cache
+from .request_cache import reset_l1_cache
 
 logger = logging.getLogger(__name__)
 
@@ -95,7 +94,7 @@ class CacheInstrumentationMiddleware(BaseHTTPMiddleware):
 
             # Try to get from cache
             cached_response = self.cache.get(cache_key)
-            if cached_response:
+            if cached_response is not None:
                 logger.debug(f"Cache hit for {endpoint_key}")
                 return self._make_response(cached_response)
 
@@ -111,25 +110,32 @@ class CacheInstrumentationMiddleware(BaseHTTPMiddleware):
         # Only cache if response is successful and slow enough
         if use_cache and cache_key and response.status_code == 200 and latency_ms >= self.cache_threshold_ms:
             try:
-                # Read response body
-                body = await response.body()
+                # Skip caching StreamingResponse and other non-bufferable responses
+                if hasattr(response, 'body'):
+                    # For buffered responses (JSONResponse, etc.)
+                    body = response.body if isinstance(response.body, bytes) else response.body.encode('utf-8')
+                else:
+                    # For streaming responses, don't cache
+                    logger.debug(f"Skipping cache for streaming response: {endpoint_key}")
+                    return response
 
                 # Cache the response
                 cached_data = {
                     "status_code": response.status_code,
                     "body": body.decode("utf-8") if isinstance(body, bytes) else body,
                     "headers": dict(response.headers),
+                    "media_type": response.media_type,
                     "timestamp": time.time(),
                     "latency_ms": latency_ms,
                 }
                 self.cache.set(cache_key, cached_data, tier="L2")
 
-                # Re-wrap response with body
+                # Re-wrap response with body and preserve content-type
                 response = Response(
                     content=body,
                     status_code=response.status_code,
                     headers=dict(response.headers),
-                    media_type=response.media_type,
+                    media_type=cached_data.get("media_type"),
                 )
             except Exception as e:
                 logger.error(f"Cache write error for {endpoint_key}: {e}")
@@ -180,7 +186,7 @@ class CacheInstrumentationMiddleware(BaseHTTPMiddleware):
             content=cached_data.get("body", ""),
             status_code=cached_data.get("status_code", 200),
             headers=cached_data.get("headers", {}),
-            media_type="application/json",
+            media_type=cached_data.get("media_type", "application/json"),
         )
 
     def _record_endpoint_stats(self, endpoint_key: str, latency_ms: float, was_cached: bool) -> None:

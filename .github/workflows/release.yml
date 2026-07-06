@@ -46,7 +46,7 @@ jobs:
     needs: validate
     uses: ./.github/workflows/sbom.yml
     secrets:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
   release:
     name: Create GitHub Release
     needs:

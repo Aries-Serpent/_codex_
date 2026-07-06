@@ -259,7 +259,9 @@ class L1CacheDecorator:
         def decorator(func: Callable[..., T]) -> Callable[..., T]:
             def wrapper(*args, **kwargs) -> T:
                 # Generate cache key from function name and arguments
-                cache_key = f"{func.__module__}.{func.__name__}:{hashlib.sha256(f'{args}:{kwargs}'.encode()).hexdigest()}"
+                # Use sorted kwargs to ensure consistent key generation regardless of order
+                sorted_kwargs = sorted(kwargs.items())
+                cache_key = f"{func.__module__}.{func.__name__}:{hashlib.sha256(f'{args}:{sorted_kwargs}'.encode()).hexdigest()}"
 
                 # Try to get from cache
                 cached_value = self.cache.get(cache_key)

@@ -51,12 +51,13 @@ def validate_gitleaks_config() -> bool:
     """Validate gitleaks configuration exists and is valid."""
     logger.info("📋 Validating gitleaks configuration...")
     
-    config_path = Path("/home/runner/work/_codex_/_codex_/.gitleaks.toml")
+    # Use relative path from current working directory (repo root)
+    config_path = Path(".gitleaks.toml")
     if not config_path.exists():
-        logger.error(f"❌ Gitleaks config not found at {config_path}")
+        logger.error(f"❌ Gitleaks config not found at {config_path.resolve()}")
         return False
     
-    logger.info(f"✅ Gitleaks config exists: {config_path}")
+    logger.info(f"✅ Gitleaks config exists: {config_path.resolve()}")
     
     # Validate config format
     try:
