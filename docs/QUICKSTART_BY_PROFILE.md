@@ -143,7 +143,7 @@ jobs:
     environment:
       name: production
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       
       # Env vars automatically injected from repository settings
       - name: Deploy

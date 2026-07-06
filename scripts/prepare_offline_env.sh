@@ -24,6 +24,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(dirname "$SCRIPT_DIR")"
 WHEELHOUSE_DIR="${REPO_ROOT}/wheelhouse"
 MODE="${1:-runtime}"
+MODE="${MODE#--}"
 REQUIREMENTS_FILE=""
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 LOG_FILE="${REPO_ROOT}/.codex/logs/offline_wheelhouse_${TIMESTAMP}.log"
@@ -126,11 +127,8 @@ if pip wheel --no-cache-dir \
     log_success "All dependencies downloaded as wheels"
 else
     log_error "Failed to download wheels"
-    rm -f "$FILTERED_REQS"
     exit 1
 fi
-
-rm -f "$FILTERED_REQS"
 
 # Step 4: Generate SHA256 checksums
 log_info "Step 4: Generating SHA256 checksums..."
@@ -152,6 +150,8 @@ if pip show cyclonedx-bom &>/dev/null; then
     else
         log_warning "SBOM generation failed, continuing without SBOM"
     fi
+
+    rm -f "$FILTERED_REQS"
 else
     log_warning "cyclonedx-bom not installed, installing..."
     pip install cyclonedx-bom -q 2>&1 | tee -a "$LOG_FILE" || {

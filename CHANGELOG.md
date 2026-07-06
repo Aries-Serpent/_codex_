@@ -1,5 +1,17 @@
 ## [Unreleased]
 
+### Fixed (PR #5233 review remediation — 2026-07-06T03:46Z)
+- Resolved review + CodeQL concerns for env-var rollout:
+  - Restored `gpt2-offline` model registry decorator placement
+  - Hardened loopback handling in GitHub app URL validation and MLflow guards
+  - Fixed Ollama host/port URL composition and optional host annotations
+  - Filtered empty trusted-host entries and corrected test assertions/import paths
+  - Fixed offline env scripts (`--mode` parsing, SBOM requirements-file lifecycle, mode-specific install requirements)
+- Removed unused `subprocess` import and corrected UTC `Z` timestamp + `Any` typing in `scripts/phase-9-metrics-collector.py`
+- Updated `docs/QUICKSTART_BY_PROFILE.md` checkout example to `actions/checkout@v5`
+- Aligned `full` optional dependency profile to `marshmallow>=3.7.1,<4` to avoid resolver conflict with `great_expectations`
+- Updated post-merge prompt with PR #5233 verification checklist
+
 ### Added (Phase 6.2: Environment Variables Deployment — 2026-07-06T03:30Z)
 - 8 repository environment variables for configuration management:
   - `CODEX_REDIS_HOST` — Distributed cache endpoint (localhost default)

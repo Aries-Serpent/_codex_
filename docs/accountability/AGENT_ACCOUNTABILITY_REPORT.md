@@ -1,3 +1,43 @@
+## SESSION SUMMARY — 2026-07-06T03:46Z [PR #5233 REVIEW + CODEQL REMEDIATION]
+
+**Session:** pr-5233-review-remediation | **Task:** Address blocking reviewer/CodeQL/bot feedback and CI-linked code issues on PR #5233 | **Date:** 2026-07-06T03:46Z | **Authority:** @mbaetiong
+
+### EXECUTION SUMMARY
+- Reviewed PR comments, review threads, and failing workflow logs (pre-merge, fast validation, code quality, secrets baseline).
+- Applied fixes across Python, shell, tests, docs, and packaging metadata to close actionable blocking feedback.
+- Updated CI-impacting packaging constraint to resolve `great_expectations` vs `marshmallow` resolver conflict in the `full` profile.
+- Updated post-merge prompt checklist with PR #5233 follow-up verification steps before session close.
+
+### KEY FIXES DELIVERED
+- Registry/decorator fix: `src/codex_ml/models/registry.py` (`gpt2-offline` registration restored)
+- Security/network fixes:
+  - `src/codex/auth/github_app.py`
+  - `src/codex_ml/tracking/mlflow_guard.py`
+  - `src/codex_ml/tracking/guards.py`
+  - `src/codex_ml/serving/inference_server.py`
+- Runtime/provider fixes:
+  - `src/codex/rag/providers/ollama_provider.py`
+  - `src/cache/redis_cache.py`
+- Tooling/scripts fixes:
+  - `scripts/prepare_offline_env.sh`
+  - `scripts/validate_offline_install.sh`
+  - `scripts/phase-9-metrics-collector.py`
+  - `pyproject.toml` (`marshmallow` constraint alignment in `full` profile)
+- Test/documentation updates:
+  - `tests/test_phase_6_2_b_env_vars.py`
+  - `docs/QUICKSTART_BY_PROFILE.md`
+
+### VALIDATION EXECUTED
+- `python scripts/ci/pre_flight_check.py` ✅
+- `python -m compileall <changed python files>` ✅
+- `bash -n scripts/prepare_offline_env.sh scripts/validate_offline_install.sh` ✅
+- `python scripts/ci/sync_tracked_files.py --check` ✅
+- `python3 scripts/ci/session_wrapup_autofix.py --check --pr-number 5233` (pre-doc-update failure expected before this session entry/changelog update)
+
+### AGENTS USED
+- Primary: `github-copilot[bot]`
+- External specialized agents: none
+
 ## SESSION SUMMARY — 2026-07-06T03:30Z [PHASE 6.2 EXECUTION: ENVIRONMENT VARIABLES DEPLOYMENT]
 
 **Session:** phase-6-2-execution | **Task:** Multi-Agent Campaign Phase 6.2: Replace 24 localhost hardcodes with 8 repository environment variables + parallel groundwork for Phases 7-9 | **Date:** 2026-07-06T02:58-03:30Z | **Authority:** @mbaetiong (D-tier autonomous, DO NOT DEFER, parallel execution authorized)

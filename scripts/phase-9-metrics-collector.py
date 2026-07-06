@@ -14,11 +14,10 @@ Duration: 8-10 hours execution time
 """
 
 import json
-import subprocess
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 # Phase 9 Metrics Schema
 METRICS_SCHEMA = {
@@ -50,12 +49,12 @@ METRICS_SCHEMA = {
 
 class Phase9MetricsCollector:
     """Collect and track Phase 9 onboarding metrics"""
-    
+
     def __init__(self, repo_root: Path = Path.cwd()):
         self.repo_root = repo_root
         self.metrics_file = repo_root / ".codex" / "phase-9-metrics-dashboard.json"
-        self.timestamp = datetime.now().isoformat()
-        
+        self.timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
     def collect_github_variables(self) -> Dict[str, Optional[str]]:
         """Collect environment variable values from GitHub Settings"""
         env_vars = {
@@ -68,11 +67,11 @@ class Phase9MetricsCollector:
             "CODEX_TRUSTED_HOSTS": None,
             "CODEX_LOCAL_LOOPBACK": None,
         }
-        
+
         # In Phase 9 execution, these are queried via GitHub API
         # For now, return template
         return env_vars
-    
+
     def calculate_adoption_metrics(self) -> Dict[str, float]:
         """Calculate % adoption for each environment variable"""
         # Template - populated during Phase 9 execution
@@ -87,7 +86,7 @@ class Phase9MetricsCollector:
             "CODEX_LOCAL_LOOPBACK": 0.0,
         }
         return adoption
-    
+
     def calculate_success_rates(self) -> Dict[str, float]:
         """Calculate setup and first-run success rates"""
         # Template - populated from CI/CD logs
@@ -97,8 +96,8 @@ class Phase9MetricsCollector:
             "first_run_success": 90.0,  # % first run succeeded
             "no_errors": 95.0,  # % without errors
         }
-    
-    def count_support_tickets(self) -> Dict[str, any]:
+
+    def count_support_tickets(self) -> Dict[str, Any]:
         """Count environment variable-related support tickets"""
         # Template - query GitHub Issues API during Phase 9
         return {
@@ -112,7 +111,7 @@ class Phase9MetricsCollector:
             ],
             "average_resolution_time_minutes": 0,
         }
-    
+
     def collect_user_satisfaction(self) -> Dict[str, float]:
         """Collect user satisfaction survey data"""
         # Template - populate from user survey responses
@@ -121,7 +120,7 @@ class Phase9MetricsCollector:
             "documentation_usefulness": 0.0,  # Target: 4.2/5
             "time_to_configure_minutes": 0.0,  # Target: <10 min
         }
-    
+
     def estimate_deployment_distribution(self) -> Dict[str, Dict[str, float]]:
         """Estimate deployment environment distribution"""
         # Template - populate from telemetry during Phase 9
@@ -142,8 +141,8 @@ class Phase9MetricsCollector:
                 "single_node": 0.05,
             },
         }
-    
-    def generate_metrics_snapshot(self) -> Dict:
+
+    def generate_metrics_snapshot(self) -> Dict[str, Any]:
         """Generate complete metrics snapshot"""
         return {
             "timestamp": self.timestamp,
@@ -156,31 +155,31 @@ class Phase9MetricsCollector:
             "satisfaction": self.collect_user_satisfaction(),
             "deployment_distribution": self.estimate_deployment_distribution(),
             "next_update": "2026-07-10T18:00:00Z",
-            "notes": "Phase 9 metrics collection in progress. Update frequency: daily."
+            "notes": "Phase 9 metrics collection in progress. Update frequency: daily.",
         }
-    
+
     def save_metrics(self) -> bool:
         """Save metrics to dashboard JSON"""
         try:
             # Ensure .codex directory exists
             self.metrics_file.parent.mkdir(parents=True, exist_ok=True)
-            
+
             metrics = self.generate_metrics_snapshot()
-            
-            with open(self.metrics_file, 'w') as f:
+
+            with open(self.metrics_file, "w") as f:
                 json.dump(metrics, f, indent=2)
-            
+
             print(f"✅ Metrics saved to {self.metrics_file}")
             return True
-            
+
         except Exception as e:
             print(f"❌ Failed to save metrics: {e}", file=sys.stderr)
             return False
-    
+
     def validate_phase_9_exit_gate(self) -> Dict[str, bool]:
         """Validate Phase 9 exit gate criteria"""
         metrics = self.generate_metrics_snapshot()
-        
+
         return {
             "adoption_80_percent": metrics["adoption"].get("CODEX_LOCAL_LOOPBACK", 0) >= 80,
             "success_rate_95_percent": metrics["success_rates"]["setup_success_rate"] >= 95,
@@ -191,13 +190,13 @@ class Phase9MetricsCollector:
             "faq_covers_90_percent": True,  # Placeholder
             "dashboard_operational": self.metrics_file.exists(),
         }
-    
+
     def generate_phase_9_report(self) -> str:
         """Generate Phase 9 completion report"""
         exit_gate = self.validate_phase_9_exit_gate()
         passed = sum(1 for v in exit_gate.values() if v)
         total = len(exit_gate)
-        
+
         report = f"""
 # Phase 9 Onboarding Metrics Report
 
@@ -234,23 +233,23 @@ Phase 10 activates upon successful Phase 9 exit gate clearance.
 def main():
     """Main entry point"""
     collector = Phase9MetricsCollector()
-    
+
     # Generate initial snapshot
     if not collector.save_metrics():
         sys.exit(1)
-    
+
     # Validate exit gate
     exit_gate = collector.validate_phase_9_exit_gate()
     passed = sum(1 for v in exit_gate.values() if v)
     total = len(exit_gate)
-    
+
     print(f"\n{'='*60}")
     print(f"Phase 9 Metrics Status: {passed}/{total} exit gate criteria met")
     print(f"{'='*60}\n")
-    
+
     for criterion, status in exit_gate.items():
         print(f"  {'✅' if status else '⏳'} {criterion}")
-    
+
     print(f"\n{'='*60}")
     print(f"Dashboard: .codex/phase-9-metrics-dashboard.json")
     print(f"Update Frequency: Daily during Phase 9 execution")

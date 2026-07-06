@@ -58,7 +58,11 @@ DEFAULT_ALLOWED_ORIGINS = [
     "https://127.0.0.1:8000",
     "http://testserver",
 ]
-DEFAULT_TRUSTED_HOSTS = [h.strip() for h in os.environ.get("CODEX_TRUSTED_HOSTS", "localhost,127.0.0.1,testserver").split(",")]
+DEFAULT_TRUSTED_HOSTS = [
+    h.strip()
+    for h in os.environ.get("CODEX_TRUSTED_HOSTS", "localhost,127.0.0.1,testserver").split(",")
+    if h.strip()
+]
 
 # API Key Security
 API_KEY_NAME = "X-API-Key"  # pragma: allowlist secret

@@ -6,7 +6,8 @@ Provides embeddings using Ollama server (local LLM runtime).
 
 import logging
 import os
-from typing import Union
+from typing import Optional, Union
+from urllib.parse import urlparse
 
 import numpy as np
 
@@ -47,7 +48,7 @@ class OllamaEmbeddingProvider:
     def __init__(
         self,
         model_name: str = "nomic-embed-text",
-        host: str = None,
+        host: Optional[str] = None,
         port: int = 11434,
         timeout: int = 30,
         dimension: int = 768,
@@ -67,8 +68,14 @@ class OllamaEmbeddingProvider:
 
         self.model_name = model_name
         self.host = host or os.environ.get("CODEX_OLLAMA_HOST", "http://localhost")
+        if "://" not in self.host:
+            self.host = f"http://{self.host}"
         self.port = port
-        self.base_url = f"{self.host}:{port}"
+        parsed_host = urlparse(self.host)
+        if parsed_host.port is None:
+            self.base_url = f"{self.host.rstrip('/')}:{port}"
+        else:
+            self.base_url = self.host.rstrip("/")
         self.timeout = timeout
         self.dimension = dimension
 

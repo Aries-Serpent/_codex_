@@ -293,7 +293,7 @@
   "open_prs": [
     5233
   ],
-  "head_sha": "7d808091998cfbc954d23b369deb047609594a88",
+  "head_sha": "7d808091998c",
   "recommended_method": "REST",
   "recommended_method_detail": "core.remaining=4705 via GITHUB_TOKEN"
 }

@@ -78,4 +78,10 @@ def load_functional_trainer() -> Callable[..., Any]:
     return _load_functional_trainer()
 
 
-__all__ = ["get_trainer", "list_trainers", "register_trainer", "trainer_registry"]
+__all__ = [
+    "get_trainer",
+    "list_trainers",
+    "load_functional_trainer",
+    "register_trainer",
+    "trainer_registry",
+]

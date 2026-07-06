@@ -173,8 +173,6 @@ def _build_default_bert(cfg: dict[str, Any]) -> HF_PreTrainedModel:
     return _load_hf_model("mlm", cfg, "bert-base-uncased")
 
 
-@model_registry.register("gpt2-offline")
-
 # Public API wrappers for entry points
 def build_minilm(cfg: dict[str, Any]) -> Any:
     """Public API wrapper for MiniLM model builder.
@@ -203,6 +201,7 @@ def build_default_bert(cfg: dict[str, Any]) -> Any:
     """
     return _build_default_bert(cfg)
 
+@model_registry.register("gpt2-offline")
 def _build_offline_gpt2(cfg: dict[str, Any]) -> HF_PreTrainedModel:
     resolved = _resolve_offline_checkpoint(
         "gpt2-offline",

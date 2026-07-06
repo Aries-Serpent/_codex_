@@ -108,10 +108,11 @@ class GitHubAppConfig:
 
         _enable_loopback = os.environ.get("CODEX_LOCAL_LOOPBACK", "true").lower() == "true"
         _host = _urlparse(_url).hostname or ""
-        _default_localhosts = ("localhost", "127.0.0.1", "::1") if _enable_loopback else ()
-        if _host in ("", *_default_localhosts):
-            if not (_enable_loopback and _host in _default_localhosts):
-                raise ValueError("api_base_url must point to a remote GitHub endpoint, not %r" % _host)
+        _loopback_hosts = {"localhost", "127.0.0.1", "::1"}
+        if _host == "":
+            raise ValueError("api_base_url must point to a remote GitHub endpoint, not %r" % _host)
+        if _host in _loopback_hosts and not _enable_loopback:
+            raise ValueError("api_base_url must point to a remote GitHub endpoint, not %r" % _host)
 
 
 # ---------------------------------------------------------------------------

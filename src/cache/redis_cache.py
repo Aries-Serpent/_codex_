@@ -35,7 +35,7 @@ class RedisCache(CacheBackend):
 
     def __init__(
         self,
-        host: str = None,
+        host: Optional[str] = None,
         port: int = 6379,
         db: int = 0,
         password: Optional[str] = None,

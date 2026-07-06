@@ -18,6 +18,8 @@ REPO_ROOT="$(dirname "$SCRIPT_DIR")"
 WHEELHOUSE_DIR="${REPO_ROOT}/wheelhouse"
 TEST_ENV="${REPO_ROOT}/.offline_test_env"
 MODE="${1:-runtime}"
+MODE="${MODE#--}"
+REQUIREMENTS_FILE="${REPO_ROOT}/requirements.txt"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 LOG_FILE="${REPO_ROOT}/.codex/logs/offline_validation_${TIMESTAMP}.log"
 
@@ -61,6 +63,28 @@ log_info "Mode: $MODE"
 log_info "Wheelhouse: $WHEELHOUSE_DIR"
 echo ""
 
+case "$MODE" in
+    minimal)
+        REQUIREMENTS_FILE="${REPO_ROOT}/requirements-minimal.txt"
+        ;;
+    runtime)
+        REQUIREMENTS_FILE="${REPO_ROOT}/requirements.txt"
+        ;;
+    full)
+        REQUIREMENTS_FILE="${REPO_ROOT}/requirements-full.txt"
+        ;;
+    *)
+        log_error "Unknown mode: $MODE"
+        echo "Usage: $0 [--minimal|--runtime|--full]"
+        exit 1
+        ;;
+esac
+
+if [ ! -f "$REQUIREMENTS_FILE" ]; then
+    log_error "Requirements file not found: $REQUIREMENTS_FILE"
+    exit 1
+fi
+
 # Step 1: Create isolated environment
 log_info "Step 1: Creating isolated Python environment..."
 rm -rf "$TEST_ENV" 2>/dev/null || true
@@ -99,7 +123,7 @@ if pip install --no-index \
     --find-links "$WHEELHOUSE_DIR" \
     --no-deps \
     -q \
-    -r "${REPO_ROOT}/requirements.txt" \
+    -r "$REQUIREMENTS_FILE" \
     2>&1 | tee -a "$LOG_FILE"; then
     log_success "All packages installed successfully"
 else
