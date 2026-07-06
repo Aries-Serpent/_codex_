@@ -1,0 +1,102 @@
+{
+  "timestamp": "2026-07-08T00:00:00Z",
+  "phase": "9",
+  "status": "GROUNDWORK_PREPARED",
+  "collection_period": "2026-07-10 to 2026-08-07",
+  "note": "This dashboard will be populated during Phase 9 execution (2026-07-10T10:00Z+)",
+  "adoption": {
+    "CODEX_REDIS_HOST": null,
+    "CODEX_OLLAMA_HOST": null,
+    "CODEX_MASTER_ADDR": null,
+    "CODEX_MASTER_PORT": null,
+    "CODEX_INFERENCE_SERVICE_HOST": null,
+    "CODEX_INFERENCE_SERVICE_PORT": null,
+    "CODEX_TRUSTED_HOSTS": null,
+    "CODEX_LOCAL_LOOPBACK": null
+  },
+  "success_rates": {
+    "setup_without_errors": null,
+    "configuration_validation": null,
+    "first_run_success": null,
+    "overall_success": null
+  },
+  "support": {
+    "weekly_tickets": null,
+    "common_issues": [],
+    "average_resolution_time_minutes": null
+  },
+  "satisfaction": {
+    "configuration_clarity_1_5": null,
+    "documentation_usefulness_1_5": null,
+    "time_to_configure_minutes": null,
+    "completion_rate_percent": null
+  },
+  "deployment_distribution": {
+    "development": {
+      "default_localhost": null,
+      "custom_local_services": null,
+      "docker_compose": null
+    },
+    "staging": {
+      "kubernetes": null,
+      "vm_cloud": null,
+      "bare_metal": null
+    },
+    "production": {
+      "kubernetes": null,
+      "high_availability": null,
+      "single_node": null
+    }
+  },
+  "user_profiles": {
+    "local_developer": {
+      "adoption_percent": null,
+      "setup_time_minutes": null,
+      "satisfaction_score": null
+    },
+    "docker_container_developer": {
+      "adoption_percent": null,
+      "setup_time_minutes": null,
+      "satisfaction_score": null
+    },
+    "kubernetes_operator": {
+      "adoption_percent": null,
+      "setup_time_minutes": null,
+      "satisfaction_score": null
+    },
+    "ci_cd_operator": {
+      "adoption_percent": null,
+      "setup_time_minutes": null,
+      "satisfaction_score": null
+    },
+    "enterprise_compliance": {
+      "adoption_percent": null,
+      "setup_time_minutes": null,
+      "satisfaction_score": null
+    }
+  },
+  "exit_gate": {
+    "adoption_80_percent": false,
+    "success_rate_95_percent": false,
+    "support_tickets_under_5_per_week": false,
+    "clarity_rating_4_5_out_of_5": false,
+    "completion_rate_85_percent": false,
+    "documentation_complete": false,
+    "faq_covers_90_percent": false,
+    "dashboard_operational": true
+  },
+  "phase_9_timeline": {
+    "activation": "2026-07-10T10:00Z",
+    "week_1_baseline": "2026-07-10 to 2026-07-17",
+    "week_2_analysis": "2026-07-17 to 2026-07-24",
+    "week_3_optimization": "2026-07-24 to 2026-07-31",
+    "week_4_completion": "2026-07-31 to 2026-08-07",
+    "expected_duration_hours": "8-10"
+  },
+  "documentation_references": {
+    "metrics_dashboard": "docs/ONBOARDING_METRICS_DASHBOARD.md",
+    "quickstart_guides": "docs/QUICKSTART_BY_PROFILE.md",
+    "comprehensive_faq": "docs/ENVIRONMENT_VARIABLES_FAQ.md",
+    "metrics_collector": "scripts/phase-9-metrics-collector.py"
+  }
+}

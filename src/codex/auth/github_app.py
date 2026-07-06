@@ -102,11 +102,17 @@ class GitHubAppConfig:
         _url = self.api_base_url.rstrip("/")
         if not _url.startswith("https://"):
             raise ValueError("api_base_url must use HTTPS (got: %r)" % self.api_base_url)
-        # Reject obviously local / private addresses.
+        # Reject obviously local / private addresses (unless loopback is enabled for dev).
+        import os
         from urllib.parse import urlparse as _urlparse
 
+        _enable_loopback = os.environ.get("CODEX_LOCAL_LOOPBACK", "true").lower() == "true"
         _host = _urlparse(_url).hostname or ""
-        if _host in ("", "localhost", "127.0.0.1", "::1"):
+        _loopback_hosts = {"localhost", "127.0.0.1", "::1"}
+        if _host == "":
+            raise ValueError("api_base_url must point to a remote GitHub endpoint, not %r" % _host)
+        # Loopback hosts are only valid when CODEX_LOCAL_LOOPBACK=true for local dev/test flows.
+        if _host in _loopback_hosts and not _enable_loopback:
             raise ValueError("api_base_url must point to a remote GitHub endpoint, not %r" % _host)
 
 

@@ -17,7 +17,7 @@ import logging
 import os
 from collections.abc import Callable
 from contextlib import contextmanager
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any, Optional
 
 import torch
@@ -49,8 +49,8 @@ class DistributedConfig:
     local_rank: int = 0
 
     # Multi-node settings
-    master_addr: str = "localhost"
-    master_port: str = "29500"
+    master_addr: str = field(default_factory=lambda: os.environ.get("CODEX_MASTER_ADDR", "localhost"))
+    master_port: str = field(default_factory=lambda: os.environ.get("CODEX_MASTER_PORT", "29500"))
 
     # Advanced settings
     find_unused_parameters: bool = False

@@ -11,6 +11,13 @@
 
 The following items are already complete and do **not** need to be repeated after merge:
 
+### PR #5233 review remediation follow-up (added 2026-07-06)
+- [ ] Confirm merged SHA includes reviewer/CodeQL remediation commit for PR #5233
+- [ ] Re-run `Validation Pipeline / Fast Validation` and confirm green
+- [ ] Re-run `Code Quality & Coverage Suite / Code Quality Analysis` and confirm no unresolved blocking lint/type findings
+- [ ] Confirm `🔐 Secrets Baseline Enforcer` passes with no new findings
+- [ ] Confirm `comment-review-gate.yml` reports 0 blocking unresolved comments
+
 - [x] **Phase 10 launch approved and activated**
   - Evidence: `.codex/archive/phase-reports/phase-1-10/PHASE_10_ACTIVATION_NOTICE_2026_07_02.md`
 - [x] **Phase 10 delivery completed across all 3 tracks**

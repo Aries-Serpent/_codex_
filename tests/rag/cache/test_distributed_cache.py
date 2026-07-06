@@ -33,6 +33,7 @@ class TestDistributedCacheConfig:
 
         assert config.backend == CacheBackend.MEMORY, "backend is not valid"
         assert config.memory_max_size == 1000, "memory_max_size is not valid"
+        # Should default to localhost when CODEX_REDIS_HOST is not set
         assert config.redis_host == "localhost", "redis_host is not valid"
 
     def test_custom_config(self):
@@ -46,6 +47,19 @@ class TestDistributedCacheConfig:
         assert config.backend == CacheBackend.HYBRID, "backend is not valid"
         assert config.memory_max_size == 500, "memory_max_size is not valid"
         assert config.redis_port == 6380, "redis_port is not valid"
+
+    def test_redis_host_env_var(self, monkeypatch):
+        """Test that CODEX_REDIS_HOST env var overrides default."""
+        monkeypatch.setenv("CODEX_REDIS_HOST", "redis-server.example.com")
+        # Need to create a new config to pick up the env var
+        config = DistributedCacheConfig()
+        assert config.redis_host == "redis-server.example.com", "redis_host should use env var"
+
+    def test_redis_host_fallback(self, monkeypatch):
+        """Test that redis_host falls back to localhost when env var unset."""
+        monkeypatch.delenv("CODEX_REDIS_HOST", raising=False)
+        config = DistributedCacheConfig()
+        assert config.redis_host == "localhost", "redis_host should fall back to localhost"
 
 
 class TestMemoryCacheBackend:

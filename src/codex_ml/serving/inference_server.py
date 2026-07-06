@@ -7,7 +7,7 @@ import os
 import secrets
 import time
 from collections import defaultdict
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Optional
 
@@ -58,7 +58,11 @@ DEFAULT_ALLOWED_ORIGINS = [
     "https://127.0.0.1:8000",
     "http://testserver",
 ]
-DEFAULT_TRUSTED_HOSTS = ["localhost", "127.0.0.1", "testserver"]
+DEFAULT_TRUSTED_HOSTS = [
+    h.strip()
+    for h in os.environ.get("CODEX_TRUSTED_HOSTS", "localhost,127.0.0.1,testserver").split(",")
+    if h.strip()
+]
 
 # API Key Security
 API_KEY_NAME = "X-API-Key"  # pragma: allowlist secret
@@ -203,6 +207,28 @@ class ModelConfig:
             "model_type": self.model_type,
             "model_path": self.model_path,
             "device": self.device,
+        }
+
+
+@dataclass
+class ServerConfig:
+    """Configuration for inference server host and port."""
+
+    host: str = field(default_factory=lambda: os.environ.get("CODEX_INFERENCE_SERVICE_HOST", "127.0.0.1"))
+    port: int = field(default_factory=lambda: int(os.environ.get("CODEX_INFERENCE_SERVICE_PORT", "8000")))
+
+    @classmethod
+    def from_env(cls) -> ServerConfig:
+        """Create server config from environment variables."""
+        return cls(
+            host=os.environ.get("CODEX_INFERENCE_SERVICE_HOST", "127.0.0.1"),
+            port=int(os.environ.get("CODEX_INFERENCE_SERVICE_PORT", "8000")),
+        )
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "host": self.host,
+            "port": self.port,
         }
 
 
@@ -421,13 +447,7 @@ if FASTAPI_AVAILABLE:
             allow_methods=["*"],
             allow_headers=["*"],
         )
-        trusted_hosts_env = os.getenv("CODEX_TRUSTED_HOSTS")
-        trusted_hosts = (
-            [host.strip() for host in trusted_hosts_env.split(",") if host.strip()]
-            if trusted_hosts_env
-            else list(DEFAULT_TRUSTED_HOSTS)
-        )
-        app.add_middleware(TrustedHostMiddleware, allowed_hosts=trusted_hosts)
+        app.add_middleware(TrustedHostMiddleware, allowed_hosts=DEFAULT_TRUSTED_HOSTS)
 
         server = ModelServer(config=config)
         limiter = server.rate_limiter

@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Offline installation bootstrap for packaged external deployments.
 # Usage:
-#   OFFLINE_BOOTSTRAP.sh --wheelhouse ./wheelhouse --artifact ./dist/codex_core-0.1.0-py3-none-any.whl
+#   OFFLINE_BOOTSTRAP.sh --wheelhouse ./wheelhouse --artifact ./dist/codex_ml-0.1.0-py3-none-any.whl
 
 WHEELHOUSE=""
 ARTIFACT=""

@@ -72,18 +72,11 @@ from codex.consolidation.mocks import (
     ObjectFactory,
     StubDataFactory,
 )
-from codex.consolidation.test_fixtures import (
-    AsyncFixture,
-    DatabaseFixture,
-    FixtureFactory,
-    MockFixture,
-    isolated_env,
-    mock_config,
-    mock_credentials,
-    temp_dir,
-    temp_file,
-    test_db_path,
-)
+# Test fixtures are intentionally NOT imported here to avoid making pytest
+# a runtime dependency of the core package. Import from:
+#   from codex.consolidation.test_fixtures import FixtureFactory  # in test code only
+# Note: This requires pytest to be installed separately (e.g., via `pip install codex-ml[full]`)
+# or directly: `pip install pytest`
 
 __all__ = [
     # Decorators (LRC-002)
@@ -100,17 +93,6 @@ __all__ = [
     "wrap_with_error_handling",
     "wrap_async_with_error_handling",
     "AuthenticationError",
-    # Test fixtures (MRC-001)
-    "FixtureFactory",
-    "DatabaseFixture",
-    "MockFixture",
-    "AsyncFixture",
-    "temp_dir",
-    "temp_file",
-    "isolated_env",
-    "mock_config",
-    "mock_credentials",
-    "test_db_path",
     # Configuration (MRC-002)
     "BaseConfig",
     "ConfigValidator",
@@ -140,4 +122,6 @@ __all__ = [
     "async_managed_resource",
     "async_pool_connection",
     "async_timeout_context",
+    # NOTE: Test fixtures (MRC-001) intentionally excluded to avoid pytest dependency
+    # Import from test code: from codex.consolidation.test_fixtures import FixtureFactory
 ]
