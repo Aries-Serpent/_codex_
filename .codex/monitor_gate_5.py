@@ -125,7 +125,7 @@ def format_status_comment(check_num: int, metrics: Dict, gate_status: str, gate_
 
 def main():
     print("📊 Starting Track 12.3 Gate 5 Real-Time Monitoring")
-    print(f"   Fix Deployed: 2026-07-06T05:40:00Z")
+    print("   Fix Deployed: 2026-07-06T05:40:00Z")
     print(f"   Current Time: {datetime.utcnow().isoformat()}Z")
     print(f"   Success Threshold: ≥95% ({MIN_RUNS} runs minimum)")
     
@@ -133,7 +133,7 @@ def main():
     all_runs = get_release_runs()
     pre_fix, post_fix = classify_runs(all_runs)
     
-    print(f"\n📈 Run Classification:")
+    print("\n📈 Run Classification:")
     print(f"   Pre-fix runs: {len(pre_fix)}")
     print(f"   Post-fix runs: {len(post_fix)}")
     
@@ -147,13 +147,13 @@ def main():
     trend = determine_trend(metrics['success_rate'])
     gate_status, gate_msg = determine_gate_status(metrics, len(post_fix))
     
-    print(f"\n✅ Post-Fix Metrics:")
+    print("\n✅ Post-Fix Metrics:")
     print(f"   Successful: {metrics['successful']}/{metrics['total']}")
     print(f"   Success Rate: {metrics['success_percent']:.1f}%")
     print(f"   Trend: {trend}")
     print(f"   Gate 5: {gate_status}")
     
-    print(f"\n📝 Status Comment:")
+    print("\n📝 Status Comment:")
     status = format_status_comment(1, metrics, gate_status, gate_msg, trend)
     print(status)
     

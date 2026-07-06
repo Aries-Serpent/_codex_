@@ -45,7 +45,7 @@ Based on codebase scan (2026-07-06T05:05:00Z), the following blockers were ident
 
 | Function | Module | File | Lines | Status |
 |----------|--------|------|-------|--------|
-| `_build_hf_tokenizer` | codex_ml.registry.tokenizers | `src/codex_ml/registry/tokenizers.py` | 45-60 | Private |
+| `_build_hf_tokenizer` | codex_ml.registry.tokenizers | `src/codex_ml/registry/tokenizers.py` | 45-60 | Private | <!-- pragma: allowlist secret -->
 | `_reward_model_heuristic` | codex_ml.plugins.registries | `src/codex_ml/plugins/registries.py` | 120-140 | Private |
 | `_build_minilm` | codex_ml.models.registry | `src/codex_ml/models/registry.py` | 30-45 | Private |
 | `_build_default_bert` | codex_ml.models.registry | `src/codex_ml/models/registry.py` | 47-62 | Private |
@@ -157,8 +157,8 @@ redis_host = os.environ.get("CODEX_REDIS_HOST", "localhost")
 **Step 2: Implement 5 public wrappers** (15 min)
 ```python
 # Example structure
-def build_hf_tokenizer(**kwargs):
-    """Public API for HuggingFace tokenizer construction.
+def build_hf_tokenizer(**kwargs):  # pragma: allowlist secret
+    """Public API for HuggingFace tokenizer construction.  # pragma: allowlist secret
     
     This is a stable public API (v0.1.0+).
     
@@ -166,9 +166,9 @@ def build_hf_tokenizer(**kwargs):
         **kwargs: Configuration parameters
         
     Returns:
-        HuggingFace tokenizer instance
+        HuggingFace tokenizer instance  # pragma: allowlist secret
     """
-    return _build_hf_tokenizer(**kwargs)
+    return _build_hf_tokenizer(**kwargs)  # pragma: allowlist secret
 ```
 
 **Step 3: Update exports** (5 min)

@@ -254,10 +254,10 @@ def main():
         print(f"  {'✅' if status else '⏳'} {criterion}")
 
     print(f"\n{'='*60}")
-    print(f"Dashboard: .codex/phase-9-metrics-dashboard.json")
-    print(f"Update Frequency: Daily during Phase 9 execution")
-    print(f"Phase 9 Activation: 2026-07-10T10:00Z")
-    print(f"Expected Duration: 8-10 hours")
+    print("Dashboard: .codex/phase-9-metrics-dashboard.json")
+    print("Update Frequency: Daily during Phase 9 execution")
+    print("Phase 9 Activation: 2026-07-10T10:00Z")
+    print("Expected Duration: 8-10 hours")
     print(f"{'='*60}\n")
     
     return 0

@@ -105,7 +105,7 @@ Agent: unified-security-scanner
 Task Name: phase-13-3-security-hardening
 Brief: Enterprise Security Hardening
 Timeline: Days 3-10 (10-day execution)
-Scope: Secrets + CVE + SBOM + Compliance
+Scope: Secrets + CVE + SBOM + Compliance  # pragma: allowlist secret
 Deliverables: 4x security audit reports
 ────────────────────────────────────────────────
 ```
@@ -156,7 +156,7 @@ Track 13.3: Security Hardening
 ├─ Status: 🟡 PRE-STAGED (awaiting Gate 5 PASS)
 ├─ Timeline: Days 3-10 (upon activation)
 ├─ Agent: unified-security-scanner
-└─ Deliverables: Secrets + CVE + SBOM + Compliance audits
+└─ Deliverables: Secrets + CVE + SBOM + Compliance audits  # pragma: allowlist secret
 
 Track 13.4: Performance Optimization
 ├─ Status: 🟡 PRE-STAGED (awaiting Gate 5 PASS)

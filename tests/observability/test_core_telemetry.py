@@ -1,5 +1,7 @@
 import unittest
+
 from scripts.observability.core_telemetry_collector import CoreTelemetryCollector
+
 
 class TestCoreTelemetry(unittest.TestCase):
     def test_core_telemetry_collector_agent_lifecycle(self):

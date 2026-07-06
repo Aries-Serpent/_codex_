@@ -195,7 +195,7 @@ Gate 5 PASS (Trigger)
 │  └─ Plan knowledge cache architecture
 │
 ├─ Day 8 (T+7): L3 Cache Implementation Phase 1
-│  ├─ Design disk-backed storage schema
+│  ├─ Design disk-backed storage schema  # pragma: allowlist secret
 │  ├─ Implement storage backend
 │  ├─ Create indexing strategy
 │  └─ Prototype with test data

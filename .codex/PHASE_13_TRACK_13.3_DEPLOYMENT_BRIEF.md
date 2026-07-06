@@ -126,17 +126,17 @@ Gate 5 PASS (Trigger)
 ├─ Day 1 (T+0): Activation & Initial Setup
 │  ├─ Load Track 13.3 brief and full design docs
 │  ├─ Connect to GitHub Advanced Security APIs
-│  ├─ Initialize secrets scanner
+│  ├─ Initialize secrets scanner  # pragma: allowlist secret
 │  └─ Status: Active, scanning initiated
 │
-├─ Day 2 (T+1): Secrets Detection Phase 1
+├─ Day 2 (T+1): Secrets Detection Phase 1  # pragma: allowlist secret
 │  ├─ Scan codebase for leaked credentials
-│  ├─ Identify high-confidence secrets
+│  ├─ Identify high-confidence secrets  # pragma: allowlist secret
 │  └─ Generate initial remediation report
 │
-├─ Day 3 (T+2): Secrets Detection Phase 2 + CVE Start
-│  ├─ Complete secrets remediation
-│  ├─ Deploy secrets detection into CI/CD
+├─ Day 3 (T+2): Secrets Detection Phase 2 + CVE Start  # pragma: allowlist secret
+│  ├─ Complete secrets remediation  # pragma: allowlist secret
+│  ├─ Deploy secrets detection into CI/CD  # pragma: allowlist secret
 │  ├─ Begin CVE scanning analysis
 │  └─ Cross-reference all dependencies
 │
@@ -184,7 +184,7 @@ Gate 5 PASS (Trigger)
 
 | Metric | Target | Definition |
 |--------|--------|------------|
-| **Secrets Found & Remediated** | 0 unpatched | All leaked secrets removed |
+| **Secrets Found & Remediated** | 0 unpatched | All leaked secrets removed | <!-- pragma: allowlist secret -->
 | **Critical/High CVEs** | 0 | All critical vulnerabilities patched |
 | **SBOM Coverage** | 100% | All components inventoried |
 | **Compliance Audit** | 0 gaps | All enterprise controls validated |

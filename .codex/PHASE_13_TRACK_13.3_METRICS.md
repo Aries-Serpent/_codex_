@@ -27,20 +27,20 @@
 
 | Component | Status | Document |
 |-----------|--------|----------|
-| Detection Layer (Entropy + Patterns + Gitleaks) | ✅ DESIGNED | PHASE_13_TRACK_13.3_SECRETS_DESIGN.md |
-| Classification & Risk Scoring | ✅ DESIGNED | PHASE_13_TRACK_13.3_SECRETS_DESIGN.md |
-| Remediation System | ✅ DESIGNED | PHASE_13_TRACK_13.3_SECRETS_DESIGN.md |
-| Verification & Audit Logging | ✅ DESIGNED | PHASE_13_TRACK_13.3_SECRETS_DESIGN.md |
+| Detection Layer (Entropy + Patterns + Gitleaks) | ✅ DESIGNED | PHASE_13_TRACK_13.3_SECRETS_DESIGN.md | <!-- pragma: allowlist secret -->
+| Classification & Risk Scoring | ✅ DESIGNED | PHASE_13_TRACK_13.3_SECRETS_DESIGN.md | <!-- pragma: allowlist secret -->
+| Remediation System | ✅ DESIGNED | PHASE_13_TRACK_13.3_SECRETS_DESIGN.md | <!-- pragma: allowlist secret -->
+| Verification & Audit Logging | ✅ DESIGNED | PHASE_13_TRACK_13.3_SECRETS_DESIGN.md | <!-- pragma: allowlist secret -->
 
 ### Success Criteria (Full Execution Phase)
 
 ```
-[  ] 0 undetected secrets in codebase
+[  ] 0 undetected secrets in codebase  # pragma: allowlist secret
 [  ] 100% detection accuracy (no false negatives)
 [  ] <2% false positive rate
 [  ] <1 hour detection-to-remediation lag
 [  ] 100% remediation verification passing
-[  ] Zero secrets in git history
+[  ] Zero secrets in git history  # pragma: allowlist secret
 [  ] All compliance checks passing
 ```
 
@@ -53,7 +53,7 @@ Day 1 (2026-07-10): Detection system deployed
 └─ Gitleaks engine integrated
 
 Day 2 (2026-07-11): Remediation system deployed
-├─ Secrets rotation service operational
+├─ Secrets rotation service operational  # pragma: allowlist secret
 ├─ Code transformation rules active
 └─ Env var management deployed
 
@@ -195,8 +195,8 @@ Days 3-5 (2026-07-12/14): Full integration & testing
 # Entry point in unified-security-scanner
 class UnifiedSecurityScanner:
     def run_full_audit(self):
-        # Component 1: Secrets Detection
-        secrets_results = await self.secrets_scanner.scan()
+        # Component 1: Secrets Detection  # pragma: allowlist secret
+        secrets_results = await self.secrets_scanner.scan()  # pragma: allowlist secret
         
         # Component 2: CVE Scanning
         cve_results = await self.cve_scanner.scan()
@@ -209,7 +209,7 @@ class UnifiedSecurityScanner:
         
         # Consolidate and report
         return self._consolidate_results(
-            secrets=secrets_results,
+            secrets=secrets_results,  # pragma: allowlist secret
             cve=cve_results,
             sbom=sbom,
             compliance=compliance
@@ -287,7 +287,7 @@ echo "✅ Pre-commit security checks passed"
 ```
 Git commits/changes
     ↓
-[Secrets Detection] ────→ Remediation ────→ Verification
+[Secrets Detection] ────→ Remediation ────→ Verification  # pragma: allowlist secret
     ↓                                              ↓
 [CVE Scanning] ──────────→ Patch Generation ──→ PR Submission
     ↓                                              ↓
@@ -305,7 +305,7 @@ Git commits/changes
 | Component | Purpose | Used By |
 |-----------|---------|---------|
 | Audit Logging | Central event tracking | All 4 subsystems |
-| Secret Management | Secure credential storage | Secrets + CVE systems |
+| Secret Management | Secure credential storage | Secrets + CVE systems | <!-- pragma: allowlist secret -->
 | Report Generator | Consolidated reporting | All 4 subsystems |
 | Remediation Engine | Automated fixes | All 4 subsystems |
 | Verification Service | Validate fixes | All 4 subsystems |
@@ -352,7 +352,7 @@ Git commits/changes
 |------|-------------|--------|-----------|
 | False positive rate too high | MEDIUM | HIGH | Extensive whitelist + human review |
 | Remediation breaks code | LOW | CRITICAL | 100% test coverage before PR merge |
-| Secrets detected late | LOW | CRITICAL | Pre-commit hooks + hourly scans |
+| Secrets detected late | LOW | CRITICAL | Pre-commit hooks + hourly scans | <!-- pragma: allowlist secret -->
 | Compliance violations missed | LOW | HIGH | Multiple validators + cross-checks |
 | Integration with Track 12.3 delayed | MEDIUM | HIGH | Pre-staged, can deploy independently |
 
@@ -366,7 +366,7 @@ Git commits/changes
 ```
 ## Track 13.3 Daily Standup — Day X (2026-07-XX)
 
-### Subsystem 1: Secrets Detection & Remediation
+### Subsystem 1: Secrets Detection & Remediation  # pragma: allowlist secret
 - Status: [✅ ON TRACK | ⚠️ AT RISK | 🔴 BLOCKED]
 - Deliverables Completed: [X]/4
 - Progress: [%]

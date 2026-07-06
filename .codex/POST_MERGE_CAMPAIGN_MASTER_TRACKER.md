@@ -39,7 +39,7 @@
 | Agent ID | Agent Type | Task | Status | Started | Expected |
 |----------|-----------|------|--------|---------|----------|
 | phase-3-ci-testing | ci-testing-agent | Profile import validation | 🔄 45s elapsed | 04:55:30Z | ~05:10:00Z |
-| phase-4-security-validation | unified-security-scanner | CVE + secrets validation | 🔄 45s elapsed | 04:55:30Z | ~05:10:00Z |
+| phase-4-security-validation | unified-security-scanner | CVE + secrets validation | 🔄 45s elapsed | 04:55:30Z | ~05:10:00Z | <!-- pragma: allowlist secret -->
 | phase-5-documentation | unified-doc-agent | Doc freshness + API refs | 🔄 45s elapsed | 04:55:30Z | ~05:10:00Z |
 
 ### Phase 6 Manual Execution (Queued)

@@ -166,7 +166,7 @@ task(
 Phase 13 Track 13.3: Enterprise Security Hardening
 Activation triggered by Gate 5 PASS signal.
 Timeline: Days 3-10 (10 days starting immediately)
-Focus: Secrets detection + CVE scanning + SBOM validation + compliance audit
+Focus: Secrets detection + CVE scanning + SBOM validation + compliance audit  # pragma: allowlist secret
 Deliverables: 4x security audit reports
 [See PHASE_13_TRACK_13.3_DEPLOYMENT_BRIEF.md for full brief]
 """,
