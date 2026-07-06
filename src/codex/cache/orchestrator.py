@@ -168,7 +168,7 @@ class UnifiedCacheOrchestrator:
             self.l2.set(key, value)
         elif tier == "L4":
             # L4 requires model-specific set operations
-            logger.warning(f"Use model-specific set methods for L4 cache")
+            logger.warning("Use model-specific set methods for L4 cache")
         else:
             logger.warning(f"Unknown cache tier: {tier}")
 

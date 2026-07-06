@@ -72,6 +72,7 @@ from codex.consolidation.mocks import (
     ObjectFactory,
     StubDataFactory,
 )
+
 # Test fixtures are intentionally NOT imported here to avoid making pytest
 # a runtime dependency of the core package. Import from:
 #   from codex.consolidation.test_fixtures import FixtureFactory  # in test code only

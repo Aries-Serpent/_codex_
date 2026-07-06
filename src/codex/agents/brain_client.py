@@ -87,6 +87,8 @@ import urllib.parse
 import urllib.request
 from typing import Any, Optional
 
+from scripts.ci._token_resolver import get_token
+
 # ── Default server URL ────────────────────────────────────────────────────────
 _DEFAULT_URL = "http://localhost:8765"
 

@@ -21,7 +21,7 @@ import logging
 import os
 from contextlib import contextmanager
 from dataclasses import dataclass
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from enum import Enum
 from typing import Any, Callable, Generator, Optional
 
@@ -346,6 +346,7 @@ class MetaTensorGuardRail:
 
         try:
             import psutil
+
             import torch
 
             # Check system memory

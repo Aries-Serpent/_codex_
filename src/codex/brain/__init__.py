@@ -36,13 +36,13 @@ from codex.brain.session_serializer import (
 # Phase 10.2: Memory Synchronization
 try:
     from codex.brain.memory_sync import (
-        ConsolidationMetrics,
-        DuplicateMatch,
-        ImprovementArea,
-        MemorySyncEngine,
-        PatternEntry,
-        PatternType,
-        RetentionPolicy,
+        ConsolidationMetrics,  # noqa: F401
+        DuplicateMatch,  # noqa: F401
+        ImprovementArea,  # noqa: F401
+        MemorySyncEngine,  # noqa: F401
+        PatternEntry,  # noqa: F401
+        PatternType,  # noqa: F401
+        RetentionPolicy,  # noqa: F401
     )
 
     MEMORY_SYNC_AVAILABLE = True
@@ -52,33 +52,33 @@ except ImportError:
 # Phase 10.3: OODA Orchestration
 try:
     from codex.brain.ooda_actor import (
-        ExecutionReport,
-        OODAactor,
+        ExecutionReport,  # noqa: F401
+        OODAactor,  # noqa: F401
     )
     from codex.brain.ooda_decider import (
-        DecisionDirective,
-        DecisionType,
-        OODADecider,
+        DecisionDirective,  # noqa: F401
+        DecisionType,  # noqa: F401
+        OODADecider,  # noqa: F401
     )
     from codex.brain.ooda_observer import (
-        AgentEcosystemState,
-        EnvironmentMetrics,
-        Observable,
-        OODAObserver,
-        RepositoryState,
-        TaskQueueState,
+        AgentEcosystemState,  # noqa: F401
+        EnvironmentMetrics,  # noqa: F401
+        Observable,  # noqa: F401
+        OODAObserver,  # noqa: F401
+        RepositoryState,  # noqa: F401
+        TaskQueueState,  # noqa: F401
     )
     from codex.brain.ooda_orchestrator import (
-        CycleRecord,
-        OODAMetrics,
-        OODAOrchestrator,
-        ParallelOODAOrchestrator,
+        CycleRecord,  # noqa: F401
+        OODAMetrics,  # noqa: F401
+        OODAOrchestrator,  # noqa: F401
+        ParallelOODAOrchestrator,  # noqa: F401
     )
     from codex.brain.ooda_orienter import (
-        OODAOrienter,
-        Orientation,
-        Pattern,
-        RiskAssessment,
+        OODAOrienter,  # noqa: F401
+        Orientation,  # noqa: F401
+        Pattern,  # noqa: F401
+        RiskAssessment,  # noqa: F401
     )
 
     OODA_AVAILABLE = True

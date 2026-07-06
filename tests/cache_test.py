@@ -10,15 +10,16 @@ Coverage:
 - Middleware: Request-level instrumentation
 """
 
-import pytest
 import tempfile
 import threading
 import time
 from pathlib import Path
 
+import pytest
+
 from codex.cache import (
-    L1RequestCache,
     L1CacheDecorator,
+    L1RequestCache,
     L2SessionCache,
     L3KnowledgeCache,
     L4ModelCache,

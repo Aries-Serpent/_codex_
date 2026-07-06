@@ -158,7 +158,7 @@ Collection of learned patterns for decision-making.
 from cognitive_brain import PatternSet, Pattern
 
 patterns = PatternSet()
-patterns.add(Pattern(name='fix_import_error', ...))
+patterns.add(Pattern(name='fix_import_error'))
 matched = patterns.find_matching(observation)
 ```
 

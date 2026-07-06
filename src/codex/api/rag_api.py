@@ -21,6 +21,8 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
 
+from codex.logging.structured_logger import logger
+
 # Initialize rate limiter
 limiter = Limiter(key_func=get_remote_address)
 
@@ -38,8 +40,6 @@ app = FastAPI(
 # Set RAG_FILES_BASE_DIR to restrict to a specific directory; defaults to CWD.
 _RAG_FILES_BASE: Path = Path(os.environ.get("RAG_FILES_BASE_DIR", str(Path.cwd()))).resolve()
 _SAFE_PATH_SEGMENT = re.compile(r"^[A-Za-z0-9._-]{1,128}$")
-
-from codex.logging.structured_logger import logger
 
 
 def _validate_path_segment(value: str, field_name: str) -> str:

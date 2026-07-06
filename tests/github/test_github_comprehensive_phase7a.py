@@ -36,7 +36,6 @@ from codex.github.url_utils import (  # noqa: E402
     validate_github_api_url,
 )
 
-
 # ---------------------------------------------------------------------------
 # GitHub API Authentication Tests
 # ---------------------------------------------------------------------------
