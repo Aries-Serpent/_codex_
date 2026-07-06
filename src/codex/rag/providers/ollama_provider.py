@@ -11,7 +11,6 @@ from urllib.parse import urlparse
 
 import numpy as np
 
-
 logger = logging.getLogger(__name__)
 
 try:

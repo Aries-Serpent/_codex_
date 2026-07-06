@@ -133,7 +133,7 @@ Days 3-7 (2026-07-08 → 2026-07-12)
 
 ```
 Days 5-9 (2026-07-10 → 2026-07-14)
-├─ Day 1: Secrets detection system deployment
+├─ Day 1: Secrets detection system deployment  # pragma: allowlist secret
 ├─ Day 2-3: CVE scanning & dependency audit
 ├─ Day 4-5: SBOM generation & validation
 ├─ Day 6: Enterprise compliance audit suite
@@ -164,7 +164,7 @@ Days 5-9 (2026-07-10 → 2026-07-14)
 Days 7-11 (2026-07-12 → 2026-07-16)
 ├─ Day 1: L1 request cache deployment
 ├─ Day 2-3: L2 session cache (Redis)
-├─ Day 4-5: L3 knowledge cache (disk-backed)
+├─ Day 4-5: L3 knowledge cache (disk-backed)  # pragma: allowlist secret
 ├─ Day 6: L4 model cache (weights)
 └─ Day 7-11: Full optimization & validation (<500ms p99)
 ```
