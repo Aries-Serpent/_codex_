@@ -1,10 +1,10 @@
-# Session Context — 2026-07-06T20:09:47Z
+# Session Context — 2026-07-06T20:16:51Z
 **Branch:** `copilot/phase-13-post-merge-implementation`  **PR:** #5247  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4994` (✅)
-- GraphQL remaining: `4998` (✅)
+- REST remaining: `4815` (✅)
+- GraphQL remaining: `4987` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -12,24 +12,24 @@
 State: `open`  Draft: `False`  Branch: `copilot/phase-13-post-merge-implementation` → `main`
 
 ### ❌ 1 Failing CI Check(s)
-- `CodeQL` (failure)
+- `Governance Compliance` (failure)
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-07-06)
-- **Security Scanning Suite** — `failure` on `copilot/phase-13-post-merge-implementation` (2026-07-06)
-- **RAG Module Tests** — `failure` on `copilot/phase-13-post-merge-implementation` (2026-07-06)
-- **🔐 Secrets Baseline Enforcer** — `failure` on `copilot/phase-13-post-merge-implementation` (2026-07-06)
-- **🔐 Secrets Baseline Enforcer** — `failure` on `copilot/phase-13-post-merge-implementation` (2026-07-06)
+- **Unified Governance Check** — `failure` on `copilot/phase-13-post-merge-implementation` (2026-07-06)
+- **Secrets Detection & Remediation** — `failure` on `copilot/phase-13-post-merge-implementation` (2026-07-06)
+- **Workflow Compliance Gate** — `failure` on `copilot/phase-13-post-merge-implementation` (2026-07-06)
+- **Code Example Validation** — `failure` on `copilot/phase-13-post-merge-implementation` (2026-07-06)
+- **Tiered Approval Gate** — `failure` on `copilot/phase-13-post-merge-implementation` (2026-07-06)
 
 ## 📝 Recent Commits
+- `68115e2a` Complete CodeQL security fix for PR #5247 with compliance updates — copilot-swe-agent[bot] (2026-07-06)
+- `0fee1d7b` docs: update accountability report and changelog for CodeQL security fix — copilot-swe-agent[bot] (2026-07-06)
+- `cc74a48b` fix(security): remove sensitive data logging in secrets detection script — copilot-swe-agent[bot] (2026-07-06)
 - `4319388f` fix: Remove 6 unused variables and imports from PR #5247 — copilot-swe-agent[bot] (2026-07-06)
 - `7a5b95d1` fix: Remove unused imports and fix GitHub Actions mutable action tags in PR #524 — copilot-swe-agent[bot] (2026-07-06)
 - `6faa73c1` Fix: Address 13 unresolved PR #5247 review comments with explicit resolving comm — copilot-swe-agent[bot] (2026-07-06)
 - `92f9ac7a` fix: resolve PR #5247 review comments (Phase 1-3) — copilot-swe-agent[bot] (2026-07-06)
 - `acbd4761` chore: plan fixes for PR #5247 review comments — copilot-swe-agent[bot] (2026-07-06)
-- `bff219fa` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-07-06)
-- `11d25c87` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-07-06)
-- `2f4741c2` fix(security): harden L2SessionCache serialization based on code review feedback — copilot-swe-agent[bot] (2026-07-06)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
