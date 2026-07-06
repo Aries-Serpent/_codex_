@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+### Fixed (auto-update — PR #5247)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5247 (SHA `c5bb58c8`) at 2026-07-06T18:21Z [auto-generated]
+
 ### PR #5247 CodeQL/Semgrep Remediation — Review #4638377415 (2026-07-06T17:45Z)
 
 #### Security

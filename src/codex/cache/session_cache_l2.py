@@ -13,10 +13,10 @@ Backend: Redis with local LRU fallback
 
 from __future__ import annotations
 
+import base64
 import json
 import logging
 import os
-import pickle
 import time
 from typing import Any, Optional
 
@@ -25,13 +25,32 @@ logger = logging.getLogger(__name__)
 # L2 constraints
 L2_TTL = 3600  # 1 hour
 
+# Type tag used by _SafeJSONEncoder to round-trip bytes values
+_BYTES_TAG = "__bytes_b64__"
+
+
+class _SafeJSONEncoder(json.JSONEncoder):
+    """JSON encoder that safely handles bytes by base64-encoding them."""
+
+    def default(self, o: Any) -> Any:
+        if isinstance(o, (bytes, bytearray)):
+            return {_BYTES_TAG: base64.b64encode(o).decode("ascii")}
+        return super().default(o)
+
+
+def _safe_json_object_hook(obj: dict) -> Any:
+    """JSON object hook that restores base64-encoded bytes produced by _SafeJSONEncoder."""
+    if len(obj) == 1 and _BYTES_TAG in obj:
+        return base64.b64decode(obj[_BYTES_TAG])
+    return obj
+
 
 class L2SessionCache:
     """Distributed session cache backed by Redis with local fallback.
 
     Features:
     - Redis connection pooling for performance
-    - Automatic serialization (JSON with pickle fallback)
+    - Automatic serialization (JSON with base64 encoding for bytes values)
     - Local LRU fallback cache if Redis unavailable
     - Connection error handling and logging
     - Key pattern scanning for analytics
@@ -130,22 +149,18 @@ class L2SessionCache:
             self._connected = False
 
     def _serialize(self, value: Any) -> bytes:
-        """Serialize value to bytes."""
+        """Serialize value to bytes using JSON with base64 fallback for bytes."""
         try:
-            return json.dumps(value).encode("utf-8")
-        except (TypeError, ValueError):
-            # Fallback to pickle for non-JSON-serializable objects
-            # nosemgrep: avoid-pickle - data written by this app only; trusted serialization path  # noqa: E501
-            return pickle.dumps(value)
+            return json.dumps(value, cls=_SafeJSONEncoder).encode("utf-8")
+        except (TypeError, ValueError) as exc:
+            raise TypeError(
+                f"L2SessionCache: value of type {type(value).__name__!r} is not "
+                "JSON-serializable. Store only JSON-safe data in the session cache."
+            ) from exc
 
     def _deserialize(self, data: bytes) -> Any:
         """Deserialize bytes to value."""
-        try:
-            return json.loads(data.decode("utf-8"))
-        except (json.JSONDecodeError, UnicodeDecodeError):
-            # Fallback to pickle
-            # nosemgrep: semgrep.unsafe-pickle-loads - Deserializing data from trusted Redis (app-serialized)  # noqa: E501
-            return pickle.loads(data)  # noqa: E501
+        return json.loads(data.decode("utf-8"), object_hook=_safe_json_object_hook)
 
     def get(self, key: str) -> Optional[Any]:
         """Get value from L2 cache.
