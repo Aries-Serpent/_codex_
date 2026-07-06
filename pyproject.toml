@@ -29,43 +29,31 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
+    # Essential configuration & validation (offline-first)
     "omegaconf>=2.3",
     "hydra-core==1.3.2",
     "pydantic>=2.4",
     "pydantic-settings>=2.14.2",
     "pyyaml>=6.0",
-    "pandas>=2.0.3,<3",
     "marshmallow>=3.7.1,<5",
-    "transformers>=5.12.1,<6",
-    "peft>=0.19.1,<1",
-    "accelerate>=1.14.0,<2",
-    "datasets>=5.0.0,<6",
-    "ray[serve]>=2.9,<3",
-    "fastapi>=0.135.3,<1",
-    "litestar>=2.22.0,<3",
-    "slowapi>=0.1.9",
-    "starlette>=1.0.1,<2",
-    "httpx>=0.26,<1",
-    "evidently>=0.7.21,<1",
-    "numpy>=2.4.6,<3",
-    "scikit-learn>=1.9.0,<2",
-    "duckdb>=1.5.4",
-    "sentencepiece>=0.1.99",
-    "torch>=2.6.1,<3.0.0",
+    # CLI support
     "typer>=0.12",
+    # Code analysis (core feature)
     "libcst>=1.0.0",
-    "radon>=6.0.1",
     "parso>=0.8.0",
+    "radon>=6.0.1",
     "jinja2>=3.1.6",
+    # Security (CVE fixes)
+    "cryptography>=48.0.0,<50.0.0",  # Security: CVE fixes (41.0.7 had 8 CVEs)
+    "PyJWT>=2.13.0,<3.0.0",  # Security: CVE fixes (2.7.0 had 7 CVEs)
+    "PyNaCl>=1.5.0,<2.0.0",  # Security: Cryptographic library
+    # Standard library replacements & utilities
     "certifi>=2026.6.17",
     "filelock>=3.29.0",
     "idna>=3.18",
     "urllib3>=2.7.0",
     "requests>=2.34.2",
     "defusedxml>=0.7.1",
-    "cryptography>=48.0.0,<50.0.0",  # Security: CVE fixes (41.0.7 had 8 CVEs)
-    "PyJWT>=2.13.0,<3.0.0",  # Security: CVE fixes (2.7.0 had 7 CVEs)
-    "PyNaCl>=1.5.0,<2.0.0",  # Security: Cryptographic library
 ]
 version = "0.1.0"
 
@@ -115,15 +103,11 @@ core = [
 
 # RUNTIME PROFILE (inference + pattern learning)
 runtime = [
-    # All core dependencies
-    "hydra-core[hydra_plugins]>=1.3",
-    "omegaconf>=2.3",
-    "pydantic>=2.4",
-    "pydantic-settings>=2.14.2",
-    "marshmallow>=3.7.1,<5",
-    "PyYAML>=6.0",
-    "typer>=0.9",
-    "click>=8.1",
+    # Data processing & ML
+    "pandas>=2.0.3,<3",
+    "numpy>=2.4.6,<3",
+    "scikit-learn>=1.9.0,<2",
+    "sentencepiece>=0.1.99",
     # ML inference & training
     "torch>=2.6.1,<3.0.0; platform_system != 'Windows'",
     "transformers>=5.12.1,<6",
@@ -139,18 +123,17 @@ runtime = [
     "httpx>=0.26,<1",
     # Distributed computing
     "ray[serve]>=2.9,<3",
-    # Data processing
-    "pandas>=2.0.3,<3",
-    "numpy>=2.4.6,<3",
     # Monitoring & telemetry
     "prometheus-client>=0.19.0",
     "psutil>=5.9",
+    # Evidence generation
+    "evidently>=0.7.21,<1",
+    # Database
+    "duckdb>=1.5.4",
     # RAG pipeline
     "sentence-transformers>=5.5.1,<6.0.0",
     "chromadb>=1.5.8,<2.0.0",
     "faiss-cpu>=1.13.2,<2.0.0",
-    # Evidence generation
-    "evidently>=0.7.21,<1",
 ]
 
 # FULL PROFILE (development + all features)
