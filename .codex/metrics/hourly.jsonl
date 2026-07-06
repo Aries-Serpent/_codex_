@@ -25,3 +25,5 @@
 {"timestamp":"2026-07-06T00:39:14.802Z","approval_source":"agent-auth-delegation","rule_matched":"","decision":"","confidence":}
 {"timestamp":"2026-07-06T03:45:27.633Z","approval_source":"agent-auth-delegation","rule_matched":"no_matching_rule","decision":"DENY","confidence":0.0}
 {"timestamp":"2026-07-06T09:39:55.606Z","approval_source":"agent-auth-delegation","rule_matched":"no_matching_rule","decision":"DENY","confidence":0.0}
+{"timestamp":"2026-07-06T17:28:46.388Z","approval_source":"agent-auth-delegation","rule_matched":"no_matching_rule","decision":"DENY","confidence":0.0}
+{"timestamp":"2026-07-06T17:38:17.389Z","approval_source":"agent-auth-delegation","rule_matched":"no_matching_rule","decision":"DENY","confidence":0.0}
