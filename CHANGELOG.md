@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+### Fixed (2026-07-06T20:11Z)
+- Security: Removed sensitive data logging in `scripts/ci/phase_13_3_secrets_detection.py` — changed from logging individual entropy/severity per finding to aggregated counts only (fixes CodeQL CWE-312: Clear Text Logging)
+
 ### Fixed (auto-update — PR #5247)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5247 (SHA `c5bb58c8`) at 2026-07-06T18:21Z [auto-generated]
 
