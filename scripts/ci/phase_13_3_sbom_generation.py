@@ -233,7 +233,6 @@ def validate_sbom(sbom_xml: str) -> bool:
         assert root.get("version"), "Version attribute required"
         
         # Check components
-        ns = {"": "http://cyclonedx.org/schema/bom/1.4"}
         components = root.findall(".//{http://cyclonedx.org/schema/bom/1.4}component")
         
         if len(components) > 0:
@@ -340,7 +339,7 @@ def main():
     
     # Generate report
     logger.info("\n[4/4] Generating coverage report...")
-    report = generate_sbom_report(all_components)
+    generate_sbom_report(all_components)
     
     # Write files
     write_sbom_files(sbom_xml)

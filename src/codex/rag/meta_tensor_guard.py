@@ -122,7 +122,7 @@ class MetaTensorGuardRail:
 
             # Verify we can allocate memory
             try:
-                test_tensor = torch.zeros(1, device="cpu")
+                torch.zeros(1, device="cpu")
                 report_details["cpu_allocation_test"] = "passed"
             except Exception as e:
                 logger.warning("CPU allocation test failed: %s", e)
@@ -423,7 +423,7 @@ class MetaTensorGuardRail:
 
                 try:
                     gc.collect()
-                    result = recovery_func()
+                    recovery_func()
                     report_details["recovery_successes"] = attempt + 1
                     status = GuardRailStatus.RECOVERED
                     error = None
