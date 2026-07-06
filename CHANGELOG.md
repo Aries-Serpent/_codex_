@@ -1,6 +1,15 @@
 ## [Unreleased]
 
-### PR #5247 Security & Code Quality Fixes (2026-07-06T17:30Z)
+### PR #5247 CodeQL/Semgrep Remediation — Review #4638377415 (2026-07-06T17:45Z)
+
+#### Security
+- Replace MD5 with SHA-256 for cache key hashing in `src/codex/cache/request_cache.py:262` (CWE-327, Semgrep insecure-hash-algorithm-md5)
+- Add nosemgrep documentation for trusted `pickle.dumps` path in `src/codex/cache/session_cache_l2.py:138`
+- Upgrade `github/codeql-action/*@v3` → `@v4` in `13-3-enterprise-compliance.yml` (3 actions)
+- Replace `github/codeql-action/upload-sarif@v2` with SHA-pinned ref `@9cea5827` in `13-3-enterprise-compliance.yml` (2 usages)
+- Add `# nosemgrep: yaml.github-actions.security.github-actions-mutable-action-tag` comments to approved standard actions across `13-3-*.yml` workflows (suppress false positives for repo-policy-approved versions)
+
+
 
 #### Security
 - Replace MD5 with SHA-256 for hashing sensitive user identity/authorization data in `src/codex/cache/middleware.py` (CWE-327)

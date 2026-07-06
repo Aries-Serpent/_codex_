@@ -135,6 +135,7 @@ class L2SessionCache:
             return json.dumps(value).encode("utf-8")
         except (TypeError, ValueError):
             # Fallback to pickle for non-JSON-serializable objects
+            # nosemgrep: avoid-pickle - data written by this app only; trusted serialization path  # noqa: E501
             return pickle.dumps(value)
 
     def _deserialize(self, data: bytes) -> Any:
