@@ -3,6 +3,12 @@ self-hosted-runner:
   labels:
     - ubuntu-latest-m
 
+# Secrets defined in your repository.
+# Custom secrets used throughout the repository for token fallback patterns.
+secrets:
+  - CODEX_MASTER_KEY
+  - CODEX_BACKUP_KEY
+
 # Configuration variables in array of strings defined in your repository or
 # organization. `null` means disabling configuration variables check.
 config-variables: null
