@@ -11,8 +11,8 @@ from datetime import datetime
 from typing import List, Dict, Tuple
 
 # Fix deployment timestamp
-FIX_DEPLOYED_AT = datetime.fromisoformat("2026-07-06T05:40:00Z")
-MONITORING_START = datetime.fromisoformat("2026-07-06T05:43:52Z")
+FIX_DEPLOYED_AT = datetime.fromisoformat("2026-07-06T05:40:00+00:00")
+MONITORING_START = datetime.fromisoformat("2026-07-06T05:43:52+00:00")
 SUCCESS_THRESHOLD = 0.95  # 95% success rate required
 MIN_RUNS = 30
 
@@ -44,8 +44,8 @@ def get_release_runs() -> List[Dict]:
         if line:
             try:
                 runs.append(json.loads(line))
-            except json.JSONDecodeError:
-                pass
+            except json.JSONDecodeError as e:
+                print(f"Warning: skipping malformed JSON line: {line[:80]}", file=sys.stderr)
     return runs
 
 def classify_runs(runs: List[Dict]) -> Tuple[List[Dict], List[Dict]]:

@@ -7,9 +7,8 @@ Tests the complete telemetry collection pipeline, SLA monitoring, and alert gene
 """
 
 import pytest
-import json
-from datetime import datetime, timezone, timedelta
-from unittest.mock import MagicMock, patch
+from datetime import datetime, timezone
+from unittest.mock import patch
 
 # Import modules to test
 import sys

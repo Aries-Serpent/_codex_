@@ -19,7 +19,7 @@ from codex.cli.pr_operator import (
     DEFAULT_LABELS,
     PRConfig,
     PRContent,
-    PROperator, # pragma: allowlist secret
+    PROperator,  # pragma: allowlist secret
     PRResult,
     _generate_pr_body,
     _sanitize_branch_name,

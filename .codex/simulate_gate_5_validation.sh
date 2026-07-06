@@ -21,8 +21,12 @@ for i in {1..5}; do
     # Create a lightweight tag to trigger the workflow
     git tag "$TEST_TAG" HEAD || echo "  (Tag may already exist)"
     
-    # Push tag to trigger Release workflow
-    git push origin "$TEST_TAG" 2>/dev/null || echo "  (Skipping push in simulation)"
+    # Push tag to trigger Release workflow (only if explicitly enabled)
+    if [[ "${ENABLE_REMOTE_PUSH:-false}" == "true" ]]; then
+        git push origin "$TEST_TAG" || echo "  (Failed to push tag)"
+    else
+        echo "  (Skipping remote push; set ENABLE_REMOTE_PUSH=true to enable)"
+    fi
     
     sleep 2
 done
