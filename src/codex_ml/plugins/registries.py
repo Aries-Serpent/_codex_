@@ -758,3 +758,18 @@ def load_reward_model_entry_points(flag: bool = False, group: str = "codex_ml.re
 
 def load_rl_agent_entry_points(flag: bool = False, group: str = "codex_ml.rl_agents"):
     return _load(rl_agents, group, flag)
+
+
+# Public API wrapper for entry point
+def reward_model_heuristic(**kwargs: Any):
+    """Public API wrapper for heuristic reward model.
+    
+    This is the stable public entry point for the deterministic heuristic reward model.
+    
+    Args:
+        **kwargs: Configuration parameters for HeuristicRewardModel
+        
+    Returns:
+        HeuristicRewardModel instance.
+    """
+    return _reward_model_heuristic(**kwargs)

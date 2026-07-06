@@ -287,16 +287,16 @@ docs-no-unmanaged-candidates = "tools.docs_agent.no_unmanaged_candidates:main"
 docs-mcp-server = "tools.docs_agent.mcp_server:main"
 
 [project.entry-points."codex_ml.tokenizers"]
-hf = "codex_ml.registry.tokenizers:_build_hf_tokenizer"
+hf = "codex_ml.registry.tokenizers:build_hf_tokenizer"
 
 [project.entry-points."codex.skills"]
 
 [project.entry-points."codex_ml.reward_models"]
-heuristic = "codex_ml.plugins.registries:_reward_model_heuristic"
+heuristic = "codex_ml.plugins.registries:reward_model_heuristic"
 
 [project.entry-points."codex_ml.models"]
-minilm = "codex_ml.models.registry:_build_minilm"
-bert_base_uncased = "codex_ml.models.registry:_build_default_bert"
+minilm = "codex_ml.models.registry:build_minilm"
+bert_base_uncased = "codex_ml.models.registry:build_default_bert"
 
 [project.entry-points."codex_ml.metrics"]
 token_accuracy = "codex_ml.metrics.registry:token_accuracy"
@@ -319,7 +319,7 @@ jsonl = "codex_ml.data.registry:load_jsonl"
 csv = "codex_ml.data.registry:load_csv"
 
 [project.entry-points."codex_ml.trainers"]
-functional = "codex_ml.registry.trainers:_load_functional_trainer"
+functional = "codex_ml.registry.trainers:load_functional_trainer"
 
 [tool.setuptools]
 

@@ -64,4 +64,18 @@ def list_trainers() -> list[str]:
     return trainer_registry.list()
 
 
+
+
+# Public API wrapper for entry point
+def load_functional_trainer() -> Callable[..., Any]:
+    """Public API wrapper for functional trainer loader.
+    
+    This is the stable public entry point for loading the functional trainer.
+    
+    Returns:
+        Callable that implements the functional trainer interface.
+    """
+    return _load_functional_trainer()
+
+
 __all__ = ["get_trainer", "list_trainers", "register_trainer", "trainer_registry"]

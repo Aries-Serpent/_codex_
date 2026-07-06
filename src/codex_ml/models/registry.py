@@ -174,6 +174,35 @@ def _build_default_bert(cfg: dict[str, Any]) -> HF_PreTrainedModel:
 
 
 @model_registry.register("gpt2-offline")
+
+# Public API wrappers for entry points
+def build_minilm(cfg: dict[str, Any]) -> Any:
+    """Public API wrapper for MiniLM model builder.
+    
+    This is the stable public entry point for building MiniLM models.
+    
+    Args:
+        cfg: Configuration dictionary with model parameters
+        
+    Returns:
+        Configured MiniLM model instance.
+    """
+    return _build_minilm(cfg)
+
+
+def build_default_bert(cfg: dict[str, Any]) -> Any:
+    """Public API wrapper for default BERT model builder.
+    
+    This is the stable public entry point for building default BERT models.
+    
+    Args:
+        cfg: Configuration dictionary with model parameters
+        
+    Returns:
+        Configured BERT model instance.
+    """
+    return _build_default_bert(cfg)
+
 def _build_offline_gpt2(cfg: dict[str, Any]) -> HF_PreTrainedModel:
     resolved = _resolve_offline_checkpoint(
         "gpt2-offline",
