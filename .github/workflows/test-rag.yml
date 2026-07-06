@@ -356,7 +356,7 @@ jobs:
         \ → 40% in S198, 40% → 45% in S199, 45% → 50% in S200, 50% → 60% in S201 (2026-03-25),\
         \ 60% → 70% in S203 (2026-03-25), 70% → 80% in S204 (2026-03-25), 80% → 85%\
         \ in S209 (2026-03-26), 85% → 90% in S211 (2026-03-26), 90% → 95% in S212\
-        \ (2026-03-26), 95% → 95% in S228 (2026-05-09), 95% → 90% in S295 (2026-07-06) after Phase 13 merged at 90.00% measured coverage.\n# Long-term target remains 95% coverage.\n\
+        \ (2026-03-26), 95% → 95% in S228 (2026-05-09), 95% → 90% in S295 (2026-07-06) to match the 90.00% measured post-Phase-13 baseline and unblock CI while coverage improvements continue.\n# Long-term target remains 95% coverage.\n\
         THRESHOLD=90\n \necho \"[COVERAGE-CHECK] Coverage threshold: $THRESHOLD%\"\
         \necho \"[COVERAGE-CHECK] Current coverage: $COVERAGE%\"\necho \"\"\n \nif\
         \ (( $(echo \"$COVERAGE < $THRESHOLD\" | bc -l) )); then\n  echo \"[COVERAGE-CHECK]\
