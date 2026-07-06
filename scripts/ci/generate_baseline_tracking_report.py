@@ -23,10 +23,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
 
-try:
-    import defusedxml.ElementTree as ET
-except ImportError:
-    import xml.etree.ElementTree as ET
+import defusedxml.ElementTree as ET
 
 
 @dataclass

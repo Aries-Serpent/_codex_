@@ -1,5 +1,18 @@
 ## [Unreleased]
 
+### Added (Packaging campaign implementation — 2026-07-06T01:25Z)
+- Added network policy enforcement module `src/safety/network_policy.py` and exported `enforce_network_policy` / `PolicyViolationError` via `src/safety/__init__.py`.
+- Added default fail-closed allowlist policy at `.codex/network-policy.yaml`.
+- Added offline bootstrap installer script `OFFLINE_BOOTSTRAP.sh`.
+- Added external onboarding docs: `INSTALL.md`, `ISOLATED_DEPLOYMENT.md`, and `INTEGRATION.md`.
+- Added campaign architecture ADR at `.codex/PACKAGING_ARCHITECTURE_DECISIONS.md`.
+- Added compatibility link-target docs to satisfy repository-wide internal link validation.
+
+### Fixed (Packaging campaign implementation — 2026-07-06T01:25Z)
+- Replaced unsafe XML parser fallback with `defusedxml` in `scripts/ci/generate_baseline_tracking_report.py`.
+- Replaced weak MD5 hashing with SHA-256 in `src/rag/caching.py` for cache key derivation.
+- Synchronized documentation metrics via `scripts/tools/doc_metrics_sync.py --fix`.
+
 ### Fixed (PR #5231 CI remediation)
 - Tightened `rust-ffi.yml`, repaired `manifest-drift-guard.yml`, and narrowed diff-based CI guards to added lines only for PR #5231.
 
@@ -215,7 +228,7 @@
 
 **Deliverables Generated:**
 - **Branch Sync:** Remote branch aligned (Behind 1, Ahead 4)
-- **18 Comprehensive Audit Documents:** 
+- **18 Comprehensive Audit Documents:**
   - PHASE_9_DEPENDENCY_AUDIT.md (vulnerabilities + 3-week roadmap)
   - PHASE_9_GATE2_*.md (5 files, 54 CVEs with remediation)
   - PHASE_9_PACKAGING_VALIDATION.md + PHASE_9_REMEDIATION_ITEMS.md
@@ -1433,6 +1446,19 @@ Fixed all 15 security vulnerabilities from commit d587689 and PR review comments
 # Changelog
 
 ## [Unreleased]
+
+### Added (Packaging campaign implementation — 2026-07-06T01:25Z)
+- Added network policy enforcement module `src/safety/network_policy.py` and exported `enforce_network_policy` / `PolicyViolationError` via `src/safety/__init__.py`.
+- Added default fail-closed allowlist policy at `.codex/network-policy.yaml`.
+- Added offline bootstrap installer script `OFFLINE_BOOTSTRAP.sh`.
+- Added external onboarding docs: `INSTALL.md`, `ISOLATED_DEPLOYMENT.md`, and `INTEGRATION.md`.
+- Added campaign architecture ADR at `.codex/PACKAGING_ARCHITECTURE_DECISIONS.md`.
+- Added compatibility link-target docs to satisfy repository-wide internal link validation.
+
+### Fixed (Packaging campaign implementation — 2026-07-06T01:25Z)
+- Replaced unsafe XML parser fallback with `defusedxml` in `scripts/ci/generate_baseline_tracking_report.py`.
+- Replaced weak MD5 hashing with SHA-256 in `src/rag/caching.py` for cache key derivation.
+- Synchronized documentation metrics via `scripts/tools/doc_metrics_sync.py --fix`.
 
 ### Fixed (auto-update — PR #5194)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5194 (SHA `1ed89f41`) at 2026-07-02T10:39Z [auto-generated]
@@ -3068,6 +3094,19 @@ python -m codex --version  # Should output: 0.1.0-final
 
 ## [Unreleased]
 
+### Added (Packaging campaign implementation — 2026-07-06T01:25Z)
+- Added network policy enforcement module `src/safety/network_policy.py` and exported `enforce_network_policy` / `PolicyViolationError` via `src/safety/__init__.py`.
+- Added default fail-closed allowlist policy at `.codex/network-policy.yaml`.
+- Added offline bootstrap installer script `OFFLINE_BOOTSTRAP.sh`.
+- Added external onboarding docs: `INSTALL.md`, `ISOLATED_DEPLOYMENT.md`, and `INTEGRATION.md`.
+- Added campaign architecture ADR at `.codex/PACKAGING_ARCHITECTURE_DECISIONS.md`.
+- Added compatibility link-target docs to satisfy repository-wide internal link validation.
+
+### Fixed (Packaging campaign implementation — 2026-07-06T01:25Z)
+- Replaced unsafe XML parser fallback with `defusedxml` in `scripts/ci/generate_baseline_tracking_report.py`.
+- Replaced weak MD5 hashing with SHA-256 in `src/rag/caching.py` for cache key derivation.
+- Synchronized documentation metrics via `scripts/tools/doc_metrics_sync.py --fix`.
+
 ### Fixed (CI Rescue Session 2026-06-24)
 - Fixed governance compliance requirements (REQ-4/REQ-5/REQ-14) in CI rescue session
 - Applied configuration updates for test file linting (F821 suppressions for xfail tests)
@@ -3406,6 +3445,19 @@ python -m codex --version  # Should output: 0.1.0-final
 ---
 
 ## [Unreleased]
+
+### Added (Packaging campaign implementation — 2026-07-06T01:25Z)
+- Added network policy enforcement module `src/safety/network_policy.py` and exported `enforce_network_policy` / `PolicyViolationError` via `src/safety/__init__.py`.
+- Added default fail-closed allowlist policy at `.codex/network-policy.yaml`.
+- Added offline bootstrap installer script `OFFLINE_BOOTSTRAP.sh`.
+- Added external onboarding docs: `INSTALL.md`, `ISOLATED_DEPLOYMENT.md`, and `INTEGRATION.md`.
+- Added campaign architecture ADR at `.codex/PACKAGING_ARCHITECTURE_DECISIONS.md`.
+- Added compatibility link-target docs to satisfy repository-wide internal link validation.
+
+### Fixed (Packaging campaign implementation — 2026-07-06T01:25Z)
+- Replaced unsafe XML parser fallback with `defusedxml` in `scripts/ci/generate_baseline_tracking_report.py`.
+- Replaced weak MD5 hashing with SHA-256 in `src/rag/caching.py` for cache key derivation.
+- Synchronized documentation metrics via `scripts/tools/doc_metrics_sync.py --fix`.
 
 ### Added
 - **STAGE 3: Production Finalization Campaign — 2026-06-24T01:42:18Z**
@@ -3764,6 +3816,19 @@ Executed Phase 3 of the coverage optimization campaign with 4 parallel coverage 
 **Status:** ✅ READY FOR EXECUTION — Awaiting approval to proceed
 ## [Unreleased]
 
+### Added (Packaging campaign implementation — 2026-07-06T01:25Z)
+- Added network policy enforcement module `src/safety/network_policy.py` and exported `enforce_network_policy` / `PolicyViolationError` via `src/safety/__init__.py`.
+- Added default fail-closed allowlist policy at `.codex/network-policy.yaml`.
+- Added offline bootstrap installer script `OFFLINE_BOOTSTRAP.sh`.
+- Added external onboarding docs: `INSTALL.md`, `ISOLATED_DEPLOYMENT.md`, and `INTEGRATION.md`.
+- Added campaign architecture ADR at `.codex/PACKAGING_ARCHITECTURE_DECISIONS.md`.
+- Added compatibility link-target docs to satisfy repository-wide internal link validation.
+
+### Fixed (Packaging campaign implementation — 2026-07-06T01:25Z)
+- Replaced unsafe XML parser fallback with `defusedxml` in `scripts/ci/generate_baseline_tracking_report.py`.
+- Replaced weak MD5 hashing with SHA-256 in `src/rag/caching.py` for cache key derivation.
+- Synchronized documentation metrics via `scripts/tools/doc_metrics_sync.py --fix`.
+
 ### Fixed (SN)
 
 - **tests/test_edge_cases_day2_batch1.py**: Fixed all `MemoryEntry` constructor calls to use the correct
@@ -4055,6 +4120,19 @@ Executed Phase 3 of the coverage optimization campaign with 4 parallel coverage 
 
 ## [Unreleased]
 
+### Added (Packaging campaign implementation — 2026-07-06T01:25Z)
+- Added network policy enforcement module `src/safety/network_policy.py` and exported `enforce_network_policy` / `PolicyViolationError` via `src/safety/__init__.py`.
+- Added default fail-closed allowlist policy at `.codex/network-policy.yaml`.
+- Added offline bootstrap installer script `OFFLINE_BOOTSTRAP.sh`.
+- Added external onboarding docs: `INSTALL.md`, `ISOLATED_DEPLOYMENT.md`, and `INTEGRATION.md`.
+- Added campaign architecture ADR at `.codex/PACKAGING_ARCHITECTURE_DECISIONS.md`.
+- Added compatibility link-target docs to satisfy repository-wide internal link validation.
+
+### Fixed (Packaging campaign implementation — 2026-07-06T01:25Z)
+- Replaced unsafe XML parser fallback with `defusedxml` in `scripts/ci/generate_baseline_tracking_report.py`.
+- Replaced weak MD5 hashing with SHA-256 in `src/rag/caching.py` for cache key derivation.
+- Synchronized documentation metrics via `scripts/tools/doc_metrics_sync.py --fix`.
+
 ### Fixed (auto-update — PR #5010)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5010 (SHA `a3909de2`) at 2026-06-19T17:19Z [auto-generated]
 
@@ -4211,6 +4289,19 @@ Executed Phase 3 of the coverage optimization campaign with 4 parallel coverage 
 ---
 
 ## [Unreleased]
+
+### Added (Packaging campaign implementation — 2026-07-06T01:25Z)
+- Added network policy enforcement module `src/safety/network_policy.py` and exported `enforce_network_policy` / `PolicyViolationError` via `src/safety/__init__.py`.
+- Added default fail-closed allowlist policy at `.codex/network-policy.yaml`.
+- Added offline bootstrap installer script `OFFLINE_BOOTSTRAP.sh`.
+- Added external onboarding docs: `INSTALL.md`, `ISOLATED_DEPLOYMENT.md`, and `INTEGRATION.md`.
+- Added campaign architecture ADR at `.codex/PACKAGING_ARCHITECTURE_DECISIONS.md`.
+- Added compatibility link-target docs to satisfy repository-wide internal link validation.
+
+### Fixed (Packaging campaign implementation — 2026-07-06T01:25Z)
+- Replaced unsafe XML parser fallback with `defusedxml` in `scripts/ci/generate_baseline_tracking_report.py`.
+- Replaced weak MD5 hashing with SHA-256 in `src/rag/caching.py` for cache key derivation.
+- Synchronized documentation metrics via `scripts/tools/doc_metrics_sync.py --fix`.
 
 ### Fixed (auto-update — PR #4970)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #4970 (SHA `f709ae63`) at 2026-06-17T05:40Z [auto-generated]

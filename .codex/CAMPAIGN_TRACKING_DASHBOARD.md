@@ -91,7 +91,7 @@ Phase 0 Completion (2026-07-06T01:10:00Z):
 
 ## 🏗️ Phase 1: Parallel Packaging Refactor
 
-**Status:** 🟡 NOT YET STARTED (Awaiting Phase 0 completion + Day 3)  
+**Status:** 🟡 IN PROGRESS (Foundation artifacts implemented 2026-07-06T01:20Z)  
 **Target Duration:** Days 3-9 (7 days)  
 **Gate Readiness:** >90% of Lanes 1-3 deliverables complete
 
@@ -102,6 +102,19 @@ Phase 0 Completion (2026-07-06T01:10:00Z):
 | **Lane 1: Packaging** | packaging-validation-agent | Day 3 | Day 9 | pyproject.toml, 3 profiles, entrypoints, wheel | 🟡 Pending |
 | **Lane 2: Offline Bootstrap** | packaging-validation-agent | Day 3 | Day 9 | lockfile.lock, OFFLINE_BOOTSTRAP.sh, dependency audit | 🟡 Pending |
 | **Lane 3: Cognitive Runtime** | cognitive-brain-cli-agent | Day 3 | Day 9 | Portable cognitive engine, API, CLI, local persistence | 🟡 Pending |
+
+
+
+### Phase 1 Foundation Artifacts Implemented (2026-07-06T01:20Z)
+
+- ✅ `src/safety/network_policy.py` (PolicyViolationError + enforce_network_policy)
+- ✅ `.codex/network-policy.yaml` (fail-closed localhost-only default)
+- ✅ `tests/safety/test_network_policy.py` (allow/block/wildcard coverage)
+- ✅ `OFFLINE_BOOTSTRAP.sh` (air-gap install bootstrap)
+- ✅ `INSTALL.md` (external install instructions)
+- ✅ `ISOLATED_DEPLOYMENT.md` (isolated deployment posture)
+- ✅ `INTEGRATION.md` (embedding and API integration guidance)
+- ✅ `.codex/PACKAGING_ARCHITECTURE_DECISIONS.md` (campaign ADR record)
 
 ### Phase 1 Synchronization Points
 
@@ -394,4 +407,3 @@ This dashboard is updated:
 **Campaign Status:** 🟢 ACTIVE  
 **Last Gate Decision:** PHASE 0 LAUNCH APPROVED (2026-07-06T01:00:00Z)  
 **Next Gate:** Phase 0 Completion (2026-07-08, target >90% lane readiness)
-

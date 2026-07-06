@@ -69,7 +69,7 @@ class RAGCache:
 
     def _make_embedding_key(self, text: str) -> str:
         """Make cache key for embedding."""
-        text_hash = hashlib.md5(text.encode()).hexdigest()
+        text_hash = hashlib.sha256(text.encode()).hexdigest()
         return make_cache_key("embedding", text_hash)
 
     def _make_query_key(self, query: str, top_k: int = 10, filters: Optional[dict] = None) -> str:
@@ -78,7 +78,7 @@ class RAGCache:
         if filters:
             key_parts.append(json.dumps(filters, sort_keys=True))
         combined = ":".join(key_parts)
-        query_hash = hashlib.md5(combined.encode()).hexdigest()
+        query_hash = hashlib.sha256(combined.encode()).hexdigest()
         return make_cache_key("rag_query", query_hash)
 
     def get_embedding(self, text: str) -> Optional[dict]:
