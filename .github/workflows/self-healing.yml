@@ -1,15 +1,262 @@
-name: Self-Healing Pipeline
+name: Self-Healing CI Loop
+
+# Triggers:
+# - workflow_run: Automatically diagnose failures from other workflows
+# - workflow_dispatch: Manual trigger for on-demand failure analysis and remediation
 on:
+  workflow_run:
+    workflows: ["*"]
+    types: [completed]
   workflow_dispatch:
+    inputs:
+      target_workflow:
+        description: "Specific workflow to analyze (optional, empty = all recent)"
+        required: false
+        type: string
+      max_iterations:
+        description: "Maximum healing iterations per pattern"
+        required: false
+        default: "5"
+        type: string
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
-permissions: {}
 jobs:
-  heal:
+  diagnose:
+    name: Diagnose & Remediate Failures
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
+
+    # Permissions for reading workflow runs and dispatching remediation agents
+    permissions:
+      contents: read
+      actions: read
+      workflows: write
+      checks: read
+
     steps:
-      - name: Stub
-        run: echo "Self-healing pipeline stub"
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      # Phase 0: Detect recent failures
+      - name: Detect recent workflow failures
+        id: detect
+        run: |
+          python << 'EOF'
+          import json
+          import os
+          from datetime import datetime, timedelta
+          from typing import List, Dict, Any
+
+          # Placeholder: Integration with GitHub API to list recent workflow runs
+          # Phase 1: Implement via github.rest.actions.listWorkflowRuns()
+
+          print("::group::Failure Detection")
+          print("Querying recent workflow runs...")
+
+          # TODO: Phase 1 - Fetch failed runs from GitHub API
+          # - Filter: conclusion == 'failure', status == 'completed'
+          # - Time window: last 24 hours
+          # - Exclude: skipped, cancelled, neutral runs
+
+          recent_failures = {
+              "total": 0,
+              "runs": [],
+              "timestamp": datetime.utcnow().isoformat()
+          }
+
+          print(f"Total failures detected: {recent_failures['total']}")
+          print("::endgroup::")
+
+          # Output for downstream steps
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+              f.write(f"failure_count={recent_failures['total']}\n")
+
+          EOF
+
+      # Phase 1: Pattern classification
+      - name: Classify failure patterns
+        id: classify
+        run: |
+          python << 'EOF'
+          import json
+          import re
+          from collections import defaultdict
+          from typing import List, Dict, Tuple
+
+          print("::group::Pattern Classification")
+          print("Analyzing failure signatures...")
+
+          # TODO: Phase 1 - Implement pattern matching
+          # Patterns to detect:
+          # - RP-001: ImportError, ModuleNotFoundError (ci-testing-agent)
+          # - RP-002: Flaky tests, timeouts (autonomous-test-healer-agent)
+          # - RP-003: Workflow compliance (workflow-compliance-guardian)
+          # - RP-004: Dependency conflicts (dependency-conflict-agent)
+          # - RP-NEW: Novel patterns (ci-testing-agent for root cause)
+
+          patterns = {
+              "RP-001_import_errors": {"count": 0, "agent": "ci-testing-agent"},
+              "RP-002_flaky_tests": {"count": 0, "agent": "autonomous-test-healer-agent"},
+              "RP-003_workflow_compliance": {"count": 0, "agent": "workflow-compliance-guardian"},
+              "RP-004_dependency_conflicts": {"count": 0, "agent": "dependency-conflict-agent"},
+              "RP-NEW_unknown": {"count": 0, "agent": "ci-testing-agent"}
+          }
+
+          # Sort by frequency and take top 3 patterns
+          top_patterns = sorted(
+              patterns.items(),
+              key=lambda x: x[1]["count"],
+              reverse=True
+          )[:3]
+
+          print(f"Top 3 patterns identified: {[p[0] for p in top_patterns]}")
+          print("::endgroup::")
+
+          EOF
+
+      # Phase 2: Log failure patterns
+      - name: Log failure patterns to JSONL
+        id: log_patterns
+        run: |
+          python << 'EOF'
+          import json
+          from datetime import datetime
+          from pathlib import Path
+
+          print("::group::Logging Failure Patterns")
+
+          # Ensure .codex directory exists
+          log_dir = Path(".codex")
+          log_dir.mkdir(exist_ok=True)
+
+          log_file = log_dir / "failure_patterns.jsonl"
+
+          # TODO: Phase 1 - Append classified patterns to JSONL
+          # Each line should include:
+          # - timestamp (ISO 8601)
+          # - workflow_run_id
+          # - pattern_type (RP-001..004, RP-NEW)
+          # - failure_signature (hash of error message)
+          # - job_name
+          # - branch
+          # - suggested_agent
+
+          pattern_entry = {
+              "timestamp": datetime.utcnow().isoformat(),
+              "workflow_run_id": None,  # Will be populated by Phase 1
+              "pattern_type": None,
+              "failure_signature": None,
+              "job_name": None,
+              "branch": None,
+              "suggested_agent": None,
+              "phase": "stub"
+          }
+
+          # Append entry (Phase 1: implement actual logging)
+          with open(log_file, "a") as f:
+              f.write(json.dumps(pattern_entry) + "\n")
+
+          print(f"Logged to: {log_file}")
+          print("::endgroup::")
+
+          EOF
+
+      # Phase 3: Dispatch remediation agents (skeleton)
+      - name: Dispatch remediation agents for top-3 patterns
+        id: dispatch
+        run: |
+          python << 'EOF'
+          import json
+          import os
+          from typing import List, Dict
+
+          print("::group::Remediation Dispatch")
+          print("Triggering specialist agents...")
+
+          # TODO: Phase 1 - Implement workflow_dispatch for:
+          # - ci-testing-agent (RP-001, RP-NEW)
+          # - autonomous-test-healer-agent (RP-002)
+          # - workflow-compliance-guardian (RP-003)
+          # - dependency-conflict-agent (RP-004)
+
+          # Pattern -> Agent mapping
+          agent_dispatch_map = {
+              "RP-001_import_errors": "ci-testing-agent",
+              "RP-002_flaky_tests": "autonomous-test-healer-agent",
+              "RP-003_workflow_compliance": "workflow-compliance-guardian",
+              "RP-004_dependency_conflicts": "dependency-conflict-agent",
+              "RP-NEW_unknown": "ci-testing-agent"
+          }
+
+          top_patterns = []  # Will be populated by Phase 1
+
+          for pattern in top_patterns:
+              agent = agent_dispatch_map.get(pattern)
+              print(f"  → Dispatching {agent} for {pattern}")
+
+              # TODO: Phase 1 - Call GitHub REST API:
+              # POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches
+              # with inputs:
+              #   - failure_pattern: pattern
+              #   - max_iterations: (from workflow input or default 5)
+              #   - pr_number: (if applicable)
+
+          print("::endgroup::")
+
+          EOF
+
+      # Phase 4: Update tracking (skeleton)
+      - name: Update failure tracking log
+        if: always()
+        run: |
+          python << 'EOF'
+          import json
+          from datetime import datetime
+          from pathlib import Path
+
+          print("::group::Tracking Update")
+
+          # TODO: Phase 2 - Update .codex/ci_failure_rate repo variable
+          # Track:
+          # - Total failures this week
+          # - Pattern distribution
+          # - Success rate of healing attempts
+          # - Agent invocation metrics
+
+          tracking_info = {
+              "timestamp": datetime.utcnow().isoformat(),
+              "workflow_name": "${{ github.workflow }}",
+              "run_id": "${{ github.run_id }}",
+              "status": "placeholder",
+              "patterns_detected": 0,
+              "agents_dispatched": 0
+          }
+
+          print(json.dumps(tracking_info, indent=2))
+          print("::endgroup::")
+
+          EOF
+
+      # Summary: Post results
+      - name: Summary
+        if: always()
+        run: |
+          echo "## 🔄 Self-Healing CI Loop Results"
+          echo ""
+          echo "**Detection**: ${{ steps.detect.outputs.failure_count || 0 }} failures found"
+          echo "**Classification**: Top patterns identified (Phase 1)"
+          echo "**Dispatch**: Remediation agents queued (Phase 1)"
+          echo ""
+          echo "**Logging**: \`.codex/failure_patterns.jsonl\` updated"
+          echo "**Next**: Phase 1 will integrate GitHub API and remediation triggers"

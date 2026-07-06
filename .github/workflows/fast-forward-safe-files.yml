@@ -71,6 +71,7 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
+        cache: 'pip'
     - name: Install PyYAML
       run: pip install pyyaml --quiet
     - name: Classify files (dry run)
@@ -134,6 +135,7 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
+        cache: 'pip'
     - name: Install PyYAML
       run: pip install pyyaml --quiet
     - name: Execute promotion

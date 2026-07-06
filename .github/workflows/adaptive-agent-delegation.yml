@@ -138,6 +138,7 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: '3.12'
+        cache: 'pip'
     - name: Collect parallel outputs
       id: collect
       run: "python3 << 'PYTHON_EOF'\nimport json\nimport os\nfrom pathlib import Path\n\

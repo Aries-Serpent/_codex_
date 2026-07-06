@@ -30,6 +30,7 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: '3.12'
+        cache: 'pip'
     - name: Extract Python code blocks
       run: "python3 << 'EOF'\nimport re\nfrom pathlib import Path\n\ndocs_dir = Path('docs')\n\
         pattern = re.compile(r'```python\\n(.*?)\\n```', re.DOTALL)\n\nextracted =\
@@ -107,6 +108,7 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: '3.12'
+        cache: 'pip'
     - name: Extract and validate YAML
       continue-on-error: true
       run: "pip install pyyaml\n\npython3 << 'EOF'\nimport re\nimport yaml\nfrom pathlib\
