@@ -1,20 +1,20 @@
 {
-  "generated_at": "2026-07-06T00:18:19.938883+00:00",
+  "generated_at": "2026-07-03T20:38:04.994569+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 4972,
+  "rest_remaining": 4997,
   "graphql_available": true,
-  "graphql_remaining": 5000,
+  "graphql_remaining": 4981,
   "gh_cli_available": true,
   "codeql_available": false,
   "best_token_var": "CODEX_MASTER_KEY",
   "open_prs": [
-    5231
+    5214
   ],
-  "branch": "copilot/implement-rust-core-python-shell-orchestration",
+  "branch": "copilot/multi-agent-campaign-plan",
   "recommendation": "Use REST for data fetches. "
 }

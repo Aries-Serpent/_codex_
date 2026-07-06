@@ -15,8 +15,9 @@ Categories:
 
 from __future__ import annotations
 
-import hashlib  # pragma: allowlist secret # pragma: allowlist secret
+import hashlib # pragma: allowlist secret # pragma: allowlist secret
 import hmac
+import urllib.error
 
 import pytest
 
@@ -35,6 +36,7 @@ from codex.github.url_utils import (  # noqa: E402
     redact_url_for_log,
     validate_github_api_url,
 )
+
 
 # ---------------------------------------------------------------------------
 # GitHub API Authentication Tests

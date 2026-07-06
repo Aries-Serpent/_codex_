@@ -9,6 +9,7 @@ from typing import Union
 
 import numpy as np
 
+
 logger = logging.getLogger(__name__)
 
 try:

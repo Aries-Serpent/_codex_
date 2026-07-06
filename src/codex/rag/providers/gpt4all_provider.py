@@ -9,6 +9,7 @@ from typing import Optional
 
 import numpy as np
 
+
 logger = logging.getLogger(__name__)
 
 try:

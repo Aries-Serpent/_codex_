@@ -10,6 +10,7 @@ Note: This module does NOT require omegaconf/hydra; it tests pure-Python
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 
 import pytest
@@ -18,11 +19,12 @@ from codex.cli.pr_operator import (
     DEFAULT_LABELS,
     PRConfig,
     PRContent,
-    PROperator,  # pragma: allowlist secret
+    PROperator, # pragma: allowlist secret
     PRResult,
     _generate_pr_body,
     _sanitize_branch_name,
 )
+
 
 # ---------------------------------------------------------------------------
 # _sanitize_branch_name

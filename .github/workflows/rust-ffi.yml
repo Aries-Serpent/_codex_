@@ -8,9 +8,17 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
+concurrency:
+  group: rust-ffi-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -22,11 +30,10 @@ jobs:
           cache: pip
 
       - name: Build with maturin
-        uses: PyO3/maturin-action@v1
+        uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b
         with:
           command: build
-          args: --release --out dist
-          working-directory: src/codex_core
+          args: --release --manifest-path src/codex_core/Cargo.toml --out dist
           sccache: "true"
 
       - name: Install and test
@@ -39,8 +46,8 @@ jobs:
           cat > dist/ARTIFACT_METADATA.json <<EOF
           {
             "workflow": "rust-ffi",
-            "os": "${{ matrix.os }}",
-            "python_version": "${{ matrix.python-version }}",
+            "os": "${{ runner.os }}",
+            "python_version": "3.12",
             "sha": "${{ github.sha }}",
             "ref": "${{ github.ref }}",
             "created_at_utc": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
@@ -50,6 +57,6 @@ jobs:
       - name: Upload built wheel artifact
         uses: actions/upload-artifact@v5
         with:
-          name: codex-core-wheel-${{ matrix.os }}-py${{ matrix.python-version }}
+          name: codex-core-wheel-${{ runner.os }}-py3.12
           path: dist/*
           if-no-files-found: error
