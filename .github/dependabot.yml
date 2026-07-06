@@ -1,5 +1,5 @@
 # Dependabot configuration for automated dependency updates
-# See: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+# Corrected to reduce update_graph unknown_error risk and keep behavior stable.
 
 version: 2
 updates:
@@ -13,8 +13,6 @@ updates:
     labels:
       - "dependencies"
       - "github-actions"
-    reviewers:
-      - "Aries-Serpent/owners"
     commit-message:
       prefix: "ci"
       include: "scope"
@@ -23,10 +21,6 @@ updates:
   # Python - Monitor pip dependencies
   - package-ecosystem: "pip"
     directory: "/"
-    # Note: Dependabot v2 does not support an `exclude-paths` key for pip.
-    # Fixture/archive directories (misc/, tests/) without a matching uv.lock
-    # may trigger "No uv.lock or pyproject.toml present" warnings during
-    # dependency graph generation, but Dependabot will still function correctly.
     schedule:
       interval: "weekly"
       day: "monday"
@@ -34,58 +28,34 @@ updates:
     labels:
       - "dependencies"
       - "python"
-    reviewers:
-      - "Aries-Serpent/owners"
     commit-message:
       prefix: "deps"
       include: "scope"
-    # Ignore problematic package versions to prevent dependency conflicts
+    # Keep ignore rules that are clearly intentional and low-risk
     ignore:
       - dependency-name: "nbconvert"
-        versions: [">=7.0.0"]  # v7 has breaking changes causing conflicts
+        versions:
+          - ">=7.0.0"
       - dependency-name: "torch"
-        versions: [">=2.3.0"]  # Avoid bleeding edge torch versions
-    # Group non-security updates to reduce resolver complexity and PR noise
+        versions:
+          - ">=2.3.0"
+    # Start with simple grouping; expand later only after green runs
     groups:
-      critical-dependencies:
-        dependency-type: "production"
+      python-core:
         patterns:
           - "pyjwt*"
           - "starlette*"
           - "fastapi*"
           - "pydantic*"
           - "cryptography*"
-      development-dependencies:
-        dependency-type: "development"
+      python-dev:
         patterns:
           - "pytest*"
           - "ruff*"
           - "black*"
           - "mypy*"
           - "pre-commit*"
-      ml-dependencies:
-        patterns:
-          - "torch*"
-          - "transformers*"
-          - "peft*"
-          - "accelerate*"
-          - "datasets*"
-      data-dependencies:
-        patterns:
-          - "pandas*"
-          - "numpy*"
-          - "scikit-learn*"
-          - "duckdb*"
-      async-dependencies:
-        patterns:
-          - "aiohttp*"
-          - "asyncio*"
-          - "httpx*"
-    # Allow both direct and indirect updates
-    versioning-strategy: "increase"
     open-pull-requests-limit: 5
-    # Security updates always opened immediately
-    # Non-security updates batched per schedule
 
   # Docker - Monitor base images (if using Dockerfile)
   - package-ecosystem: "docker"
@@ -97,8 +67,6 @@ updates:
     labels:
       - "dependencies"
       - "docker"
-    reviewers:
-      - "Aries-Serpent/owners"
     commit-message:
       prefix: "docker"
     open-pull-requests-limit: 3
