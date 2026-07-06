@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import pickle
 from typing import Any, Optional
 
@@ -34,7 +35,7 @@ class RedisCache(CacheBackend):
 
     def __init__(
         self,
-        host: str = "localhost",
+        host: str = None,
         port: int = 6379,
         db: int = 0,
         password: Optional[str] = None,
@@ -54,7 +55,7 @@ class RedisCache(CacheBackend):
             fallback_local: Use local cache as fallback if Redis unavailable
             local_max_size: Max size of local fallback cache
         """
-        self.host = host
+        self.host = host or os.environ.get("CODEX_REDIS_HOST", "localhost")
         self.port = port
         self.db = db
         self.default_ttl = default_ttl

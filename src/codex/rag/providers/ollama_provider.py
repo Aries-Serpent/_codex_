@@ -5,6 +5,7 @@ Provides embeddings using Ollama server (local LLM runtime).
 """
 
 import logging
+import os
 from typing import Union
 
 import numpy as np
@@ -46,7 +47,7 @@ class OllamaEmbeddingProvider:
     def __init__(
         self,
         model_name: str = "nomic-embed-text",
-        host: str = "http://localhost",
+        host: str = None,
         port: int = 11434,
         timeout: int = 30,
         dimension: int = 768,
@@ -65,9 +66,9 @@ class OllamaEmbeddingProvider:
             raise ImportError("requests not installed. Run: pip install requests")
 
         self.model_name = model_name
-        self.host = host
+        self.host = host or os.environ.get("CODEX_OLLAMA_HOST", "http://localhost")
         self.port = port
-        self.base_url = f"{host}:{port}"
+        self.base_url = f"{self.host}:{port}"
         self.timeout = timeout
         self.dimension = dimension
 

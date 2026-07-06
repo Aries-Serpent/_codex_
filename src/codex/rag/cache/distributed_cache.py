@@ -11,9 +11,10 @@ Provides distributed caching for production scale:
 import hashlib
 import json
 import logging
+import os
 import threading
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Optional
 
@@ -41,7 +42,7 @@ class DistributedCacheConfig:
     memory_ttl: float = 300.0
 
     # Redis settings
-    redis_host: str = "localhost"
+    redis_host: str = field(default_factory=lambda: os.environ.get("CODEX_REDIS_HOST", "localhost"))
     redis_port: int = 6379
     redis_db: int = 0
     redis_password: Optional[str] = None
