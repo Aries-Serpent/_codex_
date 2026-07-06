@@ -1,20 +1,20 @@
 {
-  "generated_at": "2026-07-06T20:16:51.077352+00:00",
+  "generated_at": "2026-07-06T22:32:53.460926+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 4815,
+  "rest_remaining": 4990,
   "graphql_available": true,
-  "graphql_remaining": 4987,
+  "graphql_remaining": 4988,
   "gh_cli_available": true,
   "codeql_available": false,
-  "best_token_var": "CODEX_MASTER_KEY",
+  "best_token_var": "GITHUB_TOKEN",
   "open_prs": [
-    5247
+    5250
   ],
-  "branch": "copilot/phase-13-post-merge-implementation",
+  "branch": "fix/ci-rag-module-tests-20260706214908",
   "recommendation": "Use REST for data fetches. "
 }
