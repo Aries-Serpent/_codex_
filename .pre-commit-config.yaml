@@ -1,0 +1,553 @@
+repos:
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.38.0
+    hooks:
+      - id: yamllint
+        name: yamllint (workflows)
+        args: [--strict, -c, .yamllint.yml]
+        files: ^\.github/workflows/
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: end-of-file-fixer
+        exclude: "^CODEX_MANIFEST\\.json$|^\\.codex/agent_context\\.json$"
+      - id: check-yaml
+        exclude: "^mkdocs\\.yml$|^.codex/reports/.*\\.yml$|^.codex/patterns/.*\\.yaml$|^.github/agents/.*\\.yml$|^.github/agents/.*\\.yaml$|^.github/actions/doc-test-scribe-action/action\\.yml$|^.github/docs/PR_2207_CI_CD_VALIDATION_ARTIFACTS\\.yaml$|^tests/fixtures/malformed_config\\.yaml$|^k8s/monitoring/agent_dashboard\\.yaml$"
+      - id: check-added-large-files
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.9
+    hooks:
+      - id: bandit
+        args: ["-c", "bandit.yaml", "-r", "src", "training", "-lll"]
+        pass_filenames: false
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
+    hooks:
+      - id: detect-secrets
+        args: ["--no-verify", "--baseline", ".secrets.baseline"]
+  # Security scanning: pip-audit for dependency vulnerabilities
+  - repo: https://github.com/pypa/pip-audit
+    rev: v2.6.1
+    hooks:
+      - id: pip-audit
+        name: pip-audit (dependency vulnerability scan)
+        args: ["--desc", "--skip-editable", "--ignore-vuln", "GHSA-5239-wwwm-4pmq",
+               "--ignore-vuln", "GHSA-58qw-9mgm-455v",
+               "--ignore-vuln", "PYSEC-2026-196"]
+        # GHSA-5239-wwwm-4pmq: pygments AdlLexer DoS — no fix version published yet
+        # GHSA-58qw-9mgm-455v: pip 26.x ZIP/tar confusion — pip-audit v2.6.1 misreports
+        #   26.0.1 as affected (fix landed in 25.3; 26.x branch is clean)
+        # PYSEC-2026-196: pip 26.1.1 entry-point path traversal — fix in pip 26.1.2;
+        #   CI runner environment controls pip version; remove once runner upgrades to 26.1.2+
+        # Note: May require requirements files to be present
+        # Run manually with: pre-commit run pip-audit --all-files
+
+  # Security scanning: gitleaks for secrets detection
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.18.1
+    hooks:
+      - id: gitleaks
+        name: gitleaks (secrets detection)
+        args: ["detect", "--source=.", "--config=.gitleaks.toml", "--verbose"]
+        # Note: Requires .gitleaks.toml config file
+        # To generate baseline: gitleaks detect --source=. --report-path=.gitleaks-baseline.json
+
+  - repo: local
+    hooks:
+      # Security checks - Command injection prevention
+      - id: check-shell-true
+        name: Check for subprocess shell=True (command injection risk)
+        entry: .pre-commit-scripts/check-shell-true.sh
+        language: system
+        pass_filenames: false
+
+      # Security checks - Unsafe XML parsing
+      - id: check-unsafe-xml
+        name: Check for unsafe XML parsing (XXE vulnerability risk)
+        entry: |
+          bash -c '
+            files=$(grep -r "import xml.etree.ElementTree" --include="*.py" . \
+              | grep -v ".git" \
+              | grep -v "test_\|_test\.py" \
+              | grep -v ".venv_ci" \
+              | grep -v ".venv_validation" \
+              | grep -v ".venv_agent" \
+              | grep -v "tools/codemods/" \
+              | grep -v "tools/validate.py" \
+              || true);
+            if [ -n "$files" ]; then
+              echo "$files";
+              echo "ERROR: Found unsafe XML parsing. Use defusedxml instead.";
+              exit 1;
+            else
+              exit 0;
+            fi
+          '
+        language: system
+        pass_filenames: false
+
+      # Security checks - Weak hash algorithms without explicit non-security flag
+      - id: check-weak-hash
+        name: Check for weak hash algorithms without usedforsecurity=False
+        entry: |
+          bash -c '
+            files=$(grep -r "hashlib\.md5\|hashlib\.sha1" --include="*.py" . | grep -v "usedforsecurity=False" | grep -v ".git" | grep -v "test_\|_test\.py" | grep -v "# nosec" || true);
+            if [ -n "$files" ]; then
+              echo "$files";
+              echo "WARNING: Found MD5/SHA1 without usedforsecurity=False. Add the parameter if not used for security.";
+            fi
+          '
+        language: system
+        pass_filenames: false
+
+      # Test file naming convention enforcement
+      - id: check-test-utility-naming
+        name: Check for test_*.py utility files (pytest collection risk)
+        entry: .pre-commit-scripts/check-test-utility-naming.sh
+        language: system
+        pass_filenames: false
+        # Run on all commits to catch existing problematic files
+
+      - id: pip-compile
+        name: pip-compile (manual)
+        entry: bash -c 'if [ -f requirements.in ]; then pip-compile requirements.in -o requirements.txt; fi'
+        language: system
+        stages: [manual]
+
+      # Auto-update codex package __init__.py files
+      - id: generate-codex-init
+        name: Generate codex __init__.py files
+        entry: python3 scripts/generate_codex_init.py
+        language: system
+        pass_filenames: false
+        files: 'src/codex/.*\.py$'
+        stages: [manual]
+
+      # Auto-update pytest.ini with discovered markers
+      - id: generate-pytest-config
+        name: Update pytest.ini with markers
+        entry: python3 scripts/generate_pytest_config.py
+        language: system
+        pass_filenames: false
+        files: '(tests/.*_test\.py$|tests/test_.*\.py$)'
+        stages: [manual]
+
+      # Generate AI-optimized repository indices
+      - id: generate-ai-index
+        name: Generate AI repository search indices
+        entry: python3 scripts/generate_ai_index.py
+        language: system
+        pass_filenames: false
+        stages: [manual]
+
+      # Cognitive brain - Pre-commit file verification
+      - id: verify-expected-files
+        name: Verify expected files from action log are staged
+        entry: python scripts/hooks/pre_commit_verify.py --check-only --quiet
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [commit]
+
+      # AST Code Smell Detection
+      - id: ast-smell-check
+        name: AST Code Smell Check (error-level only)
+        entry: python3 -c
+        language: system
+        types: [python]
+        pass_filenames: true
+        # Only check Python files in src/, agents/, scripts/
+        files: ^(src|agents|scripts)/.*\.py$
+        args:
+          - |
+            import sys
+            from pathlib import Path
+            try:
+                from codex.ast import CodeSmellDetector, SmellSeverity
+            except ImportError:
+                print('Warning: codex.ast module not installed, skipping smell check', file=sys.stderr)
+                sys.exit(0)
+            detector = CodeSmellDetector()
+            has_errors = False
+            for filepath in sys.argv[1:]:
+                try:
+                    smells = detector.detect_file(filepath)
+                    for smell in smells:
+                        if smell.severity == SmellSeverity.ERROR:
+                            print(f'{filepath}:{smell.line_start}: [{smell.rule_id}] {smell.message}')
+                            has_errors = True
+                except Exception as e:
+                    print(f'Warning: Failed to analyze {filepath}: {e}', file=sys.stderr)
+            sys.exit(1 if has_errors else 0)
+
+  # Windows filename compatibility check
+  - repo: local
+    hooks:
+      - id: check-windows-filenames
+        name: Check for Windows-incompatible filenames
+        entry: python scripts/remediation/check_windows_filenames.py
+        language: system
+        pass_filenames: true
+        types: [file]
+
+      # Test Pattern Guardian - Proactive test quality enforcement
+      - id: test-pattern-guardian
+        name: Test Pattern Guardian (mock exhaustion, serialization issues)
+        entry: python scripts/analyze_test_patterns.py
+        language: system
+        types: [python]
+        files: ^tests/.*\.py$
+        pass_filenames: false
+
+      # Meta Tensor Validator - Prevent PyTorch meta tensor issues
+      - id: check-meta-tensors
+        name: Meta Tensor Validator (PyTorch model loading patterns)
+        entry: python .pre-commit-scripts/check-meta-tensors.py
+        language: system
+        types: [python]
+        files: ^(src/|scripts/).*\.py$
+        pass_filenames: true
+        # Fails if high-severity issues found (mock exhaustion, serialization problems)
+
+      # Config Validator - Hydra config integrity
+      - id: config-validator
+        name: Config Validator (Hydra experiment configs)
+        entry: bash scripts/verify_hydra_configs.sh
+        language: system
+        files: ^(config/.*\.yaml|tests/.*\.py)$
+        pass_filenames: false
+        # Validates that all Hydra configs referenced in tests exist
+
+      # Auto-fix Common CI Issues - Detect patterns that cause workflow failures
+      - id: auto-fix-ci-issues
+        name: Auto-Fix Common CI Issues (unused imports, coverage, etc.)
+        entry: python scripts/hooks/pre_commit_pattern_check.py
+        language: system
+        pass_filenames: false
+        # Runs a staged-file recurrence check instead of a full-repo CI sweep.
+
+      # Dependency Consistency Validator - PR #5008
+      - id: check-dependency-consistency
+        name: Check Dependency Consistency (pyproject.toml vs requirements*.txt)
+        entry: python scripts/ci/validate_dependency_consistency.py
+        language: system
+        files: (pyproject\.toml|requirements.*\.txt)$
+        pass_filenames: false
+        stages: [commit]
+        # Validates that critical packages have consistent version constraints
+        # across all dependency files (pyproject.toml and requirements*.txt)
+
+      # PR #3248 Preventive Tooling - Link validation
+      - id: markdown-link-check
+        name: Markdown Link Checker (sample docs)
+        entry: bash -c 'find docs -name "*.md" 2>/dev/null | head -5 | xargs -r npx --yes markdown-link-check --quiet || true'
+        language: system
+        pass_filenames: false
+        # Checks sample markdown files for broken links (non-blocking)
+
+      # PR #3365 - Intelligent link validator (internal links, .github/agents, docs/)
+      - id: validate-internal-links
+        name: Validate Internal Doc Links (.github/agents + docs/)
+        entry: python .github/scripts/validate-links.py --fail-on-errors
+        language: system
+        pass_filenames: false
+        files: '\.md$'
+        stages: [commit]
+        # Runs full internal-link scan whenever .md files are staged; exits 1 on errors
+
+      # Phase 2: Anchor link validation
+      - id: validate-doc-anchors
+        name: Validate Documentation Anchors (Phase 2)
+        entry: python .github/scripts/validate_doc_anchors.py --directory docs
+        language: system
+        pass_filenames: false
+        files: '\.md$'
+        stages: [commit]
+        # Validates heading anchors and cross-references whenever .md files are staged
+
+      # PR #3248 Preventive Tooling - Ruff linting
+      - id: ruff-check
+        name: Ruff Linting (F401, F841 - unused imports/variables)
+        entry: bash -c 'command -v ruff >/dev/null 2>&1 && ruff check --select F401,F841 . || echo "⚠️ ruff not installed"'
+        language: system
+        pass_filenames: false
+        # Checks for unused imports and variables
+
+      # PR #3319 Code Quality - F821 strict enforcement
+      - id: ruff-f821-strict
+        name: Ruff F821 Strict (undefined names - ZERO TOLERANCE)
+        entry: bash -c 'command -v ruff >/dev/null 2>&1 && ruff check --select F821 . || echo "⚠️ ruff not installed, F821 check skipped"'
+        language: system
+        pass_filenames: false
+        # ZERO TOLERANCE for undefined names (F821) - prevents runtime failures
+
+      # PR #3319 Code Quality - E402 quality check (informational)
+      - id: ruff-e402-check
+        name: Ruff E402 Check (import organization - informational)
+        entry: bash -c 'command -v ruff >/dev/null 2>&1 && ruff check --select E402 . --exit-zero || echo "⚠️ ruff not installed"'
+        language: system
+        pass_filenames: false
+        stages: [manual]
+        # E402 check is informational only - many acceptable patterns documented
+        # Run manually with: pre-commit run ruff-e402-check
+
+      # PR #3248 Preventive Tooling - Quick test validation
+      - id: quick-tests
+        name: Quick Test Validation (fast tests only)
+        entry: bash -c 'command -v pytest >/dev/null 2>&1 && pytest tests/ -v -m "not slow" --timeout=60 --maxfail=3 -x || echo "⚠️ Quick tests had issues"'
+        language: system
+        pass_filenames: false
+        stages: [manual]
+        # Runs fast tests only (use: pre-commit run quick-tests)
+
+      # Doc Metrics Sync — keeps Mermaid diagrams and KPI numbers aligned with code
+      - id: doc-metrics-check
+        name: Doc Metrics Check (Mermaid/KPI alignment)
+        entry: python scripts/tools/doc_metrics_sync.py --check
+        language: system
+        pass_filenames: false
+        # Run: pre-commit run doc-metrics-check
+        # Fix: python scripts/tools/doc_metrics_sync.py --fix
+
+      # Deferral Language Gate — enforces Codebase Agency Policy §3a
+      # Triggers on any commit message containing deferral language.
+      # See: .codex/CODEBASE_AGENCY_POLICY.md §3a and scripts/ci/check_deferral_language.py
+      - id: deferral-language-check
+        name: "🚨 Deferral Language Policy Check (Agency Policy §3a)"
+        entry: python scripts/ci/check_deferral_language.py --commit-msg
+        language: system
+        stages: [commit-msg]
+        pass_filenames: true
+        # If this fails: load .codex/CODEBASE_AGENCY_POLICY.md and fix immediately
+
+      # ── mypy isolated-venv pre-push gate ─────────────────────────────────
+      # Runs the EXACT same mypy check that CI runs (isolated venv, same flags)
+      # BEFORE the push reaches GitHub.  This means any regression that would
+      # cause the CI "mypy Anti-Regression Gate" to fail is caught locally,
+      # surfaced with a clear error message, and can be fixed before the
+      # remote CI run even starts — eliminating the "SHA drift confusion" class
+      # of debugging where CI shows a different error count than local runs.
+      #
+      # The hook creates a fresh /tmp/mypy-venv on first run (~15 s) and reuses
+      # it on subsequent runs (< 3 s) unless cleared with `pre-commit clean`.
+      #
+      # To skip in exceptional circumstances:
+      #   git push --no-verify   # bypasses all pre-push hooks
+      - id: mypy-isolated-venv-gate
+        name: "🔎 mypy isolated-venv anti-regression gate (pre-push)"
+        entry: bash -c 'python -m venv /tmp/mypy-prepush-venv --clear 2>/dev/null && /tmp/mypy-prepush-venv/bin/pip install --quiet "mypy>=1.8.0" types-PyYAML types-requests && /tmp/mypy-prepush-venv/bin/python scripts/ci/mypy_baseline.py --require-baseline'
+        language: system
+        stages: [pre-push]
+        pass_filenames: false
+        always_run: true
+        # If this fails: type errors were introduced. Fix them or run:
+        #   python scripts/ci/mypy_baseline.py --update   (only after intentional baseline raise)
+
+      # ── ruff full scan pre-push gate ─────────────────────────────────────
+      # Runs ruff across all selected rules (E, F, I) before push so lint
+      # violations never reach CI. Complements the commit-time ruff check
+      # (which only scans staged files) with a final full-repo scan.
+      - id: ruff-full-scan-prepush
+        name: "🧹 ruff full-repo scan (pre-push)"
+        entry: bash -c 'python -m ruff check . && echo "✅ ruff clean"'
+        language: system
+        stages: [pre-push]
+        pass_filenames: false
+        always_run: true
+        # If this fails: run `python -m ruff check . --fix` then commit the fixes
+
+      # ── dead-code scan pre-push gate (100% confidence only) ──────────────
+      # Runs vulture at 100% confidence — only provably unreachable code
+      # (code after raise/return/break, assigned-but-never-read variables).
+      # At 100%, false-positive rate is effectively 0.
+      # Lower confidence items are reported by scripts/ci/dead_code_scan.py
+      # but do NOT block commits (too many false positives from public APIs).
+      - id: dead-code-scan
+        name: "🔍 dead code scan — 100% confidence (pre-push)"
+        entry: >
+          bash -c '
+            if python -m vulture --version >/dev/null 2>&1; then
+              python scripts/ci/dead_code_scan.py src/ tests/
+                --min-confidence 100
+                --fail-on-found
+                --format github
+              && echo "✅ no 100%% confidence dead code"
+            else
+              echo "⚠️  vulture not installed — skipping dead code scan (pip install vulture)"
+            fi'
+        language: system
+        stages: [pre-push]
+        pass_filenames: false
+        always_run: true
+        # If this fails: run scripts/ci/dead_code_scan.py src/ tests/ --min-confidence 100
+        # to see the findings, then remove the unreachable code blocks.
+
+      # ── CB-INV-003: sync+new-work commit anti-pattern gate (pre-push) ────────
+      # Detects when staged CHANGELOG.md changes mix auto-generated content with
+      # development (S-session) content in the same commit — the pattern that caused
+      # repeated rebase conflicts in S154. Also detects staged auto-generated files
+      # (CODEX_MANIFEST.json, session_context_latest.md, agent_auth_session.json)
+      # alongside dev files.
+      # S154 root cause documented: .codex/docs/SYNC_COMMIT_CONFLICT_PREVENTION.md
+      # Full investigation: .codex/docs/COMMIT_METHOD_FAILURES_S154.md
+      - id: prevent-sync-commit-conflict
+        name: "🔀 sync+new-work anti-pattern check (pre-commit)"
+        entry: bash -c 'if ! command -v python >/dev/null 2>&1; then echo "⚠️  prevent_sync_commit_conflict.py not runnable — skipping (python not found)"; exit 0; fi; python scripts/ci/prevent_sync_commit_conflict.py --ci-mode'
+        language: system
+        stages: [pre-commit]
+        pass_filenames: false
+        always_run: false
+        # Run at commit time so staged changes are available for inspection.
+        # (At pre-push time the index is clean — no staged changes — making the
+        # check a no-op. Use --push-range upstream..HEAD manually if you want to
+        # inspect committed changes before a push.)
+        # If this fails: review .codex/docs/SYNC_COMMIT_CONFLICT_PREVENTION.md
+        # Rule 1: never copy remote auto-commit content into a dev commit
+        # Rule 2: place new CHANGELOG entries BELOW existing [Unreleased] sections
+        # Rule 3: exclude CODEX_MANIFEST.json, session_context_latest.md from dev commits
+        # Rule 4: use .git/info/attributes + merge.keepcommit driver for recovery
+
+  # ── Reference Integrity + Agent File Size Gates ───────────────────────────
+  # Codebase Agency Policy §2: "Leave the codebase better than you found it."
+  - repo: local
+    hooks:
+      # BLOCKS any commit that moves/deletes a file without updating all references.
+      - id: check-cross-references
+        name: "🔗 Cross-reference integrity (no broken internal links)"
+        entry: python scripts/ci/check_cross_references.py
+        language: system
+        stages: [pre-commit]
+        pass_filenames: false
+        always_run: true
+
+      # GitHub Copilot custom agents silently STOP WORKING above 30,000 characters.
+      - id: check-agent-file-sizes
+        name: "📏 Agent file size limit (30,000 char max)"
+        entry: python scripts/ci/check_agent_file_sizes.py
+        language: system
+        stages: [pre-commit]
+        pass_filenames: false
+        always_run: true
+
+      # Triggered specifically when CODEX_MANIFEST.json is staged — re-syncs
+      # .secrets.baseline to pick up any integrity_sha256 hash rotation before
+      # the detect-secrets hook runs.  Prevents the RP-007 "stale baseline"
+      # failure pattern (first diagnosed in S182, 2026-04-29).
+      - id: sync-baseline-on-manifest-change
+        name: "🔐 Re-sync .secrets.baseline when CODEX_MANIFEST.json changes"
+        entry: python scripts/ci/sync_tracked_files.py --fix --manifest-only
+        language: system
+        files: ^CODEX_MANIFEST\.json$
+        stages: [pre-commit]
+        pass_filenames: false
+
+      # Ensures CODEX_MANIFEST.json integrity_sha256, .secrets.baseline,
+      # CHANGELOG.md, and AGENT_ACCOUNTABILITY_REPORT.md are always consistent
+      # at commit time.  Auto-repairs with --fix if any inconsistency is found.
+      # This eliminates the recurring "agent forgot to update .secrets.baseline"
+      # failure pattern (P-B / P-E cascade in CI Failure Pattern Analysis S194).
+      - id: sync-tracked-files
+        name: "🔄 Sync tracked files (manifest + baseline + changelog + accountability)"
+        entry: python scripts/ci/sync_tracked_files.py --fix --quiet
+        language: system
+        stages: [pre-commit]
+        pass_filenames: false
+        always_run: true
+
+      # ── Gap 33: mypy type-check (src/ only, informational) ────────────────
+      # Runs mypy against src/ at commit time so contributors see type errors
+      # immediately, without blocking the commit.  The strict anti-regression
+      # gate (which CAN block) lives in the pre-push stage above as
+      # `mypy-isolated-venv-gate` and enforces the .mypy_baseline ratchet.
+      #
+      # Exit behaviour: always exits 0 (non-blocking) so dirty commits are
+      # never refused because of pre-existing type debt (baseline = 131 as of
+      # 2026-03-14).  Use `pre-commit run mypy-src --all-files` to audit.
+      - id: mypy-src
+        name: "🔬 mypy type check (src/ only – informational)"
+        entry: >
+          bash -c '
+            if ! python -m mypy --version >/dev/null 2>&1; then
+              echo "⚠️  mypy not installed — skipping (pip install mypy)";
+              exit 0;
+            fi;
+            python -m mypy src/
+              --config-file=mypy.ini
+              --no-error-summary
+              --no-pretty
+            ; EXIT=$?;
+            if [ "$EXIT" -ne 0 ]; then
+              echo "ℹ️  mypy found type errors in src/ (non-blocking).";
+              echo "ℹ️  Run: python scripts/ci/mypy_baseline.py --update  to refresh baseline.";
+            fi;
+            exit 0'
+        language: system
+        stages: [pre-commit]
+        pass_filenames: false
+        # To run manually:   pre-commit run mypy-src --all-files
+        # Strict pre-push gate: mypy-isolated-venv-gate (blocks on regression)
+
+      # ── Gap 34: pydocstyle docstring check (informational) ───────────────
+      # Reports missing/malformed Google-style docstrings without blocking
+      # commits.  D100 (missing module docstring) and D104 (missing package
+      # docstring) are intentionally ignored since many __init__.py files are
+      # intentionally minimal.  Run manually with:
+      #   pre-commit run pydocstyle-check --all-files
+      - id: pydocstyle-check
+        name: "📝 pydocstyle docstring check (informational)"
+        entry: bash -c 'python -m pydocstyle src/ --convention=google --add-ignore=D100,D104 || true'
+        language: system
+        stages: [pre-commit]
+        pass_filenames: false
+
+  # ── Gap 35: Schema validation ─────────────────────────────────────────────
+  # Two hooks:
+  #   1. check-github-workflows  — validates .github/workflows/*.yml against the
+  #      official GitHub Actions JSON Schema (via check-jsonschema, if installed).
+  #      Falls back gracefully to YAML-parse-only when the package is absent.
+  #   2. validate-codex-configs  — runs scripts/ci/validate_configs.py which
+  #      loads every YAML in configs/ through the Pydantic TrainConfig schema.
+
+  - repo: local
+    hooks:
+      - id: check-github-workflows
+        name: "✅ Validate GitHub Actions workflow schemas"
+        entry: python scripts/ci/check_workflow_yaml.py
+        language: system
+        files: ^\.github/workflows/.*\.(yml|yaml)$
+        stages: [pre-commit]
+
+      - id: validate-codex-configs
+        name: "🧪 Validate Codex pydantic/Hydra configs (configs/)"
+        entry: python scripts/ci/validate_configs.py
+        language: system
+        stages: [pre-commit]
+        pass_filenames: false
+        # To run manually:   pre-commit run validate-codex-configs --all-files
+        # Or standalone:     python scripts/ci/validate_configs.py
+
+  # ── Phase 3b: actionlint gate for *.yml workflow files ───────────────────
+  # Runs actionlint against any staged .github/workflows/*.yml file.
+  # Install: https://github.com/rhysd/actionlint#installation (v1.7.7 pinned
+  # to match actionlint-audit.yml CI gate).  Skips gracefully when the binary
+  # is absent so first-time contributors are not blocked; CI (actionlint-audit.yml)
+  # enforces the hard gate on every PR.
+  # Run manually: pre-commit run actionlint --all-files
+  - repo: local
+    hooks:
+      - id: actionlint
+        name: "🔍 actionlint — workflow YAML syntax gate (Phase 3b)"
+        entry: >
+          bash -c '
+            if ! command -v actionlint >/dev/null 2>&1; then
+              echo "⚠️  actionlint not installed — skipping (see https://github.com/rhysd/actionlint)";
+              exit 0;
+            fi;
+            actionlint "$@"' --
+        language: system
+        files: ^\.github/workflows/.*\.(yml|yaml)$
+        stages: [pre-commit]
+        # To install: go install github.com/rhysd/actionlint/cmd/actionlint@v1.7.7
+        # Or via script: bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)

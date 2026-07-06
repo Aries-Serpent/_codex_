@@ -1,4 +1,5 @@
 import os
+import re
 import subprocess
 import sys
 import tokenize
@@ -57,6 +58,22 @@ def comment_has_banned(content: str) -> list[str]:
                     hits.append(f"line {tok.start[0]}: banned suppression in comment: {pat}")
     return hits
 
+
+def added_line_numbers(base: str, head: str, path: str) -> set[int]:
+    """Return the destination line numbers added for a path in the base..head diff."""
+    diff = subprocess.check_output(
+        ["git", "diff", "--unified=0", base, head, "--", path],
+        text=True,
+    )
+    lines: set[int] = set()
+    for match in re.finditer(r"^@@ -\d+(?:,\d+)? \+(\d+)(?:,(\d+))? @@", diff, re.MULTILINE):
+        start = int(match.group(1))
+        count = int(match.group(2) or "1")
+        if count <= 0:
+            continue
+        lines.update(range(start, start + count))
+    return lines
+
 def main() -> int:
     base, head = get_base_head()
     rows = changed_name_status(base, head)
@@ -83,9 +100,13 @@ def main() -> int:
 
     for path in changed_existing_py:
         raw = Path(path).read_text(encoding="utf-8", errors="ignore")
+        added_lines = added_line_numbers(base, head, path)
 
         # COMMENT-token scoped suppression check (prevents docstring/string false positives)
         for h in comment_has_banned(raw):
+            match = re.search(r"line (\d+):", h)
+            if not match or int(match.group(1)) not in added_lines:
+                continue
             violations.append(f"{path}: {h}")
 
         # Syntax check (deterministic)

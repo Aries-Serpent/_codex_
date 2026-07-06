@@ -1,0 +1,11 @@
+version: 1
+default_mode: fail_closed
+allow_localhost: true
+allowed_hosts:
+  - localhost
+  - 127.0.0.1
+  - ::1
+# Add approved external hosts as explicit allowlist entries only when needed.
+# Example:
+# - api.github.com
+# - "*.internal.example.com"

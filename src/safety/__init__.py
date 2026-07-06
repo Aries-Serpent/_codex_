@@ -11,6 +11,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Final
 
+from .network_policy import PolicyViolationError, enforce_network_policy
+
 
 @dataclass(frozen=True)
 class SafetyProfile:
@@ -24,4 +26,9 @@ class SafetyProfile:
 
 DEFAULT_SAFETY_PROFILE: Final[SafetyProfile] = SafetyProfile()
 
-__all__ = ["DEFAULT_SAFETY_PROFILE", "SafetyProfile"]
+__all__ = [
+    "DEFAULT_SAFETY_PROFILE",
+    "PolicyViolationError",
+    "SafetyProfile",
+    "enforce_network_policy",
+]

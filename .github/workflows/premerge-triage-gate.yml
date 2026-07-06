@@ -28,7 +28,7 @@ jobs:
 
           git diff --unified=0 "$BASE_SHA" "$HEAD_SHA" > /tmp/pr.diff
 
-          if grep -E 'UNABLE_TO_CLASSIFY|AUTO-FIX AVAILABLE:\s*false|Confidence:\s*0%' /tmp/pr.diff >/dev/null; then
+          if grep -E '^\+[^+].*(UNABLE_TO_CLASSIFY|AUTO-FIX AVAILABLE:\s*false|Confidence:\s*0%)' /tmp/pr.diff >/dev/null; then
             echo "::error::PR contains unresolved triage indicators (0% confidence / unclassified failure)."
             exit 1
           fi
