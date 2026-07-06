@@ -111,6 +111,7 @@ class GitHubAppConfig:
         _loopback_hosts = {"localhost", "127.0.0.1", "::1"}
         if _host == "":
             raise ValueError("api_base_url must point to a remote GitHub endpoint, not %r" % _host)
+        # Loopback hosts are only valid when CODEX_LOCAL_LOOPBACK=true for local dev/test flows.
         if _host in _loopback_hosts and not _enable_loopback:
             raise ValueError("api_base_url must point to a remote GitHub endpoint, not %r" % _host)
 

@@ -53,7 +53,10 @@ class Phase9MetricsCollector:
     def __init__(self, repo_root: Path = Path.cwd()):
         self.repo_root = repo_root
         self.metrics_file = repo_root / ".codex" / "phase-9-metrics-dashboard.json"
-        self.timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    @staticmethod
+    def _utc_timestamp() -> str:
+        return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     def collect_github_variables(self) -> Dict[str, Optional[str]]:
         """Collect environment variable values from GitHub Settings"""
@@ -145,7 +148,7 @@ class Phase9MetricsCollector:
     def generate_metrics_snapshot(self) -> Dict[str, Any]:
         """Generate complete metrics snapshot"""
         return {
-            "timestamp": self.timestamp,
+            "timestamp": self._utc_timestamp(),
             "phase": "9",
             "collection_period": "2026-07-10 to 2026-08-07",
             "status": "COLLECTING",
@@ -200,7 +203,7 @@ class Phase9MetricsCollector:
         report = f"""
 # Phase 9 Onboarding Metrics Report
 
-**Generated:** {self.timestamp}
+**Generated:** {self._utc_timestamp()}
 **Period:** 2026-07-10 to 2026-08-07
 **Lead Agent:** documentation-quality-agent
 
