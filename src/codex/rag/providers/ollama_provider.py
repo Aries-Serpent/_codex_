@@ -72,9 +72,16 @@ class OllamaEmbeddingProvider:
             self.host = f"http://{self.host}"
         self.port = port
         parsed_host = urlparse(self.host)
+        # Only append port if the host doesn't already have one
         if parsed_host.port is None:
-            self.base_url = f"{self.host.rstrip('/')}:{port}"
+            # Ensure we have a port from the parameter
+            if port:
+                self.base_url = f"{self.host.rstrip('/')}:{port}"
+            else:
+                # Default to 11434 if no port specified
+                self.base_url = f"{self.host.rstrip('/')}:11434"
         else:
+            # Host already includes a port, use as-is
             self.base_url = self.host.rstrip("/")
         self.timeout = timeout
         self.dimension = dimension

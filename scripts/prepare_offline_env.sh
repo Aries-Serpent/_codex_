@@ -150,8 +150,11 @@ if pip show cyclonedx-bom &>/dev/null; then
     else
         log_warning "SBOM generation failed, continuing without SBOM"
     fi
+else
+    log_warning "cyclonedx-bom not found, skipping SBOM generation"
+fi
 
-    rm -f "$FILTERED_REQS"
+rm -f "$FILTERED_REQS"
 else
     log_warning "cyclonedx-bom not installed, installing..."
     pip install cyclonedx-bom -q 2>&1 | tee -a "$LOG_FILE" || {
