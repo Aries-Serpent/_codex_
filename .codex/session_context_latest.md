@@ -1,35 +1,36 @@
-# Session Context — 2026-07-06T20:16:51Z
-**Branch:** `copilot/phase-13-post-merge-implementation`  **PR:** #5247  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-07-06T21:54:43Z
+**Branch:** `fix/ci-rag-module-tests-20260706214908`  **PR:** #5250  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4815` (✅)
-- GraphQL remaining: `4987` (✅)
+- REST remaining: `4563` (✅)
+- GraphQL remaining: `4996` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #5247 — Phase 13 post-merge: sync branch 24 commits behind main + Python-only integration
-State: `open`  Draft: `False`  Branch: `copilot/phase-13-post-merge-implementation` → `main`
+## 📋 PR #5250 — fix(ci): 🔧 Critical — RAG Module Tests [0375a25]
+State: `open`  Draft: `False`  Branch: `fix/ci-rag-module-tests-20260706214908` → `main`
 
-### ❌ 1 Failing CI Check(s)
-- `Governance Compliance` (failure)
+### ❌ 2 Failing CI Check(s)
+- `Validate WEC Template Integrity` (failure)
+- `Fast Validation` (failure)
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **Unified Governance Check** — `failure` on `copilot/phase-13-post-merge-implementation` (2026-07-06)
-- **Secrets Detection & Remediation** — `failure` on `copilot/phase-13-post-merge-implementation` (2026-07-06)
-- **Workflow Compliance Gate** — `failure` on `copilot/phase-13-post-merge-implementation` (2026-07-06)
-- **Code Example Validation** — `failure` on `copilot/phase-13-post-merge-implementation` (2026-07-06)
-- **Tiered Approval Gate** — `failure` on `copilot/phase-13-post-merge-implementation` (2026-07-06)
+- **Workflow Execution Gate** — `failure` on `fix/ci-rag-module-tests-20260706214908` (2026-07-06)
+- **Phase 9.3 Semantic Router & Multi-Agent Orchestration** — `failure` on `main` (2026-07-06)
+- **Workflow Compliance Audit (actionlint)** — `failure` on `main` (2026-07-06)
+- **Machine Readable Governance** — `failure` on `main` (2026-07-06)
+- **Security Scanning Suite** — `failure` on `main` (2026-07-06)
 
 ## 📝 Recent Commits
-- `68115e2a` Complete CodeQL security fix for PR #5247 with compliance updates — copilot-swe-agent[bot] (2026-07-06)
-- `0fee1d7b` docs: update accountability report and changelog for CodeQL security fix — copilot-swe-agent[bot] (2026-07-06)
-- `cc74a48b` fix(security): remove sensitive data logging in secrets detection script — copilot-swe-agent[bot] (2026-07-06)
-- `4319388f` fix: Remove 6 unused variables and imports from PR #5247 — copilot-swe-agent[bot] (2026-07-06)
-- `7a5b95d1` fix: Remove unused imports and fix GitHub Actions mutable action tags in PR #524 — copilot-swe-agent[bot] (2026-07-06)
-- `6faa73c1` Fix: Address 13 unresolved PR #5247 review comments with explicit resolving comm — copilot-swe-agent[bot] (2026-07-06)
-- `92f9ac7a` fix: resolve PR #5247 review comments (Phase 1-3) — copilot-swe-agent[bot] (2026-07-06)
-- `acbd4761` chore: plan fixes for PR #5247 review comments — copilot-swe-agent[bot] (2026-07-06)
+- `933a375a` fix(ci): tracking stub for RAG Module Tests [skip ci] — github-actions[bot] (2026-07-06)
+- `6b8603d7` docs: update Phase 8.2 triage dashboard [skip ci] — github-actions[bot] (2026-07-06)
+- `3409b396` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-07-06)
+- `0375a259` Merge pull request #5247 from Aries-Serpent/copilot/phase-13-post-merge-implemen — Statix (2026-07-06)
+- `7a437241` fix: suppress Semgrep safe-module-validation false positives in cache deletion p — copilot-swe-agent[bot] (2026-07-06)
+- `df1311ba` fix: configure actionlint to recognize custom repository secrets — copilot-swe-agent[bot] (2026-07-06)
+- `6e33283c` fix: resolve CI failures - Python syntax, secrets baseline, bandit format, linti — copilot-swe-agent[bot] (2026-07-06)
+- `e9df0c51` plan: initialize CI fix session for PR #5247 - address 15 failing checks — copilot-swe-agent[bot] (2026-07-06)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
