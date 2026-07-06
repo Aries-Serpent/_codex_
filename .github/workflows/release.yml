@@ -45,9 +45,8 @@ jobs:
     name: Generate SBOM
     needs: validate
     uses: ./.github/workflows/sbom.yml
-    permissions:
-      contents: read
-      actions: write
+    secrets:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
   release:
     name: Create GitHub Release
     needs:

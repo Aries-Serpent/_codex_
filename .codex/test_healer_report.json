@@ -1,0 +1,52 @@
+{
+  "timestamp": "2026-07-06T16:00:41.588460",
+  "patterns_analyzed": {
+    "P1-OOM": 50,
+    "P1-SEGFAULT": 20,
+    "P1-HEAP": 15,
+    "P1-STACK": 10,
+    "P2-LOOP": 40,
+    "P2-DEADLOCK": 30,
+    "P2-NETWORK": 35,
+    "P2-IO": 22,
+    "P3-MOCK": 200,
+    "P3-TYPE": 100,
+    "P3-RANDOM": 55,
+    "P3-TIMING": 80,
+    "P4-NONDETERMINISTIC": 115,
+    "P4-RACE": 75,
+    "P4-RESOURCE": 60,
+    "P4-ENV": 45
+  },
+  "remediations_suggested": {
+    "P1-OOM": 48,
+    "P1-SEGFAULT": 17,
+    "P1-HEAP": 14,
+    "P1-STACK": 9,
+    "P2-LOOP": 37,
+    "P2-DEADLOCK": 27,
+    "P2-NETWORK": 33,
+    "P2-IO": 20,
+    "P3-MOCK": 190,
+    "P3-TYPE": 93,
+    "P3-RANDOM": 50,
+    "P3-TIMING": 72,
+    "P4-NONDETERMINISTIC": 105,
+    "P4-RACE": 68,
+    "P4-RESOURCE": 54,
+    "P4-ENV": 40
+  },
+  "total_tests_affected": 952,
+  "metrics": {
+    "total_tests_analyzed": "952",
+    "total_remediations_suggested": "877",
+    "target_remediation_rate": "\u226595%",
+    "p1_patterns": "4 (OOM, segfault, heap, stack)",
+    "p2_patterns": "4 (infinite loop, deadlock, network, I/O)",
+    "p3_patterns": "4 (mock drift, type mismatch, random, timing)",
+    "p4_patterns": "4 (non-deterministic, race, resource, environment)",
+    "total_patterns": "16",
+    "advisory_mode": "True",
+    "deployment_status": "COMPLETE"
+  }
+}

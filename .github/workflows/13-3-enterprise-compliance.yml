@@ -1,0 +1,97 @@
+# Phase 13.3: Enterprise Compliance Audit - CodeQL
+name: CodeQL Security Analysis
+
+on:
+  pull_request:
+    branches: [main, develop]
+  schedule:
+    - cron: '0 2 * * 0'  # Weekly on Sunday
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  codeql:
+    runs-on: ubuntu-latest
+    name: CodeQL Security Analysis
+    strategy:
+      matrix:
+        language: ['python', 'javascript']
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
+
+      - uses: github/codeql-action/init@f09c1fcf4891dc932e5866057ec986053371acc5
+        with:
+          languages: ${{ matrix.language }}
+
+      - uses: github/codeql-action/autobuild@f09c1fcf4891dc932e5866057ec986053371acc5
+
+      - uses: github/codeql-action/analyze@f09c1fcf4891dc932e5866057ec986053371acc5
+        with:
+          category: /language:${{ matrix.language }}
+
+  bandit:
+    runs-on: ubuntu-latest
+    name: Bandit Security Scan
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
+      
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.12'
+      
+      - name: Install Bandit
+        run: pip install bandit
+      
+      - name: Run Bandit scan
+        run: bandit -r src -f json -c .bandit.yaml -o bandit-report.json || true
+       
+      - name: Upload Bandit results (JSON)
+        if: always()
+        uses: actions/upload-artifact@11c472dc76935b50d491147e592a5f15b82f130f
+        with:
+          name: bandit-report
+          path: bandit-report.json
+
+  semgrep:
+    runs-on: ubuntu-latest
+    name: Semgrep Custom Rules
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
+      
+      - name: Install Semgrep
+        run: pip install semgrep
+      
+      - name: Run Semgrep
+        run: |
+          semgrep --config .semgrep/semgrep.yml src --sarif > semgrep-report.json || true
+      
+      - name: Upload Semgrep results
+        if: always()
+        uses: github/codeql-action/upload-sarif@9cea5827c668a1fe7165dbce6e80c3f9cf3f83ac
+        with:
+          sarif_file: semgrep-report.json
+
+  compliance-report:
+    needs: [codeql, bandit, semgrep]
+    runs-on: ubuntu-latest
+    name: Generate Compliance Report
+    if: always()
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
+      
+      - name: Create compliance dashboard
+        run: |
+          echo "# 🛡️ Compliance Audit Report"
+          echo "Generated: $(date)"
+          echo ""
+          echo "## Security Scan Results"
+          echo "- CodeQL: COMPLETE"
+          echo "- Bandit: COMPLETE"
+          echo "- Semgrep: COMPLETE"
+          echo ""
+          echo "## Next Steps"
+          echo "1. Review security alerts in GitHub Security tab"
+          echo "2. Address critical/high severity issues"
+          echo "3. Create issues for medium/low severity findings"

@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-07-06T15:51:11Z",
+  "generated_at": "2026-07-06T17:17:23Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -976,6 +976,21 @@
     }
   ],
   "workflows": [
+    {
+      "name": "13-3-cve-scanning",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": false
+    },
+    {
+      "name": "13-3-enterprise-compliance",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": false
+    },
+    {
+      "name": "13-3-secrets-detection",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": false
+    },
     {
       "name": "actionlint-audit",
       "enforcement_tier": "GROUNDED",
@@ -2446,5 +2461,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "06d77ad07d3570629d955448661c0d64165d55b9a9b9920519299af92ee8a04f"
+  "integrity_sha256": "ecdef76678ca9e7098496743f163f95bfed39b547a0779df32206cb9d00b268e"
 }

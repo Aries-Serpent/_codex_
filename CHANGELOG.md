@@ -1,5 +1,53 @@
 ## [Unreleased]
 
+### Fixed (2026-07-06T20:11Z)
+- Security: Removed sensitive data logging in `scripts/ci/phase_13_3_secrets_detection.py` — changed from logging individual entropy/severity per finding to aggregated counts only (fixes CodeQL CWE-312: Clear Text Logging)
+
+### Fixed (auto-update — PR #5247)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5247 (SHA `c5bb58c8`) at 2026-07-06T18:21Z [auto-generated]
+
+### PR #5247 CodeQL/Semgrep Remediation — Review #4638377415 (2026-07-06T17:45Z)
+
+#### Security
+- Replace MD5 with SHA-256 for cache key hashing in `src/codex/cache/request_cache.py:262` (CWE-327, Semgrep insecure-hash-algorithm-md5)
+- Add nosemgrep documentation for trusted `pickle.dumps` path in `src/codex/cache/session_cache_l2.py:138`
+- Upgrade `github/codeql-action/*@v3` → `@v4` in `13-3-enterprise-compliance.yml` (3 actions)
+- Replace `github/codeql-action/upload-sarif@v2` with SHA-pinned ref `@9cea5827` in `13-3-enterprise-compliance.yml` (2 usages)
+- Add `# nosemgrep: yaml.github-actions.security.github-actions-mutable-action-tag` comments to approved standard actions across `13-3-*.yml` workflows (suppress false positives for repo-policy-approved versions)
+
+
+
+#### Security
+- Replace MD5 with SHA-256 for hashing sensitive user identity/authorization data in `src/codex/cache/middleware.py` (CWE-327)
+- Remove clear-text logging of secret file paths in `scripts/ci/phase_13_3_secrets_detection.py` (CWE-312)
+- Update embedded workflow action versions to `actions/checkout@v5` and `actions/github-script@v8`
+
+#### Fixed
+- Remove unused imports (`Optional`, `asdict`) from `scripts/ci/autonomous_test_healer_orchestrator.py`
+- Replace `exit()` with `sys.exit()` in `autonomous_test_healer_orchestrator.py` entrypoint
+- Remove unused imports (`subprocess`, `asdict`) from `scripts/ci/autonomous_test_healer_p1.py`
+- Remove unused import (`Set`) from `scripts/ci/autonomous_test_healer_p4.py`
+- Fix empty except clause in `src/codex/rag/materialization_prevention.py` with debug logging
+- Fix empty except clause in `tests/rag/test_meta_tensor_stress.py` with explanatory comment
+- Fix assert-with-side-effect in `tests/cache_test.py` `test_delete`
+- Fix redundant comparison in `tests/cache_test.py` `test_decorator`
+
+---
+
+### Phase 13 Post-Merge: Branch Re-alignment with Main (2026-07-06T17:11Z)
+
+#### Fixed
+- Branch re-aligned with main: merged 24 missing commits (Dependabot deps, manifest refreshes, secrets baseline, triage dashboard updates)
+- Branch now 0 commits behind main, 19 commits ahead — ready for PR to main
+- REQ-4/REQ-5 compliance maintained throughout merge
+
+#### Summary
+- Agent: Copilot Coding Agent
+- Session: 2026-07-06T17:11Z branch alignment
+- Action: `git merge origin/main` — clean merge, 18 files updated, no conflicts
+
+---
+
 ### Phase 13 AUTO-GO CONTINUE: Ready Phase Execution & Branch Alignment (2026-07-06T07:22Z)
 
 #### Added
@@ -15044,4 +15092,5 @@ Completed TIER 1 semantic routing quality validation for multi-agent orchestrati
 - **Impact:** Resolves 0% release workflow success rate (CRITICAL regression detected in Phase 12 Wave 1)
 - **Root Cause:** GitHub Actions version enforcement policy requires v5, not v7
 - **Status:** BLOCKING ISSUE RESOLVED - Release workflow can now execute successfully
+
 
