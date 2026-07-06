@@ -12,19 +12,16 @@ This module is part of Phase 13.2: RAG Meta-Tensor Safety
 
 import pytest
 from datetime import datetime, UTC
-from unittest.mock import Mock, MagicMock, patch
 
 from codex.rag.meta_tensor_guard import (
     GuardRailStatus,
     MetaTensorException,
-    OOMException,
     GuardRailReport,
     MetaTensorGuardRail,
     guard_rail_context,
     verify_model_integrity,
 )
 from codex.rag.materialization_prevention import (
-    MaterializationStrategy,
     TensorLocation,
     MaterializationEvent,
     MaterializationMonitor,

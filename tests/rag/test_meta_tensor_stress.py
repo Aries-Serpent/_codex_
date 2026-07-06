@@ -9,7 +9,6 @@ This module is part of Phase 13.2: RAG Meta-Tensor Safety
 
 import gc
 import logging
-import os
 import sys
 import time
 from dataclasses import dataclass

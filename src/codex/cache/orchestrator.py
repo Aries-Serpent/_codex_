@@ -17,7 +17,6 @@ Provides:
 from __future__ import annotations
 
 import logging
-import time
 from typing import Any, Optional
 
 from .knowledge_cache_l3 import L3KnowledgeCache, get_l3_cache

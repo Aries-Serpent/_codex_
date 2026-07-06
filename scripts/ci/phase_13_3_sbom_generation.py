@@ -25,9 +25,8 @@ import json
 import logging
 import subprocess
 import sys
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
 from datetime import datetime
 import xml.etree.ElementTree as ET
 
