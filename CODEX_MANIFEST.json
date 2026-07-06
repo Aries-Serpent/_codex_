@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-07-04T19:25:52Z",
+  "generated_at": "2026-07-06T01:43:44Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1559,7 +1559,7 @@
     {
       "name": "manifest-drift-guard",
       "enforcement_tier": "PARTIAL",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "maturity-check",
@@ -1844,7 +1844,7 @@
     {
       "name": "rust-ffi",
       "enforcement_tier": "SOFT",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "rust_swarm_ci",
@@ -2446,5 +2446,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "af37f57bb947e06e0b7f506c65a04a4062dee2a659cf15254d586b2e20330298"
+  "integrity_sha256": "1358fe058d3c7cb4f3f7ef6e547851f875bf82dde34d37654107a84429c5e453"
 }
