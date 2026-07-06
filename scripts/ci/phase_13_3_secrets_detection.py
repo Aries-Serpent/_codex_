@@ -146,11 +146,11 @@ def scan_current_tree_for_secrets(max_files: int = 1000) -> SecretDetectionResul
     logger.info(f"   - High-entropy findings: {len(high_entropy_secrets)}")
     logger.info(f"   - Scan duration: {elapsed:.1f}s")
     
-    # Log high-entropy findings (file paths are not logged to avoid exposing secret locations)
+    # Log summary of high-entropy findings (individual findings not logged to avoid exposing sensitive data)
     if high_entropy_secrets:
-        logger.warning(f"⚠️  Found {len(high_entropy_secrets)} high-entropy anomalies:")
-        for finding in high_entropy_secrets[:5]:  # Show first 5
-            logger.warning(f"   entropy={finding['entropy']:.2f} severity={finding['severity']}")
+        high_count = len([f for f in high_entropy_secrets if f['severity'] == 'HIGH'])
+        medium_count = len([f for f in high_entropy_secrets if f['severity'] == 'MEDIUM'])
+        logger.warning(f"⚠️  Found {len(high_entropy_secrets)} high-entropy anomalies: {high_count} HIGH, {medium_count} MEDIUM")
     
     return SecretDetectionResult(
         total_scanned=scanned_count,
