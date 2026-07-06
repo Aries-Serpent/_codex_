@@ -28,6 +28,7 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
+        cache: 'pip'
     - name: Run promotion readiness gate
       id: gate
       run: "python scripts/ci/promotion_readiness_gate.py \\\n  --json-out .codex/promotion-readiness-report.json\n\

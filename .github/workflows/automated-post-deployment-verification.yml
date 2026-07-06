@@ -87,6 +87,7 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: '3.12'
+        cache: 'pip'
     - name: Run Health Checks
       id: health
       run: "mkdir -p ${{ env.VERIFICATION_DIR }}\n\nSERVICE_URL=\"${{ needs.setup.outputs.service_url\
@@ -122,6 +123,7 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: '3.12'
+        cache: 'pip'
     - name: Run Smoke Tests
       id: smoke
       continue-on-error: true
@@ -157,6 +159,7 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: '3.12'
+        cache: 'pip'
     - name: Run Critical Path Tests
       id: critical
       continue-on-error: true

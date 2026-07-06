@@ -49,6 +49,7 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: ${{ env.PYTHON_VERSION }}
+        cache: 'pip'
     - name: Install PyYAML (required by setup-python-cached)
       run: pip install pyyaml --quiet
     - name: CacheManager health check

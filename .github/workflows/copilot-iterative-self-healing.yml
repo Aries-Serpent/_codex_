@@ -92,6 +92,7 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
+        cache: 'pip'
     - name: "\U0001F50B Rate-limit pre-check (Pattern A)"
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token

@@ -77,6 +77,7 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: '3.12'
+        cache: 'pip'
     - name: Run cross-reference checker
       id: crossref
       run: "python3 .github/scripts/check-cross-references.py \\\n  --repo-root=\"\
@@ -112,6 +113,7 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: '3.12'
+        cache: 'pip'
     - name: Validate heading hierarchy
       id: heading
       run: "python3 - << 'EOF'\nimport re\nfrom pathlib import Path\n\ndef validate_heading_hierarchy(file_path):\n\
