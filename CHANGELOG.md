@@ -40,6 +40,16 @@ Phase 13 merge authority gates on Track 12.3 (Workflow Health Monitor) re-valida
 - Gate criteria: ≥95% release workflow success rate
 - Expected clearance: 2026-07-06T06:15Z-06:45Z
 
+#### Authorization (Formalized 2026-07-06T05:53Z)
+- ✅ @mbaetiong grants standing approval for all Phase 13 plans
+- ✅ @mbaetiong grants standing approval for all agent-decided plans
+- ✅ @mbaetiong grants standing approval for all agent actions
+- ✅ @mbaetiong grants standing approval for auto-approval tied workflows
+- **D-Mode Parallel Execution:** All advisory-phase agents authorized to proceed simultaneously without manual gating
+- **Gate Decisions:** Gates trigger AUTO-GO CONTINUE when success criteria met (no additional approval required)
+- **Parallel Deployment:** Tracks 13.1, 13.2, 13.3, 13.4 executing concurrently; Track 12.3 monitoring running in parallel
+- **Expected Gate 5 Decision:** 2026-07-06T06:15Z-06:45Z (Track 12.3 clearance determines full execution authority)
+
 #### Authorization
 - Campaign Authority: @mbaetiong (D-tier autonomous)
 - Standing Directive: GO-CONTINUE for all gates
