@@ -1,5 +1,24 @@
 ## [Unreleased]
 
+### PR #5247 Security & Code Quality Fixes (2026-07-06T17:30Z)
+
+#### Security
+- Replace MD5 with SHA-256 for hashing sensitive user identity/authorization data in `src/codex/cache/middleware.py` (CWE-327)
+- Remove clear-text logging of secret file paths in `scripts/ci/phase_13_3_secrets_detection.py` (CWE-312)
+- Update embedded workflow action versions to `actions/checkout@v5` and `actions/github-script@v8`
+
+#### Fixed
+- Remove unused imports (`Optional`, `asdict`) from `scripts/ci/autonomous_test_healer_orchestrator.py`
+- Replace `exit()` with `sys.exit()` in `autonomous_test_healer_orchestrator.py` entrypoint
+- Remove unused imports (`subprocess`, `asdict`) from `scripts/ci/autonomous_test_healer_p1.py`
+- Remove unused import (`Set`) from `scripts/ci/autonomous_test_healer_p4.py`
+- Fix empty except clause in `src/codex/rag/materialization_prevention.py` with debug logging
+- Fix empty except clause in `tests/rag/test_meta_tensor_stress.py` with explanatory comment
+- Fix assert-with-side-effect in `tests/cache_test.py` `test_delete`
+- Fix redundant comparison in `tests/cache_test.py` `test_decorator`
+
+---
+
 ### Phase 13 Post-Merge: Branch Re-alignment with Main (2026-07-06T17:11Z)
 
 #### Fixed

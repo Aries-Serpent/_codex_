@@ -23,8 +23,8 @@ Authority: @mbaetiong (D-Tier autonomous)
 import json
 import logging
 from pathlib import Path
-from typing import Dict, List, Optional
-from dataclasses import dataclass, asdict
+from typing import Dict, List
+from dataclasses import dataclass
 from datetime import datetime
 import sys
 
@@ -358,4 +358,4 @@ def main():
 
 
 if __name__ == "__main__":
-    exit(main())
+    sys.exit(main())

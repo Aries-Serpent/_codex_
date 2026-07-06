@@ -154,7 +154,8 @@ class MetaTensorStressTest:
                     for i in range(10):
                         test_tensors.append(b"x" * 1024 * 1024)  # 1MB each
                 except MemoryError:
-                    pass
+                    # MemoryError is expected under simulated pressure; continue test execution
+                    logger.debug("MemoryError encountered during stress simulation (expected)")
 
                 # Check OOM detection still works
                 oom_report = guard.check_oom_condition()

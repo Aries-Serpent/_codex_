@@ -235,8 +235,9 @@ class MatTensorDetector:
                 except (RuntimeError, TypeError):
                     return True
 
-        except Exception:
-            pass
+        except Exception as e:
+            # Unexpected error during meta-tensor detection; treat as non-meta and continue
+            logger.debug("Meta-tensor check failed for %r: %s", type(tensor).__name__, e)
 
         return False
 

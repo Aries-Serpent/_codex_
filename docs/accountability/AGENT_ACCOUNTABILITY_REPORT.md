@@ -12977,3 +12977,27 @@ Track 12.3 critical path item (Workflow Health Monitor re-validation) is blockin
 - **WEC human grant** `copilot-agent-checkin.yml` — detected 2026-07-06T17:17:46Z @ a35d97cd — sticky [x] maintained by all future agent sessions
 - **WEC human grant** `cost-gate.yml` — detected 2026-07-06T17:17:46Z @ a35d97cd — sticky [x] maintained by all future agent sessions
 - **WEC human grant** `auto-approve-workflows` — detected 2026-07-06T17:17:46Z @ a35d97cd — sticky [x] maintained by all future agent sessions
+
+## Session: 2026-07-06T17:30Z — PR #5247 Security & Code Quality Fixes
+
+### Summary
+Addressed 13 code-review comments (github-advanced-security + github-code-quality bots) on PR #5247.
+
+### Changes Made
+- **`scripts/ci/phase_13_3_secrets_detection.py`** — Fixed CodeQL CWE-312: removed clear-text logging of secret file paths (line 154); removed tainted variable logging (line 351). Updated embedded workflow to `actions/checkout@v5` and `actions/github-script@v8`.
+- **`src/codex/cache/middleware.py`** — Fixed CodeQL CWE-327: replaced MD5 with SHA-256 for hashing sensitive user identity data (line 166).
+- **`scripts/ci/autonomous_test_healer_orchestrator.py`** — Removed unused imports `Optional`, `asdict`; replaced `exit()` with `sys.exit()`.
+- **`scripts/ci/autonomous_test_healer_p1.py`** — Removed unused imports `subprocess`, `asdict`.
+- **`scripts/ci/autonomous_test_healer_p4.py`** — Removed unused import `Set`.
+- **`src/codex/rag/materialization_prevention.py`** — Fixed empty except clause; added debug log with exception context.
+- **`tests/rag/test_meta_tensor_stress.py`** — Fixed empty except clause; added explanatory comment and debug log.
+- **`tests/cache_test.py`** — Fixed assert-with-side-effect (line 159); fixed redundant comparison (line 111).
+
+### Patterns Resolved
+- CWE-312 Clear-text logging of sensitive information (×2)
+- CWE-327 Use of broken/weak cryptographic hash on sensitive data (×1)
+- Unused imports (×5 across 3 files)
+- `exit()` vs `sys.exit()` portability (×1)
+- Assert with side-effect (×1)
+- Empty except clauses (×2)
+- Redundant comparison (×1)

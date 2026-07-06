@@ -162,8 +162,8 @@ class CacheInstrumentationMiddleware(BaseHTTPMiddleware):
             key_parts.append(user_header)
 
         key_str = ":".join(key_parts)
-        # Create hash to keep key size reasonable
-        cache_key = f"request:{hashlib.md5(key_str.encode()).hexdigest()}"
+        # Create hash to keep key size reasonable (SHA-256 used for security)
+        cache_key = f"request:{hashlib.sha256(key_str.encode()).hexdigest()}"
 
         return cache_key
 

@@ -147,11 +147,11 @@ def scan_current_tree_for_secrets(max_files: int = 1000) -> SecretDetectionResul
     logger.info(f"   - High-entropy findings: {len(high_entropy_secrets)}")
     logger.info(f"   - Scan duration: {elapsed:.1f}s")
     
-    # Log high-entropy findings
+    # Log high-entropy findings (file paths are not logged to avoid exposing secret locations)
     if high_entropy_secrets:
         logger.warning(f"⚠️  Found {len(high_entropy_secrets)} high-entropy anomalies:")
         for finding in high_entropy_secrets[:5]:  # Show first 5
-            logger.warning(f"   {finding['file']}: entropy={finding['entropy']:.2f}")
+            logger.warning(f"   entropy={finding['entropy']:.2f} severity={finding['severity']}")
     
     return SecretDetectionResult(
         total_scanned=scanned_count,
@@ -223,7 +223,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Detect & Block Secrets
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -239,7 +239,7 @@ jobs:
 
       - name: Block merge on high-entropy findings
         if: failure()
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             github.rest.pulls.createReview({
@@ -252,7 +252,7 @@ jobs:
 
       - name: Create security alert
         if: failure()
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             github.rest.issues.createComment({
@@ -348,7 +348,7 @@ def main():
     logger.info(f"✅ Configuration validated")
     logger.info(f"✅ Workspace scanned: {scan_result.total_scanned} files")
     logger.info(f"✅ High-entropy findings: {scan_result.high_entropy_finds}")
-    logger.info(f"✅ Remediation workflow deployed: {workflow_deployed}")
+    logger.info(f"✅ Remediation workflow deployed: {'yes' if workflow_deployed else 'no'}")
     logger.info(f"✅ Git history audit complete: {len(history_audit)} patterns checked")
     
     logger.info("\n✅ Phase 13.3.1 COMPLETE")
