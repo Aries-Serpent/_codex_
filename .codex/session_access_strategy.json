@@ -1,23 +1,19 @@
 {
-  "generated_at": "2026-07-06T00:03:52.293053+00:00",
+  "generated_at": "2026-07-06T00:18:19.938883+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 4969,
+  "rest_remaining": 4972,
   "graphql_available": true,
-  "graphql_remaining": 4999,
+  "graphql_remaining": 5000,
   "gh_cli_available": true,
   "codeql_available": false,
-  "best_token_var": "GITHUB_TOKEN",
+  "best_token_var": "CODEX_MASTER_KEY",
   "open_prs": [
-    5231,
-    5229,
-    5228,
-    5226,
-    5224
+    5231
   ],
   "branch": "copilot/implement-rust-core-python-shell-orchestration",
   "recommendation": "Use REST for data fetches. "
