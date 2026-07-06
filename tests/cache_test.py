@@ -106,9 +106,9 @@ class TestL1RequestCache:
         assert call_count == 1
 
         # Second call should be cached
+        before_second_call = call_count
         result2 = expensive_func(5)
         assert result2 == 10
-        before_second_call = call_count
         assert call_count == before_second_call  # Not incremented
 
 
