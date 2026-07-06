@@ -8,9 +8,10 @@ Tests ensure that:
 3. Code injection via unsafe __import__ is prevented (validate_test_env.py)
 """
 
-import pytest
 from pathlib import Path
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
+
+import pytest
 
 
 # ==============================================================================

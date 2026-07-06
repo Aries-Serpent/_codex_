@@ -6,13 +6,12 @@ Phase 12 Wave 2 - D3.2 Deliverable
 Tests the complete telemetry collection pipeline, SLA monitoring, and alert generation.
 """
 
-import pytest
+import sys
 from datetime import datetime, timezone
+from pathlib import Path
 from unittest.mock import patch
 
-# Import modules to test
-import sys
-from pathlib import Path
+import pytest
 
 # Add scripts/observability to path
 sys.path.insert(0, str(Path(__file__).parent))
