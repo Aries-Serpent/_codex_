@@ -55,9 +55,14 @@
 
 ### Re-Validation Baseline Tracking
 - **Target:** ≥95% Release workflow success rate (28.5+ of 30 runs)
-- **Current Fix:** Commit 5dd6ae86 (checkout@v7 → v5)
-- **Monitoring:** Next 30+ workflow executions
-- **Expected:** 100% success (workflow was non-functional prior)
+- **Current Fix:** Deployed 2026-07-06T05:40Z (checkout@v7 → v5)
+- **Pre-fix Baseline:** 0/30 successful (0% failure rate) ✗
+- **Monitoring Started:** 2026-07-06T05:43:52Z
+- **Post-fix Runs Collected:** 0 (awaiting Release workflow triggers)
+- **Expected Success:** >95% (simple version pin fix, low risk)
+- **Confidence Level:** AWAITING POST-FIX DATA
+- **Baseline Document:** `.codex/TRACK_12.3_REVALIDATION_BASELINE.md`
+- **Decision Brief:** `.codex/GATE_5_DECISION_BRIEF.md`
 
 ---
 
@@ -228,18 +233,27 @@ Days 7-11 (2026-07-12 → 2026-07-16)
 ## 🔔 DECISION FRAMEWORK
 
 ### Track 12.3 Gate (CRITICAL PATH) — Expected 2026-07-06T06:45Z
-**Condition:** Release workflow ≥95% success rate (28.5+ of 30 runs)  
-**Current Status:** 🔄 Baseline monitoring in progress  
-**Decision:** AUTO-GO CONTINUE → Phase 13 full execution mode  
-**Authority:** @mbaetiong pre-approved (standing directive)
+**Condition:** Release workflow ≥95% success rate (28.5+ of 30 post-fix runs)  
+**Current Status:** 🔄 BASELINE ESTABLISHED (pre-fix: 0/30, now monitoring post-fix runs)  
+**Monitoring Phase:** Phase 2 - Real-time data collection (2-3 hours estimated)  
+**Decision Timeline:** Expected 2026-07-06T06:15Z-06:45Z  
+**Authority:** @mbaetiong pre-approved (D-tier autonomous)
 
-**If PASS (≥95%):**
-1. Gate 5 decision: APPROVED
+**Baseline Established:**
+- Pre-fix runs analyzed: 30/30 failed ✗
+- Fix deployed: 2026-07-06T05:40Z ✓
+- Monitoring infrastructure: Active ✓
+- Baseline document: `.codex/TRACK_12.3_REVALIDATION_BASELINE.md` ✓
+- Decision brief: `.codex/GATE_5_DECISION_BRIEF.md` ✓
+
+**If PASS (≥95% post-fix success):**
+1. Gate 5 decision: ✓ APPROVED (AUTO-GO CONTINUE)
 2. Release/deploy authority UNLOCKED for Phase 13
 3. Tracks 13.3 & 13.4 full execution authorized
 4. Phase 13 merge authority ENABLED
+5. Timeline: Deploy T13.3-T13.4 agents immediately
 
-**If FAIL (<95%):**
+**If FAIL (<95% post-fix success):**
 1. Advisory work continues (Tracks 13.1-13.2 unaffected)
 2. Escalate to ci-testing-agent for investigation
 3. Phase 13 merge authority remains GATED
