@@ -1,3 +1,7 @@
+## [2026-07-06] — Timestamp format fix (PR #5232)
+
+- fix: Normalize UTC timestamps from `+00:00` offset form to `Z` suffix in `.codex/repository_health/offload_candidates.json` and `.codex/action_log.ndjson` for consistency with codebase standard
+
 ## [Unreleased]
 
 ### 🔄 Session 3: Phase 9.3 CI Remediation & Track 2 Activation Prep (2026-07-03T19:43Z onwards)
