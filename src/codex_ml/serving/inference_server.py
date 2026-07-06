@@ -7,7 +7,7 @@ import os
 import secrets
 import time
 from collections import defaultdict
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Optional
 
@@ -203,6 +203,28 @@ class ModelConfig:
             "model_type": self.model_type,
             "model_path": self.model_path,
             "device": self.device,
+        }
+
+
+@dataclass
+class ServerConfig:
+    """Configuration for inference server host and port."""
+
+    host: str = field(default_factory=lambda: os.environ.get("CODEX_INFERENCE_SERVICE_HOST", "127.0.0.1"))
+    port: int = field(default_factory=lambda: int(os.environ.get("CODEX_INFERENCE_SERVICE_PORT", "8000")))
+
+    @classmethod
+    def from_env(cls) -> ServerConfig:
+        """Create server config from environment variables."""
+        return cls(
+            host=os.environ.get("CODEX_INFERENCE_SERVICE_HOST", "127.0.0.1"),
+            port=int(os.environ.get("CODEX_INFERENCE_SERVICE_PORT", "8000")),
+        )
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "host": self.host,
+            "port": self.port,
         }
 
 

@@ -25,6 +25,7 @@ from .inference_server import (
     ModelLoadError,
     ModelServer,
     RateLimiter,
+    ServerConfig,
     create_app,
 )
 
@@ -43,5 +44,6 @@ __all__ = [
     "ModelLoader",
     "ModelServer",
     "RateLimiter",
+    "ServerConfig",
     "create_app",
 ]
