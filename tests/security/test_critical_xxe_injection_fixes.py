@@ -13,6 +13,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
+
 # ==============================================================================
 # TEST 1: Command Injection - validate_codex_master_key_implementation.py
 # ==============================================================================
@@ -198,6 +199,7 @@ class TestValidateTestEnvCodeInjection:
         import sys
         sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts"))
         
+        from validate_test_env import ALLOWED_PLUGINS
         
         # Check that core pytest plugins are in whitelist
         expected_plugins = [

@@ -196,7 +196,7 @@ Git commits/files
 ┌─────────────────────────────────────────┐
 │  PHASE 13.3 SECURITY PIPELINE          │
 ├─────────────────────────────────────────┤
-│  1. Secrets Detection                  │ ← Entropy + patterns  # pragma: allowlist secret
+│  1. Secrets Detection                  │ ← Entropy + patterns
 │     ↓ Remediation ↓ Verification       │
 ├─────────────────────────────────────────┤
 │  2. CVE Scanning                       │ ← pip-audit + GitHub Adv
@@ -250,7 +250,7 @@ Executive Dashboard
 
 | Metric | Target | Baseline |
 |--------|--------|----------|
-| Undetected secrets | 0 | TBD | <!-- pragma: allowlist secret -->
+| Undetected secrets | 0 | TBD |
 | Detection accuracy | 100% | TBD |
 | False positive rate | <2% | TBD |
 | Detection-to-remediation lag | <1 hour | TBD |
@@ -335,7 +335,7 @@ Upon Track 12.3 clearance, parallel deployment of:
 
 | Document | Pages | Purpose |
 |----------|-------|---------|
-| `PHASE_13_TRACK_13.3_SECRETS_DESIGN.md` | 24 | Secrets system architecture | <!-- pragma: allowlist secret -->
+| `PHASE_13_TRACK_13.3_SECRETS_DESIGN.md` | 24 | Secrets system architecture |
 | `PHASE_13_TRACK_13.3_CVE_DESIGN.md` | 22 | CVE scanning framework |
 | `PHASE_13_TRACK_13.3_SBOM_DESIGN.md` | 24 | SBOM generation pipeline |
 | `PHASE_13_TRACK_13.3_COMPLIANCE_DESIGN.md` | 23 | Compliance audit suite |

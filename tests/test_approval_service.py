@@ -19,9 +19,9 @@ Test Plan:
 - Scenario 13: Post-auto-approval governance audit ticket created
 """
 
-import logging
 import sys
 import time
+import logging
 
 # Set up path
 sys.path.insert(0, '/home/runner/work/_codex_/_codex_')
@@ -29,8 +29,8 @@ sys.path.insert(0, '/home/runner/work/_codex_/_codex_')
 from src.codex.governance.approval_service import (
     ApprovalService,
     ApprovalState,
-    AuditCode,
     SLAPolicy,
+    AuditCode,
 )
 
 

@@ -26,6 +26,7 @@ from enum import Enum
 from functools import wraps
 from typing import Any, Optional
 
+
 from ..security_utils import sanitize_log_message
 from .token_manager import TokenClaims, TokenManager
 

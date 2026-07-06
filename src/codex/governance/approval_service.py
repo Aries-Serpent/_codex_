@@ -12,15 +12,15 @@ import time
 import uuid
 from dataclasses import dataclass, field
 from enum import Enum
+from threading import Lock
+from typing import Any, Dict, List, Optional, Tuple
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 try:
-    from scripts.governance.rbac_engine import Action, ResourceType, get_default_engine
+    from scripts.governance.rbac_engine import get_default_engine, Action, ResourceType
 except ImportError:
     pass
 
-from threading import Lock
-from typing import Any, Dict, List, Optional, Tuple
 
 # ==================== ENUMS ====================
 

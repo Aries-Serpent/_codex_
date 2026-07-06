@@ -135,8 +135,8 @@ safety check --db insecure.json
 **API Integration**:
 ```python
 class GitHubAdvisoryScanner:
-    def __init__(self, token: str):  # pragma: allowlist secret
-        self.token = token  # pragma: allowlist secret
+    def __init__(self, token: str):
+        self.token = token
         self.api_url = "https://api.github.com/graphql"
     
     async def scan(self, package: str, version: str) -> list[dict]:
@@ -188,8 +188,8 @@ class GitHubAdvisoryScanner:
 **Integration**:
 ```python
 class SnykScanner:
-    def __init__(self, api_key: str):  # pragma: allowlist secret
-        self.api_key = api_key  # pragma: allowlist secret
+    def __init__(self, api_key: str):
+        self.api_key = api_key
         self.api_url = "https://api.snyk.io/v1"
     
     async def scan_project(self, manifest_file: str) -> dict:
@@ -216,7 +216,7 @@ class DependencyVulnerabilityScanner:
         self.pip_auditor = PipAuditScanner()
         self.safety_checker = SafetyScanner()
         self.github_scanner = GitHubAdvisoryScanner()
-        self.snyk_scanner = SnykScanner(os.getenv("SNYK_API_KEY"))  # pragma: allowlist secret
+        self.snyk_scanner = SnykScanner(os.getenv("SNYK_API_KEY"))
     
     async def scan_all(self) -> dict:
         """Run all scanners and consolidate results."""
@@ -485,7 +485,7 @@ class CompatibilityAnalyzer:
             "breaking_changes": await self._detect_breaking_changes(package, new_version),
             "dependency_conflicts": await self._check_dependency_conflicts(package, new_version),
             "test_coverage": await self._assess_test_coverage(package, new_version),
-            "risk_assessment": "LOW" if all([  # pragma: allowlist secret
+            "risk_assessment": "LOW" if all([
                 not self._has_breaking_changes(breaking_changes),
                 not self._has_conflicts(dependency_conflicts),
                 self._has_good_coverage(test_coverage)

@@ -314,7 +314,7 @@ codex_cache_l3_hits_total
 codex_cache_l3_misses_total
 codex_cache_l3_hit_rate
 codex_cache_l3_latency_ms{quantile="0.95,0.99"}
-codex_cache_l3_disk_usage_bytes  # pragma: allowlist secret
+codex_cache_l3_disk_usage_bytes
 codex_cache_l3_compaction_duration_ms
 ```
 

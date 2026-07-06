@@ -32,7 +32,7 @@ All Phase 4 security and governance objectives have been **successfully complete
 |---|-----------|--------|---------|
 | 1 | CVE scan torch/transformers/datasets [runtime] | ✅ PASS | 0 vulnerabilities found |
 | 2 | Verify pinned versions in uv.lock | ✅ PASS | 881.5 KB, fully pinned |
-| 3 | detect-secrets on modified files | ✅ PASS | 0 new credentials | <!-- pragma: allowlist secret -->
+| 3 | detect-secrets on modified files | ✅ PASS | 0 new credentials |
 | 4 | Validate no credentials committed | ✅ PASS | Manual pattern scan: clean |
 | 5 | Confirm external host allowlist | ✅ PASS | 4 hosts configured |
 | 6 | Verify network policy enforcement | ✅ PASS | PolicyViolationError active |

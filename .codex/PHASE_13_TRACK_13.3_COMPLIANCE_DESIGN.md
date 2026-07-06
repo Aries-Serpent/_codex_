@@ -164,12 +164,12 @@ class PCIDSSPolicy:
     async def _check_data_protection(self) -> dict:
         """Verify data is properly encrypted at rest."""
         # Check:
-        # - No plaintext secrets in code  # pragma: allowlist secret
+        # - No plaintext secrets in code
         # - Database encryption enabled
         # - File-level encryption enabled
         
         checks = {
-            "no_hardcoded_secrets": await self._check_no_secrets(),  # pragma: allowlist secret
+            "no_hardcoded_secrets": await self._check_no_secrets(),
             "database_encrypted": await self._check_db_encryption(),
             "file_encryption": await self._check_file_encryption()
         }
@@ -179,12 +179,12 @@ class PCIDSSPolicy:
             "details": checks
         }
     
-    async def _check_no_secrets(self) -> bool:  # pragma: allowlist secret
-        """Verify no hardcoded secrets."""  # pragma: allowlist secret
-        # Uses unified secrets detection system  # pragma: allowlist secret
-        from .secrets_detector import SecretsDetectionSystem  # pragma: allowlist secret
+    async def _check_no_secrets(self) -> bool:
+        """Verify no hardcoded secrets."""
+        # Uses unified secrets detection system
+        from .secrets_detector import SecretsDetectionSystem
         
-        scanner = SecretsDetectionSystem()  # pragma: allowlist secret
+        scanner = SecretsDetectionSystem()
         findings = await scanner.scan()
         
         return len(findings) == 0
@@ -456,7 +456,7 @@ class ComplianceRemediationEngine:
         """Get remediation strategy for violation."""
         
         remediation_map = {
-            "hardcoded_secret": SecretsRemediationStrategy(),  # pragma: allowlist secret
+            "hardcoded_secret": SecretsRemediationStrategy(),
             "missing_encryption": EncryptionRemediationStrategy(),
             "weak_access_control": AccessControlRemediationStrategy(),
             "missing_audit_logging": AuditLoggingRemediationStrategy(),
@@ -469,12 +469,12 @@ class ComplianceRemediationEngine:
 ### 4.2 Remediation Strategies
 
 ```python
-class SecretsRemediationStrategy:  # pragma: allowlist secret
-    """Remediate hardcoded secrets."""  # pragma: allowlist secret
+class SecretsRemediationStrategy:
+    """Remediate hardcoded secrets."""
     
     async def execute(self) -> dict:
-        """Remove hardcoded secret and replace with env var."""  # pragma: allowlist secret
-        # This delegates to secrets detection system  # pragma: allowlist secret
+        """Remove hardcoded secret and replace with env var."""
+        # This delegates to secrets detection system
         pass
 
 class EncryptionRemediationStrategy:
@@ -597,7 +597,7 @@ class ComplianceCertification:
             "auditor": "unified-security-scanner",
             "status": "CERTIFIED",
             "audit_findings": [],
-            "certification_token": str(uuid.uuid4()),  # pragma: allowlist secret
+            "certification_token": str(uuid.uuid4()),
             "digital_signature": self._sign_certification()
         }
     
@@ -626,7 +626,7 @@ class ExecutiveReportGenerator:
             },
             "key_metrics": {
                 "vulnerability_scan_success_rate": 100,
-                "secrets_detection_accuracy": 100,  # pragma: allowlist secret
+                "secrets_detection_accuracy": 100,
                 "compliance_audit_coverage": 100,
                 "security_incident_response_time": "<1 hour"
             },

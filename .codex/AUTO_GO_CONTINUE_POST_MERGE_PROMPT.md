@@ -184,7 +184,7 @@ Track 12.3 re-validation did not reach ≥95% success criteria. Tracks 13.3 & 13
 |-------|-----------|-----------|------|--------------|------|
 | 13.1 | autonomous-test-healer-agent | Test Automation & Healing | 1-5 | P1/P2/P3 auto-heal patterns + flaky test framework | ≥95% test coverage |
 | 13.2 | rag-meta-tensor-validator | RAG Meta-Tensor Safety | 1-7 | Guard rails + materialization prevention + OOM protect | 0 meta-tensor failures |
-| 13.3 | unified-security-scanner | Enterprise Security | 3-10* | Secrets detection + CVE scanning + SBOM validation | 0 high/critical findings | <!-- pragma: allowlist secret -->
+| 13.3 | unified-security-scanner | Enterprise Security | 3-10* | Secrets detection + CVE scanning + SBOM validation | 0 high/critical findings |
 | 13.4 | cache-management-agent | Performance Optimization | 3-12* | 4-layer cache + <500ms p99 latency | >85% cache hit rate |
 
 *Gate 5 (Track 12.3 clearance) required before Tracks 13.3/13.4 start

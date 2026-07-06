@@ -20,6 +20,7 @@ from codex.cognitive.workflow_optimizer import (
     ImmutableRegistry,
     OptimizationType,
     RedundancyDetector,
+    WorkflowAnalyzer,
     WorkflowCategorizer,
     WorkflowCategory,
     WorkflowCheckpoint,
@@ -28,6 +29,7 @@ from codex.cognitive.workflow_optimizer import (
     WorkflowRun,
     WorkflowStatus,
 )
+
 
 # ---------------------------------------------------------------------------
 # Enums

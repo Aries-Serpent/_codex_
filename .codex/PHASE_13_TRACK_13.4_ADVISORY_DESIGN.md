@@ -145,7 +145,7 @@ class L2CacheConfig:
     redis_host: str = "redis.default.svc.cluster.local"
     redis_port: int = 6379
     redis_db: int = 0
-    redis_password: Optional[str] = None  # pragma: allowlist secret
+    redis_password: Optional[str] = None
     redis_key_prefix: str = "codex:session:"
     redis_ttl: int = 3600  # 1 hour
     redis_socket_timeout: float = 5.0
@@ -217,7 +217,7 @@ Persistent disk-backed cache for large knowledge entities (embeddings, contexts,
 
 ```
 ┌─────────────────────────────────────┐
-│ KNOWLEDGE LAYER (Disk-Backed, 24h)  │  # pragma: allowlist secret
+│ KNOWLEDGE LAYER (Disk-Backed, 24h)  │
 ├─────────────────────────────────────┤
 │ • Storage: SQLite or LevelDB        │
 │ • TTL-based expiration (86400s)     │
@@ -308,11 +308,11 @@ CREATE INDEX idx_expires_at ON cache_entries(expires_at);
 L3CacheMetrics = {
     "hit_count": Counter,
     "miss_count": Counter,
-    "disk_latency_ms": Histogram(0-2000ms buckets),  # pragma: allowlist secret
+    "disk_latency_ms": Histogram(0-2000ms buckets),
     "db_size_mb": Gauge,
     "entry_count": Gauge,
     "compaction_time_ms": Histogram,
-    "disk_bandwidth_mbps": Gauge,  # pragma: allowlist secret
+    "disk_bandwidth_mbps": Gauge,
     "query_time_ms": Histogram,
 }
 ```
@@ -416,7 +416,7 @@ L4CacheMetrics = {
     "models_loaded": Gauge,
     "version_swaps": Counter,
     "inference_latency_ms": Histogram,
-    "disk_offload_events": Counter,  # pragma: allowlist secret
+    "disk_offload_events": Counter,
 }
 ```
 

@@ -198,7 +198,7 @@ class SafetyProfile:
     """Static defaults for safety-aware features."""
     
     min_entropy_bits: float = 48.0        # Cryptographic strength
-    max_secret_age_days: int = 30         # Secret rotation requirement  # pragma: allowlist secret
+    max_secret_age_days: int = 30         # Secret rotation requirement
     redact_pii: bool = True               # Personal data protection
     allow_network_calls: bool = False     # Offline-first default
 ```

@@ -9,12 +9,13 @@ import pytest
 
 from codex.cognitive.okr_tracker import (
     KeyResult,
-    Objective,
     OKRSummary,
     OKRTask,
     OKRTracker,
+    Objective,
     TaskStatus,
 )
+
 
 # ---------------------------------------------------------------------------
 # Enums
