@@ -75,6 +75,8 @@ from codex.consolidation.mocks import (
 # Test fixtures are intentionally NOT imported here to avoid making pytest
 # a runtime dependency of the core package. Import from:
 #   from codex.consolidation.test_fixtures import FixtureFactory  # in test code only
+# Note: This requires pytest to be installed separately (e.g., via `pip install codex-ml[full]`)
+# or directly: `pip install pytest`
 
 __all__ = [
     # Decorators (LRC-002)
