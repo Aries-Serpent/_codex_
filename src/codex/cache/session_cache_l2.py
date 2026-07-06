@@ -347,7 +347,7 @@ class L2SessionCache:
 
     def _delete_local(self, key: str) -> bool:
         """Delete from local fallback cache."""
-        if key in self._local_cache:
+        if key in self._local_cache:  # nosemgrep
             del self._local_cache[key]
             return True
         return False

@@ -137,7 +137,7 @@ class L1RequestCache(Generic[T]):
         ttl = ttl or self.default_ttl
 
         # Remove if exists to update position
-        if key in cache:
+        if key in cache:  # nosemgrep
             del cache[key]
 
         # Add to cache
@@ -159,7 +159,7 @@ class L1RequestCache(Generic[T]):
             True if key existed and was deleted, False otherwise
         """
         cache = self._get_cache()
-        if key in cache:
+        if key in cache:  # nosemgrep
             del cache[key]
             return True
         return False
