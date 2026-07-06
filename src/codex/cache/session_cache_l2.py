@@ -25,12 +25,14 @@ logger = logging.getLogger(__name__)
 # L2 constraints
 L2_TTL = 3600  # 1 hour
 
-# Type tag used by _SafeJSONEncoder to round-trip bytes values
-_BYTES_TAG = "__bytes_b64__"
+# Type tag used by _SafeJSONEncoder to round-trip bytes values.
+# The double-underscore prefix/suffix and "codex_b64" namespace make accidental
+# collision with real user data extremely unlikely.
+_BYTES_TAG = "__codex_cache_bytes_b64__"
 
 
 class _SafeJSONEncoder(json.JSONEncoder):
-    """JSON encoder that safely handles bytes by base64-encoding them."""
+    """JSON encoder that safely handles bytes/bytearray by base64-encoding them."""
 
     def default(self, o: Any) -> Any:
         if isinstance(o, (bytes, bytearray)):
@@ -39,9 +41,15 @@ class _SafeJSONEncoder(json.JSONEncoder):
 
 
 def _safe_json_object_hook(obj: dict) -> Any:
-    """JSON object hook that restores base64-encoded bytes produced by _SafeJSONEncoder."""
+    """JSON object hook that restores base64-encoded bytes produced by _SafeJSONEncoder.
+
+    Only decodes dicts that contain exactly the sentinel key to avoid false positives
+    on real user dictionaries.
+    """
     if len(obj) == 1 and _BYTES_TAG in obj:
-        return base64.b64decode(obj[_BYTES_TAG])
+        raw = obj[_BYTES_TAG]
+        if isinstance(raw, str):
+            return base64.b64decode(raw)
     return obj
 
 
@@ -149,18 +157,28 @@ class L2SessionCache:
             self._connected = False
 
     def _serialize(self, value: Any) -> bytes:
-        """Serialize value to bytes using JSON with base64 fallback for bytes."""
+        """Serialize value to bytes using JSON with base64 encoding for bytes/bytearray.
+
+        Supported types: str, int, float, bool, None, list, dict, bytes, bytearray.
+        bytes/bytearray are transparently base64-encoded and round-trip correctly.
+        """
         try:
             return json.dumps(value, cls=_SafeJSONEncoder).encode("utf-8")
         except (TypeError, ValueError) as exc:
             raise TypeError(
                 f"L2SessionCache: value of type {type(value).__name__!r} is not "
-                "JSON-serializable. Store only JSON-safe data in the session cache."
+                "JSON-serializable. Supported types: str, int, float, bool, None, "
+                "list, dict, bytes, bytearray."
             ) from exc
 
     def _deserialize(self, data: bytes) -> Any:
         """Deserialize bytes to value."""
-        return json.loads(data.decode("utf-8"), object_hook=_safe_json_object_hook)
+        try:
+            return json.loads(data.decode("utf-8"), object_hook=_safe_json_object_hook)
+        except (json.JSONDecodeError, UnicodeDecodeError) as exc:
+            raise ValueError(
+                f"L2SessionCache: cache data is corrupted or not valid JSON: {exc}"
+            ) from exc
 
     def get(self, key: str) -> Optional[Any]:
         """Get value from L2 cache.
