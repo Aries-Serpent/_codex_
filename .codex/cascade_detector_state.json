@@ -34,7 +34,7 @@
     "12:/home/runner/work/_codex_/_codex_/src/codex/cli/__init__.py": 2,
     "13:/home/runner/work/_codex_/_codex_/.codex/PHASE_9_2_SECURITY_TESTS.py": 10,
     "25:docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md \u2014 not updated in last commit (last touched": 4,
-    "30:ruff (src/ clean)": 3,
+    "30:ruff (src/ clean)": 4,
     "11:/home/runner/work/_codex_/_codex_/examples/chronicle_tips_example.py": 1,
     "35:.codex/CAMPAIGN_LIVE_STATUS.md": 1,
     "35:.codex/CAMPAIGN_VERIFICATION_CHECKLIST.md": 1,
@@ -49,8 +49,8 @@
     "31:src/codex_ml/utils/tensorboard_logger.py": 2,
     "31:src/codex_ml/utils/config_loader.py": 1,
     "35:.codex/AUTO_GO_CONTINUE_POST_MERGE_PROMPT.md": 1,
-    "11:/home/runner/work/_codex_/_codex_/.codex/monitor_gate_5.py": 4,
-    "11:/home/runner/work/_codex_/_codex_/scripts/ci/autonomous_test_healer_orchestrator.py": 1
+    "11:/home/runner/work/_codex_/_codex_/.codex/monitor_gate_5.py": 8,
+    "11:/home/runner/work/_codex_/_codex_/scripts/ci/autonomous_test_healer_orchestrator.py": 2
   },
   "circuit_state": {
     "6": "BROKEN",
@@ -63,9 +63,9 @@
     "25": "BROKEN",
     "8": "BROKEN",
     "9": "BROKEN",
-    "11": "OPEN",
+    "11": "BROKEN",
     "12": "BROKEN",
     "13": "BROKEN",
-    "30": "OPEN"
+    "30": "BROKEN"
   }
 }
