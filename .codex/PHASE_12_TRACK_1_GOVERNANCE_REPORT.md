@@ -87,7 +87,7 @@ The codebase implements a comprehensive **three-pillar governance framework**:
 | **Config Validation** | CONFIG_VALIDATOR (3 schema types) | ✅ Active | 3/3 implemented |
 | **Compliance** | CODEBASE_AGENCY_POLICY.md (v1.1.0, §0-14) | ✅ Active | 14/14 sections |
 | **Deferral Language** | deferral-language-gate.yml + scripts/ci/check_deferral_language.py | ✅ Active | 3 prohibited phrases + patterns |
-| **Secrets Detection** | detect-secrets baseline + GitHub Advanced Security | ✅ Active | 0 findings post-merge |
+| **Secrets Detection** | detect-secrets baseline + GitHub Advanced Security | ✅ Active | 0 findings post-merge | <!-- pragma: allowlist secret -->
 | **Network Policy** | PolicyViolationError active | ✅ Active | Allowlist enforced |
 
 ### 1.3 Violation Audit Results
@@ -123,7 +123,7 @@ Commits: e1d8534f, 537aa67a (Phase 3 reports)
 ```
 Commit: d6bf27cd (Security validation complete)
 ✅ CVE Scan: 0 vulnerabilities (torch/transformers/datasets verified)
-✅ Secrets Detection: 0 credentials in modified files
+✅ Secrets Detection: 0 credentials in modified files  # pragma: allowlist secret
 ✅ License Compliance: All 12 packages compatible (MIT/Apache/BSD)
 ✅ Network Policy: Enforcement verified and active
 ✅ Version Pinning: uv.lock fully reproducible (881.5 KB)
@@ -147,7 +147,7 @@ Commits: 3335f36b, 4d3a17c5 (Test reorganization + CHANGELOG)
 ✅ Public wrapper functions verified present and documented
 ✅ API cleanup correct (test fixtures intentionally excluded)
 ✅ CHANGELOG.md updated with Phase 6 completion
-✅ Secret scanning: 0 new credentials detected
+✅ Secret scanning: 0 new credentials detected  # pragma: allowlist secret
 ✅ No violations of ownership/approval policies
 ```
 
@@ -169,7 +169,7 @@ Owner Approval               0                   ✅ PASS
 Config Validation            0                   ✅ PASS
 Compliance (AI Agency)       0                   ✅ PASS
 Deferral Language            0                   ✅ PASS
-Secrets Detection            0                   ✅ PASS
+Secrets Detection            0                   ✅ PASS  # pragma: allowlist secret
 Network Policy               0                   ✅ PASS
 Documentation Standards      0                   ✅ PASS
 File Organization            0                   ✅ PASS
@@ -235,7 +235,7 @@ Core Enforcement Workflows (8):
 ├── cost-gate.yml                        ✅ Cost-incurring operation approval
 ├── branch-rebase-gate.yml               ✅ Base synchronization check
 ├── issue-resolution-gate.yml            ✅ Issue link validation
-├── agent-auth-delegation.yml            ✅ Auth token enforcement
+├── agent-auth-delegation.yml            ✅ Auth token enforcement  # pragma: allowlist secret
 └── tiered-approval-gate.yml             ✅ RBAC approval routing
 
 Specialized Gates (18):
@@ -565,7 +565,7 @@ Config Drift        LOW           MEDIUM    CONFIG_VALIDATOR active      ✅ MIT
 
 ┌─ SECURITY POSTURE ──────────────────────┐
 │ CVEs Detected:          0                 │
-│ Secrets Found:          0                 │
+│ Secrets Found:          0                 │  # pragma: allowlist secret
 │ License Issues:         0                 │
 │ Network Violations:     0                 │
 │ Release Approval:       ✅ YES            │

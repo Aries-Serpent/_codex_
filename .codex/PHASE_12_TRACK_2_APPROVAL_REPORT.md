@@ -91,7 +91,7 @@ APPROVAL_POLICIES.md defines 8 policy categories (confirmed via file inspection)
 | Category | Code | Trigger Events | SLA Escalation | Status |
 |----------|------|---|---|---|
 | **Deployment** | D | Code merge to main, release tag creation | E-001 (4h) | ✅ DEFINED |
-| **Security** | S | Secret rotation, token refresh, PAM updates | E-002 (manual) + E-003 (conflict) | ✅ DEFINED |
+| **Security** | S | Secret rotation, token refresh, PAM updates | E-002 (manual) + E-003 (conflict) | ✅ DEFINED | <!-- pragma: allowlist secret -->
 | **Configuration** | C | Config change, environment variable update | E-001 (4h) | ✅ DEFINED |
 | **Capability Grants** | G | New agent deployment, permission elevation | E-005 (8h exception) | ✅ DEFINED |
 | **Escalation** | E | SLA timeout, conflict escalation | E-004 (on-call override) | ✅ DEFINED |
