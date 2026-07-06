@@ -41,6 +41,7 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: '3.11'
+        cache: 'pip'
     - name: Query Patterns
       id: query
       run: 'python scripts/cognitive/query_k8s_patterns.py
@@ -72,6 +73,7 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: '3.11'
+        cache: 'pip'
     - name: Download Patterns
       uses: actions/download-artifact@v5
       with:
@@ -101,6 +103,7 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: '3.11'
+        cache: 'pip'
     - name: Download Patterns
       uses: actions/download-artifact@v5
       with:
@@ -130,6 +133,7 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: '3.11'
+        cache: 'pip'
     - name: Download Patterns
       uses: actions/download-artifact@v5
       with:
@@ -159,6 +163,7 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: '3.11'
+        cache: 'pip'
     - name: Download Terraform Modules
       uses: actions/download-artifact@v5
       with:
