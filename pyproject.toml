@@ -75,7 +75,7 @@ analysis = [
     "parso>=0.8.0",
 ]
 ast = [
-    "tree-sitter>=0.25.2",
+    "tree-sitter>=0.26.0",
     "tree-sitter-python>=0.20.0",
     "tree-sitter-yaml>=0.7.2",
     "sqlparse>=0.5.5",

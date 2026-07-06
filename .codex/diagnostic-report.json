@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-07-05T04:23:08.890295+00:00",
+  "timestamp": "2026-07-05T03:53:55.261894+00:00",
   "status": "failed",
   "total_issues": 18,
   "auto_fixable": 5,
@@ -34,7 +34,7 @@
       "severity": "warning",
       "file": "SHA drift detected",
       "line": 0,
-      "message": "SHA drift detected: GITHUB_SHA=da5690e4e776 but git HEAD=b20ca541b3b7. CI likely ran on a GitHub merge commit (PR merge preview). This can cause mypy/ruff counts to diverge from local runs. See .github/workflows/mypy-baseline.yml SHA-drift diagnostic step.",
+      "message": "SHA drift detected: GITHUB_SHA=5c6d5b21fe84 but git HEAD=7b103a9d0d62. CI likely ran on a GitHub merge commit (PR merge preview). This can cause mypy/ruff counts to diverge from local runs. See .github/workflows/mypy-baseline.yml SHA-drift diagnostic step.",
       "auto_fix_available": false,
       "suggested_fix": "Run: python scripts/ci/auto_fix_common_issues.py --pattern 17"
     },
@@ -100,7 +100,7 @@
       "severity": "warning",
       "file": "Copilot cloud agent sandbox detected",
       "line": 0,
-      "message": "Copilot cloud agent sandbox detected: GITHUB_SHA=da5690e4e776 is a synthetic merge commit not present in local history (HEAD=b20ca541b3b7). Pattern 17 (CI SHA Drift) will fire as a known false positive \u2014 safe to ignore. All other patterns (1-16, 18-27, 29-30) run normally and are unaffected.",
+      "message": "Copilot cloud agent sandbox detected: GITHUB_SHA=5c6d5b21fe84 is a synthetic merge commit not present in local history (HEAD=7b103a9d0d62). Pattern 17 (CI SHA Drift) will fire as a known false positive \u2014 safe to ignore. All other patterns (1-16, 18-27, 29-30) run normally and are unaffected.",
       "auto_fix_available": false,
       "suggested_fix": "Run: python scripts/ci/auto_fix_common_issues.py --pattern 28"
     },
@@ -208,6 +208,6 @@
   "next_steps": [
     "Run: python scripts/ci/auto_fix_common_issues.py",
     "Or use Copilot Agent: @workspace Fix all auto-fixable CI issues",
-    "Patterns to fix: 30, 11"
+    "Patterns to fix: 11, 30"
   ]
 }
