@@ -102,7 +102,7 @@ jobs:
     if: github.event_name == 'push'
     steps:
     - name: Checkout code
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
       with:
         fetch-depth: 0
     - name: Resolve PR for current push
@@ -150,7 +150,7 @@ jobs:
       should_proceed: ${{ steps.evaluate.outputs.should_proceed }}
     steps:
     - name: Checkout code
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
       with:
         fetch-depth: 0
     - name: Evaluate 5-tier priority rule system
@@ -337,7 +337,7 @@ jobs:
       contents: write
     steps:
     - name: Checkout code
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
     - name: Resolve token chain (Tier 1-4 with fallbacks)
       id: token
       env:
@@ -480,7 +480,7 @@ jobs:
       contents: write
     steps:
     - name: Checkout code
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
     - name: Publish metrics to artifact
       env:
         APPROVAL_SOURCE: ${{ github.event.inputs.approval_source }}

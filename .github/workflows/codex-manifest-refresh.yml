@@ -22,7 +22,7 @@ jobs:
     if: github.actor != 'github-actions[bot]' || github.event_name == 'schedule'
     steps:
     - name: Checkout PR branch (or main on schedule)
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
       with:
         ref: ${{ github.head_ref || 'main' }}
         fetch-depth: 1
@@ -137,7 +137,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         fetch-depth: 1

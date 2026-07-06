@@ -54,7 +54,7 @@ jobs:
       reason: ${{ steps.estimate.outputs.reason }}
       proposal_md: ${{ steps.proposal.outputs.proposal_md }}
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v7.0.0
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
@@ -266,7 +266,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
       with:
         token: ${{ secrets.GH_TOKEN || github.token }}
         fetch-depth: 1

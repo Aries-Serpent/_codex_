@@ -39,7 +39,7 @@ jobs:
       baseline_metrics: ${{ steps.baseline.outputs.metrics }}
     steps:
     - name: Checkout code
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
     - name: CacheManager health check
       continue-on-error: true
       run: 'python scripts/ci/generate_cache_keys.py --health --workflow root-org-validation
@@ -140,7 +140,7 @@ jobs:
     needs: pre-validation
     steps:
     - name: Checkout code
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
     - name: Set up Python 3.12 with tiered cache
       uses: ./.github/actions/setup-python-cached
       with:
@@ -223,7 +223,7 @@ jobs:
     if: always()
     steps:
     - name: Checkout code
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
     - name: Set up Python 3.12 with tiered cache
       uses: ./.github/actions/setup-python-cached
       with:
@@ -388,7 +388,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1

@@ -70,7 +70,7 @@ jobs:
         - python
         - javascript
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v7.0.0
     - uses: github/codeql-action/init@v4
       with:
         languages: ${{ matrix.language }}
@@ -137,7 +137,7 @@ jobs:
       contents: read
       security-events: write
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v7.0.0
     - name: Run Semgrep with SARIF output
       uses: returntocorp/semgrep-action@713efdd345f3035192eaa63f56867b88e63e4e5d
       with:
@@ -202,7 +202,7 @@ jobs:
 
       '
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v7.0.0
     - uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ env.PYTHON_VERSION }}
@@ -312,7 +312,7 @@ jobs:
 
       '
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v7.0.0
       with:
         fetch-depth: 0
     - uses: ./.github/actions/setup-python-cached
@@ -396,7 +396,7 @@ jobs:
 
       '
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v7.0.0
     - uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ env.PYTHON_VERSION }}
@@ -502,7 +502,7 @@ jobs:
       issues: write
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7.0.0
     - name: CacheManager health check
       continue-on-error: true
       run: 'python scripts/ci/generate_cache_keys.py --health --workflow security-scanning-suite
@@ -702,7 +702,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7.0.0
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1

@@ -31,7 +31,7 @@ jobs:
       checks: read
     steps:
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7.0.0
       with:
         fetch-depth: 1
     - name: Set up Python
@@ -73,7 +73,7 @@ jobs:
       contents: read
     steps:
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7.0.0
       with:
         fetch-depth: 1
     - name: Set up Python
@@ -103,7 +103,7 @@ jobs:
       issues: write
     steps:
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7.0.0
       with:
         fetch-depth: 1
     - name: Set up Python
@@ -134,7 +134,7 @@ jobs:
       discussions: write
     steps:
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7.0.0
       with:
         fetch-depth: 1
     - name: Set up Python
@@ -184,7 +184,7 @@ jobs:
       contents: read
     steps:
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7.0.0
       with:
         fetch-depth: 1
     - name: Check monitoring health

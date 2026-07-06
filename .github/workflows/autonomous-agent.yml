@@ -29,7 +29,7 @@ jobs:
       approved: ${{ steps.guard.outputs.approved }}
     steps:
     - name: Checkout code
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
       with:
         sparse-checkout: '.github
 
@@ -63,7 +63,7 @@ jobs:
     timeout-minutes: 60
     steps:
     - name: Checkout code
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
       with:
         fetch-depth: 0
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

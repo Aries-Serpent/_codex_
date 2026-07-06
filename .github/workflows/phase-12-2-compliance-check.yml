@@ -24,7 +24,7 @@ jobs:
       is_merge: ${{ steps.check.outputs.is_merge }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7.0.0
       with:
         fetch-depth: 1
     - name: Check if merge commit
@@ -45,7 +45,7 @@ jobs:
     needs: detect-merge
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7.0.0
       with:
         fetch-depth: 50
     - name: Set up Python

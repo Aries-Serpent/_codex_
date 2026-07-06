@@ -37,7 +37,7 @@ jobs:
       GH_TRICKLE_MIN_REMAINING: '50'
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v7.0.0
       with:
         sparse-checkout: 'scripts/ci/
 
@@ -88,7 +88,7 @@ jobs:
       actions: write
       pull-requests: write
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v7.0.0
       with:
         sparse-checkout: 'scripts/ci/
 
@@ -176,7 +176,7 @@ jobs:
       actions: write
       pull-requests: write
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v7.0.0
       with:
         sparse-checkout: 'scripts/ci/
 
@@ -249,7 +249,7 @@ jobs:
     timeout-minutes: 5
     if: github.event_name == 'pull_request' || github.event_name == 'pull_request_review'
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v7.0.0
       with:
         sparse-checkout: 'scripts/ci/
 
@@ -458,7 +458,7 @@ jobs:
       actions: read
     steps:
     - name: Checkout fast-forward script
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
       with:
         sparse-checkout: 'scripts/ci/fast_forward_safe_files.py
 

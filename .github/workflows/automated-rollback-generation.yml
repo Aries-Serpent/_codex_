@@ -35,7 +35,7 @@ jobs:
       pull-requests: write
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7.0.0
       with:
         fetch-depth: 0
     - name: Set up Python
@@ -163,7 +163,7 @@ jobs:
     needs: generate-rollback-procedures
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7.0.0
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
@@ -187,7 +187,7 @@ jobs:
     if: always()
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7.0.0
     - name: Set up Python
       uses: actions/setup-python@v6
       with:

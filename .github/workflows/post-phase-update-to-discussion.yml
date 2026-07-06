@@ -25,7 +25,7 @@ jobs:
       discussions: write
     steps:
     - name: Checkout code
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
     - name: Read markdown file
       id: read-file
       run: 'FILE_CONTENT=$(cat "${{ github.event.inputs.file_path }}")

@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v7.0.0
     - name: Set up Python
       uses: ./.github/actions/setup-python-cached
       with:
@@ -41,7 +41,7 @@ jobs:
     timeout-minutes: 30
     continue-on-error: true
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v7.0.0
     - name: Set up Python
       uses: ./.github/actions/setup-python-cached
       with:
@@ -82,7 +82,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1

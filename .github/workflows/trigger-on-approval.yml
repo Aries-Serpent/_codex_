@@ -38,7 +38,7 @@ jobs:
         \nfi\necho \"Approval by ${REVIEWER} on PR #${PR_NUM} @ ${PR_SHA} (${PR_REF})\"\
         \n"
     - name: Checkout
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
       with:
         fetch-depth: 1
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token

@@ -65,7 +65,7 @@ jobs:
         df -h
 
         '
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v7.0.0
     - name: Install Rust toolchain
       uses: actions-rust-lang/setup-rust-toolchain@46268bd060767258de96ed93c1251119784f2ab6
       with:
@@ -108,7 +108,7 @@ jobs:
     timeout-minutes: 60
     needs: rust_tests
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v7.0.0
     - name: Install Rust toolchain
       uses: actions-rust-lang/setup-rust-toolchain@46268bd060767258de96ed93c1251119784f2ab6
     - name: Run benchmarks
@@ -166,7 +166,7 @@ jobs:
         df -h
 
         '
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v7.0.0
     - name: Install Rust toolchain
       uses: actions-rust-lang/setup-rust-toolchain@46268bd060767258de96ed93c1251119784f2ab6
     - name: Install tarpaulin
@@ -214,7 +214,7 @@ jobs:
         df -h
 
         '
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v7.0.0
     - name: Set up Python 3.12 with tiered cache
       uses: ./.github/actions/setup-python-cached
       with:
@@ -268,7 +268,7 @@ jobs:
       contents: read
       pull-requests: write
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v7.0.0
       with:
         fetch-depth: 0
     - name: Download benchmark results
@@ -337,7 +337,7 @@ jobs:
       contents: read
     timeout-minutes: 60
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v7.0.0
     - name: Install Rust toolchain
       uses: actions-rust-lang/setup-rust-toolchain@46268bd060767258de96ed93c1251119784f2ab6
     - name: Run cargo audit
@@ -356,7 +356,7 @@ jobs:
       contents: read
     timeout-minutes: 60
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v7.0.0
     - name: Install Rust toolchain
       uses: actions-rust-lang/setup-rust-toolchain@46268bd060767258de96ed93c1251119784f2ab6
     - name: Build Rust docs
@@ -386,7 +386,7 @@ jobs:
         python-version:
         - 3.12.13
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v7.0.0
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
@@ -423,7 +423,7 @@ jobs:
       contents: read
     steps:
     - name: Checkout for cache health
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
       with:
         sparse-checkout: scripts/ci
     - name: Cache health report
@@ -461,7 +461,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         fetch-depth: 1

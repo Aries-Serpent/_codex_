@@ -58,7 +58,7 @@ jobs:
       '
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
       with:
         fetch-depth: 0
     - name: '🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)'
@@ -127,7 +127,7 @@ jobs:
       test_results: ${{ steps.test.outputs.results }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
       with:
         fetch-depth: 0
     - name: '🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)'
@@ -253,7 +253,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1

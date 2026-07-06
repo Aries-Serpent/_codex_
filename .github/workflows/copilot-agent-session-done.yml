@@ -30,7 +30,7 @@ jobs:
       autofix_ran: ${{ steps.autofix.outputs.autofix_ran }}
     steps:
     - name: Checkout PR branch
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
       with:
         ref: ${{ github.event.workflow_run.head_sha }}
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token

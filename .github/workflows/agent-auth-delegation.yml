@@ -34,7 +34,7 @@ jobs:
       contents: read
     steps:
     - name: Checkout (needed for session_wrapup_autofix.py)
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
       with:
         fetch-depth: 1
     - name: Set up Python
@@ -132,7 +132,7 @@ jobs:
     if: github.event.action != 'closed'
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
       with:
         fetch-depth: 50
     - name: Download pending session requirements (if any)
@@ -948,7 +948,7 @@ jobs:
 
       '
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v7.0.0
       with:
         fetch-depth: 1
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
@@ -1343,7 +1343,7 @@ jobs:
       contents: read
     steps:
     - name: Checkout (for approve_pending_runs.py)
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
       with:
         fetch-depth: 1
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
@@ -1386,7 +1386,7 @@ jobs:
     if: github.event.action == 'closed'
     steps:
     - name: Checkout repository for shared helpers
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
       with:
         fetch-depth: 1
         persist-credentials: false
@@ -1494,7 +1494,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}

@@ -49,7 +49,7 @@ jobs:
     timeout-minutes: 20
     steps:
     - name: Checkout monitor script
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
       with:
         sparse-checkout: scripts/ci/proactive_ci_monitor.py
         sparse-checkout-cone-mode: false

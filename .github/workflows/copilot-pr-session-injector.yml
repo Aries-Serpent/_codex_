@@ -18,7 +18,7 @@ jobs:
     timeout-minutes: 10
     if: github.actor != 'dependabot[bot]'
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v7.0.0
       with:
         fetch-depth: 0
     - name: "\U0001F500 Fetch base branch ref for diff"
@@ -172,7 +172,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         fetch-depth: 1

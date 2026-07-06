@@ -36,7 +36,7 @@ jobs:
       patterns: ${{ steps.query.outputs.patterns }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7.0.0
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
@@ -67,7 +67,7 @@ jobs:
     timeout-minutes: 30
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7.0.0
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
@@ -96,7 +96,7 @@ jobs:
     timeout-minutes: 30
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7.0.0
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
@@ -125,7 +125,7 @@ jobs:
     timeout-minutes: 30
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7.0.0
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
@@ -154,7 +154,7 @@ jobs:
     timeout-minutes: 45
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7.0.0
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
@@ -195,7 +195,7 @@ jobs:
       name: infrastructure-approval
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7.0.0
     - name: Download All Artifacts
       uses: actions/download-artifact@v5
     - name: Generate Approval Summary
@@ -253,7 +253,7 @@ jobs:
     if: always()
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7.0.0
     - name: Generate Completion Report
       run: 'echo "# K8s Provisioning Pipeline Complete" > completion_report.md
 

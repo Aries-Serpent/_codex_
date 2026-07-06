@@ -49,7 +49,7 @@ jobs:
       routing_method: ${{ steps.routing-method.outputs.method }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7.0.0
         with:
           fetch-depth: 0
 
@@ -123,7 +123,7 @@ jobs:
       confidence_scores: ${{ steps.router-query.outputs.confidence }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7.0.0
 
       - name: Setup Python
         uses: actions/setup-python@v6
@@ -183,7 +183,7 @@ jobs:
       queue_depth: ${{ steps.load-balance.outputs.queue_depth }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7.0.0
 
       - name: Setup Python
         uses: actions/setup-python@v6
@@ -237,7 +237,7 @@ jobs:
       parallel_agents_count: ${{ steps.concurrent-exec.outputs.agents_count }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7.0.0
 
       - name: Setup Python
         uses: actions/setup-python@v6
@@ -290,7 +290,7 @@ jobs:
     if: always()
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7.0.0
 
       - name: Setup Python
         uses: actions/setup-python@v6

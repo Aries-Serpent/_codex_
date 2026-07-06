@@ -40,7 +40,7 @@ jobs:
       \ == 'success')\n"
     steps:
     - name: Checkout main
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
       with:
         ref: refs/heads/main
         fetch-depth: 10
@@ -171,7 +171,7 @@ jobs:
         \ branch not found \u2014 skipping\" >> \"$GITHUB_STEP_SUMMARY\"\nfi\n"
     - name: Checkout 0D_base_
       if: steps.branch_check.outputs.exists == 'true'
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
       with:
         ref: refs/heads/0D_base_
         fetch-depth: 10
@@ -244,7 +244,7 @@ jobs:
     - sweep-staging
     if: always() && github.event_name == 'schedule'
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v7.0.0
       with:
         ref: refs/heads/main
         fetch-depth: 1

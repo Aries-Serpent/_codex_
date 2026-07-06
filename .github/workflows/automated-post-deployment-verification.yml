@@ -60,7 +60,7 @@ jobs:
     needs: setup
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7.0.0
     - name: Check Service Accessibility
       id: accessibility
       run: "SERVICE_URL=\"${{ needs.setup.outputs.service_url }}\"\nMAX_RETRIES=5\n\
@@ -82,7 +82,7 @@ jobs:
       health_status: ${{ steps.health.outputs.health_status }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7.0.0
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
@@ -117,7 +117,7 @@ jobs:
       smoke_status: ${{ steps.smoke.outputs.smoke_status }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7.0.0
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
@@ -152,7 +152,7 @@ jobs:
       critical_status: ${{ steps.critical.outputs.critical_status }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7.0.0
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
@@ -186,7 +186,7 @@ jobs:
     if: always()
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7.0.0
     - name: Download Artifacts
       uses: actions/download-artifact@v5
       with:

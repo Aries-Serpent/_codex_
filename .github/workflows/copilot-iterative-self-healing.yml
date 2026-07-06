@@ -84,7 +84,7 @@ jobs:
 
         '
     - name: Sparse checkout (scripts only)
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
       with:
         sparse-checkout: scripts/ci/
         sparse-checkout-cone-mode: false
@@ -160,7 +160,7 @@ jobs:
     if: needs.should-escalate.outputs.escalate == 'true'
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
       with:
         sparse-checkout: '.codex
 

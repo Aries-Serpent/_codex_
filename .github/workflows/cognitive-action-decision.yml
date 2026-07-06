@@ -57,7 +57,7 @@ jobs:
       task_file: ${{ steps.decide.outputs.task_file }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
       with:
         fetch-depth: 0
     - name: CacheManager health check
@@ -115,7 +115,7 @@ jobs:
       \ == 'true')\n"
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
       with:
         fetch-depth: 0
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

@@ -43,7 +43,7 @@ jobs:
       needs_healing: ${{ steps.detect.outputs.needs_healing }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7.0.0
       with:
         fetch-depth: 0
     - name: Set up Python
@@ -86,7 +86,7 @@ jobs:
     timeout-minutes: 15
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7.0.0
       with:
         fetch-depth: 0
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
@@ -138,7 +138,7 @@ jobs:
     timeout-minutes: 10
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7.0.0
     - name: Download detection report
       uses: actions/download-artifact@v5
       with:

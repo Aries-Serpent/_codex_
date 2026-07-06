@@ -20,7 +20,7 @@ jobs:
       c2_pass: ${{ steps.check.outputs.c2_pass }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
       with:
         fetch-depth: 0
     - name: Check 5 transition conditions
@@ -150,7 +150,7 @@ jobs:
       'pull_request'
     steps:
     - name: Checkout PR branch
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
       with:
         ref: ${{ github.head_ref }}
         fetch-depth: 1
@@ -227,7 +227,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.0
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1

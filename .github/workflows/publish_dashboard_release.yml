@@ -14,7 +14,7 @@ jobs:
       contents: read
     timeout-minutes: 60
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v7.0.0
     - name: CacheManager health check
       continue-on-error: true
       run: 'python scripts/ci/generate_cache_keys.py --health --workflow publish_dashboard_release

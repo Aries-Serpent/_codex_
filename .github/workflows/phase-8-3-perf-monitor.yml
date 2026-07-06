@@ -33,7 +33,7 @@ jobs:
       metrics-summary: ${{ steps.collect.outputs.summary }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7.0.0
       with:
         fetch-depth: 1
     - name: Set up Python
@@ -72,7 +72,7 @@ jobs:
       actions: read
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7.0.0
       with:
         fetch-depth: 1
     - name: Set up Python
@@ -108,7 +108,7 @@ jobs:
       issues: write
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7.0.0
       with:
         fetch-depth: 1
     - name: Set up Python
@@ -154,7 +154,7 @@ jobs:
       contents: write
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7.0.0
     - name: Download all artifacts
       uses: actions/download-artifact@v5
     - name: Generate dashboard

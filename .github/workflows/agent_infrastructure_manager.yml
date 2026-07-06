@@ -89,7 +89,7 @@ jobs:
 
       '
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v7.0.0
     - name: Cache pip downloads
       uses: actions/cache@v5
       with:
@@ -137,7 +137,7 @@ jobs:
 
       '
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v7.0.0
     - name: Configure webhooks
       env:
         CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
@@ -159,7 +159,7 @@ jobs:
 
       '
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v7.0.0
     - name: List variables and post to PR
       env:
         CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
@@ -189,7 +189,7 @@ jobs:
 
       '
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v7.0.0
     - name: List webhooks
       env:
         CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
@@ -203,7 +203,7 @@ jobs:
     if: "needs.auth-check.outputs.authorized == 'true' &&\n(needs.auth-check.outputs.operation\
       \ == 'app-status' ||\n needs.auth-check.outputs.operation == 'app-manifest')\n"
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v7.0.0
     - name: Show app status or generate manifest URL
       env:
         CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
