@@ -1,18 +1,20 @@
 {
-  "generated_at": "2026-07-06T07:07:45.126895+00:00",
+  "generated_at": "2026-07-06T07:21:35.381278+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 4987,
+  "rest_remaining": 4789,
   "graphql_available": true,
-  "graphql_remaining": 4994,
+  "graphql_remaining": 4982,
   "gh_cli_available": true,
   "codeql_available": false,
   "best_token_var": "GITHUB_TOKEN",
-  "open_prs": [],
+  "open_prs": [
+    5236
+  ],
   "branch": "copilot/codebase-exploration-implementation-plan",
   "recommendation": "Use REST for data fetches. "
 }
