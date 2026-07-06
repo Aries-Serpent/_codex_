@@ -117,29 +117,28 @@ def scan_current_tree_for_secrets(max_files: int = 1000) -> SecretDetectionResul
     scanned_count = 0
     high_entropy_secrets = []
     
-    try:
-        # Scan files matching patterns
-        for pattern in patterns:
-            from glob import glob
-            files = glob(pattern, recursive=True)[:max_files]
-            scanned_count += len(files)
-            
-            for filepath in files:
-                try:
-                    if Path(filepath).is_file():
-                        with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
-                            content = f.read()
-                            
-                        # Check for high-entropy strings (E-09 pattern)
-                        entropy_score = calculate_entropy(content)
-                        if entropy_score > 4.0:
-                            high_entropy_secrets.append({
-                                "file": filepath,
-                                "entropy": entropy_score,
-                                "severity": "HIGH" if entropy_score > 5.0 else "MEDIUM"
-                            })
-                except Exception as e:
-                    logger.debug(f"Skipped {filepath}: {e}")
+    # Scan files matching patterns
+    for pattern in patterns:
+        from glob import glob
+        files = glob(pattern, recursive=True)[:max_files]
+        scanned_count += len(files)
+        
+        for filepath in files:
+            try:
+                if Path(filepath).is_file():
+                    with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
+                        content = f.read()
+                        
+                    # Check for high-entropy strings (E-09 pattern)
+                    entropy_score = calculate_entropy(content)
+                    if entropy_score > 4.0:
+                        high_entropy_secrets.append({
+                            "file": filepath,
+                            "entropy": entropy_score,
+                            "severity": "HIGH" if entropy_score > 5.0 else "MEDIUM"
+                        })
+            except Exception as e:
+                logger.debug(f"Skipped {filepath}: {e}")
     
     elapsed = time.time() - start_time
     
