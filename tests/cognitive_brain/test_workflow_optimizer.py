@@ -15,7 +15,7 @@ import pytest
 
 from codex.cognitive.workflow_optimizer import (
     CacheOptimizer,
-    CheckpointManager,  # pragma: allowlist secret # pragma: allowlist secret
+    CheckpointManager,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
     ImmutableComponent,
     ImmutableRegistry,
     OptimizationType,
