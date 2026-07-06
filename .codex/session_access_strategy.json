@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-07-06T04:54:23.970891+00:00",
+  "generated_at": "2026-07-06T05:35:05.086843+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 4988,
+  "rest_remaining": 4949,
   "graphql_available": true,
-  "graphql_remaining": 4996,
+  "graphql_remaining": 5000,
   "gh_cli_available": true,
   "codeql_available": false,
   "best_token_var": "CODEX_MASTER_KEY",
