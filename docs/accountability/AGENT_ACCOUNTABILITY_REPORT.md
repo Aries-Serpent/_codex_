@@ -1,3 +1,17 @@
+## SESSION SUMMARY — 2026-07-06T00:20Z [PR #5231 CI REMEDIATION]
+
+**Session:** pr-5231-ci-remediation | **Task:** Resolve PR #5231 workflow/code-scanning feedback, reduce unintended PR drift, and refresh REQ-4/REQ-5 compliance | **Date:** 2026-07-06T00:20Z | **Authority:** @mbaetiong (D-tier autonomous, GO CONTINUE)
+
+### EXECUTION SUMMARY
+
+- Fixed `rust-ffi.yml` workflow security/compliance issues (explicit `permissions`, pinned `PyO3/maturin-action`, timeout/concurrency, corrected artifact metadata).
+- Fixed `manifest-drift-guard.yml` YAML parsing by repairing the embedded Python block and adding workflow guardrails.
+- Fixed PR-only CI false positives by narrowing `agentic_diff_guard.py` and `premerge-triage-gate.yml` checks to added lines.
+- Reduced the PR back to the intended Rust/core workflow surface by dropping generated `src/codex_core/target/` artifacts and unrelated drift from the branch diff.
+- Refreshed `CHANGELOG.md` and this report for REQ-4/REQ-5 on the latest remediation commit.
+
+---
+
 ## SESSION SUMMARY — 2026-07-03T19:43Z [PHASE 9.3 CI REMEDIATION & TRACK 2 ACTIVATION PREP]
 
 **Session:** phase-9.3-ci-remediation | **Task:** Resolve CodeQL/Semgrep CI failures on PR #5214; delegate to specialized agents; prepare campaign readiness gates for Track 2 activation (2026-07-05T09:00Z) | **Date:** 2026-07-03T19:43Z | **Authority:** @mbaetiong (D-tier autonomous, GO CONTINUE, wec:auto-approve)  <!-- pragma: allowlist secret -->

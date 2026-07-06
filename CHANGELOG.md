@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+### Fixed (PR #5231 CI remediation)
+- Tightened `rust-ffi.yml`, repaired `manifest-drift-guard.yml`, and narrowed diff-based CI guards to added lines only for PR #5231.
+
 ### Fixed (auto-update — PR #5231)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5231 (SHA `7a42fff478f5cbff86ae6672e5ce3ce9011885fa`) at 2026-07-06T00:24Z [auto-generated]
 

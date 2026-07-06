@@ -60,6 +60,7 @@ def comment_has_banned(content: str) -> list[str]:
 
 
 def added_line_numbers(base: str, head: str, path: str) -> set[int]:
+    """Return the destination line numbers added for a path in the base..head diff."""
     diff = subprocess.check_output(
         ["git", "diff", "--unified=0", base, head, "--", path],
         text=True,
