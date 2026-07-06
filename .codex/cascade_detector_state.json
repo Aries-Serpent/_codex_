@@ -47,7 +47,8 @@
     "31:src/hhg_logistics/train.py": 1,
     "31:src/hhg_logistics/eval/harness.py": 1,
     "31:src/codex_ml/utils/tensorboard_logger.py": 2,
-    "31:src/codex_ml/utils/config_loader.py": 1
+    "31:src/codex_ml/utils/config_loader.py": 1,
+    "35:.codex/AUTO_GO_CONTINUE_POST_MERGE_PROMPT.md": 1
   },
   "circuit_state": {
     "6": "BROKEN",
