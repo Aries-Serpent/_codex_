@@ -82,20 +82,20 @@ Consistent terminology across documentation and code reduces ambiguity and impro
 
 ### 10 Stable Public APIs (v0.1.0)
 
-All external users should use only these stable, versioned APIs:
+All external users should use only these stable, versioned APIs. The Cognitive Brain OODA loop provides the core abstraction for all integrations:
 
-| # | Module | Class/Function | Stability | Version |
-|---|--------|----------------|-----------|---------|
-| 1 | `codex_ml.safety` | `PromptSanitizer` | ✅ Stable | v0.1.0+ |
-| 2 | `codex_ml.config` | `Config` | ✅ Stable | v0.1.0+ |
-| 3 | `cognitive_brain` | `Planner` | ✅ Stable | v0.1.0+ |
-| 4 | `cognitive_brain` | `MemoryManager` | ✅ Stable | v0.1.0+ |
-| 5 | `codex_ml.serving` | `ModelServer` | ✅ Stable | v0.1.0+ |
-| 6 | `codex_ml.cli` | `main` | ✅ Stable | v0.1.0+ |
-| 7 | `cognitive_brain` | `ObservationData` | ✅ Stable | v0.1.0+ |
-| 8 | `cognitive_brain` | `Decision` | ✅ Stable | v0.1.0+ |
-| 9 | `codex_ml.safety` | `network_policy` | ✅ Stable | v0.1.0+ |
-| 10 | `cognitive_brain` | `PatternSet` | ✅ Stable | v0.1.0+ |
+| # | Module | Class/Function | Stability | Version | Purpose |
+|---|--------|----------------|-----------|---------|---------|
+| 1 | `cognitive_brain` | `ObservationData` | ✅ Stable | v0.1.0+ | OODA input: observations from environment |
+| 2 | `cognitive_brain` | `OrientationResult` | ✅ Stable | v0.1.0+ | OODA phase: context & pattern matching |
+| 3 | `cognitive_brain` | `Decision` | ✅ Stable | v0.1.0+ | OODA phase: action selection from patterns |
+| 4 | `cognitive_brain` | `ActionResult` | ✅ Stable | v0.1.0+ | OODA output: executed actions & feedback |
+| 5 | `cognitive_brain` | `Planner` | ✅ Stable | v0.1.0+ | Orchestrator: main OODA loop executor |
+| 6 | `cognitive_brain` | `MemoryInterface` | ✅ Stable | v0.1.0+ | Memory abstraction: STM/LTM operations |
+| 7 | `cognitive_brain` | `MemoryPattern` | ✅ Stable | v0.1.0+ | Pattern storage: learnable decision rules |
+| 8 | `cognitive_brain` | `QuantumMemoryManager` | ✅ Stable | v0.1.0+ | Quantum-enhanced memory: probability-aware learning |
+| 9 | `cognitive_brain` | `Pattern` | ✅ Stable | v0.1.0+ | Pattern unit: condition-action tuple |
+| 10 | `cognitive_brain` | `PatternSet` | ✅ Stable | v0.1.0+ | Pattern collection: searchable pattern library |
 
 **Public API Contract:**
 - ✅ Backward compatible across minor versions (v0.1.x)
@@ -348,6 +348,79 @@ def load_model_safely(model_name: str, cache_dir: str = "./cache"):
             f"This is a bug. Please report to: "
             f"https://github.com/Aries-Serpent/_codex_/issues"
         )
+
+## Profile-Aware Development
+
+Codex ML uses a 3-profile packaging strategy (core/runtime/full). When contributing, ensure your changes work across all profiles.
+
+### Development Setup
+
+**Install full profile for development:**
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -e ".[full]"
+```
+
+### Profile-Specific Testing
+
+Test your changes against each profile:
+
+**Core Profile (offline-first, minimal dependencies):**
+```bash
+pip install -e ".[core]"
+pytest tests/test_core_profile.py
+```
+
+**Runtime Profile (production inference):**
+```bash
+pip install -e ".[runtime]"
+pytest tests/test_runtime_profile.py
+```
+
+**Full Profile (development & testing):**
+```bash
+pip install -e ".[full]"
+pytest tests/
+```
+
+### When Adding Dependencies
+
+1. **Evaluate the profile impact:**
+   - Core profile: Only stdlib + essential (hydra, pydantic, cryptography)
+   - Runtime profile: Add transformers, torch, ray[serve], fastapi
+   - Full profile: Add dev tools, test utilities, plugins
+
+2. **Update `pyproject.toml`:**
+   - Add to base `dependencies` if core needs it
+   - Add to `[project.optional-dependencies]` for runtime or full
+   - Verify via `pip install -e ".[profile]"` on each profile
+
+3. **Document in docstring or README:**
+   ```python
+   """
+   Requires the runtime or full profile:
+   - pip install codex-ml[runtime]
+   - pip install codex-ml[full]
+   """
+   ```
+
+### Profile-Specific Import Checks
+
+Use try/except for optional imports:
+
+```python
+try:
+    import torch
+    HAS_TORCH = True
+except ImportError:
+    HAS_TORCH = False
+    
+def feature_requiring_torch():
+    if not HAS_TORCH:
+       raise ImportError("This feature requires the runtime or full profile. Install with: pip install codex-ml[runtime]")
+    # ... feature implementation
+```
 
     model.eval()
     return model
