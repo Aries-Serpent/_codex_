@@ -253,7 +253,7 @@ jobs:
     if: github.event.inputs.notify_slack == 'true' && always()
     steps:
     - name: Send Slack Notification
-      uses: slackapi/slack-github-action@v1.24.0
+      uses: slackapi/slack-github-action@7ff5c87a2a0f53f60a4cedc11ccdcf5e4c04b4fb  # v1.24.0
       with:
         webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
         payload: "{\n  \"text\": \"Post-Deployment Verification Results\",\n  \"blocks\"\

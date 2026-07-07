@@ -191,8 +191,7 @@ jobs:
       with:
         fetch-depth: 0
         persist-credentials: false
-        ref: ${{ (github.event_name == 'pull_request' && (inputs.target_ref || github.event.pull_request.head.sha))
-          || github.sha || '' }}
+        ref: ${{ (github.event_name == 'pull_request' && (inputs.target_ref || github.event.pull_request.head.sha)) || (github.event_name == 'issue_comment' && 'main') || inputs.target_ref || github.sha || '' }}
     - name: Overlay trusted action + script from main (security)
       run: "git fetch origin main --depth=3 --no-tags 2>/dev/null || true\ngit restore\
         \ --source=origin/main -- \\\n  .github/actions/setup-python-cached/action.yml\

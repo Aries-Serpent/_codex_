@@ -31,7 +31,7 @@ jobs:
     - name: Checkout PR branch
       uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
-        ref: ${{ github.head_ref || github.event.pull_request.head.ref }}
+        ref: ${{ github.event.pull_request.head.sha || github.head_ref || github.event.pull_request.head.ref }}
         fetch-depth: 0
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}

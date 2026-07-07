@@ -170,7 +170,7 @@ jobs:
         name: terraform-modules
         path: infrastructure/terraform/
     - name: Set up Terraform
-      uses: hashicorp/setup-terraform@v2
+      uses: hashicorp/setup-terraform@b026d3f53dd2b6c3a8f3f44b76d1ed02293f6f0c  # v2.4.0
       with:
         terraform_version: 1.5.0
     - name: Generate Terraform Plan

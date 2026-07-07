@@ -193,7 +193,7 @@ jobs:
 
         '
     - name: Commit dashboard updates
-      uses: stefanzweifel/git-auto-commit-action@v5
+      uses: stefanzweifel/git-auto-commit-action@cc5469b8e3992d1d862b76429c7a123093ac140a  # v5.1.0
       with:
         commit_message: 'chore: update performance dashboard [skip ci]'
         file_pattern: .codex/PHASE_8_3_PERFORMANCE_DASHBOARD.md
@@ -224,7 +224,7 @@ jobs:
         '
     - name: Send Slack notification on failure
       if: failure()
-      uses: slackapi/slack-github-action@v1
+      uses: slackapi/slack-github-action@7ff5c87a2a0f53f60a4cedc11ccdcf5e4c04b4fb  # v1.24.0
       with:
         payload: "{\n  \"text\": \"⚠️ Performance monitoring workflow failed\",\n\
           \  \"blocks\": [\n    {\n      \"type\": \"section\",\n      \"text\": {\n\
