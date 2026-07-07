@@ -1,20 +1,18 @@
 {
-  "generated_at": "2026-07-07T21:48:37.269008+00:00",
+  "generated_at": "2026-07-07T22:03:49.682880+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 4995,
+  "rest_remaining": 4988,
   "graphql_available": true,
-  "graphql_remaining": 4986,
+  "graphql_remaining": 4983,
   "gh_cli_available": true,
   "codeql_available": false,
   "best_token_var": "CODEX_MASTER_KEY",
-  "open_prs": [
-    5263
-  ],
-  "branch": "copilot/explore-codebase-analyze",
+  "open_prs": [],
+  "branch": "copilot/resolve-all-failed-checks",
   "recommendation": "Use REST for data fetches. "
 }
