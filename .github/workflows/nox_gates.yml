@@ -102,13 +102,14 @@ jobs:
         uses: actions/github-script@v8
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          REF_NAME: ${{ github.head_ref || github.ref }}
         with:
           script: |
             await github.rest.actions.createWorkflowDispatch({
               owner: context.repo.owner,
               repo: context.repo.repo,
               workflow_id: 'auto-approve-workflows.yml',
-              ref: '${{ github.head_ref || github.ref }}',
+              ref: process.env.REF_NAME,
               inputs: {
                 approval_source: 'workflow-execution-gate',
                 approval_intent: 'auto_approve_action_required',

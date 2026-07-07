@@ -171,7 +171,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: P0.1: Profile alignment
+      - name: "P0.1: Profile alignment"
         id: p0-1
         run: |
           if [ -f ".codex/PROFILE_DRIFT_AUDIT.json" ]; then

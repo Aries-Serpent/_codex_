@@ -106,13 +106,9 @@ jobs:
       - name: Install uv
         run: pip install uv
 
-      - name: Create wheelhouse for CORE profile
-        continue-on-error: true
+      - name: Install CORE profile
         run: |
-          mkdir -p wheelhouse
-          # Note: This is a best-effort test; full offline test requires network access at wheelhouse creation time
-          echo "Wheelhouse test (offline install validation)"
-          ls -la wheelhouse/ || echo "Wheelhouse creation deferred to offline environment"
+          pip install -e ".[core]"
 
       - name: Verify CORE profile imports
         run: |

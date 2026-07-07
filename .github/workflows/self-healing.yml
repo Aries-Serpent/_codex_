@@ -32,8 +32,7 @@ jobs:
     # Permissions for reading workflow runs and dispatching remediation agents
     permissions:
       contents: read
-      actions: read
-      workflows: write
+      actions: write
       checks: read
 
     steps:

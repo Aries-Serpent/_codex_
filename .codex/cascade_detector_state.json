@@ -54,7 +54,7 @@
     "35:.codex/AGENT_DELEGATION_BRIEF_PHASES4B_8.md": 1,
     "35:.codex/PHASE_4B_5AB_CHECKPOINT_REPORT.md": 1,
     "35:.codex/PHASE_6_7_8_IMPLEMENTATION_GUIDES.md": 3,
-    "24:.github/workflows/ml-tests.yml": 1
+    "24:.github/workflows/ml-tests.yml": 2
   },
   "circuit_state": {
     "6": "BROKEN",
@@ -70,6 +70,7 @@
     "11": "BROKEN",
     "12": "BROKEN",
     "13": "BROKEN",
-    "30": "BROKEN"
+    "30": "BROKEN",
+    "24": "OPEN"
   }
 }
