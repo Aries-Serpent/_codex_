@@ -47,7 +47,7 @@ jobs:
         \ \"   (CI is on merge-preview commit — mypy count may differ from local run)\"\
         \nelse\n  echo \"✅  No SHA drift: trigger and checked-out SHA match.\"\nfi\n"
     - name: Set up Python 3.12
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v6.3.0
       with:
         python-version: 3.12.13
         cache: 'pip'

@@ -45,7 +45,7 @@ jobs:
 
           '
         sparse-checkout-cone-mode: false
-    - uses: actions/setup-python@v6
+    - uses: actions/setup-python@v6.3.0
       with:
         python-version: 3.12.13
         cache: pip
@@ -96,7 +96,7 @@ jobs:
 
           '
         sparse-checkout-cone-mode: false
-    - uses: actions/setup-python@v6
+    - uses: actions/setup-python@v6.3.0
       with:
         python-version: 3.12.13
         cache: pip
@@ -184,7 +184,7 @@ jobs:
 
           '
         sparse-checkout-cone-mode: false
-    - uses: actions/setup-python@v6
+    - uses: actions/setup-python@v6.3.0
       with:
         python-version: 3.12.13
         cache: pip
@@ -257,7 +257,7 @@ jobs:
 
           '
         sparse-checkout-cone-mode: false
-    - uses: actions/setup-python@v6
+    - uses: actions/setup-python@v6.3.0
       with:
         python-version: 3.12.13
         cache: pip
@@ -469,7 +469,7 @@ jobs:
           '
         sparse-checkout-cone-mode: false
     - name: Set up Python 3.12
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v6.3.0
       with:
         python-version: 3.12.13
         cache: pip

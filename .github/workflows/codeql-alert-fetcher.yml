@@ -158,7 +158,7 @@ jobs:
 
       - name: Set up Python
         if: steps.token_check.outputs.token_available == 'true'
-        uses: actions/setup-python@v6 # v6
+        uses: actions/setup-python@v6.3.0 # v6
         with:
           cache: pip
           python-version: '3.12.13'

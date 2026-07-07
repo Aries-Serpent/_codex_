@@ -31,7 +31,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7 # v6.0.3
 
-      - uses: actions/setup-python@v6 # v6
+      - uses: actions/setup-python@v6.3.0 # v6
         with:
           python-version: "3.12.13"
           cache: "pip"
