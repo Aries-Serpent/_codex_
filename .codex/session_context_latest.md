@@ -1,76 +1,86 @@
-# Session Context — 2026-07-07T02:37:02Z
-**Branch:** `copilot/improve-workflow-integration`  **PR:** #5251  **Access:** `rest, graphql, gh_cli`
+# Agent Session Context Digest
 
-## 🔌 Access Strategy
-- Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4985` (✅)
-- GraphQL remaining: `4980` (✅)
-- gh CLI: ✅
-- CodeQL CLI: ❌
-
-## 📋 PR #5251 — Resolve parallel validation findings: security hardening and code quality improvements
-State: `open`  Draft: `False`  Branch: `copilot/improve-workflow-integration` → `main`
-
-### ❌ 7 Failing CI Check(s)
-- `Workload Balance & Agent Selection` (failure)
-- `Governance Compliance` (failure)
-- `Post rescue comment on failure` (cancelled)
-- `⚡ Approve action_required runs (post-delegation)` (cancelled)
-- `Activate token delegation` (cancelled)
-- `⏳ Auto-approved — agent is pre-authorized` (cancelled)
-- `Semgrep OSS` (failure)
-
-## 🚨 Recent CI Failures (last 5 runs)
-- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-07-07)
-- **.github/workflows/codex-master-key-validation.yml** — `failure` on `copilot/improve-workflow-integration` (2026-07-07)
-- **.github/workflows/codex-master-key-validation.yml** — `failure` on `copilot/improve-workflow-integration` (2026-07-07)
-- **.github/workflows/agentic-diff-guard.yml** — `failure` on `copilot/improve-workflow-integration` (2026-07-07)
-- **.github/workflows/agentic-diff-guard.yml** — `failure` on `copilot/improve-workflow-integration` (2026-07-07)
-
-## 📝 Recent Commits
-- `8534f0ac` fix: Standardize severity emoji mapping across modules — copilot-swe-agent[bot] (2026-07-07)
-- `f7ff9dc9` fix: Resolve code review findings - tempfile usage, duplicate dataclass, missing — copilot-swe-agent[bot] (2026-07-07)
-- `d2b843da` fix: Address parallel_validation findings - timestamp format, devnull suppressio — copilot-swe-agent[bot] (2026-07-07)
-- `93e2aeca` 🎉 CAMPAIGN COMPLETE: All 8 Security Findings phases delivered (4,020 lines, 227  — copilot-swe-agent[bot] (2026-07-07)
-- `05dbc01d` feat(sec): Implement Phase 8C Secrets Detection Categorizer Module — copilot-swe-agent[bot] (2026-07-07)
-- `b3cf2e16` Phase 8A: CodeQL Alert Formatter Module Implementation — copilot-swe-agent[bot] (2026-07-07)
-- `09b6a198` Phase 7 complete: @copilot scan-summary commands (359 lines + 32 tests), Phase 8 — copilot-swe-agent[bot] (2026-07-07)
-- `ccc3dd99` Phase 6 complete: PR Enhancement with WEC integration (199 workflow + 395 format — copilot-swe-agent[bot] (2026-07-07)
-
-## ⚙️ Repository Variables (live)
-- `COPILOT_AGENT_AUTH_ENABLED` = `true`
-- `COPILOT_AGENT_MAX_AUTONOMY_LEVEL` = `D`
-- `COGNITIVE_BRAIN_SESSION_NUMBER` = `1478`
-- `CODEX_CI_FAILURE_RATE` = `0.4:ok`
-- `CODEX_CI_LAST_GREEN_SHA` = `7b2f1f6f4b8913e566be313c55cc50e2be739667`
-- `COPILOT_AGENT_FIREWALL_ENABLED` = `true`
-
-## 🔁 PDA Loop — Last 5 Iterations
-- [2026-07-02] `PDA-AUTO-20260702`: ?
-- [2026-07-03] `PDA-AUTO-20260703`: ?
-- [2026-07-06] `PDA-AUTO-20260706`: ?
-
-## 📜 Codebase Agency Policy (excerpt)
-```
-# AI Codebase Agency Policy
-
-**Version:** 1.1.0
-**Effective Date:** 2026-01-05
-**Status:** Mandatory for ALL AI agents
-**Enforcement:** Policy violations require immediate correction
+> **Generated:** 2026-07-07T02:41:18Z  
+> **Repository:** Aries-Serpent/_codex_  
+> **Script:** `scripts/ci/session_bootstrap.py`
 
 ---
 
-## Purpose
+## 📋 Fetched Context
 
-This policy establishes mandatory guidelines for ALL AI agents (GitHub Copilot, custom agents, and automated systems) working within the `Aries-Serpent/_codex_` repository. The goal is to ensure:
-
-- Comprehensive problem resolution
-- Consistent code quality
-- Knowledge transfer between agent sessions
-- Cumulative codebase improvements
-- Maintainable and documented solutions
+### 🔀 [PR] 5251
+**URL:** https://github.com/Aries-Serpent/_codex_/pull/5251  
+**Summary:** (offline mode — not fetched)
 
 ---
 
+## 🔬 CI Triage Results
+
+_Triage not run (--skip-triage or script unavailable)._
+
+---
+
+## 🚨 Blocking Issues
+
+_None — baseline is healthy._
+
+### ⚠ Warnings
+
+- ⚠ --offline: 1 URL(s) found but not fetched.
+- ⚠ --skip-triage: CI triage checks not run
+
+---
+
+## 🗺️ Coverage Intelligence
+
+> _Map generated: 2026-03-30T19:22:24Z_  
+> _Overall line rate: 10.5%_
+> _Total uncovered functions: 15 | High-risk: 15_
+
+**🔴 Zero-coverage modules (120):**
+- `logging_config`
+- `codex.chat`
+- `codex.cli`
+- `codex.logging.config`
+- `codex.logging.conversation_logger`
+- `codex.logging.db_utils`
+- `codex.logging.export`
+- `codex.logging.fetch_messages`
+- `codex.logging.import_ndjson`
+- `codex.logging.query_logs`
+- _…and 110 more_
+
+**🟡 Low-coverage modules <50% (44):**
+- `codex.training` (11.2%)
+- `codex_ml.data_utils` (16.7%)
+- `codex_ml.pipeline` (12.9%)
+- `codex_ml.symbolic_pipeline` (30.2%)
+- `codex_ml.cli.codex_cli` (41.8%)
+- `codex_ml.cli.main` (32.9%)
+- `codex_ml.data.checksums` (26.9%)
+- `codex_ml.data.loader` (18.2%)
+- `codex_ml.eval.datasets` (17.3%)
+- `codex_ml.eval.eval_runner` (23.5%)
+- _…and 34 more_
+
+
+---
+
+## 🩺 Session Diagnostic Protocol Checklist
+
+Copy into `AGENT_ACCOUNTABILITY_REPORT.md` pre-flight section:
+
+```markdown
+- [x] D-00 session_bootstrap.py — 1 URL(s) found, triage ⏭️ skipped
+- [ ] D-01 Memories loaded
+- [ ] D-02 CODEBASE_AGENCY_POLICY.md reviewed
+- [ ] D-03 Accountability report loaded (last 3 sessions)
+- [ ] D-04 CHANGELOG [Unreleased] reviewed
+- [ ] D-05 PR comments reviewed
+- [ ] D-06 CI status checked
+- [ ] D-07 ci_triage_repro.sh passed
+- [ ] D-08 Baseline documented
 ```
+
+---
+_Auto-generated by `session_bootstrap.py` at 2026-07-07T02:41:18Z_
