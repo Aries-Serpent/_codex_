@@ -157,7 +157,8 @@ def test_cwe_query(api_script: Path) -> bool:
     for cwe, expected in tests:
         results.append(run_query_test(api_script, findings_file, "cwe", cwe, expected))
     
-    findings_file.parent.rmdir()
+    import shutil
+    shutil.rmtree(findings_file.parent)
     return all(results)
 
 
@@ -177,7 +178,8 @@ def test_package_query(api_script: Path) -> bool:
     for package, expected in tests:
         results.append(run_query_test(api_script, findings_file, "package", package, expected))
     
-    findings_file.parent.rmdir()
+    import shutil
+    shutil.rmtree(findings_file.parent)
     return all(results)
 
 
