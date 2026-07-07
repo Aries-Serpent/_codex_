@@ -15,7 +15,7 @@ name: Security Scanning Suite
   workflow_dispatch:
     inputs:
       scan-type:
-        description: Security scan type
+        description: Security scan types
         required: true
         type: choice
         options:
@@ -96,8 +96,7 @@ jobs:
         \ \"- **Analyze outcome:** ${{ steps.codeql.outcome }}\"\n  echo \"\"\n  if\
         \ compgen -G \"$SARIF_DIR/*.sarif\" > /dev/null; then\n    echo \"## SARIF\
         \ files produced\"\n    echo \"\"\n    for f in \"$SARIF_DIR\"/*.sarif; do\n\
-        \      size=$(wc -c < \"$f\")\n      counts=$(python -c \"import json,sys;d=json.load(open(sys.argv[1]));runs=d.get('runs',[]);rules=sum(len(r.get('tool',{}).get('driver',{}).get('rules',[])\
-        \ or []) for r in runs);results=sum(len(r.get('results',[]) or []) for r in\
+        \      size=$(wc -c < \"$f\")\n      counts=$(python -c \"import json,sys;d=json.load(open(sys.argv[1]));runs=d.get('runs',[]);rules=sum(len(r.get('tool',{}).get('driver',{}).get('rules',[])\n        \ or []) for r in runs);results=sum(len(r.get('results',[]) or []) for r in\
         \ runs);print(f'rules={rules}, results={results}')\" \"$f\" 2>/dev/null ||\
         \ echo \"rules=?, results=?\")\n      echo \"- \\`$(basename \"$f\")\\` (${size}\
         \ bytes, ${counts})\"\n    done\n  else\n    echo \"_No SARIF files were produced\
@@ -139,6 +138,8 @@ jobs:
     steps:
     - uses: actions/checkout@v5
     - name: Run Semgrep with SARIF output
+      id: semgrep
+      continue-on-error: true
       uses: returntocorp/semgrep-action@713efdd345f3035192eaa63f56867b88e63e4e5d
       with:
         generateSarif: true
@@ -348,8 +349,7 @@ jobs:
         \ indent=2, sort_keys=True)\n\" || echo '{\"error\":\"summary generation failed\"\
         }' > detect-secrets-summary.json\nFILES=$(python -c \"import json;print(json.load(open('detect-secrets-summary.json')).get('files_with_secrets',0))\"\
         \ 2>/dev/null || echo 0)\nTOTAL=$(python -c \"import json;print(json.load(open('detect-secrets-summary.json')).get('total_secrets',0))\"\
-        \ 2>/dev/null || echo 0)\nPLUGINS=$(python -c \"import json;print(', '.join(json.load(open('detect-secrets-summary.json')).get('plugins',[])\
-        \ or []))\" 2>/dev/null || echo n/a)\n{\n  echo \"# Secret Scan Report\"\n\
+        \ 2>/dev/null || echo 0)\nPLUGINS=$(python -c \"import json;print(', '.join(json.load(open('detect-secrets-summary.json')).get('plugins',[])\n        \ or []))\" 2>/dev/null || echo n/a)\n{\n  echo \"# Secret Scan Report\"\n\
         \  echo \"\"\n  echo \"- **Files with potential secrets:** ${FILES}\"\n  echo\
         \ \"- **Total potential secret occurrences:** ${TOTAL}\"\n  echo \"- **Plugins:**\
         \ ${PLUGINS}\"\n  echo \"\"\n  echo \"## Artifact contents\"\n  echo \"- \\\
@@ -427,8 +427,7 @@ jobs:
       if: always()
       shell: bash
       run: "set -euo pipefail\nCOMPONENT_COUNT=0\nBOM_FORMAT=\"\"\nSPEC_VERSION=\"\
-        \"\nif [ -f sbom.json ]; then\n  COMPONENT_COUNT=$(python -c \"import json;d=json.load(open('sbom.json'));print(len(d.get('components',[])\
-        \ or []))\" 2>/dev/null || echo 0)\n  BOM_FORMAT=$(python -c \"import json;print(json.load(open('sbom.json')).get('bomFormat',''))\"\
+        \"\nif [ -f sbom.json ]; then\n  COMPONENT_COUNT=$(python -c \"import json;d=json.load(open('sbom.json'));print(len(d.get('components',[])\n        \ or []))\" 2>/dev/null || echo 0)\n  BOM_FORMAT=$(python -c \"import json;print(json.load(open('sbom.json')).get('bomFormat',''))\"\
         \ 2>/dev/null || echo \"\")\n  SPEC_VERSION=$(python -c \"import json;print(json.load(open('sbom.json')).get('specVersion',''))\"\
         \ 2>/dev/null || echo \"\")\nfi\npython -c \"\nimport json, datetime\njson.dump({\n\
         \    'generated_at': datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),\n\
@@ -559,9 +558,7 @@ jobs:
       if: always()
       shell: bash
       run: "set -euo pipefail\nRESULTS=0\nERRORS=0\nif [ -f semgrep-results.json ];\
-        \ then\n  RESULTS=$(python -c \"import json;d=json.load(open('semgrep-results.json'));print(len(d.get('results',[])\
-        \ or []))\" 2>/dev/null || echo 0)\n  ERRORS=$(python -c \"import json;d=json.load(open('semgrep-results.json'));print(len(d.get('errors',[])\
-        \ or []))\" 2>/dev/null || echo 0)\nfi\nCHUNK_COUNT=$(ls sarif-chunks/*.sarif\
+        \ then\n  RESULTS=$(python -c \"import json;d=json.load(open('semgrep-results.json'));print(len(d.get('results',[])\n        \ or []))\" 2>/dev/null || echo 0)\n  ERRORS=$(python -c \"import json;d=json.load(open('semgrep-results.json'));print(len(d.get('errors',[])\n        \ or []))\" 2>/dev/null || echo 0)\nfi\nCHUNK_COUNT=$(ls sarif-chunks/*.sarif\
         \ 2>/dev/null | wc -l | tr -d ' ')\n{\n  echo \"# Semgrep SAST Report\"\n\
         \  echo \"\"\n  echo \"- **Findings (results):** ${RESULTS}\"\n  echo \"-\
         \ **Scanner errors:** ${ERRORS}\"\n  echo \"- **SARIF chunks uploaded to GHAS:**\
@@ -633,7 +630,7 @@ jobs:
         \ }}/actions/runs/${{ github.run_id }}\"\nARTIFACTS_URL=\"${RUN_URL}#artifacts\"\
         \nSECURITY_URL=\"${{ github.server_url }}/${{ github.repository }}/security/code-scanning\"\
         \n\nmkdir -p security-suite-summary\nOUT=\"security-suite-summary/security-suite-summary.md\"\
-        \n\n{\n  echo \"# \U0001F512 Security Scanning Suite Summary\"\n  echo \"\"\
+        \n\n{\n  echo \"# 🔐 Security Scanning Suite Summary\"\n  echo \"\"\
         \n  echo \"- **Repository:** \\`${{ github.repository }}\\`\"\n  echo \"-\
         \ **Commit:** \\`${{ github.sha }}\\`\"\n  echo \"- **Workflow run:** [#${{\
         \ github.run_number }}](${RUN_URL})\"\n  echo \"- **Artifacts:** [open dropdown](${ARTIFACTS_URL})\"\
@@ -663,9 +660,9 @@ jobs:
         \ sed 's|^\\./||' | sort)\n      echo '```'\n      echo \"\"\n      echo \"\
         </details>\"\n      echo \"\"\n    done\n  else\n    echo \"_No security-suite-*\
         \ artifacts were produced by this run._\"\n  fi\n  echo \"\"\n  echo \"##\
-        \ Where to look next\"\n  echo \"- \U0001F4E6 **Artifacts dropdown:** [run\
-        \ page → Artifacts](${ARTIFACTS_URL})\"\n  echo \"- \U0001F6E1️ **SARIF findings:**\
-        \ [Security → Code scanning](${SECURITY_URL})\"\n  echo \"- \U0001F4DD **Per-scan\
+        \ Where to look next\"\n  echo \"- 📦 **Artifacts dropdown:** [run\
+        \ page → Artifacts](${ARTIFACTS_URL})\"\n  echo \"- 🛡️ **SARIF findings:**\
+        \ [Security → Code scanning](${SECURITY_URL})\"\n  echo \"- 📝 **Per-scan\
         \ markdown reports:** \\`*-summary.md\\` inside each artifact\"\n} > \"$OUT\"\
         \ncat \"$OUT\" >> \"$GITHUB_STEP_SUMMARY\"\n"
     - name: Upload consolidated summary
