@@ -1,25 +1,18 @@
 {
-  "generated_at": "2026-07-07T09:57:21.119200+00:00",
+  "generated_at": "2026-07-07T10:20:49.067150+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 4880,
+  "rest_remaining": 3897,
   "graphql_available": true,
-  "graphql_remaining": 4983,
+  "graphql_remaining": 4915,
   "gh_cli_available": true,
   "codeql_available": false,
-  "best_token_var": "CODEX_MASTER_KEY",
+  "best_token_var": "GITHUB_TOKEN",
   "open_prs": [
-    5260,
-    5259,
-    5258,
-    5257,
-    5256,
-    5255,
-    5254,
     5253
   ],
   "branch": "dependabot/github_actions/MishaKav/pytest-coverage-comment-fd9adbdca9fdfbe2b9bfa44a7340e6a83346ce6c",
