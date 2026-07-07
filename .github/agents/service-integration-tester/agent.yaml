@@ -64,7 +64,7 @@ runs:
   using: 'composite'
   steps:
     - name: Set up Python
-      uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b
+      uses: actions/setup-python@v6
       with:
         python-version: '3.11'
 
@@ -159,7 +159,7 @@ runs:
         cat test_suggestions.txt
 
     - name: Upload coverage report
-      uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b
+      uses: actions/upload-artifact@v5
       if: always()
       with:
         name: coverage-report
@@ -175,7 +175,7 @@ runs:
         PASSED: ${{ steps.enforce.outputs.passed }}
         THRESHOLD: ${{ inputs.threshold }}
         OUTPUT_FILE: ${{ inputs.output-file }}
-      uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea
+      uses: actions/github-script@v8
       if: github.event_name == 'pull_request' && always()
       with:
         script: |
