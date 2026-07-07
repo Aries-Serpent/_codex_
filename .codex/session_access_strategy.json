@@ -1,20 +1,18 @@
 {
-  "generated_at": "2026-07-07T10:24:54.201589+00:00",
+  "generated_at": "2026-07-07T11:23:01.238603+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 3794,
+  "rest_remaining": 4995,
   "graphql_available": true,
-  "graphql_remaining": 4911,
+  "graphql_remaining": 5000,
   "gh_cli_available": true,
   "codeql_available": false,
-  "best_token_var": "GITHUB_TOKEN",
-  "open_prs": [
-    5253
-  ],
-  "branch": "dependabot/github_actions/MishaKav/pytest-coverage-comment-fd9adbdca9fdfbe2b9bfa44a7340e6a83346ce6c",
+  "best_token_var": "CODEX_MASTER_KEY",
+  "open_prs": [],
+  "branch": "copilot/explore-codebase-analyze",
   "recommendation": "Use REST for data fetches. "
 }
