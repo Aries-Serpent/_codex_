@@ -9,11 +9,13 @@ Tests:
 4. Edge cases handling
 """
 
-import subprocess
-import yaml
 import json
+import subprocess
 import tempfile
 from pathlib import Path
+
+import yaml
+
 
 def run_test(name: str, condition: bool, details: str = "") -> bool:
     """Print test result."""

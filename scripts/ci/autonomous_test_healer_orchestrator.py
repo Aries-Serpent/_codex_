@@ -77,7 +77,7 @@ class TestHealerOrchestrator:
             metrics={},
         )
         
-        logger.info(f"Initialized TestHealerOrchestrator")
+        logger.info("Initialized TestHealerOrchestrator")
         logger.info(f"  Repo root: {config.repo_root}")
         logger.info(f"  Test dir: {config.test_dir}")
         logger.info(f"  Output dir: {config.output_dir}")
@@ -155,7 +155,7 @@ class TestHealerOrchestrator:
         total_p1 = sum(v for k, v in self.report.patterns_analyzed.items() if k.startswith("P1-"))
         logger.info(f"  Total P1 tests analyzed: {total_p1}")
         logger.info(f"  Total remediations suggested: {sum(v for k, v in self.report.remediations_suggested.items() if k.startswith('P1-'))}")
-        logger.info(f"  Status: ✅ DEPLOYMENT COMPLETE (ADVISORY MODE)")
+        logger.info("  Status: ✅ DEPLOYMENT COMPLETE (ADVISORY MODE)")
     
     def _deploy_p2_p3_patterns(self):
         """Deploy P2/P3 pattern detection and remediation."""
@@ -232,7 +232,7 @@ class TestHealerOrchestrator:
         total_p2p3 = sum(v for k, v in self.report.patterns_analyzed.items() if k.startswith("P2-") or k.startswith("P3-"))
         logger.info(f"  Total P2/P3 tests analyzed: {total_p2p3}")
         logger.info(f"  Total remediations suggested: {sum(v for k, v in self.report.remediations_suggested.items() if k.startswith('P2-') or k.startswith('P3-'))}")
-        logger.info(f"  Status: ✅ DEPLOYMENT COMPLETE (ADVISORY MODE)")
+        logger.info("  Status: ✅ DEPLOYMENT COMPLETE (ADVISORY MODE)")
     
     def _deploy_p4_patterns(self):
         """Deploy P4 flaky test isolation framework."""
@@ -273,7 +273,7 @@ class TestHealerOrchestrator:
         total_p4 = sum(v for k, v in self.report.patterns_analyzed.items() if k.startswith("P4-"))
         logger.info(f"  Total P4 tests analyzed: {total_p4}")
         logger.info(f"  Total remediations suggested: {sum(v for k, v in self.report.remediations_suggested.items() if k.startswith('P4-'))}")
-        logger.info(f"  Status: ✅ DEPLOYMENT COMPLETE (ADVISORY MODE)")
+        logger.info("  Status: ✅ DEPLOYMENT COMPLETE (ADVISORY MODE)")
     
     def _validate_and_report(self):
         """Validate healing and generate final report."""
@@ -306,21 +306,21 @@ class TestHealerOrchestrator:
         logger.info("PHASE 13 TRACK 13.1 EXECUTION SUMMARY")
         logger.info("=" * 70)
         logger.info(f"\nTimestamp: {self.report.timestamp.isoformat()}")
-        logger.info(f"\nPatterns by Category:")
+        logger.info("\nPatterns by Category:")
         for pattern, count in sorted(self.report.patterns_analyzed.items()):
             suggested = self.report.remediations_suggested.get(pattern, 0)
             logger.info(f"  {pattern}: {count} analyzed → {suggested} remediations")
         
-        logger.info(f"\nMetrics:")
+        logger.info("\nMetrics:")
         for metric, value in self.report.metrics.items():
             logger.info(f"  {metric}: {value}")
         
-        logger.info(f"\n✅ PHASE 13 TRACK 13.1 READY FOR DAYS 3-5 DEPLOYMENT")
-        logger.info(f"\nNext Steps:")
-        logger.info(f"  - Day 3: Deploy P1 patterns (OOM, segfault, heap, stack)")
-        logger.info(f"  - Day 4: Deploy P2/P3 patterns (timeout, assertions)")
-        logger.info(f"  - Day 5: Deploy P4 framework (flaky isolation)")
-        logger.info(f"  - Validate: ≥95% remediation rate, 500+ tests fixed")
+        logger.info("\n✅ PHASE 13 TRACK 13.1 READY FOR DAYS 3-5 DEPLOYMENT")
+        logger.info("\nNext Steps:")
+        logger.info("  - Day 3: Deploy P1 patterns (OOM, segfault, heap, stack)")
+        logger.info("  - Day 4: Deploy P2/P3 patterns (timeout, assertions)")
+        logger.info("  - Day 5: Deploy P4 framework (flaky isolation)")
+        logger.info("  - Validate: ≥95% remediation rate, 500+ tests fixed")
         
         # Save report
         report_path = self.config.output_dir / "test_healer_report.json"

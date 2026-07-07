@@ -12,10 +12,9 @@ Tests cover:
 """
 
 import json
-import time
 import tempfile
+import time
 from pathlib import Path
-from typing import Any, Dict, List
 
 import pytest
 

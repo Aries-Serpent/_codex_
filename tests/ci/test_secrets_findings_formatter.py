@@ -26,7 +26,6 @@ from secrets_findings_formatter import (
     _convert_confidence_to_percent,
     _filter_secret_findings,
     _generate_remediation_steps,
-    _load_findings,
     _parse_secret_type,
     categorize_secret_findings,
 )

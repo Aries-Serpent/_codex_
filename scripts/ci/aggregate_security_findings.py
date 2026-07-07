@@ -35,10 +35,10 @@ import os
 import re
 import sys
 from collections import defaultdict
-from dataclasses import asdict, dataclass, field
+from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Dict, List, Optional
 
 logging.basicConfig(
     level=logging.INFO,
@@ -474,7 +474,7 @@ class FindingsAggregator:
             md_lines.append(f"- `{handoff['agent']}`: {handoff['findings_count']} findings")
 
         md_lines.append("")
-        md_lines.append(f"[View full security report](reports/security-findings-comprehensive.json)")
+        md_lines.append("[View full security report](reports/security-findings-comprehensive.json)")
 
         with open(output_file, "w") as f:
             f.write("\n".join(md_lines))

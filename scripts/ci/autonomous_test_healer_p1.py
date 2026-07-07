@@ -403,7 +403,7 @@ def main():
     )
     
     if failure:
-        logger.info(f"\nClassified failure:")
+        logger.info("\nClassified failure:")
         logger.info(f"  File: {failure.test_file}")
         logger.info(f"  Test: {failure.test_name}")
         logger.info(f"  Pattern: {failure.pattern.value}")

@@ -16,7 +16,7 @@ import sys
 from argparse import ArgumentParser
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 
 # Secret Type Classification Database

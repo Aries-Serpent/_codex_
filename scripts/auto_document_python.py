@@ -169,7 +169,7 @@ def process_directory(directory: Path) -> dict:
                     print(f"✅ Added module docstring to {py_file}")
             else:
                 print(f"✓  {py_file} already documented")
-        except Exception as e:
+        except Exception:
             stats['errors'] += 1
             print(f"❌ Error processing {py_file}: <ERROR_TYPE>")
 

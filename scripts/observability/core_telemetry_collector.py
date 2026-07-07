@@ -14,11 +14,10 @@ Status: Production-Ready
 import json
 import logging
 import threading
-import time
 from dataclasses import dataclass, field, asdict
 from datetime import datetime, timezone
 from enum import Enum
-from typing import Dict, List, Optional, Any, Set, Tuple
+from typing import Dict, Any, Set
 from collections import defaultdict, deque
 
 # ============================================================================
@@ -370,4 +369,4 @@ if __name__ == "__main__":
     
     snapshot = collector.get_metrics_snapshot()
     print(f"Metrics snapshot:\n{json.dumps(snapshot, indent=2)}")
-    print(f"Total metrics implemented: 25")
+    print("Total metrics implemented: 25")

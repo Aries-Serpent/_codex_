@@ -10,10 +10,9 @@ Tests cover:
 5. End-to-end PR body injection
 """
 
-import json
 import sys
-import tempfile
 from pathlib import Path
+
 
 def test_workflow_yaml_valid():
     """Test 1: Workflow YAML is valid"""
@@ -41,12 +40,11 @@ def test_formatter_module():
     import sys
     sys.path.insert(0, 'scripts/ci')
     from security_pr_formatter import (
-        load_findings,
+        SecurityFinding,
         format_findings_table,
-        list_top_issues,
-        get_agent_assignments,
         generate_pr_summary,
-        SecurityFinding
+        get_agent_assignments,
+        list_top_issues,
     )
     
     # Create test findings
@@ -93,11 +91,7 @@ def test_empty_findings_handling():
     """Test 3: Empty findings handled gracefully"""
     import sys
     sys.path.insert(0, 'scripts/ci')
-    from security_pr_formatter import (
-        generate_pr_summary,
-        format_findings_table,
-        list_top_issues
-    )
+    from security_pr_formatter import format_findings_table, generate_pr_summary, list_top_issues
     
     empty_findings = []
     
@@ -142,7 +136,6 @@ def test_output_format():
 def test_wec_preservation():
     """Test 6: WEC section preservation logic"""
     # This tests the JavaScript logic that should preserve WEC
-    import re
     
 
 def test_wec_preservation():
@@ -222,7 +215,7 @@ def test_agent_recommendations():
     """Test 10: Agent recommendation logic"""
     import sys
     sys.path.insert(0, 'scripts/ci')
-    from security_pr_formatter import get_agent_assignments, SecurityFinding
+    from security_pr_formatter import SecurityFinding, get_agent_assignments
     
     # Create findings from different tools
     findings = [

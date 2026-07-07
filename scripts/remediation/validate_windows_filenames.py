@@ -70,7 +70,7 @@ class FilenameValidator:
                                     'type': 'UNSAFE_ISOFORMAT',
                                     'content': line.strip()[:100]
                                 })
-            except Exception as e:
+            except Exception:
                 pass
     
     def report(self):

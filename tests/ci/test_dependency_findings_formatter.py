@@ -13,29 +13,30 @@ Test Coverage:
 """
 
 import json
-import pytest
-import tempfile
-import time
-from pathlib import Path
-from typing import Dict, List, Any
 
 # Import formatter functions
 import sys
+import tempfile
+import time
+from pathlib import Path
+from typing import Any, Dict, List
+
+import pytest
+
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "ci"))
 
 from dependency_findings_formatter import (
-    load_findings,
-    extract_package_name,
-    parse_version,
     calculate_upgrade_path,
-    filter_dependency_findings,
-    group_by_package,
-    format_dependency_vulnerabilities,
-    extract_version_from_finding,
     extract_cve_id,
+    extract_package_name,
+    extract_version_from_finding,
+    filter_dependency_findings,
+    format_dependency_vulnerabilities,
     generate_markdown_report,
+    group_by_package,
+    load_findings,
+    parse_version,
 )
-
 
 # ============================================================================
 # Test Fixtures

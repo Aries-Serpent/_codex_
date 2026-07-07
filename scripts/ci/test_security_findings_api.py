@@ -12,7 +12,6 @@ import sys
 import tempfile
 import time
 from pathlib import Path
-from typing import Dict, Any, List
 
 # Test data - sample findings
 SAMPLE_FINDINGS = [

@@ -42,7 +42,7 @@ import sys
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 logging.basicConfig(
     level=logging.INFO,
@@ -616,7 +616,7 @@ class CopilotSecurityAgentHandoff:
             md_lines = [
                 f"# Security Findings Handoff for {handoff.agent_id}",
                 "",
-                f"## Summary",
+                "## Summary",
                 f"- **Total Findings:** {handoff.findings_count}",
             ]
             

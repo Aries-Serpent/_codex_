@@ -4,9 +4,10 @@ Unit tests for Security Cache Manager
 """
 
 import json
-import pytest
-from pathlib import Path
 from datetime import datetime, timezone
+
+import pytest
+
 from scripts.ci.security_cache_manager import SecurityCacheManager
 from scripts.ci.security_findings_trend_analyzer import SecurityFindingsTrendAnalyzer
 
