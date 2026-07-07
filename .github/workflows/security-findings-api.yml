@@ -5,6 +5,9 @@ name: Security Findings API
     types:
       - security-findings-query
 
+permissions:
+  contents: read
+
 jobs:
   query-findings:
     runs-on: ubuntu-latest

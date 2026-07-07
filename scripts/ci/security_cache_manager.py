@@ -453,7 +453,7 @@ def main():
                 args.run_id, commit_sha, args.findings_json
             )
             if cache_path:
-                print(f"CACHE_PATH={cache_path}", file=open(os.devnull, "w"))
+                logger.debug(f"CACHE_PATH={cache_path}")
                 logger.info(f"✅ Cached findings: {cache_path}")
                 return 0
             return 1

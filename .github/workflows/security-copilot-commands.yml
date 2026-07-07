@@ -31,7 +31,7 @@ jobs:
         id: parse
         run: |
           python scripts/ci/copilot_security_agent_handoff.py parse-command \
-            --comment "${{ github.event.comment.body }}" \
+            --comment-body "${{ env.COMMENT_BODY }}" \
             --output /tmp/command.json
           
           # Extract parse result for debugging
@@ -46,6 +46,8 @@ jobs:
               else:
                   print("✗ No valid command found")
           EOF
+        env:
+          COMMENT_BODY: ${{ github.event.comment.body }}
       
       - name: Generate Response
         id: response

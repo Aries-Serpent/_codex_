@@ -155,7 +155,7 @@ def _calculate_rotation_deadline(urgency: str) -> str:
 
     hours = secret_info.get("rotation_hours", 168)
     deadline = datetime.now(timezone.utc) + timedelta(hours=hours)
-    return deadline.isoformat() + "Z"
+    return deadline.strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def _generate_remediation_steps(secret_type: str, file_path: str) -> str:
