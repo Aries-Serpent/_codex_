@@ -1,10 +1,10 @@
-# Session Context — 2026-07-07T21:11:17Z
+# Session Context — 2026-07-07T21:48:37Z
 **Branch:** `copilot/explore-codebase-analyze`  **PR:** #5263  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4543` (✅)
-- GraphQL remaining: `4975` (✅)
+- REST remaining: `4995` (✅)
+- GraphQL remaining: `4986` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -16,20 +16,20 @@ State: `open`  Draft: `False`  Branch: `copilot/explore-codebase-analyze` → `m
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **Workflow Execution Gate** — `failure` on `copilot/explore-codebase-analyze` (2026-07-07)
+- **💰 PR Cost Check** — `failure` on `copilot/explore-codebase-analyze` (2026-07-07)
 - **Agent Token Delegation** — `failure` on `copilot/explore-codebase-analyze` (2026-07-07)
-- **🔖 Required Actions Version Enforcer** — `failure` on `copilot/explore-codebase-analyze` (2026-07-07)
-- **Unified Governance Check** — `failure` on `copilot/explore-codebase-analyze` (2026-07-07)
-- **🧹 Cleanup Stale PR Comments** — `failure` on `copilot/explore-codebase-analyze` (2026-07-07)
+- **Coverage Ratchet** — `failure` on `copilot/explore-codebase-analyze` (2026-07-07)
+- **CODEX_MASTER_KEY Scope Validation** — `failure` on `copilot/explore-codebase-analyze` (2026-07-07)
 
 ## 📝 Recent Commits
+- `319e9580` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-07-07)
+- `b2dbba54` ci-rescue: Verify security findings as false positives and respond with commit S — copilot-swe-agent[bot] (2026-07-07)
 - `4c419e65` docs(compliance): Update REQ-4 & REQ-5 for PR #5263 CI Rescue security findings  — copilot-swe-agent[bot] (2026-07-07)
 - `b9669e07` fix(workflows): Add proper comment spacing for yamllint compliance — copilot-swe-agent[bot] (2026-07-07)
 - `22399109` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-07-07)
 - `0862a46a` fix(compliance): Semgrep OSS remediation complete + deployment documentation + R — copilot-swe-agent[bot] (2026-07-07)
 - `d0b28f8d` fix(compliance): Update CHANGELOG.md and add deployment environment variable doc — copilot-swe-agent[bot] (2026-07-07)
 - `8e64ae37` fix(semgrep): Pin all GitHub Actions to secure commit SHAs — copilot-swe-agent[bot] (2026-07-07)
-- `327557ab` WIP: Semgrep OSS remediation plan - 115 alerts including 1 error — copilot-swe-agent[bot] (2026-07-07)
-- `42cb2c26` fix(workflows): Complete all 5 workflow check remediation - ready for main branc — copilot-swe-agent[bot] (2026-07-07)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
