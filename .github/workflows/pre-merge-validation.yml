@@ -187,29 +187,42 @@ jobs:
       if: steps.autofix.outcome != 'success' || steps.pattern_pipeline.outcome !=
         'success' || steps.batch_scan_protocol.outcome != 'success' || steps.session_wrapup.outcome
         != 'success' || steps.wec_compliance.outcome != 'success'
-      run: "echo \"::error::Pre-merge validation failed\"\nif [ \"${{ steps.autofix.outcome\
-        \ }}\" != \"success\" ]; then\n  echo \"::error::Auto-fixable issues detected\"\
-        \n  if [ -f /tmp/autofix_report.json ]; then\n    python3 scripts/ci/print_autofix_issues.py\n\
-        \  fi\n  echo \"Fix with: python scripts/ci/auto_fix_common_issues.py\"\n\
-        fi\nif [ \"${{ steps.pattern_pipeline.outcome }}\" != \"success\" ]; then\n\
-        \  echo \"::error::CI pattern pipeline (strict) failed \u2014 high-recurrence\
-        \ patterns or unfixed auto-fixable issues\"\n  if [ -f /tmp/pattern_pipeline_report.json\
-        \ ]; then\n    python3 -c \"import json,sys; r=json.load(open('/tmp/pattern_pipeline_report.json'));\
-        \ print(json.dumps(r.get('summary',{}), indent=2))\"\n  fi\n  echo \"Fix with:\
-        \ python scripts/ci/auto_fix_common_issues.py && python scripts/ci/ci_pattern_pipeline.py\
-        \ --strict\"\nfi\nif [ \"${{ steps.batch_scan_protocol.outcome }}\" != \"\
-        success\" ]; then\n  echo \"::error::Agent batch-scan protocol check failed\
-        \ \u2014 one or more agent files are missing the \u26A1 Parallel Batch Scanning\
-        \ Protocol section\"\n  echo \"Fix with: python scripts/ci/inject_batch_scan_protocol.py\"\
-        \nfi\nif [ \"${{ steps.session_wrapup.outcome }}\" != \"success\" ]; then\n\
-        \  echo \"::error::Session wrapup check failed \u2014 REQ-4/REQ-5 files are\
-        \ not fresh for latest commit\"\n  echo \"Fix with: python3 scripts/ci/session_wrapup_autofix.py\
-        \ --check --pr-number ${{ github.event.pull_request.number }}\"\nfi\nif [\
-        \ \"${{ steps.wec_compliance.outcome }}\" != \"success\" ]; then\n  echo \"\
-        ::error::WEC compliance check failed \u2014 required workflows not properly\
-        \ configured in WEC block\"\n  echo \"Fix with: python3 scripts/ci/session_wrapup_autofix.py\
-        \ --check-wec-compliance --pr-number ${{ github.event.pull_request.number\
-        \ }}\"\nfi\nexit 1\n"
+      env:
+        AUTOFIX_OUTCOME: ${{ steps.autofix.outcome }}
+        PATTERN_OUTCOME: ${{ steps.pattern_pipeline.outcome }}
+        BATCH_SCAN_OUTCOME: ${{ steps.batch_scan_protocol.outcome }}
+        SESSION_OUTCOME: ${{ steps.session_wrapup.outcome }}
+        WEC_OUTCOME: ${{ steps.wec_compliance.outcome }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+      run: |
+        echo "::error::Pre-merge validation failed"
+        if [ "$AUTOFIX_OUTCOME" != "success" ]; then
+          echo "::error::Auto-fixable issues detected"
+          if [ -f /tmp/autofix_report.json ]; then
+            python3 scripts/ci/print_autofix_issues.py
+          fi
+          echo "Fix with: python scripts/ci/auto_fix_common_issues.py"
+        fi
+        if [ "$PATTERN_OUTCOME" != "success" ]; then
+          echo "::error::CI pattern pipeline (strict) failed — high-recurrence patterns or unfixed auto-fixable issues"
+          if [ -f /tmp/pattern_pipeline_report.json ]; then
+            python3 -c "import json,sys; r=json.load(open('/tmp/pattern_pipeline_report.json')); print(json.dumps(r.get('summary',{}), indent=2))"
+          fi
+          echo "Fix with: python scripts/ci/auto_fix_common_issues.py && python scripts/ci/ci_pattern_pipeline.py --strict"
+        fi
+        if [ "$BATCH_SCAN_OUTCOME" != "success" ]; then
+          echo "::error::Agent batch-scan protocol check failed — one or more agent files are missing the ⚡ Parallel Batch Scanning Protocol section"
+          echo "Fix with: python scripts/ci/inject_batch_scan_protocol.py"
+        fi
+        if [ "$SESSION_OUTCOME" != "success" ]; then
+          echo "::error::Session wrapup check failed — REQ-4/REQ-5 files are not fresh for latest commit"
+          echo "Fix with: python3 scripts/ci/session_wrapup_autofix.py --check --pr-number $PR_NUMBER"
+        fi
+        if [ "$WEC_OUTCOME" != "success" ]; then
+          echo "::error::WEC compliance check failed — required workflows not properly configured in WEC block"
+          echo "Fix with: python3 scripts/ci/session_wrapup_autofix.py --check-wec-compliance --pr-number $PR_NUMBER"
+        fi
+        exit 1
     - name: Cache health report
       if: always()
       continue-on-error: true
