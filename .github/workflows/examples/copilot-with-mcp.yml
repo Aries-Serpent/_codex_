@@ -165,7 +165,7 @@ jobs:
           if [ -f mcp_manifest.json ] && [ "$MCP_ENABLED" == "true" ]; then
             echo "📋 Loading MCP context..."
             CONTEXT=$(cat mcp_manifest.json)
-            echo "   Context size: $(echo "$CONTEXT" | wc -c) bytes"
+            echo "   Context size: ${#CONTEXT} bytes"
           fi
 
           # Example: Run your Copilot task script here
