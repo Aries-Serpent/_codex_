@@ -1,20 +1,21 @@
 {
-  "generated_at": "2026-07-07T10:24:54.201589+00:00",
+  "generated_at": "2026-07-07T16:13:15.708540+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 3794,
+  "rest_remaining": 4569,
   "graphql_available": true,
-  "graphql_remaining": 4911,
+  "graphql_remaining": 4988,
   "gh_cli_available": true,
   "codeql_available": false,
   "best_token_var": "GITHUB_TOKEN",
   "open_prs": [
-    5253
+    5263,
+    5262
   ],
-  "branch": "dependabot/github_actions/MishaKav/pytest-coverage-comment-fd9adbdca9fdfbe2b9bfa44a7340e6a83346ce6c",
+  "branch": "dependabot/go_modules/tools/github-secrets-cli/go_modules-a3c8a40308",
   "recommendation": "Use REST for data fetches. "
 }
