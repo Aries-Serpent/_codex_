@@ -14,7 +14,7 @@ Source: lane5-docfresh (doc-freshness-checker)
 |---|---|
 | High | Conflicting Python version prerequisites across onboarding docs |
 | High | Malformed markdown fence patterns in offline docs |
-| High | Citation placeholder tokens (`oaicite`) in runbook content |
+| High | Citation placeholder tokens in runbook content |
 | Medium | Quickstart alias routes external users to agent-focused page |
 | Medium | Hard-coded version strings likely to stale on release bumps |
 

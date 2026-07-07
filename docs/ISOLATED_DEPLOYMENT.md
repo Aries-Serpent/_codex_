@@ -11,6 +11,8 @@ Run the system in a local isolated repository with whitelist-only networking and
 3. Enforce deny-by-default network policy.
 4. Allow only explicitly approved hosts where required.
 
+> ⚠️ Pre-release note: treat this as v0.1.0 pre-release deployment guidance pending P0 campaign closure (lock/profile alignment, hash-verified manifests, strict no-network bootstrap path).
+
 ## Recommended Allowlist Seed (Example)
 
 ```yaml
@@ -18,8 +20,6 @@ allowed_hosts:
   - github.com
   - api.github.com
   - huggingface.co
-  - pypi.org
-  - files.pythonhosted.org
 mode: fail_closed
 ```
 

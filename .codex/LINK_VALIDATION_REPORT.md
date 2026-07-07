@@ -15,8 +15,8 @@ Scope: offline/onboarding docs and isolated deployment references
 | Severity | File:Line | Link | Recommended Fix |
 |---|---|---|---|
 | High | `docs/ONBOARDING_QUICKSTART.md:235` | `https://visualstudio.microsoft.com/cpp-build-tools/` | Use `https://visualstudio.microsoft.com/visual-cpp-build-tools/` |
-| Medium | `OFFLINE_DEPLOYMENT.md:421` | `QUICKSTART_BY_PROFILE.md#-core-profile-lightweight--offline-first-8-15-mb` | Use `#core-profile-lightweight-offline-first-8-15-mb` |
-| Medium | `OFFLINE_DEPLOYMENT.md:422` | `QUICKSTART_BY_PROFILE.md#-runtime-profile-production-inference--apis-20-35-mb` | Use `#runtime-profile-production-inference-apis-20-35-mb` |
+| Medium | `OFFLINE_DEPLOYMENT.md:421` | `QUICKSTART_BY_PROFILE.md#-core-profile-lightweight--offline-first-8-15-mb` | Use `#core-profile-lightweight-offline-first-8-15-mb` (remove emoji prefix/special markers) |
+| Medium | `OFFLINE_DEPLOYMENT.md:422` | `QUICKSTART_BY_PROFILE.md#-runtime-profile-production-inference--apis-20-35-mb` | Use `#runtime-profile-production-inference-apis-20-35-mb` (remove emoji prefix/special markers) |
 
 ## At-Risk (DNS unresolved in runner environment)
 

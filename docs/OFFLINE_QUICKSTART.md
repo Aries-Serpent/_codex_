@@ -4,6 +4,8 @@
 
 Quickstart for installing and running the repository in an isolated/offline environment using prebuilt artifacts.
 
+> ⚠️ Pre-release note: this guide targets v0.1.0 pre-release packaging and should be used with the campaign readiness reports in `.codex/` before production external distribution.
+
 ## Prerequisites
 
 - Python 3.12+
@@ -43,6 +45,6 @@ python -m pip install --no-index --find-links ./wheelhouse -e ".[full]"
 
 ## Related Docs
 
-- `/home/runner/work/_codex_/_codex_/ISOLATED_DEPLOYMENT.md`
-- `/home/runner/work/_codex_/_codex_/OFFLINE_DEPLOYMENT.md`
-- `/home/runner/work/_codex_/_codex_/QUICKSTART_BY_PROFILE.md`
+- `./ISOLATED_DEPLOYMENT.md`
+- `../OFFLINE_DEPLOYMENT.md`
+- `../QUICKSTART_BY_PROFILE.md`
