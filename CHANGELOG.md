@@ -1,5 +1,12 @@
 ## [Unreleased]
 
+### Added (2026-07-07T11:45Z — Multi-Lane Campaign Implementation)
+- Campaign: Implemented delegated multi-lane packaging-analysis campaign artifacts under `.codex/`, including semantic index, undocumented API map, packaging/offline validation reports, security/network audits, distribution cleanup checklist, standup, dashboard, and completion report.
+- Docs: Added `docs/OFFLINE_QUICKSTART.md` and `docs/ISOLATED_DEPLOYMENT.md` for external isolated deployment onboarding.
+
+### Fixed (2026-07-07T11:45Z — Multi-Lane Campaign Implementation)
+- Docs: Addressed review feedback by clarifying pre-release readiness scope, using allowlist terminology, scoping out-of-PR link remediations, and clarifying campaign artifact completion vs external release go/no-go status.
+
 ### Fixed (2026-07-07T02:56Z — CI Rescue & Compliance PR #5251)
 - Compliance: **REQ-4 & REQ-5 Hardening** — Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md` for CI rescue session with security hardening completion status and PDA tracking (pattern `PDA-CI-RESCUE-20260707`).
 - Compliance: **PDA Entry for 2026-07-07** — Added session entry to `.codex/aftermath/pda_iterations.jsonl` with PR #5251 CI rescue context (4 failing checks: Bandit, CodeQL JS/Python, Branch Rebase).
