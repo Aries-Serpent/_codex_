@@ -13912,3 +13912,13 @@ Fixed REQ-4 and REQ-5 compliance gaps caused by internal `.codex/` file updates 
 - All 9 Dependabot PRs consolidated in commit `d514c7b6`
 - PR #5253 merge-ready after compliance fix
 - PRs #5254–#5261 superseded and ready to close
+
+<!-- WEC human-grant log — auto-appended by session_wrapup_autofix -->
+- **WEC human grant** `pre-merge-validation.yml` — detected 2026-07-07T16:13:31Z @ 4c153445 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `comment-review-gate.yml` — detected 2026-07-07T16:13:31Z @ 4c153445 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `deferral-language-gate.yml` — detected 2026-07-07T16:13:31Z @ 4c153445 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `agent-auth-delegation.yml` — detected 2026-07-07T16:13:31Z @ 4c153445 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `workflow-execution-gate.yml` — detected 2026-07-07T16:13:31Z @ 4c153445 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `copilot-agent-checkin.yml` — detected 2026-07-07T16:13:31Z @ 4c153445 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `cost-gate.yml` — detected 2026-07-07T16:13:31Z @ 4c153445 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `auto-approve-workflows` — detected 2026-07-07T16:13:31Z @ 4c153445 — sticky [x] maintained by all future agent sessions
