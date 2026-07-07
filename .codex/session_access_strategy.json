@@ -1,18 +1,20 @@
 {
-  "generated_at": "2026-07-07T01:57:39.308795+00:00",
+  "generated_at": "2026-07-07T02:37:02.254449+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 4994,
+  "rest_remaining": 4985,
   "graphql_available": true,
-  "graphql_remaining": 5000,
+  "graphql_remaining": 4980,
   "gh_cli_available": true,
   "codeql_available": false,
-  "best_token_var": "CODEX_MASTER_KEY",
-  "open_prs": [],
+  "best_token_var": "GITHUB_TOKEN",
+  "open_prs": [
+    5251
+  ],
   "branch": "copilot/improve-workflow-integration",
   "recommendation": "Use REST for data fetches. "
 }
