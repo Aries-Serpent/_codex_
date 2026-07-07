@@ -53,14 +53,10 @@ jobs:
       - name: Read findings content
         id: read-findings
         run: |
-          # Read findings and escape for JavaScript
           if [ -f "pr-findings.md" ]; then
-            FINDINGS=$(cat pr-findings.md)
-            # Escape newlines for JSON
-            FINDINGS="${FINDINGS//$'\n'/\\n}"
-            echo "content=$(echo "$FINDINGS")" >> $GITHUB_OUTPUT
+            echo "✅ Findings file exists"
           else
-            echo "content=No security findings detected." >> $GITHUB_OUTPUT
+            echo "ℹ️  Findings file will be created during generation"
           fi
 
       - name: Update PR body with findings section
@@ -71,35 +67,20 @@ jobs:
             const fs = require('fs');
             
             // Read findings content
-            let findingsContent = '';
+            let findingsContent = 'No security findings detected.';
             if (fs.existsSync('pr-findings.md')) {
               findingsContent = fs.readFileSync('pr-findings.md', 'utf8');
-            } else {
-              findingsContent = 'No security findings detected.';
             }
             
             const pr = context.payload.pull_request;
             const body = pr.body || '';
             
-            // Pattern to match and remove old findings section (anything from ## 🔐 to next ## or end)
+            // Remove old findings section
             let newBody = body.replace(/## 🔐 Security Findings[\s\S]*?(?=##|$)/m, '');
-            
-            // Also remove trailing whitespace
             newBody = newBody.trim();
             
-            // Preserve WEC section - check if it exists
-            const wecSection = body.match(/## 🔄 Workflow Execution Checklist[\s\S]*?(?=##|$)/m);
-            
             // Build updated body
-            let updatedBody = '';
-            if (wecSection) {
-              // If WEC exists, inject findings after WEC
-              updatedBody = newBody;
-              updatedBody = updatedBody + '\n\n## 🔐 Security Findings\n\n' + findingsContent;
-            } else {
-              // If no WEC, just append findings
-              updatedBody = newBody + '\n\n## 🔐 Security Findings\n\n' + findingsContent;
-            }
+            let updatedBody = newBody + '\n\n## 🔐 Security Findings\n\n' + findingsContent;
             
             // Update PR body
             try {
@@ -131,13 +112,16 @@ jobs:
             }
             
             if (findingsContent && findingsContent.trim()) {
-              const comment = `## 🔐 Security Findings Detected
-
-This PR has the following security findings from automated scans:
-
-${findingsContent}
-
-**Note**: This is an automated scan for informational purposes. Please review carefully and address any critical or high-severity findings before merging.`;
+              const lines = [
+                '## 🔐 Security Findings Detected',
+                '',
+                'This PR has the following security findings from automated scans:',
+                '',
+                findingsContent,
+                '',
+                '**Note**: This is an automated scan for informational purposes. Please review carefully and address any critical or high-severity findings before merging.'
+              ];
+              const comment = lines.join('\n');
               
               try {
                 await github.rest.issues.createComment({

@@ -5,13 +5,27 @@ Copilot Security Agent Handoff Script
 Purpose:
     Enables Copilot agents to efficiently fetch, filter, and triage security findings
     for remediation. Provides structured handoff with agent-specific formatting.
+    
+    Also provides @copilot scan-summary command support for GitHub issue/PR comments.
 
 Usage:
-    python scripts/ci/copilot_security_agent_handoff.py \
+    # Agent handoff
+    python scripts/ci/copilot_security_agent_handoff.py handoff \
       --run-id 12345 \
       --agent codeql-alert-resolution-agent \
       --format json \
       --output findings-for-agent.json
+
+    # Parse @copilot scan-summary command
+    python scripts/ci/copilot_security_agent_handoff.py parse-command \
+      --comment "@copilot scan-summary critical" \
+      --output command.json
+
+    # Generate response for scan-summary command
+    python scripts/ci/copilot_security_agent_handoff.py generate-response \
+      --query-json command.json \
+      --cache-dir .codex/security-cache \
+      --output response.md
 
 Environment Variables:
     GITHUB_REPOSITORY: Repository name (owner/repo)
@@ -23,16 +37,39 @@ import argparse
 import json
 import logging
 import os
+import re
 import sys
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
+
+# Severity levels for ordering
+SEVERITY_LEVELS = {'CRITICAL': 4, 'HIGH': 3, 'MEDIUM': 2, 'LOW': 1, 'INFO': 0}
+SEVERITY_EMOJI = {
+    'CRITICAL': '🔴',
+    'HIGH': '🟡',
+    'MEDIUM': '🟢',
+    'LOW': '🔵',
+    'INFO': '⚪'
+}
+
+
+@dataclass
+class ScanSummaryQuery:
+    """Parsed scan-summary command query"""
+    command: str
+    query_type: Optional[str]  # 'cwe', 'severity', 'file', 'package'
+    value: Optional[str]
+    scope: Optional[str]  # Optional file/directory scope
+    raw_filters: str
 
 
 @dataclass
@@ -45,7 +82,310 @@ class AgentHandoff:
     recommendations: List[str]
 
 
-class CopilotSecurityAgentHandoff:
+def parse_scan_summary_command(comment_body: str) -> Optional[ScanSummaryQuery]:
+    """
+    Parse @copilot scan-summary command with optional filters.
+    
+    Supported syntax:
+        @copilot scan-summary                          # Basic summary
+        @copilot scan-summary cwe:CWE-79              # By CWE
+        @copilot scan-summary critical                # By severity
+        @copilot scan-summary CRITICAL                # By severity (uppercase)
+        @copilot scan-summary for src/path            # By file/directory
+        @copilot scan-summary cwe:CWE-79 for src/     # Combined filters
+        @copilot scan-summary package:numpy           # By package
+    
+    Args:
+        comment_body: Full GitHub comment body text
+        
+    Returns:
+        ScanSummaryQuery object with parsed command details, or None if not a
+        scan-summary command
+    """
+    # Check if this is a scan-summary command
+    if '@copilot scan-summary' not in comment_body.lower():
+        return None
+    
+    # Extract the command pattern
+    pattern = r'@copilot\s+scan-summary(?:\s+(.*))?'
+    match = re.search(pattern, comment_body, re.IGNORECASE)
+    
+    if not match:
+        return None
+    
+    raw_filters = (match.group(1) or '').strip()
+    
+    # Initialize query components
+    query_type = None
+    value = None
+    scope = None
+    
+    if not raw_filters:
+        # No filters - basic summary
+        return ScanSummaryQuery(
+            command='scan-summary',
+            query_type=None,
+            value=None,
+            scope=None,
+            raw_filters=''
+        )
+    
+    # Parse filters
+    parts = raw_filters.split()
+    i = 0
+    while i < len(parts):
+        part = parts[i]
+        
+        # Check for "for" keyword (file scope)
+        if part.lower() == 'for' and i + 1 < len(parts):
+            # Collect all remaining parts as scope
+            scope = ' '.join(parts[i+1:]).strip()
+            break
+        
+        # Check for cwe: prefix
+        if part.lower().startswith('cwe:'):
+            query_type = 'cwe'
+            value = part[4:].strip()
+            i += 1
+            continue
+        
+        # Check for package: prefix
+        if part.lower().startswith('package:'):
+            query_type = 'package'
+            value = part[8:].strip()
+            i += 1
+            continue
+        
+        # Check for severity: prefix or plain severity name
+        if part.lower().startswith('severity:'):
+            query_type = 'severity'
+            value = part[9:].strip().upper()
+            i += 1
+            continue
+        elif part.upper() in SEVERITY_LEVELS:
+            # Plain severity (e.g., "critical", "CRITICAL")
+            query_type = 'severity'
+            value = part.upper()
+            i += 1
+            continue
+        
+        i += 1
+    
+    return ScanSummaryQuery(
+        command='scan-summary',
+        query_type=query_type,
+        value=value,
+        scope=scope,
+        raw_filters=raw_filters
+    )
+
+
+def generate_scan_summary_response(findings: List[Dict[str, Any]], 
+                                  query_info: Optional[ScanSummaryQuery] = None,
+                                  cache_age_minutes: Optional[int] = None) -> str:
+    """
+    Generate GitHub comment markdown for scan summary.
+    
+    Includes:
+    - Summary table (Severity | Count | Status)
+    - Top 3 issues with links
+    - Recommended agents
+    - Links to full reports
+    - Trending indicators
+    - Cache age information
+    
+    Args:
+        findings: List of finding dictionaries from security_findings_api
+        query_info: ScanSummaryQuery object with filter info
+        cache_age_minutes: Age of findings in minutes (for caching indicator)
+        
+    Returns:
+        Markdown string suitable for GitHub comment
+    """
+    if not findings:
+        # Handle empty findings
+        return (
+            "## 🔍 Security Scan Summary\n\n"
+            "**Status**: ✅ No findings matched your query\n\n"
+            "Good news! The security scan found no issues matching your criteria.\n\n"
+            "[View Full Report](.codex/security-findings-comprehensive.md)"
+        )
+    
+    # Get repository name from environment
+    repo = os.environ.get('GITHUB_REPOSITORY', 'Aries-Serpent/_codex_')
+    
+    # Count findings by severity
+    severity_counts = {severity: 0 for severity in SEVERITY_LEVELS}
+    for finding in findings:
+        severity = finding.get('severity', 'INFO')
+        if severity in severity_counts:
+            severity_counts[severity] += 1
+    
+    # Count findings by tool
+    tool_counts = {}
+    for finding in findings:
+        tool = finding.get('tool', 'Unknown')
+        tool_counts[tool] = tool_counts.get(tool, 0) + 1
+    
+    tools_list = ', '.join(sorted(tool_counts.keys()))
+    
+    # Build query description
+    query_desc = "All findings"
+    if query_info:
+        if query_info.query_type == 'cwe':
+            query_desc = f"{query_info.value} findings"
+        elif query_info.query_type == 'severity':
+            query_desc = f"{query_info.value} findings"
+        elif query_info.query_type == 'file':
+            query_desc = f"findings in `{query_info.value}`"
+        elif query_info.query_type == 'package':
+            query_desc = f"{query_info.value} vulnerabilities"
+    
+    # Build cache age indicator
+    cache_indicator = ""
+    if cache_age_minutes is not None:
+        if cache_age_minutes < 1:
+            cache_indicator = " (just now)"
+        elif cache_age_minutes < 60:
+            cache_indicator = f" ({cache_age_minutes}m ago)"
+        elif cache_age_minutes < 1440:
+            hours = cache_age_minutes // 60
+            cache_indicator = f" ({hours}h ago)"
+        else:
+            days = cache_age_minutes // 1440
+            cache_indicator = f" ({days}d ago)"
+    
+    # Start building markdown response
+    lines = [
+        "## 🔍 Security Scan Summary\n",
+        f"**Repository**: {repo}",
+        f"**Query**: {query_desc}",
+        f"**Source**: {len(tool_counts)} tool{'s' if len(tool_counts) != 1 else ''} ({tools_list})",
+        f"**Scan Time**: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')}{cache_indicator}\n",
+    ]
+    
+    # Add summary table
+    lines.extend([
+        "### Summary\n",
+        "| Severity | Count | Status |",
+        "|----------|-------|--------|",
+    ])
+    
+    for severity in ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFO']:
+        count = severity_counts.get(severity, 0)
+        emoji = SEVERITY_EMOJI.get(severity, '❓')
+        
+        if count == 0:
+            status = "✅ None"
+        elif severity == 'CRITICAL':
+            status = "🔴 Action Required"
+        elif severity == 'HIGH':
+            status = "🟡 Review Needed"
+        elif severity == 'MEDIUM':
+            status = "🟢 Monitor"
+        else:
+            status = "⚪ Info"
+        
+        lines.append(f"| {emoji} {severity} | {count} | {status} |")
+    
+    lines.append("")
+    
+    # Add top issues
+    top_n = 3
+    sorted_findings = sorted(
+        findings,
+        key=lambda f: (
+            -SEVERITY_LEVELS.get(f.get('severity', 'INFO'), 0),
+            -f.get('_recency_score', 0)  # Optional recency score
+        )
+    )
+    
+    top_findings = sorted_findings[:top_n]
+    
+    lines.extend([
+        f"### Top Issues (showing {len(top_findings)} of {len(findings)})\n",
+    ])
+    
+    for idx, finding in enumerate(top_findings, 1):
+        severity = finding.get('severity', 'INFO')
+        title = finding.get('title', 'Untitled Finding')
+        cwe = finding.get('cwe_id', '')
+        tool = finding.get('tool', 'Unknown')
+        file_path = finding.get('file', '')
+        line_num = finding.get('line', '')
+        description = finding.get('description', '')
+        
+        # Build finding header
+        severity_emoji = SEVERITY_EMOJI.get(severity, '❓')
+        cwe_str = f"{cwe}: " if cwe else ""
+        lines.append(f"{idx}. **[{severity_emoji} {severity}]** {cwe_str}{title}")
+        
+        # Add details
+        if file_path:
+            file_ref = f"`{file_path}`"
+            if line_num:
+                file_ref += f" (line {line_num})"
+            lines.append(f"   - **File**: {file_ref}")
+        
+        if finding.get('package'):
+            pkg_ref = finding['package']
+            if finding.get('version'):
+                pkg_ref += f" v{finding['version']}"
+            lines.append(f"   - **Package**: {pkg_ref}")
+        
+        lines.append(f"   - **Tool**: {tool}")
+        
+        if description:
+            # Truncate long descriptions
+            if len(description) > 100:
+                description = description[:97] + "..."
+            lines.append(f"   - **Issue**: {description}")
+        
+        # Add remediation hint
+        if finding.get('fix_recommendation'):
+            lines.append(f"   - **Fix**: {finding['fix_recommendation']}")
+        
+        lines.append("")
+    
+    # Recommended agents
+    lines.extend([
+        "### Recommended Actions\n",
+    ])
+    
+    # Count findings by type and recommend agents
+    cwe_count = len([f for f in findings if f.get('cwe_id')])
+    pkg_count = len([f for f in findings if f.get('package')])
+    secret_count = len([f for f in findings if f.get('type', '').lower() in ['secret', 'credential']])
+    
+    recommendations = []
+    if cwe_count > 0:
+        recommendations.append(f"- **@codeql-alert-resolution-agent** — CWE/SAST remediation ({cwe_count} findings)")
+    if pkg_count > 0:
+        recommendations.append(f"- **@dependency-security-review-agent** — Dependency updates ({pkg_count} findings)")
+    if secret_count > 0:
+        recommendations.append(f"- **@secret-detection-agent** — Secrets rotation ({secret_count} findings)")
+    
+    if not recommendations:
+        recommendations.append("- Review findings and plan remediation strategy")
+    
+    for rec in recommendations:
+        lines.append(rec)
+    
+    lines.append("")
+    
+    # Trending section (placeholder for future trending data)
+    lines.extend([
+        "### Resources\n",
+        "- [📊 View Full Dashboard](.codex/security-findings-dashboard.md)",
+        "- [📋 View Full Report](.codex/security-findings-comprehensive.md)",
+        "- [🔧 View Security Remediation Guide](SECURITY_REMEDIATION_GUIDE.md)\n"
+    ])
+    
+    return "\n".join(lines)
+
+
+@dataclass
+class AgentHandoff:
     """Manages security findings handoff to Copilot agents"""
 
     def __init__(self, findings_json: str):

@@ -1,0 +1,134 @@
+{
+  "findings": [
+    {
+      "cwe": "CWE-79",
+      "severity": "CRITICAL",
+      "description": "Cross-site Scripting (XSS) vulnerability in user input handler",
+      "file_path": "codex/cli.py",
+      "line_number": 125,
+      "tool": "CodeQL",
+      "fix_recommendation": "Use html.escape() before HTML output or use a templating engine with auto-escaping",
+      "confidence": 0.98,
+      "timestamp": "2026-07-07T02:00:00Z"
+    },
+    {
+      "cwe": "CWE-22",
+      "severity": "HIGH",
+      "description": "Path Traversal vulnerability in file operations",
+      "file_path": "codex/utils/file_ops.py",
+      "line_number": 45,
+      "tool": "Semgrep",
+      "fix_recommendation": "Use pathlib.Path.resolve() with parent check to prevent directory traversal",
+      "confidence": 0.92,
+      "timestamp": "2026-07-07T02:00:00Z"
+    },
+    {
+      "cwe": "CWE-502",
+      "severity": "CRITICAL",
+      "description": "Insecure deserialization of untrusted data",
+      "file_path": "codex/serialization.py",
+      "line_number": 87,
+      "tool": "CodeQL",
+      "fix_recommendation": "Use json.loads() instead of pickle.loads() for untrusted data",
+      "confidence": 0.95,
+      "timestamp": "2026-07-07T02:00:00Z"
+    },
+    {
+      "cwe": "CWE-434",
+      "severity": "HIGH",
+      "description": "Unrestricted file upload vulnerability",
+      "file_path": "codex/api/upload.py",
+      "line_number": 156,
+      "tool": "Semgrep",
+      "fix_recommendation": "Validate file type, size, and scan for malware before storing",
+      "confidence": 0.88,
+      "timestamp": "2026-07-07T02:00:00Z"
+    },
+    {
+      "cwe": "CWE-89",
+      "severity": "CRITICAL",
+      "description": "SQL Injection vulnerability in database queries",
+      "file_path": "codex/db/queries.py",
+      "line_number": 234,
+      "tool": "CodeQL",
+      "fix_recommendation": "Use parameterized queries or ORM with prepared statements",
+      "confidence": 0.99,
+      "timestamp": "2026-07-07T02:00:00Z"
+    },
+    {
+      "cwe": "CWE-327",
+      "severity": "HIGH",
+      "description": "Use of weak cryptographic algorithm",
+      "file_path": "codex/crypto/encryption.py",
+      "line_number": 42,
+      "tool": "Bandit",
+      "fix_recommendation": "Use AES-256 instead of DES or MD5 for cryptographic operations",
+      "confidence": 0.85,
+      "timestamp": "2026-07-07T02:00:00Z"
+    },
+    {
+      "cwe": "CWE-798",
+      "severity": "CRITICAL",
+      "description": "Hardcoded credentials in source code",
+      "file_path": "codex/config.py",
+      "line_number": 18,
+      "tool": "detect-secrets",
+      "fix_recommendation": "Move credentials to environment variables or secrets manager",
+      "confidence": 1.0,
+      "timestamp": "2026-07-07T02:00:00Z"
+    },
+    {
+      "cwe": "CWE-611",
+      "severity": "MEDIUM",
+      "description": "Improper restriction of XML external entity reference",
+      "file_path": "codex/parsers/xml_parser.py",
+      "line_number": 52,
+      "tool": "Semgrep",
+      "fix_recommendation": "Disable external DTD and entity expansion in XML parser",
+      "confidence": 0.80,
+      "timestamp": "2026-07-07T02:00:00Z"
+    },
+    {
+      "cwe": "CWE-798",
+      "severity": "HIGH",
+      "description": "Weak password hashing algorithm",
+      "file_path": "codex/auth/passwords.py",
+      "line_number": 91,
+      "tool": "pip-audit",
+      "fix_recommendation": "Use argon2-id or bcrypt instead of md5 for password hashing",
+      "confidence": 0.92,
+      "timestamp": "2026-07-07T02:00:00Z"
+    },
+    {
+      "cwe": "CWE-191",
+      "severity": "MEDIUM",
+      "description": "Integer underflow in array index calculation",
+      "file_path": "codex/math/vectors.py",
+      "line_number": 128,
+      "tool": "CodeQL",
+      "fix_recommendation": "Add bounds checking before array access",
+      "confidence": 0.76,
+      "timestamp": "2026-07-07T02:00:00Z"
+    }
+  ],
+  "metadata": {
+    "timestamp": "2026-07-07T02:00:00Z",
+    "scan_duration_seconds": 45,
+    "total_findings": 10,
+    "by_severity": {
+      "CRITICAL": 4,
+      "HIGH": 4,
+      "MEDIUM": 2,
+      "LOW": 0,
+      "INFO": 0
+    },
+    "by_tool": {
+      "CodeQL": 4,
+      "Semgrep": 3,
+      "pip-audit": 1,
+      "detect-secrets": 1,
+      "Bandit": 1
+    },
+    "status": "scan_complete"
+  }
+}

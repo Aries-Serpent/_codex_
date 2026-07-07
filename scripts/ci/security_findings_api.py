@@ -418,14 +418,29 @@ def main():
         # Check if findings were found
         if result['results']['total_matched'] == 0:
             logger.warning(f"No findings matched query: {args.query_type}={args.value}")
-            if args.output:
-                args.output.write_text(format_output([], args.format))
+            empty_result = {
+                'query': result['query'],
+                'results': result['results'],
+                'findings': []
+            }
+            if args.format == 'json':
+                formatted = json.dumps(empty_result, indent=2, default=str)
             else:
-                print(format_output([], args.format))
+                formatted = format_output([], args.format)
+            
+            if args.output:
+                args.output.write_text(formatted)
+            else:
+                print(formatted)
             return 2
         
         # Format findings
-        formatted = format_output(result['findings'], args.format)
+        if args.format == 'json':
+            # For JSON, include full query result structure
+            formatted = json.dumps(result, indent=2, default=str)
+        else:
+            # For other formats, just format the findings
+            formatted = format_output(result['findings'], args.format)
         
         # Output results
         if args.output:
