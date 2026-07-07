@@ -16,6 +16,10 @@ Quickstart for installing and running the repository in an isolated/offline envi
 
 ## Installation (Offline)
 
+Expected bundle layout (relative to current directory):
+- `./wheelhouse/`
+- `./dist/` (or editable source tree for `-e` install)
+
 ```bash
 # From extracted release bundle root
 python -m pip install --no-index --find-links ./wheelhouse -e ".[core]"

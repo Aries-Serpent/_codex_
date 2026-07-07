@@ -17,11 +17,11 @@ Run the system in a local isolated repository with whitelist-only networking and
 
 ```yaml
 allowed_hosts:
-  - github.com
-  - api.github.com
-  - huggingface.co
+  # Keep empty for strict offline-isolated deployment.
 mode: fail_closed
 ```
+
+For controlled external bootstrap (not strict offline mode), add temporary hosts with explicit approval and expiry.
 
 ## Validation Checklist
 
