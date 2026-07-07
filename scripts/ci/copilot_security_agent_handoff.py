@@ -55,10 +55,10 @@ logger = logging.getLogger(__name__)
 SEVERITY_LEVELS = {'CRITICAL': 4, 'HIGH': 3, 'MEDIUM': 2, 'LOW': 1, 'INFO': 0}
 SEVERITY_EMOJI = {
     'CRITICAL': '🔴',
-    'HIGH': '🟡',
-    'MEDIUM': '🟢',
-    'LOW': '🔵',
-    'INFO': '⚪'
+    'HIGH': '🟠',
+    'MEDIUM': '🟡',
+    'LOW': '🟢',
+    'INFO': '🔵'
 }
 
 
