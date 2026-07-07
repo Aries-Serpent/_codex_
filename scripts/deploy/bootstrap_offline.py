@@ -214,7 +214,12 @@ class OfflineBootstrapper:
         """
         base_dir = Path(extract_dir).resolve()
         
-        for member in tar.getmembers():
+        # Define a filter function that validates members during extraction
+        def safe_extract_filter(member: tarfile.TarInfo, extract_path: str) -> tarfile.TarInfo | None:
+            """Filter function for safe tarfile extraction.
+            
+            Validates member paths and returns the member if safe, None if rejected.
+            """
             # Resolve the extraction path
             member_path = (base_dir / member.name).resolve()
             
@@ -236,9 +241,11 @@ class OfflineBootstrapper:
                 raise ValueError(
                     f"Security: Symlink/hardlink not allowed in tarfile: {member.name}"
                 )
+            
+            return member
         
-        # All validations passed, now extract
-        tar.extractall(extract_dir)
+        # Extract with the validation filter function
+        tar.extractall(extract_dir, filter=safe_extract_filter)
 
     def _load_manifest(self) -> bool:
         """Load and validate manifest.json."""

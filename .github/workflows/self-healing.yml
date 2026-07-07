@@ -218,9 +218,13 @@ jobs:
       # Phase 4: Update tracking (skeleton)
       - name: Update failure tracking log
         if: always()
+        env:
+          WORKFLOW_NAME: ${{ github.workflow }}
+          RUN_ID: ${{ github.run_id }}
         run: |
           python << 'EOF'
           import json
+          import os
           from datetime import datetime
           from pathlib import Path
 
@@ -235,8 +239,8 @@ jobs:
 
           tracking_info = {
               "timestamp": datetime.utcnow().isoformat(),
-              "workflow_name": "${{ github.workflow }}",
-              "run_id": "${{ github.run_id }}",
+              "workflow_name": os.environ.get("WORKFLOW_NAME", "unknown"),
+              "run_id": os.environ.get("RUN_ID", "unknown"),
               "status": "placeholder",
               "patterns_detected": 0,
               "agents_dispatched": 0
@@ -250,10 +254,12 @@ jobs:
       # Summary: Post results
       - name: Summary
         if: always()
+        env:
+          FAILURE_COUNT: ${{ steps.detect.outputs.failure_count || 0 }}
         run: |
           echo "## 🔄 Self-Healing CI Loop Results"
           echo ""
-          echo "**Detection**: ${{ steps.detect.outputs.failure_count || 0 }} failures found"
+          echo "**Detection**: ${FAILURE_COUNT} failures found"
           echo "**Classification**: Top patterns identified (Phase 1)"
           echo "**Dispatch**: Remediation agents queued (Phase 1)"
           echo ""
