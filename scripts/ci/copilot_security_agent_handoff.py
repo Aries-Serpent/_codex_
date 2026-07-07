@@ -659,41 +659,192 @@ class AgentHandoff:
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Prepare security findings handoff for Copilot agents"
+        description="Copilot security agent handoff and command handler"
     )
-    parser.add_argument(
+    subparsers = parser.add_subparsers(dest='command', help='Command to execute')
+    
+    # Handoff subcommand (for agent-specific handoff)
+    handoff_parser = subparsers.add_parser('handoff', help='Prepare security findings handoff for Copilot agents')
+    handoff_parser.add_argument(
         "--findings-json",
         default=".codex/security-findings-comprehensive.json",
         help="Path to comprehensive findings JSON file",
     )
-    parser.add_argument(
+    handoff_parser.add_argument(
         "--agent",
         required=True,
         help="Agent ID to prepare handoff for",
     )
-    parser.add_argument(
+    handoff_parser.add_argument(
         "--format",
         default="json",
         choices=["json", "markdown"],
         help="Output format",
     )
-    parser.add_argument(
+    handoff_parser.add_argument(
         "--output",
         help="Output file path (defaults to agent-specific path)",
     )
-
+    
+    # Parse-command subcommand
+    parse_parser = subparsers.add_parser('parse-command', help='Parse @copilot scan-summary command')
+    parse_parser.add_argument(
+        "--comment",
+        required=True,
+        help="GitHub comment body containing @copilot command",
+    )
+    parse_parser.add_argument(
+        "--output",
+        help="Output file for parsed command (JSON)",
+    )
+    
+    # Generate-response subcommand
+    response_parser = subparsers.add_parser('generate-response', help='Generate response for scan-summary command')
+    response_parser.add_argument(
+        "--query-json",
+        help="Path to JSON file with parsed query info",
+    )
+    response_parser.add_argument(
+        "--query",
+        help="Query info as JSON string (alternative to --query-json)",
+    )
+    response_parser.add_argument(
+        "--findings-json",
+        default=".codex/security-findings-comprehensive.json",
+        help="Path to comprehensive findings JSON file",
+    )
+    response_parser.add_argument(
+        "--cache-dir",
+        default=".codex/security-cache",
+        help="Path to security cache directory",
+    )
+    response_parser.add_argument(
+        "--output",
+        help="Output file for markdown response",
+    )
+    response_parser.add_argument(
+        "--cache-age-minutes",
+        type=int,
+        help="Age of findings cache in minutes",
+    )
+    
     args = parser.parse_args()
-
-    if not args.output:
-        args.output = f".codex/security-handoff-{args.agent}.{args.format}"
-
+    
+    if not args.command:
+        parser.print_help()
+        return 1
+    
     try:
-        handoff = CopilotSecurityAgentHandoff(args.findings_json)
-        handoff.save_handoff(args.agent, args.output, args.format)
-        logger.info("✅ Handoff preparation complete")
-        return 0
+        if args.command == 'handoff':
+            # Legacy handoff subcommand
+            if not args.output:
+                args.output = f".codex/security-handoff-{args.agent}.{args.format}"
+            
+            handoff = CopilotSecurityAgentHandoff(args.findings_json)
+            handoff.save_handoff(args.agent, args.output, args.format)
+            logger.info("✅ Handoff preparation complete")
+            return 0
+        
+        elif args.command == 'parse-command':
+            # Parse @copilot scan-summary command
+            query = parse_scan_summary_command(args.comment)
+            
+            if not query:
+                logger.warning("❌ No @copilot scan-summary command found in comment")
+                output = json.dumps({'valid': False, 'message': 'No scan-summary command found'})
+            else:
+                logger.info(f"✅ Parsed command: {query.command}")
+                output = json.dumps({
+                    'valid': True,
+                    'command': query.command,
+                    'query_type': query.query_type,
+                    'value': query.value,
+                    'scope': query.scope,
+                    'raw_filters': query.raw_filters
+                })
+            
+            if args.output:
+                Path(args.output).write_text(output)
+                logger.info(f"Parsed command saved to {args.output}")
+            else:
+                print(output)
+            
+            return 0 if query else 1
+        
+        elif args.command == 'generate-response':
+            # Generate response for scan-summary command
+            
+            # Load query info
+            query_info = None
+            if args.query_json:
+                query_data = json.loads(Path(args.query_json).read_text())
+                if query_data.get('valid'):
+                    query_info = ScanSummaryQuery(
+                        command=query_data.get('command', 'scan-summary'),
+                        query_type=query_data.get('query_type'),
+                        value=query_data.get('value'),
+                        scope=query_data.get('scope'),
+                        raw_filters=query_data.get('raw_filters', '')
+                    )
+            elif args.query:
+                query_data = json.loads(args.query)
+                query_info = ScanSummaryQuery(
+                    command=query_data.get('command', 'scan-summary'),
+                    query_type=query_data.get('query_type'),
+                    value=query_data.get('value'),
+                    scope=query_data.get('scope'),
+                    raw_filters=query_data.get('raw_filters', '')
+                )
+            
+            # Load findings (would need to query via security_findings_api.py)
+            findings = []
+            findings_file = Path(args.findings_json)
+            if findings_file.exists():
+                data = json.loads(findings_file.read_text())
+                findings = data.get('findings', [])
+            
+            # Filter findings based on query
+            if query_info and query_info.query_type and query_info.value:
+                filtered_findings = []
+                for finding in findings:
+                    if query_info.query_type == 'cwe':
+                        if finding.get('cwe_id', '').upper() == query_info.value.upper():
+                            filtered_findings.append(finding)
+                    elif query_info.query_type == 'severity':
+                        if finding.get('severity', '').upper() == query_info.value.upper():
+                            filtered_findings.append(finding)
+                    elif query_info.query_type == 'file':
+                        if query_info.value in finding.get('file', ''):
+                            filtered_findings.append(finding)
+                    elif query_info.query_type == 'package':
+                        if finding.get('package', '').lower() == query_info.value.lower():
+                            filtered_findings.append(finding)
+                findings = filtered_findings
+            
+            # Generate response markdown
+            response = generate_scan_summary_response(
+                findings,
+                query_info,
+                args.cache_age_minutes
+            )
+            
+            if args.output:
+                Path(args.output).write_text(response)
+                logger.info(f"Response saved to {args.output}")
+            else:
+                print(response)
+            
+            logger.info("✅ Response generation complete")
+            return 0
+        
+        else:
+            logger.error(f"Unknown command: {args.command}")
+            return 1
+    
     except Exception as e:
-        logger.error(f"❌ Handoff preparation failed: {e}")
+        logger.error(f"❌ Operation failed: {e}")
+        import traceback
+        traceback.print_exc()
         return 1
 
 
