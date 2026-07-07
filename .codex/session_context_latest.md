@@ -1,21 +1,22 @@
-# Session Context — 2026-07-07T00:57:19Z
+# Session Context — 2026-07-07T01:01:49Z
 **Branch:** `copilot/improve-workflow-integration`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
 - REST remaining: `5000` (✅)
-- GraphQL remaining: `5000` (✅)
+- GraphQL remaining: `4999` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 🚨 Recent CI Failures (last 5 runs)
+- **.github/workflows/self-healing.yml** — `failure` on `copilot/improve-workflow-integration` (2026-07-07)
+- **.github/workflows/agentic-diff-guard.yml** — `failure` on `copilot/improve-workflow-integration` (2026-07-07)
+- **.github/workflows/codex-master-key-validation.yml** — `failure` on `copilot/improve-workflow-integration` (2026-07-07)
 - **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-07-07)
 - **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-07-07)
-- **.github/workflows/agentic-diff-guard.yml** — `failure` on `main` (2026-07-07)
-- **Workflow Compliance Audit (actionlint)** — `failure` on `main` (2026-07-07)
-- **🔐 Secrets Baseline Enforcer** — `failure` on `main` (2026-07-07)
 
 ## 📝 Recent Commits
+- `e74a4f69` Apply remaining changes — copilot-swe-agent[bot] (2026-07-07)
 - `87542282` Update security scan type description in workflow — Statix (2026-07-07)
 - `357d518a` docs: update Phase 8.2 triage dashboard [skip ci] — github-actions[bot] (2026-07-06)
 - `ff5274e8` Merge pull request #5250 from Aries-Serpent/fix/ci-rag-module-tests-202607062149 — Statix (2026-07-06)
@@ -23,7 +24,6 @@
 - `5c25621b` Merge bcfcfacf177fa59021e02de4fad0f95904b05fcd into 80a4aff105e8ae45f8f91628f515 — Statix (2026-07-06)
 - `bcfcfacf` fix(ci): WEC integrity — uncheck disabled workflow via CODEX_MASTER_KEY — copilot-swe-agent[bot] (2026-07-06)
 - `40587544` fix(ci): WEC Template — uncheck disabled copilot-iterative-self-healing.yml — copilot-swe-agent[bot] (2026-07-06)
-- `67d37622` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-07-06)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
