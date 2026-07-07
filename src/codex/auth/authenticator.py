@@ -7,10 +7,15 @@ that covers the full login / logout / password-change lifecycle.
 
 Typical usage::
 
+    import os
     from codex.auth import Authenticator, UserStore, TokenManager
 
     store = UserStore()
-    tokens = TokenManager(secret_key="change-me")
+    # Get secret key from environment (required in production)
+    secret_key = os.getenv("AUTH_SECRET_KEY") or os.getenv("CODEX_AUTH_SECRET_KEY")
+    if not secret_key:
+        raise ValueError("AUTH_SECRET_KEY or CODEX_AUTH_SECRET_KEY environment variable required")
+    tokens = TokenManager(secret_key=secret_key)
     auth = Authenticator(user_store=store, token_manager=tokens)
 
     # Register
@@ -26,6 +31,7 @@ Typical usage::
 from __future__ import annotations
 
 import logging
+import os
 from dataclasses import dataclass, field
 from typing import Optional
 
