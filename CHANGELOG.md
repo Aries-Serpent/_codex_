@@ -1,5 +1,12 @@
 ## [Unreleased]
 
+### Dependencies (2026-07-07T16:14Z — Golang Crypto Bump PR #5262)
+- Golang: **golang.org/x/crypto** `0.45.0` → `0.52.0` in `tools/github-secrets-cli` (security patch, addresses CVE-2024-45337 and related vulnerabilities)
+
+### Fixed (2026-07-07T16:14Z — PR Comment Review & Compliance PR #5262)
+- Compliance: **REQ-4 & REQ-5 Recovery** — Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md` to restore compliance after CI auto-generated commits that did not include these files.
+- CI: **Merge Conflict Resolution** — Resolved divergent histories between local branch and remote `cognitive-preflight` bot commit; 7 `.codex/` files resolved using local branch state.
+
 ### Fixed (2026-07-07T02:56Z — CI Rescue & Compliance PR #5251)
 - Compliance: **REQ-4 & REQ-5 Hardening** — Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md` for CI rescue session with security hardening completion status and PDA tracking (pattern `PDA-CI-RESCUE-20260707`).
 - Compliance: **PDA Entry for 2026-07-07** — Added session entry to `.codex/aftermath/pda_iterations.jsonl` with PR #5251 CI rescue context (4 failing checks: Bandit, CodeQL JS/Python, Branch Rebase).
