@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-import os
 import sys
 import json
 import subprocess
-from typing import List, Dict, Tuple
+from typing import List, Tuple
 
 def run_gh_command(cmd: List[str]) -> Tuple[bool, str]:
     try:

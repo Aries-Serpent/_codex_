@@ -160,7 +160,7 @@ def generate_rust_sbom() -> list[Component]:
         if result.returncode == 0:
             # Parse cargo tree output
             # This is simplified; real parsing would be more complex
-            logger.info(f"   ✅ Cargo dependencies detected")
+            logger.info("   ✅ Cargo dependencies detected")
     
     except Exception as e:
         logger.debug(f"   Note: {e}")
@@ -236,8 +236,8 @@ def validate_sbom(sbom_xml: str) -> bool:
         components = root.findall(".//{http://cyclonedx.org/schema/bom/1.4}component")
         
         if len(components) > 0:
-            logger.info(f"✅ SBOM schema valid")
-            logger.info(f"   - Root element: bom")
+            logger.info("✅ SBOM schema valid")
+            logger.info("   - Root element: bom")
             logger.info(f"   - Version: {root.get('version')}")
             logger.info(f"   - Contains metadata: {root.find('{http://cyclonedx.org/schema/bom/1.4}metadata') is not None}")
             logger.info(f"   - Components: {len(components)}")
@@ -306,7 +306,7 @@ def generate_sbom_report(components: list[Component]) -> dict:
         }
     }
     
-    logger.info(f"✅ SBOM Report:")
+    logger.info("✅ SBOM Report:")
     logger.info(f"   - Total components: {report['total_components']}")
     logger.info(f"   - Python: {python_count}")
     logger.info(f"   - JavaScript: {javascript_count}")
@@ -352,9 +352,9 @@ def main():
     logger.info(f"✅ Python packages: {len(python_comps)}")
     logger.info(f"✅ JavaScript packages: {len(js_comps)}")
     logger.info(f"✅ Rust packages: {len(rust_comps)}")
-    logger.info(f"✅ SBOM format: CycloneDX 1.4")
+    logger.info("✅ SBOM format: CycloneDX 1.4")
     logger.info(f"✅ Validation: {'PASSED' if valid else 'FAILED'}")
-    logger.info(f"✅ Coverage: 100%")
+    logger.info("✅ Coverage: 100%")
     
     logger.info("\n✅ Phase 13.3.3 COMPLETE")
     return 0

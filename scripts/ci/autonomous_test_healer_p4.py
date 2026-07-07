@@ -384,7 +384,7 @@ def main():
     )
     
     if flaky_failure:
-        logger.info(f"\nDetected flaky test:")
+        logger.info("\nDetected flaky test:")
         logger.info(f"  Test: {flaky_failure.test_file}::{flaky_failure.test_name}")
         logger.info(f"  Pattern: {flaky_failure.pattern.value}")
         logger.info(f"  Failure rate: {flaky_failure.failure_rate*100:.1f}%")
@@ -397,7 +397,7 @@ def main():
         fixture = framework.create_deterministic_fixture(flaky_failure.test_name)
         report.add_isolation_fixture(flaky_failure.test_name, fixture)
         
-        logger.info(f"\nGenerated isolation fixture:")
+        logger.info("\nGenerated isolation fixture:")
         logger.info(fixture[:200] + "...")
     
     # Summary

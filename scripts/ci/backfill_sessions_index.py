@@ -79,7 +79,7 @@ class SessionIndexBackfiller:
                 dt = datetime.fromisoformat(ts)
 
             return dt.strftime("%Y-%m-%dT%H:%M:%SZ")
-        except Exception as e:
+        except Exception:
             # Silently return empty string for missing/invalid timestamps
             return ""
 

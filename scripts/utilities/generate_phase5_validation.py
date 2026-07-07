@@ -1,7 +1,6 @@
 from pathlib import Path
 
 from src.codex.utils.path_extended import get_repo_root
-from pathlib import Path
 
 # Create validation report
 validation_report = {

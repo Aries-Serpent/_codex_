@@ -7,10 +7,8 @@ Validates all core events against the schema defined in TELEMETRY_SCHEMA.md.
 Phase 12 Wave 2 - D3.2 Deliverable
 """
 
-import json
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional, Tuple
-from enum import Enum
+from typing import Any, Dict, List, Tuple
 import logging
 
 logger = logging.getLogger(__name__)

@@ -122,7 +122,7 @@ def validate_workflow_links(verbose: bool = False) -> int:
                     })
                     if verbose:
                         print(f"❌ {yml_file}: [{text}]({link}) - {error}")
-        except Exception as e:
+        except Exception:
             if verbose:
                 print(f"⚠️  Warning: Could not parse {yml_file}: <ERROR_TYPE>")
 

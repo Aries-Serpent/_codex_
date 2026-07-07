@@ -133,7 +133,7 @@ def load_gaps_and_plans(base_path: Path) -> dict[str, Any]:
         try:
             with open(gaps_file, encoding="utf-8") as f:
                 gaps_data = json.load(f)
-        except json.JSONDecodeError as e:
+        except json.JSONDecodeError:
             # gaps.json is optional; if corrupt, log warning and continue with empty gaps data.
             logger.warning("Could not parse gaps.json (corrupt JSON): <ERROR_TYPE>")
         except OSError as e:

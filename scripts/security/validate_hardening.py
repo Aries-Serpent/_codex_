@@ -133,7 +133,7 @@ def test_layer1_string_validation() -> None:
             False,
             "Should have blocked injection"
         )
-    except ValueError as e:
+    except ValueError:
         report.record(
             "SQL injection blocked (A01)",
             "String",

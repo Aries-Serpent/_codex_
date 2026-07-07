@@ -1,0 +1,48 @@
+name: Security Findings API
+
+"on":
+  repository_dispatch:
+    types:
+      - security-findings-query
+
+permissions:
+  contents: read
+
+jobs:
+  query-findings:
+    runs-on: ubuntu-latest
+    outputs:
+      findings: ${{ steps.query.outputs.findings }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Query Findings
+        id: query
+        env:
+          QUERY_TYPE: ${{ github.event.client_payload.query_type }}
+          QUERY_VALUE: ${{ github.event.client_payload.value }}
+        run: |
+          python scripts/ci/security_findings_api.py query \
+            --query-type "$QUERY_TYPE" \
+            --value "$QUERY_VALUE" \
+            --cache-dir ".codex/security-cache" \
+            --output "findings.json"
+
+          FINDINGS=$(cat findings.json)
+          echo "findings<<EOF" >> $GITHUB_OUTPUT
+          echo "$FINDINGS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Upload Results
+        uses: actions/upload-artifact@v5
+        with:
+          name: api-findings-result
+          path: findings.json
+          retention-days: 1

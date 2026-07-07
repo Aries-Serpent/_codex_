@@ -204,14 +204,14 @@ def main():
         print("=" * 70)
         return 0
 
-    except AssertionError as e:
+    except AssertionError:
         print()
         print("=" * 70)
         print("❌ TEST FAILED: <ERROR_TYPE>")
         print("=" * 70)
         return 1
 
-    except Exception as e:
+    except Exception:
         print()
         print("=" * 70)
         print("❌ UNEXPECTED ERROR: <ERROR_TYPE>")

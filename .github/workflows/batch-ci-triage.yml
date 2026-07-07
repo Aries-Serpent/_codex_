@@ -95,7 +95,33 @@ jobs:
           \    }\n\n    if (run.conclusion !== 'failure' && failedJobs.length ===\
           \ 0) continue;\n\n    // Determine failing step names\n    const failingSteps\
           \ = failedJobs.flatMap(j =>\n      (j.steps || []).filter(s => s.conclusion\
-          \ === 'failure').map(s => `${j.name} \u203A ${s.name}`)\n    );\n\n    failures.push({\n\
+          \ === 'failure').map(s => `${j.name} \u203A ${s.name}`)\n    );\n\n
+    // Check if this is security-scanning-suite failure
+    let hasSecurityFindings = false;
+    let securityFindingsContext = null;
+    if (wf.name === 'Security Scanning Suite') {
+      try {
+        const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
+          owner: context.repo.owner,
+          repo: context.repo.repo,
+          run_id: run.id,
+        });
+        const findingsArtifact = (artifacts.data.artifacts || []).find(a =>
+          a.name.includes('security-findings-comprehensive')
+        );
+        if (findingsArtifact) {
+          hasSecurityFindings = true;
+          securityFindingsContext = {
+            artifact_id: findingsArtifact.id,
+            artifact_name: findingsArtifact.name,
+          };
+        }
+      } catch (e) {
+        console.warn(`Could not check security findings: ${e.message}`);
+      }
+    }
+
+        failures.push({\n\
           \      workflow_name: wf.name,\n      workflow_file: wf.path.replace('.github/workflows/',\
           \ ''),\n      run_id: run.id,\n      run_url: run.html_url,\n      run_number:\
           \ run.run_number,\n      created_at: run.created_at,\n      head_branch:\
@@ -103,7 +129,9 @@ jobs:
           \ 8) : 'unknown',\n      pr_number: run.pull_requests && run.pull_requests.length\
           \ > 0\n        ? run.pull_requests[0].number : null,\n      failed_jobs:\
           \ failedJobs.map(j => j.name),\n      failing_steps: failingSteps,\n   \
-          \   logs_url: run.logs_url,\n    });\n  }\n}\n\nconsole.log(`Total recent\
+          \   logs_url: run.logs_url,
+      has_security_findings: hasSecurityFindings,
+      security_findings_context: securityFindingsContext,\n    });\n  }\n}\n\nconsole.log(`Total recent\
           \ failures found: ${failures.length}`);\nrequire('fs').writeFileSync(failuresFile,\
           \ JSON.stringify(failures));\ncore.setOutput('failure_count', failures.length);\n\
           core.setOutput('failures_path', failuresFile);\ncore.setOutput('active_workflows_scanned',\

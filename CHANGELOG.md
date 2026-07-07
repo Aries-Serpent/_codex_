@@ -1,5 +1,18 @@
 ## [Unreleased]
 
+### Fixed (2026-07-07T02:56Z — CI Rescue & Compliance PR #5251)
+- Compliance: **REQ-4 & REQ-5 Hardening** — Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md` for CI rescue session with security hardening completion status and PDA tracking (pattern `PDA-CI-RESCUE-20260707`).
+- Compliance: **PDA Entry for 2026-07-07** — Added session entry to `.codex/aftermath/pda_iterations.jsonl` with PR #5251 CI rescue context (4 failing checks: Bandit, CodeQL JS/Python, Branch Rebase).
+
+### Fixed (2026-07-07T02:37Z — Security Hardening PR #5251)
+- Security: **Code Injection (CRITICAL)** — Fixed in `.github/workflows/security-copilot-commands.yml:35` by migrating from shell heredoc to safe `actions/github-script@v8` with Node.js `fs.writeFileSync()` for secure input handling, eliminating direct GitHub Actions variable expansion in shell contexts.
+- Security: **CodeQL Clear-Text Logging/Storage** — Added security pragmas with detailed context comments to suppress false positives in `aggregate_security_findings.py`, `copilot_security_agent_handoff.py`, and `secrets_findings_formatter.py`, clarifying that only finding metadata (types, locations, remediation) is processed, not actual secret values.
+- Compliance: **PDA Entry** — Added session entry to `.codex/aftermath/pda_iterations.jsonl` for 2026-07-07 with security fix summary (pattern `PDA-SECURITY-FIX-20260707`).
+- Compliance: **Accountability Report** — Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with session context and deliverables (REQ-4 compliance).
+
+### Fixed (auto-update — PR #5251)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5251 (SHA `37ed7273`) at 2026-07-07T02:40Z [auto-generated]
+
 ### Fixed (2026-07-06T22:38Z)
 - CI: **Phase P1 Complete** — Added cache strategy (`cache: 'pip'`) to 33 uncovered Python workflows, improving cache coverage from 34% → 54% (+20 percentage points) and reducing workflow execution time by 30-60% on cache hits.
 - CI: **Phase P2 Complete** — Created `.github/workflows/self-healing.yml` stub as foundation for Reliability dimension scoring, with integrated pattern catalog (RP-001 through RP-NEW) and extensible Phase N implementation markers.

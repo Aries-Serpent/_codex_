@@ -62,7 +62,7 @@ def validate_gitleaks_config() -> bool:
         import tomllib
         with open(config_path, 'rb') as f:
             config = tomllib.load(f)
-        logger.info(f"✅ Config is valid TOML")
+        logger.info("✅ Config is valid TOML")
         logger.info(f"   - Paths excluded: {len(config.get('allowlist', {}).get('paths', []))}")
         return True
     except Exception as e:
@@ -141,7 +141,7 @@ def scan_current_tree_for_secrets(max_files: int = 1000) -> SecretDetectionResul
     
     elapsed = time.time() - start_time
     
-    logger.info(f"✅ Workspace scan complete")
+    logger.info("✅ Workspace scan complete")
     logger.info(f"   - Files scanned: {scanned_count}")
     logger.info(f"   - High-entropy findings: {len(high_entropy_secrets)}")
     logger.info(f"   - Scan duration: {elapsed:.1f}s")
@@ -304,9 +304,9 @@ def audit_historical_commits() -> dict:
         
         findings = {pattern: 0 for pattern in secret_patterns}
         
-        logger.info(f"✅ Git history audit complete")
+        logger.info("✅ Git history audit complete")
         logger.info(f"   - Patterns checked: {len(secret_patterns)}")
-        logger.info(f"   - No critical patterns detected in recent commits")
+        logger.info("   - No critical patterns detected in recent commits")
         
         return findings
     
@@ -344,7 +344,7 @@ def main():
     logger.info("\n" + "=" * 70)
     logger.info("📊 Phase 13.3.1 Summary: Secrets Detection")
     logger.info("=" * 70)
-    logger.info(f"✅ Configuration validated")
+    logger.info("✅ Configuration validated")
     logger.info(f"✅ Workspace scanned: {scan_result.total_scanned} files")
     logger.info(f"✅ High-entropy findings: {scan_result.high_entropy_finds}")
     logger.info(f"✅ Remediation workflow deployed: {'yes' if workflow_deployed else 'no'}")

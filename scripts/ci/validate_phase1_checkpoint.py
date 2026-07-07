@@ -133,7 +133,7 @@ def validate_session_query_api() -> tuple[bool, list[str]]:
         db_path = resolve_db_path(None)
         if not Path(db_path).exists():
             errors.append(f"Database not found at resolved path: {db_path}")
-    except FileNotFoundError as e:
+    except FileNotFoundError:
         # This is OK if DB doesn't exist - still valid API
         pass
     except Exception as e:
