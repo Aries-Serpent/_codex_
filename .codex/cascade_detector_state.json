@@ -50,7 +50,10 @@
     "31:src/codex_ml/utils/config_loader.py": 1,
     "35:.codex/AUTO_GO_CONTINUE_POST_MERGE_PROMPT.md": 1,
     "11:/home/runner/work/_codex_/_codex_/.codex/monitor_gate_5.py": 8,
-    "11:/home/runner/work/_codex_/_codex_/scripts/ci/autonomous_test_healer_orchestrator.py": 2
+    "11:/home/runner/work/_codex_/_codex_/scripts/ci/autonomous_test_healer_orchestrator.py": 2,
+    "35:.codex/AGENT_DELEGATION_BRIEF_PHASES4B_8.md": 1,
+    "35:.codex/PHASE_4B_5AB_CHECKPOINT_REPORT.md": 1,
+    "35:.codex/PHASE_6_7_8_IMPLEMENTATION_GUIDES.md": 3
   },
   "circuit_state": {
     "6": "BROKEN",

@@ -13682,7 +13682,7 @@ Implement Phases 4B-8 of the Security Findings Integration system:
 ### ARCHITECTURE
 
 ```
-Scanning (CodeQL, Semgrep, pip-audit, Safety, detect-secrets)
+Scanning (CodeQL, Semgrep, pip-audit, Safety, detect-secrets)  # pragma: allowlist secret
          ↓
 Cache Manager (Phase 4A) - 30-run rolling cache with deduplication
          ↓
@@ -13700,7 +13700,7 @@ PR Enhancement    @copilot Commands CodeQL Formatter
     GitHub Integration      Dependency Formatter
                             (Phase 8B)
                                   │
-                            Secrets Categorizer
+                            Secrets Categorizer  # pragma: allowlist secret
                             (Phase 8C)
 ```
 

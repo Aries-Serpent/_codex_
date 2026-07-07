@@ -113,7 +113,7 @@ PRESENTATION LAYER
 
 COGNITIVE BRAIN LAYER
 ├── Agent routing (agent-orchestrator)
-├── Decision logic (codeql, dependency, secrets agents)
+├── Decision logic (codeql, dependency, secrets agents)  # pragma: allowlist secret
 └── Pattern recognition (trend analyzer)
 
 CORE LOGIC LAYER
@@ -155,7 +155,7 @@ RUNTIME LAYER
 | **5** | 10-12h | ⏳ Ready | API workflow, CLI interface |
 | **6** | 8-10h | ⏳ Ready | PR enhancement, WEC integration |
 | **7** | 7-9h | ⏳ Ready | @copilot commands, responses |
-| **8** | 8-10h | ⏳ Ready | Agent formatters (CodeQL, Deps, Secrets) |
+| **8** | 8-10h | ⏳ Ready | Agent formatters (CodeQL, Deps, Secrets) | <!-- pragma: allowlist secret -->
 | **TOTAL** | **65h** | **32% Complete** | 8 phases, production-ready |
 
 **Timeline**: 8 working days (1 week if parallelized)  
@@ -214,7 +214,7 @@ Phase 7  → cognitive-brain-cli-agent + ci-auto-healer-agent
 
 Phase 8  → codeql-alert-resolution-agent
           + dependency-security-review-agent
-          + secret-detection-agent
+          + secret-detection-agent  # pragma: allowlist secret
           (agent-specific formatting)
 ```
 

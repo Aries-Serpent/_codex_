@@ -639,7 +639,7 @@ RUNTIME (GitHub Actions, SQLite, JSON files)
 | **5** | `workflow-ci-fixer` + `ci-auto-healer-agent` | API workflow creation, CLI implementation |
 | **6** | `workflow-ci-fixer` + `pr-check-remediation-agent` | PR enhancement workflow, WEC integration |
 | **7** | `cognitive-brain-cli-agent` + `ci-auto-healer-agent` | Command parsing, response generation |
-| **8** | `codeql-alert-resolution-agent` + `dependency-security-review-agent` + `secret-detection-agent` | Agent-specific formatting expertise |
+| **8** | `codeql-alert-resolution-agent` + `dependency-security-review-agent` + `secret-detection-agent` | Agent-specific formatting expertise | <!-- pragma: allowlist secret -->
 
 **Parallelization**: Phases 4B-8 can run in parallel if agents coordinate:
 - Agents reserve their assigned output file paths

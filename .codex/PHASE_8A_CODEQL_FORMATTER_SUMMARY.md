@@ -94,7 +94,7 @@ Successfully implemented **Phase 8A: CodeQL Alert Formatter Module** as part of 
 | CWE Titles | 2 | Known and unknown CWEs |
 | Severity Conversion | 6 | All levels, case-insensitivity, unknown |
 | Confidence Conversion | 6 | Float, int, string, edge cases |
-| Fix Pattern Generation | 4 | SQL, path traversal, secrets, generic |
+| Fix Pattern Generation | 4 | SQL, path traversal, secrets, generic | <!-- pragma: allowlist secret -->
 | Findings Loading | 3 | Valid cache, missing file, invalid JSON |
 | CWE Grouping | 3 | Normal grouping, missing CWE, empty |
 | Sorting by Severity | 2 | Proper ordering, missing severity |
@@ -308,7 +308,7 @@ Created:
 Phase 8A: CodeQL Formatter      ✅ COMPLETE
            ↓
 Phase 8B: Dependency Formatter  🔄 In parallel
-Phase 8C: Secrets Formatter     🔄 In parallel
+Phase 8C: Secrets Formatter     🔄 In parallel  # pragma: allowlist secret
            ↓
 Phase 9: PR Enhancement         ⏳ Next phase
 ```

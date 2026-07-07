@@ -179,7 +179,7 @@ def calculate_upgrade_risk(package: str, from_version: str, to_version: str) -> 
     
     Returns:
     {
-        "risk_level": "low|medium|high",
+        "risk_level": "low|medium|high",  # pragma: allowlist secret
         "breaking_changes": [list of changes],
         "deprecations": [deprecated items],
         "test_effort": "low|medium|high",
@@ -262,13 +262,13 @@ python scripts/ci/security_dependency_agent_format.py format \
 ### Functions to Implement
 
 ```python
-def categorize_secrets(findings: list) -> dict:
+def categorize_secrets(findings: list) -> dict:  # pragma: allowlist secret
     """
-    Group secrets by type and risk level.
+    Group secrets by type and risk level.  # pragma: allowlist secret
     
     Categories:
     - AWS keys (CRITICAL)
-    - GitHub tokens (CRITICAL)
+    - GitHub tokens (CRITICAL)  # pragma: allowlist secret
     - Private keys (CRITICAL)
     - API keys (HIGH)
     - Database credentials (CRITICAL)
@@ -290,9 +290,9 @@ def generate_rotation_checklist(rotation_required: list) -> str:
     """
     Generate step-by-step rotation guide.
     
-    For each secret:
-    1. Revoke current secret
-    2. Update GitHub Actions secrets
+    For each secret:  # pragma: allowlist secret
+    1. Revoke current secret  # pragma: allowlist secret
+    2. Update GitHub Actions secrets  # pragma: allowlist secret
     3. Update application configs
     4. Verify functionality
     5. Document rotation date
@@ -361,7 +361,7 @@ Phase 8 START
     ↓
 codeql-alert-resolution-agent ─→ formats CodeQL findings (150 lines)
 dependency-security-review-agent ─→ formats dependencies (150 lines)
-secret-detection-agent ─→ categorizes secrets (100 lines)
+secret-detection-agent ─→ categorizes secrets (100 lines)  # pragma: allowlist secret
     ↓ (all parallel, ~10-15 minutes each)
     ↓
 Phase 8 COMPLETE

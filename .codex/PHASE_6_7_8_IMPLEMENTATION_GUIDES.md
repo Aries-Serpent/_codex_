@@ -121,7 +121,7 @@ python scripts/ci/security_pr_formatter.py generate \
 |----------|-------|-------|-------|
 | CRITICAL | 5 | CodeQL (2), Semgrep (3) | 🔴 New! |
 | HIGH | 12 | CodeQL (5), pip-audit (7) | 🟡 Stable |
-| MEDIUM | 18 | Safety (8), detect-secrets (10) | 🟢 Improving |
+| MEDIUM | 18 | Safety (8), detect-secrets (10) | 🟢 Improving | <!-- pragma: allowlist secret -->
 
 ### Top Issues
 
@@ -495,15 +495,15 @@ def generate_dependency_diff(package: str, from_version: str, to_version: str) -
 
 **Functions**:
 ```python
-def categorize_secrets(findings: list) -> dict
-    # Group by secret type
+def categorize_secrets(findings: list) -> dict  # pragma: allowlist secret
+    # Group by secret type  # pragma: allowlist secret
     
 def check_allowlist(findings: list) -> list
     # Filter against allowlist with expiry
     
 def generate_rotation_checklist(rotation_required: list) -> str
     # Step-by-step rotation guide
-    # Include GitHub Actions token update procedure
+    # Include GitHub Actions token update procedure  # pragma: allowlist secret
 ```
 
 ### 8.4 Testing Checklist

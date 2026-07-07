@@ -259,7 +259,7 @@ result = format_dependency_vulnerabilities(".codex/security-findings-comprehensi
 for pkg in result["vulnerable_packages"]:
     print(f"{pkg['package']}: {pkg['severity']} - {pkg['vulnerability']}")
     print(f"  Upgrade to: {pkg['safe_upgrade']['target_version']}")
-    print(f"  Risk: {pkg['safe_upgrade']['risk_level']}")
+    print(f"  Risk: {pkg['safe_upgrade']['risk_level']}")  # pragma: allowlist secret
 ```
 
 ### CLI Usage

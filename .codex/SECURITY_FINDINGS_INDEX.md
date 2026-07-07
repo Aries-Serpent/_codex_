@@ -91,7 +91,7 @@ Phase 7 (READY ⏳):
 Phase 8 (READY ⏳):
 ├── security_codeql_agent_format.py - CodeQL formatter
 ├── security_dependency_agent_format.py - Dependency formatter
-└── Enhanced secrets categorizer
+└── Enhanced secrets categorizer  # pragma: allowlist secret
 ```
 
 ### Layered Architecture
@@ -181,7 +181,7 @@ RUNTIME: GitHub Actions, SQLite, JSON files
 | **5** | workflow-ci-fixer | ci-auto-healer-agent | 10-12h |
 | **6** | workflow-ci-fixer | pr-check-remediation-agent | 8-10h |
 | **7** | cognitive-brain-cli-agent | ci-auto-healer-agent | 7-9h |
-| **8** | codeql-alert-resolution-agent, dependency-security-review-agent, secret-detection-agent | - | 8-10h |
+| **8** | codeql-alert-resolution-agent, dependency-security-review-agent, secret-detection-agent | - | 8-10h | <!-- pragma: allowlist secret -->
 
 ### Coordination Points
 

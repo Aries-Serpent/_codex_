@@ -130,13 +130,13 @@ python scripts/ci/secrets_findings_formatter.py categorize-secrets \
 
 ### Type Hints: 100%
 ```python
-def categorize_secret_findings(findings_json_path: str) -> Dict[str, Any]:
-def _parse_secret_type(finding: Dict[str, Any]) -> str:
+def categorize_secret_findings(findings_json_path: str) -> Dict[str, Any]:  # pragma: allowlist secret
+def _parse_secret_type(finding: Dict[str, Any]) -> str:  # pragma: allowlist secret
 def _calculate_rotation_deadline(urgency: str) -> str:
-def _generate_remediation_steps(secret_type: str, file_path: str) -> str:
+def _generate_remediation_steps(secret_type: str, file_path: str) -> str:  # pragma: allowlist secret
 def _convert_confidence_to_percent(confidence: Any) -> str:
 def _load_findings(findings_json_path: str) -> List[Dict[str, Any]]:
-def _filter_secret_findings(findings: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+def _filter_secret_findings(findings: List[Dict[str, Any]]) -> List[Dict[str, Any]]:  # pragma: allowlist secret
 def _generate_markdown_report(formatted: Dict[str, Any]) -> str:
 def main() -> int:
 ```
@@ -297,7 +297,7 @@ def main() -> int:
 | Criterion | Status | Evidence |
 |-----------|--------|----------|
 | All test cases passing | ✅ PASS | 19/19 tests passed |
-| Secret categorization verified | ✅ PASS | 10 types classified correctly |
+| Secret categorization verified | ✅ PASS | 10 types classified correctly | <!-- pragma: allowlist secret -->
 | Rotation deadlines accurate | ✅ PASS | ISO 8601 format, future dates |
 | Remediation steps clear | ✅ PASS | 6-step procedures per type |
 | Performance < 500ms | ✅ PASS | 0.4ms measured |
@@ -325,8 +325,8 @@ python tests/ci/test_secrets_findings_formatter.py
 Expected output:
 ```
 Running 19 test cases...
-✓ test_parse_secret_type_aws
-✓ test_parse_secret_type_github
+✓ test_parse_secret_type_aws  # pragma: allowlist secret
+✓ test_parse_secret_type_github  # pragma: allowlist secret
 ...
 ============================================================
 Results: 19 passed, 0 failed

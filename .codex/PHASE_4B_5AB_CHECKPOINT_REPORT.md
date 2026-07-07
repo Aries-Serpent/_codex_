@@ -174,7 +174,7 @@
 | 7 | @copilot Parser | ⏳ Queued | 150 | Enhanced `copilot_security_agent_handoff.py` |
 | 8 | CodeQL Format | ⏳ Queued | 150 | `security_codeql_agent_format.py` |
 | 8 | Deps Format | ⏳ Queued | 150 | `security_dependency_agent_format.py` |
-| 8 | Secrets Format | ⏳ Queued | 100 | Enhanced `copilot_security_agent_handoff.py` |
+| 8 | Secrets Format | ⏳ Queued | 100 | Enhanced `copilot_security_agent_handoff.py` | <!-- pragma: allowlist secret -->
 
 **Total Code Delivered/Queued**: 2,830+ lines  
 **Total Documentation**: 800+ lines (guides, benchmarks, reports)

@@ -30,7 +30,7 @@ INPUT LAYER (5 Tools)
 ├── Semgrep
 ├── pip-audit
 ├── Safety
-└── detect-secrets
+└── detect-secrets  # pragma: allowlist secret
     ↓
 AGGREGATION (Phase 4A) ✅
 ├── Comprehensive JSON
@@ -62,7 +62,7 @@ PRESENTATION LAYERS
 └── Agent Formatters (Phase 8) ⏳
     ├── CodeQL formatter (CWE grouping)
     ├── Dependency formatter (upgrade paths)
-    └── Secrets categorizer (rotation)
+    └── Secrets categorizer (rotation)  # pragma: allowlist secret
     ↓
 OUTPUT LAYER
 ├── Autonomous remediation (@agents)

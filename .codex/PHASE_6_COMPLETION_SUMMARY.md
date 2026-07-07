@@ -124,7 +124,7 @@ _Last scan: 2026-07-07T02:03+00:00_
 
 | Severity | Count | Tools | Trend |
 |----------|-------|-------|-------|
-| 🔴 CRITICAL | 4 | CodeQL, detect-secrets | ⚫ Unknown |
+| 🔴 CRITICAL | 4 | CodeQL, detect-secrets | ⚫ Unknown | <!-- pragma: allowlist secret -->
 | 🟠 HIGH | 4 | Bandit, Semgrep, pip-audit | ⚫ Unknown |
 | 🟡 MEDIUM | 2 | CodeQL, Semgrep | ⚫ Unknown |
 
