@@ -386,12 +386,15 @@ def generate_scan_summary_response(findings: List[Dict[str, Any]],
 
 @dataclass
 class AgentHandoff:
-    """Manages security findings handoff to Copilot agents"""
+    """Handoff data for a specific agent"""
+    agent_id: str
+    findings_count: int
+    findings: List[Dict[str, Any]]
+    summary: Dict[str, Any]
+    recommendations: List[str]
 
-    def __init__(self, findings_json: str):
-        self.findings_data = None
-        self.findings_json = Path(findings_json)
-        self._load_findings()
+
+class CopilotSecurityAgentHandoff:
 
     def _load_findings(self) -> None:
         """Load findings from JSON file"""
