@@ -1,27 +1,25 @@
-# Session Context — 2026-07-07T10:20:49Z
+# Session Context — 2026-07-07T10:24:54Z
 **Branch:** `dependabot/github_actions/MishaKav/pytest-coverage-comment-fd9adbdca9fdfbe2b9bfa44a7340e6a83346ce6c`  **PR:** #5253  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `3897` (✅)
-- GraphQL remaining: `4915` (✅)
+- REST remaining: `3794` (✅)
+- GraphQL remaining: `4911` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 📋 PR #5253 — ci(deps): bump MishaKav/pytest-coverage-comment from a01708271d42c5703d489b13eb503ba47c01e82a to fd9adbdca9fdfbe2b9bfa44a7340e6a83346ce6c
 State: `open`  Draft: `False`  Branch: `dependabot/github_actions/MishaKav/pytest-coverage-comment-fd9adbdca9fdfbe2b9bfa44a7340e6a83346ce6c` → `main`
 
-### ❌ 1 Failing CI Check(s)
-- `copilot` (cancelled)
-
 ## 🚨 Recent CI Failures (last 5 runs)
-- **Workflow Execution Gate** — `failure` on `dependabot/github_actions/docker/build-push-action-7.3.0` (2026-07-07)
-- **Workflow Execution Gate** — `failure` on `dependabot/github_actions/docker/build-push-action-7.3.0` (2026-07-07)
-- **Workflow Execution Gate** — `failure` on `dependabot/github_actions/actions/setup-python-6.3.0` (2026-07-07)
 - **.github/workflows/agentic-diff-guard.yml** — `failure` on `dependabot/github_actions/MishaKav/pytest-coverage-comment-fd9adbdca9fdfbe2b9bfa44a7340e6a83346ce6c` (2026-07-07)
+- **.github/workflows/self-healing.yml** — `failure` on `dependabot/github_actions/MishaKav/pytest-coverage-comment-fd9adbdca9fdfbe2b9bfa44a7340e6a83346ce6c` (2026-07-07)
 - **.github/workflows/codex-master-key-validation.yml** — `failure` on `dependabot/github_actions/MishaKav/pytest-coverage-comment-fd9adbdca9fdfbe2b9bfa44a7340e6a83346ce6c` (2026-07-07)
+- **Workflow Execution Gate** — `failure` on `dependabot/github_actions/docker/build-push-action-7.3.0` (2026-07-07)
+- **Agent Token Delegation** — `failure` on `dependabot/github_actions/docker/build-push-action-7.3.0` (2026-07-07)
 
 ## 📝 Recent Commits
+- `b7c06435` Apply remaining changes — copilot-swe-agent[bot] (2026-07-07)
 - `d514c7b6` ci(deps): consolidate Dependabot PRs #5253–#5261 — bump 9 dependencies — copilot-swe-agent[bot] (2026-07-07)
 - `119198a7` chore: initial plan — consolidate all Dependabot PRs — copilot-swe-agent[bot] (2026-07-07)
 - `b2f38744` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-07-07)
@@ -29,7 +27,6 @@ State: `open`  Draft: `False`  Branch: `dependabot/github_actions/MishaKav/pytes
 - `0b5286bc` chore(vars): auto-sync variable audit report [skip ci] — github-actions[bot] (2026-07-07)
 - `eb7aad87` chore(vars): sync .codex/agent_context.json from repo variables [skip ci] — github-actions[bot] (2026-07-07)
 - `d394617b` docs: update Phase 8.2 triage dashboard [skip ci] — github-actions[bot] (2026-07-07)
-- `d49c2c05` fix(ci): nightly codebase health sweep — main [skip ci] — github-actions[bot] (2026-07-07)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
