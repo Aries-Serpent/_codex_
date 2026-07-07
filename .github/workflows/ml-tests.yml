@@ -18,6 +18,7 @@ jobs:
     permissions:
       contents: read
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
     strategy:
       matrix:
         os: [ubuntu-latest]
@@ -44,7 +45,7 @@ jobs:
           pip install --upgrade pip
           pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
           pip install -r requirements.txt || true
-          pip install pytest pytest-cov pytest-mock pytest-timeout
+          pip install pytest==8.4.2 pytest-cov==7.0.0 pytest-mock==3.14.0 pytest-timeout==2.4.0
 
       - name: Run ${{ matrix.test-suite }} tests
         run: |
@@ -71,6 +72,7 @@ jobs:
     permissions:
       contents: read
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     needs: test-ml-components
 
     steps:
@@ -87,7 +89,7 @@ jobs:
           pip install --upgrade pip
           pip install torch --index-url https://download.pytorch.org/whl/cpu
           pip install -r requirements.txt || true
-          pip install pytest pytest-timeout
+          pip install pytest==8.4.2 pytest-timeout==2.4.0
 
       - name: Run integration tests
         run: |
@@ -100,6 +102,7 @@ jobs:
     permissions:
       contents: read
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: test-ml-components
 
     steps:
