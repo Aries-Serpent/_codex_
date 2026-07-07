@@ -241,6 +241,7 @@ def test_output_formats(api_script: Path) -> bool:
                     'query',
                     '--query-type', 'cwe',
                     '--value', 'CWE-79',
+                    '--findings-file', str(findings_file),
                     '--format', fmt,
                     '--output', str(output_file)
                 ],
@@ -266,7 +267,8 @@ def test_output_formats(api_script: Path) -> bool:
             print(f"✗ {fmt.upper()}: {e}")
             results.append(False)
     
-    findings_file.parent.rmdir()
+    import shutil
+    shutil.rmtree(temp_dir)
     return all(results)
 
 
