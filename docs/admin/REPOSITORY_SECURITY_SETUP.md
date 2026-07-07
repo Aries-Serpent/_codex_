@@ -616,7 +616,7 @@ pip-compile requirements.in -o requirements/lock.txt --upgrade
 - **Internal Wiki**: Security Best Practices
 - **Slack Channel**: #security-alerts
 - **Email**: security@localhost
-- **Incident Response**: [Runbook](../security/INCIDENT_RESPONSE.md)
+- **Incident Response**: [Runbook](../operations/INCIDENT_RESPONSE.md)
 
 ---
 

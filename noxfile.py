@@ -32,3 +32,20 @@ nox.options.error_on_missing_interpreters = _dev_noxfile.nox.options.error_on_mi
 
 # The sessions are automatically imported from the development noxfile module
 # No need to explicitly export them - nox discovers them via introspection
+
+
+# Add alias sessions that the CI workflow expects
+@nox.session(name="gates", python=_dev_noxfile.DEFAULT_PYTHON)
+def gates(session: nox.Session) -> None:
+    """Security gates - alias for sec session."""
+    session.notify("sec")
+
+
+@nox.session(name="precommit", python=_dev_noxfile.DEFAULT_PYTHON)
+def precommit(session: nox.Session) -> None:
+    """Pre-commit checks - verify no merge markers and basic file integrity."""
+    session.chdir(str(Path(__file__).resolve().parent))
+    
+    # Use the patch_debris session from the development noxfile
+    # which checks for merge/diff markers
+    session.notify("patch_debris")

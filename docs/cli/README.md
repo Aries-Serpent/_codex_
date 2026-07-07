@@ -7,7 +7,7 @@ This directory contains documentation for the command-line interface (CLI) tools
 ## Contents
 
 ### CLI Reference
-- **[CLI Overview](../CLI.md)** - Introduction to CLI tools
+- **[CLI Overview](../ast/CLI.md)** - Introduction to CLI tools
 - **[CLI Status Audit](./status_audit.md)** - Complete CLI status
 - **[Dataset CLI](./dataset_cli.md)** - Dataset management commands
 - **[Minimal Workflow](./minimal_train_eval_workflow.md)** - Quick start workflow

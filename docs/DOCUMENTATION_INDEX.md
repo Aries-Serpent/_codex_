@@ -92,7 +92,7 @@
 | Document | Purpose | Diagrams |
 |----------|---------|----------|
 | [ARCHITECTURE_BLUEPRINT.md](./ARCHITECTURE_BLUEPRINT.md) | Comprehensive architecture reference | Yes (Mermaid) |
-| [agents/prompts/ARCHITECTURE.md](./ARCHITECTURE.md) | System architecture diagrams | Yes (Mermaid) |
+| [agents/prompts/ARCHITECTURE.md](./architecture/INDEX.md) | System architecture diagrams | Yes (Mermaid) |
 | [agents/ORCHESTRATION.md](https://github.com/Aries-Serpent/_codex_/blob/main/agents/ORCHESTRATION.md) | Physics-inspired orchestration | Yes |
 
 ### API Documentation

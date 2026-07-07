@@ -727,7 +727,7 @@ sphinx-build -b html docs/ docs/_build
 ## Next Steps
 
 1. **Clone and setup**: Follow Quick Start section
-2. **Read architecture**: See [ARCHITECTURE.md](../ARCHITECTURE.md)
+2. **Read architecture**: See [ARCHITECTURE.md](../architecture/INDEX.md)
 3. **Explore codebase**: Check [Repository Structure](../ARCHITECTURE_BLUEPRINT.md#repository-structure)
 4. **Join development**: Follow contribution guidelines in [CONTRIBUTING.md](../../CONTRIBUTING.md)
 5. **Ask for help**: Open issue in GitHub or check [Discussions](https://github.com/Aries-Serpent/_codex_/discussions)

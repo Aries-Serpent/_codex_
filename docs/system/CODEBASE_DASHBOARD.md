@@ -510,7 +510,7 @@ None active. All blockers resolved or have mitigation plans.
 - [Cognitive Map](./CODEBASE_COGNITIVE_MAP.md) - Architecture overview
 - [Roadmap](../ROADMAP.md) - Feature roadmap (coming soon)
 - [Contributing](../CONTRIBUTING.md) - Contribution guide
-- [Architecture](../ARCHITECTURE.md) - Detailed architecture
+- [Architecture](../architecture/INDEX.md) - Detailed architecture
 - [MCP Quick Start](../mcp/QUICK_START.md) - ChatGPT packaging
 
 ### Key Components

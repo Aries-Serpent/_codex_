@@ -238,6 +238,6 @@ All errors are logged to Layer 4 monitoring for visibility.
 ---
 
 **Related Documentation**:
-- [ARCHITECTURE.md](../ARCHITECTURE.md) - Full architecture documentation
+- [ARCHITECTURE.md](./INDEX.md) - Full architecture documentation
 - [5-Layer Architecture](5_LAYER_ARCHITECTURE.md) - Layer structure and responsibilities
 - [System Context](SYSTEM_CONTEXT.md) - External system context

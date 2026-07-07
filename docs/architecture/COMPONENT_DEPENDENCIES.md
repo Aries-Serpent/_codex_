@@ -346,4 +346,4 @@ CLI Command
 
 **Related Documentation**:
 - [5-Layer Architecture](../architecture/5_LAYER_ARCHITECTURE.md) - System layers
-- [ARCHITECTURE.md](../ARCHITECTURE.md) - Full architecture
+- [ARCHITECTURE.md](./INDEX.md) - Full architecture

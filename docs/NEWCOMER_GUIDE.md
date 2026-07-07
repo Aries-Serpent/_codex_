@@ -409,10 +409,10 @@ Before committing:
 ### Documentation Resources
 
 1. **Start here**: [Documentation Hub](./index.md)
-2. **Architecture**: [./ARCHITECTURE.md](./ARCHITECTURE.md)
+2. **Architecture**: [./ARCHITECTURE.md](./architecture/INDEX.md)
 3. **Contributing**: [CONTRIBUTING.md](CONTRIBUTING.md)
 4. **Changelog**: [docs/CHANGELOG.md](https://github.com/Aries-Serpent/_codex_/blob/main/CHANGELOG.md)
-5. **CLI Reference**: [./CLI.md](./CLI.md)
+5. **CLI Reference**: [./CLI.md](./ast/CLI.md)
 
 ### Troubleshooting
 

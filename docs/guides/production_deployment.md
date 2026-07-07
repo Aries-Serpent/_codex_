@@ -654,7 +654,7 @@ kubectl exec codex-xxxx -n production -- \
 - [Docker Documentation](https://docs.docker.com/)
 - [Helm Charts](https://helm.sh/docs/)
 - [API Reference](../api/)
-- [Architecture Blueprint](../ARCHITECTURE.md)
+- [Architecture Blueprint](../architecture/INDEX.md)
 
 ---
 

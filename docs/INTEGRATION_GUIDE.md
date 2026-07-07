@@ -458,7 +458,7 @@ print(response.choices[0].message.content)
 
 ## See Also
 
-- [Quickstart Guide](./QUICKSTART.md)
+- [Quickstart Guide](./docs/guides/QUICKSTART.md)
 - [Configuration Guide](./CONFIGURATION_GUIDE.md)
 - [RAG API Reference](./RAG_API_REFERENCE.md)
 - [Troubleshooting Guide](./TROUBLESHOOTING.md)

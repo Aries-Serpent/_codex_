@@ -7,7 +7,7 @@ This directory contains comprehensive documentation for the Continuous Integrati
 ## Contents
 
 ### Core CI/CD Guides
-- **[CI Overview](../CI.md)** - Introduction to the CI/CD system
+- **[CI Overview](../operations/CI_FAILURE_TRACKING_LOG.md)** - Introduction to the CI/CD system
 - **[Health Monitoring](../monitoring/)** - CI/CD pipeline health monitoring
 
 ### Documentation in Progress
