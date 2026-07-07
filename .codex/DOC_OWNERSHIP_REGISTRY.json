@@ -1,0 +1,289 @@
+{
+  "registry_metadata": {
+    "version": "1.0",
+    "created_at": "2026-07-07T17:48:35Z",
+    "last_updated": "2026-07-07T17:48:35Z",
+    "authority": "@mbaetiong",
+    "description": "Central documentation ownership registry mapping all user-facing docs to responsible agents and review cadences"
+  },
+  "root_level_documentation": {
+    "README.md": {
+      "owner": "@unified-doc-agent",
+      "category": "Primary Entry Point",
+      "last_reviewed": "2026-07-07",
+      "next_review_due": "2026-10-07",
+      "review_cadence_days": 90,
+      "sla_days": 90,
+      "critical": true,
+      "description": "Primary entry point for new users; link-validation gate"
+    },
+    "CONTRIBUTING.md": {
+      "owner": "@policy-coach-agent",
+      "category": "Contributor Onboarding",
+      "last_reviewed": "2026-07-07",
+      "next_review_due": "2026-10-07",
+      "review_cadence_days": 90,
+      "sla_days": 90,
+      "critical": true,
+      "description": "Contributor onboarding; code-style alignment and workflows"
+    },
+    "SECURITY.md": {
+      "owner": "@security-audit-agent",
+      "category": "Security Policy",
+      "last_reviewed": "2026-07-07",
+      "next_review_due": "2026-10-07",
+      "review_cadence_days": 90,
+      "sla_days": 90,
+      "critical": true,
+      "description": "Security policy; must stay current with CVE fixes and threat model"
+    },
+    "CHANGELOG.md": {
+      "owner": "@pypi-publishing-operations-agent",
+      "category": "Release History",
+      "last_reviewed": "2026-07-07",
+      "next_review_due": "2026-07-14",
+      "review_cadence_days": 7,
+      "sla_days": 90,
+      "critical": true,
+      "description": "Version history; updated per release"
+    },
+    "AGENTS.md": {
+      "owner": "@skills-master-agent",
+      "category": "Agent Registry",
+      "last_reviewed": "2026-07-07",
+      "next_review_due": "2026-10-07",
+      "review_cadence_days": 90,
+      "sla_days": 90,
+      "critical": true,
+      "description": "Agent registry; sync with .github/agents/ directory"
+    },
+    "CODE_OF_CONDUCT.md": {
+      "owner": "@policy-coach-agent",
+      "category": "Community Policy",
+      "last_reviewed": "2026-07-07",
+      "next_review_due": "2027-07-07",
+      "review_cadence_days": 365,
+      "sla_days": 180,
+      "critical": false,
+      "description": "Code of conduct; low-change foundational policy"
+    }
+  },
+  "docs_navigation": {
+    "docs/index.md": {
+      "owner": "@unified-doc-agent",
+      "category": "Core Navigation",
+      "last_reviewed": "2026-07-07",
+      "next_review_due": "2026-10-07",
+      "review_cadence_days": 90,
+      "sla_days": 90,
+      "critical": true
+    },
+    "docs/README.md": {
+      "owner": "@documentation-quality-agent",
+      "category": "Core Navigation",
+      "last_reviewed": "2026-07-07",
+      "next_review_due": "2026-10-07",
+      "review_cadence_days": 90,
+      "sla_days": 90,
+      "critical": true
+    },
+    "docs/MASTER_INDEX.md": {
+      "owner": "@unified-doc-agent",
+      "category": "Core Navigation",
+      "last_reviewed": "2026-07-07",
+      "next_review_due": "2026-10-07",
+      "review_cadence_days": 90,
+      "sla_days": 90,
+      "critical": true
+    },
+    "docs/NEWCOMER_GUIDE.md": {
+      "owner": "@unified-doc-agent",
+      "category": "Onboarding",
+      "last_reviewed": "2026-07-07",
+      "next_review_due": "2026-10-07",
+      "review_cadence_days": 90,
+      "sla_days": 90,
+      "critical": true
+    }
+  },
+  "documentation_domains": {
+    "api_reference": {
+      "owner": "@code-analysis-agent",
+      "category": "API Reference",
+      "review_cadence_days": 90,
+      "sla_days": 90,
+      "critical": true,
+      "files_pattern": "docs/reference/*",
+      "validation_required": "Code examples must execute successfully"
+    },
+    "architecture_design": {
+      "owner": "@python-architect-agent",
+      "category": "Architecture",
+      "review_cadence_days": 90,
+      "sla_days": 90,
+      "critical": true,
+      "files_pattern": "docs/arch/*",
+      "validation_required": "Diagrams must match current codebase structure"
+    },
+    "guides_howto": {
+      "owner": "@doc-refactor-test-agent",
+      "category": "Guides & How-To",
+      "review_cadence_days": 90,
+      "sla_days": 90,
+      "critical": true,
+      "files_pattern": "docs/guides/*",
+      "validation_required": "100% of code examples must execute successfully"
+    },
+    "admin_operations": {
+      "owner": "@workflow-compliance-guardian",
+      "category": "Admin & Operations",
+      "review_cadence_days": 90,
+      "sla_days": 90,
+      "critical": true,
+      "files_pattern": "docs/admin/*",
+      "validation_required": "All procedures verified to work in staging environment"
+    },
+    "troubleshooting_diagnostics": {
+      "owner": "@ci-health-alert-agent",
+      "category": "Troubleshooting",
+      "review_cadence_days": 30,
+      "sla_days": 90,
+      "critical": true,
+      "files_pattern": "docs/troubleshooting/*",
+      "validation_required": "Updated as issues arise; stale diagnostics are dangerous"
+    },
+    "terminology_glossary": {
+      "owner": "@terminology-consistency-agent",
+      "category": "Terminology",
+      "review_cadence_days": 180,
+      "sla_days": 90,
+      "critical": false,
+      "files_pattern": "docs/TERMINOLOGY*",
+      "validation_required": "Consistency across codebase"
+    },
+    "cognitive_brain": {
+      "owner": "@skills-master-agent",
+      "category": "Cognitive Brain System",
+      "review_cadence_days": 60,
+      "sla_days": 90,
+      "critical": true,
+      "files_pattern": "docs/system/*cognitive*"
+    },
+    "ci_cd_pipelines": {
+      "owner": "@workflow-health-monitor",
+      "category": "CI/CD",
+      "review_cadence_days": 90,
+      "sla_days": 90,
+      "critical": true,
+      "files_pattern": "docs/ci/*"
+    },
+    "security_hardening": {
+      "owner": "@security-audit-agent",
+      "category": "Security",
+      "review_cadence_days": 60,
+      "sla_days": 60,
+      "critical": true,
+      "files_pattern": "docs/security/*"
+    }
+  },
+  "review_schedule": {
+    "critical_docs": {
+      "cadence": "quarterly",
+      "cadence_days": 90,
+      "notification_warning_days": 7,
+      "escalation_days": 120
+    },
+    "high_priority": {
+      "cadence": "quarterly",
+      "cadence_days": 90,
+      "notification_warning_days": 10,
+      "escalation_days": 120
+    },
+    "medium_priority": {
+      "cadence": "semi-annual",
+      "cadence_days": 180,
+      "notification_warning_days": 14,
+      "escalation_days": 210
+    },
+    "low_priority": {
+      "cadence": "annual",
+      "cadence_days": 365,
+      "notification_warning_days": 30,
+      "escalation_days": 400
+    }
+  },
+  "sla_thresholds": {
+    "critical_broken_links": 0,
+    "critical_stale_days": 90,
+    "high_stale_days": 90,
+    "medium_stale_days": 180,
+    "low_stale_days": 365,
+    "acceptable_health_score": 0.95
+  },
+  "escalation_paths": {
+    "stale_doc_notification": "Doc owner (@agent-name); escalate to @mbaetiong if unresolved after 14 days",
+    "broken_link": "Link validator alerts; doc owner must fix within 7 days",
+    "code_example_failure": "Doc owner must verify examples execute; escalate if code-doc drift detected",
+    "security_risk": "Security owner must remediate within 48 hours; escalate to @mbaetiong immediately"
+  },
+  "metadata_requirements": {
+    "yaml_front_matter": {
+      "title": "Document title (required)",
+      "owner": "@agent-name or @username (required)",
+      "last_reviewed": "ISO 8601 date (required)",
+      "review_cadence": "quarterly/semi-annual/annual (required)",
+      "sla_days": "Integer days (required)",
+      "critical": "Boolean true/false (required)"
+    }
+  },
+  "validation_gates": {
+    "broken_links": {
+      "check": "All internal links must resolve to existing files",
+      "enforced_on": "PRs modifying Tier 1 docs",
+      "tool": "link-validator-agent"
+    },
+    "freshness": {
+      "check": "Document must have last_reviewed within SLA",
+      "enforced_on": "CI gate on main branch",
+      "tool": "doc-freshness-checker"
+    },
+    "code_examples": {
+      "check": "Code examples in guides must execute without error",
+      "enforced_on": "PRs modifying guides/",
+      "tool": "doc-refactor-test-agent"
+    },
+    "metadata": {
+      "check": "All Tier 1 docs must have YAML front-matter",
+      "enforced_on": "PRs modifying user-facing docs",
+      "tool": "config-validator"
+    }
+  },
+  "tier_classification": {
+    "tier_1_user_facing": {
+      "scope": "Docs that directly affect user experience and must stay current",
+      "sla_enforcement": true,
+      "includes": [
+        "Root-level canonical docs (README.md, SECURITY.md, CONTRIBUTING.md, etc.)",
+        "docs/ subdirectory (guides, reference, architecture, admin, index)",
+        ".github/agents/ specifications and copilot prompts"
+      ]
+    },
+    "tier_2_historical": {
+      "scope": "Archived reports, phase-specific docs, point-in-time snapshots",
+      "sla_enforcement": false,
+      "includes": [
+        ".codex/archive/ directory",
+        "reports/, archive/ directories",
+        "PHASE_*/WAVE_*/GATE_* prefixed files",
+        "Dated snapshots (*REPORT*, *SUMMARY*, *FINAL*, *COMPLETION*)"
+      ]
+    }
+  },
+  "tools_and_automation": {
+    "link_validator": "link-validator-agent checks for broken links",
+    "freshness_checker": "doc-freshness-checker monitors staleness via YAML metadata",
+    "code_example_validator": "doc-refactor-test-agent executes examples in test harness",
+    "ci_gate": "Automated GitHub Actions gate enforces freshness on main branch",
+    "alert_system": "GitHub issues created for stale/broken docs; escalates via @mentions"
+  }
+}
