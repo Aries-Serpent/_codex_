@@ -316,7 +316,7 @@ jobs:
     steps:
       - name: Check smoke test results
         run: |
-          FAILED_TESTS="${{ join(needs.smoke-test.result) }}"
+          FAILED_TESTS="${{ needs.smoke-test.result }}"
           
           if [[ "$FAILED_TESTS" == *"failure"* ]]; then
             echo "❌ Some smoke tests failed"

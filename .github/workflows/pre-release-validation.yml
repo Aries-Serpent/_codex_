@@ -182,7 +182,7 @@ jobs:
             echo "pass=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: P0.2: Manifest structure
+      - name: "P0.2: Manifest structure"
         id: p0-2
         run: |
           if [ -f ".codex/PROFILE_DEPENDENCY_MANIFEST.md" ]; then
@@ -209,7 +209,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: P1.3: SBOM present
+      - name: "P1.3: SBOM present"
         id: p1-3
         run: |
           if [ -f "sbom.json" ] || [ -f ".codex/sbom.json" ]; then
@@ -235,7 +235,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: P2.2.1: Release workflow
+      - name: "P2.2.1: Release workflow"
         id: p2-1
         run: |
           if [ -f ".github/workflows/release-to-pypi.yml" ]; then
@@ -246,7 +246,7 @@ jobs:
             exit 1
           fi
 
-      - name: P2.2.2: Smoke tests
+      - name: "P2.2.2: Smoke tests"
         id: p2-2
         run: |
           if [ -f ".github/workflows/smoke-tests-deployment.yml" ]; then
@@ -257,7 +257,7 @@ jobs:
             exit 1
           fi
 
-      - name: P2.2.3: Deployment guide
+      - name: "P2.2.3: Deployment guide"
         id: p2-3
         run: |
           if [ -f "docs/deployment/DEPLOYMENT_GUIDE.md" ]; then
@@ -268,7 +268,7 @@ jobs:
             exit 1
           fi
 
-      - name: P2.2.4: Rollback procedures
+      - name: "P2.2.4: Rollback procedures"
         id: p2-4
         run: |
           if [ -f "scripts/deploy/rollback_release.py" ] && \

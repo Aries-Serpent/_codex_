@@ -80,8 +80,8 @@ jobs:
           
           # Count package additions/removals compared to main
           if git show main:uv.lock &>/dev/null; then
-            ADDED=$(diff -u <(git show main:uv.lock | grep '^name = ' | sort) <(cat uv.lock | grep '^name = ' | sort) | grep '^+' | wc -l)
-            REMOVED=$(diff -u <(git show main:uv.lock | grep '^name = ' | sort) <(cat uv.lock | grep '^name = ' | sort) | grep '^-' | wc -l)
+            ADDED=$(diff -u <(git show main:uv.lock | grep '^name = ' | sort) <(cat uv.lock | grep '^name = ' | sort) | grep -c '^+')
+            REMOVED=$(diff -u <(git show main:uv.lock | grep '^name = ' | sort) <(cat uv.lock | grep '^name = ' | sort) | grep -c '^-')
             echo "packages_added=${ADDED}" >> $GITHUB_OUTPUT
             echo "packages_removed=${REMOVED}" >> $GITHUB_OUTPUT
             echo "Dependencies changed: +${ADDED} / -${REMOVED}"
@@ -100,7 +100,7 @@ jobs:
           fi
           
           # Check for floating versions (none should exist)
-          FLOATING=$(grep -E 'version = "[^=].*\*' uv.lock | wc -l)
+          FLOATING=$(grep -cE 'version = "[^=].*\*' uv.lock)
           echo "Floating version specs: ${FLOATING}"
           if [ "${FLOATING}" -gt 0 ]; then
             echo "⚠ Warning: Lock file contains floating versions"
@@ -146,13 +146,13 @@ jobs:
         run: |
           echo "=== Artifact Hashes (SHA256) ==="
           cd dist
-          sha256sum * > SHA256SUMS
+          sha256sum ./* > SHA256SUMS
           cat SHA256SUMS
           cd ..
           
           # Calculate sizes
           SIZES=$(ls -lh dist/*.whl | awk '{print $9, $5}' | paste -sd ' ' -)
-          echo "artifact_hashes=$(cat dist/SHA256SUMS | wc -l)" >> $GITHUB_OUTPUT
+          echo "artifact_hashes=$(wc -l < dist/SHA256SUMS)" >> $GITHUB_OUTPUT
 
       # ─────────────────────────────────────────────────────────────
       # Phase 4: SBOM Generation & Signing
@@ -195,7 +195,7 @@ jobs:
           echo "Policy: $(cat .codex/LICENSE_COMPLIANCE_POLICY.md | head -5)"
           
           # Quick check: verify no GPL packages
-          GPL_COUNT=$(python scripts/build/generate_sbom.py --profiles full 2>&1 | grep -i "gpl" | wc -l)
+          GPL_COUNT=$(python scripts/build/generate_sbom.py --profiles full 2>&1 | grep -ic "gpl")
           if [ "${GPL_COUNT}" -gt 0 ]; then
             echo "⚠ Warning: Found GPL packages"
             exit 1
