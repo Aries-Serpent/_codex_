@@ -56,10 +56,10 @@ jobs:
       fail-fast: false
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
@@ -72,9 +72,11 @@ jobs:
 
       - name: Determine version to test
         id: version
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
         run: |
-          if [ -n "${{ inputs.version }}" ]; then
-            VERSION="${{ inputs.version }}"
+          if [ -n "$INPUT_VERSION" ]; then
+            VERSION="$INPUT_VERSION"
           else
             # Get latest version from PyPI
             VERSION=$(python -c "import json; import urllib.request; data = urllib.request.urlopen('https://pypi.org/pypi/codex-ml/json').read(); info = json.loads(data); print(info['info']['version'])")
@@ -297,7 +299,7 @@ jobs:
 
       - name: Upload installation artifacts
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: smoke-test-results-${{ matrix.python-version }}-${{ matrix.profile }}-${{ matrix.ml-extras }}
           path: |
@@ -325,7 +327,7 @@ jobs:
 
       - name: Generate summary report
         if: always()
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const fs = require('fs');
@@ -363,7 +365,7 @@ jobs:
     if: failure()
     steps:
       - name: Create rollback issue
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const issue = await github.rest.issues.create({
