@@ -1,0 +1,342 @@
+{
+  "metadata": {
+    "timestamp": "2026-07-07T13:06:54Z",
+    "campaign": "Lane 5 - Documentation Consolidation",
+    "phase": "P2.1.1 - AUDIT & MAPPING",
+    "task": "P2.1.1 - Audit all documentation"
+  },
+  "executive_summary": {
+    "total_markdown_files": 7820,
+    "total_documentation_size_mb": 976,
+    "critical_docs_present": 6,
+    "high_priority_consolidation_opportunities": 20,
+    "estimated_redundancy_percentage": "35-45%"
+  },
+  "critical_documentation": {
+    "root_level_present": {
+      "README.md": {
+        "size_kb": 58.76,
+        "lines": 1387,
+        "status": "✅ EXISTS - Primary entry point"
+      },
+      "INSTALL.md": {
+        "size_kb": 1.5,
+        "lines": 61,
+        "status": "⚠️ MINIMAL - Needs expansion"
+      },
+      "CONTRIBUTING.md": {
+        "size_kb": 22.32,
+        "lines": 614,
+        "status": "✅ EXISTS - Comprehensive"
+      },
+      "INTEGRATION.md": {
+        "size_kb": 2.29,
+        "lines": 92,
+        "status": "⚠️ MINIMAL - Incomplete"
+      },
+      "SECURITY.md": {
+        "size_kb": 18.06,
+        "lines": 526,
+        "status": "✅ EXISTS - Complete"
+      },
+      "AGENTS.md": {
+        "size_kb": 32.62,
+        "lines": 684,
+        "status": "✅ EXISTS - Comprehensive"
+      }
+    }
+  },
+  "documentation_structure": {
+    "docs_directory": {
+      "total_subdirectories": 95,
+      "total_markdown_files": 1200,
+      "major_categories": [
+        {
+          "category": "configuration",
+          "count": 14,
+          "path": "docs/configuration/",
+          "status": "Medium Priority"
+        },
+        {
+          "category": "api",
+          "count": 9,
+          "path": "docs/api/",
+          "status": "High Priority - Consolidation Candidate"
+        },
+        {
+          "category": "architecture",
+          "count": 22,
+          "path": "docs/architecture/",
+          "status": "High Priority - Consolidation Candidate"
+        },
+        {
+          "category": "deployment",
+          "count": 25,
+          "path": "docs/deployment/",
+          "status": "High Priority - Consolidation Candidate"
+        },
+        {
+          "category": "operations",
+          "count": 14,
+          "path": "docs/operations/",
+          "status": "Medium Priority"
+        },
+        {
+          "category": "guides",
+          "count": 72,
+          "path": "docs/guides/",
+          "status": "Very High Priority - Fragmented"
+        },
+        {
+          "category": "archive",
+          "count": 28,
+          "path": "docs/archive/",
+          "status": "Archive - Needs Cleanup"
+        }
+      ]
+    },
+    "codex_directory": {
+      "total_subdirectories": 48,
+      "total_markdown_files": 6620,
+      "major_categories": [
+        {
+          "category": "archive",
+          "count": 1300,
+          "path": ".codex/archive/",
+          "status": "Large historical archive"
+        },
+        {
+          "category": "plans",
+          "count": 174,
+          "path": ".codex/plans/",
+          "status": "Active planning docs"
+        },
+        {
+          "category": "cognitive_brain",
+          "count": 238,
+          "path": ".codex/cognitive_brain/",
+          "status": "Active - Subsystem"
+        },
+        {
+          "category": "reports",
+          "count": 227,
+          "path": ".codex/reports/",
+          "status": "Campaign reports"
+        },
+        {
+          "category": "docs",
+          "count": 90,
+          "path": ".codex/docs/",
+          "status": "Mirror of docs/"
+        }
+      ]
+    }
+  },
+  "consolidation_opportunities": [
+    {
+      "priority": "CRITICAL",
+      "topic": "Offline Deployment & Air-Gap Setup",
+      "found_in": [
+        "OFFLINE_DEPLOYMENT.md",
+        "docs/offline_quickstart.md",
+        "docs/OFFLINE_QUICKSTART.md",
+        "docs/ISOLATED_DEPLOYMENT.md"
+      ],
+      "count": 32,
+      "estimated_duplication": "High - 5+ sources for same task",
+      "action": "Consolidate into single canonical docs/deployment/offline.md"
+    },
+    {
+      "priority": "CRITICAL",
+      "topic": "Deployment & Installation",
+      "found_in": [
+        "INSTALL.md",
+        "docs/DEPLOYMENT_GUIDE.md",
+        "docs/deploy/",
+        "scripts/README_DEPLOYMENT_ORCHESTRATOR.md"
+      ],
+      "count": 126,
+      "estimated_duplication": "High - Multiple overlapping guides",
+      "action": "Consolidate into single canonical docs/deployment/README.md"
+    },
+    {
+      "priority": "CRITICAL",
+      "topic": "Quickstart & Getting Started",
+      "found_in": [
+        "QUICKSTART_BY_PROFILE.md",
+        "docs/quickstart_local_training.md",
+        "docs/QUICKSTART_BY_PROFILE.md",
+        "docs/onboarding/QUICK_START.md"
+      ],
+      "count": 34,
+      "estimated_duplication": "Very High - 4+ root quickstarts",
+      "action": "Consolidate into single canonical docs/quickstart/README.md"
+    },
+    {
+      "priority": "HIGH",
+      "topic": "API Reference & Documentation",
+      "found_in": [
+        "docs/api.md",
+        "docs/api_catalog.md",
+        "docs/zendesk_api_reference.md"
+      ],
+      "count": 103,
+      "estimated_duplication": "Medium - Different APIs but overlapping structure",
+      "action": "Consolidate into unified docs/api/README.md"
+    },
+    {
+      "priority": "HIGH",
+      "topic": "Architecture & Design",
+      "found_in": [
+        "docs/ARCHITECTURE_DIAGRAMS_INDEX.md",
+        "docs/REPOSITORY_ARCHITECTURE_DIAGRAMS.md",
+        "docs/architecture/",
+        ".codex/docs/architecture/"
+      ],
+      "count": 130,
+      "estimated_duplication": "Medium - Many detailed docs but scattered",
+      "action": "Create unified docs/architecture/INDEX.md with cross-references"
+    },
+    {
+      "priority": "HIGH",
+      "topic": "Configuration & Hydra",
+      "found_in": [
+        "docs/configuration/",
+        "docs/configs/",
+        "configs/CONFIGURATION_STRUCTURE.md"
+      ],
+      "count": 60,
+      "estimated_duplication": "Medium - Multiple config doc sources",
+      "action": "Consolidate into single docs/configuration/README.md"
+    },
+    {
+      "priority": "MEDIUM",
+      "topic": "Agent Documentation",
+      "found_in": [
+        "AGENTS.md",
+        "docs/agent/",
+        ".codex/agents/"
+      ],
+      "count": 30,
+      "estimated_duplication": "Medium - Registry vs. detailed docs",
+      "action": "Create cross-reference system between AGENTS.md and detailed docs"
+    }
+  ],
+  "outdated_documentation": {
+    "criteria": "Last modified > 30 days AND < 3 backlinks",
+    "estimated_count": "100-150 files",
+    "example_files": [
+      "docs/DEPRECATED.md",
+      "docs/legacy_reduction/",
+      "archive/ subdirectories"
+    ],
+    "action": "Schedule for Phase 3 archive cleanup"
+  },
+  "orphaned_documentation": {
+    "criteria": "No internal backlinks found",
+    "estimated_count": "50-75 files",
+    "likely_candidates": [
+      "Various deep_research/ files",
+      "Experimental guides",
+      "Old session reports"
+    ],
+    "action": "Review and archive in Phase 3"
+  },
+  "documentation_coverage_gaps": [
+    {
+      "required": "Unified Quickstart (all profiles)",
+      "current": "4+ scattered quickstarts",
+      "status": "⚠️ MISSING"
+    },
+    {
+      "required": "Canonical API Reference",
+      "current": "Multiple partial references",
+      "status": "⚠️ FRAGMENTED"
+    },
+    {
+      "required": "Offline Deployment Guide",
+      "current": "5+ overlapping docs",
+      "status": "⚠️ FRAGMENTED"
+    },
+    {
+      "required": "Architecture Overview",
+      "current": "Scattered across multiple docs",
+      "status": "⚠️ FRAGMENTED"
+    },
+    {
+      "required": "Configuration Reference",
+      "current": "Multiple overlapping docs",
+      "status": "⚠️ FRAGMENTED"
+    },
+    {
+      "required": "Troubleshooting & FAQ",
+      "current": "Scattered references",
+      "status": "⚠️ MINIMAL"
+    },
+    {
+      "required": "Migration Guide",
+      "current": "Some Hydra migration docs",
+      "status": "⚠️ INCOMPLETE"
+    },
+    {
+      "required": "Release Notes & Changelog",
+      "current": "CHANGELOG.md exists",
+      "status": "✅ PRESENT"
+    },
+    {
+      "required": "Development & Contributing",
+      "current": "CONTRIBUTING.md exists",
+      "status": "✅ PRESENT"
+    },
+    {
+      "required": "Security & Safety",
+      "current": "SECURITY.md exists",
+      "status": "✅ PRESENT"
+    }
+  ],
+  "statistics": {
+    "total_documentation_bytes": 976000000,
+    "total_documentation_files": 7820,
+    "documentation_by_category": {
+      "quickstart": {
+        "count": 34,
+        "consolidation_priority": "CRITICAL"
+      },
+      "api_reference": {
+        "count": 103,
+        "consolidation_priority": "CRITICAL"
+      },
+      "architecture": {
+        "count": 130,
+        "consolidation_priority": "HIGH"
+      },
+      "deployment": {
+        "count": 126,
+        "consolidation_priority": "CRITICAL"
+      },
+      "configuration": {
+        "count": 60,
+        "consolidation_priority": "HIGH"
+      },
+      "agent_docs": {
+        "count": 30,
+        "consolidation_priority": "MEDIUM"
+      },
+      "planning_reports": {
+        "count": 1834,
+        "consolidation_priority": "Archive"
+      }
+    },
+    "root_vs_distributed": {
+      "root_level_docs": 48,
+      "docs_directory": 1200,
+      "codex_directory": 6620
+    }
+  },
+  "next_steps": [
+    "✅ COMPLETE - P2.1.1: Audit all documentation",
+    "→ P2.1.2: Map documentation structure (create DOCUMENTATION_STRUCTURE_MAP.md)",
+    "→ P2.1.3: Identify consolidation opportunities (detailed priority list)",
+    "→ P2.1.4: Validate all links (comprehensive link checker)"
+  ]
+}
