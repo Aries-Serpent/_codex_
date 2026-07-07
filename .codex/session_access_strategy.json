@@ -1,20 +1,27 @@
 {
-  "generated_at": "2026-07-07T03:37:30.880821+00:00",
+  "generated_at": "2026-07-07T09:57:21.119200+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 4999,
+  "rest_remaining": 4880,
   "graphql_available": true,
-  "graphql_remaining": 4994,
+  "graphql_remaining": 4983,
   "gh_cli_available": true,
   "codeql_available": false,
-  "best_token_var": "GITHUB_TOKEN",
+  "best_token_var": "CODEX_MASTER_KEY",
   "open_prs": [
-    5251
+    5260,
+    5259,
+    5258,
+    5257,
+    5256,
+    5255,
+    5254,
+    5253
   ],
-  "branch": "copilot/improve-workflow-integration",
+  "branch": "dependabot/github_actions/MishaKav/pytest-coverage-comment-fd9adbdca9fdfbe2b9bfa44a7340e6a83346ce6c",
   "recommendation": "Use REST for data fetches. "
 }
