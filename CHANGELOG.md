@@ -1,5 +1,15 @@
 ## [Unreleased]
 
+### Fixed (2026-07-07T20:52Z — PR #5263 Semgrep OSS Security Scan Remediation)
+- Security: **Shell Injection (CRITICAL - Semgrep OSS)** — Fixed `.github/workflows/examples/copilot-with-mcp.yml` line 191 by moving `github.event.inputs.task` and `github.event.inputs.mcp_enabled` from direct shell interpolation to `env:` block. Updated shell script references to use quoted variables (`"$VARIABLE"`) to prevent arbitrary code injection from untrusted GitHub context data. Prevents CWE-94 code injection attacks.
+- Security: **Mutable GitHub Actions Tags (114 Warnings - Semgrep OSS)** — Pinned ALL 175 workflow files to immutable 40-character commit SHAs across `.github/workflows/` directory. Fixed mutable tag references for 13+ GitHub Actions:
+  - `actions/checkout@v5` → `@8ade135a41bc03ea155e62e844d188df1ea18608`
+  - `actions/setup-python@v6` → `@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d`
+  - `actions/upload-artifact@v5` → `@26f41dcceda07d7450f2956775e979febf65457e`
+  - Plus 10+ additional standard GitHub Actions and codeql-action variants
+  - Prevents supply chain attacks from mutable action tag hijacking (trivy-action, kics-github-action compromises)
+- Compliance: Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with Semgrep OSS remediation session entry (REQ-4) and updated CHANGELOG.md (REQ-5) — both files updated in same commit per compliance requirements.
+
 ### Fixed (2026-07-07T20:00Z — PR #5263 Security Vulnerability Remediation)
 - Security: **Shell Injection (Semgrep OSS)** — Fixed `.github/workflows/self-healing.yml` lines 238-239 (tracking update) and 256 (summary step) by moving `github.workflow`, `github.run_id`, and `steps.detect.outputs.failure_count` variables from direct interpolation to `env:` block to prevent shell injection attacks. Updated Python script and echo command to read from environment variables using `os.environ.get()` and `${VARIABLE_NAME}` syntax.
 - Security: **Arbitrary File Write during Tarfile Extraction (CodeQL - HIGH)** — Fixed `scripts/deploy/bootstrap_offline.py` line 241 by refactoring path validation logic into `safe_extract_filter()` function and explicitly passing it as filter parameter to `tar.extractall()`. Validates all members during extraction to prevent path traversal (CWE-426) attacks. Python 3.12+ compatible with native `filter='data'` fallback.
