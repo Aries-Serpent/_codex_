@@ -8,6 +8,7 @@ import pytest
 from pathlib import Path
 from datetime import datetime, timezone
 from scripts.ci.security_cache_manager import SecurityCacheManager
+from scripts.ci.security_findings_trend_analyzer import SecurityFindingsTrendAnalyzer
 
 
 @pytest.fixture
@@ -171,6 +172,192 @@ class TestSecurityCacheManager:
         assert metrics.run_count >= 1
         assert metrics.total_findings > 0
         assert metrics.avg_critical >= 0
+
+
+class TestSecurityFindingsTrendAnalyzer:
+    """Test suite for SecurityFindingsTrendAnalyzer"""
+
+    def test_analyzer_initialization(self, temp_cache_dir):
+        """Test analyzer initialization"""
+        analyzer = SecurityFindingsTrendAnalyzer(temp_cache_dir)
+        assert analyzer.cache_dir == temp_cache_dir
+
+    def test_analyze_with_no_data(self, temp_cache_dir):
+        """Test analyze with no cached data"""
+        analyzer = SecurityFindingsTrendAnalyzer(temp_cache_dir)
+        report = analyzer.analyze()
+        assert report is None
+
+    def test_analyze_with_data(self, temp_cache_dir, sample_findings_json):
+        """Test analyze with cached data"""
+        # First populate cache
+        manager = SecurityCacheManager(temp_cache_dir)
+        manager.cache_findings(
+            run_id="run-1",
+            commit_sha="sha-1",
+            findings_json_path=sample_findings_json,
+        )
+        manager.cache_findings(
+            run_id="run-2",
+            commit_sha="sha-2",
+            findings_json_path=sample_findings_json,
+        )
+
+        # Now analyze
+        analyzer = SecurityFindingsTrendAnalyzer(temp_cache_dir)
+        report = analyzer.analyze()
+        
+        assert report is not None
+        assert report.runs_analyzed >= 2
+        assert report.total_findings_span[0] > 0
+
+    def test_generate_ascii_bar_chart(self, temp_cache_dir):
+        """Test ASCII bar chart generation"""
+        analyzer = SecurityFindingsTrendAnalyzer(temp_cache_dir)
+        data = [("Item A", 10), ("Item B", 25), ("Item C", 15)]
+        chart = analyzer._generate_ascii_bar_chart(data, max_width=40)
+        
+        assert "Item A" in chart
+        assert "Item B" in chart
+        assert "█" in chart
+        assert len(chart) > 0
+
+    def test_generate_severity_distribution(self, temp_cache_dir, sample_findings_json):
+        """Test severity distribution chart"""
+        manager = SecurityCacheManager(temp_cache_dir)
+        manager.cache_findings(
+            run_id="12345",
+            commit_sha="abc123",
+            findings_json_path=sample_findings_json,
+        )
+
+        analyzer = SecurityFindingsTrendAnalyzer(temp_cache_dir)
+        run_list = analyzer._parse_run_metadata([
+            {
+                "run_id": "12345",
+                "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                "findings_count": 10,
+                "critical_count": 2,
+                "high_count": 3,
+                "medium_count": 4,
+                "low_count": 1,
+            }
+        ])
+
+        distribution = analyzer._generate_severity_distribution(run_list)
+        assert "CRITICAL" in distribution
+        assert "HIGH" in distribution
+        assert "MEDIUM" in distribution
+        assert "LOW" in distribution
+
+    def test_generate_trend_sparkline(self, temp_cache_dir):
+        """Test trend sparkline generation"""
+        analyzer = SecurityFindingsTrendAnalyzer(temp_cache_dir)
+        counts = [10, 15, 12, 18, 14, 20, 16, 22, 19, 25]
+        sparkline = analyzer._generate_trend_sparkline(counts, width=30)
+        
+        assert len(sparkline) > 0
+        assert any(c in sparkline for c in "▁▂▃▄▅▆▇█")
+
+    def test_generate_dashboard_markdown_no_data(self, temp_cache_dir):
+        """Test dashboard generation with no data"""
+        analyzer = SecurityFindingsTrendAnalyzer(temp_cache_dir)
+        dashboard = analyzer.generate_dashboard_markdown(temp_cache_dir, temp_cache_dir / "dashboard.md")
+        assert dashboard is None
+
+    def test_generate_dashboard_markdown_with_data(self, temp_cache_dir, sample_findings_json):
+        """Test dashboard generation with data"""
+        # Populate cache
+        manager = SecurityCacheManager(temp_cache_dir)
+        for i in range(3):
+            manager.cache_findings(
+                run_id=f"run-{i}",
+                commit_sha=f"sha-{i}",
+                findings_json_path=sample_findings_json,
+            )
+
+        # Generate dashboard
+        analyzer = SecurityFindingsTrendAnalyzer(temp_cache_dir)
+        dashboard_path = temp_cache_dir / "dashboard.md"
+        dashboard = analyzer.generate_dashboard_markdown(temp_cache_dir, dashboard_path)
+        
+        assert dashboard is not None
+        assert "Security Findings Dashboard" in dashboard
+        assert "7-Day Trend" in dashboard
+        assert "30-Day Trend" in dashboard
+        assert "Severity Distribution" in dashboard
+        assert "Remediation Velocity" in dashboard
+        assert dashboard_path.exists()
+
+    def test_dashboard_markdown_contains_sections(self, temp_cache_dir, sample_findings_json):
+        """Test that dashboard contains all required sections"""
+        manager = SecurityCacheManager(temp_cache_dir)
+        manager.cache_findings(
+            run_id="12345",
+            commit_sha="abc123",
+            findings_json_path=sample_findings_json,
+        )
+
+        analyzer = SecurityFindingsTrendAnalyzer(temp_cache_dir)
+        dashboard_path = temp_cache_dir / "dashboard.md"
+        dashboard = analyzer.generate_dashboard_markdown(temp_cache_dir, dashboard_path)
+        
+        # Verify all required sections
+        required_sections = [
+            "Security Findings Dashboard",
+            "Summary Stats",
+            "7-Day Trend",
+            "30-Day Trend",
+            "Severity Distribution",
+            "Top 5 Recurring Issues",
+            "Remediation Velocity",
+            "Top CWEs",
+        ]
+        
+        for section in required_sections:
+            assert section in dashboard, f"Missing section: {section}"
+
+    def test_dashboard_markdown_renders_valid(self, temp_cache_dir, sample_findings_json):
+        """Test that generated dashboard markdown is valid"""
+        manager = SecurityCacheManager(temp_cache_dir)
+        manager.cache_findings(
+            run_id="12345",
+            commit_sha="abc123",
+            findings_json_path=sample_findings_json,
+        )
+
+        analyzer = SecurityFindingsTrendAnalyzer(temp_cache_dir)
+        dashboard_path = temp_cache_dir / "dashboard.md"
+        dashboard = analyzer.generate_dashboard_markdown(temp_cache_dir, dashboard_path)
+        
+        # Verify markdown structure
+        assert dashboard.startswith("# 🛡️")
+        assert "---" in dashboard
+        assert dashboard.endswith("*Generated:")
+
+    def test_generate_markdown_report(self, temp_cache_dir, sample_findings_json):
+        """Test traditional markdown report generation"""
+        manager = SecurityCacheManager(temp_cache_dir)
+        manager.cache_findings(
+            run_id="run-1",
+            commit_sha="sha-1",
+            findings_json_path=sample_findings_json,
+        )
+        manager.cache_findings(
+            run_id="run-2",
+            commit_sha="sha-2",
+            findings_json_path=sample_findings_json,
+        )
+
+        analyzer = SecurityFindingsTrendAnalyzer(temp_cache_dir)
+        report = analyzer.analyze()
+        
+        assert report is not None
+        
+        md_report = analyzer.generate_markdown_report(report)
+        assert md_report is not None
+        assert "Security Findings Trend Analysis Report" in md_report
+        assert "Overall Trend" in md_report
 
 
 if __name__ == "__main__":
