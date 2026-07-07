@@ -1,21 +1,22 @@
-# Session Context — 2026-07-07T01:16:52Z
+# Session Context — 2026-07-07T01:28:05Z
 **Branch:** `copilot/improve-workflow-integration`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
 - REST remaining: `5000` (✅)
-- GraphQL remaining: `4997` (✅)
+- GraphQL remaining: `4995` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **.github/workflows/agentic-diff-guard.yml** — `failure` on `copilot/improve-workflow-integration` (2026-07-07)
+- **.github/workflows/self-healing.yml** — `failure` on `copilot/improve-workflow-integration` (2026-07-07)
 - **.github/workflows/codex-master-key-validation.yml** — `failure` on `copilot/improve-workflow-integration` (2026-07-07)
-- **.github/workflows/self-healing.yml** — `failure` on `copilot/improve-workflow-integration` (2026-07-07)
-- **.github/workflows/self-healing.yml** — `failure` on `copilot/improve-workflow-integration` (2026-07-07)
+- **.github/workflows/agentic-diff-guard.yml** — `failure` on `copilot/improve-workflow-integration` (2026-07-07)
 - **.github/workflows/codex-master-key-validation.yml** — `failure` on `copilot/improve-workflow-integration` (2026-07-07)
 
 ## 📝 Recent Commits
+- `65b9e9c2` Apply remaining changes — copilot-swe-agent[bot] (2026-07-07)
 - `c89b1dc9` feat(security): complete security findings integration phases 1-3 with aggregati — copilot-swe-agent[bot] (2026-07-07)
 - `c66c4f92` feat(security): Phase 1-2 implementation for comprehensive security findings agg — copilot-swe-agent[bot] (2026-07-07)
 - `b6e23b2b` Start Phase 1: Security Scanning Suite Integration — Comprehensive Reporting — copilot-swe-agent[bot] (2026-07-07)
@@ -23,7 +24,6 @@
 - `87542282` Update security scan type description in workflow — Statix (2026-07-07)
 - `357d518a` docs: update Phase 8.2 triage dashboard [skip ci] — github-actions[bot] (2026-07-06)
 - `ff5274e8` Merge pull request #5250 from Aries-Serpent/fix/ci-rag-module-tests-202607062149 — Statix (2026-07-06)
-- `2d945295` fix(ci): auto-fix CI issues on PR [skip ci] (Pattern 35/RP-007) — github-actions[bot] (2026-07-06)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
