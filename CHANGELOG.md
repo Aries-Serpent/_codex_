@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+### Fixed (2026-07-07T02:56Z — CI Rescue & Compliance PR #5251)
+- Compliance: **REQ-4 & REQ-5 Hardening** — Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md` for CI rescue session with security hardening completion status and PDA tracking (pattern `PDA-CI-RESCUE-20260707`).
+- Compliance: **PDA Entry for 2026-07-07** — Added session entry to `.codex/aftermath/pda_iterations.jsonl` with PR #5251 CI rescue context (4 failing checks: Bandit, CodeQL JS/Python, Branch Rebase).
+
 ### Fixed (2026-07-07T02:37Z — Security Hardening PR #5251)
 - Security: **Code Injection (CRITICAL)** — Fixed in `.github/workflows/security-copilot-commands.yml:35` by migrating from shell heredoc to safe `actions/github-script@v8` with Node.js `fs.writeFileSync()` for secure input handling, eliminating direct GitHub Actions variable expansion in shell contexts.
 - Security: **CodeQL Clear-Text Logging/Storage** — Added security pragmas with detailed context comments to suppress false positives in `aggregate_security_findings.py`, `copilot_security_agent_handoff.py`, and `secrets_findings_formatter.py`, clarifying that only finding metadata (types, locations, remediation) is processed, not actual secret values.
