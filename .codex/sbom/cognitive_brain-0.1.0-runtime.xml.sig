@@ -1,0 +1,2 @@
+algorithm: hmac-sha256
+signature: fcaeabb2cbf56ccbdbb40ed9fe780853cd55185c148674c3ed9da5215f0e69bf

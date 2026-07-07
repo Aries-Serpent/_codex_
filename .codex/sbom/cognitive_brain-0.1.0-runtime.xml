@@ -1,0 +1,3866 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bom xmlns="http://cyclonedx.org/schema/bom/1.4" version="1">
+  <metadata>
+    <timestamp>2026-07-07T13:03:48.442743+00:00</timestamp>
+    <tools>
+      <tool>
+        <vendor>Aries-Serpent</vendor>
+        <name>codex-sbom-generator</name>
+        <version>1.0.0</version>
+      </tool>
+    </tools>
+    <component type="application" bom-ref="codex">
+      <name>cognitive_brain</name>
+      <version>0.1.0</version>
+      <description>Cognitive Brain ML framework (runtime profile)</description>
+      <manufacturer>
+        <name>Aries-Serpent</name>
+        <url>https://github.com/aries-serpent/_codex_</url>
+      </manufacturer>
+      <license>
+        <expression>MIT</expression>
+      </license>
+    </component>
+  </metadata>
+  <components>
+    <component type="library">
+      <name>absl-py</name>
+      <version>2.5.0</version>
+      <purl>pkg:pypi/absl-py@2.5.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>accelerate</name>
+      <version>1.14.0</version>
+      <purl>pkg:pypi/accelerate@1.14.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>aiohappyeyeballs</name>
+      <version>2.7.1</version>
+      <purl>pkg:pypi/aiohappyeyeballs@2.7.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>aiohttp-cors</name>
+      <version>0.8.1</version>
+      <purl>pkg:pypi/aiohttp-cors@0.8.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>aiohttp-retry</name>
+      <version>2.9.1</version>
+      <purl>pkg:pypi/aiohttp-retry@2.9.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>aiohttp</name>
+      <version>3.14.1</version>
+      <purl>pkg:pypi/aiohttp@3.14.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>aiosignal</name>
+      <version>1.4.0</version>
+      <purl>pkg:pypi/aiosignal@1.4.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>alembic</name>
+      <version>1.18.5</version>
+      <purl>pkg:pypi/alembic@1.18.5</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>altair</name>
+      <version>6.2.2</version>
+      <purl>pkg:pypi/altair@6.2.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>amqp</name>
+      <version>5.3.1</version>
+      <purl>pkg:pypi/amqp@5.3.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>annotated-doc</name>
+      <version>0.0.4</version>
+      <purl>pkg:pypi/annotated-doc@0.0.4</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>annotated-types</name>
+      <version>0.7.0</version>
+      <purl>pkg:pypi/annotated-types@0.7.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>antlr4-python3-runtime</name>
+      <version>4.9.3</version>
+      <purl>pkg:pypi/antlr4-python3-runtime@4.9.3</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>anyio</name>
+      <version>4.14.1</version>
+      <purl>pkg:pypi/anyio@4.14.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>appdirs</name>
+      <version>1.4.4</version>
+      <purl>pkg:pypi/appdirs@1.4.4</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>argcomplete</name>
+      <version>3.7.0</version>
+      <purl>pkg:pypi/argcomplete@3.7.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>ast-serialize</name>
+      <version>0.6.0</version>
+      <purl>pkg:pypi/ast-serialize@0.6.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>asyncssh</name>
+      <version>2.24.0</version>
+      <purl>pkg:pypi/asyncssh@2.24.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>atpublic</name>
+      <version>7.0.0</version>
+      <purl>pkg:pypi/atpublic@7.0.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>attrs</name>
+      <version>26.1.0</version>
+      <purl>pkg:pypi/attrs@26.1.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>bcrypt</name>
+      <version>5.0.0</version>
+      <purl>pkg:pypi/bcrypt@5.0.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>billiard</name>
+      <version>4.2.4</version>
+      <purl>pkg:pypi/billiard@4.2.4</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>black</name>
+      <version>26.5.1</version>
+      <purl>pkg:pypi/black@26.5.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>blinker</name>
+      <version>1.9.0</version>
+      <purl>pkg:pypi/blinker@1.9.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>build</name>
+      <version>1.5.0</version>
+      <purl>pkg:pypi/build@1.5.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>cachetools</name>
+      <version>7.1.4</version>
+      <purl>pkg:pypi/cachetools@7.1.4</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>celery</name>
+      <version>5.6.3</version>
+      <purl>pkg:pypi/celery@5.6.3</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>certifi</name>
+      <version>2026.6.17</version>
+      <purl>pkg:pypi/certifi@2026.6.17</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>cffi</name>
+      <version>2.1.0</version>
+      <purl>pkg:pypi/cffi@2.1.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>cfgv</name>
+      <version>3.5.0</version>
+      <purl>pkg:pypi/cfgv@3.5.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>chardet</name>
+      <version>6.0.0.post1</version>
+      <purl>pkg:pypi/chardet@6.0.0.post1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>charset-normalizer</name>
+      <version>3.4.7</version>
+      <purl>pkg:pypi/charset-normalizer@3.4.7</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>chromadb</name>
+      <version>1.5.9</version>
+      <purl>pkg:pypi/chromadb@1.5.9</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>click-didyoumean</name>
+      <version>0.3.1</version>
+      <purl>pkg:pypi/click-didyoumean@0.3.1</purl>
+      <license>
+        <expression>BSD-3-Clause</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>click-plugins</name>
+      <version>1.1.1.2</version>
+      <purl>pkg:pypi/click-plugins@1.1.1.2</purl>
+      <license>
+        <expression>BSD-3-Clause</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>click-repl</name>
+      <version>0.3.0</version>
+      <purl>pkg:pypi/click-repl@0.3.0</purl>
+      <license>
+        <expression>BSD-3-Clause</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>click</name>
+      <version>8.4.2</version>
+      <purl>pkg:pypi/click@8.4.2</purl>
+      <license>
+        <expression>BSD-3-Clause</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>cloudpickle</name>
+      <version>3.1.2</version>
+      <purl>pkg:pypi/cloudpickle@3.1.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>codex-ml</name>
+      <version>0.1.0</version>
+      <purl>pkg:pypi/codex-ml@0.1.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>colorama</name>
+      <version>0.4.6</version>
+      <purl>pkg:pypi/colorama@0.4.6</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>colorful</name>
+      <version>0.5.8</version>
+      <purl>pkg:pypi/colorful@0.5.8</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>colorlog</name>
+      <version>6.10.1</version>
+      <purl>pkg:pypi/colorlog@6.10.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>configobj</name>
+      <version>5.0.9</version>
+      <purl>pkg:pypi/configobj@5.0.9</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>contourpy</name>
+      <version>1.3.3</version>
+      <purl>pkg:pypi/contourpy@1.3.3</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>coverage</name>
+      <version>7.15.0</version>
+      <purl>pkg:pypi/coverage@7.15.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>cryptography</name>
+      <version>48.0.1</version>
+      <purl>pkg:pypi/cryptography@48.0.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>cuda-bindings</name>
+      <version>13.3.1</version>
+      <purl>pkg:pypi/cuda-bindings@13.3.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>cuda-pathfinder</name>
+      <version>1.5.6</version>
+      <purl>pkg:pypi/cuda-pathfinder@1.5.6</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>cuda-toolkit</name>
+      <version>13.0.2</version>
+      <purl>pkg:pypi/cuda-toolkit@13.0.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>cycler</name>
+      <version>0.12.1</version>
+      <purl>pkg:pypi/cycler@0.12.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>databricks-sdk</name>
+      <version>0.120.0</version>
+      <purl>pkg:pypi/databricks-sdk@0.120.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>dataproperty</name>
+      <version>1.1.1</version>
+      <purl>pkg:pypi/dataproperty@1.1.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>datasets</name>
+      <version>5.0.0</version>
+      <purl>pkg:pypi/datasets@5.0.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>defusedxml</name>
+      <version>0.7.1</version>
+      <purl>pkg:pypi/defusedxml@0.7.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>dependency-groups</name>
+      <version>1.3.1</version>
+      <purl>pkg:pypi/dependency-groups@1.3.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>deprecated</name>
+      <version>1.3.1</version>
+      <purl>pkg:pypi/deprecated@1.3.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>deprecation</name>
+      <version>2.1.0</version>
+      <purl>pkg:pypi/deprecation@2.1.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>detect-secrets</name>
+      <version>1.5.0</version>
+      <purl>pkg:pypi/detect-secrets@1.5.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>dictdiffer</name>
+      <version>0.9.0</version>
+      <purl>pkg:pypi/dictdiffer@0.9.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>dill</name>
+      <version>0.4.1</version>
+      <purl>pkg:pypi/dill@0.4.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>diskcache</name>
+      <version>5.6.3</version>
+      <purl>pkg:pypi/diskcache@5.6.3</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>distlib</name>
+      <version>0.4.3</version>
+      <purl>pkg:pypi/distlib@0.4.3</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>distro</name>
+      <version>1.9.0</version>
+      <purl>pkg:pypi/distro@1.9.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>docker</name>
+      <version>7.1.0</version>
+      <purl>pkg:pypi/docker@7.1.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>dpath</name>
+      <version>2.2.0</version>
+      <purl>pkg:pypi/dpath@2.2.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>duckdb</name>
+      <version>1.5.4</version>
+      <purl>pkg:pypi/duckdb@1.5.4</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>dulwich</name>
+      <version>1.2.10</version>
+      <purl>pkg:pypi/dulwich@1.2.10</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>durationpy</name>
+      <version>0.10</version>
+      <purl>pkg:pypi/durationpy@0.10</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>dvc-data</name>
+      <version>3.18.3</version>
+      <purl>pkg:pypi/dvc-data@3.18.3</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>dvc-http</name>
+      <version>2.32.0</version>
+      <purl>pkg:pypi/dvc-http@2.32.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>dvc-objects</name>
+      <version>5.2.0</version>
+      <purl>pkg:pypi/dvc-objects@5.2.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>dvc-render</name>
+      <version>1.0.2</version>
+      <purl>pkg:pypi/dvc-render@1.0.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>dvc-studio-client</name>
+      <version>0.23.0</version>
+      <purl>pkg:pypi/dvc-studio-client@0.23.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>dvc-task</name>
+      <version>0.40.2</version>
+      <purl>pkg:pypi/dvc-task@0.40.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>dvc</name>
+      <version>3.67.1</version>
+      <purl>pkg:pypi/dvc@3.67.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>dynaconf</name>
+      <version>3.3.2</version>
+      <purl>pkg:pypi/dynaconf@3.3.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>entrypoints</name>
+      <version>0.4</version>
+      <purl>pkg:pypi/entrypoints@0.4</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>evaluate</name>
+      <version>0.4.6</version>
+      <purl>pkg:pypi/evaluate@0.4.6</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>evidently</name>
+      <version>0.7.21</version>
+      <purl>pkg:pypi/evidently@0.7.21</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>execnet</name>
+      <version>2.1.2</version>
+      <purl>pkg:pypi/execnet@2.1.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>faiss-cpu</name>
+      <version>1.14.3</version>
+      <purl>pkg:pypi/faiss-cpu@1.14.3</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>faker</name>
+      <version>40.28.1</version>
+      <purl>pkg:pypi/faker@40.28.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>fastapi</name>
+      <version>0.139.0</version>
+      <purl>pkg:pypi/fastapi@0.139.0</purl>
+      <license>
+        <expression>MIT</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>fastjsonschema</name>
+      <version>2.21.2</version>
+      <purl>pkg:pypi/fastjsonschema@2.21.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>filelock</name>
+      <version>3.29.6</version>
+      <purl>pkg:pypi/filelock@3.29.6</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>flask-cors</name>
+      <version>6.0.5</version>
+      <purl>pkg:pypi/flask-cors@6.0.5</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>flask</name>
+      <version>3.1.3</version>
+      <purl>pkg:pypi/flask@3.1.3</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>flatbuffers</name>
+      <version>25.12.19</version>
+      <purl>pkg:pypi/flatbuffers@25.12.19</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>flatten-dict</name>
+      <version>0.5.0</version>
+      <purl>pkg:pypi/flatten-dict@0.5.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>flufl-lock</name>
+      <version>9.1.0</version>
+      <purl>pkg:pypi/flufl-lock@9.1.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>fonttools</name>
+      <version>4.63.0</version>
+      <purl>pkg:pypi/fonttools@4.63.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>frozenlist</name>
+      <version>1.8.0</version>
+      <purl>pkg:pypi/frozenlist@1.8.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>fsspec</name>
+      <version>2026.4.0</version>
+      <purl>pkg:pypi/fsspec@2026.4.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>funcy</name>
+      <version>2.0</version>
+      <purl>pkg:pypi/funcy@2.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>gitdb</name>
+      <version>4.0.12</version>
+      <purl>pkg:pypi/gitdb@4.0.12</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>gitpython</name>
+      <version>3.1.50</version>
+      <purl>pkg:pypi/gitpython@3.1.50</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>google-api-core</name>
+      <version>2.31.0</version>
+      <purl>pkg:pypi/google-api-core@2.31.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>google-auth</name>
+      <version>2.55.1</version>
+      <purl>pkg:pypi/google-auth@2.55.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>googleapis-common-protos</name>
+      <version>1.75.0</version>
+      <purl>pkg:pypi/googleapis-common-protos@1.75.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>grandalf</name>
+      <version>0.8</version>
+      <purl>pkg:pypi/grandalf@0.8</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>graphene</name>
+      <version>3.4.3</version>
+      <purl>pkg:pypi/graphene@3.4.3</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>graphql-core</name>
+      <version>3.2.11</version>
+      <purl>pkg:pypi/graphql-core@3.2.11</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>graphql-relay</name>
+      <version>3.2.0</version>
+      <purl>pkg:pypi/graphql-relay@3.2.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>great-expectations</name>
+      <version>1.18.2</version>
+      <purl>pkg:pypi/great-expectations@1.18.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>greenlet</name>
+      <version>3.5.3</version>
+      <purl>pkg:pypi/greenlet@3.5.3</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>grpcio</name>
+      <version>1.82.0</version>
+      <purl>pkg:pypi/grpcio@1.82.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>gto</name>
+      <version>1.9.0</version>
+      <purl>pkg:pypi/gto@1.9.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>gunicorn</name>
+      <version>26.0.0</version>
+      <purl>pkg:pypi/gunicorn@26.0.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>h11</name>
+      <version>0.16.0</version>
+      <purl>pkg:pypi/h11@0.16.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>hf-xet</name>
+      <version>1.5.1</version>
+      <purl>pkg:pypi/hf-xet@1.5.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>httpcore</name>
+      <version>1.0.9</version>
+      <purl>pkg:pypi/httpcore@1.0.9</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>httptools</name>
+      <version>0.8.0</version>
+      <purl>pkg:pypi/httptools@0.8.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>httpx</name>
+      <version>0.28.1</version>
+      <purl>pkg:pypi/httpx@0.28.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>huey</name>
+      <version>3.1.1</version>
+      <purl>pkg:pypi/huey@3.1.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>huggingface-hub</name>
+      <version>1.22.0</version>
+      <purl>pkg:pypi/huggingface-hub@1.22.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>humanize</name>
+      <version>4.16.0</version>
+      <purl>pkg:pypi/humanize@4.16.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>hydra-core</name>
+      <version>1.3.2</version>
+      <purl>pkg:pypi/hydra-core@1.3.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>hypothesis</name>
+      <version>6.156.1</version>
+      <purl>pkg:pypi/hypothesis@6.156.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>identify</name>
+      <version>2.6.19</version>
+      <purl>pkg:pypi/identify@2.6.19</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>idna</name>
+      <version>3.18</version>
+      <purl>pkg:pypi/idna@3.18</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>importlib-metadata</name>
+      <version>9.0.0</version>
+      <purl>pkg:pypi/importlib-metadata@9.0.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>importlib-resources</name>
+      <version>7.1.0</version>
+      <purl>pkg:pypi/importlib-resources@7.1.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>iniconfig</name>
+      <version>2.3.0</version>
+      <purl>pkg:pypi/iniconfig@2.3.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>isort</name>
+      <version>8.0.1</version>
+      <purl>pkg:pypi/isort@8.0.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>iterative-telemetry</name>
+      <version>0.0.10</version>
+      <purl>pkg:pypi/iterative-telemetry@0.0.10</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>itsdangerous</name>
+      <version>2.2.0</version>
+      <purl>pkg:pypi/itsdangerous@2.2.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>jinja2</name>
+      <version>3.1.6</version>
+      <purl>pkg:pypi/jinja2@3.1.6</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>jiter</name>
+      <version>0.16.0</version>
+      <purl>pkg:pypi/jiter@0.16.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>joblib</name>
+      <version>1.5.3</version>
+      <purl>pkg:pypi/joblib@1.5.3</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>jsonschema-specifications</name>
+      <version>2025.9.1</version>
+      <purl>pkg:pypi/jsonschema-specifications@2025.9.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>jsonschema</name>
+      <version>4.26.0</version>
+      <purl>pkg:pypi/jsonschema@4.26.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>jupyter-core</name>
+      <version>5.9.1</version>
+      <purl>pkg:pypi/jupyter-core@5.9.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>kiwisolver</name>
+      <version>1.5.0</version>
+      <purl>pkg:pypi/kiwisolver@1.5.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>kombu</name>
+      <version>5.6.2</version>
+      <purl>pkg:pypi/kombu@5.6.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>kubernetes</name>
+      <version>36.0.2</version>
+      <purl>pkg:pypi/kubernetes@36.0.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>libcst</name>
+      <version>1.8.6</version>
+      <purl>pkg:pypi/libcst@1.8.6</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>librt</name>
+      <version>0.12.0</version>
+      <purl>pkg:pypi/librt@0.12.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>limits</name>
+      <version>5.8.0</version>
+      <purl>pkg:pypi/limits@5.8.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>litestar-htmx</name>
+      <version>0.5.0</version>
+      <purl>pkg:pypi/litestar-htmx@0.5.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>litestar</name>
+      <version>2.24.0</version>
+      <purl>pkg:pypi/litestar@2.24.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>lm-eval</name>
+      <version>0.4.12</version>
+      <purl>pkg:pypi/lm-eval@0.4.12</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>lxml</name>
+      <version>6.1.1</version>
+      <purl>pkg:pypi/lxml@6.1.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>mako</name>
+      <version>1.3.12</version>
+      <purl>pkg:pypi/mako@1.3.12</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>mando</name>
+      <version>0.7.1</version>
+      <purl>pkg:pypi/mando@0.7.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>markdown-it-py</name>
+      <version>4.2.0</version>
+      <purl>pkg:pypi/markdown-it-py@4.2.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>markdown</name>
+      <version>3.10.2</version>
+      <purl>pkg:pypi/markdown@3.10.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>markupsafe</name>
+      <version>3.0.3</version>
+      <purl>pkg:pypi/markupsafe@3.0.3</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>marshmallow</name>
+      <version>3.26.2</version>
+      <purl>pkg:pypi/marshmallow@3.26.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>matplotlib</name>
+      <version>3.11.0</version>
+      <purl>pkg:pypi/matplotlib@3.11.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>mbstrdecoder</name>
+      <version>1.1.5</version>
+      <purl>pkg:pypi/mbstrdecoder@1.1.5</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>mdurl</name>
+      <version>0.1.2</version>
+      <purl>pkg:pypi/mdurl@0.1.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>mistune</name>
+      <version>3.3.2</version>
+      <purl>pkg:pypi/mistune@3.3.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>mlflow-skinny</name>
+      <version>3.14.0</version>
+      <purl>pkg:pypi/mlflow-skinny@3.14.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>mlflow-tracing</name>
+      <version>3.14.0</version>
+      <purl>pkg:pypi/mlflow-tracing@3.14.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>mlflow</name>
+      <version>3.14.0</version>
+      <purl>pkg:pypi/mlflow@3.14.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>mmh3</name>
+      <version>5.2.1</version>
+      <purl>pkg:pypi/mmh3@5.2.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>more-itertools</name>
+      <version>11.1.0</version>
+      <purl>pkg:pypi/more-itertools@11.1.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>mpmath</name>
+      <version>1.3.0</version>
+      <purl>pkg:pypi/mpmath@1.3.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>msgpack</name>
+      <version>1.2.1</version>
+      <purl>pkg:pypi/msgpack@1.2.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>msgspec</name>
+      <version>0.21.1</version>
+      <purl>pkg:pypi/msgspec@0.21.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>multidict</name>
+      <version>6.7.1</version>
+      <purl>pkg:pypi/multidict@6.7.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>multipart</name>
+      <version>1.3.1</version>
+      <purl>pkg:pypi/multipart@1.3.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>multiprocess</name>
+      <version>0.70.19</version>
+      <purl>pkg:pypi/multiprocess@0.70.19</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>mypy-extensions</name>
+      <version>1.1.0</version>
+      <purl>pkg:pypi/mypy-extensions@1.1.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>mypy</name>
+      <version>2.1.0</version>
+      <purl>pkg:pypi/mypy@2.1.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>narwhals</name>
+      <version>2.23.0</version>
+      <purl>pkg:pypi/narwhals@2.23.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>nbformat</name>
+      <version>5.10.4</version>
+      <purl>pkg:pypi/nbformat@5.10.4</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>nbstripout</name>
+      <version>0.9.1</version>
+      <purl>pkg:pypi/nbstripout@0.9.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>networkx</name>
+      <version>3.6.1</version>
+      <purl>pkg:pypi/networkx@3.6.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>nltk</name>
+      <version>3.9.4</version>
+      <purl>pkg:pypi/nltk@3.9.4</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>nodeenv</name>
+      <version>1.10.0</version>
+      <purl>pkg:pypi/nodeenv@1.10.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>nox</name>
+      <version>2026.4.10</version>
+      <purl>pkg:pypi/nox@2026.4.10</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>numpy</name>
+      <version>2.5.1</version>
+      <purl>pkg:pypi/numpy@2.5.1</purl>
+      <license>
+        <expression>BSD-3-Clause</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>nvidia-cublas</name>
+      <version>13.1.1.3</version>
+      <purl>pkg:pypi/nvidia-cublas@13.1.1.3</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>nvidia-cuda-cupti</name>
+      <version>13.0.85</version>
+      <purl>pkg:pypi/nvidia-cuda-cupti@13.0.85</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>nvidia-cuda-nvrtc</name>
+      <version>13.0.88</version>
+      <purl>pkg:pypi/nvidia-cuda-nvrtc@13.0.88</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>nvidia-cuda-runtime</name>
+      <version>13.0.96</version>
+      <purl>pkg:pypi/nvidia-cuda-runtime@13.0.96</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>nvidia-cudnn-cu13</name>
+      <version>9.20.0.48</version>
+      <purl>pkg:pypi/nvidia-cudnn-cu13@9.20.0.48</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>nvidia-cufft</name>
+      <version>12.0.0.61</version>
+      <purl>pkg:pypi/nvidia-cufft@12.0.0.61</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>nvidia-cufile</name>
+      <version>1.15.1.6</version>
+      <purl>pkg:pypi/nvidia-cufile@1.15.1.6</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>nvidia-curand</name>
+      <version>10.4.0.35</version>
+      <purl>pkg:pypi/nvidia-curand@10.4.0.35</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>nvidia-cusolver</name>
+      <version>12.0.4.66</version>
+      <purl>pkg:pypi/nvidia-cusolver@12.0.4.66</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>nvidia-cusparse</name>
+      <version>12.6.3.3</version>
+      <purl>pkg:pypi/nvidia-cusparse@12.6.3.3</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>nvidia-cusparselt-cu13</name>
+      <version>0.8.1</version>
+      <purl>pkg:pypi/nvidia-cusparselt-cu13@0.8.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>nvidia-ml-py3</name>
+      <version>7.352.0</version>
+      <purl>pkg:pypi/nvidia-ml-py3@7.352.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>nvidia-nccl-cu13</name>
+      <version>2.29.7</version>
+      <purl>pkg:pypi/nvidia-nccl-cu13@2.29.7</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>nvidia-nvjitlink</name>
+      <version>13.0.88</version>
+      <purl>pkg:pypi/nvidia-nvjitlink@13.0.88</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>nvidia-nvshmem-cu13</name>
+      <version>3.4.5</version>
+      <purl>pkg:pypi/nvidia-nvshmem-cu13@3.4.5</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>nvidia-nvtx</name>
+      <version>13.0.85</version>
+      <purl>pkg:pypi/nvidia-nvtx@13.0.85</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>oauthlib</name>
+      <version>3.3.1</version>
+      <purl>pkg:pypi/oauthlib@3.3.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>omegaconf</name>
+      <version>2.3.1</version>
+      <purl>pkg:pypi/omegaconf@2.3.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>onnxruntime</name>
+      <version>1.27.0</version>
+      <purl>pkg:pypi/onnxruntime@1.27.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>openai</name>
+      <version>2.44.0</version>
+      <purl>pkg:pypi/openai@2.44.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>opencensus-context</name>
+      <version>0.1.3</version>
+      <purl>pkg:pypi/opencensus-context@0.1.3</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>opencensus</name>
+      <version>0.11.4</version>
+      <purl>pkg:pypi/opencensus@0.11.4</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>opentelemetry-api</name>
+      <version>1.43.0</version>
+      <purl>pkg:pypi/opentelemetry-api@1.43.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>opentelemetry-exporter-otlp-proto-common</name>
+      <version>1.43.0</version>
+      <purl>pkg:pypi/opentelemetry-exporter-otlp-proto-common@1.43.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>opentelemetry-exporter-otlp-proto-grpc</name>
+      <version>1.43.0</version>
+      <purl>pkg:pypi/opentelemetry-exporter-otlp-proto-grpc@1.43.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>opentelemetry-exporter-prometheus</name>
+      <version>0.64b0</version>
+      <purl>pkg:pypi/opentelemetry-exporter-prometheus@0.64b0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>opentelemetry-proto</name>
+      <version>1.43.0</version>
+      <purl>pkg:pypi/opentelemetry-proto@1.43.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>opentelemetry-sdk</name>
+      <version>1.43.0</version>
+      <purl>pkg:pypi/opentelemetry-sdk@1.43.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>opentelemetry-semantic-conventions</name>
+      <version>0.64b0</version>
+      <purl>pkg:pypi/opentelemetry-semantic-conventions@0.64b0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>orjson</name>
+      <version>3.11.9</version>
+      <purl>pkg:pypi/orjson@3.11.9</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>overrides</name>
+      <version>7.7.0</version>
+      <purl>pkg:pypi/overrides@7.7.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>packaging</name>
+      <version>26.2</version>
+      <purl>pkg:pypi/packaging@26.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pandas</name>
+      <version>2.3.3</version>
+      <purl>pkg:pypi/pandas@2.3.3</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>parso</name>
+      <version>0.8.7</version>
+      <purl>pkg:pypi/parso@0.8.7</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pathspec</name>
+      <version>1.1.1</version>
+      <purl>pkg:pypi/pathspec@1.1.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pathvalidate</name>
+      <version>3.3.1</version>
+      <purl>pkg:pypi/pathvalidate@3.3.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>patsy</name>
+      <version>1.0.2</version>
+      <purl>pkg:pypi/patsy@1.0.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>peft</name>
+      <version>0.19.1</version>
+      <purl>pkg:pypi/peft@0.19.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pillow</name>
+      <version>12.3.0</version>
+      <purl>pkg:pypi/pillow@12.3.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>platformdirs</name>
+      <version>4.10.0</version>
+      <purl>pkg:pypi/platformdirs@4.10.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>playwright</name>
+      <version>1.61.0</version>
+      <purl>pkg:pypi/playwright@1.61.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>plotly</name>
+      <version>5.24.1</version>
+      <purl>pkg:pypi/plotly@5.24.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pluggy</name>
+      <version>1.6.0</version>
+      <purl>pkg:pypi/pluggy@1.6.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>polyfactory</name>
+      <version>3.3.0</version>
+      <purl>pkg:pypi/polyfactory@3.3.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>portalocker</name>
+      <version>3.2.0</version>
+      <purl>pkg:pypi/portalocker@3.2.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pre-commit</name>
+      <version>4.6.0</version>
+      <purl>pkg:pypi/pre-commit@4.6.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>prettytable</name>
+      <version>3.18.0</version>
+      <purl>pkg:pypi/prettytable@3.18.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>prometheus-client</name>
+      <version>0.25.0</version>
+      <purl>pkg:pypi/prometheus-client@0.25.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>prompt-toolkit</name>
+      <version>3.0.52</version>
+      <purl>pkg:pypi/prompt-toolkit@3.0.52</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>propcache</name>
+      <version>0.5.2</version>
+      <purl>pkg:pypi/propcache@0.5.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>proto-plus</name>
+      <version>1.28.0</version>
+      <purl>pkg:pypi/proto-plus@1.28.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>protobuf</name>
+      <version>6.33.6</version>
+      <purl>pkg:pypi/protobuf@6.33.6</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>psutil</name>
+      <version>7.2.2</version>
+      <purl>pkg:pypi/psutil@7.2.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>py-spy</name>
+      <version>0.4.2</version>
+      <purl>pkg:pypi/py-spy@0.4.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pyarrow</name>
+      <version>24.0.0</version>
+      <purl>pkg:pypi/pyarrow@24.0.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pyasn1-modules</name>
+      <version>0.4.2</version>
+      <purl>pkg:pypi/pyasn1-modules@0.4.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pyasn1</name>
+      <version>0.6.3</version>
+      <purl>pkg:pypi/pyasn1@0.6.3</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pybase64</name>
+      <version>1.4.3</version>
+      <purl>pkg:pypi/pybase64@1.4.3</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pycparser</name>
+      <version>3.0</version>
+      <purl>pkg:pypi/pycparser@3.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pydantic-core</name>
+      <version>2.46.4</version>
+      <purl>pkg:pypi/pydantic-core@2.46.4</purl>
+      <license>
+        <expression>MIT</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pydantic-settings</name>
+      <version>2.14.2</version>
+      <purl>pkg:pypi/pydantic-settings@2.14.2</purl>
+      <license>
+        <expression>MIT</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pydantic</name>
+      <version>2.13.4</version>
+      <purl>pkg:pypi/pydantic@2.13.4</purl>
+      <license>
+        <expression>MIT</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pydot</name>
+      <version>4.0.1</version>
+      <purl>pkg:pypi/pydot@4.0.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pyee</name>
+      <version>13.0.1</version>
+      <purl>pkg:pypi/pyee@13.0.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pygit2</name>
+      <version>1.19.3</version>
+      <purl>pkg:pypi/pygit2@1.19.3</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pygithub</name>
+      <version>2.9.1</version>
+      <purl>pkg:pypi/pygithub@2.9.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pygments</name>
+      <version>2.20.0</version>
+      <purl>pkg:pypi/pygments@2.20.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pygtrie</name>
+      <version>2.5.0</version>
+      <purl>pkg:pypi/pygtrie@2.5.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pyjwt</name>
+      <version>2.13.0</version>
+      <purl>pkg:pypi/pyjwt@2.13.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pynacl</name>
+      <version>1.6.2</version>
+      <purl>pkg:pypi/pynacl@1.6.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pyotp</name>
+      <version>2.10.0</version>
+      <purl>pkg:pypi/pyotp@2.10.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pyparsing</name>
+      <version>3.3.2</version>
+      <purl>pkg:pypi/pyparsing@3.3.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pypika</name>
+      <version>0.51.1</version>
+      <purl>pkg:pypi/pypika@0.51.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pyproject-hooks</name>
+      <version>1.2.0</version>
+      <purl>pkg:pypi/pyproject-hooks@1.2.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pytablewriter</name>
+      <version>1.2.1</version>
+      <purl>pkg:pypi/pytablewriter@1.2.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pytest-asyncio</name>
+      <version>1.4.0</version>
+      <purl>pkg:pypi/pytest-asyncio@1.4.0</purl>
+      <license>
+        <expression>MIT</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pytest-cov</name>
+      <version>5.0.0</version>
+      <purl>pkg:pypi/pytest-cov@5.0.0</purl>
+      <license>
+        <expression>MIT</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pytest-mock</name>
+      <version>3.15.1</version>
+      <purl>pkg:pypi/pytest-mock@3.15.1</purl>
+      <license>
+        <expression>MIT</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pytest-randomly</name>
+      <version>4.1.0</version>
+      <purl>pkg:pypi/pytest-randomly@4.1.0</purl>
+      <license>
+        <expression>MIT</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pytest-rerunfailures</name>
+      <version>16.4</version>
+      <purl>pkg:pypi/pytest-rerunfailures@16.4</purl>
+      <license>
+        <expression>MIT</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pytest-split</name>
+      <version>0.11.0</version>
+      <purl>pkg:pypi/pytest-split@0.11.0</purl>
+      <license>
+        <expression>MIT</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pytest-timeout</name>
+      <version>2.4.0</version>
+      <purl>pkg:pypi/pytest-timeout@2.4.0</purl>
+      <license>
+        <expression>MIT</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pytest-xdist</name>
+      <version>3.8.0</version>
+      <purl>pkg:pypi/pytest-xdist@3.8.0</purl>
+      <license>
+        <expression>MIT</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pytest</name>
+      <version>9.1.1</version>
+      <purl>pkg:pypi/pytest@9.1.1</purl>
+      <license>
+        <expression>MIT</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>python-dateutil</name>
+      <version>2.9.0.post0</version>
+      <purl>pkg:pypi/python-dateutil@2.9.0.post0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>python-discovery</name>
+      <version>1.4.3</version>
+      <purl>pkg:pypi/python-discovery@1.4.3</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>python-dotenv</name>
+      <version>1.2.2</version>
+      <purl>pkg:pypi/python-dotenv@1.2.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pytokens</name>
+      <version>0.4.1</version>
+      <purl>pkg:pypi/pytokens@0.4.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pytz</name>
+      <version>2026.2</version>
+      <purl>pkg:pypi/pytz@2026.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>pyyaml</name>
+      <version>6.0.3</version>
+      <purl>pkg:pypi/pyyaml@6.0.3</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>radon</name>
+      <version>6.0.1</version>
+      <purl>pkg:pypi/radon@6.0.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>ray</name>
+      <version>2.56.0</version>
+      <purl>pkg:pypi/ray@2.56.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>referencing</name>
+      <version>0.37.0</version>
+      <purl>pkg:pypi/referencing@0.37.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>regex</name>
+      <version>2026.6.28</version>
+      <purl>pkg:pypi/regex@2026.6.28</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>requests-oauthlib</name>
+      <version>2.0.0</version>
+      <purl>pkg:pypi/requests-oauthlib@2.0.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>requests</name>
+      <version>2.34.2</version>
+      <purl>pkg:pypi/requests@2.34.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>responses</name>
+      <version>0.26.2</version>
+      <purl>pkg:pypi/responses@0.26.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>rich-click</name>
+      <version>1.9.8</version>
+      <purl>pkg:pypi/rich-click@1.9.8</purl>
+      <license>
+        <expression>BSD-3-Clause</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>rich</name>
+      <version>15.0.0</version>
+      <purl>pkg:pypi/rich@15.0.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>rouge-score</name>
+      <version>0.1.2</version>
+      <purl>pkg:pypi/rouge-score@0.1.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>rpds-py</name>
+      <version>2026.6.3</version>
+      <purl>pkg:pypi/rpds-py@2026.6.3</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>ruamel-yaml</name>
+      <version>0.19.1</version>
+      <purl>pkg:pypi/ruamel-yaml@0.19.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>ruff</name>
+      <version>0.15.20</version>
+      <purl>pkg:pypi/ruff@0.15.20</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>sacrebleu</name>
+      <version>2.6.0</version>
+      <purl>pkg:pypi/sacrebleu@2.6.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>safetensors</name>
+      <version>0.8.0</version>
+      <purl>pkg:pypi/safetensors@0.8.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>scikit-learn</name>
+      <version>1.9.0</version>
+      <purl>pkg:pypi/scikit-learn@1.9.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>scipy</name>
+      <version>1.18.0</version>
+      <purl>pkg:pypi/scipy@1.18.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>scmrepo</name>
+      <version>3.6.2</version>
+      <purl>pkg:pypi/scmrepo@3.6.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>semver</name>
+      <version>3.0.4</version>
+      <purl>pkg:pypi/semver@3.0.4</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>sentence-transformers</name>
+      <version>5.6.0</version>
+      <purl>pkg:pypi/sentence-transformers@5.6.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>sentencepiece</name>
+      <version>0.2.1</version>
+      <purl>pkg:pypi/sentencepiece@0.2.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>sentry-sdk</name>
+      <version>2.64.0</version>
+      <purl>pkg:pypi/sentry-sdk@2.64.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>setuptools</name>
+      <version>81.0.0</version>
+      <purl>pkg:pypi/setuptools@81.0.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>shellingham</name>
+      <version>1.5.4</version>
+      <purl>pkg:pypi/shellingham@1.5.4</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>shortuuid</name>
+      <version>1.0.13</version>
+      <purl>pkg:pypi/shortuuid@1.0.13</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>shtab</name>
+      <version>1.8.1</version>
+      <purl>pkg:pypi/shtab@1.8.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>six</name>
+      <version>1.17.0</version>
+      <purl>pkg:pypi/six@1.17.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>skops</name>
+      <version>0.14.0</version>
+      <purl>pkg:pypi/skops@0.14.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>slowapi</name>
+      <version>0.1.10</version>
+      <purl>pkg:pypi/slowapi@0.1.10</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>smart-open</name>
+      <version>8.0.0</version>
+      <purl>pkg:pypi/smart-open@8.0.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>smmap</name>
+      <version>5.0.3</version>
+      <purl>pkg:pypi/smmap@5.0.3</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>sniffio</name>
+      <version>1.3.1</version>
+      <purl>pkg:pypi/sniffio@1.3.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>sortedcontainers</name>
+      <version>2.4.0</version>
+      <purl>pkg:pypi/sortedcontainers@2.4.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>sqlalchemy</name>
+      <version>2.0.51</version>
+      <purl>pkg:pypi/sqlalchemy@2.0.51</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>sqlitedict</name>
+      <version>2.1.0</version>
+      <purl>pkg:pypi/sqlitedict@2.1.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>sqlparse</name>
+      <version>0.5.5</version>
+      <purl>pkg:pypi/sqlparse@0.5.5</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>sqltrie</name>
+      <version>0.11.2</version>
+      <purl>pkg:pypi/sqltrie@0.11.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>starlette</name>
+      <version>1.3.1</version>
+      <purl>pkg:pypi/starlette@1.3.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>statsmodels</name>
+      <version>0.14.6</version>
+      <purl>pkg:pypi/statsmodels@0.14.6</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>sympy</name>
+      <version>1.14.0</version>
+      <purl>pkg:pypi/sympy@1.14.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>tabledata</name>
+      <version>1.3.5</version>
+      <purl>pkg:pypi/tabledata@1.3.5</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>tabulate</name>
+      <version>0.10.0</version>
+      <purl>pkg:pypi/tabulate@0.10.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>tcolorpy</name>
+      <version>0.1.7</version>
+      <purl>pkg:pypi/tcolorpy@0.1.7</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>tenacity</name>
+      <version>9.1.4</version>
+      <purl>pkg:pypi/tenacity@9.1.4</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>tensorboard-data-server</name>
+      <version>0.7.2</version>
+      <purl>pkg:pypi/tensorboard-data-server@0.7.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>tensorboard</name>
+      <version>2.21.0</version>
+      <purl>pkg:pypi/tensorboard@2.21.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>threadpoolctl</name>
+      <version>3.6.0</version>
+      <purl>pkg:pypi/threadpoolctl@3.6.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>tokenizers</name>
+      <version>0.22.2</version>
+      <purl>pkg:pypi/tokenizers@0.22.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>tomlkit</name>
+      <version>0.15.0</version>
+      <purl>pkg:pypi/tomlkit@0.15.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>torch</name>
+      <version>2.12.1</version>
+      <purl>pkg:pypi/torch@2.12.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>tqdm</name>
+      <version>4.68.4</version>
+      <purl>pkg:pypi/tqdm@4.68.4</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>traitlets</name>
+      <version>5.15.1</version>
+      <purl>pkg:pypi/traitlets@5.15.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>transformers</name>
+      <version>5.13.0</version>
+      <purl>pkg:pypi/transformers@5.13.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>tree-sitter-python</name>
+      <version>0.25.0</version>
+      <purl>pkg:pypi/tree-sitter-python@0.25.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>tree-sitter-yaml</name>
+      <version>0.7.2</version>
+      <purl>pkg:pypi/tree-sitter-yaml@0.7.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>tree-sitter</name>
+      <version>0.26.0</version>
+      <purl>pkg:pypi/tree-sitter@0.26.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>triton</name>
+      <version>3.7.1</version>
+      <purl>pkg:pypi/triton@3.7.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>typepy</name>
+      <version>1.3.5</version>
+      <purl>pkg:pypi/typepy@1.3.5</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>typer</name>
+      <version>0.26.8</version>
+      <purl>pkg:pypi/typer@0.26.8</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>typing-extensions</name>
+      <version>4.16.0</version>
+      <purl>pkg:pypi/typing-extensions@4.16.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>typing-inspect</name>
+      <version>0.9.0</version>
+      <purl>pkg:pypi/typing-inspect@0.9.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>typing-inspection</name>
+      <version>0.4.2</version>
+      <purl>pkg:pypi/typing-inspection@0.4.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>tzdata</name>
+      <version>2026.2</version>
+      <purl>pkg:pypi/tzdata@2026.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>tzlocal</name>
+      <version>5.4.4</version>
+      <purl>pkg:pypi/tzlocal@5.4.4</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>ujson</name>
+      <version>5.13.0</version>
+      <purl>pkg:pypi/ujson@5.13.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>urllib3</name>
+      <version>2.7.0</version>
+      <purl>pkg:pypi/urllib3@2.7.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>uuid6</name>
+      <version>2025.0.1</version>
+      <purl>pkg:pypi/uuid6@2025.0.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>uvicorn</name>
+      <version>0.50.2</version>
+      <purl>pkg:pypi/uvicorn@0.50.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>uvloop</name>
+      <version>0.22.1</version>
+      <purl>pkg:pypi/uvloop@0.22.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>vine</name>
+      <version>5.1.0</version>
+      <purl>pkg:pypi/vine@5.1.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>virtualenv</name>
+      <version>21.6.0</version>
+      <purl>pkg:pypi/virtualenv@21.6.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>voluptuous</name>
+      <version>0.16.0</version>
+      <purl>pkg:pypi/voluptuous@0.16.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>wandb</name>
+      <version>0.28.0</version>
+      <purl>pkg:pypi/wandb@0.28.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>watchdog</name>
+      <version>6.0.0</version>
+      <purl>pkg:pypi/watchdog@6.0.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>watchfiles</name>
+      <version>1.2.0</version>
+      <purl>pkg:pypi/watchfiles@1.2.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>wcwidth</name>
+      <version>0.8.2</version>
+      <purl>pkg:pypi/wcwidth@0.8.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>websocket-client</name>
+      <version>1.9.0</version>
+      <purl>pkg:pypi/websocket-client@1.9.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>websockets</name>
+      <version>16.0</version>
+      <purl>pkg:pypi/websockets@16.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>werkzeug</name>
+      <version>3.1.8</version>
+      <purl>pkg:pypi/werkzeug@3.1.8</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>word2number</name>
+      <version>1.1</version>
+      <purl>pkg:pypi/word2number@1.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>wrapt</name>
+      <version>2.2.2</version>
+      <purl>pkg:pypi/wrapt@2.2.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>xxhash</name>
+      <version>3.8.1</version>
+      <purl>pkg:pypi/xxhash@3.8.1</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>yamllint</name>
+      <version>1.38.0</version>
+      <purl>pkg:pypi/yamllint@1.38.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>yarl</name>
+      <version>1.24.2</version>
+      <purl>pkg:pypi/yarl@1.24.2</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>zc-lockfile</name>
+      <version>4.0</version>
+      <purl>pkg:pypi/zc-lockfile@4.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+    <component type="library">
+      <name>zipp</name>
+      <version>4.1.0</version>
+      <purl>pkg:pypi/zipp@4.1.0</purl>
+      <license>
+        <expression>Apache-2.0</expression>
+      </license>
+      <supplier>
+        <name>PyPI Community</name>
+      </supplier>
+    </component>
+  </components>
+</bom>
