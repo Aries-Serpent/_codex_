@@ -75,12 +75,29 @@ jobs:
             const pr = context.payload.pull_request;
             const body = pr.body || '';
             
-            // Remove old findings section
+            // Remove old findings section (safely)
             let newBody = body.replace(/## 🔐 Security Findings[\s\S]*?(?=##|$)/m, '');
             newBody = newBody.trim();
             
-            // Build updated body
-            let updatedBody = newBody + '\n\n## 🔐 Security Findings\n\n' + findingsContent;
+            // Check if WEC (🔄 Workflow Execution Checklist) section exists
+            const hasWEC = body.includes('🔄 Workflow Execution Checklist') || body.includes('Workflow Execution Checklist');
+            
+            // Build updated body - preserve WEC if present
+            let updatedBody = '';
+            if (hasWEC) {
+              // If WEC exists, inject findings after it
+              updatedBody = newBody.replace(
+                /(## 🔄 Workflow Execution Checklist[\s\S]*?)(?=##|$)/m,
+                '$1\n\n## 🔐 Security Findings\n\n' + findingsContent
+              );
+              // If replacement didn't work, just append
+              if (updatedBody === newBody) {
+                updatedBody = newBody + '\n\n## 🔐 Security Findings\n\n' + findingsContent;
+              }
+            } else {
+              // If no WEC, just append findings
+              updatedBody = newBody + '\n\n## 🔐 Security Findings\n\n' + findingsContent;
+            }
             
             // Update PR body
             try {
@@ -90,7 +107,7 @@ jobs:
                 pull_number: pr.number,
                 body: updatedBody
               });
-              console.log('✅ PR body updated with security findings');
+              console.log('✅ PR body updated with security findings (WEC-aware)');
             } catch (error) {
               console.error('❌ Failed to update PR body:', error.message);
               if (error.status === 422) {
