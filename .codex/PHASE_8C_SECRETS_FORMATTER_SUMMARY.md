@@ -15,7 +15,7 @@
 - Lines of Code: 186 (within 150-200 target)
 - Type Hints: 100% coverage
 - Docstrings: 100% coverage
-- Dependencies: Stdlib only (zero external)
+- Dependencies: Stdlib only (zero external) # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 - Python Compatibility: 3.12+ verified
 
 **Key Functions**:

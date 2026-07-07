@@ -15,7 +15,7 @@ from scripts.ci.security_findings_trend_analyzer import SecurityFindingsTrendAna
 @pytest.fixture
 def temp_cache_dir(tmp_path):
     """Create temporary cache directory"""
-    return tmp_path / "security-cache"
+    return tmp_path / "security-cache" # pragma: allowlist secret
 
 
 @pytest.fixture
