@@ -1,7 +1,7 @@
 ## [Unreleased]
 
-### Dependencies (2026-07-07T16:14Z — Golang Crypto Bump PR #5262)
-- Golang: **golang.org/x/crypto** `0.45.0` → `0.52.0` in `tools/github-secrets-cli` (security patch, addresses CVE-2024-45337 and related vulnerabilities)
+### Dependencies (2026-07-07T16:14Z — Go Crypto Bump PR #5262)
+- Go: **golang.org/x/crypto** `0.45.0` → `0.52.0` in `tools/github-secrets-cli` (security patch)
 
 ### Fixed (2026-07-07T16:14Z — PR Comment Review & Compliance PR #5262)
 - Compliance: **REQ-4 & REQ-5 Recovery** — Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md` to restore compliance after CI auto-generated commits that did not include these files.

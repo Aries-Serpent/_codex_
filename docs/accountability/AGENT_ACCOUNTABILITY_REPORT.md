@@ -13860,7 +13860,7 @@ and the CI gate requirement.
 
 ### EXECUTION SUMMARY - COMPLETE ✅
 
-**PR Scope:** Golang dependency bump `golang.org/x/crypto` 0.45.0 → 0.52.0 in `/tools/github-secrets-cli`
+**PR Scope:** Go dependency bump `golang.org/x/crypto` 0.45.0 → 0.52.0 in `/tools/github-secrets-cli`
 
 **Comment Review (§0 Compliance):** 🟢 ALL BLOCKING COMMENTS REVIEWED
 - ✅ Reviewed security findings comment (#4905796142) — paths do not exist at the reported locations (false positives from automated scan)
