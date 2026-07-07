@@ -68,7 +68,7 @@ jobs:
         sparse-checkout: scripts/ci/test_variables_api.py
         sparse-checkout-cone-mode: false
     - name: Set up Python 3.12
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v6.3.0
       with:
         cache: pip
         python-version: 3.12.13
@@ -106,7 +106,7 @@ jobs:
         sparse-checkout: scripts/ci/test_variables_api.py
         sparse-checkout-cone-mode: false
     - name: Set up Python 3.12
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v6.3.0
       with:
         cache: pip
         python-version: 3.12.13

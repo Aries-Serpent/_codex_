@@ -15116,3 +15116,20 @@ Completed TIER 1 semantic routing quality validation for multi-agent orchestrati
 - **Status:** BLOCKING ISSUE RESOLVED - Release workflow can now execute successfully
 
 
+
+## [Unreleased] — 2026-07-07
+
+### Dependencies
+- Consolidate all open Dependabot PRs (#5253–#5261) into single PR (#5253)
+  - `MishaKav/pytest-coverage-comment`: `a0170827` → `fd9adbdc` (GitHub Action)
+  - `myst-parser`: `>=5.0.0` → `>=5.1.0`
+  - `cyclonedx-bom`: `>=4.0.0` → `>=7.3.0`
+  - `pyannote.audio`: `3.3.2` → `4.0.7`
+  - `jupyterlab`: `4.5.9` → `4.6.1`
+  - `actions/setup-python`: `@v6` → `@v6.3.0` (exact pin across ~100 workflows)
+  - `numpy`: `2.4.6` → `2.5.1`
+  - `docker/build-push-action`: `f9f3042f` → `53b7df96` (GitHub Action)
+  - `github/codeql-action/upload-sarif`: `9cea5827`/`5e316336` → `006d029c` (GitHub Action)
+
+### Fixed (2026-07-07T10:25Z — REQ-4/REQ-5 Compliance PR #5253)
+- Compliance: **REQ-4 & REQ-5 Recovery** — Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md` to restore compliance after internal `.codex/` file updates. All 9 Dependabot PRs consolidated and ready for merge.

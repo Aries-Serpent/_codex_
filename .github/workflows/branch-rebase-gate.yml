@@ -38,7 +38,7 @@ jobs:
     - name: 🗂️ Pre-create pip cache dir
       run: mkdir -p ~/.cache/pip
     - name: 🐍 Set up Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v6.3.0
       with:
         python-version: 3.12.13
         cache: 'pip'
