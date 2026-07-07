@@ -36,7 +36,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v7 # v6.0.3
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v6.0.3
 
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
@@ -99,7 +99,7 @@ jobs:
           fi
 
       - name: Upload telemetry report
-        uses: actions/upload-artifact@v5 # v7.0.1
+        uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e # v7.0.1
         with:
           name: telemetry-report-${{ github.run_id }}
           path: telemetry_report_*.json
@@ -140,7 +140,7 @@ jobs:
           steps.critical.outputs.critical_failure_rate == 'true' ||
           steps.critical.outputs.high_auto_fix_failures == 'true' ||
           steps.critical.outputs.high_coverage_timeouts == 'true'
-        uses: actions/github-script@v8 # v9
+        uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293 # v9
         with:
           script: |
             const fs = require('fs');

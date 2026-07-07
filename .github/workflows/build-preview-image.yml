@@ -53,7 +53,7 @@ jobs:
     timeout-minutes: 5
     needs: cost-gate
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: Hadolint — Dockerfile linter
       uses: hadolint/hadolint-action@54c9adbab1582c2ef04b2016b760714a4bfde3cf
       with:
@@ -75,7 +75,7 @@ jobs:
         - preview
         - preview-dev
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: Set up QEMU
       uses: docker/setup-qemu-action@ce360397dd3f832beb865e1373c09c0e9f86d70a
       with:
@@ -197,7 +197,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1

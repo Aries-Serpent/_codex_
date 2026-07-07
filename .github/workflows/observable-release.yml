@@ -30,12 +30,12 @@ jobs:
       # ─────────────────────────────────────────────────────────────
 
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
         with:
           fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 

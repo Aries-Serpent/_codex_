@@ -39,7 +39,7 @@ jobs:
       baseline_metrics: ${{ steps.baseline.outputs.metrics }}
     steps:
     - name: Checkout code
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: CacheManager health check
       continue-on-error: true
       run: 'python scripts/ci/generate_cache_keys.py --health --workflow root-org-validation
@@ -125,7 +125,7 @@ jobs:
         '
     - name: Upload baseline artifact
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: validation-baseline
         path: .codex/validation/baseline.txt
@@ -140,7 +140,7 @@ jobs:
     needs: pre-validation
     steps:
     - name: Checkout code
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: Set up Python 3.12 with tiered cache
       uses: ./.github/actions/setup-python-cached
       with:
@@ -206,7 +206,7 @@ jobs:
 
         '
     - name: Upload reference report
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: reference-validation-report
         path: .codex/reports/reference_validation.md
@@ -223,14 +223,14 @@ jobs:
     if: always()
     steps:
     - name: Checkout code
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: Set up Python 3.12 with tiered cache
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
         cache-tier: common
     - name: Download baseline
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@7a64585046d847ae9b56aeb3ce4702ca38ae8e84
       continue-on-error: true
       with:
         name: validation-baseline
@@ -305,14 +305,14 @@ jobs:
 
         '
     - name: Upload final report
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: root-org-validation-report
         path: .codex/reports/root_org_validation_${{ github.run_number }}.md
         retention-days: 90
     - name: Comment on PR (if applicable)
       if: github.event_name == 'pull_request'
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       with:
         script: "const fs = require('fs');\nconst MARKER = '<!-- root-org-validation-v1\
           \ -->';\nconst reportRaw = fs.readFileSync(\n  '.codex/reports/root_org_validation_${{\
@@ -388,7 +388,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1

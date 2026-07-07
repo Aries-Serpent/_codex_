@@ -22,11 +22,11 @@ jobs:
       contents: read
     steps:
     - name: "\U0001F4E5 Checkout"
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: "\U0001F5C2\uFE0F Pre-create pip cache dir"
       run: mkdir -p ~/.cache/pip
     - name: "\U0001F40D Set up Python"
-      uses: actions/setup-python@v6.3.0
+      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
       with:
         python-version: 3.12.13
         cache: 'pip'
@@ -135,7 +135,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         fetch-depth: 1

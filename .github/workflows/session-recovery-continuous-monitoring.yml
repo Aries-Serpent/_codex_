@@ -22,11 +22,11 @@ jobs:
     timeout-minutes: 10
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v6.3.0
+      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
       with:
         python-version: '3.12'
         cache: 'pip'
@@ -70,14 +70,14 @@ jobs:
         \nfi\n\necho \"\"\necho \"\U0001F7E2 Recovery System: OPERATIONAL\"\n"
     - name: Upload monitoring report
       if: steps.monitor.outputs.report_created == 'true'
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: session-recovery-monitoring-${{ github.run_number }}
         path: .codex/session_recovery_monitoring_report.json
         retention-days: 30
     - name: Comment on recent failed sessions
       if: failure()
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       with:
         script: "const fs = require('fs');\nconst report = JSON.parse(fs.readFileSync('.codex/session_recovery_monitoring_report.json',\
           \ 'utf8'));\n\nif (report.recent_failures.length > 0) {\n  github.rest.issues.createComment({\n\
@@ -100,7 +100,7 @@ jobs:
       contents: read
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: Generate recovery trend report
       run: "echo \"## Session Recovery Trend Report\"\necho \"\"\necho \"**Report\
         \ Date:** $(date -u +%Y-%m-%dT%H:%M:%SZ)\"\necho \"**Run ID:** ${{ github.run_id\

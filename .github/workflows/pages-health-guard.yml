@@ -24,7 +24,7 @@ jobs:
     timeout-minutes: 15
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: Resolve GitHub Pages URL
       id: resolve_url
       run: '# Standard GitHub Pages URL pattern: https://<org>.github.io/<repo>/

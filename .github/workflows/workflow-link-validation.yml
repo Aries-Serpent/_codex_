@@ -42,11 +42,11 @@ jobs:
     timeout-minutes: 60
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v6.3.0
+      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: 'pip'
@@ -83,7 +83,7 @@ jobs:
         == 'workflow_dispatch' && inputs.strict_mode == 'false') }}
     - name: Comment on PR
       if: failure() && github.event_name == 'pull_request'
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       with:
         script: "const comment = `## ⚠️ Workflow Documentation Link Validation - Issues\
           \ Found\n\nBroken links were found in workflow documentation. These are\
@@ -99,7 +99,7 @@ jobs:
           \ repo: context.repo.repo,\n  body: comment\n});\n"
     - name: Upload validation report
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: link-validation-report
         path: '${{ github.workspace }}/link-validation-report.json
@@ -133,7 +133,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}

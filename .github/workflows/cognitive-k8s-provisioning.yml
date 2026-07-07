@@ -36,9 +36,9 @@ jobs:
       patterns: ${{ steps.query.outputs.patterns }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: Set up Python
-      uses: actions/setup-python@v6.3.0
+      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
       with:
         python-version: '3.11'
         cache: 'pip'
@@ -53,7 +53,7 @@ jobs:
         '
       shell: bash
     - name: Upload Patterns
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: k8s-patterns
         path: k8s_patterns.json
@@ -68,14 +68,14 @@ jobs:
     timeout-minutes: 30
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: Set up Python
-      uses: actions/setup-python@v6.3.0
+      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
       with:
         python-version: '3.11'
         cache: 'pip'
     - name: Download Patterns
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@7a64585046d847ae9b56aeb3ce4702ca38ae8e84
       with:
         name: k8s-patterns
     - name: Validate Configuration
@@ -83,7 +83,7 @@ jobs:
 
         '
     - name: Upload Compliance Report
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: compliance-report
         path: infrastructure_compliance_report.json
@@ -98,14 +98,14 @@ jobs:
     timeout-minutes: 30
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: Set up Python
-      uses: actions/setup-python@v6.3.0
+      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
       with:
         python-version: '3.11'
         cache: 'pip'
     - name: Download Patterns
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@7a64585046d847ae9b56aeb3ce4702ca38ae8e84
       with:
         name: k8s-patterns
     - name: Estimate Costs
@@ -113,7 +113,7 @@ jobs:
 
         '
     - name: Upload Cost Estimate
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: cost-estimate
         path: cost_estimate.json
@@ -128,14 +128,14 @@ jobs:
     timeout-minutes: 30
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: Set up Python
-      uses: actions/setup-python@v6.3.0
+      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
       with:
         python-version: '3.11'
         cache: 'pip'
     - name: Download Patterns
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@7a64585046d847ae9b56aeb3ce4702ca38ae8e84
       with:
         name: k8s-patterns
     - name: Generate Terraform Configuration
@@ -143,7 +143,7 @@ jobs:
 
         '
     - name: Upload Terraform Modules
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: terraform-modules
         path: infrastructure/terraform/
@@ -158,14 +158,14 @@ jobs:
     timeout-minutes: 45
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: Set up Python
-      uses: actions/setup-python@v6.3.0
+      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
       with:
         python-version: '3.11'
         cache: 'pip'
     - name: Download Terraform Modules
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@7a64585046d847ae9b56aeb3ce4702ca38ae8e84
       with:
         name: terraform-modules
         path: infrastructure/terraform/
@@ -178,7 +178,7 @@ jobs:
 
         '
     - name: Upload Plan Summary
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: terraform-plan
         path: terraform_plan_summary.md
@@ -200,9 +200,9 @@ jobs:
       name: infrastructure-approval
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: Download All Artifacts
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@7a64585046d847ae9b56aeb3ce4702ca38ae8e84
     - name: Generate Approval Summary
       run: 'echo "# K8s Cluster Provisioning Approval" > approval_summary.md
 
@@ -258,7 +258,7 @@ jobs:
     if: always()
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: Generate Completion Report
       run: 'echo "# K8s Provisioning Pipeline Complete" > completion_report.md
 
@@ -282,7 +282,7 @@ jobs:
 
         '
     - name: Upload Completion Report
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: completion-report
         path: completion_report.md

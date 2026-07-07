@@ -58,7 +58,7 @@ jobs:
       '
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         fetch-depth: 0
     - name: '🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)'
@@ -99,7 +99,7 @@ jobs:
         \  echo \"Review mode: Cascade PR analysis\" >> $GITHUB_STEP_SUMMARY\nfi\n"
     - name: Upload review results
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: cascade-review-${{ github.run_number }}
         path: '.codex/reviews/*.json
@@ -127,7 +127,7 @@ jobs:
       test_results: ${{ steps.test.outputs.results }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         fetch-depth: 0
     - name: '🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)'
@@ -173,7 +173,7 @@ jobs:
         \ >> $GITHUB_STEP_SUMMARY\nfi\n"
     - name: Upload evolution artifacts
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: evolution-artifacts-${{ github.run_number }}
         path: '.github/copilot-evolution/data/*.json
@@ -253,7 +253,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1

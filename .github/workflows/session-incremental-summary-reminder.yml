@@ -16,7 +16,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Post incremental summary reminders to active exploration PRs
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: "const EXPLORATION_MARKER    = 'SESSION_TYPE_EXPLORATION';\nconst\

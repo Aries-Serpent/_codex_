@@ -22,7 +22,7 @@ jobs:
       )\n"
     steps:
     - name: Checkout
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         fetch-depth: 1
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
@@ -40,7 +40,7 @@ jobs:
     - name: Apply variable updates from .codex/pending_var_updates.json
       id: apply_vars
       if: steps.validate_token.outputs.valid == 'true'
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         script: "const fs = require('fs');\n\n// Only these variables can be set autonomously\
@@ -98,7 +98,7 @@ jobs:
         \ var updates [skip ci]\"\ngit push origin HEAD || true\n"
     - name: Post result comment
       if: always()
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         script: "const valid   = '${{ steps.validate_token.outputs.valid }}';\nconst\

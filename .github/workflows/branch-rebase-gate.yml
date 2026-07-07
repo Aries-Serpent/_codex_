@@ -27,7 +27,7 @@ jobs:
       head_branch: ${{ steps.check.outputs.head_branch }}
     steps:
     - name: 📥 Checkout (sparse — script only)
-      uses: actions/checkout@v5
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         sparse-checkout: |
           scripts/__init__.py
@@ -38,7 +38,7 @@ jobs:
     - name: 🗂️ Pre-create pip cache dir
       run: mkdir -p ~/.cache/pip
     - name: 🐍 Set up Python
-      uses: actions/setup-python@v6.3.0
+      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
       with:
         python-version: 3.12.13
         cache: 'pip'
@@ -96,7 +96,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1

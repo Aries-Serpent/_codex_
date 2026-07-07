@@ -43,7 +43,7 @@ jobs:
         - linux/amd64
         - linux/arm64
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5
     - name: Build wheelhouse (builder stage) for ${{ matrix.platform }}
@@ -65,7 +65,7 @@ jobs:
         cache-tier: common
     - name: Cache Dependencies
       if: ${{ matrix.platform == 'linux/amd64' || env.ALLOW_MULTIARCH == 'true' }}
-      uses: actions/cache@v5
+      uses: actions/cache@2cdf405574899ba3c3aab6e1984d4f91812edc99
       with:
         path: '~/.cache/pip
 
@@ -89,7 +89,7 @@ jobs:
       run: echo "name=$(echo '${{ matrix.platform }}' | tr '/' '-')" >> "$GITHUB_OUTPUT"
     - name: Upload wheelhouse with manifest
       if: ${{ matrix.platform == 'linux/amd64' || env.ALLOW_MULTIARCH == 'true' }}
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: baseline-wheelhouse-${{ steps.safe-platform.outputs.name }}
         path: ./wheelhouse
@@ -111,7 +111,7 @@ jobs:
         - cpu
         - gpu
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5
     - name: Determine Dockerfile
@@ -142,7 +142,7 @@ jobs:
         \ grype-${{ matrix.variant }}.sarif \\\n  --fail-on critical\n"
       continue-on-error: true
     - name: Upload SBOM artifacts
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: sbom-${{ matrix.variant }}
         path: 'sbom-${{ matrix.variant }}.*.json
@@ -174,7 +174,7 @@ jobs:
         - '3.12'
         - '3.13'
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5
     - name: Test build with Python ${{ matrix.python_version }}
@@ -206,9 +206,9 @@ jobs:
       contents: read
       issues: write
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: Download current baseline (amd64)
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@7a64585046d847ae9b56aeb3ce4702ca38ae8e84
       with:
         name: baseline-wheelhouse-linux-amd64
         path: ./current-baseline
@@ -234,7 +234,7 @@ jobs:
         \  echo \"ℹ️ Baseline comparison skipped (no previous baseline)\"\nfi\n"
     - name: Create drift alert issue
       if: steps.compare.outputs.drift_detected == 'true'
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       with:
         script: "github.rest.issues.create({\n  owner: context.repo.owner,\n  repo:\
           \ context.repo.repo,\n  title: '\U0001F50D Dependency Drift Detected',\n\
@@ -256,9 +256,9 @@ jobs:
       contents: read
       security-events: write
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: Set up Python
-      uses: actions/setup-python@v6.3.0
+      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
       with:
         python-version: 3.12.13
         cache: pip
@@ -299,7 +299,7 @@ jobs:
         \ \"::warning::safety found HIGH issues\"\nfi\n"
     - name: Upload audit artifacts
       if: always()
-      uses: actions/upload-artifact@v7.0.1
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: dependency-audit-${{ github.run_id }}
         path: 'workbench/security/ci_pip_audit.json

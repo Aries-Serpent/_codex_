@@ -49,7 +49,7 @@ jobs:
     if: github.event_name == 'pull_request' || github.event.pull_request != null
     steps:
     - name: Checkout (for consolidator script)
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         sparse-checkout: 'scripts/ci/pr_comment_consolidator.py
 
@@ -60,7 +60,7 @@ jobs:
           '
         sparse-checkout-cone-mode: false
     - name: Set up Python
-      uses: actions/setup-python@v6.3.0
+      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
       with:
         cache: pip
         python-version: 3.12.13

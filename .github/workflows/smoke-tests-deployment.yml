@@ -56,10 +56,10 @@ jobs:
       fail-fast: false
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
@@ -299,7 +299,7 @@ jobs:
 
       - name: Upload installation artifacts
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
         with:
           name: smoke-test-results-${{ matrix.python-version }}-${{ matrix.profile }}-${{ matrix.ml-extras }}
           path: |
@@ -327,7 +327,7 @@ jobs:
 
       - name: Generate summary report
         if: always()
-        uses: actions/github-script@v8
+        uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
         with:
           script: |
             const fs = require('fs');
@@ -365,7 +365,7 @@ jobs:
     if: failure()
     steps:
       - name: Create rollback issue
-        uses: actions/github-script@v8
+        uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
         with:
           script: |
             const issue = await github.rest.issues.create({

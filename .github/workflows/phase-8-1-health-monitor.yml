@@ -31,11 +31,11 @@ jobs:
       checks: read
     steps:
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         fetch-depth: 1
     - name: Set up Python
-      uses: actions/setup-python@v6.3.0
+      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
       with:
         python-version: '3.11'
         cache: pip
@@ -55,7 +55,7 @@ jobs:
         GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
         GITHUB_REPOSITORY: ${{ github.repository }}
     - name: Upload metrics artifact
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       if: always()
       with:
         name: ci-metrics
@@ -73,15 +73,15 @@ jobs:
       contents: read
     steps:
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         fetch-depth: 1
     - name: Set up Python
-      uses: actions/setup-python@v6.3.0
+      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
       with:
         python-version: '3.11'
     - name: Download metrics
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@7a64585046d847ae9b56aeb3ce4702ca38ae8e84
       with:
         name: ci-metrics
         path: .codex/metrics
@@ -103,15 +103,15 @@ jobs:
       issues: write
     steps:
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         fetch-depth: 1
     - name: Set up Python
-      uses: actions/setup-python@v6.3.0
+      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
       with:
         python-version: '3.11'
     - name: Download metrics
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@7a64585046d847ae9b56aeb3ce4702ca38ae8e84
       with:
         name: ci-metrics
         path: .codex/metrics
@@ -134,15 +134,15 @@ jobs:
       discussions: write
     steps:
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         fetch-depth: 1
     - name: Set up Python
-      uses: actions/setup-python@v6.3.0
+      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
       with:
         python-version: '3.11'
     - name: Download metrics
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@7a64585046d847ae9b56aeb3ce4702ca38ae8e84
       with:
         name: ci-metrics
         path: .codex/metrics
@@ -165,7 +165,7 @@ jobs:
         .codex/PHASE_8_1_DAILY_REPORT.md\", \"w\") as f:\n    f.write(report)\n\n\
         print(\"\u2713 Daily report generated\")\nEOF\n"
     - name: Upload report
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       if: always()
       with:
         name: daily-report
@@ -184,7 +184,7 @@ jobs:
       contents: read
     steps:
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         fetch-depth: 1
     - name: Check monitoring health

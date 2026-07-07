@@ -16,8 +16,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-    - uses: actions/checkout@v7
-    - uses: actions/setup-python@v6.3.0
+    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+    - uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
       with:
         python-version: 3.12.13
         cache: pip
@@ -32,8 +32,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-    - uses: actions/checkout@v7
-    - uses: actions/setup-python@v6.3.0
+    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+    - uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
       with:
         python-version: 3.12.13
         cache: pip
@@ -48,8 +48,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-    - uses: actions/checkout@v7
-    - uses: actions/setup-python@v6.3.0
+    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+    - uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
       with:
         python-version: 3.12.13
         cache: pip
@@ -57,7 +57,7 @@ jobs:
     - name: Log rebuild audit entry
       run: python scripts/rag/rag_rebuild_audit.py --check audit
     - name: Upload audit log
-      uses: actions/upload-artifact@v7.0.1
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: rag-audit-${{ github.run_id }}
         path: reports/rag/rebuild_audit_latest.json

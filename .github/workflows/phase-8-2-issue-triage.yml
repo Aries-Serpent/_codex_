@@ -26,10 +26,10 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
 
       - name: Set up Python
-        uses: actions/setup-python@v6.3.0
+        uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
         with:
           python-version: "3.11"
           cache: "pip"
@@ -43,7 +43,7 @@ jobs:
           python3 phase_8_2_issue_classifier.py --test
 
       - name: Add severity and category labels
-        uses: actions/github-script@v8
+        uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |
@@ -101,10 +101,10 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
 
       - name: Set up Python
-        uses: actions/setup-python@v6.3.0
+        uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
         with:
           python-version: "3.11"
 

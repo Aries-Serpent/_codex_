@@ -33,7 +33,7 @@ jobs:
           build-mode: none
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: Initialize CodeQL
       uses: github/codeql-action/init@5e316336eb4f107009e477d4bfbfff13d7250fae
       with:
@@ -58,7 +58,7 @@ jobs:
         output: codeql-sarif-advanced/${{ matrix.language }}
     - name: Upload CodeQL SARIF artifact
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: codeql-sarif-advanced-${{ matrix.language }}
         path: codeql-sarif-advanced/${{ matrix.language }}
@@ -140,7 +140,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         fetch-depth: 1

@@ -21,7 +21,7 @@ jobs:
       '
     steps:
     - name: Detect timebox, exploration, and no-auto-proceed directives
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: "const commentBody = context.payload.comment.body || '';\nconst prNumber\

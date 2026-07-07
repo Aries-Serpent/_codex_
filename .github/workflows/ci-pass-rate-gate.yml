@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: Compute 7-day pass rate
       id: rate
       env:
@@ -44,7 +44,7 @@ jobs:
         }\nwith open(\"reports/ci/ci_pass_rate_latest.json\", \"w\") as f:\n    json.dump(report,\
         \ f, indent=2)\nprint(json.dumps(report, indent=2))\nPYEOF\n"
     - name: Upload pass-rate report
-      uses: actions/upload-artifact@v7.0.1
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: ci-pass-rate-${{ github.run_id }}
         path: reports/ci/ci_pass_rate_latest.json

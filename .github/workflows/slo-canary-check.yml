@@ -17,8 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-    - uses: actions/checkout@v7
-    - uses: actions/setup-python@v6.3.0
+    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+    - uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
       with:
         python-version: 3.12.13
         cache: pip
@@ -27,7 +27,7 @@ jobs:
       id: canary
       run: python scripts/observability/slo_canary.py
     - name: Upload canary report
-      uses: actions/upload-artifact@v7.0.1
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: slo-canary-${{ github.run_id }}
         path: reports/observability/slo_canary_latest.json
@@ -41,8 +41,8 @@ jobs:
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.schedule == '0
       7 1 * *' }}
     steps:
-    - uses: actions/checkout@v7
-    - uses: actions/setup-python@v6.3.0
+    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+    - uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
       with:
         python-version: 3.12.13
         cache: pip
@@ -66,7 +66,7 @@ jobs:
         \ indent=2))\nprint(\"::notice::✅ D8 exit criteria #4 met: MTTR report generated\"\
         )\nPYEOF\n"
     - name: Upload MTTR report
-      uses: actions/upload-artifact@v7.0.1
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: mttr-report-${{ github.run_id }}
         path: reports/observability/mttr_*.json
@@ -80,8 +80,8 @@ jobs:
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.schedule == '0
       7 1 * *' }}
     steps:
-    - uses: actions/checkout@v7
-    - uses: actions/setup-python@v6.3.0
+    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+    - uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
       with:
         python-version: 3.12.13
         cache: pip
@@ -109,7 +109,7 @@ jobs:
         \ indent=2))\nprint(\"::notice::✅ D8 exit criteria #4b met: MTTD report generated\"\
         )\nPYEOF\n"
     - name: Upload MTTD report
-      uses: actions/upload-artifact@v7.0.1
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: mttd-report-${{ github.run_id }}
         path: reports/observability/mttd_*.json

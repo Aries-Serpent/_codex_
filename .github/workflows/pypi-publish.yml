@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: CacheManager health check
       continue-on-error: true
       run: 'python scripts/ci/generate_cache_keys.py --health --workflow pypi-publish
@@ -48,7 +48,7 @@ jobs:
     - name: Check distribution
       run: twine check dist/*
     - name: Upload artifacts
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: python-package-distributions
         path: dist/
@@ -68,7 +68,7 @@ jobs:
       url: https://test.pypi.org/p/codex-ml
     steps:
     - name: Download artifacts
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@7a64585046d847ae9b56aeb3ce4702ca38ae8e84
       with:
         name: python-package-distributions
         path: dist/
@@ -94,7 +94,7 @@ jobs:
       url: https://pypi.org/p/codex-ml
     steps:
     - name: Download artifacts
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@7a64585046d847ae9b56aeb3ce4702ca38ae8e84
       with:
         name: python-package-distributions
         path: dist/

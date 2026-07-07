@@ -17,9 +17,9 @@ jobs:
     timeout-minutes: 60
     if: startsWith(github.event.comment.body, '/copilot')
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: Cache pip downloads
-      uses: actions/cache@v5
+      uses: actions/cache@2cdf405574899ba3c3aab6e1984d4f91812edc99
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-chatops-${{ hashFiles('pyproject.toml') }}
@@ -72,7 +72,7 @@ jobs:
         == ''run'')
 
         '
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         script: "const prNumber = parseInt(process.env.PR_NUMBER, 10);\nconst EXPIRED_MARKER\

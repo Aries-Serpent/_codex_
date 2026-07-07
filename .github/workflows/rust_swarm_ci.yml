@@ -65,24 +65,24 @@ jobs:
         df -h
 
         '
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: Install Rust toolchain
       uses: actions-rust-lang/setup-rust-toolchain@46268bd060767258de96ed93c1251119784f2ab6
       with:
         toolchain: stable
         components: rustfmt, clippy
     - name: Cache cargo registry
-      uses: actions/cache@v5
+      uses: actions/cache@2cdf405574899ba3c3aab6e1984d4f91812edc99
       with:
         path: ~/.cargo/registry
         key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
     - name: Cache cargo index
-      uses: actions/cache@v5
+      uses: actions/cache@2cdf405574899ba3c3aab6e1984d4f91812edc99
       with:
         path: ~/.cargo/git
         key: ${{ runner.os }}-cargo-index-${{ hashFiles('**/Cargo.lock') }}
     - name: Cache cargo build
-      uses: actions/cache@v5
+      uses: actions/cache@2cdf405574899ba3c3aab6e1984d4f91812edc99
       with:
         path: target
         key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
@@ -96,7 +96,7 @@ jobs:
       run: cargo test --lib --release --locked --verbose
     - name: Upload test results
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: rust-test-results
         path: target/release/deps/*.log
@@ -108,7 +108,7 @@ jobs:
     timeout-minutes: 60
     needs: rust_tests
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: Install Rust toolchain
       uses: actions-rust-lang/setup-rust-toolchain@46268bd060767258de96ed93c1251119784f2ab6
     - name: Run benchmarks
@@ -135,7 +135,7 @@ jobs:
         \  No benchmark data available (timeout or failure)\" >> benchmark_results.txt\n\
         fi\n"
     - name: Upload benchmark results
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: benchmark-results
         path: 'benchmark_results.txt
@@ -166,7 +166,7 @@ jobs:
         df -h
 
         '
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: Install Rust toolchain
       uses: actions-rust-lang/setup-rust-toolchain@46268bd060767258de96ed93c1251119784f2ab6
     - name: Install tarpaulin
@@ -187,7 +187,7 @@ jobs:
         files: ./coverage/lcov.info
         fail_ci_if_error: false
     - name: Upload coverage report
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: coverage-report
         path: coverage/
@@ -214,7 +214,7 @@ jobs:
         df -h
 
         '
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: Set up Python 3.12 with tiered cache
       uses: ./.github/actions/setup-python-cached
       with:
@@ -253,7 +253,7 @@ jobs:
         \ tests not run or no tests found</p>\n</body>\n</html>\nEOF\nfi\n"
     - name: Upload integration test results
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: integration-test-results
         path: htmlcov/
@@ -268,11 +268,11 @@ jobs:
       contents: read
       pull-requests: write
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         fetch-depth: 0
     - name: Download benchmark results
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@7a64585046d847ae9b56aeb3ce4702ca38ae8e84
       with:
         name: benchmark-results
     - name: Verify benchmark results exist
@@ -304,7 +304,7 @@ jobs:
       if: ${{ github.event_name == 'pull_request' && hashFiles('coverage/benchmark_validation_report.txt')
         != '' }}
       continue-on-error: true
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       with:
         script: "const fs = require('fs');\nconst results = fs.readFileSync('coverage/benchmark_validation_report.txt',\
           \ 'utf8');\nconst MARKER = '<!-- benchmark-results-v1 -->';\nconst body\
@@ -337,7 +337,7 @@ jobs:
       contents: read
     timeout-minutes: 60
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: Install Rust toolchain
       uses: actions-rust-lang/setup-rust-toolchain@46268bd060767258de96ed93c1251119784f2ab6
     - name: Run cargo audit
@@ -356,7 +356,7 @@ jobs:
       contents: read
     timeout-minutes: 60
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: Install Rust toolchain
       uses: actions-rust-lang/setup-rust-toolchain@46268bd060767258de96ed93c1251119784f2ab6
     - name: Build Rust docs
@@ -364,7 +364,7 @@ jobs:
 
         '
     - name: Upload documentation
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: rust-documentation
         path: target/doc/
@@ -386,9 +386,9 @@ jobs:
         python-version:
         - 3.12.13
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: Set up Python
-      uses: actions/setup-python@v6.3.0
+      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
       with:
         python-version: ${{ matrix.python-version }}
         cache: pip
@@ -404,7 +404,7 @@ jobs:
     - name: Build wheel
       run: maturin build --release
     - name: Upload wheel
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: wheel-${{ matrix.os }}-py${{ matrix.python-version }}
         path: target/wheels/*.whl
@@ -423,7 +423,7 @@ jobs:
       contents: read
     steps:
     - name: Checkout for cache health
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         sparse-checkout: scripts/ci
     - name: Cache health report
@@ -461,7 +461,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         fetch-depth: 1

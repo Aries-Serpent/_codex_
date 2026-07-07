@@ -39,7 +39,7 @@ jobs:
       actions: write
     steps:
     - name: Checkout
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: Delete stale agent venv cache (force-rebuild)
       if: inputs.force-rebuild == true
       env:
@@ -62,7 +62,7 @@ jobs:
         \ requirements/agent.txt \\\n  --json > /tmp/agent-env-health.json 2>&1 ||\
         \ true\ncat /tmp/agent-env-health.json\n"
     - name: Upload health report artifact
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: agent-env-health-${{ github.run_id }}
         path: /tmp/agent-env-health.json

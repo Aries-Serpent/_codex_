@@ -32,7 +32,7 @@ jobs:
       actions: read
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         fetch-depth: 0
     - name: Set up Python (cached)
@@ -60,7 +60,7 @@ jobs:
 
         '
     - name: Download recent CI artifacts
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       id: artifacts
       with:
         script: "let workflowRuns = [];\ntry {\n  const runs = await github.rest.actions.listWorkflowRunsForRepo({\n\
@@ -109,7 +109,7 @@ jobs:
         \ complete\"\n"
     - name: Generate QA summary
       id: summary
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       with:
         script: "const fs = require('fs');\nlet qaIssues = 0, ruffIssues = 0, banditIssues\
           \ = 0;\n\ntry {\n  const qa = JSON.parse(fs.readFileSync('qa-report.json',\
@@ -139,7 +139,7 @@ jobs:
           \ qaIssues + ruffIssues + banditIssues);\n  core.setOutput('summary', summary);\n\
           \  core.setOutput('details', details);\n}\n"
     - name: Upload QA reports
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       if: always()
       with:
         name: qa-walkthrough-reports-${{ github.run_id }}
@@ -182,7 +182,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1

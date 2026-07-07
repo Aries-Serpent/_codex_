@@ -22,7 +22,7 @@ jobs:
       contents: read
     timeout-minutes: ${{ fromJSON(vars.CODEX_TEST_TIMEOUT_MINUTES || '60') }}
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: Setup Python
       uses: ./.github/actions/setup-python-cached
       with:
@@ -72,7 +72,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1
@@ -99,7 +99,7 @@ jobs:
       runs-on: ubuntu-latest
       steps:
       - name: Trigger auto-approve-workflows
-        uses: actions/github-script@v8
+        uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           REF_NAME: ${{ github.head_ref || github.ref }}

@@ -86,7 +86,7 @@ jobs:
         \ not found at $(dirname \"$VENV_PYTHON\")\"\n  exit 1\nfi\necho \"[SETUP]\
         \ ✓ venv directory verified at $(dirname \"$VENV_PYTHON\")\"\n"
     - name: Cache sentence-transformers models
-      uses: actions/cache@v5
+      uses: actions/cache@2cdf405574899ba3c3aab6e1984d4f91812edc99
       with:
         path: ~/.cache/torch/sentence_transformers
         key: ${{ runner.os }}-sentence-transformers-py${{ matrix.python-version }}-${{
@@ -322,7 +322,7 @@ jobs:
         name: rag-coverage-${{ matrix.python-version }}
         fail_ci_if_error: false
     - name: Upload HTML coverage report
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       if: always()
       with:
         name: coverage-report-${{ matrix.python-version }}
@@ -420,7 +420,7 @@ jobs:
         \ ⚠️  generate_cache_keys.py not found (skipping detailed check)\"\nfi\n \n\
         echo \"[CACHE-HEALTH] ✅ Cache health report complete\"\n"
     - name: Upload security report
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       if: always()
       with:
         name: security-report-${{ matrix.python-version }}
