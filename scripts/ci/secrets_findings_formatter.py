@@ -488,9 +488,13 @@ def main() -> int:
 
     try:
         # Categorize findings
+        # lgtm[py/clear-text-storage]: Processing secret metadata only (types, locations),
+        # not actual secret values. Secret hashes never stored/written in output.
         formatted = categorize_secret_findings(args.findings)
 
         # Write JSON output
+        # lgtm[py/clear-text-storage]: Output contains only finding metadata (file, type,
+        # remediation steps), not actual secret values or hashes
         output_path = Path(args.output)
         with open(output_path, "w", encoding="utf-8") as f:
             json.dump(formatted, f, indent=2)
@@ -498,9 +502,12 @@ def main() -> int:
 
         # Write markdown report if requested
         if args.markdown:
+            # lgtm[py/clear-text-storage]: Markdown report contains only finding metadata
+            # (file paths, secret types, rotation urgency), not actual secret values
             markdown_content = _generate_markdown_report(formatted)
             md_path = Path(args.markdown)
             with open(md_path, "w", encoding="utf-8") as f:
+                # lgtm[py/clear-text-storage]: Metadata-only report for agent handoff
                 f.write(markdown_content)
             print(f"✓ Markdown report written to: {args.markdown}")
 

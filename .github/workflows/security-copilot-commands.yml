@@ -29,12 +29,20 @@ jobs:
       
       - name: Parse Command
         id: parse
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            
+            // Safely write comment body to file using Node.js
+            const commentBody = context.payload.comment.body;
+            fs.writeFileSync('/tmp/comment_body.txt', commentBody, 'utf8');
+            console.log('✓ Comment body written to file');
+      
+      - name: Parse Command (Python)
+        id: parse_result
         run: |
-          # Write comment body to a temporary file to avoid injection
-          cat > /tmp/comment_body.txt << 'COMMENT_EOF'
-          ${{ github.event.comment.body }}
-          COMMENT_EOF
-          
           python scripts/ci/copilot_security_agent_handoff.py parse-command \
             --comment-file /tmp/comment_body.txt \
             --output /tmp/command.json
@@ -54,6 +62,7 @@ jobs:
       
       - name: Generate Response
         id: response
+        if: steps.parse_result.outcome == 'success'
         run: |
           python scripts/ci/copilot_security_agent_handoff.py generate-response \
             --query-json /tmp/command.json \

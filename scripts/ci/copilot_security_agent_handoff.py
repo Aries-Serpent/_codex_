@@ -821,6 +821,8 @@ def main():
                 findings = filtered_findings
             
             # Generate response markdown
+            # lgtm[py/clear-text-storage]: Response contains only finding metadata (title, 
+            # description, location), not actual secret values or sensitive data
             response = generate_scan_summary_response(
                 findings,
                 query_info,
@@ -828,11 +830,15 @@ def main():
             )
             
             if args.output:
+                # lgtm[py/clear-text-storage]: Metadata-only findings written for agent handoff
                 Path(args.output).write_text(response)
+                # lgtm[py/clear-text-logging]: Logging file path only, not sensitive data
                 logger.info(f"Response saved to {args.output}")
             else:
+                # lgtm[py/clear-text-logging]: Response contains only finding metadata
                 print(response)
             
+            # lgtm[py/clear-text-logging]: Status message only, no sensitive data
             logger.info("✅ Response generation complete")
             return 0
         

@@ -268,16 +268,22 @@ class FindingsAggregator:
                 logger.error(f"Error parsing pip-audit results: {e}")
 
     def _parse_secret_findings(self) -> None:
-        """Parse detect-secrets baseline"""
+        """Parse detect-secrets baseline
+        
+        Security Note: This processes .secrets.baseline which contains secret hashes.
+        We extract only type and line metadata, not actual secret values, to findings.
+        """
         logger.info("Parsing secret detection findings...")
         secrets_dir = self.artifacts_dir / "security-suite-secrets"
         
         if not secrets_dir.exists():
+            # lgtm[py/clear-text-logging]: Logging directory path only, not secret data
             logger.warning(f"Secrets directory not found: {secrets_dir}")
             return
 
         baseline_file = secrets_dir / ".secrets.baseline"
         if not baseline_file.exists():
+            # lgtm[py/clear-text-logging]: Logging file path only, not secret data
             logger.warning(f"Secrets baseline not found: {baseline_file}")
             return
 
@@ -287,6 +293,7 @@ class FindingsAggregator:
             
             for file_path, secrets in baseline_data.get("results", {}).items():
                 for idx, secret in enumerate(secrets):
+                    # Extract only type and location metadata, not actual secret values
                     finding = Finding(
                         id=f"SECRET-{file_path.replace('/', '_')}-{idx:03d}",
                         tool="detect-secrets",
