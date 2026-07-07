@@ -103,8 +103,6 @@ def _parse_secret_type(finding: Dict[str, Any]) -> str:
         Secret type string (e.g., "AWS_API_KEY")
     """
     description = finding.get("description", "").lower()
-    cwe = finding.get("cwe", "").lower()
-    tool = finding.get("tool", "").lower()
 
     # Pattern matching on description and CWE
     if "aws" in description or "akia" in description:

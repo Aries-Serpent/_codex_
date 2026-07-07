@@ -476,7 +476,7 @@ class TestPerformance:
     def test_format_performance_under_500ms(self, findings_json_file):
         """Test formatting completes under 500ms."""
         start = time.time()
-        result = format_dependency_vulnerabilities(findings_json_file)
+        format_dependency_vulnerabilities(findings_json_file)
         elapsed = (time.time() - start) * 1000  # Convert to ms
         
         assert elapsed < 500, f"Formatting took {elapsed}ms, target < 500ms"

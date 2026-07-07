@@ -520,11 +520,6 @@ class SecurityFindingsTrendAnalyzer:
         if not run_list:
             return None
 
-        # Compute statistics
-        total_findings = [r["findings_count"] for r in run_list]
-        critical_counts = [r["critical_count"] for r in run_list]
-        high_counts = [r["high_count"] for r in run_list]
-
         # Generate dashboard sections
         lines = [
             "# 🛡️ Security Findings Dashboard",

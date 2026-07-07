@@ -357,6 +357,10 @@ def format_output(findings: List[Dict[str, Any]], format_type: str = 'json') -> 
                     lines.append("\n")
         
         return "".join(lines)
+    
+    # Defensive check - should never reach here due to validation above
+    raise ValueError(f"Unsupported format type: {format_type}")
+
 
 
 def main():

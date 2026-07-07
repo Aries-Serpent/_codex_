@@ -70,8 +70,14 @@ class FilenameValidator:
                                     'type': 'UNSAFE_ISOFORMAT',
                                     'content': line.strip()[:100]
                                 })
-            except Exception:
-                pass
+            except Exception as e:
+                # Record file parsing error as non-fatal warning
+                rel_path = py_file.relative_to(self.repo_root)
+                self.code_issues[str(rel_path)].append({
+                    'line': 0,
+                    'type': 'PARSE_ERROR',
+                    'content': f"Failed to parse file: {str(e)[:80]}"
+                })
     
     def report(self):
         """Generate validation report."""
