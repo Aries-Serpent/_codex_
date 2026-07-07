@@ -1,0 +1,16 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-07-07T13:06:01.350067+00:00",
+  "sbom": {
+    "generated": true,
+    "version": "0.1.0",
+    "profiles": [
+      "core",
+      "runtime",
+      "full"
+    ],
+    "components": 349,
+    "signatures_valid": true,
+    "generation_time_seconds": 2.5
+  }
+}
