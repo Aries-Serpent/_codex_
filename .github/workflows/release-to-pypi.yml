@@ -36,7 +36,7 @@ jobs:
       version: ${{ steps.version.outputs.version }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -122,10 +122,10 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout repository
-        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+        uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
@@ -140,7 +140,7 @@ jobs:
           # Build script should handle profile-specific wheels
 
       - name: Upload wheel artifacts
-        uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+        uses: actions/upload-artifact@v5
         with:
           name: wheels-${{ matrix.os }}-${{ matrix.python-version }}
           path: dist/
@@ -154,16 +154,16 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout repository
-        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+        uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
 
       - name: Download all wheels
-        uses: actions/download-artifact@7a64585046d847ae9b56aeb3ce4702ca38ae8e84
+        uses: actions/download-artifact@v4
         with:
           path: dist/
           merge-multiple: true
@@ -189,7 +189,7 @@ jobs:
             --version ${{ needs.pre-release-checks.outputs.version }}
 
       - name: Upload manifest artifact
-        uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+        uses: actions/upload-artifact@v5
         with:
           name: release-manifest
           path: .codex/manifests/
@@ -203,10 +203,10 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout repository
-        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+        uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
@@ -238,7 +238,7 @@ jobs:
           fi
 
       - name: Upload SBOM artifact
-        uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+        uses: actions/upload-artifact@v5
         with:
           name: sbom
           path: sbom*.json
@@ -252,22 +252,22 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout repository
-        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+        uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
 
       - name: Download wheels
-        uses: actions/download-artifact@7a64585046d847ae9b56aeb3ce4702ca38ae8e84
+        uses: actions/download-artifact@v4
         with:
           path: dist/
           merge-multiple: true
 
       - name: Download manifest
-        uses: actions/download-artifact@7a64585046d847ae9b56aeb3ce4702ca38ae8e84
+        uses: actions/download-artifact@v4
         with:
           name: release-manifest
           path: .codex/manifests/
@@ -290,16 +290,16 @@ jobs:
       url: https://pypi.org/project/codex-ml/
     steps:
       - name: Checkout repository
-        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+        uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
 
       - name: Download wheels
-        uses: actions/download-artifact@7a64585046d847ae9b56aeb3ce4702ca38ae8e84
+        uses: actions/download-artifact@v4
         with:
           path: dist/
           merge-multiple: true
@@ -339,7 +339,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout repository
-        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -353,19 +353,19 @@ jobs:
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
 
       - name: Download wheels
-        uses: actions/download-artifact@7a64585046d847ae9b56aeb3ce4702ca38ae8e84
+        uses: actions/download-artifact@v4
         with:
           path: dist/
           merge-multiple: true
 
       - name: Download manifest
-        uses: actions/download-artifact@7a64585046d847ae9b56aeb3ce4702ca38ae8e84
+        uses: actions/download-artifact@v4
         with:
           name: release-manifest
           path: release-artifacts/
 
       - name: Download SBOM
-        uses: actions/download-artifact@7a64585046d847ae9b56aeb3ce4702ca38ae8e84
+        uses: actions/download-artifact@v4
         with:
           name: sbom
           path: release-artifacts/
@@ -425,7 +425,7 @@ jobs:
           prerelease: false
 
       - name: Upload release artifacts
-        uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191
+        uses: softprops/action-gh-release@v2
         with:
           files: |
             dist/*.whl
@@ -441,10 +441,10 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout repository
-        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+        uses: actions/checkout@v5
 
       - name: Create deployment summary comment
-        uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+        uses: actions/github-script@v8
         env:
           GITHUB_REF: ${{ github.ref }}
           GITHUB_REPO: ${{ github.repository }}
@@ -511,7 +511,7 @@ jobs:
           EOF
 
       - name: Upload deployment metrics
-        uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+        uses: actions/upload-artifact@v5
         with:
           name: deployment-metrics
           path: .codex/metrics/

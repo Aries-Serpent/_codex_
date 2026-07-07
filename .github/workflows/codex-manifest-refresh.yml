@@ -22,7 +22,7 @@ jobs:
     if: github.actor != 'github-actions[bot]' || github.event_name == 'schedule'
     steps:
     - name: Checkout PR branch (or main on schedule)
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         ref: ${{ github.head_ref || 'main' }}
         fetch-depth: 1
@@ -32,7 +32,7 @@ jobs:
       id: resolve-target
       uses: ./.github/actions/resolve-push-target
     - name: Set up Python
-      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
+      uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
         cache: pip
@@ -137,7 +137,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         fetch-depth: 1

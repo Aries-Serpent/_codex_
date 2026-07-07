@@ -19,7 +19,7 @@ jobs:
     steps:
     - name: Extract PR number from discussion
       id: extract_pr
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           secrets.GITHUB_TOKEN }}
@@ -58,7 +58,7 @@ jobs:
           n/g, ' '));\n"
     - name: Post bridge notification to PR
       if: steps.extract_pr.outputs.skip != 'true'
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       env:
         PR_NUMBER: ${{ steps.extract_pr.outputs.pr_number }}
         DISCUSSION_NUMBER: ${{ steps.extract_pr.outputs.discussion_number }}

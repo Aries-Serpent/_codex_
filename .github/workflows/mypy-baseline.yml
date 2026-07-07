@@ -27,7 +27,7 @@ jobs:
     timeout-minutes: 10
     steps:
     - name: Checkout repository
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         fetch-depth: 1
     - name: 🔍 SHA drift diagnostic
@@ -47,7 +47,7 @@ jobs:
         \ \"   (CI is on merge-preview commit — mypy count may differ from local run)\"\
         \nelse\n  echo \"✅  No SHA drift: trigger and checked-out SHA match.\"\nfi\n"
     - name: Set up Python 3.12
-      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
+      uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
         cache: 'pip'
@@ -102,7 +102,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1

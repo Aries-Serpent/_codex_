@@ -21,7 +21,7 @@ jobs:
     timeout-minutes: 15
     steps:
     - name: Checkout repository
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         fetch-depth: 0
     - name: Set up Python 3.12 with tiered cache
@@ -47,7 +47,7 @@ jobs:
 
         '
     - name: Upload health report artifacts
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       with:
         name: repository-health-report
         path: '.codex/repository_health/offload_candidates.json
@@ -64,7 +64,7 @@ jobs:
         \ >> $GITHUB_OUTPUT\n  echo \"✅ No offload candidates found\"\nfi\n"
     - name: Create PR with findings (if needed)
       if: steps.check_action.outputs.action_needed == 'true'
-      uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1
+      uses: peter-evans/create-pull-request@v6
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         commit-message: 'chore: Repository health monitoring report'

@@ -20,12 +20,12 @@ jobs:
       c2_pass: ${{ steps.check.outputs.c2_pass }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         fetch-depth: 0
     - name: Check 5 transition conditions
       id: check
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       with:
         github-token: ${{ github.token }}
         script: "const fs = require('fs');\nconst conditions = [];\n\n// C1: AGENT_REGISTRY.yaml\
@@ -150,13 +150,13 @@ jobs:
       'pull_request'
     steps:
     - name: Checkout PR branch
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         ref: ${{ github.head_ref }}
         fetch-depth: 1
         token: ${{ github.token }}
     - name: Set up Python
-      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
+      uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
         cache: pip
@@ -193,7 +193,7 @@ jobs:
         \ pass on re-run\"\nfi\n"
     - name: Post healing notice to PR
       if: steps.c2-check.outputs.stale == 'true'
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       with:
         github-token: ${{ github.token }}
         script: "const pr = context.payload.pull_request.number;\nawait github.rest.issues.createComment({\n\
@@ -227,7 +227,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1

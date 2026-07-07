@@ -18,7 +18,7 @@ jobs:
     name: Check and notify on security alerts
     steps:
     - name: Checkout repository
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
     - name: CacheManager health check
       continue-on-error: true
       run: 'python scripts/ci/generate_cache_keys.py --health --workflow security-alert-notification
@@ -28,7 +28,7 @@ jobs:
     - name: Get Dependabot alerts
       id: get-alerts
       continue-on-error: true
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         script: "let alerts;\ntry {\n  const response = await github.rest.dependabot.listAlertsForRepo({\n\
@@ -55,7 +55,7 @@ jobs:
     - name: Create security summary
       id: create-summary
       if: steps.get-alerts.outputs.has-alerts == 'true'
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       env:
         ALERTS_JSON: ${{ steps.get-alerts.outputs.alerts }}
       with:
@@ -98,7 +98,7 @@ jobs:
     - name: Create GitHub Issue for new alerts
       if: steps.get-alerts.outputs.has-alerts == 'true' && (steps.get-alerts.outputs.critical-count
         > 0 || steps.get-alerts.outputs.high-count > 0)
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       env:
         ISSUE_SUMMARY: ${{ steps.create-summary.outputs.summary }}
         CRITICAL_COUNT: ${{ steps.get-alerts.outputs.critical-count }}

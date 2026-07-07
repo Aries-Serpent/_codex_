@@ -34,7 +34,7 @@ jobs:
     timeout-minutes: ${{ fromJSON(vars.CODEX_TEST_TIMEOUT_MINUTES || '30') }}
     steps:
     - name: Checkout code
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
     - name: Set up Python
       uses: ./.github/actions/setup-python-cached
       with:
@@ -100,7 +100,7 @@ jobs:
         '
     - name: Upload coverage artifact (shard ${{ matrix.shard }})
       if: always()
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       with:
         name: coverage-shard-${{ matrix.shard }}
         path: 'coverage_shard_${{ matrix.shard }}.xml
@@ -113,7 +113,7 @@ jobs:
         retention-days: 14
     - name: Upload timeout logs
       if: steps.coverage.outputs.coverage_failed == 'true'
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       with:
         name: timeout-logs-shard-${{ matrix.shard }}
         path: 'pytest_timeout.ini
@@ -135,7 +135,7 @@ jobs:
     if: always()
     steps:
     - name: Checkout code
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
     - name: Set up Python
       uses: ./.github/actions/setup-python-cached
       with:
@@ -149,7 +149,7 @@ jobs:
 
         '
     - name: Download all coverage artifacts
-      uses: actions/download-artifact@7a64585046d847ae9b56aeb3ce4702ca38ae8e84
+      uses: actions/download-artifact@v4
       with:
         pattern: coverage-shard-*
         path: coverage-shards
@@ -169,7 +169,7 @@ jobs:
         \ produced no output\"\nfi\n"
     - name: Upload combined coverage
       if: steps.merge.outputs.merge_succeeded == 'true'
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       with:
         name: coverage-combined
         path: 'coverage_combined.xml
@@ -238,7 +238,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1

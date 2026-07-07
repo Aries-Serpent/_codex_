@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
-    - uses: actions/labeler@8558fd74291d67161a8a6ce71bd0f0b3c87e31e0
+    - uses: actions/labeler@v5
       with:
         configuration-path: .github/labeler.yml
     - name: CacheManager health check
@@ -49,7 +49,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         ref: ${{ github.sha }}

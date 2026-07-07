@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
-    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+    - uses: actions/checkout@v5
     - name: CacheManager health check
       continue-on-error: true
       run: 'python scripts/ci/generate_cache_keys.py --health --workflow pypi-publish
@@ -48,7 +48,7 @@ jobs:
     - name: Check distribution
       run: twine check dist/*
     - name: Upload artifacts
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       with:
         name: python-package-distributions
         path: dist/
@@ -68,12 +68,12 @@ jobs:
       url: https://test.pypi.org/p/codex-ml
     steps:
     - name: Download artifacts
-      uses: actions/download-artifact@7a64585046d847ae9b56aeb3ce4702ca38ae8e84
+      uses: actions/download-artifact@v4
       with:
         name: python-package-distributions
         path: dist/
     - name: Publish to TestPyPI
-      uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b
+      uses: pypa/gh-action-pypi-publish@v1
       with:
         repository-url: https://test.pypi.org/legacy/
         password: ${{ secrets.TEST_PYPI_API_TOKEN }}
@@ -94,12 +94,12 @@ jobs:
       url: https://pypi.org/p/codex-ml
     steps:
     - name: Download artifacts
-      uses: actions/download-artifact@7a64585046d847ae9b56aeb3ce4702ca38ae8e84
+      uses: actions/download-artifact@v4
       with:
         name: python-package-distributions
         path: dist/
     - name: Publish to PyPI
-      uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b
+      uses: pypa/gh-action-pypi-publish@v1
       with:
         skip-existing: false
     env:

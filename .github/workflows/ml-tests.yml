@@ -32,10 +32,10 @@ jobs:
           - integration
 
     steps:
-      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      - uses: actions/checkout@v5
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
           cache: 'pip'
@@ -59,7 +59,7 @@ jobs:
             -m "not slow" || true
 
       - name: Upload coverage
-        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354
+        uses: codecov/codecov-action@v4
         if: always()
         with:
           file: ./coverage.xml
@@ -76,10 +76,10 @@ jobs:
     needs: test-ml-components
 
     steps:
-      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      - uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d
+        uses: actions/setup-python@v6
         with:
           python-version: '3.11'
           cache: 'pip'
@@ -106,10 +106,10 @@ jobs:
     needs: test-ml-components
 
     steps:
-      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      - uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d
+        uses: actions/setup-python@v6
         with:
           python-version: '3.11'
 
@@ -131,7 +131,7 @@ jobs:
             -m "not slow and not integration" || true
 
       - name: Archive coverage report
-        uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+        uses: actions/upload-artifact@v5
         if: always()
         with:
           name: coverage-report

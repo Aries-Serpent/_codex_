@@ -25,11 +25,11 @@ jobs:
       checks: write
     steps:
     - name: Checkout repository
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         fetch-depth: 1
     - name: Set up Python
-      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
+      uses: actions/setup-python@v6
       with:
         python-version: '3.11'
         cache: pip
@@ -101,7 +101,7 @@ jobs:
         \ | head -50\nfi\n"
     - name: Archive validation report
       if: always()
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       with:
         name: token-validation-report
         path: .codex/token_validation_report.json
@@ -159,7 +159,7 @@ jobs:
         github.event_name == ''schedule''
 
         '
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: "github.rest.issues.create({\n  owner: context.repo.owner,\n  repo:\

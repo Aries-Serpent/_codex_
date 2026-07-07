@@ -57,7 +57,7 @@ jobs:
       task_file: ${{ steps.decide.outputs.task_file }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         fetch-depth: 0
     - name: CacheManager health check
@@ -90,7 +90,7 @@ jobs:
         fi\n"
     - name: Upload decision artifacts
       if: steps.decide.outputs.has_decisions == 'true'
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       with:
         name: cognitive-decisions-${{ github.run_number }}
         path: 'cognitive/decisions/*.json
@@ -115,7 +115,7 @@ jobs:
       \ == 'true')\n"
     steps:
     - name: Checkout repository
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         fetch-depth: 0
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
@@ -126,7 +126,7 @@ jobs:
         cache-tier: common
     - name: Download decision artifacts (if from decision job)
       if: needs.decision_engine.outputs.has_decisions == 'true'
-      uses: actions/download-artifact@7a64585046d847ae9b56aeb3ce4702ca38ae8e84
+      uses: actions/download-artifact@v4
       with:
         name: cognitive-decisions-${{ github.run_number }}
         path: cognitive/decisions/
@@ -145,7 +145,7 @@ jobs:
         \  echo \"Action executor script not found\"\n  exit 0\nfi\n"
     - name: Upload execution results
       if: always()
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       with:
         name: cognitive-execution-${{ github.run_number }}
         path: 'cognitive/execution/*.json

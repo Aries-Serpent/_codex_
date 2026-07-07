@@ -43,9 +43,9 @@ jobs:
       validation_issues: ${{ steps.validate.outputs.issues }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
+      uses: actions/setup-python@v6
       with:
         python-version: '3.12'
         cache: pip
@@ -74,7 +74,7 @@ jobs:
         \ >> $GITHUB_OUTPUT\n\necho \"Validation confidence: $CONFIDENCE\"\necho \"\
         Valid: $VALID\"\necho \"Issues found: $ISSUES\"\n"
     - name: Upload validation results
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       with:
         name: validation-results
         path: 'validation_output.json
@@ -98,9 +98,9 @@ jobs:
       connectivity_tests_passed: ${{ steps.connectivity.outputs.tests_passed }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
+      uses: actions/setup-python@v6
       with:
         python-version: '3.12'
     - name: Test registry connectivity
@@ -117,7 +117,7 @@ jobs:
         echo \"tests_passed=$TESTS_PASSED\" >> $GITHUB_OUTPUT\n\necho \"Connectivity\
         \ status: $STATUS\"\necho \"Tests passed: $TESTS_PASSED\"\n"
     - name: Upload connectivity results
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       with:
         name: connectivity-results
         path: connectivity_output.json
@@ -142,7 +142,7 @@ jobs:
       '
     steps:
     - name: Checkout repository
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
     - name: Create approval request
       id: approval
       run: 'echo "## Registry Validation Complete - Awaiting Approval"
@@ -185,7 +185,7 @@ jobs:
       '
     steps:
     - name: Checkout repository
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
     - name: Store registry variables
       env:
         GH_TOKEN: ${{ github.token }}
@@ -226,9 +226,9 @@ jobs:
       >= 0.80
     steps:
     - name: Checkout repository
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
+      uses: actions/setup-python@v6
       with:
         python-version: '3.12'
     - name: Send webhook notification
@@ -257,7 +257,7 @@ jobs:
     if: always()
     steps:
     - name: Checkout repository
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
     - name: Generate workflow summary
       run: 'echo "# Cognitive Registry Validation Workflow Summary"
 

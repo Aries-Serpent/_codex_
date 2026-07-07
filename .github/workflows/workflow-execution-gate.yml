@@ -37,7 +37,7 @@ jobs:
       GH_TRICKLE_MIN_REMAINING: '50'
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
     steps:
-    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+    - uses: actions/checkout@v5
       with:
         sparse-checkout: 'scripts/ci/
 
@@ -45,7 +45,7 @@ jobs:
 
           '
         sparse-checkout-cone-mode: false
-    - uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
+    - uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
         cache: pip
@@ -88,7 +88,7 @@ jobs:
       actions: write
       pull-requests: write
     steps:
-    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+    - uses: actions/checkout@v5
       with:
         sparse-checkout: 'scripts/ci/
 
@@ -96,7 +96,7 @@ jobs:
 
           '
         sparse-checkout-cone-mode: false
-    - uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
+    - uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
         cache: pip
@@ -176,7 +176,7 @@ jobs:
       actions: write
       pull-requests: write
     steps:
-    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+    - uses: actions/checkout@v5
       with:
         sparse-checkout: 'scripts/ci/
 
@@ -184,7 +184,7 @@ jobs:
 
           '
         sparse-checkout-cone-mode: false
-    - uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
+    - uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
         cache: pip
@@ -200,7 +200,7 @@ jobs:
         \ low (${REMAINING} remaining, resets at ${RESET_AT}). dispatch-checked may\
         \ be throttled.\"\nfi\n"
     - name: Dispatch hub for WEC decision routing
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
@@ -249,7 +249,7 @@ jobs:
     timeout-minutes: 5
     if: github.event_name == 'pull_request' || github.event_name == 'pull_request_review'
     steps:
-    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+    - uses: actions/checkout@v5
       with:
         sparse-checkout: 'scripts/ci/
 
@@ -257,7 +257,7 @@ jobs:
 
           '
         sparse-checkout-cone-mode: false
-    - uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
+    - uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
         cache: pip
@@ -458,7 +458,7 @@ jobs:
       actions: read
     steps:
     - name: Checkout fast-forward script
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         sparse-checkout: 'scripts/ci/fast_forward_safe_files.py
 
@@ -469,7 +469,7 @@ jobs:
           '
         sparse-checkout-cone-mode: false
     - name: Set up Python 3.12
-      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
+      uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
         cache: pip
@@ -497,7 +497,7 @@ jobs:
         \n"
     - name: Upload fast-forward result artifact
       if: always()
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       with:
         name: wec-fast-forward-pr${{ needs.parse-checklist.outputs.pr_number }}-${{
           github.run_id }}

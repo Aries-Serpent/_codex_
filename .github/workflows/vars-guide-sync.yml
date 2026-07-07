@@ -36,7 +36,7 @@ jobs:
         }}
     steps:
     - name: Checkout
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         fetch-depth: 1
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
@@ -106,7 +106,7 @@ jobs:
         \ HEAD:\"$_TARGET\"\necho \"\U0001F4E4 Pushed to $_TARGET\"\n"
     - name: Upload audit report artifact
       if: steps.detect.outputs.changed == 'true'
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       with:
         name: variable-audit-report-${{ github.run_number }}
         path: docs/admin/variable_audit_latest.md
@@ -149,7 +149,7 @@ jobs:
         '
     - name: Open blocker issue if absent required variables
       if: steps.audit.outputs.absent_required != '0' && github.event_name == 'schedule'
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         script: "const absent = parseInt('${{ steps.audit.outputs.absent_required\

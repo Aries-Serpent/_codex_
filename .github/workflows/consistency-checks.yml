@@ -31,11 +31,11 @@ jobs:
     timeout-minutes: 10
     steps:
     - name: Checkout code
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         fetch-depth: 0
     - name: Setup Node.js
-      uses: actions/setup-node@60edb3dd545a775178f52524783378180af4d1f7
+      uses: actions/setup-node@v5
       with:
         node-version: '22'
         cache: npm
@@ -53,7 +53,7 @@ jobs:
       continue-on-error: true
     - name: Comment on PR (if markdown issues)
       if: failure() && github.event_name == 'pull_request'
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       with:
         script: "const fs = require('fs');\nconst output = fs.readFileSync('/tmp/md-lint-output.txt',\
           \ 'utf8');\n\ngithub.rest.issues.createComment({\n  issue_number: context.issue.number,\n\
@@ -70,11 +70,11 @@ jobs:
     timeout-minutes: 10
     steps:
     - name: Checkout code
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         fetch-depth: 0
     - name: Setup Python
-      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
+      uses: actions/setup-python@v6
       with:
         python-version: '3.12'
         cache: 'pip'
@@ -94,7 +94,7 @@ jobs:
         '
     - name: Upload report as artifact
       if: always()
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       with:
         name: cross-reference-report
         path: /tmp/crossref-report.txt
@@ -108,9 +108,9 @@ jobs:
     timeout-minutes: 10
     steps:
     - name: Checkout code
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
     - name: Setup Python
-      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
+      uses: actions/setup-python@v6
       with:
         python-version: '3.12'
         cache: 'pip'
@@ -159,7 +159,7 @@ jobs:
     if: always()
     steps:
     - name: Checkout code
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
     - name: Generate consistency report
       run: 'cat << ''EOF'' > /tmp/consistency-summary.md
 

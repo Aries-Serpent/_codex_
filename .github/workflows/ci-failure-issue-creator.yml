@@ -54,7 +54,7 @@ jobs:
       failed_job_count: ${{ steps.jobs.outputs.failed_job_count }}
     steps:
     - name: Checkout (consolidator + OTel)
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         sparse-checkout: 'scripts/ci/pr_comment_consolidator.py
 
@@ -64,7 +64,7 @@ jobs:
         sparse-checkout-cone-mode: false
     - name: Classify severity and labels
       id: classify
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       with:
         script: "const wfName = context.payload.workflow_run.name;\nconst wfSlug =\
           \ wfName.toLowerCase()\n                 .replace(/[^a-z0-9]+/g, '-')\n\
@@ -86,7 +86,7 @@ jobs:
     - name: Fetch failed job details
       id: jobs
       if: github.event.workflow_run.conclusion == 'failure'
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         script: "const { data } = await github.rest.actions.listJobsForWorkflowRun({\n\
@@ -104,7 +104,7 @@ jobs:
     - name: "Deduplicate \u2014 issue + single-branch check"
       id: dedup
       if: github.event.workflow_run.conclusion == 'failure'
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         script: "const wfSlug = '${{ steps.classify.outputs.wf_slug }}';\nconst owner\
@@ -151,7 +151,7 @@ jobs:
     steps:
     - name: Create GitHub Issue
       id: issue
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       env:
         FAILED_JOBS_MD: ${{ needs.triage.outputs.failed_jobs_md }}
       with:
@@ -217,7 +217,7 @@ jobs:
       pr_number: ${{ steps.pr.outputs.pr_number }}
     steps:
     - name: Checkout main
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         ref: main
         fetch-depth: 1
@@ -241,7 +241,7 @@ jobs:
         \n"
     - name: Open fix PR with @copilot command
       id: pr
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       env:
         FAILED_JOBS_MD: ${{ needs.triage.outputs.failed_jobs_md }}
       with:
@@ -299,7 +299,7 @@ jobs:
     if: always() && github.event.workflow_run.head_branch == 'main'
     steps:
     - name: Checkout (consolidator)
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         sparse-checkout: 'scripts/ci/pr_comment_consolidator.py
 
@@ -308,13 +308,13 @@ jobs:
           '
         sparse-checkout-cone-mode: false
     - name: Set up Python
-      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
+      uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
         cache: 'pip'
     - name: Find target PR for dashboard post
       id: find-pr
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         script: "// Priority: new fix PR > active branch PR > most-recently-updated\
@@ -410,7 +410,7 @@ jobs:
       '
     steps:
     - name: Close matching open ci-failure issues
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         script: "const wfName = context.payload.workflow_run.name;\nconst wfSlug =\

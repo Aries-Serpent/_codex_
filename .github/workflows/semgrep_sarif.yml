@@ -42,9 +42,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+    - uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
+      uses: actions/setup-python@v6
       with:
         python-version: '3.11'
         cache: pip
@@ -178,7 +178,7 @@ jobs:
         \ \"$SARIF_FILE\"\n  else\n    echo \"   - Validation: ❌ Failed!\"\n    exit\
         \ 1\n  fi\nfi\n"
     - name: Upload SARIF to GitHub Security
-      uses: github/codeql-action/upload-sarif@006d029c8dc7b906d4ce5b7c700d32f20f2d35dd
+      uses: github/codeql-action/upload-sarif@v3
       if: always() && hashFiles('semgrep.sarif') != ''
       with:
         sarif_file: semgrep.sarif

@@ -36,7 +36,7 @@ jobs:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         fetch-depth: 1
     - name: Setup Python
@@ -51,7 +51,7 @@ jobs:
         '
     - name: Fetch recent failed workflow runs
       id: fetch-failures
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       with:
         script: "const maxRuns = Number('${{ inputs.max_runs || 5 }}') || 5;\nconst\
           \ lookbackHours = 25;  // slightly more than 1h schedule to avoid gaps\n\
@@ -138,7 +138,7 @@ jobs:
           \ activeWorkflowsScanned);\n"
     - name: Build triage report
       id: build-report
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       env:
         FAILURES_PATH: ${{ steps.fetch-failures.outputs.failures_path }}
         ACTIVE_WORKFLOWS_SCANNED: ${{ steps.fetch-failures.outputs.active_workflows_scanned
@@ -216,7 +216,7 @@ jobs:
     - name: Generate structured JSON report
       id: json-report
       if: always()
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       env:
         FAILURES_PATH: ${{ steps.fetch-failures.outputs.failures_path }}
       with:
@@ -248,7 +248,7 @@ jobs:
           \ structured JSON report with', failures.length, 'failures');\n"
     - name: Upsert triage issue
       id: upsert-issue
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       env:
         REPORT_BODY: ${{ steps.build-report.outputs.report_body }}
         HAS_FAILURES: ${{ steps.build-report.outputs.has_failures }}
@@ -279,7 +279,7 @@ jobs:
       if: always()
       env:
         REPORT_BODY: ${{ steps.build-report.outputs.report_body }}
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       with:
         script: 'require(''fs'').writeFileSync(''ci-triage-report.md'', process.env.REPORT_BODY
           || ''*(no report)*'');
@@ -287,7 +287,7 @@ jobs:
           '
     - name: Upload triage report artifact
       if: always()
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       with:
         name: ci-triage-report-${{ github.run_id }}
         path: 'ci-triage-report.md

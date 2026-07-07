@@ -32,12 +32,12 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v6.0.3
+        uses: actions/checkout@v5 # v6.0.3
         with:
           fetch-depth: 1
 
       - name: Set up Python
-        uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d # v6
+        uses: actions/setup-python@v6 # v6
         with:
           python-version: '3.12.13'
           cache: 'pip'

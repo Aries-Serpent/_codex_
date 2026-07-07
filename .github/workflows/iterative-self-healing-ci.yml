@@ -62,7 +62,7 @@ jobs:
       pr_number: ${{ steps.classify.outputs.pr_number }}
     steps:
     - name: Checkout
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         fetch-depth: 50
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
@@ -281,7 +281,7 @@ jobs:
         - 3
     steps:
     - name: Checkout target branch (working tree)
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         fetch-depth: 50
         ref: ${{ github.event.workflow_run.head_sha || needs.triage.outputs.head_branch || 'main' }}
@@ -563,7 +563,7 @@ jobs:
       '
     steps:
     - name: Checkout target branch
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         fetch-depth: 5
         ref: ${{ github.event.workflow_run.head_sha || needs.triage.outputs.head_branch || 'main' }}
@@ -694,7 +694,7 @@ jobs:
       \ == '')\n"
     steps:
     - name: Checkout main (trusted) to get post_rescue_comment.py
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         ref: refs/heads/main
     - name: Append escalation to canonical CI rescue thread (S298)
@@ -738,7 +738,7 @@ jobs:
       '
     steps:
     - name: Checkout for pattern_recorder access
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       continue-on-error: true
       with:
         ref: refs/heads/main
@@ -787,7 +787,7 @@ jobs:
         \ DB snapshot written to /tmp/pattern_snapshot.json\"\nwc -l /tmp/pattern_snapshot.json\
         \ || true\n"
     - name: Upload pattern DB snapshot artifact
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       with:
         name: pattern-db-snapshot-${{ github.run_id }}
         path: /tmp/pattern_snapshot.json

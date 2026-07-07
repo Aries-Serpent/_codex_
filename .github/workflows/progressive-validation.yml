@@ -30,7 +30,7 @@ jobs:
       validation_strategy: ${{ steps.analyze.outputs.validation_strategy }}
     steps:
     - name: Checkout code
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         fetch-depth: 0
     - name: Analyze PR Size
@@ -106,7 +106,7 @@ jobs:
       contents: read
     steps:
     - name: Checkout code
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
     - name: Set up Python
       uses: ./.github/actions/setup-python-cached
       with:
@@ -177,7 +177,7 @@ jobs:
       fail-fast: false
     steps:
     - name: Checkout code
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
     - name: Set up Python
       uses: ./.github/actions/setup-python-cached
       with:
@@ -219,7 +219,7 @@ jobs:
     timeout-minutes: 30
     steps:
     - name: Checkout code
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
     - name: Set up Python
       uses: ./.github/actions/setup-python-cached
       with:
@@ -259,7 +259,7 @@ jobs:
     timeout-minutes: 60
     steps:
     - name: Checkout code
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
     - name: Set up Python
       uses: ./.github/actions/setup-python-cached
       with:
@@ -302,10 +302,10 @@ jobs:
       pull-requests: write
     steps:
     - name: Checkout (needed for post-pr-summary action)
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
     - name: Generate summary
       id: gen-summary
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       with:
         script: "const prSize = '${{ needs.analyze.outputs.pr_size }}';\nconst validationStrategy\
           \ = '${{ needs.analyze.outputs.validation_strategy }}';\n\nconst layerResults\
@@ -354,7 +354,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1

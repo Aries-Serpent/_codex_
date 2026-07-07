@@ -27,7 +27,7 @@ jobs:
       \ 'generated') &&\n contains(github.event.comment.body, 'comments'))"
     steps:
     - name: 👍 React to bot review and acknowledge bot comments
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       with:
         github-token: ${{ github.token }}
         script: "const owner = context.repo.owner;\nconst repo  = context.repo.repo;\n\
@@ -79,7 +79,7 @@ jobs:
           \ acknowledged: ${acknowledged.length} comment(s)`);\n"
     - name: 💬 Post @copilot apply changes (issue_comment trigger only)
       if: github.event_name == 'issue_comment'
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       with:
         github-token: ${{ github.token }}
         script: "const owner       = context.repo.owner;\nconst repo        = context.repo.repo;\n\
@@ -137,7 +137,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1

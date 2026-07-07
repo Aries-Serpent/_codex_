@@ -40,11 +40,11 @@ jobs:
     timeout-minutes: 10
     steps:
     - name: Checkout repository
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         fetch-depth: 1
     - name: Set up Python
-      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
@@ -91,7 +91,7 @@ jobs:
     - name: Comment on PR with findings
       if: github.event_name == 'pull_request' && steps.safety-check.outputs.found-violations
         == 'true'
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       with:
         script: "const violations = ${{ steps.safety-check.outputs.violation-count\
           \ }};\nconst comment = `## API Null-Handling Validation Report\n\nStatus:\
