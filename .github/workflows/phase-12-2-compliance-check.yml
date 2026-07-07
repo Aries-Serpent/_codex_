@@ -43,6 +43,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs: detect-merge
+    outputs:
+      status: ${{ steps.status.outputs.status }}
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5
@@ -118,3 +120,21 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+  auto-approve-on-compliance:
+      name: "⚡ Auto-Approve if Compliance Passed"
+      needs: compliance-check
+      if: |
+        success() &&
+        needs.compliance-check.outputs.status == 'APPROVED' &&
+        github.event_name == 'pull_request'
+      runs-on: ubuntu-latest
+      steps:
+      - name: Dispatch auto-approve-workflows
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        run: |
+          gh workflow run auto-approve-workflows.yml \
+            -f approval_source=workflow-execution-gate \
+            -f approval_intent=auto_approve_action_required \
+            -f target_pr="${{ github.event.pull_request.number }}" \
+            -f approval_reason="phase-12-2-compliance-approved"

@@ -125,6 +125,21 @@ jobs:
         \ required.\"\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+  trigger-auto-approval:
+    name: "⚡ Dispatch Auto-Approve (if auth authorized)"
+    needs: [detect-checkbox, await-approval]
+    if: needs.detect-checkbox.outputs.auth_requested == 'true'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Dispatch auto-approve-workflows.yml
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      run: |
+        gh workflow run auto-approve-workflows.yml \
+          -f approval_source=agent-auth-delegation \
+          -f approval_intent=auto_approve_action_required \
+          -f target_pr="${{ github.event.pull_request.number }}" \
+          -f approval_reason="copilot-auth-enabled"
   cognitive-preflight:
     name: "\U0001F9E0 Cognitive Pre-flight Check"
     runs-on: ubuntu-latest
