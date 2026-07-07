@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-07-06T17:17:23Z",
+  "generated_at": "2026-07-07T04:08:54Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1902,6 +1902,26 @@
       "has_concurrency": true
     },
     {
+      "name": "security-copilot-commands",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": false
+    },
+    {
+      "name": "security-findings-api",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": false
+    },
+    {
+      "name": "security-findings-copilot-handoff",
+      "enforcement_tier": "PARTIAL",
+      "has_concurrency": true
+    },
+    {
+      "name": "security-pr-enhancement",
+      "enforcement_tier": "PARTIAL",
+      "has_concurrency": false
+    },
+    {
       "name": "security-scanning-suite",
       "enforcement_tier": "PARTIAL",
       "has_concurrency": true
@@ -2461,5 +2481,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "ecdef76678ca9e7098496743f163f95bfed39b547a0779df32206cb9d00b268e"
+  "integrity_sha256": "69e5e547f035c6c1d2c9d9c13cf6a2b4e7cbbcf4a23e18c023dc5a949d082589"
 }
