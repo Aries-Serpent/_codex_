@@ -25,10 +25,13 @@ jobs:
 
       - name: Query Findings
         id: query
+        env:
+          QUERY_TYPE: ${{ github.event.client_payload.query_type }}
+          QUERY_VALUE: ${{ github.event.client_payload.value }}
         run: |
           python scripts/ci/security_findings_api.py query \
-            --query-type "${{ github.event.client_payload.query_type }}" \
-            --value "${{ github.event.client_payload.value }}" \
+            --query-type "$QUERY_TYPE" \
+            --value "$QUERY_VALUE" \
             --cache-dir ".codex/security-cache" \
             --output "findings.json"
 

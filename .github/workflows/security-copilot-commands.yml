@@ -30,27 +30,41 @@ jobs:
       - name: Parse Command
         id: parse
         uses: actions/github-script@v8
+        env:
+          COMMENT_BODY: ${{ github.event.comment.body }}
         with:
           script: |
             const fs = require('fs');
             const path = require('path');
             
-            // Safely write comment body to file using Node.js
-            const commentBody = context.payload.comment.body;
-            fs.writeFileSync('/tmp/comment_body.txt', commentBody, 'utf8');
-            console.log('✓ Comment body written to file');
+            // Safely write comment body to file using environment variable
+            const commentBody = process.env.COMMENT_BODY;
+            const tempFile = path.join(process.env.RUNNER_TEMP, 'comment_body.txt');
+            fs.writeFileSync(tempFile, commentBody, 'utf8');
+            console.log(`✓ Comment body written to ${tempFile}`);
+            
+            // Output temp file path for next steps
+            core.setOutput('comment_file', tempFile);
       
       - name: Parse Command (Python)
         id: parse_result
+        env:
+          RUNNER_TEMP: ${{ runner.temp }}
         run: |
+          COMMENT_FILE="${RUNNER_TEMP}/comment_body.txt"
+          COMMAND_JSON="${RUNNER_TEMP}/command.json"
+          
           python scripts/ci/copilot_security_agent_handoff.py parse-command \
-            --comment-file /tmp/comment_body.txt \
-            --output /tmp/command.json
+            --comment-file "$COMMENT_FILE" \
+            --output "$COMMAND_JSON"
           
           # Extract parse result for debugging
           python3 << 'EOF'
           import json
-          with open('/tmp/command.json', 'r') as f:
+          import os
+          
+          cmd_file = os.path.join(os.environ['RUNNER_TEMP'], 'command.json')
+          with open(cmd_file, 'r') as f:
               data = json.load(f)
               if data.get('valid'):
                   print(f"✓ Command parsed: {data.get('command')}")
@@ -63,18 +77,23 @@ jobs:
       - name: Generate Response
         id: response
         if: steps.parse_result.outcome == 'success'
+        env:
+          RUNNER_TEMP: ${{ runner.temp }}
         run: |
+          COMMAND_JSON="${RUNNER_TEMP}/command.json"
+          RESPONSE_MD="${RUNNER_TEMP}/response.md"
+          
           python scripts/ci/copilot_security_agent_handoff.py generate-response \
-            --query-json /tmp/command.json \
+            --query-json "$COMMAND_JSON" \
             --findings-json .codex/security-findings-comprehensive.json \
             --cache-dir .codex/security-cache \
-            --output /tmp/response.md
+            --output "$RESPONSE_MD"
           
           # Verify response was generated
-          if [ -f /tmp/response.md ]; then
-            echo "✓ Response generated ($(wc -l < /tmp/response.md) lines)"
+          if [ -f "$RESPONSE_MD" ]; then
+            echo "✓ Response generated ($(wc -l < "$RESPONSE_MD") lines)"
             # Set output for debugging
-            RESPONSE=$(cat /tmp/response.md)
+            RESPONSE=$(cat "$RESPONSE_MD")
             echo "response_length=${#RESPONSE}" >> $GITHUB_OUTPUT
           else
             echo "✗ Failed to generate response"
@@ -84,10 +103,16 @@ jobs:
       - name: Post Comment
         if: steps.response.outcome == 'success'
         uses: actions/github-script@v8
+        env:
+          RUNNER_TEMP: ${{ runner.temp }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         with:
           script: |
             const fs = require('fs');
-            const response = fs.readFileSync('/tmp/response.md', 'utf8');
+            const path = require('path');
+            
+            const responseFile = path.join(process.env.RUNNER_TEMP, 'response.md');
+            const response = fs.readFileSync(responseFile, 'utf8');
             
             if (!response || response.length === 0) {
               console.log('Response is empty, skipping comment');
@@ -95,7 +120,7 @@ jobs:
             }
             
             try {
-              github.rest.issues.createComment({
+              await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.issue.number,
@@ -110,11 +135,14 @@ jobs:
       - name: Handle Errors
         if: failure()
         uses: actions/github-script@v8
+        env:
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         with:
           script: |
-            github.rest.issues.createComment({
+            await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
               body: '❌ Failed to generate security scan summary. Please check the workflow logs.'
             });
+

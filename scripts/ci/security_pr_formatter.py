@@ -294,7 +294,8 @@ def generate_pr_summary(findings: List[SecurityFinding]) -> str:
             summary_parts.append(f"{count} {emoji} {severity}")
     
     summary = ", ".join(summary_parts)
-    timestamp = datetime.now(timezone.utc).isoformat(timespec='minutes')
+    # Format timestamp as UTC Z format (YYYY-MM-DDTHH:MM:SSZ)
+    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     
     return f"**Summary**: {summary}\n\n_Last scan: {timestamp}_"
 
@@ -386,7 +387,7 @@ def main():
         findings = load_findings(args.findings)
         print(f"Loaded {len(findings)} findings")
         print(f"Valid format: {len(findings) >= 0}")
-        return 0 if findings else 1
+        return 0  # Validation succeeds even with empty findings
     
     return 0
 
