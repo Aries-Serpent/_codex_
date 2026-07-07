@@ -1,10 +1,10 @@
-# Session Context — 2026-07-07T23:04:52Z
+# Session Context — 2026-07-07T23:26:14Z
 **Branch:** `copilot/resolve-all-failed-checks`  **PR:** #5264  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4767` (✅)
-- GraphQL remaining: `4975` (✅)
+- REST remaining: `4460` (✅)
+- GraphQL remaining: `4948` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -12,25 +12,25 @@
 State: `open`  Draft: `False`  Branch: `copilot/resolve-all-failed-checks` → `main`
 
 ### ❌ 2 Failing CI Check(s)
-- `PR Security Enhancement` (failure)
 - `Validate Findings JSON` (failure)
+- `PR Security Enhancement` (failure)
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **Self-Healing CI Loop** — `failure` on `main` (2026-07-07)
 - **Self-Healing CI Loop** — `failure` on `main` (2026-07-07)
-- **Security PR Enhancement** — `failure` on `copilot/resolve-all-failed-checks` (2026-07-07)
-- **Unified Governance Check** — `failure` on `copilot/resolve-all-failed-checks` (2026-07-07)
-- **Resilient Dependency Submission** — `failure` on `copilot/resolve-all-failed-checks` (2026-07-07)
+- **Session Incremental Summary Reminder** — `failure` on `main` (2026-07-07)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-07)
+- **Self-Healing CI Loop** — `failure` on `main` (2026-07-07)
 
 ## 📝 Recent Commits
+- `23b6e04f` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-07-07)
+- `83107973` Apply remaining changes — copilot-swe-agent[bot] (2026-07-07)
+- `3f44bcf7` chronicle: Comprehensive session search and reindex - full session details, comm — copilot-swe-agent[bot] (2026-07-07)
 - `460561ff` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-07-07)
 - `5ecb870d` Apply remaining changes — copilot-swe-agent[bot] (2026-07-07)
 - `195e07c7` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-07-07)
 - `e8052ffe` fix(ci): Enforce GitHub Actions version policy across 24 workflows (45 violation — copilot-swe-agent[bot] (2026-07-07)
 - `f8baf1bf` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-07-07)
-- `727b3ac0` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-07-07)
-- `90d4f5b5` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-07-07)
-- `90acf8f9` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-07-07)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
