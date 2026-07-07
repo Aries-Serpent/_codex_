@@ -1,5 +1,11 @@
 ## [Unreleased]
 
+### Fixed (2026-07-07T02:37Z — Security Hardening PR #5251)
+- Security: **Code Injection (CRITICAL)** — Fixed in `.github/workflows/security-copilot-commands.yml:35` by migrating from shell heredoc to safe `actions/github-script@v8` with Node.js `fs.writeFileSync()` for secure input handling, eliminating direct GitHub Actions variable expansion in shell contexts.
+- Security: **CodeQL Clear-Text Logging/Storage** — Added security pragmas with detailed context comments to suppress false positives in `aggregate_security_findings.py`, `copilot_security_agent_handoff.py`, and `secrets_findings_formatter.py`, clarifying that only finding metadata (types, locations, remediation) is processed, not actual secret values.
+- Compliance: **PDA Entry** — Added session entry to `.codex/aftermath/pda_iterations.jsonl` for 2026-07-07 with security fix summary (pattern `PDA-SECURITY-FIX-20260707`).
+- Compliance: **Accountability Report** — Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with session context and deliverables (REQ-4 compliance).
+
 ### Fixed (auto-update — PR #5251)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5251 (SHA `37ed7273`) at 2026-07-07T02:40Z [auto-generated]
 
