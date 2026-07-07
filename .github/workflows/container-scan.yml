@@ -47,7 +47,7 @@ jobs:
         exit-code: '0'
     - name: Upload SARIF to GitHub Security tab
       if: always()
-      uses: github/codeql-action/upload-sarif@5e316336eb4f107009e477d4bfbfff13d7250fae
+      uses: github/codeql-action/upload-sarif@006d029c8dc7b906d4ce5b7c700d32f20f2d35dd
       with:
         sarif_file: trivy-results-${{ strategy.job-index }}.sarif
     - name: Upload scan artifact

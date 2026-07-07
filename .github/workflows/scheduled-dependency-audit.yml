@@ -153,7 +153,7 @@ jobs:
         retention-days: 90
     - name: Upload Grype SARIF to GitHub Security
       if: always()
-      uses: github/codeql-action/upload-sarif@5e316336eb4f107009e477d4bfbfff13d7250fae
+      uses: github/codeql-action/upload-sarif@006d029c8dc7b906d4ce5b7c700d32f20f2d35dd
       with:
         sarif_file: grype-${{ matrix.variant }}.sarif
         category: grype-${{ matrix.variant }}
