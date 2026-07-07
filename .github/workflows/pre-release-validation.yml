@@ -37,10 +37,12 @@ jobs:
 
       - name: Check if release PR
         id: check
+        env:
+          BRANCH_REF: ${{ github.head_ref || github.ref }}
         run: |
           # Check if branch matches release pattern
-          if [[ "${{ github.head_ref || github.ref }}" == *"release"* ]] || \
-             [[ "${{ github.head_ref || github.ref }}" == *"v0.1"* ]]; then
+          if [[ "${BRANCH_REF}" == *"release"* ]] || \
+             [[ "${BRANCH_REF}" == *"v0.1"* ]]; then
             echo "is-release=true" >> $GITHUB_OUTPUT
             
             # Extract version from pyproject.toml
@@ -58,6 +60,8 @@ jobs:
     needs: is-release-pr
     if: needs.is-release-pr.outputs.is-release == 'true'
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -338,26 +342,26 @@ jobs:
         run: |
           echo "## ✅ Pre-Release Validation Results
 
-### Version Check
-- Version: ${{ needs.validate-version.outputs.version }}
-- Status: ${{ needs.validate-version.result }}
+          ### Version Check
+          - Version: ${{ needs.validate-version.outputs.version }}
+          - Status: ${{ needs.validate-version.result }}
 
-### Checklist
-- [ ] CHANGELOG.md updated: ${{ needs.validate-changelog.result }}
-- [ ] Release notes present: ${{ needs.validate-release-notes.result }}
-- [ ] P0 Gate validated: ${{ needs.validate-p0-gate.result }}
-- [ ] P1 Gate validated: ${{ needs.validate-p1-gate.result }}
-- [ ] P2 Gate validated: ${{ needs.validate-p2-gate.result }}
-- [ ] Manifest integrity: ${{ needs.validate-manifest.result }}
-- [ ] Artifacts ready: ${{ needs.validate-artifacts.result }}
+          ### Checklist
+          - [ ] CHANGELOG.md updated: ${{ needs.validate-changelog.result }}
+          - [ ] Release notes present: ${{ needs.validate-release-notes.result }}
+          - [ ] P0 Gate validated: ${{ needs.validate-p0-gate.result }}
+          - [ ] P1 Gate validated: ${{ needs.validate-p1-gate.result }}
+          - [ ] P2 Gate validated: ${{ needs.validate-p2-gate.result }}
+          - [ ] Manifest integrity: ${{ needs.validate-manifest.result }}
+          - [ ] Artifacts ready: ${{ needs.validate-artifacts.result }}
 
-### Next Steps
-Once all checks pass:
-1. Get code review approval
-2. Merge to main
-3. Git tag: \`git tag -a v${{ needs.validate-version.outputs.version }} -m 'Release v${{ needs.validate-version.outputs.version }}'\`
-4. Push tag: \`git push origin v${{ needs.validate-version.outputs.version }}\`
-5. This triggers release-to-pypi.yml workflow" >> $GITHUB_OUTPUT
+          ### Next Steps
+          Once all checks pass:
+          1. Get code review approval
+          2. Merge to main
+          3. Git tag: \`git tag -a v${{ needs.validate-version.outputs.version }} -m 'Release v${{ needs.validate-version.outputs.version }}'\`
+          4. Push tag: \`git push origin v${{ needs.validate-version.outputs.version }}\`
+          5. This triggers release-to-pypi.yml workflow" >> $GITHUB_OUTPUT
 
       - name: Comment on PR
         if: github.event_name == 'pull_request'

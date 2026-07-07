@@ -156,9 +156,9 @@ jobs:
           echo "## Overall Validation Status" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           
-          if [ "${{ needs.profile-drift-check.outcome }}" == "success" ] && \
-             [ "${{ needs.lock-hash-validation.outcome }}" == "success" ] && \
-             [ "${{ needs.offline-install-test.outcome }}" == "success" ]; then
+          if [ "${{ needs.profile-drift-check.result }}" == "success" ] && \
+             [ "${{ needs.lock-hash-validation.result }}" == "success" ] && \
+             [ "${{ needs.offline-install-test.result }}" == "success" ]; then
             echo "✅ **ALL CHECKS PASSED**" >> $GITHUB_STEP_SUMMARY
             exit 0
           else

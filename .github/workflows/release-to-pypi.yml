@@ -445,28 +445,28 @@ jobs:
             
             const body = `## 🚀 Release Deployment Summary
 
-**Version**: \`${version}\`
+            **Version**: \`${version}\`
 
-### ✅ Completed Steps
-- [x] Pre-release validation gates passed
-- [x] Wheels built for all platforms
-- [x] Manifest generated and verified
-- [x] SBOM generated
-- [x] Published to PyPI
-- [x] GitHub release created
+            ### ✅ Completed Steps
+            - [x] Pre-release validation gates passed
+            - [x] Wheels built for all platforms
+            - [x] Manifest generated and verified
+            - [x] SBOM generated
+            - [x] Published to PyPI
+            - [x] GitHub release created
 
-### 📦 Installation
-\`\`\`bash
-pip install codex-ml==${cleanVersion}
-\`\`\`
+            ### 📦 Installation
+            \`\`\`bash
+            pip install codex-ml==${cleanVersion}
+            \`\`\`
 
-### 🔍 Verify Installation
-See [Smoke Tests](https://github.com/${{ github.repository }}/actions/workflows/smoke-tests-deployment.yml) for installation verification on all profiles.
+            ### 🔍 Verify Installation
+            See [Smoke Tests](https://github.com/${{ github.repository }}/actions/workflows/smoke-tests-deployment.yml) for installation verification on all profiles.
 
-### 🔄 Rollback
-If issues are found, see [Rollback Procedures](docs/deployment/ROLLBACK_CHECKLIST.md).
+            ### 🔄 Rollback
+            If issues are found, see [Rollback Procedures](docs/deployment/ROLLBACK_CHECKLIST.md).
 
-**Deployed at**: ${new Date().toISOString()}`;
+            **Deployed at**: ${new Date().toISOString()}`;
             
             github.rest.git.createRef({
               owner: context.repo.owner,
