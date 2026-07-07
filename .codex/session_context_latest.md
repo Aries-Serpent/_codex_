@@ -1,10 +1,10 @@
-# Session Context — 2026-07-07T03:11:41Z
+# Session Context — 2026-07-07T03:24:01Z
 **Branch:** `copilot/improve-workflow-integration`  **PR:** #5251  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4990` (✅)
-- GraphQL remaining: `4999` (✅)
+- REST remaining: `4989` (✅)
+- GraphQL remaining: `4996` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -15,21 +15,21 @@ State: `open`  Draft: `False`  Branch: `copilot/improve-workflow-integration` �
 - `CodeQL` (failure)
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **.github/workflows/codex-master-key-validation.yml** — `failure` on `copilot/improve-workflow-integration` (2026-07-07)
 - **.github/workflows/self-healing.yml** — `failure` on `copilot/improve-workflow-integration` (2026-07-07)
 - **.github/workflows/agentic-diff-guard.yml** — `failure` on `copilot/improve-workflow-integration` (2026-07-07)
-- **.github/workflows/self-healing.yml** — `failure` on `copilot/improve-workflow-integration` (2026-07-07)
 - **.github/workflows/codex-master-key-validation.yml** — `failure` on `copilot/improve-workflow-integration` (2026-07-07)
+- **.github/workflows/codex-master-key-validation.yml** — `failure` on `copilot/improve-workflow-integration` (2026-07-07)
+- **.github/workflows/self-healing.yml** — `failure` on `copilot/improve-workflow-integration` (2026-07-07)
 
 ## 📝 Recent Commits
+- `839af80c` fix: Address CodeQL and code quality issues - sys.exit, unused variables, mixed  — copilot-swe-agent[bot] (2026-07-07)
+- `47d7e977` Initial assessment of remaining issues in PR #5251 — copilot-swe-agent[bot] (2026-07-07)
 - `2c91fe89` fix: Complete CI rescue work for PR #5251 - compliance and ruff checks — copilot-swe-agent[bot] (2026-07-07)
 - `ade8a036` fix: Update accountability report and changelog for CI rescue session (REQ-4/REQ — copilot-swe-agent[bot] (2026-07-07)
 - `db965fb4` chore: Add PDA entry for 2026-07-07 CI rescue session (PR #5251) — copilot-swe-agent[bot] (2026-07-07)
 - `4c16f59a` chore: Add PDA entry for security hardening fixes (2026-07-07) — copilot-swe-agent[bot] (2026-07-07)
 - `e6969223` fix: Resolve workflow and Python code issues - YAML indentation, security harden — copilot-swe-agent[bot] (2026-07-07)
 - `7f5320a4` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-07-07)
-- `94e18b23` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-07-07)
-- `0a99fd4b` plan: Address parallel validation findings - security and code quality fixes — copilot-swe-agent[bot] (2026-07-07)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
