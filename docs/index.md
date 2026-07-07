@@ -30,7 +30,7 @@ The cognitive brain enables:
 - 📋 **[CI/CD Index](ci/INDEX.md)** — All CI failure analysis, fix summaries, and validation reports
 
 ### Core Documentation
-- 📖 **[Architecture](./ARCHITECTURE.md)** - Detailed technical architecture
+- 📖 **[Architecture](./architecture/INDEX.md)** - Detailed technical architecture
 - 🤝 **[Contributing](CONTRIBUTING.md)** - Development workflow and guidelines
 - 🔐 **[Admin Guide](ADMIN_IMPLEMENTATION_GUIDE.md)** - Setup and management
 - 📚 **[API Reference](api/index.md)** - Complete API documentation

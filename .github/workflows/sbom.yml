@@ -32,7 +32,7 @@ jobs:
     timeout-minutes: 60
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         fetch-depth: 0
     - name: Set up Python
@@ -84,7 +84,7 @@ jobs:
         {len(components)} component(s) listed\")\nPY\n"
     - name: Upload SBOM artifacts
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: sbom-${{ github.run_id }}
         path: 'sbom-cyclonedx.json
@@ -103,9 +103,8 @@ jobs:
         || echo "Cache health: check skipped"
 
         '
-    env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
+      env:
+        GH_TOKEN: ${{ github.token }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
@@ -123,14 +122,13 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        token: ${{ github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
+        GH_TOKEN: ${{ github.token }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
         REPO: ${{ github.repository }}
         COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
@@ -140,6 +138,3 @@ jobs:
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
-    env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}

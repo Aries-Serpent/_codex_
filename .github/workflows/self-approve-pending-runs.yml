@@ -38,7 +38,7 @@ jobs:
       \ '\u26A1 Self-Approve Pending Workflow Runs'"
     steps:
     - name: Checkout (for approve_pending_runs.py)
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         fetch-depth: 1
         ref: ${{ github.event.repository.default_branch || 'main' }}
@@ -110,7 +110,7 @@ jobs:
         '
     - name: Dispatch hub for batch approval (self-approve-pending-runs)
       if: steps.pending.outputs.count != '0'
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       with:
         github-token: ${{ steps.token.outputs.token }}
         script: "const owner = context.repo.owner;\nconst repo = context.repo.repo;\n\

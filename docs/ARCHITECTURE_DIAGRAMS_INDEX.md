@@ -234,4 +234,4 @@ Found issues or have suggestions?
 
 **Last Updated**: 2026-01-20  
 **Next Update**: After Phase 2 completion  
-**Questions?** See [ARCHITECTURE.md](ARCHITECTURE.md) for full documentation
+**Questions?** See [ARCHITECTURE.md](architecture/INDEX.md) for full documentation

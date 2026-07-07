@@ -120,7 +120,7 @@ jobs:
       has_regressions: ${{ steps.analyze.outputs.has_regressions }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         fetch-depth: 0
     - name: Set up Python
@@ -153,7 +153,7 @@ jobs:
         \  echo \"gap_count=0\" >> $GITHUB_OUTPUT\nfi\n"
     - name: Upload audit results
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: audit-results-${{ github.run_number }}
         path: '.codex/audit/*.json
@@ -187,12 +187,11 @@ jobs:
       critical_issues: ${{ steps.qa.outputs.critical_issues }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         fetch-depth: 0
         persist-credentials: false
-        ref: ${{ (github.event_name == 'pull_request' && (inputs.target_ref || github.event.pull_request.head.sha))
-          || github.sha || '' }}
+        ref: ${{ (github.event_name == 'pull_request' && (inputs.target_ref || github.event.pull_request.head.sha)) || (github.event_name == 'issue_comment' && 'main') || inputs.target_ref || github.sha || '' }}
     - name: Overlay trusted action + script from main (security)
       run: "git fetch origin main --depth=3 --no-tags 2>/dev/null || true\ngit restore\
         \ --source=origin/main -- \\\n  .github/actions/setup-python-cached/action.yml\
@@ -264,7 +263,7 @@ jobs:
         \  --run-url    \"${RUN_URL}\"\n"
     - name: Upload QA results
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: qa-walkthrough-${{ github.run_number }}
         path: '.codex/qa/*.json
@@ -308,7 +307,7 @@ jobs:
       '
     steps:
     - name: Checkout
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         persist-credentials: false
     - name: Generate improvement PR
@@ -398,7 +397,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1

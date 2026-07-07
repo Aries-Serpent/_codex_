@@ -22,11 +22,11 @@ jobs:
       contains(github.event.workflow_run.head_branch, ''copilot'')'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
         with:
           fetch-depth: 1
       - name: Download security findings artifacts
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@7a64585046d847ae9b56aeb3ce4702ca38ae8e84
         with:
           name: security-suite-comprehensive-findings
           path: ./security-findings/
@@ -58,7 +58,7 @@ jobs:
           PYTHON_EOF
       - name: Create findings issue
         if: steps.findings.outputs.TOTAL != ''
-        uses: actions/github-script@v8
+        uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
@@ -137,7 +137,7 @@ jobs:
             core.setOutput('issue_url', issue.data.html_url);
       - name: Comment on PR if available
         if: github.event.workflow_run.event == 'pull_request'
-        uses: actions/github-script@v8
+        uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |

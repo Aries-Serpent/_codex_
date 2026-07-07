@@ -291,8 +291,15 @@ class AuthMiddleware:
     Supports JWT tokens, API keys, and OAuth tokens.
 
     Example:
+        import os
+        from codex.auth.middleware import AuthMiddleware
+        from codex.auth.token_manager import TokenManager
+        
         app = FastAPI()
-        token_manager = TokenManager(secret_key="your-secret")
+        secret_key = os.getenv("AUTH_SECRET_KEY") or os.getenv("CODEX_AUTH_SECRET_KEY")
+        if not secret_key:
+            raise ValueError("AUTH_SECRET_KEY or CODEX_AUTH_SECRET_KEY environment variable required")
+        token_manager = TokenManager(secret_key=secret_key)
         app.add_middleware(AuthMiddleware, token_manager=token_manager)
     """
 

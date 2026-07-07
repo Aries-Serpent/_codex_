@@ -39,7 +39,7 @@ jobs:
       issues: read
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         fetch-depth: 0
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
@@ -99,21 +99,21 @@ jobs:
         '
     - name: Upload logs
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: dependabot-sheriff-logs
         path: .codex/logs/dependabot_sheriff_*.log
         retention-days: 30
     - name: Upload summary
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: dependabot-sheriff-summary
         path: .codex/logs/dependabot_sheriff_summary_*.md
         retention-days: 30
     - name: Comment on failure
       if: failure()
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       with:
         script: "const fs = require('fs');\n\n// Find the latest log file\nconst logFiles\
           \ = fs.readdirSync('.codex/logs').filter(f => f.startsWith('dependabot_sheriff_'));\n\
@@ -134,7 +134,7 @@ jobs:
           `\n  `,\n  labels: ['dependabot', 'automation', 'bug']\n});\n"
     - name: Post summary
       if: success()
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       with:
         script: "const fs = require('fs');\n\n// Find the latest summary file\nconst\
           \ summaryFiles = fs.readdirSync('.codex/logs').filter(f => f.startsWith('dependabot_sheriff_summary_'));\n\

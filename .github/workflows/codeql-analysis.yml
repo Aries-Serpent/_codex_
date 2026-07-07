@@ -42,16 +42,16 @@ jobs:
         - go
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
+      uses: github/codeql-action/init@cf7e9f4722505fce4e8b916562df43b01cbc47b73
       with:
         languages: ${{ matrix.language }}
         config-file: .github/codeql/codeql-config.yml
     - name: Autobuild
-      uses: github/codeql-action/autobuild@v3
+      uses: github/codeql-action/autobuild@407ffafae6a767df3e0230c3e0be3951fbf20671
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
+      uses: github/codeql-action/analyze@5b6282e01cf21224e7223e2e91613cd0404b19fb
       with:
         category: /language:${{ matrix.language }}
         upload: never
@@ -59,7 +59,7 @@ jobs:
     - name: Upload CodeQL SARIF artifact
       if: always()
       # pragma: allowlist secret
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: codeql-sarif-${{ matrix.language }}
         path: codeql-sarif/${{ matrix.language }}
@@ -164,7 +164,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         fetch-depth: 1

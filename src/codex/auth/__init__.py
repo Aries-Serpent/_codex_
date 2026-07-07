@@ -13,10 +13,14 @@ Production Features:
 - Session management
 
 Usage:
+    import os
     from codex.auth import TokenManager, AuthMiddleware, require_auth
 
-    # Initialize token manager
-    token_manager = TokenManager(secret_key="your-secret-key")
+    # Initialize token manager with secret from environment
+    secret_key = os.getenv("AUTH_SECRET_KEY") or os.getenv("CODEX_AUTH_SECRET_KEY")
+    if not secret_key:
+        raise ValueError("AUTH_SECRET_KEY or CODEX_AUTH_SECRET_KEY environment variable required")
+    token_manager = TokenManager(secret_key=secret_key)
 
     # Add middleware to FastAPI
     app.add_middleware(AuthMiddleware, token_manager=token_manager)

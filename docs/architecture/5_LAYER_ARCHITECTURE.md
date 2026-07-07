@@ -256,6 +256,6 @@ graph LR
 ---
 
 **Related Documentation**:
-- [ARCHITECTURE.md](../ARCHITECTURE.md) - Full architecture documentation
+- [ARCHITECTURE.md](./INDEX.md) - Full architecture documentation
 - [CODEBASE_MERMAID_MAPS.md](../CODEBASE_MERMAID_MAPS.md) - All system diagrams
 - [System Context](SYSTEM_CONTEXT.md) - C4 Context diagram

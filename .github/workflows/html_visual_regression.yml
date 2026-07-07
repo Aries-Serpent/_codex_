@@ -18,7 +18,7 @@ jobs:
       contents: read
     timeout-minutes: 60
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: CacheManager health check
       continue-on-error: true
       run: 'python scripts/ci/generate_cache_keys.py --health --workflow html_visual_regression
@@ -50,7 +50,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1

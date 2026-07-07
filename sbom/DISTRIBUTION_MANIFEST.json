@@ -1,0 +1,14 @@
+{
+  "name": "codex-ml",
+  "version": "0.1.0",
+  "created": "2026-07-07T17:46:22.854642",
+  "packages": {
+    "total": 41,
+    "profiles": {
+      "base": 41,
+      "development": "see requirements/lock-dev.txt",
+      "ml": "see requirements/lock-ml.txt"
+    }
+  },
+  "sbom": "sbom/cyclonedx-resolved.json"
+}

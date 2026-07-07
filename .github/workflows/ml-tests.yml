@@ -15,7 +15,10 @@ on:
 
 jobs:
   test-ml-components:
+    permissions:
+      contents: read
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
     strategy:
       matrix:
         os: [ubuntu-latest]
@@ -29,10 +32,10 @@ jobs:
           - integration
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d
         with:
           python-version: ${{ matrix.python-version }}
           cache: 'pip'
@@ -42,7 +45,7 @@ jobs:
           pip install --upgrade pip
           pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
           pip install -r requirements.txt || true
-          pip install pytest pytest-cov pytest-mock pytest-timeout
+          pip install pytest==8.4.2 pytest-cov==7.0.0 pytest-mock==3.14.0 pytest-timeout==2.4.0
 
       - name: Run ${{ matrix.test-suite }} tests
         run: |
@@ -56,22 +59,27 @@ jobs:
             -m "not slow" || true
 
       - name: Upload coverage
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354
         if: always()
         with:
           file: ./coverage.xml
           flags: ${{ matrix.test-suite }}
           name: ${{ matrix.test-suite }}-${{ matrix.python-version }}
+          token: ${{ secrets.CODECOV_TOKEN }}
+          continue-on-error: true
 
   test-integration-slow:
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     needs: test-ml-components
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d
         with:
           python-version: '3.11'
           cache: 'pip'
@@ -81,7 +89,7 @@ jobs:
           pip install --upgrade pip
           pip install torch --index-url https://download.pytorch.org/whl/cpu
           pip install -r requirements.txt || true
-          pip install pytest pytest-timeout
+          pip install pytest==8.4.2 pytest-timeout==2.4.0
 
       - name: Run integration tests
         run: |
@@ -91,14 +99,17 @@ jobs:
             --timeout=600 || true
 
   test-coverage-gate:
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: test-ml-components
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d
         with:
           python-version: '3.11'
 
@@ -116,11 +127,11 @@ jobs:
             --cov=training \
             --cov-report=term \
             --cov-report=html \
-            --cov-fail-under=50 \
+            --cov-fail-under=70 \
             -m "not slow and not integration" || true
 
       - name: Archive coverage report
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
         if: always()
         with:
           name: coverage-report

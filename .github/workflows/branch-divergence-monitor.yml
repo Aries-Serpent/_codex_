@@ -40,7 +40,7 @@ jobs:
       summary_json: ${{ steps.measure.outputs.summary_json }}
     steps:
     - name: Check out repository (shallow)
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         fetch-depth: 0
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
@@ -210,7 +210,7 @@ jobs:
       '
     steps:
     - name: Checkout 0D_base_
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         ref: 0D_base_
         fetch-depth: 5
@@ -314,12 +314,12 @@ jobs:
       '
     steps:
     - name: "Checkout (sparse \u2014 scripts only)"
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         sparse-checkout: .github
         sparse-checkout-cone-mode: false
     - name: Ensure required labels exist
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         script: "const required = [\n  { name: 'branch-divergence', color: 'e4e669',\
@@ -336,7 +336,7 @@ jobs:
           \ label.description,\n      });\n      console.log(`Created label: ${label.name}`);\n\
           \    } else {\n      throw err;\n    }\n  }\n}\n"
     - name: Build and upsert divergence tracking issue
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       env:
         SUMMARY_JSON: ${{ needs.detect.outputs.summary_json }}
         BEHIND_COUNT: ${{ needs.detect.outputs.behind_count }}
@@ -449,7 +449,7 @@ jobs:
       issues: write
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         fetch-depth: 1

@@ -18,7 +18,7 @@ jobs:
     timeout-minutes: 10
     if: github.actor != 'dependabot[bot]'
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         fetch-depth: 0
     - name: "\U0001F500 Fetch base branch ref for diff"
@@ -93,7 +93,7 @@ jobs:
     - name: Post cognitive brain briefing on PR
       id: briefing
       if: steps.pr_analysis.outputs.validation-status == 'valid'
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       env:
         ANALYSIS_JSON: ${{ steps.pr_analysis.outputs.response }}
         BRAIN_TOUCHED: ${{ steps.meta.outputs.brain_touched }}
@@ -172,7 +172,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         fetch-depth: 1

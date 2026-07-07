@@ -340,7 +340,7 @@ Prepared for next session:
 ## 🔗 Quick Links
 
 📊 [Status Document](https://github.com/Aries-Serpent/_codex_/tree/main/docs/cognitive_brain/status)
-🏗️ [Architecture Diagrams](../../ARCHITECTURE.md)
+🏗️ [Architecture Diagrams](../../architecture/INDEX.md)
 📋 [Continuation Instructions](../../cognitive_brain/prompts/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_11.md)
 💬 PR Comment Template
 🤖 [Workflow CI Fixer Agent](../../../.github/agents/workflow-ci-fixer.agent.md)

@@ -53,7 +53,7 @@ jobs:
       has_critical: ${{ steps.parse.outputs.has_critical }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: Load context manifest
       id: load
       run: "MANIFEST_PATH=\"${{ inputs.context_manifest || '.codex/session_context_manifest.json'\
@@ -89,7 +89,7 @@ jobs:
       max-parallel: ${{ inputs.max_agents || 5 }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: Initialize delegation context
       id: init
       run: "AGENT=\"${{ matrix.agent }}\"\nDRY_RUN=\"${{ inputs.dry_run || false }}\"\
@@ -133,9 +133,9 @@ jobs:
     continue-on-error: true
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: Set up Python
-      uses: actions/setup-python@v6.3.0
+      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
       with:
         python-version: '3.12'
         cache: 'pip'
@@ -180,7 +180,7 @@ jobs:
     if: ${{ always() }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: Report delegation status
       run: "echo \"\U0001F4CA Adaptive Agent Delegation Framework - Status Report\"\
         \necho \"\"\necho \"\u2705 Framework Components:\"\necho \"  1. Context Loading:\

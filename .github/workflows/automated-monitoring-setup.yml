@@ -39,11 +39,11 @@ jobs:
       name: ${{ inputs.environment }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v6.3.0
+      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
       with:
         python-version: '3.12'
         cache: 'pip'
@@ -275,7 +275,7 @@ jobs:
 
         '
     - name: Upload setup report
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: monitoring-setup-report
         path: setup-report.md
@@ -311,14 +311,14 @@ jobs:
         '
     - name: Upload deployment logs
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: monitoring-deployment-logs
         path: logs/
         retention-days: 30
     - name: Post deployment status
       if: always()
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: "const fs = require('fs');\nconst report = fs.readFileSync('setup-report.md',\

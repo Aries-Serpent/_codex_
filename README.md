@@ -678,7 +678,7 @@ Start here if you're new to Codex ML:
 
 - **[📖 5-Minute Onboarding Quickstart](docs/ONBOARDING_QUICKSTART.md)** — Install and run your first example in 5 minutes
 - **[📚 Learning Paths](docs/LEARNING_PATHS.md)** — Choose a structured learning journey (Beginner → Intermediate → Advanced)
-- **[🏗️ Complete Architecture Guide](docs/ARCHITECTURE.md)** — Understand the 5-layer architecture with Mermaid diagrams
+- **[🏗️ Complete Architecture Guide](docs/human-facing/architecture.md)** — Understand the 5-layer architecture with Mermaid diagrams
 - **[🆘 Troubleshooting Guide](docs/TROUBLESHOOTING.md)** — Fix 25+ common issues
 - **[📑 Documentation Index](docs/DOCUMENTATION_INDEX.md)** — Central hub for all documentation
 
@@ -801,7 +801,7 @@ python -m scripts.space_traversal.wiki_generator
 
 - **Inference serving:** FastAPI server now wires a deterministic local model with real `/predict` and `/embed` responses. See [docs/INFERENCE_SERVING_GUIDE.md](docs/INFERENCE_SERVING_GUIDE.md) for usage and configuration.
 - **Duplication quality gate:** Reusable duplication analysis module with CLI wrapper and thresholds is documented in [docs/QUALITY_GATES.md](docs/QUALITY_GATES.md).
-- **Training telemetry toggle:** `codex-train` exposes `--system-metrics` to emit optional CPU/RAM metrics; documented in [docs/CLI.md](docs/CLI.md).
+- **Training telemetry toggle:** `codex-train` exposes `--system-metrics` to emit optional CPU/RAM metrics; documented in [docs/API CLI](docs/api/cli.md).
 - **Gap/task alignment:** The declarative task list in [docs/gaps/gap_pipeline_overview.md](docs/gaps/gap_pipeline_overview.md) maps every gap to a concrete action, ensuring every gap is closed or explicitly deferred.
 
 ### API Reference
@@ -1120,7 +1120,7 @@ path:docs/ "mermaid" in:file
 
 - **Getting Started**: Start with [`NEWCOMER_GUIDE.md`](docs/NEWCOMER_GUIDE.md)
 - **Contributing**: See [CONTRIBUTING.md](CONTRIBUTING.md)
-- **Architecture**: Read [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+- **Architecture**: Read [docs/Architecture](docs/human-facing/architecture.md)
 - **Security**: Report vulnerabilities via [SECURITY.md](SECURITY.md)
 - **Search Help**: Full guide in [PROMPTS/CHATGPT_SEARCH_RECIPES.md](PROMPTS/CHATGPT_SEARCH_RECIPES.md)
 

@@ -17,10 +17,10 @@ mypy>=2.1.0,<3.0.0
 pip-audit>=2.10.1
 bandit>=1.7.5
 
-# Type stubs
-types-jsonschema>=2024.2.0
-types-PyYAML>=6.0.12
-types-requests>=2.33.0
+# Type stubs (pinned for consistency)
+types-jsonschema==4.22.0.20240914
+types-PyYAML==6.0.12.6
+types-requests==2.31.0.10
 
 # CLI tools
 typer>=0.12.5

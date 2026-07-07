@@ -9,12 +9,12 @@
 This documentation is organized into several key sections:
 
 ### Getting Started
-- [Quickstart Guide](guides/QUICKSTART.md) - Get up and running quickly
+- [Quickstart Guide](docs/guides/QUICKSTART.md) - Get up and running quickly
 - [Installation](setup/environment.md) - Detailed installation instructions
 - [Contributing](https://github.com/Aries-Serpent/_codex_/blob/main/CONTRIBUTING.md) - How to contribute to the project
 
 ### User Guides
-- [CLI Usage](CLI.md) - Command-line interface guide
+- [CLI Usage](ast/CLI.md) - Command-line interface guide
 - [API Reference](API_REFERENCE.md) - Complete API documentation
 - [Configuration](configs/OmegaConf_Schema.md) - Configuration management
 
@@ -54,7 +54,7 @@ This documentation is organized into several key sections:
 ## 🔍 Finding What You Need
 
 ### For New Users
-1. Start with the [Quickstart Guide](guides/QUICKSTART.md)
+1. Start with the [Quickstart Guide](docs/guides/QUICKSTART.md)
 2. Review [Architecture Quick Reference](./ARCHITECTURE_QUICK_REFERENCE.md) or [Full Architecture](./architecture/ARCHITECTURE_CONSOLIDATED.md)
 3. Explore [User Guides](#user-guides)
 

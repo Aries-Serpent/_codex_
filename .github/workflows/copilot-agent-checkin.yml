@@ -52,10 +52,10 @@ jobs:
       pull-requests: write
       contents: read
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         fetch-depth: 1
-    - uses: actions/setup-python@v6.3.0
+    - uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
       with:
         cache: pip
         python-version: 3.12.13
@@ -120,7 +120,7 @@ jobs:
       '
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         fetch-depth: 1
     - name: Scan failing workflows for HEAD SHA (P6-A)
@@ -177,7 +177,7 @@ jobs:
         n\")\nprint(f\"Generated Q1\u2013{min(3, len(solutions))} from PDA pattern\
         \ library ({len(solutions)} patterns).\")\nPYEOF\n"
     - name: 'Post research topics and open check-in to Discussion #3756'
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       env:
         SHA: ${{ github.sha }}
         REF: ${{ github.ref_name }}
@@ -359,7 +359,7 @@ jobs:
           \ the above bodies. No GraphQL mutations executed.');\n}\n"
     - name: "Missed-trigger guard \u2014 re-trigger unanswered rescue comments"
       continue-on-error: true
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       env:
         GH_DISCUSSION_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY
           || secrets.GITHUB_TOKEN }}
@@ -412,7 +412,7 @@ jobs:
           }\n\n// Find unanswered rescue comments.\n// Unified marker format (S294):\
           \ <!-- ci-rescue-sha:{pr_number}:{sha12} -->\n//   All workflows now use\
           \ this single canonical format.\n//   Posted by scripts/ci/post_rescue_comment.py\
-          \ \u2014 called by every\n//   rescue-comment job via actions/checkout@v7\
+          \ \u2014 called by every\n//   rescue-comment job via actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608\
           \ + python step.\n//   SHA-scoped: multiple workflows failing on the same\
           \ commit APPEND\n//   to the same comment rather than posting new threads.\n\
           //\n// Legacy formats (still recognised for backward compat with older comments):\n\
@@ -590,7 +590,7 @@ jobs:
           }\n"
     - name: "Incomplete-session guard \u2014 re-trigger if attestation missing"
       continue-on-error: true
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       env:
         DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
         PR_NUMBER: ${{ github.event.pull_request.number || '' }}
@@ -686,7 +686,7 @@ jobs:
       '
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         fetch-depth: 1
     - name: "Open check-in \u2014 post Q&A and research topics to Discussion #3756"
@@ -714,7 +714,7 @@ jobs:
       '
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         ref: ${{ github.event.repository.default_branch }}
         fetch-depth: 1
@@ -743,7 +743,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Post reply to discussion comment
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       env:
         REPLY_COMMENT_NODE_ID: ${{ github.event.inputs.reply_comment_node_id }}
         DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}

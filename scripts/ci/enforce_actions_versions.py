@@ -49,6 +49,8 @@ from pathlib import Path
 # EXACT_VERSIONS overrides: the action MUST use exactly that version.
 #
 # Update when a new major version is audited and approved for this repo.
+# Note: Third-party actions (codecov/codecov-action) must be pinned to a specific
+# commit hash (40-character SHA) and are exempt from version checking via _EXEMPT_PATTERNS.
 EXPECTED_VERSIONS: dict[str, str] = {
     # repo convention: v5 is the current standard (254 occurrences)
     "actions/checkout": "v5",

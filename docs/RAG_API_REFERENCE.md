@@ -474,6 +474,6 @@ retriever = RetrieverPipeline(
 
 ## See Also
 
-- [Quickstart Guide](./QUICKSTART.md)
+- [Quickstart Guide](./docs/guides/QUICKSTART.md)
 - [Configuration Guide](./CONFIGURATION_GUIDE.md)
 - [Ingestion API Reference](./INGESTION_API_REFERENCE.md)

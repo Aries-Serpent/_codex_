@@ -40,16 +40,16 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5 # v5
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v5
 
       - name: Set up Python
-        uses: actions/setup-python@v6.3.0 # v6
+        uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d # v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Cache Python wheels
         id: cache-wheels
-        uses: actions/cache@v5 # v5
+        uses: actions/cache@2cdf405574899ba3c3aab6e1984d4f91812edc99 # v5
         with:
           path: |
             ~/.cache/pip
@@ -95,16 +95,16 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5 # v5
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v5
 
       - name: Set up Python
-        uses: actions/setup-python@v6.3.0 # v6
+        uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d # v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Cache Playwright browsers
         id: cache-playwright
-        uses: actions/cache@v5 # v5
+        uses: actions/cache@2cdf405574899ba3c3aab6e1984d4f91812edc99 # v5
         with:
           path: |
             ~/.cache/ms-playwright
@@ -139,7 +139,7 @@ jobs:
 
     steps:
       - name: Cleanup caches older than 14 days
-        uses: actions/github-script@v8 # v9
+        uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293 # v9
         with:
           script: |
             const caches = await github.rest.actions.getActionsCacheList({

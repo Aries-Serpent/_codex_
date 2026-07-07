@@ -131,32 +131,61 @@ def validate_input(
 
 
 def _validate_path_input(value: str) -> None:
-    """Validate filesystem paths for traversal or injection attempts."""
-
+    """Validate filesystem paths for traversal or injection attempts.
+    
+    Uses pathlib.Path.resolve() with parent directory containment checks
+    to prevent directory traversal attacks (CWE-22).
+    
+    Args:
+        value: Path string to validate
+        
+    Raises:
+        SecurityError: If path contains traversal attempts or invalid characters
+    """
+    # Check for null bytes and control characters
     if any(char in value for char in ["\0", "\n", "\r"]):
         raise SecurityError("Invalid characters in path")
 
-    normalized = os.path.normpath(value)
-    if normalized.startswith("..") or os.path.isabs(normalized):
+    # Reject absolute paths
+    if os.path.isabs(value):
         raise SecurityError(f"Path traversal attempt detected: {value}")
 
+    # Reject home directory expansion attempts
     if value.startswith("~"):
         raise SecurityError(f"Path traversal attempt detected: {value}")
 
-    posix_path = PurePosixPath(value)
-    if any(part == ".." for part in posix_path.parts):
-        raise SecurityError(f"Path traversal attempt detected: {value}")
-
-    windows_path = PureWindowsPath(value)
-    if windows_path.is_absolute() or windows_path.drive:
-        raise SecurityError(f"Path traversal attempt detected: {value}")
-
-    if any(part == ".." for part in windows_path.parts):
-        raise SecurityError(f"Path traversal attempt detected: {value}")
+    # Use pathlib.Path.resolve() to resolve symlinks and normalize the path
+    # This prevents bypassing security checks via symlink escape attacks
+    try:
+        current_dir = Path.cwd().resolve()
+        input_path = Path(value)
+        
+        # Reject paths with ".." components before resolution
+        # This catches explicit traversal attempts
+        if ".." in input_path.parts:
+            raise SecurityError(f"Path traversal attempt detected: {value}")
+        
+        # Resolve the path relative to current directory
+        resolved_path = (current_dir / input_path).resolve()
+        
+        # Verify that the resolved path is within or a child of current directory
+        # This prevents symlink escape attacks and ensures containment
+        try:
+            resolved_path.relative_to(current_dir)
+        except ValueError as err:
+            raise SecurityError(
+                f"Path '{value}' attempts to escape current directory"
+            ) from err
+            
+    except (RuntimeError, OSError) as err:
+        raise SecurityError(f"Invalid path: {value}") from err
 
 
 def enforce_absolute_path(path: str) -> Path:
     """Validate and enforce absolute path requirements.
+    
+    Uses pathlib.Path.resolve() to properly handle symlinks and validate
+    path containment (CWE-22 mitigation).
 
     Args:
         path: Path string to validate
@@ -167,21 +196,32 @@ def enforce_absolute_path(path: str) -> Path:
     Raises:
         SecurityError: If path contains relative components or traversal
     """
-    p = Path(path)
-
-    # Reject relative path traversal
+    # Reject relative path traversal patterns
     if ".." in path:
         raise SecurityError(f"Path traversal not allowed: {path}")
+
+    p = Path(path)
 
     # Reject non-absolute paths
     if not p.is_absolute():
         raise SecurityError(f"Only absolute paths allowed: {path}")
 
-    return p
+    # Resolve the path to handle symlinks and validate it's still absolute
+    # This prevents symlink escape attacks
+    try:
+        resolved = p.resolve()
+        if not resolved.is_absolute():
+            raise SecurityError(f"Failed to resolve to absolute path: {path}")
+        return resolved
+    except (RuntimeError, OSError) as err:
+        raise SecurityError(f"Failed to resolve path: {path}") from err
 
 
 def sanitize_path(path: Path, base_dir: Path) -> Path:
     """Sanitize and validate a path within a base directory.
+    
+    Uses pathlib.Path.resolve() with parent directory containment checks
+    to prevent directory traversal attacks (CWE-22).
 
     Args:
         path: Path to sanitize
@@ -192,18 +232,27 @@ def sanitize_path(path: Path, base_dir: Path) -> Path:
 
     Raises:
         ValueError: If path escapes base_dir or contains traversal
+        
+    Security:
+        - Resolves symlinks to prevent symlink escape attacks
+        - Validates path containment via relative_to() check
+        - Ensures all paths are constrained within base_dir
     """
     try:
-        # Resolve both paths to absolute
+        # Resolve both paths to absolute, handling symlinks
         abs_path = path.resolve()
         abs_base = base_dir.resolve()
 
         # Check if path is within base_dir
+        # This will raise ValueError if abs_path is outside abs_base
         abs_path.relative_to(abs_base)
 
         return abs_path
     except ValueError as err:
         msg = f"Path {path} is outside base directory {base_dir}"
+        raise ValueError(msg) from err
+    except (RuntimeError, OSError) as err:
+        msg = f"Failed to resolve path {path} within base directory {base_dir}"
         raise ValueError(msg) from err
 
 

@@ -420,6 +420,6 @@ logging:
 
 ## See Also
 
-- [Quickstart Guide](./QUICKSTART.md)
+- [Quickstart Guide](./docs/guides/QUICKSTART.md)
 - [Configuration Guide](./CONFIGURATION_GUIDE.md)
 - [API Reference](./API_REFERENCE.md)

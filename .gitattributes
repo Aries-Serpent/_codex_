@@ -162,3 +162,14 @@ examples/ export-ignore
 .codex/embeddings/codex_index_meta.json          merge=ours linguist-generated=true
 docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md      merge=ours linguist-generated=true
 docs/admin/variable_audit_latest.md              merge=ours linguist-generated=true
+
+# Case-sensitivity enforcement (Track 8.3 — case-collision de-duplication)
+# Prevents regressions of re-introduced case-collisions on Windows/macOS checkouts
+docs/architecture.md    text diff=markdown
+docs/ci.md              text diff=markdown
+docs/cli.md             text diff=markdown
+docs/guides/quickstart.md              text diff=markdown
+docs/offline_quickstart.md             text diff=markdown
+docs/quickstart.md      text diff=markdown
+docs/security/incident_response.md     text diff=markdown
+docs/validation/tokenization_validation.md text diff=markdown

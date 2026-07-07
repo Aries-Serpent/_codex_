@@ -488,7 +488,7 @@
 - [Cognitive Map](./system/CODEBASE_COGNITIVE_MAP.md) - Architecture overview
 - [Dashboard](./system/CODEBASE_DASHBOARD.md) - Live status
 - [Contributing](CONTRIBUTING.md) - How to contribute
-- [Architecture](./ARCHITECTURE.md) - Technical architecture
+- [Architecture](./architecture/INDEX.md) - Technical architecture
 - [MCP Planset](mcp/ADVANCED_FEATURES_PLANSET.md) - MCP roadmap details
 
 ---

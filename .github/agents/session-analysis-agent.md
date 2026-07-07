@@ -667,7 +667,7 @@ cognitive_brain:
 **Contact:** @mbaetiong
 **Related Docs:**
 - [Session Log Retrieval Agent](session-log-retrieval-agent.md)
-- [Cognitive Architecture](../../docs/ARCHITECTURE.md)
+- [Cognitive Architecture](../../docs/architecture/INDEX.md)
 - [Agent Handoff Protocol](../../.codex/docs/AGENT_HANDOFF_PROTOCOL.md)
 
 ---

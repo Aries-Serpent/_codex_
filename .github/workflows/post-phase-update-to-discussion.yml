@@ -25,7 +25,7 @@ jobs:
       discussions: write
     steps:
     - name: Checkout code
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
     - name: Read markdown file
       id: read-file
       run: 'FILE_CONTENT=$(cat "${{ github.event.inputs.file_path }}")
@@ -39,7 +39,7 @@ jobs:
         '
     - name: Post to Discussion
       id: post-discussion
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       with:
         script: "const fs = require('fs');\nconst filePath = '${{ github.event.inputs.file_path\
           \ }}';\nconst discussionNumber = ${{ github.event.inputs.discussion_number\

@@ -30,7 +30,7 @@ jobs:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
     steps:
     - name: Prune caches older than ${{ inputs.max_age_days || 7 }} days
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       with:
         script: "const owner = context.repo.owner;\nconst repo  = context.repo.repo;\n\
           const maxAgeDays  = parseInt('${{ inputs.max_age_days || 7 }}', 10);\nconst\

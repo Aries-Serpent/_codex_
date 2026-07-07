@@ -22,7 +22,7 @@ jobs:
       '
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         fetch-depth: 1
     - name: Set up Python
@@ -95,7 +95,7 @@ jobs:
         \ completed within timeout\nPYEOF\n"
     - name: Post handoff summary comment
       if: steps.validate.outputs.validation_status != 'skipped'
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       env:
         VALIDATION_STATUS: ${{ steps.validate.outputs.validation_status }}
         DELEGATING_AGENT: ${{ steps.validate.outputs.delegating_agent }}
@@ -158,7 +158,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1

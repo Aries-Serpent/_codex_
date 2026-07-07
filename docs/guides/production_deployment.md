@@ -432,6 +432,187 @@ export JWT_SECRET_KEY=$(openssl rand -hex 32)
 export GITHUB_TOKEN=<from-secrets-manager>
 ```
 
+### Authentication & Credentials (Production - REQUIRED)
+
+This section provides step-by-step instructions for setting up authentication environment variables in your deployment environment.
+
+#### 1. Authentication Secret Key Setup
+
+The application requires a secret key for JWT token signing and session encryption. Choose **ONE** of these options:
+
+**Option A: Using AUTH_SECRET_KEY (Recommended)**
+
+```bash
+# Generate a cryptographically secure random key
+export AUTH_SECRET_KEY=$(openssl rand -hex 32)
+
+# Verify it was set
+echo "✅ AUTH_SECRET_KEY is set: ${#AUTH_SECRET_KEY} characters"
+
+# In your deployment environment (Docker, Kubernetes, etc.):
+# Add to .env file, secrets manager, or environment variables
+AUTH_SECRET_KEY="<your-hex-generated-key>"
+```
+
+**Option B: Using CODEX_AUTH_SECRET_KEY (Alternative)**
+
+```bash
+# If you prefer the CODEX-prefixed naming convention:
+export CODEX_AUTH_SECRET_KEY=$(openssl rand -hex 32)
+
+# The application accepts either AUTH_SECRET_KEY or CODEX_AUTH_SECRET_KEY
+# Precedence: AUTH_SECRET_KEY is checked first, then falls back to CODEX_AUTH_SECRET_KEY
+```
+
+**Deployment Methods:**
+
+| Method | Command | Example |
+|--------|---------|---------|
+| **Docker** | `docker run -e AUTH_SECRET_KEY=...` | `docker run -e AUTH_SECRET_KEY=$(openssl rand -hex 32) codex:latest` |
+| **Docker Compose** | Add to `.env` or `docker-compose.yml` | `AUTH_SECRET_KEY: "${AUTH_SECRET_KEY}"` |
+| **Kubernetes** | Create Secret resource | `kubectl create secret generic codex-auth --from-literal=AUTH_SECRET_KEY=...` |
+| **Kubernetes Helm** | values.yaml | `authSecretKey: "<your-key>"` |
+| **Environment File** | `.env` or `/etc/codex/.env` | `AUTH_SECRET_KEY=<your-key>` |
+| **Shell Export** | `export AUTH_SECRET_KEY=...` | `source .env && export AUTH_SECRET_KEY` |
+
+#### 2. GitHub App OAuth Client Secret
+
+If using GitHub App OAuth for authentication:
+
+```bash
+# Step 1: Obtain from GitHub App Settings
+# Navigate to: GitHub Settings → Developer settings → OAuth Apps → Your App
+# Copy the "Client Secret" value
+
+export GITHUB_APP_CLIENT_SECRET="<your-github-app-client-secret>"
+
+# Step 2: Verify in deployment (DO NOT log the actual value)
+if [ -z "$GITHUB_APP_CLIENT_SECRET" ]; then
+    echo "❌ ERROR: GITHUB_APP_CLIENT_SECRET not set!"
+    exit 1
+else
+    echo "✅ GITHUB_APP_CLIENT_SECRET is set (length: ${#GITHUB_APP_CLIENT_SECRET})"
+fi
+
+# Step 3: Configure in deployment environment
+# Add to secrets manager, environment file, or orchestration system
+```
+
+**Deployment Steps for GitHub App OAuth:**
+
+1. **Generate GitHub App Client Secret:**
+   - Go to https://github.com/settings/developers
+   - Click on your OAuth App
+   - In "Client Secret" section, click "Generate a new client secret"
+   - Copy the newly generated secret immediately (it only displays once)
+
+2. **Set in Deployment Environment:**
+   ```bash
+   # For Docker containers
+   docker run -e GITHUB_APP_CLIENT_SECRET="<secret>" codex:latest
+   
+   # For Kubernetes with Secrets
+   kubectl create secret generic github-oauth \
+     --from-literal=GITHUB_APP_CLIENT_SECRET="<secret>"
+   kubectl set env deployment/codex \
+     --from=secret/github-oauth
+   
+   # For systemd service
+   # Add to /etc/systemd/system/codex.service:
+   # Environment="GITHUB_APP_CLIENT_SECRET=<secret>"
+   ```
+
+3. **Verify Configuration:**
+   ```bash
+   # Test authentication endpoint
+   curl -X POST http://localhost:8000/auth/github/callback \
+     -H "Content-Type: application/json" \
+     -d '{"code": "test", "state": "test"}'
+   
+   # Should return 400 Bad Request (invalid code), NOT 500 Server Error
+   # A 500 error indicates GITHUB_APP_CLIENT_SECRET is not set properly
+   ```
+
+#### 3. Additional Service Credentials
+
+For services requiring authentication:
+
+| Service | Environment Variable | How to Obtain |
+|---------|----------------------|---------------|
+| **Slack Webhooks** | `SLACK_WEBHOOK_URL` | Create in Slack App settings → Incoming Webhooks |
+| **AWS Credentials** | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` | AWS IAM → Create Access Keys → Download CSV |
+| **Azure Credentials** | `AZURE_SUBSCRIPTION_ID`, `AZURE_CLIENT_ID`, `AZURE_CLIENT_SECRET` | Azure Portal → App Registrations → Certificates & Secrets |
+| **GCP Credentials** | `GOOGLE_APPLICATION_CREDENTIALS` | GCP Console → Service Accounts → Create Key (JSON) |
+| **API Keys** | Service-specific | Provider's developer console |
+
+**Example Multi-Service Setup:**
+
+```bash
+# Docker Compose (.env file)
+AUTH_SECRET_KEY=<generated-hex-key>
+GITHUB_APP_CLIENT_SECRET=<github-secret>
+SLACK_WEBHOOK_URL=https://hooks.slack.com/services/YOUR/WEBHOOK/URL
+AWS_ACCESS_KEY_ID=<aws-key-id>
+AWS_SECRET_ACCESS_KEY=<aws-secret>
+AZURE_SUBSCRIPTION_ID=<subscription-id>
+```
+
+#### 4. Secrets Management Best Practices
+
+| Practice | Method | Command |
+|----------|--------|---------|
+| **Generate Secure Secrets** | OpenSSL | `openssl rand -hex 32` (32 bytes = 256 bits) |
+| **Store in Vault** | HashiCorp Vault | `vault kv put secret/codex AUTH_SECRET_KEY=...` |
+| **Store in Cloud** | AWS Secrets Manager | `aws secretsmanager create-secret --name codex/auth ...` |
+| **Store in K8s** | Kubernetes Secrets | `kubectl create secret generic codex-auth ...` |
+| **Encrypt at Rest** | etcd (K8s) | Enable encryption: `--encryption-provider-config` |
+| **Rotate Periodically** | Scheduled | Every 90 days minimum |
+| **Audit Access** | Enable logging | CloudTrail, Vault audit logs, K8s audit logs |
+| **Never Log** | Code review | Grep for `AUTH_SECRET_KEY` in logs to verify |
+
+#### 5. Deployment Verification Checklist
+
+Before deploying to production, verify:
+
+- [ ] **AUTH_SECRET_KEY is set:**
+  ```bash
+  if [ -z "$AUTH_SECRET_KEY" ]; then echo "❌ NOT SET"; else echo "✅ SET"; fi
+  ```
+
+- [ ] **GITHUB_APP_CLIENT_SECRET is set** (if using GitHub OAuth):
+  ```bash
+  if [ -z "$GITHUB_APP_CLIENT_SECRET" ]; then echo "❌ NOT SET"; else echo "✅ SET"; fi
+  ```
+
+- [ ] **All service credentials are set:**
+  ```bash
+  # Check all required environment variables
+  for var in AUTH_SECRET_KEY GITHUB_APP_CLIENT_SECRET SLACK_WEBHOOK_URL; do
+    if [ -z "$(eval echo \$$var)" ]; then
+      echo "❌ $var is NOT SET"
+    else
+      echo "✅ $var is set (length: ${#var})"
+    fi
+  done
+  ```
+
+- [ ] **Secrets are NOT committed to git:**
+  ```bash
+  git log -p | grep -i "AUTH_SECRET_KEY\|GITHUB_APP_CLIENT_SECRET" || echo "✅ No secrets in git history"
+  ```
+
+- [ ] **Environment variables are isolated per environment:**
+  - Production secrets ≠ Development secrets
+  - Each environment has separate credential sets
+
+- [ ] **Secrets are rotated on deployment:**
+  ```bash
+  # Example: Auto-generate new key on deploy
+  export AUTH_SECRET_KEY=$(openssl rand -hex 32)
+  ```
+
+
+
 ## Configuration Files
 
 ```yaml
@@ -654,7 +835,7 @@ kubectl exec codex-xxxx -n production -- \
 - [Docker Documentation](https://docs.docker.com/)
 - [Helm Charts](https://helm.sh/docs/)
 - [API Reference](../api/)
-- [Architecture Blueprint](../ARCHITECTURE.md)
+- [Architecture Blueprint](../architecture/INDEX.md)
 
 ---
 

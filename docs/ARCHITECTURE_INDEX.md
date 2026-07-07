@@ -17,7 +17,7 @@ The _codex_ repository implements a Level 4 MLOps-certified, production-grade ML
 | Document | Purpose | Audience | Size |
 |----------|---------|----------|------|
 | [ARCHITECTURE_BLUEPRINT.md](./ARCHITECTURE_BLUEPRINT.md) | Comprehensive repository blueprint | Developers, Architects | 1162 lines |
-| [ARCHITECTURE.md](./ARCHITECTURE.md) | ML framework architecture overview | ML Engineers | 642 lines |
+| [ARCHITECTURE.md](./architecture/INDEX.md) | ML framework architecture overview | ML Engineers | 642 lines |
 | [Architecture.md](./human-facing/architecture.md) | Import shim governance & policy | Developers | 177 lines |
 | [architecture.md](./human-facing/architecture.md) | Quick runtime flow diagrams | Quick Reference | 55 lines |
 
@@ -324,7 +324,7 @@ data:
 ### Architecture-Related Docs
 
 - [ARCHITECTURE_BLUEPRINT.md](./ARCHITECTURE_BLUEPRINT.md) - Full blueprint
-- [ARCHITECTURE.md](./ARCHITECTURE.md) - ML architecture
+- [ARCHITECTURE.md](./architecture/INDEX.md) - ML architecture
 - [Architecture.md](./human-facing/architecture.md) - Import governance
 - [docs/architecture/](./architecture/) - Architecture directory
 

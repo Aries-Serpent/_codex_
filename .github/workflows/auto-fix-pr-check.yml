@@ -29,9 +29,9 @@ jobs:
       checks: write
     steps:
     - name: Checkout PR branch
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
-        ref: ${{ github.head_ref || github.event.pull_request.head.ref }}
+        ref: ${{ github.event.pull_request.head.sha || github.head_ref || github.event.pull_request.head.ref }}
         fetch-depth: 0
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
@@ -62,7 +62,7 @@ jobs:
       continue-on-error: true
     - name: Upload diagnostic report
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: diagnostic-report-${{ github.event.pull_request.number }}
         path: .codex/diagnostic-report.json
@@ -82,7 +82,7 @@ jobs:
       id: gen_comment
       if: steps.diagnostic.outcome == 'failure' && steps.read_report.outputs.report_exists
         == 'true'
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       env:
         AUTO_FIXABLE: ${{ steps.read_report.outputs.auto_fixable }}
         TOTAL_ISSUES: ${{ steps.read_report.outputs.total_issues }}
@@ -223,7 +223,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1

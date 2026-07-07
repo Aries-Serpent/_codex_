@@ -64,7 +64,7 @@ jobs:
       evaluation_complete: ${{ steps.evaluate.outputs.complete }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         fetch-depth: 0
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
@@ -112,7 +112,7 @@ jobs:
         \ to $_TARGET\"\nelse\n  echo \"ℹ️  No learning updates to commit\"\nfi\n"
     - name: Upload evaluation results
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: aftermath-evaluation-${{ github.run_number }}
         path: 'cognitive/evaluations/*.json
@@ -140,7 +140,7 @@ jobs:
       '
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         fetch-depth: 0
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
@@ -189,7 +189,7 @@ jobs:
         \n  git push origin HEAD:\"$_TARGET\"\n  echo \"✅ Cognitive brain updated\
         \ on $_TARGET\"\nelse\n  echo \"ℹ️  No changes to cognitive brain\"\nfi\n"
     - name: Upload pattern artifacts
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: cognitive-patterns-${{ github.run_number }}
         path: '.codex/cognitive_brain/patterns/*.json
@@ -212,7 +212,7 @@ jobs:
     if: always()
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         fetch-depth: 1
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

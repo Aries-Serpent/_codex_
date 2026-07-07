@@ -34,11 +34,11 @@ jobs:
       contents: read
     steps:
     - name: Checkout (needed for session_wrapup_autofix.py)
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         fetch-depth: 1
     - name: Set up Python
-      uses: actions/setup-python@v6.3.0
+      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
       with:
         cache: pip
         python-version: 3.12.13
@@ -125,6 +125,22 @@ jobs:
         \ required.\"\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+  trigger-auto-approval:
+    name: "⚡ Dispatch Auto-Approve (if auth authorized)"
+    needs: [detect-checkbox, await-approval]
+    if: needs.detect-checkbox.outputs.auth_requested == 'true'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Dispatch auto-approve-workflows.yml
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+      run: |
+        gh workflow run auto-approve-workflows.yml \
+          -f approval_source=agent-auth-delegation \
+          -f approval_intent=auto_approve_action_required \
+          -f target_pr="$PR_NUMBER" \
+          -f approval_reason="copilot-auth-enabled"
   cognitive-preflight:
     name: "\U0001F9E0 Cognitive Pre-flight Check"
     runs-on: ubuntu-latest
@@ -132,7 +148,7 @@ jobs:
     if: github.event.action != 'closed'
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         fetch-depth: 50
     - name: Download pending session requirements (if any)
@@ -157,7 +173,7 @@ jobs:
       if: 'github.event_name == ''pull_request'' || github.event_name == ''pull_request_review''
 
         '
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
@@ -225,7 +241,7 @@ jobs:
           \ for step-by-step instructions, ` +\n  `or run: gh workflow run copilot-session-chain.yml\
           \ -f source_branch=${head}`\n);\n"
     - name: Post Mandatory Agent Checklist to PR
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       if: 'github.event_name == ''pull_request'' || github.event_name == ''pull_request_review''
 
         '
@@ -326,7 +342,7 @@ jobs:
           \    body,\n  });\n  console.log(`\u2705 Checklist posted for SHA ${sha}`);\n\
           }\n"
     - name: Surface Session-Type Directives to Checklist
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       if: 'github.event_name == ''pull_request'' || github.event_name == ''pull_request_review''
 
         '
@@ -441,129 +457,200 @@ jobs:
     - name: Detect empty commits in PR
       id: empty_commit_check
       continue-on-error: true
-      run: "echo \"### \U0001F50D Empty Commit Check (REQ-3b)\" >> \"$GITHUB_STEP_SUMMARY\"\
-        \n\n# Ensure the base ref is available locally so git log does not fail silently\n\
-        if ! git fetch --no-tags origin \"${{ github.base_ref }}\" 2>/dev/null; then\n\
-        \  echo \"\u26A0\uFE0F **WARN** \u2014 Unable to fetch base ref origin/${{\
-        \ github.base_ref }}; skipping empty-commit check.\" >> \"$GITHUB_STEP_SUMMARY\"\
-        \n  echo \"::warning::Empty-commit check skipped \u2014 could not fetch origin/${{\
-        \ github.base_ref }}.\"\n  exit 0\nfi\n\n# Obtain commit list relative to\
-        \ the base ref; if this fails, emit WARN instead of a false PASS\nCOMMITS=$(git\
-        \ log --format=\"%H %an: %s\" \"origin/${{ github.base_ref }}\"..HEAD 2>/dev/null)\
-        \ || {\n  echo \"\u26A0\uFE0F **WARN** \u2014 git log failed for range origin/${{\
-        \ github.base_ref }}..HEAD; skipping empty-commit check.\" >> \"$GITHUB_STEP_SUMMARY\"\
-        \n  echo \"::warning::Empty-commit check skipped \u2014 git log failed for\
-        \ origin/${{ github.base_ref }}..HEAD.\"\n  exit 0\n}\n\n# Count commits with\
-        \ no file-tree changes\nEMPTY_COMMITS=$(printf '%s\\n' \"$COMMITS\" | while\
-        \ IFS= read -r line; do\n  [ -z \"$line\" ] && continue\n  SHA=$(echo \"$line\"\
-        \ | awk '{print $1}')\n  # Capture diff-tree output first; if the command\
-        \ fails (e.g., shallow\n  # checkout missing objects) skip this commit rather\
-        \ than treating it\n  # as empty, which would be a false-positive empty-commit\
-        \ warning.\n  CHANGES_OUTPUT=$(git diff-tree --no-commit-id -r --name-only\
-        \ \"$SHA\" 2>/dev/null) || {\n    echo \"::warning::Empty-commit check: git\
-        \ diff-tree failed for $SHA; skipping.\" >&2\n    continue\n  }\n  CHANGES=$(printf\
-        \ '%s\\n' \"$CHANGES_OUTPUT\" | grep -c . || true)\n  # grep -c . counts non-empty\
-        \ lines (exit 1 when 0 matches is silenced\n  # by || true); this correctly\
-        \ handles the empty-output case without\n  # needing pipefail or a separate\
-        \ wc call.\n  [ \"$CHANGES\" -eq 0 ] && echo \"$line\"\ndone)\n\nif [ -z \"\
-        $EMPTY_COMMITS\" ]; then\n  echo \"\u2705 **PASS** \u2014 No empty commits\
-        \ detected in this PR.\" >> \"$GITHUB_STEP_SUMMARY\"\nelse\n  COUNT=$(echo\
-        \ \"$EMPTY_COMMITS\" | grep -c . || true)\n  echo \"\u26A0\uFE0F **WARN**\
-        \ \u2014 ${COUNT} empty commit(s) detected (no file changes):\" >> \"$GITHUB_STEP_SUMMARY\"\
-        \n  echo '```' >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"$EMPTY_COMMITS\" >> \"\
-        $GITHUB_STEP_SUMMARY\"\n  echo '```' >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"\
-        \" >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"**Impact:** Empty commits will appear\
-        \ as AGENT-COMMIT in \\`branch-divergence-monitor.yml\\`\" >> \"$GITHUB_STEP_SUMMARY\"\
-        \n  echo \"and will be auto-absorbed by the fast-forward sync. No action required\
-        \ unless\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"these commits were unintentional\
-        \ \u2014 if so, use \\`git rebase -i\\` to drop them\" >> \"$GITHUB_STEP_SUMMARY\"\
-        \n  echo \"**before** pushing to remote (after push, force-push is required\
-        \ to remove).\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"::warning::${COUNT}\
-        \ empty commit(s) found in PR \u2014 will be AGENT-COMMIT in divergence monitor\
-        \ (auto-absorbed)\"\nfi\n"
+      env:
+        BASE_REF: ${{ github.base_ref }}
+      run: |
+        echo "### 🔍 Empty Commit Check (REQ-3b)" >> "$GITHUB_STEP_SUMMARY"
+
+        # Ensure the base ref is available locally so git log does not fail silently
+        if ! git fetch --no-tags origin "$BASE_REF" 2>/dev/null; then
+          echo "⚠️  **WARN** — Unable to fetch base ref origin/$BASE_REF; skipping empty-commit check." >> "$GITHUB_STEP_SUMMARY"
+          echo "::warning::Empty-commit check skipped — could not fetch origin/$BASE_REF."
+          exit 0
+        fi
+
+        # Obtain commit list relative to the base ref; if this fails, emit WARN instead of a false PASS
+        COMMITS=$(git log --format="%H %an: %s" "origin/$BASE_REF"..HEAD 2>/dev/null) || {
+          echo "⚠️  **WARN** — git log failed for range origin/$BASE_REF..HEAD; skipping empty-commit check." >> "$GITHUB_STEP_SUMMARY"
+          echo "::warning::Empty-commit check skipped — git log failed for origin/$BASE_REF..HEAD."
+          exit 0
+        }
+
+        # Count commits with no file-tree changes
+        EMPTY_COMMITS=$(printf '%s\n' "$COMMITS" | while IFS= read -r line; do
+          [ -z "$line" ] && continue
+          SHA=$(echo "$line" | awk '{print $1}')
+          # Capture diff-tree output first; if the command fails (e.g., shallow
+          # checkout missing objects) skip this commit rather than treating it
+          # as empty, which would be a false-positive empty-commit warning.
+          CHANGES_OUTPUT=$(git diff-tree --no-commit-id -r --name-only "$SHA" 2>/dev/null) || {
+            echo "::warning::Empty-commit check: git diff-tree failed for $SHA; skipping." >&2
+            continue
+          }
+          CHANGES=$(printf '%s\n' "$CHANGES_OUTPUT" | grep -c . || true)
+          # grep -c . counts non-empty lines (exit 1 when 0 matches is silenced
+          # by || true); this correctly handles the empty-output case without
+          # needing pipefail or a separate wc call.
+          [ "$CHANGES" -eq 0 ] && echo "$line"
+        done)
+
+        if [ -z "$EMPTY_COMMITS" ]; then
+          echo "✅ **PASS** — No empty commits detected in this PR." >> "$GITHUB_STEP_SUMMARY"
+        else
+          COUNT=$(echo "$EMPTY_COMMITS" | grep -c . || true)
+          echo "⚠️  **WARN** — ${COUNT} empty commit(s) detected (no file changes):" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          echo "$EMPTY_COMMITS" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Impact:** Empty commits will appear as AGENT-COMMIT in \`branch-divergence-monitor.yml\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "and will be auto-absorbed by the fast-forward sync. No action required unless" >> "$GITHUB_STEP_SUMMARY"
+          echo "these commits were unintentional — if so, use \`git rebase -i\` to drop them" >> "$GITHUB_STEP_SUMMARY"
+          echo "**before** pushing to remote (after push, force-push is required to remove)." >> "$GITHUB_STEP_SUMMARY"
+          echo "::warning::${COUNT} empty commit(s) found in PR — will be AGENT-COMMIT in divergence monitor (auto-absorbed)"
+        fi
     - name: Verify Accountability Report updated in last commit
       id: accountability_check
-      run: "REPORT=\"docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\"\n\necho\
-        \ \"### \U0001F50D Accountability Report Check\" >> \"$GITHUB_STEP_SUMMARY\"\
-        \necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\n\n# Dependabot bots don't maintain\
-        \ the accountability report\nACTOR=\"${{ github.actor }}\"\nif [[ \"${ACTOR}\"\
-        \ == \"dependabot[bot]\" || \"${ACTOR}\" == \"dependabot-preview[bot]\" ]];\
-        \ then\n  echo \"\u23ED\uFE0F **SKIP** \u2014 Actor is \\`${ACTOR}\\` (bot);\
-        \ accountability report not required.\" >> \"$GITHUB_STEP_SUMMARY\"\n  exit\
-        \ 0\nfi\n\nif [ ! -f \"$REPORT\" ]; then\n  echo \"\u274C **FAIL** \u2014\
-        \ \\`${REPORT}\\` does not exist.\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"\
-        **Fix:** Create this file and commit it before activating a session.\" >>\
-        \ \"$GITHUB_STEP_SUMMARY\"\n  exit 1\nfi\n\n# Skip past consecutive infrastructure\
-        \ / [skip ci] commits authored\n# by github-actions[bot] (auto-merge, manifest\
-        \ refresh, follow-up\n# prompt regeneration) \u2014 they should never be expected\
-        \ to touch\n# the accountability report.  S178: prevents REQ-4 from firing\
-        \ on\n# branches where branch-rebase-gate auto-merged main on top of an\n\
-        # agent commit that DID update the report.\nMAX_LOOKBACK=10\nBASE_REF=\"HEAD~1\"\
-        \nSKIPPED=0\nwhile [ \"$SKIPPED\" -lt \"$MAX_LOOKBACK\" ]; do\n  CANDIDATE_IDX=$((SKIPPED\
-        \ + 1))\n  CANDIDATE=\"HEAD~$((CANDIDATE_IDX - 1))\"\n  # Resolve the candidate\
-        \ commit metadata. If git rev-parse fails\n  # (shallow clone limit reached),\
-        \ break out and use whatever\n  # BASE_REF we have so far \u2014 never fall\
-        \ through silently.\n  if ! git rev-parse --verify --quiet \"$CANDIDATE^{commit}\"\
-        \ >/dev/null 2>&1; then\n    break\n  fi\n  CAUTHOR=$(git log -1 --format='%an'\
-        \ \"$CANDIDATE\" 2>/dev/null || echo \"\")\n  CSUBJECT=$(git log -1 --format='%s'\
-        \ \"$CANDIDATE\" 2>/dev/null || echo \"\")\n  case \"$CAUTHOR\" in\n    \"\
-        github-actions[bot]\"|\"github-actions\"|\"dependabot[bot]\"|\"dependabot-preview[bot]\"\
-        )\n      IS_INFRA_AUTHOR=1 ;;\n    *) IS_INFRA_AUTHOR=0 ;;\n  esac\n  IS_INFRA_SUBJECT=0\n\
-        \  case \"$CSUBJECT\" in\n    *\"[skip ci]\"*|\"chore: auto-merge\"*|\"chore(manifest):\"\
-        *|\"chore: Generate follow-up\"*|\"chore: generate follow-up\"*)\n      IS_INFRA_SUBJECT=1\
-        \ ;;\n  esac\n  if [ \"$IS_INFRA_AUTHOR\" = \"1\" ] || [ \"$IS_INFRA_SUBJECT\"\
-        \ = \"1\" ]; then\n    SKIPPED=$((SKIPPED + 1))\n    continue\n  fi\n  BASE_REF=\"\
-        HEAD~$((SKIPPED + 1))\"\n  break\ndone\n\nif git diff --name-only \"$BASE_REF\"\
-        \ HEAD 2>/dev/null | grep -qF \"$REPORT\"; then\n  if [ \"$SKIPPED\" -gt 0\
-        \ ]; then\n    echo \"\u2705 **PASS** \u2014 \\`${REPORT}\\` was updated in\
-        \ the last agent commit (skipped ${SKIPPED} infra commit(s) on top).\" >>\
-        \ \"$GITHUB_STEP_SUMMARY\"\n  else\n    echo \"\u2705 **PASS** \u2014 \\`${REPORT}\\\
-        ` was updated in the last commit.\" >> \"$GITHUB_STEP_SUMMARY\"\n  fi\nelse\n\
-        \  LAST_TOUCH=$(git log -1 --format=\"%ar\" -- \"$REPORT\" 2>/dev/null ||\
-        \ echo \"unknown\")\n  echo \"\u274C **FAIL** \u2014 \\`${REPORT}\\` was NOT\
-        \ updated in the last commit.\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"Last\
-        \ modified: ${LAST_TOUCH}\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"\" >> \"\
-        $GITHUB_STEP_SUMMARY\"\n  echo \"**Fix:** Update the accountability report\
-        \ in your next commit before session activation.\" >> \"$GITHUB_STEP_SUMMARY\"\
-        \n  exit 1\nfi\n"
+      env:
+        GITHUB_ACTOR: ${{ github.actor }}
+      run: |
+        REPORT="docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
+
+        echo "### 🔍 Accountability Report Check" >> "$GITHUB_STEP_SUMMARY"
+        echo "" >> "$GITHUB_STEP_SUMMARY"
+
+        # Dependabot bots don't maintain the accountability report
+        ACTOR="$GITHUB_ACTOR"
+        if [[ "${ACTOR}" == "dependabot[bot]" || "${ACTOR}" == "dependabot-preview[bot]" ]]; then
+          echo "⏭️  **SKIP** — Actor is \`${ACTOR}\` (bot); accountability report not required." >> "$GITHUB_STEP_SUMMARY"
+          exit 0
+        fi
+
+        if [ ! -f "$REPORT" ]; then
+          echo "❌ **FAIL** — \`${REPORT}\` does not exist." >> "$GITHUB_STEP_SUMMARY"
+          echo "**Fix:** Create this file and commit it before activating a session." >> "$GITHUB_STEP_SUMMARY"
+          exit 1
+        fi
+
+        # Skip past consecutive infrastructure / [skip ci] commits authored
+        # by github-actions[bot] (auto-merge, manifest refresh, follow-up
+        # prompt regeneration) — they should never be expected to touch
+        # the accountability report.  S178: prevents REQ-4 from firing on
+        # branches where branch-rebase-gate auto-merged main on top of an
+        # agent commit that DID update the report.
+        MAX_LOOKBACK=10
+        BASE_REF="HEAD~1"
+        SKIPPED=0
+        while [ "$SKIPPED" -lt "$MAX_LOOKBACK" ]; do
+          CANDIDATE_IDX=$((SKIPPED + 1))
+          CANDIDATE="HEAD~$((CANDIDATE_IDX - 1))"
+          # Resolve the candidate commit metadata. If git rev-parse fails
+          # (shallow clone limit reached), break out and use whatever
+          # BASE_REF we have so far — never fall through silently.
+          if ! git rev-parse --verify --quiet "$CANDIDATE^{commit}" >/dev/null 2>&1; then
+            break
+          fi
+          CAUTHOR=$(git log -1 --format='%an' "$CANDIDATE" 2>/dev/null || echo "")
+          CSUBJECT=$(git log -1 --format='%s' "$CANDIDATE" 2>/dev/null || echo "")
+          case "$CAUTHOR" in
+            "github-actions[bot]"|"github-actions"|"dependabot[bot]"|"dependabot-preview[bot]")
+              IS_INFRA_AUTHOR=1 ;;
+            *) IS_INFRA_AUTHOR=0 ;;
+          esac
+          IS_INFRA_SUBJECT=0
+          case "$CSUBJECT" in
+            *"[skip ci]"*|"chore: auto-merge"*|"chore(manifest):"*|"chore: Generate follow-up"*|"chore: generate follow-up"*)
+              IS_INFRA_SUBJECT=1 ;;
+          esac
+          if [ "$IS_INFRA_AUTHOR" = "1" ] || [ "$IS_INFRA_SUBJECT" = "1" ]; then
+            SKIPPED=$((SKIPPED + 1))
+            continue
+          fi
+          BASE_REF="HEAD~$((SKIPPED + 1))"
+          break
+        done
+
+        if git diff --name-only "$BASE_REF" HEAD 2>/dev/null | grep -qF "$REPORT"; then
+          if [ "$SKIPPED" -gt 0 ]; then
+            echo "✅ **PASS** — \`${REPORT}\` was updated in the last agent commit (skipped ${SKIPPED} infra commit(s) on top)." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "✅ **PASS** — \`${REPORT}\` was updated in the last commit." >> "$GITHUB_STEP_SUMMARY"
+          fi
+        else
+          LAST_TOUCH=$(git log -1 --format="%ar" -- "$REPORT" 2>/dev/null || echo "unknown")
+          echo "❌ **FAIL** — \`${REPORT}\` was NOT updated in the last commit." >> "$GITHUB_STEP_SUMMARY"
+          echo "Last modified: ${LAST_TOUCH}" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Fix:** Update the accountability report in your next commit before session activation." >> "$GITHUB_STEP_SUMMARY"
+          exit 1
+        fi
     - name: Verify CHANGELOG.md updated in last commit
       id: changelog_check
-      run: "CHANGELOG=\"CHANGELOG.md\"\n\necho \"### \U0001F50D CHANGELOG.md Check\"\
-        \ >> \"$GITHUB_STEP_SUMMARY\"\necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\n\n#\
-        \ Dependabot bots don't maintain the CHANGELOG \u2014 same exemption as REQ-4.\n\
-        ACTOR=\"${{ github.actor }}\"\nif [[ \"${ACTOR}\" == \"dependabot[bot]\" ||\
-        \ \"${ACTOR}\" == \"dependabot-preview[bot]\" ]]; then\n  echo \"\u23ED\uFE0F\
-        \ **SKIP** \u2014 Actor is \\`${ACTOR}\\` (bot); CHANGELOG.md not required.\"\
-        \ >> \"$GITHUB_STEP_SUMMARY\"\n  exit 0\nfi\n\nif [ ! -f \"$CHANGELOG\" ];\
-        \ then\n  echo \"\u26A0\uFE0F **SKIP** \u2014 \\`${CHANGELOG}\\` does not\
-        \ exist in repo root.\" >> \"$GITHUB_STEP_SUMMARY\"\n  exit 0\nfi\n\n# Skip\
-        \ past consecutive infrastructure / [skip ci] commits before\n# checking REQ-5\
-        \ \u2014 same logic as REQ-4 above.\nMAX_LOOKBACK=10\nBASE_REF=\"HEAD~1\"\n\
-        SKIPPED=0\nwhile [ \"$SKIPPED\" -lt \"$MAX_LOOKBACK\" ]; do\n  CANDIDATE_IDX=$((SKIPPED\
-        \ + 1))\n  CANDIDATE=\"HEAD~$((CANDIDATE_IDX - 1))\"\n  if ! git rev-parse\
-        \ --verify --quiet \"$CANDIDATE^{commit}\" >/dev/null 2>&1; then\n    break\n\
-        \  fi\n  CAUTHOR=$(git log -1 --format='%an' \"$CANDIDATE\" 2>/dev/null ||\
-        \ echo \"\")\n  CSUBJECT=$(git log -1 --format='%s' \"$CANDIDATE\" 2>/dev/null\
-        \ || echo \"\")\n  case \"$CAUTHOR\" in\n    \"github-actions[bot]\"|\"github-actions\"\
-        |\"dependabot[bot]\"|\"dependabot-preview[bot]\")\n      IS_INFRA_AUTHOR=1\
-        \ ;;\n    *) IS_INFRA_AUTHOR=0 ;;\n  esac\n  IS_INFRA_SUBJECT=0\n  case \"\
-        $CSUBJECT\" in\n    *\"[skip ci]\"*|\"chore: auto-merge\"*|\"chore(manifest):\"\
-        *|\"chore: Generate follow-up\"*|\"chore: generate follow-up\"*)\n      IS_INFRA_SUBJECT=1\
-        \ ;;\n  esac\n  if [ \"$IS_INFRA_AUTHOR\" = \"1\" ] || [ \"$IS_INFRA_SUBJECT\"\
-        \ = \"1\" ]; then\n    SKIPPED=$((SKIPPED + 1))\n    continue\n  fi\n  BASE_REF=\"\
-        HEAD~$((SKIPPED + 1))\"\n  break\ndone\n\nif git diff --name-only \"$BASE_REF\"\
-        \ HEAD 2>/dev/null | grep -qF \"$CHANGELOG\"; then\n  if [ \"$SKIPPED\" -gt\
-        \ 0 ]; then\n    echo \"\u2705 **PASS** \u2014 \\`${CHANGELOG}\\` was updated\
-        \ in the last agent commit (skipped ${SKIPPED} infra commit(s) on top).\"\
-        \ >> \"$GITHUB_STEP_SUMMARY\"\n  else\n    echo \"\u2705 **PASS** \u2014 \\\
-        `${CHANGELOG}\\` was updated in the last commit.\" >> \"$GITHUB_STEP_SUMMARY\"\
-        \n  fi\nelse\n  LAST_TOUCH=$(git log -1 --format=\"%ar\" -- \"$CHANGELOG\"\
-        \ 2>/dev/null || echo \"unknown\")\n  echo \"\u274C **FAIL** \u2014 \\`${CHANGELOG}\\\
-        ` was NOT updated in the last commit.\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo\
-        \ \"Last modified: ${LAST_TOUCH}\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"\"\
-        \ >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"**Fix:** Add a \\`## [Unreleased]\\\
-        ` entry to \\`CHANGELOG.md\\` in your next commit.\" >> \"$GITHUB_STEP_SUMMARY\"\
-        \n  exit 1\nfi\n"
+      env:
+        GITHUB_ACTOR: ${{ github.actor }}
+      run: |
+        CHANGELOG="CHANGELOG.md"
+
+        echo "### 🔍 CHANGELOG.md Check" >> "$GITHUB_STEP_SUMMARY"
+        echo "" >> "$GITHUB_STEP_SUMMARY"
+
+        # Dependabot bots don't maintain the CHANGELOG — same exemption as REQ-4.
+        ACTOR="$GITHUB_ACTOR"
+        if [[ "${ACTOR}" == "dependabot[bot]" || "${ACTOR}" == "dependabot-preview[bot]" ]]; then
+          echo "⏭️  **SKIP** — Actor is \`${ACTOR}\` (bot); CHANGELOG.md not required." >> "$GITHUB_STEP_SUMMARY"
+          exit 0
+        fi
+
+        if [ ! -f "$CHANGELOG" ]; then
+          echo "⚠️  **SKIP** — \`${CHANGELOG}\` does not exist in repo root." >> "$GITHUB_STEP_SUMMARY"
+          exit 0
+        fi
+
+        # Skip past consecutive infrastructure / [skip ci] commits before
+        # checking REQ-5 — same logic as REQ-4 above.
+        MAX_LOOKBACK=10
+        BASE_REF="HEAD~1"
+        SKIPPED=0
+        while [ "$SKIPPED" -lt "$MAX_LOOKBACK" ]; do
+          CANDIDATE_IDX=$((SKIPPED + 1))
+          CANDIDATE="HEAD~$((CANDIDATE_IDX - 1))"
+          if ! git rev-parse --verify --quiet "$CANDIDATE^{commit}" >/dev/null 2>&1; then
+            break
+          fi
+          CAUTHOR=$(git log -1 --format='%an' "$CANDIDATE" 2>/dev/null || echo "")
+          CSUBJECT=$(git log -1 --format='%s' "$CANDIDATE" 2>/dev/null || echo "")
+          case "$CAUTHOR" in
+            "github-actions[bot]"|"github-actions"|"dependabot[bot]"|"dependabot-preview[bot]")
+              IS_INFRA_AUTHOR=1 ;;
+            *) IS_INFRA_AUTHOR=0 ;;
+          esac
+          IS_INFRA_SUBJECT=0
+          case "$CSUBJECT" in
+            *"[skip ci]"*|"chore: auto-merge"*|"chore(manifest):"*|"chore: Generate follow-up"*|"chore: generate follow-up"*)
+              IS_INFRA_SUBJECT=1 ;;
+          esac
+          if [ "$IS_INFRA_AUTHOR" = "1" ] || [ "$IS_INFRA_SUBJECT" = "1" ]; then
+            SKIPPED=$((SKIPPED + 1))
+            continue
+          fi
+          BASE_REF="HEAD~$((SKIPPED + 1))"
+          break
+        done
+
+        if git diff --name-only "$BASE_REF" HEAD 2>/dev/null | grep -qF "$CHANGELOG"; then
+          if [ "$SKIPPED" -gt 0 ]; then
+            echo "✅ **PASS** — \`${CHANGELOG}\` was updated in the last agent commit (skipped ${SKIPPED} infra commit(s) on top)." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "✅ **PASS** — \`${CHANGELOG}\` was updated in the last commit." >> "$GITHUB_STEP_SUMMARY"
+          fi
+        else
+          LAST_TOUCH=$(git log -1 --format="%ar" -- "$CHANGELOG" 2>/dev/null || echo "unknown")
+          echo "❌ **FAIL** — \`${CHANGELOG}\` was NOT updated in the last commit." >> "$GITHUB_STEP_SUMMARY"
+          echo "Last modified: ${LAST_TOUCH}" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Fix:** Add a \`## [Unreleased]\` entry to \`CHANGELOG.md\` in your next commit." >> "$GITHUB_STEP_SUMMARY"
+          exit 1
+        fi
     - name: 'Auto-fix: self-heal accountability report and CHANGELOG (REQ-4/5)'
       id: autofix_docs
       if: "always() && (steps.accountability_check.outcome == 'failure' ||\n steps.changelog_check.outcome\
@@ -689,7 +776,7 @@ jobs:
       if: 'github.event_name == ''pull_request'' || github.event_name == ''pull_request_review''
 
         '
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
@@ -815,7 +902,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
@@ -948,7 +1035,7 @@ jobs:
 
       '
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         fetch-depth: 1
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
@@ -975,7 +1062,7 @@ jobs:
     - name: Set repo variables via CODEX_MASTER_KEY (maintainer auth)
       id: set_vars
       continue-on-error: true
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
@@ -1006,7 +1093,7 @@ jobs:
           \ COGNITIVE_BRAIN_ALLOWED_ACTORS: ${updatedActors}`);\n\ncore.setOutput('updated_actors',\
           \ updatedActors);\n"
     - name: Dispatch hub for token delegation approval (agent-auth-delegation)
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
@@ -1060,7 +1147,7 @@ jobs:
         \ \"${TARGET_BRANCH}\" || true\n  git push origin HEAD:refs/heads/${TARGET_BRANCH}\n\
         fi\n"
     - name: Dispatch GitHub Guru (maintainer verification)
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         script: "try {\n  await github.rest.actions.createWorkflowDispatch({\n   \
@@ -1124,7 +1211,7 @@ jobs:
         \n"
     - name: Session Concurrency Gate
       id: session_gate
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         script: "const prNumber = parseInt('${{ needs.detect-checkbox.outputs.pr_number\
@@ -1251,7 +1338,7 @@ jobs:
     - name: Post @copilot continue
       id: post_copilot_comment
       if: steps.session_gate.outputs.acquired == 'true'
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       env:
         CB_PATTERNS: ${{ steps.cb_patterns.outputs.cb_markdown || '' }}
       with:
@@ -1343,7 +1430,7 @@ jobs:
       contents: read
     steps:
     - name: Checkout (for approve_pending_runs.py)
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         fetch-depth: 1
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
@@ -1358,7 +1445,7 @@ jobs:
         app-id: ${{ secrets._GITHUB_APP_ID }}
         private-key: ${{ secrets._GITHUB_APP_PRIVATE_KEY }}
     - name: Set up Python
-      uses: actions/setup-python@v6.3.0
+      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
       with:
         cache: pip
         python-version: 3.12.13
@@ -1386,12 +1473,12 @@ jobs:
     if: github.event.action == 'closed'
     steps:
     - name: Checkout repository for shared helpers
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         fetch-depth: 1
         persist-credentials: false
     - name: Release COPILOT_ACTIVE_SESSION and trigger next queued PR
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
@@ -1494,7 +1581,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}

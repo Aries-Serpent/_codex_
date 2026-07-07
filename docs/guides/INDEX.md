@@ -5,7 +5,7 @@
 Comprehensive guides, references, and documentation for repository usage and architecture.
 
 ## Quick Start
-- [Quickstart Guide](QUICKSTART.md) - Get started quickly
+- [Quickstart Guide](./quickstart.md) - Get started quickly
 
 ## Architecture & Design
 - [Repository Architecture Diagrams](REPOSITORY_ARCHITECTURE_DIAGRAMS.md) - Visual architecture documentation

@@ -135,7 +135,7 @@ See `MCP_IMPLEMENTATION_SUMMARY.md` for detailed information on MCP capabilities
 ## 10. Additional references
 
 - [Quickstart walkthrough](quickstart.md)
-- [CLI reference](CLI.md)
+- [CLI reference](ast/CLI.md)
 - [Logging guide](guides/LOGGING.md)
 
 *Last reviewed:* 2026-03-05

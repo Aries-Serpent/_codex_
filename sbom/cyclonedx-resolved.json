@@ -1,0 +1,269 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "serialNumber": "urn:uuid:codex-ml-sbom-2026-07-07T17-46-22.854298",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-07-07T17:46:22.854308",
+    "tools": [
+      {
+        "vendor": "astral-sh",
+        "name": "uv",
+        "version": "0.11.27"
+      }
+    ],
+    "component": {
+      "type": "application",
+      "name": "codex-ml",
+      "version": "0.1.0"
+    }
+  },
+  "components": [
+    {
+      "type": "library",
+      "name": "annotated-doc",
+      "version": "0.0.4",
+      "purl": "pkg:pypi/annotated-doc@0.0.4"
+    },
+    {
+      "type": "library",
+      "name": "annotated-types",
+      "version": "0.7.0",
+      "purl": "pkg:pypi/annotated-types@0.7.0"
+    },
+    {
+      "type": "library",
+      "name": "antlr4-python3-runtime",
+      "version": "4.9.3",
+      "purl": "pkg:pypi/antlr4-python3-runtime@4.9.3"
+    },
+    {
+      "type": "library",
+      "name": "certifi",
+      "version": "2026.6.17",
+      "purl": "pkg:pypi/certifi@2026.6.17"
+    },
+    {
+      "type": "library",
+      "name": "cffi",
+      "version": "2.0.0",
+      "purl": "pkg:pypi/cffi@2.0.0"
+    },
+    {
+      "type": "library",
+      "name": "charset-normalizer",
+      "version": "3.4.7",
+      "purl": "pkg:pypi/charset-normalizer@3.4.7"
+    },
+    {
+      "type": "library",
+      "name": "click",
+      "version": "8.3.3",
+      "purl": "pkg:pypi/click@8.3.3"
+    },
+    {
+      "type": "library",
+      "name": "colorama",
+      "version": "0.4.6",
+      "purl": "pkg:pypi/colorama@0.4.6"
+    },
+    {
+      "type": "library",
+      "name": "cryptography",
+      "version": "48.0.1",
+      "purl": "pkg:pypi/cryptography@48.0.1"
+    },
+    {
+      "type": "library",
+      "name": "defusedxml",
+      "version": "0.7.1",
+      "purl": "pkg:pypi/defusedxml@0.7.1"
+    },
+    {
+      "type": "library",
+      "name": "filelock",
+      "version": "3.29.0",
+      "purl": "pkg:pypi/filelock@3.29.0"
+    },
+    {
+      "type": "library",
+      "name": "hydra-core",
+      "version": "1.3.2",
+      "purl": "pkg:pypi/hydra-core@1.3.2"
+    },
+    {
+      "type": "library",
+      "name": "idna",
+      "version": "3.18",
+      "purl": "pkg:pypi/idna@3.18"
+    },
+    {
+      "type": "library",
+      "name": "jinja2",
+      "version": "3.1.6",
+      "purl": "pkg:pypi/jinja2@3.1.6"
+    },
+    {
+      "type": "library",
+      "name": "libcst",
+      "version": "1.8.6",
+      "purl": "pkg:pypi/libcst@1.8.6"
+    },
+    {
+      "type": "library",
+      "name": "mando",
+      "version": "0.7.1",
+      "purl": "pkg:pypi/mando@0.7.1"
+    },
+    {
+      "type": "library",
+      "name": "markdown-it-py",
+      "version": "4.0.0",
+      "purl": "pkg:pypi/markdown-it-py@4.0.0"
+    },
+    {
+      "type": "library",
+      "name": "markupsafe",
+      "version": "3.0.3",
+      "purl": "pkg:pypi/markupsafe@3.0.3"
+    },
+    {
+      "type": "library",
+      "name": "marshmallow",
+      "version": "3.26.2",
+      "purl": "pkg:pypi/marshmallow@3.26.2"
+    },
+    {
+      "type": "library",
+      "name": "mdurl",
+      "version": "0.1.2",
+      "purl": "pkg:pypi/mdurl@0.1.2"
+    },
+    {
+      "type": "library",
+      "name": "omegaconf",
+      "version": "2.3.0",
+      "purl": "pkg:pypi/omegaconf@2.3.0"
+    },
+    {
+      "type": "library",
+      "name": "packaging",
+      "version": "25.0",
+      "purl": "pkg:pypi/packaging@25.0"
+    },
+    {
+      "type": "library",
+      "name": "parso",
+      "version": "0.8.6",
+      "purl": "pkg:pypi/parso@0.8.6"
+    },
+    {
+      "type": "library",
+      "name": "pycparser",
+      "version": "3.0",
+      "purl": "pkg:pypi/pycparser@3.0"
+    },
+    {
+      "type": "library",
+      "name": "pydantic",
+      "version": "2.13.3",
+      "purl": "pkg:pypi/pydantic@2.13.3"
+    },
+    {
+      "type": "library",
+      "name": "pydantic-core",
+      "version": "2.46.3",
+      "purl": "pkg:pypi/pydantic-core@2.46.3"
+    },
+    {
+      "type": "library",
+      "name": "pydantic-settings",
+      "version": "2.14.2",
+      "purl": "pkg:pypi/pydantic-settings@2.14.2"
+    },
+    {
+      "type": "library",
+      "name": "pygments",
+      "version": "2.20.0",
+      "purl": "pkg:pypi/pygments@2.20.0"
+    },
+    {
+      "type": "library",
+      "name": "pyjwt",
+      "version": "2.13.0",
+      "purl": "pkg:pypi/pyjwt@2.13.0"
+    },
+    {
+      "type": "library",
+      "name": "pynacl",
+      "version": "1.6.2",
+      "purl": "pkg:pypi/pynacl@1.6.2"
+    },
+    {
+      "type": "library",
+      "name": "python-dotenv",
+      "version": "1.2.2",
+      "purl": "pkg:pypi/python-dotenv@1.2.2"
+    },
+    {
+      "type": "library",
+      "name": "pyyaml",
+      "version": "6.0.3",
+      "purl": "pkg:pypi/pyyaml@6.0.3"
+    },
+    {
+      "type": "library",
+      "name": "radon",
+      "version": "6.0.1",
+      "purl": "pkg:pypi/radon@6.0.1"
+    },
+    {
+      "type": "library",
+      "name": "requests",
+      "version": "2.34.2",
+      "purl": "pkg:pypi/requests@2.34.2"
+    },
+    {
+      "type": "library",
+      "name": "rich",
+      "version": "15.0.0",
+      "purl": "pkg:pypi/rich@15.0.0"
+    },
+    {
+      "type": "library",
+      "name": "shellingham",
+      "version": "1.5.4",
+      "purl": "pkg:pypi/shellingham@1.5.4"
+    },
+    {
+      "type": "library",
+      "name": "six",
+      "version": "1.17.0",
+      "purl": "pkg:pypi/six@1.17.0"
+    },
+    {
+      "type": "library",
+      "name": "typer",
+      "version": "0.25.0",
+      "purl": "pkg:pypi/typer@0.25.0"
+    },
+    {
+      "type": "library",
+      "name": "typing-extensions",
+      "version": "4.15.0",
+      "purl": "pkg:pypi/typing-extensions@4.15.0"
+    },
+    {
+      "type": "library",
+      "name": "typing-inspection",
+      "version": "0.4.2",
+      "purl": "pkg:pypi/typing-inspection@0.4.2"
+    },
+    {
+      "type": "library",
+      "name": "urllib3",
+      "version": "2.7.0",
+      "purl": "pkg:pypi/urllib3@2.7.0"
+    }
+  ]
+}

@@ -31,9 +31,13 @@ Authentication flow (GitHub App)::
 
 Webhook security::
 
+    import os
     X-Hub-Signature-256: sha256=<HMAC-SHA256(secret, body)>
 
-    verifier = WebhookVerifier(secret="webhook-secret")  <!-- pragma: allowlist secret -->
+    secret = os.getenv("GITHUB_WEBHOOK_SECRET")
+    if not secret:
+        raise ValueError("GITHUB_WEBHOOK_SECRET environment variable required")
+    verifier = WebhookVerifier(secret=secret)
     verifier.verify(request_body_bytes, signature_header)
 
 Required dependency (already in pyproject.toml)::

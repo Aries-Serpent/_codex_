@@ -24,7 +24,7 @@ jobs:
       is_merge: ${{ steps.check.outputs.is_merge }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         fetch-depth: 1
     - name: Check if merge commit
@@ -43,13 +43,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs: detect-merge
+    outputs:
+      status: ${{ steps.status.outputs.status }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       with:
         fetch-depth: 50
     - name: Set up Python
-      uses: actions/setup-python@v6.3.0
+      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
       with:
         python-version: '3.12'
         cache: 'pip'
@@ -72,7 +74,7 @@ jobs:
         \ ${STATUS} (score: ${SCORE})\"\n"
     - name: Upload compliance report
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
       with:
         name: governance-report
         path: '.codex/PHASE_12_2_COMPLIANCE_REPORT.md
@@ -83,7 +85,7 @@ jobs:
         retention-days: 30
     - name: Post PR comment
       if: github.event_name == 'pull_request' && always()
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       with:
         script: "const fs = require('fs');\nconst status = '${{ steps.status.outputs.status\
           \ }}';\nconst score = '${{ steps.status.outputs.score }}';\nconst statusEmoji\
@@ -118,3 +120,21 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+  auto-approve-on-compliance:
+      name: "⚡ Auto-Approve if Compliance Passed"
+      needs: compliance-check
+      if: |
+        success() &&
+        needs.compliance-check.outputs.status == 'APPROVED' &&
+        github.event_name == 'pull_request'
+      runs-on: ubuntu-latest
+      steps:
+      - name: Dispatch auto-approve-workflows
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        run: |
+          gh workflow run auto-approve-workflows.yml \
+            -f approval_source=workflow-execution-gate \
+            -f approval_intent=auto_approve_action_required \
+            -f target_pr="${{ github.event.pull_request.number }}" \
+            -f approval_reason="phase-12-2-compliance-approved"

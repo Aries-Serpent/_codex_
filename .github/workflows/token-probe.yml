@@ -149,7 +149,7 @@ jobs:
     if: always()
     steps:
     - name: Post consolidated result to PR
-      uses: actions/github-script@v8
+      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
       env:
         MASTER_FUNCTIONAL: ${{ needs.probe-master-key.outputs.functional }}
         MASTER_READ: ${{ needs.probe-master-key.outputs.read_status }}

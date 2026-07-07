@@ -55,7 +55,7 @@
    - `tests/` — Test suite
    - `docs/` — Documentation
 
-3. **Read:** [Architecture Overview](./ARCHITECTURE.md) (skim first 20% to understand layers)
+3. **Read:** [Architecture Overview](./architecture/INDEX.md) (skim first 20% to understand layers)
 
 4. **Checkpoint:** Can you identify the 5 layers?
 
@@ -339,7 +339,7 @@ You've learned:
 
 **Goal:** Understand the 5-layer architecture in detail
 
-1. **Read:** [Complete Architecture Guide](./ARCHITECTURE.md)
+1. **Read:** [Complete Architecture Guide](./architecture/INDEX.md)
 
 2. **Map the architecture:**
    - Draw each layer on paper
@@ -585,7 +585,7 @@ Choose a specialization based on your interests:
    - Cloud training
    - Monitoring and logging
 
-4. **[CI/CD Pipelines](./CI.md)**
+4. **[CI/CD Pipelines](./ci/CI_FAILURE_ANALYSIS.md)**
    - GitHub Actions setup
    - Testing automation
    - Deployment automation
@@ -675,7 +675,7 @@ Use this checklist to track your progress:
 | Topic | Time | Resource |
 |-------|------|----------|
 | **Quick Start** | 15 min | [Onboarding](./ONBOARDING_QUICKSTART.md) |
-| **Architecture** | 20 min | [Architecture Guide](./ARCHITECTURE.md) |
+| **Architecture** | 20 min | [Architecture Guide](./architecture/INDEX.md) |
 | **Configuration** | 30 min | [Hydra Guide](./configuration/HYDRA_GUIDE.md) |
 | **Training** | 60 min | [Training Guide](./training/README.md) |
 | **Evaluation** | 45 min | [Evaluation Guide](./guides/fairness_evaluation_guide.md) |

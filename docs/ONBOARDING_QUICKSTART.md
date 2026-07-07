@@ -171,7 +171,7 @@ python -c "from codex.cli import app; print('Import successful!')"
 - Plugin architecture
 
 ### 📚 Want to Understand the Architecture?
-→ Read [Architecture Deep Dive](./ARCHITECTURE.md)
+→ Read [Architecture Deep Dive](./architecture/INDEX.md)
 - 5-layer architecture
 - Design patterns
 - Extension points
@@ -286,7 +286,7 @@ source .venv/bin/activate
 | Resource | Purpose | Time |
 |----------|---------|------|
 | [Quick Start](./onboarding/QUICK_START.md) | Extended setup guide | 15 min |
-| [Architecture](./ARCHITECTURE.md) | System design & layers | 20 min |
+| [Architecture](./architecture/INDEX.md) | System design & layers | 20 min |
 | [Configuration](./configuration/HYDRA_GUIDE.md) | Hydra + OmegaConf guide | 10 min |
 | [Contributing](../CONTRIBUTING.md) | Development workflow | 10 min |
 | [Troubleshooting](./TROUBLESHOOTING.md) | Common issues & fixes | As needed |
@@ -310,7 +310,7 @@ source .venv/bin/activate
 ## 🤖 Getting Help
 
 - **Setup issues?** → [Troubleshooting Guide](./TROUBLESHOOTING.md)
-- **Architecture questions?** → [Architecture Guide](./ARCHITECTURE.md)
+- **Architecture questions?** → [Architecture Guide](./architecture/INDEX.md)
 - **Configuration help?** → [Configuration Guide](./configuration/HYDRA_GUIDE.md)
 - **Contributing?** → [Contributing Guide](../CONTRIBUTING.md)
 - **Found a bug?** → [Open an Issue](https://github.com/Aries-Serpent/_codex_/issues)

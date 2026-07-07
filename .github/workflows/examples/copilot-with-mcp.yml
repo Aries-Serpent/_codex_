@@ -55,10 +55,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5 # v5
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608  # v5
 
       - name: Set up Python
-        uses: actions/setup-python@v6.3.0 # v6
+        uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d  # v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pip'
@@ -165,7 +165,7 @@ jobs:
           if [ -f mcp_manifest.json ] && [ "$MCP_ENABLED" == "true" ]; then
             echo "📋 Loading MCP context..."
             CONTEXT=$(cat mcp_manifest.json)
-            echo "   Context size: $(echo "$CONTEXT" | wc -c) bytes"
+            echo "   Context size: ${#CONTEXT} bytes"
           fi
 
           # Example: Run your Copilot task script here
@@ -176,22 +176,25 @@ jobs:
 
       - name: Generate summary
         if: always()
+        env:
+          COPILOT_TASK: ${{ github.event.inputs.task }}
+          MCP_ENABLED: ${{ github.event.inputs.mcp_enabled }}
         run: |
-          echo "# Copilot Task Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Task**: ${{ github.event.inputs.task }}" >> $GITHUB_STEP_SUMMARY
-          echo "**MCP Enabled**: ${{ github.event.inputs.mcp_enabled }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "# Copilot Task Summary" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Task**: $COPILOT_TASK" >> "$GITHUB_STEP_SUMMARY"
+          echo "**MCP Enabled**: $MCP_ENABLED" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
 
           if [ -f mcp_manifest.json ]; then
             DEPS=$(jq -r '.dependencies | length' mcp_manifest.json 2>/dev/null || echo "0")
-            echo "**MCP Context**:" >> $GITHUB_STEP_SUMMARY
-            echo "- Dependencies loaded: $DEPS" >> $GITHUB_STEP_SUMMARY
+            echo "**MCP Context**:" >> "$GITHUB_STEP_SUMMARY"
+            echo "- Dependencies loaded: $DEPS" >> "$GITHUB_STEP_SUMMARY"
           fi
 
       - name: Upload artifacts
         if: always()
-        uses: actions/upload-artifact@v5 # v5
+        uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e  # v5
         with:
           name: copilot-task-results
           path: |
