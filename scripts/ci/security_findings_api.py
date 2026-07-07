@@ -80,7 +80,17 @@ def load_findings(cache_dir: Optional[Path] = None,
     cache_dir = cache_dir or DEFAULT_CACHE_DIR
     findings_file = findings_file or DEFAULT_FINDINGS_FILE
     
-    # Try cache first (latest run)
+    # If findings_file is explicitly provided, use it first
+    if findings_file and findings_file.exists():
+        try:
+            with open(findings_file, 'r') as f:
+                data = json.load(f)
+                logger.info(f"Loaded findings from: {findings_file}")
+                return data.get('findings', [])
+        except (json.JSONDecodeError, OSError) as e:
+            logger.warning(f"Failed to load specified findings file: {e}, trying cache")
+    
+    # Try cache next (latest run)
     if cache_dir.exists():
         index_file = cache_dir / "index.json"
         if index_file.exists():
@@ -209,7 +219,8 @@ def filter_by_severity(findings: List[Dict[str, Any]], severity: str) -> List[Di
     return matching
 
 
-def query_findings(query_type: str, value: str, cache_dir: Optional[Path] = None) -> Dict[str, Any]:
+def query_findings(query_type: str, value: str, cache_dir: Optional[Path] = None,
+                   findings_file: Optional[Path] = None) -> Dict[str, Any]:
     """
     Query findings by type and value.
     
@@ -217,6 +228,7 @@ def query_findings(query_type: str, value: str, cache_dir: Optional[Path] = None
         query_type: Type of query ('cwe', 'package', 'file', 'severity')
         value: Query value
         cache_dir: Optional path to cache directory
+        findings_file: Optional path to findings file
         
     Returns:
         Dictionary with query metadata and matched findings
@@ -231,7 +243,7 @@ def query_findings(query_type: str, value: str, cache_dir: Optional[Path] = None
     
     # Load findings
     try:
-        findings = load_findings(cache_dir)
+        findings = load_findings(cache_dir, findings_file)
     except FileNotFoundError as e:
         logger.error(f"Failed to load findings: {e}")
         raise
@@ -401,7 +413,7 @@ def main():
     
     try:
         # Execute query
-        result = query_findings(args.query_type, args.value, args.cache_dir)
+        result = query_findings(args.query_type, args.value, args.cache_dir, args.findings_file)
         
         # Check if findings were found
         if result['results']['total_matched'] == 0:

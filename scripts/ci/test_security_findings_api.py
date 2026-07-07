@@ -199,7 +199,8 @@ def test_file_query(api_script: Path) -> bool:
     for filepath, expected in tests:
         results.append(run_query_test(api_script, findings_file, "file", filepath, expected))
     
-    findings_file.parent.rmdir()
+    import shutil
+    shutil.rmtree(findings_file.parent)
     return all(results)
 
 
@@ -220,7 +221,8 @@ def test_severity_query(api_script: Path) -> bool:
     for severity, expected in tests:
         results.append(run_query_test(api_script, findings_file, "severity", severity, expected))
     
-    findings_file.parent.rmdir()
+    import shutil
+    shutil.rmtree(findings_file.parent)
     return all(results)
 
 
@@ -289,6 +291,7 @@ def test_performance(api_script: Path) -> bool:
                 'query',
                 '--query-type', 'severity',
                 '--value', 'HIGH',
+                '--findings-file', str(findings_file),
                 '--format', 'json'
             ],
             capture_output=True,
@@ -300,19 +303,23 @@ def test_performance(api_script: Path) -> bool:
         if result.returncode == 0 or result.returncode == 2:
             if elapsed < 500:
                 print(f"✓ Query completed in {elapsed:.1f}ms (< 500ms)")
-                findings_file.parent.rmdir()
+                import shutil
+                shutil.rmtree(findings_file.parent)
                 return True
             else:
                 print(f"⚠ Query completed in {elapsed:.1f}ms (exceeds 500ms target)")
-                findings_file.parent.rmdir()
+                import shutil
+                shutil.rmtree(findings_file.parent)
                 return False
         else:
             print(f"✗ Query failed with code {result.returncode}")
-            findings_file.parent.rmdir()
+            import shutil
+            shutil.rmtree(findings_file.parent)
             return False
     except Exception as e:
         print(f"✗ Performance test failed: {e}")
-        findings_file.parent.rmdir()
+        import shutil
+        shutil.rmtree(findings_file.parent)
         return False
 
 
