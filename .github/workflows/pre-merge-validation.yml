@@ -78,20 +78,37 @@ jobs:
       continue-on-error: true
     - name: Session wrapup check
       id: session_wrapup
-      run: "# Verify accountability report and CHANGELOG were updated this session\n\
-        # (REQ-4 / REQ-5 cognitive pre-flight gate \u2014 check-only, no writes).\n\
-        python scripts/ci/session_wrapup_autofix.py \\\n  --pr-number \"${{ github.event.pull_request.number\
-        \ }}\" \\\n  --sha \"${{ github.sha }}\" \\\n  --run-url \"${{ github.server_url\
-        \ }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\" \\\n  --check\n"
+      env:
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        COMMIT_SHA: ${{ github.sha }}
+        SERVER_URL: ${{ github.server_url }}
+        REPOSITORY: ${{ github.repository }}
+        RUN_ID: ${{ github.run_id }}
+      run: |
+        # Verify accountability report and CHANGELOG were updated this session
+        # (REQ-4 / REQ-5 cognitive pre-flight gate — check-only, no writes).
+        python scripts/ci/session_wrapup_autofix.py \
+          --pr-number "$PR_NUMBER" \
+          --sha "$COMMIT_SHA" \
+          --run-url "$SERVER_URL/$REPOSITORY/actions/runs/$RUN_ID" \
+          --check
     - name: WEC compliance check (Phase 3.3)
       id: wec_compliance
-      run: "# (Phase 3.3) Validate WEC compliance against merge target requirements.\n\
-        # Ensures all required workflows are present and checked, REQ-4 and REQ-5\n\
-        # are satisfied.  This is the CI gate for Phase 3.1 enhanced function.\nMERGE_TARGET=\"\
-        ${{ github.base_ref }}\"\nif [ \"$MERGE_TARGET\" != \"main\" ] && [ \"$MERGE_TARGET\"\
-        \ != \"0D_base_\" ]; then\n  MERGE_TARGET=\"main\"\nfi\npython scripts/ci/session_wrapup_autofix.py\
-        \ \\\n  --pr-number \"${{ github.event.pull_request.number }}\" \\\n  --check-wec-compliance\
-        \ \\\n  --merge-target \"$MERGE_TARGET\"\n"
+      env:
+        BASE_REF: ${{ github.base_ref }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+      run: |
+        # (Phase 3.3) Validate WEC compliance against merge target requirements.
+        # Ensures all required workflows are present and checked, REQ-4 and REQ-5
+        # are satisfied.  This is the CI gate for Phase 3.1 enhanced function.
+        MERGE_TARGET="$BASE_REF"
+        if [ "$MERGE_TARGET" != "main" ] && [ "$MERGE_TARGET" != "0D_base_" ]; then
+          MERGE_TARGET="main"
+        fi
+        python scripts/ci/session_wrapup_autofix.py \
+          --pr-number "$PR_NUMBER" \
+          --check-wec-compliance \
+          --merge-target "$MERGE_TARGET"
       continue-on-error: true
     - name: Upload validation reports
       if: always()

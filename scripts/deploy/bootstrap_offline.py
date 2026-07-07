@@ -162,13 +162,27 @@ class OfflineBootstrapper:
             return False
 
     def _extract_wheelhouse(self) -> bool:
-        """Extract wheelhouse to temporary directory."""
+        """Extract wheelhouse to temporary directory.
+        
+        Security: Uses Python 3.12+ tarfile.data_filter to prevent path traversal
+        and symlink/hardlink attacks during extraction.
+        """
         try:
             self.extraction_dir = tempfile.mkdtemp(prefix="bootstrap_")
             logger.info(f"Extracting to: {self.extraction_dir}")
 
             with tarfile.open(str(self.wheelhouse_path), "r:gz") as tar:
-                tar.extractall(self.extraction_dir)
+                # Security: Use data_filter to prevent path traversal attacks
+                # (Python 3.12+). The data_filter is a tarfile-provided filter
+                # function that validates all members before extraction.
+                filter_func = getattr(tarfile, 'data_filter', None)
+                if filter_func is not None:
+                    # Python 3.12+ with native security filter
+                    # filter_func validates and sanitizes all member paths
+                    tar.extractall(self.extraction_dir, filter=filter_func)
+                else:
+                    # Fallback for older Python: manual validation
+                    self._validate_and_extract_safely(tar, self.extraction_dir)
 
             self.wheelhouse_dir = Path(self.extraction_dir) / "wheelhouse"
 
@@ -184,6 +198,47 @@ class OfflineBootstrapper:
         except Exception as e:
             logger.error(f"Extraction failed: {e}")
             return False
+
+    def _validate_and_extract_safely(self, tar: tarfile.TarFile, extract_dir: str) -> None:
+        """Validate tarfile members and extract safely (fallback for Python < 3.12).
+        
+        This method validates all member paths before extraction to prevent
+        directory traversal attacks (e.g., files with names like '../../../etc/passwd').
+        
+        Args:
+            tar: Open TarFile instance
+            extract_dir: Base directory for extraction
+            
+        Raises:
+            ValueError: If any member attempts path traversal
+        """
+        base_dir = Path(extract_dir).resolve()
+        
+        for member in tar.getmembers():
+            # Resolve the extraction path
+            member_path = (base_dir / member.name).resolve()
+            
+            # Check if path escapes the extraction directory
+            try:
+                member_path.relative_to(base_dir)
+            except ValueError:
+                raise ValueError(
+                    f"Security: Attempted path traversal in tarfile member: {member.name}"
+                )
+            
+            # Block absolute paths (including Windows absolute paths)
+            # Using os.path.isabs() for cross-platform compatibility
+            if os.path.isabs(member.name):
+                raise ValueError(f"Security: Absolute path in tarfile member: {member.name}")
+            
+            # Block symlinks and hardlinks (could be used for traversal)
+            if member.issym() or member.islnk():
+                raise ValueError(
+                    f"Security: Symlink/hardlink not allowed in tarfile: {member.name}"
+                )
+        
+        # All validations passed, now extract
+        tar.extractall(extract_dir)
 
     def _load_manifest(self) -> bool:
         """Load and validate manifest.json."""

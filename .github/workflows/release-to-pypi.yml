@@ -42,12 +42,15 @@ jobs:
 
       - name: Set version from tag or input
         id: version
+        env:
+          GITHUB_REF: ${{ github.ref }}
+          INPUT_VERSION: ${{ inputs.version }}
         run: |
-          if [[ "${{ github.ref }}" =~ ^refs/tags/ ]]; then
-            VERSION="${{ github.ref }}"
+          if [[ "$GITHUB_REF" =~ ^refs/tags/ ]]; then
+            VERSION="$GITHUB_REF"
             VERSION="${VERSION#refs/tags/}"
           else
-            VERSION="${{ inputs.version }}"
+            VERSION="$INPUT_VERSION"
           fi
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
           echo "Release version: ${VERSION}"
@@ -342,8 +345,10 @@ jobs:
 
       - name: Set version from tag
         id: version
+        env:
+          GITHUB_REF: ${{ github.ref }}
         run: |
-          VERSION="${{ github.ref }}"
+          VERSION="$GITHUB_REF"
           VERSION="${VERSION#refs/tags/}"
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
 
@@ -440,9 +445,12 @@ jobs:
 
       - name: Create deployment summary comment
         uses: actions/github-script@v8
+        env:
+          GITHUB_REF: ${{ github.ref }}
+          GITHUB_REPO: ${{ github.repository }}
         with:
           script: |
-            const version = '${{ github.ref }}'.replace('refs/tags/', '');
+            const version = process.env.GITHUB_REF.replace('refs/tags/', '');
             const cleanVersion = version.replace(/^v/, '');
             
             const body = [
@@ -464,7 +472,7 @@ jobs:
               "```",
               "",
               "### 🔍 Verify Installation",
-              "See [Smoke Tests](https://github.com/${{ github.repository }}/actions/workflows/smoke-tests-deployment.yml) for installation verification on all profiles.",
+              "See [Smoke Tests](https://github.com/" + process.env.GITHUB_REPO + "/actions/workflows/smoke-tests-deployment.yml) for installation verification on all profiles.",
               "",
               "### 🔄 Rollback",
               "If issues are found, see [Rollback Procedures](docs/deployment/ROLLBACK_CHECKLIST.md).",
@@ -482,13 +490,16 @@ jobs:
             });
 
       - name: Record deployment metrics
+        env:
+          REF_NAME: ${{ github.ref_name }}
+          COMMIT_SHA: ${{ github.sha }}
         run: |
           mkdir -p .codex/metrics
-          cat > .codex/metrics/release-${{ github.ref_name }}.json << 'EOF'
+          cat > ".codex/metrics/release-${REF_NAME}.json" << 'EOF'
           {
-            "version": "${{ github.ref_name }}",
+            "version": "$REF_NAME",
             "deployed_at": "$(date -Iseconds)",
-            "commit_sha": "${{ github.sha }}",
+            "commit_sha": "$COMMIT_SHA",
             "status": "success",
             "artifacts": {
               "wheels": "Published to PyPI",
