@@ -71,7 +71,7 @@ jobs:
 
       '
     steps:
-    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+    - uses: actions/checkout@v5
     - name: Setup Python
       uses: ./.github/actions/setup-python-cached
       with:
@@ -113,7 +113,7 @@ jobs:
         \nfi\n"
     - name: Upload validation results
       if: always()
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       with:
         name: data-validation-results-${{ github.run_number }}
         path: 'reports/validation/*.json
@@ -138,7 +138,7 @@ jobs:
       '
     steps:
     - name: Checkout
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
     - name: Free disk space for CI
       run: 'echo "=== Disk usage before cleanup ==="
 
@@ -299,7 +299,7 @@ jobs:
         \ $GITHUB_STEP_SUMMARY\n  exit 1\nfi\n"
     - name: Upload determinism reports
       if: always()
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       with:
         name: determinism-reports-${{ github.run_number }}
         path: 'determinism_pass1.log
@@ -326,7 +326,7 @@ jobs:
 
       '
     steps:
-    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+    - uses: actions/checkout@v5
     - name: Setup Python
       uses: ./.github/actions/setup-python-cached
       with:
@@ -354,7 +354,7 @@ jobs:
         '
     - name: Upload DVC status artifact
       if: always()
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       with:
         name: dvc-status-${{ github.run_number }}
         path: workbench/evidence/dvc_status.json
@@ -433,7 +433,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1

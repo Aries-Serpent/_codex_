@@ -24,7 +24,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         fetch-depth: 1
     - name: Initialize with repository variables
@@ -44,7 +44,7 @@ jobs:
 
         '
     - name: Setup Python
-      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
+      uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
         cache: pip
@@ -77,7 +77,7 @@ jobs:
         \ ${{ inputs.pr_number }}\n"
     - name: Upload context artifact
       if: always()
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       with:
         name: session-context-pr${{ inputs.pr_number }}
         path: .codex/session_contexts/session_${{ inputs.pr_number }}_*.json
@@ -94,13 +94,13 @@ jobs:
       pull-requests: write
     steps:
     - name: Download context artifact
-      uses: actions/download-artifact@7a64585046d847ae9b56aeb3ce4702ca38ae8e84
+      uses: actions/download-artifact@v5
       with:
         name: session-context-pr${{ inputs.pr_number }}
         path: context
     - name: Post context to PR
       if: hashFiles('context/*.json') != ''
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       with:
         script: "const fs = require('fs');\nconst path = require('path');\n\n// Read\
           \ context file\nconst contextFile = fs.readdirSync('context').find(f =>\

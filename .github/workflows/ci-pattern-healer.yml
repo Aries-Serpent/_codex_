@@ -43,11 +43,11 @@ jobs:
       needs_healing: ${{ steps.detect.outputs.needs_healing }}
     steps:
     - name: Checkout
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: 'pip'
@@ -71,7 +71,7 @@ jobs:
         \ \"$GITHUB_OUTPUT\"\nfi\n"
     - name: Upload diagnostic report
       if: always()
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       with:
         name: ci-patterns-detected-${{ github.run_id }}
         path: .codex/ci-patterns-detected.json
@@ -87,13 +87,13 @@ jobs:
     timeout-minutes: 15
     steps:
     - name: Checkout
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         fetch-depth: 0
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
     - name: Set up Python
-      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: 'pip'
@@ -122,7 +122,7 @@ jobs:
         fi\n"
     - name: Upload fix report
       if: always()
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       with:
         name: ci-patterns-fixed-${{ github.run_id }}
         path: .codex/ci-patterns-fixed.json
@@ -140,15 +140,15 @@ jobs:
     timeout-minutes: 10
     steps:
     - name: Checkout
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
     - name: Download detection report
-      uses: actions/download-artifact@7a64585046d847ae9b56aeb3ce4702ca38ae8e84
+      uses: actions/download-artifact@v5
       with:
         name: ci-patterns-detected-${{ github.run_id }}
         path: .codex/
     - name: Download fix report
       if: needs.heal-patterns.result == 'success'
-      uses: actions/download-artifact@7a64585046d847ae9b56aeb3ce4702ca38ae8e84
+      uses: actions/download-artifact@v5
       with:
         name: ci-patterns-fixed-${{ github.run_id }}
         path: .codex/

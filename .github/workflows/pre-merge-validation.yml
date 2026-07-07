@@ -28,7 +28,7 @@ jobs:
       pull-requests: write
     steps:
     - name: Checkout
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         fetch-depth: 2
     - name: Set up Python with shared cache
@@ -113,7 +113,7 @@ jobs:
     - name: Upload validation reports
       if: always()
       continue-on-error: true
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       with:
         name: pre-merge-validation-reports-${{ github.run_id }}
         path: '/tmp/autofix_report.json
@@ -126,7 +126,7 @@ jobs:
     - name: Post validation summary
       if: always()
       continue-on-error: true
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       with:
         script: "const checks = {\n  autofix: '${{ steps.autofix.outcome }}',\n  pattern_pipeline:\
           \ '${{ steps.pattern_pipeline.outcome }}',\n  batch_scan_protocol: '${{\
@@ -166,7 +166,7 @@ jobs:
           \ || err.message}). Continuing.`);\n}\n"
     - name: Trigger auto-approve-workflows on WEC PASSED
       if: steps.wec_compliance.outcome == 'success'
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
       with:
@@ -249,7 +249,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         fetch-depth: 1

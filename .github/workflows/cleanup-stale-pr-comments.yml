@@ -48,9 +48,9 @@ jobs:
       github.event_name == 'pull_request'\n"
     steps:
     - name: Checkout
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
+      uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
         cache: pip
@@ -74,7 +74,7 @@ jobs:
         \n  echo \"include_rescue=false\" >> \"$GITHUB_OUTPUT\"\nfi\n"
     - name: React to slash command
       if: github.event_name == 'issue_comment'
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       with:
         script: "await github.rest.reactions.createForIssueComment({\n  owner: context.repo.owner,\n\
           \  repo: context.repo.repo,\n  comment_id: context.payload.comment.id,\n\
@@ -97,7 +97,7 @@ jobs:
         always()
 
         '
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       with:
         script: "const fs = require('fs');\nlet output = '';\ntry {\n  output = fs.readFileSync('/tmp/cleanup_output.txt',\
           \ 'utf8');\n} catch (_) {\n  output = '(no output)';\n}\n\nconst dryRun\

@@ -25,9 +25,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+    - uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
+      uses: actions/setup-python@v6
       with:
         python-version: '3.12'
         cache: 'pip'
@@ -72,7 +72,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+    - uses: actions/checkout@v5
     - name: Extract Bash code blocks
       run: "python3 << 'EOF'\nimport re\nfrom pathlib import Path\n\ndocs_dir = Path('docs')\n\
         pattern = re.compile(r'```bash\\n(.*?)\\n```', re.DOTALL)\n\nextracted = []\n\
@@ -103,9 +103,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+    - uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
+      uses: actions/setup-python@v6
       with:
         python-version: '3.12'
         cache: 'pip'

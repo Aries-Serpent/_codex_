@@ -37,7 +37,7 @@ jobs:
         - 3.12.13
     steps:
     - name: Checkout code
-      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+      uses: actions/checkout@v5
     - name: Initialize with repository variables
       env:
         CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
@@ -86,7 +86,7 @@ jobs:
         \ not found at $(dirname \"$VENV_PYTHON\")\"\n  exit 1\nfi\necho \"[SETUP]\
         \ ✓ venv directory verified at $(dirname \"$VENV_PYTHON\")\"\n"
     - name: Cache sentence-transformers models
-      uses: actions/cache@2cdf405574899ba3c3aab6e1984d4f91812edc99
+      uses: actions/cache@v5
       with:
         path: ~/.cache/torch/sentence_transformers
         key: ${{ runner.os }}-sentence-transformers-py${{ matrix.python-version }}-${{
@@ -313,7 +313,7 @@ jobs:
         \ / | tail -1 | awk '{print \"  Available: \" $4 \", Used: \" $3 \", Size:\
         \ \" $2}'\n \nexit $TEST_EXIT\n"
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354
+      uses: codecov/codecov-action@v4
       if: always()
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
@@ -322,7 +322,7 @@ jobs:
         name: rag-coverage-${{ matrix.python-version }}
         fail_ci_if_error: false
     - name: Upload HTML coverage report
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       if: always()
       with:
         name: coverage-report-${{ matrix.python-version }}
@@ -420,7 +420,7 @@ jobs:
         \ ⚠️  generate_cache_keys.py not found (skipping detailed check)\"\nfi\n \n\
         echo \"[CACHE-HEALTH] ✅ Cache health report complete\"\n"
     - name: Upload security report
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       if: always()
       with:
         name: security-report-${{ matrix.python-version }}
@@ -446,7 +446,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+      uses: actions/checkout@v5
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         fetch-depth: 1

@@ -35,7 +35,7 @@ jobs:
         - 3.12.13
     steps:
     - name: Checkout code
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
     - name: Initialize with repository variables
       env:
         CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
@@ -76,7 +76,7 @@ jobs:
         \ \"ERROR: Authentication tests failed with exit code $TEST_EXIT_CODE\" >&2\n\
         \  exit $TEST_EXIT_CODE\nfi\n\necho \"✓ Authentication tests passed\"\n"
     - name: Upload coverage reports
-      uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354
+      uses: codecov/codecov-action@v4
       if: always()
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
@@ -110,7 +110,7 @@ jobs:
       continue-on-error: true
 
     - name: Upload scope report
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       if: always()
       with:
         name: codex-master-key-scope-report-${{ matrix.python-version }}
@@ -119,7 +119,7 @@ jobs:
         if-no-files-found: warn
 
     - name: Upload coverage report
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       if: always()
       with:
         name: codex-master-key-coverage-${{ matrix.python-version }}
@@ -195,7 +195,7 @@ jobs:
         \ 2>&1 || true\n  exit 1\nfi\necho \"✓ Security report verified and ready\
         \ for upload\"\nls -lh auth-security-report.json\n"
     - name: Upload security report
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       if: always()
       with:
         name: auth-security-report-${{ matrix.python-version }}
@@ -214,7 +214,7 @@ jobs:
     needs: test-authentication
     steps:
     - name: Checkout code
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
     - name: Set up Python (cached)
       uses: ./.github/actions/setup-python-cached
       with:
@@ -324,7 +324,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1

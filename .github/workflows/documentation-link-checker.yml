@@ -71,7 +71,7 @@ jobs:
     if: needs.wec-gate.outputs.skip != 'true'
     steps:
     - name: Checkout repository
-      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+      uses: actions/checkout@v5
       with:
         fetch-depth: 0
     - name: Compute files to check
@@ -101,7 +101,7 @@ jobs:
         \necho \"\U0001F4CA Candidate file count: $FILE_COUNT\"\n"
     - name: Restore per-file checksum cache
       id: per_file_cache
-      uses: actions/cache@2cdf405574899ba3c3aab6e1984d4f91812edc99
+      uses: actions/cache@v5
       with:
         path: .link-check-per-file.json
         key: link-check-per-file-${{ github.ref_name }}
@@ -133,7 +133,7 @@ jobs:
         \ check\"\n  echo \"skip=false\" >> \"$GITHUB_OUTPUT\"\nfi\n"
     - name: Set up Node.js
       if: steps.skip_check.outputs.skip != 'true'
-      uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
+      uses: actions/setup-node@v5
       with:
         node-version: '22'
     - name: Install markdown-link-check
@@ -189,7 +189,7 @@ jobs:
         files_checked\": \"${CHANGED:-0}\"\n}\nEOFREPORT\n"
     - name: Upload link check report
       if: always()
-      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
+      uses: actions/upload-artifact@v5
       with:
         name: link-check-report
         path: link-check-report.json
@@ -220,7 +220,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+      uses: actions/checkout@v5
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         fetch-depth: 1

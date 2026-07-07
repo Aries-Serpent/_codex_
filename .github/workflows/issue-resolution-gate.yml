@@ -37,11 +37,11 @@ jobs:
     timeout-minutes: 10
     steps:
     - name: Checkout
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         fetch-depth: 1
     - name: Set up Python 3.12
-      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
+      uses: actions/setup-python@v6
       with:
         cache: pip
         python-version: 3.12.13
@@ -113,7 +113,7 @@ jobs:
         fi\n"
     - name: Upload resolution report
       if: always()
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       with:
         name: issue-resolution-report
         path: /tmp/issue-resolution-reports/

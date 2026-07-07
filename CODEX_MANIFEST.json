@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-07-07T16:02:37Z",
+  "generated_at": "2026-07-07T22:24:54Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1463,8 +1463,8 @@
     },
     {
       "name": "doc-freshness-check",
-      "enforcement_tier": "PARTIAL",
-      "has_concurrency": true
+      "enforcement_tier": "SOFT",
+      "has_concurrency": false
     },
     {
       "name": "doc-refresh-gate",
@@ -1622,6 +1622,11 @@
       "has_concurrency": true
     },
     {
+      "name": "observable-release",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": false
+    },
+    {
       "name": "openvino-phase-c",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1747,6 +1752,11 @@
       "has_concurrency": true
     },
     {
+      "name": "pre-release-validation",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
       "name": "premerge-triage-gate",
       "enforcement_tier": "GROUNDED",
       "has_concurrency": false
@@ -1760,6 +1770,11 @@
       "name": "process-variable-intents",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
+    },
+    {
+      "name": "profile-validation",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": false
     },
     {
       "name": "progressive-validation",
@@ -1809,6 +1824,11 @@
     {
       "name": "reference-integrity",
       "enforcement_tier": "PARTIAL",
+      "has_concurrency": true
+    },
+    {
+      "name": "release-to-pypi",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -1984,6 +2004,11 @@
     {
       "name": "slo-canary-check",
       "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "smoke-tests-deployment",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -2486,5 +2511,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "352d5e7ea68a3b48199e36792addcc40b880b90b7c9b36df98691cffd658296e"
+  "integrity_sha256": "ddb0adc2375d4add69b6abe2c53c106d675e8e36f5a14379272a98ea9d20d582"
 }

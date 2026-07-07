@@ -89,9 +89,9 @@ jobs:
 
       '
     steps:
-    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+    - uses: actions/checkout@v5
     - name: Cache pip downloads
-      uses: actions/cache@2cdf405574899ba3c3aab6e1984d4f91812edc99
+      uses: actions/cache@v5
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-infra-${{ hashFiles('pyproject.toml') }}
@@ -137,7 +137,7 @@ jobs:
 
       '
     steps:
-    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+    - uses: actions/checkout@v5
     - name: Configure webhooks
       env:
         CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
@@ -159,7 +159,7 @@ jobs:
 
       '
     steps:
-    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+    - uses: actions/checkout@v5
     - name: List variables and post to PR
       env:
         CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
@@ -189,7 +189,7 @@ jobs:
 
       '
     steps:
-    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+    - uses: actions/checkout@v5
     - name: List webhooks
       env:
         CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
@@ -203,7 +203,7 @@ jobs:
     if: "needs.auth-check.outputs.authorized == 'true' &&\n(needs.auth-check.outputs.operation\
       \ == 'app-status' ||\n needs.auth-check.outputs.operation == 'app-manifest')\n"
     steps:
-    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+    - uses: actions/checkout@v5
     - name: Show app status or generate manifest URL
       env:
         CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}

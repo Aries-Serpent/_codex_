@@ -36,7 +36,7 @@ jobs:
       run_coverage: ${{ steps.filter.outputs.run_coverage }}
       run_quality: ${{ steps.filter.outputs.run_quality }}
     steps:
-    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+    - uses: actions/checkout@v5
       with:
         fetch-depth: 0
     - name: Compute coverage/quality scope
@@ -90,7 +90,7 @@ jobs:
 
       '
     steps:
-    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+    - uses: actions/checkout@v5
     - name: Setup Python
       uses: ./.github/actions/setup-python-cached
       with:
@@ -153,7 +153,7 @@ jobs:
         else\n  echo '{}' > coverage_modules.json\nfi\n"
     - name: Upload coverage artifacts
       if: always()
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       with:
         name: coverage-artifacts-${{ github.run_number }}
         path: '.coverage.json
@@ -185,7 +185,7 @@ jobs:
       '
     steps:
     - name: Checkout code
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         fetch-depth: 0
     - name: Set up Python
@@ -269,7 +269,7 @@ jobs:
         '
     - name: Upload code quality reports
       if: always()
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       with:
         name: code-quality-reports-${{ github.run_number }}
         path: 'ruff-output.txt
@@ -298,7 +298,7 @@ jobs:
     if: always()
     steps:
     - name: Checkout for cache health
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         sparse-checkout: scripts/ci
     - name: Cache health report
@@ -356,7 +356,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1

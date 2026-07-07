@@ -43,11 +43,11 @@ jobs:
         - linux/amd64
         - linux/arm64
     steps:
-    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+    - uses: actions/checkout@v5
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5
+      uses: docker/setup-buildx-action@v3
     - name: Build wheelhouse (builder stage) for ${{ matrix.platform }}
-      uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a
+      uses: docker/build-push-action@v6
       if: ${{ matrix.platform == 'linux/amd64' || env.ALLOW_MULTIARCH == 'true' }}
       with:
         context: .
@@ -65,7 +65,7 @@ jobs:
         cache-tier: common
     - name: Cache Dependencies
       if: ${{ matrix.platform == 'linux/amd64' || env.ALLOW_MULTIARCH == 'true' }}
-      uses: actions/cache@2cdf405574899ba3c3aab6e1984d4f91812edc99
+      uses: actions/cache@v5
       with:
         path: '~/.cache/pip
 
@@ -89,7 +89,7 @@ jobs:
       run: echo "name=$(echo '${{ matrix.platform }}' | tr '/' '-')" >> "$GITHUB_OUTPUT"
     - name: Upload wheelhouse with manifest
       if: ${{ matrix.platform == 'linux/amd64' || env.ALLOW_MULTIARCH == 'true' }}
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       with:
         name: baseline-wheelhouse-${{ steps.safe-platform.outputs.name }}
         path: ./wheelhouse
@@ -111,16 +111,16 @@ jobs:
         - cpu
         - gpu
     steps:
-    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+    - uses: actions/checkout@v5
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5
+      uses: docker/setup-buildx-action@v3
     - name: Determine Dockerfile
       id: dockerfile
       run: "if [ \"${{ matrix.variant }}\" = \"gpu\" ]; then\n  echo \"file=Dockerfile.gpu\"\
         \ >> $GITHUB_OUTPUT\nelse\n  echo \"file=Dockerfile\" >> $GITHUB_OUTPUT\n\
         fi\n"
     - name: Build image for SBOM
-      uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a
+      uses: docker/build-push-action@v6
       with:
         context: .
         file: ${{ steps.dockerfile.outputs.file }}
@@ -130,19 +130,19 @@ jobs:
         tags: codex-ml:sbom-${{ matrix.variant }}
         cache-from: type=gha
     - name: Install Syft
-      uses: anchore/sbom-action/download-syft@e22c389904149dbc22b58101806040fa8d37a610
+      uses: anchore/sbom-action/download-syft@v0
     - name: Generate SBOM with Syft
       run: "syft codex-ml:sbom-${{ matrix.variant }} \\\n  -o spdx-json=sbom-${{ matrix.variant\
         \ }}.spdx.json \\\n  -o cyclonedx-json=sbom-${{ matrix.variant }}.cyclonedx.json\
         \ \\\n  -o syft-json=sbom-${{ matrix.variant }}.syft.json\n"
     - name: Install Grype
-      uses: anchore/scan-action/download-grype@e1165082ffb1fe366ebaf02d8526e7c4989ea9d2
+      uses: anchore/scan-action/download-grype@v0
     - name: Scan with Grype
       run: "grype codex-ml:sbom-${{ matrix.variant }} \\\n  --output sarif \\\n  --file\
         \ grype-${{ matrix.variant }}.sarif \\\n  --fail-on critical\n"
       continue-on-error: true
     - name: Upload SBOM artifacts
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       with:
         name: sbom-${{ matrix.variant }}
         path: 'sbom-${{ matrix.variant }}.*.json
@@ -153,7 +153,7 @@ jobs:
         retention-days: 90
     - name: Upload Grype SARIF to GitHub Security
       if: always()
-      uses: github/codeql-action/upload-sarif@006d029c8dc7b906d4ce5b7c700d32f20f2d35dd
+      uses: github/codeql-action/upload-sarif@v3
       with:
         sarif_file: grype-${{ matrix.variant }}.sarif
         category: grype-${{ matrix.variant }}
@@ -174,11 +174,11 @@ jobs:
         - '3.12'
         - '3.13'
     steps:
-    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+    - uses: actions/checkout@v5
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5
+      uses: docker/setup-buildx-action@v3
     - name: Test build with Python ${{ matrix.python_version }}
-      uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a
+      uses: docker/build-push-action@v6
       with:
         context: .
         file: Dockerfile
@@ -206,9 +206,9 @@ jobs:
       contents: read
       issues: write
     steps:
-    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+    - uses: actions/checkout@v5
     - name: Download current baseline (amd64)
-      uses: actions/download-artifact@7a64585046d847ae9b56aeb3ce4702ca38ae8e84
+      uses: actions/download-artifact@v5
       with:
         name: baseline-wheelhouse-linux-amd64
         path: ./current-baseline
@@ -234,7 +234,7 @@ jobs:
         \  echo \"ℹ️ Baseline comparison skipped (no previous baseline)\"\nfi\n"
     - name: Create drift alert issue
       if: steps.compare.outputs.drift_detected == 'true'
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       with:
         script: "github.rest.issues.create({\n  owner: context.repo.owner,\n  repo:\
           \ context.repo.repo,\n  title: '\U0001F50D Dependency Drift Detected',\n\
@@ -256,9 +256,9 @@ jobs:
       contents: read
       security-events: write
     steps:
-    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+    - uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
+      uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
         cache: pip
@@ -299,7 +299,7 @@ jobs:
         \ \"::warning::safety found HIGH issues\"\nfi\n"
     - name: Upload audit artifacts
       if: always()
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       with:
         name: dependency-audit-${{ github.run_id }}
         path: 'workbench/security/ci_pip_audit.json

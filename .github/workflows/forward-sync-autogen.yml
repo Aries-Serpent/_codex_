@@ -24,7 +24,7 @@ jobs:
     timeout-minutes: 10
     steps:
     - name: Checkout main
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         ref: main
         fetch-depth: 1
@@ -40,7 +40,7 @@ jobs:
         \ >> \"$GITHUB_OUTPUT\"\n  echo \"✅ Staging branch detected: $TARGET\"\nfi\n"
     - name: 📥 Checkout chain tip (${{ steps.resolve-target.outputs.branch }})
       if: steps.check-target.outputs.skip != 'true'
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         persist-credentials: false
         ref: ${{ steps.resolve-target.outputs.branch }}

@@ -19,15 +19,15 @@ jobs:
       matrix:
         language: ['python', 'javascript']
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
+      - uses: actions/checkout@v5
 
-      - uses: github/codeql-action/init@f09c1fcf4891dc932e5866057ec986053371acc5
+      - uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
 
-      - uses: github/codeql-action/autobuild@f09c1fcf4891dc932e5866057ec986053371acc5
+      - uses: github/codeql-action/autobuild@v3
 
-      - uses: github/codeql-action/analyze@f09c1fcf4891dc932e5866057ec986053371acc5
+      - uses: github/codeql-action/analyze@v3
         with:
           category: /language:${{ matrix.language }}
 
@@ -35,9 +35,9 @@ jobs:
     runs-on: ubuntu-latest
     name: Bandit Security Scan
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
+      - uses: actions/checkout@v5
       
-      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
           cache: 'pip'
@@ -50,7 +50,7 @@ jobs:
        
       - name: Upload Bandit results (JSON)
         if: always()
-        uses: actions/upload-artifact@11c472dc76935b50d491147e592a5f15b82f130f
+        uses: actions/upload-artifact@v5
         with:
           name: bandit-report
           path: bandit-report.json
@@ -59,7 +59,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Semgrep Custom Rules
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
+      - uses: actions/checkout@v5
       
       - name: Install Semgrep
         run: pip install semgrep
@@ -70,7 +70,7 @@ jobs:
       
       - name: Upload Semgrep results
         if: always()
-        uses: github/codeql-action/upload-sarif@006d029c8dc7b906d4ce5b7c700d32f20f2d35dd
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: semgrep-report.json
 
@@ -80,7 +80,7 @@ jobs:
     name: Generate Compliance Report
     if: always()
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
+      - uses: actions/checkout@v5
       
       - name: Create compliance dashboard
         run: |

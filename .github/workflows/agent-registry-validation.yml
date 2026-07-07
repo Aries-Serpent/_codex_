@@ -27,7 +27,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         fetch-depth: 1
     - name: Set up Python
@@ -138,7 +138,7 @@ jobs:
         n\")\nPYEOF\n"
     - name: Post validation summary
       if: github.event_name == 'pull_request'
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       env:
         REGISTRY_VALID: ${{ steps.registry_validation.outputs.registry_valid }}
         MANIFEST_VALID: ${{ steps.manifest_validation.outputs.manifest_valid }}
@@ -193,7 +193,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1

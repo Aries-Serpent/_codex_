@@ -54,14 +54,14 @@ jobs:
     if: github.actor != 'dependabot[bot]' && github.actor != 'renovate[bot]'
     steps:
     - name: 📥 Checkout (sparse — script only)
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         sparse-checkout: 'scripts/ci/branch_cleanup.py
 
           '
         sparse-checkout-cone-mode: false
     - name: 🐍 Set up Python
-      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
+      uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
         cache: 'pip'
@@ -117,7 +117,7 @@ jobs:
         \n"
     - name: 📦 Upload JSON report as artifact
       if: always()
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       with:
         name: branch-cleanup-report-${{ github.run_number }}
         path: /tmp/branch_cleanup_report.json

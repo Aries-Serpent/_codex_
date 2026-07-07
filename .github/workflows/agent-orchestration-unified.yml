@@ -65,7 +65,7 @@ jobs:
       agent_count: ${{ steps.init.outputs.agent_count }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
     - name: CacheManager health check
       continue-on-error: true
       run: 'python scripts/ci/generate_cache_keys.py --health --workflow agent-orchestration-unified
@@ -97,7 +97,7 @@ jobs:
         \  echo \"agent_count=0\" >> $GITHUB_OUTPUT\nfi\n"
     - name: Upload chain execution plan
       if: steps.init.outputs.chain_generated == 'true'
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       with:
         name: agent-chain-plan-${{ github.run_number }}
         path: .codex/agents/chain_plan.json
@@ -135,7 +135,7 @@ jobs:
       '
     steps:
     - name: Checkout repository
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
     - name: Set up Python 3.12
       uses: ./.github/actions/setup-python-cached
       with:
@@ -144,7 +144,7 @@ jobs:
         cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
     - name: Download chain plan (if available)
       if: needs.orchestrate_agent_chain.outputs.chain_generated == 'true'
-      uses: actions/download-artifact@7a64585046d847ae9b56aeb3ce4702ca38ae8e84
+      uses: actions/download-artifact@v5
       with:
         name: agent-chain-plan-${{ github.run_number }}
         path: .codex/agents/
@@ -165,7 +165,7 @@ jobs:
         \ found\"\nfi\n"
     - name: Upload handoff results
       if: always()
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       with:
         name: agent-handoff-results-${{ github.run_number }}
         path: '.codex/agents/handoff_*.json

@@ -38,19 +38,19 @@ jobs:
         \nfi\necho \"Approval by ${REVIEWER} on PR #${PR_NUM} @ ${PR_SHA} (${PR_REF})\"\
         \n"
     - name: Checkout
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         fetch-depth: 1
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
         ref: ${{ github.event.pull_request.head.ref }}
     - name: Set up Python (for approve_pending_runs.py)
-      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
+      uses: actions/setup-python@v6
       with:
         cache: pip
         python-version: 3.12.13
     - name: Dispatch unified approval hub
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
@@ -68,7 +68,7 @@ jobs:
           \ dispatch failed: ${err.message}`);\n}\n"
       continue-on-error: true
     - name: Dispatch Validation Pipeline (validate.yml)
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
@@ -81,7 +81,7 @@ jobs:
           }\n"
       continue-on-error: true
     - name: Dispatch Pre-Merge Validation (pre-merge-validation.yml)
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
@@ -94,7 +94,7 @@ jobs:
           \ ${err.message}`);\n}\n"
       continue-on-error: true
     - name: Dispatch CodeQL Alert Fetcher (codeql-alert-fetcher.yml)
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         script: "const owner = context.repo.owner;\nconst repo  = context.repo.repo;\n\
@@ -109,7 +109,7 @@ jobs:
           \ (needs CODEX_MASTER_KEY/security_events): ${err.message}`);\n}\n"
       continue-on-error: true
     - name: Post @copilot continue (resume agent session)
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}

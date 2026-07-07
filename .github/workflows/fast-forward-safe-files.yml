@@ -59,7 +59,7 @@ jobs:
       plan_json: ${{ steps.classify.outputs.plan_json }}
     steps:
     - name: Checkout (scripts + allowlist only)
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         sparse-checkout: 'scripts/ci/fast_forward_safe_files.py
 
@@ -68,7 +68,7 @@ jobs:
           '
         sparse-checkout-cone-mode: false
     - name: Set up Python 3.12
-      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
+      uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
         cache: 'pip'
@@ -123,7 +123,7 @@ jobs:
     if: needs.preflight.outputs.allowed_count != '0'
     steps:
     - name: Checkout (scripts + allowlist only)
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         sparse-checkout: 'scripts/ci/fast_forward_safe_files.py
 
@@ -132,7 +132,7 @@ jobs:
           '
         sparse-checkout-cone-mode: false
     - name: Set up Python 3.12
-      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
+      uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
         cache: 'pip'
@@ -156,7 +156,7 @@ jobs:
         \ \"${MSG_FLAG[@]}\"\n"
     - name: Upload result artifact
       if: always()
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       with:
         name: fast-forward-result-pr${{ inputs.pr_number }}-${{ github.run_id }}
         path: /tmp/ff_result.json

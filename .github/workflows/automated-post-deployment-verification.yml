@@ -60,7 +60,7 @@ jobs:
     needs: setup
     steps:
     - name: Checkout
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
     - name: Check Service Accessibility
       id: accessibility
       run: "SERVICE_URL=\"${{ needs.setup.outputs.service_url }}\"\nMAX_RETRIES=5\n\
@@ -82,9 +82,9 @@ jobs:
       health_status: ${{ steps.health.outputs.health_status }}
     steps:
     - name: Checkout
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
+      uses: actions/setup-python@v6
       with:
         python-version: '3.12'
         cache: 'pip'
@@ -102,7 +102,7 @@ jobs:
         \  echo \"health_status=unknown\" >> $GITHUB_OUTPUT\n  echo \"⚠ Health check\
         \ results not available\"\nfi\n"
     - name: Upload Health Report
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       with:
         name: health-check-report
         path: ${{ env.VERIFICATION_DIR }}/health-reports/
@@ -118,9 +118,9 @@ jobs:
       smoke_status: ${{ steps.smoke.outputs.smoke_status }}
     steps:
     - name: Checkout
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
+      uses: actions/setup-python@v6
       with:
         python-version: '3.12'
         cache: 'pip'
@@ -138,7 +138,7 @@ jobs:
         \ }}/smoke_summary.json\necho \"✓ Smoke tests completed\"\necho \"smoke_status=passed\"\
         \ >> $GITHUB_OUTPUT\n"
     - name: Upload Smoke Test Results
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       with:
         name: smoke-test-results
         path: ${{ env.VERIFICATION_DIR }}/
@@ -154,9 +154,9 @@ jobs:
       critical_status: ${{ steps.critical.outputs.critical_status }}
     steps:
     - name: Checkout
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@0b93645e9fea7318ecad4b1a3fb94f4ea6aa3a1d.3.0
+      uses: actions/setup-python@v6
       with:
         python-version: '3.12'
         cache: 'pip'
@@ -170,7 +170,7 @@ jobs:
         \ ${{ env.VERIFICATION_DIR }}/critical_paths_report.json\necho \"✓ Critical\
         \ path tests completed\"\necho \"critical_status=passed\" >> $GITHUB_OUTPUT\n"
     - name: Upload Critical Path Results
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       with:
         name: critical-path-results
         path: ${{ env.VERIFICATION_DIR }}/
@@ -189,9 +189,9 @@ jobs:
     if: always()
     steps:
     - name: Checkout
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
     - name: Download Artifacts
-      uses: actions/download-artifact@7a64585046d847ae9b56aeb3ce4702ca38ae8e84
+      uses: actions/download-artifact@v5
       with:
         path: ${{ env.VERIFICATION_DIR }}/artifacts
     - name: Generate Summary Report
@@ -218,14 +218,14 @@ jobs:
         \n    ;;\nesac\n\necho \"✓ Report generated: $REPORT_FILE\"\necho \"report_file=$REPORT_FILE\"\
         \ >> $GITHUB_OUTPUT\n"
     - name: Upload Verification Report
-      uses: actions/upload-artifact@26f41dcceda07d7450f2956775e979febf65457e
+      uses: actions/upload-artifact@v5
       with:
         name: verification-report
         path: ${{ env.VERIFICATION_DIR }}/
         retention-days: 30
     - name: Comment on PR
       if: github.event_name == 'pull_request'
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       with:
         script: "const fs = require('fs');\nconst reportFile = '${{ steps.report.outputs.report_file\
           \ }}';\n\nif (fs.existsSync(reportFile)) {\n  const report = fs.readFileSync(reportFile,\
@@ -253,7 +253,7 @@ jobs:
     if: github.event.inputs.notify_slack == 'true' && always()
     steps:
     - name: Send Slack Notification
-      uses: slackapi/slack-github-action@7ff5c87a2a0f53f60a4cedc11ccdcf5e4c04b4fb  # v1.24.0
+      uses: slackapi/slack-github-action@v2  # v1.24.0
       with:
         webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
         payload: "{\n  \"text\": \"Post-Deployment Verification Results\",\n  \"blocks\"\
@@ -279,7 +279,7 @@ jobs:
     if: failure()
     steps:
     - name: Create Issue
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       with:
         script: "github.rest.issues.create({\n  owner: context.repo.owner,\n  repo:\
           \ context.repo.repo,\n  title: 'Deployment Verification Failed - ${{ github.event.inputs.environment\

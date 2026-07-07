@@ -40,7 +40,7 @@ jobs:
       '
     steps:
     - name: "\U0001F4E5 Checkout"
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         fetch-depth: 0
         token: ${{ secrets.GITHUB_TOKEN }}
@@ -52,7 +52,7 @@ jobs:
       uses: ./.github/actions/resolve-push-target
     - name: "\U0001F50D Verify single-file change"
       id: check
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       with:
         script: "const sleep = (ms) => new Promise((resolve) => setTimeout(resolve,\
           \ ms));\nasync function callWithRateLimitRetry(fn, label) {\n  const maxAttempts\
@@ -150,7 +150,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         fetch-depth: 1

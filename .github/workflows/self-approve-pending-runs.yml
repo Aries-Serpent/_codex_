@@ -38,13 +38,13 @@ jobs:
       \ '\u26A1 Self-Approve Pending Workflow Runs'"
     steps:
     - name: Checkout (for approve_pending_runs.py)
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+      uses: actions/checkout@v5
       with:
         fetch-depth: 1
         ref: ${{ github.event.repository.default_branch || 'main' }}
     - name: Generate Cognitive Brain App token
       id: app-token
-      uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1
+      uses: actions/create-github-app-token@v1
       continue-on-error: true
       with:
         app-id: ${{ secrets._GITHUB_APP_ID }}
@@ -110,7 +110,7 @@ jobs:
         '
     - name: Dispatch hub for batch approval (self-approve-pending-runs)
       if: steps.pending.outputs.count != '0'
-      uses: actions/github-script@60a0d83039c74a4adc464b97cf20538046d2b293
+      uses: actions/github-script@v8
       with:
         github-token: ${{ steps.token.outputs.token }}
         script: "const owner = context.repo.owner;\nconst repo = context.repo.repo;\n\
