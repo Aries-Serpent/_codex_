@@ -21,6 +21,12 @@
 
 ### Fixed (2026-07-07T11:45Z — Multi-Lane Campaign Implementation)
 - Docs: Addressed review feedback by clarifying pre-release readiness scope, using allowlist terminology, scoping out-of-PR link remediations, and clarifying campaign artifact completion vs external release go/no-go status.
+### Dependencies (2026-07-07T16:14Z — Go Crypto Bump PR #5262)
+- Go: **golang.org/x/crypto** `0.45.0` → `0.52.0` in `tools/github-secrets-cli` (security patch)
+
+### Fixed (2026-07-07T16:14Z — PR Comment Review & Compliance PR #5262)
+- Compliance: **REQ-4 & REQ-5 Recovery** — Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md` to restore compliance after CI auto-generated commits that did not include these files.
+- CI: **Merge Conflict Resolution** — Resolved divergent histories between local branch and remote `cognitive-preflight` bot commit; 7 `.codex/` files resolved using local branch state.
 
 ### Fixed (2026-07-07T02:56Z — CI Rescue & Compliance PR #5251)
 - Compliance: **REQ-4 & REQ-5 Hardening** — Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md` for CI rescue session with security hardening completion status and PDA tracking (pattern `PDA-CI-RESCUE-20260707`).
