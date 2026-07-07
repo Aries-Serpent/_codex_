@@ -585,7 +585,7 @@ Choose a specialization based on your interests:
    - Cloud training
    - Monitoring and logging
 
-4. **[CI/CD Pipelines](./operations/CI_FAILURE_TRACKING_LOG.md)**
+4. **[CI/CD Pipelines](./ci/CI_FAILURE_ANALYSIS.md)**
    - GitHub Actions setup
    - Testing automation
    - Deployment automation
