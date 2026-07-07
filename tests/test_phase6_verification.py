@@ -12,6 +12,7 @@ Tests:
 import subprocess
 import yaml
 import json
+import tempfile
 from pathlib import Path
 
 def run_test(name: str, condition: bool, details: str = "") -> bool:
@@ -225,38 +226,44 @@ def main():
     # Test 5: Output to file
     print("\n📋 Test Suite 5: File Output")
     if formatter_path.exists() and findings_path.exists():
-        output_path = Path("/tmp/test_pr_findings.md")
-        result = subprocess.run(
-            ["python", str(formatter_path), "generate",
-             "--findings", str(findings_path),
-             "--output", str(output_path),
-             "--limit", "2"],
-            capture_output=True,
-            text=True,
-            timeout=30
-        )
-        
-        all_passed &= run_test(
-            "Formatter creates output file",
-            result.returncode == 0 and output_path.exists(),
-            f"Exit: {result.returncode}, File exists: {output_path.exists()}"
-        )
-        
-        if output_path.exists():
-            with open(output_path) as f:
-                content = f.read()
-            
-            all_passed &= run_test(
-                "Output file has content",
-                len(content) > 100,
-                f"File too small: {len(content)} bytes"
+        with tempfile.NamedTemporaryFile(mode='w+', suffix='.md', delete=False) as tmp:
+            output_path = Path(tmp.name)
+        try:
+            result = subprocess.run(
+                ["python", str(formatter_path), "generate",
+                 "--findings", str(findings_path),
+                 "--output", str(output_path),
+                 "--limit", "2"],
+                capture_output=True,
+                text=True,
+                timeout=30
             )
             
             all_passed &= run_test(
-                "Output file is markdown",
-                "##" in content or "|" in content,
-                "Not valid markdown"
+                "Formatter creates output file",
+                result.returncode == 0 and output_path.exists(),
+                f"Exit: {result.returncode}, File exists: {output_path.exists()}"
             )
+            
+            if output_path.exists():
+                with open(output_path) as f:
+                    content = f.read()
+                
+                all_passed &= run_test(
+                    "Output file has content",
+                    len(content) > 100,
+                    f"File too small: {len(content)} bytes"
+                )
+                
+                all_passed &= run_test(
+                    "Output file is markdown",
+                    "##" in content or "|" in content,
+                    "Not valid markdown"
+                )
+        finally:
+            # Clean up tempfile
+            if output_path.exists():
+                output_path.unlink()
     
     # Summary
     print("\n" + "="*70)
