@@ -56,12 +56,14 @@ jobs:
             -m "not slow" || true
 
       - name: Upload coverage
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354
         if: always()
         with:
           file: ./coverage.xml
           flags: ${{ matrix.test-suite }}
           name: ${{ matrix.test-suite }}-${{ matrix.python-version }}
+          token: ${{ secrets.CODECOV_TOKEN }}
+          continue-on-error: true
 
   test-integration-slow:
     runs-on: ubuntu-latest
