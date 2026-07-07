@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bom xmlns="http://cyclonedx.org/schema/bom/1.4" version="1">
+  <!-- SBOM Template for cognitive_brain v0.1.0 -->
+  <!-- Schema: CycloneDX 1.4 (https://cyclonedx.org/schema/bom/1.4/bom-1.4.schema.json) -->
+  
+  <metadata>
+    <timestamp>2026-01-01T00:00:00Z</timestamp>
+    <tools>
+      <tool>
+        <vendor>Aries-Serpent</vendor>
+        <name>codex-sbom-generator</name>
+        <version>1.0.0</version>
+      </tool>
+    </tools>
+    <component type="application" bom-ref="codex">
+      <name>cognitive_brain</name>
+      <version>0.1.0</version>
+      <description>Cognitive Brain ML framework with meta-tensor support and offline-first architecture</description>
+      <manufacturer>
+        <name>Aries-Serpent</name>
+        <url>https://github.com/aries-serpent/_codex_</url>
+      </manufacturer>
+      <supplier>
+        <name>Aries-Serpent</name>
+        <url>https://github.com/aries-serpent/_codex_</url>
+      </supplier>
+      <license>
+        <expression>MIT</expression>
+      </license>
+    </component>
+  </metadata>
+
+  <!-- Profile-specific component sections will be populated during generation -->
+  <!-- Each profile (core, runtime, full) will have its own components section -->
+  
+  <components>
+    <!-- 
+      Components list structure for each package:
+      
+      <component type="library" bom-ref="pkg:pypi/package-name@version">
+        <name>package-name</name>
+        <version>PACKAGE_VERSION</version>
+        <purl>pkg:pypi/package-name@PACKAGE_VERSION</purl>
+        <hashes>
+          <hash alg="SHA-256">HASH_VALUE</hash>
+        </hashes>
+        <licenses>
+          <license>
+            <expression>LICENSE_SPDX</expression>
+          </license>
+        </licenses>
+        <supplier>
+          <name>SUPPLIER_NAME</name>
+        </supplier>
+        <description>Brief package description</description>
+      </component>
+      
+      For uv.lock integration:
+      - Extract all 1484 packages from uv.lock
+      - For each package, include:
+        * name: package name from lock file
+        * version: exact pinned version
+        * purl: Package URL for PyPI ecosystem
+        * hashes: SHA256 hash from lock file (if available)
+        * licenses: SPDX license identifier (fetched from package metadata)
+        * supplier: Package publisher/author
+    -->
+  </components>
+
+  <!-- Vulnerabilities section (populated from advisory DB) -->
+  <vulnerabilities>
+    <!-- 
+      For each known CVE/GHSA in dependencies:
+      
+      <vulnerability ref="CVE-YYYY-XXXXX">
+        <id>CVE-YYYY-XXXXX</id>
+        <source name="NVD">
+          <url>https://nvd.nist.gov/vuln/detail/CVE-YYYY-XXXXX</url>
+        </source>
+        <severity>high|medium|low</severity>
+        <description>Vulnerability description</description>
+        <affected>
+          <target>
+            <ref>pkg:pypi/package-name@version</ref>
+            <versions>
+              <version>vulnerable_version_range</version>
+            </versions>
+          </target>
+        </affected>
+      </vulnerability>
+    -->
+  </vulnerabilities>
+
+  <!-- Services section for optional components like inference API -->
+  <services>
+    <!-- 
+      Optional services section for future expansion:
+      - Inference API
+      - Model serving endpoints
+      - Monitoring/telemetry services
+    -->
+  </services>
+
+</bom>
