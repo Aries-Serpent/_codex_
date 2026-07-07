@@ -44422,7 +44422,7 @@
       "extension": ".md",
       "path": ".github/agents/PHASE3_EXECUTIVE_SUMMARY.md",
       "requires_ingestion": false,
-      "size_bytes": 8693
+      "size_bytes": 8699
     },
     {
       "classification": "exception_candidate",
@@ -44431,7 +44431,7 @@
       "extension": ".md",
       "path": ".github/agents/PHASE3_TEMPLATE_APPLICATION_REPORT.md",
       "requires_ingestion": false,
-      "size_bytes": 13311
+      "size_bytes": 13317
     },
     {
       "classification": "exception_candidate",
@@ -47284,7 +47284,7 @@
       "extension": ".md",
       "path": ".github/agents/session-analysis-agent.md",
       "requires_ingestion": false,
-      "size_bytes": 27737
+      "size_bytes": 27743
     },
     {
       "classification": "exception_candidate",
@@ -57409,7 +57409,7 @@
       "extension": ".yml",
       "path": ".github/workflows/examples/copilot-with-mcp.yml",
       "requires_ingestion": false,
-      "size_bytes": 6973
+      "size_bytes": 6958
     },
     {
       "classification": "workflow_file",
@@ -59552,6 +59552,195 @@
       "path": ".mypy-baseline.txt",
       "requires_ingestion": false,
       "size_bytes": 115
+    },
+    {
+      "classification": "schema",
+      "confidence": 0.95,
+      "exception": false,
+      "extension": ".json",
+      "path": ".nox/lint-3-12/lib/python3.12/site-packages/black/resources/black.schema.json",
+      "requires_ingestion": false,
+      "size_bytes": 7499
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".txt",
+      "path": ".nox/lint-3-12/lib/python3.12/site-packages/black-26.5.1.dist-info/entry_points.txt",
+      "requires_ingestion": true,
+      "size_bytes": 144
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".txt",
+      "path": ".nox/lint-3-12/lib/python3.12/site-packages/blib2to3/Grammar.txt",
+      "requires_ingestion": true,
+      "size_bytes": 12084
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".txt",
+      "path": ".nox/lint-3-12/lib/python3.12/site-packages/blib2to3/PatternGrammar.txt",
+      "requires_ingestion": true,
+      "size_bytes": 807
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".txt",
+      "path": ".nox/lint-3-12/lib/python3.12/site-packages/click-8.4.2.dist-info/licenses/LICENSE.txt",
+      "requires_ingestion": true,
+      "size_bytes": 1475
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".txt",
+      "path": ".nox/lint-3-12/lib/python3.12/site-packages/isort-8.0.1.dist-info/entry_points.txt",
+      "requires_ingestion": true,
+      "size_bytes": 100
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".rst",
+      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip/_vendor/README.rst",
+      "requires_ingestion": true,
+      "size_bytes": 9222
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".txt",
+      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip/_vendor/cachecontrol/LICENSE.txt",
+      "requires_ingestion": true,
+      "size_bytes": 558
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".txt",
+      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip/_vendor/distlib/LICENSE.txt",
+      "requires_ingestion": true,
+      "size_bytes": 14531
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip/_vendor/idna/LICENSE.md",
+      "requires_ingestion": true,
+      "size_bytes": 1541
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".txt",
+      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip/_vendor/urllib3/LICENSE.txt",
+      "requires_ingestion": true,
+      "size_bytes": 1093
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".txt",
+      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip/_vendor/vendor.txt",
+      "requires_ingestion": true,
+      "size_bytes": 316
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".txt",
+      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip-26.1.2.dist-info/entry_points.txt",
+      "requires_ingestion": true,
+      "size_bytes": 84
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".txt",
+      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip-26.1.2.dist-info/licenses/AUTHORS.txt",
+      "requires_ingestion": true,
+      "size_bytes": 11869
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".txt",
+      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip-26.1.2.dist-info/licenses/LICENSE.txt",
+      "requires_ingestion": true,
+      "size_bytes": 1093
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".txt",
+      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip-26.1.2.dist-info/licenses/src/pip/_vendor/cachecontrol/LICENSE.txt",
+      "requires_ingestion": true,
+      "size_bytes": 558
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".txt",
+      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip-26.1.2.dist-info/licenses/src/pip/_vendor/distlib/LICENSE.txt",
+      "requires_ingestion": true,
+      "size_bytes": 14531
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip-26.1.2.dist-info/licenses/src/pip/_vendor/idna/LICENSE.md",
+      "requires_ingestion": true,
+      "size_bytes": 1541
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".txt",
+      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip-26.1.2.dist-info/licenses/src/pip/_vendor/urllib3/LICENSE.txt",
+      "requires_ingestion": true,
+      "size_bytes": 1093
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".txt",
+      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pytokens-0.4.1.dist-info/top_level.txt",
+      "requires_ingestion": true,
+      "size_bytes": 37
+    },
+    {
+      "classification": "configuration",
+      "confidence": 0.75,
+      "exception": false,
+      "extension": ".json",
+      "path": ".nox/lint-3-12/lib/python3.12/site-packages/ruff-0.15.20.dist-info/sboms/ruff.cyclonedx.json",
+      "requires_ingestion": false,
+      "size_bytes": 387391
     },
     {
       "classification": "configuration",
@@ -64681,7 +64870,7 @@
       "extension": ".md",
       "path": "docs/ARCHITECTURE_DIAGRAMS_INDEX.md",
       "requires_ingestion": true,
-      "size_bytes": 10102
+      "size_bytes": 10108
     },
     {
       "classification": "architecture_note",
@@ -64699,7 +64888,7 @@
       "extension": ".md",
       "path": "docs/ARCHITECTURE_INDEX.md",
       "requires_ingestion": false,
-      "size_bytes": 10769
+      "size_bytes": 10781
     },
     {
       "classification": "exception_candidate",
@@ -64906,7 +65095,7 @@
       "extension": ".md",
       "path": "docs/CONFIGURATION_GUIDE.md",
       "requires_ingestion": false,
-      "size_bytes": 17336
+      "size_bytes": 17348
     },
     {
       "classification": "exception_candidate",
@@ -65068,7 +65257,7 @@
       "extension": ".md",
       "path": "docs/DOCUMENTATION_INDEX.md",
       "requires_ingestion": false,
-      "size_bytes": 14565
+      "size_bytes": 14571
     },
     {
       "classification": "exception_candidate",
@@ -65329,7 +65518,7 @@
       "extension": ".md",
       "path": "docs/INTEGRATION_GUIDE.md",
       "requires_ingestion": false,
-      "size_bytes": 9988
+      "size_bytes": 10000
     },
     {
       "classification": "exception_candidate",
@@ -65392,7 +65581,7 @@
       "extension": ".md",
       "path": "docs/LEARNING_PATHS.md",
       "requires_ingestion": false,
-      "size_bytes": 16924
+      "size_bytes": 16962
     },
     {
       "classification": "exception_candidate",
@@ -65464,7 +65653,7 @@
       "extension": ".md",
       "path": "docs/NEWCOMER_GUIDE.md",
       "requires_ingestion": false,
-      "size_bytes": 18008
+      "size_bytes": 18018
     },
     {
       "classification": "legacy_human_documentation",
@@ -65491,7 +65680,7 @@
       "extension": ".md",
       "path": "docs/ONBOARDING_QUICKSTART.md",
       "requires_ingestion": false,
-      "size_bytes": 8355
+      "size_bytes": 8373
     },
     {
       "classification": "exception_candidate",
@@ -65860,7 +66049,7 @@
       "extension": ".md",
       "path": "docs/RAG_API_REFERENCE.md",
       "requires_ingestion": false,
-      "size_bytes": 11090
+      "size_bytes": 11102
     },
     {
       "classification": "exception_candidate",
@@ -65887,7 +66076,7 @@
       "extension": ".md",
       "path": "docs/README.md",
       "requires_ingestion": false,
-      "size_bytes": 3742
+      "size_bytes": 3756
     },
     {
       "classification": "exception_candidate",
@@ -65977,7 +66166,7 @@
       "extension": ".md",
       "path": "docs/ROADMAP.md",
       "requires_ingestion": false,
-      "size_bytes": 21248
+      "size_bytes": 21254
     },
     {
       "classification": "exception_candidate",
@@ -66193,7 +66382,7 @@
       "extension": ".md",
       "path": "docs/TROUBLESHOOTING.md",
       "requires_ingestion": false,
-      "size_bytes": 10152
+      "size_bytes": 10164
     },
     {
       "classification": "exception_candidate",
@@ -66211,7 +66400,7 @@
       "extension": ".md",
       "path": "docs/Usage_Guide.md",
       "requires_ingestion": false,
-      "size_bytes": 4786
+      "size_bytes": 4790
     },
     {
       "classification": "exception_candidate",
@@ -66778,7 +66967,7 @@
       "extension": ".md",
       "path": "docs/admin/REPOSITORY_SECURITY_SETUP.md",
       "requires_ingestion": false,
-      "size_bytes": 20282
+      "size_bytes": 20284
     },
     {
       "classification": "exception_candidate",
@@ -67759,7 +67948,7 @@
       "extension": ".md",
       "path": "docs/architecture/5_LAYER_ARCHITECTURE.md",
       "requires_ingestion": true,
-      "size_bytes": 10460
+      "size_bytes": 10452
     },
     {
       "classification": "exception_candidate",
@@ -67786,7 +67975,7 @@
       "extension": ".md",
       "path": "docs/architecture/COMPONENT_DEPENDENCIES.md",
       "requires_ingestion": true,
-      "size_bytes": 9590
+      "size_bytes": 9582
     },
     {
       "classification": "architecture_note",
@@ -67813,7 +68002,7 @@
       "extension": ".md",
       "path": "docs/architecture/E2E_REQUEST_FLOW.md",
       "requires_ingestion": true,
-      "size_bytes": 9391
+      "size_bytes": 9383
     },
     {
       "classification": "exception_candidate",
@@ -67858,7 +68047,7 @@
       "extension": ".md",
       "path": "docs/architecture/SYSTEM_CONTEXT.md",
       "requires_ingestion": true,
-      "size_bytes": 7066
+      "size_bytes": 7058
     },
     {
       "classification": "exception_candidate",
@@ -68011,7 +68200,7 @@
       "extension": ".md",
       "path": "docs/archive/COMPREHENSIVE_GAP_ANALYSIS.md",
       "requires_ingestion": false,
-      "size_bytes": 20562
+      "size_bytes": 20568
     },
     {
       "classification": "exception_candidate",
@@ -68470,7 +68659,7 @@
       "extension": ".md",
       "path": "docs/archive/phases/PHASE_11_0_EXECUTIVE_SUMMARY.md",
       "requires_ingestion": false,
-      "size_bytes": 11359
+      "size_bytes": 11365
     },
     {
       "classification": "exception_candidate",
@@ -69703,7 +69892,7 @@
       "extension": ".md",
       "path": "docs/ci/README.md",
       "requires_ingestion": false,
-      "size_bytes": 2136
+      "size_bytes": 2152
     },
     {
       "classification": "exception_candidate",
@@ -69820,7 +70009,7 @@
       "extension": ".md",
       "path": "docs/cli/README.md",
       "requires_ingestion": false,
-      "size_bytes": 3188
+      "size_bytes": 3192
     },
     {
       "classification": "exception_candidate",
@@ -72232,7 +72421,7 @@
       "extension": ".md",
       "path": "docs/guides/INDEX.md",
       "requires_ingestion": false,
-      "size_bytes": 1247
+      "size_bytes": 1249
     },
     {
       "classification": "exception_candidate",
@@ -72592,7 +72781,7 @@
       "extension": ".md",
       "path": "docs/guides/local-development-setup.md",
       "requires_ingestion": false,
-      "size_bytes": 14316
+      "size_bytes": 14322
     },
     {
       "classification": "exception_candidate",
@@ -72709,7 +72898,7 @@
       "extension": ".md",
       "path": "docs/guides/production_deployment.md",
       "requires_ingestion": false,
-      "size_bytes": 14523
+      "size_bytes": 14529
     },
     {
       "classification": "exception_candidate",
@@ -73060,7 +73249,7 @@
       "extension": ".md",
       "path": "docs/index.md",
       "requires_ingestion": false,
-      "size_bytes": 8319
+      "size_bytes": 8325
     },
     {
       "classification": "exception_candidate",
@@ -78712,7 +78901,7 @@
       "extension": ".md",
       "path": "docs/system/CODEBASE_COGNITIVE_MAP.md",
       "requires_ingestion": false,
-      "size_bytes": 16726
+      "size_bytes": 16732
     },
     {
       "classification": "exception_candidate",
@@ -78721,7 +78910,7 @@
       "extension": ".md",
       "path": "docs/system/CODEBASE_DASHBOARD.md",
       "requires_ingestion": false,
-      "size_bytes": 32006
+      "size_bytes": 32012
     },
     {
       "classification": "exception_candidate",
@@ -80431,7 +80620,7 @@
       "extension": ".md",
       "path": "docs/validation/INDEX.md",
       "requires_ingestion": false,
-      "size_bytes": 4358
+      "size_bytes": 4356
     },
     {
       "classification": "exception_candidate",
@@ -80692,7 +80881,7 @@
       "extension": ".md",
       "path": "docs/validation/Usage_Guide.md",
       "requires_ingestion": false,
-      "size_bytes": 6053
+      "size_bytes": 6057
     },
     {
       "classification": "exception_candidate",
@@ -81295,7 +81484,7 @@
       "extension": ".json",
       "path": "docs-data/generated/candidate-inventory.json",
       "requires_ingestion": false,
-      "size_bytes": 2364471
+      "size_bytes": 2552833
     },
     {
       "classification": "generated_machine_readable_artifact",
@@ -81313,7 +81502,7 @@
       "extension": ".json",
       "path": "docs-data/generated/codebase-discovery-report.json",
       "requires_ingestion": false,
-      "size_bytes": 443389
+      "size_bytes": 728649
     },
     {
       "classification": "generated_machine_readable_artifact",
@@ -81412,7 +81601,7 @@
       "extension": ".json",
       "path": "docs-data/generated/existing-automation-report.json",
       "requires_ingestion": false,
-      "size_bytes": 7129
+      "size_bytes": 7736
     },
     {
       "classification": "generated_machine_readable_artifact",
@@ -81502,7 +81691,7 @@
       "extension": ".json",
       "path": "docs-data/generated/markdown-inventory.json",
       "requires_ingestion": false,
-      "size_bytes": 1937488
+      "size_bytes": 2112594
     },
     {
       "classification": "generated_machine_readable_artifact",
@@ -81556,7 +81745,7 @@
       "extension": ".json",
       "path": "docs-data/generated/migration-readiness-report.json",
       "requires_ingestion": false,
-      "size_bytes": 157
+      "size_bytes": 158
     },
     {
       "classification": "generated_machine_readable_artifact",
@@ -87652,5 +87841,5 @@
       "size_bytes": 6029
     }
   ],
-  "generated_at": "2026-07-07T20:32:01Z"
+  "generated_at": "2026-07-07T20:36:59Z"
 }
