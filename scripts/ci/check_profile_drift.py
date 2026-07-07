@@ -27,8 +27,15 @@ except ImportError:
 
 
 def normalize_pkg(dep_str):
-    """Extract normalized package name from dependency specifier."""
-    return re.split(r'[<>=\[\];]', dep_str)[0].strip().lower()
+    """Extract normalized package name from dependency specifier.
+    
+    Normalizes to: lowercase, hyphens (not underscores), no version specifiers.
+    This matches PyPI naming conventions where underscores and hyphens are equivalent.
+    """
+    # Split off version specifiers and normalize whitespace
+    pkg = re.split(r'[<>=\[\];]', dep_str)[0].strip()
+    # Normalize: lowercase and replace underscores with hyphens (PEP 503)
+    return pkg.lower().replace('_', '-')
 
 
 def load_pyproject_extras():
@@ -62,9 +69,9 @@ def load_lock_packages():
     with open(lock_path, 'r') as f:
         lock_content = f.read()
     
-    # Extract package names
+    # Extract package names and normalize (lowercase + hyphens)
     packages = set(re.findall(r'name = "([^"]+)"', lock_content))
-    normalized_packages = set(p.lower() for p in packages)
+    normalized_packages = set(p.lower().replace('_', '-') for p in packages)
     
     # Check for hashes
     hash_count = len(re.findall(r'hash = "sha256:[a-f0-9]{64}"', lock_content))
