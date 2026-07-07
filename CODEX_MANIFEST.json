@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-07-07T14:55:36Z",
+  "generated_at": "2026-07-07T16:02:37Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1592,6 +1592,11 @@
       "has_concurrency": true
     },
     {
+      "name": "ml-tests",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": false
+    },
+    {
       "name": "model-drift-retrain",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -2481,5 +2486,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "42e78b8ae824a0d8146dd753c974e7432331bad6be3b5c3cf0ca0c04ffdb8703"
+  "integrity_sha256": "352d5e7ea68a3b48199e36792addcc40b880b90b7c9b36df98691cffd658296e"
 }
