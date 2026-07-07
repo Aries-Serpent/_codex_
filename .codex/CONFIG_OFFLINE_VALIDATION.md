@@ -5,7 +5,7 @@ Source: lane2-packaging (packaging-validation-agent)
 
 ## Executive Score
 
-Overall external packaging readiness: **NO-GO (4.5/10)** until lock/profile and offline flow issues are fixed.
+Overall external packaging readiness: **NO-GO (4.5/10)** until lock/profile and offline flow issues are fixed.\n\n**Clarification:** campaign artifact delivery can be complete while release readiness remains NO-GO; this document tracks distribution gate status, not report-generation progress.
 
 ## Key Configuration Findings
 

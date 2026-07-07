@@ -51,12 +51,12 @@ Progress: **90% campaign artifact completion**
 
 ## Risk Register (Current)
 
-| Severity | Risk | Current State |
-|---|---|---|
-| High | lock/profile drift (`core/runtime/full`) | Open |
-| High | non-hash export manifests for release-grade offline installs | Open |
-| Medium | fragmented network policy guard adoption | Open |
-| Medium | docs freshness and quickstart path ambiguity | Mitigation underway |
+| Severity | Risk | Current State | Target Milestone |
+|---|---|---|---|
+| High | lock/profile drift (`core/runtime/full`) | Open | M1: lock alignment gate implemented |
+| High | non-hash export manifests for release-grade offline installs | Open | M2: hash-verified manifest pipeline active |
+| Medium | fragmented network policy guard adoption | Open | M3: centralized outbound guard coverage audit pass |
+| Medium | docs freshness and quickstart path ambiguity | Mitigation underway | M4: onboarding docs canonicalization complete |
 
 ---
 

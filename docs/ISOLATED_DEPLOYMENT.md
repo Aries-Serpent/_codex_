@@ -2,7 +2,7 @@
 
 ## Goal
 
-Run the system in a local isolated repository with whitelist-only networking and offline dependency provisioning.
+Run the system in a local isolated repository with allowlist-only networking and offline dependency provisioning.
 
 ## Deployment Model
 
