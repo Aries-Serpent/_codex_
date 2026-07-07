@@ -1,5 +1,17 @@
 ## [Unreleased]
 
+### Added (2026-07-07T18:06Z — Phase 8 WS4 Validation Coordination & Parallel Delegation)
+- Campaign: **Phase 8 WS4 Validation Initiated** — Created comprehensive `PHASE_8_WS4_VALIDATION_COORDINATION.md` with 4 parallel validation lanes (Artifacts, Documentation, Repository Cleanup, Integration & Sign-Off).
+- Campaign: **Parallel Agent Delegation (Active)** — Delegated WS4 validation work to 3 specialized agents:
+  - Lane A (Artifact Integrity): `unified-coverage-agent` — Validating uv.lock, CycloneDX SBOM, Windows filename safety, case-collision fixes
+  - Lane B (Documentation): `unified-doc-agent` — Validating registry accuracy, link health, CI/CD gate activation
+  - Lane C (Cleanup): `repository-hygiene-agent` — Validating artifact archival, Python cache cleanup, report consolidation
+  - Lane D (Integration): Queued sequential execution after parallel lanes complete
+- Security: **CodeQL Unpinned Action Alerts** — Fixed unpinned GitHub Actions in release workflows:
+  - `softprops/action-gh-release@v1` → `v2.0.8` (2 workflows: observable-release.yml, release-to-pypi.yml)
+  - Commit: `dd577e7e`
+- Compliance: Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with WS4 validation session entry documenting parallel delegation strategy and expected timeline (completion target 2026-07-07T20:00Z).
+
 ### Added (2026-07-07T17:29Z — Phase 8 WS3 Authorization & Execution Launch)
 - Campaign: Verified all Phase 8 Workstream 3 execution briefs present and ready for agent activation — 4 parallel/sequential tracks with coordinated timeline (28 hours total, completion target 2026-07-08T18:00Z).
 - Campaign: Confirmed auto-approve workflow gap remediation complete — all 5 workflow transition gaps (G1–G5, CRITICAL/HIGH/MEDIUM severity) fixed with verified workflow_dispatch and token chain (CODEX_MASTER_KEY || CODEX_BACKUP_KEY).
