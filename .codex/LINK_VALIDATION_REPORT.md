@@ -15,8 +15,8 @@ Scope: offline/onboarding docs and isolated deployment references
 | Severity | File:Line | Link | Recommended Fix |
 |---|---|---|---|
 | High | `docs/ONBOARDING_QUICKSTART.md:235` | `https://visualstudio.microsoft.com/cpp-build-tools/` | Use `https://visualstudio.microsoft.com/visual-cpp-build-tools/` |
-| Medium | `OFFLINE_DEPLOYMENT.md:421` | `QUICKSTART_BY_PROFILE.md#-core-profile-lightweight--offline-first-8-15-mb` | Follow-up required in the referenced file: regenerate anchor from the current heading slug in GitHub/MkDocs (emoji/special markers removed, collapsed hyphen behavior verified). |
-| Medium | `OFFLINE_DEPLOYMENT.md:422` | `QUICKSTART_BY_PROFILE.md#-runtime-profile-production-inference--apis-20-35-mb` | Follow-up required in the referenced file: regenerate anchor from the current heading slug in GitHub/MkDocs (emoji/special markers removed, collapsed hyphen behavior verified). |
+| Medium | `OFFLINE_DEPLOYMENT.md:421` | `QUICKSTART_BY_PROFILE.md#-core-profile-lightweight--offline-first-8-15-mb` | Replace with `QUICKSTART_BY_PROFILE.md#core-profile-lightweight-offline-first-8-15-mb` and verify against rendered heading slug in target file. |
+| Medium | `OFFLINE_DEPLOYMENT.md:422` | `QUICKSTART_BY_PROFILE.md#-runtime-profile-production-inference--apis-20-35-mb` | Replace with `QUICKSTART_BY_PROFILE.md#runtime-profile-production-inference-apis-20-35-mb` and verify against rendered heading slug in target file. |
 
 ## At-Risk (DNS unresolved in runner environment)
 

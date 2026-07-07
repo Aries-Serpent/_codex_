@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Quickstart for installing and running the repository in an isolated/offline environment using prebuilt artifacts.
+Quickstart for installing and running the codex-ml package/system in an isolated/offline environment using prebuilt artifacts.
 
 > ⚠️ Pre-release note: this guide targets v0.1.0 pre-release packaging and should be used with the campaign readiness reports in `.codex/` before production external distribution.
 
