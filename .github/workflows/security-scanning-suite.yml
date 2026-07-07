@@ -617,7 +617,7 @@ jobs:
     if: always()
     steps:
     - name: Download all security-suite artifacts
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         path: security-suite-artifacts/
         pattern: security-suite-*
@@ -694,7 +694,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
       - name: Download all security-suite artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           path: security-suite-artifacts/
           pattern: security-suite-*
@@ -776,7 +776,7 @@ jobs:
           python-version: '3.12'
           cache: pip
       - name: Download comprehensive findings
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: security-suite-comprehensive-findings
           path: .

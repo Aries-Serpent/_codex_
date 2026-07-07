@@ -86,7 +86,7 @@ jobs:
         \ not found at $(dirname \"$VENV_PYTHON\")\"\n  exit 1\nfi\necho \"[SETUP]\
         \ ✓ venv directory verified at $(dirname \"$VENV_PYTHON\")\"\n"
     - name: Cache sentence-transformers models
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ~/.cache/torch/sentence_transformers
         key: ${{ runner.os }}-sentence-transformers-py${{ matrix.python-version }}-${{

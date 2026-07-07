@@ -142,13 +142,13 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
     - name: Download detection report
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: ci-patterns-detected-${{ github.run_id }}
         path: .codex/
     - name: Download fix report
       if: needs.heal-patterns.result == 'success'
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: ci-patterns-fixed-${{ github.run_id }}
         path: .codex/

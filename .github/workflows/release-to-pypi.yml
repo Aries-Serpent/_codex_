@@ -163,7 +163,7 @@ jobs:
           cache: pip
 
       - name: Download all wheels
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           path: dist/
           merge-multiple: true
@@ -261,13 +261,13 @@ jobs:
           cache: pip
 
       - name: Download wheels
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           path: dist/
           merge-multiple: true
 
       - name: Download manifest
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: release-manifest
           path: .codex/manifests/
@@ -299,7 +299,7 @@ jobs:
           cache: pip
 
       - name: Download wheels
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           path: dist/
           merge-multiple: true
@@ -353,19 +353,19 @@ jobs:
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
 
       - name: Download wheels
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           path: dist/
           merge-multiple: true
 
       - name: Download manifest
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: release-manifest
           path: release-artifacts/
 
       - name: Download SBOM
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: sbom
           path: release-artifacts/

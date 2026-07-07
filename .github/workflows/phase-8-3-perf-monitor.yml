@@ -80,7 +80,7 @@ jobs:
       with:
         python-version: '3.11'
     - name: Download current metrics
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: performance-metrics
         path: .
@@ -116,7 +116,7 @@ jobs:
       with:
         python-version: '3.11'
     - name: Download metrics
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: performance-metrics
         path: .
@@ -156,7 +156,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
     - name: Download all artifacts
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
     - name: Generate dashboard
       run: 'cat > .codex/PHASE_8_3_PERFORMANCE_DASHBOARD.md << ''EOF''
 

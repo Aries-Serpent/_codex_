@@ -81,7 +81,7 @@ jobs:
       with:
         python-version: '3.11'
     - name: Download metrics
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: ci-metrics
         path: .codex/metrics
@@ -111,7 +111,7 @@ jobs:
       with:
         python-version: '3.11'
     - name: Download metrics
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: ci-metrics
         path: .codex/metrics
@@ -142,7 +142,7 @@ jobs:
       with:
         python-version: '3.11'
     - name: Download metrics
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: ci-metrics
         path: .codex/metrics

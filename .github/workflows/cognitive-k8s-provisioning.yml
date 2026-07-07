@@ -75,7 +75,7 @@ jobs:
         python-version: '3.11'
         cache: 'pip'
     - name: Download Patterns
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: k8s-patterns
     - name: Validate Configuration
@@ -105,7 +105,7 @@ jobs:
         python-version: '3.11'
         cache: 'pip'
     - name: Download Patterns
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: k8s-patterns
     - name: Estimate Costs
@@ -135,7 +135,7 @@ jobs:
         python-version: '3.11'
         cache: 'pip'
     - name: Download Patterns
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: k8s-patterns
     - name: Generate Terraform Configuration
@@ -165,7 +165,7 @@ jobs:
         python-version: '3.11'
         cache: 'pip'
     - name: Download Terraform Modules
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: terraform-modules
         path: infrastructure/terraform/
@@ -202,7 +202,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
     - name: Download All Artifacts
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
     - name: Generate Approval Summary
       run: 'echo "# K8s Cluster Provisioning Approval" > approval_summary.md
 
