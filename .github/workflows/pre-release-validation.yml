@@ -333,7 +333,7 @@ jobs:
   # Post results as PR comment
   post-results:
     name: Post validation results
-    needs: [is-release-pr, validate-version, validate-changelog, validate-p0-gate, validate-p1-gate, validate-p2-gate, validate-manifest]
+    needs: [is-release-pr, validate-version, validate-changelog, validate-release-notes, validate-p0-gate, validate-p1-gate, validate-p2-gate, validate-manifest, validate-artifacts]
     if: always() && needs.is-release-pr.outputs.is-release == 'true'
     runs-on: ubuntu-latest
     steps:

@@ -49,7 +49,7 @@ jobs:
         run: |
           echo "## Profile Validation Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          if [ ${{ steps.drift-check.result }} == 'success' ]; then
+          if [ ${{ steps.drift-check.outcome }} == 'success' ]; then
             echo "✅ **PASSED**: No profile drift detected" >> $GITHUB_STEP_SUMMARY
           else
             echo "❌ **FAILED**: Profile drift detected" >> $GITHUB_STEP_SUMMARY

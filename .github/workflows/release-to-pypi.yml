@@ -32,6 +32,8 @@ jobs:
     name: Pre-release Validation
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    outputs:
+      version: ${{ steps.version.outputs.version }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -41,7 +43,7 @@ jobs:
       - name: Set version from tag or input
         id: version
         run: |
-          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
+          if [[ "${{ github.ref }}" =~ ^refs/tags/ ]]; then
             VERSION="${{ github.ref }}"
             VERSION="${VERSION#refs/tags/}"
           else
@@ -144,7 +146,7 @@ jobs:
   # Generate manifest (Lane 3 P0.2.2 output)
   generate-manifest:
     name: Generate Release Manifest
-    needs: build-wheels
+    needs: [build-wheels, pre-release-checks]
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -277,7 +279,7 @@ jobs:
   # Publish to PyPI
   publish-to-pypi:
     name: Publish to PyPI
-    needs: [verify-manifest, generate-sbom]
+    needs: [verify-manifest, generate-sbom, pre-release-checks]
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment:
