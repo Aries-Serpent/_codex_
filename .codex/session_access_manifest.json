@@ -1,26 +1,26 @@
 {
-  "generated_at": "2026-07-07T23:59:49.042896+00:00",
-  "session_sha": "19a053f2c2ee",
+  "generated_at": "2026-07-08T00:14:02.085790+00:00",
+  "session_sha": "de268e33b732",
   "branch": "copilot/monitoring-healing-campaign",
   "repo": "Aries-Serpent/_codex_",
   "rest": {
     "available": true,
-    "detail": "4990 remaining via CODEX_MASTER_KEY, resets 00:48:58Z",
+    "detail": "4907 remaining via CODEX_MASTER_KEY, resets 00:48:58Z",
     "extra": {
-      "remaining": 4990,
+      "remaining": 4907,
       "reset_epoch": 1783471738
     }
   },
   "graphql": {
     "available": true,
-    "detail": "4998 pts remaining via GITHUB_TOKEN",
+    "detail": "4996 pts remaining via GITHUB_TOKEN",
     "extra": {
-      "remaining": 4998
+      "remaining": 4996
     }
   },
   "gh_cli": {
     "available": true,
-    "detail": "gh version 2.95.0 (2026-06-17) | auth=OK | api=core.remaining=4947",
+    "detail": "gh version 2.95.0 (2026-06-17) | auth=OK | api=core.remaining=4771",
     "extra": {
       "version": "gh version 2.95.0 (2026-06-17)",
       "auth_ok": true,
@@ -55,7 +55,7 @@
       "rate_limits": {
         "core": {
           "resource": "core",
-          "remaining": 4990,
+          "remaining": 4907,
           "limit": 5000,
           "reset_epoch": 1783471738,
           "reset_human": "00:48:58Z"
@@ -64,12 +64,12 @@
           "resource": "search",
           "remaining": 30,
           "limit": 30,
-          "reset_epoch": 1783468849,
-          "reset_human": "00:00:49Z"
+          "reset_epoch": 1783469702,
+          "reset_human": "00:15:02Z"
         },
         "graphql": {
           "resource": "graphql",
-          "remaining": 4996,
+          "remaining": 4988,
           "limit": 5000,
           "reset_epoch": 1783471667,
           "reset_human": "00:47:47Z"
@@ -78,78 +78,78 @@
           "resource": "integration_manifest",
           "remaining": 5000,
           "limit": 5000,
-          "reset_epoch": 1783472389,
-          "reset_human": "00:59:49Z"
+          "reset_epoch": 1783473242,
+          "reset_human": "01:14:02Z"
         },
         "source_import": {
           "resource": "source_import",
           "remaining": 100,
           "limit": 100,
-          "reset_epoch": 1783468849,
-          "reset_human": "00:00:49Z"
+          "reset_epoch": 1783469702,
+          "reset_human": "00:15:02Z"
         },
         "code_scanning_autofix": {
           "resource": "code_scanning_autofix",
           "remaining": 10,
           "limit": 10,
-          "reset_epoch": 1783468849,
-          "reset_human": "00:00:49Z"
+          "reset_epoch": 1783469702,
+          "reset_human": "00:15:02Z"
         },
         "actions_runner_registration": {
           "resource": "actions_runner_registration",
           "remaining": 10000,
           "limit": 10000,
-          "reset_epoch": 1783472389,
-          "reset_human": "00:59:49Z"
+          "reset_epoch": 1783473242,
+          "reset_human": "01:14:02Z"
         },
         "scim": {
           "resource": "scim",
           "remaining": 15000,
           "limit": 15000,
-          "reset_epoch": 1783472389,
-          "reset_human": "00:59:49Z"
+          "reset_epoch": 1783473242,
+          "reset_human": "01:14:02Z"
         },
         "dependency_snapshots": {
           "resource": "dependency_snapshots",
           "remaining": 100,
           "limit": 100,
-          "reset_epoch": 1783468849,
-          "reset_human": "00:00:49Z"
+          "reset_epoch": 1783469702,
+          "reset_human": "00:15:02Z"
         },
         "dependency_sbom": {
           "resource": "dependency_sbom",
           "remaining": 100,
           "limit": 100,
-          "reset_epoch": 1783468849,
-          "reset_human": "00:00:49Z"
+          "reset_epoch": 1783469702,
+          "reset_human": "00:15:02Z"
         },
         "audit_log": {
           "resource": "audit_log",
           "remaining": 1750,
           "limit": 1750,
-          "reset_epoch": 1783472389,
-          "reset_human": "00:59:49Z"
+          "reset_epoch": 1783473242,
+          "reset_human": "01:14:02Z"
         },
         "audit_log_streaming": {
           "resource": "audit_log_streaming",
           "remaining": 15,
           "limit": 15,
-          "reset_epoch": 1783472389,
-          "reset_human": "00:59:49Z"
+          "reset_epoch": 1783473242,
+          "reset_human": "01:14:02Z"
         },
         "code_search": {
           "resource": "code_search",
           "remaining": 10,
           "limit": 10,
-          "reset_epoch": 1783468849,
-          "reset_human": "00:00:49Z"
+          "reset_epoch": 1783469702,
+          "reset_human": "00:15:02Z"
         },
         "copilot_usage_records": {
           "resource": "copilot_usage_records",
           "remaining": 1750,
           "limit": 1750,
-          "reset_epoch": 1783472389,
-          "reset_human": "00:59:49Z"
+          "reset_epoch": 1783473242,
+          "reset_human": "01:14:02Z"
         }
       },
       "scopes": [
@@ -179,13 +179,13 @@
       "error": ""
     },
     {
-      "token_tail": "Zibw",
+      "token_tail": "94Lw",
       "source_var": "GITHUB_TOKEN",
       "is_elevated": false,
       "rate_limits": {
         "core": {
           "resource": "core",
-          "remaining": 4949,
+          "remaining": 4773,
           "limit": 5000,
           "reset_epoch": 1783472268,
           "reset_human": "00:57:48Z"
@@ -194,12 +194,12 @@
           "resource": "search",
           "remaining": 30,
           "limit": 30,
-          "reset_epoch": 1783468850,
-          "reset_human": "00:00:50Z"
+          "reset_epoch": 1783469703,
+          "reset_human": "00:15:03Z"
         },
         "graphql": {
           "resource": "graphql",
-          "remaining": 4998,
+          "remaining": 4996,
           "limit": 5000,
           "reset_epoch": 1783471668,
           "reset_human": "00:47:48Z"
@@ -208,78 +208,78 @@
           "resource": "integration_manifest",
           "remaining": 5000,
           "limit": 5000,
-          "reset_epoch": 1783472390,
-          "reset_human": "00:59:50Z"
+          "reset_epoch": 1783473243,
+          "reset_human": "01:14:03Z"
         },
         "source_import": {
           "resource": "source_import",
           "remaining": 100,
           "limit": 100,
-          "reset_epoch": 1783468850,
-          "reset_human": "00:00:50Z"
+          "reset_epoch": 1783469703,
+          "reset_human": "00:15:03Z"
         },
         "code_scanning_autofix": {
           "resource": "code_scanning_autofix",
           "remaining": 10,
           "limit": 10,
-          "reset_epoch": 1783468850,
-          "reset_human": "00:00:50Z"
+          "reset_epoch": 1783469703,
+          "reset_human": "00:15:03Z"
         },
         "actions_runner_registration": {
           "resource": "actions_runner_registration",
           "remaining": 10000,
           "limit": 10000,
-          "reset_epoch": 1783472390,
-          "reset_human": "00:59:50Z"
+          "reset_epoch": 1783473243,
+          "reset_human": "01:14:03Z"
         },
         "scim": {
           "resource": "scim",
           "remaining": 15000,
           "limit": 15000,
-          "reset_epoch": 1783472390,
-          "reset_human": "00:59:50Z"
+          "reset_epoch": 1783473243,
+          "reset_human": "01:14:03Z"
         },
         "dependency_snapshots": {
           "resource": "dependency_snapshots",
           "remaining": 100,
           "limit": 100,
-          "reset_epoch": 1783468850,
-          "reset_human": "00:00:50Z"
+          "reset_epoch": 1783469703,
+          "reset_human": "00:15:03Z"
         },
         "dependency_sbom": {
           "resource": "dependency_sbom",
           "remaining": 100,
           "limit": 100,
-          "reset_epoch": 1783468850,
-          "reset_human": "00:00:50Z"
+          "reset_epoch": 1783469703,
+          "reset_human": "00:15:03Z"
         },
         "audit_log": {
           "resource": "audit_log",
           "remaining": 1750,
           "limit": 1750,
-          "reset_epoch": 1783472390,
-          "reset_human": "00:59:50Z"
+          "reset_epoch": 1783473243,
+          "reset_human": "01:14:03Z"
         },
         "audit_log_streaming": {
           "resource": "audit_log_streaming",
           "remaining": 15,
           "limit": 15,
-          "reset_epoch": 1783472390,
-          "reset_human": "00:59:50Z"
+          "reset_epoch": 1783473243,
+          "reset_human": "01:14:03Z"
         },
         "code_search": {
           "resource": "code_search",
           "remaining": 10,
           "limit": 10,
-          "reset_epoch": 1783468850,
-          "reset_human": "00:00:50Z"
+          "reset_epoch": 1783469703,
+          "reset_human": "00:15:03Z"
         },
         "copilot_usage_records": {
           "resource": "copilot_usage_records",
           "remaining": 1750,
           "limit": 1750,
-          "reset_epoch": 1783472390,
-          "reset_human": "00:59:50Z"
+          "reset_epoch": 1783473243,
+          "reset_human": "01:14:03Z"
         }
       },
       "scopes": [],
@@ -287,11 +287,11 @@
     }
   ],
   "best_token_var": "CODEX_MASTER_KEY",
-  "best_token_rest_remaining": 4990,
+  "best_token_rest_remaining": 4907,
   "rest_reset_epoch": 1783471738,
-  "graphql_remaining": 4998,
+  "graphql_remaining": 4996,
   "open_prs": [],
-  "head_sha": "19a053f2c2ee2bc62939b67ba8067bc19e7b8ffc",
+  "head_sha": "de268e33b7322c3a1c0a945a3736473dfbf3f0f4",
   "recommended_method": "REST",
-  "recommended_method_detail": "core.remaining=4990 via CODEX_MASTER_KEY"
+  "recommended_method_detail": "core.remaining=4907 via CODEX_MASTER_KEY"
 }
