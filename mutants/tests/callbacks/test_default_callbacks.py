@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import pytest
 
+pytest.importorskip("mlflow")
+
 from codex_ml.callbacks.base import Callback
 from codex_ml.training import unified_training
-
-pytest.importorskip("mlflow")
 
 
 class SpyCallback(Callback):
@@ -27,8 +27,7 @@ def test_default_callbacks_auto_added() -> None:
     assert spy.state_reference is not None, "Training did not produce state"
     history = spy.state_reference.get("epoch_history")
     assert isinstance(history, list) and history, "epoch_history not present or empty"
-    assert ("epoch" in history[0] and "status" in history[0], "Condition must be true"
-    ), "LoggingCallback did not log expected metrics"
+    assert "epoch" in history[0] and "status" in history[0], "LoggingCallback did not log expected metrics"
 
 
 def test_disable_default_callbacks() -> None:
@@ -41,5 +40,4 @@ def test_disable_default_callbacks() -> None:
     spy = SpyCallback()
     _ = unified_training.run_unified_training(cfg, callbacks=[spy])
     assert spy.state_reference is not None, "state_reference must be initialized"
-    assert ("epoch_history" not in spy.state_reference, "Condition must be true"
-    ), "LoggingCallback was added despite disable flag"
+    assert "epoch_history" not in spy.state_reference, "LoggingCallback was added despite disable flag"

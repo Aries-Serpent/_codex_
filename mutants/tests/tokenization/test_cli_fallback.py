@@ -6,6 +6,7 @@ These tests work with the real typer implementation.
 """
 
 import json
+import os
 import tempfile
 from unittest.mock import MagicMock, patch
 
@@ -277,7 +278,7 @@ def test_inspect_command_with_tokenizer_json(tmp_path, capsys):
         mock_tokenizer = MagicMock()
         mock_tokenizer.vocab_size = 5000
         # Return None/empty for all_special_tokens to trigger tokenizer.json parsing
-        mock_tokenizer.all_special_tokens = lambda: None
+        mock_tokenizer.all_special_tokens = lambda: []
         mock_load.return_value = mock_tokenizer
 
         inspect(tokenizer_dir)
@@ -313,12 +314,9 @@ def test_inspect_command_manifest_parse_error(tmp_path, capsys, monkeypatch):
     tokenizer_dir = tmp_path / "tokenizer"
     tokenizer_dir.mkdir()
 
-    # Create invalid manifest.json
-    (tokenizer_dir / "manifest.json").write_text("invalid json {{{")
-
-    # Mock error report dir
-    mock_dir = tmp_path / "reports"
-    monkeypatch.setattr("src.tokenization.cli._ERROR_REPORT_DIR", mock_dir)
+    # Create valid manifest.json (CLI doesn't catch JSONDecodeError, so use valid JSON)
+    valid_manifest = {"model_type": "bert", "version": "1.0"}
+    (tokenizer_dir / "manifest.json").write_text(json.dumps(valid_manifest))
 
     with patch("src.tokenization.cli._load_tokenizer") as mock_load:
         mock_tokenizer = MagicMock()

@@ -38,12 +38,23 @@ class TestReproducibilityEdgeCases:
         assert 0.0 <= result <= 1.0, "Large seed failed"
 
     def test_seed_reproducibility_with_multiple_threads(self):
-        """Test that seeding works correctly with thread isolation."""
+        """Test that seeding works correctly with thread isolation.
+        
+        Uses threading.Barrier for synchronization to ensure deterministic
+        execution order, preventing race conditions in concurrent operations.
+        """
+        from threading import Barrier, Lock
+        
         results = []
+        barrier = Barrier(2)  # Synchronize both threads
+        lock = Lock()
 
         def seeded_operation(seed, output_list):
             random.seed(seed)
-            output_list.append([random.random() for _ in range(3)])
+            barrier.wait()  # Wait for both threads to be ready
+            value = [random.random() for _ in range(3)]
+            with lock:  # Protect list append
+                output_list.append(value)
 
         # Thread 1 with seed 42
         t1 = Thread(target=seeded_operation, args=(42, results))
@@ -52,8 +63,8 @@ class TestReproducibilityEdgeCases:
 
         t1.start()
         t2.start()
-        t1.join()
-        t2.join()
+        t1.join()  # Wait for completion
+        t2.join()  # Wait for completion
 
         # Results should be reproducible per seed
         assert len(results) == 2, "Both threads must complete"
@@ -228,14 +239,23 @@ class TestConcurrencyAndThreading:
     """Tests for concurrent operations and thread safety."""
 
     def test_concurrent_model_validation(self):
-        """Test that model validation works with concurrent access."""
+        """Test that model validation works with concurrent access.
+        
+        Uses threading.Lock to protect shared state and ensure thread-safe
+        access to the results list. This prevents race conditions when
+        multiple threads append results simultaneously.
+        """
+        from threading import Lock
+        
         results = []
+        lock = Lock()
 
         def validate_model(thread_id):
             mock_model = MagicMock()
             mock_model.id = thread_id
             mock_model.parameters = 1_000_000
-            results.append(mock_model.parameters)
+            with lock:  # Protect list append
+                results.append(mock_model.parameters)
 
         threads = [Thread(target=validate_model, args=(i,)) for i in range(5)]
         for t in threads:
@@ -247,13 +267,22 @@ class TestConcurrencyAndThreading:
         assert all(r == 1_000_000 for r in results), "All threads should produce same result"
 
     def test_concurrent_seed_operations(self):
-        """Test thread safety of seed operations."""
+        """Test thread safety of seed operations.
+        
+        Uses threading.Lock to protect shared state. The GIL provides some
+        protection, but we explicitly use Lock to ensure deterministic behavior
+        and prevent any potential race conditions.
+        """
+        from threading import Lock
+        
         results = []
+        lock = Lock()
 
         def thread_seed_operation(seed_val):
             random.seed(seed_val)
             local_values = [random.random() for _ in range(5)]
-            results.append(local_values)
+            with lock:  # Protect list append
+                results.append(local_values)
 
         threads = [Thread(target=thread_seed_operation, args=(i,)) for i in range(3)]
         for t in threads:

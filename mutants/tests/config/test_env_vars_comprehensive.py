@@ -1,5 +1,22 @@
-#         assert "test" in config.description.lower(, "Condition must be true"
-#         ), "Condition must be true"
+"""
+Comprehensive tests for environment variable configuration.
+
+Tests the EnvironmentManager and EnvVarConfig classes for proper
+environment variable handling, validation, and configuration.
+"""
+
+import os
+from unittest.mock import patch
+
+import pytest
+
+from src.codex.config.env_vars import EnvVarConfig, EnvironmentManager
+
+
+@pytest.fixture
+def env_manager():
+    """Create a fresh EnvironmentManager instance for testing."""
+    return EnvironmentManager()
 
 
 # ============================================================================
