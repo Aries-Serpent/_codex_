@@ -8,6 +8,8 @@ This test suite covers:
 - Model and tokenizer initialization helpers
 """
 
+pytest.importorskip("torch")
+
 from __future__ import annotations
 
 import pytest

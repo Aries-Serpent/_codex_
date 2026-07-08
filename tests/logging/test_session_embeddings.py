@@ -11,6 +11,9 @@ Test coverage:
     - Threading (concurrent access)
 """
 
+import pytest
+pytest.importorskip("numpy")
+
 from __future__ import annotations
 
 import json

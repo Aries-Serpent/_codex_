@@ -4,6 +4,10 @@ Phase 7A Wave 2 Lane 2.2: ML RAG Testing
 Test Categories: Unit (80), Integration (50), Edge Cases (15), Error Handling (5)
 """
 
+import pytest
+pytest.importorskip("torch")
+pytest.importorskip("numpy")
+
 from __future__ import annotations
 
 import importlib

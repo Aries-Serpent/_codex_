@@ -17,6 +17,8 @@ Targets previously uncovered code paths:
 - Scenario factories: prisoner's dilemma, zero-sum, security.
 """
 
+pytest.importorskip("numpy")
+
 from __future__ import annotations
 
 import numpy as np

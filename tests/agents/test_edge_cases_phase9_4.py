@@ -20,6 +20,8 @@ yet reached by Phase 9.1 / 9.2 happy-path or 9.3 error-path tests:
 #AFTERMATH_METRIC - Phase 9.4 edge-case coverage tests
 """
 
+pytest.importorskip("numpy")
+
 from __future__ import annotations
 
 from pathlib import Path

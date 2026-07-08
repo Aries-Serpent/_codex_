@@ -10,6 +10,9 @@ so they pass on CPU-only CI runners and only run when a GPU is present.
 See docs/ops/openvino_integration.md Phase B/C for context.
 """
 
+import pytest
+pytest.importorskip("numpy")
+
 from __future__ import annotations
 
 import importlib

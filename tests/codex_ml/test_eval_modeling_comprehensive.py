@@ -4,6 +4,9 @@ Phase 7A Wave 2 Lane 2.2: ML Eval & Modeling Testing
 Test Categories: Unit (70), Integration (40), Edge Cases (15), Error Handling (15)
 """
 
+pytest.importorskip("torch")
+pytest.importorskip("numpy")
+
 from __future__ import annotations
 
 import numpy as np

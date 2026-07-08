@@ -4,6 +4,9 @@ All tests generate synthetic images programmatically — no external files requi
 Designed to run with ``pytest -q --tb=short -W error``.
 """
 
+import pytest
+pytest.importorskip("numpy")
+
 from __future__ import annotations
 
 import subprocess

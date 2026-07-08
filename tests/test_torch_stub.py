@@ -36,6 +36,9 @@ c. mypy coverage      – documented via the mypy count reduction in
    ``.mypy_baseline`` (757 → ≤ 600 after this PR).
 """
 
+import pytest
+pytest.importorskip("torch")
+
 from __future__ import annotations
 
 import sys

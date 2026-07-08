@@ -13,6 +13,9 @@ Covers public APIs not already exercised in Phase 9.1 files:
 #AFTERMATH_METRIC - Phase 9.2 public-function API contract tests
 """
 
+import pytest
+pytest.importorskip("numpy")
+
 from __future__ import annotations
 
 from pathlib import Path

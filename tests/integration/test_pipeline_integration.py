@@ -10,6 +10,8 @@ Target: 25 tests
 Part of Phase 7: Integration Scenarios (80-85% coverage)
 """
 
+pytest.importorskip("torch")
+
 from __future__ import annotations
 
 import json

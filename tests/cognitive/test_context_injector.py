@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+import pytest
+pytest.importorskip("numpy")
+
 """
 Tests for Context Injection System - Phase 10.3 Days 4-5
 
