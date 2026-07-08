@@ -1,29 +1,32 @@
-# Session Context — 2026-07-08T19:06:00Z
-**Branch:** `copilot/unified-governance-gate-v0-1-0-final-validation`  **PR:** none  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-07-08T19:27:14Z
+**Branch:** `copilot/unified-governance-gate-v0-1-0-final-validation`  **PR:** #5270  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4992` (✅)
-- GraphQL remaining: `4999` (✅)
+- REST remaining: `4707` (✅)
+- GraphQL remaining: `4983` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
+## 📋 PR #5270 — build(deps): bump the npm_and_yarn group across 1 directory with 2 updates
+State: `open`  Draft: `False`  Branch: `dependabot/npm_and_yarn/cognitive_app/npm_and_yarn-8ed86ed36d` → `copilot/unified-governance-gate-v0-1-0-final-validation`
+
 ## 🚨 Recent CI Failures (last 5 runs)
-- **Resilient Dependency Submission** — `failure` on `main` (2026-07-08)
-- **Automated Compliance Check** — `failure` on `main` (2026-07-08)
-- **Code Example Validation** — `failure` on `main` (2026-07-08)
-- **Profile Validation** — `failure` on `main` (2026-07-08)
-- **.github/workflows/agent_infrastructure_manager.yml** — `failure` on `main` (2026-07-08)
+- **.github/workflows/autonomous-agent.yml** — `failure` on `dependabot/npm_and_yarn/cognitive_app/npm_and_yarn-8ed86ed36d` (2026-07-08)
+- **.github/workflows/chatops_copilot_trigger.yml** — `failure` on `dependabot/npm_and_yarn/cognitive_app/npm_and_yarn-8ed86ed36d` (2026-07-08)
+- **.github/workflows/13-3-secrets-detection.yml** — `failure` on `dependabot/npm_and_yarn/cognitive_app/npm_and_yarn-8ed86ed36d` (2026-07-08)
+- **.github/workflows/13-3-cve-scanning.yml** — `failure` on `dependabot/npm_and_yarn/cognitive_app/npm_and_yarn-8ed86ed36d` (2026-07-08)
+- **.github/workflows/agent-health-check.yml** — `failure` on `dependabot/npm_and_yarn/cognitive_app/npm_and_yarn-8ed86ed36d` (2026-07-08)
 
 ## 📝 Recent Commits
+- `a25a0b9b` Apply remaining changes — copilot-swe-agent[bot] (2026-07-08)
+- `338288f6` Phase 14 WS4 Completion: All 9/9 governance pillars PASS - v0.1.0-final PRODUCTI — copilot-swe-agent[bot] (2026-07-08)
+- `9190079a` docs(phase-14-ws4): Final Governance Validation Report — 9/9 Pillars PASS — Prod — copilot-swe-agent[bot] (2026-07-08)
+- `7efcabc8` Fix governance workflow: properly classify exempted paths and respect policy enf — copilot-swe-agent[bot] (2026-07-08)
+- `8dba7229` Verify Phase 14 WS4 CRITICAL CodeQL findings remediation - 4/4 CRITICAL eliminat — copilot-swe-agent[bot] (2026-07-08)
 - `2b172825` Merge pull request #5269 from Aries-Serpent/copilot/phase-14-initiation-multi-ag — Statix (2026-07-08)
 - `4acac29a` fix(code-review): resolve all 5 unresolved code review threads — copilot-swe-agent[bot] (2026-07-08)
 - `c5ced7b8` WS3 Code Review Remediation - Fix 5 Unresolved Threads — copilot-swe-agent[bot] (2026-07-08)
-- `3c72e262` Phase 14 WS3: Final validation complete — All agents PASS, production ready for  — copilot-swe-agent[bot] (2026-07-08)
-- `47e1251f` fix(code-review): address parallel validation feedback (docstrings, comments, te — copilot-swe-agent[bot] (2026-07-08)
-- `4aa4930e` docs(phase-14): Create Phase 14 WS3 Completion Report — All Validations PASS, Pr — copilot-swe-agent[bot] (2026-07-08)
-- `9c433d57` docs(phase-14): Phase 14 WS3 Complete — Production Readiness Validated (artifact — copilot-swe-agent[bot] (2026-07-08)
-- `fb288622` fix(test): add missing Path import to test_repo_map_cli.py and apply import fixe — copilot-swe-agent[bot] (2026-07-08)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
