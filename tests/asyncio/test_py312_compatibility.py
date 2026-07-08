@@ -18,6 +18,7 @@ import pytest
 class TestAsyncioCompatibility:
     """Test suite for Python 3.12 asyncio compatibility."""
 
+    @pytest.mark.asyncio
     async def test_no_deprecated_event_loop_calls(self):
         """
         Verify no usage of deprecated get_event_loop().
@@ -30,6 +31,7 @@ class TestAsyncioCompatibility:
         assert loop is not None, "loop must be initialized"
         assert isinstance(loop, asyncio.AbstractEventLoop)
 
+    @pytest.mark.asyncio
     async def test_asyncio_run_compatibility(self):
         """Test that asyncio.run() works correctly in Python 3.12."""
 
@@ -42,6 +44,7 @@ class TestAsyncioCompatibility:
         result = await simple_coro()
         assert result == "success", "Result must not be empty"
 
+    @pytest.mark.asyncio
     async def test_gather_with_exceptions(self):
         """Test asyncio.gather with exceptions in Python 3.12."""
 
@@ -59,6 +62,7 @@ class TestAsyncioCompatibility:
         assert results[0] == "ok", "Result must not be empty"
         assert isinstance(results[1], ValueError)
 
+    @pytest.mark.asyncio
     async def test_task_creation(self):
         """Test task creation works in Python 3.12."""
 
@@ -70,6 +74,7 @@ class TestAsyncioCompatibility:
         result = await task
         assert result == 42, "Result must not be empty"
 
+    @pytest.mark.asyncio
     async def test_timeout_context_manager(self):
         """Test asyncio.timeout() context manager (Python 3.11+)."""
         if sys.version_info >= (3, 11):
@@ -84,6 +89,7 @@ class TestAsyncioCompatibility:
 
             assert result == "done", "Result must not be empty"
 
+    @pytest.mark.asyncio
     async def test_multiple_coroutines_concurrently(self):
         """Test running multiple coroutines concurrently."""
         results = []
@@ -112,6 +118,7 @@ class TestRequestBatcherAsyncContext:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_request_batcher_import(self):
         """Test that RequestBatcher can be imported."""
         try:
@@ -131,6 +138,7 @@ class TestRequestBatcherAsyncContext:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_request_batcher_async_context(self):
         """Test RequestBatcher works in Python 3.12 async context."""
         try:
@@ -161,6 +169,7 @@ class TestAsyncDataLoaders:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_async_data_loader_import(self):
         """Test that async data loaders can be imported."""
         try:
@@ -180,6 +189,7 @@ class TestAsyncDataLoaders:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_async_pattern_no_event_loop_warning(self):
         """
         Test that async patterns don't trigger event loop warnings.
@@ -189,6 +199,7 @@ class TestAsyncDataLoaders:
         """
 
         # Run a simple async operation
+        @pytest.mark.asyncio
         async def test_op():
             await asyncio.sleep(0.001)
             return True
@@ -216,6 +227,7 @@ class TestAsyncDataLoaders:
 class TestAsyncioModernPatterns:
     """Test modern asyncio patterns work across all Python versions."""
 
+    @pytest.mark.asyncio
     async def test_async_with_context_manager(self):
         """Test async context managers work correctly."""
 
@@ -231,6 +243,7 @@ class TestAsyncioModernPatterns:
         async with AsyncContextManager() as ctx:
             assert ctx is not None, "ctx must be initialized"
 
+    @pytest.mark.asyncio
     async def test_async_iterator(self):
         """Test async iterators work correctly."""
 
@@ -254,6 +267,7 @@ class TestAsyncioModernPatterns:
 
         assert results == [1, 2, 3]
 
+    @pytest.mark.asyncio
     async def test_asyncio_queue(self):
         """Test asyncio.Queue works in Python 3.12."""
         queue = asyncio.Queue(maxsize=5)
@@ -264,6 +278,7 @@ class TestAsyncioModernPatterns:
         assert await queue.get() == "item1", "Item must not be empty"
         assert await queue.get() == "item2", "Item must not be empty"
 
+    @pytest.mark.asyncio
     async def test_asyncio_event(self):
         """Test asyncio.Event works in Python 3.12."""
         event = asyncio.Event()
@@ -281,6 +296,7 @@ class TestAsyncioModernPatterns:
 class TestAsyncioIntegration:
     """Integration tests for asyncio in Python 3.12."""
 
+    @pytest.mark.asyncio
     async def test_complex_async_workflow(self):
         """Test a complex async workflow similar to real usage."""
         results = []

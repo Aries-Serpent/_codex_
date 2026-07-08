@@ -194,6 +194,7 @@ class TestStartupExecution:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_startup_with_sync_hooks(self):
         """Test startup with synchronous hooks."""
         manager = LifecycleManager()
@@ -219,6 +220,7 @@ class TestStartupExecution:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_startup_with_async_hooks(self):
         """Test startup with asynchronous hooks."""
         manager = LifecycleManager()
@@ -242,6 +244,7 @@ class TestStartupExecution:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_startup_with_mixed_hooks(self):
         """Test startup with mixed sync and async hooks."""
         manager = LifecycleManager()
@@ -268,6 +271,7 @@ class TestStartupExecution:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_startup_failure_triggers_rollback(self):
         """Test that startup failure triggers rollback."""
         manager = LifecycleManager()
@@ -292,6 +296,7 @@ class TestStartupExecution:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_startup_no_hooks(self):
         """Test startup with no hooks."""
         manager = LifecycleManager()
@@ -314,6 +319,7 @@ class TestShutdownExecution:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_shutdown_with_sync_hooks(self):
         """Test shutdown with synchronous hooks."""
         manager = LifecycleManager()
@@ -341,6 +347,7 @@ class TestShutdownExecution:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_shutdown_with_async_hooks(self):
         """Test shutdown with asynchronous hooks."""
         manager = LifecycleManager()
@@ -366,6 +373,7 @@ class TestShutdownExecution:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_shutdown_hook_exception_doesnt_stop_others(self):
         """Test that exception in one hook doesn't stop others."""
         manager = LifecycleManager()
@@ -394,6 +402,7 @@ class TestShutdownExecution:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_shutdown_no_hooks(self):
         """Test shutdown with no hooks."""
         manager = LifecycleManager()
@@ -419,6 +428,7 @@ class TestResourceCleanup:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_cleanup_with_sync_cleanup_method(self):
         """Test cleanup with synchronous cleanup method."""
         manager = LifecycleManager()
@@ -442,6 +452,7 @@ class TestResourceCleanup:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_cleanup_with_async_cleanup_method(self):
         """Test cleanup with asynchronous cleanup method."""
         manager = LifecycleManager()
@@ -465,6 +476,7 @@ class TestResourceCleanup:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_cleanup_with_close_method(self):
         """Test cleanup with close method when cleanup not available."""
         manager = LifecycleManager()
@@ -488,6 +500,7 @@ class TestResourceCleanup:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_cleanup_exception_doesnt_stop_others(self):
         """Test that exception in one resource cleanup doesn't stop others."""
         manager = LifecycleManager()
@@ -607,6 +620,7 @@ class TestStatusMethods:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_status_after_startup(self):
         """Test status after successful startup."""
         manager = LifecycleManager()
@@ -625,6 +639,7 @@ class TestStatusMethods:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_status_after_shutdown(self):
         """Test status after shutdown."""
         manager = LifecycleManager()

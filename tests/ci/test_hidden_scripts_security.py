@@ -58,8 +58,8 @@ class TestAccessControl(unittest.TestCase):
             is_allowed, msg = self.manager.validate_access_control("test_script")
 
             # Should be blocked because not CODEX_MASTER_KEY
-            self.assertFalse(is_allowed)
-            self.assertIn("CODEX_MASTER_KEY", msg)
+            assert not is_allowed
+            assert "CODEX_MASTER_KEY" in msg
 
     def test_unauthorized_agent_rejection(self):
         """Test that non-elevated tokens are rejected.
@@ -73,7 +73,7 @@ class TestAccessControl(unittest.TestCase):
 
             is_allowed, msg = self.manager.validate_access_control("test_script")
 
-            self.assertFalse(is_allowed)
+            assert not is_allowed
 
     def test_cross_repo_access_prevention(self):
         """Test that org-level scripts cannot be accessed from non-org context.
@@ -89,7 +89,7 @@ class TestAccessControl(unittest.TestCase):
 
                 is_allowed, msg = self.manager.validate_access_control("org_script")
 
-                self.assertFalse(is_allowed)
+                assert not is_allowed
 
     def test_rate_limiting_detection(self):
         """Test handling of GitHub API rate limiting (429 responses).
@@ -105,7 +105,7 @@ class TestAccessControl(unittest.TestCase):
 
             is_allowed, msg = self.manager.validate_access_control("test_script")
 
-            self.assertFalse(is_allowed)
+            assert not is_allowed
 
 
 class TestIntegrityVerification(unittest.TestCase):
@@ -152,15 +152,15 @@ class TestIntegrityVerification(unittest.TestCase):
         is_valid, msg = self.manager.validate_script_integrity(
             "test_script", script_content
         )
-        self.assertTrue(is_valid)
+        assert is_valid
 
         # Validate integrity with tampered content
         tampered_content = "logger.info('tampered')"
         is_valid, msg = self.manager.validate_script_integrity(
             "test_script", tampered_content
         )
-        self.assertFalse(is_valid)
-        self.assertIn("checksum", msg.lower())
+        assert not is_valid
+        assert "checksum" in msg.lower()
 
     def test_corrupted_script_detection(self):
         """Test that corrupted (invalid base64) scripts are rejected.
@@ -178,7 +178,7 @@ class TestIntegrityVerification(unittest.TestCase):
         with self.assertRaises(ValueError) as ctx:
             self.manager._decode_script("this_is_not_valid_base64!!!")
 
-        self.assertIn("Failed to decode", str(ctx.exception))
+        assert "Failed to decode" in str(ctx.exception)
 
 
 class TestAuditLogging(unittest.TestCase):
@@ -214,18 +214,18 @@ class TestAuditLogging(unittest.TestCase):
             # Read audit log
             audit_log = self.manager.get_audit_log()
 
-            self.assertEqual(len(audit_log), 1)
+            assert len(audit_log) == 1
             entry = audit_log[0]
 
             # Verify no token values in log
-            self.assertNotIn("CODEX_MASTER_KEY", json.dumps(entry))
-            self.assertNotIn("ghu_", json.dumps(entry))  # GitHub token prefix
+            assert "CODEX_MASTER_KEY" not in json.dumps(entry)
+            assert "ghu_" not in json.dumps(entry)  # GitHub token prefix
 
             # Verify required fields
-            self.assertEqual(entry["event_type"], "retrieve")
-            self.assertEqual(entry["script_name"], "test_script")
-            self.assertEqual(entry["result"], "success")
-            self.assertEqual(entry["token_scope"], "elevated")
+            assert entry["event_type"] == "retrieve"
+            assert entry["script_name"] == "test_script"
+            assert entry["result"] == "success"
+            assert entry["token_scope"] == "elevated"
 
     def test_security_events_flagged_correctly(self):
         """Test that security violations are properly flagged.
@@ -255,17 +255,17 @@ class TestAuditLogging(unittest.TestCase):
             # Retrieve audit log
             audit_log = self.manager.get_audit_log()
 
-            self.assertEqual(len(audit_log), 2)
+            assert len(audit_log) == 2
 
             # Verify blocking
             blocked_entry = audit_log[0]
-            self.assertEqual(blocked_entry["result"], "blocked")
-            self.assertEqual(blocked_entry["error_message"], "Insufficient token scope")
+            assert blocked_entry["result"] == "blocked"
+            assert blocked_entry["error_message"] == "Insufficient token scope"
 
             # Verify failure
             failed_entry = audit_log[1]
-            self.assertEqual(failed_entry["result"], "failure")
-            self.assertIn("checksum", failed_entry["error_message"].lower())
+            assert failed_entry["result"] == "failure"
+            assert "checksum" in failed_entry["error_message"].lower()
 
 
 class TestEncryptionDecryption(unittest.TestCase):
@@ -304,10 +304,10 @@ class TestEncryptionDecryption(unittest.TestCase):
         decoded_content, decoded_metadata = self.manager._decode_script(encoded)
 
         # Verify
-        self.assertEqual(decoded_content, original_content)
-        self.assertEqual(decoded_metadata["name"], metadata["name"])
-        self.assertEqual(decoded_metadata["version"], metadata["version"])
-        self.assertEqual(decoded_metadata["security_level"], metadata["security_level"])
+        assert decoded_content == original_content
+        assert decoded_metadata["name"] == metadata["name"]
+        assert decoded_metadata["version"] == metadata["version"]
+        assert decoded_metadata["security_level"] == metadata["security_level"]
 
     def test_invalid_base64_handling(self):
         """Test graceful handling of invalid base64 data.
@@ -319,7 +319,7 @@ class TestEncryptionDecryption(unittest.TestCase):
         with self.assertRaises(ValueError) as ctx:
             self.manager._decode_script(invalid_base64)
 
-        self.assertIn("Failed to decode", str(ctx.exception))
+        assert "Failed to decode" in str(ctx.exception)
 
 
 class TestScenario8bIntegration(unittest.TestCase):
@@ -383,32 +383,32 @@ sys.exit(0)
                         description="Detects known vulnerabilities in dependencies",
                     )
 
-                    self.assertTrue(success)
-                    self.assertIn("stored successfully", msg.lower())
+                    assert success
+                    assert "stored successfully" in msg.lower()
 
                     # Verify script NOT in git (only in cache)
                     cache_path = self.manager.cache_dir / "vulnerability_detector.b64"
-                    self.assertTrue(cache_path.exists())
+                    assert cache_path.exists()
 
                     # STEP 2: Retrieve the script
                     retrieved_content, retrieve_msg = self.manager.retrieve_hidden_script(
                         "vulnerability_detector"
                     )
 
-                    self.assertIsNotNone(retrieved_content)
-                    self.assertEqual(retrieved_content, vulnerability_detector)
+                    assert retrieved_content is not None
+                    assert retrieved_content == vulnerability_detector
 
                     # STEP 3: Verify checksum is valid
                     checksum_valid, checksum_msg = self.manager.validate_script_integrity(
                         "vulnerability_detector", retrieved_content
                     )
-                    self.assertTrue(checksum_valid)
+                    assert checksum_valid
 
                     # STEP 4: Verify audit log is complete
                     audit_log = self.manager.get_audit_log()
 
                     # Should have store + retrieve entries
-                    self.assertGreaterEqual(len(audit_log), 2)
+                    assert len(audit_log) >= 2
 
                     store_entry = [e for e in audit_log if e["event_type"] == "store"][0]
                     retrieve_entry = [
@@ -416,21 +416,21 @@ sys.exit(0)
                     ][0]
 
                     # Verify required fields
-                    self.assertEqual(store_entry["script_name"], "vulnerability_detector")
-                    self.assertEqual(store_entry["result"], "success")
-                    self.assertEqual(store_entry["token_scope"], "elevated")
+                    assert store_entry["script_name"] == "vulnerability_detector"
+                    assert store_entry["result"] == "success"
+                    assert store_entry["token_scope"] == "elevated"
 
-                    self.assertEqual(retrieve_entry["script_name"], "vulnerability_detector")
-                    self.assertEqual(retrieve_entry["result"], "success")
+                    assert retrieve_entry["script_name"] == "vulnerability_detector"
+                    assert retrieve_entry["result"] == "success"
 
                     # STEP 5: Verify zero token exposure in logs
                     audit_json = json.dumps(audit_log)
-                    self.assertNotIn("CODEX_MASTER_KEY", audit_json)
-                    self.assertNotIn("ghu_", audit_json)
-                    self.assertNotIn("fake_master_key", audit_json)
+                    assert "CODEX_MASTER_KEY" not in audit_json
+                    assert "ghu_" not in audit_json
+                    assert "fake_master_key" not in audit_json
 
                     # STEP 6: Verify 100% audit coverage
-                    self.assertEqual(len([e for e in audit_log if e["result"] != ""]), len(audit_log))
+                    assert len([e for e in audit_log if e["result"] != ""]) == len(audit_log)
 
 
 class TestScriptMetadata(unittest.TestCase):
@@ -453,17 +453,17 @@ class TestScriptMetadata(unittest.TestCase):
         # Serialize
         data = metadata.to_dict()
 
-        self.assertEqual(data["name"], "test_script")
-        self.assertEqual(data["version"], "1.0.0")
-        self.assertEqual(data["security_level"], SecurityLevel.HIGH)
-        self.assertEqual(len(data["dependencies"]), 2)
+        assert data["name"] == "test_script"
+        assert data["version"] == "1.0.0"
+        assert data["security_level"] == SecurityLevel.HIGH
+        assert len(data["dependencies"]) == 2
 
         # Deserialize
         restored = ScriptMetadata.from_dict(data)
 
-        self.assertEqual(restored.name, metadata.name)
-        self.assertEqual(restored.version, metadata.version)
-        self.assertEqual(restored.security_level, metadata.security_level)
+        assert restored.name == metadata.name
+        assert restored.version == metadata.version
+        assert restored.security_level == metadata.security_level
 
 
 class TestAuditLogEntry(unittest.TestCase):
@@ -484,14 +484,14 @@ class TestAuditLogEntry(unittest.TestCase):
         # Serialize
         data = entry.to_dict()
 
-        self.assertEqual(data["event_type"], "execute")
-        self.assertEqual(data["script_name"], "test_script")
-        self.assertEqual(data["result"], "success")
-        self.assertEqual(data["execution_time_ms"], 1234)
+        assert data["event_type"] == "execute"
+        assert data["script_name"] == "test_script"
+        assert data["result"] == "success"
+        assert data["execution_time_ms"] == 1234
 
         # Verify JSON serializable
         json_str = json.dumps(data)
-        self.assertIsInstance(json_str, str)
+        assert isinstance(json_str, str)
 
 
 def run_tests():

@@ -33,6 +33,7 @@ class TestAsyncInitialization:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_async_context_empty_resource(self):
         """Should handle async context with no resource"""
         from codex.api.rag_api import RAGAPI
@@ -53,6 +54,7 @@ class TestAsyncInitialization:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_async_context_exception_cleanup(self):
         """Should cleanup properly on async exception"""
         from codex.api.rag_api import RAGAPI
@@ -75,6 +77,7 @@ class TestAsyncInitialization:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_nested_async_contexts(self):
         """Should handle nested async contexts"""
         from codex.api.rag_api import RAGAPI
@@ -101,6 +104,7 @@ class TestAsyncConcurrency:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_concurrent_api_operations(self):
         """Should handle concurrent API calls"""
         from codex.api.github_logs import GitHubLogsAPI
@@ -133,6 +137,7 @@ class TestAsyncConcurrency:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_async_timeout_handling(self):
         """Should handle async operation timeout"""
 
@@ -153,6 +158,7 @@ class TestAsyncConcurrency:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_async_cancellation(self):
         """Should handle async task cancellation"""
 
@@ -464,6 +470,7 @@ class TestEndToEndWorkflows:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_async_api_chain(self):
         """Test chained async API calls"""
         try:
@@ -615,6 +622,7 @@ class TestEdgeCaseCombinations:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_async_with_timeout_and_cancellation(self):
         """Test async operation with both timeout and cancellation"""
 

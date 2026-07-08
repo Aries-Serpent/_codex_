@@ -319,6 +319,7 @@ class TestGitHubClientAsync:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_list_workflows(self, client, mock_workflow_data):
         """Test listing workflows."""
         mock_response = MagicMock()
@@ -347,6 +348,7 @@ class TestGitHubClientAsync:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_get_workflow(self, client, mock_workflow_data):
         """Test getting a workflow."""
         mock_response = MagicMock()
@@ -371,6 +373,7 @@ class TestGitHubClientAsync:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_list_workflow_runs(self, client, mock_run_data):
         """Test listing workflow runs."""
         mock_response = MagicMock()
@@ -399,6 +402,7 @@ class TestGitHubClientAsync:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_get_workflow_run(self, client, mock_run_data):
         """Test getting a workflow run."""
         mock_response = MagicMock()
@@ -423,6 +427,7 @@ class TestGitHubClientAsync:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_list_workflow_jobs(self, client, mock_job_data):
         """Test listing workflow jobs."""
         mock_response = MagicMock()
@@ -451,6 +456,7 @@ class TestGitHubClientAsync:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_list_run_artifacts(self, client, mock_artifact_data):
         """Test listing run artifacts."""
         mock_response = MagicMock()
@@ -479,6 +485,7 @@ class TestGitHubClientAsync:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_rate_limit_handling(self, client):
         """Test rate limit error handling."""
         mock_response = MagicMock()
@@ -506,6 +513,7 @@ class TestGitHubClientAsync:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_authentication_error(self, client):
         """Test authentication error handling."""
         mock_response = MagicMock()
@@ -533,6 +541,7 @@ class TestGitHubClientAsync:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_not_found_error(self, client):
         """Test not found error handling."""
         mock_response = MagicMock()
@@ -560,6 +569,7 @@ class TestGitHubClientAsync:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_rate_limit_header_parsing(self, client):
         """Test rate limit info from headers."""
         mock_response = MagicMock()
@@ -604,6 +614,7 @@ class TestWorkflowOperations:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_trigger_and_wait_workflow(self, client, mock_run_data):
         """Test triggering and waiting for workflow."""
         # Mock trigger (returns 204)
@@ -642,6 +653,7 @@ class TestWorkflowOperations:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_cancel_workflow(self, client):
         """Test cancelling a workflow run."""
         mock_response = MagicMock()
@@ -664,6 +676,7 @@ class TestWorkflowOperations:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_rerun_workflow(self, client):
         """Test re-running a workflow."""
         mock_response = MagicMock()

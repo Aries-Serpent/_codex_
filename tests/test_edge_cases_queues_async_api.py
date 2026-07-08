@@ -319,6 +319,7 @@ class TestAsyncIteratorEdgeCases:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_empty_async_iterator(self):
         """Test empty async iterator"""
 
@@ -342,6 +343,7 @@ class TestAsyncIteratorEdgeCases:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_single_item_async_iterator(self):
         """Test async iterator with single item"""
 
@@ -364,6 +366,7 @@ class TestAsyncIteratorEdgeCases:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_async_iterator_with_delay(self):
         """Test async iterator with delays"""
 
@@ -388,6 +391,7 @@ class TestAsyncIteratorEdgeCases:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_async_iterator_exception(self):
         """Test async iterator exception handling"""
 
@@ -414,6 +418,7 @@ class TestAsyncIteratorEdgeCases:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_async_stream_backpressure(self):
         """Test async stream with backpressure simulation"""
 

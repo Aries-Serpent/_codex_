@@ -21,6 +21,7 @@ def _optional_import(module: str):
         return None
 
 
+@pytest.mark.skipif(_optional_import("torch") is None, reason="torch not installed")
 @pytest.mark.parametrize("seed", [123, 42])
 def test_seed_repro_python(seed: int) -> None:
     set_seed(seed)

@@ -67,7 +67,7 @@ def set_reproducible(seed: int | None = None, *, deterministic: bool = True) -> 
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
-    except (ValueError, TypeError, RuntimeError) as e:
+    except (ImportError, AttributeError, ValueError, TypeError, RuntimeError) as e:
         type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
@@ -79,20 +79,20 @@ def set_deterministic(enabled: bool = True) -> None:
     Safe no-op when frameworks are absent.
     """
     try:
-        import torch
+       import torch
 
-        try:
-            backend = torch.backends.cudnn
-            backend.deterministic = enabled
-            backend.benchmark = not enabled
-        except (ValueError, TypeError, RuntimeError) as e:
-            type(e).__name__
-            logger.debug("Exception: <ERROR_TYPE>")
-            logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
-    except (ValueError, TypeError, RuntimeError) as e:
-        type(e).__name__
-        logger.debug("Exception: <ERROR_TYPE>")
-        logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
+       try:
+           backend = torch.backends.cudnn
+           backend.deterministic = enabled
+           backend.benchmark = not enabled
+       except (ValueError, TypeError, RuntimeError) as e:
+           type(e).__name__
+           logger.debug("Exception: <ERROR_TYPE>")
+           logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
+    except (ImportError, AttributeError, ValueError, TypeError, RuntimeError) as e:
+       type(e).__name__
+       logger.debug("Exception: <ERROR_TYPE>")
+       logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 
 
 __all__ = ["set_deterministic", "set_reproducible"]

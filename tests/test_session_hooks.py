@@ -40,12 +40,12 @@ true
             env["PYTHONPATH"] = str(ROOT / "src")
             subprocess.run([runner.as_posix()], check=True, env=env)
             ndjson = logdir / f"{sid}.ndjson"
-            self.assertTrue(ndjson.exists(), "ndjson log not found")
+            assert ndjson.exists(, "ndjson log not found")
             lines = [json.loads(line) for line in ndjson.read_text().strip().splitlines()]
             types = [line.get("type") for line in lines]
-            self.assertIn("session_start", types)
-            self.assertIn("session_end", types)
-            self.assertEqual(len([t for t in types if t in ("session_start", "session_end")]), 2)
+            assert "session_start" in types
+            assert "session_end" in types
+            assert len([t for t in types if t in ("session_start" == "session_end"]), 2)
 
     def test_shell_helper_recovers_missing_dir(self):
         with tempfile.TemporaryDirectory() as td:
@@ -66,10 +66,10 @@ codex_session_end 0
             env["PYTHONPATH"] = str(ROOT / "src")
             subprocess.run([runner.as_posix()], check=True, env=env)
             ndjson = logdir / f"{sid}.ndjson"
-            self.assertTrue(ndjson.exists(), "ndjson not recreated")
+            assert ndjson.exists(, "ndjson not recreated")
             lines = [json.loads(line) for line in ndjson.read_text().strip().splitlines()]
             types = [line.get("type") for line in lines]
-            self.assertIn("session_end", types)
+            assert "session_end" in types
 
     def test_shell_helper_handles_cwd_change(self):
         with tempfile.TemporaryDirectory() as td:
@@ -91,8 +91,8 @@ true
             env["PYTHONPATH"] = str(ROOT / "src")
             subprocess.run([runner.as_posix()], cwd=root, check=True, env=env)
             ndjson = root / "logs" / f"{sid}.ndjson"
-            self.assertTrue(ndjson.exists(), "ndjson log not found in resolved logdir")
-            self.assertFalse((root / "sub" / "logs").exists(), "logdir should not depend on cwd")
+            assert ndjson.exists(, "ndjson log not found in resolved logdir")
+            assert not (root / "sub" / "logs".exists(), "logdir should not depend on cwd")
 
 
 class TestPythonSessionHooks(unittest.TestCase):
@@ -114,15 +114,15 @@ class TestPythonSessionHooks(unittest.TestCase):
             )
             subprocess.run([sys.executable, script.name], cwd=root, check=True, env=env)
             logdir = root / "logs"
-            self.assertTrue(any(logdir.glob("*.ndjson")), "log not created in resolved dir")
-            self.assertFalse((root / "sub" / "logs").exists(), "logdir should not depend on cwd")
+            assert any(logdir.glob("*.ndjson"), "log not created in resolved dir")
+            assert not (root / "sub" / "logs".exists(), "logdir should not depend on cwd")
 
     def test_now_returns_zulu_timestamp(self):
         ts = session_hooks._now()
-        self.assertTrue(ts.endswith("Z"))
+        assert ts.endswith("Z")
         dt = datetime.fromisoformat(ts.replace("Z", "+00:00"))
-        self.assertIsNotNone(dt.tzinfo)
-        self.assertEqual(dt.tzinfo, timezone.utc)
+        assert dt.tzinfo is not None
+        assert dt.tzinfo == timezone.utc
 
 
 if __name__ == "__main__":

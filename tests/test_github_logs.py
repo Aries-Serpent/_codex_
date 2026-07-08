@@ -87,6 +87,7 @@ class TestGitHubClientCheckRuns:
         assert check_run.is_failed, "Condition must be true"
 
     @patch("src.services.github.client.httpx.AsyncClient")
+    @pytest.mark.asyncio
     async def test_get_check_run(self, mock_client_class, mock_check_run_data):
         """Test fetching a single check run."""
         from src.services.github.client import GitHubClient
@@ -112,6 +113,7 @@ class TestGitHubClientCheckRuns:
         assert check_run.status == "completed", "status is not valid"
 
     @patch("src.services.github.client.httpx.AsyncClient")
+    @pytest.mark.asyncio
     async def test_list_check_runs_for_ref(self, mock_client_class, mock_check_runs_response):
         """Test listing check runs for a git reference."""
         from src.services.github.client import GitHubClient

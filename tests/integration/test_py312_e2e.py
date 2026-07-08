@@ -166,6 +166,7 @@ class TestAsyncWorkflows:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_basic_async_workflow(self):
         """Test basic async workflow."""
         import asyncio
@@ -197,6 +198,7 @@ class TestAsyncWorkflows:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_async_context_manager_workflow(self):
         """Test async context manager workflow."""
         import asyncio
@@ -232,6 +234,7 @@ class TestAsyncWorkflows:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_async_generator_workflow(self):
         """Test async generator workflow."""
         import asyncio
@@ -390,6 +393,7 @@ class TestFullSystemIntegration:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_concurrent_operations(self):
         """Test concurrent operations work correctly."""
         import asyncio

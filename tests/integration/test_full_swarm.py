@@ -41,7 +41,7 @@ class TestSwarmIntegration(unittest.TestCase):
         processed = swarm.process_batch(1000)
         assert processed == 1000, "processed is not valid"
         """
-        self.assertIsNotNone(expected_behavior)
+        assert expected_behavior is not None
 
     def test_500_agents_10k_tasks(self):
         """
@@ -67,7 +67,7 @@ class TestSwarmIntegration(unittest.TestCase):
         throughput = task_count / duration
         assert throughput > 5000, f"Throughput: {throughput:.0f} tasks/s"
         """
-        self.assertIsNotNone(expected_test)
+        assert expected_test is not None
 
     def test_compression_integration(self):
         """Test compression in full pipeline."""
@@ -88,7 +88,7 @@ class TestSwarmIntegration(unittest.TestCase):
         assert decompressed == tasks_json, "decompressed is not valid"
         assert ratio >= 10, f"Compression ratio: {ratio:.1f}x"
         """
-        self.assertIsNotNone(expected_test)
+        assert expected_test is not None
 
     def test_concurrent_access_patterns(self):
         """Test multiple concurrent operations."""
@@ -109,7 +109,7 @@ class TestSwarmIntegration(unittest.TestCase):
 
         assert all(results), "All workers should succeed"
         """
-        self.assertIsNotNone(expected_test)
+        assert expected_test is not None
 
     def test_error_recovery_integration(self):
         """Test error handling and recovery."""
@@ -138,7 +138,7 @@ class TestSwarmIntegration(unittest.TestCase):
         recovery_results = swarm.process_tasks(recovery_tasks)
         assert all(r["success"] for r in recovery_results), "Result must not be empty"
         """
-        self.assertIsNotNone(expected_test)
+        assert expected_test is not None
 
 
 class TestTaskManagerIntegration(unittest.TestCase):
@@ -161,7 +161,7 @@ class TestTaskManagerIntegration(unittest.TestCase):
         assert result[0] == task_id, "Result must not be empty"
         assert result[1] is True, "Result must not be empty"
         """
-        self.assertIsNotNone(expected_test)
+        assert expected_test is not None
 
 
 class TestMetricsIntegration(unittest.TestCase):
@@ -178,7 +178,7 @@ class TestMetricsIntegration(unittest.TestCase):
         - Memory usage per agent
         - Compression ratios
         """
-        self.assertIsNotNone(expected_behavior)
+        assert expected_behavior is not None
 
 
 def main():

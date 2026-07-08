@@ -44,37 +44,37 @@ class TestResolveToken(unittest.TestCase):
         get_token(required_elevated=True)[0] = "backup_token"
         os.environ["GITHUB_TOKEN"] = "gh_token"
         tok, src = _resolve_token()
-        self.assertEqual(tok, "master_token")
-        self.assertEqual(src, "CODEX_MASTER_KEY")
+        assert tok == "master_token"
+        assert src == "CODEX_MASTER_KEY"
 
     def test_priority_backup_key_when_master_absent(self):
         self._clear_tokens()
         get_token(required_elevated=True)[0] = "backup_token"
         os.environ["GITHUB_TOKEN"] = "gh_token"
         tok, src = _resolve_token()
-        self.assertEqual(tok, "backup_token")
-        self.assertEqual(src, "CODEX_BACKUP_KEY")
+        assert tok == "backup_token"
+        assert src == "CODEX_BACKUP_KEY"
 
     def test_priority_agent_github_token(self):
         self._clear_tokens()
         os.environ["AGENT_GITHUB_TOKEN"] = "agent_token"
         os.environ["GITHUB_TOKEN"] = "gh_token"
         tok, src = _resolve_token()
-        self.assertEqual(tok, "agent_token")
-        self.assertEqual(src, "AGENT_GITHUB_TOKEN")
+        assert tok == "agent_token"
+        assert src == "AGENT_GITHUB_TOKEN"
 
     def test_priority_github_token_fallback(self):
         self._clear_tokens()
         os.environ["GITHUB_TOKEN"] = "gh_token"
         tok, src = _resolve_token()
-        self.assertEqual(tok, "gh_token")
-        self.assertEqual(src, "GITHUB_TOKEN")
+        assert tok == "gh_token"
+        assert src == "GITHUB_TOKEN"
 
     def test_no_token_returns_empty(self):
         self._clear_tokens()
         tok, src = _resolve_token()
-        self.assertEqual(tok, "")
-        self.assertEqual(src, "NONE")
+        assert tok == ""
+        assert src == "NONE"
 
     def tearDown(self):
         self._clear_tokens()
@@ -113,8 +113,8 @@ class TestRepoVariables(unittest.TestCase):
             },
         )
         result = self.vm.list_repo_vars(self.OWNER, self.REPO)
-        self.assertEqual(len(result), 2)
-        self.assertEqual(result[0]["name"], "VAR_A")
+        assert len(result) == 2
+        assert result[0]["name"] == "VAR_A"
         mock_req.assert_called_once_with(
             "GET",
             f"/repos/{self.OWNER}/{self.REPO}/actions/variables",
@@ -126,14 +126,14 @@ class TestRepoVariables(unittest.TestCase):
     def test_list_repo_vars_empty(self, mock_req):
         mock_req.return_value = (200, {"total_count": 0, "variables": []})
         result = self.vm.list_repo_vars(self.OWNER, self.REPO)
-        self.assertEqual(result, [])
+        assert result == []
 
     @patch("variable_manager._gh_request")
     def test_list_repo_vars_403_raises(self, mock_req):
         mock_req.return_value = (403, {"message": "Resource not accessible"})
         with self.assertRaises(GitHubAPIError) as ctx:
             self.vm.list_repo_vars(self.OWNER, self.REPO)
-        self.assertEqual(ctx.exception.status, 403)
+        assert ctx.exception.status == 403
 
     # ── get ───────────────────────────────────────────────────────────────
 
@@ -144,14 +144,14 @@ class TestRepoVariables(unittest.TestCase):
             {"name": "MY_VAR", "value": "hello", "created_at": "...", "updated_at": "..."},
         )
         result = self.vm.get_repo_var(self.OWNER, self.REPO, "MY_VAR")
-        self.assertEqual(result["value"], "hello")
+        assert result["value"] == "hello"
 
     @patch("variable_manager._gh_request")
     def test_get_repo_var_404_raises(self, mock_req):
         mock_req.return_value = (404, {"message": "Not Found"})
         with self.assertRaises(GitHubAPIError) as ctx:
             self.vm.get_repo_var(self.OWNER, self.REPO, "NONEXISTENT")
-        self.assertEqual(ctx.exception.status, 404)
+        assert ctx.exception.status == 404
 
     # ── create ────────────────────────────────────────────────────────────
 
@@ -159,7 +159,7 @@ class TestRepoVariables(unittest.TestCase):
     def test_create_repo_var_success(self, mock_req):
         mock_req.return_value = (201, None)  # GitHub returns 201 No Content
         status = self.vm.create_repo_var(self.OWNER, self.REPO, "NEW_VAR", "new_value")
-        self.assertEqual(status, 201)
+        assert status == 201
         mock_req.assert_called_once_with(
             "POST",
             f"/repos/{self.OWNER}/{self.REPO}/actions/variables",
@@ -180,7 +180,7 @@ class TestRepoVariables(unittest.TestCase):
     def test_update_repo_var_success(self, mock_req):
         mock_req.return_value = (204, None)
         status = self.vm.update_repo_var(self.OWNER, self.REPO, "MY_VAR", "updated")
-        self.assertEqual(status, 204)
+        assert status == 204
         mock_req.assert_called_once_with(
             "PATCH",
             f"/repos/{self.OWNER}/{self.REPO}/actions/variables/MY_VAR",
@@ -195,7 +195,7 @@ class TestRepoVariables(unittest.TestCase):
     def test_delete_repo_var_success(self, mock_req):
         mock_req.return_value = (204, None)
         status = self.vm.delete_repo_var(self.OWNER, self.REPO, "OLD_VAR")
-        self.assertEqual(status, 204)
+        assert status == 204
         mock_req.assert_called_once_with(
             "DELETE",
             f"/repos/{self.OWNER}/{self.REPO}/actions/variables/OLD_VAR",
@@ -226,7 +226,7 @@ class TestEnvironmentVariables(unittest.TestCase):
     def test_list_env_vars(self, mock_req):
         mock_req.return_value = (200, {"variables": [{"name": "ENV_VAR", "value": "ev"}]})
         result = self.vm.list_env_vars(self.OWNER, self.REPO, self.ENV)
-        self.assertEqual(result[0]["name"], "ENV_VAR")
+        assert result[0]["name"] == "ENV_VAR"
         mock_req.assert_called_with(
             "GET",
             f"/repos/{self.OWNER}/{self.REPO}/environments/{self.ENV}/variables",
@@ -290,7 +290,7 @@ class TestOrgVariables(unittest.TestCase):
     def test_list_org_vars(self, mock_req):
         mock_req.return_value = (200, {"variables": [{"name": "ORG_V", "value": "ov"}]})
         result = self.vm.list_org_vars(self.ORG)
-        self.assertEqual(result[0]["name"], "ORG_V")
+        assert result[0]["name"] == "ORG_V"
         mock_req.assert_called_with(
             "GET",
             f"/orgs/{self.ORG}/actions/variables",
@@ -361,8 +361,8 @@ class TestBrainClientMechanism(unittest.TestCase):
         vm.list_repo_vars("Aries-Serpent", "_codex_")
         mock_brain.proxy_request.assert_called_once()
         call_args = mock_brain.proxy_request.call_args
-        self.assertEqual(call_args.args[0], "GET")
-        self.assertIn("actions/variables", call_args.args[1])
+        assert call_args.args[0] == "GET"
+        assert "actions/variables" in call_args.args[1]
         os.environ.pop("CODEX_MASTER_KEY", None)
 
     def test_falls_back_to_urllib_on_brain_error(self):

@@ -20,6 +20,7 @@ from codex_ml.utils.checkpointing import (
 
 def test_rng_roundtrip(monkeypatch):
     torch = pytest.importorskip("torch")
+    pytest.importorskip("numpy")
     required_attrs = ("manual_seed", "rand")
     if not all(hasattr(torch, attr) for attr in required_attrs):
         pytest.skip("torch missing RNG helpers", allow_module_level=False)

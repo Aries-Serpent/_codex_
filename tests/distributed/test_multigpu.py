@@ -142,13 +142,13 @@ class TestDataParallelism(unittest.TestCase):
         if not harness.has_gpus(1):
             # Mock test when no GPUs available
             model = nn.Linear(10, 10)
-            self.assertIsInstance(model, nn.Module)
+            assert isinstance(model, nn.Module)
             return
 
         # Actual GPU test
         model = nn.Linear(10, 10).cuda()
         ddp_model = DDP(model, device_ids=[0])
-        self.assertIsInstance(ddp_model, DDP)
+        assert isinstance(ddp_model, DDP)
 
     def test_ddp_gradient_synchronization(self):
         """Test gradient synchronization across ranks."""
@@ -166,7 +166,7 @@ class TestDataParallelism(unittest.TestCase):
 
         # Check gradients exist
         for param in model.parameters():
-            self.assertIsNotNone(param.grad)
+            assert param.grad is not None
 
         optimizer.step()
 
@@ -186,7 +186,7 @@ class TestDataParallelism(unittest.TestCase):
         loss.backward()
         optimizer.step()
 
-        self.assertTrue(True)  # Test passed if we got here
+        assert True  # Test passed if we got here
 
     def test_ddp_checkpoint_consistency(self):
         """Test checkpoint saving and loading with DDP."""
@@ -204,7 +204,7 @@ class TestDataParallelism(unittest.TestCase):
 
         # Verify parameters match
         for p1, p2 in zip(model.parameters(), model_restored.parameters()):
-            self.assertTrue(torch.allclose(p1, p2))
+            assert torch.allclose(p1, p2)
 
 
 @unittest.skipUnless(TORCH_AVAILABLE, "PyTorch not available")
@@ -230,7 +230,7 @@ class TestModelParallelism(unittest.TestCase):
         x = torch.randn(4, 10)
         y = model(x)
 
-        self.assertEqual(y.shape, (4, 10))
+        assert y.shape == (4, 10)
 
     @harness.skip_if_no_gpus(2)
     def test_tensor_parallel_communication(self):
@@ -244,8 +244,8 @@ class TestModelParallelism(unittest.TestCase):
         t1 = t0.to(device1)
 
         # Verify tensor moved correctly
-        self.assertEqual(t1.device.type, "cuda")
-        self.assertEqual(t1.device.index, 1)
+        assert t1.device.type == "cuda"
+        assert t1.device.index == 1
 
 
 @unittest.skipUnless(TORCH_AVAILABLE, "PyTorch not available")
@@ -259,15 +259,15 @@ class TestPipelineParallelism(unittest.TestCase):
         micro_batch_size = 8
         num_micro_batches = batch_size // micro_batch_size
 
-        self.assertEqual(num_micro_batches, 4)
+        assert num_micro_batches == 4
 
         # Simulate micro-batch processing
         x = torch.randn(batch_size, 10)
         micro_batches = x.split(micro_batch_size)
 
-        self.assertEqual(len(micro_batches), num_micro_batches)
+        assert len(micro_batches) == num_micro_batches
         for mb in micro_batches:
-            self.assertEqual(mb.shape[0], micro_batch_size)
+            assert mb.shape[0] == micro_batch_size
 
     def test_pipeline_gradient_accumulation(self):
         """Test gradient accumulation across micro-batches."""
@@ -286,7 +286,7 @@ class TestPipelineParallelism(unittest.TestCase):
 
         # Check gradients accumulated
         for param in model.parameters():
-            self.assertIsNotNone(param.grad)
+            assert param.grad is not None
 
         optimizer.step()
 
@@ -304,8 +304,8 @@ class TestDistributedUtilities(unittest.TestCase):
         rank = int(os.environ.get("RANK", 0))
         world_size = int(os.environ.get("WORLD_SIZE", 1))
 
-        self.assertEqual(rank, 0)
-        self.assertEqual(world_size, 4)
+        assert rank == 0
+        assert world_size == 4
 
         mock_env.teardown()
 
@@ -321,7 +321,7 @@ class TestDistributedUtilities(unittest.TestCase):
 
         # Check memory allocated
         mem_allocated = torch.cuda.memory_allocated(0)
-        self.assertGreater(mem_allocated, 0)
+        assert mem_allocated > 0
 
         # Free memory
         del t
@@ -338,7 +338,7 @@ class TestDistributedUtilities(unittest.TestCase):
             barrier_called = True
 
         mock_barrier()
-        self.assertTrue(barrier_called)
+        assert barrier_called
 
 
 @unittest.skipUnless(TORCH_AVAILABLE, "PyTorch not available")
@@ -369,8 +369,8 @@ class TestDistributedDataLoader(unittest.TestCase):
 
         # Verify data loader works
         batch = next(iter(loader))
-        self.assertEqual(len(batch), 2)  # (data, labels)
-        self.assertEqual(batch[0].shape[0], 8)  # batch size
+        assert len(batch) == 2  # (data, labels)
+        assert batch[0].shape[0] == 8  # batch size
 
 
 def run_multi_gpu_tests():

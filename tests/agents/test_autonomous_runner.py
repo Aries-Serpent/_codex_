@@ -79,6 +79,7 @@ class TestAutonomousAgentExecute:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_execute_empty_task(self, tmp_path):
         """Test execution with empty task returns error."""
         try:
@@ -106,6 +107,7 @@ class TestAutonomousAgentExecute:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_execute_none_task(self, tmp_path):
         """Test execution with None task returns error."""
         try:
@@ -132,6 +134,7 @@ class TestAutonomousAgentExecute:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_execute_truncates_long_task(self, tmp_path):
         """Test that very long tasks are truncated."""
         try:
@@ -166,6 +169,7 @@ class TestAutonomousAgentExecute:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_execute_dry_run_mode(self, tmp_path):
         """Test execution in dry-run mode."""
         try:
@@ -198,6 +202,7 @@ class TestAutonomousAgentExecute:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_execute_logs_execution(self, tmp_path):
         """Test that execution is logged."""
         try:
@@ -232,6 +237,7 @@ class TestSaveReport:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_save_report_creates_file(self, tmp_path):
         """Test that report file is created."""
         try:
@@ -271,6 +277,7 @@ class TestSaveReport:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_save_report_content(self, tmp_path):
         """Test report content structure."""
         try:
@@ -368,6 +375,7 @@ class TestMainFunction:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_main_function_exists(self):
         """Test that main function exists and is async."""
         try:
@@ -389,6 +397,7 @@ class TestMainFunction:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_main_uses_environment_variables(self, tmp_path):
         """Test that main reads from environment variables."""
         try:
@@ -437,6 +446,7 @@ class TestEdgeCases:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_execute_with_special_characters(self, tmp_path):
         """Test execution with special characters in task."""
         try:
@@ -468,6 +478,7 @@ class TestEdgeCases:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_execute_with_model_preference(self, tmp_path):
         """Test execution with specific model preference."""
         try:
@@ -498,6 +509,7 @@ class TestEdgeCases:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_execute_with_auto_model(self, tmp_path):
         """Test execution with auto model selection."""
         try:

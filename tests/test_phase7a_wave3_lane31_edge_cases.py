@@ -345,6 +345,7 @@ class TestAsyncConcurrencyEdgeCases:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_empty_async_operation(self):
         """Test empty async operation."""
         async def empty_coro():
@@ -362,6 +363,7 @@ class TestAsyncConcurrencyEdgeCases:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_immediate_return(self):
         """Test async function that returns immediately."""
         async def immediate():
@@ -379,6 +381,7 @@ class TestAsyncConcurrencyEdgeCases:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_async_with_delay(self):
         """Test async function with delay."""
         async def delayed():
@@ -397,6 +400,7 @@ class TestAsyncConcurrencyEdgeCases:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_async_exception_handling(self):
         """Test async exception handling."""
         async def failing_coro():
@@ -435,6 +439,7 @@ class TestAsyncConcurrencyEdgeCases:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_concurrent_tasks(self):
         """Test concurrent async tasks."""
         async def task(n):
@@ -456,6 +461,7 @@ class TestAsyncConcurrencyEdgeCases:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.asyncio
     async def test_race_condition_simulation(self):
         """Test race condition simulation."""
         counter = {"value": 0}
@@ -1044,6 +1050,7 @@ class TestExtendedAsyncVariations:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.parametrize("delay_ms", [0, 1, 5, 10])
+    @pytest.mark.asyncio
     async def test_async_delays(self, delay_ms):
         """Test async operations with various delays."""
         async def delayed_op():
@@ -1063,6 +1070,7 @@ class TestExtendedAsyncVariations:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.parametrize("task_count", [1, 2, 3, 5])
+    @pytest.mark.asyncio
     async def test_async_task_counts(self, task_count):
         """Test async with various task counts."""
         async def simple_task():
@@ -1402,6 +1410,7 @@ class TestComprehensiveAsyncConcurrency:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.parametrize("task_id", range(5))
+    @pytest.mark.asyncio
     async def test_simple_async_tasks(self, task_id):
         """Test simple async tasks."""
         async def task():
@@ -1421,6 +1430,7 @@ class TestComprehensiveAsyncConcurrency:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.parametrize("delay", [0.001, 0.005, 0.01])
+    @pytest.mark.asyncio
     async def test_async_delays_precision(self, delay):
         """Test async delays with precision."""
         async def delayed():

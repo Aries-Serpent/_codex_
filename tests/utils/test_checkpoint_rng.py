@@ -8,6 +8,10 @@ import json
 import random
 from pathlib import Path
 
+import pytest
+
+pytest.importorskip("torch")
+
 from codex_ml.utils.checkpointing import (
     CheckpointManager,
     dump_rng_state,
