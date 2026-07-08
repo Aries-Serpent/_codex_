@@ -22510,6 +22510,14 @@
       "reason": "Session notes and governance artifacts from PR #5264 - auto-registered by governance fix"
     },
     {
+      "path": ".codex/workflow-monitoring/PHASE2_REMEDIATION_PROGRESS.md",
+      "reason": "Session notes and workflow monitoring artifacts from PR #5264 - auto-registered by governance fix"
+    },
+    {
+      "path": ".codex/workflow-monitoring/PHASE2_STATUS_T+20MIN.md",
+      "reason": "Session notes and workflow monitoring artifacts from PR #5264 - auto-registered by governance fix"
+    },
+    {
       "path": ".codex/workflow-monitoring/README.md",
       "reason": "Session notes and governance artifacts from PR #5264 - auto-registered by governance fix"
     },

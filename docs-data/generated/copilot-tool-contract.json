@@ -1,0 +1,170 @@
+{
+  "generated_at": "2026-07-08T00:21:25Z",
+  "tools": [
+    {
+      "input_schema": {
+        "type": "object"
+      },
+      "output_schema": {
+        "type": "object"
+      },
+      "purpose": "get agent context",
+      "read_only": true,
+      "required_validation_after_use": [],
+      "safety_notes": "Deterministic JSON output required.",
+      "tool_name": "get_agent_context"
+    },
+    {
+      "input_schema": {
+        "type": "object"
+      },
+      "output_schema": {
+        "type": "object"
+      },
+      "purpose": "search docs",
+      "read_only": true,
+      "required_validation_after_use": [],
+      "safety_notes": "Deterministic JSON output required.",
+      "tool_name": "search_docs"
+    },
+    {
+      "input_schema": {
+        "type": "object"
+      },
+      "output_schema": {
+        "type": "object"
+      },
+      "purpose": "get document",
+      "read_only": true,
+      "required_validation_after_use": [],
+      "safety_notes": "Deterministic JSON output required.",
+      "tool_name": "get_document"
+    },
+    {
+      "input_schema": {
+        "type": "object"
+      },
+      "output_schema": {
+        "type": "object"
+      },
+      "purpose": "get related context",
+      "read_only": true,
+      "required_validation_after_use": [],
+      "safety_notes": "Deterministic JSON output required.",
+      "tool_name": "get_related_context"
+    },
+    {
+      "input_schema": {
+        "type": "object"
+      },
+      "output_schema": {
+        "type": "object"
+      },
+      "purpose": "get task brief",
+      "read_only": true,
+      "required_validation_after_use": [],
+      "safety_notes": "Deterministic JSON output required.",
+      "tool_name": "get_task_brief"
+    },
+    {
+      "input_schema": {
+        "type": "object"
+      },
+      "output_schema": {
+        "type": "object"
+      },
+      "purpose": "impact analysis",
+      "read_only": true,
+      "required_validation_after_use": [],
+      "safety_notes": "Deterministic JSON output required.",
+      "tool_name": "impact_analysis"
+    },
+    {
+      "input_schema": {
+        "type": "object"
+      },
+      "output_schema": {
+        "type": "object"
+      },
+      "purpose": "list actions",
+      "read_only": true,
+      "required_validation_after_use": [],
+      "safety_notes": "Deterministic JSON output required.",
+      "tool_name": "list_actions"
+    },
+    {
+      "input_schema": {
+        "type": "object"
+      },
+      "output_schema": {
+        "type": "object"
+      },
+      "purpose": "validate docs",
+      "read_only": true,
+      "required_validation_after_use": [],
+      "safety_notes": "Deterministic JSON output required.",
+      "tool_name": "validate_docs"
+    },
+    {
+      "input_schema": {
+        "type": "object"
+      },
+      "output_schema": {
+        "type": "object"
+      },
+      "purpose": "classify candidate file",
+      "read_only": true,
+      "required_validation_after_use": [],
+      "safety_notes": "Deterministic JSON output required.",
+      "tool_name": "classify_candidate_file"
+    },
+    {
+      "input_schema": {
+        "type": "object"
+      },
+      "output_schema": {
+        "type": "object"
+      },
+      "purpose": "update action status",
+      "read_only": false,
+      "required_validation_after_use": [
+        "validate_docs",
+        "rebuild_indexes"
+      ],
+      "safety_notes": "Deterministic JSON output required.",
+      "tool_name": "update_action_status"
+    },
+    {
+      "input_schema": {
+        "type": "object"
+      },
+      "output_schema": {
+        "type": "object"
+      },
+      "purpose": "ingest candidate file",
+      "read_only": false,
+      "required_validation_after_use": [
+        "validate_docs",
+        "rebuild_indexes"
+      ],
+      "safety_notes": "Deterministic JSON output required.",
+      "tool_name": "ingest_candidate_file"
+    },
+    {
+      "input_schema": {
+        "type": "object"
+      },
+      "output_schema": {
+        "type": "object"
+      },
+      "purpose": "rebuild indexes",
+      "read_only": false,
+      "required_validation_after_use": [
+        "validate_docs",
+        "rebuild_indexes"
+      ],
+      "safety_notes": "Deterministic JSON output required.",
+      "tool_name": "rebuild_indexes"
+    }
+  ]
+}

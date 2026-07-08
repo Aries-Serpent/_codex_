@@ -1,0 +1,29 @@
+{
+  "canonical_files": {
+    "actions": "/home/runner/work/_codex_/_codex_/docs-data/actions.jsonl",
+    "blocks": "/home/runner/work/_codex_/_codex_/docs-data/blocks.jsonl",
+    "decisions": "/home/runner/work/_codex_/_codex_/docs-data/decisions.jsonl",
+    "documents": "/home/runner/work/_codex_/_codex_/docs-data/documents.jsonl",
+    "references": "/home/runner/work/_codex_/_codex_/docs-data/references.jsonl",
+    "relationships": "/home/runner/work/_codex_/_codex_/docs-data/relationships.jsonl",
+    "requirements": "/home/runner/work/_codex_/_codex_/docs-data/requirements.jsonl",
+    "sections": "/home/runner/work/_codex_/_codex_/docs-data/sections.jsonl"
+  },
+  "generated_at": "2026-07-08T00:21:25Z",
+  "generated_files": [
+    "docs.sqlite",
+    "manifest.json",
+    "agent-context.json",
+    "search-index.jsonl",
+    "query-health-report.json",
+    "copilot-tool-contract.json",
+    "copilot-mcp-config.example.json",
+    "deletion-candidates.json",
+    "quarantine-candidates.json",
+    "migration-campaign-plan.json"
+  ],
+  "validation_status": {
+    "errors": 0,
+    "valid": true
+  }
+}
