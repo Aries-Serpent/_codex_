@@ -160,7 +160,7 @@ def _gpu_metadata() -> MutableMapping[str, Any]:
             details["gpus"] = [
                 torch.cuda.get_device_name(i) for i in range(torch.cuda.device_count())
             ]
-    except (ValueError, TypeError, RuntimeError) as e:
+    except (ImportError, AttributeError, ValueError, TypeError, RuntimeError) as e:
         type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
