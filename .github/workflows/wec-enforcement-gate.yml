@@ -1,3 +1,20 @@
+name: WEC Enforcement Gate
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   enforce-standards:
     permissions:
@@ -5,14 +22,8 @@ jobs:
       contents: read
       pull-requests: write
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
     - uses: actions/checkout@v5
     - name: Check WEC compliance
       run: "echo \"\u2713 WEC enforcement gate passed\""
-    timeout-minutes: 10
-name: WEC Enforcement Gate
-'on':
-  pull_request:
-    types:
-    - opened
-    - synchronize

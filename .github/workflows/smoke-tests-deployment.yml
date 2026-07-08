@@ -30,6 +30,7 @@ jobs:
   test-matrix:
     name: Define test matrix
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     outputs:
       python-version: ${{ steps.matrix.outputs.python-version }}
       profile: ${{ steps.matrix.outputs.profile }}
@@ -312,6 +313,7 @@ jobs:
     name: Smoke Test Summary
     needs: smoke-test
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     if: always()
     steps:
       - name: Check smoke test results
@@ -362,6 +364,7 @@ jobs:
     name: Trigger Rollback (if needed)
     needs: [smoke-test]
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     if: failure()
     steps:
       - name: Create rollback issue
