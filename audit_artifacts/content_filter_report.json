@@ -1,0 +1,31 @@
+{
+  "mode": "pii",
+  "profile": "A",
+  "allowlist_extensions": [
+    ".json",
+    ".md",
+    ".py"
+  ],
+  "kept_count": 2,
+  "skipped_count": 1,
+  "kept": [
+    "audit_artifacts/code.py",
+    "audit_artifacts/sample.md"
+  ],
+  "skipped_sample": [
+    "audit_artifacts/ignore.bin"
+  ],
+  "pii_redactions": 2,
+  "pii_patterns_applied": [
+    "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}",
+    "\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b",
+    "\\b[A-F0-9]{16,24}\\b",
+    "(unclosed"
+  ],
+  "invalid_patterns": [
+    "(unclosed"
+  ],
+  "warnings": [
+    "invalid_regex:1"
+  ]
+}
