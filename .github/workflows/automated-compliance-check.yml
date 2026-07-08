@@ -5,7 +5,7 @@ jobs:
       pull-requests: write
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Validate workflow compliance
       run: "\n                    python3 << 'COMPLIANCE_EOF'\nimport yaml\nfrom pathlib\
         \ import Path\n\n# Check YAML syntax\nfor wf in Path('.github/workflows').glob('*.yml'):\n\

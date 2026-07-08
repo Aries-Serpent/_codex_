@@ -103,7 +103,7 @@ jobs:
         \ results not available\"\nfi\n"
     
       - name: Cache test results (Layer 3)
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         if: always()
         with:
           path: .pytest_cache/
