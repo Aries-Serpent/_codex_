@@ -1,1 +1,6 @@
 {"ts": 1783534742.5799992, "actor": "mbaetiong", "action": "inject_session_context", "resource": "*", "actor_tier": "SYSTEM_OWNER", "allowed": true, "reason": "tier_ok"}
+{"ts": 1783536491.8681393, "actor": "", "action": "inject_session_context", "resource": "*", "actor_tier": "DENIED", "allowed": false, "reason": "empty_input"}
+{"ts": 1783536492.193608, "actor": "external-contributor", "action": "inject_session_context", "resource": "*", "actor_tier": "DENIED", "allowed": false, "reason": "actor_denied"}
+{"ts": 1783536493.177035, "actor": "external-contributor", "action": "inject_session_context", "resource": "*", "actor_tier": "DENIED", "allowed": false, "reason": "actor_denied"}
+{"ts": 1783536493.8302984, "actor": "external-contributor", "action": "inject_session_context", "resource": "*", "actor_tier": "DENIED", "allowed": false, "reason": "actor_denied"}
+{"ts": 1783536494.4881124, "actor": "mbaetiong", "action": "inject_session_context", "resource": "*", "actor_tier": "SYSTEM_OWNER", "allowed": true, "reason": "tier_ok"}

@@ -1,0 +1,14 @@
+{
+  "capabilities": [
+    {
+      "id": "alpha",
+      "similarity_index": 1.0,
+      "files_considered": 2
+    },
+    {
+      "id": "beta",
+      "similarity_index": 1.0,
+      "files_considered": 1
+    }
+  ]
+}
