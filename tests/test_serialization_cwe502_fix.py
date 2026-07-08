@@ -19,7 +19,7 @@ from typing import Any
 
 import pytest
 
-from src.codex.serialization_vulnerable import ConfigLoader, DataDeserializer
+from src.codex.serialization_safe import ConfigLoader, DataDeserializer
 
 
 class TestDataDeserializer:
