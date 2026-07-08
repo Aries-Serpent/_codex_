@@ -1,12 +1,12 @@
 """Tests for MLflow integration."""
+import pytest
+
 pytest.importorskip("mlflow")
 
 import os
 import tempfile
 from pathlib import Path
 from unittest.mock import patch
-
-import pytest
 
 from codex_ml.training.mlflow_integration import (
     MLflowTracker,
