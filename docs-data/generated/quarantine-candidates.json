@@ -1,9 +1,15 @@
 {
-  "candidates": [],
+  "candidates": [
+    "artifacts/emb/models--sentence-transformers--all-MiniLM-L6-v2/blobs/44af2e3b0fa3a0b6239e48422972bf755f28fde0",
+    "artifacts/emb/models--sentence-transformers--all-MiniLM-L6-v2/blobs/59d594003bf59880a884c574bf88ef7555bb0202",
+    "artifacts/emb/models--sentence-transformers--all-MiniLM-L6-v2/blobs/72b987fd805cfa2b58c4c8c952b274a11bfd5a00",
+    "artifacts/emb/models--sentence-transformers--all-MiniLM-L6-v2/blobs/952a9b81c0bfd99800fabf352f69c7ccd46c5e43",
+    "artifacts/emb/models--sentence-transformers--all-MiniLM-L6-v2/blobs/fd1b291129c607e5d49799f87cb219b27f98acdf"
+  ],
   "criteria": [
     "conversion warnings",
     "low classification confidence",
     "uncertain external dependency"
   ],
-  "generated_at": "2026-07-08T00:21:25Z"
+  "generated_at": "2026-07-08T19:18:32Z"
 }

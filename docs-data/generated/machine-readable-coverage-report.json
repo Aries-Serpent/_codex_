@@ -10137,10 +10137,11 @@
     "artifacts/emb/models--sentence-transformers--all-MiniLM-L6-v2/blobs/952a9b81c0bfd99800fabf352f69c7ccd46c5e43",
     "artifacts/emb/models--sentence-transformers--all-MiniLM-L6-v2/blobs/fd1b291129c607e5d49799f87cb219b27f98acdf"
   ],
-  "generated_at": "2026-07-08T19:18:00Z",
+  "generated_at": "2026-07-08T19:18:20Z",
   "generated_files": [
     "docs-data/generated/agent-context.json",
     "docs-data/generated/candidate-inventory.json",
+    "docs-data/generated/changed-candidates.json",
     "docs-data/generated/codebase-discovery-report.json",
     "docs-data/generated/copilot-mcp-config.example.json",
     "docs-data/generated/copilot-tool-contract.json",
