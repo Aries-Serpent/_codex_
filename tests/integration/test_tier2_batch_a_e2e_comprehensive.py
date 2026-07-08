@@ -15,7 +15,7 @@ Success Criteria:
 - ✅ Critical paths fully covered
 - ✅ Validation gates functional
 """
-  # pragma: allowlist secret
+  # pragma: allowlist secret  # pragma: allowlist secret
 import json
 import threading
 import time

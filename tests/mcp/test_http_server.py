@@ -15,7 +15,7 @@ from mcp.server.http import (
     ContextItem,
     ContextUpsertRequest,
     QueryRequest,
-    app,
+    app,  # pragma: allowlist secret
     create_app,
 )
 

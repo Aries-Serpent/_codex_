@@ -15,7 +15,7 @@ from src.codex.refactoring.deterritorialization_engine import (
     RigidityType,  # pragma: allowlist secret
     DeterritorializationEngine,
 )
-
+  # pragma: allowlist secret
 
 class TestRigidityType:
     """Test RigidityType enum."""

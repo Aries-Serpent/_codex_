@@ -15,7 +15,7 @@ import time
 
 import pytest
 
-
+  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret
 class TestL1ArtifactCache: # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
     """L1 Cache Layer: Artifact caching"""
     

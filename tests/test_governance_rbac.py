@@ -15,7 +15,7 @@ import pytest
 from src.codex.governance.rbac import (
     CodexRole,  # pragma: allowlist secret
     ResourceType,
-    Action,
+    Action,  # pragma: allowlist secret
     RBACEnforcer,
 )
 
