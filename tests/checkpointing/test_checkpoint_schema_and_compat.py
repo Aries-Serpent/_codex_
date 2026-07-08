@@ -6,6 +6,7 @@ Test module for checkpoint schema and compat.
 
 from __future__ import annotations
 
+import os
 import tempfile
 import warnings
 
