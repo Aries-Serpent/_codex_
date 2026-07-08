@@ -361,7 +361,7 @@ class TestConcurrentRequests:
 
         def login_user():
             return test_client.post(
-                "/auth/login", json={"username": "conclogin", "password": "SecurePass123!"}
+                "/auth/login", json={"username_or_email": "conclogin", "password": "SecurePass123!"}
             )
 
         # Make multiple concurrent login requests
@@ -371,7 +371,7 @@ class TestConcurrentRequests:
 
         # All should succeed
         status_codes = [r.status_code for r in results]
-        assert all(code in [200, 201, 400, 401, 422, 429] for code in status_codes), "code is not valid"
+        assert all(code == 200 for code in status_codes), "All login attempts should succeed with 200"
 
     def test_concurrent_mixed_operations(self, test_client):
         """Concurrent mixed operations (register, login, etc)."""
@@ -388,7 +388,7 @@ class TestConcurrentRequests:
                 )
             else:  # login
                 return test_client.post(
-                    "/auth/login", json={"username": "nonexistent", "password": "wrong"}
+                    "/auth/login", json={"username_or_email": "nonexistent", "password": "wrong"}
                 )
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
@@ -403,7 +403,7 @@ class TestConcurrentRequests:
 
         # All should complete without errors
         status_codes = [r.status_code for r in results]
-        assert all(code in [200, 201, 400, 401, 422, 429] for code in status_codes)
+        assert all(code in [201, 400, 401] for code in status_codes), "Expected 201/400 for register, 401 for login"
 
 
 # ---------------------------------------------------------------------------
@@ -448,25 +448,28 @@ class TestRapidSequentialRequests:
         responses = []
         for _ in range(20):
             response = test_client.post(
-                "/auth/login", json={"username": "rapidlogin", "password": "SecurePass123!"}
+                "/auth/login", json={"username_or_email": "rapidlogin", "password": "SecurePass123!"}
             )
             responses.append(response)
 
         # Most should succeed
         success_count = sum(1 for r in responses if r.status_code == 200)
-        assert success_count >= 0, "success_count must be positive"
+        rate_limited_count = sum(1 for r in responses if r.status_code == 429)
+        assert all(r.status_code in [200, 429] for r in responses), "Expected 200 or 429 responses"
+        assert success_count > 0, "At least some logins should succeed"
+        assert rate_limited_count > 0, "Some logins should be rate limited"
 
     def test_rapid_invalid_requests(self, test_client):
         """Rapid invalid requests."""
         responses = []
         for i in range(20):
             response = test_client.post(
-                "/auth/login", json={"username": f"invalid{i}", "password": "wrong"}
+                "/auth/login", json={"username_or_email": f"invalid{i}", "password": "wrong"}
             )
             responses.append(response)
 
-        # All should fail with 400
-        assert all(r.status_code in [400, 401, 422, 429] for r in responses), "Response must not be empty"
+        # All should fail with 401 or be rate limited with 429
+        assert all(r.status_code in [401, 429] for r in responses), "Expected 401 for invalid login or 429 for rate limit"
 
 
 # ---------------------------------------------------------------------------
@@ -618,9 +621,9 @@ class TestStatePersistence:
         )
 
         response = test_client.post(
-            "/auth/login", json={"username": "loginafter", "password": "SecurePass123!"}
+            "/auth/login", json={"username_or_email": "loginafter", "password": "SecurePass123!"}
         )
-        assert response.status_code in [200, 201, 400, 401, 422], "Response must not be empty"
+        assert response.status_code == 200, "Login after registration should succeed"
 
     def test_wrong_password_fails_login(self, test_client):
         """Wrong password should fail login."""
@@ -634,6 +637,6 @@ class TestStatePersistence:
         )
 
         response = test_client.post(
-            "/auth/login", json={"username": "wrongpass", "password": "WrongPassword123!"}
+            "/auth/login", json={"username_or_email": "wrongpass", "password": "WrongPassword123!"}
         )
-        assert response.status_code in [400, 401, 422], "Response must not be empty"
+        assert response.status_code == 401, "Wrong password should return unauthorized"

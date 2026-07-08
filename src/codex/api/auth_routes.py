@@ -31,6 +31,7 @@ from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, Field, field_validator
 
 from codex.auth.authenticator import Authenticator, LoginResult
+from codex.auth.exceptions import InvalidCredentialsError
 from codex.auth.token_manager import TokenManager
 from codex.auth.user_store import UserStore
 from codex.security_utils import sanitize_log_message
@@ -306,6 +307,11 @@ def create_auth_router(
                 user_agent=user_agent,
                 totp_code=body.totp_code,
             )
+        except InvalidCredentialsError as exc:
+            logger.warning(
+                "Login failed from %s: %s", _safe_log_value(ip_address), str(exc)
+            )
+            raise HTTPException(status_code=401, detail="Invalid credentials") from exc
         except (ConnectionError, TimeoutError) as exc:
             code = getattr(exc, "code", "")
             if code == "mfa_required":

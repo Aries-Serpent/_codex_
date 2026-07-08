@@ -328,23 +328,7 @@
 
 import time
 
-# Mock UnifiedCache if not available
-try:
-    from src.codex.caching.unified_cache import UnifiedCache
-except ImportError:
-    class UnifiedCache:
-        def __init__(self, max_size=10000):
-            self.max_size = max_size
-            self.data = {}
-        
-        def get(self, key):
-            return self.data.get(key)
-        
-        def set(self, key, value):
-            if len(self.data) >= self.max_size:
-                # Simple eviction: remove first item
-                self.data.pop(next(iter(self.data)), None)
-            self.data[key] = value
+from codex.caching.unified_cache import UnifiedCache
 
 
 class TestCachePerformanceBenchmarks:
