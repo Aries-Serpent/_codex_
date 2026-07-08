@@ -5,7 +5,6 @@ are not installed in the CI/test environment.
 """
 
 from __future__ import annotations
-pytest.importorskip("numpy")
 
 import importlib
 import importlib.machinery
@@ -19,9 +18,14 @@ from pathlib import Path
 
 import pytest
 
-# Note: Torch is imported defensively so conftest still loads in minimal
+# Note: NumPy and Torch are imported defensively so conftest still loads in minimal
 # environments where many fixtures become no-ops, while pytest collection and
 # xdist worker startup still succeed.
+try:
+    import numpy as np
+except ImportError:
+    np = None
+
 try:
     import torch
 except ImportError:
