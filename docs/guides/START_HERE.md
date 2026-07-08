@@ -233,7 +233,7 @@
 1. Check: [Production Monitoring](./GETTING_STARTED_ML_ENGINEER.md#phase-4-monitoring--observability)
 2. Read: [Troubleshooting](./FAQ_COMPREHENSIVE.md)
 3. Check: [Status Page](https://status.codex-ml.dev)
-4. Chat: [Support](support@codex-ml.dev)
+4. Chat: [Support](mailto:support@codex-ml.dev)
 
 ---
 
