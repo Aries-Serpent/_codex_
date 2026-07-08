@@ -1,0 +1,444 @@
+---
+config:
+    graph:
+        useMaxWidth: true
+    mermaid:
+        flowchart:
+            htmlLabels: true
+            curve: monotoneX
+---
+
+# Architecture Diagrams
+
+## 1. System Components Diagram
+
+```mermaid
+graph TB
+    subgraph "Client Layer"
+        WEB["🌐 Web Console<br/>React/TypeScript"]
+        CLI["💻 CLI Tool<br/>Python"]
+        SDK["📚 API SDK<br/>Python/JS"]
+    end
+    
+    subgraph "API Gateway Layer"
+        LB["⚖️ Load Balancer<br/>AWS ELB"]
+        APIGW["🚪 API Gateway<br/>FastAPI"]
+        RLS["🛡️ Rate Limit<br/>Service"]
+    end
+    
+    subgraph "Authentication & Auth Layer"
+        OAUTH["🔐 OAuth Manager<br/>GitHub Integration"]
+        MFA["📲 MFA Provider<br/>TOTP"]
+        TOKENS["🎫 Token Manager<br/>JWT / Refresh"]
+    end
+    
+    subgraph "Core Microservices"
+        AGENT["🤖 Agent Service"]
+        WORKFLOW["⚙️ Workflow Service"]
+        RBAC["🔑 RBAC Service"]
+        APPROVAL["✅ Approval Service"]
+        AUDIT["📋 Audit Service"]
+        SECRETS["🔒 Secrets Service"]
+    end
+    
+    subgraph "Data Layer"
+        PG["🗄️ PostgreSQL<br/>Agents, Workflows, Audit"]
+        SQLITE["🗄️ SQLite<br/>RBAC, Approval"]
+        REDIS["⚡ Redis<br/>Cache, Sessions"]
+        S3["📦 S3/GCS<br/>Code, Logs, Archive"]
+    end
+    
+    WEB --> LB
+    CLI --> LB
+    SDK --> LB
+    
+    LB --> RLS
+    RLS --> APIGW
+    
+    APIGW --> OAUTH
+    APIGW --> MFA
+    APIGW --> TOKENS
+    
+    OAUTH --> AGENT
+    MFA --> RBAC
+    TOKENS --> APPROVAL
+    
+    AGENT --> PG
+    AGENT --> S3
+    AGENT --> REDIS
+    AGENT --> AUDIT
+    
+    WORKFLOW --> PG
+    WORKFLOW --> AGENT
+    WORKFLOW --> AUDIT
+    
+    RBAC --> SQLITE
+    RBAC --> REDIS
+    RBAC --> AUDIT
+    
+    APPROVAL --> SQLITE
+    APPROVAL --> PG
+    APPROVAL --> RBAC
+    APPROVAL --> AUDIT
+    
+    SECRETS --> PG
+    SECRETS --> AUDIT
+    
+    AUDIT --> PG
+    AUDIT --> S3
+    
+    style WEB fill:#e1f5ff
+    style CLI fill:#e1f5ff
+    style SDK fill:#e1f5ff
+    
+    style AGENT fill:#fff3e0
+    style WORKFLOW fill:#fff3e0
+    style RBAC fill:#fff3e0
+    style APPROVAL fill:#fff3e0
+    style AUDIT fill:#fff3e0
+    style SECRETS fill:#fff3e0
+    
+    style PG fill:#f3e5f5
+    style SQLITE fill:#f3e5f5
+    style REDIS fill:#f3e5f5
+    style S3 fill:#f3e5f5
+```
+
+## 2. Data Flow Diagram - Agent Deployment
+
+```mermaid
+graph LR
+    USER["👤 User<br/>alice@co.com"]
+    
+    USER -->|1. Submit Deploy<br/>AGENT_DEPLOY_PROD| AGENT["🤖 Agent<br/>Service"]
+    
+    AGENT -->|2. Check<br/>RBAC| RBAC["🔑 RBAC<br/>Service"]
+    
+    RBAC -->|3. Validate<br/>Permissions| DB1["SQLite<br/>RBAC DB"]
+    
+    RBAC -->|4. Permission<br/>Allowed| AGENT
+    
+    AGENT -->|5. Create<br/>Approval| APPROVAL["✅ Approval<br/>Service"]
+    
+    APPROVAL -->|6. Get Required<br/>Approvers| RBAC
+    
+    RBAC -->|7. Approvers:<br/>security_reviewer<br/>ci_operator| APPROVAL
+    
+    APPROVAL -->|8. Notify<br/>Approvers| EMAIL["📧 Email<br/>Service"]
+    
+    EMAIL -->|9. Approval<br/>Request| APPROVER["👤 Approver<br/>bob@co.com"]
+    
+    APPROVER -->|10. Approval<br/>Decision| APPROVAL
+    
+    APPROVAL -->|11. Log<br/>Decision| AUDIT["📋 Audit<br/>Service"]
+    
+    AUDIT -->|12. Store<br/>Event| PG["PostgreSQL<br/>Audit Log"]
+    
+    APPROVAL -->|13. Decision<br/>Result| AGENT
+    
+    AGENT -->|14. Deploy<br/>Agent| K8S["☸️ Kubernetes<br/>Execution"]
+    
+    K8S -->|15. Store<br/>Code & Logs| S3["📦 S3/GCS<br/>Storage"]
+    
+    AGENT -->|16. Update<br/>Status| DB2["PostgreSQL<br/>Agent DB"]
+    
+    AGENT -->|17. Response| USER
+    
+    style USER fill:#e1f5ff
+    style APPROVER fill:#e1f5ff
+    style EMAIL fill:#ffe0b2
+    style K8S fill:#c8e6c9
+```
+
+## 3. Authentication Flow
+
+```mermaid
+graph TD
+    A["User: Login Page"] -->|1. Click Login| B["GitHub OAuth<br/>Redirect"]
+    
+    B -->|2. Redirect to<br/>github.com| C["GitHub<br/>Authorization"]
+    
+    C -->|3. User Grants<br/>Permission| D["GitHub<br/>Returns Code"]
+    
+    D -->|4. Redirect back<br/>with Code| E["OAuth Manager"]
+    
+    E -->|5. Exchange Code<br/>for Token| F["GitHub API"]
+    
+    F -->|6. Return<br/>Access Token| E
+    
+    E -->|7. Get User Info| F
+    
+    F -->|8. Return<br/>User Data| E
+    
+    E -->|9. Create Session| G["User Store"]
+    
+    G -->|10. Session Created| E
+    
+    E -->|11. MFA Enabled?| H{"Check<br/>MFA"}
+    
+    H -->|Yes| I["📲 MFA<br/>Provider"]
+    I -->|12. Prompt for<br/>TOTP Code| A
+    A -->|13. Enter Code| I
+    I -->|14. Validate| J{"Valid<br/>Code?"}
+    J -->|No| I
+    J -->|Yes| K["Issue Tokens"]
+    
+    H -->|No| K["🎫 Token<br/>Manager"]
+    
+    K -->|15. Issue<br/>Access Token| L["🎫 access_token<br/>TTL: 15 min"]
+    K -->|16. Issue<br/>Refresh Token| M["🎫 refresh_token<br/>TTL: 30 days"]
+    K -->|17. Issue<br/>Session Token| N["🎫 session_token<br/>TTL: 24 hours"]
+    
+    L -->|18. Return Tokens| A
+    M -->|18. Return Tokens| A
+    N -->|18. Return Tokens| A
+    
+    style A fill:#e1f5ff
+    style K fill:#c8e6c9
+    style L fill:#a5d6a7
+    style M fill:#a5d6a7
+    style N fill:#a5d6a7
+```
+
+## 4. RBAC Permission Check Flow
+
+```mermaid
+graph TD
+    A["API Request<br/>******"] -->|1. Extract Token| B["Token Manager<br/>Validate JWT"]
+    
+    B -->|2. Valid?| C{"Signature<br/>OK?"}
+    
+    C -->|No| D["❌ 401<br/>Invalid Token"]
+    C -->|Yes| E["Decode<br/>Payload"]
+    
+    E -->|3. Get Claims| F["user_id, roles,<br/>scopes"]
+    
+    F -->|4. Load User<br/>Roles| G["RBAC<br/>Service"]
+    
+    G -->|5. Query Permission<br/>Matrix| H["SQLite<br/>RBAC DB"]
+    
+    H -->|6. Lookup| I["role → resource →<br/>actions"]
+    
+    I -->|7. Permission<br/>Result| G
+    
+    G -->|8. Check<br/>Required Action| J{"Action in<br/>Permissions?"}
+    
+    J -->|No| K["❌ 403<br/>Forbidden"]
+    J -->|Yes| L{"Action is<br/>APPROVE or<br/>DELETE?"}
+    
+    L -->|Yes| M["⚠️ High Risk<br/>Action"]
+    M -->|9. Check Scopes| N["api:resource:approve<br/>in token?"]
+    N -->|No| K
+    N -->|Yes| O["✅ Allowed"]
+    
+    L -->|No| O["✅ Allowed"]
+    
+    O -->|10. Log to<br/>Audit Trail| P["Audit<br/>Service"]
+    
+    P -->|11. Store Event| Q["PostgreSQL<br/>Audit Log"]
+    
+    O -->|12. Proceed| R["Request<br/>Processed"]
+    
+    K -->|Log Failure| P
+    
+    style A fill:#e1f5ff
+    style R fill:#c8e6c9
+    style K fill:#ffcdd2
+```
+
+## 5. Approval Workflow with SLA Escalation
+
+```mermaid
+graph TD
+    A["Approval Request<br/>Created"] -->|Expires: 5 min| B["L1 Approver<br/>Primary Owner"]
+    
+    B -->|1. SLA: 4 hours| C{"L1<br/>Response?"}
+    
+    C -->|Approved| D["✅ APPROVED<br/>Proceed"]
+    C -->|Rejected| E["❌ REJECTED<br/>Block"]
+    C -->|No Response| F["L1 SLA<br/>Expired"]
+    
+    F -->|2. Escalate| G["L2 Approver<br/>Secondary"]
+    
+    G -->|3. SLA: 4 hours| H{"L2<br/>Response?"}
+    
+    H -->|Approved| D
+    H -->|Rejected| E
+    H -->|No Response| I["L2 SLA<br/>Expired"]
+    
+    I -->|4. Escalate| J["L3 Approver<br/>Senior Authority"]
+    
+    J -->|5. SLA: 4 hours| K{"L3<br/>Response?"}
+    
+    K -->|Approved| D
+    K -->|Rejected| E
+    K -->|No Response| L["🤖 Auto-Approve<br/>Quorum Unavailable"]
+    
+    L -->|6. Auto-Approve| M["✅ Approved via<br/>Auto-Escalation"]
+    
+    D -->|7. Log Result| N["Audit<br/>Service"]
+    E -->|7. Log Result| N
+    M -->|7. Log Result| N
+    
+    N -->|8. Store Event| O["PostgreSQL<br/>Audit Log"]
+    
+    D -->|✅ Action<br/>Proceeds| P["🎯 Execute<br/>Operation"]
+    E -->|❌ Action<br/>Blocked| Q["Block Operation"]
+    M -->|✅ Action<br/>Proceeds| P
+    
+    style D fill:#a5d6a7
+    style E fill:#ef9a9a
+    style M fill:#a5d6a7
+    style P fill:#c8e6c9
+    style Q fill:#ffcdd2
+```
+
+## 6. Deployment Architecture - Multi-Zone
+
+```mermaid
+graph TB
+    subgraph "US Region"
+        subgraph "Zone A"
+            A1["K8s Node A1<br/>Pod: API Svc<br/>Pod: Agent Svc"]
+            A2["K8s Node A2<br/>Pod: Auth Svc<br/>Pod: Audit Svc"]
+        end
+        
+        subgraph "Zone B"
+            B1["K8s Node B1<br/>Pod: API Svc<br/>Pod: Agent Svc"]
+            B2["K8s Node B2<br/>Pod: Auth Svc<br/>Pod: Audit Svc"]
+        end
+        
+        subgraph "Zone C"
+            C1["K8s Node C1<br/>Pod: API Svc<br/>Pod: Agent Svc"]
+            C2["K8s Node C2<br/>Pod: Auth Svc<br/>Pod: Audit Svc"]
+        end
+        
+        subgraph "Data Layer"
+            PG1["PostgreSQL<br/>Primary"]
+            PG2["PostgreSQL<br/>Replica 1"]
+            PG3["PostgreSQL<br/>Replica 2"]
+            REDIS["Redis<br/>Cluster"]
+            S3["S3<br/>Storage"]
+        end
+    end
+    
+    LB["Load Balancer<br/>NLB / ALB"]
+    USER["Internet<br/>Clients"]
+    
+    USER -->|HTTPS| LB
+    LB --> A1
+    LB --> B1
+    LB --> C1
+    
+    A1 --> PG1
+    B1 --> PG1
+    C1 --> PG1
+    
+    PG1 --> PG2
+    PG1 --> PG3
+    
+    A1 --> REDIS
+    B1 --> REDIS
+    C1 --> REDIS
+    
+    A1 --> S3
+    B1 --> S3
+    C1 --> S3
+    
+    style A1 fill:#fff3e0
+    style B1 fill:#fff3e0
+    style C1 fill:#fff3e0
+    style PG1 fill:#f3e5f5
+    style REDIS fill:#f3e5f5
+    style S3 fill:#f3e5f5
+```
+
+## 7. Security Layers
+
+```mermaid
+graph TD
+    subgraph "Layer 1: Network"
+        DDoS["☁️ DDoS Protection<br/>CloudFront / WAF"]
+        TLS["🔒 TLS 1.3<br/>Encryption"]
+    end
+    
+    subgraph "Layer 2: Authentication"
+        OAUTH["🔐 OAuth 2.0<br/>GitHub Integration"]
+        MFA["📲 MFA<br/>TOTP"]
+    end
+    
+    subgraph "Layer 3: Authorization"
+        RBAC["🔑 RBAC<br/>7 Roles"]
+        SCOPES["🎯 Token Scopes<br/>Fine-grained"]
+    end
+    
+    subgraph "Layer 4: Application"
+        INPUT["✅ Input Validation<br/>Pydantic"]
+        SANITIZE["🧹 Sanitization<br/>XSS/Injection"]
+        CRYPT["🔐 Encryption<br/>AES-256"]
+    end
+    
+    subgraph "Layer 5: Audit"
+        LOGS["📋 Audit Logs<br/>Every Action"]
+        RETENTION["📦 90-day Retention<br/>Cold Storage"]
+    end
+    
+    DDoS --> TLS
+    TLS --> OAUTH
+    OAUTH --> MFA
+    MFA --> RBAC
+    RBAC --> SCOPES
+    SCOPES --> INPUT
+    INPUT --> SANITIZE
+    SANITIZE --> CRYPT
+    CRYPT --> LOGS
+    LOGS --> RETENTION
+    
+    style DDoS fill:#c8e6c9
+    style TLS fill:#c8e6c9
+    style OAUTH fill:#b3e5fc
+    style MFA fill:#b3e5fc
+    style RBAC fill:#fff9c4
+    style SCOPES fill:#fff9c4
+    style CRYPT fill:#f8bbd0
+    style LOGS fill:#d1c4e9
+```
+
+---
+
+## Diagram Legend
+
+| Icon | Meaning |
+|------|---------|
+| 🌐 | Web/Client |
+| 💻 | CLI/Desktop |
+| 📚 | API/SDK |
+| ⚖️ | Load Balancer |
+| 🚪 | API Gateway |
+| 🛡️ | Security |
+| 🔐 | Authentication |
+| 📲 | MFA |
+| 🎫 | Tokens |
+| 🤖 | Agent |
+| ⚙️ | Workflow |
+| 🔑 | Authorization |
+| ✅ | Approval |
+| 📋 | Audit |
+| 🔒 | Encryption |
+| 🗄️ | Database |
+| ⚡ | Cache |
+| 📦 | Storage |
+| ☸️ | Kubernetes |
+| ☁️ | Cloud Service |
+| ✅ | Success |
+| ❌ | Failure |
+| ⚠️ | Warning |
+| 🤖 | Automatic |
+| 👤 | User |
+| 📧 | Email |
+
+---
+
+**Generated:** 2026-07-08  
+**Version:** 1.0.0  
+**Status:** Production Ready
