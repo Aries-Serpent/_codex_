@@ -16,6 +16,7 @@ Return codes:
 Environment variables:
     CODEX_SKIP_OPTIONAL_IMPORTS - Skip modules requiring optional dependencies
 """
+
 import argparse
 import logging
 import os

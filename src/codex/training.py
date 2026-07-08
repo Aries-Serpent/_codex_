@@ -554,7 +554,9 @@ def _run_minilm_training(
                 )
                 system_metrics_logger.start()  # codeql[py/clear-text-logging-sensitive-data]
             except (IOError, OSError) as exc:  # pragma: no cover - monitoring optional
-                logger.error(f"[monitoring-error] failed to start system metrics logger: {exc}",)
+                logger.error(
+                    f"[monitoring-error] failed to start system metrics logger: {exc}",
+                )
     # Prepare tokenizer/encoding
     if tokenizer is None:
         vocab = sorted({ch for text in corpus for ch in text})

@@ -3,6 +3,7 @@
 Run pre-commit with verbosity, timeout, and selective skipping.
 Diagnoses slow hooks; supports cache cleanup fallback.
 """
+
 from __future__ import annotations
 
 import os

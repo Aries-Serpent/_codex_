@@ -274,12 +274,12 @@ class PatternGraph:
             "avg_degree": avg_degree,
             "type_distribution": dict(type_dist),
             "relationship_distribution": dict(rel_dist),
-            "avg_node_confidence": sum(n.confidence for n in self.nodes.values()) / num_nodes
-            if num_nodes > 0
-            else 0,
-            "avg_node_frequency": sum(n.frequency for n in self.nodes.values()) / num_nodes
-            if num_nodes > 0
-            else 0,
+            "avg_node_confidence": (
+                sum(n.confidence for n in self.nodes.values()) / num_nodes if num_nodes > 0 else 0
+            ),
+            "avg_node_frequency": (
+                sum(n.frequency for n in self.nodes.values()) / num_nodes if num_nodes > 0 else 0
+            ),
         }
 
     def export_graphml(self) -> str:
@@ -383,9 +383,11 @@ class GraphBuilder:
                 success_rate=pattern.success_rate,
                 tags=pattern.tags if hasattr(pattern, "tags") else [],
                 metrics=pattern.metrics if hasattr(pattern, "metrics") else {},
-                created_at=pattern.first_seen
-                if hasattr(pattern, "first_seen")
-                else datetime.now(timezone.utc),
+                created_at=(
+                    pattern.first_seen
+                    if hasattr(pattern, "first_seen")
+                    else datetime.now(timezone.utc)
+                ),
             )
             self.graph.add_node(node)
 

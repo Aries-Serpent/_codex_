@@ -41,15 +41,13 @@ def log_change(action: str, path: Path, why: str, preview: str = "") -> None:
 
 
 def q5(step: str, err: str, ctx: str) -> None:
-    msg = textwrap.dedent(
-        f"""\
+    msg = textwrap.dedent(f"""\
     Question for ChatGPT-5 {ts()}:
     While performing [{step}], encountered the following error:
     {err}
     Context: {ctx}
     What are the possible causes, and how can this be resolved while preserving intended functionality?
-    """
-    )
+    """)
     with ERRORS.open("a", encoding="utf-8") as fh:
         fh.write(json.dumps({"ts": ts(), "step": step, "error": err, "context": ctx}) + "\n")
     sys.stderr.write(msg + "\n")
@@ -70,9 +68,7 @@ def upsert(path: Path, content: str, sentinel: str) -> None:
 
 # ---- environment ----
 DEV_REQ_SENT = "# BEGIN: CODEX_DEV_REQUIREMENTS"
-DEV_REQ = (
-    DEV_REQ_SENT
-    + """
+DEV_REQ = DEV_REQ_SENT + """
 black
 isort
 flake8
@@ -84,11 +80,8 @@ semgrep
 detect-secrets
 # END: CODEX_DEV_REQUIREMENTS
 """
-)
 RUN_REQ_SENT = "# BEGIN: CODEX_RUN_REQUIREMENTS"
-RUN_REQ = (
-    RUN_REQ_SENT
-    + """
+RUN_REQ = RUN_REQ_SENT + """
 transformers
 datasets
 sentencepiece
@@ -96,11 +89,8 @@ accelerate
 peft
 # END: CODEX_RUN_REQUIREMENTS
 """
-)
 GPU_SH_SENT = "# BEGIN: CODEX_GPU_CHECK"
-GPU_SH = (
-    GPU_SH_SENT
-    + """
+GPU_SH = GPU_SH_SENT + """
 #!/usr/bin/env bash
 set -euo pipefail
 umask 077
@@ -112,24 +102,18 @@ else
 fi
 # END: CODEX_GPU_CHECK
 """
-)
 ENV_DOC_SENT = "<!-- BEGIN: CODEX_ENV_DOC -->"
-ENV_DOC = (
-    ENV_DOC_SENT
-    + """
+ENV_DOC = ENV_DOC_SENT + """
 # Environment (Ubuntu)
 
 - Use `scripts/gpu/check_gpu.sh` to summarize GPU driver/CUDA availability.
 - Reproducibility: pin requirements and capture image digest when containerized.
 - All validation runs are local (no online CI activation).
 """
-)
 
 # ---- tokenization ----
 SP_SENT = "# BEGIN: CODEX_SENTENCEPIECE_ADAPTER"
-SP_CODE = (
-    SP_SENT
-    + """
+SP_CODE = SP_SENT + """
 from __future__ import annotations
 import json
 from pathlib import Path
@@ -172,22 +156,16 @@ class SentencePieceAdapter:
             raise AssertionError(f"vocab_size {vs} != expected {expected}")
 # END: CODEX_SENTENCEPIECE_ADAPTER
 """
-)
 SP_TEST_SENT = "# BEGIN: CODEX_TEST_SP_ADAPTER"
-SP_TEST = (
-    SP_TEST_SENT
-    + """
+SP_TEST = SP_TEST_SENT + """
 import pytest
 pytest.skip("heavy SentencePiece training skipped in CI; run locally", allow_module_level=True)
 # END: CODEX_TEST_SP_ADAPTER
 """
-)
 
 # ---- modeling ----
 ACT_SENT = "# BEGIN: CODEX_ACTIVATIONS"
-ACT_CODE = (
-    ACT_SENT
-    + """
+ACT_CODE = ACT_SENT + """
 from __future__ import annotations
 from typing import Callable, Dict
 try:
@@ -222,11 +200,8 @@ def get_activation(name: str):
     return _REGISTRY[key]()
 # END: CODEX_ACTIVATIONS
 """
-)
 ACT_TEST_SENT = "# BEGIN: CODEX_TEST_ACT"
-ACT_TEST = (
-    ACT_TEST_SENT
-    + """
+ACT_TEST = ACT_TEST_SENT + """
 from codex_ml.models.activations import get_activation
 
 def test_activation_registry_smoke():
@@ -235,11 +210,8 @@ def test_activation_registry_smoke():
         assert act is not None
 # END: CODEX_TEST_ACT
 """
-)
 PEFT_SENT = "# BEGIN: CODEX_PEFT_ADAPTER"
-PEFT_CODE = (
-    PEFT_SENT
-    + '''
+PEFT_CODE = PEFT_SENT + '''
 from __future__ import annotations
 
 def apply_lora(model, cfg: dict | None = None):
@@ -251,12 +223,9 @@ def apply_lora(model, cfg: dict | None = None):
         return model
 # END: CODEX_PEFT_ADAPTER
 '''
-)
 # ---- training ----
 CB_SENT = "# BEGIN: CODEX_TRAINING_CALLBACKS"
-CB_CODE = (
-    CB_SENT
-    + """
+CB_CODE = CB_SENT + """
 from __future__ import annotations
 class EarlyStopping:
     def __init__(self, patience: int = 3, min_delta: float = 0.0):
@@ -271,23 +240,17 @@ class EarlyStopping:
         return self.bad > self.patience
 # END: CODEX_TRAINING_CALLBACKS
 """
-)
 TRAIN_DOC_SENT = "<!-- BEGIN: CODEX_TRAIN_ARGS_DOC -->"
-TRAIN_DOC = (
-    TRAIN_DOC_SENT
-    + """
+TRAIN_DOC = TRAIN_DOC_SENT + """
 # Training Arguments (YAML/Hydra)
 
 - **gradient_accumulation_steps**: accumulate before optimizer step.
 - **early_stopping**: enable with patience/min_delta; wire to callbacks.EarlyStopping in your trainer loop.
 """
-)
 
 # ---- config ----
 HYDRA_DOC_SENT = "<!-- BEGIN: CODEX_HYDRA_DISTRIBUTED_OVERRIDES -->"
-HYDRA_DOC = (
-    HYDRA_DOC_SENT
-    + """
+HYDRA_DOC = HYDRA_DOC_SENT + """
 # Hydra Distributed Overrides
 
 ## torchrun (single node)
@@ -311,13 +274,10 @@ tokenizer.backend=sentencepiece tokenizer.vocab_size=32000
 
 ```
 """
-)
 
 # ---- evaluation ----
 CURVE_SENT = "# BEGIN: CODEX_METRIC_CURVES"
-CURVE_CODE = (
-    CURVE_SENT
-    + """
+CURVE_CODE = CURVE_SENT + """
 from __future__ import annotations
 import json
 from pathlib import Path
@@ -339,11 +299,8 @@ def summarize(path: Path, metric: str) -> Dict[str, float]:
     return {"count": len(vals), "mean": (st.mean(vals) if vals else 0.0)}
 # END: CODEX_METRIC_CURVES
 """
-)
 CURVE_TEST_SENT = "# BEGIN: CODEX_TEST_CURVES"
-CURVE_TEST = (
-    CURVE_TEST_SENT
-    + """
+CURVE_TEST = CURVE_TEST_SENT + """
 from pathlib import Path
 from codex_ml.metrics.curves import append_curve, summarize
 
@@ -354,13 +311,10 @@ def test_curves_roundtrip(tmp_path: Path):
     assert s["count"] == 5 and s["mean"] > 0
 # END: CODEX_TEST_CURVES
 """
-)
 
 # ---- monitoring ----
 PROM_SENT = "# BEGIN: CODEX_PROMETHEUS"
-PROM_CODE = (
-    PROM_SENT
-    + """
+PROM_CODE = PROM_SENT + """
 from __future__ import annotations
 
 def maybe_export_metrics(app=None, port: int = 9000):
@@ -374,13 +328,10 @@ def maybe_export_metrics(app=None, port: int = 9000):
     return counters, gauges
 # END: CODEX_PROMETHEUS
 """
-)
 
 # ---- checkpointing ----
 SHA_SENT = "# BEGIN: CODEX_CHECKSUMS"
-SHA_CODE = (
-    SHA_SENT
-    + """
+SHA_CODE = SHA_SENT + """
 from __future__ import annotations
 import hashlib, os
 from pathlib import Path
@@ -398,13 +349,10 @@ def write_checksum(path: Path):
     (path/"checksum.sha256").write_text(sha256_dir(path))
 # END: CODEX_CHECKSUMS
 """
-)
 
 # ---- data ----
 CACHE_SENT = "# BEGIN: CODEX_DATA_CACHE"
-CACHE_CODE = (
-    CACHE_SENT
-    + """
+CACHE_CODE = CACHE_SENT + """
 from __future__ import annotations
 import time
 
@@ -427,11 +375,8 @@ class SimpleCache:
         self._d[k] = (val, time.time())
 # END: CODEX_DATA_CACHE
 """
-)
 SHARD_SENT = "# BEGIN: CODEX_DATA_SHARD"
-SHARD_CODE = (
-    SHARD_SENT
-    + """
+SHARD_CODE = SHARD_SENT + """
 from __future__ import annotations
 
 def shard_range(rank: int, world: int, n: int) -> tuple[int,int]:
@@ -442,11 +387,8 @@ def shard_range(rank: int, world: int, n: int) -> tuple[int,int]:
     return start, end
 # END: CODEX_DATA_SHARD
 """
-)
 DATA_TEST_SENT = "# BEGIN: CODEX_TEST_DATA_CACHE_SHARD"
-DATA_TEST = (
-    DATA_TEST_SENT
-    + """
+DATA_TEST = DATA_TEST_SENT + """
 from codex_ml.data.sharding import shard_range
 
 def test_shard_cover():
@@ -458,13 +400,10 @@ def test_shard_cover():
     assert len(cov) == n
 # END: CODEX_TEST_DATA_CACHE_SHARD
 """
-)
 
 # ---- security ----
 RISK_SENT = "# BEGIN: CODEX_RISK_SCORE"
-RISK_CODE = (
-    RISK_SENT
-    + """
+RISK_CODE = RISK_SENT + """
 from __future__ import annotations
 
 def risk_score(text: str) -> float:
@@ -477,13 +416,10 @@ def risk_score(text: str) -> float:
     return float(score)
 # END: CODEX_RISK_SCORE
 """
-)
 
 # ---- CI placeholders ----
 NIGHTLY_SENT = "# BEGIN: CODEX_NIGHTLY_DISABLED"
-NIGHTLY = (
-    NIGHTLY_SENT
-    + """
+NIGHTLY = NIGHTLY_SENT + """
 # Disabled workflow placeholder — enable by renaming to nightly.yml and reviewing triggers.
 # on:
 #   schedule:
@@ -494,11 +430,8 @@ NIGHTLY = (
 #     steps: [{ uses: actions/checkout@v4 }]
 # END: CODEX_NIGHTLY_DISABLED
 """
-)
 VULN_SENT = "# BEGIN: CODEX_VULN_DISABLED"
-VULN = (
-    VULN_SENT
-    + """
+VULN = VULN_SENT + """
 # Disabled dependency scan placeholder — enable manually if desired.
 # on:
 #   workflow_dispatch:
@@ -508,24 +441,18 @@ VULN = (
 #     steps: [{ uses: actions/checkout@v4 }]
 # END: CODEX_VULN_DISABLED
 """
-)
 
 # ---- deployment ----
 CHART_SENT = "# BEGIN: CODEX_HELM_CHART"
-CHART = (
-    CHART_SENT
-    + """
+CHART = CHART_SENT + """
 apiVersion: v2
 name: codex-api
 version: 0.0.1
 description: Helm chart (stub)
 # END: CODEX_HELM_CHART
 """
-)
 VALUES_SENT = "# BEGIN: CODEX_HELM_VALUES"
-VALUES = (
-    VALUES_SENT
-    + """
+VALUES = VALUES_SENT + """
 replicaCount: 1
 image:
   repository: codex-api
@@ -534,17 +461,13 @@ service:
   port: 8000
 # END: CODEX_HELM_VALUES
 """
-)
 GRPC_DOC_SENT = "<!-- BEGIN: CODEX_GRPC_PARITY_DOC -->"
-GRPC_DOC = (
-    GRPC_DOC_SENT
-    + """
+GRPC_DOC = GRPC_DOC_SENT + """
 # gRPC Parity Plan
 
 - Mirror REST endpoints: Train/Infer/Evaluate/Status.
 - Define .proto, generate stubs, ensure compatibility tests.
 """
-)
 
 # ---- docs & examples ----
 NB_SENT = '"nbformat": 4'
@@ -558,9 +481,7 @@ NB = """{
 }
 """
 MC_SENT = "<!-- BEGIN: CODEX_MODEL_CARD -->"
-MC = (
-    MC_SENT
-    + """
+MC = MC_SENT + """
 # Model Card (Template)
 
 ## Intended Use
@@ -569,13 +490,10 @@ MC = (
 ## Ethical Considerations
 ## Metrics & Limitations
 """
-)
 
 # ---- experiment tracking ----
 GIT_SENT = "# BEGIN: CODEX_GIT_TAG"
-GIT = (
-    GIT_SENT
-    + """
+GIT = GIT_SENT + """
 from __future__ import annotations
 import subprocess
 
@@ -586,7 +504,6 @@ def current_commit() -> str | None:
         return None
 # END: CODEX_GIT_TAG
 """
-)
 
 
 def apply():

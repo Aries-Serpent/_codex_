@@ -33,6 +33,7 @@ from typing import Any
 yaml: ModuleType | None
 try:  # pragma: no cover - optional dependency
     import yaml as _yaml_module
+
     yaml = _yaml_module
 except (ImportError, AttributeError):  # pragma: no cover - optional dependency
     yaml = None

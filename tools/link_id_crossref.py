@@ -7,6 +7,7 @@ Usage:
 
 Exit: 0 on success, 1 if missing IDs or dangling references
 """
+
 from __future__ import annotations
 
 import argparse

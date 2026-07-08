@@ -25,7 +25,7 @@ class Phase10SystemIntegration:
                 "track_id": "from campaign_tracks.jsonl",
                 "task_id": "from deliverables.jsonl",
                 "dependencies": "from relationships.jsonl",
-                "requirements": "from requirements.jsonl"
+                "requirements": "from requirements.jsonl",
             },
             "integration_pattern": "Session stores record IDs, not file paths",
             "example": {
@@ -33,8 +33,8 @@ class Phase10SystemIntegration:
                 "phase_id": "abb5691f-7e53-7c0c-2aed-360e37bcd748",
                 "current_deliverable": "Phase 10.1 Deliverable 3",
                 "upstream_requirements": "session_restore_time_ms < 100ms",
-                "downstream_dependencies": 2
-            }
+                "downstream_dependencies": 2,
+            },
         }
 
         return checkpoint_data
@@ -53,8 +53,8 @@ class Phase10SystemIntegration:
                     "text": "Session restore time optimization",
                     "references_decision_id": "decision_123",
                     "references_action_id": "deliverable_456",
-                    "impact_area": "Phase 10.1"
-                }
+                    "impact_area": "Phase 10.1",
+                },
             },
             "ltm_consolidation": {
                 "long_term": "Pattern tagged with phase_id and track_id",
@@ -62,10 +62,10 @@ class Phase10SystemIntegration:
                     "pattern_id": "pat_001",
                     "pattern_name": "session_restore_optimization",
                     "source_phase": "abb5691f-7e53-7c0c-2aed-360e37bcd748",
-                    "related_deliverables": 3
-                }
+                    "related_deliverables": 3,
+                },
             },
-            "search_capability": "FTS over phase descriptions, decision rationales, deliverable names"
+            "search_capability": "FTS over phase descriptions, decision rationales, deliverable names",
         }
 
         return memory_integration
@@ -78,29 +78,33 @@ class Phase10SystemIntegration:
                 {
                     "step": "Observe",
                     "tool": "get_agent_context()",
-                    "retrieves": ["phases", "tracks", "deliverables", "agents"]
+                    "retrieves": ["phases", "tracks", "deliverables", "agents"],
                 },
                 {
                     "step": "Orient",
                     "tool": "get_task_brief(task_id)",
-                    "retrieves": ["task definition", "requirements", "constraints"]
+                    "retrieves": ["task definition", "requirements", "constraints"],
                 },
                 {
                     "step": "Decide",
                     "tools": ["get_related_context(task_id)", "impact_analysis(task_id, changes)"],
-                    "validates": ["upstream requirements", "downstream impacts", "dependency chains"]
+                    "validates": [
+                        "upstream requirements",
+                        "downstream impacts",
+                        "dependency chains",
+                    ],
                 },
                 {
                     "step": "Act",
                     "tool": "list_actions(phase_id)",
-                    "executes": ["task-specific actions from deliverables.jsonl"]
-                }
+                    "executes": ["task-specific actions from deliverables.jsonl"],
+                },
             ],
             "post_execution": {
                 "update_records": "rebuild_indexes() after changes",
                 "validate": "validate_docs() to check integrity",
-                "store": "update session/memory with record IDs"
-            }
+                "store": "update session/memory with record IDs",
+            },
         }
 
         return ooda_execution

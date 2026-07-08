@@ -89,9 +89,7 @@ def append_change(file_path: pathlib.Path, action: str, rationale: str, before: 
         )
     )
     with CHANGE_LOG.open("a", encoding="utf-8") as f:
-        f.write(
-            textwrap.dedent(
-                f"""
+        f.write(textwrap.dedent(f"""
         ## {now_iso()} — {file_path.relative_to(ROOT)}
         - **Action:** {action}
         - **Rationale:** {rationale}
@@ -103,10 +101,7 @@ def append_change(file_path: pathlib.Path, action: str, rationale: str, before: 
         ```
 
         </details>
-        """
-            ).strip()
-            + "\n\n"
-        )
+        """).strip() + "\n\n")
 
 
 def sha256_text(s: str) -> str:
@@ -180,8 +175,7 @@ def patch_viewer_table_validation(path: pathlib.Path):
 
     # 2) Inject validator if absent
     if "_validate_table_name" not in new:
-        validator = textwrap.dedent(
-            f"""
+        validator = textwrap.dedent(f"""
         def _validate_table_name(s: str) -> str:
             pattern = re.compile(r"{TABLE_PATTERN}")
             if s is None:
@@ -191,8 +185,7 @@ def patch_viewer_table_validation(path: pathlib.Path):
             raise argparse.ArgumentTypeError(
                 "Invalid table name: '{{s}}'. Only letters, digits, and underscore are allowed."
             )
-        """
-        )
+        """)
         # place near top after imports
         # heuristics: after first double newline
         parts = new.split("\n\n", 1)
@@ -211,14 +204,12 @@ def patch_viewer_table_validation(path: pathlib.Path):
 
     # 4) If code accesses args.table without prior validation, add runtime guard once.
     if "args.table" in new and "Invalid table name:" not in new:
-        guard = textwrap.dedent(
-            f"""
+        guard = textwrap.dedent(f"""
         # Runtime guard (defense-in-depth) in case argparse wiring is bypassed:
         if getattr(args, "table", None):
             if not re.fullmatch(r"{TABLE_PATTERN}", args.table):
                 raise SystemExit(f"Invalid table name: '{{args.table}}'. Only letters, digits, and underscore are allowed.")
-        """
-        )
+        """)
         # Heuristic: insert after a line that looks like "args = parser.parse_args()" or similar
         new = re.sub(
             r"(args\s*=\s*[^\n]*parse_args\([^)]*\)\s*)",
@@ -261,16 +252,14 @@ def patch_session_hooks_warnings(path: pathlib.Path):
         if "logging.warning" in body and "retries" in body:
             return
         # Insert a warning near common retry exits
-        insertion = textwrap.dedent(
-            """
+        insertion = textwrap.dedent("""
             # Warning when retries have been exhausted
             try:
                 _last_err  # noqa: F821
             except NameError:
                 _last_err = None
             logging.warning("Write attempt failed after all retries in %s: %s", __name__, _last_err)
-        """
-        )
+        """)
         # Heuristic: append before return/raise at end of block
         body2 = re.sub(
             r"(return\s+[^\n]+|raise\s+[^\n]+)\s*$",
@@ -373,8 +362,7 @@ def main():
 
     # Results
     RESULTS.write_text(
-        textwrap.dedent(
-            f"""
+        textwrap.dedent(f"""
     # Results Summary ({now_iso()})
 
     - Implemented:
@@ -385,9 +373,7 @@ def main():
     - Next steps: strengthen smoke tests for invalid `--table` & forced retry paths.
 
     **DO NOT ACTIVATE ANY GitHub Actions files.**
-    """
-        ).strip()
-        + "\n",
+    """).strip() + "\n",
         encoding="utf-8",
     )
 

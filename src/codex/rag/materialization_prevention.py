@@ -118,9 +118,7 @@ class MaterializationMonitor:
 
         return event
 
-    def record_recovery(
-        self, event: MaterializationEvent, success: bool, method: str
-    ) -> None:
+    def record_recovery(self, event: MaterializationEvent, success: bool, method: str) -> None:
         """Record recovery attempt."""
         with self.lock:
             event.recovery_attempted = True
@@ -249,9 +247,7 @@ class MatTensorDetector:
                 "shape": tuple(tensor.shape) if hasattr(tensor, "shape") else None,
                 "dtype": str(tensor.dtype) if hasattr(tensor, "dtype") else None,
                 "device": str(tensor.device) if hasattr(tensor, "device") else None,
-                "is_meta": (
-                    tensor.is_meta if hasattr(tensor, "is_meta") else False
-                ),
+                "is_meta": (tensor.is_meta if hasattr(tensor, "is_meta") else False),
             }
         except Exception as e:
             return {"error": str(e)}
@@ -431,7 +427,9 @@ class MaterializationPreventionFramework:
         }
 
 
-def prevent_meta_tensor_materialization(model_name: str = "unknown") -> MaterializationPreventionFramework:
+def prevent_meta_tensor_materialization(
+    model_name: str = "unknown",
+) -> MaterializationPreventionFramework:
     """
     Create and initialize meta tensor prevention framework.
 

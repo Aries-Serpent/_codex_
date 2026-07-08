@@ -10,6 +10,7 @@ Limitations:
 Usage:
   python tools/patch_apply.py --patch-file docs/templates/status/patch_example.diff
 """
+
 from __future__ import annotations
 
 import argparse

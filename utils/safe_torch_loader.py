@@ -5,6 +5,7 @@ Use this instead of torch.load() directly.
 This module provides secure wrappers around PyTorch's model loading
 functionality to mitigate CVE-2024-XXXXX (Remote Code Execution via torch.load).
 """
+
 import logging
 import os
 from typing import Any, Optional
@@ -22,6 +23,7 @@ def _get_torch():
         return _torch
     try:
         import torch
+
         _torch = torch
         return _torch
     except (ImportError, OSError) as e:

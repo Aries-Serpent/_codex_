@@ -3,6 +3,7 @@
 Portable audit runner: uses internal Python pipeline by default,
 falls back to external 'chatgpt-codex' CLI only if present on PATH.
 """
+
 from __future__ import annotations
 
 import argparse

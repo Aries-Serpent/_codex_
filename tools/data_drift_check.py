@@ -5,6 +5,7 @@ Simple data drift check comparing label distributions.
 Usage:
   python tools/data_drift_check.py --ref data/train.stats.json --cur data/new.stats.json --threshold 0.2
 """
+
 from __future__ import annotations
 
 import argparse

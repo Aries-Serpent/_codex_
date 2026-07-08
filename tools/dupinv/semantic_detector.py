@@ -60,7 +60,6 @@ class MinHashDetector:
         # Tokenize by splitting on non-alphanumeric
         return re.findall(r"\w+", code.lower())
 
-
     def create_shingles(self, tokens: list[str]) -> set[str]:
         """
         Create shingles (n-grams) from tokens.

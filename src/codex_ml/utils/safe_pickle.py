@@ -240,7 +240,9 @@ def trusted_pickle_dumps(obj: Any, *, protocol: int | None = None) -> bytes:
         remain interoperable with existing checkpoint consumers.
     """
     resolved_protocol = pickle.HIGHEST_PROTOCOL if protocol is None else protocol
-    return pickle.dumps(obj, protocol=resolved_protocol)  # nosec B301 # nosemgrep: semgrep_rules.py-pickle-dump
+    return pickle.dumps(
+        obj, protocol=resolved_protocol
+    )  # nosec B301 # nosemgrep: semgrep_rules.py-pickle-dump
 
 
 def safe_pickle_dump(

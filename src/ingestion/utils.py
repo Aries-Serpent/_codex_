@@ -127,7 +127,10 @@ def _fallback_detect_encoding(path: Path, sample_size: int = 131072) -> str:
         except (UnicodeDecodeError, LookupError):
             logger.debug("Exception caught, continuing", exc_info=True)
             continue
-        except (IOError, OSError) as exc:  # nosec B112 - intentional continue; add trace for diagnostics
+        except (
+            IOError,
+            OSError,
+        ) as exc:  # nosec B112 - intentional continue; add trace for diagnostics
             logger.debug("ingestion.utils: probing encodings failed: %s", exc, exc_info=True)
             continue
 
@@ -228,7 +231,10 @@ def write_manifest(
         if _git is None:
             raise FileNotFoundError("git not available on PATH")
         sha = subprocess.check_output([_git, "rev-parse", "HEAD"], text=True).strip()  # nosec B603
-    except (IOError, OSError) as exc:  # nosec B110 - best-effort VCS probe; continue without commit metadata
+    except (
+        IOError,
+        OSError,
+    ) as exc:  # nosec B110 - best-effort VCS probe; continue without commit metadata
         logger.debug("ingestion.utils: unable to capture git SHA: %s", exc, exc_info=True)
         sha = None
     manifest = {
@@ -282,7 +288,10 @@ def _manual_read_text(
     # Normalize newlines and strip BOM
     try:
         text = text.replace("\r\n", "\n").replace("\r", "\n").lstrip("\ufeff")
-    except (IOError, OSError) as exc:  # nosec B110 - preserve original behavior; log for observability
+    except (
+        IOError,
+        OSError,
+    ) as exc:  # nosec B110 - preserve original behavior; log for observability
         logger.debug("ingestion.utils: failed to normalize text: %s", exc, exc_info=True)
     return text, str(enc)
 
@@ -341,7 +350,9 @@ def read_text(path: str | Path, encoding: str = "utf-8", errors: str = "strict")
                     return result
                 # Unexpected object: coerce to string
                 return str(result)
-            except Exception as exc:  # nosec B110 - fall through to manual reader; log for visibility
+            except (
+                Exception
+            ) as exc:  # nosec B110 - fall through to manual reader; log for visibility
                 logger.debug(
                     "ingestion.utils: primary reader result normalisation failed: %s",
                     exc,

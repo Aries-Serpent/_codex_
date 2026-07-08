@@ -214,8 +214,12 @@ class ModelConfig:
 class ServerConfig:
     """Configuration for inference server host and port."""
 
-    host: str = field(default_factory=lambda: os.environ.get("CODEX_INFERENCE_SERVICE_HOST", "127.0.0.1"))
-    port: int = field(default_factory=lambda: int(os.environ.get("CODEX_INFERENCE_SERVICE_PORT", "8000")))
+    host: str = field(
+        default_factory=lambda: os.environ.get("CODEX_INFERENCE_SERVICE_HOST", "127.0.0.1")
+    )
+    port: int = field(
+        default_factory=lambda: int(os.environ.get("CODEX_INFERENCE_SERVICE_PORT", "8000"))
+    )
 
     @classmethod
     def from_env(cls) -> ServerConfig:

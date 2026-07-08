@@ -294,7 +294,7 @@ class AuthMiddleware:
         import os
         from codex.auth.middleware import AuthMiddleware
         from codex.auth.token_manager import TokenManager
-        
+
         app = FastAPI()
         secret_key = os.getenv("AUTH_SECRET_KEY") or os.getenv("CODEX_AUTH_SECRET_KEY")
         if not secret_key:

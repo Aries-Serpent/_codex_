@@ -111,13 +111,17 @@ def load_checkpoint(
     if _torch_supports_weights_only():
         kwargs["weights_only"] = False
     try:
-        payload = torch_load(weights, **kwargs)  # nosec B614 - weights_only=False required for optimizer/RNG state
+        payload = torch_load(
+            weights, **kwargs
+        )  # nosec B614 - weights_only=False required for optimizer/RNG state
     except TypeError as exc:
         type(exc).__name__
         logger.debug("TypeError: <ERROR_TYPE>")
         if "weights_only" in kwargs and "weights_only" in str(exc):
             kwargs.pop("weights_only", None)
-            payload = torch_load(weights, **kwargs)  # nosec B614 - Retrying without weights_only parameter
+            payload = torch_load(
+                weights, **kwargs
+            )  # nosec B614 - Retrying without weights_only parameter
         else:
             raise
     meta: dict[str, Any] = {}

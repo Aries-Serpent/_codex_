@@ -28,8 +28,7 @@ class BridgeResponse:
 def _build_prompt(diff: str, errors: str) -> str:
     diff_block = diff.strip() or "<no staged diff>"
     error_block = errors.strip() or "<no errors captured>"
-    return textwrap.dedent(
-        f"""
+    return textwrap.dedent(f"""
         You are the Codex auto-fix assistant. Review the provided git diff of staged
         changes and the lint/test errors. Respond with a unified diff that fixes the
         issues without introducing unrelated edits. Only emit the diff.
@@ -41,8 +40,7 @@ def _build_prompt(diff: str, errors: str) -> str:
         <errors>
         {error_block}
         </errors>
-        """
-    ).strip()
+        """).strip()
 
 
 def _strip_code_fences(text: str) -> str:

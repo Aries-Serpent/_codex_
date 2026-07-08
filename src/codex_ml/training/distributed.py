@@ -49,7 +49,9 @@ class DistributedConfig:
     local_rank: int = 0
 
     # Multi-node settings
-    master_addr: str = field(default_factory=lambda: os.environ.get("CODEX_MASTER_ADDR", "localhost"))
+    master_addr: str = field(
+        default_factory=lambda: os.environ.get("CODEX_MASTER_ADDR", "localhost")
+    )
     master_port: str = field(default_factory=lambda: os.environ.get("CODEX_MASTER_PORT", "29500"))
 
     # Advanced settings

@@ -4,6 +4,7 @@
 Refuses to commit any file under .codex/ exceeding 200 KB. Intended to
 prevent accidentally committing huge markdown or database files.
 """
+
 import os
 import sys
 

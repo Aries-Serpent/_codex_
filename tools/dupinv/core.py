@@ -231,7 +231,6 @@ class DuplicateScanner:
             intentional_duplicates=[],  # Will be populated in Phase 6
         )
 
-
     def write_outputs(
         self, inventory: SupplementalInventory, output_dir: Path, formats: list[str] = None
     ):

@@ -5,6 +5,7 @@ Ensures proper cleanup of GPU memory and file handles.
 This module provides context managers and utilities to prevent resource
 leaks in PyTorch operations, addressing CVE-2024-XXXXX.
 """
+
 import contextlib
 import gc
 import logging
@@ -21,6 +22,7 @@ def _get_torch():
     if _torch is None:
         try:
             import torch
+
             _torch = torch
         except (ImportError, OSError) as e:
             raise ImportError(

@@ -55,13 +55,11 @@ def log_change(
         diff = "".join(ud)
     # Prepare diff section outside f-string to avoid Python 3.10 syntax limitations
     diff_section = f"```diff\n{diff}\n```" if diff else ""
-    entry = textwrap.dedent(
-        f"""\
+    entry = textwrap.dedent(f"""\
     ## {ts()} — {action}: `{path.as_posix()}`
     **Rationale:** {rationale}
     {diff_section}
-    """
-    )
+    """)
     with CHANGE_LOG.open("a", encoding="utf-8") as f:
         f.write(entry + "\n")
 
@@ -73,15 +71,13 @@ def log_error(step: str, message: str, context: str, files: list[str] | None = N
         "error": message,
         "context": context,
         "files": files or [],
-        "question_for_chatgpt_5": textwrap.dedent(
-            f"""\
+        "question_for_chatgpt_5": textwrap.dedent(f"""\
             Question for ChatGPT-5:
             While performing [{step}], encountered the following error:
             {message}
             Context: {context}
             What are the possible causes, and how can this be resolved while preserving intended functionality?
-        """
-        ).strip(),
+        """).strip(),
     }
     with ERRORS_LOG.open("a", encoding="utf-8") as f:
         f.write(json.dumps(record, ensure_ascii=False) + "\n")
@@ -263,8 +259,7 @@ def patch_ingestion_module(dry_run: bool):
 def patch_ingestion_readme(dry_run: bool):
     target = REPO_ROOT / "src" / "ingestion" / "README.md"
     before = read(target) or ""
-    section = textwrap.dedent(
-        """\
+    section = textwrap.dedent("""\
         # Ingestion
 
         ## Parameters
@@ -285,8 +280,7 @@ def patch_ingestion_readme(dry_run: bool):
         for chunk in ingest("data/sample.txt", encoding="utf-8", chunk_size=4096):
             process(chunk)
         ```
-    """
-    )
+    """)
     after = section if not before.strip() else before.rstrip() + "\n\n" + section
     write_if_changed(
         target,
@@ -298,8 +292,7 @@ def patch_ingestion_readme(dry_run: bool):
 
 def ensure_tests(dry_run: bool):
     target = REPO_ROOT / "tests" / "test_ingestion_io.py"
-    content = textwrap.dedent(
-        """\
+    content = textwrap.dedent("""\
         import io
         from pathlib import Path
         import pytest
@@ -340,8 +333,7 @@ def ensure_tests(dry_run: bool):
             d.mkdir()
             with pytest.raises(FileNotFoundError):
                 _call_ingest(d)
-    """
-    )
+    """)
     write_if_changed(
         target,
         content,
@@ -375,8 +367,7 @@ def patch_deep_research_script(dry_run: bool):
         if "from ingestion import ingest" not in new:
             new = "from ingestion import ingest\n" + new
         if removed:
-            helper = textwrap.dedent(
-                '''
+            helper = textwrap.dedent('''
 
                 # Replaced placeholder ingestion tasks with actual calls:
                 def run_ingestion_example(path: str):
@@ -385,8 +376,7 @@ def patch_deep_research_script(dry_run: bool):
                     """
                     data = ingest(path)
                     return data
-            '''
-            )
+            ''')
             new = new.rstrip() + "\n" + helper
         return new
 
@@ -406,8 +396,7 @@ def record_prune(
     evidence: str,
     decision: str,
 ):
-    entry = textwrap.dedent(
-        f"""\
+    entry = textwrap.dedent(f"""\
     ### Pruning
     - Item: {item}
     - Purpose: {purpose}
@@ -415,8 +404,7 @@ def record_prune(
     - Failure modes: {failures}
     - Evidence: {evidence}
     - Decision: {decision}
-    """
-    )
+    """)
     with CHANGE_LOG.open("a", encoding="utf-8") as f:
         f.write(entry + "\n")
 

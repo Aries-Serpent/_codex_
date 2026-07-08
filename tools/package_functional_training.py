@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Move functional_training.py into codex package and rewrite imports."""
+
 import pathlib
 import re
 import shutil

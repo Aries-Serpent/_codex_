@@ -4,6 +4,7 @@
 Provides functions to initialize the log database and run arbitrary queries.
 This module can be invoked directly via CLI.
 """
+
 import argparse
 import json
 import os

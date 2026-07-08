@@ -225,5 +225,5 @@ def get_backoff_delay(attempt: int, base: float = 1.0, max_delay: float = 60.0) 
     float
         Delay in seconds before retrying
     """
-    delay = base * (2 ** attempt)
+    delay = base * (2**attempt)
     return min(delay, max_delay)

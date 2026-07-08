@@ -8,6 +8,7 @@ Notes:
 - Local lint/tests/coverage should run in the Codex Ubuntu environment only.
 - This does NOT block analysts from using web search.
 """
+
 from __future__ import annotations
 
 import datetime as dt

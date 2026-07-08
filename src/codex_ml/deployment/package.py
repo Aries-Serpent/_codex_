@@ -61,7 +61,9 @@ def build_service_package(
         "files": sorted(p.name for p in model_root.glob("*")),
         "metadata": dict(metadata or {}),
         # Secrets stored only as SHA256 hashes, not raw values  # noqa: E501
-        "secrets": [hashlib.sha256(k.encode()).hexdigest()[:16] for k in gathered_secrets],  # nosec - hashed identifiers only — no secret values stored
+        "secrets": [
+            hashlib.sha256(k.encode()).hexdigest()[:16] for k in gathered_secrets
+        ],  # nosec - hashed identifiers only — no secret values stored
     }
     manifest_path = staging / "manifest.json"
     # Manifest stores only hashed secret identifiers

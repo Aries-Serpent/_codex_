@@ -79,8 +79,10 @@ def _normalise_candidate(uri: str, *, allow_remote: bool) -> tuple[str, Optional
         if parsed.scheme == "file":
             # Feature gate for localhost allowlist
             _enable_loopback = os.environ.get("CODEX_LOCAL_LOOPBACK", "true").lower() == "true"
-            _default_localhosts = {"", "localhost", "127.0.0.1", "::1"} if _enable_loopback else {""}
-            
+            _default_localhosts = (
+                {"", "localhost", "127.0.0.1", "::1"} if _enable_loopback else {""}
+            )
+
             netloc = parsed.netloc or ""
             if netloc not in _default_localhosts:
                 if not allow_remote:
@@ -141,8 +143,10 @@ def _apply_guard(
         if parsed_override.scheme in {"", "file"}:
             # Feature gate for localhost allowlist
             _enable_loopback = os.environ.get("CODEX_LOCAL_LOOPBACK", "true").lower() == "true"
-            _default_localhosts = {"", "localhost", "127.0.0.1", "::1"} if _enable_loopback else {""}
-            
+            _default_localhosts = (
+                {"", "localhost", "127.0.0.1", "::1"} if _enable_loopback else {""}
+            )
+
             if parsed_override.scheme != "file" or parsed_override.netloc in _default_localhosts:
                 preferred_local = local_override
         else:

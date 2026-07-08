@@ -9,6 +9,7 @@ Notes:
   - If `jsonschema` is not installed, this tool prints an info message and exits 0 (graceful).
   - Designed for local use; do not wire into CI.
 """
+
 from __future__ import annotations
 
 import argparse

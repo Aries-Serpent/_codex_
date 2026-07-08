@@ -420,7 +420,9 @@ def _load_payload(path: Path, *, map_location: Optional[str], fmt: SaveFormat) -
                 kwargs["map_location"] = map_location
             if "weights_only" in inspect.signature(torch.load).parameters:
                 kwargs["weights_only"] = False
-            return torch.load(path, **kwargs)  # nosec B614 - weights_only=False required for optimizer/RNG state
+            return torch.load(
+                path, **kwargs
+            )  # nosec B614 - weights_only=False required for optimizer/RNG state
         except (IOError, OSError) as exc:  # pragma: no cover - torch optional
             errors.append(exc)
             if fmt == "torch":

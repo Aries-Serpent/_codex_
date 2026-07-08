@@ -3,6 +3,7 @@
 Offline, idempotent migration from v1.1 -> v1.2.
 Adds/adjusts metadata.template_version and preserves all content.
 """
+
 import argparse
 import json
 import pathlib

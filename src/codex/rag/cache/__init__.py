@@ -29,7 +29,10 @@ try:
         EmbeddingCache,
         EmbeddingCacheConfig,
     )
-except (ImportError, AttributeError):  # nosec B110 — optional numpy dependency, intentional no-op  # pragma: no cover
+except (
+    ImportError,
+    AttributeError,
+):  # nosec B110 — optional numpy dependency, intentional no-op  # pragma: no cover
     pass
 
 __all__ = [

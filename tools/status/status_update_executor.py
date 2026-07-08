@@ -44,16 +44,14 @@ class ErrorCaptureRecorder:
 
     def record(self, step: str, error: str, context: Optional[dict[str, str]] = None) -> None:
         timestamp = datetime.now(timezone.utc).isoformat(timespec="seconds")
-        prompt = textwrap.dedent(
-            f""":::
+        prompt = textwrap.dedent(f""":::
 Question for ChatGPT @codex {timestamp}:
 While performing {step}, encountered the following error:
 {error}
 Context: {json.dumps(context or {}, sort_keys=True)}
 What are the possible causes, and how can this be resolved while preserving intended functionality?
 :::
-"""
-        ).strip()
+""").strip()
         payload = {
             "timestamp": timestamp,
             "step": step,

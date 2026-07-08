@@ -2,12 +2,12 @@
 Codex Bridge Module - Adapters connecting Codex to external runtimes and services.
 
 This module provides backward compatibility imports for GitHub client operations.
-The actual implementations have been moved to src/codex/clients/ for P19 shadow 
+The actual implementations have been moved to src/codex/clients/ for P19 shadow
 import resolution.
 
 Usage:
     from codex_bridge.github_client import list_branches, get_text
-    
+
     # Or via the main codex namespace:
     from codex.clients import list_branches, get_text
 """
@@ -43,4 +43,3 @@ __all__: list[str] = [
     "list_branches",
     "most_recent_branch",
 ]
-

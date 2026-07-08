@@ -4,6 +4,7 @@
 Scans common dependency manifests to flag unpinned requirements. Outputs both
 JSON and Markdown summaries for easy review.
 """
+
 from __future__ import annotations
 
 import argparse

@@ -4,6 +4,7 @@
 This script parses change_log.md and results.md files and inserts their contents
 into the SQLite database defined by CODEX_DB or provided via --db.
 """
+
 import argparse
 import datetime
 import os

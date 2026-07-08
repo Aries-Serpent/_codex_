@@ -68,9 +68,9 @@ class FullTextIndexer:
     def _tokenize(text: str) -> List[str]:
         """Tokenize text into words."""
         # Convert to lowercase and split on non-word characters
-        tokens = re.findall(r'\w+', text.lower())
+        tokens = re.findall(r"\w+", text.lower())
         # Filter stopwords (simple list)
-        stopwords = {'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for'}
+        stopwords = {"the", "a", "an", "and", "or", "but", "in", "on", "at", "to", "for"}
         return [t for t in tokens if t not in stopwords and len(t) > 1]
 
 
@@ -100,8 +100,7 @@ class SemanticEmbeddings:
 
         # Create simple embedding (one dimension per token)
         # In practice would use pre-trained embeddings
-        embedding = [float(tokens.count(token)) / len(tokens)
-                     for token in sorted(set(tokens))]
+        embedding = [float(tokens.count(token)) / len(tokens) for token in sorted(set(tokens))]
 
         self.embeddings[doc_id] = embedding
         return embedding
@@ -109,8 +108,10 @@ class SemanticEmbeddings:
     def search_similar(self, query: str, top_k: int = 5) -> List[Tuple[str, float]]:
         """Find most similar documents to query."""
         query_tokens = self._get_tokens(query)
-        query_embedding = [float(query_tokens.count(token)) / (len(query_tokens) or 1)
-                          for token in sorted(set(query_tokens))]
+        query_embedding = [
+            float(query_tokens.count(token)) / (len(query_tokens) or 1)
+            for token in sorted(set(query_tokens))
+        ]
 
         similarities = []
 
@@ -126,7 +127,7 @@ class SemanticEmbeddings:
     @staticmethod
     def _get_tokens(text: str) -> List[str]:
         """Extract tokens from text."""
-        return re.findall(r'\w+', text.lower())
+        return re.findall(r"\w+", text.lower())
 
     @staticmethod
     def _cosine_similarity(vec1: List[float], vec2: List[float]) -> float:
@@ -137,8 +138,8 @@ class SemanticEmbeddings:
         vec2_padded = vec2 + [0] * (max_len - len(vec2))
 
         dot_product = sum(a * b for a, b in zip(vec1_padded, vec2_padded))
-        norm1 = sum(a ** 2 for a in vec1_padded) ** 0.5
-        norm2 = sum(b ** 2 for b in vec2_padded) ** 0.5
+        norm1 = sum(a**2 for a in vec1_padded) ** 0.5
+        norm2 = sum(b**2 for b in vec2_padded) ** 0.5
 
         if norm1 == 0 or norm2 == 0:
             return 0.0
@@ -159,14 +160,14 @@ class HistoryTracker:
         self.current_version = "1.0.0"
         self.migration_log: List[Dict] = []
         self.schema_versions: Dict[str, str] = {
-            'document': '1.0.0',
-            'section': '1.0.0',
-            'block': '1.0.0',
-            'action': '1.0.0',
-            'decision': '1.0.0',
-            'requirement': '1.0.0',
-            'reference': '1.0.0',
-            'relationship': '1.0.0',
+            "document": "1.0.0",
+            "section": "1.0.0",
+            "block": "1.0.0",
+            "action": "1.0.0",
+            "decision": "1.0.0",
+            "requirement": "1.0.0",
+            "reference": "1.0.0",
+            "relationship": "1.0.0",
         }
 
     def record_migration(
@@ -177,10 +178,10 @@ class HistoryTracker:
     ) -> None:
         """Record a schema migration."""
         migration = {
-            'from': from_version,
-            'to': to_version,
-            'description': description,
-            'timestamp': self._get_timestamp(),
+            "from": from_version,
+            "to": to_version,
+            "description": description,
+            "timestamp": self._get_timestamp(),
         }
         self.migration_log.append(migration)
 
@@ -194,7 +195,7 @@ class HistoryTracker:
 
         result = []
         for migration in self.migration_log:
-            if migration['from'] == from_version:
+            if migration["from"] == from_version:
                 result.append(migration)
 
         return result
@@ -211,4 +212,5 @@ class HistoryTracker:
     def _get_timestamp() -> str:
         """Get ISO 8601 timestamp."""
         from datetime import datetime
-        return datetime.utcnow().isoformat() + 'Z'
+
+        return datetime.utcnow().isoformat() + "Z"

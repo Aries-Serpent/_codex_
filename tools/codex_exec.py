@@ -3,6 +3,7 @@
 Codex Orchestrator: runs the sequential phases, applies minimal patches, records a CHANGELOG, and writes research questions to docs/reference/codex_questions.md on failure.
 Policy: DO NOT enable GitHub Actions. All checks run locally when CODEX_ENV=1.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -38,16 +39,11 @@ def sh(cmd: list[str], step: str):
 def record_question(step_number_desc: str, error: str, context: str = ""):
     QUESTIONS.parent.mkdir(parents=True, exist_ok=True)
     with QUESTIONS.open("a", encoding="utf-8") as f:
-        f.write(
-            textwrap.dedent(
-                f"""
+        f.write(textwrap.dedent(f"""
                 Question from ChatGPT @codex {dt.datetime.now().isoformat(timespec='seconds')}:
                 While performing {step_number_desc}, encountered the following error: {error}
                 Context: {context}. What are the possible causes, and how can this be resolved while preserving intended functionality?
-                """.strip()
-            )
-            + "\n\n"
-        )
+                """.strip()) + "\n\n")
 
 
 def normalize_readme():

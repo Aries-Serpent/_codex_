@@ -75,8 +75,12 @@ class ClusterConfig:
         # Fall back to standard distributed env vars
         num_nodes = int(os.environ.get("NUM_NODES", os.environ.get("NNODES", 1)))
         node_rank = int(os.environ.get("NODE_RANK", os.environ.get("RANK", 0)))
-        master_addr = os.environ.get("CODEX_MASTER_ADDR", os.environ.get("MASTER_ADDR", "localhost"))
-        master_port = int(os.environ.get("CODEX_MASTER_PORT", os.environ.get("MASTER_PORT", "29500")))
+        master_addr = os.environ.get(
+            "CODEX_MASTER_ADDR", os.environ.get("MASTER_ADDR", "localhost")
+        )
+        master_port = int(
+            os.environ.get("CODEX_MASTER_PORT", os.environ.get("MASTER_PORT", "29500"))
+        )
         gpus_per_node = int(os.environ.get("GPUS_PER_NODE", 8))
 
         return cls(

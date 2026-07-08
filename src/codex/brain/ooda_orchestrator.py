@@ -118,16 +118,16 @@ class CycleRecorder:
                 successful_cycles=len(successful),
                 failed_cycles=len(recent) - len(successful),
                 avg_cycle_latency_ms=sum(latencies) / len(latencies) if latencies else 0,
-                p95_cycle_latency_ms=sorted_latencies[p95_idx]
-                if p95_idx < len(sorted_latencies)
-                else 0,
-                p99_cycle_latency_ms=sorted_latencies[p99_idx]
-                if p99_idx < len(sorted_latencies)
-                else 0,
+                p95_cycle_latency_ms=(
+                    sorted_latencies[p95_idx] if p95_idx < len(sorted_latencies) else 0
+                ),
+                p99_cycle_latency_ms=(
+                    sorted_latencies[p99_idx] if p99_idx < len(sorted_latencies) else 0
+                ),
                 avg_decision_confidence=sum(confidences) / len(confidences) if confidences else 0,
-                avg_execution_success_rate=sum(success_rates) / len(success_rates)
-                if success_rates
-                else 0,
+                avg_execution_success_rate=(
+                    sum(success_rates) / len(success_rates) if success_rates else 0
+                ),
                 total_agents_invoked=sum(len(c.execution_report.agents_executed) for c in recent),
                 total_side_effects=sum(len(c.execution_report.side_effects) for c in recent),
                 uptime_percent=len(successful) / len(recent) * 100 if recent else 0,
@@ -410,8 +410,10 @@ class OODAOrchestrator:
         logger.info("\n" + "=" * 60)
         logger.info("OODA LOOP ORCHESTRATION METRICS")
         logger.info("=" * 60)
-        logger.info(f"Cycles: {metrics.total_cycles} "
-            f"(✓{metrics.successful_cycles} ✗{metrics.failed_cycles})")
+        logger.info(
+            f"Cycles: {metrics.total_cycles} "
+            f"(✓{metrics.successful_cycles} ✗{metrics.failed_cycles})"
+        )
         logger.info(f"Uptime: {metrics.uptime_percent:.1f}%")
         logger.info("\nLatency (ms):")
         logger.info(f"  Average: {metrics.avg_cycle_latency_ms:.0f}")

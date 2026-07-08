@@ -121,7 +121,7 @@ def find_files(
             return []
 
         if pattern is None:
-            pattern = '*'
+            pattern = "*"
 
         glob_pattern = f"**/{pattern}" if recursive else pattern
         return list(root.glob(glob_pattern))

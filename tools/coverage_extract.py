@@ -8,6 +8,7 @@ Output:
 Usage:
   python tools/coverage_extract.py --coverage-json .coverage.json --out coverage_modules.json
 """
+
 from __future__ import annotations
 
 import argparse

@@ -56,8 +56,7 @@ def main() -> None:
     root = repo_root()
     hook = root / ".git" / "hooks" / "prepare-commit-msg"
 
-    script = dedent(
-        r"""#!/usr/bin/env bash
+    script = dedent(r"""#!/usr/bin/env bash
 set -euo pipefail
 MSG_FILE="$1"
 ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
@@ -80,8 +79,7 @@ else
   } >> "$MSG_FILE" || true
 fi
 exit 0
-"""
-    )
+""")
 
     try:
         write_hook(hook, script)

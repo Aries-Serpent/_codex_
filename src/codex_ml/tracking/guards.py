@@ -95,7 +95,7 @@ def normalize_mlflow_uri(uri: Optional[str]) -> Optional[str]:
         # Feature gate for localhost allowlist
         _enable_loopback = os.environ.get("CODEX_LOCAL_LOOPBACK", "true").lower() == "true"
         _default_localhosts = {"", "localhost", "127.0.0.1", "::1"} if _enable_loopback else {""}
-        
+
         if parsed.netloc and parsed.netloc not in _default_localhosts:
             path_part = f"/{parsed.netloc}{path_part}"
         candidate = Path(path_part or ".")

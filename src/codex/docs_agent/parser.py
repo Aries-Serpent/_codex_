@@ -23,12 +23,9 @@ class MarkdownParser:
 
     def __init__(self):
         # Heading pattern: # Title
-        self.heading_pattern = re.compile(r'^(#{1,6})\s+(.+)$', re.MULTILINE)
+        self.heading_pattern = re.compile(r"^(#{1,6})\s+(.+)$", re.MULTILINE)
         # Code block pattern: ```language ... ```
-        self.code_block_pattern = re.compile(
-            r'```(\w+)?\n(.*?)\n```',
-            re.MULTILINE | re.DOTALL
-        )
+        self.code_block_pattern = re.compile(r"```(\w+)?\n(.*?)\n```", re.MULTILINE | re.DOTALL)
 
     def parse_file(self, filepath: str) -> Tuple[Dict, List[Dict]]:
         """Parse markdown file into sections and metadata.
@@ -36,7 +33,7 @@ class MarkdownParser:
         Returns:
             (metadata, sections_list)
         """
-        with open(filepath, 'r', encoding='utf-8') as f:
+        with open(filepath, "r", encoding="utf-8") as f:
             content = f.read()
 
         metadata = MetadataExtractor.extract_frontmatter(content)
@@ -53,16 +50,18 @@ class MarkdownParser:
             level = len(match.group(1))
             title = match.group(2).strip()
             start_pos = match.start()
-            end_pos = heading_matches[idx + 1].start() if idx + 1 < len(heading_matches) else len(content)
+            end_pos = (
+                heading_matches[idx + 1].start() if idx + 1 < len(heading_matches) else len(content)
+            )
 
-            section_content = content[match.start():end_pos]
+            section_content = content[match.start() : end_pos]
 
             section = {
-                'level': level,
-                'title': title,
-                'content': section_content,
-                'anchor': self._generate_anchor(title),
-                'position': idx,
+                "level": level,
+                "title": title,
+                "content": section_content,
+                "anchor": self._generate_anchor(title),
+                "position": idx,
             }
 
             sections.append(section)
@@ -72,9 +71,9 @@ class MarkdownParser:
     def _generate_anchor(self, title: str) -> str:
         """Generate anchor from section title."""
         anchor = title.lower()
-        anchor = re.sub(r'[^\w\s-]', '', anchor)
-        anchor = re.sub(r'[-\s]+', '-', anchor)
-        return anchor.strip('-')
+        anchor = re.sub(r"[^\w\s-]", "", anchor)
+        anchor = re.sub(r"[-\s]+", "-", anchor)
+        return anchor.strip("-")
 
 
 class CodeBlockExtractor:
@@ -88,26 +87,23 @@ class CodeBlockExtractor:
     """
 
     def __init__(self):
-        self.code_block_pattern = re.compile(
-            r'```(\w+)?\n(.*?)\n```',
-            re.MULTILINE | re.DOTALL
-        )
+        self.code_block_pattern = re.compile(r"```(\w+)?\n(.*?)\n```", re.MULTILINE | re.DOTALL)
 
     def extract_blocks(self, content: str) -> List[Dict]:
         """Extract all code blocks from content."""
         blocks = []
 
         for match in self.code_block_pattern.finditer(content):
-            language = match.group(1) or 'plaintext'
+            language = match.group(1) or "plaintext"
             code = match.group(2)
 
             block = {
-                'language': language,
-                'code': code,
-                'line_count': len(code.split('\n')),
-                'executable': self._is_executable(language),
-                'tested': self._has_marker(code, 'tested'),
-                'unsafe': self._has_marker(code, 'unsafe'),
+                "language": language,
+                "code": code,
+                "line_count": len(code.split("\n")),
+                "executable": self._is_executable(language),
+                "tested": self._has_marker(code, "tested"),
+                "unsafe": self._has_marker(code, "unsafe"),
             }
 
             blocks.append(block)
@@ -118,8 +114,19 @@ class CodeBlockExtractor:
     def _is_executable(language: str) -> bool:
         """Check if code block is in an executable language."""
         executable_langs = {
-            'python', 'bash', 'sh', 'shell', 'javascript', 'js',
-            'go', 'rust', 'java', 'cpp', 'c', 'ruby', 'php',
+            "python",
+            "bash",
+            "sh",
+            "shell",
+            "javascript",
+            "js",
+            "go",
+            "rust",
+            "java",
+            "cpp",
+            "c",
+            "ruby",
+            "php",
         }
         return language.lower() in executable_langs
 
@@ -127,8 +134,8 @@ class CodeBlockExtractor:
     def _has_marker(code: str, marker: str) -> bool:
         """Check if code has special marker in comment."""
         # Look for markers like # tested, # unsafe in first 3 lines
-        lines = code.split('\n')[:3]
-        marker_pattern = f'# {marker}'
+        lines = code.split("\n")[:3]
+        marker_pattern = f"# {marker}"
         return any(marker_pattern in line for line in lines)
 
 
@@ -141,8 +148,8 @@ class MetadataExtractor:
       - Custom fields
     """
 
-    FRONTMATTER_PATTERN = re.compile(r'^---\n(.*?)\n---\n', re.DOTALL)
-    DIRECTIVE_PATTERN = re.compile(r'!(\w+):\s*(.+)$', re.MULTILINE)
+    FRONTMATTER_PATTERN = re.compile(r"^---\n(.*?)\n---\n", re.DOTALL)
+    DIRECTIVE_PATTERN = re.compile(r"!(\w+):\s*(.+)$", re.MULTILINE)
 
     @classmethod
     def extract_frontmatter(cls, content: str) -> Dict[str, Any]:
@@ -155,9 +162,9 @@ class MetadataExtractor:
         frontmatter_text = match.group(1)
         metadata = {}
 
-        for line in frontmatter_text.strip().split('\n'):
-            if ':' in line:
-                key, value = line.split(':', 1)
+        for line in frontmatter_text.strip().split("\n"):
+            if ":" in line:
+                key, value = line.split(":", 1)
                 metadata[key.strip()] = value.strip()
 
         return metadata
@@ -180,14 +187,14 @@ class MetadataExtractor:
     def extract_links(cls, content: str) -> List[Dict]:
         """Extract links from markdown content."""
         # Markdown links: [text](url)
-        markdown_pattern = re.compile(r'\[([^\]]+)\]\(([^\)]+)\)')
+        markdown_pattern = re.compile(r"\[([^\]]+)\]\(([^\)]+)\)")
         links = []
 
         for match in markdown_pattern.finditer(content):
             link = {
-                'text': match.group(1),
-                'url': match.group(2),
-                'type': cls._classify_link(match.group(2)),
+                "text": match.group(1),
+                "url": match.group(2),
+                "type": cls._classify_link(match.group(2)),
             }
             links.append(link)
 
@@ -196,24 +203,24 @@ class MetadataExtractor:
     @staticmethod
     def _classify_link(url: str) -> str:
         """Classify link type."""
-        if url.startswith('http://') or url.startswith('https://'):
-            return 'external'
-        elif url.startswith('#'):
-            return 'anchor'
+        if url.startswith("http://") or url.startswith("https://"):
+            return "external"
+        elif url.startswith("#"):
+            return "anchor"
         else:
-            return 'internal'
+            return "internal"
 
     @classmethod
     def extract_images(cls, content: str) -> List[Dict]:
         """Extract image references from markdown."""
         # Markdown images: ![alt](url)
-        image_pattern = re.compile(r'!\[([^\]]*)\]\(([^\)]+)\)')
+        image_pattern = re.compile(r"!\[([^\]]*)\]\(([^\)]+)\)")
         images = []
 
         for match in image_pattern.finditer(content):
             img = {
-                'alt_text': match.group(1),
-                'url': match.group(2),
+                "alt_text": match.group(1),
+                "url": match.group(2),
             }
             images.append(img)
 
@@ -223,11 +230,11 @@ class MetadataExtractor:
     def extract_metadata_summary(cls, content: str) -> Dict[str, Any]:
         """Extract comprehensive metadata from document."""
         return {
-            'frontmatter': cls.extract_frontmatter(content),
-            'directives': cls.extract_directives(content),
-            'links': cls.extract_links(content),
-            'images': cls.extract_images(content),
-            'word_count': len(content.split()),
-            'heading_count': len(re.findall(r'^#+\s', content, re.MULTILINE)),
-            'code_block_count': len(re.findall(r'```', content)) // 2,
+            "frontmatter": cls.extract_frontmatter(content),
+            "directives": cls.extract_directives(content),
+            "links": cls.extract_links(content),
+            "images": cls.extract_images(content),
+            "word_count": len(content.split()),
+            "heading_count": len(re.findall(r"^#+\s", content, re.MULTILINE)),
+            "code_block_count": len(re.findall(r"```", content)) // 2,
         }

@@ -14,6 +14,7 @@ Actions:
 Usage:
   python tools/apply_pyproject_packaging.py
 """
+
 from __future__ import annotations
 
 import ast
@@ -141,8 +142,7 @@ for extra, values in CANONICAL_OPTIONAL_DEPENDENCIES.items():
 CANONICAL_OPTIONAL_BLOCK = "\n".join(_optional_lines)
 del _optional_lines
 
-CANONICAL_HEADER = textwrap.dedent(
-    """
+CANONICAL_HEADER = textwrap.dedent("""
 [build-system]
 requires = ["setuptools>=67", "wheel"]
 build-backend = "setuptools.build_meta"
@@ -201,11 +201,9 @@ monitoring = ["prometheus-client>=0.14", "psutil>=5.9", "pynvml>=11.5"]
 ops = ["requests>=2.34.2"]
 symbolic = ["sentencepiece>=0.1.99", "tokenizers>=0.14"]
 tracking = ["mlflow>=2.9", "wandb>=0.15"]
-"""
-).strip()
+""").strip()
 
-CANONICAL_FOOTER = textwrap.dedent(
-    """
+CANONICAL_FOOTER = textwrap.dedent("""
 [project.scripts]
 codex-train = "codex_ml.cli.entrypoints:train_main"
 codex-eval = "codex_ml.cli.entrypoints:eval_main"
@@ -237,8 +235,7 @@ include = [
   "tools*"
 ]
 exclude = ["tests*", "torch*"]
-"""
-).strip()
+""").strip()
 
 CANONICAL = (
     f"{CANONICAL_HEADER}\n{CANONICAL_DEPENDENCIES_BLOCK}\n\n"
@@ -500,7 +497,7 @@ def main():
     )
 
     canonical_license_block = (
-        "[project.license-files]\npaths = [\n  \"LICENSE\",\n  \"LICENSES/*\"\n]\n"
+        '[project.license-files]\npaths = [\n  "LICENSE",\n  "LICENSES/*"\n]\n'
     )
     license_pattern = r"(?ms)^\[project\.license-files\][\s\S]*?(?=^dependencies\s*=|^\[project\.[a-zA-Z-]+|^\[tool\.|^\Z)"
     text, license_replacements = re.subn(license_pattern, canonical_license_block, text)

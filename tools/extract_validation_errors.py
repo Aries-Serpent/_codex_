@@ -5,6 +5,7 @@ Extract validation errors from status update reports and create error files.
 This script validates a status report and creates an error-<report_name>.md file
 in the same directory containing all the incomplete or incorrect aspects.
 """
+
 import argparse
 import sys
 from pathlib import Path

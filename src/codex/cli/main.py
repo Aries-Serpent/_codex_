@@ -279,7 +279,9 @@ if TYPER_AVAILABLE:
         # Emit typer import error warning if it occurred
         if _TYPER_IMPORT_ERROR:
 
-            logger.error(f"Warning: typer import failed ({_TYPER_IMPORT_ERROR}). Using limited CLI.",)
+            logger.error(
+                f"Warning: typer import failed ({_TYPER_IMPORT_ERROR}). Using limited CLI.",
+            )
         app()
 
 else:

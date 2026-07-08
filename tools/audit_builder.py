@@ -8,6 +8,7 @@ and writes `audit_output/` artifacts for later review.
 Usage:
   python tools/audit_builder.py --prompt-file AUDIT_PROMPT.md
 """
+
 from __future__ import annotations
 
 import argparse

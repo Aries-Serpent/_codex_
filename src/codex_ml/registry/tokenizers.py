@@ -355,17 +355,15 @@ def encode_cached(
     return _clone_mapping(frozen)
 
 
-
-
 # Public API wrapper for entry point
 def build_hf_tokenizer(**kwargs: Any):
     """Public API wrapper for HuggingFace tokenizer builder.
-    
+
     This is the stable public entry point for building HuggingFace tokenizers.
-    
+
     Args:
         **kwargs: Configuration parameters passed to HFTokenizerAdapter.load()
-        
+
     Returns:
         HFTokenizerAdapter instance configured with the provided parameters.
     """

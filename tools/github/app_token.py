@@ -13,6 +13,7 @@ Notes:
   See GitHub docs for details.
 - This script only performs a network call if --print-installation-token is passed.
 """
+
 from __future__ import annotations
 
 import argparse

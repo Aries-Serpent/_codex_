@@ -215,9 +215,7 @@ class MetaTensorGuardRail:
                 raise ValueError("Model is None")
 
             report_details["model_type"] = type(model).__name__
-            report_details["model_has_named_params"] = hasattr(
-                model, "named_parameters"
-            )
+            report_details["model_has_named_params"] = hasattr(model, "named_parameters")
 
             status = GuardRailStatus.PASSED
             error = None
@@ -263,17 +261,13 @@ class MetaTensorGuardRail:
 
             # Check direct parameters
             for name, param in model.named_parameters():
-                if param.device.type == "meta" or (
-                    hasattr(param, "is_meta") and param.is_meta
-                ):
+                if param.device.type == "meta" or (hasattr(param, "is_meta") and param.is_meta):
                     report_details["meta_params"].append(name)
                     meta_found = True
 
             # Check direct buffers
             for name, buf in model.named_buffers():
-                if buf.device.type == "meta" or (
-                    hasattr(buf, "is_meta") and buf.is_meta
-                ):
+                if buf.device.type == "meta" or (hasattr(buf, "is_meta") and buf.is_meta):
                     report_details["meta_buffers"].append(name)
                     meta_found = True
 
@@ -283,17 +277,13 @@ class MetaTensorGuardRail:
                     continue
 
                 for param_name, param in submodule.named_parameters(recurse=False):
-                    if param.device.type == "meta" or (
-                        hasattr(param, "is_meta") and param.is_meta
-                    ):
+                    if param.device.type == "meta" or (hasattr(param, "is_meta") and param.is_meta):
                         full_name = f"{submodule_name}.{param_name}"
                         report_details["meta_submodule_params"].append(full_name)
                         meta_found = True
 
                 for buf_name, buf in submodule.named_buffers(recurse=False):
-                    if buf.device.type == "meta" or (
-                        hasattr(buf, "is_meta") and buf.is_meta
-                    ):
+                    if buf.device.type == "meta" or (hasattr(buf, "is_meta") and buf.is_meta):
                         full_name = f"{submodule_name}.{buf_name}"
                         report_details["meta_submodule_buffers"].append(full_name)
                         meta_found = True
@@ -495,11 +485,13 @@ class MetaTensorGuardRail:
     def log_summary(self) -> None:
         """Log summary of all guard rail checks."""
         summary = self.get_summary()
-        logger.info("Guard Rail Summary: %d checks, %d passed, %d failed, %d recovered",
-                    summary["total_checks"],
-                    summary["passed"],
-                    summary["failed"],
-                    summary["recovered"])
+        logger.info(
+            "Guard Rail Summary: %d checks, %d passed, %d failed, %d recovered",
+            summary["total_checks"],
+            summary["passed"],
+            summary["failed"],
+            summary["recovered"],
+        )
 
 
 @contextmanager

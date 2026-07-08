@@ -31,6 +31,7 @@ following steps:
 Note: This script avoids triggering any GitHub actions; all operations occur
 locally within the codex environment.
 """
+
 from __future__ import annotations
 
 import json
@@ -47,6 +48,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 def ts() -> str:
     """Return an ISO-8601 timestamp without microseconds."""
     from codex.utils.path_utils import windows_safe_timestamp
+
     return windows_safe_timestamp(fmt="iso")
 
 
@@ -86,16 +88,14 @@ def record_error(errors: Path, step: str, err: Exception, ctx: str) -> None:
     errors.parent.mkdir(parents=True, exist_ok=True)
     entry = {"ts": ts(), "step": step, "error": str(err), "context": ctx}
     _append_text(errors, json.dumps(entry) + "\n")
-    question = textwrap.dedent(
-        f"""
+    question = textwrap.dedent(f"""
         Question for ChatGPT @codex {ts()}:
         While performing [{step}], encountered the following error:
         {err}
         Context: {ctx}
         What are the possible causes, and how can this be resolved while
         preserving intended functionality?
-        """
-    )
+        """)
     sys.stderr.write(question)
 
 
@@ -171,15 +171,13 @@ def main() -> None:
         if sysmet.exists():
             text = sysmet.read_text(encoding="utf-8")
             if "_NVML_AVAILABLE" not in text and "import pynvml" in text:
-                replacement = textwrap.dedent(
-                    """
+                replacement = textwrap.dedent("""
                     try:
                         import pynvml
                         _NVML_AVAILABLE = True
                     except Exception:
                         _NVML_AVAILABLE = False
-                    """
-                ).strip()
+                    """).strip()
                 patched = text.replace("import pynvml", replacement)
                 patched = patched.replace(
                     "pynvml.nvmlInit()",
@@ -209,8 +207,7 @@ def main() -> None:
         if hf_file.exists():
             content = hf_file.read_text(encoding="utf-8")
             if "HFTokenizerAdapter" not in content:
-                adapter_code = textwrap.dedent(
-                    """
+                adapter_code = textwrap.dedent("""
                     try:
                         from tokenizers import Tokenizer
                     except Exception:
@@ -245,8 +242,7 @@ def main() -> None:
 
                         def eos_id(self) -> int:
                             return self._eos
-                    """
-                ).strip()
+                    """).strip()
                 hf_file.write_text(content.rstrip() + "\n\n" + adapter_code, encoding="utf-8")
                 preview = "\n".join(adapter_code.splitlines()[:30])
                 log_change(
@@ -344,8 +340,7 @@ def main() -> None:
     # Phase 6: Finalization - update codex-ready task sequence YAML
     try:
         yaml_file = REPO_ROOT / "codex_ready_task_sequence.yaml"
-        yaml_content = textwrap.dedent(
-            """
+        yaml_content = textwrap.dedent("""
             **Codex-ready Task Sequence**
 
             1. **Preparation**
@@ -384,8 +379,7 @@ def main() -> None:
                - Update `.codex/change_log.md` with all modifications and rationale.
                - Write this task sequence to `codex_ready_task_sequence.yaml` for the
                  next codex execution.
-            """
-        ).strip()
+            """).strip()
         yaml_file.write_text(yaml_content, encoding="utf-8")
         log_change(
             change_log, "create", yaml_file, "Generated codex-ready task sequence", yaml_content

@@ -47,6 +47,7 @@ logger = logging.getLogger(__name__)
 _requests: ModuleType | None
 try:
     import requests as _requests_module
+
     _requests = _requests_module
 
     HAS_REQUESTS = True

@@ -7,6 +7,7 @@ Writes audit_artifacts/capabilities_raw.json with a list of suggested capabiliti
 Usage:
   python tools/capability_autodiscover.py
 """
+
 from __future__ import annotations
 
 import json

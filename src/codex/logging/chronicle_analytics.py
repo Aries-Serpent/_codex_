@@ -126,12 +126,14 @@ class ChronicleAnalytics:
             "total_sessions": total,
             "date_range": f"{date_range[0]} to {date_range[1]}" if date_range else None,
             "sessions_last_7_days": dict(sorted(last_7_days.items())),
-            "avg_sessions_per_day": round(
-                total / max(1, (date_range[1] - date_range[0]).days + 1),
-                2,
-            )
-            if date_range
-            else 0,
+            "avg_sessions_per_day": (
+                round(
+                    total / max(1, (date_range[1] - date_range[0]).days + 1),
+                    2,
+                )
+                if date_range
+                else 0
+            ),
         }
 
     def _analyze_tool_usage(self) -> dict[str, Any]:

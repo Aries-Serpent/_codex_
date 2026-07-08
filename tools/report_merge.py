@@ -5,6 +5,7 @@ Merge multiple JSON fragments into a status report JSON (non-destructive).
 Usage:
   python tools/report_merge.py --report reports/daily/2025-11-02.json --in coverage_modules.json:coverage_by_module --in perf_snapshot.json:automation.performance
 """
+
 from __future__ import annotations
 
 import argparse

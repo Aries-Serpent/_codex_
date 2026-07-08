@@ -49,7 +49,7 @@ def handle_response(
         ResponseError: If status doesn't match and raise_on_error=True
     """
     expected = [expected_status] if isinstance(expected_status, int) else expected_status
-    status = getattr(response, 'status_code', None)
+    status = getattr(response, "status_code", None)
 
     if status not in expected:
         msg = f"Expected status {expected}, got {status}"
@@ -102,7 +102,7 @@ def get_json_response(
         return default
 
     if path:
-        parts = path.split('.')
+        parts = path.split(".")
         for part in parts:
             if isinstance(data, dict):
                 data = data.get(part)
@@ -125,15 +125,15 @@ class ResponseParser:
 
     def text(self, default: str = "") -> str:
         """Get response text."""
-        return getattr(self.response, 'text', default)
+        return getattr(self.response, "text", default)
 
     def headers(self) -> Dict[str, str]:
         """Get response headers."""
-        return getattr(self.response, 'headers', {})
+        return getattr(self.response, "headers", {})
 
     def status(self) -> int:
         """Get status code."""
-        return getattr(self.response, 'status_code', 0)
+        return getattr(self.response, "status_code", 0)
 
     def is_success(self) -> bool:
         """Check if response indicates success."""

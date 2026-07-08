@@ -51,19 +51,14 @@ def append_error(step_num, step_desc, err_msg, context):
     }
     with ERRORS.open("a", encoding="utf-8") as f:
         f.write(json.dumps(entry, ensure_ascii=False) + "\n")
-    sys.stderr.write(
-        textwrap.dedent(
-            f"""
+    sys.stderr.write(textwrap.dedent(f"""
         Question for ChatGPT-5:
         While performing [{step_num}: {step_desc}], encountered the following error:
         {err_msg}
         Context: {context}
         What are the possible causes, and how can this be resolved while preserving
         intended functionality?
-        """
-        ).strip()
-        + "\n"
-    )
+        """).strip() + "\n")
 
 
 def run(cmd, step_num, step_desc, cwd=ROOT, env=None, check=True):
@@ -84,9 +79,7 @@ def phase1_prep():
         if cp and cp.returncode == 0:
             repo_root = pathlib.Path(cp.stdout.strip())
             if repo_root.resolve() != ROOT.resolve():
-                append_change(
-                    f"Repo root from git differs from script ROOT: {repo_root} vs {ROOT}"
-                )
+                append_change(f"Repo root from git differs from script ROOT: {repo_root} vs {ROOT}")
         cp2 = run(
             ["git", "status", "--porcelain"],
             "1.1",
@@ -366,8 +359,7 @@ def run_pytest():
 
 def phase6_finalize():
     RESULTS.write_text(
-        textwrap.dedent(
-            f"""
+        textwrap.dedent(f"""
     # Results Summary
 
     - Timestamp: {now_iso()}
@@ -383,9 +375,7 @@ def phase6_finalize():
     - Confirm actual export names in
       `codex/logging/session_hooks.py` and `codex/logging/session_logger.py`.
     - Ensure `src/codex/logging/query_logs.py` exists and supports `--format json`.
-    """
-        ).strip()
-        + "\n",
+    """).strip() + "\n",
         encoding="utf-8",
     )
     append_change("Wrote .codex/results.md")

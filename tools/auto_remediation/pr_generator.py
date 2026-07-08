@@ -197,7 +197,7 @@ class AutomatedPRGenerator:
 
             # Use line-based replacement if context provides line numbers
             # Otherwise fall back to simple string replacement (with caution)
-            if hasattr(fix, 'line_number') and fix.line_number:
+            if hasattr(fix, "line_number") and fix.line_number:
                 lines = content.splitlines(keepends=True)
                 # Replace specific line(s) based on line number
                 # This is more precise than simple string replacement

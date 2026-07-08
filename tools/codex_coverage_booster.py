@@ -52,18 +52,14 @@ def nowstamp() -> str:
 def append_error(step: str, err: Exception, context: str) -> None:
     DOCS_ERRORS.parent.mkdir(parents=True, exist_ok=True)
     with open(DOCS_ERRORS, "a", encoding="utf-8") as f:
-        f.write(
-            textwrap.dedent(
-                f"""
+        f.write(textwrap.dedent(f"""
                 Question for ChatGPT-5 {nowstamp()}:
                 While performing {step}, encountered the following error:
                 {type(err).__name__}: {err}
                 Context: {context}
                 What are the possible causes, and how can this be resolved while preserving intended functionality?
 
-                """
-            )
-        )
+                """))
 
 
 def safe_write(path: Path, content: str, apply: bool) -> None:
@@ -87,8 +83,7 @@ def repo_has_module(subdir: str, file: str) -> bool:
 
 
 def test_template_sentencepiece() -> str:
-    return textwrap.dedent(
-        f"""\
+    return textwrap.dedent(f"""\
         {HEADER}
         import json
         import importlib
@@ -144,13 +139,11 @@ def test_template_sentencepiece() -> str:
                 ids = spa.encode("hello")
                 text = spa.decode(ids)
                 assert isinstance(ids, list) and isinstance(text, str)
-        """
-    )
+        """)
 
 
 def test_template_git_tag() -> str:
-    return textwrap.dedent(
-        f"""\
+    return textwrap.dedent(f"""\
         {HEADER}
         import subprocess
         import importlib
@@ -181,13 +174,11 @@ def test_template_git_tag() -> str:
             if hasattr(mod, "current_commit"):
                 out = mod.current_commit()
                 assert out in (None, "",)
-        """
-    )
+        """)
 
 
 def test_template_callbacks() -> str:
-    return textwrap.dedent(
-        f"""\
+    return textwrap.dedent(f"""\
         {HEADER}
         import importlib
 
@@ -203,13 +194,11 @@ def test_template_callbacks() -> str:
                 assert es.step(0.41) in (False, True)
                 stop = es.step(0.42)
                 assert isinstance(stop, bool)
-        """
-    )
+        """)
 
 
 def test_template_train_loop() -> str:
-    return textwrap.dedent(
-        f"""\
+    return textwrap.dedent(f"""\
         {HEADER}
         import json
         import importlib
@@ -236,13 +225,11 @@ def test_template_train_loop() -> str:
                     mod.record_metrics(p, {"bad": Bad()})
                 except Exception:
                     pass  # suppressed: no action needed
-        """
-    )
+        """)
 
 
 def test_template_mlflow_utils() -> str:
-    return textwrap.dedent(
-        f"""\
+    return textwrap.dedent(f"""\
         {HEADER}
         import os
         import importlib
@@ -251,13 +238,11 @@ def test_template_mlflow_utils() -> str:
             mod = importlib.import_module("codex_ml.tracking.mlflow_utils")
             monkeypatch.setenv("MLFLOW_TRACKING_URI", "http://127.0.0.1:0")
             assert hasattr(mod, "__name__")
-        """
-    )
+        """)
 
 
 def test_template_modeling() -> str:
-    return textwrap.dedent(
-        f"""\
+    return textwrap.dedent(f"""\
         {HEADER}
         import importlib
         import pytest
@@ -271,13 +256,11 @@ def test_template_modeling() -> str:
                     with pytest.raises(Exception):
                         fn(bad)
                     break
-        """
-    )
+        """)
 
 
 def test_template_error_log() -> str:
-    return textwrap.dedent(
-        f"""\
+    return textwrap.dedent(f"""\
         {HEADER}
         import threading
         import time
@@ -302,13 +285,11 @@ def test_template_error_log() -> str:
             for t in threads:
                 t.join()
             assert logfile.exists()
-        """
-    )
+        """)
 
 
 def test_template_checkpointing() -> str:
-    return textwrap.dedent(
-        f"""\
+    return textwrap.dedent(f"""\
         {HEADER}
         import importlib
         from pathlib import Path
@@ -326,8 +307,7 @@ def test_template_checkpointing() -> str:
                     except Exception:
                         pass  # suppressed: no action needed
                     break
-        """
-    )
+        """)
 
 
 TEMPLATES = {
@@ -341,8 +321,7 @@ TEMPLATES = {
     "tests/utils/test_checkpointing.py": test_template_checkpointing,
 }
 
-README_PATCH = textwrap.dedent(
-    """\
+README_PATCH = textwrap.dedent("""\
     ## Testing & Coverage (Local-Only)
 
     This repository enforces testing and coverage **only within the Codex/local environment**.
@@ -353,8 +332,7 @@ README_PATCH = textwrap.dedent(
       ```
     - No CI or cost-incurring GitHub Actions are enabled or required. Do not add workflow YAMLs.
     - Some tests may mock optional dependencies (e.g., `sentencepiece`) to cover error paths.
-    """
-)
+    """)
 
 
 def patch_readme(apply: bool) -> None:
@@ -375,8 +353,7 @@ def patch_readme(apply: bool) -> None:
 
 
 def write_conftest(apply: bool) -> None:
-    content = textwrap.dedent(
-        f"""\
+    content = textwrap.dedent(f"""\
         {HEADER}
         import os
         import pytest
@@ -386,8 +363,7 @@ def write_conftest(apply: bool) -> None:
             monkeypatch.chdir(tmp_path)
             monkeypatch.setenv("HOME", str(tmp_path))
             yield
-        """
-    )
+        """)
     safe_write(TESTS / "conftest.py", content, apply)
 
 

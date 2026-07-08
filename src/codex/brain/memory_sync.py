@@ -263,16 +263,14 @@ class MemorySyncEngine:
             frequency_threshold = self.config["frequency_threshold"]
             max_promote = self.config["max_promote_per_cycle"]
 
-            hot_entries = conn.execute(
-                f"""
+            hot_entries = conn.execute(f"""
                 SELECT key, value, pattern_type, frequency, success_rate,
                        confidence, last_accessed, created_at, metadata, tags
                 FROM stm_entries
                 WHERE frequency >= {frequency_threshold}
                 ORDER BY frequency DESC, last_accessed DESC
                 LIMIT {max_promote}
-                """
-            ).fetchall()
+                """).fetchall()
 
             conn.close()
 
@@ -308,8 +306,7 @@ class MemorySyncEngine:
             # Find entries past retention window
             cutoff_date = (datetime.now(timezone.utc) - timedelta(days=90)).isoformat()
 
-            cold_entries = conn.execute(
-                f"""
+            cold_entries = conn.execute(f"""
                 SELECT key, confidence
                 FROM ltm_entries
                 WHERE created_at < '{cutoff_date}'
@@ -317,8 +314,7 @@ class MemorySyncEngine:
                 AND policy != '{RetentionPolicy.EVERGREEN.value}'
                 ORDER BY confidence ASC
                 LIMIT {self.config['max_prune_per_cycle']}
-                """
-            ).fetchall()
+                """).fetchall()
 
             conn.close()
 
@@ -345,7 +341,10 @@ class MemorySyncEngine:
 
                     duplicates.append(
                         DuplicateMatch(
-                            key1=entry1.key, key2=entry2.key, similarity=similarity, merge_target=merge_target
+                            key1=entry1.key,
+                            key2=entry2.key,
+                            similarity=similarity,
+                            merge_target=merge_target,
                         )
                     )
 
@@ -489,7 +488,9 @@ class MemorySyncEngine:
 
         return promoted, pruned, merged
 
-    def _merge_duplicate_patterns(self, conn: sqlite3.Connection, dup: DuplicateMatch, now: str) -> int:
+    def _merge_duplicate_patterns(
+        self, conn: sqlite3.Connection, dup: DuplicateMatch, now: str
+    ) -> int:
         """Merge duplicate patterns, keeping higher-confidence entry."""
         try:
             # Get both entries
@@ -656,7 +657,9 @@ class MemorySyncEngine:
             conn.row_factory = sqlite3.Row
 
             # Fetch all LTM entries
-            ltm_entries = conn.execute("SELECT * FROM ltm_entries ORDER BY confidence DESC").fetchall()
+            ltm_entries = conn.execute(
+                "SELECT * FROM ltm_entries ORDER BY confidence DESC"
+            ).fetchall()
 
             conn.close()
 
@@ -671,9 +674,9 @@ class MemorySyncEngine:
                         "frequency": row["frequency"],
                         "success_rate": row["success_rate"],
                         "tags": json.loads(row["tags"]) if row["tags"] else [],
-                        "improvement_areas": json.loads(row["improvement_areas"])
-                        if row["improvement_areas"]
-                        else [],
+                        "improvement_areas": (
+                            json.loads(row["improvement_areas"]) if row["improvement_areas"] else []
+                        ),
                         "policy": row["policy"],
                     }
                 )

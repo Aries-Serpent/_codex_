@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """Codex offline runner: audit -> pre-commit -> tests.
 Avoids network/CI, provides fallback when external CLI missing."""
+
 from __future__ import annotations
 
 import argparse

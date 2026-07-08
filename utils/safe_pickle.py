@@ -46,6 +46,7 @@ Production Deployment Guidelines:
 - Consider migrating to safetensors for new models
 - Audit allowlist (SAFE_MODULES) for your application's needs
 """
+
 import hashlib
 import hmac
 import io
@@ -70,16 +71,36 @@ class RestrictedUnpickler(pickle.Unpickler):
 
     # Whitelist of allowed modules and their safe classes
     SAFE_MODULES: dict[str, set[str]] = {
-        'builtins': {'int', 'float', 'str', 'list', 'dict', 'tuple', 'set', 'frozenset', 'bool', 'NoneType', 'bytes', 'bytearray'},
-        'collections': {'OrderedDict', 'defaultdict', 'Counter', 'deque'},
-        'collections.abc': {'Iterable', 'Iterator', 'Mapping', 'MutableMapping', 'Sequence', 'MutableSequence'},
-        'numpy': {'ndarray', 'dtype', 'generic', 'number', 'int_', 'float_', 'complex_', 'bool_'},
-        'numpy.core.multiarray': {'_reconstruct', 'scalar'},
-        'numpy._core.multiarray': {'_reconstruct', 'scalar'},
-        'torch': {'Tensor', 'Size', 'dtype', 'device'},
-        'torch.storage': {'_TypedStorage', 'TypedStorage', '_LegacyStorage'},
+        "builtins": {
+            "int",
+            "float",
+            "str",
+            "list",
+            "dict",
+            "tuple",
+            "set",
+            "frozenset",
+            "bool",
+            "NoneType",
+            "bytes",
+            "bytearray",
+        },
+        "collections": {"OrderedDict", "defaultdict", "Counter", "deque"},
+        "collections.abc": {
+            "Iterable",
+            "Iterator",
+            "Mapping",
+            "MutableMapping",
+            "Sequence",
+            "MutableSequence",
+        },
+        "numpy": {"ndarray", "dtype", "generic", "number", "int_", "float_", "complex_", "bool_"},
+        "numpy.core.multiarray": {"_reconstruct", "scalar"},
+        "numpy._core.multiarray": {"_reconstruct", "scalar"},
+        "torch": {"Tensor", "Size", "dtype", "device"},
+        "torch.storage": {"_TypedStorage", "TypedStorage", "_LegacyStorage"},
         # Add project-specific safe classes here
-        'codex_ml': {'ModelCheckpoint', 'TrainingState'},
+        "codex_ml": {"ModelCheckpoint", "TrainingState"},
     }
 
     def find_class(self, module: str, name: str):
@@ -98,7 +119,7 @@ class RestrictedUnpickler(pickle.Unpickler):
         """
         # Check if module and class are in whitelist
         if module in self.SAFE_MODULES:
-            if name in self.SAFE_MODULES[module] or '*' in self.SAFE_MODULES.get(module, set()):
+            if name in self.SAFE_MODULES[module] or "*" in self.SAFE_MODULES.get(module, set()):
                 return super().find_class(module, name)
 
         # Log and reject unsafe class
@@ -178,7 +199,7 @@ def safe_pickle_load(
     if not file_path.exists():
         raise FileNotFoundError(f"Pickle file not found: {file_path}")
 
-    with open(file_path, 'rb') as f:
+    with open(file_path, "rb") as f:
         data = f.read()
 
     return safe_pickle_load_bytes(
@@ -210,11 +231,7 @@ def safe_pickle_load_bytes(
         pickled_data = data[:-32]
         signature = data[-32:]
 
-        expected_sig = hmac.new(
-            secret_key,
-            pickled_data,
-            hashlib.sha256
-        ).digest()
+        expected_sig = hmac.new(secret_key, pickled_data, hashlib.sha256).digest()
 
         if not hmac.compare_digest(signature, expected_sig):
             raise ValueError(
@@ -250,7 +267,9 @@ def trusted_pickle_dumps(
 ) -> bytes:
     """Serialize trusted objects behind one reviewed pickle boundary."""
     resolved_protocol = pickle.HIGHEST_PROTOCOL if protocol is None else protocol
-    return pickle.dumps(obj, protocol=resolved_protocol)  # nosec B301 # nosemgrep: semgrep_rules.py-pickle-dump
+    return pickle.dumps(
+        obj, protocol=resolved_protocol
+    )  # nosec B301 # nosemgrep: semgrep_rules.py-pickle-dump
 
 
 def safe_pickle_dump(
@@ -288,11 +307,7 @@ def safe_pickle_dump(
             secret_key = _get_secret_key()
 
         # Add HMAC signature
-        signature = hmac.new(
-            secret_key,
-            pickled_data,
-            hashlib.sha256
-        ).digest()
+        signature = hmac.new(secret_key, pickled_data, hashlib.sha256).digest()
 
         data = pickled_data + signature
         logger.info(f"Added HMAC signature to {file_path}")
@@ -300,7 +315,7 @@ def safe_pickle_dump(
         data = pickled_data
 
     # Security: data is HMAC-signed pickled bytes; file_path is trusted from caller
-    with open(file_path, 'wb') as f:
+    with open(file_path, "wb") as f:
         f.write(data)
 
     logger.debug(f"Saved pickle to {file_path} ({len(data)} bytes)")
@@ -319,12 +334,12 @@ def _get_secret_key() -> bytes:
         32-byte secret key
     """
     # Try environment variable first
-    key_env = os.environ.get('PICKLE_SECRET_KEY')
+    key_env = os.environ.get("PICKLE_SECRET_KEY")
     if key_env:
         return key_env.encode()
 
     # Try user-specific key file
-    key_file = Path.home() / '.codex' / 'pickle.key'
+    key_file = Path.home() / ".codex" / "pickle.key"
     if key_file.exists():
         return key_file.read_bytes()
 
@@ -340,6 +355,7 @@ def _get_secret_key() -> bytes:
 
 # Alternative: Safer serialization formats
 
+
 def suggest_alternatives(context: str = "general") -> str:
     """
     Suggest safer alternatives to pickle based on use case.
@@ -351,7 +367,7 @@ def suggest_alternatives(context: str = "general") -> str:
         Suggestion string with alternatives
     """
     alternatives = {
-        'model': """
+        "model": """
 For ML models, consider:
 - safetensors (https://github.com/huggingface/safetensors)
   - Model-specific format without pickle
@@ -362,20 +378,20 @@ For ML models, consider:
   - For large numerical arrays
   - pip install h5py
 """,
-        'config': """
+        "config": """
 For configuration data, use:
 - JSON (json module) - built-in, human-readable
 - YAML (pyyaml) - more features than JSON
 - TOML (tomli/tomllib) - modern config format
 """,
-        'data': """
+        "data": """
 For general data serialization:
 - JSON (json module) - simple, standard
 - MessagePack (msgpack) - binary JSON alternative
 - Protocol Buffers (protobuf) - strongly typed
 - Apache Arrow (pyarrow) - columnar data
 """,
-        'cache': """
+        "cache": """
 For caching:
 - JSON for simple data
 - SQLite (sqlite3) - built-in database
@@ -389,10 +405,10 @@ For caching:
 
 # Export public API
 __all__ = [
-    'safe_pickle_load',
-    'safe_pickle_load_bytes',
-    'safe_pickle_dump',
-    'trusted_pickle_dumps',
-    'RestrictedUnpickler',
-    'suggest_alternatives',
+    "safe_pickle_load",
+    "safe_pickle_load_bytes",
+    "safe_pickle_dump",
+    "trusted_pickle_dumps",
+    "RestrictedUnpickler",
+    "suggest_alternatives",
 ]

@@ -37,9 +37,7 @@ def run_command(cmd: list[str], cwd: Path | None = None) -> tuple[int, str, str]
         return 1, "", str(e)
 
 
-def _fallback_validate_required(
-    schema: dict[str, Any], data: Any, path: str = ""
-) -> list[str]:
+def _fallback_validate_required(schema: dict[str, Any], data: Any, path: str = "") -> list[str]:
     """Best-effort required-field validation when ``jsonschema`` is unavailable.
 
     This fallback only checks object structure and recursively required fields;
@@ -782,7 +780,6 @@ def generate_status_update() -> dict[str, Any]:
     }
 
 
-
 def validate_report(report: dict[str, Any]) -> tuple[bool, list[str]]:
     """Validate report against schema."""
     if not SCHEMA_PATH.exists():
@@ -817,6 +814,7 @@ def main():
         # Save invalid report to separate location for debugging
         STATUS_DIR.mkdir(parents=True, exist_ok=True)
         from codex.utils.path_utils import windows_safe_timestamp
+
         timestamp = windows_safe_timestamp(fmt="readable")
         invalid_file = STATUS_DIR / f"_codex_status_update-{timestamp}.invalid.json"
 

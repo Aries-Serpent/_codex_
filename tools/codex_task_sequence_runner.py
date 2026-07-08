@@ -22,6 +22,7 @@ The runner is intentionally simple:
 
 - Strategies: record_and_stop | record_and_continue
 """
+
 from __future__ import annotations
 
 import argparse

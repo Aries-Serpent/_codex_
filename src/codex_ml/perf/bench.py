@@ -156,7 +156,9 @@ def main(argv: list[str] | None = None) -> int:
     if args.json:
         logger.info(json.dumps(res.as_dict(), indent=2))
     else:
-        logger.info(f"n={len(res.samples_ms)}  median={res.median_ms:.2f} ms  p95={res.p95_ms:.2f} ms")
+        logger.info(
+            f"n={len(res.samples_ms)}  median={res.median_ms:.2f} ms  p95={res.p95_ms:.2f} ms"
+        )
 
     if args.mlflow:
         try:

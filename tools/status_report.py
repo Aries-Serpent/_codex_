@@ -19,6 +19,7 @@ python tools/status_report.py \
   --pr 1916 \
   --out STATUS_REPORT.md
 """
+
 from __future__ import annotations
 
 import argparse
