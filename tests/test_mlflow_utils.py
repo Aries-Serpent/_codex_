@@ -112,7 +112,14 @@ def test_start_run_disabled_returns_noop():
 def test_start_run_and_logging(monkeypatch, tmp_path):
     """Test comprehensive MLflow step logging with proper step parameter handling."""
     dummy = DummyMLF()
-    monkeypatch.setattr(MU, "_mlf", dummy)
+    
+    # Monkeypatch importlib.import_module to return DummyMLF instead of real mlflow
+    def fake_import(name, *args, **kwargs):
+        if name == "mlflow":
+            return dummy
+        return importlib.import_module.__wrapped__(name, *args, **kwargs)
+    
+    monkeypatch.setattr(importlib, "import_module", fake_import)
     MU._HAS_MLFLOW = True
 
     with MU.start_run(
