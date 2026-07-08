@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-07-08T17:26:06Z",
+  "generated_at": "2026-07-08T19:08:46Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1059,7 +1059,7 @@
     {
       "name": "agentic-diff-guard",
       "enforcement_tier": "SOFT",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "api-documentation",
@@ -1104,7 +1104,7 @@
     {
       "name": "automated-compliance-check",
       "enforcement_tier": "SOFT",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "automated-monitoring-setup",
@@ -1259,7 +1259,7 @@
     {
       "name": "codeql-fix-verification",
       "enforcement_tier": "GROUNDED",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "codeql",
@@ -1599,7 +1599,7 @@
     {
       "name": "ml-tests",
       "enforcement_tier": "SOFT",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "model-drift-retrain",
@@ -1779,7 +1779,7 @@
     {
       "name": "profile-validation",
       "enforcement_tier": "GROUNDED",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "progressive-validation",
@@ -2109,7 +2109,7 @@
     {
       "name": "wec-enforcement-gate",
       "enforcement_tier": "SOFT",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "workflow-analytics-unified",
@@ -2521,5 +2521,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "11fc15207eb2a4e205745aa68e10b0e588e86f6082069ac2a62e96062d193d56"
+  "integrity_sha256": "8ffd9c9d68a4f73823f52de31941c074be7191d73ba41cfaf69fefc60fbe539e"
 }
