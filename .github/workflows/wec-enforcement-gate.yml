@@ -26,4 +26,5 @@ jobs:
     steps:
     - uses: actions/checkout@v5
     - name: Check WEC compliance
-      run: "echo \"\u2713 WEC enforcement gate passed\""
+      run: |
+        echo "✓ WEC enforcement gate passed"

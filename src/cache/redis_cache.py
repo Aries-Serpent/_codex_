@@ -100,12 +100,21 @@ class RedisCache(CacheBackend):
             self._connected = False
 
     def _serialize(self, value: Any) -> bytes:
-        """Serialize value to bytes."""
+        """Serialize value to bytes.
+        
+        Raises:
+            TypeError: If value is not JSON-serializable.
+                       Use JSONEncoder subclass or convert to serializable type.
+        """
         try:
             return json.dumps(value).encode("utf-8")
-        except (TypeError, ValueError):
-            # Fallback to pickle for non-JSON-serializable objects
-            return pickle.dumps(value)
+        except (TypeError, ValueError) as e:
+            # CWE-502: Do NOT use pickle fallback (unsafe deserialization)
+            # Instead, require application to handle non-JSON-serializable objects explicitly.
+            raise TypeError(
+                f"Value is not JSON-serializable. Please convert to a JSON-compatible type. "
+                f"Original error: {e}"
+            ) from e
 
     def _deserialize(self, data: bytes) -> Any:
         """Deserialize bytes to value (CWE-502 remediation: JSON only, no unsafe pickle).

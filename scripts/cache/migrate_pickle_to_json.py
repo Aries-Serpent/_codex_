@@ -62,13 +62,21 @@ class PickleToJsonMigrator:
             return None
 
     def migrate(self) -> None:
-        """Migrate all pickle data in Redis to JSON format."""
+        """Migrate all pickle data in Redis to JSON format.
+        
+        Uses SCAN instead of KEYS to avoid blocking large Redis instances.
+        """
         if not self.redis:
             logger.error("Cannot migrate: Redis connection failed")
             return
 
         try:
-            all_keys = self.redis.keys("*")
+            # Use SCAN instead of KEYS to avoid blocking production Redis
+            # KEYS("*") can block Redis for seconds on large datasets
+            all_keys = []
+            for key in self.redis.scan_iter(match="*"):
+                all_keys.append(key)
+            
             self.stats["total_keys"] = len(all_keys)
             logger.info(f"Starting migration of {len(all_keys)} keys...")
 
