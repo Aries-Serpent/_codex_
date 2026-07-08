@@ -31,7 +31,7 @@ def run_inventory(repo_root: Path) -> dict:
     markdown_inventory = []
 
     exempted_paths = policy.get("exempted_paths", [])
-    
+
     for path in candidates:
         rp = relpath(path, repo_root)
         cls, confidence = classify_path(rp, exceptions, exempted_paths)
