@@ -109,7 +109,7 @@ def test_container_smoke_basic(tmp_path):
     ]
     logger.error(f"[test] Running: {shlex.join(cmd)}")
     # Allow enough time for slower CI/container startup while still failing reasonably fast.
-    proc = subprocess.run(  # nosemgrep: python.lang.security.audit.dangerous-subprocess-use-tainted-env-args.dangerous-subprocess-use-tainted-env-args -- env-derived args are validated by _validated_smoke_image/_validated_host_port and shell=False is used
+    proc = subprocess.run(  # nosemgrep: python.lang.security.audit.dangerous-subprocess-use-tainted-env-args.dangerous-subprocess-use-tainted-env-args
         cmd, capture_output=True, text=True, timeout=300, check=False, shell=False
     )
     if proc.returncode != 0:
