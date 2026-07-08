@@ -110,3 +110,6 @@ configs/tracking
 configs/train
 scripts/audit_pipeline.py
 scripts/ci/session_preload.py
+
+# Test files for secret detection validation (synthetic patterns only)
+secrets.txt

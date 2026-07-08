@@ -1,0 +1,23 @@
+{
+  "validation": "coverage_regression_detection",
+  "baseline": {
+    "coverage_percent": 34.63,
+    "test_count": 2467
+  },
+  "current": {
+    "coverage_percent": 34.63,
+    "variance_percent": 0.0,
+    "quality_metrics": {
+      "test_pass_rate": 100.0,
+      "test_flakiness": 0.0,
+      "test_determinism": 100.0,
+      "test_isolation": 100.0
+    }
+  },
+  "detection": {
+    "regression_detected": false,
+    "variance_tolerance": 1.5,
+    "quality_metrics_valid": true,
+    "validation_passed": true
+  }
+}

@@ -1,9 +1,32 @@
+name: Automated Compliance Check
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+  push:
+    branches:
+      - main
+      - develop
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   compliance-check:
     permissions:
       contents: read
       pull-requests: write
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
     - uses: actions/checkout@v5
     - name: Validate workflow compliance
@@ -17,15 +40,3 @@ jobs:
         \ and perms == 'write-all':\n            print(f\"\u274C {wf.name}: Uses write-all\
         \ permissions\")\n            exit(1)\n\nprint(\"\u2713 All workflows comply\
         \ with standards\")\nCOMPLIANCE_EOF\n                    "
-    timeout-minutes: 15
-name: Automated Compliance Check
-'on':
-  pull_request:
-    types:
-    - opened
-    - synchronize
-    - reopened
-  push:
-    branches:
-    - main
-    - develop

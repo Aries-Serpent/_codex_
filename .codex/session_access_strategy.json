@@ -1,20 +1,20 @@
 {
-  "generated_at": "2026-07-08T17:08:54.780473+00:00",
+  "generated_at": "2026-07-08T18:05:23.369038+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 3456,
+  "rest_remaining": 4607,
   "graphql_available": true,
-  "graphql_remaining": 4966,
+  "graphql_remaining": 4991,
   "gh_cli_available": true,
   "codeql_available": false,
   "best_token_var": "CODEX_MASTER_KEY",
   "open_prs": [
-    5268
+    5269
   ],
-  "branch": "copilot/activate-phase-12-post-merge-execution",
+  "branch": "copilot/phase-14-initiation-multi-agent-campaign",
   "recommendation": "Use REST for data fetches. "
 }

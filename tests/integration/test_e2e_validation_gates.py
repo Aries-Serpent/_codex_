@@ -19,14 +19,10 @@ import logging
 import tempfile
 import threading
 from datetime import datetime
-from typing import Any, Dict
 import pytest
 
 from tests.integration.conftest_validation_gates import (
     get_gate_registry,
-    ValidationGateRegistry,
-    GateCategory,
-    GateSeverity,
 )
 
 

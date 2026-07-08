@@ -1,0 +1,29 @@
+{
+  "validation": "module_coverage_gates",
+  "phase": "baseline",
+  "minimums": {
+    "tier_1": 90.0,
+    "tier_2": 85.0,
+    "tier_3": 77.0,
+    "tier_4": 62.0
+  },
+  "tier_results": {
+    "tier_1": {
+      "minimum": 90.0,
+      "valid": false
+    },
+    "tier_2": {
+      "minimum": 85.0,
+      "valid": false
+    },
+    "tier_3": {
+      "minimum": 77.0,
+      "valid": false
+    },
+    "tier_4": {
+      "minimum": 62.0,
+      "valid": false
+    }
+  },
+  "validation_passed": false
+}

@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-07-08T14:33:12Z",
+  "generated_at": "2026-07-08T17:26:06Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1102,6 +1102,11 @@
       "has_concurrency": true
     },
     {
+      "name": "automated-compliance-check",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": false
+    },
+    {
       "name": "automated-monitoring-setup",
       "enforcement_tier": "PARTIAL",
       "has_concurrency": true
@@ -1928,7 +1933,7 @@
     },
     {
       "name": "security-copilot-commands",
-      "enforcement_tier": "GROUNDED",
+      "enforcement_tier": "PARTIAL",
       "has_concurrency": false
     },
     {
@@ -2100,6 +2105,11 @@
       "name": "vars-guide-sync",
       "enforcement_tier": "GROUNDED",
       "has_concurrency": true
+    },
+    {
+      "name": "wec-enforcement-gate",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": false
     },
     {
       "name": "workflow-analytics-unified",
@@ -2511,5 +2521,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "29e407f5f0b2395cf1348c9cfd8cc79352d639a78d32a0b303f204f25ea448e2"
+  "integrity_sha256": "11fc15207eb2a4e205745aa68e10b0e588e86f6082069ac2a62e96062d193d56"
 }

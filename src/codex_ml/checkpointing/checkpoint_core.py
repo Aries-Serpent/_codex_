@@ -78,7 +78,7 @@ def save_checkpoint(
         # Use custom encoder if available for ML types
         if CustomJSONEncoder is not None:
             kwargs["cls"] = CustomJSONEncoder
-        
+
         try:
             json.dump(
                 {

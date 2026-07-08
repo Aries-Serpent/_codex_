@@ -13,7 +13,6 @@ This module contains 10+ mutation-killer tests targeting:
 """
 
 import pytest
-from decimal import Decimal
 
 
 class TestDataBoundaryConditions:
@@ -74,7 +73,6 @@ class TestDataBoundaryConditions:
         assert 0 == 0
         
         # Negative minimum
-        import sys
         small_int = -(2**63)
         assert small_int < 0
         assert small_int - 1 < small_int

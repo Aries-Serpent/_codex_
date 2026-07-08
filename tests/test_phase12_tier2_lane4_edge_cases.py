@@ -24,11 +24,7 @@ import threading
 import time
 import tempfile
 import os
-import sys
-from unittest.mock import Mock, MagicMock, patch, call
-from pathlib import Path
 from datetime import datetime, timedelta, timezone
-from typing import List, Dict, Optional, Any
 import json
 import logging
 
@@ -321,7 +317,7 @@ class TestTimeEdgeCases:
     def test_daylight_saving_time_transition(self):
         """Test handling of DST transitions."""
         # Note: This is a boundary condition test
-        from datetime import timezone, timedelta
+        from datetime import timezone
         
         # Create times at DST boundary
         utc = timezone.utc

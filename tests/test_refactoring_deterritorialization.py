@@ -10,9 +10,6 @@ Tests cover:
 """
 
 import pytest
-import ast
-from pathlib import Path
-from unittest.mock import Mock, patch
 
 from src.codex.refactoring.deterritorialization_engine import (
     RigidityType,  # pragma: allowlist secret

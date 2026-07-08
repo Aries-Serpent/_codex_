@@ -9,7 +9,6 @@ Tests cover:
 """
 
 import pytest
-from unittest.mock import Mock, patch
 
 from src.codex.qa.rubric import (
     QARubric,

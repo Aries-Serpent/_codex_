@@ -111,7 +111,7 @@ def _install_optional_dependency_stubs():
 
     xml_stub = _module_spec_stub("defusedxml")
     xml_tree_stub = _module_spec_stub("defusedxml.ElementTree")
-    xml_minidom_stub = _module_spec_stub("defusedxml.minidom")
+    xml_minidom_stub = _module_spec_stub("defusedxml.minidom")  # nosemgrep: python.lang.security.use-defused-xml.use-defused-xml -- defusedxml stubs are for XXE protection
     # XXE PROTECTION: Use defusedxml stubs to prevent XXE attacks during smoke tests.
     # defusedxml provides safe XML parsing that prevents:
     # - External entity (XXE) attacks

@@ -92,7 +92,6 @@ permissions:
   issues: write
   security-events: read  # Required for probing code-scanning API
 
-
 jobs:
   probe-and-notify:
     name: Probe ${{ inputs.gap_id }} — ${{ inputs.issue_title }}

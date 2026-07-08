@@ -21,7 +21,6 @@ from __future__ import annotations
 import json
 import logging
 import os
-import pickle
 from typing import Any, Optional
 
 from .base import CacheBackend
@@ -100,21 +99,41 @@ class RedisCache(CacheBackend):
             self._connected = False
 
     def _serialize(self, value: Any) -> bytes:
-        """Serialize value to bytes."""
+        """Serialize value to bytes (JSON only for security).
+
+        Uses JSON serialization exclusively to prevent CWE-502 (insecure deserialization).
+        All values must be JSON-serializable. For non-JSON types, application code should
+        convert them (e.g., custom JSONEncoder, date.isoformat(), custom __dict__, etc).
+
+        Raises:
+            TypeError: If value is not JSON-serializable.
+                       Use JSONEncoder subclass or convert to serializable type.
+        """
         try:
             return json.dumps(value).encode("utf-8")
-        except (TypeError, ValueError):
-            # Fallback to pickle for non-JSON-serializable objects
-            return pickle.dumps(value)
+        except (TypeError, ValueError) as e:
+            raise TypeError(
+                f"Value is not JSON-serializable. Please convert to a JSON-compatible type. "
+                f"Original error: {e}"
+            ) from e
 
     def _deserialize(self, data: bytes) -> Any:
-        """Deserialize bytes to value."""
+        """Deserialize bytes to value (CWE-502 remediation: JSON only, no unsafe pickle).
+
+        For backward compatibility with pickle-cached objects:
+        Use migration scripts in scripts/cache/migrate_pickle_to_json.py
+        """
         try:
             return json.loads(data.decode("utf-8"))
         except (json.JSONDecodeError, UnicodeDecodeError):
-            # Fallback to pickle for backward compatibility with cached objects
-            # nosemgrep: semgrep.unsafe-pickle-loads - Deserializing data previously serialized by this app (trusted boundary)  # noqa: E501
-            return pickle.loads(data)  # noqa: E501
+            # Pickle is unsafe (CWE-502). Old cached data should be migrated using:
+            # python scripts/cache/migrate_pickle_to_json.py
+            # For now, log warning and return None to force cache miss
+            logger.warning(
+                "Encountered non-JSON cached data. This is likely pickle-serialized data from an older version. "
+                "Please run: python scripts/cache/migrate_pickle_to_json.py to migrate to secure JSON format."
+            )
+            return None
 
     def get(self, key: str) -> Optional[Any]:
         """Get value from cache."""

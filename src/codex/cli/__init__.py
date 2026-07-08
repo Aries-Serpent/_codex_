@@ -63,7 +63,7 @@ cli = _load_click_cli()
 
 def _initialize_cli_groups() -> dict[str, Any]:
     """Initialize CLI groups and helpers from loaded Click module.
-    
+
     Returns a dictionary with all CLI group exports properly typed.
     This pattern avoids uninitialized variable anti-pattern while
     maintaining backward compatibility for test imports.
