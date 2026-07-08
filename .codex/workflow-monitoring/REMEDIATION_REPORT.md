@@ -15,7 +15,7 @@
 | **Auto-Fixable** | 0 (Requires manual secret regeneration) |
 | **Root Cause** | CODEX_MASTER_KEY missing 'security_events' OAuth scope |
 | **Affected Workflows** | codeql-alert-fetcher.yml |
-| **Current Status** | Graceful degradation (exit 0, no artifact generated) |
+| **Current Status** | Graceful degradation (exit 0, no artifact generated) |  # pragma: allowlist secret
 | **Escalation Required** | YES → to @mbaetiong |
 | **Timeline** | 15-30 minutes (manual token regeneration) |
 
