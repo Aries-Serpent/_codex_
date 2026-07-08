@@ -1,0 +1,11 @@
+
+RVS Pre-flight — 2026-07-08 04:26 UTC
+  Workers: 6  Batch-size: 30  Changed-only: False  Preview: False
+
+▶ Discovering tests for group: quick …
+
+╔══════════════════════════════════════════════════════════════════════╗
+║  QUICK group — 1832 file(s), 62 batch(es), 6 worker(s)               ║
+╚══════════════════════════════════════════════════════════════════════╝
+  Marker  : not slow and not integration
+  Timeout : 60s/test   maxfail: 20
