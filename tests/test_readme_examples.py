@@ -3,11 +3,12 @@ Test Readme Examples
 
 Test module for readme examples.
 """
+
 import pathlib
 import re
 import sqlite3
 
-
+import pytest
 
 
 def test_readme_session_logger_example(tmp_path, monkeypatch):

@@ -647,7 +647,6 @@ class TestFeatureMetadata:
 
     def test_feature_metadata_to_dict(self):
         """Test converting metadata to dictionary."""
-import pytest
         metadata = FeatureMetadata(
             name="test_feature",
             version="1.0.0",

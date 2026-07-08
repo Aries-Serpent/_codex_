@@ -3,12 +3,13 @@ Test Datasets Determinism
 
 Test module for datasets determinism.
 """
-datasets = pytest.importorskip("src.data.datasets", reason="torch required")
-torch = pytest.importorskip("torch", reason="torch required")
 
+import pytest
 
 pytestmark = pytest.mark.requires_torch
 
+datasets = pytest.importorskip("src.data.datasets", reason="torch required")
+torch = pytest.importorskip("torch", reason="torch required")
 
 
 def test_deterministic_split_same_seed_repeats():

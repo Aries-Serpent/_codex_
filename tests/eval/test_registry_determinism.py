@@ -3,9 +3,8 @@ Test Registry Determinism
 
 Test module for registry determinism.
 """
-import pytest
-from codex_ml.metrics.registry import get_metric
 
+from codex_ml.metrics.registry import get_metric
 
 
 def test_metric_registry_determinism():

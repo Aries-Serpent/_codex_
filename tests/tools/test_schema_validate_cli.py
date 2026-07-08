@@ -3,11 +3,12 @@ Test Schema Validate Cli
 
 Test module for schema validate cli.
 """
+
 import subprocess
 import sys
 from pathlib import Path
 
-
+import pytest
 
 SCHEMA = Path("docs/templates/status/codex_status_template.schema_v1.2.json")
 DATA = Path("docs/templates/status/example_report_v1.2.json")

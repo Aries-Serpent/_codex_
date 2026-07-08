@@ -77,9 +77,8 @@ class TestModuleImports:
 
     def test_dataclass_decorator(self):
         """Test that GitHubSecretsManager is a dataclass."""
-import pytest
-            from src.agent.secrets import GitHubSecretsManager
         try:
+            from src.agent.secrets import GitHubSecretsManager
 
             # Dataclasses have a __dataclass_fields__ attribute
             assert hasattr(GitHubSecretsManager, "__dataclass_fields__")

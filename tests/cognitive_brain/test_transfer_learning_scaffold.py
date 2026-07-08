@@ -3,12 +3,13 @@
 Validates the knowledge_transfer.py script's session knowledge base structure
 and pattern library conformance for cross-session transfer readiness.
 """
+
 from __future__ import annotations
+
 import importlib
 from pathlib import Path
 
-
-
+import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SCRIPTS_COGNITIVE = REPO_ROOT / "scripts" / "cognitive"

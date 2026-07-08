@@ -3,17 +3,18 @@ Test App Token Cli
 
 Test module for app token cli.
 """
+
 from __future__ import annotations
-pytest.importorskip("jwt")
+
 import os
 import shutil
 import subprocess
 import sys
 from pathlib import Path
 
+import pytest
 
-
-
+pytest.importorskip("jwt")
 
 
 def _generate_pem(tmp_path: Path) -> Path:

@@ -7,18 +7,13 @@ CI environment and validate the complete workflow execution.
 Specifically tests the fix for GitHub Actions job #61098313515 where
 a missing `import json` statement caused CI failure.
 """
+
 import os
 import subprocess
 import sys
 from pathlib import Path
-import sys
-import validate_cargo_features as vcf
-import sys
-from validate_cargo_features import validate_cargo_features
-from pathlib import Path
-from codex.logging.structured_logger import logger
 
-
+import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SCRIPT_PATH = REPO_ROOT / "scripts" / "ci" / "validate_cargo_features.py"
@@ -99,7 +94,9 @@ class TestCIWorkflowIntegration:
         feature lists.
         """
         test_code = f"""
+import sys
 sys.path.insert(0, '{SCRIPT_PATH.parent}')
+import validate_cargo_features as vcf
 
 # Verify json is imported
 assert hasattr(vcf, 'json'), "json module not imported"
@@ -132,7 +129,11 @@ pyo3 = "0.18"
 """)
 
         test_code = f"""
+import sys
 sys.path.insert(0, '{SCRIPT_PATH.parent}')
+from validate_cargo_features import validate_cargo_features
+from pathlib import Path
+from codex.logging.structured_logger import logger
 
 is_valid, errors = validate_cargo_features(Path('{invalid_cargo}'))
 logger.info(f"is_valid: {{is_valid}}")

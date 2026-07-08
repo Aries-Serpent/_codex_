@@ -3,15 +3,16 @@ Test Load Latest
 
 Test module for load latest.
 """
+
 from __future__ import annotations
-torch = pytest.importorskip("torch", reason="PyTorch not installed; skipping load_latest tests")
+
 from pathlib import Path
+
+import pytest
+
 from codex_ml.utils.checkpointing import CheckpointManager
 
-
-
-
-
+torch = pytest.importorskip("torch", reason="PyTorch not installed; skipping load_latest tests")
 
 
 class Tiny(torch.nn.Module):

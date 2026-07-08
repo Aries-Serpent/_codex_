@@ -3,18 +3,18 @@ Test Cli Schemas
 
 Test module for cli schemas.
 """
+
 from __future__ import annotations
+
 import json
 import subprocess
 import sys
 from pathlib import Path
-    import jsonschema  # type: ignore
-    import tools.github.gh_api as gh
 
-
-
+import pytest
 
 try:
+    import jsonschema  # type: ignore
 except ImportError:  # pragma: no cover - optional dependency not installed
     jsonschema = None  # type: ignore[assignment]
     pytestmark = pytest.mark.skip(reason="jsonschema not installed")
@@ -41,6 +41,7 @@ def test_list_plugins_matches_schema():
 
 def test_gh_api_envelope_schema(monkeypatch, capsys):
     schema = _load_schema("gh_api_envelope.schema.json")
+    import tools.github.gh_api as gh
 
     monkeypatch.setenv("GH_TOKEN", "dummy-token")
 

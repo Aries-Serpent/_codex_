@@ -11,15 +11,16 @@ Covered scenarios:
 - Missing checkpoint file raises an appropriate error
 - Multiple sequential checkpoints can be enumerated and re-read
 """
+
 from __future__ import annotations
+
 import hashlib
 import json
 import pickle
 import sys
 from pathlib import Path
 
-
-
+import pytest
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 for _p in (str(_REPO_ROOT / "src"), str(_REPO_ROOT)):

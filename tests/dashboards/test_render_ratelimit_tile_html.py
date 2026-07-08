@@ -3,12 +3,11 @@ Test Render Ratelimit Tile Html
 
 Test module for render ratelimit tile html.
 """
-import pytest
+
 import json
 import subprocess
 import sys
 from pathlib import Path
-
 
 
 def test_render_tile_html(tmp_path):

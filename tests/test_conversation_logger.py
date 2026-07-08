@@ -3,11 +3,10 @@ Test Conversation Logger
 
 Test module for conversation logger.
 """
-import pytest
+
 import sqlite3
+
 from codex.logging.conversation_logger import (
-
-
     end_session,
     log_message,
     start_session,

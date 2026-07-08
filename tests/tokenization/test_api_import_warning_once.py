@@ -3,11 +3,10 @@ Test Api Import Warning Once
 
 Test module for api import warning once.
 """
-import pytest
+
 import warnings
+
 import codex_ml.tokenization as tk
-
-
 
 
 def test_warning_emitted_once():

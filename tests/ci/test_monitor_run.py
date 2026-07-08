@@ -5,20 +5,21 @@ Covers PollSnapshot serialisation, state-file round-trip, run-ID resolution,
 cherry_pick_delta path filtering, exit-code mapping, session timing (h/m/s/ns),
 and the background-thread API.  No live GitHub API or network calls are made.
 """
+
 from __future__ import annotations
+
 import sys
 import time
 from pathlib import Path
-    import monitor_run as mr
-    from monitor_run import (
 
-
-
+import pytest
 
 SCRIPT_DIR = Path(__file__).resolve().parent.parent.parent / "scripts" / "ci"
 sys.path.insert(0, str(SCRIPT_DIR))
 
 try:
+    import monitor_run as mr
+    from monitor_run import (
         MonitorThread,
         PollSnapshot,
         _compute_elapsed,

@@ -3,16 +3,15 @@ Test Codex Audit Orchestrator
 
 Test module for codex audit orchestrator.
 """
+
 from __future__ import annotations
-import pytest
+
 import json
 import subprocess
 import sys
 from pathlib import Path
+
 from tools import codex_audit_orchestrator as orchestrator
-
-
-
 
 
 def _patch_output_roots(tmp_path: Path) -> None:

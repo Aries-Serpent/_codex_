@@ -3,12 +3,11 @@ Test Link Id Crossref
 
 Test module for link id crossref.
 """
-import pytest
+
 import json
 import subprocess
 import sys
 from pathlib import Path
-
 
 
 def test_crossref_ok(tmp_path):

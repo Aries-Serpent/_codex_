@@ -5,14 +5,13 @@ Validates:
 - Tests component elevated by coverage_percent
 - Safeguards component influenced by severity factor (additive mode)
 """
-import pytest
+
 import json
 import os
 import shutil
 import subprocess
 import sys
 from pathlib import Path
-
 
 ART = Path("audit_artifacts")
 

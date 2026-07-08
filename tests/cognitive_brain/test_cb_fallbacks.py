@@ -492,10 +492,9 @@
 
 class TestCognitiveBrainMemoryIntegration:
     """Integration test: full PDA cycle persists to LTM."""
-import pytest
-        from scripts.cognitive.cognitive_brain_core import CognitiveBrain
 
     def test_pda_cycle_persists_to_ltm(self, tmp_path):
+        from scripts.cognitive.cognitive_brain_core import CognitiveBrain
 
         brain = CognitiveBrain(workspace_dir=str(tmp_path / "cognitive"))
         result = brain.run_pda_cycle()

@@ -7,17 +7,14 @@ Tests cover:
 - Error reporting
 - Performance with sampling
 """
+
 from __future__ import annotations
-    from codex_ml.data import validation
-        import pandas as pd
-                import pandas as pd
-                import pandas as pd
-                import pandas as pd
 
-
+import pytest
 
 # Import module under test
 try:
+    from codex_ml.data import validation
 except ImportError:
     pytest.skip("validation module not available", allow_module_level=True)
 
@@ -26,6 +23,7 @@ except ImportError:
 def sample_dataframe():
     """Create sample DataFrame for testing."""
     try:
+        import pandas as pd
 
         return pd.DataFrame(
             {
@@ -150,6 +148,7 @@ class TestNullCheckRule:
         """Test validation fails with nulls."""
         if hasattr(validation, "NullCheckRule"):
             try:
+                import pandas as pd
 
                 df = pd.DataFrame(
                     {
@@ -185,6 +184,7 @@ class TestDataTypeRule:
         """Test validation fails with incorrect types."""
         if hasattr(validation, "DataTypeRule"):
             try:
+                import pandas as pd
 
                 df = pd.DataFrame(
                     {
@@ -244,6 +244,7 @@ class TestUniqueCheckRule:
         """Test validation fails with duplicate values."""
         if hasattr(validation, "UniqueCheckRule"):
             try:
+                import pandas as pd
 
                 df = pd.DataFrame(
                     {

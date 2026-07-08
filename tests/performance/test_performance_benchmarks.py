@@ -10,20 +10,20 @@ Baseline performance metrics for all completed plansets:
 
 Part of Post-Completion Phase 2.1: Baseline Performance Metrics
 """
+
 from __future__ import annotations
+
 import statistics
 import time
 from datetime import UTC, datetime
+
+import pytest
+
 from codex.logging.structured_logger import logger
-    from src.bridge_manager import BridgeMode, ContextMessage, SecureBridge
-        import re
-
-
-
-
 
 # Test availability
 try:
+    from src.bridge_manager import BridgeMode, ContextMessage, SecureBridge
 
     BRIDGE_AVAILABLE = True
 except ImportError:
@@ -103,6 +103,7 @@ class TestPIIScrubbing:
         """Measure PII scrubbing performance"""
 
         # Mock PII scrubber
+        import re
 
         EMAIL_PATTERN = r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b"
         IPV4_PATTERN = r"\b(?:\d{1,3}\.){3}\d{1,3}\b"

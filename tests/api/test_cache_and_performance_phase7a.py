@@ -5,6 +5,7 @@ This module contains 35+ tests covering:
 Cache behavior and performance optimization tests
 """
 
+import pytest
 
 
 class TestImplementation:

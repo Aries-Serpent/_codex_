@@ -1,14 +1,15 @@
 """
+pytest.importorskip("charset_normalizer")
 Test Ingestion Read Text
 
 Test module for ingestion read text.
 """
-pytest.importorskip("charset_normalizer")
+
 import importlib.util
+
+import pytest
+
 from ingestion.utils import read_text
-
-
-
 
 
 @pytest.mark.skipif(

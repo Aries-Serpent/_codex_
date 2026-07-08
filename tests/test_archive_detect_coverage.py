@@ -4,16 +4,17 @@ Comprehensive tests for codex.archive.detect module.
 Tests cover file detection, MIME type detection, language detection,
 and source lines of code (SLoC) counting.
 """
+
 from __future__ import annotations
+
 import tempfile
 import time
 from pathlib import Path
 from unittest.mock import patch
+
+import pytest
+
 from codex.archive.detect import (
-
-
-
-
     FileMeta,
     _sloc_of_bytes,
     detect_mime_lang,

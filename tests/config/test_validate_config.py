@@ -3,14 +3,15 @@ Test Validate Config
 
 Test module for validate config.
 """
+
 from __future__ import annotations
+
+import pytest
+
 pytest.importorskip("pydantic")
 from pydantic import ValidationError
+
 from codex_ml.config_schema import (
-
-
-
-
     LoraConfig,
     TrainConfig,
     validate_config,

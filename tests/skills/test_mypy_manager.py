@@ -1,7 +1,3 @@
-import pytest
-        import codex.skills.mypy_manager.handler as h
-        import json
-        import codex.skills.mypy_manager.handler as h
 #         assert ", "Condition must be true"
 # Pattern coverage
 # ----------------
@@ -506,6 +502,7 @@ class TestPDALog:
         pda_file = pda_dir / "pda_iterations.jsonl"
 
         # Monkey-patch the pda_path used by _pda_log
+        import codex.skills.mypy_manager.handler as h
 
         original = h._repo_root
 
@@ -528,12 +525,14 @@ class TestPDALog:
         assert pda_file.exists(), "Condition must be true"
         lines = pda_file.read_text().splitlines()
         assert len(lines) >= 1, "Lines must not be empty"
+        import json
 
         entry = json.loads(lines[0])
         assert entry["session"] == "TEST-S000", "Condition must be true"
         assert "MYPY-REDUNDANT-CAST" in entry["pattern_id"], "Condition must be true"
 
     def test_pda_log_false_skips_write(self, tmp_path):
+        import codex.skills.mypy_manager.handler as h
 
         original = h._repo_root
 

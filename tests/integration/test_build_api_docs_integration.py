@@ -163,7 +163,6 @@ class TestBuildAPIDocsIntegration:
 
     def test_fail_on_missing_with_skip_optional_succeeds(self, tmp_path):
         """Test --fail-on-missing combined with --skip-optional succeeds."""
-import pytest
         script = REPO_ROOT / "tools" / "build_api_docs.py"
 
         # Use --skip-optional to not request codex_ml at all

@@ -9,12 +9,13 @@ Tests the benchmark_retrieval function covering:
 - Latency measurement
 - Error handling
 """
-    from codex.rag.benchmarks.retrieval_bench import benchmark_retrieval
 
 
+import pytest
 
 # Import benchmark module
 try:
+    from codex.rag.benchmarks.retrieval_bench import benchmark_retrieval
 
     RETRIEVAL_BENCH_AVAILABLE = True
 except ImportError:

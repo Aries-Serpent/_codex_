@@ -9,11 +9,12 @@ This test suite covers:
 
 Process 4 validation from the implementation plan.
 """
+
 from __future__ import annotations
+
 from urllib.parse import urlparse
 
-
-
+import pytest
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Fixtures

@@ -155,7 +155,6 @@ def test_validate_detector_output_missing_fields():
 
 def test_validate_detector_output_wrong_type():
     """Test detector validation with wrong field types."""
-import pytest
     from scripts.space_traversal.audit_runner import validate_detector_output
 
     det = {

@@ -3,13 +3,12 @@ Test Sampler Multi Gpu
 
 Test module for sampler multi gpu.
 """
+
 from __future__ import annotations
-import pytest
+
 import types
+
 from codex_ml.monitoring import codex_logging
-
-
-
 
 
 class _DummyNVML:

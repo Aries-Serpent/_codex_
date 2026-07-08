@@ -3,12 +3,11 @@ Test List Plugins Cli Flags
 
 Test module for list plugins cli flags.
 """
+
 from __future__ import annotations
-import pytest
+
 import subprocess
 import sys
-
-
 
 
 def test_names_only_emits_marker_when_empty() -> None:

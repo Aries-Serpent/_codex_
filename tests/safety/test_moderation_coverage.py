@@ -8,15 +8,16 @@ Test Coverage Target: 20+ tests for ~80% coverage of moderation module.
 
 Created: 2026-01-18 (Phase 14.2)
 """
+
 from __future__ import annotations
+
 from unittest.mock import patch
-    from codex_ml.safety.moderation import (
 
-
-
+import pytest
 
 # Import module under test
 try:
+    from codex_ml.safety.moderation import (
         ModerationAdapter,
         ModerationDecision,
         ModerationRejection,

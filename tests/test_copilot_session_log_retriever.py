@@ -123,7 +123,6 @@ def populate_test_db(db_path: Path, data: list):
 
 class TestCopilotSessionRetriever:
     """Test suite for CopilotSessionRetriever."""
-import pytest
 
     def test_initialization(self, temp_db, temp_repo):
         """Test retriever initialization."""

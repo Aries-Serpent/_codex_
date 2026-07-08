@@ -106,12 +106,11 @@ def test_exact_detector_language_detection():
 
 def test_exact_detector_handles_empty_directory():
     """Test that empty directory is handled gracefully."""
-import pytest
-        from tools.dupinv.exact_detector import ExactDetector
     with tempfile.TemporaryDirectory() as tmpdir:
         root = Path(tmpdir)
 
         # Run detector on empty directory
+        from tools.dupinv.exact_detector import ExactDetector
 
         detector = ExactDetector(root)
         groups = detector.scan()

@@ -3,11 +3,10 @@ Test Token Accuracy
 
 Test module for token accuracy.
 """
+
 from __future__ import annotations
-import pytest
+
 from codex_ml.metrics.metric_implementations import TokenAccuracy
-
-
 
 
 def test_token_accuracy_matches_numpy() -> None:

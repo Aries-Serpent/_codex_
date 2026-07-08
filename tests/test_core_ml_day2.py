@@ -2,34 +2,11 @@
 Core Module Tests — codex_ml.core
 Configuration management, registry, and pipeline execution patterns
 """
+
 import tempfile
 from pathlib import Path
-            from codex_ml.config_schema import load_config
-            from codex_ml.config_schema import load_config
-            from codex_ml.config_schema import ConfigSchema
-            from codex_ml.config_schema import get_default_config
-        import os
-            from codex_ml.config_schema import load_config_with_env
-            from codex_ml.registry import Registry
-            from codex_ml.registry import Registry
-            from codex_ml.registry import Registry
-            from codex_ml.registry import Registry
-            from codex_ml.pipeline import Pipeline
-            from codex_ml.pipeline import Pipeline
-            from codex_ml.pipeline import Pipeline
-            from codex_ml.pipeline import Pipeline
-            from codex_ml.pipeline import Pipeline
-            from codex_ml.model_registry import list_models
-            from codex_ml.model_registry import get_model_info
-            from codex_ml.model_registry import get_model_download_url
-            from codex_ml.data_utils import create_data_loader
-            from codex_ml.data_utils import DataTransform
-            from codex_ml.data_utils import batch_process
-            from codex_ml.logging.structured import get_structured_logger
-            from codex_ml.metrics import MetricsCollector
-            from codex_ml.events import EventTracker
 
-
+import pytest
 
 
 class TestConfigurationManagement:
@@ -38,6 +15,7 @@ class TestConfigurationManagement:
     def test_config_from_dict(self):
         """Configuration should load from dictionary."""
         try:
+            from codex_ml.config_schema import load_config
         except (ImportError, AttributeError):
             pytest.skip("Config utilities not available")
 
@@ -56,6 +34,7 @@ class TestConfigurationManagement:
     def test_config_from_yaml(self):
         """Configuration should load from YAML file."""
         try:
+            from codex_ml.config_schema import load_config
         except (ImportError, AttributeError):
             pytest.skip("Config utilities not available")
 
@@ -78,6 +57,7 @@ batch_size: 32
     def test_config_type_validation(self):
         """Configuration should validate field types."""
         try:
+            from codex_ml.config_schema import ConfigSchema
         except (ImportError, AttributeError):
             pytest.skip("ConfigSchema not available")
 
@@ -95,6 +75,7 @@ batch_size: 32
     def test_config_default_override(self):
         """Configuration should support default value override."""
         try:
+            from codex_ml.config_schema import get_default_config
         except (ImportError, AttributeError):
             pytest.skip("Config utilities not available")
 
@@ -109,8 +90,10 @@ batch_size: 32
 
     def test_config_env_variable_injection(self):
         """Configuration should support environment variable overrides."""
+        import os
 
         try:
+            from codex_ml.config_schema import load_config_with_env
         except (ImportError, AttributeError):
             pytest.skip("Env config utilities not available")
 
@@ -131,6 +114,7 @@ class TestRegistrySystem:
     def test_registry_registration(self):
         """Registry should support plugin registration."""
         try:
+            from codex_ml.registry import Registry
         except (ImportError, AttributeError):
             pytest.skip("Registry not available")
 
@@ -148,6 +132,7 @@ class TestRegistrySystem:
     def test_registry_lookup(self):
         """Registry should support plugin lookup."""
         try:
+            from codex_ml.registry import Registry
         except (ImportError, AttributeError):
             pytest.skip("Registry not available")
 
@@ -164,6 +149,7 @@ class TestRegistrySystem:
     def test_registry_caching(self):
         """Registry should cache lookup results."""
         try:
+            from codex_ml.registry import Registry
         except (ImportError, AttributeError):
             pytest.skip("Registry not available")
 
@@ -191,6 +177,7 @@ class TestRegistrySystem:
     def test_registry_version_compatibility(self):
         """Registry should support version checking."""
         try:
+            from codex_ml.registry import Registry
         except (ImportError, AttributeError):
             pytest.skip("Registry not available")
 
@@ -207,6 +194,7 @@ class TestPipelineExecution:
     def test_pipeline_creation(self):
         """Pipeline should be creatable from configuration."""
         try:
+            from codex_ml.pipeline import Pipeline
         except (ImportError, AttributeError):
             pytest.skip("Pipeline not available")
 
@@ -227,6 +215,7 @@ class TestPipelineExecution:
     def test_pipeline_step_execution_order(self):
         """Pipeline should execute steps in order."""
         try:
+            from codex_ml.pipeline import Pipeline
         except (ImportError, AttributeError):
             pytest.skip("Pipeline not available")
 
@@ -250,6 +239,7 @@ class TestPipelineExecution:
     def test_pipeline_error_handling(self):
         """Pipeline should handle step errors gracefully."""
         try:
+            from codex_ml.pipeline import Pipeline
         except (ImportError, AttributeError):
             pytest.skip("Pipeline not available")
 
@@ -271,6 +261,7 @@ class TestPipelineExecution:
     def test_pipeline_resource_cleanup(self):
         """Pipeline should clean up resources on completion."""
         try:
+            from codex_ml.pipeline import Pipeline
         except (ImportError, AttributeError):
             pytest.skip("Pipeline not available")
 
@@ -289,6 +280,7 @@ class TestPipelineExecution:
     def test_pipeline_state_management(self):
         """Pipeline should maintain execution state."""
         try:
+            from codex_ml.pipeline import Pipeline
         except (ImportError, AttributeError):
             pytest.skip("Pipeline not available")
 
@@ -307,6 +299,7 @@ class TestModelRegistryHelpers:
     def test_model_registry_list(self):
         """Registry should list available models."""
         try:
+            from codex_ml.model_registry import list_models
         except (ImportError, AttributeError):
             pytest.skip("Model registry not available")
 
@@ -319,6 +312,7 @@ class TestModelRegistryHelpers:
     def test_model_registry_get_info(self):
         """Registry should provide model metadata."""
         try:
+            from codex_ml.model_registry import get_model_info
         except (ImportError, AttributeError):
             pytest.skip("Model registry not available")
 
@@ -331,6 +325,7 @@ class TestModelRegistryHelpers:
     def test_model_registry_download_url(self):
         """Registry should provide model URLs for download."""
         try:
+            from codex_ml.model_registry import get_model_download_url
         except (ImportError, AttributeError):
             pytest.skip("Model registry not available")
 
@@ -349,6 +344,7 @@ class TestDataPipeline:
     def test_data_loader_creation(self):
         """Data loader should be creatable."""
         try:
+            from codex_ml.data_utils import create_data_loader
         except (ImportError, AttributeError):
             pytest.skip("Data utilities not available")
 
@@ -365,6 +361,7 @@ class TestDataPipeline:
     def test_data_transformation_chain(self):
         """Data transformations should chain properly."""
         try:
+            from codex_ml.data_utils import DataTransform
         except (ImportError, AttributeError):
             pytest.skip("Data transformation not available")
 
@@ -378,6 +375,7 @@ class TestDataPipeline:
     def test_batch_processing(self):
         """Batch processing should work correctly."""
         try:
+            from codex_ml.data_utils import batch_process
         except (ImportError, AttributeError):
             pytest.skip("Batch processing not available")
 
@@ -397,6 +395,7 @@ class TestObservability:
     def test_structured_logging(self):
         """Should support structured logging."""
         try:
+            from codex_ml.logging.structured import get_structured_logger
         except (ImportError, AttributeError):
             pytest.skip("Structured logging not available")
 
@@ -412,6 +411,7 @@ class TestObservability:
     def test_metrics_collection(self):
         """Should support metrics collection."""
         try:
+            from codex_ml.metrics import MetricsCollector
         except (ImportError, AttributeError):
             pytest.skip("Metrics not available")
 
@@ -428,6 +428,7 @@ class TestObservability:
     def test_event_tracking(self):
         """Should track execution events."""
         try:
+            from codex_ml.events import EventTracker
         except (ImportError, AttributeError):
             pytest.skip("Event tracking not available")
 

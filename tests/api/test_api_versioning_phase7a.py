@@ -5,6 +5,7 @@ This module contains 20+ tests covering:
 API versioning and backward compatibility tests
 """
 
+import pytest
 
 
 class TestImplementation:

@@ -1,7 +1,8 @@
 """Tests for SQLite table name sanitization."""
+
+import pytest
+
 from codex.logging.db_utils import _sanitize_table
-
-
 
 
 def test_sanitize_table_accepts_valid() -> None:

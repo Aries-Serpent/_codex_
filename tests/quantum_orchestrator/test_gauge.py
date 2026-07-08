@@ -183,7 +183,6 @@ def test_symmetry_type_enum():
 
 def test_transformation_result_serialization():
     """Test TransformationResult to_dict."""
-import pytest
     result = TransformationResult(
         transformed_state=Mock(),
         is_invariant=True,

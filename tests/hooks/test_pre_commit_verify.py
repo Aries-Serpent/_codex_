@@ -4,18 +4,17 @@ Tests for pre_commit_verify.py
 This module tests the pre-commit verification hook that ensures
 all expected files from the action log are staged for commit.
 """
-import pytest
+
 import json
 import sys
 import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
-from pre_commit_verify import (
-
 
 # Add scripts/hooks to path for import
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "hooks"))
 
+from pre_commit_verify import (
     extract_expected_files,
     generate_report,
     load_gitignore_patterns,

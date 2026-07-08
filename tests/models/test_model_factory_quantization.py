@@ -61,7 +61,6 @@ def test_quantization_mapping_uses_bitsandbytes(monkeypatch: pytest.MonkeyPatch)
 
 def test_quantization_mapping_requires_bitsandbytes(monkeypatch: pytest.MonkeyPatch) -> None:
     """Informative error when advanced settings used without transformers extras."""
-import pytest
 
     recorded: dict[str, Any] = {}
     monkeypatch.setattr(factory, "BitsAndBytesConfig", None)

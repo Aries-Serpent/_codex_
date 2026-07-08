@@ -7,85 +7,14 @@ Tests:
 - Session logging
 - Log querying
 """
+
 from __future__ import annotations
+
 import os
 import tempfile
 from unittest.mock import patch
-            from codex.config.env_vars import EnvironmentManager
-            from codex.config.env_vars import EnvironmentManager
-        from codex.config.env_vars import EnvironmentManager
-            from codex.config.env_vars import EnvironmentManager
-        from codex.config.env_vars import EnvironmentManager
-        from codex.logging.error_handler import CodexErrorHandler
-        from codex.logging.error_handler import CodexErrorHandler
-        from codex.logging.error_handler import CodexErrorHandler
-        from codex.logging.session_logger import SessionLogger
-        from codex.logging.session_logger import SessionLogger
-        from click.testing import CliRunner
-        from codex.cli import validate_env_cmd
-        from click.testing import CliRunner
-        from codex.cli import session_logger_cmd
-        from click.testing import CliRunner
-        from codex.cli import query_logs_cmd
-        from codex.logging.db_manager import DBManager
-        from codex.logging.db_manager import DBManager
-        from codex.logging.db_manager import DBManager
-        from click.testing import CliRunner
-        from codex.cli import init_db_cmd
-        from codex.logging.db_manager import DBManager
-        from click.testing import CliRunner
-        from codex.cli import (
-        from click.testing import CliRunner
-        from codex.cli import export_env_cmd
-        from click.testing import CliRunner
-        from codex.cli import export_env_cmd
-        import json
-        from click.testing import CliRunner
-        from codex.cli import list_sessions_cmd
-            from codex.logging.db_manager import DBManager
-        from click.testing import CliRunner
-        from codex.cli import clean_logs_cmd
-        import logging
-        from codex.logging.error_handler import CodexErrorHandler
-        from unittest.mock import patch
-        from codex.config.env_vars import EnvironmentManager
-        from unittest.mock import patch
-        from codex.config.env_vars import EnvironmentManager
-        import time
-        from pathlib import Path
-        from codex.logging.error_handler import CodexErrorHandler
-        import shutil
-        from pathlib import Path
-        from codex.logging.db_manager import DBManager
-        from unittest.mock import patch
-        from codex.config.env_vars import EnvironmentManager
-        from codex.logging.db_manager import DBManager
-        from unittest.mock import patch
-        from click.testing import CliRunner
-        from codex.cli import export_env_cmd
-            import json
-        from click.testing import CliRunner
-        from codex.cli import clean_logs_cmd
-        import threading
-        import time
-        from codex.logging.db_manager import DBManager
-        import time
-        from click.testing import CliRunner
-        from codex.cli import init_db_cmd
-        from codex.logging.db_manager import DBManager
-        import time
-        from unittest.mock import patch
-        from codex.logging.db_manager import DBManager
-        from codex.logging.viewer import LogViewer
-        import time
-        from unittest.mock import patch
-        from codex.logging.db_manager import DBManager
-        from codex.logging.viewer import LogViewer
-            import sys
-            from io import StringIO
 
-
-
+import pytest
 
 
 class TestEnvironmentManager:
@@ -94,6 +23,7 @@ class TestEnvironmentManager:
     def test_get_default_values(self):
         """Test default value fallback."""
         with patch.dict(os.environ, {}, clear=True):
+            from codex.config.env_vars import EnvironmentManager
 
             env = EnvironmentManager()
             assert env.get("CODEX_ENV_PYTHON_VERSION") == "3.12", "Condition must be true"
@@ -103,6 +33,7 @@ class TestEnvironmentManager:
     def test_session_id_generation(self):
         """Test automatic session ID generation."""
         with patch.dict(os.environ, {}, clear=True):
+            from codex.config.env_vars import EnvironmentManager
 
             env = EnvironmentManager()
             session_id = env.get_session_id()
@@ -114,6 +45,7 @@ class TestEnvironmentManager:
     def test_validation_failure(self):
         """Test validation of invalid values."""
         # Import first, then patch and create new instance
+        from codex.config.env_vars import EnvironmentManager
 
         with patch.dict(os.environ, {"CODEX_SQLITE_POOL": "2"}, clear=False):
             with pytest.raises(EnvironmentError, match="Invalid value"):
@@ -122,6 +54,7 @@ class TestEnvironmentManager:
     def test_get_log_dir_creates_directory(self, tmp_path):
         """Test log directory creation."""
         with patch.dict(os.environ, {"CODEX_SESSION_LOG_DIR": str(tmp_path / "logs")}):
+            from codex.config.env_vars import EnvironmentManager
 
             env = EnvironmentManager()
             log_dir = env.get_log_dir()
@@ -130,6 +63,7 @@ class TestEnvironmentManager:
 
     def test_dump_config(self):
         """Test configuration dump."""
+        from codex.config.env_vars import EnvironmentManager
 
         env = EnvironmentManager()
         config = env.dump_config()
@@ -143,6 +77,7 @@ class TestErrorHandler:
 
     def test_log_error(self, tmp_path):
         """Test error logging."""
+        from codex.logging.error_handler import CodexErrorHandler
 
         handler = CodexErrorHandler(log_dir=tmp_path)
 
@@ -162,6 +97,7 @@ class TestErrorHandler:
 
     def test_decorator(self, tmp_path):
         """Test error logging decorator."""
+        from codex.logging.error_handler import CodexErrorHandler
 
         handler = CodexErrorHandler(log_dir=tmp_path)
 
@@ -182,6 +118,7 @@ class TestErrorHandler:
 
     def test_fatal_error_exits(self, tmp_path):
         """Test fatal error handling exits."""
+        from codex.logging.error_handler import CodexErrorHandler
 
         handler = CodexErrorHandler(log_dir=tmp_path)
 
@@ -197,6 +134,7 @@ class TestSessionLogger:
 
     def test_log_message(self, tmp_path):
         """Test logging a message."""
+        from codex.logging.session_logger import SessionLogger
 
         with patch.dict(os.environ, {"CODEX_LOG_DB_PATH": str(tmp_path / "test.db")}):
             logger = SessionLogger(session_id="test-session")
@@ -206,6 +144,7 @@ class TestSessionLogger:
 
     def test_context_manager(self, tmp_path):
         """Test SessionLogger as context manager."""
+        from codex.logging.session_logger import SessionLogger
 
         with patch.dict(os.environ, {"CODEX_LOG_DB_PATH": str(tmp_path / "test.db")}):
             with SessionLogger(session_id="test-session") as logger:
@@ -219,7 +158,9 @@ class TestCLI:
 
     def test_validate_env_command(self):
         """Test validate-env CLI command."""
+        from click.testing import CliRunner
 
+        from codex.cli import validate_env_cmd
 
         runner = CliRunner()
         result = runner.invoke(validate_env_cmd)
@@ -230,7 +171,9 @@ class TestCLI:
 
     def test_session_logger_command(self):
         """Test session-logger CLI command."""
+        from click.testing import CliRunner
 
+        from codex.cli import session_logger_cmd
 
         runner = CliRunner()
         with runner.isolated_filesystem():
@@ -245,7 +188,9 @@ class TestCLI:
 
     def test_query_logs_command_no_results(self):
         """Test query-logs CLI command with no results."""
+        from click.testing import CliRunner
 
+        from codex.cli import query_logs_cmd
 
         runner = CliRunner()
         with runner.isolated_filesystem():
@@ -260,6 +205,7 @@ class TestDBManager:
 
     def test_schema_initialization(self, tmp_path):
         """Test database schema initialization."""
+        from codex.logging.db_manager import DBManager
 
         db_path = tmp_path / "test.db"
         manager = DBManager(db_path=db_path)
@@ -279,6 +225,7 @@ class TestDBManager:
 
     def test_connection_pooling(self, tmp_path):
         """Test connection pooling when enabled."""
+        from codex.logging.db_manager import DBManager
 
         db_path = tmp_path / "test_pool.db"
         manager = DBManager(db_path=db_path)
@@ -305,6 +252,7 @@ class TestDBManager:
 
     def test_context_manager(self, tmp_path):
         """Test DBManager context manager."""
+        from codex.logging.db_manager import DBManager
 
         db_path = tmp_path / "test_ctx.db"
         manager = DBManager(db_path=db_path)
@@ -316,7 +264,9 @@ class TestDBManager:
 
     def test_init_db_cli_command(self):
         """Test init-db CLI command."""
+        from click.testing import CliRunner
 
+        from codex.cli import init_db_cmd
 
         runner = CliRunner()
         with runner.isolated_filesystem():
@@ -339,6 +289,7 @@ class TestDBManager:
             pooling_db_manager: Provides DBManager with pooling enabled
             pool_state_tracker: Tracks pool size changes
         """
+        from codex.logging.db_manager import DBManager
 
         # Get connection and return to pool
         conn1 = pooling_db_manager.get_connection()
@@ -362,7 +313,9 @@ class TestCLIEndToEnd:
 
     def test_cli_session_lifecycle(self, tmp_path):
         """Test complete CLI workflow: init → log → view → query."""
+        from click.testing import CliRunner
 
+        from codex.cli import (
             init_db_cmd,
             query_logs_cmd,
             session_logger_cmd,
@@ -416,7 +369,9 @@ class TestNewCLICommands:
 
     def test_export_env_text(self):
         """Test export-env command with text format."""
+        from click.testing import CliRunner
 
+        from codex.cli import export_env_cmd
 
         runner = CliRunner()
         result = runner.invoke(export_env_cmd, ["--format", "text"])
@@ -426,20 +381,25 @@ class TestNewCLICommands:
 
     def test_export_env_json(self):
         """Test export-env command with JSON format."""
+        from click.testing import CliRunner
 
+        from codex.cli import export_env_cmd
 
         runner = CliRunner()
         result = runner.invoke(export_env_cmd, ["--format", "json"])
 
         assert result.exit_code == 0, "Result must not be empty"
         # Should be valid JSON
+        import json
 
         data = json.loads(result.output)
         assert "CODEX_ENV_PYTHON_VERSION" in data, "Data must not be empty"
 
     def test_list_sessions(self, tmp_path):
         """Test list-sessions command."""
+        from click.testing import CliRunner
 
+        from codex.cli import list_sessions_cmd
 
         runner = CliRunner()
 
@@ -453,6 +413,7 @@ class TestNewCLICommands:
 
         try:
             # Initialize and add some data
+            from codex.logging.db_manager import DBManager
 
             manager = DBManager(db_path=tmp_path / "list_test.db")
             manager.init_schema()
@@ -472,7 +433,9 @@ class TestNewCLICommands:
 
     def test_clean_logs_dry_run(self):
         """Test clean-logs command in dry-run mode."""
+        from click.testing import CliRunner
 
+        from codex.cli import clean_logs_cmd
 
         runner = CliRunner()
         result = runner.invoke(clean_logs_cmd, ["--dry-run", "--older-than", "30"])
@@ -486,7 +449,9 @@ class TestMissingMethods:
 
     def test_set_log_level(self, tmp_path):
         """Test dynamic log level setting."""
+        import logging
 
+        from codex.logging.error_handler import CodexErrorHandler
 
         handler = CodexErrorHandler(log_dir=tmp_path)
 
@@ -510,7 +475,9 @@ class TestMissingMethods:
 
     def test_public_validate_method(self):
         """Test public validate() method."""
+        from unittest.mock import patch
 
+        from codex.config.env_vars import EnvironmentManager
 
         # Lazy validation mode
         with patch.dict(os.environ, {}, clear=True):
@@ -529,7 +496,9 @@ class TestMissingMethods:
 
     def test_validate_with_invalid_env(self):
         """Test validate() detects invalid environment."""
+        from unittest.mock import patch
 
+        from codex.config.env_vars import EnvironmentManager
 
         with patch.dict(os.environ, {"CODEX_SQLITE_POOL": "999"}, clear=True):
             env = EnvironmentManager(lazy_validation=True)
@@ -544,7 +513,10 @@ class TestEdgeCases:
 
     def test_error_handler_with_empty_log_dir(self):
         """Test ErrorHandler with non-existent log directory."""
+        import time
+        from pathlib import Path
 
+        from codex.logging.error_handler import CodexErrorHandler
 
         # Non-existent path should be created
         fake_path = Path(os.path.join(tempfile.gettempdir(), "codex_test_nonexistent_") + str(time.time()))
@@ -553,12 +525,15 @@ class TestEdgeCases:
         assert fake_path.exists(), "Condition must be true"
 
         # Cleanup
+        import shutil
 
         shutil.rmtree(fake_path)
 
     def test_db_manager_invalid_path(self):
         """Test DBManager with invalid/read-only path."""
+        from pathlib import Path
 
+        from codex.logging.db_manager import DBManager
 
         # Invalid path should raise error on init_schema
         db = DBManager(db_path=Path("/invalid/readonly/path.db"))
@@ -568,7 +543,9 @@ class TestEdgeCases:
 
     def test_environment_manager_missing_optional_vars(self):
         """Test EnvironmentManager with missing optional variables."""
+        from unittest.mock import patch
 
+        from codex.config.env_vars import EnvironmentManager
 
         with patch.dict(os.environ, {}, clear=True):
             env = EnvironmentManager()
@@ -579,6 +556,7 @@ class TestEdgeCases:
 
     def test_db_manager_empty_database(self, tmp_path):
         """Test querying empty database."""
+        from codex.logging.db_manager import DBManager
 
         db = DBManager(db_path=tmp_path / "empty.db")
         db.init_schema()
@@ -591,8 +569,11 @@ class TestEdgeCases:
 
     def test_export_env_with_empty_config(self):
         """Test export-env with minimal environment."""
+        from unittest.mock import patch
 
+        from click.testing import CliRunner
 
+        from codex.cli import export_env_cmd
 
         runner = CliRunner()
 
@@ -601,13 +582,16 @@ class TestEdgeCases:
             assert result.exit_code == 0, "Result must not be empty"
 
             # Should have at least defaults
+            import json
 
             config = json.loads(result.output)
             assert "CODEX_ENV_PYTHON_VERSION" in config, "Condition must be true"
 
     def test_clean_logs_with_no_old_logs(self):
         """Test clean-logs when no old logs exist."""
+        from click.testing import CliRunner
 
+        from codex.cli import clean_logs_cmd
 
         runner = CliRunner()
         result = runner.invoke(clean_logs_cmd, ["--older-than=30", "--dry-run"])
@@ -620,7 +604,10 @@ class TestConcurrentAccess:
 
     def test_db_manager_concurrent_access(self, tmp_path):
         """Test DBManager handles concurrent writes correctly (WAL mode)."""
+        import threading
+        import time
 
+        from codex.logging.db_manager import DBManager
 
         db_path = tmp_path / "concurrent_test.db"
         manager = DBManager(db_path=db_path)
@@ -680,8 +667,12 @@ class TestFullSessionLifecycle:
 
         Flow: init-db → log messages → query database → verify results
         """
+        import time
 
+        from click.testing import CliRunner
 
+        from codex.cli import init_db_cmd
+        from codex.logging.db_manager import DBManager
 
         runner = CliRunner()
         db_path = tmp_path / "lifecycle_test.db"
@@ -751,7 +742,11 @@ class TestViewerCLIWrapper:
         This is a regression test for the P1 bug where the wrapper called
         main(parse_args(args)) instead of main(args), causing TypeError.
         """
+        import time
+        from unittest.mock import patch
 
+        from codex.logging.db_manager import DBManager
+        from codex.logging.viewer import LogViewer
 
         # Set up test database
         db_path = tmp_path / "viewer_test.db"
@@ -792,7 +787,11 @@ class TestViewerCLIWrapper:
 
     def test_viewer_wrapper_with_actual_main(self, tmp_path):
         """Test that viewer wrapper works end-to-end with actual main()."""
+        import time
+        from unittest.mock import patch
 
+        from codex.logging.db_manager import DBManager
+        from codex.logging.viewer import LogViewer
 
         # Set up test database
         db_path = tmp_path / "viewer_e2e.db"
@@ -811,6 +810,8 @@ class TestViewerCLIWrapper:
         # Set DB path in environment so viewer can find it
         with patch.dict(os.environ, {"CODEX_LOG_DB_PATH": str(db_path)}):
             # Capture stdout to verify output
+            import sys
+            from io import StringIO
 
             old_stdout = sys.stdout
             sys.stdout = captured_output = StringIO()

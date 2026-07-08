@@ -7,16 +7,17 @@ Tests cover:
 - Manifest generation
 - Error handling
 """
+
 from __future__ import annotations
+
 import tempfile
 from pathlib import Path
-    from codex_ml.data import split
 
-
-
+import pytest
 
 # Import module under test
 try:
+    from codex_ml.data import split
 except ImportError:
     pytest.skip("split module not available", allow_module_level=True)
 

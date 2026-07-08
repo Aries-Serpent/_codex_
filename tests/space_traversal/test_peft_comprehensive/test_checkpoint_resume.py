@@ -3,18 +3,19 @@ Test Checkpoint Resume
 
 Test module for checkpoint resume.
 """
+
+import pytest
+
 pytest.importorskip("numpy", reason="numpy required")
-torch = pytest.importorskip("torch")
+
+
 from codex.training import TrainCfg, run_custom_trainer
 from codex_ml.models import MiniLM, MiniLMConfig
 from training.data_utils import TextDataset, split_texts
 
-
-
-
-
 pytestmark = pytest.mark.requires_torch
 
+torch = pytest.importorskip("torch")
 
 
 class _Tok:

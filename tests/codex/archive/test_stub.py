@@ -3,19 +3,8 @@ Tests for codex.archive.stub module.
 
 This module contains tests for stub generation functionality.
 """
-import pytest
-from unittest.mock import patch
-        from codex.archive.stub import make_stub_text
-        from codex.archive.stub import make_stub_text
-        from codex.archive.stub import make_stub_text
-        from codex.archive.stub import make_stub_text
-        from codex.archive.stub import make_stub_text
-        from codex.archive.stub import make_stub_text
-        from codex.archive.stub import make_stub_text
-        from codex.archive.stub import make_stub_text
-        from codex.archive.stub import make_stub_text
-        from codex.archive.stub import make_stub_text
 
+from unittest.mock import patch
 
 
 class TestMakeStubText:
@@ -24,6 +13,7 @@ class TestMakeStubText:
     @patch("codex.archive.stub.utcnow_iso")
     def test_basic_stub(self, mock_utcnow):
         """Test basic stub generation."""
+        from codex.archive.stub import make_stub_text
 
         mock_utcnow.return_value = "2024-01-01T00:00:00Z" # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
@@ -41,6 +31,7 @@ class TestMakeStubText:
     @patch("codex.archive.stub.utcnow_iso")
     def test_contains_header(self, mock_utcnow):
         """Test stub contains header."""
+        from codex.archive.stub import make_stub_text
 
         mock_utcnow.return_value = "2024-01-01T00:00:00Z"
 
@@ -58,6 +49,7 @@ class TestMakeStubText:
     @patch("codex.archive.stub.utcnow_iso")
     def test_contains_path(self, mock_utcnow):
         """Test stub contains file path."""
+        from codex.archive.stub import make_stub_text
 
         mock_utcnow.return_value = "2024-01-01T00:00:00Z"
 
@@ -75,6 +67,7 @@ class TestMakeStubText:
     @patch("codex.archive.stub.utcnow_iso")
     def test_contains_actor(self, mock_utcnow):
         """Test stub contains actor."""
+        from codex.archive.stub import make_stub_text
 
         mock_utcnow.return_value = "2024-01-01T00:00:00Z"
 
@@ -92,6 +85,7 @@ class TestMakeStubText:
     @patch("codex.archive.stub.utcnow_iso")
     def test_contains_reason(self, mock_utcnow):
         """Test stub contains reason."""
+        from codex.archive.stub import make_stub_text
 
         mock_utcnow.return_value = "2024-01-01T00:00:00Z"
 
@@ -109,6 +103,7 @@ class TestMakeStubText:
     @patch("codex.archive.stub.utcnow_iso")
     def test_contains_tombstone(self, mock_utcnow):
         """Test stub contains tombstone ID."""
+        from codex.archive.stub import make_stub_text
 
         mock_utcnow.return_value = "2024-01-01T00:00:00Z"
 
@@ -126,6 +121,7 @@ class TestMakeStubText:
     @patch("codex.archive.stub.utcnow_iso")
     def test_contains_restore_instructions(self, mock_utcnow):
         """Test stub contains restore instructions."""
+        from codex.archive.stub import make_stub_text
 
         mock_utcnow.return_value = "2024-01-01T00:00:00Z"
 
@@ -144,6 +140,7 @@ class TestMakeStubText:
     @patch("codex.archive.stub.utcnow_iso")
     def test_contains_sha256(self, mock_utcnow):
         """Test stub contains SHA256 hash."""
+        from codex.archive.stub import make_stub_text
 
         mock_utcnow.return_value = "2024-01-01T00:00:00Z"
 
@@ -161,6 +158,7 @@ class TestMakeStubText:
     @patch("codex.archive.stub.utcnow_iso")
     def test_contains_commit(self, mock_utcnow):
         """Test stub contains commit SHA."""
+        from codex.archive.stub import make_stub_text
 
         mock_utcnow.return_value = "2024-01-01T00:00:00Z"
 
@@ -178,6 +176,7 @@ class TestMakeStubText:
     @patch("codex.archive.stub.utcnow_iso")
     def test_uses_utcnow(self, mock_utcnow):
         """Test stub uses utcnow_iso for timestamp."""
+        from codex.archive.stub import make_stub_text
 
         mock_utcnow.return_value = "2025-06-15T12:30:45Z"
 

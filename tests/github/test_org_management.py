@@ -9,9 +9,8 @@ This test suite covers:
 
 Process 5 validation from the implementation plan.
 """
-from __future__ import annotations
-import pytest
 
+from __future__ import annotations
 
 
 class TestOrganizationTeams:

@@ -3,15 +3,14 @@ Test Registry Entries
 
 Test module for registry entries.
 """
+
 from __future__ import annotations
-    pytest.importorskip("numpy")
+
 from pathlib import Path
+
+import pytest
+
 from codex_ml.plugins import registries
-    from codex_ml.plugins import registries
-
-
-
-
 
 
 def test_offline_tokenizer_instantiates(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -74,6 +73,7 @@ def test_offline_metric_missing(monkeypatch: pytest.MonkeyPatch, tmp_path: Path)
 
 
 def test_offline_trainer_defaults(monkeypatch: pytest.MonkeyPatch) -> None:
+    pytest.importorskip("numpy")
     monkeypatch.delenv("CODEX_ML_FUNCTIONAL_TRAINER_CONFIG", raising=False)
     trainer = registries.trainers.resolve_and_instantiate("offline:functional")
     defaults = getattr(trainer, "__codex_defaults__", {})
@@ -82,9 +82,11 @@ def test_offline_trainer_defaults(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_offline_trainer_missing_config(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    pytest.importorskip("numpy")
     monkeypatch.setenv("CODEX_ML_FUNCTIONAL_TRAINER_CONFIG", str(tmp_path / "missing.json"))
 
     # Mock _repo_root to return a non-existent directory so fallback file won't be found
+    from codex_ml.plugins import registries
 
     monkeypatch.setattr(registries, "_repo_root", lambda: tmp_path / "nonexistent_repo")
 

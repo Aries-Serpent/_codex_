@@ -3,11 +3,10 @@ Test Cuda Determinism Guard
 
 Test module for cuda determinism guard.
 """
+
 from __future__ import annotations
-import pytest
+
 from codex_ml.training import unified_training
-
-
 
 
 class _DummyCuda:

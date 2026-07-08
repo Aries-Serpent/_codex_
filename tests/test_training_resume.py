@@ -1,14 +1,15 @@
 """
+pytest.importorskip("mlflow")
 Test Training Resume
 
 Test module for training resume.
 """
-pytest.importorskip("mlflow")
+
+import pytest
+
 from codex_ml.training import run_functional_training
 from codex_ml.utils.hf_pinning import HFModelUnavailableError
 from tests.helpers.optional_dependencies import import_optional_dependency
-
-
 
 import_optional_dependency("torch")
 import_optional_dependency("transformers")

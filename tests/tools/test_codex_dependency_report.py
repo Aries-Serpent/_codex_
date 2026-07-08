@@ -3,12 +3,11 @@ Test Codex Dependency Report
 
 Test module for codex dependency report.
 """
-import pytest
+
 import json
 from pathlib import Path
+
 import tools.codex_dependency_report as dep_report
-
-
 
 
 def test_dependency_report_writes_json(tmp_path: Path):

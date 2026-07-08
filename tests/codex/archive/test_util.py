@@ -3,21 +3,6 @@ Tests for codex.archive.util module.
 
 This module contains tests for utility helpers in the archival workflow.
 """
-import pytest
-        from codex.archive.util import utcnow
-        from codex.archive.util import utcnow
-        from codex.archive.util import utcnow, utcnow_iso
-        from codex.archive.util import sha256_hex
-        from codex.archive.util import sha256_hex
-        from codex.archive.util import sha256_bytes
-        from codex.archive.util import sha256_bytes, sha256_hex
-        from codex.archive.util import sha256_bytes, sha256_file
-        from codex.archive.util import sha256_file
-        from codex.archive.util import zstd_compress
-        from codex.archive.util import zlib_compress
-        from codex.archive.util import zlib_compress
-        from codex.archive.util import ISO_FORMAT
-        from codex.archive.util import logger
 
 
 class TestUtcnow:
@@ -25,6 +10,7 @@ class TestUtcnow:
 
     def test_returns_string(self):
         """Test utcnow returns a string."""
+        from codex.archive.util import utcnow
 
         result = utcnow()
 
@@ -32,6 +18,7 @@ class TestUtcnow:
 
     def test_iso_format(self):
         """Test utcnow returns ISO format."""
+        from codex.archive.util import utcnow
 
         result = utcnow()
 
@@ -44,6 +31,7 @@ class TestUtcnow:
 
     def test_utcnow_iso_alias(self):
         """Test utcnow_iso is an alias."""
+        from codex.archive.util import utcnow, utcnow_iso
 
         # Both should return valid timestamps
         result1 = utcnow()
@@ -58,6 +46,7 @@ class TestSha256:
 
     def test_sha256_hex(self):
         """Test sha256_hex function."""
+        from codex.archive.util import sha256_hex
 
         data = b"hello world"
         result = sha256_hex(data)
@@ -67,6 +56,7 @@ class TestSha256:
 
     def test_sha256_hex_deterministic(self):
         """Test sha256_hex is deterministic."""
+        from codex.archive.util import sha256_hex
 
         data = b"test data"
 
@@ -77,6 +67,7 @@ class TestSha256:
 
     def test_sha256_bytes(self):
         """Test sha256_bytes function."""
+        from codex.archive.util import sha256_bytes
 
         data = b"hello world"
         result = sha256_bytes(data)
@@ -86,6 +77,7 @@ class TestSha256:
 
     def test_sha256_hex_and_bytes_same(self):
         """Test sha256_hex and sha256_bytes return same result."""
+        from codex.archive.util import sha256_bytes, sha256_hex
 
         data = b"test"
 
@@ -93,6 +85,7 @@ class TestSha256:
 
     def test_sha256_file(self, tmp_path):
         """Test sha256_file function."""
+        from codex.archive.util import sha256_bytes, sha256_file
 
         # Create a test file
         test_file = tmp_path / "test.txt"
@@ -105,6 +98,7 @@ class TestSha256:
 
     def test_sha256_file_nonexistent(self, tmp_path):
         """Test sha256_file with nonexistent file."""
+        from codex.archive.util import sha256_file
 
         nonexistent = tmp_path / "nonexistent.txt"
 
@@ -118,6 +112,7 @@ class TestCompression:
 
     def test_zstd_compress(self):
         """Test zstd_compress function."""
+        from codex.archive.util import zstd_compress
 
         data = b"hello world" * 100  # Repeated for better compression
 
@@ -129,6 +124,7 @@ class TestCompression:
 
     def test_zlib_compress(self):
         """Test zlib_compress function."""
+        from codex.archive.util import zlib_compress
 
         data = b"hello world" * 100
 
@@ -139,6 +135,7 @@ class TestCompression:
 
     def test_zlib_compress_level(self):
         """Test zlib_compress with different levels."""
+        from codex.archive.util import zlib_compress
 
         data = b"test data" * 50
 
@@ -154,11 +151,13 @@ class TestModuleConstants:
 
     def test_iso_format(self):
         """Test ISO_FORMAT constant."""
+        from codex.archive.util import ISO_FORMAT
 
         assert ISO_FORMAT == "%Y-%m-%dT%H:%M:%SZ", "ISO_FORMAT is not valid"
 
     def test_logger_exists(self):
         """Test logger is configured."""
+        from codex.archive.util import logger
 
         assert logger is not None, "logger must be initialized"
         assert logger.name == "codex.archive.util", "name is not valid"

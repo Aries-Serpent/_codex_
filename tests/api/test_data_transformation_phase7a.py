@@ -5,6 +5,7 @@ This module contains 35+ tests covering:
 Data transformation and serialization tests
 """
 
+import pytest
 
 
 class TestImplementation:

@@ -9,24 +9,8 @@ Strategy: Physics Reference Table #56 - Invariants checklist approach
 
 Goal: Maximize coverage/time ratio to quickly reach 30%
 """
-            from agents.codex_client.codex_client import bridge
-            from agents.codex_client.codex_client import config
-            from agents.codex_client.codex_client import models
-            from agents.codex_client.codex_client import demo_plan_and_call
-        from agents.workflow_navigator import WorkflowNavigator
-        from agents.workflow_navigator import WorkflowNavigator
-        from agents.workflow_navigator import WorkflowNavigator
-        from agents.physics_integration import HybridPhysicsOrchestrator
-        from agents.physics_integration import HybridPhysicsOrchestrator
-            from agents.advanced_physics_calculators import EMFieldRouter
-            from agents.advanced_physics_calculators import WavePropagator
-            from agents.advanced_physics_calculators import RelativityScheduler
-        from agents.mental_mapping import ReasoningStep
-        from agents.mental_mapping import MentalMappingModel
-        from agents.quantum_game_theory import BlueRedTeamSimulator
-        from agents.self_healing import SelfHealingEngine
-        from agents.self_healing import SelfHealingEngine
 
+import pytest
 
 # ============================================================================
 # CODEX_CLIENT MODULES (0% coverage - 149 statements)
@@ -40,6 +24,7 @@ class TestCodexClientBridge:
     def test_import(self):
         """Test bridge module can be imported."""
         try:
+            from agents.codex_client.codex_client import bridge
 
             assert bridge is not None, "bridge must be initialized"
         except ImportError as e:
@@ -52,6 +37,7 @@ class TestCodexClientConfig:
     def test_import(self):
         """Test config module can be imported."""
         try:
+            from agents.codex_client.codex_client import config
 
             assert config is not None, "config must be initialized"
         except ImportError as e:
@@ -64,6 +50,7 @@ class TestCodexClientModels:
     def test_import(self):
         """Test models module can be imported."""
         try:
+            from agents.codex_client.codex_client import models
 
             assert models is not None, "models must be initialized"
         except ImportError as e:
@@ -76,6 +63,7 @@ class TestCodexClientDemo:
     def test_import(self):
         """Test demo module can be imported."""
         try:
+            from agents.codex_client.codex_client import demo_plan_and_call
 
             assert demo_plan_and_call is not None, "demo_plan_and_call must be initialized"
         except ImportError as e:
@@ -93,6 +81,7 @@ class TestWorkflowNavigatorInvariants:
 
     def test_workflow_count_positive(self):
         """Invariant: Navigator should have positive number of workflows."""
+        from agents.workflow_navigator import WorkflowNavigator
 
         nav = WorkflowNavigator()
         workflows = nav.list_workflows()
@@ -102,6 +91,7 @@ class TestWorkflowNavigatorInvariants:
 
     def test_workflow_ids_unique(self):
         """Invariant: Workflow IDs should be unique."""
+        from agents.workflow_navigator import WorkflowNavigator
 
         nav = WorkflowNavigator()
         workflows = nav.list_workflows()
@@ -112,6 +102,7 @@ class TestWorkflowNavigatorInvariants:
 
     def test_factory_method_produces_valid_workflow(self):
         """Test factory method creates valid workflows."""
+        from agents.workflow_navigator import WorkflowNavigator
 
         nav = WorkflowNavigator()
 
@@ -134,6 +125,7 @@ class TestPhysicsIntegrationInvariants:
 
     def test_capabilities_keys_valid(self):
         """Invariant: Capabilities should have expected keys."""
+        from agents.physics_integration import HybridPhysicsOrchestrator
 
         orch = HybridPhysicsOrchestrator()
         caps = orch.get_capabilities()
@@ -156,6 +148,7 @@ class TestPhysicsIntegrationInvariants:
 
     def test_decision_history_initialized(self):
         """Invariant: Decision history should be initialized as list."""
+        from agents.physics_integration import HybridPhysicsOrchestrator
 
         orch = HybridPhysicsOrchestrator()
 
@@ -176,6 +169,7 @@ class TestAdvancedPhysicsInvariants:
     def test_em_field_router_initialization(self):
         """Test EMFieldRouter can be initialized."""
         try:
+            from agents.advanced_physics_calculators import EMFieldRouter
 
             router = EMFieldRouter(grid_size=10)
 
@@ -187,6 +181,7 @@ class TestAdvancedPhysicsInvariants:
     def test_wave_propagator_initialization(self):
         """Test WavePropagator can be initialized."""
         try:
+            from agents.advanced_physics_calculators import WavePropagator
 
             propagator = WavePropagator(grid_size=10)
 
@@ -198,6 +193,7 @@ class TestAdvancedPhysicsInvariants:
     def test_relativity_scheduler_initialization(self):
         """Test RelativityScheduler can be initialized."""
         try:
+            from agents.advanced_physics_calculators import RelativityScheduler
 
             scheduler = RelativityScheduler()
 
@@ -218,6 +214,7 @@ class TestMentalMappingCorrected:
 
     def test_reasoning_step_creation(self):
         """Test ReasoningStep can be created."""
+        from agents.mental_mapping import ReasoningStep
 
         step = ReasoningStep(step_id="step1", description="Test step", inputs=[], outputs=[])
 
@@ -226,6 +223,7 @@ class TestMentalMappingCorrected:
 
     def test_model_export_to_dict(self):
         """Test MentalMappingModel can export to dict."""
+        from agents.mental_mapping import MentalMappingModel
 
         model = MentalMappingModel()
 
@@ -247,6 +245,7 @@ class TestQuantumGameTheoryCorrected:
 
     def test_blue_red_team_simulator_basic(self):
         """Test BlueRedTeamSimulator basic functionality."""
+        from agents.quantum_game_theory import BlueRedTeamSimulator
 
         try:
             simulator = BlueRedTeamSimulator(
@@ -270,6 +269,7 @@ class TestSelfHealingCorrected:
 
     def test_engine_detect_issues_method_exists(self):
         """Test SelfHealingEngine has detect method."""
+        from agents.self_healing import SelfHealingEngine
 
         engine = SelfHealingEngine()
 
@@ -282,6 +282,7 @@ class TestSelfHealingCorrected:
 
     def test_engine_initialization_state(self):
         """Test SelfHealingEngine initializes with empty state."""
+        from agents.self_healing import SelfHealingEngine
 
         engine = SelfHealingEngine()
 

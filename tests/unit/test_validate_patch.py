@@ -6,11 +6,12 @@ Tests cover:
  - Invalid patches (missing @@ markers, insufficient context)
  - Edge cases (empty patches, malformed syntax)
 """
+
 import subprocess
 import tempfile
 from pathlib import Path
 
-
+import pytest
 
 VALID_PATCH_CONTENT = """--- /dev/null
 +++ b/tmp_test_file.txt

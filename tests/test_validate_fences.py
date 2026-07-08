@@ -3,15 +3,16 @@ Test Validate Fences
 
 Test module for validate fences.
 """
+
 from __future__ import annotations
+
 import subprocess
 import sys
 from pathlib import Path
+
+import pytest
+
 from tools import validate_fences
-
-
-
-
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "tools" / "validate_fences.py"

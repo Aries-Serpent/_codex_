@@ -7,22 +7,22 @@ Tests quantum principles:
 - Phase encoding
 - Pattern correlation
 """
-np = pytest.importorskip("numpy")
+
 import json
 import math
+
+# Add scripts to path
 import sys
 import tempfile
 from pathlib import Path
-from extract_workflow_patterns import (
-        import os
 
+import pytest
 
-# Add scripts to path
-
-
+np = pytest.importorskip("numpy")
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "cognitive"))
 
+from extract_workflow_patterns import (
     CognitiveBrainFeeder,
     PatternWave,
     QuantumPatternClassifier,
@@ -453,6 +453,7 @@ class TestIntegration:
     @pytest.mark.skip(reason="Requires GITHUB_TOKEN")
     def test_real_workflow_extraction(self):
         """Test with real GitHub workflows (requires token)"""
+        import os
 
         token = os.environ.get("GITHUB_TOKEN")
         if not token:

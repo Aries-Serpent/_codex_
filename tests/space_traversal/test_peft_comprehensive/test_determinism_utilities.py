@@ -191,7 +191,6 @@ class TestDeterministicModeIntegration:
     @pytest.mark.skipif(not TORCH_AVAILABLE, reason="PyTorch not available")
     def test_toggle_deterministic_mode_multiple_times(self):
         """Test toggling deterministic mode multiple times."""
-import pytest
         # Enable
         result1 = set_deterministic_mode(enabled=True, warn=False)
         status1 = get_deterministic_status()

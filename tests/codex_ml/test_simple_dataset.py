@@ -3,9 +3,8 @@ Test Simple Dataset
 
 Test module for simple dataset.
 """
-import pytest
-from codex_ml.data.simple_dataset import Sample, SimpleDataset
 
+from codex_ml.data.simple_dataset import Sample, SimpleDataset
 
 
 def test_simple_dataset_deterministic_encoding():

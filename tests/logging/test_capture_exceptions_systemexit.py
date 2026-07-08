@@ -3,16 +3,15 @@ Test Capture Exceptions Systemexit
 
 Test module for capture exceptions systemexit.
 """
+
 from __future__ import annotations
-import pytest
+
 import subprocess
 import sys
-import sys
-from codex_ml.codex_structured_logging import capture_exceptions, configure_cli_logging
-
-
 
 SCRIPT = """
+import sys
+from codex_ml.codex_structured_logging import capture_exceptions, configure_cli_logging
 
 configure_cli_logging(quiet=True)
 

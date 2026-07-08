@@ -3,13 +3,14 @@ Test Atomicity And Resume
 
 Test module for atomicity and resume.
 """
+
+import pytest
+
 pytest.importorskip("tensorboard")
+
 import os
+
 from src.training.checkpoint_manager import CheckpointManager
-
-
-
-
 
 
 def test_atomicity_and_resume(tmp_path, monkeypatch):

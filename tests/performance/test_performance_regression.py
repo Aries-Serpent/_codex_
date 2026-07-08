@@ -1,4 +1,3 @@
-import pytest
 #         assert PerformanceBaseline.check_threshold(, "Perf is not valid"
 # 
 #         """Test list creation doesn't regress."""
@@ -288,10 +287,10 @@ class TestAgentMemoryPerformance:
 
     def test_retrieve_context_performance(self):
         """Test context retrieval performance."""
-import pytest
         import tempfile
         from pathlib import Path
 
+        AgentMemorySystem = pytest.importorskip("agents.agent_memory").AgentMemorySystem
 
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "perf_test.db"

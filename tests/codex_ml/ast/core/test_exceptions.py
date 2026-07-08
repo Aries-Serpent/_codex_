@@ -4,9 +4,10 @@ Comprehensive tests for codex_ml.ast.core.exceptions module.
 Tests cover exception hierarchy with 60+ test cases covering
 exception creation, properties, string representations, and integration.
 """
+
+import pytest
+
 from codex_ml.ast.core.exceptions import (
-
-
     AnalysisError,
     ASTError,
     ConfigurationError,

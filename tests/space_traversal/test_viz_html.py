@@ -191,7 +191,6 @@ def test_html_template_content():
 
 def test_dashboard_score_classes(tmp_path: Path):
     """Test score class assignment."""
-import pytest
     from scripts.space_traversal.viz_html import generate_dashboard
 
     # High average

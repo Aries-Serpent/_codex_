@@ -6,23 +6,21 @@ both branches:
 - Provides helper utilities to write a tiny corpus (_write_corpus) and to install
   a stubbed `spm` module inside the adapter module to exercise training/loading
   without requiring the sentencepiece package (_stub_sp).
+- Keeps tests that require the real package guarded with pytest.importorskip so
   CI environments without sentencepiece continue to run the stubbed tests.
 - Adds robust monkeypatching, reload strategies, and clear assertions to make
   tests resilient and backwards compatible with minor API variations in the
   adapter (e.g., string/Path inputs, encode/decode naming, etc).
 """
-- Keeps tests that require the real package guarded with pytest.importorskip so
-    pytest.importorskip("sentencepiece", reason="sentencepiece not installed")
+
 import importlib
 import importlib.util
 import json
 import sys
 from pathlib import Path
 from types import SimpleNamespace
-    from codex_ml.tokenization.sentencepiece_adapter import SentencePieceAdapter
-    from codex_ml.tokenization.sentencepiece_adapter import SentencePieceAdapter
 
-
+import pytest
 
 pytestmark = pytest.mark.filterwarnings(
     "ignore::DeprecationWarning"
@@ -228,6 +226,8 @@ def test_train_and_reload_roundtrip(tmp_path):
     This test exercises an end-to-end flow using the real sentencepiece package.
     It is skipped in environments without sentencepiece.
     """
+    pytest.importorskip("sentencepiece", reason="sentencepiece not installed")
+    from codex_ml.tokenization.sentencepiece_adapter import SentencePieceAdapter
 
     corpus = _write_corpus(tmp_path)
     model_prefix = tmp_path / "spm_model"
@@ -306,6 +306,7 @@ def test_train_or_load_requires_sentencepiece(tmp_path, monkeypatch):
     When the adapter no longer has a valid spm object, calling train_or_load
     should raise an AttributeError (adapter expects methods on the spm object).
     """
+    pytest.importorskip("sentencepiece", reason="sentencepiece not installed")
     model = tmp_path / "toy.model"
     corpus = tmp_path / "corpus.txt"
     corpus.write_text("x", encoding="utf-8")
@@ -327,6 +328,7 @@ def test_load_requires_sentencepiece(tmp_path, monkeypatch):
     When spm is None, load() should raise AttributeError because library functionality
     is missing.
     """
+    pytest.importorskip("sentencepiece", reason="sentencepiece not installed")
     model = tmp_path / "toy.model"
     model.write_text("model", encoding="utf-8")
 
@@ -465,6 +467,8 @@ def test_persisted_special_tokens_are_loaded(tmp_path, monkeypatch):
 def test_add_special_tokens_sidecar(tmp_path):
     """Real sentencepiece integration continues to persist mappings."""
 
+    pytest.importorskip("sentencepiece", reason="sentencepiece not installed")
+    from codex_ml.tokenization.sentencepiece_adapter import SentencePieceAdapter
 
     corpus = _write_corpus(tmp_path)
     model_prefix = tmp_path / "spm_model"

@@ -3,34 +3,12 @@ Unit tests for codex_ml.training module components.
 
 Tests training loop functionality, loss computation, and metric logging.
 """
+
 import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock
-        from codex_ml.training.loop import train_one_step
-        from codex_ml.training.loop import train_one_step
-        from codex_ml.training.loop import train_one_step
-        from codex_ml.training.loop import train_one_step
-        from codex_ml.training.loop import train_epoch
-        from codex_ml.interfaces.contracts import TrainingContractError
-        from codex_ml.training.loop import train_epoch
-        from codex_ml.interfaces.contracts import TrainingContractError
-        from codex_ml.training.loop import train_epoch
-        from codex_ml.interfaces.contracts import TrainingContractError
-        from codex_ml.training.loop import train_epoch
-        from codex_ml.training.loop import train_epoch
-        from codex_ml.training.loop import run_minimal_training
-        from codex_ml.training.loop import run_minimal_training
-        from codex_ml.training.loop import run_minimal_training
-        from codex_ml.training.loop import run_minimal_training
-        from codex_ml.training.loop import run_minimal_training
-        from codex_ml.training.loop import run_minimal_training
-        from codex_ml.training.loop import run_minimal_evaluation
-        from codex_ml.training.loop import run_minimal_evaluation
-        from codex_ml.training.loop import run_minimal_evaluation
-        from codex_ml.training.loop import run_minimal_evaluation
-        from codex_ml.training.loop import run_minimal_evaluation
 
-
+import pytest
 
 
 class TestTrainOneStep:
@@ -38,12 +16,14 @@ class TestTrainOneStep:
 
     def test_train_one_step_import(self):
         """Test train_one_step can be imported."""
+        from codex_ml.training.loop import train_one_step
 
         assert train_one_step is not None, "train_one_step must be initialized"
         assert callable(train_one_step), "Condition must be true"
 
     def test_train_one_step_reduces_loss(self):
         """Test train_one_step reduces loss value."""
+        from codex_ml.training.loop import train_one_step
 
         loss = 10.0
         new_loss = train_one_step(loss)
@@ -53,6 +33,7 @@ class TestTrainOneStep:
 
     def test_train_one_step_decay_factor(self):
         """Test train_one_step applies 0.9 decay factor."""
+        from codex_ml.training.loop import train_one_step
 
         loss = 100.0
         new_loss = train_one_step(loss)
@@ -61,6 +42,7 @@ class TestTrainOneStep:
 
     def test_train_one_step_multiple_iterations(self):
         """Test train_one_step over multiple iterations."""
+        from codex_ml.training.loop import train_one_step
 
         loss = 10.0
         for _ in range(5):
@@ -76,12 +58,15 @@ class TestTrainEpoch:
 
     def test_train_epoch_import(self):
         """Test train_epoch can be imported."""
+        from codex_ml.training.loop import train_epoch
 
         assert train_epoch is not None, "train_epoch must be initialized"
         assert callable(train_epoch), "Condition must be true"
 
     def test_train_epoch_empty_dataloader_raises(self):
         """Test train_epoch raises on empty dataloader."""
+        from codex_ml.interfaces.contracts import TrainingContractError
+        from codex_ml.training.loop import train_epoch
 
         model = MagicMock()
         dataloader = []
@@ -92,6 +77,8 @@ class TestTrainEpoch:
 
     def test_train_epoch_missing_input_ids_raises(self):
         """Test train_epoch raises when input_ids missing."""
+        from codex_ml.interfaces.contracts import TrainingContractError
+        from codex_ml.training.loop import train_epoch
 
         model = MagicMock()
         dataloader = [{"other_key": "value"}]
@@ -102,6 +89,8 @@ class TestTrainEpoch:
 
     def test_train_epoch_missing_loss_raises(self):
         """Test train_epoch raises when loss not returned."""
+        from codex_ml.interfaces.contracts import TrainingContractError
+        from codex_ml.training.loop import train_epoch
 
         model = MagicMock()
         model.step.return_value = {"other": "result"}  # No loss
@@ -113,6 +102,7 @@ class TestTrainEpoch:
 
     def test_train_epoch_success(self):
         """Test train_epoch with successful batch processing."""
+        from codex_ml.training.loop import train_epoch
 
         model = MagicMock()
         model.step.return_value = {"loss": 0.5}
@@ -138,12 +128,14 @@ class TestRunMinimalTraining:
 
     def test_run_minimal_training_import(self):
         """Test run_minimal_training can be imported."""
+        from codex_ml.training.loop import run_minimal_training
 
         assert run_minimal_training is not None, "run_minimal_training must be initialized"
         assert callable(run_minimal_training), "Condition must be true"
 
     def test_run_minimal_training_creates_directory(self):
         """Test run_minimal_training creates output directory."""
+        from codex_ml.training.loop import run_minimal_training
 
         with tempfile.TemporaryDirectory() as tmpdir:
             run_dir = Path(tmpdir) / "new_run"
@@ -156,6 +148,7 @@ class TestRunMinimalTraining:
 
     def test_run_minimal_training_creates_metrics_file(self):
         """Test run_minimal_training creates metrics.ndjson."""
+        from codex_ml.training.loop import run_minimal_training
 
         with tempfile.TemporaryDirectory() as tmpdir:
             config = {}
@@ -167,6 +160,7 @@ class TestRunMinimalTraining:
 
     def test_run_minimal_training_returns_loss_final(self):
         """Test run_minimal_training returns loss_final."""
+        from codex_ml.training.loop import run_minimal_training
 
         with tempfile.TemporaryDirectory() as tmpdir:
             config = {"training": {"base_loss": 10.0, "decay": 0.9}}
@@ -178,6 +172,7 @@ class TestRunMinimalTraining:
 
     def test_run_minimal_training_default_config(self):
         """Test run_minimal_training with default config."""
+        from codex_ml.training.loop import run_minimal_training
 
         with tempfile.TemporaryDirectory() as tmpdir:
             config = {}  # Empty config, should use defaults
@@ -190,6 +185,7 @@ class TestRunMinimalTraining:
 
     def test_run_minimal_training_min_steps(self):
         """Test run_minimal_training with minimum steps."""
+        from codex_ml.training.loop import run_minimal_training
 
         with tempfile.TemporaryDirectory() as tmpdir:
             config = {}
@@ -205,12 +201,14 @@ class TestRunMinimalEvaluation:
 
     def test_run_minimal_evaluation_import(self):
         """Test run_minimal_evaluation can be imported."""
+        from codex_ml.training.loop import run_minimal_evaluation
 
         assert run_minimal_evaluation is not None, "run_minimal_evaluation must be initialized"
         assert callable(run_minimal_evaluation), "Condition must be true"
 
     def test_run_minimal_evaluation_creates_directory(self):
         """Test run_minimal_evaluation creates output directory."""
+        from codex_ml.training.loop import run_minimal_evaluation
 
         with tempfile.TemporaryDirectory() as tmpdir:
             run_dir = Path(tmpdir) / "eval_run"
@@ -222,6 +220,7 @@ class TestRunMinimalEvaluation:
 
     def test_run_minimal_evaluation_returns_score(self):
         """Test run_minimal_evaluation returns score."""
+        from codex_ml.training.loop import run_minimal_evaluation
 
         with tempfile.TemporaryDirectory() as tmpdir:
             config = {"eval": {"base_score": 0.7}}
@@ -233,6 +232,7 @@ class TestRunMinimalEvaluation:
 
     def test_run_minimal_evaluation_with_checkpoint(self):
         """Test run_minimal_evaluation with checkpoint provided."""
+        from codex_ml.training.loop import run_minimal_evaluation
 
         with tempfile.TemporaryDirectory() as tmpdir:
             config = {"eval": {"base_score": 0.5}}
@@ -244,6 +244,7 @@ class TestRunMinimalEvaluation:
 
     def test_run_minimal_evaluation_score_capped(self):
         """Test run_minimal_evaluation caps score at 1.0."""
+        from codex_ml.training.loop import run_minimal_evaluation
 
         with tempfile.TemporaryDirectory() as tmpdir:
             config = {"eval": {"base_score": 0.95}}

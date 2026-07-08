@@ -3,15 +3,8 @@ Test Engine
 
 Test module for engine.
 """
-            from codex_ml.training.engine import _normalize_params
-            from codex_ml.training.engine import _normalize_params
-            from codex_ml.training.engine import _normalize_params
-            from codex_ml.training.engine import _normalize_params
-            from codex_ml.training.engine import TrainingEngine
-            from codex_ml.training.engine import TrainingEngine
-            from codex_ml.training.engine import TrainingEngine
-            from codex_ml.training.engine import TrainingEngine
 
+import pytest
 
 
 class TestNormalizeParams:
@@ -20,6 +13,7 @@ class TestNormalizeParams:
     def test_normalize_params_string(self):
         """Test normalizing string parameters."""
         try:
+            from codex_ml.training.engine import _normalize_params
 
             result = _normalize_params({"key": "value"})
             assert result == {"key": "value"}, "Result must not be empty"
@@ -29,6 +23,7 @@ class TestNormalizeParams:
     def test_normalize_params_bool(self):
         """Test normalizing boolean parameters."""
         try:
+            from codex_ml.training.engine import _normalize_params
 
             result = _normalize_params({"flag": True, "other": False})
             assert result == {"flag": 1, "other": 0}
@@ -38,6 +33,7 @@ class TestNormalizeParams:
     def test_normalize_params_none(self):
         """Test normalizing None parameters (should be filtered)."""
         try:
+            from codex_ml.training.engine import _normalize_params
 
             result = _normalize_params({"key": None})
             assert result == {}, "Result must not be empty"
@@ -47,6 +43,7 @@ class TestNormalizeParams:
     def test_normalize_params_mixed(self):
         """Test normalizing mixed types."""
         try:
+            from codex_ml.training.engine import _normalize_params
 
             result = _normalize_params(
                 {"str": "text", "int": 42, "float": 3.14, "bool": True, "none": None}
@@ -66,6 +63,7 @@ class TestTrainingEngine:
     def test_engine_creation_default(self):
         """Test creating engine with defaults."""
         try:
+            from codex_ml.training.engine import TrainingEngine
 
             engine = TrainingEngine()
             assert engine is not None, "engine must be initialized"
@@ -76,6 +74,7 @@ class TestTrainingEngine:
     def test_engine_creation_with_mlflow(self):
         """Test creating engine with mlflow enabled."""
         try:
+            from codex_ml.training.engine import TrainingEngine
 
             engine = TrainingEngine(enable_mlflow=True)
             assert engine.enable_mlflow in [True, False]
@@ -85,6 +84,7 @@ class TestTrainingEngine:
     def test_engine_has_start_run(self):
         """Test engine has start_run method."""
         try:
+            from codex_ml.training.engine import TrainingEngine
 
             engine = TrainingEngine()
             assert hasattr(engine, "start_run")
@@ -95,6 +95,7 @@ class TestTrainingEngine:
     def test_engine_start_run_no_mlflow(self):
         """Test start_run with mlflow disabled."""
         try:
+            from codex_ml.training.engine import TrainingEngine
 
             engine = TrainingEngine(enable_mlflow=False)
             engine.start_run()

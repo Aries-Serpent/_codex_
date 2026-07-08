@@ -4,14 +4,14 @@ Unit tests for scripts/ci/cost_estimator.py
 OBJ-001 T-001 — verifies KR-1: correct GREEN/YELLOW/RED classification
 for all 5 cost-gated workflows and edge cases.
 """
+
 from __future__ import annotations
+
 import importlib.util
 import sys
 from pathlib import Path
-        import json
 
-
-
+import pytest
 
 # ── Import cost_estimator from scripts/ci/ ───────────────────────────────────
 _REPO_ROOT = Path(__file__).resolve().parents[3]
@@ -246,6 +246,7 @@ class TestProposalMarkdown:
         assert "90" in md, "Condition must be true"
 
     def test_to_dict_serializable(self):
+        import json
 
         e = make(runner="ubuntu-latest-m", timeout=30, matrix=2, ghcr=True)
         d = e.to_dict()

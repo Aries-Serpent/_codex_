@@ -187,7 +187,6 @@ def test_regression_alert_empty():
 
 def test_regression_alert_with_regressions():
     """Test regression alert with regressions."""
-import pytest
     from scripts.space_traversal.viz_ascii import regression_alert
 
     regressions = [

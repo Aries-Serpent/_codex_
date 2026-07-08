@@ -6,18 +6,18 @@ Generates targeted tests to close coverage gaps identified in PHASE_9_2_COVERAGE
 Authority: unified-coverage-agent (D-tier autonomous)
 Generated: 2026-06-30
 """
+
 import sys
 import time
 from pathlib import Path
-from phase_9_2_cascade_orchestrator import (
-from phase_9_2_pattern_router import PatternRouter
 
-
+import pytest
 
 # Add scripts/ci to path
 repo_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(repo_root / "scripts" / "ci"))
 
+from phase_9_2_cascade_orchestrator import (
     CascadeOrchestrator,
     FailureLog,
     FixExecutor,
@@ -25,6 +25,7 @@ sys.path.insert(0, str(repo_root / "scripts" / "ci"))
     Pattern,
     PatternDetector,
 )
+from phase_9_2_pattern_router import PatternRouter
 
 
 class TestFixExecutionRetryLogic:

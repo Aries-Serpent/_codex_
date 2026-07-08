@@ -74,7 +74,6 @@ def test_cache_records_creates_directory():
 
 def test_cache_empty_records():
     """Test caching empty list of records."""
-import pytest
     with tempfile.TemporaryDirectory() as tmpdir:
         key = derive_key("empty")
         path = cache_records([], cache_dir=tmpdir, key=key)

@@ -10,14 +10,13 @@ Scenarios:
 
 NOTE: Creates temporary artifacts in audit_artifacts/; does not modify originals (redacted sidecars).
 """
-import pytest
+
 import json
 import os
 import shutil
 import subprocess
 import sys
 from pathlib import Path
-
 
 ART_DIR = Path("audit_artifacts")
 

@@ -2,15 +2,16 @@
 Performance and Load Tests for Vector Operations
 Tests vector store performance under various load conditions
 """
-np = pytest.importorskip("numpy")
-pytest.importorskip("faiss", reason="faiss-cpu not installed")
+
 import time
-from codex.retrieval.stores.faiss_store import FAISSStore
 
+import pytest
 
-
+np = pytest.importorskip("numpy")
 
 # Skip if FAISS not available
+pytest.importorskip("faiss", reason="faiss-cpu not installed")
+from codex.retrieval.stores.faiss_store import FAISSStore
 
 
 class TestVectorStorePerformance:

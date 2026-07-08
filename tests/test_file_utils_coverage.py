@@ -3,15 +3,16 @@ Comprehensive tests for codex.file_utils module.
 
 Tests cover safe file reading utilities with proper error handling and logging.
 """
+
 from __future__ import annotations
+
 import tempfile
 from pathlib import Path
 from unittest.mock import patch
+
+import pytest
+
 from codex.file_utils import (
-
-
-
-
     migrate_from_ignore,
     read_text_safe,
     read_text_safe_fallback,

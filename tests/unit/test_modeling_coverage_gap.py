@@ -7,25 +7,12 @@ This test suite covers:
 - LoRA settings configuration
 - Model and tokenizer initialization helpers
 """
+
 from __future__ import annotations
-pytest.importorskip("torch")
+
+import pytest
+
 from modeling import (
-        import torch
-        import torch
-        import torch
-        import torch
-        import torch
-        import torch
-        import torch
-        import torch
-        import torch
-        import torch
-        import torch
-        import torch
-
-
-
-
     _DTYPE_MAP,
     LoraSettings,
     ModelInitConfig,
@@ -43,48 +30,56 @@ class TestDtypeResolution:
     def test_resolve_dtype_float32_default(self):
         """Test resolving default float32 dtype."""
         dtype = _resolve_dtype(None)
+        import torch
 
         assert dtype == torch.float32, "dtype is not valid"
 
     def test_resolve_dtype_explicit_float32(self):
         """Test resolving explicit float32."""
         dtype = _resolve_dtype("float32")
+        import torch
 
         assert dtype == torch.float32, "dtype is not valid"
 
     def test_resolve_dtype_fp32_alias(self):
         """Test resolving fp32 alias for float32."""
         dtype = _resolve_dtype("fp32")
+        import torch
 
         assert dtype == torch.float32, "dtype is not valid"
 
     def test_resolve_dtype_bfloat16(self):
         """Test resolving bfloat16 dtype."""
         dtype = _resolve_dtype("bfloat16")
+        import torch
 
         assert dtype == torch.bfloat16, "dtype is not valid"
 
     def test_resolve_dtype_bf16_alias(self):
         """Test resolving bf16 alias for bfloat16."""
         dtype = _resolve_dtype("bf16")
+        import torch
 
         assert dtype == torch.bfloat16, "dtype is not valid"
 
     def test_resolve_dtype_float16(self):
         """Test resolving float16 dtype."""
         dtype = _resolve_dtype("float16")
+        import torch
 
         assert dtype == torch.float16, "dtype is not valid"
 
     def test_resolve_dtype_fp16_alias(self):
         """Test resolving fp16 alias for float16."""
         dtype = _resolve_dtype("fp16")
+        import torch
 
         assert dtype == torch.float16, "dtype is not valid"
 
     def test_resolve_dtype_half_alias(self):
         """Test resolving half alias for float16."""
         dtype = _resolve_dtype("half")
+        import torch
 
         assert dtype == torch.float16, "dtype is not valid"
 
@@ -93,6 +88,7 @@ class TestDtypeResolution:
         dtype_lower = _resolve_dtype("float32")
         dtype_upper = _resolve_dtype("FLOAT32")
         dtype_mixed = _resolve_dtype("Float32")
+        import torch
 
         assert dtype_lower == dtype_upper == dtype_mixed == torch.float32, "dtype_lower is not valid"
 
@@ -104,6 +100,7 @@ class TestDtypeResolution:
     def test_resolve_dtype_public_api(self):
         """Test public API resolve_dtype function."""
         dtype = resolve_dtype("float32")
+        import torch
 
         assert dtype == torch.float32, "dtype is not valid"
 
@@ -421,6 +418,7 @@ class TestNeedsBf16:
 
     def test_needs_bf16_by_dtype_obj(self):
         """Test bf16 detection by dtype object."""
+        import torch
 
         assert _needs_bf16(None, torch.bfloat16) is True
         assert _needs_bf16(None, torch.float32) is False
@@ -441,6 +439,7 @@ class TestDtypeMap:
 
     def test_dtype_map_values_are_torch_dtypes(self):
         """Test that all values in _DTYPE_MAP are torch dtypes."""
+        import torch
 
         for key, dtype in _DTYPE_MAP.items():
             assert isinstance(dtype, torch.dtype), f"Value for {key} is not a torch dtype"

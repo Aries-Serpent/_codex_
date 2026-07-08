@@ -3,18 +3,17 @@ Test Experiment Tracking
 
 Test module for experiment tracking.
 """
-import pytest
+
 from pathlib import Path
+
 from codex_ml.tracking.experiments import (
-from scripts.analyze_experiments import analyze
-
-
     finish_run,
     load_events,
     log_metric,
     new_run_info,
     start_run,
 )
+from scripts.analyze_experiments import analyze
 
 
 def test_experiment_tracking_roundtrip(tmp_path: Path) -> None:

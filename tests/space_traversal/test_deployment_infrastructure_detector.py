@@ -4,9 +4,8 @@ Comprehensive tests for deployment-infrastructure detector.
 Tests Docker, Kubernetes, Helm, Terraform detection and
 deployment script recognition.
 """
-import pytest
-from scripts.space_traversal.detectors.deployment_infrastructure import detect
 
+from scripts.space_traversal.detectors.deployment_infrastructure import detect
 
 
 def test_deployment_infrastructure_no_files():

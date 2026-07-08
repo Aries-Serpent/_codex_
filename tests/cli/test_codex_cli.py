@@ -3,13 +3,12 @@ Test Codex Cli
 
 Test module for codex cli.
 """
+
 from __future__ import annotations
-import pytest
+
 from click.testing import CliRunner
+
 from codex.cli import cli
-
-
-
 
 
 def test_codex_cli_help():

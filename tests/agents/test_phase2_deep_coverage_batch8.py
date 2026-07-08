@@ -11,26 +11,11 @@ Systematically applies orchestration and workflow patterns:
 
 Target: +4-5% coverage gain (57% → 62%)
 """
+
+import pytest
+
 pytest.importorskip("numpy", reason="numpy not installed")
 import numpy as np
-        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
-        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
-            from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
-        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
-            from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
-            from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
-        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
-        from agents.workflow_navigator import WorkflowNavigator
-        from agents.workflow_navigator import WorkflowNavigator
-        from agents.workflow_navigator import WorkflowNavigator
-        from agents.workflow_navigator import WorkflowNavigator
-        from agents.workflow_navigator import WorkflowNavigator
-        from agents.workflow_navigator import WorkflowNavigator
-        from agents.workflow_navigator import WorkflowNavigator
-        from collections import deque
-
-
-
 
 
 class TestPhase2_DeveloperOrchestrator:
@@ -41,12 +26,14 @@ class TestPhase2_DeveloperOrchestrator:
 
     def test_developer_orchestrator_initialization(self):
         """Test DeveloperOrchestrator initialization"""
+        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
         orchestrator = PhysicsGuidedDeveloperOrchestrator()
         assert orchestrator is not None, "orchestrator must be initialized"
 
     def test_get_workflow(self):
         """Test retrieving a workflow"""
+        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
         orchestrator = PhysicsGuidedDeveloperOrchestrator()
         if hasattr(orchestrator, "get_workflow"):
@@ -56,6 +43,7 @@ class TestPhase2_DeveloperOrchestrator:
     def test_add_task_to_workflow(self):
         """Test PhysicsGuidedDeveloperOrchestrator is importable (scipy-dependent)."""
         try:
+            from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
             orchestrator = PhysicsGuidedDeveloperOrchestrator()
             assert orchestrator is not None, "orchestrator must be initialized"
@@ -64,6 +52,7 @@ class TestPhase2_DeveloperOrchestrator:
 
     def test_execute_workflow(self):
         """Test executing a workflow"""
+        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
         orchestrator = PhysicsGuidedDeveloperOrchestrator()
         if hasattr(orchestrator, "execute"):
@@ -73,6 +62,7 @@ class TestPhase2_DeveloperOrchestrator:
     def test_pause_resume_workflow(self):
         """Test PhysicsGuidedDeveloperOrchestrator pause/resume (scipy-dependent)."""
         try:
+            from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
             orchestrator = PhysicsGuidedDeveloperOrchestrator()
             # Verify methods exist if instantiation succeeds
@@ -83,6 +73,7 @@ class TestPhase2_DeveloperOrchestrator:
     def test_cancel_workflow(self):
         """Test PhysicsGuidedDeveloperOrchestrator cancel (scipy-dependent)."""
         try:
+            from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
             orchestrator = PhysicsGuidedDeveloperOrchestrator()
             assert orchestrator is not None, "orchestrator must be initialized"
@@ -91,6 +82,7 @@ class TestPhase2_DeveloperOrchestrator:
 
     def test_get_workflow_status(self):
         """Test getting workflow status"""
+        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
         orchestrator = PhysicsGuidedDeveloperOrchestrator()
         if hasattr(orchestrator, "get_status"):
@@ -106,12 +98,14 @@ class TestPhase2_WorkflowNavigator:
 
     def test_workflow_navigator_initialization(self):
         """Test WorkflowNavigator initialization"""
+        from agents.workflow_navigator import WorkflowNavigator
 
         navigator = WorkflowNavigator()
         assert navigator is not None, "navigator must be initialized"
 
     def test_navigate_to_step(self):
         """Test navigating to a specific step index returns bool."""
+        from agents.workflow_navigator import WorkflowNavigator
 
         navigator = WorkflowNavigator()
         # navigate_to(step_index) returns bool
@@ -120,6 +114,7 @@ class TestPhase2_WorkflowNavigator:
 
     def test_get_current_step(self):
         """Test getting current step"""
+        from agents.workflow_navigator import WorkflowNavigator
 
         navigator = WorkflowNavigator()
         if hasattr(navigator, "current_step"):
@@ -128,6 +123,7 @@ class TestPhase2_WorkflowNavigator:
 
     def test_get_next_step(self):
         """Test getting next step"""
+        from agents.workflow_navigator import WorkflowNavigator
 
         navigator = WorkflowNavigator()
         if hasattr(navigator, "next_step"):
@@ -136,6 +132,7 @@ class TestPhase2_WorkflowNavigator:
 
     def test_get_previous_step(self):
         """Test getting previous step"""
+        from agents.workflow_navigator import WorkflowNavigator
 
         navigator = WorkflowNavigator()
         if hasattr(navigator, "previous_step"):
@@ -144,6 +141,7 @@ class TestPhase2_WorkflowNavigator:
 
     def test_list_workflows(self):
         """Test listing available workflows"""
+        from agents.workflow_navigator import WorkflowNavigator
 
         navigator = WorkflowNavigator()
         if hasattr(navigator, "list_workflows"):
@@ -152,6 +150,7 @@ class TestPhase2_WorkflowNavigator:
 
     def test_get_workflow_suggestions(self):
         """Test getting workflow suggestions"""
+        from agents.workflow_navigator import WorkflowNavigator
 
         navigator = WorkflowNavigator()
         if hasattr(navigator, "get_workflow_suggestions"):
@@ -182,6 +181,7 @@ class TestPhase2_TaskScheduling:
 
     def test_fifo_scheduling(self):
         """Test FIFO (First-In-First-Out) scheduling"""
+        from collections import deque
 
         queue = deque([1, 2, 3])
         first = queue.popleft()

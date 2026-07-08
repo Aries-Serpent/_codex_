@@ -449,7 +449,6 @@ class TestPathsIntegration:
 
     def test_path_retrieval_consistency(self):
         """Test that path retrieval is consistent."""
-import pytest
         with tempfile.TemporaryDirectory() as tmpdir:
             os.chdir(tmpdir)
 

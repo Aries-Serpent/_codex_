@@ -8,13 +8,14 @@ Tests the GPT4AllEmbeddingProvider class covering:
 - Error handling and recovery
 - Model loading and auto-detection
 """
+
 from unittest.mock import MagicMock, patch
-    from codex.rag.providers.gpt4all_provider import GPT4AllEmbeddingProvider
 
-
+import pytest
 
 # Import the provider (may be optional if gpt4all not available)
 try:
+    from codex.rag.providers.gpt4all_provider import GPT4AllEmbeddingProvider
 
     GPT4ALL_AVAILABLE = True
 except ImportError:

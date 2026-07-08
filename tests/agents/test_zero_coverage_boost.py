@@ -8,29 +8,8 @@ to quickly increase coverage from 0% to 20-30% for these modules:
 - exceptions.py
 - msp_client.py
 """
-        from agents.exceptions import (
-        from agents.exceptions import AgentError
-        from agents.exceptions import AgentConfigError
-        from agents.exceptions import AgentImportError
-        from agents.exceptions import ValidationError
-        from agents.exceptions import AgentExecutionError
-        from agents.exceptions import AgentConfigError, AgentError
-        from agents.exceptions import (
-        from agents.exceptions import AgentImportError
-            from agents.agent_memory import MemoryType
-            from agents.agent_memory import MemoryStore
-            from agents.agent_memory import MemoryStore
-            from agents.agent_memory import MemoryEntry
-            from agents.msp_client import MSPClient
-            from agents.msp_client import MSPClient
-            from agents.developer_orchestrator import DeveloperOrchestrator
-            from agents.developer_orchestrator import DeveloperOrchestrator
-            from agents.developer_orchestrator import TaskType
-            from agents.developer_orchestrator import CodeGenerator
-            from agents.codex_client.codex_client import bridge
-            from agents.codex_client.codex_client import config
-            from agents.codex_client.codex_client import models
 
+import pytest
 
 # ============================================================================
 # EXCEPTIONS MODULE (0% -> target 80%+)
@@ -42,6 +21,7 @@ class TestExceptionsModule:
 
     def test_import_exceptions(self):
         """Test all exceptions can be imported."""
+        from agents.exceptions import (
             AgentConfigError,
             AgentError,
             AgentExecutionError,
@@ -59,6 +39,7 @@ class TestExceptionsModule:
 
     def test_raise_agent_error(self):
         """Test AgentError can be raised and caught."""
+        from agents.exceptions import AgentError
 
         def _raise_agent_error():
             raise AgentError("Test error message")
@@ -68,30 +49,35 @@ class TestExceptionsModule:
 
     def test_raise_config_error(self):
         """Test AgentConfigError can be raised."""
+        from agents.exceptions import AgentConfigError
 
         with pytest.raises(AgentConfigError):
             raise AgentConfigError("Invalid configuration")
 
     def test_raise_import_error(self):
         """Test AgentImportError can be raised."""
+        from agents.exceptions import AgentImportError
 
         with pytest.raises(AgentImportError):
             raise AgentImportError("numpy", "numpy", "ml")
 
     def test_raise_validation_error(self):
         """Test ValidationError can be raised."""
+        from agents.exceptions import ValidationError
 
         with pytest.raises(ValidationError):
             raise ValidationError("Validation failed")
 
     def test_raise_execution_error(self):
         """Test AgentExecutionError can be raised."""
+        from agents.exceptions import AgentExecutionError
 
         with pytest.raises(AgentExecutionError):
             raise AgentExecutionError("Execution failed")
 
     def test_exception_hierarchy(self):
         """Test exception hierarchy."""
+        from agents.exceptions import AgentConfigError, AgentError
 
         # AgentConfigError should be a subclass of AgentError
         with pytest.raises(AgentError):
@@ -99,6 +85,7 @@ class TestExceptionsModule:
 
     def test_physics_exceptions(self):
         """Test physics-specific exceptions."""
+        from agents.exceptions import (
             CausalityViolationError,
             ConvergenceError,
             InvariantViolationError,
@@ -112,6 +99,7 @@ class TestExceptionsModule:
 
     def test_import_error_message(self):
         """Test AgentImportError provides helpful message."""
+        from agents.exceptions import AgentImportError
 
         def _raise_import_error():
             raise AgentImportError("torch", "torch", "ml")
@@ -133,6 +121,7 @@ class TestAgentMemoryModule:
     def test_import_memory_types(self):
         """Test memory type enums can be imported."""
         try:
+            from agents.agent_memory import MemoryType
 
             assert MemoryType is not None, "MemoryType must be initialized"
         except (ImportError, AttributeError) as e:
@@ -141,6 +130,7 @@ class TestAgentMemoryModule:
     def test_import_memory_store(self):
         """Test MemoryStore class can be imported."""
         try:
+            from agents.agent_memory import MemoryStore
 
             assert MemoryStore is not None, "MemoryStore must be initialized"
         except (ImportError, AttributeError) as e:
@@ -149,6 +139,7 @@ class TestAgentMemoryModule:
     def test_memory_store_initialization(self):
         """Test MemoryStore can be instantiated."""
         try:
+            from agents.agent_memory import MemoryStore
 
             store = MemoryStore()
             assert store is not None, "store must be initialized"
@@ -158,6 +149,7 @@ class TestAgentMemoryModule:
     def test_memory_entry_creation(self):
         """Test creating a memory entry."""
         try:
+            from agents.agent_memory import MemoryEntry
 
             entry = MemoryEntry(
                 memory_id="test_entry",
@@ -181,6 +173,7 @@ class TestMSPClientModule:
     def test_import_msp_client(self):
         """Test MSPClient can be imported."""
         try:
+            from agents.msp_client import MSPClient
 
             assert MSPClient is not None, "MSPClient must be initialized"
         except (ImportError, AttributeError) as e:
@@ -189,6 +182,7 @@ class TestMSPClientModule:
     def test_msp_client_initialization(self):
         """Test MSPClient can be instantiated."""
         try:
+            from agents.msp_client import MSPClient
 
             # Try to create with minimal args
             client = MSPClient(endpoint="http://localhost:8000")
@@ -209,6 +203,7 @@ class TestDeveloperOrchestratorModule:
     def test_import_developer_orchestrator(self):
         """Test DeveloperOrchestrator can be imported."""
         try:
+            from agents.developer_orchestrator import DeveloperOrchestrator
 
             assert DeveloperOrchestrator is not None, "DeveloperOrchestrator must be initialized"
         except (ImportError, AttributeError) as e:
@@ -217,6 +212,7 @@ class TestDeveloperOrchestratorModule:
     def test_developer_orchestrator_initialization(self):
         """Test DeveloperOrchestrator can be instantiated."""
         try:
+            from agents.developer_orchestrator import DeveloperOrchestrator
 
             orchestrator = DeveloperOrchestrator()
             assert orchestrator is not None, "orchestrator must be initialized"
@@ -226,6 +222,7 @@ class TestDeveloperOrchestratorModule:
     def test_import_task_types(self):
         """Test task type enums can be imported."""
         try:
+            from agents.developer_orchestrator import TaskType
 
             assert TaskType is not None, "TaskType must be initialized"
         except (ImportError, AttributeError) as e:
@@ -234,6 +231,7 @@ class TestDeveloperOrchestratorModule:
     def test_import_code_generator(self):
         """Test CodeGenerator class can be imported."""
         try:
+            from agents.developer_orchestrator import CodeGenerator
 
             assert CodeGenerator is not None, "CodeGenerator must be initialized"
         except (ImportError, AttributeError) as e:
@@ -251,6 +249,7 @@ class TestCodexClientModules:
     def test_import_bridge(self):
         """Test bridge module can be imported."""
         try:
+            from agents.codex_client.codex_client import bridge
 
             assert bridge is not None, "bridge must be initialized"
         except (ImportError, AttributeError) as e:
@@ -259,6 +258,7 @@ class TestCodexClientModules:
     def test_import_config(self):
         """Test config module can be imported."""
         try:
+            from agents.codex_client.codex_client import config
 
             assert config is not None, "config must be initialized"
         except (ImportError, AttributeError) as e:
@@ -267,6 +267,7 @@ class TestCodexClientModules:
     def test_import_models(self):
         """Test models module can be imported."""
         try:
+            from agents.codex_client.codex_client import models
 
             assert models is not None, "models must be initialized"
         except (ImportError, AttributeError) as e:

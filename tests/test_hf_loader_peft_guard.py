@@ -3,20 +3,21 @@ Test Hf Loader Peft Guard
 
 Test module for hf loader peft guard.
 """
+
 from __future__ import annotations
-pytest.importorskip("transformers")
-    torch = pytest.importorskip("torch")
+
 import logging
 import sys
+
+import pytest
+
+pytest.importorskip("transformers")
+
 import codex_ml.hf_loader as hf_loader
 
 
-
-
-
-
-
 def test_load_causal_lm_handles_missing_peft(monkeypatch, caplog):
+    torch = pytest.importorskip("torch")
 
     class DummyModel:
         def __init__(self) -> None:

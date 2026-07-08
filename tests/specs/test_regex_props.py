@@ -3,14 +3,13 @@ Test Regex Props
 
 Test module for regex props.
 """
+
 from __future__ import annotations
-import pytest
+
 import time
+
 from codex_utils.regex_patterns import ENV_ASSIGNMENT as ENV
 from codex_utils.regex_patterns import PEM_BLOCK as PEM
-
-
-
 
 
 def test_env_valid_and_invalid():

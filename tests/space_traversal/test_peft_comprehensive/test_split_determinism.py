@@ -1,15 +1,16 @@
 """
+pytest.importorskip("tensorboard")
 Test Split Determinism
 
 Test module for split determinism.
 """
-pytest.importorskip("tensorboard")
+
+import pytest
+
 pytest.importorskip("numpy", reason="numpy required")
+
+
 from training.data_utils import split_texts
-
-
-
-
 
 
 def test_split_seed_reproducibility() -> None:

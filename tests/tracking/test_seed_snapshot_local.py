@@ -3,13 +3,12 @@ Test Seed Snapshot Local
 
 Test module for seed snapshot local.
 """
-import pytest
-from pathlib import Path
-    from src.codex_ml.tracking.mlflow_utils import seed_snapshot
 
+from pathlib import Path
 
 
 def test_seed_snapshot_writes_file(tmp_path: Path):
+    from src.codex_ml.tracking.mlflow_utils import seed_snapshot
 
     out_dir = tmp_path / "run"
     path = seed_snapshot({"py": 0, "np": 0}, out_dir, enabled=False)

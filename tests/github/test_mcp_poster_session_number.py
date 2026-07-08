@@ -7,13 +7,13 @@ Covers:
 - Token token auth priority with CODEX_MASTER_KEY / CODEX_BACKUP_KEY
 - CLI main() for set-variable command
 """
+
 from __future__ import annotations
+
 import json
 import unittest.mock as mock
-from codex.github.mcp_poster import GitHubMCPPoster, main
 
-
-
+import pytest
 
 # Ensure codex.github is registered as an attribute of the codex package before
 # pytest's monkeypatch.setattr() tries to resolve dotted paths like
@@ -21,6 +21,7 @@ from codex.github.mcp_poster import GitHubMCPPoster, main
 # sets X as an attribute on its parent only after the submodule is imported;
 # the explicit import below guarantees the attribute is present even if test
 # collection order changes.
+from codex.github.mcp_poster import GitHubMCPPoster, main
 
 # ---------------------------------------------------------------------------
 # Helpers

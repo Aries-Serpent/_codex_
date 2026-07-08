@@ -7,13 +7,14 @@ Tests cover:
 - SQLite storage
 - Error handling
 """
+
 from __future__ import annotations
-    from codex_ml.cli import metrics_cli
 
-
+import pytest
 
 # Import module under test
 try:
+    from codex_ml.cli import metrics_cli
 except ImportError:
     pytest.skip("metrics_cli module not available", allow_module_level=True)
 

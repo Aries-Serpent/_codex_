@@ -3,19 +3,20 @@ Test Cli Logging Integration
 
 Test module for cli logging integration.
 """
-pytest.importorskip("typer")
-torch = pytest.importorskip("torch", reason="PyTorch required for logging integration tests")
+
 import json
 from pathlib import Path
-from typer.testing import CliRunner
-from codex_ml.evaluation import cli as eval_cli
 
+import pytest
 
-
+pytest.importorskip("typer")
 
 
 # Skip entire module if torch is not available or unloadable
+torch = pytest.importorskip("torch", reason="PyTorch required for logging integration tests")
+from typer.testing import CliRunner
 
+from codex_ml.evaluation import cli as eval_cli
 
 
 class NoopLogger:

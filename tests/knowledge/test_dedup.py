@@ -3,11 +3,10 @@ Test Dedup
 
 Test module for dedup.
 """
+
 from __future__ import annotations
-import pytest
+
 from codex.knowledge.dedup import dedup_records, hamming, simhash
-
-
 
 
 def test_simhash_stability_for_similar_text() -> None:

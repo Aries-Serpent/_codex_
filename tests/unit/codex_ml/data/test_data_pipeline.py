@@ -391,7 +391,6 @@ class TestErrorHandlingData:
 
     def test_disk_full_simulation(self):
         """Test: disk full error handling."""
-import pytest
         # Simulate disk full - would raise in real scenario
         assert True, "True is not valid"
 

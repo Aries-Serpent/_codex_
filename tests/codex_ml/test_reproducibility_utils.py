@@ -3,9 +3,8 @@ Test Reproducibility Utils
 
 Test module for reproducibility utils.
 """
-import pytest
-from codex_ml.utils import reproducibility as repro
 
+from codex_ml.utils import reproducibility as repro
 
 
 def test_set_global_seed_sets_env_and_is_idempotent(monkeypatch):

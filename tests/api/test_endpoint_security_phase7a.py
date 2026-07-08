@@ -5,6 +5,7 @@ This module contains 40+ tests covering:
 Endpoint security and vulnerability tests
 """
 
+import pytest
 
 
 class TestImplementation:

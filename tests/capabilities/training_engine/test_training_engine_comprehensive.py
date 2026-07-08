@@ -7,21 +7,22 @@ Tests cover:
 - Resume logic
 - Hyperparameter sweeps
 """
+
 from __future__ import annotations
-pytest.importorskip("hypothesis")
+
 import tempfile
 from enum import Enum
 from typing import Any
+
+import pytest
+
+pytest.importorskip("hypothesis")
+
+
+pytest.importorskip("hypothesis", reason="hypothesis required for property tests")
+
 from hypothesis import given, settings
 from hypothesis import strategies as st
-        import random
-
-
-
-
-
-
-
 
 # --- Distributed Training Tests ---
 
@@ -325,6 +326,7 @@ class SweepRunner:
 
     def sample_config(self) -> dict[str, Any]:
         """Sample configuration from sweep space."""
+        import random
 
         sampled = {}
         for name, param in self.config.parameters.items():

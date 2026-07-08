@@ -3,9 +3,8 @@ Test Container Security
 
 Test module for container security.
 """
-import pytest
-from pathlib import Path
 
+from pathlib import Path
 
 
 def test_no_root_user_in_container() -> None:

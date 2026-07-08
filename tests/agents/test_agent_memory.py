@@ -4,14 +4,15 @@ Test Agent Memory Module
 Comprehensive unit tests for the agent memory system.
 Tests MemoryEntry, ContextFrame, PatternLibrary, AgentMemory, and AgentMemorySystem.
 """
+
 from __future__ import annotations
+
 from datetime import UTC, datetime
 from pathlib import Path
+
+import pytest
+
 from agents.agent_memory import (
-
-
-
-
     AgentMemory,
     AgentMemorySystem,
     ContextFrame,

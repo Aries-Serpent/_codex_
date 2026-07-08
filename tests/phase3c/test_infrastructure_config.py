@@ -5,17 +5,18 @@ error handling, and integration scenarios.
 
 Target: Boost config module coverage from 82.14% to 95%+
 """
+
 from __future__ import annotations
+
 import os
 import tempfile
 import uuid
 from pathlib import Path
 from unittest import mock
+
+import pytest
+
 from src.codex.config.env_vars import EnvironmentManager, EnvVarConfig
-
-
-
-
 
 
 class TestEnvironmentManagerBasics:

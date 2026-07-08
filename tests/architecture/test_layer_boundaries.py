@@ -6,13 +6,14 @@ docs/architecture/ARCHITECTURE_LAYERS.md are not violated in the live codebase.
 
 Run: pytest tests/architecture/ -v
 """
+
 from __future__ import annotations
+
 import ast
 import warnings
 from pathlib import Path
 
-
-
+import pytest
 
 ROOT = Path(__file__).parent.parent.parent
 SRC = ROOT / "src"

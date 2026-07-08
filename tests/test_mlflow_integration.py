@@ -201,7 +201,6 @@ def test_mlflow_tracker_artifact_logging():
 
 def test_mlflow_tracker_error_handling():
     """Test error handling in MLflow operations."""
-import pytest
     with tempfile.TemporaryDirectory() as tmpdir:
         tracker = MLflowTracker("test_exp", tracking_uri=tmpdir)
 

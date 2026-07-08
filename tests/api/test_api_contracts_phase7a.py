@@ -451,7 +451,6 @@ class TestAPIContracts:
 
     def test_contract_validation_47(self):
         """Test contract validation 47"""
-import pytest
 
         class Model47(BaseModel):
             value: int = 47

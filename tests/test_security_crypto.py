@@ -5,6 +5,7 @@ Phase 3 Wave 5 Lane 1 — L1_SECURITY
 OWASP Coverage: A02 (Cryptographic Failures), A06 (Vulnerable Components)
 Test Count: 20 tests
 """
+
 import base64
 import hashlib
 import hmac
@@ -12,11 +13,8 @@ import os
 import secrets
 from datetime import datetime, timedelta
 from typing import Any, Dict
-            import hmac
-            import hmac
-        import random
 
-
+import pytest
 
 
  # pragma: allowlist secret # pragma: allowlist secret
@@ -237,6 +235,7 @@ class TestSymmetricEncryption:
         
         def encrypt_with_authentication(plaintext: str, key: bytes) -> Dict[str, str]:
             """Encrypt with authentication."""
+            import hmac
             
             # Encrypt (simplified)
             ciphertext = plaintext.encode()  # Placeholder
@@ -312,6 +311,7 @@ class TestAsymmetricEncryption:
         def verify_signature(message: str, signature: str, public_key: str) -> bool:
             """Verify digital signature."""
             # Simplified simulation
+            import hmac
             
             # In real implementation, would use RSA or ECDSA
             expected_sig = hmac.new(
@@ -431,6 +431,7 @@ class TestSecureRandomNumberGeneration:
     def test_secure_random_vs_weak_random(self):
         """Verify secure random is used, not weak random."""
         
+        import random
         
         # Weak: Python's random module (not cryptographic)
         weak_value = random.randint(0, 1000000)

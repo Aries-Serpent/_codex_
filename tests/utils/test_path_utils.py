@@ -90,7 +90,6 @@ class TestSanitizeFilename:
 
     def test_no_illegal_chars_unchanged(self):
         """Filenames without illegal characters should remain unchanged."""
-import pytest
         filename = "report_20260121_143045.json"
         result = sanitize_filename(filename)
         assert result == filename, "Result must not be empty"

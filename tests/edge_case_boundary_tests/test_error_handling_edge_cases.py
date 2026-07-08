@@ -9,10 +9,11 @@ Categories tested:
 - H3: Partial Failure Scenarios (cascade prevention)
 - H4: Error Message Handling (information leakage prevention)
 """
-from unittest.mock import MagicMock
 
 # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+from unittest.mock import MagicMock
 
+import pytest
 
 
 class TestExceptionChaining:

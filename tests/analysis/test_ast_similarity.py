@@ -6,14 +6,13 @@ Validates:
 - Non-Python files skipped
 - Parse errors produce warnings
 """
-import pytest
+
 import json
 import os
 import shutil
 import subprocess
 import sys
 from pathlib import Path
-
 
 ART = Path("audit_artifacts")
 

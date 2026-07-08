@@ -1,10 +1,10 @@
 import os
 import pickle
 from unittest.mock import patch
+
+import pytest
+
 from src.codex_ml.utils.safe_pickle import (
-    import io
-
-
     SIGNED_PICKLE_ALGO_SHA256,
     SIGNED_PICKLE_MAGIC,
     SIGNED_PICKLE_VERSION,
@@ -26,6 +26,7 @@ class DummyBlockedClass:
 
 
 def test_restricted_unpickler_find_class():
+    import io
 
     unpickler = RestrictedUnpickler(io.BytesIO(b""))
 

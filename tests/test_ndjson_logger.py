@@ -3,14 +3,13 @@ Test Ndjson Logger
 
 Test module for ndjson logger.
 """
-import pytest
+
 import json
 from pathlib import Path
-    from codex_utils.ndjson import NDJSONLogger
-
 
 
 def test_ndjson_logger_writes_lines(tmp_path: Path):
+    from codex_utils.ndjson import NDJSONLogger
 
     path = tmp_path / "metrics.ndjson"
     with NDJSONLogger(str(path)) as log:

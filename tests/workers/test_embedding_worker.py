@@ -11,21 +11,11 @@ Tests cover:
 
 Phase 48: Coverage improvement for 0% coverage module.
 """
+
 import os
 from unittest.mock import MagicMock
-            from workers import embedding_worker
-            from workers.embedding_worker import default_preprocess
-            from workers.embedding_worker import default_preprocess
-            from workers.embedding_worker import _load_embedder_class
-            from workers.embedding_worker import _load_embedder_class
-            from workers.embedding_worker import _load_embedder_class
-            from workers.embedding_worker import _upsert_with_retry
-            from workers.embedding_worker import run_worker
-            from workers.embedding_worker import main
-            import workers
-            from workers import embedding_worker
 
-
+import pytest
 
 
 @pytest.fixture(autouse=True)
@@ -35,6 +25,7 @@ def cleanup_mocks():
     mock.patch.stopall()
 
 
+import pytest
 
 
 class TestDefaultPreprocess:
@@ -43,6 +34,7 @@ class TestDefaultPreprocess:
     def test_import_embedding_worker(self):
         """Test embedding_worker module can be imported."""
         try:
+            from workers import embedding_worker
 
             assert hasattr(embedding_worker, "default_preprocess")
         except ImportError:
@@ -51,6 +43,7 @@ class TestDefaultPreprocess:
     def test_default_preprocess_noop(self):
         """Test default_preprocess returns text unchanged."""
         try:
+            from workers.embedding_worker import default_preprocess
 
             text = "Hello, world!"
             result = default_preprocess(text)
@@ -61,6 +54,7 @@ class TestDefaultPreprocess:
     def test_default_preprocess_empty_string(self):
         """Test default_preprocess with empty string."""
         try:
+            from workers.embedding_worker import default_preprocess
 
             result = default_preprocess("")
             assert result == "", "Result must not be empty"
@@ -74,6 +68,7 @@ class TestLoadEmbedderClass:
     def test_load_embedder_class_empty_path(self):
         """Test loading default MockEmbedder when path is empty."""
         try:
+            from workers.embedding_worker import _load_embedder_class
 
             # Empty path should return MockEmbedder
             cls = _load_embedder_class("")
@@ -84,6 +79,7 @@ class TestLoadEmbedderClass:
     def test_load_embedder_class_custom_path(self):
         """Test loading embedder from custom path."""
         try:
+            from workers.embedding_worker import _load_embedder_class
 
             # Should be able to load the mock embedder explicitly
             path = "src.mcp.embeddings.mock_embedder.MockEmbedder"
@@ -99,6 +95,7 @@ class TestLoadEmbedderClass:
     def test_load_embedder_class_invalid_path(self):
         """Test loading embedder from invalid path raises."""
         try:
+            from workers.embedding_worker import _load_embedder_class
 
             with pytest.raises((ImportError, ModuleNotFoundError, AttributeError, ValueError)):
                 _load_embedder_class("nonexistent.module.Class")
@@ -112,6 +109,7 @@ class TestUpsertWithRetry:
     def test_upsert_with_retry_success(self):
         """Test upsert succeeds on first try."""
         try:
+            from workers.embedding_worker import _upsert_with_retry
 
             mock_adapter = MagicMock()
             mock_adapter.upsert_batch = MagicMock()
@@ -130,6 +128,7 @@ class TestRunWorker:
     def test_run_worker_import(self):
         """Test run_worker can be imported."""
         try:
+            from workers.embedding_worker import run_worker
 
             assert callable(run_worker), "Condition must be true"
         except ImportError:
@@ -142,6 +141,7 @@ class TestMain:
     def test_main_import(self):
         """Test main can be imported."""
         try:
+            from workers.embedding_worker import main
 
             assert callable(main), "Condition must be true"
         except ImportError:
@@ -154,6 +154,7 @@ class TestModuleImports:
     def test_workers_package_exists(self):
         """Test workers package can be imported."""
         try:
+            import workers
 
             assert workers is not None, "workers must be initialized"
         except ImportError:
@@ -162,6 +163,7 @@ class TestModuleImports:
     def test_embedding_worker_module_exists(self):
         """Test embedding_worker module exists."""
         try:
+            from workers import embedding_worker
 
             assert embedding_worker is not None, "embedding_worker must be initialized"
         except ImportError:

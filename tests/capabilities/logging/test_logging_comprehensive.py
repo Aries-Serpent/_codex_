@@ -7,23 +7,25 @@ Tests cover:
 - PII scrubbing
 - Alerting rules
 """
+
 from __future__ import annotations
-pytest.importorskip("hypothesis")
+
 import json
 import re
 import time
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
+
+import pytest
+
+pytest.importorskip("hypothesis")
+
+
+pytest.importorskip("hypothesis", reason="hypothesis required for property tests")
+
 from hypothesis import given, settings
 from hypothesis import strategies as st
-
-
-
-
-
-
-
 
 # --- Centralized Metrics Sink Tests ---
 

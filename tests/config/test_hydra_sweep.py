@@ -3,14 +3,13 @@ Test Hydra Sweep
 
 Test module for hydra sweep.
 """
+
 from __future__ import annotations
-import pytest
+
 from datetime import datetime
 from pathlib import Path
+
 from omegaconf import OmegaConf
-
-
-
 
 
 def test_hydra_sweep_config_loads() -> None:

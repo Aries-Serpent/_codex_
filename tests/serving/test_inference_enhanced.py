@@ -1,28 +1,15 @@
 """
 Tests for Enhanced Inference Server with Authentication and Circuit Breaker
 """
+
+from unittest.mock import patch
+
+import pytest
+
 pytest.importorskip("fastapi")
 pytest.importorskip("starlette")
-        resilience = pytest.importorskip("src.codex_ml.serving.resilience")
-from unittest.mock import patch
+
 from src.codex_ml.serving.inference_server import (  # pragma: allowlist secret
-        from fastapi.testclient import TestClient
-        from fastapi.testclient import TestClient
-        from fastapi.testclient import TestClient
-        from fastapi.testclient import TestClient
-        from fastapi.testclient import TestClient
-        from fastapi.testclient import TestClient
-        from fastapi.testclient import TestClient
-        from fastapi.testclient import TestClient
-        from fastapi.testclient import TestClient
-        from fastapi.testclient import TestClient
-        from fastapi.testclient import TestClient
-        from fastapi.testclient import TestClient
-        from fastapi.testclient import TestClient
-
-
-
-
     AuthManager,
     ModelConfig,
     create_app,
@@ -91,6 +78,7 @@ class TestInferenceServerWithAuth:
         config = ModelConfig(model_name="test-model", model_type="stub")
         app = create_app(config)
 
+        from fastapi.testclient import TestClient
 
         client = TestClient(app)
 
@@ -106,6 +94,7 @@ class TestInferenceServerWithAuth:
         config = ModelConfig(model_name="test-model", model_type="stub")
         app = create_app(config)
 
+        from fastapi.testclient import TestClient
 
         client = TestClient(app)
 
@@ -130,6 +119,7 @@ class TestInferenceServerWithAuth:
         config = ModelConfig(model_name="test-model", model_type="stub")
         app = create_app(config)
 
+        from fastapi.testclient import TestClient
 
         client = TestClient(app)
 
@@ -145,6 +135,7 @@ class TestInferenceServerWithAuth:
         config = ModelConfig(model_name="test-model", model_type="stub")
         app = create_app(config)
 
+        from fastapi.testclient import TestClient
 
         client = TestClient(app)
 
@@ -160,6 +151,7 @@ class TestInferenceServerWithAuth:
         config = ModelConfig(model_name="test-model", model_type="stub")
         app = create_app(config)
 
+        from fastapi.testclient import TestClient
 
         client = TestClient(app)
 
@@ -174,6 +166,7 @@ class TestInferenceServerWithAuth:
         config = ModelConfig(model_name="test-model", model_type="stub")
         app = create_app(config)
 
+        from fastapi.testclient import TestClient
 
         client = TestClient(app)
 
@@ -187,6 +180,7 @@ class TestInferenceServerWithAuth:
         config = ModelConfig(model_name="test-model", model_type="stub")
         app = create_app(config)
 
+        from fastapi.testclient import TestClient
 
         client = TestClient(app)
 
@@ -205,6 +199,7 @@ class TestInferenceServerWithAuth:
         config = ModelConfig(model_name="test-model", model_type="stub")
         app = create_app(config)
 
+        from fastapi.testclient import TestClient
 
         client = TestClient(app)
 
@@ -221,6 +216,7 @@ class TestInferenceServerWithAuth:
         config = ModelConfig(model_name="test-model", model_type="stub")
         app = create_app(config)
 
+        from fastapi.testclient import TestClient
 
         client = TestClient(app)
 
@@ -241,6 +237,7 @@ class TestInferenceServerWithAuth:
         config = ModelConfig(model_name="test-model", model_type="stub")
         app = create_app(config)
 
+        from fastapi.testclient import TestClient
 
         client = TestClient(app)
 
@@ -258,6 +255,7 @@ class TestInferenceServerWithAuth:
         config = ModelConfig(model_name="test-model", model_type="stub")
         app = create_app(config)
 
+        from fastapi.testclient import TestClient
 
         client = TestClient(app)
 
@@ -272,11 +270,13 @@ class TestCircuitBreakerIntegration:
 
     def test_circuit_breaker_on_predict(self):
         """Test real circuit breaker behavior during prediction failures"""
+        resilience = pytest.importorskip("src.codex_ml.serving.resilience")
         circuit_breaker_config = resilience.CircuitBreakerConfig
 
         config = ModelConfig(model_name="test-model", model_type="stub")
         app = create_app(config)
 
+        from fastapi.testclient import TestClient
 
         client = TestClient(app, raise_server_exceptions=False)
 
@@ -300,6 +300,7 @@ class TestCircuitBreakerIntegration:
         config = ModelConfig(model_name="test-model", model_type="stub")
         app = create_app(config)
 
+        from fastapi.testclient import TestClient
 
         client = TestClient(app)
 

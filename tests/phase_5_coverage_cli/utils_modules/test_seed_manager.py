@@ -10,26 +10,18 @@ Test Coverage Goals:
   - Error handling (25%): Missing dependencies, invalid seeds
   - Edge cases (15%): Edge seed values, partial numpy/torch
 """
+
 from __future__ import annotations
+
 import os
 from dataclasses import asdict
 from unittest.mock import patch
-    from codex_ml.reproducibility.seed_manager import (
-            from codex_ml.reproducibility.seed_manager import set_seed
-        import random
-        import random
-            import numpy as np
-            from codex_ml.reproducibility.seed_manager import set_seed
-        from codex_ml.reproducibility import seed_manager
-        from codex_ml.reproducibility import seed_manager
-        from codex_ml.reproducibility import seed_manager
-        from codex_ml.reproducibility import seed_manager
 
-
-
+import pytest
 
 # Import the module to test
 try:
+    from codex_ml.reproducibility.seed_manager import (
         SeedState,
         get_seed_state,
         restore_seed_state,
@@ -86,6 +78,7 @@ class TestSetSeedBasic:
         """Test setting Python random seed."""
         # Should not raise error
         try:
+            from codex_ml.reproducibility.seed_manager import set_seed
             set_seed(42)
         except Exception as e:
             pytest.skip(f"set_seed not available: {e}")
@@ -246,6 +239,7 @@ class TestDeterminism:
 
     def test_repeated_seeds_same_sequence(self) -> None:
         """Test that same seed produces consistent sequence."""
+        import random
 
         try:
             set_seed(42)
@@ -261,6 +255,7 @@ class TestDeterminism:
 
     def test_different_seeds_different_sequence(self) -> None:
         """Test that different seeds produce different sequences."""
+        import random
 
         try:
             set_seed(42)
@@ -277,7 +272,9 @@ class TestDeterminism:
     def test_numpy_determinism(self) -> None:
         """Test numpy determinism with seed."""
         try:
+            import numpy as np
 
+            from codex_ml.reproducibility.seed_manager import set_seed
 
             set_seed(42)
             arr1 = np.random.randn(3)
@@ -344,18 +341,22 @@ class TestModuleStructure:
 
     def test_module_has_set_seed(self) -> None:
         """Test module exports set_seed."""
+        from codex_ml.reproducibility import seed_manager
         assert hasattr(seed_manager, 'set_seed')
 
     def test_module_has_seed_state_class(self) -> None:
         """Test module exports SeedState class."""
+        from codex_ml.reproducibility import seed_manager
         assert hasattr(seed_manager, 'SeedState')
 
     def test_module_has_flags(self) -> None:
         """Test module has availability flags."""
+        from codex_ml.reproducibility import seed_manager
         assert hasattr(seed_manager, 'NUMPY_AVAILABLE')
         assert hasattr(seed_manager, 'TORCH_AVAILABLE')
 
     def test_flags_are_boolean(self) -> None:
         """Test availability flags are boolean."""
+        from codex_ml.reproducibility import seed_manager
         assert isinstance(seed_manager.NUMPY_AVAILABLE, bool)
         assert isinstance(seed_manager.TORCH_AVAILABLE, bool)

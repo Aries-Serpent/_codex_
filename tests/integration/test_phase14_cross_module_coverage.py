@@ -8,17 +8,13 @@ Test Coverage Target: 30+ integration tests for Phase 14.3
 
 Created: 2026-01-18 (Phase 14.3)
 """
+
 from __future__ import annotations
+
 import tempfile
 from pathlib import Path
-        import os
-        import logging
-        import logging.handlers
-        import json
-        import json
 
-
-
+import pytest
 
 # =============================================================================
 # CLI to Core Integration Tests
@@ -255,6 +251,7 @@ class TestConfigurationIntegration:
 
     def test_environment_variable_injection(self):
         """Test environment variables are injected into config."""
+        import os
 
         # Set test env var
         os.environ["TEST_CONFIG_VAR"] = "test_value"
@@ -276,6 +273,8 @@ class TestLoggingIntegration:
 
     def test_log_propagation(self):
         """Test logs propagate correctly across modules."""
+        import logging
+        import logging.handlers
 
         # Create test logger
         logger = logging.getLogger("test.integration")
@@ -297,6 +296,7 @@ class TestLoggingIntegration:
 
     def test_structured_logging_format(self):
         """Test structured logging produces valid format."""
+        import json
 
         log_entry = {
             "timestamp": "2026-01-18T12:00:00Z",
@@ -399,6 +399,7 @@ class TestFileSystemIntegration:
 
     def test_checkpoint_save_load_cycle(self):
         """Test checkpoint save and load cycle."""
+        import json
 
         with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             checkpoint = {"epoch": 5, "loss": 0.3}

@@ -6,23 +6,13 @@ Validates:
 2. List/register operations work correctly
 3. Adapter interfaces are properly defined
 """
-    from codex_ml.plugins.registry import Registry
-    from codex_ml.plugins.registry import Registry
-    from codex_ml.plugins.registry import Registry
-    from codex_ml.plugins.registry import Registry
-    from codex_ml.plugins.registry import Registry
-        from codex_ml.metrics.registry import BUILTIN_METRICS
-        from codex_ml.models.factory import load_model
-    from codex_ml.plugins.registry import discover
-    from codex_ml.plugins.registry import get
-    from codex_ml.plugins.registry import Registry
-        from codex_ml.data.registry import load_line_dataset
-    from codex_ml.plugins.registry import Registry
 
+import pytest
 
 
 def test_registry_list_names():
     """Test that Registry.names() returns all registered names."""
+    from codex_ml.plugins.registry import Registry
 
     registry = Registry(kind="test")
 
@@ -44,6 +34,7 @@ def test_registry_list_names():
 
 def test_registry_case_insensitive():
     """Test that registry lookups are case-insensitive."""
+    from codex_ml.plugins.registry import Registry
 
     registry = Registry(kind="test")
 
@@ -60,6 +51,7 @@ def test_registry_case_insensitive():
 
 def test_registry_register_decorator():
     """Test registry registration as decorator."""
+    from codex_ml.plugins.registry import Registry
 
     registry = Registry(kind="metrics")
 
@@ -79,6 +71,7 @@ def test_registry_register_decorator():
 
 def test_registry_resolve_and_instantiate():
     """Test instantiation from registry."""
+    from codex_ml.plugins.registry import Registry
 
     registry = Registry(kind="models")
 
@@ -98,6 +91,7 @@ def test_registry_resolve_and_instantiate():
 
 def test_registry_missing_key_raises():
     """Test that accessing missing key raises appropriate error."""
+    from codex_ml.plugins.registry import Registry
 
     registry = Registry(kind="test")
 
@@ -112,6 +106,7 @@ def test_registry_missing_key_raises():
 def test_metrics_registry_exists():
     """Test that metrics registry is available with stable names."""
     try:
+        from codex_ml.metrics.registry import BUILTIN_METRICS
 
         # Should be a dict
         assert isinstance(BUILTIN_METRICS, dict)
@@ -128,6 +123,7 @@ def test_metrics_registry_exists():
 def test_model_factory_list():
     """Test that model factories can be listed."""
     try:
+        from codex_ml.models.factory import load_model
 
         # Function should exist and be callable
         assert callable(load_model)
@@ -141,6 +137,7 @@ def test_model_factory_list():
 
 def test_plugin_registry_discover():
     """Test entry point discovery mechanism."""
+    from codex_ml.plugins.registry import discover
 
     # Should return a dict (may be empty if no plugins installed)
     plugins = discover(group="codex_ml.plugins")
@@ -154,6 +151,7 @@ def test_plugin_registry_discover():
 
 def test_plugin_registry_get():
     """Test single plugin retrieval."""
+    from codex_ml.plugins.registry import get
 
     # Should return None for missing plugins
     result = get("nonexistent_plugin", group="codex_ml.plugins")
@@ -162,6 +160,7 @@ def test_plugin_registry_get():
 
 def test_registry_load_from_entry_points():
     """Test loading plugins from entry points."""
+    from codex_ml.plugins.registry import Registry
 
     registry = Registry(kind="test_plugins")
 
@@ -182,6 +181,7 @@ def test_registry_load_from_entry_points():
 def test_data_loader_registry():
     """Test that data loader registry is available."""
     try:
+        from codex_ml.data.registry import load_line_dataset
 
         # Function should exist and be callable
         assert callable(load_line_dataset), "Data must not be empty"
@@ -208,6 +208,7 @@ def test_entry_point_groups_stable(group, expected_prefix):
 
 def test_registry_duplicate_warning(caplog):
     """Test that duplicate registrations emit warnings."""
+    from codex_ml.plugins.registry import Registry
 
     registry = Registry(kind="test")
 

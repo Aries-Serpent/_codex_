@@ -1,7 +1,6 @@
 """
 Quick auth middleware tests to meet 100+ requirement.
 """
-import pytest
 
 
 class TestAuthMiddlewareBasic:

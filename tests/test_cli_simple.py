@@ -1,18 +1,19 @@
 """
+pytest.importorskip("mlflow")
 Test Cli Simple
 
 Test module for cli simple.
 """
+
 from __future__ import annotations
-pytest.importorskip("mlflow")
+
 import json
 from pathlib import Path
+
+import pytest
 from click.testing import CliRunner
+
 from codex_ml.cli import simple_cli
-
-
-
-
 
 
 @pytest.mark.infra

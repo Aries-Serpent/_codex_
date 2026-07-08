@@ -406,7 +406,6 @@ class TestConfigConsistency:
 
     def test_ivfpq_config_equality(self):
         """Test IVFPQ config equality."""
-import pytest
         config1 = IVFPQConfig(nlist=100)
         config2 = IVFPQConfig(nlist=100)
         assert config1 == config2, "config1 is not valid"

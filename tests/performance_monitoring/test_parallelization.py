@@ -3,9 +3,8 @@
 This module tests test parallelization strategies including
 worker distribution, load balancing, and execution optimization.
 """
-import pytest
-from datetime import datetime
 
+from datetime import datetime
 
 
 class TestWorkerDistribution:

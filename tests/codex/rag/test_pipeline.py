@@ -74,9 +74,8 @@ class TestRagPipelineConfiguration:
 
     def test_custom_embedding_model(self):
         """Test custom embedding model."""
-import pytest
-            from src.codex.rag import pipeline
         try:
+            from src.codex.rag import pipeline
 
             if hasattr(pipeline, "RagPipeline"):
                 rag = pipeline.RagPipeline(embedding_model="custom")

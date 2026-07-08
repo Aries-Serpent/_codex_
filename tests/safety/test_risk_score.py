@@ -3,9 +3,8 @@ Test Risk Score
 
 Test module for risk score.
 """
-import pytest
-from codex_ml.safety.risk_score import risk_score
 
+from codex_ml.safety.risk_score import risk_score
 
 
 def test_safe_text():

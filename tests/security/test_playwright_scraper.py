@@ -7,96 +7,16 @@ Covers:
 - Export helpers (JSON + CSV)
 - CLI entry-points (argument parsing)
 """
+
 from __future__ import annotations
+
 import json
 import sys
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 from urllib.parse import urlparse
-        import playwright_scraper as ps
-        import playwright_scraper as ps
-        import playwright_scraper as ps
-        import playwright_scraper as ps
-        import playwright_scraper as ps
-        import playwright_scraper as ps
-        import playwright_scraper as ps
-        import playwright_scraper as ps
-        import playwright_scraper as ps
-        import playwright_scraper as ps
-        from resolution_pipeline import PipelineResult
-        from resolution_pipeline import ResolutionPipeline
-        from resolution_pipeline import ResolutionPipeline
-        from resolution_pipeline import ResolutionPipeline
-        from resolution_pipeline import ResolutionPipeline
-        from resolution_pipeline import ResolutionPipeline
-        from resolution_pipeline import ResolutionPipeline
-        from resolution_pipeline import ResolutionPipeline
-        from resolution_pipeline import ResolutionPipeline
-        from resolution_pipeline import ResolutionPipeline
-        from resolution_pipeline import ResolutionPipeline
-        from resolution_pipeline import ResolutionPipeline
-        from resolution_pipeline import SEVERITY_PRIORITY
-        from resolution_pipeline import ResolutionPipeline
-        from resolution_pipeline import build_parser
-        from resolution_pipeline import build_parser
-        from resolution_pipeline import build_parser
-        from resolution_pipeline import ResolutionPipeline
-        from resolution_pipeline import ResolutionPipeline
-        from resolution_pipeline import ResolutionPipeline
-        import playwright_scraper as ps
-        import playwright_scraper as ps
-        import playwright_scraper as ps
-        import playwright_scraper as ps
-        import playwright_scraper as ps
-        import playwright_scraper as ps
-        import playwright_scraper as ps
-        import playwright_scraper as ps
-        import playwright_scraper as ps
-        import playwright_scraper as ps
-        import playwright_scraper as ps
-        import playwright_scraper as ps
-        import playwright_scraper as ps
-        import playwright_scraper as ps
-        import playwright_scraper as ps
-        import playwright_scraper as ps
-        import resolution_pipeline as rp
-        import resolution_pipeline as rp
-        import resolution_pipeline as rp
-        import resolution_pipeline as rp
-        import resolution_pipeline as rp
-        import resolution_pipeline as rp
-        import resolution_pipeline as rp
-        import resolution_pipeline as rp
-        import resolution_pipeline as rp
-        import resolution_pipeline as rp
-        import resolution_pipeline as rp
-        import resolution_pipeline as rp
-        import resolution_pipeline as rp
-        import resolution_pipeline as rp
-        import resolution_pipeline as rp
-        import resolution_pipeline as rp
-        import resolution_pipeline as rp
-        import resolution_pipeline as rp
-        import resolution_pipeline as rp
-        import resolution_pipeline as rp
-        import resolution_pipeline as rp
-        import resolution_pipeline as rp
-        import resolution_pipeline as rp
-        import resolution_pipeline as rp
-        import resolution_pipeline as rp
-        import resolution_pipeline as rp
-        import resolution_pipeline as rp
-        import resolution_pipeline as rp
-        import resolution_pipeline as rp
-        import resolution_pipeline as rp
-        import resolution_pipeline as rp
-        import resolution_pipeline as rp
-        import resolution_pipeline as rp
-        import resolution_pipeline as rp
-        import resolution_pipeline as rp
 
-
-
+import pytest
 
 # ---------------------------------------------------------------------------
 # Path bootstrap so we can import scripts directly
@@ -118,12 +38,14 @@ class TestPlaywrightScraperImportGuard:
 
     def test_has_playwright_false_when_missing(self, monkeypatch):
         """HAS_PLAYWRIGHT is False when import fails."""
+        import playwright_scraper as ps
 
         monkeypatch.setattr(ps, "HAS_PLAYWRIGHT", False)
         assert ps.HAS_PLAYWRIGHT is False, "HAS_PLAYWRIGHT is not valid"
 
     def test_scraper_raises_import_error_without_playwright(self, monkeypatch):
         """PlaywrightScraper raises ImportError when HAS_PLAYWRIGHT is False."""
+        import playwright_scraper as ps
 
         monkeypatch.setattr(ps, "HAS_PLAYWRIGHT", False)
         with pytest.raises(ImportError, match="playwright is not installed"):
@@ -132,6 +54,7 @@ class TestPlaywrightScraperImportGuard:
 
 class TestExportJson:
     def test_creates_json_with_correct_structure(self, tmp_path):
+        import playwright_scraper as ps
 
         alerts = [
             {"title": "SQL injection", "url": "/1", "severity": "high", "alert_number": 1},
@@ -148,6 +71,7 @@ class TestExportJson:
         assert "exported_at" in data, "Data must not be empty"
 
     def test_creates_parent_dirs(self, tmp_path):
+        import playwright_scraper as ps
 
         out = tmp_path / "a" / "b" / "alerts.json"
         ps.export_json([], out)
@@ -156,6 +80,7 @@ class TestExportJson:
 
 class TestExportCsv:
     def test_creates_csv_with_header(self, tmp_path):
+        import playwright_scraper as ps
 
         alerts = [{"title": "T", "url": "U", "severity": "low", "alert_number": 1}]
         out = tmp_path / "alerts.csv"
@@ -167,6 +92,7 @@ class TestExportCsv:
         assert "low" in content, "Content must not be empty"
 
     def test_empty_alerts_writes_header_only(self, tmp_path):
+        import playwright_scraper as ps
 
         out = tmp_path / "empty.csv"
         ps.export_csv([], out)
@@ -177,18 +103,21 @@ class TestExportCsv:
 
 class TestPlaywrightScraperParser:
     def test_default_repo(self):
+        import playwright_scraper as ps
 
         parser = ps.build_parser()
         args = parser.parse_args([])
         assert "Aries-Serpent" in args.repo, "Condition must be true"
 
     def test_custom_repo(self):
+        import playwright_scraper as ps
 
         parser = ps.build_parser()
         args = parser.parse_args(["--repo", "https://github.com/foo/bar"])
         assert args.repo == "https://github.com/foo/bar", "repo is not valid"
 
     def test_headless_flag(self):
+        import playwright_scraper as ps
 
         parser = ps.build_parser()
         args = parser.parse_args(["--no-headless"])
@@ -197,6 +126,7 @@ class TestPlaywrightScraperParser:
 
 class TestPlaywrightScraperMainNoPlaywright:
     def test_main_returns_1_without_playwright(self, monkeypatch):
+        import playwright_scraper as ps
 
         monkeypatch.setattr(ps, "HAS_PLAYWRIGHT", False)
         with patch("sys.argv", ["ps", "--repo", "https://github.com/a/b"]):
@@ -210,6 +140,7 @@ class TestPlaywrightScraperMainNoPlaywright:
 
 class TestPipelineResult:
     def test_to_dict_contains_all_keys(self):
+        from resolution_pipeline import PipelineResult
 
         result = PipelineResult(alerts_collected=10, codemods_applied=3)
         d = result.to_dict()
@@ -222,6 +153,7 @@ class TestPipelineResult:
 class TestResolutionPipelineCollect:
     def test_collect_returns_zero_when_no_fetcher(self, tmp_path):
         """If fetch_codeql_alerts.py is absent, collect returns 0."""
+        from resolution_pipeline import ResolutionPipeline
 
         pipeline = ResolutionPipeline(
             owner="owner",
@@ -236,6 +168,7 @@ class TestResolutionPipelineCollect:
         assert count == 0, "Count must be greater than zero"
 
     def test_collect_uses_playwright_fallback_when_api_returns_zero(self, tmp_path):
+        from resolution_pipeline import ResolutionPipeline
 
         pipeline = ResolutionPipeline(
             owner="owner",
@@ -252,6 +185,7 @@ class TestResolutionPipelineCollect:
         mock_pw.assert_called_once()
 
     def test_collect_skips_playwright_when_api_succeeds(self, tmp_path):
+        from resolution_pipeline import ResolutionPipeline
 
         pipeline = ResolutionPipeline(
             owner="owner",
@@ -270,6 +204,7 @@ class TestResolutionPipelineCollect:
 
 class TestResolutionPipelineAnalyse:
     def test_analyse_returns_empty_if_no_inventory(self, tmp_path):
+        from resolution_pipeline import ResolutionPipeline
 
         pipeline = ResolutionPipeline(
             owner="owner",
@@ -282,6 +217,7 @@ class TestResolutionPipelineAnalyse:
         assert any("inventory_missing" in e for e in pipeline.result.errors), "Result must not be empty"
 
     def test_analyse_loads_summary_from_inventory(self, tmp_path):
+        from resolution_pipeline import ResolutionPipeline
 
         inventory = tmp_path / "inv.json"
         inventory.write_text(
@@ -315,6 +251,7 @@ class TestResolutionPipelineAnalyse:
 
 class TestResolutionPipelineRemediate:
     def test_remediate_skips_missing_codemods(self, tmp_path):
+        from resolution_pipeline import ResolutionPipeline
 
         pipeline = ResolutionPipeline("owner", "repo")
         # All codemods are in a path that doesn't exist — should return 0
@@ -323,6 +260,7 @@ class TestResolutionPipelineRemediate:
         assert applied == 0, "applied is not valid"
 
     def test_remediate_counts_successful_codemods(self, tmp_path):
+        from resolution_pipeline import ResolutionPipeline
 
         fake_codemod = tmp_path / "fake_fix.py"
         fake_codemod.write_text("# fake")
@@ -339,6 +277,7 @@ class TestResolutionPipelineRemediate:
 class TestResolutionPipelineValidate:
     def test_validate_passes_when_tools_absent(self, tmp_path):
         """Missing ruff/bandit (FileNotFoundError → exit 0) should not fail."""
+        from resolution_pipeline import ResolutionPipeline
 
         pipeline = ResolutionPipeline("owner", "repo")
         with patch.object(pipeline, "_run", return_value=0):
@@ -348,6 +287,7 @@ class TestResolutionPipelineValidate:
         assert pipeline.result.validation_passed is True, "Result must not be empty"
 
     def test_validate_fails_when_ruff_errors(self):
+        from resolution_pipeline import ResolutionPipeline
 
         pipeline = ResolutionPipeline("owner", "repo")
 
@@ -365,12 +305,14 @@ class TestResolutionPipelineValidate:
 
 class TestResolutionPipelineClose:
     def test_close_dry_run_returns_zero(self, tmp_path):
+        from resolution_pipeline import ResolutionPipeline
 
         pipeline = ResolutionPipeline("owner", "repo", dry_run=True)
         closed = pipeline.close_alerts(alert_numbers=[1, 2, 3])
         assert closed == 0, "closed is not valid"
 
     def test_close_respects_max_batch(self, tmp_path):
+        from resolution_pipeline import ResolutionPipeline
 
         pipeline = ResolutionPipeline("owner", "repo")
         with patch.object(pipeline, "_run", return_value=0):
@@ -395,12 +337,14 @@ class TestResolutionPipelineSeverityMapping:
         ],
     )
     def test_severity_priority_mapping(self, severity, expected_priority):
+        from resolution_pipeline import SEVERITY_PRIORITY
 
         assert SEVERITY_PRIORITY[severity] == expected_priority, "Condition must be true"
 
 
 class TestResolutionPipelineRun:
     def test_run_all_stages(self, tmp_path):
+        from resolution_pipeline import ResolutionPipeline
 
         pipeline = ResolutionPipeline(
             owner="owner",
@@ -423,6 +367,7 @@ class TestResolutionPipelineRun:
 
 class TestResolutionPipelineParser:
     def test_defaults(self):
+        from resolution_pipeline import build_parser
 
         args = build_parser().parse_args([])
         assert args.owner == "Aries-Serpent", "owner is not valid"
@@ -430,11 +375,13 @@ class TestResolutionPipelineParser:
         assert "collect" in args.stages, "Condition must be true"
 
     def test_dry_run_flag(self):
+        from resolution_pipeline import build_parser
 
         args = build_parser().parse_args(["--dry-run"])
         assert args.dry_run is True, "dry_run is not valid"
 
     def test_stages_parsing(self):
+        from resolution_pipeline import build_parser
 
         args = build_parser().parse_args(["--stages", "collect,close"])
         assert "collect" in args.stages, "Condition must be true"
@@ -443,6 +390,7 @@ class TestResolutionPipelineParser:
 
 class TestCountAlerts:
     def test_count_from_total_alerts_key(self, tmp_path):
+        from resolution_pipeline import ResolutionPipeline
 
         p = tmp_path / "inv.json"
         p.write_text(json.dumps({"total_alerts": 99, "alerts": []}))
@@ -450,6 +398,7 @@ class TestCountAlerts:
         assert pipeline._count_alerts(p) == 99, "Count must be greater than zero"
 
     def test_count_from_alerts_list(self, tmp_path):
+        from resolution_pipeline import ResolutionPipeline
 
         p = tmp_path / "inv.json"
         p.write_text(json.dumps({"alerts": [{}, {}, {}]}))
@@ -457,6 +406,7 @@ class TestCountAlerts:
         assert pipeline._count_alerts(p) == 3, "Count must be greater than zero"
 
     def test_count_returns_zero_on_bad_file(self, tmp_path):
+        from resolution_pipeline import ResolutionPipeline
 
         pipeline = ResolutionPipeline("o", "r")
         assert pipeline._count_alerts(tmp_path / "nonexistent.json") == 0, "Count must be greater than zero"
@@ -475,6 +425,7 @@ class TestPlaywrightScraperInit:
     """__init__ body (lines 69-73): attributes set correctly."""
 
     def _make(self, monkeypatch, url="https://github.com/owner/repo", **kwargs):
+        import playwright_scraper as ps
 
         monkeypatch.setattr(ps, "HAS_PLAYWRIGHT", True)
         monkeypatch.delenv("GITHUB_TOKEN", raising=False)
@@ -497,6 +448,7 @@ class TestPlaywrightScraperInit:
         assert scraper.github_token == "explicit_tok", "github_token is not valid"
 
     def test_token_falls_back_to_env(self, monkeypatch):
+        import playwright_scraper as ps
 
         monkeypatch.setattr(ps, "HAS_PLAYWRIGHT", True)
         monkeypatch.setenv("GITHUB_TOKEN", "env_tok_xyz")
@@ -525,6 +477,7 @@ class TestAuthenticate:
     """_authenticate branch coverage — IMP-008 CDP route interception."""
 
     def _make_scraper(self, monkeypatch, token=""):
+        import playwright_scraper as ps
 
         monkeypatch.setattr(ps, "HAS_PLAYWRIGHT", True)
         monkeypatch.delenv("GITHUB_TOKEN", raising=False)
@@ -596,6 +549,7 @@ class TestExtractRowData:
     """_extract_row_data branch coverage (lines 107-126)."""
 
     def _make_scraper(self, monkeypatch):
+        import playwright_scraper as ps
 
         monkeypatch.setattr(ps, "HAS_PLAYWRIGHT", True)
         return ps.PlaywrightScraper("https://github.com/owner/repo", github_token="tok")
@@ -690,6 +644,7 @@ class TestIterPages:
     """_iter_pages generator coverage (lines 138-189)."""
 
     def _make_scraper(self, monkeypatch):
+        import playwright_scraper as ps
 
         monkeypatch.setattr(ps, "HAS_PLAYWRIGHT", True)
         return ps.PlaywrightScraper("https://github.com/owner/repo", github_token="tok")
@@ -844,6 +799,7 @@ class TestScrape:
     """scrape() context-manager flow (lines 196-217)."""
 
     def _make_scraper(self, monkeypatch, token="tok"):
+        import playwright_scraper as ps
 
         monkeypatch.setattr(ps, "HAS_PLAYWRIGHT", True)
         return ps.PlaywrightScraper("https://github.com/owner/repo", github_token=token)
@@ -867,6 +823,7 @@ class TestScrape:
         return mock_sp, mock_pw, mock_browser, mock_page
 
     def test_scrape_returns_list(self, monkeypatch):
+        import playwright_scraper as ps
 
         scraper = self._make_scraper(monkeypatch)
 
@@ -884,6 +841,7 @@ class TestScrape:
         assert result == expected, "Result must not be empty"
 
     def test_scrape_calls_browser_close_on_success(self, monkeypatch):
+        import playwright_scraper as ps
 
         scraper = self._make_scraper(monkeypatch)
 
@@ -900,6 +858,7 @@ class TestScrape:
 
     def test_scrape_calls_browser_close_on_exception(self, monkeypatch):
         """browser.close() is called even when _iter_pages raises."""
+        import playwright_scraper as ps
 
         scraper = self._make_scraper(monkeypatch)
 
@@ -918,6 +877,7 @@ class TestScrape:
         mock_browser.close.assert_called_once()
 
     def test_scrape_aggregates_multiple_pages(self, monkeypatch):
+        import playwright_scraper as ps
 
         scraper = self._make_scraper(monkeypatch)
 
@@ -938,6 +898,7 @@ class TestScrape:
         assert result[1]["title"] == "B", "Result must not be empty"
 
     def test_scrape_headless_passed_to_launch(self, monkeypatch):
+        import playwright_scraper as ps
 
         monkeypatch.setattr(ps, "HAS_PLAYWRIGHT", True)
         scraper = ps.PlaywrightScraper(
@@ -961,6 +922,7 @@ class TestMainWithPlaywright:
     """main() function coverage (lines 304-328)."""
 
     def test_main_success_returns_0(self, monkeypatch, tmp_path):
+        import playwright_scraper as ps
 
         monkeypatch.setattr(ps, "HAS_PLAYWRIGHT", True)
 
@@ -977,6 +939,7 @@ class TestMainWithPlaywright:
         assert out.exists(), "Condition must be true"
 
     def test_main_with_csv_writes_csv(self, monkeypatch, tmp_path):
+        import playwright_scraper as ps
 
         monkeypatch.setattr(ps, "HAS_PLAYWRIGHT", True)
 
@@ -1008,6 +971,7 @@ class TestMainWithPlaywright:
         assert "high" in content, "Content must not be empty"
 
     def test_main_scrape_exception_returns_1(self, monkeypatch, tmp_path):
+        import playwright_scraper as ps
 
         monkeypatch.setattr(ps, "HAS_PLAYWRIGHT", True)
 
@@ -1022,6 +986,7 @@ class TestMainWithPlaywright:
         assert result == 1, "Result must not be empty"
 
     def test_main_no_playwright_returns_1(self, monkeypatch):
+        import playwright_scraper as ps
 
         monkeypatch.setattr(ps, "HAS_PLAYWRIGHT", False)
 
@@ -1031,6 +996,7 @@ class TestMainWithPlaywright:
         assert result == 1, "Result must not be empty"
 
     def test_main_custom_token_and_timeout(self, monkeypatch, tmp_path):
+        import playwright_scraper as ps
 
         monkeypatch.setattr(ps, "HAS_PLAYWRIGHT", True)
 
@@ -1077,6 +1043,7 @@ class TestCollectViaApi:
 
     def test_api_fetcher_success_returns_alert_count(self, tmp_path):
         """Fetcher exists and _run returns 0 → reads inventory count."""
+        import resolution_pipeline as rp
 
         inventory = tmp_path / "inv.json"
         inventory.write_text(
@@ -1105,6 +1072,7 @@ class TestCollectViaApi:
 
     def test_api_fetcher_failure_returns_zero(self, tmp_path):
         """Fetcher exists but _run returns 1 → returns 0."""
+        import resolution_pipeline as rp
 
         (tmp_path / "fetch_codeql_alerts.py").write_text("# fake")
 
@@ -1124,6 +1092,7 @@ class TestCollectViaApi:
 
     def test_api_includes_token_in_cmd_when_set(self, tmp_path):
         """Token is appended to the command when self.token is truthy."""
+        import resolution_pipeline as rp
 
         inventory = tmp_path / "inv.json"
         inventory.write_text(json.dumps({"total_alerts": 1, "alerts": [{}]}))
@@ -1154,6 +1123,7 @@ class TestCollectViaPlaywright:
     def test_playwright_success_copies_output_to_inventory(self, tmp_path):
         """Scraper exists, _run=0, pw-output file present, no existing inventory
         → copies file and returns alert count."""
+        import resolution_pipeline as rp
 
         pw_out = tmp_path / "pw_alerts.json"
         alerts = [{"severity": "high", "alert_number": i} for i in range(5)]
@@ -1179,6 +1149,7 @@ class TestCollectViaPlaywright:
 
     def test_playwright_failure_returns_zero(self, tmp_path):
         """Scraper exists but _run returns 1 → returns 0."""
+        import resolution_pipeline as rp
 
         (tmp_path / "playwright_scraper.py").write_text("# fake")
 
@@ -1197,6 +1168,7 @@ class TestCollectViaPlaywright:
 
     def test_playwright_scraper_missing_returns_zero(self, tmp_path):
         """playwright_scraper.py absent → returns 0 immediately."""
+        import resolution_pipeline as rp
 
         # No playwright_scraper.py created in tmp_path
         pipeline = rp.ResolutionPipeline("owner", "repo")
@@ -1211,6 +1183,7 @@ class TestAnalyseUncoveredPaths:
 
     def test_analyse_returns_empty_when_analyser_missing(self, tmp_path):
         """Lines 212-213: analyser script not found → returns {} immediately."""
+        import resolution_pipeline as rp
 
         # tmp_path has no analyze_alerts.py
         pipeline = rp.ResolutionPipeline(
@@ -1228,6 +1201,7 @@ class TestAnalyseUncoveredPaths:
 
     def test_analyse_records_error_on_nonzero_run_exit(self, tmp_path):
         """Lines 234-235: _run returns 1 → error appended, summary is empty."""
+        import resolution_pipeline as rp
 
         inventory = tmp_path / "inv.json"
         inventory.write_text(json.dumps({"total_alerts": 2, "alerts": []}))
@@ -1254,6 +1228,7 @@ class TestLoadAnalysisSummaryException:
     """Lines 257-259: _load_analysis_summary exception path."""
 
     def test_returns_empty_dict_on_bad_json(self, tmp_path):
+        import resolution_pipeline as rp
 
         inventory = tmp_path / "inv.json"
         inventory.write_text("not valid json {{{")
@@ -1269,6 +1244,7 @@ class TestRemediateUncoveredPaths:
 
     def test_unknown_category_is_skipped(self):
         """Lines 284-285: codemod name absent from _CODEMODS dict."""
+        import resolution_pipeline as rp
 
         pipeline = rp.ResolutionPipeline("owner", "repo")
         with patch("resolution_pipeline._CODEMODS", {}):
@@ -1277,6 +1253,7 @@ class TestRemediateUncoveredPaths:
 
     def test_registered_but_missing_file_is_skipped(self, tmp_path):
         """Lines 287-288: codemod registered but file path doesn't exist."""
+        import resolution_pipeline as rp
 
         nonexistent = tmp_path / "nonexistent_codemod.py"
         # Do NOT create the file
@@ -1290,6 +1267,7 @@ class TestRemediateUncoveredPaths:
 
     def test_dry_run_appends_flag_to_cmd(self, tmp_path):
         """Line 293: dry_run=True → --dry-run is included in the subprocess cmd."""
+        import resolution_pipeline as rp
 
         fake_codemod = tmp_path / "fix.py"
         fake_codemod.write_text("# fake")
@@ -1310,6 +1288,7 @@ class TestRemediateUncoveredPaths:
 
     def test_failed_codemod_increments_counter(self, tmp_path):
         """Lines 300-301: _run returns 1 → codemods_failed incremented."""
+        import resolution_pipeline as rp
 
         fake_codemod = tmp_path / "fix.py"
         fake_codemod.write_text("# fake")
@@ -1329,6 +1308,7 @@ class TestValidateBanditFailure:
     """Lines 337-339: bandit exits with code 2 → validation fails."""
 
     def test_bandit_high_severity_causes_failure(self):
+        import resolution_pipeline as rp
 
         pipeline = rp.ResolutionPipeline("owner", "repo")
 
@@ -1352,6 +1332,7 @@ class TestCloseAlertsUncoveredPaths:
 
     def test_closer_missing_returns_zero(self, tmp_path):
         """Lines 379-380: close_codeql_alert.py not found → returns 0."""
+        import resolution_pipeline as rp
 
         # No closer file in tmp_path
         pipeline = rp.ResolutionPipeline("owner", "repo")
@@ -1362,6 +1343,7 @@ class TestCloseAlertsUncoveredPaths:
 
     def test_none_alert_numbers_resolves_p0_p1_from_inventory(self, tmp_path):
         """Line 383: alert_numbers=None → _resolve_p0_p1_alerts() provides them."""
+        import resolution_pipeline as rp
 
         inventory = tmp_path / "inv.json"
         inventory.write_text(
@@ -1395,6 +1377,7 @@ class TestCloseAlertsUncoveredPaths:
 
     def test_token_included_in_close_cmd(self, tmp_path):
         """Lines 395→398: when token is set, --token is appended to cmd."""
+        import resolution_pipeline as rp
 
         closer = tmp_path / "close_codeql_alert.py"
         closer.write_text("# fake")
@@ -1416,6 +1399,7 @@ class TestCloseAlertsUncoveredPaths:
 
     def test_failed_close_increments_no_closed_count(self, tmp_path):
         """Line 401: _run returns 1 → alert not counted as closed."""
+        import resolution_pipeline as rp
 
         closer = tmp_path / "close_codeql_alert.py"
         closer.write_text("# fake")
@@ -1435,6 +1419,7 @@ class TestResolveP0P1Alerts:
     """Lines 409-418: _resolve_p0_p1_alerts coverage."""
 
     def test_returns_only_critical_and_high_alert_numbers(self, tmp_path):
+        import resolution_pipeline as rp
 
         inventory = tmp_path / "inv.json"
         inventory.write_text(
@@ -1458,6 +1443,7 @@ class TestResolveP0P1Alerts:
         assert 40 not in result, "Result must not be empty"
 
     def test_excludes_entries_with_null_alert_number(self, tmp_path):
+        import resolution_pipeline as rp
 
         inventory = tmp_path / "inv.json"
         inventory.write_text(
@@ -1477,6 +1463,7 @@ class TestResolveP0P1Alerts:
         assert 5 in result, "Result must not be empty"
 
     def test_returns_empty_list_when_inventory_missing(self, tmp_path):
+        import resolution_pipeline as rp
 
         pipeline = rp.ResolutionPipeline(
             "owner",
@@ -1488,6 +1475,7 @@ class TestResolveP0P1Alerts:
         assert result == [], "Result must not be empty"
 
     def test_returns_empty_list_when_inventory_bad_json(self, tmp_path):
+        import resolution_pipeline as rp
 
         inventory = tmp_path / "inv.json"
         inventory.write_text("{ bad json !!!")
@@ -1502,6 +1490,7 @@ class TestRunMethod:
     """Lines 426-443: _run subprocess helper."""
 
     def test_real_echo_returns_zero_and_logs_stdout(self):
+        import resolution_pipeline as rp
 
         pipeline = rp.ResolutionPipeline("owner", "repo")
         ret = pipeline._run(["echo", "hello from test"], label="echo-test")
@@ -1509,6 +1498,7 @@ class TestRunMethod:
         assert ret == 0, "ret is not valid"
 
     def test_real_stderr_command_returns_zero(self):
+        import resolution_pipeline as rp
 
         pipeline = rp.ResolutionPipeline("owner", "repo")
         ret = pipeline._run(
@@ -1519,6 +1509,7 @@ class TestRunMethod:
 
     def test_nonexistent_command_returns_zero(self):
         """Lines 441-443: FileNotFoundError → returns 0 (non-blocking)."""
+        import resolution_pipeline as rp
 
         pipeline = rp.ResolutionPipeline("owner", "repo")
         ret = pipeline._run(["__nonexistent_cmd_xyz_99__"], label="missing-tool")
@@ -1527,6 +1518,7 @@ class TestRunMethod:
 
     def test_failing_command_returns_nonzero(self):
         """_run propagates the real exit code on subprocess failure."""
+        import resolution_pipeline as rp
 
         pipeline = rp.ResolutionPipeline("owner", "repo")
         ret = pipeline._run(
@@ -1541,6 +1533,7 @@ class TestRunStageAliases:
 
     def test_analyze_alias_calls_analyse(self):
         """'analyze' (US spelling) triggers self.analyse()."""
+        import resolution_pipeline as rp
 
         pipeline = rp.ResolutionPipeline("owner", "repo")
         with (
@@ -1560,6 +1553,7 @@ class TestRunStageAliases:
 
     def test_fix_alias_calls_remediate(self):
         """'fix' triggers self.remediate()."""
+        import resolution_pipeline as rp
 
         pipeline = rp.ResolutionPipeline("owner", "repo")
         with (
@@ -1579,6 +1573,7 @@ class TestRunStageAliases:
 
     def test_close_stage_calls_close_alerts(self):
         """'close' triggers self.close_alerts()."""
+        import resolution_pipeline as rp
 
         pipeline = rp.ResolutionPipeline("owner", "repo")
         with (
@@ -1601,6 +1596,7 @@ class TestMainFunction:
     """Lines 545-581: main() entry-point coverage."""
 
     def test_main_returns_0_when_no_errors(self):
+        import resolution_pipeline as rp
 
         with (
             patch("sys.argv", ["rp", "--owner", "o", "--repo", "r", "--stages", "collect"]),
@@ -1611,6 +1607,7 @@ class TestMainFunction:
         assert ret == 0, "ret is not valid"
 
     def test_main_returns_1_when_errors_present(self):
+        import resolution_pipeline as rp
 
         with (
             patch("sys.argv", ["rp", "--owner", "o", "--repo", "r", "--stages", "collect"]),
@@ -1623,6 +1620,7 @@ class TestMainFunction:
         assert ret == 1, "ret is not valid"
 
     def test_main_output_json_writes_file(self, tmp_path):
+        import resolution_pipeline as rp
 
         out_json = tmp_path / "result.json"
 
@@ -1654,6 +1652,7 @@ class TestMainFunction:
         assert "elapsed_s" in data, "Data must not be empty"
 
     def test_main_prints_passed_when_validation_passes(self, capsys):
+        import resolution_pipeline as rp
 
         result = rp.PipelineResult(validation_passed=True)
         with (
@@ -1666,6 +1665,7 @@ class TestMainFunction:
         assert "passed" in captured.out, "Condition must be true"
 
     def test_main_prints_errors_when_present(self, capsys):
+        import resolution_pipeline as rp
 
         result = rp.PipelineResult(errors=["ruff_failed", "bandit_high_severity"])
         with (
@@ -1679,6 +1679,7 @@ class TestMainFunction:
 
     def test_main_use_playwright_flag(self, tmp_path):
         """--use-playwright reaches ResolutionPipeline constructor."""
+        import resolution_pipeline as rp
 
         constructed: list = []
         original_init = rp.ResolutionPipeline.__init__

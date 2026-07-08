@@ -2,13 +2,14 @@
 
 All tests mock ``time.sleep`` so the suite runs instantly without real delays.
 """
+
 from __future__ import annotations
+
 from unittest.mock import MagicMock, patch
+
+import pytest
+
 from codex.resilience.retry import RetryExhausted, retry_with_backoff
-
-
-
-
 
 # ---------------------------------------------------------------------------
 # Helpers

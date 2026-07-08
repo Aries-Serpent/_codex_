@@ -3,16 +3,17 @@ Test Code Quality Pipeline
 
 Test module for code quality pipeline.
 """
-from __future__ import annotations
-import shutil
-import subprocess
 
 #!/usr/bin/env python
 # Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
 # Purpose: Verify code quality tooling presence; skip gracefully if not installed.
 
+from __future__ import annotations
 
+import shutil
+import subprocess
 
+import pytest
 
 
 def _has(cmd: str) -> bool:

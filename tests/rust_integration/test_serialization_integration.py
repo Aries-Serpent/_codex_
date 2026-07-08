@@ -1,25 +1,16 @@
 """
 Python integration tests for Serialization
 """
+
 import time
-        from codex_engine import AgentState
-        from codex_engine import AgentState
-        from codex_engine import AgentState, deserialize_state, serialize_state
-        import json
-        from codex_engine import AgentState, serialize_state
-        import json
-        from codex_engine import AgentState, deserialize_state, serialize_state
-        from codex_engine import AgentState, deserialize_state, serialize_state
-        from codex_engine import AgentState, deserialize_state, serialize_state
-        import concurrent.futures
-        from codex_engine import AgentState, serialize_state
 
-
+import pytest
 
 
 def test_agent_state_creation():
     """Test creating an AgentState instance."""
     try:
+        from codex_engine import AgentState
 
         state = AgentState("agent_1", ["memory1", "memory2"])
         assert state.id == "agent_1", "id is not valid"
@@ -31,6 +22,7 @@ def test_agent_state_creation():
 def test_agent_state_metrics():
     """Test AgentState metrics."""
     try:
+        from codex_engine import AgentState
 
         state = AgentState("agent_1", [])
 
@@ -48,6 +40,7 @@ def test_agent_state_metrics():
 def test_serialization_round_trip():
     """Test serialization and deserialization."""
     try:
+        from codex_engine import AgentState, deserialize_state, serialize_state
 
         state = AgentState("agent_1", ["item1", "item2"])
         state.set_metric("score", 0.98)
@@ -66,7 +59,9 @@ def test_serialization_round_trip():
 def test_serialization_size():
     """Test that MessagePack is compact."""
     try:
+        import json
 
+        from codex_engine import AgentState, serialize_state
 
         state = AgentState("agent_1", ["memory"] * 1000)
 
@@ -87,7 +82,9 @@ def test_serialization_size():
 def test_serialization_performance():
     """Test that MessagePack is faster than JSON."""
     try:
+        import json
 
+        from codex_engine import AgentState, deserialize_state, serialize_state
 
         state = AgentState("agent_1", ["item"] * 1000)
         for i in range(10):
@@ -125,6 +122,7 @@ def test_serialization_performance():
 def test_large_state_serialization():
     """Test serialization of large state."""
     try:
+        from codex_engine import AgentState, deserialize_state, serialize_state
 
         state = AgentState("agent_1", ["large_memory_item"] * 10000)
 
@@ -139,6 +137,7 @@ def test_large_state_serialization():
 def test_empty_state_serialization():
     """Test serialization of empty state."""
     try:
+        from codex_engine import AgentState, deserialize_state, serialize_state
 
         state = AgentState("agent_1", [])
 
@@ -154,7 +153,9 @@ def test_empty_state_serialization():
 def test_concurrent_serialization():
     """Test concurrent serialization from multiple threads."""
     try:
+        import concurrent.futures
 
+        from codex_engine import AgentState, serialize_state
 
         state = AgentState("agent_1", ["item"] * 100)
 

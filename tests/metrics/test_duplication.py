@@ -3,12 +3,13 @@ Tests for Duplication Detection
 
 Covers detection logic, parsing, and edge cases.
 """
+
 import tempfile
 from pathlib import Path
+
+import pytest
+
 from codex.metrics.duplication import (
-
-
-
     DuplicateBlock,
     DuplicationDetector,
     DuplicationRatio,

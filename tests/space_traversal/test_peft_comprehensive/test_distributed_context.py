@@ -3,9 +3,8 @@ Test Distributed Context
 
 Test module for distributed context.
 """
-import pytest
-from codex_ml.training.unified_training import distributed_context
 
+from codex_ml.training.unified_training import distributed_context
 
 
 def test_distributed_context_env(monkeypatch):

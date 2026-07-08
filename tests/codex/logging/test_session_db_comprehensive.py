@@ -10,6 +10,7 @@ Focus on the 5 critical bugs in load_session():
 
 These tests target the 343 untested functions in codex module.
 """
+
 import sqlite3
 import tempfile
 import threading
@@ -17,10 +18,10 @@ import time
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Generator
+
+import pytest
+
 from codex.logging.session_db import CacheEntry, SessionDB
-
-
-
 
 
 class TestSessionDBCriticalEdgeCases:

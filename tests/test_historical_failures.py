@@ -6,25 +6,24 @@ to validate accuracy and effectiveness.
 
 Target: 85%+ accuracy on known failure types
 """
+
 import json
 import sys
 from pathlib import Path
+
+import pytest
+
 from codex.logging.structured_logger import logger
-    from agent import (
-    from agent import DiagnosticReport as DiagnosticReport
-    from ingestion import Ingestor, ingest
-    import re
-
-
-
 
 # Add agent to path
 agent_path = Path(__file__).parent.parent / ".github" / "agents" / "ci-diagnostic-agent" / "src"
 sys.path.insert(0, str(agent_path))
 
 try:
+    from agent import (
         CIDiagnosticAgent,
     )
+    from agent import DiagnosticReport as DiagnosticReport
 except ImportError:
     pytest.skip("CI Diagnostic Agent not available", allow_module_level=True)
 
@@ -43,6 +42,7 @@ class TestHistoricalFailures:
         return """
 Traceback (most recent call last):
   File "test_integration.py", line 5, in <module>
+    from ingestion import Ingestor, ingest
 ImportError: cannot import name 'Ingestor' from 'ingestion'
 Make sure the module is installed and the import path is correct.
 """
@@ -270,6 +270,7 @@ def test_pattern_coverage(failure_type, expected_pattern):
     assert failure_type in patterns, "Assertion must pass"
 
     # Verify pattern can match expected strings
+    import re
 
     pattern = patterns[failure_type]["pattern"]
     assert re.search(pattern, expected_pattern, re.IGNORECASE) is not None

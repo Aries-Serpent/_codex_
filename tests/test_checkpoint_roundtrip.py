@@ -3,16 +3,17 @@ Test Checkpoint Roundtrip
 
 Test module for checkpoint roundtrip.
 """
+
 from __future__ import annotations
-np = pytest.importorskip("numpy")
-torch = pytest.importorskip("torch")
+
 import random
+
+import pytest
+
 from codex_ml.utils.checkpoint import load_checkpoint, save_checkpoint
 
-
-
-
-
+np = pytest.importorskip("numpy")
+torch = pytest.importorskip("torch")
 
 
 @pytest.mark.parametrize("use_scheduler", [True, False])

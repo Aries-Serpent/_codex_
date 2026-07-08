@@ -11,41 +11,11 @@ Systematically applies operator and performance patterns:
 
 Target: +4-5% coverage gain (38% → 43%)
 """
+
+import pytest
+
 pytest.importorskip("numpy", reason="numpy not installed")
 import numpy as np
-        from agents.physics_orchestrator import QuantumOperator
-        from agents.physics_orchestrator import QuantumOperator
-        from agents.physics_orchestrator import (
-        from agents.physics_orchestrator import (
-        from agents.physics_orchestrator import QuantumOperator
-        from agents.physics_orchestrator import QuantumOperator
-        from agents.physics_orchestrator import HamiltonianEvolver
-        from agents.physics_orchestrator import HamiltonianEvolver
-        from agents.physics_orchestrator import HamiltonianEvolver
-        from agents.physics_orchestrator import HamiltonianEvolver
-        from agents.physics_orchestrator import HamiltonianEvolver
-        from agents.physics_orchestrator import EnergyState
-        from agents.physics_orchestrator import EnergyState
-        from agents.physics_orchestrator import EnergyState
-        from agents.physics_orchestrator import EnergyLandscape
-        from agents.physics_orchestrator import EnergyLandscape, EnergyState
-        from agents.physics_orchestrator import EnergyLandscape, EnergyState
-        from agents.physics_orchestrator import EnergyLandscape, EnergyState
-        from agents.physics_orchestrator import EnergyLandscape, EnergyState
-        from agents.physics_orchestrator import PhysicsOrchestrator
-        from agents.physics_orchestrator import PhysicsOrchestrator
-        from agents.physics_orchestrator import HamiltonianEvolver
-        from agents.physics_orchestrator import HamiltonianEvolver
-        from agents.physics_orchestrator import HamiltonianEvolver
-        from agents.physics_orchestrator import HamiltonianEvolver
-        from agents.physics_orchestrator import HamiltonianEvolver
-        from agents.physics_orchestrator import HamiltonianEvolver
-        from agents.physics_orchestrator import PhysicsOrchestrator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-
-
-
 
 
 class TestPhase2_MomentumOperators:
@@ -57,6 +27,7 @@ class TestPhase2_MomentumOperators:
 
     def test_quantum_operator_initialization(self):
         """Test QuantumOperator initialization"""
+        from agents.physics_orchestrator import QuantumOperator
 
         op = QuantumOperator()
         assert op is not None, "op must be initialized"
@@ -64,6 +35,7 @@ class TestPhase2_MomentumOperators:
 
     def test_quantum_operator_build(self):
         """Test building quantum operators"""
+        from agents.physics_orchestrator import QuantumOperator
 
         op = QuantumOperator(grid_size=5)
         op._build_operators()
@@ -71,6 +43,7 @@ class TestPhase2_MomentumOperators:
 
     def test_momentum_conservation_check(self):
         """Test momentum conservation checker (Eq #7)"""
+        from agents.physics_orchestrator import (
             ActionPath,
             ActionType,
             PhysicsInspiredOrchestrator,
@@ -89,6 +62,7 @@ class TestPhase2_MomentumOperators:
 
     def test_energy_conservation_check(self):
         """Test energy conservation checker (Eq #17)"""
+        from agents.physics_orchestrator import (
             ActionPath,
             ActionType,
             PhysicsInspiredOrchestrator,
@@ -105,6 +79,7 @@ class TestPhase2_MomentumOperators:
 
     def test_momentum_operator_eigenvalues(self):
         """Test momentum operator eigenvalue calculation"""
+        from agents.physics_orchestrator import QuantumOperator
 
         op = QuantumOperator(grid_size=8)
         op._build_operators()
@@ -113,6 +88,7 @@ class TestPhase2_MomentumOperators:
 
     def test_gradient_computation(self):
         """Test gradient computation for momentum (∇ψ)"""
+        from agents.physics_orchestrator import QuantumOperator
 
         op = QuantumOperator(grid_size=10)
         # Test gradient methods if available
@@ -133,6 +109,7 @@ class TestPhase2_EnergyOperators:
 
     def test_hamiltonian_evolver_initialization(self):
         """Test HamiltonianEvolver initialization"""
+        from agents.physics_orchestrator import HamiltonianEvolver
 
         evolver = HamiltonianEvolver()
         assert evolver is not None, "evolver must be initialized"
@@ -140,6 +117,7 @@ class TestPhase2_EnergyOperators:
 
     def test_harmonic_hamiltonian_creation(self):
         """Test creating harmonic oscillator Hamiltonian"""
+        from agents.physics_orchestrator import HamiltonianEvolver
 
         evolver = HamiltonianEvolver(grid_size=16)
         # harmonic_hamiltonian requires q and p parameters
@@ -149,6 +127,7 @@ class TestPhase2_EnergyOperators:
 
     def test_double_well_hamiltonian(self):
         """Test double-well potential Hamiltonian"""
+        from agents.physics_orchestrator import HamiltonianEvolver
 
         evolver = HamiltonianEvolver(grid_size=16)
         # double_well_hamiltonian requires q and p, uses barrier not barrier_height
@@ -157,6 +136,7 @@ class TestPhase2_EnergyOperators:
 
     def test_time_evolution_operator(self):
         """Test time evolution operator e^{-iĤt/ħ} (Eq #20)"""
+        from agents.physics_orchestrator import HamiltonianEvolver
 
         evolver = HamiltonianEvolver(grid_size=8)
         if hasattr(evolver, "evolve"):
@@ -166,6 +146,7 @@ class TestPhase2_EnergyOperators:
 
     def test_energy_eigenvalues(self):
         """Test computing energy eigenvalues"""
+        from agents.physics_orchestrator import HamiltonianEvolver
 
         evolver = HamiltonianEvolver(grid_size=8)
         # harmonic_hamiltonian returns a scalar, not a matrix
@@ -176,6 +157,7 @@ class TestPhase2_EnergyOperators:
 
     def test_energy_state_initialization(self):
         """Test EnergyState initialization"""
+        from agents.physics_orchestrator import EnergyState
 
         state = EnergyState(
             state_id="test_state",
@@ -188,6 +170,7 @@ class TestPhase2_EnergyOperators:
 
     def test_free_energy_calculation(self):
         """Test free energy F = U - TS calculation"""
+        from agents.physics_orchestrator import EnergyState
 
         state = EnergyState(state_id="test", configuration={}, internal_energy=100.0, entropy=10.0)
         free_energy = state.free_energy()
@@ -197,6 +180,7 @@ class TestPhase2_EnergyOperators:
 
     def test_boltzmann_probability(self):
         """Test Boltzmann probability e^{-ΔE/kT}"""
+        from agents.physics_orchestrator import EnergyState
 
         state = EnergyState(state_id="test", configuration={}, internal_energy=10.0, entropy=1.0)
         prob = state.boltzmann_probability(reference_energy=5.0)
@@ -205,6 +189,7 @@ class TestPhase2_EnergyOperators:
 
     def test_energy_landscape_initialization(self):
         """Test EnergyLandscape initialization"""
+        from agents.physics_orchestrator import EnergyLandscape
 
         landscape = EnergyLandscape(temperature=2.0)
         assert landscape is not None, "landscape must be initialized"
@@ -212,6 +197,7 @@ class TestPhase2_EnergyOperators:
 
     def test_energy_landscape_add_state(self):
         """Test adding states to energy landscape"""
+        from agents.physics_orchestrator import EnergyLandscape, EnergyState
 
         landscape = EnergyLandscape()
         state = EnergyState(state_id="s1", configuration={}, internal_energy=5.0, entropy=1.0)
@@ -220,6 +206,7 @@ class TestPhase2_EnergyOperators:
 
     def test_gibbs_probability(self):
         """Test Gibbs probability calculation"""
+        from agents.physics_orchestrator import EnergyLandscape, EnergyState
 
         landscape = EnergyLandscape(temperature=1.0)
         state = EnergyState(state_id="s1", configuration={}, internal_energy=10.0, entropy=2.0)
@@ -230,6 +217,7 @@ class TestPhase2_EnergyOperators:
 
     def test_state_selection(self):
         """Test selecting state from Gibbs distribution"""
+        from agents.physics_orchestrator import EnergyLandscape, EnergyState
 
         landscape = EnergyLandscape()
         for i in range(3):
@@ -246,6 +234,7 @@ class TestPhase2_EnergyOperators:
 
     def test_minimize_free_energy(self):
         """Test free energy minimization"""
+        from agents.physics_orchestrator import EnergyLandscape, EnergyState
 
         landscape = EnergyLandscape(temperature=1.0)
         for i in range(5):
@@ -270,6 +259,7 @@ class TestPhase2_PerformanceOptimization:
 
     def test_optimize_with_energy(self):
         """Test energy-based optimization"""
+        from agents.physics_orchestrator import PhysicsOrchestrator
 
         orchestrator = PhysicsOrchestrator()
         if hasattr(orchestrator, "optimize_with_energy"):
@@ -280,6 +270,7 @@ class TestPhase2_PerformanceOptimization:
 
     def test_speed_of_light_constraint(self):
         """Test v < c constraint (Eq #26)"""
+        from agents.physics_orchestrator import PhysicsOrchestrator
 
         orchestrator = PhysicsOrchestrator()
         # Test that velocity is bounded
@@ -395,6 +386,7 @@ class TestPhase2_AdvancedHamiltonians:
 
     def test_harmonic_oscillator_energy_levels(self):
         """Test E_n = ħω(n + 1/2)"""
+        from agents.physics_orchestrator import HamiltonianEvolver
 
         evolver = HamiltonianEvolver(grid_size=16)
         omega = 2.0
@@ -406,6 +398,7 @@ class TestPhase2_AdvancedHamiltonians:
 
     def test_hamiltonian_time_independence(self):
         """Test time-independent Hamiltonian"""
+        from agents.physics_orchestrator import HamiltonianEvolver
 
         evolver = HamiltonianEvolver(grid_size=8)
         # Same parameters should give same result
@@ -415,6 +408,7 @@ class TestPhase2_AdvancedHamiltonians:
 
     def test_potential_energy_operator(self):
         """Test potential energy operator V̂"""
+        from agents.physics_orchestrator import HamiltonianEvolver
 
         evolver = HamiltonianEvolver(grid_size=8)
         if hasattr(evolver, "potential_operator"):
@@ -426,6 +420,7 @@ class TestPhase2_AdvancedHamiltonians:
 
     def test_kinetic_energy_operator(self):
         """Test kinetic energy operator T̂ = -ħ²∇²/2m"""
+        from agents.physics_orchestrator import HamiltonianEvolver
 
         evolver = HamiltonianEvolver(grid_size=8)
         if hasattr(evolver, "kinetic_operator"):
@@ -436,6 +431,7 @@ class TestPhase2_AdvancedHamiltonians:
 
     def test_hamiltonian_hermiticity(self):
         """Test Ĥ† = Ĥ (Hamiltonian is Hermitian)"""
+        from agents.physics_orchestrator import HamiltonianEvolver
 
         evolver = HamiltonianEvolver(grid_size=8)
         # harmonic_hamiltonian returns a real scalar, which is trivially Hermitian
@@ -451,6 +447,7 @@ class TestPhase2_ConservationLaws:
 
     def test_energy_conservation_in_time_evolution(self):
         """Test energy conservation during time evolution"""
+        from agents.physics_orchestrator import HamiltonianEvolver
 
         evolver = HamiltonianEvolver(grid_size=8)
 
@@ -477,6 +474,7 @@ class TestPhase2_ConservationLaws:
 
     def test_current_conservation(self):
         """Test current conservation ∇·j + ∂ρ/∂t = 0 (Eq #7)"""
+        from agents.physics_orchestrator import PhysicsOrchestrator
 
         orchestrator = PhysicsOrchestrator()
         # Test current conservation if method exists
@@ -508,6 +506,7 @@ class TestPhase2_OptimizationMethods:
 
     def test_path_integral_optimization(self):
         """Test path integral optimization"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         if hasattr(orchestrator, "optimize_path"):
@@ -522,6 +521,7 @@ class TestPhase2_OptimizationMethods:
 
     def test_simulated_annealing(self):
         """Test simulated annealing optimization"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         if hasattr(orchestrator, "simulated_annealing"):

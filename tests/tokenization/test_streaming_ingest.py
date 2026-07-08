@@ -1,14 +1,15 @@
 """
+pytest.importorskip("charset_normalizer")
 Test Streaming Ingest
 
 Test module for streaming ingest.
 """
+
 from __future__ import annotations
-pytest.importorskip("charset_normalizer")
+
+import pytest
+
 from src.codex_ml.tokenization import train_tokenizer as module
-
-
-
 
 pytestmark = pytest.mark.skipif(
     module is None, reason="tokenizers not available — train_tokenizer module not loaded"

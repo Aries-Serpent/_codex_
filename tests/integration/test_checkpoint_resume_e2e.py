@@ -3,25 +3,15 @@
 Tests full checkpoint resume workflow including schema detection, migration,
 and recovery from partial or corrupted checkpoint states.
 """
+
 from __future__ import annotations
+
 import json
 import shutil
 import tempfile
 from pathlib import Path
-        from src.codex_ml.checkpointing.checkpoint_core import (
-        from src.codex_ml.checkpointing.checkpoint_core import (
-        from src.codex_ml.checkpointing.checkpoint_core import (
-        from src.codex_ml.checkpointing.checkpoint_core import (
-        from src.codex_ml.checkpointing.checkpoint_core import (
-        from src.codex_ml.checkpointing.checkpoint_core import (
-        import time
-        from src.codex_ml.checkpointing.checkpoint_core import (
-        from src.codex_ml.checkpointing.checkpoint_core import load_checkpoint
-        import os
-        from src.codex_ml.checkpointing.checkpoint_core import save_checkpoint
 
-
-
+import pytest
 
 
 class TestCheckpointResumeFullWorkflow:
@@ -30,6 +20,7 @@ class TestCheckpointResumeFullWorkflow:
     def test_checkpoint_resume_end_to_end_workflow(self):
         """Test complete save-load-resume-train cycle."""
         # Arrange
+        from src.codex_ml.checkpointing.checkpoint_core import (
             SCHEMA_VERSION,
             load_checkpoint,
             save_checkpoint,
@@ -99,6 +90,7 @@ class TestCheckpointResumeFullWorkflow:
     def test_checkpoint_resume_with_schema_validation(self):
         """Verify schema compatibility checks during resume."""
         # Arrange
+        from src.codex_ml.checkpointing.checkpoint_core import (
             load_checkpoint,
             save_checkpoint,
         )
@@ -140,6 +132,7 @@ class TestCheckpointResumeFullWorkflow:
     def test_checkpoint_resume_missing_metadata_recovery(self):
         """Verify resume still works when metadata is missing."""
         # Arrange
+        from src.codex_ml.checkpointing.checkpoint_core import (
             load_checkpoint,
             save_checkpoint,
         )
@@ -179,6 +172,7 @@ class TestCheckpointPartialRecovery:
     def test_checkpoint_load_handles_extra_fields(self):
         """Verify load handles extra fields in saved state gracefully."""
         # Arrange
+        from src.codex_ml.checkpointing.checkpoint_core import (
             load_checkpoint,
             save_checkpoint,
         )
@@ -214,6 +208,7 @@ class TestCheckpointPartialRecovery:
     def test_checkpoint_load_handles_missing_metadata_file(self):
         """Verify load gracefully handles missing metadata.json."""
         # Arrange
+        from src.codex_ml.checkpointing.checkpoint_core import (
             load_checkpoint,
             save_checkpoint,
         )
@@ -252,6 +247,7 @@ class TestCheckpointResumeDeterminism:
     def test_checkpoint_resume_round_trip_idempotency(self):
         """Verify repeated save-load cycles produce identical results."""
         # Arrange
+        from src.codex_ml.checkpointing.checkpoint_core import (
             load_checkpoint,
             save_checkpoint,
         )
@@ -294,7 +290,9 @@ class TestCheckpointResumeDeterminism:
     def test_checkpoint_timestamp_changes_on_each_save(self):
         """Verify checkpoint timestamps update on each save."""
         # Arrange
+        import time
 
+        from src.codex_ml.checkpointing.checkpoint_core import (
             load_checkpoint,
             save_checkpoint,
         )
@@ -346,6 +344,7 @@ class TestCheckpointResumeErrorRecovery:
     def test_checkpoint_load_nonexistent_path_clear_error(self):
         """Verify clear error message for nonexistent checkpoint path."""
         # Arrange
+        from src.codex_ml.checkpointing.checkpoint_core import load_checkpoint
 
         nonexistent = "/nonexistent/path/to/checkpoint"
 
@@ -360,7 +359,9 @@ class TestCheckpointResumeErrorRecovery:
     def test_checkpoint_save_to_readonly_directory_error(self):
         """Verify appropriate error when save directory is read-only."""
         # Arrange
+        import os
 
+        from src.codex_ml.checkpointing.checkpoint_core import save_checkpoint
 
         tmpdir = Path(tempfile.mkdtemp())
 

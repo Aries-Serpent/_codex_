@@ -8,15 +8,15 @@ This test module implements timeout handling and performance boundary tests:
 
 Expected coverage gain: +0.5pp from timeout/recovery code paths
 """
+
 import os
 import signal
 import threading
 import time
 from contextlib import contextmanager
 from unittest.mock import Mock
-        import tempfile
 
-
+import pytest
 
 
 @contextmanager
@@ -132,6 +132,7 @@ class TestResourceExhaustion:
 
     def test_file_descriptor_exhaustion(self):
         """Test handling file descriptor limits."""
+        import tempfile
 
         file_handles = []
         try:

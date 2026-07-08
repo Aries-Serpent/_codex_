@@ -3,9 +3,8 @@ Test Volume Mounts
 
 Test module for volume mounts.
 """
-import pytest
-from pathlib import Path
 
+from pathlib import Path
 
 
 def test_compose_defines_required_volumes() -> None:

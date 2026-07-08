@@ -6,18 +6,14 @@ These tests verify that distributed/accelerate initialization:
 2. Falls back to CPU-only mode when GPUs are not available
 3. Provides clear error messages for troubleshooting
 """
-        from codex_ml.distributed import (
-        from accelerate import Accelerator
-        from codex_ml.distributed import (
-        from accelerate import Accelerator
-        import torch.distributed as dist
-        from codex_ml.distributed import init_distributed_if_needed
 
+import pytest
 
 
 def test_distributed_init_skip_when_unavailable():
     """Test that distributed init gracefully skips when torch.distributed unavailable."""
     try:
+        from codex_ml.distributed import (
             init_distributed_if_needed,
             is_distributed_available,
         )
@@ -38,6 +34,7 @@ def test_distributed_init_skip_when_unavailable():
 def test_accelerate_init_cpu_fallback():
     """Test that Accelerator can initialize on CPU-only systems."""
     try:
+        from accelerate import Accelerator
 
         # Should successfully create accelerator even without GPU
         accelerator = Accelerator(cpu=True)
@@ -54,6 +51,7 @@ def test_accelerate_init_cpu_fallback():
 def test_distributed_utils_safe_defaults():
     """Test that distributed utils provide safe defaults when unavailable."""
     try:
+        from codex_ml.distributed import (
             barrier,
             cleanup,
             get_rank,
@@ -78,6 +76,7 @@ def test_distributed_utils_safe_defaults():
 def test_accelerate_init_with_config():
     """Test Accelerator initialization with various configs."""
     try:
+        from accelerate import Accelerator
 
         # Test with minimal config
         configs = [
@@ -101,7 +100,9 @@ def test_accelerate_init_with_config():
 def test_distributed_backend_selection(backend, monkeypatch):
     """Test that distributed backend selection works or fails gracefully."""
     try:
+        import torch.distributed as dist
 
+        from codex_ml.distributed import init_distributed_if_needed
 
         # Don't actually initialize if already initialized
         if dist.is_initialized():

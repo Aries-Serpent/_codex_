@@ -179,7 +179,6 @@ def test_log_metrics_negative_step(patched_mlflow):
 
 def test_log_metrics_large_step(patched_mlflow):
     """Test logging with large step values."""
-import pytest
     dummy = patched_mlflow
 
     MU.log_metrics({"metric": 1.0}, step=10_000, enabled=True)

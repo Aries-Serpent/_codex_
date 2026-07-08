@@ -1,9 +1,10 @@
 """Smoke tests for security secret helpers to ensure entropy checks stay stable."""
+
 from __future__ import annotations
+
+import pytest
+
 from security import secrets as sec
-
-
-
 
 
 def test_secret_entropy_thresholds():

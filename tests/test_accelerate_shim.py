@@ -3,26 +3,26 @@ Test Accelerate Shim
 
 Test module for accelerate shim.
 """
+
+import importlib
+import sys
+import tempfile
+
+import pytest
+
 pytest.importorskip("numpy")
 pytest.importorskip("torch")
 pytest.importorskip("transformers")
 pytest.importorskip("datasets")
 pytest.importorskip("accelerate")
 pytest.importorskip("yaml")
-import importlib
-import sys
-import tempfile
-    import accelerate
-    import accelerate
-
-
-
 
 
 def test_accelerate_shim_prints_path(capsys, monkeypatch):
     # Force a fresh import so the shim installs
     monkeypatch.delitem(sys.modules, "training.engine_hf_trainer", raising=False)
     eng = importlib.import_module("training.engine_hf_trainer")
+    import accelerate
 
     has_dlc = hasattr(getattr(accelerate, "utils", object()), "DataLoaderConfiguration")
 
@@ -43,6 +43,7 @@ def test_accelerate_shim_prints_path(capsys, monkeypatch):
 
 
 def test_accelerate_shim_handles_new_kwargs_on_legacy(capsys, monkeypatch):
+    import accelerate
 
     accelerate = importlib.reload(accelerate)
 

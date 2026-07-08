@@ -8,13 +8,13 @@ Coverage targets:
 
 Target coverage: 33.40% → 85%+
 """
+
+import pytest
+
 pytest.importorskip("numpy", reason="numpy not installed")
 import numpy as np
+
 from agents.quantum_game_theory import (
-
-
-
-
     NUMPY_AVAILABLE,
     BlueRedTeamSimulator,
     ClassicalGameEngine,

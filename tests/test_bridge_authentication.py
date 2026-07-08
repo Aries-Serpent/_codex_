@@ -6,15 +6,16 @@ Tests the security enhancements added in PS-02:
 - Security audit trail logging
 - Constant-time token comparison (timing attack prevention)
 """
+
 import json
 import os
 import tempfile
 from datetime import UTC, datetime
 from pathlib import Path
+
+import pytest
+
 from bridge_manager import (
-
-
-
     BridgeManager,
     BridgeMode,
     ContextMessage,

@@ -3,43 +3,15 @@
 This module provides additional test coverage for workflow management,
 including edge cases, error scenarios, and integration patterns.
 """
+
 from __future__ import annotations
+
 import logging
 import tempfile
 from pathlib import Path
 from unittest.mock import patch
-        from services import WorkflowParser
-        from services import WorkflowParser
-        from services import WorkflowParser
-        from services import WorkflowParser
-        from services import WorkflowParser
-        from services import WorkflowParser
-        from services import WorkflowParser
-        from services import WorkflowInventory
-        from services import WorkflowInventory
-        from services import WorkflowInventory
-        from services import WorkflowParser
-        from services import WorkflowParser
-        from services import WorkflowParser
-        import services
-        import services
-        import services
-        import services
-        import services
-        import services
-        import services
-        from services import WorkflowParser
-        from services import WorkflowParser
-        from services import WorkflowParser
-        from services import WorkflowInventory, WorkflowParser
-        from services import WorkflowParser
-        from services import WorkflowParser
-        from services import WorkflowParser
-        from services import WorkflowParser
-        from services import WorkflowParser
 
-
-
+import pytest
 
 
 class TestWorkflowParserEdgeCases:
@@ -47,6 +19,7 @@ class TestWorkflowParserEdgeCases:
 
     def test_parser_parse_file_encoding_error(self, tmp_path):
         """Test parser with file encoding issues."""
+        from services import WorkflowParser
 
         # Create file with binary data
         test_file = tmp_path / "binary.yml"
@@ -59,6 +32,7 @@ class TestWorkflowParserEdgeCases:
 
     def test_parser_with_very_large_file(self, tmp_path):
         """Test parser with large workflow file."""
+        from services import WorkflowParser
 
         # Create large YAML file
         test_file = tmp_path / "large.yml"
@@ -74,6 +48,7 @@ class TestWorkflowParserEdgeCases:
 
     def test_parser_with_deeply_nested_yaml(self, tmp_path):
         """Test parser with deeply nested YAML structure."""
+        from services import WorkflowParser
 
         test_file = tmp_path / "nested.yml"
         content = "a:\n"
@@ -88,6 +63,7 @@ class TestWorkflowParserEdgeCases:
 
     def test_parser_cache_key_collision(self):
         """Test that cache properly distinguishes different files."""
+        from services import WorkflowParser
         pass  # removed redundant `import tempfile` (top-level import used)
 
         parser = WorkflowParser()
@@ -108,6 +84,7 @@ class TestWorkflowParserEdgeCases:
 
     def test_parser_handles_yaml_null_values(self, tmp_path):
         """Test parser with YAML null values."""
+        from services import WorkflowParser
 
         test_file = tmp_path / "nulls.yml"
         test_file.write_text(
@@ -126,6 +103,7 @@ jobs:
 
     def test_parser_with_special_yaml_tags(self, tmp_path):
         """Test parser with YAML special tags."""
+        from services import WorkflowParser
 
         test_file = tmp_path / "tags.yml"
         test_file.write_text(
@@ -143,6 +121,7 @@ timestamp: 2001-12-15T02:59:43.1Z
 
     def test_parser_with_yaml_comments(self, tmp_path):
         """Test parser preserves functionality with YAML comments."""
+        from services import WorkflowParser
 
         test_file = tmp_path / "comments.yml"
         test_file.write_text(
@@ -172,6 +151,7 @@ class TestWorkflowInventoryScan:
 
     def test_inventory_scan_empty_directory(self):
         """Test scanning empty directory."""
+        from services import WorkflowInventory
         pass  # removed redundant `import tempfile` (top-level import used)
 
         inventory = WorkflowInventory()
@@ -184,6 +164,7 @@ class TestWorkflowInventoryScan:
 
     def test_inventory_scan_with_workflows(self):
         """Test scanning directory with workflows."""
+        from services import WorkflowInventory
         pass  # removed redundant `import tempfile` (top-level import used)
 
         inventory = WorkflowInventory()
@@ -204,6 +185,7 @@ class TestWorkflowInventoryScan:
 
     def test_inventory_scan_nested_workflow_dirs(self):
         """Test scanning with nested workflow directories."""
+        from services import WorkflowInventory
         pass  # removed redundant `import tempfile` (top-level import used)
 
         inventory = WorkflowInventory()
@@ -226,6 +208,7 @@ class TestWorkflowMetadataHandling:
 
     def test_metadata_from_minimal_workflow(self):
         """Test extracting metadata from minimal workflow."""
+        from services import WorkflowParser
 
         parser = WorkflowParser()
 
@@ -239,6 +222,7 @@ class TestWorkflowMetadataHandling:
 
     def test_metadata_with_all_triggers(self):
         """Test workflow with all trigger types."""
+        from services import WorkflowParser
 
         parser = WorkflowParser()
 
@@ -264,6 +248,7 @@ on:
 
     def test_metadata_with_inputs(self):
         """Test workflow with input parameters."""
+        from services import WorkflowParser
 
         parser = WorkflowParser()
 
@@ -295,6 +280,7 @@ class TestServiceModuleLogging:
 
     def test_logger_configuration(self):
         """Test that logger is properly configured."""
+        import services
 
         logger = services.logger
         assert logger is not None, "logger must be initialized"
@@ -302,12 +288,14 @@ class TestServiceModuleLogging:
 
     def test_logger_level_defaults(self):
         """Test logger level configuration."""
+        import services
 
         # Logger should have a level or inherit from root
         assert services.logger.level >= 0, "level must be greater than zero"
 
     def test_logger_propagation(self):
         """Test logger propagation settings."""
+        import services
 
         # Check if logger propagates to root
         assert hasattr(services.logger, "propagate")
@@ -317,6 +305,7 @@ class TestServiceModuleLogging:
         """Test that logger factory is called correctly."""
         mock_get_logger.return_value = logging.getLogger("test")
 
+        import services
 
         # Logger should be obtained from logging module
         assert services.logger is not None, "logger must be initialized"
@@ -327,6 +316,7 @@ class TestServicesGitHubOptionalDependency:
 
     def test_services_works_without_httpx(self):
         """Test that services works when httpx is not available."""
+        import services
 
         # Services should be importable even if httpx is missing
         assert hasattr(services, "WorkflowParser")
@@ -335,6 +325,7 @@ class TestServicesGitHubOptionalDependency:
     @patch.dict("sys.modules", {"httpx": None})
     def test_github_import_failure_handling(self):
         """Test handling of GitHub import failures."""
+        import services
 
         # Services should be usable
         parser = services.WorkflowParser()
@@ -342,6 +333,7 @@ class TestServicesGitHubOptionalDependency:
 
     def test_github_client_conditional_import(self):
         """Test GitHub client is conditionally imported."""
+        import services
 
         github_client_available = "GitHubClient" in services.__all__
 
@@ -354,6 +346,7 @@ class TestWorkflowParserCaching:
 
     def test_cache_stores_results(self):
         """Test that cache stores parse results."""
+        from services import WorkflowParser
 
         parser = WorkflowParser()
 
@@ -368,6 +361,7 @@ class TestWorkflowParserCaching:
 
     def test_cache_bypass_with_use_cache_false(self):
         """Test cache bypass when use_cache=False."""
+        from services import WorkflowParser
 
         parser = WorkflowParser()
 
@@ -383,6 +377,7 @@ class TestWorkflowParserCaching:
 
     def test_cache_hit_consistency(self):
         """Test that cache hits return consistent results."""
+        from services import WorkflowParser
 
         parser = WorkflowParser()
 
@@ -402,6 +397,7 @@ class TestServicesIntegrationScenarios:
 
     def test_parse_and_inventory_workflow(self):
         """Test parsing workflow and adding to inventory."""
+        from services import WorkflowInventory, WorkflowParser
 
         parser = WorkflowParser()
         inventory = WorkflowInventory()
@@ -422,6 +418,7 @@ class TestServicesIntegrationScenarios:
 
     def test_multiple_workflows_parsing(self):
         """Test parsing multiple workflows."""
+        from services import WorkflowParser
 
         parser = WorkflowParser()
 
@@ -441,6 +438,7 @@ class TestServicesIntegrationScenarios:
 
     def test_workflow_directory_discovery(self):
         """Test discovering workflow files in directory."""
+        from services import WorkflowParser
 
         parser = WorkflowParser()
 
@@ -463,6 +461,7 @@ class TestServicesErrorHandlingExtended:
 
     def test_parser_recovers_from_error(self):
         """Test that parser recovers from parse error."""
+        from services import WorkflowParser
 
         parser = WorkflowParser()
 
@@ -484,6 +483,7 @@ class TestServicesErrorHandlingExtended:
 
     def test_handles_missing_required_fields(self):
         """Test handling workflows missing required fields."""
+        from services import WorkflowParser
 
         parser = WorkflowParser()
 
@@ -498,6 +498,7 @@ class TestServicesErrorHandlingExtended:
 
     def test_handles_syntax_variations(self):
         """Test handling various YAML syntax variations."""
+        from services import WorkflowParser
 
         parser = WorkflowParser()
 

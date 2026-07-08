@@ -182,7 +182,6 @@ class TestCheckLegacyConfigUsage:
 
     def test_respects_env_var_to_disable_check(self, tmp_path, monkeypatch):
         """Should skip check if CODEX_CHECK_LEGACY_CONFIGS=0."""
-import pytest
         # This is more about ensuring the module-level check respects the env var
         # The function itself doesn't check this, but we can verify behavior
 

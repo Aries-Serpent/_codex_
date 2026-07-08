@@ -6,30 +6,10 @@ Tests cover:
 - Health monitoring integration
 - CLI argument handling
 """
+
 from unittest.mock import MagicMock, patch
-            from codex_ml.cli import feature_store
-            from codex_ml.cli.feature_store import app
-            from typer.testing import CliRunner
-            from codex_ml.cli.feature_store import app
-            from typer.testing import CliRunner
-            from codex_ml.cli.feature_store import app
-            from typer.testing import CliRunner
-            from codex_ml.cli.feature_store import app
-            from typer.testing import CliRunner
-            from codex_ml.cli.feature_store import app
-            from typer.testing import CliRunner
-            from codex_ml.cli.feature_store import app
-            from typer.testing import CliRunner
-            from codex_ml.cli.feature_store import app
-            from codex_ml.cli.feature_store import FeatureGroup
-            from codex_ml.cli.feature_store import FeatureStore
-            from codex_ml.cli.feature_store import FeatureHealthMonitor
-            from typer.testing import CliRunner
-            from codex_ml.cli.feature_store import app
-            from typer.testing import CliRunner
-            from codex_ml.cli.feature_store import app
 
-
+import pytest
 
 
 class TestFeatureStoreImports:
@@ -38,6 +18,7 @@ class TestFeatureStoreImports:
     def test_module_imports(self):
         """Test that module can be imported."""
         try:
+            from codex_ml.cli import feature_store
 
             assert hasattr(feature_store, "app")
             assert hasattr(feature_store, "console")
@@ -49,6 +30,7 @@ class TestFeatureStoreImports:
     def test_typer_app_configured(self):
         """Test that Typer app is properly configured."""
         try:
+            from codex_ml.cli.feature_store import app
 
             assert app.info.name == "feature-store", "name is not valid"
             assert app.info.help == "Feature store management CLI", "help is not valid"
@@ -63,7 +45,9 @@ class TestFeatureRegistration:
     def test_register_creates_feature_group(self, mock_store_class):
         """Test register command creates feature group."""
         try:
+            from typer.testing import CliRunner
 
+            from codex_ml.cli.feature_store import app
 
             mock_store = MagicMock()
             mock_store_class.return_value = mock_store
@@ -80,7 +64,9 @@ class TestFeatureRegistration:
     def test_register_with_description(self, mock_store_class):
         """Test register command with description option."""
         try:
+            from typer.testing import CliRunner
 
+            from codex_ml.cli.feature_store import app
 
             mock_store = MagicMock()
             mock_store_class.return_value = mock_store
@@ -99,7 +85,9 @@ class TestFeatureRegistration:
     def test_register_with_custom_store_path(self, mock_store_class):
         """Test register command with custom store path."""
         try:
+            from typer.testing import CliRunner
 
+            from codex_ml.cli.feature_store import app
 
             mock_store = MagicMock()
             mock_store_class.return_value = mock_store
@@ -124,7 +112,9 @@ class TestFeatureListing:
     def test_list_command_basic(self, mock_store_class):
         """Test list command basic functionality."""
         try:
+            from typer.testing import CliRunner
 
+            from codex_ml.cli.feature_store import app
 
             mock_store = MagicMock()
             mock_store.list_features.return_value = []
@@ -142,7 +132,9 @@ class TestFeatureListing:
     def test_list_with_health_flag(self, mock_store_class):
         """Test list command with --health flag."""
         try:
+            from typer.testing import CliRunner
 
+            from codex_ml.cli.feature_store import app
 
             mock_store = MagicMock()
             mock_store.list_features.return_value = []
@@ -159,7 +151,9 @@ class TestFeatureListing:
     def test_list_without_versions(self, mock_store_class):
         """Test list command with --no-versions flag."""
         try:
+            from typer.testing import CliRunner
 
+            from codex_ml.cli.feature_store import app
 
             mock_store = MagicMock()
             mock_store.list_features.return_value = []
@@ -179,6 +173,7 @@ class TestFeatureStoreHelpers:
     def test_feature_group_import(self):
         """Test FeatureGroup can be imported."""
         try:
+            from codex_ml.cli.feature_store import FeatureGroup
 
             assert FeatureGroup is not None, "FeatureGroup must be initialized"
         except ImportError:
@@ -187,6 +182,7 @@ class TestFeatureStoreHelpers:
     def test_feature_store_import(self):
         """Test FeatureStore can be imported."""
         try:
+            from codex_ml.cli.feature_store import FeatureStore
 
             assert FeatureStore is not None, "FeatureStore must be initialized"
         except ImportError:
@@ -195,6 +191,7 @@ class TestFeatureStoreHelpers:
     def test_feature_health_monitor_import(self):
         """Test FeatureHealthMonitor can be imported."""
         try:
+            from codex_ml.cli.feature_store import FeatureHealthMonitor
 
             assert FeatureHealthMonitor is not None, "FeatureHealthMonitor must be initialized"
         except ImportError:
@@ -208,7 +205,9 @@ class TestFeatureStoreErrorHandling:
     def test_register_handles_store_error(self, mock_store_class):
         """Test register command handles store errors gracefully."""
         try:
+            from typer.testing import CliRunner
 
+            from codex_ml.cli.feature_store import app
 
             mock_store_class.side_effect = Exception("Store initialization failed")
 
@@ -224,7 +223,9 @@ class TestFeatureStoreErrorHandling:
     def test_list_handles_empty_store(self, mock_store_class):
         """Test list command handles empty store."""
         try:
+            from typer.testing import CliRunner
 
+            from codex_ml.cli.feature_store import app
 
             mock_store = MagicMock()
             mock_store.list_features.return_value = []

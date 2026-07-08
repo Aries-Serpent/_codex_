@@ -3,14 +3,13 @@ Test Query Logs Tail
 
 Test module for query logs tail.
 """
-import pytest
+
 import json
 import os
 import sqlite3
 import subprocess
 import sys
 from pathlib import Path
-
 
 
 def test_tail_option(tmp_path):

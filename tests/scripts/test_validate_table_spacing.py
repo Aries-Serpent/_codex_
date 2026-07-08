@@ -176,7 +176,6 @@ class TestCodeBlockHandling:
 
     def test_code_block_toggle(self, tmp_path):
         """Test that code block state toggles correctly"""
-import pytest
         test_file = tmp_path / "test.md"
         test_file.write_text(
             "Before code\n"

@@ -8,10 +8,10 @@ Created: 2026-01-18
 Phase: 16.2 - End-to-End Testing
 Tests: 15+
 """
+
 from pathlib import Path
-                        import yaml
 
-
+import pytest
 
 # Repository root
 REPO_ROOT = Path(__file__).parents[2]
@@ -51,6 +51,7 @@ class TestTrainingPipelineSetup:
                 if yaml_files:
                     # Check first config file
                     try:
+                        import yaml
 
                         config = yaml.safe_load(yaml_files[0].read_text(encoding="utf-8"))
                         # Just verify it's a dict

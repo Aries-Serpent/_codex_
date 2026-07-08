@@ -11,13 +11,13 @@ Target: 45+ edge case tests
 Part of Phase 3.3: Integration & E2E Test Suite
 Coverage goal: +15-18% (reaching 77-80% total)
 """
+
 from __future__ import annotations
+
 import json
 import threading
-        import random
 
-
-
+import pytest
 
 # =============================================================================
 # Network Failures and Retries Integration Tests
@@ -855,6 +855,7 @@ class TestPartialFailuresAndRollback:
 
     def test_retry_with_jitter_prevents_thundering_herd(self):
         """Test retry with jitter prevents thundering herd."""
+        import random
 
         base_delay = 1.0
         max_jitter = 0.5

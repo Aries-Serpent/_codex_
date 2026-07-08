@@ -113,7 +113,6 @@ class TestMLPScorer:
 
     def test_mlp_consistency_across_calls(self):
         """Test MLP produces consistent scores for same input."""
-import pytest
         mlp = MLPScorer(input_dim=4, hidden_dim=3)
 
         test_features = [0.5, 0.3, 0.7, 0.2]

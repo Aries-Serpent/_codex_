@@ -10,76 +10,13 @@ Gap-filling targets:
   4. _types.py security (45.45% → 100%)
   5. dp_config.py (44.74% → 100%)
 """
+
 from __future__ import annotations
+
 import sys
 from pathlib import Path
-        from codex_ml.tracking.mlflow_guard import MLflowGuard
-        from codex_ml.tracking.mlflow_guard import MLflowGuard
-        from codex_ml.tracking.mlflow_guard import MLflowGuard
-        from codex_ml.tracking.mlflow_guard import MLflowGuard
-        from codex_ml.tracking.mlflow_guard import MLflowGuard
-        from codex_ml.tracking.mlflow_guard import MLflowGuard
-        from codex_ml.tracking.mlflow_guard import MLflowGuard
-        from codex_ml.tracking.mlflow_guard import MLflowGuard
-        from codex_ml.tracking.mlflow_guard import MLflowGuard
-        from codex_ml.tracking.mlflow_guard import MLflowGuard
-        from cognitive_brain.quantum.base import QuantumDecisionEngine
-        from cognitive_brain.quantum.base import QuantumDecisionEngine
-        from cognitive_brain.quantum.base import QuantumDecisionEngine
-        from cognitive_brain.quantum.base import QuantumDecisionEngine
-        from cognitive_brain.quantum.base import QuantumDecisionEngine
-        from cognitive_brain.quantum.base import QuantumDecisionEngine
-        from cognitive_brain.quantum.base import QuantumDecisionEngine
-        from cognitive_brain.quantum.base import QuantumDecisionEngine
-        from cognitive_brain.quantum.base import QuantumDecisionEngine
-        from cognitive_brain.quantum.base import QuantumDecisionEngine
-        from codex_ml.interfaces.peft_hooks import PEFTHooks
-        from codex_ml.interfaces.peft_hooks import PEFTHooks
-        from codex_ml.interfaces.peft_hooks import PEFTHooks
-        from codex_ml.interfaces.peft_hooks import PEFTHooks
-        from codex_ml.interfaces.peft_hooks import PEFTHooks
-        from codex_ml.interfaces.peft_hooks import PEFTHooks
-        from codex_ml.interfaces.peft_hooks import PEFTHooks
-        from codex_ml.interfaces.peft_hooks import PEFTHooks
-        from codex_ml.interfaces.peft_hooks import PEFTHooks
-        from security._types import SecurityContext
-        from security._types import SecurityContext
-        from security._types import SecurityContext
-        from security._types import SecurityContext
-        from security._types import SecurityContext
-        from security._types import SecurityContext
-        from security._types import SecurityContext
-        from security._types import SecurityContext
-        from security._types import SecurityContext
-        from security._types import SecurityContext
-        from codex_ml.training.dp_config import DPConfig
-        from codex_ml.training.dp_config import DPConfig
-        from codex_ml.training.dp_config import DPConfig
-        from codex_ml.training.dp_config import DPConfig
-        from codex_ml.training.dp_config import DPConfig
-        from codex_ml.training.dp_config import DPConfig
-        from codex_ml.training.dp_config import DPConfig
-        from codex_ml.training.dp_config import DPConfig
-        from codex_ml.training.dp_config import DPConfig
-        from codex_ml.training.dp_config import DPConfig
-        from codex_ml.training.rng_checkpoint import RNGCheckpoint
-        from codex_ml.training.rng_checkpoint import RNGCheckpoint
-        from codex_ml.training.rng_checkpoint import RNGCheckpoint
-        from codex_ml.training.rng_checkpoint import RNGCheckpoint
-        from codex_ml.tracking.mlflow_guard import MLflowGuard
-        from cognitive_brain.quantum.base import QuantumDecisionEngine
-        from codex_ml.interfaces.peft_hooks import PEFTHooks
-        from security._types import SecurityContext
-        from codex_ml.training.dp_config import DPConfig
-        from codex_ml.tracking.mlflow_guard import MLflowGuard
-        from codex_ml.tracking.mlflow_guard import MLflowGuard
-        from cognitive_brain.quantum.base import QuantumDecisionEngine
-        from codex_ml.interfaces.peft_hooks import PEFTHooks
-        from security._types import SecurityContext
-        from codex_ml.training.dp_config import DPConfig
 
-
-
+import pytest
 
 # Add src to path for imports
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -97,11 +34,13 @@ class TestMLflowGuard:
 
     def test_mlflow_guard_import(self):
         """Test that mlflow_guard can be imported."""
+        from codex_ml.tracking.mlflow_guard import MLflowGuard
 
         assert MLflowGuard is not None, "MLflowGuard must be initialized"
 
     def test_mlflow_guard_init(self):
         """Test MLflowGuard initialization."""
+        from codex_ml.tracking.mlflow_guard import MLflowGuard
 
         try:
             guard = MLflowGuard()
@@ -111,6 +50,7 @@ class TestMLflowGuard:
 
     def test_mlflow_guard_context_manager(self):
         """Test MLflowGuard as context manager."""
+        from codex_ml.tracking.mlflow_guard import MLflowGuard
 
         try:
             with MLflowGuard() as guard:
@@ -120,6 +60,7 @@ class TestMLflowGuard:
 
     def test_mlflow_guard_enable_tracking(self):
         """Test enabling MLflow tracking."""
+        from codex_ml.tracking.mlflow_guard import MLflowGuard
 
         try:
             guard = MLflowGuard()
@@ -130,6 +71,7 @@ class TestMLflowGuard:
 
     def test_mlflow_guard_disable_tracking(self):
         """Test disabling MLflow tracking."""
+        from codex_ml.tracking.mlflow_guard import MLflowGuard
 
         try:
             guard = MLflowGuard()
@@ -140,6 +82,7 @@ class TestMLflowGuard:
 
     def test_mlflow_guard_log_metric(self):
         """Test logging metric through guard."""
+        from codex_ml.tracking.mlflow_guard import MLflowGuard
 
         try:
             guard = MLflowGuard()
@@ -150,6 +93,7 @@ class TestMLflowGuard:
 
     def test_mlflow_guard_log_param(self):
         """Test logging parameter through guard."""
+        from codex_ml.tracking.mlflow_guard import MLflowGuard
 
         try:
             guard = MLflowGuard()
@@ -160,6 +104,7 @@ class TestMLflowGuard:
 
     def test_mlflow_guard_with_exception_handling(self):
         """Test MLflowGuard exception handling."""
+        from codex_ml.tracking.mlflow_guard import MLflowGuard
 
         try:
             with MLflowGuard():
@@ -169,6 +114,7 @@ class TestMLflowGuard:
 
     def test_mlflow_guard_multiple_metrics(self):
         """Test logging multiple metrics."""
+        from codex_ml.tracking.mlflow_guard import MLflowGuard
 
         try:
             guard = MLflowGuard()
@@ -180,6 +126,7 @@ class TestMLflowGuard:
 
     def test_mlflow_guard_batch_logging(self):
         """Test batch logging of metrics."""
+        from codex_ml.tracking.mlflow_guard import MLflowGuard
 
         try:
             guard = MLflowGuard()
@@ -200,11 +147,13 @@ class TestQuantumBase:
 
     def test_quantum_base_import(self):
         """Test importing quantum base module."""
+        from cognitive_brain.quantum.base import QuantumDecisionEngine
 
         assert QuantumDecisionEngine is not None, "QuantumDecisionEngine must be initialized"
 
     def test_quantum_engine_init(self):
         """Test QuantumDecisionEngine initialization."""
+        from cognitive_brain.quantum.base import QuantumDecisionEngine
 
         try:
             engine = QuantumDecisionEngine()
@@ -214,6 +163,7 @@ class TestQuantumBase:
 
     def test_quantum_engine_with_config(self):
         """Test QuantumDecisionEngine with configuration."""
+        from cognitive_brain.quantum.base import QuantumDecisionEngine
 
         try:
             config = {"k1": 0.332, "k2": 0.5}
@@ -224,6 +174,7 @@ class TestQuantumBase:
 
     def test_quantum_engine_measure_state(self):
         """Test measuring quantum state."""
+        from cognitive_brain.quantum.base import QuantumDecisionEngine
 
         try:
             engine = QuantumDecisionEngine()
@@ -234,6 +185,7 @@ class TestQuantumBase:
 
     def test_quantum_engine_superposition(self):
         """Test quantum superposition."""
+        from cognitive_brain.quantum.base import QuantumDecisionEngine
 
         try:
             engine = QuantumDecisionEngine()
@@ -246,6 +198,7 @@ class TestQuantumBase:
 
     def test_quantum_engine_entanglement(self):
         """Test quantum entanglement."""
+        from cognitive_brain.quantum.base import QuantumDecisionEngine
 
         try:
             engine = QuantumDecisionEngine()
@@ -257,6 +210,7 @@ class TestQuantumBase:
 
     def test_quantum_engine_collapse_probability(self):
         """Test wave function collapse with probability."""
+        from cognitive_brain.quantum.base import QuantumDecisionEngine
 
         try:
             engine = QuantumDecisionEngine()
@@ -267,6 +221,7 @@ class TestQuantumBase:
 
     def test_quantum_engine_decision_with_bias(self):
         """Test quantum decision with bias."""
+        from cognitive_brain.quantum.base import QuantumDecisionEngine
 
         try:
             engine = QuantumDecisionEngine()
@@ -277,6 +232,7 @@ class TestQuantumBase:
 
     def test_quantum_engine_multiple_decisions(self):
         """Test multiple quantum decisions."""
+        from cognitive_brain.quantum.base import QuantumDecisionEngine
 
         try:
             engine = QuantumDecisionEngine()
@@ -287,6 +243,7 @@ class TestQuantumBase:
 
     def test_quantum_engine_reset_state(self):
         """Test resetting quantum engine state."""
+        from cognitive_brain.quantum.base import QuantumDecisionEngine
 
         try:
             engine = QuantumDecisionEngine()
@@ -306,11 +263,13 @@ class TestPEFTHooks:
 
     def test_peft_hooks_import(self):
         """Test importing peft_hooks module."""
+        from codex_ml.interfaces.peft_hooks import PEFTHooks
 
         assert PEFTHooks is not None, "PEFTHooks must be initialized"
 
     def test_peft_hooks_init(self):
         """Test PEFTHooks initialization."""
+        from codex_ml.interfaces.peft_hooks import PEFTHooks
 
         try:
             hooks = PEFTHooks()
@@ -320,6 +279,7 @@ class TestPEFTHooks:
 
     def test_peft_hooks_register_hook(self):
         """Test registering a PEFT hook."""
+        from codex_ml.interfaces.peft_hooks import PEFTHooks
 
         try:
             hooks = PEFTHooks()
@@ -334,6 +294,7 @@ class TestPEFTHooks:
 
     def test_peft_hooks_trigger_hook(self):
         """Test triggering a registered hook."""
+        from codex_ml.interfaces.peft_hooks import PEFTHooks
 
         try:
             hooks = PEFTHooks()
@@ -349,6 +310,7 @@ class TestPEFTHooks:
 
     def test_peft_hooks_multiple_hooks(self):
         """Test registering multiple hooks."""
+        from codex_ml.interfaces.peft_hooks import PEFTHooks
 
         try:
             hooks = PEFTHooks()
@@ -360,6 +322,7 @@ class TestPEFTHooks:
 
     def test_peft_hooks_hook_with_args(self):
         """Test hook execution with arguments."""
+        from codex_ml.interfaces.peft_hooks import PEFTHooks
 
         try:
             hooks = PEFTHooks()
@@ -375,6 +338,7 @@ class TestPEFTHooks:
 
     def test_peft_hooks_hook_with_kwargs(self):
         """Test hook execution with keyword arguments."""
+        from codex_ml.interfaces.peft_hooks import PEFTHooks
 
         try:
             hooks = PEFTHooks()
@@ -390,6 +354,7 @@ class TestPEFTHooks:
 
     def test_peft_hooks_remove_hook(self):
         """Test removing a registered hook."""
+        from codex_ml.interfaces.peft_hooks import PEFTHooks
 
         try:
             hooks = PEFTHooks()
@@ -401,6 +366,7 @@ class TestPEFTHooks:
 
     def test_peft_hooks_list_hooks(self):
         """Test listing all registered hooks."""
+        from codex_ml.interfaces.peft_hooks import PEFTHooks
 
         try:
             hooks = PEFTHooks()
@@ -422,11 +388,13 @@ class TestSecurityTypes:
 
     def test_security_types_import(self):
         """Test importing security types module."""
+        from security._types import SecurityContext
 
         assert SecurityContext is not None, "SecurityContext must be initialized"
 
     def test_security_context_init(self):
         """Test SecurityContext initialization."""
+        from security._types import SecurityContext
 
         try:
             ctx = SecurityContext()
@@ -436,6 +404,7 @@ class TestSecurityTypes:
 
     def test_security_context_with_user(self):
         """Test SecurityContext with user."""
+        from security._types import SecurityContext
 
         try:
             ctx = SecurityContext(user="test_user")
@@ -445,6 +414,7 @@ class TestSecurityTypes:
 
     def test_security_context_with_permissions(self):
         """Test SecurityContext with permissions."""
+        from security._types import SecurityContext
 
         try:
             perms = ["read", "write", "execute"]
@@ -455,6 +425,7 @@ class TestSecurityTypes:
 
     def test_security_context_check_permission(self):
         """Test checking permissions."""
+        from security._types import SecurityContext
 
         try:
             ctx = SecurityContext(permissions=["read", "write"])
@@ -465,6 +436,7 @@ class TestSecurityTypes:
 
     def test_security_context_grant_permission(self):
         """Test granting new permission."""
+        from security._types import SecurityContext
 
         try:
             ctx = SecurityContext(permissions=[])
@@ -475,6 +447,7 @@ class TestSecurityTypes:
 
     def test_security_context_revoke_permission(self):
         """Test revoking permission."""
+        from security._types import SecurityContext
 
         try:
             ctx = SecurityContext(permissions=["read", "write"])
@@ -485,6 +458,7 @@ class TestSecurityTypes:
 
     def test_security_context_set_role(self):
         """Test setting security role."""
+        from security._types import SecurityContext
 
         try:
             ctx = SecurityContext()
@@ -495,6 +469,7 @@ class TestSecurityTypes:
 
     def test_security_context_clear(self):
         """Test clearing security context."""
+        from security._types import SecurityContext
 
         try:
             ctx = SecurityContext(user="test", permissions=["read"])
@@ -505,6 +480,7 @@ class TestSecurityTypes:
 
     def test_security_context_is_authenticated(self):
         """Test authentication check."""
+        from security._types import SecurityContext
 
         try:
             ctx = SecurityContext(user="test")
@@ -524,11 +500,13 @@ class TestDPConfig:
 
     def test_dp_config_import(self):
         """Test importing dp_config module."""
+        from codex_ml.training.dp_config import DPConfig
 
         assert DPConfig is not None, "DPConfig must be initialized"
 
     def test_dp_config_init(self):
         """Test DPConfig initialization."""
+        from codex_ml.training.dp_config import DPConfig
 
         try:
             config = DPConfig()
@@ -538,6 +516,7 @@ class TestDPConfig:
 
     def test_dp_config_with_backend(self):
         """Test DPConfig with specific backend."""
+        from codex_ml.training.dp_config import DPConfig
 
         try:
             config = DPConfig(backend="nccl")
@@ -547,6 +526,7 @@ class TestDPConfig:
 
     def test_dp_config_set_world_size(self):
         """Test setting world size."""
+        from codex_ml.training.dp_config import DPConfig
 
         try:
             config = DPConfig()
@@ -557,6 +537,7 @@ class TestDPConfig:
 
     def test_dp_config_set_rank(self):
         """Test setting rank."""
+        from codex_ml.training.dp_config import DPConfig
 
         try:
             config = DPConfig()
@@ -567,6 +548,7 @@ class TestDPConfig:
 
     def test_dp_config_enable_fp16(self):
         """Test enabling FP16."""
+        from codex_ml.training.dp_config import DPConfig
 
         try:
             config = DPConfig()
@@ -577,6 +559,7 @@ class TestDPConfig:
 
     def test_dp_config_get_device(self):
         """Test getting device from config."""
+        from codex_ml.training.dp_config import DPConfig
 
         try:
             config = DPConfig()
@@ -587,6 +570,7 @@ class TestDPConfig:
 
     def test_dp_config_validate(self):
         """Test config validation."""
+        from codex_ml.training.dp_config import DPConfig
 
         try:
             config = DPConfig()
@@ -597,6 +581,7 @@ class TestDPConfig:
 
     def test_dp_config_to_dict(self):
         """Test converting config to dictionary."""
+        from codex_ml.training.dp_config import DPConfig
 
         try:
             config = DPConfig()
@@ -607,6 +592,7 @@ class TestDPConfig:
 
     def test_dp_config_from_dict(self):
         """Test creating config from dictionary."""
+        from codex_ml.training.dp_config import DPConfig
 
         try:
             config_dict = {"backend": "nccl", "world_size": 4}
@@ -626,11 +612,13 @@ class TestRNGCheckpoint:
 
     def test_rng_checkpoint_import(self):
         """Test importing rng_checkpoint module."""
+        from codex_ml.training.rng_checkpoint import RNGCheckpoint
 
         assert RNGCheckpoint is not None, "RNGCheckpoint must be initialized"
 
     def test_rng_checkpoint_save(self):
         """Test saving RNG checkpoint."""
+        from codex_ml.training.rng_checkpoint import RNGCheckpoint
 
         try:
             checkpoint = RNGCheckpoint()
@@ -641,6 +629,7 @@ class TestRNGCheckpoint:
 
     def test_rng_checkpoint_load(self):
         """Test loading RNG checkpoint."""
+        from codex_ml.training.rng_checkpoint import RNGCheckpoint
 
         try:
             checkpoint = RNGCheckpoint()
@@ -651,6 +640,7 @@ class TestRNGCheckpoint:
 
     def test_rng_checkpoint_restore_state(self):
         """Test restoring RNG state."""
+        from codex_ml.training.rng_checkpoint import RNGCheckpoint
 
         try:
             checkpoint = RNGCheckpoint()
@@ -670,6 +660,7 @@ class TestIntegrationAndErrors:
 
     def test_mlflow_guard_with_none_config(self):
         """Test MLflowGuard with None configuration."""
+        from codex_ml.tracking.mlflow_guard import MLflowGuard
 
         try:
             MLflowGuard(config=None)
@@ -679,6 +670,7 @@ class TestIntegrationAndErrors:
 
     def test_quantum_engine_with_invalid_states(self):
         """Test quantum engine with invalid states."""
+        from cognitive_brain.quantum.base import QuantumDecisionEngine
 
         try:
             engine = QuantumDecisionEngine()
@@ -689,6 +681,7 @@ class TestIntegrationAndErrors:
 
     def test_peft_hooks_nonexistent_hook(self):
         """Test triggering non-existent hook."""
+        from codex_ml.interfaces.peft_hooks import PEFTHooks
 
         try:
             hooks = PEFTHooks()
@@ -699,6 +692,7 @@ class TestIntegrationAndErrors:
 
     def test_security_context_multiple_role_changes(self):
         """Test changing security role multiple times."""
+        from security._types import SecurityContext
 
         try:
             ctx = SecurityContext()
@@ -710,6 +704,7 @@ class TestIntegrationAndErrors:
 
     def test_dp_config_with_invalid_backend(self):
         """Test DPConfig with invalid backend."""
+        from codex_ml.training.dp_config import DPConfig
 
         try:
             DPConfig(backend="invalid_backend_xyz")
@@ -728,6 +723,7 @@ class TestBoundaryAndEdgeCases:
 
     def test_mlflow_guard_zero_metrics(self):
         """Test logging zero value metric."""
+        from codex_ml.tracking.mlflow_guard import MLflowGuard
 
         try:
             guard = MLflowGuard()
@@ -738,6 +734,7 @@ class TestBoundaryAndEdgeCases:
 
     def test_mlflow_guard_negative_metrics(self):
         """Test logging negative value metric."""
+        from codex_ml.tracking.mlflow_guard import MLflowGuard
 
         try:
             guard = MLflowGuard()
@@ -748,6 +745,7 @@ class TestBoundaryAndEdgeCases:
 
     def test_quantum_engine_boundary_probability(self):
         """Test quantum engine with boundary probabilities."""
+        from cognitive_brain.quantum.base import QuantumDecisionEngine
 
         try:
             engine = QuantumDecisionEngine()
@@ -759,6 +757,7 @@ class TestBoundaryAndEdgeCases:
 
     def test_peft_hooks_empty_hook_name(self):
         """Test registering hook with empty name."""
+        from codex_ml.interfaces.peft_hooks import PEFTHooks
 
         try:
             hooks = PEFTHooks()
@@ -769,6 +768,7 @@ class TestBoundaryAndEdgeCases:
 
     def test_security_context_empty_permissions(self):
         """Test SecurityContext with empty permissions."""
+        from security._types import SecurityContext
 
         try:
             ctx = SecurityContext(permissions=[])
@@ -779,6 +779,7 @@ class TestBoundaryAndEdgeCases:
 
     def test_dp_config_zero_world_size(self):
         """Test DPConfig with zero world size."""
+        from codex_ml.training.dp_config import DPConfig
 
         try:
             config = DPConfig()

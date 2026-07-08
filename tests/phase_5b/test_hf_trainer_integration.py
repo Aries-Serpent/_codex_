@@ -12,33 +12,33 @@ Tests complete training workflows with HF Trainer:
 
 Part of Phase 5B-II: Integration Test Development
 """
+
 from __future__ import annotations
+
 import json
 import logging
 import tempfile
 from unittest.mock import Mock, patch
-    from transformers import Trainer, TrainingArguments
-    import torch
-    from training.engine_hf_trainer import HFTrainer, create_trainer
-            from training import engine_hf_trainer
 
-
-
+import pytest
 
 # Conditional imports with graceful degradation
 try:
+    from transformers import Trainer, TrainingArguments
 
     TRANSFORMERS_AVAILABLE = True
 except ImportError:
     TRANSFORMERS_AVAILABLE = False
 
 try:
+    import torch
 
     TORCH_AVAILABLE = True
 except ImportError:
     TORCH_AVAILABLE = False
 
 try:
+    from training.engine_hf_trainer import HFTrainer, create_trainer
 
     HF_TRAINER_AVAILABLE = True
 except (ImportError, AttributeError, ModuleNotFoundError):
@@ -414,6 +414,7 @@ class TestHFTrainerErrorPaths:
     def test_graceful_degradation_with_missing_dependencies(self):
         """Test: Graceful degradation when dependencies missing."""
         try:
+            from training import engine_hf_trainer
 
             assert hasattr(engine_hf_trainer, "HFTrainer") or hasattr(
                 engine_hf_trainer, "create_trainer"

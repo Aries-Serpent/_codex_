@@ -122,10 +122,9 @@ class TestFeatureStoreImports:
 
     def test_rich_available(self) -> None:
         """Test that rich is available."""
-import pytest
+        try:
             from rich.console import Console
             from rich.table import Table
-        try:
 
             assert Console is not None, "Console must be initialized"
             assert Table is not None, "Table must be initialized"

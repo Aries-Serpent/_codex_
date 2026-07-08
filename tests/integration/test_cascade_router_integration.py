@@ -11,20 +11,21 @@ Tests cover:
 Author: Phase 9.2 ↔ 9.3 Integration Tests
 Date: 2026-06-26
 """
+
 import logging
 import os
+
+# Import adapter components
 import sys
 import time
 from datetime import datetime
-from orchestration.adapters.cascade_to_router_adapter import (
 
-
-# Import adapter components
-
+import pytest
 
 # Add src to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../src"))
 
+from orchestration.adapters.cascade_to_router_adapter import (
     AgentAssignment,
     CascadeContext,
     CascadeEscalationHandler,

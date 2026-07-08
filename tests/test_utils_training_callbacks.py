@@ -3,9 +3,8 @@ Test Utils Training Callbacks
 
 Test module for utils training callbacks.
 """
-import pytest
-from utils.training_callbacks import EarlyStopping
 
+from utils.training_callbacks import EarlyStopping
 
 
 def test_early_stopping_triggers_after_patience():

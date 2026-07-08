@@ -8,9 +8,8 @@ Tests cover:
 - Transition guards
 - State callbacks
 """
-import pytest
-from enum import Enum
 
+from enum import Enum
 
 
 class TrainingState(Enum):

@@ -3,8 +3,8 @@ Test Run Functional Training Tokenizer
 
 Test module for run functional training tokenizer.
 """
-    from codex.training import run_functional_training
 
+import pytest
 
 py = pytest
 py.importorskip("omegaconf")
@@ -16,6 +16,7 @@ if not hasattr(transformers, "AutoTokenizer"):
 
 
 def test_run_functional_training_use_fast_flag(monkeypatch):
+    from codex.training import run_functional_training
 
     called = {}
 

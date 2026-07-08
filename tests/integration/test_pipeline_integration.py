@@ -9,25 +9,16 @@ Tests comprehensive cross-module pipeline integration:
 Target: 25 tests
 Part of Phase 7: Integration Scenarios (80-85% coverage)
 """
+
 from __future__ import annotations
-pytest.importorskip("torch")
+
 import json
-from tests.utils.torch_helpers import require_torch
-        import torch
-        import torch
-        import torch
-        import torch
-        import torch
-        import torch
-        import torch
-        import gzip
 
-
-
-
+import pytest
 
 # See tests/utils/__init__.py for exported test helpers.
 # Import torch helpers using absolute import from tests package
+from tests.utils.torch_helpers import require_torch
 
 torch = require_torch()
 
@@ -271,6 +262,7 @@ class TestTrainingEvaluationCheckpointPipeline:
 
     def test_training_setup(self, pipeline_workspace):
         """Test training pipeline setup."""
+        import torch
 
         # Create simple model
         model = torch.nn.Linear(10, 5)
@@ -283,6 +275,7 @@ class TestTrainingEvaluationCheckpointPipeline:
 
     def test_training_step_execution(self, pipeline_workspace):
         """Test single training step execution."""
+        import torch
 
         model = torch.nn.Linear(10, 5)
         optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
@@ -323,6 +316,7 @@ class TestTrainingEvaluationCheckpointPipeline:
 
     def test_evaluation_phase(self, pipeline_workspace):
         """Test evaluation phase in pipeline."""
+        import torch
 
         model = torch.nn.Linear(10, 5)
         model.eval()
@@ -344,6 +338,7 @@ class TestTrainingEvaluationCheckpointPipeline:
 
     def test_checkpoint_saving(self, pipeline_workspace):
         """Test checkpoint saving during training."""
+        import torch
 
         model = torch.nn.Linear(10, 5)
         optimizer = torch.optim.Adam(model.parameters())
@@ -367,6 +362,7 @@ class TestTrainingEvaluationCheckpointPipeline:
 
     def test_checkpoint_resumption(self, pipeline_workspace):
         """Test resuming from checkpoint."""
+        import torch
 
         # Save checkpoint
         model = torch.nn.Linear(10, 5)
@@ -382,6 +378,7 @@ class TestTrainingEvaluationCheckpointPipeline:
 
     def test_learning_rate_scheduling(self, pipeline_workspace):
         """Test learning rate scheduling in pipeline."""
+        import torch
 
         model = torch.nn.Linear(10, 5)
         optimizer = torch.optim.SGD(model.parameters(), lr=0.1)
@@ -399,6 +396,7 @@ class TestTrainingEvaluationCheckpointPipeline:
     @pytest.mark.slow
     def test_end_to_end_training_pipeline(self, pipeline_workspace):
         """Test complete training pipeline: setup → train → eval → checkpoint."""
+        import torch
 
         # Setup
         model = torch.nn.Linear(10, 5)
@@ -550,6 +548,7 @@ class TestDataIngestionProcessingStorage:
 
     def test_data_compression(self, pipeline_workspace):
         """Test data compression for storage."""
+        import gzip
 
         data = b"Large data content " * 100
         compressed_file = pipeline_workspace / "data" / "compressed.gz"

@@ -4,19 +4,19 @@ Tests for Auto-Fix with Rollback functionality.
 Tests pre-flight checks, rollback mechanisms, and fix application
 with safety guarantees.
 """
+
 import subprocess
+
+# Import the module to test
 import sys
 from pathlib import Path
 from unittest.mock import Mock, patch
-from auto_fix_with_rollback import (
-        import json
 
-
-# Import the module to test
-
+import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "ci"))
 
+from auto_fix_with_rollback import (
     AutoFixWithRollback,
     FixApplicationError,
     PreFlightError,
@@ -266,6 +266,7 @@ class TestAutoFixWithRollback:
 
         assert output_file.exists(), "Condition must be true"
 
+        import json
 
         with open(output_file) as f:
             saved_metrics = json.load(f)

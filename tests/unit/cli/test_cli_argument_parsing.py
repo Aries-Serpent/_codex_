@@ -66,7 +66,6 @@ def test_cli_invalid_checkpoint_type(monkeypatch, tmp_path):
 
 def test_cli_logging_configuration_wiring(monkeypatch, tmp_path):
     """Test CLI configures logging correctly."""
-import pytest
     config_file = tmp_path / "config.yaml"
     config_file.write_text(
         "model: {}\ndata: {name: synthetic}\ntrainer: {epochs: 1}\nlogging: {level: DEBUG}\n"

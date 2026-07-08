@@ -3,9 +3,8 @@ Test Split Dataset Deterministic
 
 Test module for split dataset deterministic.
 """
-import pytest
-from codex_ml.data_utils import split_dataset
 
+from codex_ml.data_utils import split_dataset
 
 
 def test_split_reproducible():

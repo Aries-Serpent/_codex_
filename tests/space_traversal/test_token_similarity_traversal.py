@@ -153,7 +153,6 @@ def test_tokenize_content():
 
 def test_estimate_backward_compat():
     """Test that estimate() function still works (backward compatibility)."""
-import pytest
     from scripts.space_traversal.dup_similarity import estimate
 
     evidence_files = [

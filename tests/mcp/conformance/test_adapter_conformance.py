@@ -3,10 +3,6 @@ Test Adapter Conformance
 
 Test module for adapter conformance.
 """
-import importlib
-import os
-from collections.abc import Iterable
-from typing import Any
 
 # Conformance test scaffold for adapters.
 # This file is a lightweight conformance harness that can be parameterized
@@ -15,7 +11,12 @@ from typing import Any
 # It is safe for CI: by default it expects to be run against the in-repo mock backend.
 # Adapter factory lookup helper. Tests should set ADAPTER_UNDER_TEST to the import path
 # e.g. "src.mcp.backends.mock_backend.InMemoryMockBackend" or "src.mcp.backends.pinecone_adapter.PineconeAdapter"
+import importlib
+import os
+from collections.abc import Iterable
+from typing import Any
 
+import pytest
 
 ADAPTER_PATH = os.environ.get(
     "ADAPTER_UNDER_TEST", "src.mcp.backends.mock_backend.InMemoryMockBackend"

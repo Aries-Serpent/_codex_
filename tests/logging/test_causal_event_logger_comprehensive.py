@@ -6,19 +6,20 @@ Tests cover:
 - Database operations
 - Causal event logging
 """
+
 import tempfile
 from datetime import datetime
 from pathlib import Path
+
+import pytest
+
 from codex.logging.causal_event_logger import (
-from codex.logging.db_manager import DatabaseManager
-from codex.logging.session_logger import SessionLogger
-
-
-
     CausalLink,
     CausalRelationType,
     Event,
 )
+from codex.logging.db_manager import DatabaseManager
+from codex.logging.session_logger import SessionLogger
 
 # ============================================================================
 # Fixtures

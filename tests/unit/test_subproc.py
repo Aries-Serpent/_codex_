@@ -1,13 +1,14 @@
 """Unit tests for codex_ml.utils.subproc."""
+
 from __future__ import annotations
+
 import subprocess
 import sys
 from pathlib import Path
+
+import pytest
+
 from codex_ml.utils.subproc import (
-
-
-
-
     _assert_safe_script,
     _discover_repo_root,
     _gather_allowed_roots,

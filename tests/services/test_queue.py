@@ -6,14 +6,14 @@ Tests for queue-based service processing patterns.
 Phase 56: MEDIUM Priority Module Tests
 Coverage Target: src/services 28% → 40%+
 """
+
 import time
 from collections import deque
 from dataclasses import dataclass, field
 from enum import Enum, auto
 from typing import Any, Optional
-        import heapq
 
-
+import pytest
 
 
 class JobStatus(Enum):
@@ -56,6 +56,7 @@ class TestQueueOperations:
 
     def test_priority_queue(self):
         """Priority queue orders by priority."""
+        import heapq
 
         class PriorityQueue:
             def __init__(self):

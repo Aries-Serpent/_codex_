@@ -1,6 +1,6 @@
-pytest.importorskip("charset_normalizer")
-    from omegaconf import OmegaConf
+import pytest
 
+pytest.importorskip("charset_normalizer")
 #     assert frozen == (, "frozen is not valid"
 #         ("alpha", ("x", "bytes", None)),
 #         ("beta", (3, (("zeta", (1, 2)),))),
@@ -66,6 +66,7 @@ def test_ensure_offline_environment_idempotent(monkeypatch: pytest.MonkeyPatch) 
 
 
 def test_config_fingerprint_stable() -> None:
+    from omegaconf import OmegaConf
 
     cfg_a = OmegaConf.create({"seed": 1, "nested": {"value": [1, 2, 3]}})
     cfg_b = OmegaConf.create({"nested": {"value": [1, 2, 3]}, "seed": 1})

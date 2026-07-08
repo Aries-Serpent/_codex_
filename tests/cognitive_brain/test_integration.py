@@ -2,31 +2,27 @@
 Integration Tests for Phase 7 Quantum Enhancement
 Tests all quantum features working together in production-like scenarios.
 """
+
 import sqlite3
 import tempfile
 from pathlib import Path
+
+import pytest
+
 from cognitive_brain.integrations.compliance_integration import (
+    AuditResult,
+    QuantumComplianceAssessor,
+)
 from cognitive_brain.integrations.entangled_assessor import (
+    EntangledComplianceSecurityAssessor,
+    MockSecurityScanner,
+)
 from cognitive_brain.models.quantum_metrics import QuantumMetricRepository
 from cognitive_brain.quantum.coherence_monitor import CoherenceMonitor
 from cognitive_brain.quantum.config import QuantumConfig
 from cognitive_brain.quantum.entanglement import EntanglementManager
 from cognitive_brain.quantum.superposition import SuperpositionEngine
 from cognitive_brain.quantum.uncertainty import UncertaintyOptimizer
-        from cognitive_brain.quantum.uncertainty import TestExecutionMetrics
-    import time
-    from cognitive_brain.quantum.base import QuantumFeature
-    from datetime import datetime
-    from cognitive_brain.quantum.base import QuantumFeature
-
-
-
-    AuditResult,
-    QuantumComplianceAssessor,
-)
-    EntangledComplianceSecurityAssessor,
-    MockSecurityScanner,
-)
 
 
 @pytest.fixture
@@ -162,6 +158,7 @@ def test_uncertainty_prioritization(integrated_system):
     ]
 
     for test_id, _, time_seconds, failure_rate in test_cases:
+        from cognitive_brain.quantum.uncertainty import TestExecutionMetrics
 
         metrics = TestExecutionMetrics(
             test_id=test_id,
@@ -264,6 +261,7 @@ def test_entangled_assessor_integration(temp_db):
 
 def test_performance_within_limits(integrated_system):
     """Test that integrated system meets performance requirements."""
+    import time
 
     engine = integrated_system["superposition"]
 
@@ -291,6 +289,7 @@ def test_error_handling_and_rollback(integrated_system):
     monitor = integrated_system["monitor"]
 
     # Simulate critical coherence degradation
+    from cognitive_brain.quantum.base import QuantumFeature
 
     # Log metrics with very low coherence
     for i in range(10):
@@ -352,7 +351,9 @@ def test_database_persistence(temp_db):
     repository = QuantumMetricRepository(temp_db)
 
     # Log some metrics
+    from datetime import datetime
 
+    from cognitive_brain.quantum.base import QuantumFeature
 
     test_metrics = [
         {

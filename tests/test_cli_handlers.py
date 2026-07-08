@@ -15,15 +15,14 @@ Test Coverage:
 - Individual command implementations
 - Exception handling and recovery
 """
+
 import tempfile
 from pathlib import Path
 from unittest.mock import Mock, patch
+
+import pytest
+
 from codex.cli_handlers import (
-            import os
-        import subprocess
-
-
-
     CLICommandHandler,
     CommandRegistry,
     CommandResult,
@@ -303,6 +302,7 @@ class TestIngestionCommand:
             src.write_text('{"test": "data"}\n', encoding="utf-8")
 
             # Change to temp directory
+            import os
             old_cwd = os.getcwd()
             try:
                 os.chdir(tmpdir)
@@ -332,6 +332,7 @@ class TestValidationCommand:
     @patch("subprocess.run")
     def test_validation_failure(self, mock_run):
         """Test validation failure."""
+        import subprocess
 
         mock_run.side_effect = subprocess.CalledProcessError(1, "nox")
 

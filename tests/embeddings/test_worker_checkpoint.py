@@ -3,11 +3,10 @@ Test Worker Checkpoint
 
 Test module for worker checkpoint.
 """
-import pytest
+
 import json
+
 from workers.embedding_worker import run_worker
-
-
 
 
 def test_worker_checkpoint_resume(tmp_path, monkeypatch):

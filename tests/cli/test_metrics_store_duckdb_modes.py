@@ -1,14 +1,15 @@
 """DuckDB ingest mode tests for metrics CLI."""
+
 from __future__ import annotations
-duckdb = pytest.importorskip("duckdb")  # skip if dependency missing
+
 import json
 import subprocess
 import sys
 from pathlib import Path
 
+import pytest
 
-
-
+duckdb = pytest.importorskip("duckdb")  # skip if dependency missing
 
 
 def run_cli(args: list[str]) -> tuple[int, str, str]:

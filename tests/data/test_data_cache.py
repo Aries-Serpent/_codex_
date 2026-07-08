@@ -3,15 +3,15 @@ Test Data Cache
 
 Test module for data cache.
 """
+
 from __future__ import annotations
-            torch = pytest.importorskip("torch")
+
 import json
 from pathlib import Path
+
+import pytest
+
 from codex_ml.data_utils import cache_tokenized
-
-
-
-
 
 
 class DummyTokenizer:
@@ -30,6 +30,7 @@ def test_cache_tokenized_writes_manifest(tmp_path: Path) -> None:
     for entry, expected in zip(manifest, tokenized, strict=False):
         sample_file = tmp_path / entry["path"]
         if sample_file.suffix == ".pt":
+            torch = pytest.importorskip("torch")
             if hasattr(torch, "load"):
                 stored = torch.load(
                     sample_file, weights_only=True

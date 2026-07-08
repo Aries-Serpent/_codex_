@@ -3,11 +3,10 @@ Test Prepare Split
 
 Test module for prepare split.
 """
+
 from __future__ import annotations
-import pytest
+
 from hhg_logistics.data.prepare import _split_rows
-
-
 
 
 def test_split_rows_keeps_validation_non_empty_for_small_inputs() -> None:

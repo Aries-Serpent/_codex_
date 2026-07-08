@@ -41,6 +41,7 @@ class TestMLflowTracker:
 
     def test_log_artifact(self, tmp_path):
         """Should log artifact files."""
+        pytest.importorskip("mlflow")
 
         artifact_file = tmp_path / "model.txt"
         artifact_file.write_text("dummy model")
@@ -55,6 +56,7 @@ class TestMLflowTracker:
 
     def test_context_manager(self, tmp_path):
         """Test context manager functionality."""
+        pytest.importorskip("mlflow")
 
         tracker = MLflowTracker(
             enabled=True,
@@ -70,6 +72,7 @@ class TestMLflowTracker:
 
     def test_nested_runs(self, tmp_path):
         """Test nested run support."""
+        pytest.importorskip("mlflow")
 
         tracker = MLflowTracker(
             enabled=True,
@@ -84,6 +87,7 @@ class TestMLflowTracker:
 
     def test_tags(self, tmp_path):
         """Test tag logging."""
+        pytest.importorskip("mlflow")
 
         tracker = MLflowTracker(
             enabled=True,
@@ -96,6 +100,7 @@ class TestMLflowTracker:
 
     def test_init_tracking(self, tmp_path):
         """Test global tracker initialization."""
+        pytest.importorskip("mlflow")
 
         tracker = init_tracking(
             enabled=True,
@@ -112,6 +117,7 @@ class TestMLflowIntegration:
 
     def test_training_loop_integration(self, tmp_path):
         """Test integration with training loop."""
+        pytest.importorskip("mlflow")
 
         tracker = MLflowTracker(
             enabled=True,
@@ -147,7 +153,6 @@ class TestMLflowIntegration:
 
     def test_graceful_degradation(self):
         """Test graceful degradation when MLflow unavailable."""
-import pytest
         tracker = MLflowTracker(enabled=True)  # May fail to init
 
         # Should not raise errors

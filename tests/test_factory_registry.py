@@ -274,7 +274,6 @@ class TestRegistryIntegration:
 
     def test_decorator_pattern(self):
         """Test using registry as decorator."""
-import pytest
         registry = Registry(kind="test")
 
         @registry.register("func1")

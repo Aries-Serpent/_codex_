@@ -12,13 +12,14 @@ Key test areas:
 - Error handling and edge cases
 - Backward compatibility with different tokenizer configurations
 """
+
 from __future__ import annotations
+
+import pytest
+
 pytest.importorskip("transformers")
+
 from codex_ml.interfaces.tokenizer import HFTokenizer
-
-
-
-
 
 
 class DummyTokenizer:

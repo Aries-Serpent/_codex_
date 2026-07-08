@@ -5,26 +5,20 @@ Covers GitHubAppConfig, GitHubApp (JWT + token exchange), WebhookVerifier,
 and the build_app_manifest helper.  Network calls are mocked so the suite
 runs fully offline.
 """
+
 from __future__ import annotations
+
 import base64
 import hashlib
 import hmac
 import json
 import time
 import unittest.mock as mock
+
+import pytest  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+
 from codex.auth.exceptions import AuthenticationError
 from codex.auth.github_app import (
-    from cryptography.hazmat.primitives import serialization
-    from cryptography.hazmat.primitives.asymmetric import rsa
-        from datetime import datetime, timedelta, timezone
-        import urllib.error
-        from datetime import datetime, timezone
-        import urllib.error
-        import urllib.error
-
-
-
-
     GitHubApp,
     GitHubAppConfig,
     InstallationToken,
@@ -44,6 +38,8 @@ from codex.auth.github_app import (
 @pytest.fixture(scope="session")
 def rsa_private_key_pem() -> str:
     """Generate a throwaway RSA-2048 private key (PEM) for tests."""
+    from cryptography.hazmat.primitives import serialization
+    from cryptography.hazmat.primitives.asymmetric import rsa
 
     key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
     return key.private_bytes(
@@ -153,6 +149,7 @@ class TestGenerateJWT:
 class TestInstallationToken:
 
     def _make_mock_response(self, token: str, expires_delta: int = 3600) -> mock.MagicMock:
+        from datetime import datetime, timedelta, timezone
 
         expires = datetime.now(timezone.utc) + timedelta(seconds=expires_delta)
         body = json.dumps(
@@ -201,6 +198,7 @@ class TestInstallationToken:
         assert t2.token == "ghs_new", "token is not valid"
 
     def test_http_error_raises_auth_error(self, github_app):
+        import urllib.error
 
         with (
             mock.patch(
@@ -394,6 +392,7 @@ class TestUtilities:
 
     def test_parse_iso8601_utc_z(self):
         ts = _parse_iso8601("2024-01-15T12:00:00Z")
+        from datetime import datetime, timezone
 
         expected = datetime(2024, 1, 15, 12, 0, 0, tzinfo=timezone.utc).timestamp()
         assert abs(ts - expected) < 2, "Condition must be true"
@@ -432,6 +431,7 @@ class TestResolveGitHubToken:
 
     def test_fallback_uses_backup_on_401(self, github_app, monkeypatch):
         """pat_api_get retries with CODEX_BACKUP_KEY when master returns 401."""
+        import urllib.error
 
         monkeypatch.setenv("CODEX_MASTER_KEY", "bad-master-key")
         monkeypatch.setenv("CODEX_BACKUP_KEY", "good-backup-key")
@@ -464,6 +464,7 @@ class TestResolveGitHubToken:
 
     def test_all_tokens_fail_raises(self, github_app, monkeypatch):
         """pat_api_get raises AuthenticationError when all tokens are exhausted."""
+        import urllib.error
 
         for var in ("CODEX_MASTER_KEY", "CODEX_BACKUP_KEY", "AGENT_GITHUB_TOKEN", "GITHUB_TOKEN"):
             monkeypatch.setenv(var, "bad-token")

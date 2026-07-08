@@ -3,16 +3,13 @@
 Tests use mocking so they run without network access and without the
 sigstore SDK being installed.
 """
+
 from __future__ import annotations
-import pytest
+
 import json
 import sys
 from pathlib import Path
 from unittest.mock import MagicMock, patch
-import scripts.security.sigstore_verify as sv  # noqa: E402
-        import urllib.error
-
-
 
 # ---------------------------------------------------------------------------
 # Path setup — ensure the repo root is importable
@@ -22,6 +19,7 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 # Import module under test (after path fix)
+import scripts.security.sigstore_verify as sv  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -165,6 +163,7 @@ class TestVerifyPackageWithSigstoreNoAttestation:
 
     def test_network_error_returns_error_status(self) -> None:
         """Network failures produce status='error', not an uncaught exception."""
+        import urllib.error
 
         with (
             patch.object(sv, "_SIGSTORE_AVAILABLE", True),

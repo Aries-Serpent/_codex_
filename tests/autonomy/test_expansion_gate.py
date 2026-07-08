@@ -2,15 +2,16 @@
 Tests for Phase 6 — Safe Autonomy Expansion Gate
 (src/codex/autonomy/expansion_gate.py)
 """
+
 from __future__ import annotations
+
 import os
 import subprocess
 import sys
+
+import pytest
+
 from codex.autonomy.expansion_gate import (
-
-
-
-
     _AUDIT_COVERAGE_THRESHOLD,
     _GI_THRESHOLD,
     _LP_THRESHOLD,

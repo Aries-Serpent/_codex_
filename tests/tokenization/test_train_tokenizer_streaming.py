@@ -1,19 +1,19 @@
 """
+pytest.importorskip("charset_normalizer")
 Test Train Tokenizer Streaming
 
 Test module for train tokenizer streaming.
 """
+
 from __future__ import annotations
-pytest.importorskip("charset_normalizer")
-    pytest.importorskip("tokenizers")
+
 import json
 import types
 from pathlib import Path
+
+import pytest
+
 from src.codex_ml.tokenization import train_tokenizer
-
-
-
-
 
 
 def test_iter_text_uses_chunk_size(monkeypatch):
@@ -39,6 +39,7 @@ def test_iter_text_uses_chunk_size(monkeypatch):
 def test_sentencepiece_streaming_iterator(monkeypatch, tmp_path):
     if train_tokenizer is None:
         pytest.skip("tokenizers not available — train_tokenizer module not loaded")
+    pytest.importorskip("tokenizers")
     corpus = tmp_path / "corpus.txt"
     corpus.write_text("alpha\nbeta\n", encoding="utf-8")
 
@@ -99,6 +100,7 @@ def test_sentencepiece_streaming_iterator(monkeypatch, tmp_path):
 def test_sentencepiece_streaming_seed_fallback_recreates_iterator(monkeypatch, tmp_path):
     if train_tokenizer is None:
         pytest.skip("tokenizers not available — train_tokenizer module not loaded")
+    pytest.importorskip("tokenizers")
     corpus = tmp_path / "corpus.txt"
     corpus.write_text("alpha\nbeta\n", encoding="utf-8")
 

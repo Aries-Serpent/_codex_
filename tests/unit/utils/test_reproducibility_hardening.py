@@ -71,7 +71,6 @@ def test_enable_deterministic_training_missing_dependencies():
 
 def test_enable_deterministic_training_exceptions():
     """Test exceptions in setting seeds."""
-import pytest
 
     class MockEnviron(dict):
         def __setitem__(self, key, value):

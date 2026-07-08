@@ -6,11 +6,12 @@ Tests for service health monitoring and readiness probes.
 Phase 55: MEDIUM Priority Module Tests
 Coverage Target: src/services 11% → 28%+
 """
+
 from datetime import datetime
 from enum import Enum
 from unittest.mock import MagicMock
 
-
+import pytest
 
 
 class HealthStatus(Enum):

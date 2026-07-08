@@ -17,15 +17,14 @@ Physics principles validated:
 - Shannon Entropy (-Σp log p)
 - Quantum Entanglement
 """
+
 from __future__ import annotations
+
 import math
+
+import pytest
+
 from quantum import (
-        from quantum.plugin_registry import calculate_thermodynamic_load_priority
-        from quantum.plugin_registry import calculate_thermodynamic_load_priority
-
-
-
-
     PluginState,
     QuantumPlugin,
     QuantumPluginRegistry,
@@ -396,6 +395,7 @@ class TestCapability5AdaptiveLoadingStrategy:
         Physics: Boltzmann distribution P ∝ exp(-E/kT)
         Low T = selective, High T = permissive
         """
+        from quantum.plugin_registry import calculate_thermodynamic_load_priority
 
         plugins = [
             QuantumPlugin(name="heavy", import_path="sys", energy_cost=5.0),
@@ -418,6 +418,7 @@ class TestCapability5AdaptiveLoadingStrategy:
 
     def test_adaptive_loading_edge_cases(self):
         """Test edge cases in adaptive loading."""
+        from quantum.plugin_registry import calculate_thermodynamic_load_priority
 
         # Edge: Single plugin
         plugins = [QuantumPlugin(name="single", import_path="sys", energy_cost=1.0)]

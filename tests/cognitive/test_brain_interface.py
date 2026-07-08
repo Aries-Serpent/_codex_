@@ -6,19 +6,19 @@ This test module provides comprehensive coverage for the cognitive brain
 interface, including pattern querying, objective alignment, session state,
 and learning feedback.
 """
+
 import json
+
+# Import the brain interface
 import sys
 import tempfile
 from pathlib import Path
-from codex.cognitive.brain_interface import (
-    import codex.cognitive.brain_interface as _bm
 
-
-# Import the brain interface
-
+import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / "src"))
 
+from codex.cognitive.brain_interface import (
     AgentBrainInterface,
     AgentCategory,
     AgentContext,
@@ -44,6 +44,7 @@ def _reset_pattern_min_confidence():
     Reset to 0.0 for the duration of each test so pattern-query tests are
     environment-independent.
     """
+    import codex.cognitive.brain_interface as _bm
 
     original = _bm._MIN_CONFIDENCE
     _bm._MIN_CONFIDENCE = 0.0

@@ -3,14 +3,15 @@
 Tests the full branch-create → PR-open roundtrip in a single session using
 mocked urllib responses (no real network calls, no secrets required).
 """
+
 from __future__ import annotations
+
 import json
 import unittest.mock as mock  # pragma: allowlist secret
+
+import pytest
+
 from codex.github.mcp_poster import GitHubMCPPoster
-
-
-
-
 
 
 @pytest.fixture(autouse=True)

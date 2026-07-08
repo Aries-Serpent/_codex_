@@ -3,15 +3,14 @@ Test Tracking Ndjson Summary
 
 Test module for tracking ndjson summary.
 """
+
 from __future__ import annotations
-import pytest
+
 import csv
 from pathlib import Path
+
 from codex_ml.cli import ndjson_summary
 from codex_ml.logging.ndjson_logger import NDJSONLogger
-
-
-
 
 
 def _read_csv(path: Path) -> list[dict[str, str]]:

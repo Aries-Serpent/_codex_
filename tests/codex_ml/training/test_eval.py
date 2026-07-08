@@ -3,13 +3,8 @@ Test Eval
 
 Test module for eval.
 """
-            from codex_ml.training.eval import _safe_float
-            from codex_ml.training.eval import _safe_float
-            from codex_ml.training.eval import _move_batch_to_device
-            from codex_ml.training.eval import _move_batch_to_device
-            from codex_ml.training.eval import evaluate
-            from codex_ml.training.eval import evaluate
 
+import pytest
 
 
 class TestSafeFloat:
@@ -18,6 +13,7 @@ class TestSafeFloat:
     def test_safe_float_from_number(self):
         """Test converting number to float."""
         try:
+            from codex_ml.training.eval import _safe_float
 
             assert _safe_float(42) == 42.0, "Condition must be true"
             assert _safe_float(3.14) == 3.14, "Condition must be true"
@@ -27,6 +23,7 @@ class TestSafeFloat:
     def test_safe_float_from_invalid(self):
         """Test safe_float with invalid input returns 0.0."""
         try:
+            from codex_ml.training.eval import _safe_float
 
             result = _safe_float(object())
             assert result == 0.0, "Result must not be empty"
@@ -40,6 +37,7 @@ class TestMoveBatchToDevice:
     def test_move_batch_none_device(self):
         """Test move_batch with None device returns same batch."""
         try:
+            from codex_ml.training.eval import _move_batch_to_device
 
             batch = {"input": [1, 2, 3], "target": [4, 5, 6]}
             result = _move_batch_to_device(batch, None)
@@ -50,6 +48,7 @@ class TestMoveBatchToDevice:
     def test_move_batch_without_to_method(self):
         """Test move_batch with values without .to() method."""
         try:
+            from codex_ml.training.eval import _move_batch_to_device
 
             batch = {"value": 42}
             result = _move_batch_to_device(batch, "cpu")
@@ -64,6 +63,7 @@ class TestEvaluate:
     def test_evaluate_empty_dataloader(self):
         """Test evaluate with empty dataloader."""
         try:
+            from codex_ml.training.eval import evaluate
 
             def dummy_loss(outputs, batch):
                 return 0.0
@@ -89,6 +89,7 @@ class TestEvaluate:
     def test_evaluate_single_batch(self):
         """Test evaluate with single batch."""
         try:
+            from codex_ml.training.eval import evaluate
 
             def dummy_loss(outputs, batch):
                 return 1.0

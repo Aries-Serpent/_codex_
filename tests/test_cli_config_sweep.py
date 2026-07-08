@@ -3,14 +3,13 @@ Test Cli Config Sweep
 
 Test module for cli config sweep.
 """
-import pytest
+
 import hashlib
+
 import yaml
 from click.testing import CliRunner
+
 from codex_ml.cli.codex_cli import codex
-
-
-
 
 
 def test_config_sweep_generates_metadata(tmp_path):

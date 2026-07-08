@@ -3,29 +3,27 @@ Test Model Registry
 
 Test module for model registry.
 """
+
 from __future__ import annotations
-    pytest.importorskip("typer")
+
 import sys
+
+import pytest
+
 from tests.helpers.optional_dependencies import import_optional_dependency
-    import torch as _torch
-from codex_ml.models.registry import get_model
-from codex_ml.plugins.registries import models as plugin_models
-    from typer.testing import CliRunner
-    from codex_ml.cli import plugins_cli
-
-
-
-
 
 import_optional_dependency("torch", allow_stub=False)
 transformers = import_optional_dependency("transformers")
 
 try:
+    import torch as _torch
 
     _TORCH_312_BUG = sys.version_info >= (3, 12) and _torch.__version__.startswith("2.")
 except ImportError:
     _TORCH_312_BUG = False
 
+from codex_ml.models.registry import get_model
+from codex_ml.plugins.registries import models as plugin_models
 
 GPT2Config = transformers.GPT2Config
 GPT2LMHeadModel = transformers.GPT2LMHeadModel
@@ -153,7 +151,10 @@ def test_plugin_catalogue_tinyllama_offline_missing(tmp_path):
 
 
 def test_plugins_cli_lists_offline_models():
+    pytest.importorskip("typer")
+    from typer.testing import CliRunner
 
+    from codex_ml.cli import plugins_cli
 
     runner = CliRunner()
     result = runner.invoke(plugins_cli.app, ["list", "models"])

@@ -3,12 +3,11 @@ Test Split Manifest
 
 Test module for split manifest.
 """
-import pytest
+
 import json
 from pathlib import Path
+
 from codex_ml.data.split_utils import split_dataset
-
-
 
 
 def test_split_dataset_writes_checksum_manifest(tmp_path: Path) -> None:

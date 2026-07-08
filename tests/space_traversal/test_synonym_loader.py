@@ -6,14 +6,13 @@ Validates:
 - map_hash computation
 - Passthrough when no map present
 """
-import pytest
+
 import json
 import os
 import shutil
 import subprocess
 import sys
 from pathlib import Path
-
 
 ART = Path("audit_artifacts")
 SYNONYMS = Path("configs/synonyms/test_synonyms.json")

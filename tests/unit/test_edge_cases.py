@@ -3,34 +3,13 @@ Unit tests for edge cases across all modules.
 
 Tests boundary conditions, invalid inputs, and error handling.
 """
+
 import importlib.util
 import tempfile
 from pathlib import Path
 from unittest.mock import Mock, patch
-        from codex.utils.path_utils import windows_safe_timestamp
-        from codex.utils.path_utils import windows_safe_timestamp
-        from codex.utils.path_utils import sanitize_filename
-        from codex.utils.path_utils import sanitize_filename
-        from codex.utils.path_utils import sanitize_filename
-        from codex.archive.dal import _decode_json_field
-        from codex.archive.dal import _decode_json_field
-        from codex.archive.dal import _decode_json_field
-        from codex.archive.dal import _decode_json_field
-        from codex_ml.training.loop import train_one_step
-        from codex_ml.training.loop import train_one_step
-        from codex_ml.training.loop import train_epoch
-        from codex_ml.training.loop import run_minimal_training
-        from codex_ml.checkpointing.checkpoint_core import _ensure_dir
-        from codex_ml.checkpointing.checkpoint_core import load_checkpoint
-        from codex_ml.distributed.minimal import _parse_env_int
-        from codex_ml.distributed.minimal import _parse_env_int
-        from codex_ml.distributed.minimal import _parse_env_int
-            from codex.rag.indexer import chunk_text
-            from codex.rag.indexer import chunk_text
-            from codex.rag.indexer import chunk_text
-            from codex.config.config_loader import EnvironmentManager
 
-
+import pytest
 
 
 class TestPathUtilsEdgeCases:
@@ -38,12 +17,14 @@ class TestPathUtilsEdgeCases:
 
     def test_windows_safe_timestamp_invalid_format(self):
         """Test windows_safe_timestamp with invalid format raises."""
+        from codex.utils.path_utils import windows_safe_timestamp
 
         with pytest.raises(ValueError, match="Unknown format"):
             windows_safe_timestamp(fmt="invalid_format")
 
     def test_windows_safe_timestamp_without_seconds(self):
         """Test windows_safe_timestamp without seconds."""
+        from codex.utils.path_utils import windows_safe_timestamp
 
         result = windows_safe_timestamp(fmt="iso", include_seconds=False)
 
@@ -53,6 +34,7 @@ class TestPathUtilsEdgeCases:
 
     def test_sanitize_filename_empty_string(self):
         """Test sanitize_filename with empty string."""
+        from codex.utils.path_utils import sanitize_filename
 
         result = sanitize_filename("")
 
@@ -61,6 +43,7 @@ class TestPathUtilsEdgeCases:
 
     def test_sanitize_filename_only_illegal_chars(self):
         """Test sanitize_filename with only illegal characters."""
+        from codex.utils.path_utils import sanitize_filename
 
         result = sanitize_filename('<>:"/\\|?*')
 
@@ -71,6 +54,7 @@ class TestPathUtilsEdgeCases:
 
     def test_sanitize_filename_unicode(self):
         """Test sanitize_filename with unicode characters."""
+        from codex.utils.path_utils import sanitize_filename
 
         result = sanitize_filename("файл_测试_テスト.txt")
 
@@ -83,6 +67,7 @@ class TestDALEdgeCases:
 
     def test_decode_json_field_invalid_json(self):
         """Test _decode_json_field with invalid JSON."""
+        from codex.archive.dal import _decode_json_field
 
         result = _decode_json_field("{invalid json}")
 
@@ -91,6 +76,7 @@ class TestDALEdgeCases:
 
     def test_decode_json_field_non_dict_json(self):
         """Test _decode_json_field with non-dict JSON."""
+        from codex.archive.dal import _decode_json_field
 
         result = _decode_json_field('["array", "not", "dict"]')
 
@@ -99,6 +85,7 @@ class TestDALEdgeCases:
 
     def test_decode_json_field_bytes(self):
         """Test _decode_json_field with bytes."""
+        from codex.archive.dal import _decode_json_field
 
         result = _decode_json_field(b'{"key": "value"}')
 
@@ -107,6 +94,7 @@ class TestDALEdgeCases:
 
     def test_decode_json_field_none(self):
         """Test _decode_json_field with None."""
+        from codex.archive.dal import _decode_json_field
 
         result = _decode_json_field(None)
 
@@ -119,6 +107,7 @@ class TestTrainingEdgeCases:
 
     def test_train_one_step_zero_loss(self):
         """Test train_one_step with zero loss."""
+        from codex_ml.training.loop import train_one_step
 
         result = train_one_step(0.0)
 
@@ -127,6 +116,7 @@ class TestTrainingEdgeCases:
 
     def test_train_one_step_negative_loss(self):
         """Test train_one_step with negative loss."""
+        from codex_ml.training.loop import train_one_step
 
         result = train_one_step(-10.0)
 
@@ -135,6 +125,7 @@ class TestTrainingEdgeCases:
 
     def test_train_epoch_single_batch(self):
         """Test train_epoch with single batch."""
+        from codex_ml.training.loop import train_epoch
 
         model = Mock()
         model.step.return_value = {"loss": 1.5}
@@ -147,6 +138,7 @@ class TestTrainingEdgeCases:
 
     def test_run_minimal_training_max_steps_zero(self):
         """Test run_minimal_training with max_steps=0."""
+        from codex_ml.training.loop import run_minimal_training
 
         with tempfile.TemporaryDirectory() as tmpdir:
             result = run_minimal_training({}, max_steps=0, run_dir=tmpdir)
@@ -160,6 +152,7 @@ class TestCheckpointEdgeCases:
 
     def test_ensure_dir_existing_directory(self):
         """Test _ensure_dir with existing directory."""
+        from codex_ml.checkpointing.checkpoint_core import _ensure_dir
 
         with tempfile.TemporaryDirectory() as tmpdir:
             # Should not raise when directory exists
@@ -170,6 +163,7 @@ class TestCheckpointEdgeCases:
 
     def test_load_checkpoint_nonexistent_path(self):
         """Test load_checkpoint with nonexistent path."""
+        from codex_ml.checkpointing.checkpoint_core import load_checkpoint
 
         if not _torch_available():
             pytest.skip("PyTorch required")
@@ -184,6 +178,7 @@ class TestDistributedEdgeCases:
     @patch.dict("os.environ", {"TEST_FLAG": ""}, clear=False)
     def test_parse_env_int_empty_string(self):
         """Test _parse_env_int with empty string."""
+        from codex_ml.distributed.minimal import _parse_env_int
 
         with pytest.warns(RuntimeWarning):
             result = _parse_env_int("TEST_FLAG")
@@ -192,6 +187,7 @@ class TestDistributedEdgeCases:
     @patch.dict("os.environ", {"TEST_FLAG": "abc123"}, clear=False)
     def test_parse_env_int_mixed_string(self):
         """Test _parse_env_int with mixed alphanumeric."""
+        from codex_ml.distributed.minimal import _parse_env_int
 
         with pytest.warns(RuntimeWarning):
             result = _parse_env_int("TEST_FLAG")
@@ -200,6 +196,7 @@ class TestDistributedEdgeCases:
     @patch.dict("os.environ", {"TEST_FLAG": "99999999999"}, clear=False)
     def test_parse_env_int_large_number(self):
         """Test _parse_env_int with very large number."""
+        from codex_ml.distributed.minimal import _parse_env_int
 
         result = _parse_env_int("TEST_FLAG")
 
@@ -212,6 +209,7 @@ class TestRAGIndexingEdgeCases:
     def test_chunk_text_single_char(self):
         """Test chunk_text with single character."""
         try:
+            from codex.rag.indexer import chunk_text
 
             chunks = chunk_text("A", chunk_size=100, overlap=10)
 
@@ -223,6 +221,7 @@ class TestRAGIndexingEdgeCases:
     def test_chunk_text_exact_chunk_size(self):
         """Test chunk_text with text exactly chunk_size."""
         try:
+            from codex.rag.indexer import chunk_text
 
             text = "A" * 100
             chunks = chunk_text(text, chunk_size=100, overlap=0)
@@ -234,6 +233,7 @@ class TestRAGIndexingEdgeCases:
     def test_chunk_text_zero_overlap(self):
         """Test chunk_text with zero overlap."""
         try:
+            from codex.rag.indexer import chunk_text
 
             text = "A" * 200
             chunks = chunk_text(text, chunk_size=100, overlap=0)
@@ -250,6 +250,7 @@ class TestConfigEdgeCases:
     def test_environment_manager_missing_key(self):
         """Test EnvironmentManager with missing environment variable."""
         try:
+            from codex.config.config_loader import EnvironmentManager
 
             manager = EnvironmentManager()
 

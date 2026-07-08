@@ -1,14 +1,11 @@
 """Behavioral checks for :mod:`codex_ml.training.continuous_learning`."""
+
 from __future__ import annotations
-import pytest
+
 import sys
 import tempfile
 from pathlib import Path
 from typing import Any
-    from codex_ml.training.continuous_learning import ContinuousLearningPipeline
-    from codex_ml.training.continuous_learning import (
-
-
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SRC_DIR = REPO_ROOT / "src"
@@ -21,6 +18,7 @@ def _train_fn(data: Any):
 
 
 def test_registry_persistence(tmp_path):
+    from codex_ml.training.continuous_learning import ContinuousLearningPipeline
 
     registry_path = tmp_path / "registry.json"
     pipeline = ContinuousLearningPipeline(
@@ -37,6 +35,7 @@ def test_registry_persistence(tmp_path):
 
 
 def test_model_comparison_and_rollback(tmp_path):
+    from codex_ml.training.continuous_learning import (
         ContinuousLearningPipeline,
         ModelVersion,
     )

@@ -3,12 +3,11 @@ Test Integration Card
 
 Test module for integration card.
 """
+
 from __future__ import annotations
-import pytest
+
 from codex_ml.detectors.aggregate import scorecard
 from codex_ml.detectors.unified_training import detector_unified_training
-
-
 
 
 def test_integration_scorecard_has_reasonable_fields():

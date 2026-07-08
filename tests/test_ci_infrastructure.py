@@ -6,10 +6,10 @@ and integration with the codebase automation.
 
 Coverage: 35+ additional tests to reach 200+ total
 """
+
 import time
-    import sys
 
-
+import pytest
 
 
 class TestGitHubActionsIntegration:
@@ -489,6 +489,7 @@ class TestCIIntegration:
 # Verification count
 def test_ci_infrastructure_test_count():
     """Verify 35+ CI infrastructure tests created"""
+    import sys
     current_module = sys.modules[__name__]
     
     test_count = len([name for name in dir(current_module) 

@@ -3,13 +3,12 @@ Test Tokenizer Roundtrip
 
 Test module for tokenizer roundtrip.
 """
+
 from __future__ import annotations
-import pytest
+
 from collections.abc import Iterable, Sequence
+
 from codex_ml.interfaces.tokenizer import HFTokenizer, WhitespaceTokenizer
-
-
-
 
 
 def _safe_tokenizer() -> HFTokenizer | WhitespaceTokenizer:

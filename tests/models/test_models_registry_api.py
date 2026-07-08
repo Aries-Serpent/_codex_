@@ -3,12 +3,13 @@ Test Models Registry Api
 
 Test module for models registry api.
 """
-torch = pytest.importorskip("torch")
-transformers = pytest.importorskip("transformers")
+
+import pytest
+
 from codex_ml.models.registry import get_model
 
-
-
+torch = pytest.importorskip("torch")
+transformers = pytest.importorskip("transformers")
 PretrainedConfig = transformers.PretrainedConfig
 PreTrainedModel = transformers.PreTrainedModel
 

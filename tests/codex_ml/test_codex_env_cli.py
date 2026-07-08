@@ -3,11 +3,10 @@ Test Codex Env Cli
 
 Test module for codex env cli.
 """
-import pytest
+
 from pathlib import Path
+
 from codex_ml.cli import codex_env
-
-
 
 
 def test_codex_env_health_invokes_env_check(monkeypatch, tmp_path: Path):

@@ -60,12 +60,6 @@ def test_record_metrics_writes_json(tmp_path, artifacts, monkeypatch):
     Test that record_metrics properly writes both JSON and NDJSON format files
     with correct structure and data preservation.
     """
-import pytest
-    from codex_ml import train_loop
-    from codex_ml import train_loop
-    from codex_ml import train_loop
-    from codex_ml import train_loop
-    from codex_ml import train_loop
     from codex_ml import train_loop
 
     # Set up the artifacts directory for the train_loop module
@@ -102,6 +96,7 @@ def test_record_metrics_error_path(tmp_path, monkeypatch):
     """
     Test error handling when metrics recording fails due to filesystem issues.
     """
+    from codex_ml import train_loop
 
     monkeypatch.setattr(train_loop, "ART_DIR", tmp_path, raising=False)
 
@@ -125,6 +120,7 @@ def test_record_metrics_unserializable(tmp_path, monkeypatch):
     """
     Test handling of unserializable objects in metrics data.
     """
+    from codex_ml import train_loop
 
     class UnserializableObject:
         """Object that cannot be JSON serialized."""
@@ -145,6 +141,7 @@ def test_ts_format():
     """
     Test that timestamp formatting produces valid ISO format with Z suffix.
     """
+    from codex_ml import train_loop
 
     ts = train_loop._now_ts()
     assert isinstance(ts, str), "timestamp should be a string"
@@ -161,6 +158,7 @@ def test_cli_parsing_smoke(monkeypatch, tmp_path, capsys):
     """
     Smoke test for CLI argument parsing and main execution flow.
     """
+    from codex_ml import train_loop
 
     # Change to tmp directory to avoid polluting the real workspace
     monkeypatch.chdir(tmp_path)
@@ -200,6 +198,7 @@ def test_empty_dataset_path(monkeypatch):
     """
     Test training loop behavior with empty or missing dataset.
     """
+    from codex_ml import train_loop
 
     # Test demo epoch function returns valid metrics dictionary
     result = train_loop.demo_epoch(epoch=0)

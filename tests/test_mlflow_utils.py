@@ -3,6 +3,7 @@ Test Mlflow Utils
 
 Test module for mlflow utils.
 """
+
 import contextlib
 import importlib
 import json
@@ -10,10 +11,10 @@ import sys
 from pathlib import Path
 from types import ModuleType
 from typing import Any
+
+import pytest
+
 from codex_ml.tracking import mlflow_utils as MU
-
-
-
 
 
 def _inject_fake_mlflow(tmp_path: Path) -> ModuleType:

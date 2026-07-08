@@ -3,9 +3,8 @@ Test Tokenizer Encode Decode
 
 Test module for tokenizer encode decode.
 """
-import pytest
-from codex_ml.tokenization.offline_vocab import TinyVocabTokenizer
 
+from codex_ml.tokenization.offline_vocab import TinyVocabTokenizer
 
 
 def test_encode_decode_roundtrip():

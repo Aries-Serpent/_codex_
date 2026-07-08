@@ -3,14 +3,15 @@ Test Tokenizer Cli
 
 Test module for tokenizer cli.
 """
-pytest.importorskip("sentencepiece")
+
 import types
 from pathlib import Path
+
+import pytest
+
+pytest.importorskip("sentencepiece")
+
 import codex_ml.tokenization.cli as cli
-
-
-
-
 
 
 def test_train_cli(tmp_path, monkeypatch):

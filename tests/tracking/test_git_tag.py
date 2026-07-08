@@ -3,12 +3,11 @@ Test Git Tag
 
 Test module for git tag.
 """
+
 from __future__ import annotations
-import pytest
+
 import importlib
 import subprocess
-
-
 
 
 def test_current_commit(monkeypatch):

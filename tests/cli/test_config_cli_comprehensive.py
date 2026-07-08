@@ -3,14 +3,14 @@ Tests for codex_ml.cli.config module.
 
 Tests configuration management CLI functionality.
 """
+
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
+
+import pytest
 import yaml
-            from codex_ml.cli import config
-
-
 
 
 class TestConfigModuleImport:
@@ -19,6 +19,7 @@ class TestConfigModuleImport:
     def test_config_module_import(self):
         """Test that config module can be imported."""
         try:
+            from codex_ml.cli import config
 
             assert config is not None, "config must be initialized"
         except ImportError as e:

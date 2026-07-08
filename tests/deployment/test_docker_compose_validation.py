@@ -3,10 +3,11 @@ Test docker-compose.yml configuration validity and service definitions.
 
 Part of deployment-infrastructure capability maturity improvement.
 """
+
 from pathlib import Path
+
+import pytest
 import yaml
-
-
 
 
 @pytest.fixture

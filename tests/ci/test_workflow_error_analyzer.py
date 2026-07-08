@@ -8,11 +8,10 @@ Tests cover:
 - Recommendation generation
 - Report output formats
 """
+
+import pytest
+
 from scripts.ci.analyze_workflow_errors import (
-        import re
-        import re
-
-
     ERROR_PATTERNS,
     AnalysisResult,
     analyze_log_content,
@@ -368,6 +367,7 @@ class TestAnalysisResult:
         # Should be ISO format containing 'T' separator
         assert "T" in result.analyzed_at, "analyzed_at must be ISO 8601 (contains 'T')"
         # Must also contain a date component: 4-digit year
+        import re
         assert re.search(r"\d{4}-\d{2}-\d{2}", result.analyzed_at), (
             "analyzed_at must include a YYYY-MM-DD date component"
         )
@@ -427,6 +427,7 @@ class TestErrorPatternConfiguration:
 
     def test_patterns_are_valid_regex(self):
         """Test that all patterns are valid regex."""
+        import re
 
         for error_type, config in ERROR_PATTERNS.items():
             for pattern in config["patterns"]:

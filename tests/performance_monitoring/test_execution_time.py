@@ -3,12 +3,13 @@
 This module tests tracking and analysis of test execution times including
 duration measurement, trend analysis, and performance regression detection.
 """
+
 import json
 import tempfile
 from datetime import datetime, timedelta
 from pathlib import Path
 
-
+import pytest
 
 
 class TestDurationMeasurement:

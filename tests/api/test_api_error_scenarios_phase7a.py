@@ -246,7 +246,6 @@ class TestAPIErrorScenarios:
 
     def test_error_scenario_34(self):
         """Test error scenario 34 (HTTP 500)"""
-import pytest
         try:
             raise HTTPException(status_code=500, detail="Error 34")
         except HTTPException as exc:

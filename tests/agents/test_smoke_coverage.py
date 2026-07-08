@@ -11,25 +11,8 @@ These tests provide baseline coverage and validate:
 - Classes can be instantiated
 - Basic invariants hold
 """
-        from agents import agent_memory
-        from agents.mental_mapping import MentalMappingModel
-        from agents import quantum_game_theory
-        from agents.quantum_game_theory import TeamType
-        from agents.quantum_game_theory import StrategyState, TeamType
-        from agents import self_healing
-        from agents.self_healing import IssueSeverity
-        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
-            from agents import msp_client
-        from agents.physics_integration import HybridPhysicsOrchestrator
-        from agents.workflow_navigator import WorkflowNavigator
-        from agents.workflow_navigator import WorkflowNavigator
-        from agents import developer_orchestrator
-        from agents.developer_orchestrator import AppType
-        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
-        from agents import exceptions
-        from agents.exceptions import (
-        from agents.exceptions import AgentImportError
 
+import pytest
 
 
 class TestAgentMemorySmoke:
@@ -37,11 +20,13 @@ class TestAgentMemorySmoke:
 
     def test_import(self):
         """Test module can be imported."""
+        from agents import agent_memory
 
         assert agent_memory is not None, "agent_memory must be initialized"
 
     def test_mental_mapping_import(self):
         """Test MentalMappingModel import."""
+        from agents.mental_mapping import MentalMappingModel
 
         assert MentalMappingModel is not None, "MentalMappingModel must be initialized"
 
@@ -51,17 +36,20 @@ class TestQuantumGameTheorySmoke:
 
     def test_import(self):
         """Test module can be imported."""
+        from agents import quantum_game_theory
 
         assert quantum_game_theory is not None, "quantum_game_theory must be initialized"
 
     def test_team_type_enum(self):
         """Test TeamType enum."""
+        from agents.quantum_game_theory import TeamType
 
         assert TeamType.BLUE is not None, "BLUE must be initialized"
         assert TeamType.RED is not None, "RED must be initialized"
 
     def test_strategy_state_basic(self):
         """Test StrategyState initialization."""
+        from agents.quantum_game_theory import StrategyState, TeamType
 
         state = StrategyState(team=TeamType.BLUE, strategies=["defend", "monitor"])
 
@@ -74,17 +62,20 @@ class TestSelfHealingSmoke:
 
     def test_import(self):
         """Test module can be imported."""
+        from agents import self_healing
 
         assert self_healing is not None, "self_healing must be initialized"
 
     def test_issue_severity_enum(self):
         """Test IssueSeverity enum."""
+        from agents.self_healing import IssueSeverity
 
         assert IssueSeverity.LOW is not None, "LOW must be initialized"
         assert IssueSeverity.HIGH is not None, "HIGH must be initialized"
 
     def test_detected_issue_creation(self):
         """Test DetectedIssue can be created."""
+        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
 
         issue = DetectedIssue(
             issue_id="test-001",
@@ -105,6 +96,7 @@ class TestMSPClientSmoke:
     def test_import_attempt(self):
         """Test module import (may require httpx)."""
         try:
+            from agents import msp_client
 
             assert msp_client is not None, "msp_client must be initialized"
         except ImportError as e:
@@ -117,6 +109,7 @@ class TestPhysicsIntegrationImproved:
 
     def test_get_capabilities(self):
         """Test capability reporting."""
+        from agents.physics_integration import HybridPhysicsOrchestrator
 
         orchestrator = HybridPhysicsOrchestrator()
         capabilities = orchestrator.get_capabilities()
@@ -132,6 +125,7 @@ class TestWorkflowNavigatorImproved:
 
     def test_list_workflows(self):
         """Test listing workflows."""
+        from agents.workflow_navigator import WorkflowNavigator
 
         navigator = WorkflowNavigator()
         workflows = navigator.list_workflows()
@@ -141,6 +135,7 @@ class TestWorkflowNavigatorImproved:
 
     def test_get_workflow_exists(self):
         """Test retrieving existing workflow."""
+        from agents.workflow_navigator import WorkflowNavigator
 
         navigator = WorkflowNavigator()
         workflow = navigator.get_workflow("AUDIT_EXEC")
@@ -154,17 +149,20 @@ class TestDeveloperOrchestratorSimple:
 
     def test_import(self):
         """Test module import."""
+        from agents import developer_orchestrator
 
         assert developer_orchestrator is not None, "developer_orchestrator must be initialized"
 
     def test_app_type_enum(self):
         """Test AppType enum."""
+        from agents.developer_orchestrator import AppType
 
         assert AppType.PYTHON_CLI is not None, "PYTHON_CLI must be initialized"
         assert AppType.PYTHON_WEB is not None, "PYTHON_WEB must be initialized"
 
     def test_orchestrator_init(self):
         """Test orchestrator can be initialized."""
+        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
         orchestrator = PhysicsGuidedDeveloperOrchestrator(session_id="test")
 
@@ -178,11 +176,13 @@ class TestExceptionsModule:
 
     def test_import(self):
         """Test exceptions module can be imported."""
+        from agents import exceptions
 
         assert exceptions is not None, "exceptions must be initialized"
 
     def test_agent_error_hierarchy(self):
         """Test exception hierarchy."""
+        from agents.exceptions import (
             AgentConfigError,
             AgentError,
             AgentImportError,
@@ -196,6 +196,7 @@ class TestExceptionsModule:
 
     def test_agent_import_error_message(self):
         """Test AgentImportError provides helpful message."""
+        from agents.exceptions import AgentImportError
 
         error = AgentImportError("numpy", extra="perf")
         msg = str(error)

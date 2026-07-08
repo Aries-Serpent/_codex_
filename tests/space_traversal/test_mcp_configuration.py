@@ -3,9 +3,8 @@ Tests for MCP configuration management detector.
 
 Tests detection of configuration files, environment handling, and mcp.json schema.
 """
-import pytest
-from scripts.space_traversal.detectors import mcp_configuration
 
+from scripts.space_traversal.detectors import mcp_configuration
 
 
 def test_detect_no_config():

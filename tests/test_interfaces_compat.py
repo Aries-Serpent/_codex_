@@ -3,22 +3,23 @@ Test Interfaces Compat
 
 Test module for interfaces compat.
 """
+
+# BEGIN: CODEX_IFACE_TESTS
 import importlib
 import json
 import os
 from collections.abc import Mapping
 from typing import Any
+
+import pytest
+
 from codex_ml.interfaces import (
-from codex_ml.interfaces import tokenizer as tokenizer_mod
-
-# BEGIN: CODEX_IFACE_TESTS
-
-
     RewardModel,
     RLAgent,
     TokenizerAdapter,
     apply_config,
 )
+from codex_ml.interfaces import tokenizer as tokenizer_mod
 
 # Load interface definitions from config or environment
 CFG_PATH = os.getenv("CODEX_INTERFACES_CFG", "configs/interfaces.yaml")

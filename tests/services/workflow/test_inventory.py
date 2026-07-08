@@ -50,21 +50,6 @@ jobs:
 @pytest.fixture
 def sample_reusable_workflow():
     """Sample reusable workflow content."""
-import pytest
-    from pathlib import Path
-    from src.services import WorkflowInventory as WI
-    from src.services.workflow import WorkflowInventory
-    from src.services.workflow.parser import WorkflowParser
-    from src.services.workflow.parser import WorkflowParser
-    from pathlib import Path
-    from src.services.workflow.parser import WorkflowParser
-    from src.services.workflow.parser import WorkflowParser
-    from src.services.workflow.parser import WorkflowParser
-    from pathlib import Path
-    from src.services.workflow.parser import WorkflowParser
-    from src.services.workflow.parser import WorkflowParser
-    from src.services.workflow.types import InputType
-    from src.services.workflow.parser import WorkflowParser
     return """
 name: Reusable Workflow
 on:
@@ -357,6 +342,7 @@ def test_scan_file_extensions(
 
 def test_real_workflow_integration():
     """Integration test with actual repository workflows."""
+    from pathlib import Path
 
     # Use actual workflows directory
     workflows_dir = Path(__file__).parent.parent.parent.parent / ".github" / "workflows"
@@ -390,6 +376,8 @@ def test_real_workflow_integration():
 
 def test_workflow_inventory_import_from_services():
     """Test that WorkflowInventory can be imported from services module."""
+    from src.services import WorkflowInventory as WI
+    from src.services.workflow import WorkflowInventory
 
     # Verify both import paths work
     assert WI is WorkflowInventory, "WI is not valid"
@@ -397,6 +385,7 @@ def test_workflow_inventory_import_from_services():
 
 def test_parser_handles_invalid_yaml(temp_workflows_dir):
     """Test that parser handles invalid YAML gracefully."""
+    from src.services.workflow.parser import WorkflowParser
 
     # Create file with invalid YAML
     invalid_file = temp_workflows_dir / "invalid.yml"
@@ -411,6 +400,7 @@ def test_parser_handles_invalid_yaml(temp_workflows_dir):
 
 def test_parser_handles_invalid_utf8(temp_workflows_dir):
     """Test that parser handles invalid UTF-8 gracefully."""
+    from src.services.workflow.parser import WorkflowParser
 
     # Create file with invalid UTF-8
     invalid_file = temp_workflows_dir / "invalid_utf8.yml"
@@ -443,7 +433,9 @@ def test_inventory_skips_corrupted_files(temp_workflows_dir, sample_workflow_con
 
 def test_parser_handles_missing_required_fields():
     """Test parser handles workflows missing required fields."""
+    from pathlib import Path
 
+    from src.services.workflow.parser import WorkflowParser
 
     # Workflow with no jobs
     content = """
@@ -590,6 +582,7 @@ def test_refresh_workflow_handles_parser_exception(
 
 def test_parser_with_list_trigger_format(temp_workflows_dir):
     """Test parsing workflows with list format triggers."""
+    from src.services.workflow.parser import WorkflowParser
 
     content = """
 name: Multi Trigger
@@ -610,6 +603,7 @@ jobs:
 
 def test_parser_with_string_trigger_format(temp_workflows_dir):
     """Test parsing workflows with string format triggers."""
+    from src.services.workflow.parser import WorkflowParser
 
     content = """
 name: Simple
@@ -680,7 +674,9 @@ jobs:
 
 def test_clear_parser_cache():
     """Test clearing parser cache."""
+    from pathlib import Path
 
+    from src.services.workflow.parser import WorkflowParser
 
     parser = WorkflowParser()
 
@@ -823,6 +819,7 @@ jobs:
 
 def test_input_with_invalid_type(temp_workflows_dir):
     """Test input with invalid type falls back to string."""
+    from src.services.workflow.parser import WorkflowParser
 
     content = """
 name: Invalid Input
@@ -845,6 +842,7 @@ jobs:
     assert wf is not None, "wf must be initialized"
     assert "test" in wf.inputs, "Condition must be true"
     # Should fall back to STRING for invalid type
+    from src.services.workflow.types import InputType
 
     assert wf.inputs["test"].type == InputType.STRING, "type is not valid"
 
@@ -982,6 +980,7 @@ jobs:
 
 def test_trigger_with_string_branches(temp_workflows_dir):
     """Test trigger with branches as string (single branch)."""
+    from src.services.workflow.parser import WorkflowParser
 
     content = """
 name: Single Branch

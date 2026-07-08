@@ -6,11 +6,10 @@ Test Hydra Degrade
 
 Test module for hydra degrade.
 """
+
 from __future__ import annotations
-import pytest
+
 import codex_ml.cli.hydra_main as hydra_main
-
-
 
 
 def test_hydra_missing_module_degrades(monkeypatch, capsys):

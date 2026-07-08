@@ -6,12 +6,13 @@ Validates the BayesianAssessor API:
 - adjust_scores() blending with CODEX_BAYESIAN_MODE flag
 - from_dict() and from_json() construction
 """
+
 import json
 import tempfile
+
+import pytest
+
 from cognitive_brain.analytics.bayesian import (
-
-
-
     BayesianAssessor,
     CPDTable,
     _bayesian_mode_enabled,

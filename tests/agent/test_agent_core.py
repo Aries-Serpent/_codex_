@@ -45,7 +45,6 @@ class TestAgentCore:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_execute_empty_task(self, agent):
         """Test executing empty task."""
         result = await agent.execute("")
@@ -63,7 +62,6 @@ class TestAgentCore:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_execute_simple_task(self, agent):
         """Test executing a simple task."""
         result = await agent.execute("Test task")
@@ -101,7 +99,6 @@ class TestMockAdapter:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_complete(self, adapter):
         """Test completion with mock adapter."""
         from agent.adapters.base_adapter import CompletionRequest
@@ -122,7 +119,6 @@ class TestMockAdapter:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_health_check(self, adapter):
         """Test health check always returns True."""
         healthy = await adapter.health_check()
@@ -130,5 +126,4 @@ class TestMockAdapter:
 
     def test_provider_name(self, adapter):
         """Test provider name."""
-import pytest
         assert adapter.provider_name == "mock", "provider_name is not valid"

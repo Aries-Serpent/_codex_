@@ -3,16 +3,13 @@ Test Plan And Store
 
 Test module for plan and store.
 """
+
 from __future__ import annotations
-import pytest
+
 from pathlib import Path
+
 from codex.archive.api import restore, store
 from codex.archive.plan import build_plan
-    import os
-    import time
-
-
-
 
 
 def test_build_plan_and_store(tmp_path: Path, monkeypatch) -> None:
@@ -21,6 +18,8 @@ def test_build_plan_and_store(tmp_path: Path, monkeypatch) -> None:
     f_new = tmp_path / "new.py"
     f_new.write_text("logger.info('new')\n", encoding="utf-8")
 
+    import os
+    import time
 
     os.utime(f_old.as_posix(), (time.time() - 200 * 86400, time.time() - 200 * 86400))
 

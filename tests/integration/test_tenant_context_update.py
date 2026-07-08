@@ -11,16 +11,16 @@ Covers:
 - In-memory cache is updated together with the SQLite row
 - deactivate_tenant() delegates to update_tenant(active=False)
 """
+
 from __future__ import annotations
+
 import json
 import sqlite3
 from pathlib import Path
 from typing import Any
 from unittest.mock import MagicMock, patch
-        from services.msp_gateway.middleware.tenant_context import TenantRegistry
 
-
-
+import pytest
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -53,6 +53,7 @@ def registry(tmp_path: Path):
             mock_auth,
         ),
     ):
+        from services.msp_gateway.middleware.tenant_context import TenantRegistry
 
         reg = TenantRegistry(backend="sqlite")
         # Pre-create the tenant row so update tests have a target

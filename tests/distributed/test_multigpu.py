@@ -10,33 +10,33 @@ Comprehensive test suite for distributed training scenarios including:
 Author: Codex ML Team
 Version: 1.0.0
 """
+
+import pytest
+
 pytest.importorskip("torch")
-import os
-import sys
-import unittest
-from codex.logging.structured_logger import logger
-    import torch.distributed as dist
-    from torch.nn.parallel import DistributedDataParallel as DDP
-    import torch
-    import torch.nn as nn
-        from torch.utils.data.distributed import DistributedSampler
-        from torch.utils.data import DataLoader, Dataset
 
-
-
+pytest.importorskip("torch")
 
 # Apply disable_torch_profiler fixture to all tests in this module
 # to avoid profiler type errors
 pytestmark = pytest.mark.usefixtures("disable_torch_profiler")
 
 
+import os
+import sys
+import unittest
 
+from codex.logging.structured_logger import logger
 
 # Add src to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "src"))
 
 try:
+    import torch.distributed as dist
+    from torch.nn.parallel import DistributedDataParallel as DDP
 
+    import torch
+    import torch.nn as nn
 
     TORCH_AVAILABLE = True
 except ImportError:
@@ -142,13 +142,13 @@ class TestDataParallelism(unittest.TestCase):
         if not harness.has_gpus(1):
             # Mock test when no GPUs available
             model = nn.Linear(10, 10)
-            assert isinstance(model, nn.Module)
+            self.assertIsInstance(model, nn.Module)
             return
 
         # Actual GPU test
         model = nn.Linear(10, 10).cuda()
         ddp_model = DDP(model, device_ids=[0])
-        assert isinstance(ddp_model, DDP)
+        self.assertIsInstance(ddp_model, DDP)
 
     def test_ddp_gradient_synchronization(self):
         """Test gradient synchronization across ranks."""
@@ -166,7 +166,7 @@ class TestDataParallelism(unittest.TestCase):
 
         # Check gradients exist
         for param in model.parameters():
-            assert param.grad is not None
+            self.assertIsNotNone(param.grad)
 
         optimizer.step()
 
@@ -186,7 +186,7 @@ class TestDataParallelism(unittest.TestCase):
         loss.backward()
         optimizer.step()
 
-        assert True  # Test passed if we got here
+        self.assertTrue(True)  # Test passed if we got here
 
     def test_ddp_checkpoint_consistency(self):
         """Test checkpoint saving and loading with DDP."""
@@ -204,7 +204,7 @@ class TestDataParallelism(unittest.TestCase):
 
         # Verify parameters match
         for p1, p2 in zip(model.parameters(), model_restored.parameters()):
-            assert torch.allclose(p1, p2)
+            self.assertTrue(torch.allclose(p1, p2))
 
 
 @unittest.skipUnless(TORCH_AVAILABLE, "PyTorch not available")
@@ -230,7 +230,7 @@ class TestModelParallelism(unittest.TestCase):
         x = torch.randn(4, 10)
         y = model(x)
 
-        assert y.shape == (4, 10)
+        self.assertEqual(y.shape, (4, 10))
 
     @harness.skip_if_no_gpus(2)
     def test_tensor_parallel_communication(self):
@@ -244,8 +244,8 @@ class TestModelParallelism(unittest.TestCase):
         t1 = t0.to(device1)
 
         # Verify tensor moved correctly
-        assert t1.device.type == "cuda"
-        assert t1.device.index == 1
+        self.assertEqual(t1.device.type, "cuda")
+        self.assertEqual(t1.device.index, 1)
 
 
 @unittest.skipUnless(TORCH_AVAILABLE, "PyTorch not available")
@@ -259,15 +259,15 @@ class TestPipelineParallelism(unittest.TestCase):
         micro_batch_size = 8
         num_micro_batches = batch_size // micro_batch_size
 
-        assert num_micro_batches == 4
+        self.assertEqual(num_micro_batches, 4)
 
         # Simulate micro-batch processing
         x = torch.randn(batch_size, 10)
         micro_batches = x.split(micro_batch_size)
 
-        assert len(micro_batches) == num_micro_batches
+        self.assertEqual(len(micro_batches), num_micro_batches)
         for mb in micro_batches:
-            assert mb.shape[0] == micro_batch_size
+            self.assertEqual(mb.shape[0], micro_batch_size)
 
     def test_pipeline_gradient_accumulation(self):
         """Test gradient accumulation across micro-batches."""
@@ -286,7 +286,7 @@ class TestPipelineParallelism(unittest.TestCase):
 
         # Check gradients accumulated
         for param in model.parameters():
-            assert param.grad is not None
+            self.assertIsNotNone(param.grad)
 
         optimizer.step()
 
@@ -304,8 +304,8 @@ class TestDistributedUtilities(unittest.TestCase):
         rank = int(os.environ.get("RANK", 0))
         world_size = int(os.environ.get("WORLD_SIZE", 1))
 
-        assert rank == 0
-        assert world_size == 4
+        self.assertEqual(rank, 0)
+        self.assertEqual(world_size, 4)
 
         mock_env.teardown()
 
@@ -321,7 +321,7 @@ class TestDistributedUtilities(unittest.TestCase):
 
         # Check memory allocated
         mem_allocated = torch.cuda.memory_allocated(0)
-        assert mem_allocated > 0
+        self.assertGreater(mem_allocated, 0)
 
         # Free memory
         del t
@@ -338,7 +338,7 @@ class TestDistributedUtilities(unittest.TestCase):
             barrier_called = True
 
         mock_barrier()
-        assert barrier_called
+        self.assertTrue(barrier_called)
 
 
 @unittest.skipUnless(TORCH_AVAILABLE, "PyTorch not available")
@@ -347,7 +347,9 @@ class TestDistributedDataLoader(unittest.TestCase):
 
     def test_data_sharding(self):
         """Test data sharding across ranks."""
+        from torch.utils.data.distributed import DistributedSampler
 
+        from torch.utils.data import DataLoader, Dataset
 
         class DummyDataset(Dataset):
             def __init__(self, size=100):
@@ -367,8 +369,8 @@ class TestDistributedDataLoader(unittest.TestCase):
 
         # Verify data loader works
         batch = next(iter(loader))
-        assert len(batch) == 2  # (data, labels)
-        assert batch[0].shape[0] == 8  # batch size
+        self.assertEqual(len(batch), 2)  # (data, labels)
+        self.assertEqual(batch[0].shape[0], 8)  # batch size
 
 
 def run_multi_gpu_tests():

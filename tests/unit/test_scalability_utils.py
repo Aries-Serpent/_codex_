@@ -16,14 +16,15 @@ Covers all public APIs:
 - PerformanceMonitor: record, get_average (windowed), get_percentile, get_summary,
   timed decorator, capped at 1000 points
 """
+
 from __future__ import annotations
+
 import threading
 import time
+
+import pytest
+
 from codex_ml.utils.scalability import (
-
-
-
-
     CircuitBreaker,
     Endpoint,
     LoadBalancer,

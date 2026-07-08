@@ -3,25 +3,26 @@ Test Checkpointing Safe Load
 
 Test module for checkpointing safe load.
 """
+
 from __future__ import annotations
-    torch = pytest.importorskip("torch")
+
 import inspect
 from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
-    from utils.checkpointing import load_checkpoint  # type: ignore
-    from codex_ml.utils.checkpointing import load_checkpoint  # type: ignore
 
-
-
+import pytest
 
 # Resolve load_checkpoint from either layout:
 try:  # prefer top-level utils layout if available
+    from utils.checkpointing import load_checkpoint  # type: ignore
 except ImportError:  # pragma: no cover - fallback to package layout
+    from codex_ml.utils.checkpointing import load_checkpoint  # type: ignore
 
 
 def _require_torch() -> Any:
     """Return a real torch module or skip with a helpful reason."""
+    torch = pytest.importorskip("torch")
     missing = [name for name in ("save", "load", "randn") if not hasattr(torch, name)]
     if missing:
         pytest.skip(f"PyTorch stub missing attributes: {', '.join(missing)}")

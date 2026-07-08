@@ -129,7 +129,6 @@ class TestDataDriftCheck:
 
     def test_main_invalid_json(self, tmp_path):
         """Test main function with invalid JSON."""
-import pytest
         ref_file = tmp_path / "ref.json"
         cur_file = tmp_path / "cur.json"
 

@@ -40,11 +40,6 @@ def simple_function():
 
     complex_file = src_dir / "complex.py"
     complex_file.write_text("""
-import pytest
-    from autonomous_agent import CodebaseHealth
-    from autonomous_agent import CodebaseHealth
-    from autonomous_agent import CodebaseHealth
-    import ast
 def complex_function(x, y, z):
     '''A complex function.'''
     if x > 0:
@@ -202,6 +197,7 @@ def test_action_proposer_init(temp_repo):
 
 def test_propose_actions_for_complexity(temp_repo):
     """Test action proposal for high complexity."""
+    from autonomous_agent import CodebaseHealth
 
     metric = HealthMetric(
         name="code_complexity",
@@ -229,6 +225,7 @@ def test_propose_actions_for_complexity(temp_repo):
 
 def test_propose_actions_for_duplication(temp_repo):
     """Test action proposal for code duplication."""
+    from autonomous_agent import CodebaseHealth
 
     metric = HealthMetric(
         name="code_duplication",
@@ -374,6 +371,7 @@ def test_action_filtering_by_level(temp_repo):
 
 def test_save_state(temp_repo):
     """Test state saving."""
+    from autonomous_agent import CodebaseHealth
 
     agent = AutonomousAgent(temp_repo)
 
@@ -430,6 +428,7 @@ def test_complexity_calculation(temp_repo):
     sensor = CodeHealthSensor(temp_repo)
 
     # Create a simple function
+    import ast
 
     code = """
 def simple():

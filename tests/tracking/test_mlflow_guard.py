@@ -3,7 +3,9 @@ Test Mlflow Guard
 
 Test module for mlflow guard.
 """
+
 from __future__ import annotations
+
 import importlib
 import json
 import os
@@ -13,8 +15,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
-
-
+import pytest
 
 
 def _install_stub_mlflow(monkeypatch: pytest.MonkeyPatch) -> types.ModuleType:

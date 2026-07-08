@@ -7,9 +7,10 @@ Tests cover:
 - Multi-device support
 - Time-based validation
 """
+
+import pytest
+
 from codex.auth.mfa_provider import MFAProvider, MFASecret
-
-
 
 # ============================================================================
 # Fixtures

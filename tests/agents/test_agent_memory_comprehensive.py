@@ -21,14 +21,13 @@ Test Categories:
 - Edge cases and error handling
 - Performance characteristics
 """
+
 import tempfile
 from pathlib import Path
+
+import pytest
+
 from agents.agent_memory import (
-            import time
-            import time
-
-
-
     AgentMemory,
     ContextFrame,
     MemoryEntry,
@@ -392,6 +391,7 @@ class TestAgentMemory:
     def test_large_memory_storage(self, memory_system):
         """Test storing many memories."""
         if hasattr(memory_system, "add_memory"):
+            import time
 
             start = time.time()
             for i in range(100):
@@ -421,6 +421,7 @@ class TestAgentMemory:
                 )
                 memory_system.add_memory(entry)
 
+            import time
 
             start = time.time()
             memory_system.search_memories(category="decision")

@@ -109,7 +109,6 @@ def test_stage_s7_manifest_handles_empty_coverage(monkeypatch, tmp_path):
 
 def test_stage_s7_manifest_no_coverage_file(monkeypatch, tmp_path):
     """Test that manifest works without coverage_map.json."""
-import pytest
     artifacts_dir = tmp_path / "audit_artifacts"
     artifacts_dir.mkdir()
 

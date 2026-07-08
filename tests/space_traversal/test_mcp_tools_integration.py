@@ -7,22 +7,15 @@ Verifies that the detector:
 3. Detects mcp/ and tools/ paths correctly
 4. Appears in capabilities_raw.json after S3 execution
 """
+
 from __future__ import annotations
-    pytest.importorskip("scripts.space_traversal.audit_runner")
-    pytest.importorskip("yaml")
-    pytest.importorskip("jinja2")
-    from scripts.space_traversal.detectors.mcp_tools_integration import detect
-    from scripts.space_traversal.detectors.mcp_tools_integration import detect
-    from scripts.space_traversal.detectors.mcp_tools_integration import detect
-    from scripts.space_traversal.detectors.mcp_tools_integration import detect
-    from scripts.space_traversal.detectors.mcp_tools_integration import detect
-    from scripts.space_traversal.detectors.mcp_tools_integration import detect
 
-
+import pytest
 
 
 def test_mcp_tools_integration_detector_basic():
     """Test basic MCP tools integration detector functionality."""
+    from scripts.space_traversal.detectors.mcp_tools_integration import detect
 
     file_index = {
         "files": [
@@ -44,6 +37,7 @@ def test_mcp_tools_integration_detector_basic():
 
 def test_mcp_tools_integration_detector_patterns():
     """Test that detector finds patterns correctly."""
+    from scripts.space_traversal.detectors.mcp_tools_integration import detect
 
     file_index = {
         "files": [
@@ -61,6 +55,7 @@ def test_mcp_tools_integration_detector_patterns():
 
 def test_mcp_tools_integration_detector_no_evidence():
     """Test detector with no matching files."""
+    from scripts.space_traversal.detectors.mcp_tools_integration import detect
 
     file_index = {
         "files": [
@@ -78,6 +73,7 @@ def test_mcp_tools_integration_detector_no_evidence():
 
 def test_mcp_tools_integration_detector_sorted():
     """Test that detector returns sorted results."""
+    from scripts.space_traversal.detectors.mcp_tools_integration import detect
 
     file_index = {
         "files": [
@@ -101,6 +97,9 @@ def test_mcp_tools_integration_in_s3_output(tmp_path):
     through S3 to ensure the detector is properly loaded and executed.
     """
     # Skip if we can't import the runner (e.g., in minimal test environments)
+    pytest.importorskip("scripts.space_traversal.audit_runner")
+    pytest.importorskip("yaml")
+    pytest.importorskip("jinja2")
 
     # This test would ideally set up a full test environment, but that's complex.
     # For now, we'll just verify the detector can be imported and called.
@@ -111,6 +110,7 @@ def test_mcp_tools_integration_in_s3_output(tmp_path):
     # 4. Verify capabilities_raw.json contains mcp-tools-integration
 
     # Simplified version: just verify detector works end-to-end
+    from scripts.space_traversal.detectors.mcp_tools_integration import detect
 
     # Simulate a context_index structure
     file_index = {
@@ -144,6 +144,7 @@ def test_mcp_tools_integration_in_s3_output(tmp_path):
 
 def test_mcp_tools_integration_case_insensitive():
     """Test that detector is case-insensitive for pattern matching."""
+    from scripts.space_traversal.detectors.mcp_tools_integration import detect
 
     file_index = {
         "files": [

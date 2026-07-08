@@ -588,7 +588,6 @@ class TestPerformance:
 
 class TestValidation:
     """Validation and correctness tests."""
-import pytest
 
     def test_pattern_score_bounds(self):
         engine = MemoryConsolidationEngine()

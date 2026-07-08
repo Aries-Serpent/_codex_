@@ -8,18 +8,19 @@ Tests cover:
 - Resource exhaustion
 - Boundary conditions
 """
+
 import threading
 import time
+
+import pytest
+
 from codex.auth.authenticator import Authenticator
 from codex.auth.exceptions import (  # pragma: allowlist secret
+    InvalidCredentialsError,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+)
 from codex.auth.token_manager import TokenManager
 from codex.auth.user_model import PasswordHasher
 from codex.auth.user_store import UserStore
-
-
-
-    InvalidCredentialsError,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
-)
 
 # Use a minimal iteration count in tests so PBKDF2 hashing is fast.
 _FAST_HASHER = PasswordHasher(iterations=1)

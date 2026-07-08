@@ -3,11 +3,10 @@ Test Context Manifest
 
 Test module for context manifest.
 """
-import pytest
+
 import json
 import subprocess
 import sys
-
 
 
 def test_manifest_contains_apis(tmp_path):

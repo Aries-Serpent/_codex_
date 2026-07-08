@@ -135,7 +135,6 @@ class TestToTemplate:
 
     def test_to_template_missing_type(self):
         """Test template conversion with missing type defaults to unknown."""
-import pytest
         from codex_crm.pa_legacy.reader import to_template
 
         package = {"flows": {"flow1": {"definition": {"resources": {"conn": {}}}}}}

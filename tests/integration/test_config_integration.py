@@ -12,25 +12,13 @@ Tests configuration system integration across modules:
 Part of Phase 23 Week 2: Integration Testing (100-120 tests)
 Target: 20-30 tests for Configuration Integration
 """
+
 from __future__ import annotations
+
 import json
 import os
-            from omegaconf import OmegaConf
-            from omegaconf import OmegaConf
-            from omegaconf import OmegaConf
-            from omegaconf import OmegaConf
-            from omegaconf import OmegaConf
-            from omegaconf import OmegaConf
-            from omegaconf import OmegaConf
-            from omegaconf import OmegaConf
-            from omegaconf import OmegaConf
-            from omegaconf import OmegaConf
-            from omegaconf import OmegaConf
-            from omegaconf import OmegaConf
-            from omegaconf import OmegaConf
 
-
-
+import pytest
 
 # Mark all tests as integration tests
 pytestmark = [pytest.mark.integration]
@@ -96,6 +84,7 @@ class TestHydraConfigComposition:
     def test_compose_multiple_configs(self, base_config, model_config):
         """Verify composing multiple configuration files."""
         try:
+            from omegaconf import OmegaConf
 
             base = OmegaConf.load(base_config)
             model = OmegaConf.load(model_config)
@@ -138,6 +127,7 @@ class TestConfigurationOverrides:
     def test_override_from_cli(self, base_config):
         """Verify CLI overrides apply correctly."""
         try:
+            from omegaconf import OmegaConf
 
             base = OmegaConf.load(base_config)
 
@@ -153,6 +143,7 @@ class TestConfigurationOverrides:
     def test_override_precedence(self, base_config):
         """Verify override precedence order."""
         try:
+            from omegaconf import OmegaConf
 
             base = OmegaConf.create({"value": 1})
             override1 = OmegaConf.create({"value": 2})
@@ -167,6 +158,7 @@ class TestConfigurationOverrides:
     def test_nested_override(self, model_config):
         """Verify nested configuration overrides."""
         try:
+            from omegaconf import OmegaConf
 
             config = OmegaConf.load(model_config)
 
@@ -180,6 +172,7 @@ class TestConfigurationOverrides:
     def test_list_override(self, temp_config_dir):
         """Verify list configuration overrides."""
         try:
+            from omegaconf import OmegaConf
 
             config = OmegaConf.create({"layers": [64, 128, 256]})
 
@@ -202,6 +195,7 @@ class TestEnvironmentVariableHandling:
         config_file.write_text("model_size: ${oc.env:CODEX_MODEL_SIZE}\n")
 
         try:
+            from omegaconf import OmegaConf
 
             config = OmegaConf.load(config_file)
             resolved = OmegaConf.to_container(config, resolve=True)
@@ -216,6 +210,7 @@ class TestEnvironmentVariableHandling:
         config_file.write_text("port: ${oc.env:PORT,8080}\n")
 
         try:
+            from omegaconf import OmegaConf
 
             config = OmegaConf.load(config_file)
             resolved = OmegaConf.to_container(config, resolve=True)
@@ -301,6 +296,7 @@ class TestConfigurationValidation:
     def test_schema_validation(self, temp_config_dir):
         """Verify configuration schema validation."""
         try:
+            from omegaconf import OmegaConf
 
             config = OmegaConf.create({"model": {"hidden_size": 512, "num_layers": 6}})
 
@@ -412,6 +408,7 @@ class TestConfigInterpolation:
     def test_variable_interpolation(self, temp_config_dir):
         """Verify variable interpolation in config."""
         try:
+            from omegaconf import OmegaConf
 
             config = OmegaConf.create(
                 {
@@ -431,6 +428,7 @@ class TestConfigInterpolation:
     def test_nested_interpolation(self, temp_config_dir):
         """Verify nested interpolation."""
         try:
+            from omegaconf import OmegaConf
 
             config = OmegaConf.create(
                 {
@@ -452,6 +450,7 @@ class TestConfigInterpolation:
     def test_conditional_interpolation(self, temp_config_dir):
         """Verify conditional interpolation."""
         try:
+            from omegaconf import OmegaConf
 
             config = OmegaConf.create(
                 {
@@ -560,6 +559,7 @@ class TestConfigurationMerging:
     def test_deep_merge(self, temp_config_dir):
         """Verify deep configuration merge."""
         try:
+            from omegaconf import OmegaConf
 
             base = OmegaConf.create({"model": {"hidden_size": 512, "num_layers": 6}})
             override = OmegaConf.create({"model": {"num_layers": 12}})
@@ -574,6 +574,7 @@ class TestConfigurationMerging:
     def test_list_merge_strategies(self, temp_config_dir):
         """Verify list merge strategies."""
         try:
+            from omegaconf import OmegaConf
 
             base = OmegaConf.create({"items": [1, 2, 3]})
             override = OmegaConf.create({"items": [4, 5]})

@@ -136,7 +136,6 @@ def test_mixed_cycles_and_self_loops():
 
 def test_no_false_positives_for_isolated_nodes():
     """Test that isolated nodes without self-edges are not reported as cycles."""
-import pytest
     graph = DependencyGraph()
     graph.add_node("A")
     graph.add_node("B")

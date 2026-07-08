@@ -9,15 +9,15 @@ Tests cover:
 - Concurrent access
 - Migration and schema
 """
+
 import os
 import tempfile
+
+import pytest
+
 from codex.auth.in_memory_user_repository import InMemoryUserRepository
 from codex.auth.sqlite_user_repository import SQLiteUserRepository
 from codex.auth.user_model import PasswordHasher, User
-        import threading
-
-
-
 
 # ============================================================================
 # InMemoryUserRepository Tests
@@ -234,6 +234,7 @@ class TestSQLiteUserRepository:
         repo2.close()
 
     def test_concurrent_access(self, db_path):
+        import threading
 
         def create_user(username):
             repo = SQLiteUserRepository(db_path)

@@ -3,17 +3,18 @@ Test Mlflow Offline
 
 Test module for mlflow offline.
 """
-from __future__ import annotations
-mlflow = pytest.importorskip("mlflow")
-from pathlib import Path
 
 #!/usr/bin/env python
 # Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
 # Purpose: Validate MLflow offline logging behavior if mlflow is installed.
 
+from __future__ import annotations
 
+from pathlib import Path
 
+import pytest
 
+mlflow = pytest.importorskip("mlflow")
 
 
 @pytest.mark.smoke

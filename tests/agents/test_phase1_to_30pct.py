@@ -9,13 +9,12 @@ Based on Coverage Uplift Paths Table (Equations 1-53):
 
 Strategy: Focus on agents module with largest statement counts
 """
+
 import contextlib
+
+import pytest
+
 from agents.advanced_physics_calculators import (
-from agents.physics_orchestrator import (
-                import numpy as np
-
-
-
     AdvancedPhysicsOrchestrator,
     ChaoticAttractor,
     EMFieldRouter,
@@ -25,6 +24,7 @@ from agents.physics_orchestrator import (
     RelativityScheduler,
     WavePropagator,
 )
+from agents.physics_orchestrator import (
     ActionType,
     DiffusionFlowModel,
     EnergyLandscape,
@@ -306,6 +306,7 @@ class TestFractalAnalyzerMethods:
         if hasattr(analyzer, "box_counting_dimension"):
             try:
                 # Use minimal data
+                import numpy as np
 
                 data = np.array([[0, 0], [1, 1]])
                 dim = analyzer.box_counting_dimension(data)

@@ -7,48 +7,11 @@ modules to significantly increase coverage through realistic use cases.
 Author: Copilot AI Agent
 Version: 1.0.0
 """
+
+import pytest
+
 pytest.importorskip("numpy", reason="numpy not installed")
 import numpy as np
-        from agents.agent_memory import AgentMemory
-        from agents.physics_orchestrator import (
-        from agents.agent_memory import AgentMemory
-        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.quantum_game_theory import QuantumInspiredGameEngine, TeamType
-        from agents.agent_memory import AgentMemory
-        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
-        from agents.agent_memory import AgentMemory
-        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
-        from agents.agent_memory import AgentMemory
-        from agents.physics_orchestrator import HamiltonianEvolver
-        from agents.mental_mapping import MentalMappingModel, NodeType
-        from agents.quantum_game_theory import StrategyState
-        from agents.agent_memory import AgentMemory
-        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
-        from agents.physics_orchestrator import EnergyState
-        from agents.quantum_game_theory import QuantumGameState, StrategyState
-        from agents.agent_memory import AgentMemory
-        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
-        from agents.agent_memory import AgentMemory
-        from agents.mental_mapping import MentalMappingModel, NodeType
-        from agents.physics_orchestrator import DecisionState, PhysicsOrchestrator
-        from agents.quantum_game_theory import StrategyState
-        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
-        from agents.agent_memory import AgentMemory
-        from agents.mental_mapping import MentalMappingModel, NodeType
-        from agents.advanced_physics_calculators import FluidChannel
-        from agents.physics_orchestrator import EnergyLandscape
-        from agents.physics_orchestrator import EnergyState, HamiltonianEvolver
-        from agents.agent_memory import AgentMemory
-        from agents.mental_mapping import MentalMappingModel, NodeType
-        from agents.agent_memory import AgentMemory
-        from agents.mental_mapping import MentalMappingModel
-        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
-        from agents.agent_memory import AgentMemory
-        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
-
-
-
 
 
 class TestIntegration_CompleteWorkflows:
@@ -56,6 +19,8 @@ class TestIntegration_CompleteWorkflows:
 
     def test_complete_decision_workflow(self):
         """Test complete decision-making workflow"""
+        from agents.agent_memory import AgentMemory
+        from agents.physics_orchestrator import (
             DecisionState,
             ForceVector,
             PhysicsOrchestrator,
@@ -84,6 +49,8 @@ class TestIntegration_CompleteWorkflows:
 
     def test_mental_map_workflow_integration(self):
         """Test mental mapping workflow with memory integration"""
+        from agents.agent_memory import AgentMemory
+        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
 
         model = MentalMappingModel()
         memory = AgentMemory()
@@ -116,6 +83,8 @@ class TestIntegration_CompleteWorkflows:
 
     def test_quantum_game_with_orchestrator(self):
         """Test quantum game theory integrated with physics orchestrator"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
+        from agents.quantum_game_theory import QuantumInspiredGameEngine, TeamType
 
         # Create game
         blue = np.array([0.6, 0.4])
@@ -135,6 +104,8 @@ class TestIntegration_CompleteWorkflows:
 
     def test_developer_orchestrator_complete_pipeline(self):
         """Test complete code generation and validation pipeline"""
+        from agents.agent_memory import AgentMemory
+        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
         orchestrator = PhysicsGuidedDeveloperOrchestrator()
         memory = AgentMemory()
@@ -165,6 +136,8 @@ class TestIntegration_CompleteWorkflows:
 
     def test_workflow_navigator_with_memory(self):
         """Test WorkflowNavigator integrated with AgentMemory"""
+        from agents.agent_memory import AgentMemory
+        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
 
         navigator = WorkflowNavigator()
         memory = AgentMemory()
@@ -197,6 +170,8 @@ class TestIntegration_DataFlow:
 
     def test_data_flow_physics_to_memory(self):
         """Test data flowing from physics calculations to memory"""
+        from agents.agent_memory import AgentMemory
+        from agents.physics_orchestrator import HamiltonianEvolver
 
         evolver = HamiltonianEvolver(grid_size=8)
         memory = AgentMemory()
@@ -216,6 +191,8 @@ class TestIntegration_DataFlow:
 
     def test_data_flow_graph_to_quantum(self):
         """Test data flowing from graph analysis to quantum game"""
+        from agents.mental_mapping import MentalMappingModel, NodeType
+        from agents.quantum_game_theory import StrategyState
 
         model = MentalMappingModel()
 
@@ -235,6 +212,8 @@ class TestIntegration_DataFlow:
 
     def test_data_flow_memory_to_workflow(self):
         """Test data flowing from memory to workflow navigation"""
+        from agents.agent_memory import AgentMemory
+        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
 
         memory = AgentMemory()
         navigator = WorkflowNavigator()
@@ -260,6 +239,8 @@ class TestIntegration_StateManagement:
 
     def test_state_synchronization_physics_quantum(self):
         """Test state synchronization between physics and quantum modules"""
+        from agents.physics_orchestrator import EnergyState
+        from agents.quantum_game_theory import QuantumGameState, StrategyState
 
         # Physics state
         energy_state = EnergyState(configuration={}, energy=50.0, entropy=0.5)
@@ -274,6 +255,8 @@ class TestIntegration_StateManagement:
 
     def test_state_persistence_memory_workflow(self):
         """Test state persistence through memory"""
+        from agents.agent_memory import AgentMemory
+        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
 
         memory = AgentMemory()
         navigator1 = WorkflowNavigator()
@@ -303,6 +286,11 @@ class TestIntegration_MultiModuleChains:
 
     def test_five_module_chain(self):
         """Test workflow involving 5 different modules"""
+        from agents.agent_memory import AgentMemory
+        from agents.mental_mapping import MentalMappingModel, NodeType
+        from agents.physics_orchestrator import DecisionState, PhysicsOrchestrator
+        from agents.quantum_game_theory import StrategyState
+        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
 
         # Module 1: Physics
         orchestrator = PhysicsOrchestrator()
@@ -330,6 +318,8 @@ class TestIntegration_MultiModuleChains:
 
     def test_cyclic_data_flow(self):
         """Test cyclic data flow between modules"""
+        from agents.agent_memory import AgentMemory
+        from agents.mental_mapping import MentalMappingModel, NodeType
 
         memory = AgentMemory()
         model = MentalMappingModel()
@@ -358,6 +348,8 @@ class TestIntegration_ParameterPropagation:
 
     def test_temperature_propagation(self):
         """Test temperature parameter propagating through modules"""
+        from agents.advanced_physics_calculators import FluidChannel
+        from agents.physics_orchestrator import EnergyLandscape
 
         # Set temperature in one module
         landscape = EnergyLandscape(temperature=300.0)
@@ -373,6 +365,7 @@ class TestIntegration_ParameterPropagation:
 
     def test_energy_conservation_across_modules(self):
         """Test energy conservation principle across modules"""
+        from agents.physics_orchestrator import EnergyState, HamiltonianEvolver
 
         # Initial energy
         initial = EnergyState(configuration={}, energy=100.0, entropy=0.3)
@@ -390,6 +383,8 @@ class TestIntegration_ErrorRecovery:
 
     def test_recovery_from_memory_error(self):
         """Test system recovery from memory errors"""
+        from agents.agent_memory import AgentMemory
+        from agents.mental_mapping import MentalMappingModel, NodeType
 
         memory = AgentMemory()
         model = MentalMappingModel()
@@ -403,6 +398,8 @@ class TestIntegration_ErrorRecovery:
 
     def test_recovery_from_graph_error(self):
         """Test recovery from graph operation errors"""
+        from agents.agent_memory import AgentMemory
+        from agents.mental_mapping import MentalMappingModel
 
         model = MentalMappingModel()
         memory = AgentMemory()
@@ -421,6 +418,7 @@ class TestIntegration_PerformanceScaling:
 
     def test_large_graph_operations(self):
         """Test operations on large graphs"""
+        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
 
         model = MentalMappingModel()
 
@@ -445,6 +443,7 @@ class TestIntegration_PerformanceScaling:
 
     def test_many_memory_operations(self):
         """Test many memory store/retrieve operations"""
+        from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
 
@@ -459,6 +458,7 @@ class TestIntegration_PerformanceScaling:
 
     def test_complex_workflow_scaling(self):
         """Test workflow with many steps"""
+        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
 
         navigator = WorkflowNavigator()
 

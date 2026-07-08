@@ -3,19 +3,20 @@ Test Rng Reproducibility
 
 Test module for rng reproducibility.
 """
+
 from __future__ import annotations
-    torch = pytest.importorskip("torch")
-    np = pytest.importorskip("numpy")
+
 import random
 from pathlib import Path
+
+import pytest
+
 from codex_ml.training.rng_checkpoint import RNGState, set_seed
 
 
-
-
-
-
 def test_rng_capture_and_restore(tmp_path: Path) -> None:
+    torch = pytest.importorskip("torch")
+    np = pytest.importorskip("numpy")
 
     set_seed(123)
     rng_state = RNGState()
@@ -39,6 +40,8 @@ def test_rng_capture_and_restore(tmp_path: Path) -> None:
 
 
 def test_set_seed_reproducible() -> None:
+    torch = pytest.importorskip("torch")
+    np = pytest.importorskip("numpy")
 
     set_seed(42)
     tensor_a = torch.rand(2)

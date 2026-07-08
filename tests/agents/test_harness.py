@@ -9,7 +9,7 @@ Provides:
 - Output verification utilities
 - Performance benchmarking support
 """
-import pytest
+
 import json
 import logging
 import time
@@ -18,7 +18,6 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from enum import Enum
 from typing import Any, Callable, Dict, List, Optional, Tuple
-
 
 logger = logging.getLogger(__name__)
 

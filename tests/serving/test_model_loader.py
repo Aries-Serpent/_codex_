@@ -3,16 +3,14 @@ Tests for Model Loader
 
 Tests model loading with caching, device placement, and validation
 """
-        pytest.importorskip("transformers")
-        pytest.importorskip("torch")
+
 import tempfile
 from pathlib import Path
 from unittest.mock import Mock, patch
+
+import pytest
+
 from src.codex_ml.serving.model_loader import (
-        import torch
-
-
-
     DeviceType,
     ModelConfig,
     ModelLoader,
@@ -274,6 +272,7 @@ class TestModelLoader:
 
     def test_load_huggingface_stub(self):
         """Test loading HuggingFace model (stub)"""
+        pytest.importorskip("transformers")
 
         loader = ModelLoader()
 
@@ -299,8 +298,10 @@ class TestModelLoader:
 
     def test_get_torch_dtype_float16(self):
         """Test getting torch dtype for float16"""
+        pytest.importorskip("torch")
 
         loader = ModelLoader()
+        import torch
 
         dtype = loader._get_torch_dtype("float16")
         assert dtype == torch.float16, "dtype is not valid"

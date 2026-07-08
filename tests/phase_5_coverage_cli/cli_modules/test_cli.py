@@ -233,7 +233,6 @@ device: cpu
 trainer:
   epochs: 1
 """
-import pytest
         )
 
         with patch("cli._instantiate_model"):

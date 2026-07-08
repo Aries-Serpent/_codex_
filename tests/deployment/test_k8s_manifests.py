@@ -3,16 +3,17 @@ Test K8S Manifests
 
 Test module for k8s manifests.
 """
-from __future__ import annotations
-from pathlib import Path
-import yaml
 
 #!/usr/bin/env python
 # Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
 # Purpose: Validate Kubernetes manifests if present; offline & deterministic.
 
+from __future__ import annotations
 
+from pathlib import Path
 
+import pytest
+import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CANDIDATE_DIRS = [REPO_ROOT / "deploy", REPO_ROOT / "k8s", REPO_ROOT / "ops"]

@@ -2,23 +2,21 @@
 
 Uses fake FAISS and SentenceTransformer implementations for offline determinism.
 """
+
 from __future__ import annotations
-np = pytest.importorskip("numpy")
-_codex_rag = pytest.importorskip("codex.rag", reason="codex.rag not importable in this environment")
-_codex_rag_retriever = pytest.importorskip(
+
 import sys
 import types
 from dataclasses import dataclass
 from pathlib import Path
-    import torch as _torch
-    from codex.rag import retriever as retriever_module
 
+import pytest
 
-
-
+np = pytest.importorskip("numpy")
 
 _TORCH_312_BUG: bool = False
 try:
+    import torch as _torch
 
     _TORCH_312_BUG = sys.version_info >= (3, 12) and tuple(
         int(x) for x in _torch.__version__.split(".")[:2]
@@ -26,7 +24,9 @@ try:
 except ImportError:
     _TORCH_312_BUG = False  # torch not installed; PyTorch 2.x isinstance bug cannot apply
 
+_codex_rag = pytest.importorskip("codex.rag", reason="codex.rag not importable in this environment")
 indexer = _codex_rag.indexer
+_codex_rag_retriever = pytest.importorskip(
     "codex.rag.retriever", reason="codex.rag.retriever not importable"
 )
 Retriever = _codex_rag_retriever.Retriever
@@ -121,6 +121,7 @@ def sentence_transformer_spy(monkeypatch: pytest.MonkeyPatch) -> SentenceTransfo
     fake_module = types.SimpleNamespace(SentenceTransformer=FakeSentenceTransformer)
     monkeypatch.setitem(sys.modules, "sentence_transformers", fake_module)
     # Also patch the module-level SentenceTransformer variable in retriever module
+    from codex.rag import retriever as retriever_module
 
     monkeypatch.setattr(retriever_module, "SentenceTransformer", FakeSentenceTransformer)
     return SentenceTransformerSpy(calls=calls)

@@ -2,17 +2,18 @@
 
 These checks ensure CPU-default allocations remain intact after meta tensor fixes.
 """
+
 from __future__ import annotations
+
 import builtins
 import sys
 import types
 from collections.abc import Callable
 from types import SimpleNamespace
+
+import pytest
+
 from codex.rag import utils
-
-
-
-
 
 
 @pytest.fixture()

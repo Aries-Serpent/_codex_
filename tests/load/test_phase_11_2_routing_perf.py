@@ -9,22 +9,21 @@ Validates the AdvancedAgentRouter against Phase 11.2 success criteria:
 - Fallback chain construction
 - Batch routing correctness
 """
+
 from __future__ import annotations
+
 import statistics
 import sys
 import time
 from pathlib import Path
-from phase_11_2_advanced_router import (  # noqa: E402
-        from phase_11_2_advanced_router import main
-        from phase_11_2_advanced_router import main
-
-
 
 # Ensure scripts/ci is importable when running via pytest from repo root
 _SCRIPTS_CI = Path(__file__).resolve().parents[2] / "scripts" / "ci"
 if str(_SCRIPTS_CI) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_CI))
 
+import pytest  # noqa: E402
+from phase_11_2_advanced_router import (  # noqa: E402
     AdvancedAgentRouter,
     RoutingDecision,
     _tokenise,
@@ -254,11 +253,13 @@ class TestAgentProfiles:
         assert len(ids) == len(set(ids)), "Duplicate agent IDs found"
 
     def test_list_agents_cli(self) -> None:
+        from phase_11_2_advanced_router import main
 
         rc = main(["--list-agents"])
         assert rc == 0, "rc is not valid"
 
     def test_self_test_cli(self) -> None:
+        from phase_11_2_advanced_router import main
 
         rc = main(["--self-test"])
         # 0 = meets 95% target, 1 = below target — both are valid returns

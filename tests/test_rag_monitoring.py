@@ -5,15 +5,14 @@ Tests cover metrics tracking, statistics calculation, export formats,
 thread safety, memory management, and edge cases.
 Target: 90%+ coverage of src/codex/rag/monitoring.py
 """
+
 import threading
 import time
 from collections import deque
+
+import pytest
+
 from codex.rag.monitoring import (
-        import src.codex.rag.monitoring as mon_module
-        import src.codex.rag.monitoring as mon_module
-
-
-
     MetricDataPoint,
     MetricsConfig,
     RAGMetrics,
@@ -531,6 +530,7 @@ class TestGlobalMetrics:
     def test_get_metrics_singleton(self):
         """Test that get_metrics returns the same instance."""
         # Reset global state
+        import src.codex.rag.monitoring as mon_module
 
         mon_module._global_metrics = None
 
@@ -540,6 +540,7 @@ class TestGlobalMetrics:
 
     def test_get_metrics_thread_safe(self):
         """Test thread-safe singleton creation."""
+        import src.codex.rag.monitoring as mon_module
 
         mon_module._global_metrics = None
 

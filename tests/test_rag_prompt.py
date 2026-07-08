@@ -420,7 +420,6 @@ def test_assemble_rag_prompt_all_sections():
 
 def test_config_custom_headers():
     """Test custom headers in configuration"""
-import pytest
     config = PromptConfig(
         use_legacy_delimiters=False,
         context_header="## Retrieved Documents",

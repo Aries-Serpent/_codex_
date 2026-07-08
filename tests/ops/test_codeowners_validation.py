@@ -3,11 +3,10 @@ Test Codeowners Validation
 
 Test module for codeowners validation.
 """
+
 from __future__ import annotations
-import pytest
+
 from src.tools.codeowners_validate import (
-
-
     validate_codeowners_text,
     validate_repo_codeowners,
 )

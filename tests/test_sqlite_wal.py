@@ -3,11 +3,10 @@ Test Sqlite Wal
 
 Test module for sqlite wal.
 """
-import pytest
+
 import sqlite3
 import threading
 import time
-
 
 
 def test_wal_mode_read_while_write(tmp_path):

@@ -3,11 +3,10 @@ Test Lora Toggles
 
 Test module for lora toggles.
 """
+
 from __future__ import annotations
-import pytest
+
 from codex_ml.modeling import LoraSettings, load_model_and_tokenizer
-
-
 
 
 def test_load_model_without_lora():

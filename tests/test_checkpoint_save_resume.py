@@ -3,28 +3,28 @@ Test Checkpoint Save Resume
 
 Test module for checkpoint save resume.
 """
+
 from __future__ import annotations
-pytest.importorskip("torch")
+
 from pathlib import Path
+
+import pytest
+
+pytest.importorskip("torch")
+
+
 from codex_ml.utils.checkpointing import (
-from codex_ml.utils.safe_pickle import trusted_pickle_dumps
-    import torch
-    import unittest.mock
-
-
-
-
-
-
     TORCH_AVAILABLE,
     load_checkpoint,
     save_checkpoint,
 )
+from codex_ml.utils.safe_pickle import trusted_pickle_dumps
 
 pytestmark = pytest.mark.skipif(not TORCH_AVAILABLE, reason="requires torch")
 
 
 def test_save_and_load_checkpoint(tmp_path: Path) -> None:
+    import torch
 
     if not hasattr(torch, "nn") or not hasattr(torch.nn, "Linear"):
         pytest.skip("torch.nn Linear unavailable", allow_module_level=False)
@@ -42,6 +42,7 @@ def test_save_and_load_checkpoint(tmp_path: Path) -> None:
     checkpoint_path = tmp_path / "unit.ckpt"
 
     # ADDED: Verify no mock objects in state
+    import unittest.mock
 
     model_state = model.state_dict()
     for key, value in model_state.items():

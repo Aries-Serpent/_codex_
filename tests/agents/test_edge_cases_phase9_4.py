@@ -19,65 +19,12 @@ yet reached by Phase 9.1 / 9.2 happy-path or 9.3 error-path tests:
 
 #AFTERMATH_METRIC - Phase 9.4 edge-case coverage tests
 """
+
 from __future__ import annotations
-pytest.importorskip("numpy")
+
 from pathlib import Path
-        from agents.physics_orchestrator import EnergyLandscape, EnergyState
-        from agents.physics_orchestrator import EnergyLandscape, EnergyState
-        from agents.physics_orchestrator import EnergyLandscape, EnergyState
-        from agents.physics_orchestrator import EnergyLandscape, EnergyState
-        from agents.physics_orchestrator import EnergyLandscape
-        from agents.physics_orchestrator import EnergyLandscape, EnergyState
-        from agents.physics_orchestrator import EnergyLandscape
-        from agents.physics_orchestrator import SwarmIntelligence
-        from agents.physics_orchestrator import SwarmIntelligence
-        from agents.physics_orchestrator import SwarmIntelligence
-        from agents.physics_orchestrator import SwarmIntelligence
-        from agents.physics_orchestrator import ActionPath, ActionType
-        from agents.physics_orchestrator import SuperpositionExplorer
-        from agents.physics_orchestrator import SuperpositionExplorer
-        from agents.physics_orchestrator import SuperpositionExplorer
-        from agents.physics_orchestrator import SuperpositionExplorer
-        from agents.physics_orchestrator import QuantumState
-        from agents.physics_orchestrator import QuantumState
-        from agents.physics_orchestrator import QuantumState
-        from agents.physics_orchestrator import QuantumState
-        from agents.physics_orchestrator import QuantumState
-        import math
-        from agents.mental_mapping import MentalMappingModel
-        from agents.mental_mapping import MentalMappingModel
-        from agents.mental_mapping import MentalMappingModel
-        from agents.mental_mapping import MentalMappingModel, NodeType
-        from agents.mental_mapping import MentalMappingModel, NodeType
-        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
-        from agents.mental_mapping import MentalMappingModel, NodeType
-        from agents.mental_mapping import MentalMappingModel, NodeType
-        from agents.mental_mapping import MentalMappingModel, NodeType
-        from agents.mental_mapping import MentalMappingModel
-        from agents.mental_mapping import MentalMappingModel
-        from agents.mental_mapping import MentalMappingModel, NodeType
-        import agents.quantum_game_theory as qgt_module
-        import numpy as np
-        import agents.quantum_game_theory as qgt_module
-        import numpy as np
-        import agents.quantum_game_theory as qgt_module
-        import numpy as np
-        import agents.quantum_game_theory as qgt_module
-        from agents.workflow_navigator import WorkflowNavigator
-        from agents.workflow_navigator import WorkflowStep
-        from agents.workflow_navigator import Workflow, WorkflowFrequency, WorkflowNavigator
-        from agents.workflow_navigator import StepStatus, WorkflowStep
-        from agents.workflow_navigator import WorkflowNavigator
-        from agents.cognitive_adapter import SimpleDictMemory
-        from agents.cognitive_adapter import LegacyAgentAdapter
-        from agents.cognitive_adapter import LegacyAgentAdapter
-        from agents.cognitive_adapter import LegacyAgentAdapter
-        from agents.cognitive_adapter import LegacyAgentAdapter
-        from agents.cognitive_adapter import wrap_legacy_agent
 
-
-
-
+import pytest
 
 # ---------------------------------------------------------------------------
 # EnergyLandscape — single-point landscape and entropy edge cases
@@ -88,6 +35,7 @@ class TestEnergyLandscapeSinglePoint:
     """Edge cases when the landscape has exactly one state."""
 
     def test_single_state_minimize_returns_that_state(self) -> None:
+        from agents.physics_orchestrator import EnergyLandscape, EnergyState
 
         landscape = EnergyLandscape(temperature=1.0)
         state = EnergyState(configuration={"x": 0}, energy=0.5, entropy=0.1, temperature=1.0)
@@ -96,6 +44,7 @@ class TestEnergyLandscapeSinglePoint:
         assert result is state, "Result must not be empty"
 
     def test_single_state_select_returns_that_state(self) -> None:
+        from agents.physics_orchestrator import EnergyLandscape, EnergyState
 
         landscape = EnergyLandscape(temperature=1.0)
         state = EnergyState(configuration={"x": 0}, energy=0.5, entropy=0.1, temperature=1.0)
@@ -104,6 +53,7 @@ class TestEnergyLandscapeSinglePoint:
         assert selected is state, "selected is not valid"
 
     def test_single_state_entropy_is_zero(self) -> None:
+        from agents.physics_orchestrator import EnergyLandscape, EnergyState
 
         landscape = EnergyLandscape(temperature=1.0)
         state = EnergyState(configuration={"x": 0}, energy=0.5, entropy=0.0, temperature=1.0)
@@ -113,6 +63,7 @@ class TestEnergyLandscapeSinglePoint:
         assert isinstance(entropy, float)
 
     def test_cool_system_reduces_temperature(self) -> None:
+        from agents.physics_orchestrator import EnergyLandscape, EnergyState
 
         landscape = EnergyLandscape(temperature=2.0)
         state = EnergyState(configuration={}, energy=1.0, entropy=0.0, temperature=2.0)
@@ -121,11 +72,13 @@ class TestEnergyLandscapeSinglePoint:
         assert landscape.temperature == pytest.approx(1.0), "temperature is not valid"
 
     def test_empty_landscape_entropy_is_zero(self) -> None:
+        from agents.physics_orchestrator import EnergyLandscape
 
         landscape = EnergyLandscape(temperature=1.0)
         assert landscape.calculate_system_entropy() == 0.0, "l is not valid"
 
     def test_multi_state_entropy_positive(self) -> None:
+        from agents.physics_orchestrator import EnergyLandscape, EnergyState
 
         landscape = EnergyLandscape(temperature=1.0)
         for e in [0.0, 1.0, 2.0]:
@@ -136,6 +89,7 @@ class TestEnergyLandscapeSinglePoint:
         assert entropy > 0.0, "entropy must be greater than zero"
 
     def test_integrate_with_self_appraisal_returns_dict(self) -> None:
+        from agents.physics_orchestrator import EnergyLandscape
 
         landscape = EnergyLandscape(temperature=1.0)
         result = landscape.integrate_with_self_appraisal(0.9, 0.8)
@@ -154,6 +108,7 @@ class TestSwarmIntelligenceSingleParticle:
     """Edge cases for SwarmIntelligence with a single particle."""
 
     def test_single_particle_optimization_returns_result(self) -> None:
+        from agents.physics_orchestrator import SwarmIntelligence
 
         swarm = SwarmIntelligence(dimensions=1, num_particles=1)
         result = swarm.run_optimization(
@@ -165,6 +120,7 @@ class TestSwarmIntelligenceSingleParticle:
         assert "best_score" in result, "Result must not be empty"
 
     def test_coordinate_agents_moves_toward_target(self) -> None:
+        from agents.physics_orchestrator import SwarmIntelligence
 
         swarm = SwarmIntelligence(dimensions=2, num_particles=2)
         agents = [(0.0, 0.0), (2.0, 0.0)]
@@ -176,11 +132,13 @@ class TestSwarmIntelligenceSingleParticle:
             assert new != orig, "new is not valid"
 
     def test_num_agents_property_equals_num_particles(self) -> None:
+        from agents.physics_orchestrator import SwarmIntelligence
 
         swarm = SwarmIntelligence(dimensions=2, num_particles=5)
         assert swarm.num_agents == 5, "num_agents is not valid"
 
     def test_optimize_alias_works(self) -> None:
+        from agents.physics_orchestrator import SwarmIntelligence
 
         swarm = SwarmIntelligence(dimensions=1, num_particles=2)
         result = swarm.optimize(
@@ -200,6 +158,7 @@ class TestSuperpositionExplorerSinglePath:
     """Edge cases for SuperpositionExplorer with a single path."""
 
     def _make_path(self):
+        from agents.physics_orchestrator import ActionPath, ActionType
 
         path = ActionPath(
             action_type=ActionType.ANALYZE,
@@ -211,6 +170,7 @@ class TestSuperpositionExplorerSinglePath:
         return path
 
     def test_single_path_measure_returns_that_path(self) -> None:
+        from agents.physics_orchestrator import SuperpositionExplorer
 
         explorer = SuperpositionExplorer()
         path = self._make_path()
@@ -220,6 +180,7 @@ class TestSuperpositionExplorerSinglePath:
         assert prob == pytest.approx(1.0, abs=1e-9)
 
     def test_apply_interference_with_single_path_does_not_raise(self) -> None:
+        from agents.physics_orchestrator import SuperpositionExplorer
 
         explorer = SuperpositionExplorer()
         path = self._make_path()
@@ -228,6 +189,7 @@ class TestSuperpositionExplorerSinglePath:
         explorer.apply_interference()
 
     def test_run_grover_iteration_single_path(self) -> None:
+        from agents.physics_orchestrator import SuperpositionExplorer
 
         explorer = SuperpositionExplorer()
         path = self._make_path()
@@ -239,6 +201,7 @@ class TestSuperpositionExplorerSinglePath:
         assert selected is path, "selected is not valid"
 
     def test_empty_explorer_no_superposition_state(self) -> None:
+        from agents.physics_orchestrator import SuperpositionExplorer
 
         explorer = SuperpositionExplorer()
         assert explorer.superposition_state is None, "superposition_state is not valid"
@@ -254,32 +217,38 @@ class TestQuantumStateNormalisation:
     """Edge cases in QuantumState amplitude normalisation."""
 
     def test_single_amplitude_normalises_to_one(self) -> None:
+        from agents.physics_orchestrator import QuantumState
 
         qs = QuantumState(amplitudes={"a": complex(3.0, 0)})
         prob = qs.probability("a")
         assert prob == pytest.approx(1.0), "prob is not valid"
 
     def test_multiple_equal_amplitudes_normalised(self) -> None:
+        from agents.physics_orchestrator import QuantumState
 
         qs = QuantumState(amplitudes={"a": complex(1, 0), "b": complex(1, 0)})
         assert qs.probability("a") == pytest.approx(0.5), "Condition must be true"
         assert qs.probability("b") == pytest.approx(0.5), "Condition must be true"
 
     def test_unknown_state_probability_is_zero(self) -> None:
+        from agents.physics_orchestrator import QuantumState
 
         qs = QuantumState(amplitudes={"a": complex(1, 0)})
         assert qs.probability("nonexistent") == 0.0, "Condition must be true"
 
     def test_collapse_returns_highest_prob_state(self) -> None:
+        from agents.physics_orchestrator import QuantumState
 
         qs = QuantumState(amplitudes={"high": complex(3, 0), "low": complex(1, 0)})
         collapsed = qs.collapse()
         assert collapsed == "high", "collapsed is not valid"
 
     def test_apply_phase_does_not_change_probability(self) -> None:
+        from agents.physics_orchestrator import QuantumState
 
         qs = QuantumState(amplitudes={"a": complex(1, 0)})
         prob_before = qs.probability("a")
+        import math
 
         qs.apply_phase("a", math.pi / 4)
         prob_after = qs.probability("a")
@@ -295,36 +264,42 @@ class TestMentalMappingEdgeCases:
     """Edge cases in MentalMappingModel."""
 
     def test_empty_map_summary_returns_dict(self) -> None:
+        from agents.mental_mapping import MentalMappingModel
 
         model = MentalMappingModel()
         summary = model.get_mental_map_summary()
         assert isinstance(summary, dict)
 
     def test_empty_map_iterative_review_returns_empty_list(self) -> None:
+        from agents.mental_mapping import MentalMappingModel
 
         model = MentalMappingModel()
         result = model.iterative_review()
         assert result == [], "Result must not be empty"
 
     def test_empty_map_calculate_metrics_returns_dict(self) -> None:
+        from agents.mental_mapping import MentalMappingModel
 
         model = MentalMappingModel()
         metrics = model.calculate_metrics()
         assert isinstance(metrics, dict)
 
     def test_node_with_zero_confidence_marked_for_review(self) -> None:
+        from agents.mental_mapping import MentalMappingModel, NodeType
 
         model = MentalMappingModel()
         node = model.create_node(NodeType.CONCEPT, content="low-conf", confidence=0.0)
         assert node.needs_review is True, "needs_review is not valid"
 
     def test_node_with_max_confidence_not_marked_for_review(self) -> None:
+        from agents.mental_mapping import MentalMappingModel, NodeType
 
         model = MentalMappingModel()
         node = model.create_node(NodeType.CONCEPT, content="high-conf", confidence=1.0)
         assert node.needs_review is False, "needs_review is not valid"
 
     def test_connect_node_to_itself(self) -> None:
+        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
 
         model = MentalMappingModel()
         node = model.create_node(NodeType.CONCEPT, content="self-ref", confidence=1.0)
@@ -335,12 +310,14 @@ class TestMentalMappingEdgeCases:
         assert edge.target_id == node.node_id, "target_id is not valid"
 
     def test_get_reasoning_chain_on_empty_node(self) -> None:
+        from agents.mental_mapping import MentalMappingModel, NodeType
 
         model = MentalMappingModel()
         node = model.create_node(NodeType.CONCEPT, content="no reasoning", confidence=1.0)
         assert node.reasoning_chain == [], "reasoning_chain is not valid"
 
     def test_add_reasoning_step_to_node(self) -> None:
+        from agents.mental_mapping import MentalMappingModel, NodeType
 
         model = MentalMappingModel()
         node = model.create_node(NodeType.CONCEPT, content="with reasoning", confidence=1.0)
@@ -353,6 +330,7 @@ class TestMentalMappingEdgeCases:
         assert len(node.reasoning_chain) == 1, "Collection must not be empty"
 
     def test_node_mark_for_review_and_review(self) -> None:
+        from agents.mental_mapping import MentalMappingModel, NodeType
 
         model = MentalMappingModel()
         node = model.create_node(NodeType.CONCEPT, content="review me", confidence=1.0)
@@ -363,18 +341,21 @@ class TestMentalMappingEdgeCases:
         assert node.quality_score == pytest.approx(0.9), "quality_score is not valid"
 
     def test_bfs_on_empty_map_returns_empty(self) -> None:
+        from agents.mental_mapping import MentalMappingModel
 
         model = MentalMappingModel()
         result = model.bfs()
         assert result == [], "Result must not be empty"
 
     def test_dfs_on_empty_map_returns_empty(self) -> None:
+        from agents.mental_mapping import MentalMappingModel
 
         model = MentalMappingModel()
         result = model.dfs()
         assert result == [], "Result must not be empty"
 
     def test_get_connected_nodes_empty_map_returns_empty(self) -> None:
+        from agents.mental_mapping import MentalMappingModel, NodeType
 
         model = MentalMappingModel()
         node = model.create_node(NodeType.CONCEPT, content="isolated", confidence=1.0)
@@ -391,10 +372,12 @@ class TestQuantumInspiredGameEngineSingleStrategy:
     """Edge cases for QuantumInspiredGameEngine with a single strategy per player."""
 
     def test_single_strategy_each_player_does_not_raise(self) -> None:
+        import agents.quantum_game_theory as qgt_module
 
         if not qgt_module.NUMPY_AVAILABLE:
             pytest.skip("numpy not available")
 
+        import numpy as np
 
         payoff = np.array([[1.0]])
         engine = qgt_module.QuantumInspiredGameEngine(
@@ -406,10 +389,12 @@ class TestQuantumInspiredGameEngineSingleStrategy:
         assert engine is not None, "engine must be initialized"
 
     def test_single_strategy_payoffs_accessible(self) -> None:
+        import agents.quantum_game_theory as qgt_module
 
         if not qgt_module.NUMPY_AVAILABLE:
             pytest.skip("numpy not available")
 
+        import numpy as np
 
         payoff = np.array([[1.0]])
         engine = qgt_module.QuantumInspiredGameEngine(
@@ -423,10 +408,12 @@ class TestQuantumInspiredGameEngineSingleStrategy:
         assert isinstance(red_payoff, float)
 
     def test_single_strategy_play_round_returns_dict(self) -> None:
+        import agents.quantum_game_theory as qgt_module
 
         if not qgt_module.NUMPY_AVAILABLE:
             pytest.skip("numpy not available")
 
+        import numpy as np
 
         payoff = np.array([[1.0]])
         engine = qgt_module.QuantumInspiredGameEngine(
@@ -448,6 +435,7 @@ class TestBlueRedTeamSimulatorEdgeCases:
     """Edge cases in BlueRedTeamSimulator."""
 
     def _make_sim(self):
+        import agents.quantum_game_theory as qgt_module
 
         if not qgt_module.NUMPY_AVAILABLE:
             pytest.skip("numpy not available")
@@ -488,6 +476,7 @@ class TestWorkflowNavigatorEdgeCases:
     """Edge cases in WorkflowNavigator and WorkflowStep."""
 
     def test_nonexistent_workspace_dir_still_constructs(self, tmp_path: Path) -> None:
+        from agents.workflow_navigator import WorkflowNavigator
 
         nonexistent = tmp_path / "no_such_dir"
         # Should not raise on construction
@@ -495,6 +484,7 @@ class TestWorkflowNavigatorEdgeCases:
         assert nav is not None, "nav must be initialized"
 
     def test_step_with_both_command_and_uses_executes_command(self, tmp_path: Path) -> None:
+        from agents.workflow_navigator import WorkflowStep
 
         # Per the implementation, command takes precedence over uses
         step = WorkflowStep(id="both", action="both", command="echo hello", uses="some.module")
@@ -503,6 +493,7 @@ class TestWorkflowNavigatorEdgeCases:
         assert result["success"] is True, "Result must not be empty"
 
     def test_workflow_with_zero_steps(self, tmp_path: Path) -> None:
+        from agents.workflow_navigator import Workflow, WorkflowFrequency, WorkflowNavigator
 
         nav = WorkflowNavigator(workspace_dir=tmp_path)
         wf = Workflow(
@@ -518,11 +509,13 @@ class TestWorkflowNavigatorEdgeCases:
         assert len(retrieved.steps) == 0, "Collection must not be empty"
 
     def test_workflow_step_status_starts_pending(self) -> None:
+        from agents.workflow_navigator import StepStatus, WorkflowStep
 
         step = WorkflowStep(id="s", action="a")
         assert step.status == StepStatus.PENDING, "status is not valid"
 
     def test_list_workflows_returns_registered(self, tmp_path: Path) -> None:
+        from agents.workflow_navigator import WorkflowNavigator
 
         nav = WorkflowNavigator(workspace_dir=tmp_path)
         workflows = nav.list_workflows()
@@ -538,6 +531,7 @@ class TestSimpleDictMemoryEdgeCases:
     """Edge cases for SimpleDictMemory."""
 
     def _make_memory(self):
+        from agents.cognitive_adapter import SimpleDictMemory
 
         return SimpleDictMemory()
 
@@ -591,6 +585,7 @@ class TestLegacyAgentAdapterEdgeCases:
     """Edge cases for LegacyAgentAdapter."""
 
     def test_adapter_with_raising_legacy_agent_returns_failure(self) -> None:
+        from agents.cognitive_adapter import LegacyAgentAdapter
 
         class BrokenAgent:
             def process(self, data):
@@ -606,6 +601,7 @@ class TestLegacyAgentAdapterEdgeCases:
         assert "legacy failure" in result.errors[0], "Result must not be empty"
 
     def test_adapter_with_working_legacy_agent_returns_success(self) -> None:
+        from agents.cognitive_adapter import LegacyAgentAdapter
 
         class WorkingAgent:
             def process(self, data):
@@ -620,6 +616,7 @@ class TestLegacyAgentAdapterEdgeCases:
         assert result.output == {"processed": True}, "Result must not be empty"
 
     def test_adapter_with_execute_method_fallback(self) -> None:
+        from agents.cognitive_adapter import LegacyAgentAdapter
 
         class ExecuteAgent:
             def execute(self, data):
@@ -634,6 +631,7 @@ class TestLegacyAgentAdapterEdgeCases:
         assert result.output == "executed", "Result must not be empty"
 
     def test_adapter_callable_fallback(self) -> None:
+        from agents.cognitive_adapter import LegacyAgentAdapter
 
         class CallableAgent:
             def __call__(self, data):
@@ -647,6 +645,7 @@ class TestLegacyAgentAdapterEdgeCases:
         assert result.success is True, "Result must not be empty"
 
     def test_wrap_legacy_agent_returns_planner(self) -> None:
+        from agents.cognitive_adapter import wrap_legacy_agent
 
         class SimpleAgent:
             def process(self, data):

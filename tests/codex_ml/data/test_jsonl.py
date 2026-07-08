@@ -1,12 +1,11 @@
 """Smoke tests for codex_ml JSONL dataset loader."""
+
 from __future__ import annotations
-import pytest
+
 import json
 from pathlib import Path
+
 from codex_ml.data.loaders.jsonl import load_jsonl_dataset
-
-
-
 
 
 def test_load_jsonl_dataset(tmp_path: Path) -> None:

@@ -223,7 +223,6 @@ class TestInference:
 
     def test_inference_retry_on_failure(self):
         """Test inference retry on failure."""
-import pytest
         # Arrange
         max_retries = 3
 

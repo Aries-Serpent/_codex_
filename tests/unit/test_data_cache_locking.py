@@ -1,16 +1,17 @@
 """
+pytest.importorskip("tensorboard")
 Test Data Cache Locking
 
 Test module for data cache locking.
 """
+
 from __future__ import annotations
-pytest.importorskip("tensorboard")
+
+import pytest
+
 np = pytest.importorskip("numpy")
+
 from src.training.data_utils import cache_dataset, load_cached
-
-
-
-
 
 
 def test_cache_dataset_creates_lock_file(tmp_path) -> None:

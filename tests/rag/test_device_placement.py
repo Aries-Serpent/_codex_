@@ -263,6 +263,7 @@ class TestRAGModuleDevicePlacement:
 
     def test_embeddings_device_placement(self):
         """Test EmbeddingModel device placement."""
+        pytest.importorskip("sentence_transformers")
         from codex.rag.embeddings import EmbeddingModel
 
         model = EmbeddingModel(device="cpu")
@@ -270,6 +271,7 @@ class TestRAGModuleDevicePlacement:
 
     def test_retriever_device_placement(self):
         """Test RAGRetriever device placement."""
+        pytest.importorskip("sentence_transformers")
         from codex.rag.retriever import RAGRetriever
 
         retriever = RAGRetriever(device="cpu")
@@ -278,6 +280,7 @@ class TestRAGModuleDevicePlacement:
     @pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA not available")
     def test_indexer_cuda_placement(self):
         """Test RAGIndexer CUDA placement."""
+        pytest.importorskip("sentence_transformers")
         from codex.rag.indexer import RAGIndexer
 
         indexer = RAGIndexer(device="cuda:0")
@@ -286,7 +289,7 @@ class TestRAGModuleDevicePlacement:
 
     def test_dynamic_device_change(self):
         """Test dynamic device change in RAG modules."""
-import pytest
+        pytest.importorskip("sentence_transformers")
         from codex.rag.indexer import RAGIndexer
 
         indexer = RAGIndexer(device="cpu")

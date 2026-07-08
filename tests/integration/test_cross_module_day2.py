@@ -1,5 +1,4 @@
 """Day 2: Integration tests - Cross-module"""
-import pytest
 
 
 class TestCrossModuleIntegration:

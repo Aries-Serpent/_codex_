@@ -8,16 +8,17 @@ Tests cover:
 - Error handling and rate limiting
 - Authentication
 """
+
 from __future__ import annotations
+
 from unittest.mock import Mock, patch
-    from src.services.github.client import GitHubClient, GitHubException
-    from src.services.github.types import Issue, PullRequest, Repository
 
-
-
+import pytest
 
 # Test GitHub client if available
 try:
+    from src.services.github.client import GitHubClient, GitHubException
+    from src.services.github.types import Issue, PullRequest, Repository
 
     HAS_GITHUB_CLIENT = True
 except ImportError:

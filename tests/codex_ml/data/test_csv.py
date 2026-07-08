@@ -1,11 +1,10 @@
 """Smoke tests for codex_ml CSV dataset loader."""
+
 from __future__ import annotations
-import pytest
+
 from pathlib import Path
+
 from codex_ml.data.loaders.csv import load_csv_dataset
-
-
-
 
 
 def test_load_csv_dataset(tmp_path: Path) -> None:

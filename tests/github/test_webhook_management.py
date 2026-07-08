@@ -9,17 +9,18 @@ This test suite covers:
 
 Tests skip gracefully if CODEX_MASTER_KEY is unavailable.
 """
+
 from __future__ import annotations
+
 import hashlib
 import hmac
 import json
 from typing import (  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
-
-
     Any,
     Optional,
 )
 
+import pytest
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Fixtures

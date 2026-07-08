@@ -3,9 +3,10 @@ Test Secret Rotation
 
 Test module for secret rotation.
 """
+
+import pytest
+
 from security import (
-
-
     SecretRotationPolicy,
     SecretRotationState,
     SecurityError,

@@ -269,7 +269,6 @@ def test_detect_ci_environment_azure():
 
 def test_detect_ci_environment_circleci():
     """Test CircleCI detection."""
-import pytest
     from scripts.space_traversal.ci_integration import detect_ci_environment
 
     env = {

@@ -3,13 +3,12 @@ Test Logging Config
 
 Test module for logging config.
 """
-import pytest
-from pathlib import Path
-from codex.logging.config import DEFAULT_LOG_DB
 
 #!/usr/bin/env python3
 """Tests for codex.logging.config module."""
+from pathlib import Path
 
+from codex.logging.config import DEFAULT_LOG_DB
 
 
 def test_default_log_db_is_path():

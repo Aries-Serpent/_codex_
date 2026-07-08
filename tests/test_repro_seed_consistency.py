@@ -3,24 +3,25 @@ Test Repro Seed Consistency
 
 Test module for repro seed consistency.
 """
-pytest.importorskip("numpy")
+
 import random
+
+import pytest
+
+pytest.importorskip("numpy")
+
 import numpy as np
-    import torch
-    from codex_ml.utils import set_reproducible  # type: ignore[attr-defined]
-    from codex_ml.utils.repro import set_reproducible  # type: ignore
-
-
-
-
 
 try:
+    import torch
 except ImportError:  # pragma: no cover - torch missing
     torch = None  # type: ignore[assignment]
 
 # Prefer top-level re-export if available; fallback to module path
 try:
+    from codex_ml.utils import set_reproducible  # type: ignore[attr-defined]
 except ImportError:  # pragma: no cover
+    from codex_ml.utils.repro import set_reproducible  # type: ignore
 
 
 def test_set_reproducible_repeatable():

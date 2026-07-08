@@ -11,25 +11,17 @@ Tests end-to-end workflows from CLI commands through training execution:
 Part of Phase 23 Week 2: Integration Testing (100-120 tests)
 Target: 30-40 tests for CLI-to-Training workflows
 """
+
 from __future__ import annotations
-pytest.importorskip("torch", reason="PyTorch required for tests")
+
 import json
 import subprocess
 import sys
-            from codex.utils.config_loader import (
-            from codex.utils.config_loader import load_config as load_config
-            from codex.utils.config_loader import get_loader
-            from codex.training import TrainCfg
-            import torch
-            import torch
-            import torch
-            from omegaconf import OmegaConf
-            from omegaconf import OmegaConf
 
-
-
+import pytest
 
 # Skip entire module if torch is not available or unloadable
+pytest.importorskip("torch", reason="PyTorch required for tests")
 # Mark all tests as integration tests
 pytestmark = [pytest.mark.integration, pytest.mark.slow]
 
@@ -125,8 +117,10 @@ class TestConfigurationLoading:
     def test_load_valid_yaml_config(self, minimal_config):
         """Verify loading valid YAML configuration."""
         try:
+            from codex.utils.config_loader import (
                 get_loader,
             )
+            from codex.utils.config_loader import load_config as load_config
 
             get_loader()
             # Config loading should not raise
@@ -137,6 +131,7 @@ class TestConfigurationLoading:
     def test_load_config_with_overrides(self, minimal_config, temp_workspace):
         """Verify configuration overrides work correctly."""
         try:
+            from codex.utils.config_loader import get_loader
 
             loader = get_loader()
             # Test override mechanism exists
@@ -174,6 +169,7 @@ class TestTrainingPipelineInitialization:
     def test_initialize_training_from_config(self, minimal_config, sample_dataset):
         """Verify training pipeline initializes from config file."""
         try:
+            from codex.training import TrainCfg
 
             # Should be able to create training config
             cfg = TrainCfg(
@@ -214,6 +210,7 @@ class TestEndToEndTrainingWorkflow:
     def test_simple_training_workflow(self, temp_workspace, sample_dataset):
         """Verify simple training workflow completes successfully."""
         try:
+            import torch
 
             model = torch.nn.Linear(10, 2)
             optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
@@ -253,6 +250,7 @@ class TestEndToEndTrainingWorkflow:
         checkpoint_dir = temp_workspace / "checkpoints"
 
         try:
+            import torch
 
             model = torch.nn.Linear(10, 2)
             checkpoint_path = checkpoint_dir / "step_5.pt"
@@ -337,6 +335,7 @@ class TestOutputValidation:
     def test_validate_checkpoint_format(self, temp_workspace):
         """Verify checkpoint files have correct format."""
         try:
+            import torch
 
             checkpoint_path = temp_workspace / "checkpoints" / "model.pt"
             checkpoint = {
@@ -425,6 +424,7 @@ class TestConfigurationIntegration:
     def test_hydra_config_composition(self, temp_workspace):
         """Verify Hydra config composition works correctly."""
         try:
+            from omegaconf import OmegaConf
 
             base_config = {"model": {"hidden_size": 128}}
             override_config = {"model": {"hidden_size": 256}}
@@ -442,6 +442,7 @@ class TestConfigurationIntegration:
     def test_config_interpolation(self, temp_workspace):
         """Verify config value interpolation works."""
         try:
+            from omegaconf import OmegaConf
 
             cfg = OmegaConf.create(
                 {

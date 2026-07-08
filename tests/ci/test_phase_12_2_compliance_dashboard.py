@@ -1,9 +1,8 @@
 from __future__ import annotations
-import pytest
+
 import importlib.util
 import sys
 from pathlib import Path
-
 
 
 def _load_module():

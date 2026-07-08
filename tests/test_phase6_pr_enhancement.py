@@ -9,29 +9,14 @@ Tests cover:
 4. Empty findings handling
 5. End-to-end PR body injection
 """
-import pytest
+
 import sys
 from pathlib import Path
-    import yaml
-    import sys
-    from security_pr_formatter import (
-    import sys
-    from security_pr_formatter import format_findings_table, generate_pr_summary, list_top_issues
-    import sys
-    from security_pr_formatter import load_findings
-    import sys
-    from security_pr_formatter import generate_findings_section
-    import re
-    import subprocess
-    import sys
-    from security_pr_formatter import generate_findings_section
-    import sys
-    from security_pr_formatter import SecurityFinding, get_agent_assignments
-
 
 
 def test_workflow_yaml_valid():
     """Test 1: Workflow YAML is valid"""
+    import yaml
     
     workflow_path = Path(".github/workflows/security-pr-enhancement.yml")
     assert workflow_path.exists(), "Workflow file not found"
@@ -52,7 +37,9 @@ def test_workflow_yaml_valid():
 
 def test_formatter_module():
     """Test 2: Formatter module works correctly"""
+    import sys
     sys.path.insert(0, 'scripts/ci')
+    from security_pr_formatter import (
         SecurityFinding,
         format_findings_table,
         generate_pr_summary,
@@ -102,7 +89,9 @@ def test_formatter_module():
 
 def test_empty_findings_handling():
     """Test 3: Empty findings handled gracefully"""
+    import sys
     sys.path.insert(0, 'scripts/ci')
+    from security_pr_formatter import format_findings_table, generate_pr_summary, list_top_issues
     
     empty_findings = []
     
@@ -112,7 +101,9 @@ def test_empty_findings_handling():
 
 def test_findings_json_loading():
     """Test 4: Load and parse findings JSON"""
+    import sys
     sys.path.insert(0, 'scripts/ci')
+    from security_pr_formatter import load_findings
     
     findings_path = Path(".codex/security-findings-comprehensive.json")
     
@@ -128,7 +119,9 @@ def test_findings_json_loading():
 
 def test_output_format():
     """Test 5: Output format is valid markdown"""
+    import sys
     sys.path.insert(0, 'scripts/ci')
+    from security_pr_formatter import generate_findings_section
     
     findings_path = Path(".codex/security-findings-comprehensive.json")
     assert findings_path.exists(), "Findings file not found"
@@ -148,6 +141,7 @@ def test_wec_preservation():
 def test_wec_preservation():
     """Test 6: WEC section preservation logic"""
     # This tests the JavaScript logic that should preserve WEC
+    import re
     
     sample_body_with_wec = """## Description
 This PR does X and Y.
@@ -165,6 +159,7 @@ This PR does X and Y.
 
 def test_cli_interface():
     """Test 7: CLI interface works correctly"""
+    import subprocess
     
     help_result = subprocess.run(
         ["python", "scripts/ci/security_pr_formatter.py", "--help"],
@@ -203,7 +198,9 @@ def test_github_script_compatibility():
 
 def test_severity_emoji_support():
     """Test 9: Severity emoji support"""
+    import sys
     sys.path.insert(0, 'scripts/ci')
+    from security_pr_formatter import generate_findings_section
     
     findings_path = Path(".codex/security-findings-comprehensive.json")
     assert findings_path.exists(), "Findings file not found for emoji test"
@@ -216,7 +213,9 @@ def test_severity_emoji_support():
 
 def test_agent_recommendations():
     """Test 10: Agent recommendation logic"""
+    import sys
     sys.path.insert(0, 'scripts/ci')
+    from security_pr_formatter import SecurityFinding, get_agent_assignments
     
     # Create findings from different tools
     findings = [

@@ -12,6 +12,7 @@ Categories tested:
 - D6: Collection Operations (empty, single, large collections)
 """
 
+import pytest
 
 
 class TestInputSanitization:

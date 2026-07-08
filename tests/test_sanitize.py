@@ -10,7 +10,6 @@ def test_sanitize_escapes_ampersand():
 
 def test_sanitize_preserves_safe_text():
     """Test that safe text without HTML chars passes through."""
-import pytest
     prompt = "This is a safe prompt without HTML"
     escaped = sanitize_prompt(prompt)
     # Should still be readable

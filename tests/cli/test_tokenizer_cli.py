@@ -3,16 +3,17 @@ Test Tokenizer Cli
 
 Test module for tokenizer cli.
 """
+
 from __future__ import annotations
-codex_cli = pytest.importorskip("codex_ml.cli.codex_cli")
+
 import json
 from types import SimpleNamespace
 from typing import Optional
+
+import pytest
 from click.testing import CliRunner
 
-
-
-
+codex_cli = pytest.importorskip("codex_ml.cli.codex_cli")
 
 
 def _patch_tokenizer_pipeline(monkeypatch, *, error_cls=RuntimeError, **methods):

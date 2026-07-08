@@ -3,17 +3,14 @@ Test Checkpointing Core
 
 Test module for checkpointing core.
 """
-    torch = pytest.importorskip("torch")
-    pytest.importorskip("numpy")
-import importlib
+
 import json
 import random
 from pathlib import Path
+
+import pytest
+
 from codex_ml.utils.checkpointing import (
-        import torch
-
-
-
     CheckpointManager,
     dump_rng_state,
     load_rng_state,
@@ -21,17 +18,8 @@ from codex_ml.utils.checkpointing import (
 )
 
 
-def _has_torch():
-    try:
-        # Check if this is the shadow stub module (real torch not installed)
-        if getattr(torch, "IS_CODEX_STUB", False):
-            return False
-        return True
-    except (ImportError, AttributeError):
-        return False
-
-
 def test_rng_roundtrip(monkeypatch):
+    torch = pytest.importorskip("torch")
     required_attrs = ("manual_seed", "rand")
     if not all(hasattr(torch, attr) for attr in required_attrs):
         pytest.skip("torch missing RNG helpers", allow_module_level=False)
@@ -43,6 +31,7 @@ def test_rng_roundtrip(monkeypatch):
     load_rng_state(state)
     assert random.random() == py_val, "r is not valid"
 
+    np = pytest.importorskip("numpy")
     load_rng_state(state)
     np_val = np.random.rand()
     np.random.rand()
@@ -56,7 +45,6 @@ def test_rng_roundtrip(monkeypatch):
     assert torch.rand(1).item() == t_val, "Item must not be empty"
 
 
-@pytest.mark.skipif(not _has_torch(), reason="torch not installed")
 def test_checkpoint_best_k(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setattr("codex_ml.utils.checkpointing.TORCH_AVAILABLE", False, raising=False)
     mgr = CheckpointManager(tmp_path, keep_last=1, keep_best=1)

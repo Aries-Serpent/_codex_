@@ -41,12 +41,6 @@ def hello_world():
 
 def test_python_adapter_parse_class():
     """Test parsing a class definition."""
-import pytest
-import os
-import sys
-from pathlib import Path
-from typing import Dict, List
-from codex.logging.structured_logger import logger
     source = """
 class TestClass:
     \"\"\"A test class.\"\"\"
@@ -113,6 +107,11 @@ def typed_function(name: str, age: int = 0) -> str:
 def test_python_adapter_parse_imports():
     """Test parsing import statements."""
     source = """
+import os
+import sys
+from pathlib import Path
+from typing import Dict, List
+from codex.logging.structured_logger import logger
 """
 
     adapter = PythonASTAdapter()

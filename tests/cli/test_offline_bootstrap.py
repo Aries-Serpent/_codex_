@@ -3,17 +3,16 @@ Test Offline Bootstrap
 
 Test module for offline bootstrap.
 """
+
 from __future__ import annotations
-import pytest
+
 from pathlib import Path
-    from codex_ml.cli import offline_bootstrap
-
-
 
 
 def test_track_bootstrap(tmp_path: Path) -> None:
     root = tmp_path / "runs"
 
+    from codex_ml.cli import offline_bootstrap
 
     rc = offline_bootstrap.main(
         [

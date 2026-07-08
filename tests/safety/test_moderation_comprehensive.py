@@ -7,15 +7,16 @@ including offline filtering, provider integration, and policy enforcement.
 Test Coverage: 30+ tests targeting 70%+ coverage
 Phase: 3.2 - Safety Module Testing
 """
+
 from __future__ import annotations
+
 import tempfile
 from unittest.mock import MagicMock, patch
-    from codex_ml.safety.moderation import (
 
-
-
+import pytest
 
 try:
+    from codex_ml.safety.moderation import (
         ModerationAdapter,
         ModerationDecision,
         ModerationRejection,

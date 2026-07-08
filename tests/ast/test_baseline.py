@@ -76,7 +76,6 @@ def test_delete_baseline():
 
 def test_clear_all():
     """Test clearing all baselines."""
-import pytest
     with tempfile.TemporaryDirectory() as tmpdir:
         manager = BaselineManager(f"{tmpdir}/test.db")
 

@@ -1,11 +1,10 @@
 """Smoke tests for the Helm chart defaults."""
+
 from __future__ import annotations
-import pytest
+
 from pathlib import Path
+
 import yaml
-
-
-
 
 VALUES_PATH = Path(__file__).resolve().parents[2] / "deploy" / "helm" / "values.yaml"
 

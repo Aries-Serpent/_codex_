@@ -128,7 +128,6 @@ class TestDuplicationAnalyzerEdgeCases:
 
     def test_no_duplicates(self):
         """Test analyzer on directory with no duplicates"""
-import pytest
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
 

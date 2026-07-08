@@ -72,6 +72,5 @@ def test_tree_traversal():
 
 def test_source_location_str():
     """Test SourceLocation string representation."""
-import pytest
     loc = SourceLocation(Path(os.path.join(tempfile.gettempdir(), "test.py")), 10, 5, 15, 20)
     assert str(loc) == os.path.join(tempfile.gettempdir(), "test.py:10:5"), "Condition must be true"

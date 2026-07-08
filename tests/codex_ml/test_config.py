@@ -6,12 +6,10 @@ Tests for ML training configuration parsing and validation.
 Phase 55: MEDIUM Priority Module Tests
 Coverage Target: src/codex_ml 11% → 16%+
 """
+
 from dataclasses import dataclass
-        from dataclasses import asdict
-        import json
-        from dataclasses import asdict
 
-
+import pytest
 
 
 @dataclass
@@ -175,6 +173,7 @@ class TestConfigSerialization:
 
     def test_config_to_dict(self):
         """Config can be serialized to dict."""
+        from dataclasses import asdict
 
         config = TrainingConfig(model_name="bert-base")
         config_dict = asdict(config)
@@ -203,6 +202,8 @@ class TestConfigSerialization:
 
     def test_config_to_json(self):
         """Config can be serialized to JSON."""
+        import json
+        from dataclasses import asdict
 
         config = TrainingConfig(model_name="bert-base")
         json_str = json.dumps(asdict(config))

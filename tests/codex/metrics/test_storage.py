@@ -3,17 +3,8 @@ Tests for codex.metrics.storage module.
 
 This module contains tests for metric storage with JSON and SQLite backends.
 """
-import pytest
-from pathlib import Path
-        from codex.metrics.storage import MetricStorage
-        from codex.metrics.storage import MetricStorage
-        from codex.metrics.storage import MetricStorage
-        from codex.metrics.storage import MetricStorage
-        from codex.metrics.storage import MetricStorage
-        from codex.metrics.storage import DEFAULT_JSON_DIR
-        from codex.metrics.storage import DEFAULT_SQLITE_PATH
-        from codex.metrics.storage import logger
 
+from pathlib import Path
 
 
 class TestMetricStorage:
@@ -21,6 +12,7 @@ class TestMetricStorage:
 
     def test_init_with_defaults(self, tmp_path):
         """Test MetricStorage initialization with default paths."""
+        from codex.metrics.storage import MetricStorage
 
         # Override defaults for testing
         json_dir = tmp_path / "json"
@@ -36,6 +28,7 @@ class TestMetricStorage:
 
     def test_init_json_only(self, tmp_path):
         """Test MetricStorage with JSON only."""
+        from codex.metrics.storage import MetricStorage
 
         json_dir = tmp_path / "json"
 
@@ -47,6 +40,7 @@ class TestMetricStorage:
 
     def test_init_sqlite_only(self, tmp_path):
         """Test MetricStorage with SQLite only."""
+        from codex.metrics.storage import MetricStorage
 
         sqlite_path = tmp_path / "test.db"
 
@@ -58,6 +52,7 @@ class TestMetricStorage:
 
     def test_init_creates_directories(self, tmp_path):
         """Test that initialization creates necessary directories."""
+        from codex.metrics.storage import MetricStorage
 
         json_dir = tmp_path / "nested" / "json" / "dir"
         sqlite_path = tmp_path / "nested" / "db" / "test.db"
@@ -69,6 +64,7 @@ class TestMetricStorage:
 
     def test_init_disabled(self, tmp_path):
         """Test MetricStorage with both backends disabled."""
+        from codex.metrics.storage import MetricStorage
 
         storage = MetricStorage(
             json_dir=tmp_path / "json",
@@ -88,18 +84,21 @@ class TestModuleConstants:
 
     def test_default_json_dir(self):
         """Test DEFAULT_JSON_DIR constant."""
+        from codex.metrics.storage import DEFAULT_JSON_DIR
 
         assert isinstance(DEFAULT_JSON_DIR, Path)
         assert "metrics" in str(DEFAULT_JSON_DIR), "Condition must be true"
 
     def test_default_sqlite_path(self):
         """Test DEFAULT_SQLITE_PATH constant."""
+        from codex.metrics.storage import DEFAULT_SQLITE_PATH
 
         assert isinstance(DEFAULT_SQLITE_PATH, Path)
         assert DEFAULT_SQLITE_PATH.suffix == ".db", "suffix is not valid"
 
     def test_logger_exists(self):
         """Test logger is configured."""
+        from codex.metrics.storage import logger
 
         assert logger is not None, "logger must be initialized"
         assert logger.name == "codex.metrics.storage", "name is not valid"

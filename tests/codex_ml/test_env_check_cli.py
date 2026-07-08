@@ -3,11 +3,10 @@ Test Env Check Cli
 
 Test module for env check cli.
 """
-import pytest
+
 from pathlib import Path
+
 from codex_ml.cli import env_check
-
-
 
 
 def test_env_check_invokes_subtools(monkeypatch, tmp_path: Path):

@@ -7,9 +7,8 @@ health response schema, prediction payload shape, and batch output integrity.
 This test runs as part of ``ml-lifecycle-gate.yml`` (``serving-smoke`` job)
 and is also exercisable directly via ``pytest tests/integration/test_serving_smoke.py``.
 """
-from __future__ import annotations
-import pytest
 
+from __future__ import annotations
 
 
 class TestServingSmoke:

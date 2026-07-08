@@ -3,11 +3,12 @@ Test Agents Exceptions Module
 
 Comprehensive unit tests for the shared exception hierarchy.
 """
+
 from __future__ import annotations
+
+import pytest
+
 from agents.exceptions import (
-
-
-
     PACKAGE_NAME,
     AgentConfigError,
     AgentError,

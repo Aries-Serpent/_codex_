@@ -13,12 +13,13 @@ Comprehensive test coverage for the duplication analysis module covering:
 
 Tests include basic functionality, edge cases, error paths, and integration scenarios.
 """
+
 import hashlib
 from pathlib import Path
+
+import pytest
+
 from src.codex.analysis.duplication import (
-
-
-
     DuplicationReport,
     _assess_severity,
     _hash_file,

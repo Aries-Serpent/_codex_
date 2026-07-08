@@ -3,13 +3,12 @@ Test Resume Optimizer Rng Equivalence
 
 Test module for resume optimizer rng equivalence.
 """
+
 from __future__ import annotations
-import pytest
+
 import random
+
 from codex_ml.utils import checkpoint_core
-
-
-
 
 
 def test_resume_optimizer_rng_equivalence(tmp_path) -> None:

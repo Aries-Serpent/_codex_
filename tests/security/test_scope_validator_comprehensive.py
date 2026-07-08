@@ -6,11 +6,12 @@ This module tests scope validation and authorization including:
 - Hierarchical permission checking
 - Scope error handling
 """
+
 from __future__ import annotations
+
+import pytest
+
 from security.scope_validator import (
-
-
-
     InsufficientScopeError,
     InvalidScopeError,
     ScopeError,

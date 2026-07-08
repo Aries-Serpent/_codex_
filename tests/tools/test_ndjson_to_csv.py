@@ -3,15 +3,14 @@ Test Ndjson To Csv
 
 Test module for ndjson to csv.
 """
+
 from __future__ import annotations
-import pytest
+
 from pathlib import Path
-from tools import ndjson_to_csv
-
-
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
+from tools import ndjson_to_csv
 
 
 def test_convert_file(tmp_path):

@@ -4,14 +4,10 @@ Comprehensive tests for Approval Workflow Engine — Phase 12.2
 
 Target: >95% coverage, all success criteria validated
 """
+
+import pytest
+
 from scripts.governance.approval_engine import (
-        from scripts.governance.approval_engine import EscalationAction
-        from scripts.governance.compliance_monitor import PolicyLibrary
-        from scripts.governance.compliance_monitor import ComplianceMonitor
-            from scripts.governance.approval_engine import ApprovalWorkflowEngine
-        import os
-
-
     ApprovalWorkflowEngine,
     AuditEventType,
     AuditLogger,
@@ -90,6 +86,7 @@ class TestApprovalEngine:
             "test", definition, {"type": "pr"}, "user1", ["admin"]
         )
         
+        from scripts.governance.approval_engine import EscalationAction
         engine.escalate_workflow(
             exec_id, "stage1", "Timeout", EscalationAction.AUTO_APPROVE
         )
@@ -209,6 +206,7 @@ class TestSuccessCriteria:
 
     def test_policy_coverage(self):
         """SC1: Verify 40+ policies are defined."""
+        from scripts.governance.compliance_monitor import PolicyLibrary
         policies = PolicyLibrary.define_policies()
         assert len(policies) >= 40, f"Expected ≥40 policies, got {len(policies)}"
 
@@ -230,6 +228,7 @@ class TestSuccessCriteria:
 
     def test_compliance_monitoring(self):
         """SC3: Verify 99%+ compliance rate, 100% audit logging."""
+        from scripts.governance.compliance_monitor import ComplianceMonitor
         
         monitor = ComplianceMonitor()
         
@@ -266,6 +265,7 @@ class TestSuccessCriteria:
         # This would test integration with src.codex.governance.rbac
         # For now, verify imports work
         try:
+            from scripts.governance.approval_engine import ApprovalWorkflowEngine
             assert hasattr(ApprovalWorkflowEngine, '__init__')
             # Real test would verify RBAC enforcer parameter
         except ImportError:
@@ -273,6 +273,7 @@ class TestSuccessCriteria:
 
     def test_documentation_completeness(self):
         """SC5: Verify complete documentation."""
+        import os
         
         # Check all deliverables exist
         docs = [

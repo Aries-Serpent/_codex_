@@ -3,11 +3,12 @@ Test Synthetic Alignment
 
 Test module for synthetic alignment.
 """
+
 from __future__ import annotations
+
+import pytest
+
 from codex_ml.eval.fallback import synthetic_alignment
-
-
-
 
 
 def test_synthetic_alignment_handles_reference_only_tokens() -> None:

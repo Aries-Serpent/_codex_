@@ -3,9 +3,10 @@ Integration tests for codex.archive.dal module.
 
 Tests basic DAL functionality with SQLite backend.
 """
+
+import pytest
+
 from codex.archive.dal import SqliteDAL
-
-
 
 
 class TestSqliteDAL:

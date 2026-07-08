@@ -40,7 +40,6 @@ class _FakeHttpClient:
 @dataclass
 class _MockUUID:
     """Mock UUID object for testing."""
-import pytest
 
     hex: str = "rid-123"
 

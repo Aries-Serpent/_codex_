@@ -3,16 +3,17 @@ Test Workflow Validation
 
 Test module for workflow validation.
 """
-from __future__ import annotations
-from pathlib import Path
-import yaml
 
 #!/usr/bin/env python
 # Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
 # Purpose: Validate local CI tooling presence (pre-commit); avoid enabling GH Actions.
 
+from __future__ import annotations
 
+from pathlib import Path
 
+import pytest
+import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 PRE_COMMIT = REPO_ROOT / ".pre-commit-config.yaml"

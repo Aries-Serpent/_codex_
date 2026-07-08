@@ -65,7 +65,6 @@ def test_issue_type_construction():
 @pytest.mark.integration
 def test_pull_request_type_construction():
     """Test PullRequest type construction."""
-import pytest
     pr = PullRequest(
         id=789,
         number=2,

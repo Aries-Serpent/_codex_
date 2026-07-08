@@ -326,7 +326,6 @@ class TestFeatureHealthIntegration:
 
     def test_sla_compliance_monitoring(self):
         """Test SLA compliance monitoring."""
-import pytest
         monitor = FeatureHealthMonitor()
 
         # Record updates at different times

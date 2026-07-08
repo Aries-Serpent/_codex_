@@ -3,7 +3,7 @@ Test Import Ndjson Cli
 
 Test module for import ndjson cli.
 """
-import pytest
+
 import json
 import os
 import shutil
@@ -11,7 +11,6 @@ import sqlite3
 import subprocess
 import sys
 from pathlib import Path
-
 
 
 def _write_ndjson(path: Path, events: list[dict]) -> None:

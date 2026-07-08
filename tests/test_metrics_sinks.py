@@ -3,12 +3,11 @@ Test Metrics Sinks
 
 Test module for metrics sinks.
 """
-import pytest
+
 import json
 from pathlib import Path
+
 from codex_ml.metrics.sinks import CsvSink, NdjsonSink, create_sink
-
-
 
 
 def test_csv_sink(tmp_path: Path) -> None:

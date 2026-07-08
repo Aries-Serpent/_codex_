@@ -3,9 +3,8 @@ Test Pipeline
 
 Test module for pipeline.
 """
-import pytest
-from codex_digest.pipeline import run_pipeline
 
+from codex_digest.pipeline import run_pipeline
 
 
 def test_pipeline_converges():

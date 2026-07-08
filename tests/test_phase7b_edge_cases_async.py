@@ -8,38 +8,12 @@ Target: +50-60 tests for final comprehensive coverage
 Generated: 2026-06-20
 Authority: @mbaetiong (COPILOT_AGENT_AUTH_ENABLED=true)
 """
+
 import asyncio
 import threading
 from unittest.mock import patch
-        from codex.api.rag_api import RAGAPI
-        from codex.api.rag_api import RAGAPI
-        from codex.api.rag_api import RAGAPI
-        from codex.api.github_logs import GitHubLogsAPI
-        from codex.agents.orchestrator import Orchestrator
-        from codex.archive.dal import ArchiveDAL
-        from codex.tokenization.api import Tokenizer
-        from codex.api.rag_api import RAGAPI
-        from codex.archive.retry import RetryPolicy
-        from codex.api.rag_api import RAGAPI
-        from codex.tokenization.api import Tokenizer
-        from codex.api.rag_api import RAGAPI
-        from codex.archive.dal import ArchiveDAL
-            from codex.api.rag_api import RAGAPI
-            from codex.cli import CLI
-            from codex.ingestion.file_ingestor import FileIngestor
-            from codex.rag.pipelines.embedding import EmbeddingGenerator
-            from codex.tokenization.api import Tokenizer
-            from codex.api.rag_api import RAGAPI
-            from codex.ingestion.file_ingestor import FileIngestor
-            from codex.tokenization.api import Tokenizer
-            from codex.tokenization.api import Tokenizer
-        from codex.archive.dal import ArchiveDAL
-        from codex.archive.dal import ArchiveDAL
-        from codex.tokenization.api import Tokenizer
-        from codex.tokenization.api import Tokenizer
-        from codex.archive.dal import ArchiveDAL
 
-
+import pytest
 
 # ============================================================================
 # Async/Await Pattern Tests (20-25 tests)
@@ -59,9 +33,9 @@ class TestAsyncInitialization:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_async_context_empty_resource(self):
         """Should handle async context with no resource"""
+        from codex.api.rag_api import RAGAPI
 
         try:
             async with RAGAPI() as api:
@@ -79,9 +53,9 @@ class TestAsyncInitialization:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_async_context_exception_cleanup(self):
         """Should cleanup properly on async exception"""
+        from codex.api.rag_api import RAGAPI
 
         try:
             with pytest.raises((RuntimeError, ValueError)):
@@ -101,9 +75,9 @@ class TestAsyncInitialization:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_nested_async_contexts(self):
         """Should handle nested async contexts"""
+        from codex.api.rag_api import RAGAPI
 
         try:
             async with RAGAPI() as api1:
@@ -127,9 +101,9 @@ class TestAsyncConcurrency:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_concurrent_api_operations(self):
         """Should handle concurrent API calls"""
+        from codex.api.github_logs import GitHubLogsAPI
 
         try:
             api = GitHubLogsAPI(token="dummy_token")
@@ -159,7 +133,6 @@ class TestAsyncConcurrency:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_async_timeout_handling(self):
         """Should handle async operation timeout"""
 
@@ -180,7 +153,6 @@ class TestAsyncConcurrency:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_async_cancellation(self):
         """Should handle async task cancellation"""
 
@@ -208,6 +180,7 @@ class TestThreadSafety:
 
     def test_shared_state_race_condition(self):
         """Should handle concurrent access to shared state"""
+        from codex.agents.orchestrator import Orchestrator
 
         try:
             orch = Orchestrator()
@@ -260,6 +233,7 @@ class TestResourceExhaustion:
 
     def test_many_concurrent_connections(self):
         """Should handle many concurrent connections gracefully"""
+        from codex.archive.dal import ArchiveDAL
 
         try:
             connections = []
@@ -281,6 +255,7 @@ class TestResourceExhaustion:
 
     def test_large_batch_processing(self):
         """Should handle large batch processing"""
+        from codex.tokenization.api import Tokenizer
 
         try:
             tokenizer = Tokenizer()
@@ -308,6 +283,7 @@ class TestErrorRecovery:
 
     def test_retry_on_transient_error(self):
         """Should retry on transient errors"""
+        from codex.api.rag_api import RAGAPI
 
         try:
             api = RAGAPI()
@@ -330,6 +306,7 @@ class TestErrorRecovery:
 
     def test_circuit_breaker_pattern(self):
         """Should implement circuit breaker pattern"""
+        from codex.archive.retry import RetryPolicy
 
         try:
             policy = RetryPolicy(max_retries=3, backoff_factor=0.1)
@@ -353,6 +330,7 @@ class TestGracefulDegradation:
 
     def test_fallback_on_api_error(self):
         """Should fallback on API error"""
+        from codex.api.rag_api import RAGAPI
 
         try:
             api = RAGAPI()
@@ -365,6 +343,7 @@ class TestGracefulDegradation:
 
     def test_partial_success_handling(self):
         """Should handle partial success in batch operations"""
+        from codex.tokenization.api import Tokenizer
 
         try:
             tokenizer = Tokenizer()
@@ -395,6 +374,7 @@ class TestStateManagement:
 
     def test_state_isolation_between_instances(self):
         """Multiple instances should not share state"""
+        from codex.api.rag_api import RAGAPI
 
         try:
             api1 = RAGAPI()
@@ -411,6 +391,7 @@ class TestStateManagement:
 
     def test_cleanup_on_exception(self):
         """Resources should cleanup on exception"""
+        from codex.archive.dal import ArchiveDAL
 
         try:
             dal = ArchiveDAL(connection_string="dummy")
@@ -442,6 +423,8 @@ class TestEndToEndWorkflows:
     def test_cli_to_api_flow(self):
         """Test flow from CLI through API"""
         try:
+            from codex.api.rag_api import RAGAPI
+            from codex.cli import CLI
 
             cli = CLI()
             api = RAGAPI()
@@ -456,6 +439,9 @@ class TestEndToEndWorkflows:
     def test_ingest_tokenize_embed_flow(self):
         """Test full ingest->tokenize->embed pipeline"""
         try:
+            from codex.ingestion.file_ingestor import FileIngestor
+            from codex.rag.pipelines.embedding import EmbeddingGenerator
+            from codex.tokenization.api import Tokenizer
 
             ingestor = FileIngestor()
             tokenizer = Tokenizer()
@@ -478,10 +464,10 @@ class TestEndToEndWorkflows:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_async_api_chain(self):
         """Test chained async API calls"""
         try:
+            from codex.api.rag_api import RAGAPI
 
             api = RAGAPI()
 
@@ -506,6 +492,8 @@ class TestIntegrationErrorPropagation:
     def test_error_in_pipeline_stage(self):
         """Should propagate error from pipeline stage"""
         try:
+            from codex.ingestion.file_ingestor import FileIngestor
+            from codex.tokenization.api import Tokenizer
 
             ingestor = FileIngestor()
             tokenizer = Tokenizer()
@@ -523,6 +511,7 @@ class TestIntegrationErrorPropagation:
     def test_partial_failure_in_batch(self):
         """Should handle partial failure in batch operations"""
         try:
+            from codex.tokenization.api import Tokenizer
 
             tokenizer = Tokenizer()
             texts = ["valid", "also_valid"]
@@ -551,6 +540,7 @@ class TestBoundaryConditions:
 
     def test_zero_timeout(self):
         """Should handle zero timeout"""
+        from codex.archive.dal import ArchiveDAL
 
         try:
             ArchiveDAL(connection_string="dummy", timeout=0)
@@ -560,6 +550,7 @@ class TestBoundaryConditions:
 
     def test_negative_timeout(self):
         """Should reject negative timeout"""
+        from codex.archive.dal import ArchiveDAL
 
         try:
             with pytest.raises((ValueError, TypeError)):
@@ -569,6 +560,7 @@ class TestBoundaryConditions:
 
     def test_max_int_batch_size(self):
         """Should handle maximum batch size"""
+        from codex.tokenization.api import Tokenizer
 
         try:
             tokenizer = Tokenizer()
@@ -592,6 +584,7 @@ class TestEdgeCaseCombinations:
 
     def test_concurrent_empty_operations(self):
         """Test concurrent empty operations"""
+        from codex.tokenization.api import Tokenizer
 
         try:
             tokenizer = Tokenizer()
@@ -622,7 +615,6 @@ class TestEdgeCaseCombinations:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_async_with_timeout_and_cancellation(self):
         """Test async operation with both timeout and cancellation"""
 
@@ -642,6 +634,7 @@ class TestEdgeCaseCombinations:
 
     def test_resource_cleanup_with_exception_and_retry(self):
         """Test resource cleanup with exception and retry"""
+        from codex.archive.dal import ArchiveDAL
 
         try:
             dal = ArchiveDAL(connection_string="dummy")

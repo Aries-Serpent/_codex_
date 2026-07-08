@@ -225,7 +225,6 @@ def test_load_manifest_or_scored(tmp_path: Path):
 
 def test_trending_detection(tmp_path: Path):
     """Test detection of trending up/down/stable capabilities."""
-import pytest
     from scripts.space_traversal.trend_aggregator import aggregate_trends
 
     artifacts_dir = tmp_path / "audit_artifacts"

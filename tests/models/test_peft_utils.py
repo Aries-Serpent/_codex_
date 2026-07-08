@@ -3,13 +3,14 @@ Test Peft Utils
 
 Test module for peft utils.
 """
+
 from __future__ import annotations
+
 import importlib
+
+import pytest
+
 from src.models.peft_utils import summarize_peft
-
-
-
-
 
 
 def test_summarize_peft_graceful_without_peft() -> None:

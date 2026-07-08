@@ -1,9 +1,10 @@
 """Tests for codex_ml.utils.optional_dependencies."""
+
 from __future__ import annotations
+
+import pytest
+
 from codex_ml.utils.optional_dependencies import (
-
-
-
     build_optional_dependency_error,
     format_optional_dependency_error,
     raise_optional_dependency_error,

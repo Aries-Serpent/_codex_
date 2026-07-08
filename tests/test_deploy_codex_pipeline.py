@@ -3,12 +3,13 @@ Test Deploy Codex Pipeline
 
 Test module for deploy codex pipeline.
 """
+
 import json
 from pathlib import Path
+
+import pytest
+
 from deploy.deploy_codex_pipeline import main
-
-
-
 
 
 def _write_jsonl(path: Path, rows):

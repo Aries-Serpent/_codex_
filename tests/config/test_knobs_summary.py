@@ -2,13 +2,12 @@
 Knobs Summary Sidecar Test (P5)
 Ensures knobs_effective.json produced when SUMMARY_ENABLE=1
 """
-import pytest
+
 import json
 import os
 import subprocess
 import sys
 from pathlib import Path
-
 
 
 def test_knobs_summary_sidecar():

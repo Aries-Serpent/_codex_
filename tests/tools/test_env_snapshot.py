@@ -3,11 +3,10 @@ Test Env Snapshot
 
 Test module for env snapshot.
 """
-import pytest
+
 import json
 import subprocess
 import sys
-
 
 
 def test_env_snapshot_writes_file(tmp_path, monkeypatch):

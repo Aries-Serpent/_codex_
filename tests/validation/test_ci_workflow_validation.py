@@ -405,7 +405,6 @@ class TestArtifactValidation:
 
     def test_artifact_upload_configured(self) -> None:
         """Test that artifact upload is configured where needed."""
-import pytest
         workflows_dir = Path(".github/workflows")
         if workflows_dir.exists():
             for workflow in workflows_dir.glob("*.yml"):

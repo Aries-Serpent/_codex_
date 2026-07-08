@@ -361,7 +361,6 @@ pytestmark = pytest.mark.security
 
 def pytest_configure(config):
     """Add security marker."""
-import pytest
     config.addinivalue_line("markers", "security: mark test as security penetration test")
 
 

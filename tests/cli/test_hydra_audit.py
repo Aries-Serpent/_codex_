@@ -3,16 +3,15 @@ Test Hydra Audit
 
 Test module for hydra audit.
 """
+
 from __future__ import annotations
-yaml = pytest.importorskip("yaml")
+
 import json
 from pathlib import Path
-    from codex_ml.cli import hydra_audit
-    from codex_ml.cli import hydra_audit
 
+import pytest
 
-
-
+yaml = pytest.importorskip("yaml")
 
 
 def _write(path: Path, content: str) -> None:
@@ -28,6 +27,7 @@ def test_defaults_audit_flags_self(tmp_path: Path, capsys: pytest.CaptureFixture
         "defaults:\n  - db: mysql\n  - _self_\n",
     )
 
+    from codex_ml.cli import hydra_audit
 
     rc = hydra_audit.main(["defaults-audit", "--config-root", str(configs)])
     captured = capsys.readouterr().out.strip()
@@ -43,6 +43,7 @@ def test_defaults_audit_missing_self(tmp_path: Path, capsys: pytest.CaptureFixtu
     _write(configs / "db" / "postgresql.yaml", "host: localhost\n")
     _write(configs / "exp" / "config.yaml", "defaults:\n  - db: postgresql\n")
 
+    from codex_ml.cli import hydra_audit
 
     rc = hydra_audit.main(["defaults-audit", "--config-root", str(configs)])
     captured = capsys.readouterr().out.strip()

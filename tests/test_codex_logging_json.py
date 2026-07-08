@@ -6,10 +6,8 @@ Test Codex Logging Json
 
 Test module for codex logging json.
 """
-import pytest
-from codex_ml.monitoring.codex_logging import init_logger
-    import importlib
 
+from codex_ml.monitoring.codex_logging import init_logger
 
 
 def test_json_logger_format(monkeypatch, capsys):
@@ -26,6 +24,7 @@ def test_json_logger_format(monkeypatch, capsys):
 def test_nvml_disabled(monkeypatch):
     monkeypatch.setenv("CODEX_DISABLE_NVML", "1")
     # Re-import module to trigger guard
+    import importlib
 
     mod = importlib.reload(importlib.import_module("codex_ml.monitoring.codex_logging"))
     assert mod.pynvml is None, "pynvml is not valid"

@@ -10,21 +10,18 @@ Tests cover:
 - Size bounds enforcement
 - Path traversal prevention
 """
+
 from __future__ import annotations
+
 import json
 import tempfile
 import zipfile
 from pathlib import Path
 from unittest.mock import MagicMock, patch
+
+import pytest
+
 from codex.ingest.adapter import (
-        from datetime import datetime, timezone
-        from datetime import datetime, timezone
-        from datetime import datetime, timezone
-        from datetime import datetime, timezone
-
-
-
-
     MAX_FILE_SIZE_MB,
     MAX_FILES_COUNT,
     MAX_TOTAL_SIZE_MB,
@@ -42,6 +39,7 @@ class TestSnapshot:
 
     def test_snapshot_creation(self, tmp_path: Path) -> None:
         """Test basic snapshot creation."""
+        from datetime import datetime, timezone
 
         snapshot = Snapshot(
             snapshot_id="20251217-abc123",
@@ -57,6 +55,7 @@ class TestSnapshot:
 
     def test_get_source_dir(self, tmp_path: Path) -> None:
         """Test get_source_dir returns correct path."""
+        from datetime import datetime, timezone
 
         snapshot = Snapshot(
             snapshot_id="test",
@@ -70,6 +69,7 @@ class TestSnapshot:
 
     def test_get_artifact_path(self, tmp_path: Path) -> None:
         """Test get_artifact_path returns correct path."""
+        from datetime import datetime, timezone
 
         snapshot = Snapshot(
             snapshot_id="test",
@@ -84,6 +84,7 @@ class TestSnapshot:
 
     def test_to_dict(self, tmp_path: Path) -> None:
         """Test serialization to dictionary."""
+        from datetime import datetime, timezone
 
         now = datetime.now(timezone.utc)
         snapshot = Snapshot(

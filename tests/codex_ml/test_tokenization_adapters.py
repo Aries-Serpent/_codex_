@@ -3,21 +3,15 @@
 These tests validate the tokenizer adapters and skip gracefully when
 the required dependencies (transformers, sentencepiece) are not installed.
 """
+
 from __future__ import annotations
-transformers = pytest.importorskip("transformers", reason="transformers not installed")
+
 import importlib.util
-    import sentencepiece as _spm
-    from tokenizers import Tokenizer
-    from tokenizers.models import WordLevel
-    from tokenizers.pre_tokenizers import Whitespace
-    from codex_ml.tokenization.hf_adapter import HFTokenizerAdapter
-    from codex_ml.tokenization.sentencepiece_adapter import SentencePieceAdapter
-    from codex_ml.tokenization.sentencepiece_adapter import SentencePieceAdapter
 
-
-
+import pytest
 
 # Try to import transformers - skip tests if not available
+transformers = pytest.importorskip("transformers", reason="transformers not installed")
 
 # Try to import tokenizers package - skip tests if not available
 HAS_TOKENIZERS = importlib.util.find_spec("tokenizers") is not None
@@ -26,6 +20,7 @@ HAS_TOKENIZERS = importlib.util.find_spec("tokenizers") is not None
 # Also verify the module has real functionality (not a stub/type-hint-only package).
 # IS_CODEX_STUB=True means the in-repo shim is active rather than the real C extension.
 try:
+    import sentencepiece as _spm
 
     HAS_SENTENCEPIECE = hasattr(_spm, "SentencePieceTrainer") and not getattr(
         _spm, "IS_CODEX_STUB", False
@@ -37,7 +32,11 @@ except ImportError:
 @pytest.mark.skipif(not HAS_TOKENIZERS, reason="requires tokenizers package")
 def test_hf_tokenizer_adapter_basic(tmp_path):
     """Test basic HuggingFace tokenizer adapter functionality."""
+    from tokenizers import Tokenizer
+    from tokenizers.models import WordLevel
+    from tokenizers.pre_tokenizers import Whitespace
 
+    from codex_ml.tokenization.hf_adapter import HFTokenizerAdapter
 
     # Create a simple tokenizer JSON file for testing
     # Build a minimal tokenizer
@@ -73,6 +72,7 @@ def test_hf_tokenizer_adapter_basic(tmp_path):
 @pytest.mark.skipif(not HAS_SENTENCEPIECE, reason="requires sentencepiece")
 def test_sentencepiece_adapter_basic(tmp_path):
     """Test basic SentencePiece adapter functionality."""
+    from codex_ml.tokenization.sentencepiece_adapter import SentencePieceAdapter
 
     # Create a small corpus for training
     corpus_file = tmp_path / "corpus.txt"
@@ -103,6 +103,7 @@ def test_sentencepiece_adapter_basic(tmp_path):
 @pytest.mark.skipif(not HAS_SENTENCEPIECE, reason="requires sentencepiece")
 def test_sentencepiece_adapter_load(tmp_path):
     """Test loading an existing SentencePiece model."""
+    from codex_ml.tokenization.sentencepiece_adapter import SentencePieceAdapter
 
     # Create and train a model
     corpus_file = tmp_path / "corpus.txt"

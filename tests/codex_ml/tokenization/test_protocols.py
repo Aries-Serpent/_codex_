@@ -1,4 +1,3 @@
-import pytest
 from codex_ml.tokenization._protocols import TokenizerAdapter
 
 

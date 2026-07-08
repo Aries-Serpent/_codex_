@@ -45,7 +45,6 @@ class TestStatusDetector:
 
     def test_evidence_collection(self, tmp_path):
         """Test evidence file collection."""
-import pytest
         evidence = tmp_path / "evidence.jsonl"
         evidence.write_text('{"test": "data"}\n')
         assert evidence.exists(), "Condition must be true"

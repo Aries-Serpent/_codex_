@@ -8,9 +8,8 @@ Test External Web Search
 
 Test module for external web search.
 """
-import pytest
-from codex_ml.analysis.providers import ExternalWebSearch
 
+from codex_ml.analysis.providers import ExternalWebSearch
 
 
 class _DummyResponse:

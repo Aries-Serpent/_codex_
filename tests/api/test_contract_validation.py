@@ -8,11 +8,12 @@ Created: 2026-01-18
 Phase: 16.1 - API Contract Testing
 Tests: 25+
 """
+
 import json
 import re
 from pathlib import Path
 
-
+import pytest
 
 # Repository root
 REPO_ROOT = Path(__file__).parents[2]

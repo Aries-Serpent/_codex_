@@ -14,13 +14,14 @@ Tests cover:
  11. Single-bin degenerate distribution
  12. Symmetric distribution produces low PSI
 """
+
 from __future__ import annotations
+
 import math
+
+import pytest
+
 from codex_ml.monitoring.data_drift import DataDriftDetector, DriftResult
-
-
-
-
 
 # ---------------------------------------------------------------------------
 # Helpers

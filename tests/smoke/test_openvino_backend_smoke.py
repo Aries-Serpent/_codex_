@@ -9,18 +9,14 @@ so they pass on CPU-only CI runners and only run when a GPU is present.
 
 See docs/ops/openvino_integration.md Phase B/C for context.
 """
+
 from __future__ import annotations
-pytest.importorskip("numpy")
+
 import importlib
 import sys
 from unittest.mock import MagicMock, patch
-    from codex_ml.backends.openvino_backend import is_available as _ov_is_available
-        from codex_ml.backends import openvino_backend
-        import numpy as np
 
-
-
-
+import pytest
 
 
 # ---------------------------------------------------------------------------
@@ -116,6 +112,7 @@ class TestOpenVINOBackendAvailable:
 # Phase C — live GPU inference path (skipif when GPU absent)
 # ---------------------------------------------------------------------------
 try:
+    from codex_ml.backends.openvino_backend import is_available as _ov_is_available
 
     _GPU_PRESENT = _ov_is_available("GPU")
 except (ImportError, AttributeError):
@@ -140,6 +137,7 @@ class TestOpenVINOPhaseC:
 
     def setup_method(self):
         """Import the real (non-mocked) backend."""
+        from codex_ml.backends import openvino_backend
 
         self.backend = openvino_backend
 
@@ -159,6 +157,7 @@ class TestOpenVINOPhaseC:
         the model would be compiled on the Arc iGPU; the output tensor dict
         must be non-empty.
         """
+        import numpy as np
 
         # Create minimal OpenVINO IR XML + BIN pair
         xml_path = tmp_path / "model.xml"

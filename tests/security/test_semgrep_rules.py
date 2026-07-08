@@ -3,18 +3,18 @@ Test Semgrep Rules
 
 Test module for semgrep rules.
 """
+
 import os
 import shutil
 import subprocess
 from pathlib import Path
-import subprocess, pickle, yaml, requests, ast
-
 
 ROOT = Path(__file__).resolve().parents[2]
 CONFIG_DIR = ROOT / "semgrep_rules"
 
 
 BAD_CODE = """
+import subprocess, pickle, yaml, requests, ast
 subprocess.run('ls', shell=True)
 eval('1+1')
 requests.get('http://example.com')
@@ -26,6 +26,7 @@ pickle.load(open('a','rb'))
 
 def test_semgrep_rules(tmp_path: Path) -> None:
     if shutil.which("semgrep") is None:
+        import pytest
 
         pytest.skip("semgrep not installed")
     bad = tmp_path / "bad.py"

@@ -3,13 +3,12 @@ Test Crc32 File
 
 Test module for crc32 file.
 """
+
 from __future__ import annotations
-import pytest
+
 import zlib
+
 from codex_ml.data.integrity import crc32_file
-
-
-
 
 
 def test_crc32_matches_zlib(tmp_path):

@@ -3,11 +3,10 @@ Test Mlflow Defaults And Noop
 
 Test module for mlflow defaults and noop.
 """
-import pytest
+
 import importlib.util
 import sys
 from pathlib import Path
-
 
 
 def _load_mlflow_utils():

@@ -65,7 +65,6 @@ class TestReproducibility:
 
     def test_seed_tracking(self):
         """Test seed is tracked in metadata."""
-import pytest
         metadata = {"seed": 42, "model": "test"}
         assert "seed" in metadata, "Data must not be empty"
         assert isinstance(metadata["seed"], int)

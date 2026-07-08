@@ -3,12 +3,11 @@
 This module tests collection, aggregation, and analysis of test reliability metrics.
 Tests cover metric definitions, calculations, and reporting.
 """
-import pytest
+
 import json
 import tempfile
 from datetime import datetime, timedelta
 from pathlib import Path
-
 
 
 class TestMetricDefinitions:

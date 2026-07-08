@@ -177,7 +177,6 @@ class TestErrorMessages:
 
     def test_help_text_contains_examples(self, runner):
         """Test: help text includes usage examples."""
-import pytest
         result = runner.invoke(cli, ['--help'])
         assert result.exit_code == 0, "Result must not be empty"
 

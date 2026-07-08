@@ -3,14 +3,15 @@ Test Archive Manifest Side Effects
 
 Test module for archive manifest side effects.
 """
+
 from __future__ import annotations
+
 import json
 from pathlib import Path
+
+import pytest
+
 from codex.knowledge.build import archive_and_manifest, build_kb
-
-
-
-
 
 
 def test_archive_and_manifest_creates_components(

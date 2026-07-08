@@ -12,13 +12,12 @@ Tests workflows that span multiple modules:
 Part of Phase 23 Week 2: Integration Testing (100-120 tests)
 Target: 20-30 tests for Cross-Module Workflows
 """
+
 from __future__ import annotations
+
 import json
-            from codex_ml.tokenization import load_tokenizer as load_tokenizer
-        import os
 
-
-
+import pytest
 
 # Mark all tests as integration tests
 pytestmark = [pytest.mark.integration, pytest.mark.slow]
@@ -155,6 +154,7 @@ class TestTokenizationTrainingPipeline:
     def test_tokenizer_initialization(self, temp_workspace):
         """Verify tokenizer initialization."""
         try:
+            from codex_ml.tokenization import load_tokenizer as load_tokenizer
 
             # Should be able to initialize tokenizer
             # (will skip if dependencies not available)
@@ -537,6 +537,7 @@ class TestConfigurationPropagation:
         """Verify environment variables propagate."""
         monkeypatch.setenv("CODEX_DEBUG", "true")
 
+        import os
 
         debug_enabled = os.getenv("CODEX_DEBUG") == "true"
 

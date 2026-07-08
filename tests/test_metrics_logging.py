@@ -1,19 +1,20 @@
 """
+pytest.importorskip("tensorboard")
 Test Metrics Logging
 
 Test module for metrics logging.
 """
-pytest.importorskip("tensorboard")
+
+import json
+from pathlib import Path
+
+import pytest
+
 pytest.importorskip("omegaconf")
 pytest.importorskip("transformers")
 pytest.importorskip("torch")
-import json
-from pathlib import Path
+
 from codex.training import emit_validation_metric_record
-
-
-
-
 
 
 def test_emit_validation_metric_record(tmp_path: Path) -> None:

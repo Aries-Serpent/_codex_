@@ -2,7 +2,6 @@
 Minimal tests for Codex CLI App - Phase 9.4 Coverage Gap-Fill
 Targets critical Codex CLI app initialization and routing.
 """
-import pytest
 
 
 class TestCodexCLIAppMinimal:

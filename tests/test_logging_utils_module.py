@@ -6,13 +6,12 @@ Test Logging Utils Module
 
 Test module for logging utils module.
 """
+
 from __future__ import annotations
-import pytest
+
 from pathlib import Path
+
 from src import logging_utils
-
-
-
 
 
 def test_setup_logging_tensorboard(monkeypatch, tmp_path):

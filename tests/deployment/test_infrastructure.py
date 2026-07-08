@@ -2,15 +2,10 @@
 Comprehensive tests for Deployment Infrastructure
 Tests deployment configuration, validation, and infrastructure setup
 """
+
 from pathlib import Path
-        from scripts.space_traversal.detectors import deployment_infrastructure
-        from scripts.space_traversal.detectors.deployment_infrastructure import detect
-        from scripts.space_traversal.detectors.deployment_infrastructure import detect
-        import yaml
-            from src.codex_ml.deployment import cloud
-            from src.codex_ml.cli import deploy
 
-
+import pytest
 
 
 class TestDeploymentInfrastructureDetector:
@@ -18,11 +13,13 @@ class TestDeploymentInfrastructureDetector:
 
     def test_detector_import(self):
         """Test that deployment detector can be imported"""
+        from scripts.space_traversal.detectors import deployment_infrastructure
 
         assert hasattr(deployment_infrastructure, "detect")
 
     def test_detector_contract(self):
         """Test detector follows the contract"""
+        from scripts.space_traversal.detectors.deployment_infrastructure import detect
 
         result = detect({"files": []})
 
@@ -33,6 +30,7 @@ class TestDeploymentInfrastructureDetector:
 
     def test_detect_with_deployment_files(self):
         """Test detection with deployment files present"""
+        from scripts.space_traversal.detectors.deployment_infrastructure import detect
 
         file_index = {
             "files": [
@@ -53,6 +51,7 @@ class TestDeploymentConfiguration:
 
     def test_deployment_config_structure(self, tmp_path):
         """Test deployment configuration structure"""
+        import yaml
 
         config = {
             "deployment": {
@@ -104,6 +103,7 @@ class TestDeploymentInfrastructure:
     def test_deployment_module_import(self):
         """Test that deployment modules can be imported"""
         try:
+            from src.codex_ml.deployment import cloud
 
             assert hasattr(cloud, "__name__")
         except ImportError:
@@ -112,6 +112,7 @@ class TestDeploymentInfrastructure:
     def test_deployment_cli_import(self):
         """Test that deployment CLI can be imported"""
         try:
+            from src.codex_ml.cli import deploy
 
             assert hasattr(deploy, "__name__")
         except ImportError:

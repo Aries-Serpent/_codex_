@@ -3,9 +3,10 @@ Test Prometheus
 
 Test module for prometheus.
 """
+
 import importlib
 
-
+import pytest
 
 
 def test_import_module():

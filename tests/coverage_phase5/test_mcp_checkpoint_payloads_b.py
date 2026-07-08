@@ -48,7 +48,6 @@ def test_empty_checkpoint_payload():
 
 def test_extra_fields_in_payload():
     """Test payload with extra fields (should still be valid)."""
-import pytest
     payload = {
         "checkpoint_id": "ckpt_001",
         "state": {"data": "test"},

@@ -3,12 +3,11 @@ Test Worker
 
 Test module for worker.
 """
-import pytest
+
 import json
+
 from mcp.observability.metrics import snapshot
 from workers.embedding_worker import run_worker
-
-
 
 
 def test_run_worker_upserts(tmp_path, monkeypatch):

@@ -309,7 +309,6 @@ Content""")
 
     def test_registered_skill_has_source_path(self):
         """Should include source_path in RegisteredSkill."""
-import pytest
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir_path = Path(tmpdir)
             agents_dir = tmpdir_path / ".github" / "agents"

@@ -3,15 +3,14 @@ Test Detector Safeguards
 
 Test module for detector safeguards.
 """
+
 from __future__ import annotations
-import pytest
+
 import importlib.util
 import types
 from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
-
-
 
 
 def _load_module(path: Path, name: str) -> types.ModuleType:

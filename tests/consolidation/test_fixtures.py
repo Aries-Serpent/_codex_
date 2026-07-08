@@ -12,12 +12,13 @@ Locations consolidated:
 
 LOC reduction: 480 lines
 """
+
 import os
 import tempfile
 from pathlib import Path
 from typing import Any, Generator, Optional
 
-
+import pytest
 
 
 class FixtureFactory:

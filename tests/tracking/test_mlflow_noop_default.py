@@ -3,13 +3,12 @@ Test Mlflow Noop Default
 
 Test module for mlflow noop default.
 """
+
 from __future__ import annotations
-import pytest
+
 import importlib
 import sys
 from types import ModuleType
-
-
 
 
 def _install_fake_mlflow() -> None:

@@ -8,20 +8,21 @@ that caused GitHub Actions job #61098313515 to fail.
 The script ensures proper validation of Cargo.toml features configuration
 for PyO3 Python extensions.
 """
+
 import json
 import sys
 import textwrap
 from pathlib import Path
 from typing import Any
 from unittest.mock import patch
-from validate_cargo_features import main, validate_cargo_features
 
-
+import pytest
 
 # Add scripts directory to path
 SCRIPT_DIR = Path(__file__).resolve().parent.parent.parent / "scripts" / "ci"
 sys.path.insert(0, str(SCRIPT_DIR))
 
+from validate_cargo_features import main, validate_cargo_features
 
 
 class TestValidateCargoFeatures:

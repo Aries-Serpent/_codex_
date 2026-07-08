@@ -10,45 +10,11 @@ This module tests the main Codex CLI commands including:
 
 Phase: 46 - Coverage Improvement
 """
+
 from unittest.mock import patch
+
+import pytest
 from click.testing import CliRunner
-            from codex_ml.cli.codex_cli import _csv_list
-            from codex_ml.cli.codex_cli import _csv_list
-            from codex_ml.cli.codex_cli import _csv_list
-            from codex_ml.cli.codex_cli import _csv_list
-            from codex_ml.cli.codex_cli import _update_path
-            from codex_ml.cli.codex_cli import _update_path
-            from codex_ml.cli.codex_cli import _update_path
-            from codex_ml.cli.codex_cli import codex
-            from codex_ml.cli.codex_cli import codex
-            from codex_ml.cli.codex_cli import codex
-            from codex_ml.cli.codex_cli import codex
-            from codex_ml.cli.codex_cli import codex
-            from codex_ml.cli.codex_cli import codex
-            from codex_ml.cli.codex_cli import codex
-            from codex_ml.cli.codex_cli import codex
-            from codex_ml.cli.codex_cli import codex
-            from codex_ml.cli.codex_cli import codex
-            from codex_ml.cli.codex_cli import codex
-            from codex_ml.cli.codex_cli import codex
-            from codex_ml.cli.codex_cli import codex
-            from codex_ml.cli.codex_cli import codex
-            from codex_ml.cli.codex_cli import codex
-            from codex_ml.cli.codex_cli import codex
-            from codex_ml.cli.codex_cli import codex
-            from codex_ml.cli.codex_cli import codex
-            from codex_ml.cli.codex_cli import codex
-            from codex_ml.cli.codex_cli import codex
-            from codex_ml.cli.codex_cli import codex
-            from codex_ml.cli.codex_cli import main
-            import click.exceptions as _click_exc
-            from codex_ml.cli.codex_cli import main
-            from codex_ml.cli.codex_cli import _hash_dataset
-            from codex_ml.cli.codex_cli import _hash_dataset
-            from codex_ml.cli.codex_cli import _hash_dataset
-            from codex_ml.cli.codex_cli import _get_tokenizer_pipeline
-
-
 
 
 class TestHelperFunctions:
@@ -57,6 +23,7 @@ class TestHelperFunctions:
     def test_csv_list_simple(self):
         """Test _csv_list with simple comma-separated values."""
         try:
+            from codex_ml.cli.codex_cli import _csv_list
 
             result = _csv_list("a,b,c")
             assert result == ["a", "b", "c"]
@@ -66,6 +33,7 @@ class TestHelperFunctions:
     def test_csv_list_with_spaces(self):
         """Test _csv_list with spaces around values."""
         try:
+            from codex_ml.cli.codex_cli import _csv_list
 
             result = _csv_list(" a , b , c ")
             assert result == ["a", "b", "c"]
@@ -75,6 +43,7 @@ class TestHelperFunctions:
     def test_csv_list_empty(self):
         """Test _csv_list with empty string."""
         try:
+            from codex_ml.cli.codex_cli import _csv_list
 
             result = _csv_list("")
             assert result == [], "Result must not be empty"
@@ -84,6 +53,7 @@ class TestHelperFunctions:
     def test_csv_list_single_value(self):
         """Test _csv_list with single value."""
         try:
+            from codex_ml.cli.codex_cli import _csv_list
 
             result = _csv_list("single")
             assert result == ["single"], "Result must not be empty"
@@ -97,6 +67,7 @@ class TestUpdatePath:
     def test_update_path_dict(self):
         """Test _update_path with dictionary target."""
         try:
+            from codex_ml.cli.codex_cli import _update_path
 
             target = {}
             _update_path(target, "a.b.c", "value")
@@ -107,6 +78,7 @@ class TestUpdatePath:
     def test_update_path_single_level(self):
         """Test _update_path with single level path."""
         try:
+            from codex_ml.cli.codex_cli import _update_path
 
             target = {}
             _update_path(target, "key", "value")
@@ -117,6 +89,7 @@ class TestUpdatePath:
     def test_update_path_existing_dict(self):
         """Test _update_path with existing nested dict."""
         try:
+            from codex_ml.cli.codex_cli import _update_path
 
             target = {"a": {"b": {}}}
             _update_path(target, "a.b.c", "value")
@@ -131,6 +104,7 @@ class TestCLIGroup:
     def test_cli_help(self):
         """Test CLI help output."""
         try:
+            from codex_ml.cli.codex_cli import codex
 
             runner = CliRunner()
             result = runner.invoke(codex, ["--help"])
@@ -142,6 +116,7 @@ class TestCLIGroup:
     def test_tokenizer_subgroup_help(self):
         """Test tokenizer subgroup help."""
         try:
+            from codex_ml.cli.codex_cli import codex
 
             runner = CliRunner()
             result = runner.invoke(codex, ["tokenizer", "--help"])
@@ -157,6 +132,7 @@ class TestTokenizerCommands:
     def test_tokenizer_train_help(self):
         """Test tokenizer train command help."""
         try:
+            from codex_ml.cli.codex_cli import codex
 
             runner = CliRunner()
             result = runner.invoke(codex, ["tokenizer", "train", "--help"])
@@ -168,6 +144,7 @@ class TestTokenizerCommands:
     def test_tokenizer_validate_help(self):
         """Test tokenizer validate command help."""
         try:
+            from codex_ml.cli.codex_cli import codex
 
             runner = CliRunner()
             result = runner.invoke(codex, ["tokenizer", "validate", "--help"])
@@ -178,6 +155,7 @@ class TestTokenizerCommands:
     def test_tokenizer_encode_help(self):
         """Test tokenizer encode command help."""
         try:
+            from codex_ml.cli.codex_cli import codex
 
             runner = CliRunner()
             result = runner.invoke(codex, ["tokenizer", "encode", "--help"])
@@ -188,6 +166,7 @@ class TestTokenizerCommands:
     def test_tokenizer_decode_help(self):
         """Test tokenizer decode command help."""
         try:
+            from codex_ml.cli.codex_cli import codex
 
             runner = CliRunner()
             result = runner.invoke(codex, ["tokenizer", "decode", "--help"])
@@ -202,6 +181,7 @@ class TestConfigSweepCommand:
     def test_config_sweep_help(self):
         """Test config-sweep command help."""
         try:
+            from codex_ml.cli.codex_cli import codex
 
             runner = CliRunner()
             result = runner.invoke(codex, ["config-sweep", "--help"])
@@ -215,6 +195,7 @@ class TestConfigSweepCommand:
     def test_config_sweep_basic(self, mock_subprocess, tmp_path):
         """Test config-sweep command with basic options."""
         try:
+            from codex_ml.cli.codex_cli import codex
 
             # Create a mock base config
             base_config = tmp_path / "base.yaml"
@@ -249,6 +230,7 @@ class TestTrainCommand:
     def test_train_help(self):
         """Test train command help."""
         try:
+            from codex_ml.cli.codex_cli import codex
 
             runner = CliRunner()
             result = runner.invoke(codex, ["train", "--help"])
@@ -262,6 +244,7 @@ class TestTrainCommand:
     def test_train_mlflow_options(self):
         """Test train command has MLflow options."""
         try:
+            from codex_ml.cli.codex_cli import codex
 
             runner = CliRunner()
             result = runner.invoke(codex, ["train", "--help"])
@@ -277,6 +260,7 @@ class TestResumeCommand:
     def test_resume_help(self):
         """Test resume command help."""
         try:
+            from codex_ml.cli.codex_cli import codex
 
             runner = CliRunner()
             result = runner.invoke(codex, ["resume", "--help"])
@@ -292,6 +276,7 @@ class TestMetricsServerCommand:
     def test_metrics_server_help(self):
         """Test metrics-server command help."""
         try:
+            from codex_ml.cli.codex_cli import codex
 
             runner = CliRunner()
             result = runner.invoke(codex, ["metrics-server", "--help"])
@@ -307,6 +292,7 @@ class TestTokenizeCommand:
     def test_tokenize_help(self):
         """Test tokenize command help (if exists)."""
         try:
+            from codex_ml.cli.codex_cli import codex
 
             runner = CliRunner()
             result = runner.invoke(codex, ["tokenize", "--help"])
@@ -322,6 +308,7 @@ class TestRepoMapCommand:
     def test_repo_map_help(self):
         """Test repo-map command help."""
         try:
+            from codex_ml.cli.codex_cli import codex
 
             runner = CliRunner()
             result = runner.invoke(codex, ["repo-map", "--help"])
@@ -337,6 +324,7 @@ class TestDeployCommand:
     def test_deploy_help(self):
         """Test deploy command help."""
         try:
+            from codex_ml.cli.codex_cli import codex
 
             runner = CliRunner()
             result = runner.invoke(codex, ["deploy", "--help"])
@@ -349,6 +337,7 @@ class TestDeployCommand:
     def test_deploy_requires_dry_run(self, tmp_path):
         """Test deploy command requires --dry-run flag."""
         try:
+            from codex_ml.cli.codex_cli import codex
 
             # Create mock config
             config = tmp_path / "deploy.yaml"
@@ -368,6 +357,7 @@ class TestStatusReportCommand:
     def test_status_report_help(self):
         """Test status-report command help."""
         try:
+            from codex_ml.cli.codex_cli import codex
 
             runner = CliRunner()
             result = runner.invoke(codex, ["status-report", "--help"])
@@ -383,6 +373,7 @@ class TestEvaluateCommand:
     def test_evaluate_help(self):
         """Test evaluate command help."""
         try:
+            from codex_ml.cli.codex_cli import codex
 
             runner = CliRunner()
             result = runner.invoke(codex, ["evaluate", "--help"])
@@ -395,6 +386,7 @@ class TestEvaluateCommand:
     def test_evaluate_metrics_sink_option(self):
         """Test evaluate command has metrics-sink option."""
         try:
+            from codex_ml.cli.codex_cli import codex
 
             runner = CliRunner()
             result = runner.invoke(codex, ["evaluate", "--help"])
@@ -410,6 +402,7 @@ class TestPrepareDataCommand:
     def test_prepare_data_help(self):
         """Test prepare-data command help."""
         try:
+            from codex_ml.cli.codex_cli import codex
 
             runner = CliRunner()
             result = runner.invoke(codex, ["prepare-data", "--help"])
@@ -426,6 +419,7 @@ class TestExportEnvCommand:
     def test_export_env_help(self):
         """Test export-env command help."""
         try:
+            from codex_ml.cli.codex_cli import codex
 
             runner = CliRunner()
             result = runner.invoke(codex, ["export-env", "--help"])
@@ -442,6 +436,7 @@ class TestMainFunction:
     def test_main_with_help(self):
         """Test main function with --help."""
         try:
+            from codex_ml.cli.codex_cli import main
 
             exit_code = main(["--help"])
             assert exit_code == 0, "exit_code is not valid"
@@ -451,9 +446,11 @@ class TestMainFunction:
     def test_main_with_invalid_command(self):
         """Test main function with invalid command."""
         try:
+            import click.exceptions as _click_exc
         except ImportError:
             _click_exc = None  # type: ignore[assignment]
         try:
+            from codex_ml.cli.codex_cli import main
 
             exit_code = main(["invalid-command"])
             assert exit_code != 0, "exit_code is not valid"
@@ -471,6 +468,7 @@ class TestHashDataset:
     def test_hash_dataset(self, tmp_path):
         """Test dataset hashing function."""
         try:
+            from codex_ml.cli.codex_cli import _hash_dataset
 
             # Create a test file
             test_file = tmp_path / "test_data.txt"
@@ -485,6 +483,7 @@ class TestHashDataset:
     def test_hash_dataset_consistency(self, tmp_path):
         """Test that same content produces same hash."""
         try:
+            from codex_ml.cli.codex_cli import _hash_dataset
 
             # Create two files with same content
             file1 = tmp_path / "file1.txt"
@@ -502,6 +501,7 @@ class TestHashDataset:
     def test_hash_dataset_different_content(self, tmp_path):
         """Test that different content produces different hash."""
         try:
+            from codex_ml.cli.codex_cli import _hash_dataset
 
             # Create two files with different content
             file1 = tmp_path / "file1.txt"
@@ -522,6 +522,7 @@ class TestGetTokenizerPipeline:
     def test_get_tokenizer_pipeline_cached(self):
         """Test that tokenizer pipeline is cached."""
         try:
+            from codex_ml.cli.codex_cli import _get_tokenizer_pipeline
 
             # First call
             pipeline1 = _get_tokenizer_pipeline()

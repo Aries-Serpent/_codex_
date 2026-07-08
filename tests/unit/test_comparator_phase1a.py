@@ -13,14 +13,13 @@ Comprehensive test coverage for the behavior comparator module covering:
 
 Tests include basic functionality, edge cases, integration scenarios.
 """
+
 import hashlib
 from pathlib import Path
+
+import pytest
+
 from src.codex.verify.comparator import (
-        import json
-        import tempfile
-
-
-
     ComparisonDetail,
     ComparisonMode,
     ComparisonResult,
@@ -587,6 +586,7 @@ class TestEdgeCases:
 
     def test_result_to_dict_json_serializable(self):
         """Test that result to_dict is JSON serializable."""
+        import json
 
         result = ComparisonResult(
             result="pass",  # type: ignore
@@ -624,6 +624,7 @@ class TestIntegration:
             mode=ComparisonMode.STRICT,
         )
         # Save result
+        import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:
             output_file = Path(tmpdir) / "result.json"

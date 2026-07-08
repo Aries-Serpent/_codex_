@@ -6,15 +6,13 @@ find_pr_for_run() must return the PR with the *highest* number (most
 recently opened) rather than prs[0] (oldest), to avoid posting rescue
 comments on the wrong PR.
 """
+
 from __future__ import annotations
-import pytest
+
 import sys
 from pathlib import Path
 from typing import Any
 from unittest.mock import patch
-import ci_rescue
-
-
 
 # ---------------------------------------------------------------------------
 # Import the module under test
@@ -23,6 +21,7 @@ SCRIPTS_CI = Path(__file__).resolve().parents[2] / "scripts" / "ci"
 if str(SCRIPTS_CI) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_CI))
 
+import ci_rescue
 
 # ---------------------------------------------------------------------------
 # Helpers

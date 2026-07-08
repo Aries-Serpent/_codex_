@@ -9,18 +9,18 @@ Tests cover:
 - Token lifecycle
 - Edge cases and error handling
 """
+
+import pytest
+
 from codex.auth.authenticator import Authenticator, LoginResult
 from codex.auth.exceptions import (
-from codex.auth.mfa_provider import MFAProvider
-from codex.auth.token_manager import TokenManager, TokenType
-from codex.auth.user_store import User, UserStore
-        import pyotp
-
-
     InvalidCredentialsError,
     MFARequiredError,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
     UserAlreadyExistsError,
 )
+from codex.auth.mfa_provider import MFAProvider
+from codex.auth.token_manager import TokenManager, TokenType
+from codex.auth.user_store import User, UserStore
 
 # ============================================================================
 # Fixtures
@@ -257,6 +257,7 @@ class TestLoginMFA:
         secret = auth_with_mfa.mfa_provider.register_mfa(user.user_id, "sha256")
 
         # Get valid TOTP code
+        import pyotp
 
         totp = pyotp.TOTP(secret.secret)
         code = totp.now()

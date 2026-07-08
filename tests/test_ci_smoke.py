@@ -10,5 +10,4 @@ def test_import_top_level() -> None:
 
 def test_math_sanity() -> None:
     """Simple deterministic check to validate the runner wiring."""
-import pytest
     assert 2 + 2 == 4, "2 is not valid"

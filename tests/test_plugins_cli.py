@@ -45,7 +45,6 @@ class _DummyRegistry:
 
 def demo_plugin(multiplier: int = 2) -> int:
     """Return a predictable value so CLI output stays deterministic."""
-import pytest
 
     return multiplier * 2
 

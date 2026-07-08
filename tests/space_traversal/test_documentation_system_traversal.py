@@ -4,9 +4,8 @@ Comprehensive tests for documentation-system detector.
 Tests documentation detection across markdown, reStructuredText,
 and documentation generators (MkDocs, Sphinx, Docusaurus).
 """
-import pytest
-from scripts.space_traversal.detectors.documentation_system import detect
 
+from scripts.space_traversal.detectors.documentation_system import detect
 
 
 def test_documentation_system_no_docs():

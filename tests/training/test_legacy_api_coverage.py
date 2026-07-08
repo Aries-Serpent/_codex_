@@ -9,32 +9,17 @@ Phase: 2.1 - Core ML Training Coverage Initiative
 Created: 2026-01-18
 Target Coverage: 70%+
 """
+
 from __future__ import annotations
+
 from pathlib import Path
 from unittest.mock import MagicMock, Mock, patch
-    from codex_ml.training.legacy_api import (
-        from codex_ml.training.legacy_api import _coerce_optimizer
-        from codex_ml.training.legacy_api import _coerce_optimizer
-        from codex_ml.training.legacy_api import _coerce_safety
-        from codex_ml.training.legacy_api import _coerce_scheduler
-        from codex_ml.training.legacy_api import _listify_texts
-        from codex_ml.training.legacy_api import _listify_texts
-        from codex_ml.training.legacy_api import _listify_texts
-        from codex_ml.training.legacy_api import _load_texts
-        from codex_ml.training.legacy_api import _normalize_config
-        from codex_ml.training.legacy_api import _log_optional_dependencies
-        from codex_ml.training.legacy_api import build_dataloader
-    from dataclasses import asdict
-    from codex_ml.safety import ModerationSettings
-    from codex_ml.training.legacy_api import SafetySettings
-    from codex_ml.training.legacy_api import maybe_autocast
-    from dataclasses import asdict
 
-
-
+import pytest
 
 # Import modules under test - with proper guards
 try:
+    from codex_ml.training.legacy_api import (
         OptimizerSettings,
         SafetySettings,
         SchedulerSettings,
@@ -187,6 +172,7 @@ def test_optimizer_coercion_dict():
     """Test optimizer configuration coercion from dict."""
     # Test if _coerce_optimizer exists and is accessible
     try:
+        from codex_ml.training.legacy_api import _coerce_optimizer
 
         result = _coerce_optimizer({"name": "adam", "weight_decay": 0.005})
         assert isinstance(result, OptimizerSettings)
@@ -199,6 +185,7 @@ def test_optimizer_coercion_dict():
 def test_optimizer_coercion_object():
     """Test optimizer configuration coercion from object."""
     try:
+        from codex_ml.training.legacy_api import _coerce_optimizer
 
         settings = OptimizerSettings(name="sgd")
         result = _coerce_optimizer(settings)
@@ -210,6 +197,7 @@ def test_optimizer_coercion_object():
 def test_safety_coercion_dict():
     """Test safety configuration coercion from dict."""
     try:
+        from codex_ml.training.legacy_api import _coerce_safety
 
         result = _coerce_safety({"enabled": False, "bypass": True})
         assert isinstance(result, SafetySettings)
@@ -222,6 +210,7 @@ def test_safety_coercion_dict():
 def test_scheduler_coercion_dict():
     """Test scheduler configuration coercion from dict."""
     try:
+        from codex_ml.training.legacy_api import _coerce_scheduler
 
         result = _coerce_scheduler({"name": "cosine"})
         assert isinstance(result, SchedulerSettings)
@@ -237,6 +226,7 @@ def test_scheduler_coercion_dict():
 def test_listify_texts_string():
     """Test _listify_texts converts string to list."""
     try:
+        from codex_ml.training.legacy_api import _listify_texts
 
         result = _listify_texts("single text")
         assert result == ["single text"], "Result must not be empty"
@@ -247,6 +237,7 @@ def test_listify_texts_string():
 def test_listify_texts_list():
     """Test _listify_texts preserves list."""
     try:
+        from codex_ml.training.legacy_api import _listify_texts
 
         result = _listify_texts(["text1", "text2"])
         assert result == ["text1", "text2"]
@@ -257,6 +248,7 @@ def test_listify_texts_list():
 def test_listify_texts_none():
     """Test _listify_texts handles None."""
     try:
+        from codex_ml.training.legacy_api import _listify_texts
 
         result = _listify_texts(None)
         assert result == [] or result is None, "Result must not be empty"
@@ -267,6 +259,7 @@ def test_listify_texts_none():
 def test_load_texts_from_file(temp_data_dir):
     """Test _load_texts loads from JSONL file."""
     try:
+        from codex_ml.training.legacy_api import _load_texts
 
         file_path = temp_data_dir / "train.jsonl"
         result = _load_texts(str(file_path))
@@ -279,6 +272,7 @@ def test_load_texts_from_file(temp_data_dir):
 def test_normalize_config_dict():
     """Test _normalize_config processes dict configs."""
     try:
+        from codex_ml.training.legacy_api import _normalize_config
 
         config_dict = {"epochs": 5, "batch_size": 16}
         result = _normalize_config(config_dict)
@@ -290,6 +284,7 @@ def test_normalize_config_dict():
 def test_log_optional_dependencies():
     """Test _log_optional_dependencies logs without errors."""
     try:
+        from codex_ml.training.legacy_api import _log_optional_dependencies
 
         # Should not raise
         _log_optional_dependencies()
@@ -306,6 +301,7 @@ def test_log_optional_dependencies():
 def test_build_dataloader_basic(mock_load_jsonl):
     """Test build_dataloader creates DataLoader."""
     try:
+        from codex_ml.training.legacy_api import build_dataloader
 
         mock_load_jsonl.return_value = [
             {"text": "sample1"},
@@ -320,6 +316,7 @@ def test_build_dataloader_basic(mock_load_jsonl):
 
 def test_training_run_config_serialization():
     """Test TrainingRunConfig can be serialized."""
+    from dataclasses import asdict
 
     config = TrainingRunConfig()
     config_dict = asdict(config)
@@ -328,6 +325,8 @@ def test_training_run_config_serialization():
 
 def test_safety_settings_with_moderation_config():
     """Test SafetySettings integrates with ModerationSettings."""
+    from codex_ml.safety import ModerationSettings
+    from codex_ml.training.legacy_api import SafetySettings
 
     moderation = ModerationSettings()
     settings = SafetySettings(moderation=moderation)
@@ -341,6 +340,7 @@ def test_autocast_integration(mock_autocast):
     mock_autocast.return_value.__exit__ = Mock()
 
     # Test that autocast can be imported and called
+    from codex_ml.training.legacy_api import maybe_autocast
 
     with maybe_autocast("cuda", dtype="fp16"):
         pass
@@ -348,6 +348,7 @@ def test_autocast_integration(mock_autocast):
 
 def test_optimizer_settings_serialization():
     """Test OptimizerSettings can be serialized."""
+    from dataclasses import asdict
 
     settings = OptimizerSettings(name="adam", weight_decay=0.02)
     settings_dict = asdict(settings)

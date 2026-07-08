@@ -70,7 +70,6 @@ class TestCoVeEngine:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_verify_empty_response(self, engine):
         """Test verification of empty response."""
         result = await engine.verify_response("")
@@ -88,7 +87,6 @@ class TestCoVeEngine:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_verify_with_context(self, engine):
         """Test verification with supporting context."""
         response = "Python was created by Guido van Rossum in 1991."
@@ -109,10 +107,8 @@ class TestCoVeEngine:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_stats_tracking(self, engine):
         """Test that stats are tracked."""
-import pytest
         await engine.verify_response("Test response one.")
         await engine.verify_response("Test response two.")
 

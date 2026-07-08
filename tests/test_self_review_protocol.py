@@ -332,7 +332,6 @@ def my_function():
 
 def test_analyze_python_file_bare_except(tmp_path):
     """Test detection of bare except clauses."""
-import pytest
     test_file = tmp_path / "test.py"
     test_file.write_text("""
 def risky_function():

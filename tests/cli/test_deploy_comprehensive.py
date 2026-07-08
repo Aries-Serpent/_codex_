@@ -3,22 +3,15 @@ Tests for codex_ml.cli.deploy module.
 
 Tests dry-run deployment validation for reasoning pods.
 """
+
 import json
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
+
+import pytest
 import yaml
-            from codex_ml.cli import deploy
-            from codex_ml.cli.deploy import _load_yaml_file
-            from codex_ml.cli.deploy import _load_json_file
-            from codex_ml.cli.deploy import run_deploy_dry_run
-            from codex_ml.cli.deploy import run_deploy_dry_run
-            from codex_ml.cli.deploy import run_deploy_dry_run
-            from codex_ml.cli.deploy import _load_yaml_file
-            from codex_ml.cli.deploy import _load_yaml_file
-
-
 
 
 class TestDeployFunctions:
@@ -27,6 +20,7 @@ class TestDeployFunctions:
     def test_deploy_module_import(self):
         """Test that deploy module can be imported."""
         try:
+            from codex_ml.cli import deploy
 
             assert deploy is not None, "deploy must be initialized"
         except ImportError as e:
@@ -35,6 +29,7 @@ class TestDeployFunctions:
     def test_load_yaml_file_function(self):
         """Test _load_yaml_file utility function."""
         try:
+            from codex_ml.cli.deploy import _load_yaml_file
 
             # Create temporary YAML file
             with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
@@ -53,6 +48,7 @@ class TestDeployFunctions:
     def test_load_json_file_function(self):
         """Test _load_json_file utility function."""
         try:
+            from codex_ml.cli.deploy import _load_json_file
 
             # Create temporary JSON file
             with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
@@ -75,6 +71,7 @@ class TestDeployDryRun:
     def test_dry_run_required(self):
         """Test that dry_run=False raises RuntimeError."""
         try:
+            from codex_ml.cli.deploy import run_deploy_dry_run
 
             with pytest.raises(RuntimeError) as excinfo:
                 run_deploy_dry_run(
@@ -90,6 +87,7 @@ class TestDeployDryRun:
     def test_missing_rollout_ring(self):
         """Test that missing rollout_ring raises RuntimeError."""
         try:
+            from codex_ml.cli.deploy import run_deploy_dry_run
 
             # Create temp config without rollout_ring
             with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
@@ -113,6 +111,7 @@ class TestDeployDryRun:
     def test_missing_run_metadata(self):
         """Test that missing run_metadata.json raises RuntimeError."""
         try:
+            from codex_ml.cli.deploy import run_deploy_dry_run
 
             # Create temp config with rollout_ring
             with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
@@ -154,6 +153,7 @@ class TestDeployValidation:
     def test_rollout_ring_from_pod_section(self):
         """Test rollout_ring extraction from pod section."""
         try:
+            from codex_ml.cli.deploy import _load_yaml_file
 
             with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
                 yaml.dump({"pod": {"ring": "0A_base_", "name": "test-pod"}}, f)
@@ -170,6 +170,7 @@ class TestDeployValidation:
     def test_rollout_ring_from_top_level(self):
         """Test rollout_ring extraction from top level."""
         try:
+            from codex_ml.cli.deploy import _load_yaml_file
 
             with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
                 yaml.dump({"rollout_ring": "0B_base_", "name": "test-deployment"}, f)

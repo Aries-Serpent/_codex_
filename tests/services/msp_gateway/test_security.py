@@ -140,22 +140,7 @@ class TestPolicyEnforcer:
 
     def test_load_policies_with_valid_yaml(self, tmp_path):
         """Load policies from actual YAML files."""
-import pytest
         import yaml
-        from services.msp_gateway.security import PolicyEnforcer
-        from services.msp_gateway.security import AuthManager
-        from services.msp_gateway.security import hash_api_key
-        from services.msp_gateway.security import legacy_hash_api_key
-        from services.msp_gateway.security import OfflineGuard
-        from services.msp_gateway.security import settings as sec_settings
-        from services.msp_gateway.security import settings as sec_settings
-        from services.msp_gateway.security import settings as sec_settings
-        from services.msp_gateway.security import settings as sec_settings
-        from services.msp_gateway import security
-        from services.msp_gateway import security
-        from services.msp_gateway import security
-        from services.msp_gateway import security
-        from services.msp_gateway import security
 
         safelist_path = tmp_path / "safelist.yaml"
         denylist_path = tmp_path / "denylist.yaml"
@@ -169,6 +154,7 @@ import pytest
             encoding="utf-8",
         )
 
+        from services.msp_gateway.security import PolicyEnforcer
 
         enforcer = PolicyEnforcer(policy_dir=str(tmp_path))
         assert "allowed_topics" in enforcer.safelist, "Condition must be true"
@@ -182,10 +168,12 @@ import pytest
 
 class TestAuthManager:
     def _make_auth(self):
+        from services.msp_gateway.security import AuthManager
 
         return AuthManager()
 
     def test_hash_api_key_uses_versioned_kdf_format(self):
+        from services.msp_gateway.security import hash_api_key
 
         hashed = hash_api_key("key123")
 
@@ -225,6 +213,7 @@ class TestAuthManager:
         assert auth.verify_api_key("key_shared") == "tenant_new", "Condition must be true"
 
     def test_verify_api_key_accepts_legacy_hash(self):
+        from services.msp_gateway.security import legacy_hash_api_key
 
         auth = self._make_auth()
         auth.register_api_key_hash(legacy_hash_api_key("legacy-key"), "tenant_legacy")
@@ -239,22 +228,26 @@ class TestAuthManager:
 
 class TestOfflineGuard:
     def _make_guard(self):
+        from services.msp_gateway.security import OfflineGuard
 
         return OfflineGuard()
 
     def test_check_network_access_offline_true(self, monkeypatch):
+        from services.msp_gateway.security import settings as sec_settings
 
         monkeypatch.setattr(sec_settings, "offline", True)
         guard = self._make_guard()
         assert guard.check_network_access() is True, "Condition must be true"
 
     def test_check_network_access_offline_false(self, monkeypatch):
+        from services.msp_gateway.security import settings as sec_settings
 
         monkeypatch.setattr(sec_settings, "offline", False)
         guard = self._make_guard()
         assert guard.check_network_access() is False, "Condition must be true"
 
     def test_block_external_call_raises_when_offline(self, monkeypatch):
+        from services.msp_gateway.security import settings as sec_settings
 
         monkeypatch.setattr(sec_settings, "offline", True)
         guard = self._make_guard()
@@ -262,6 +255,7 @@ class TestOfflineGuard:
             guard.block_external_call("http_request")
 
     def test_block_external_call_passes_when_online(self, monkeypatch):
+        from services.msp_gateway.security import settings as sec_settings
 
         monkeypatch.setattr(sec_settings, "offline", False)
         guard = self._make_guard()
@@ -275,6 +269,7 @@ class TestOfflineGuard:
 
 class TestModuleLevelFunctions:
     def test_validate_prompt_valid(self, monkeypatch):
+        from services.msp_gateway import security
 
         # Inject a clean enforcer
         monkeypatch.setattr(security.policy_enforcer, "check_blocked_patterns", lambda _: None)
@@ -283,6 +278,7 @@ class TestModuleLevelFunctions:
         assert error is None, "Error should be raised or set"
 
     def test_validate_prompt_blocked(self, monkeypatch):
+        from services.msp_gateway import security
 
         monkeypatch.setattr(
             security.policy_enforcer,
@@ -294,6 +290,7 @@ class TestModuleLevelFunctions:
         assert error is not None, "error must be initialized"
 
     def test_validate_prompt_too_long(self, monkeypatch):
+        from services.msp_gateway import security
 
         monkeypatch.setattr(security.policy_enforcer, "check_blocked_patterns", lambda _: None)
         long_prompt = "a" * 10001
@@ -302,6 +299,7 @@ class TestModuleLevelFunctions:
         assert "maximum length" in (error or ""), "Error should be raised or set"
 
     def test_redact_content_returns_tuple(self, monkeypatch):
+        from services.msp_gateway import security
 
         monkeypatch.setattr(
             security.policy_enforcer,
@@ -313,6 +311,7 @@ class TestModuleLevelFunctions:
         assert "term:password" in redactions, "Condition must be true"
 
     def test_redact_content_no_redactions(self, monkeypatch):
+        from services.msp_gateway import security
 
         monkeypatch.setattr(
             security.policy_enforcer,

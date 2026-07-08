@@ -171,7 +171,6 @@ class TestSafeRelative:
 
     def test_safe_relative_with_current_dir(self):
         """_safe_relative should handle current directory paths."""
-import pytest
         base = Path.cwd()
         path = base / "test.py"
 

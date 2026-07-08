@@ -2,16 +2,15 @@
 
 Test module for sentencepiece tokenizer.
 """
+
 from __future__ import annotations
-spm = pytest.importorskip("sentencepiece")
+
 import json
 import sys
 from pathlib import Path
 from types import SimpleNamespace
-from codex_ml.tokenization.adapter import (
 
-
-
+import pytest
 
 if "transformers" not in sys.modules:
 
@@ -62,10 +61,12 @@ if "transformers" not in sys.modules:
         IS_CODEX_STUB=True,
     )
 
+from codex_ml.tokenization.adapter import (
     SentencePieceTokenizer,
     TokenizerAdapter,
 )
 
+spm = pytest.importorskip("sentencepiece")
 
 
 def _train_sentencepiece_model(tmp_path: Path) -> Path:

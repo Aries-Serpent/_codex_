@@ -3,14 +3,13 @@ Test Manifest
 
 Test module for manifest.
 """
+
 from __future__ import annotations
-import pytest
+
 import json
 from pathlib import Path
+
 from codex_ml.data.checksums import _sha256_file, manifest_for_paths
-
-
-
 
 
 def test_manifest_stable_and_changes_on_tamper(tmp_path: Path):

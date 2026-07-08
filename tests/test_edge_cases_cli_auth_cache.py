@@ -7,13 +7,12 @@ Generated: 150+ parameterized edge case tests
 
 Author: autonomous-test-healer-agent (v2.0.0-s228)
 """
+
 import json
 import tempfile
 from pathlib import Path
-        import threading
-        import threading
 
-
+import pytest
 
 # ============================================================================
 # FIXTURES: CLI & Command Edge Cases
@@ -583,6 +582,7 @@ class TestConcurrentAccessEdgeCases:
 
     def test_shared_resource_read_only(self):
         """Test shared resource with read-only access"""
+        import threading
 
         class SharedResource:
             def __init__(self, value):
@@ -610,6 +610,7 @@ class TestConcurrentAccessEdgeCases:
 
     def test_shared_resource_write_protection(self):
         """Test shared resource with write protection"""
+        import threading
 
         class SharedResource:
             def __init__(self, value):

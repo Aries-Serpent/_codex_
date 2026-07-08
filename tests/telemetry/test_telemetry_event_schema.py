@@ -1,22 +1,22 @@
 """
+pytest.importorskip("mlflow")
 Test Telemetry Event Schema
 
 Test module for telemetry event schema.
 """
-pytest.importorskip("mlflow")
-pytest.importorskip("torch", reason="torch is required for telemetry emission tests")
-pytest.importorskip("jsonschema", reason="jsonschema not installed")
+
 import json
 import sys
 from pathlib import Path
+
+import pytest
+
+pytest.importorskip("torch", reason="torch is required for telemetry emission tests")
+pytest.importorskip("jsonschema", reason="jsonschema not installed")
+
 from jsonschema import Draft7Validator  # type: ignore
+
 from src.codex_ml import train_loop as train_loop_module
-    import torch as _torch_mod
-
-
-
-
-
 
 if train_loop_module.instantiate_model is None:  # pragma: no cover - optional dependency missing
     pytest.skip("model registry unavailable", allow_module_level=True)
@@ -25,6 +25,7 @@ if train_loop_module.instantiate_model is None:  # pragma: no cover - optional d
 # DR-003: guard tightened to torch < 2.2.0; CI uses torch >= 2.2.0 so tests run.
 _TORCH_312_BUG = False
 try:
+    import torch as _torch_mod
 
     _torch_ver = tuple(int(x) for x in _torch_mod.__version__.split(".")[:2])
     _TORCH_312_BUG = sys.version_info >= (3, 12) and _torch_ver < (2, 2)

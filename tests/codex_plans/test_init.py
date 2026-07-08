@@ -5,24 +5,10 @@ Applies Quantum Test Methodology:
 - Born Rule: Prioritizes high-probability failures
 - Zero Coverage: Critical priority (amplitude = 1.0)
 """
+
 from pathlib import Path
-            from src import codex_plans
-            from src.codex_plans import list_plan_documents
-            from src.codex_plans import __all__
-            from src.codex_plans import list_plan_documents
-            from src.codex_plans import list_plan_documents
-            from src.codex_plans import list_plan_documents
-            from src.codex_plans import list_plan_documents
-            import tempfile
-            from src.codex_plans import list_plan_documents
-            import tempfile
-            from src.codex_plans import list_plan_documents
-            from src.codex_plans import list_plan_documents
-            from src.codex_plans import list_plan_documents
-            import tempfile
-            from src.codex_plans import list_plan_documents
 
-
+import pytest
 
 # ==================== Import Tests ====================
 
@@ -33,6 +19,7 @@ class TestModuleImports:
     def test_module_import(self):
         """Test that codex_plans module can be imported."""
         try:
+            from src import codex_plans
 
             assert codex_plans is not None, "codex_plans must be initialized"
         except ImportError:
@@ -41,6 +28,7 @@ class TestModuleImports:
     def test_list_plan_documents_import(self):
         """Test list_plan_documents function import."""
         try:
+            from src.codex_plans import list_plan_documents
 
             assert list_plan_documents is not None, "list_plan_documents must be initialized"
         except ImportError:
@@ -49,6 +37,7 @@ class TestModuleImports:
     def test_all_exports(self):
         """Test __all__ exports."""
         try:
+            from src.codex_plans import __all__
 
             assert "list_plan_documents" in __all__, "Condition must be true"
         except ImportError:
@@ -64,6 +53,7 @@ class TestListPlanDocuments:
     def test_returns_list(self):
         """Test that function returns a list."""
         try:
+            from src.codex_plans import list_plan_documents
 
             result = list_plan_documents()
             assert isinstance(result, list)
@@ -73,6 +63,7 @@ class TestListPlanDocuments:
     def test_returns_path_objects(self):
         """Test that returned items are Path objects."""
         try:
+            from src.codex_plans import list_plan_documents
 
             result = list_plan_documents()
             for item in result:
@@ -83,6 +74,7 @@ class TestListPlanDocuments:
     def test_finds_markdown_files(self):
         """Test that function finds .md files."""
         try:
+            from src.codex_plans import list_plan_documents
 
             result = list_plan_documents()
             # All returned files should be markdown
@@ -94,6 +86,7 @@ class TestListPlanDocuments:
     def test_results_are_sorted(self):
         """Test that results are sorted."""
         try:
+            from src.codex_plans import list_plan_documents
 
             result = list_plan_documents()
             assert result == sorted(result), "Result must not be empty"
@@ -103,7 +96,9 @@ class TestListPlanDocuments:
     def test_custom_base_dir(self):
         """Test with custom base directory."""
         try:
+            import tempfile
 
+            from src.codex_plans import list_plan_documents
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 # Create a test markdown file
@@ -119,7 +114,9 @@ class TestListPlanDocuments:
     def test_empty_directory(self):
         """Test with empty directory."""
         try:
+            import tempfile
 
+            from src.codex_plans import list_plan_documents
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 result = list_plan_documents(base_dir=Path(tmpdir))
@@ -130,6 +127,7 @@ class TestListPlanDocuments:
     def test_none_base_dir_uses_default(self):
         """Test that None base_dir uses module directory."""
         try:
+            from src.codex_plans import list_plan_documents
 
             # Should not raise an error
             result = list_plan_documents(base_dir=None)
@@ -147,6 +145,7 @@ class TestEdgeCases:
     def test_non_existent_directory(self):
         """Test with non-existent directory path."""
         try:
+            from src.codex_plans import list_plan_documents
 
             # This should raise an error or return empty
             result = list_plan_documents(base_dir=Path("/nonexistent/path"))
@@ -158,7 +157,9 @@ class TestEdgeCases:
     def test_mixed_file_types(self):
         """Test directory with mixed file types."""
         try:
+            import tempfile
 
+            from src.codex_plans import list_plan_documents
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 # Create various file types

@@ -3,11 +3,10 @@ Test Unified Training
 
 Test module for unified training.
 """
+
 from __future__ import annotations
-import pytest
+
 from codex_ml.detectors.unified_training import detector_unified_training
-
-
 
 
 def test_unified_training_detector_shape():

@@ -11,17 +11,17 @@ Tests backward compatibility and functional training workflows:
 
 Part of Phase 5B-II: Integration Test Development
 """
+
 from __future__ import annotations
+
 import logging
 from unittest.mock import Mock, patch
-    from codex_ml.training.legacy_api import (
-    from codex_ml.training.functional_training import (
 
-
-
+import pytest
 
 # Conditional imports with graceful degradation
 try:
+    from codex_ml.training.legacy_api import (
         LegacyTrainer,
         translate_legacy_config,
     )
@@ -31,6 +31,7 @@ except (ImportError, AttributeError, ModuleNotFoundError):
     LEGACY_API_AVAILABLE = False
 
 try:
+    from codex_ml.training.functional_training import (
         functional_train,
         functional_train_step,
     )

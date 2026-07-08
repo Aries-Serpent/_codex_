@@ -25,7 +25,6 @@ def test_fix_pool_executor_created() -> None:
 
 def test_fix_pool_sets_env(monkeypatch) -> None:
     """Calling ``_fix_pool`` enables SQLite pooling via env var."""
-import pytest
     monkeypatch.delenv("CODEX_SQLITE_POOL", raising=False)
     try:
         _fix_pool(max_workers=0)

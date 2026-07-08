@@ -4,14 +4,15 @@ Comprehensive tests for archival bundling compression formats.
 Tests cover tar.gz, zip, and tar.xz compression formats with various
 file types and sizes to ensure proper bundling and extraction.
 """
+
 from __future__ import annotations
+
 import tarfile
 import zipfile
+
+import pytest
+
 from .security_utils import safe_extract_tarfile
-
-
-
-
 
 
 class TestTarGzCompression:

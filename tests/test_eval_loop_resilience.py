@@ -13,7 +13,6 @@ torch = pytest.importorskip("torch")
 
 class _ConstantLossModel(torch.nn.Module):
     """Simple module that exposes `.loss` for evaluation tests."""
-import pytest
 
     def __init__(self, value: float = 0.25) -> None:
         super().__init__()

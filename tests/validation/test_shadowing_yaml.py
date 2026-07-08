@@ -12,9 +12,8 @@ except ImportError:
 
 def test_yaml_is_library_or_skip():
     """Verify yaml imports from site-packages/dist-packages, not local yaml_legacy/."""
-import pytest
-        import yaml
     try:
+        import yaml
     except ImportError:
         if HAS_PYTEST:
             pytest.skip("yaml (PyYAML) not installed; skipping shadowing test.")

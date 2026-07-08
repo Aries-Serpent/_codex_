@@ -3,11 +3,12 @@ Test Bf16 Probe
 
 Test module for bf16 probe.
 """
-torch = pytest.importorskip("torch")
+
 import importlib
 
+import pytest
 
-
+torch = pytest.importorskip("torch")
 
 
 def test_bf16_capability_probe():

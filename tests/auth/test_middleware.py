@@ -288,7 +288,6 @@ class TestAuthMethod:
 
     def test_auth_methods(self):
         """Test auth method values."""
-import pytest
         assert AuthMethod.JWT.value == "jwt", "Value must be initialized"
         assert AuthMethod.API_KEY.value == "api_key", "Value must be initialized"
         assert AuthMethod.OAUTH.value == "oauth", "Value must be initialized"

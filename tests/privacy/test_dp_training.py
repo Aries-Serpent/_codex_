@@ -3,17 +3,19 @@ Test Dp Training
 
 Test module for dp training.
 """
+
+import pytest
+
 pytest.importorskip("torch")
 pytest.importorskip("opacus")
+
 import torch
 import torch.nn.functional as F
 from codex.training import TrainCfg, run_custom_trainer
 
 
-
-
-
 def test_dp_training_runs(monkeypatch, tmp_path):
+    opacus = pytest.importorskip("opacus")
 
     class DummyPrivacyEngine:
         def __init__(self) -> None:

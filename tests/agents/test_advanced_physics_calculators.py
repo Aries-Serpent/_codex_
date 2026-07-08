@@ -9,12 +9,13 @@ Tests all emerging physics paradigms:
 5. Wave Propagation
 6. Relativistic Effects
 """
-np = pytest.importorskip("numpy", reason="numpy required for advanced physics calculations")
-from agents.advanced_physics_calculators import (
 
+import pytest
 
 # Skip entire module if numpy is not available (optional dependency)
+np = pytest.importorskip("numpy", reason="numpy required for advanced physics calculations")
 
+from agents.advanced_physics_calculators import (
     AdvancedPhysicsOrchestrator,
     ChaoticAttractor,
     ChaoticNeuralNetwork,

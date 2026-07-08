@@ -1,13 +1,14 @@
 """
 Tests for Inference Server
 """
-np = pytest.importorskip("numpy")
+
 import time
+
+import pytest
+
+np = pytest.importorskip("numpy")
+
 from src.codex_ml.serving.inference_server import (
-
-
-
-
     MAX_BATCH_SIZE,
     MAX_INPUT_LENGTH,
     ModelConfig,

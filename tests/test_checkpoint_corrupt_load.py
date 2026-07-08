@@ -3,14 +3,15 @@ Test Checkpoint Corrupt Load
 
 Test module for checkpoint corrupt load.
 """
-pytest.importorskip("torch")
+
 from pathlib import Path
+
+import pytest
+
+pytest.importorskip("torch")
+
 import torch
 from codex_ml.utils.checkpointing import (
-
-
-
-
     CheckpointLoadError,
     load_training_checkpoint,
     save_checkpoint,

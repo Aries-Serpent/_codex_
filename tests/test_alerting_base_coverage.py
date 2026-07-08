@@ -3,14 +3,14 @@ Comprehensive tests for codex.alerting.base module.
 
 Tests cover AlertSeverity enum, AlertEvent dataclass, and AlertChannel ABC.
 """
+
 from __future__ import annotations
+
 from datetime import UTC, datetime
+
+import pytest
+
 from codex.alerting.base import AlertChannel, AlertEvent, AlertSeverity
-        from datetime import timedelta
-
-
-
-
 
 
 class TestAlertSeverity:
@@ -184,6 +184,7 @@ class TestAlertEvent:
 
     def test_alert_event_fill_timestamp_empty(self):
         """Test fill_timestamp sets timestamp when empty."""
+        from datetime import timedelta
 
         before = datetime.now(UTC).replace(microsecond=0)
         event = AlertEvent(

@@ -3,14 +3,15 @@ Test Offline Scans
 
 Test module for offline scans.
 """
+
 from __future__ import annotations
+
 import json
-    from tools.security import offline_scans
 
-
-
+import pytest
 
 try:
+    from tools.security import offline_scans
 except ModuleNotFoundError:  # pragma: no cover - environment-dependent tooling path
     pytest.skip("tools.security offline scans not available", allow_module_level=True)
 

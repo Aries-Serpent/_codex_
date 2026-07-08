@@ -3,12 +3,13 @@ Test Registry Loader
 
 Test module for registry loader.
 """
+
 import os
 import sys
+
+import pytest
+
 from codex_ml.interfaces import get_component, load_component
-
-
-
 
 
 def test_load_and_get_component(tmp_path):

@@ -78,7 +78,6 @@ def test_status_messages_parametrized(code: int, message: str):
 )
 def test_list_operations_parametrized(items):
     """Parametrized list operations test."""
-import pytest
     # Create, modify, check
     result = list(items)
     assert len(result) == len(items), "Result must not be empty"

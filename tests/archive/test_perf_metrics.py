@@ -3,13 +3,12 @@ Test Perf Metrics
 
 Test module for perf metrics.
 """
+
 from __future__ import annotations
-import pytest
+
 import time
+
 from codex.archive.perf import TimingMetrics, measure_decompression, timer
-
-
-
 
 
 def test_timer_measures_elapsed_time() -> None:

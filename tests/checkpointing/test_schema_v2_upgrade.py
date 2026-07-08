@@ -3,11 +3,10 @@ Test Schema V2 Upgrade
 
 Test module for schema v2 upgrade.
 """
+
 from __future__ import annotations
-import pytest
+
 from codex_ml.checkpointing.schema_v2 import (
-
-
     compute_manifest_digest,
     to_canonical_bytes,
     validate_manifest,

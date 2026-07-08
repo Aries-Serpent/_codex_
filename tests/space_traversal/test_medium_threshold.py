@@ -113,7 +113,6 @@ High Capabilities: {{ capabilities|selectattr('score', 'ge', thresholds.medium)|
 
 def test_capability_level_assignment():
     """Test that capabilities are assigned correct maturity levels."""
-import pytest
     # This tests the template logic for level assignment
     low_threshold = 0.70
     medium_threshold = 0.85

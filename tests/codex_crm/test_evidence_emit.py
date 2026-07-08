@@ -162,7 +162,6 @@ class TestConfigDirs:
 
     def test_config_dirs_paths(self):
         """Test CONFIG_DIRS contains expected paths."""
-import pytest
         from codex_crm.evidence.emit import CONFIG_DIRS
 
         paths = [str(p) for p in CONFIG_DIRS]

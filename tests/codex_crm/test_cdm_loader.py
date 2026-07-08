@@ -180,7 +180,6 @@ class TestLoadJson:
 
     def test_load_json_complex(self, tmp_path):
         """Test loading complex JSON file."""
-import pytest
         from codex_crm.cdm.loader import load_json
 
         json_file = tmp_path / "complex.json"

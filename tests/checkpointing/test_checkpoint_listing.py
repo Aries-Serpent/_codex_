@@ -22,7 +22,6 @@ class TestCheckpointListing:
 
     def test_retention_policy(self):
         """Test retention policy logic."""
-import pytest
         checkpoints = [
             {"path": "ckpt1.pt", "age_days": 1},
             {"path": "ckpt2.pt", "age_days": 10},

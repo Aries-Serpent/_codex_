@@ -1,14 +1,15 @@
 from __future__ import annotations
+
+import pytest
+
 pytest.importorskip("tensorboard")
+
 import json
 from contextlib import nullcontext
 from pathlib import Path
+
 from src.training import trainer as trainer_module
 from src.training.trainer import CheckpointConfig, Trainer, TrainerConfig
-
-
-
-
 
 
 class FakeTensor:

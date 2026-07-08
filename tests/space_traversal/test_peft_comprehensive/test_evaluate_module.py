@@ -3,16 +3,17 @@ Test Evaluate Module
 
 Test module for evaluate module.
 """
+
 from __future__ import annotations
+
+import pytest
+
 pytest.importorskip("numpy", reason="numpy required")
+
 import json
 from pathlib import Path
+
 from training.evaluate import evaluate
-
-
-
-
-
 
 
 class _DummyTensor:

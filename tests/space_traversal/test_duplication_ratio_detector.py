@@ -4,13 +4,12 @@ Comprehensive test suite for duplication ratio detector.
 Tests cover stem-based detection, token-similarity integration, edge cases,
 and determinism following the High Maturity Achievement Plan.
 """
-import pytest
+
 import importlib.util
 import types
 from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
-
 
 # Constants for consistent test configuration
 DETECTOR_PATH = Path("scripts/space_traversal/detectors/detector_duplication.py")

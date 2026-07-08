@@ -1,9 +1,8 @@
 """Validate status update template remains placeholder-only."""
+
 from __future__ import annotations
-import pytest
+
 from pathlib import Path
-
-
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 STATUS_UPDATE = REPO_ROOT / "docs" / "status_updates" / "status_update_{{date}}.md"

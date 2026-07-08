@@ -3,15 +3,14 @@ Test Cli
 
 Test module for cli.
 """
+
 from __future__ import annotations
-import pytest
+
 import json
 import zipfile
 from pathlib import Path
+
 from codex_crm import cli
-
-
-
 
 
 def _create_pa_zip(tmp_path: Path) -> Path:

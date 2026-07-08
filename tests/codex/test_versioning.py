@@ -1,13 +1,12 @@
 """Smoke tests for :mod:`codex.versioning`."""
+
 from __future__ import annotations
-import pytest
+
 import json
 from pathlib import Path
+
 from codex import _version
 from codex.versioning import SemanticVersion, determine_bump, update_artifact_version
-
-
-
 
 
 def test_semantic_version_and_bump():

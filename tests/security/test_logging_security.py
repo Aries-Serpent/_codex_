@@ -4,11 +4,12 @@ Unit tests for security logging utilities.
 These tests verify that sensitive information is properly redacted
 and that security utilities work as expected.
 """
+
 import logging
+
+import pytest
+
 from src.security.logging import (
-
-
-
     create_log_filter,
     hash_token,
     redact_email,

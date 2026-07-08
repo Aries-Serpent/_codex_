@@ -3,14 +3,13 @@ Test Error Log
 
 Test module for error log.
 """
+
 from __future__ import annotations
-import pytest
+
 import importlib
 import os
 import threading
 import time
-
-
 
 
 def test_log_error_records(tmp_path, monkeypatch):

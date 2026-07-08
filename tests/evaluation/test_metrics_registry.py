@@ -3,17 +3,18 @@ Test Metrics Registry
 
 Test module for metrics registry.
 """
-from __future__ import annotations
-import io
-import json
-from pathlib import Path
 
 #!/usr/bin/env python
 # Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
 # Purpose: Validate metrics logging patterns (NDJSON/CSV) without external deps.
 
+from __future__ import annotations
 
+import io
+import json
+from pathlib import Path
 
+import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 

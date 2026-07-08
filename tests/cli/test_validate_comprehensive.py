@@ -3,26 +3,15 @@ Tests for codex_ml.cli.validate module.
 
 Tests configuration validation functionality.
 """
+
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock, patch
+
+import pytest
 import yaml
-            from codex_ml.cli import validate
-            from codex_ml.cli.validate import (
-            from codex_ml.cli.validate import _format_validation_error
-            from codex_ml.cli.validate import _format_validation_error
-            from codex_ml.utils.yaml_support import safe_load
-            from codex_ml.utils.yaml_support import MissingPyYAMLError
-            from codex_ml.cli.validate import difflib
-            import difflib
-        import difflib
-            from codex_ml.cli.validate import ValidationError
-            from codex_ml.cli.validate import typer
-            from codex_ml.cli.validate import validate_config_file
-
-
 
 CLI_HELP_TIMEOUT_SECONDS = 90
 
@@ -33,6 +22,7 @@ class TestValidateModuleImport:
     def test_validate_module_import(self):
         """Test that validate module can be imported."""
         try:
+            from codex_ml.cli import validate
 
             assert validate is not None, "validate must be initialized"
         except ImportError as e:
@@ -41,6 +31,7 @@ class TestValidateModuleImport:
     def test_validate_has_logging_utilities(self):
         """Test that logging utilities are available."""
         try:
+            from codex_ml.cli.validate import (
                 capture_exceptions,
                 init_json_logging,
                 log_event,
@@ -59,6 +50,7 @@ class TestValidationErrorFormatting:
     def test_format_validation_error_function_exists(self):
         """Test that _format_validation_error function exists."""
         try:
+            from codex_ml.cli.validate import _format_validation_error
 
             assert callable(_format_validation_error), "Error should be raised or set"
         except ImportError as e:
@@ -68,6 +60,7 @@ class TestValidationErrorFormatting:
     def test_format_validation_error_with_mock(self, mock_validation_error):
         """Test validation error formatting with mock."""
         try:
+            from codex_ml.cli.validate import _format_validation_error
 
             # Create mock error
             mock_error = MagicMock()
@@ -93,6 +86,7 @@ class TestYAMLSupport:
     def test_safe_load_import(self):
         """Test that safe_load is importable."""
         try:
+            from codex_ml.utils.yaml_support import safe_load
 
             assert callable(safe_load), "Condition must be true"
         except ImportError as e:
@@ -101,6 +95,7 @@ class TestYAMLSupport:
     def test_missing_pyyaml_error_import(self):
         """Test that MissingPyYAMLError is importable."""
         try:
+            from codex_ml.utils.yaml_support import MissingPyYAMLError
 
             assert issubclass(MissingPyYAMLError, Exception)
         except ImportError as e:
@@ -183,15 +178,18 @@ class TestDiffValidation:
     def test_difflib_import(self):
         """Test that difflib is properly imported."""
         try:
+            from codex_ml.cli.validate import difflib
 
             # Should be the standard library difflib or equivalent
             assert hasattr(difflib, "unified_diff") or difflib is not None
         except ImportError:
+            import difflib
 
             assert hasattr(difflib, "unified_diff")
 
     def test_config_diff_detection(self):
         """Test detection of config differences."""
+        import difflib
 
         config1 = "epochs: 10\nbatch_size: 32"
         config2 = "epochs: 20\nbatch_size: 32"
@@ -216,6 +214,7 @@ class TestOptionalDependencies:
     def test_pydantic_optional(self):
         """Test that pydantic is handled as optional."""
         try:
+            from codex_ml.cli.validate import ValidationError
 
             # ValidationError may be None if pydantic not installed
             if ValidationError is not None:
@@ -227,6 +226,7 @@ class TestOptionalDependencies:
     def test_typer_optional(self):
         """Test that typer is handled as optional."""
         try:
+            from codex_ml.cli.validate import typer
 
             # typer may be None if not installed
             if typer is not None:
@@ -238,6 +238,7 @@ class TestOptionalDependencies:
     def test_config_schema_optional(self):
         """Test that config_schema is handled as optional."""
         try:
+            from codex_ml.cli.validate import validate_config_file
 
             # May be None if not available
             if validate_config_file is not None:

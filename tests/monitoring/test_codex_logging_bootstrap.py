@@ -3,18 +3,18 @@ Test Codex Logging Bootstrap
 
 Test module for codex logging bootstrap.
 """
-    pytest.importorskip("wandb")
-    pytest.importorskip("mlflow")
-    pytest.importorskip("tensorboard")
+
 from types import SimpleNamespace
+
+import pytest
+
 from codex_ml.monitoring.codex_logging import _codex_logging_bootstrap
-    import mlflow
-
-
-
 
 
 def test_logging_bootstrap(tmp_path):
+    pytest.importorskip("wandb")
+    pytest.importorskip("mlflow")
+    pytest.importorskip("tensorboard")
     cfg = {
         "tensorboard": {"enable": True, "logdir": str(tmp_path / "tb")},
         "wandb": {"enable": True, "project": "test"},
@@ -30,5 +30,6 @@ def test_logging_bootstrap(tmp_path):
     assert loggers.wb is not None, "wb must be initialized"
     assert loggers.mlflow_active, "Condition must be true"
     loggers.wb.finish()
+    import mlflow
 
     mlflow.end_run()

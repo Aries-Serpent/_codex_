@@ -3,14 +3,13 @@ Test Codex Env And Deps Tools
 
 Test module for codex env and deps tools.
 """
-import pytest
+
 import json
 from pathlib import Path
+
 import tools.codex_dependency_report as dep_report
 import tools.codex_env_snapshot as env_snap
 import tools.codex_mltest_runner as ml_runner
-
-
 
 
 def test_env_snapshot_includes_environment_block(tmp_path: Path):

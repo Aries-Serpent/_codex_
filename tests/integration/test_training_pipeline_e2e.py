@@ -8,25 +8,25 @@ Tests complete training workflows across configuration, execution, and checkpoin
 
 Part of Post-Completion Phase 1.2: Training Pipeline Integration Tests
 """
+
 from __future__ import annotations
-pytest.importorskip("torch", reason="PyTorch required for tests")
-from unittest.mock import Mock
-    from codex.utils.config_loader import load_config
-    import torch
-            import json
 
-
+import pytest
 
 # Skip entire module if torch is not available or unloadable
+pytest.importorskip("torch", reason="PyTorch required for tests")
+from unittest.mock import Mock
 
 # Test availability flags
 try:
+    from codex.utils.config_loader import load_config
 
     CONFIG_AVAILABLE = True
 except ImportError:
     CONFIG_AVAILABLE = False
 
 try:
+    import torch
 
     TORCH_AVAILABLE = True
 except ImportError:
@@ -125,6 +125,7 @@ checkpoint:
             assert loaded["loss"] == 0.25, "Condition must be true"
         else:
             # Mock save without torch
+            import json
 
             checkpoint_path.write_text(json.dumps(checkpoint))
             assert checkpoint_path.exists(), "Condition must be true"

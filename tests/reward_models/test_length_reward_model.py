@@ -3,9 +3,8 @@ Test Length Reward Model
 
 Test module for length reward model.
 """
-import pytest
-from codex_ml.reward_models import LengthRewardModel
 
+from codex_ml.reward_models import LengthRewardModel
 
 
 def test_length_reward_model_basic():

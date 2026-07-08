@@ -1,17 +1,18 @@
 """Tests for deterministic inference pipeline stages (v1.0.0)."""
+
 from __future__ import annotations
-np = pytest.importorskip("numpy")
-torch = pytest.importorskip("torch")
+
 import json
 import os
 from pathlib import Path
 from types import SimpleNamespace
+
+import pytest
+
+np = pytest.importorskip("numpy")
+torch = pytest.importorskip("torch")
+
 from scripts import inference_pipeline as pipeline
-
-
-
-
-
 
 
 class DummyTokenizer:

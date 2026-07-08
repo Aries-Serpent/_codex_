@@ -1,11 +1,10 @@
 """Smoke tests for ingestion.file_ingestor."""
+
 from __future__ import annotations
-import pytest
+
 from pathlib import Path
+
 from ingestion.file_ingestor import read_file
-
-
-
 
 
 def test_read_file_with_auto_encoding(tmp_path: Path) -> None:

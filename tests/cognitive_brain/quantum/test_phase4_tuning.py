@@ -9,20 +9,16 @@ Tests for:
 - Graceful degradation on missing / corrupt tuning rules file
 - EXP1BResults.k1_verified field population
 """
-import pytest
+
 import json
+
 from cognitive_brain.integrations.compliance_integration import (
-from cognitive_brain.quantum.coherence_monitor import CoherenceMonitor
-from cognitive_brain.quantum.config import QuantumConfig
-    from cognitive_brain.models.quantum_metrics import QuantumMetricRepository
-        from cognitive_brain.experiments.exp1b_revalidation import (
-        from cognitive_brain.experiments.exp1b_revalidation import (
-
-
     AuditResult,
     ComplianceDecision,
     QuantumComplianceAssessor,
 )
+from cognitive_brain.quantum.coherence_monitor import CoherenceMonitor
+from cognitive_brain.quantum.config import QuantumConfig
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -31,6 +27,7 @@ from cognitive_brain.quantum.config import QuantumConfig
 
 def _make_assessor(lightweight: bool = True) -> QuantumComplianceAssessor:
     """Build a minimal QuantumComplianceAssessor suitable for unit tests."""
+    from cognitive_brain.models.quantum_metrics import QuantumMetricRepository
 
     config = QuantumConfig()
     repo = QuantumMetricRepository()
@@ -372,6 +369,7 @@ class TestK1VerifiedField:
     def test_k1_verified_populated_in_verified_mode(self):
         """When use_verified_labels=True, k1_verified should be set (== k1)."""
 
+        from cognitive_brain.experiments.exp1b_revalidation import (
             run_exp1b_revalidation,
         )
 
@@ -382,6 +380,7 @@ class TestK1VerifiedField:
     def test_k1_verified_zero_in_raw_mode(self):
         """When use_verified_labels=False, k1_verified should be 0.0."""
 
+        from cognitive_brain.experiments.exp1b_revalidation import (
             run_exp1b_revalidation,
         )
 

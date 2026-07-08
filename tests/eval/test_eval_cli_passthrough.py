@@ -3,15 +3,14 @@ Test Eval Cli Passthrough
 
 Test module for eval cli passthrough.
 """
+
 from __future__ import annotations
-import pytest
+
 import sys
 import types
+
 from codex.logging.structured_logger import logger
 from codex_ml.cli.entrypoints import eval_main
-
-
-
 
 
 def test_eval_cli_env_override_and_passthrough(monkeypatch) -> None:

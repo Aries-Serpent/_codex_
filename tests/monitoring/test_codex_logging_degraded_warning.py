@@ -1,12 +1,11 @@
 """Ensure degraded telemetry surfaces CLI-visible warnings."""
+
 from __future__ import annotations
-import pytest
+
 import argparse
 import importlib
+
 from codex_ml.monitoring import codex_logging as cl
-
-
-
 
 
 def test_degraded_mode_prints_warning(monkeypatch, capsys):

@@ -3,12 +3,11 @@ Test Render Monthly Html
 
 Test module for render monthly html.
 """
-import pytest
+
 import json
 import subprocess
 import sys
 from pathlib import Path
-
 
 
 def write_bundle(p: Path):

@@ -10,32 +10,24 @@ Covers:
   help, discover, health, capabilities property
 * brain module-level singleton importable from codex.cognitive
 """
+
 from __future__ import annotations
-import pytest
+
 import json
 import sys
 from pathlib import Path
-from codex.cognitive.agent_brain_api import (
-from codex.cognitive.planset_orchestrator import PlansetOrchestrator
-from codex.cognitive.quantum_planset_engine import ImprovementArea, QuantumPlansetEngine
-        from codex.cognitive.planset_orchestrator import PromptSet
-        from codex.cognitive import brain
-        from codex.cognitive import brain
-        from codex.cognitive import brain
-        from codex.cognitive import brain
-        from codex.cognitive import brain
-        from codex.cognitive import (
-
-
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
+from codex.cognitive.agent_brain_api import (
     AGENT_CAPABILITIES,
     AgentBrainAPI,
     AgentSessionContext,
     CognitiveBrain,
     CompletionReport,
 )
+from codex.cognitive.planset_orchestrator import PlansetOrchestrator
+from codex.cognitive.quantum_planset_engine import ImprovementArea, QuantumPlansetEngine
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -283,6 +275,7 @@ class TestCognitiveBrain:
         cb = _make_brain(tmp_path)
         result = cb.next()
         # Either a PromptSet or None (all done)
+        from codex.cognitive.planset_orchestrator import PromptSet
 
         assert result is None or isinstance(result, PromptSet)
 
@@ -382,30 +375,36 @@ class TestCognitiveBrain:
 
 class TestBrainSingleton:
     def test_brain_importable(self):
+        from codex.cognitive import brain
 
         assert isinstance(brain, CognitiveBrain)
 
     def test_brain_has_help(self):
+        from codex.cognitive import brain
 
         assert callable(brain.help, "Condition must be true"
         ), "Condition must be true"
 
     def test_brain_has_discover(self):
+        from codex.cognitive import brain
 
         d = brain.discover()
         assert "improvement_areas" in d, "Condition must be true"
 
     def test_brain_has_health(self):
+        from codex.cognitive import brain
 
         h = brain.health()
         assert "status" in h, "Condition must be true"
 
     def test_brain_for_agent_works(self):
+        from codex.cognitive import brain
 
         api = brain.for_agent("copilot-coding-agent")
         assert isinstance(api, AgentBrainAPI)
 
     def test_all_exports_importable(self):
+        from codex.cognitive import (
             CognitiveBrain,
             brain,
         )

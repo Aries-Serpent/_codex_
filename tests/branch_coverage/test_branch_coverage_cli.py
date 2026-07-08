@@ -8,14 +8,15 @@ Created: 2026-01-18
 Phase: 14.4 - Final Gaps & Branch Coverage
 Target: 100% branch coverage for CLI modules
 """
+
 import os
 from pathlib import Path
 from typing import Any
 from unittest.mock import MagicMock, patch
+
+import pytest
+
 from tests.branch_coverage import branch_input
-
-
-
 
 # ============================================================================
 # Branch Coverage: CLI Main Module

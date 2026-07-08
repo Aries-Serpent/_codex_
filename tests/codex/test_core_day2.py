@@ -3,6 +3,7 @@ Day 2 Gap-Filling Tests: codex - Core
 Focus: Core codex functionality and integration
 """
 
+import pytest
 
 
 class TestCodexCorePatterns:

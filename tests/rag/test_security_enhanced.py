@@ -3,11 +3,12 @@
 These tests are designed to kill mutants in security-critical paths.
 Each test validates specific security boundary conditions.
 """
+
 import hashlib
 import html
 import re
 
-
+import pytest
 
 # ============================================================================
 # Security Functions Under Test (Inline for Mutation Testing)

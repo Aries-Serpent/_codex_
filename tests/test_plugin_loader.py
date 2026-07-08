@@ -3,15 +3,11 @@ Test Plugin Loader
 
 Test module for plugin loader.
 """
+
 from __future__ import annotations
-import pytest
+
 import sys
 from types import ModuleType, SimpleNamespace
-    from importlib import metadata as imd
-    from codex_ml.plugins.loader import load_plugins
-    from codex_ml.metrics import registry as metrics_registry
-
-
 
 
 def test_load_plugins_monkeypatched(monkeypatch):
@@ -41,6 +37,7 @@ def test_load_plugins_monkeypatched(monkeypatch):
 
         return FakeEPs([FakeEP("demo_plugin", plugin)])
 
+    from importlib import metadata as imd
 
     monkeypatch.setattr(imd, "entry_points", fake_entry_points)
 
@@ -49,6 +46,7 @@ def test_load_plugins_monkeypatched(monkeypatch):
     def register(name, fn=None, **kwargs):
         registered.append(SimpleNamespace(name=name, fn=fn))
 
+    from codex_ml.plugins.loader import load_plugins
 
     count = load_plugins("codex_ml.metrics", register=register)
     assert count == 1, "Count must be greater than zero"
@@ -62,6 +60,7 @@ def test_metric_registry_init_uses_loader(monkeypatch):
     if _real_torch is None:
         sys.modules["torch"] = ModuleType("torch")
 
+    from codex_ml.metrics import registry as metrics_registry
 
     def fake_load_plugins(group, register=None):
         assert group == "codex_ml.metrics", "group is not valid"

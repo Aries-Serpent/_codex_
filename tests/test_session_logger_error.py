@@ -3,13 +3,12 @@ Test Session Logger Error
 
 Test module for session logger error.
 """
-import pytest
+
 import json
 import os
 from datetime import datetime, timedelta
+
 from codex_ml.logging.session_logger import SessionLogger
-
-
 
 
 def test_log_error_includes_context_and_type(tmp_path):

@@ -21,8 +21,6 @@ def _has_hydra() -> bool:
 @pytest.mark.skipif(not _has_hydra(), reason="hydra-core not installed")
 def test_hydra_main_offline_compose(monkeypatch, tmp_path) -> None:
     """Ensure the Hydra CLI composes configs and passes overrides to training."""
-import pytest
-            from hydra.core.global_hydra import GlobalHydra
 
     module = importlib.import_module("codex_ml.cli.hydra_main")
 
@@ -67,6 +65,7 @@ import pytest
         assert captured["model"]["name"] == "tiny-offline", "Condition must be true"
 
         try:
+            from hydra.core.global_hydra import GlobalHydra
         except ImportError:  # pragma: no cover - hydra optional in CI
             return
         if GlobalHydra().is_initialized():

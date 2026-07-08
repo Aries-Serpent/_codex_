@@ -3,16 +3,14 @@ Test Safety Filters Integration
 
 Test module for safety filters integration.
 """
+
 from __future__ import annotations
+
 from pathlib import Path
+
+import pytest
+
 from codex_ml.safety import SafetyConfig, sanitize_prompt
-    import codex_ml.training.__init__ as training
-    from codex_ml.safety.sanitizers import sanitize_prompt as sanitize_impl
-        from codex_ml.utils.hf_pinning import HFModelUnavailableError
-
-
-
-
 
 
 def _aws_token() -> str:
@@ -58,6 +56,8 @@ def test_policy_yaml_safe_loading_and_overrides() -> None:
 
 
 def test_training_invokes_prompt_sanitizer(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    import codex_ml.training.__init__ as training
+    from codex_ml.safety.sanitizers import sanitize_prompt as sanitize_impl
 
     calls: list[str] = []
 
@@ -90,6 +90,7 @@ def test_training_invokes_prompt_sanitizer(monkeypatch: pytest.MonkeyPatch, tmp_
         # Model unavailable in offline CI (HFModelUnavailableError or similar).
         # hf_pinning.require_revision() raises ValueError (not HFModelUnavailableError)
         # when no commit hash is set — treat that as the same offline-skip condition.
+        from codex_ml.utils.hf_pinning import HFModelUnavailableError
 
         _msg = str(exc).lower()
         _OFFLINE_PATTERNS = ("unavailable", "commit hash", "hf_revision")

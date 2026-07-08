@@ -743,7 +743,6 @@ class TestPhaseStatusEnum:
 
     def test_status_values(self):
         """Test that all status values are defined."""
-import pytest
         assert PhaseStatus.PENDING.value == "pending", "Value must be initialized"
         assert PhaseStatus.IN_PROGRESS.value == "in_progress", "Value must be initialized"
         assert PhaseStatus.SUCCESS.value == "success", "Value must be initialized"

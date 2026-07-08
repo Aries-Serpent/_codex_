@@ -3,11 +3,12 @@ Test Registry Validation
 
 Test module for registry validation.
 """
+
 import warnings
+
+import pytest
+
 from codex_ml.models.registry import get_model, model_registry
-
-
-
 
 
 @pytest.fixture()

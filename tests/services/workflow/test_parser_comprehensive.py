@@ -593,7 +593,6 @@ class TestEdgeCases:
 
     def test_parse_workflow_cache_invalidation(self):
         """Test cache can be cleared and repopulated."""
-import pytest
         parser = WorkflowParser()
         yaml_content = "name: cache-test\non: push\njobs: {}\n"
         path = Path("test.yml")

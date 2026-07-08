@@ -3,14 +3,13 @@ Test Provenance Snapshot
 
 Test module for provenance snapshot.
 """
+
 from __future__ import annotations
-import pytest
+
 import json
 from pathlib import Path
+
 from codex_ml.utils.provenance import snapshot_hydra_config
-
-
-
 
 
 def test_provenance_snapshot(tmp_path: Path) -> None:

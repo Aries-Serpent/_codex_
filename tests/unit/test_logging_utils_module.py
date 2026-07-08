@@ -1,16 +1,17 @@
 """
+pytest.importorskip("tensorboard")
 Test Logging Utils Module
 
 Test module for logging utils module.
 """
+
 from __future__ import annotations
-pytest.importorskip("tensorboard")
+
 from types import SimpleNamespace
+
+import pytest
+
 from src import logging_utils
-
-
-
-
 
 
 def test_init_tensorboard(monkeypatch: pytest.MonkeyPatch) -> None:

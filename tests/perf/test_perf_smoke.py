@@ -3,9 +3,10 @@ Test Perf Smoke
 
 Test module for perf smoke.
 """
+
 import time
 
-
+import pytest
 
 
 @pytest.mark.perf

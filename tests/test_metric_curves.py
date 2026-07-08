@@ -3,14 +3,15 @@ Test Metric Curves
 
 Test module for metric curves.
 """
-pytest.importorskip("torch")
-from pathlib import Path
-from codex_ml.metrics.curves import append_curve, summarize
 
 # BEGIN: CODEX_TEST_CURVES
+from pathlib import Path
 
+import pytest
 
+pytest.importorskip("torch")
 
+from codex_ml.metrics.curves import append_curve, summarize
 
 
 def test_curves_roundtrip(tmp_path: Path):

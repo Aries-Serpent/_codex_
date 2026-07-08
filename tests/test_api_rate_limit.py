@@ -3,14 +3,15 @@ Test Api Rate Limit
 
 Test module for api rate limit.
 """
-pytest.importorskip("torch", reason="PyTorch is required for API service tests")
-pytest.importorskip("fastapi")
+
 import importlib
+
+import pytest
+
+pytest.importorskip("torch", reason="PyTorch is required for API service tests")
+
+pytest.importorskip("fastapi")
 from fastapi.testclient import TestClient
-
-
-
-
 
 
 def test_rate_limit(monkeypatch):

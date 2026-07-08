@@ -10,13 +10,12 @@ Version: 4.1.0
 
 Reference: .codex/ESCALATION_RULES.yaml
 """
-import pytest
+
 import sys
 from datetime import datetime
 from pathlib import Path
+
 from codex.logging.structured_logger import logger
-
-
 
 # ============================================================================
 # TEST DATA: Simulated Coverage Reports

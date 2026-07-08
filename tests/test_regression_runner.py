@@ -3,13 +3,14 @@ Test Regression Runner
 
 Test module for regression runner.
 """
+
 import json
 from pathlib import Path
+
+import pytest
+
 from codex_regression import log as log_module
 from codex_regression import runner
-
-
-
 
 
 def test_runner_treats_exit_code_five_as_skipped(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):

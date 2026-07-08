@@ -3,16 +3,16 @@
 
 Test that evaluation runner captures complete provenance including git commit and seed.
 """
+
 from __future__ import annotations
+
 import json
 from pathlib import Path
+
+import pytest
+
 from codex_ml.config import EvaluationConfig
 from codex_ml.eval.runner import run_evaluation
-    import codex_ml.utils.provenance as prov_module
-
-
-
-
 
 
 @pytest.fixture
@@ -37,6 +37,7 @@ def test_evaluation_captures_git_commit_in_provenance(
     def _fake_git_commit():
         return fake_commit
 
+    import codex_ml.utils.provenance as prov_module
 
     monkeypatch.setattr(prov_module, "_git_commit", _fake_git_commit)
 

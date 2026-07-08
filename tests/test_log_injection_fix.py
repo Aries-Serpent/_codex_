@@ -9,13 +9,13 @@ Tests cover:
 - Proper parameterized logging
 - Integration with existing logging infrastructure
 """
+
 import logging
+import pytest
 from io import StringIO
 from unittest.mock import MagicMock, patch
+
 from codex.logging_safe import (
-        import json
-
-
     create_safe_logger,
     sanitize_for_log,
     create_safe_json_log,
@@ -298,6 +298,7 @@ class TestCreateSafeJsonLog:
         )
         
         # Verify it's valid JSON
+        import json
         parsed = json.loads(result)
         assert parsed["message"] == "Action"
         assert "alicefalse" in parsed["user"]

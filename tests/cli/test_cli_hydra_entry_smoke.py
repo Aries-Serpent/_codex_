@@ -3,20 +3,21 @@ Test Cli Hydra Entry Smoke
 
 Test module for cli hydra entry smoke.
 """
+
 from __future__ import annotations
-        pytest.importorskip("hydra")
+
 import json
 import os
 import subprocess
 import sys
 
-
-
+import pytest
 
 
 def test_hydra_train_prints_cfg(monkeypatch, tmp_path):
     # Import if available; allow stub environments to exercise the CLI error path.
     try:
+        pytest.importorskip("hydra")
     except pytest.skip.Exception:
         pytest.skip("hydra not importable")
     monkeypatch.chdir(tmp_path)

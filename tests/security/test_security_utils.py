@@ -2,10 +2,10 @@
 Tests for security utilities module.
 Validates redaction and sanitization functions for sensitive data.
 """
+
+import pytest
+
 from codex.security_utils import (
-    import codex.security_utils as module
-
-
     redact_dict_with_secret_keys,
     redact_secret_name,
     redact_sensitive_value,
@@ -138,6 +138,7 @@ class TestRedactDictWithSecretKeys:
 
 def test_module_warning_comment():
     """Test that the module has proper security warnings."""
+    import codex.security_utils as module
 
     # Check that module has security warnings in docstring
     assert module.__doc__ is not None, "__doc__ must be initialized"

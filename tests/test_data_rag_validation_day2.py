@@ -2,43 +2,12 @@
 Data Pipeline & RAG Validation Tests
 Covers data loading, transformation, and RAG index health
 """
+
 import json
 import tempfile
 from pathlib import Path
-            from codex_ml.data_utils import load_json_data
-            from codex_ml.data_utils import load_csv_data
-            from codex_ml.data_utils import load_parquet_data
-            import pandas as pd
-            import pyarrow.parquet
-            from codex_ml.data_utils import StreamingDataLoader
-            from codex_ml.data_utils import TextCleaner
-            from codex_ml.data_utils import Normalizer
-            from codex_ml.data_utils import TokenizationTransform
-            from codex_ml.data_utils import ChainedTransform, Transform
-            from codex_ml.data_utils import batch_transform
-            from codex_ml.rag import get_rag_index
-            from codex_ml.rag import RAGIndex
-            from codex_ml.rag import get_rag_index
-            import torch
-            from codex_ml.rag import get_rag_index_metadata
-        import time
-            from codex_ml.rag import RAGIndex
-            from codex_ml.utils.checkpointing import save_checkpoint
-            import torch
-            import torch.nn as nn
-            from codex_ml.utils.checkpointing import load_checkpoint, save_checkpoint
-            import torch
-            import torch.nn as nn
-            from codex_ml.utils.checkpointing import load_checkpoint, save_checkpoint
-                import torch
-            from codex_ml.data_utils import load_json_data
-            from codex_ml.data_utils import load_json_data
-            from codex_ml.data_utils import process_data
-            from codex_ml.data_utils import validate_data_type
-            from codex_ml.data_utils import batch_process
-            from codex_ml.data_utils import batch_generator
 
-
+import pytest
 
 
 class TestDataLoading:
@@ -47,6 +16,7 @@ class TestDataLoading:
     def test_load_json_file(self):
         """Should load JSON data files."""
         try:
+            from codex_ml.data_utils import load_json_data
         except (ImportError, AttributeError):
             pytest.skip("JSON loading not available")
 
@@ -66,6 +36,7 @@ class TestDataLoading:
     def test_load_csv_file(self):
         """Should load CSV data files."""
         try:
+            from codex_ml.data_utils import load_csv_data
         except (ImportError, AttributeError):
             pytest.skip("CSV loading not available")
 
@@ -84,11 +55,14 @@ class TestDataLoading:
     def test_load_parquet_file(self):
         """Should load Parquet data files."""
         try:
+            from codex_ml.data_utils import load_parquet_data
         except (ImportError, AttributeError):
             pytest.skip("Parquet loading not available")
 
         # Skip if pandas/pyarrow not available
         try:
+            import pandas as pd
+            import pyarrow.parquet
         except ImportError:
             pytest.skip("pandas/pyarrow not installed")
 
@@ -107,6 +81,7 @@ class TestDataLoading:
     def test_streaming_data_loading(self):
         """Should support streaming data loads."""
         try:
+            from codex_ml.data_utils import StreamingDataLoader
         except (ImportError, AttributeError):
             pytest.skip("Streaming loader not available")
 
@@ -123,6 +98,7 @@ class TestDataTransformation:
     def test_text_cleaning_transform(self):
         """Should clean text data."""
         try:
+            from codex_ml.data_utils import TextCleaner
         except (ImportError, AttributeError):
             pytest.skip("TextCleaner not available")
 
@@ -137,6 +113,7 @@ class TestDataTransformation:
     def test_normalization_transform(self):
         """Should normalize numeric data."""
         try:
+            from codex_ml.data_utils import Normalizer
         except (ImportError, AttributeError):
             pytest.skip("Normalizer not available")
 
@@ -151,6 +128,7 @@ class TestDataTransformation:
     def test_tokenization_transform(self):
         """Should tokenize text data."""
         try:
+            from codex_ml.data_utils import TokenizationTransform
         except (ImportError, AttributeError):
             pytest.skip("TokenizationTransform not available")
 
@@ -165,6 +143,7 @@ class TestDataTransformation:
     def test_chained_transforms(self):
         """Should chain multiple transforms."""
         try:
+            from codex_ml.data_utils import ChainedTransform, Transform
         except (ImportError, AttributeError):
             pytest.skip("Transform utilities not available")
 
@@ -181,6 +160,7 @@ class TestDataTransformation:
     def test_batch_transform(self):
         """Should apply transforms to batches."""
         try:
+            from codex_ml.data_utils import batch_transform
         except (ImportError, AttributeError):
             pytest.skip("batch_transform not available")
 
@@ -199,6 +179,7 @@ class TestRAGIndexHealth:
     def test_rag_index_exists(self):
         """RAG index should exist and be accessible."""
         try:
+            from codex_ml.rag import get_rag_index
         except (ImportError, AttributeError):
             pytest.skip("RAG module not available")
 
@@ -211,6 +192,7 @@ class TestRAGIndexHealth:
     def test_rag_index_retrieve_query(self):
         """RAG index should handle retrieval queries."""
         try:
+            from codex_ml.rag import RAGIndex
         except (ImportError, AttributeError):
             pytest.skip("RAG module not available")
 
@@ -225,7 +207,9 @@ class TestRAGIndexHealth:
     def test_rag_tensor_materialization(self):
         """RAG tensors should not be on meta device."""
         try:
+            from codex_ml.rag import get_rag_index
 
+            import torch
         except (ImportError, AttributeError):
             pytest.skip("PyTorch or RAG module not available")
 
@@ -243,6 +227,7 @@ class TestRAGIndexHealth:
     def test_rag_index_freshness(self):
         """RAG index should have freshness metadata."""
         try:
+            from codex_ml.rag import get_rag_index_metadata
         except (ImportError, AttributeError):
             pytest.skip("RAG metadata not available")
 
@@ -255,7 +240,9 @@ class TestRAGIndexHealth:
 
     def test_rag_retrieval_latency(self):
         """RAG retrieval should meet latency SLA."""
+        import time
         try:
+            from codex_ml.rag import RAGIndex
         except (ImportError, AttributeError):
             pytest.skip("RAG module not available")
 
@@ -278,10 +265,13 @@ class TestCheckpointing:
     def test_checkpoint_save(self):
         """Should save model checkpoints."""
         try:
+            from codex_ml.utils.checkpointing import save_checkpoint
         except (ImportError, AttributeError):
             pytest.skip("Checkpointing not available")
 
         try:
+            import torch
+            import torch.nn as nn
         except ImportError:
             pytest.skip("PyTorch not available")
 
@@ -298,10 +288,13 @@ class TestCheckpointing:
     def test_checkpoint_load(self):
         """Should load model checkpoints."""
         try:
+            from codex_ml.utils.checkpointing import load_checkpoint, save_checkpoint
         except (ImportError, AttributeError):
             pytest.skip("Checkpointing not available")
 
         try:
+            import torch
+            import torch.nn as nn
         except ImportError:
             pytest.skip("PyTorch not available")
 
@@ -320,6 +313,7 @@ class TestCheckpointing:
     def test_checkpoint_resume_state(self):
         """Should preserve training state in checkpoint."""
         try:
+            from codex_ml.utils.checkpointing import load_checkpoint, save_checkpoint
         except (ImportError, AttributeError):
             pytest.skip("Checkpointing not available")
 
@@ -332,6 +326,7 @@ class TestCheckpointing:
             }
 
             with tempfile.NamedTemporaryFile(suffix='.pt', delete=False) as f:
+                import torch
                 torch.save(checkpoint, f.name)
 
                 loaded = torch.load(f.name)
@@ -349,6 +344,7 @@ class TestErrorHandling:
     def test_invalid_file_path_error(self):
         """Should handle invalid file paths."""
         try:
+            from codex_ml.data_utils import load_json_data
         except (ImportError, AttributeError):
             pytest.skip("Data loading not available")
 
@@ -358,6 +354,7 @@ class TestErrorHandling:
     def test_corrupted_data_error(self):
         """Should handle corrupted data gracefully."""
         try:
+            from codex_ml.data_utils import load_json_data
         except (ImportError, AttributeError):
             pytest.skip("Data loading not available")
 
@@ -374,6 +371,7 @@ class TestErrorHandling:
     def test_empty_data_handling(self):
         """Should handle empty data gracefully."""
         try:
+            from codex_ml.data_utils import process_data
         except (ImportError, AttributeError):
             pytest.skip("Data processing not available")
 
@@ -387,6 +385,7 @@ class TestErrorHandling:
     def test_type_mismatch_error(self):
         """Should handle type mismatches."""
         try:
+            from codex_ml.data_utils import validate_data_type
         except (ImportError, AttributeError):
             pytest.skip("Data validation not available")
 
@@ -403,6 +402,7 @@ class TestMemoryManagement:
     def test_batch_memory_efficiency(self):
         """Batching should be memory efficient."""
         try:
+            from codex_ml.data_utils import batch_process
         except (ImportError, AttributeError):
             pytest.skip("batch_process not available")
 
@@ -419,6 +419,7 @@ class TestMemoryManagement:
     def test_generator_not_materialized(self):
         """Should support generators to avoid materialization."""
         try:
+            from codex_ml.data_utils import batch_generator
         except (ImportError, AttributeError):
             pytest.skip("batch_generator not available")
 

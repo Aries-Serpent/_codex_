@@ -10,53 +10,13 @@ Systematically applies entanglement and distributed patterns:
 
 Target: +4-5% coverage gain (38% → 43%)
 """
+
+import pytest
+
 pytest.importorskip("numpy")
+
+
 import numpy as np
-        from agents.quantum_game_theory import QuantumGameState, StrategyState
-        from agents.quantum_game_theory import QuantumGameState, StrategyState
-        from agents.quantum_game_theory import QuantumGameState, StrategyState
-        from agents.quantum_game_theory import QuantumGameState, StrategyState
-        from agents.quantum_game_theory import QuantumGameState, StrategyState
-        from agents.quantum_game_theory import QuantumGameState, StrategyState
-        from agents.quantum_game_theory import QuantumGameState, StrategyState
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.quantum_game_theory import QuantumGameState, StrategyState
-        from agents.quantum_game_theory import QuantumGameState, StrategyState
-        from agents.quantum_game_theory import QuantumGameState, StrategyState
-        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import ForceVector
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.agent_memory import AgentMemory
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.quantum_game_theory import QuantumInspiredGameEngine
-        from agents.agent_memory import AgentMemory
-        from agents.mental_mapping import MentalMappingModel, NodeType
-        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
-        from agents.workflow_navigator import WorkflowNavigator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.quantum_game_theory import QuantumGameState, StrategyState
-        from agents.quantum_game_theory import QuantumGameState, StrategyState
-        from agents.agent_memory import AgentMemory
-        from agents.quantum_game_theory import QuantumGameState, StrategyState
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.quantum_game_theory import QuantumGameState, StrategyState
-
-
-
-
 
 
 class TestPhase3_Entanglement_BellStates:
@@ -67,6 +27,7 @@ class TestPhase3_Entanglement_BellStates:
 
     def test_bell_state_creation(self):
         """Test creating Bell states"""
+        from agents.quantum_game_theory import QuantumGameState, StrategyState
 
         blue_state = StrategyState("blue", np.array([1 / np.sqrt(2), 1 / np.sqrt(2)]))
         red_state = StrategyState("red", np.array([1 / np.sqrt(2), 1 / np.sqrt(2)]))
@@ -76,6 +37,7 @@ class TestPhase3_Entanglement_BellStates:
 
     def test_phi_plus_state(self):
         """Test |Φ+⟩ = (|00⟩ + |11⟩)/√2 state"""
+        from agents.quantum_game_theory import QuantumGameState, StrategyState
 
         # Φ+ state: both teams with equal superposition
         blue = StrategyState("blue", np.array([1.0, 0.0]))
@@ -86,6 +48,7 @@ class TestPhase3_Entanglement_BellStates:
 
     def test_phi_minus_state(self):
         """Test |Φ-⟩ = (|00⟩ - |11⟩)/√2 state"""
+        from agents.quantum_game_theory import QuantumGameState, StrategyState
 
         blue = StrategyState("blue", np.array([1.0, 0.0]))
         red = StrategyState("red", np.array([0.0, -1.0]))
@@ -95,6 +58,7 @@ class TestPhase3_Entanglement_BellStates:
 
     def test_measurement_correlation(self):
         """Test measurement correlations in entangled states"""
+        from agents.quantum_game_theory import QuantumGameState, StrategyState
 
         blue = StrategyState("blue", np.array([0.7, 0.3]))
         red = StrategyState("red", np.array([0.7, 0.3]))
@@ -116,6 +80,7 @@ class TestPhase3_Entanglement_CHSH:
 
     def test_chsh_correlation(self):
         """Test CHSH correlation measure"""
+        from agents.quantum_game_theory import QuantumGameState, StrategyState
 
         blue = StrategyState("blue", np.array([0.7, 0.3]))
         red = StrategyState("red", np.array([0.7, 0.3]))
@@ -129,6 +94,7 @@ class TestPhase3_Entanglement_CHSH:
 
     def test_correlation_angles(self):
         """Test correlation at different measurement angles"""
+        from agents.quantum_game_theory import QuantumGameState, StrategyState
 
         # Test at different angles
         angles = [0, np.pi / 4, np.pi / 2, np.pi]
@@ -143,6 +109,7 @@ class TestPhase3_Entanglement_CHSH:
 
     def test_bell_inequality_violation(self):
         """Test Bell inequality violation detection"""
+        from agents.quantum_game_theory import QuantumGameState, StrategyState
 
         blue = StrategyState("blue", np.array([1 / np.sqrt(2), 1 / np.sqrt(2)]))
         red = StrategyState("red", np.array([1 / np.sqrt(2), 1 / np.sqrt(2)]))
@@ -161,6 +128,7 @@ class TestPhase3_Distributed_CurrentBounds:
 
     def test_distributed_current_bound(self):
         """Test distributed current bound enforcement"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         # c_eff should be enforced in distributed settings
@@ -168,6 +136,7 @@ class TestPhase3_Distributed_CurrentBounds:
 
     def test_node_specific_c_eff(self):
         """Test node-specific effective speed of light"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Different nodes may have different c_eff based on latency
@@ -175,6 +144,7 @@ class TestPhase3_Distributed_CurrentBounds:
 
     def test_network_latency_derived_c_eff(self):
         """Test c_eff derived from network latency measurements"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         # c_eff = distance / latency
@@ -182,6 +152,7 @@ class TestPhase3_Distributed_CurrentBounds:
 
     def test_distributed_flow_conservation(self):
         """Test flow conservation across distributed nodes"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Σj_in = Σj_out across network
@@ -197,6 +168,7 @@ class TestPhase3_Transactional_Semantics:
 
     def test_transactional_state_change(self):
         """Test all-or-nothing state changes"""
+        from agents.quantum_game_theory import QuantumGameState, StrategyState
 
         blue = StrategyState("blue", np.array([0.5, 0.5]))
         red = StrategyState("red", np.array([0.5, 0.5]))
@@ -215,6 +187,7 @@ class TestPhase3_Transactional_Semantics:
 
     def test_rollback_on_failure(self):
         """Test rollback when transaction fails"""
+        from agents.quantum_game_theory import QuantumGameState, StrategyState
 
         blue = StrategyState("blue", np.array([0.5, 0.5]))
         red = StrategyState("red", np.array([0.5, 0.5]))
@@ -234,6 +207,7 @@ class TestPhase3_Transactional_Semantics:
 
     def test_coordinated_commit(self):
         """Test coordinated commit across entangled components"""
+        from agents.quantum_game_theory import QuantumGameState, StrategyState
 
         blue = StrategyState("blue", np.array([0.6, 0.4]))
         red = StrategyState("red", np.array([0.6, 0.4]))
@@ -248,6 +222,7 @@ class TestPhase3_Transactional_Semantics:
 
     def test_feature_flag_propagation(self):
         """Test feature flag propagation (Eq #62)"""
+        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
         orchestrator = PhysicsGuidedDeveloperOrchestrator()
 
@@ -266,6 +241,7 @@ class TestPhase3_ConcurrencyConstraints:
 
     def test_spinor_coupling_guard(self):
         """Test spinor coupling prevents unsafe concurrent evolution"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Spinor components should not evolve independently
@@ -273,6 +249,7 @@ class TestPhase3_ConcurrencyConstraints:
 
     def test_concurrent_evolution_safety(self):
         """Test safety constraints for concurrent evolutions"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Concurrent evolutions must respect coupling constraints
@@ -280,6 +257,7 @@ class TestPhase3_ConcurrencyConstraints:
 
     def test_helicity_preservation(self):
         """Test helicity preservation during concurrent ops"""
+        from agents.physics_orchestrator import ForceVector
 
         force = ForceVector("f1", 10.0, [1.0, 0.0, 0.0], 5)
         # Helicity should be preserved
@@ -295,6 +273,7 @@ class TestPhase3_ShardedAggregation:
 
     def test_sharded_probability_sum(self):
         """Test probability sums to 1 across shards"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Total probability across all shards should be 1
@@ -302,6 +281,7 @@ class TestPhase3_ShardedAggregation:
 
     def test_shard_consistency(self):
         """Test consistency across distributed shards"""
+        from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
         # Sharded memory should maintain consistency
@@ -309,6 +289,7 @@ class TestPhase3_ShardedAggregation:
 
     def test_metric_aggregation(self):
         """Test Prometheus-style metric aggregation (Eq #27)"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Metrics should aggregate correctly across nodes
@@ -316,6 +297,7 @@ class TestPhase3_ShardedAggregation:
 
     def test_label_key_consistency(self):
         """Test label key consistency in aggregation"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Labels must be consistent for aggregation
@@ -329,6 +311,8 @@ class TestPhase3_CrossModule_EntangledGroups:
 
     def test_entangled_physics_quantum(self):
         """Test entangled physics + quantum coordination"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
+        from agents.quantum_game_theory import QuantumInspiredGameEngine
 
         orchestrator = PhysicsInspiredOrchestrator()
         blue = np.array([0.5, 0.5])
@@ -344,6 +328,8 @@ class TestPhase3_CrossModule_EntangledGroups:
 
     def test_entangled_memory_mental(self):
         """Test entangled memory + mental mapping"""
+        from agents.agent_memory import AgentMemory
+        from agents.mental_mapping import MentalMappingModel, NodeType
 
         memory = AgentMemory()
         model = MentalMappingModel()
@@ -361,6 +347,8 @@ class TestPhase3_CrossModule_EntangledGroups:
 
     def test_entangled_developer_workflow(self):
         """Test entangled developer + workflow coordination"""
+        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
+        from agents.workflow_navigator import WorkflowNavigator
 
         dev_orch = PhysicsGuidedDeveloperOrchestrator()
         workflow_nav = WorkflowNavigator()
@@ -377,6 +365,7 @@ class TestPhase3_DistributedMonitoring:
 
     def test_distributed_coherence_check(self):
         """Test coherence checking across distributed nodes"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Coherence should be maintained across distribution
@@ -384,6 +373,7 @@ class TestPhase3_DistributedMonitoring:
 
     def test_distributed_health_snapshot(self):
         """Test health snapshot aggregation (Eq #47)"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         # H = f(ρ, j, v, γ) aggregated across nodes
@@ -391,6 +381,7 @@ class TestPhase3_DistributedMonitoring:
 
     def test_distributed_alert_routing(self):
         """Test alert routing based on coherence bands (Eq #54)"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Green/yellow/red bands route alerts correctly
@@ -404,6 +395,7 @@ class TestPhase3_InvariantValidation:
 
     def test_global_normalization(self):
         """Test Σρ = 1 globally (Eq #35)"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Total probability must be 1 globally
@@ -411,6 +403,7 @@ class TestPhase3_InvariantValidation:
 
     def test_global_current_bound(self):
         """Test |j| ≤ c_eff globally (Eq #36)"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         # All currents must respect effective light speed
@@ -418,6 +411,7 @@ class TestPhase3_InvariantValidation:
 
     def test_conservation_across_boundaries(self):
         """Test conservation laws across module boundaries"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Σp and ΣE conserved across boundaries
@@ -431,6 +425,7 @@ class TestPhase3_EdgeCases_Distributed:
 
     def test_partial_network_failure(self):
         """Test handling partial network failures"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         # System should gracefully handle node failures
@@ -438,6 +433,7 @@ class TestPhase3_EdgeCases_Distributed:
 
     def test_entanglement_breaking(self):
         """Test detection when entanglement breaks"""
+        from agents.quantum_game_theory import QuantumGameState, StrategyState
 
         blue = StrategyState("blue", np.array([0.7, 0.3]))
         red = StrategyState("red", np.array([0.7, 0.3]))
@@ -450,6 +446,7 @@ class TestPhase3_EdgeCases_Distributed:
 
     def test_measurement_without_entanglement(self):
         """Test measurements on non-entangled states"""
+        from agents.quantum_game_theory import QuantumGameState, StrategyState
 
         blue = StrategyState("blue", np.array([0.5, 0.5]))
         red = StrategyState("red", np.array([0.5, 0.5]))
@@ -462,6 +459,7 @@ class TestPhase3_EdgeCases_Distributed:
 
     def test_shard_isolation_on_failure(self):
         """Test shard isolation when consistency fails"""
+        from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
         # Failing shard should be isolated
@@ -475,6 +473,7 @@ class TestPhase3_Performance_Distributed:
 
     def test_parallel_entangled_measurements(self):
         """Test parallel measurements on entangled states"""
+        from agents.quantum_game_theory import QuantumGameState, StrategyState
 
         states = []
         for i in range(10):
@@ -488,6 +487,7 @@ class TestPhase3_Performance_Distributed:
 
     def test_distributed_aggregation_performance(self):
         """Test performance of distributed aggregation"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrators = [PhysicsInspiredOrchestrator() for _ in range(5)]
 
@@ -496,6 +496,7 @@ class TestPhase3_Performance_Distributed:
 
     def test_bulk_transactional_updates(self):
         """Test bulk transactional updates"""
+        from agents.quantum_game_theory import QuantumGameState, StrategyState
 
         blue = StrategyState("blue", np.array([0.5, 0.5]))
         red = StrategyState("red", np.array([0.5, 0.5]))

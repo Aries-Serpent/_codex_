@@ -3,17 +3,17 @@ Test Pyproject Toml Parse
 
 Test module for pyproject toml parse.
 """
+
 from __future__ import annotations
+
 from pathlib import Path
-    import tomllib as _toml  # type: ignore[attr-defined]
-        import tomli as _toml  # type: ignore
-
-
 
 # Prefer stdlib tomllib (3.11+); fallback to tomli if installed
 try:
+    import tomllib as _toml  # type: ignore[attr-defined]
 except ImportError:  # pragma: no cover
     try:
+        import tomli as _toml  # type: ignore
     except ImportError:  # pragma: no cover
         _toml = None
 
@@ -21,6 +21,7 @@ except ImportError:  # pragma: no cover
 def test_pyproject_toml_parses_strictly():
     if _toml is None:
         # Environment doesn't provide a TOML parser; skip.
+        import pytest
 
         pytest.skip("tomllib/tomli not available in test environment")
     root = Path(__file__).resolve().parents[1]

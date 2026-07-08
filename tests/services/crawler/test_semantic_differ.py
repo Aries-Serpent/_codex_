@@ -13,13 +13,14 @@ Tests include:
 - Edge cases (empty, identical, completely different)
 - Integration with content diffing
 """
+
 from __future__ import annotations
+
 from unittest.mock import patch
+
+import pytest
+
 from services.crawler.content_diff import (
-
-
-
-
     ChangeType,
     ContentDiffer,
     ContentDiffResult,

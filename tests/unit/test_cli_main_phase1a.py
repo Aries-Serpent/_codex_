@@ -13,16 +13,16 @@ Comprehensive test coverage for the CLI main module covering:
 
 Tests include basic functionality, fallback modes, error cases, integration scenarios.
 """
+
 import json
 from pathlib import Path
 from unittest.mock import patch
-    from src.codex.cli.main import (
-        from src.codex.cli.main import TYPER_AVAILABLE, app
 
-
+import pytest
 
 # Try to import from main module
 try:
+    from src.codex.cli.main import (
         _TYPER_IMPORT_ERROR,
         TYPER_AVAILABLE,
         main,
@@ -106,6 +106,7 @@ class TestCliCommandsWithTyper:
     def test_ingest_command_registered(self, mock_typer):
         """Test that ingest command is registered."""
         # Check if app exists
+        from src.codex.cli.main import TYPER_AVAILABLE, app
 
         if TYPER_AVAILABLE:
             assert hasattr(app, "command")

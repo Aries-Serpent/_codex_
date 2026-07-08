@@ -10,13 +10,12 @@ Tests cover:
 - Load balancing
 - Agent communication patterns
 """
-import pytest
-import sys as _sys_orch
-from unittest.mock import Mock, patch
-from agents.developer_orchestrator import (
 
 # Patch ADVANCED_PHYSICS to False to avoid numpy initialization issues
+import sys as _sys_orch
+from unittest.mock import Mock, patch
 
+from agents.developer_orchestrator import (
     AppType,
     DevelopmentPhase,
     PhysicsGuidedDeveloperOrchestrator,

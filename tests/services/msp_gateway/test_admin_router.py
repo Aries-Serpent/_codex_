@@ -1,13 +1,14 @@
 from __future__ import annotations
-pytest.importorskip("pydantic_settings")
+
 import asyncio
 from unittest.mock import MagicMock
+
+import pytest
+
+pytest.importorskip("pydantic_settings")
+
 from services.msp_gateway.routers import admin
 from services.msp_gateway.schemas.requests import TenantUpdateRequest
-
-
-
-
 
 
 def _tenant_payload() -> dict[str, object]:

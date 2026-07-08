@@ -3,12 +3,6 @@ Test Audit Parity
 
 Test module for audit parity.
 """
-import pytest
-import json
-import subprocess
-import sys
-from pathlib import Path
-from codex.logging.structured_logger import logger
 
 #!/usr/bin/env python3
 """
@@ -27,7 +21,12 @@ Usage:
   pytest -q tests/test_audit_parity.py
 """
 
+import json
+import subprocess
+import sys
+from pathlib import Path
 
+from codex.logging.structured_logger import logger
 
 ROOT = Path(__file__).resolve().parents[1]
 ARTIFACTS = ROOT / "audit_artifacts"

@@ -8,23 +8,24 @@ Covers:
 - Token expiry → refresh fails with 401 (API)
 - Access token expiry → must re-authenticate (API)
 """
+
 from __future__ import annotations  # pragma: allowlist secret
-pytest.importorskip("fastapi")
+
 import time
 from unittest.mock import patch
+
+import pytest
+
+ # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+pytest.importorskip("fastapi")
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
+
 from codex.api.auth_routes import create_auth_router
 from codex.auth.authenticator import Authenticator
 from codex.auth.mfa_provider import MFAProvider
 from codex.auth.token_manager import TokenManager
 from codex.auth.user_store import UserStore
-
-
-
-
- # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
-
 
 # ---------------------------------------------------------------------------
 # Fixtures

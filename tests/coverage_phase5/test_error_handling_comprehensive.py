@@ -76,7 +76,6 @@ def test_error_to_dict():
 
 def test_server_error_range():
     """Test server error code ranges."""
-import pytest
     for code in range(-32099, -32000):
         error = JsonRpcError(code, f"Server error {code}")
         assert error.code == code, "Error should be raised or set"

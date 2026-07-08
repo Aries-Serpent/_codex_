@@ -69,7 +69,6 @@ class TestMkdocsBuild:
 
     def test_docs_directory_structure(self):
         """Test docs directory structure."""
-import pytest
         repo_root = Path(__file__).parents[2]
         docs_dir = repo_root / "docs"
         if docs_dir.exists():

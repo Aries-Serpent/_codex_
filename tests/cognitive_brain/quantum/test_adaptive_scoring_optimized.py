@@ -1,4 +1,3 @@
-import pytest
 #         assert results1.k1 == pytest.approx(, "Result must not be empty"
 #             results2.k1, abs=0.001
 #         ), "k₁ values differ between runs with same seed"

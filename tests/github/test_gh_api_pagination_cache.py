@@ -3,14 +3,13 @@ Test Gh Api Pagination Cache
 
 Test module for gh api pagination cache.
 """
+
 from __future__ import annotations
-import pytest
+
 import json
 from pathlib import Path
+
 import tools.github.gh_api as gh
-
-
-
 
 
 def test_pagination_aggregates_arrays(monkeypatch, capsys):

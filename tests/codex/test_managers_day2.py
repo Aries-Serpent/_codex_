@@ -1,5 +1,4 @@
 """Day 2: codex - Manager tests"""
-import pytest
 
 
 class TestCodexManagers:

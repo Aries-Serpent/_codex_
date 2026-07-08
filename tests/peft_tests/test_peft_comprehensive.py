@@ -43,7 +43,6 @@ class TestPEFTTraining:
 
     def test_training_config(self):
         """Test PEFT training configuration."""
-import pytest
         config = {
             "peft_config": {"r": 8},
             "training_args": {"learning_rate": 0.001},

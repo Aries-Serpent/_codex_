@@ -3,9 +3,8 @@ Test Get Component Env Var
 
 Test module for get component env var.
 """
-import pytest
-from codex_ml.interfaces.registry import get_component
 
+from codex_ml.interfaces.registry import get_component
 
 
 def test_get_component_from_env(monkeypatch, tmp_path):

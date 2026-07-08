@@ -3,9 +3,8 @@ Test Config Settings
 
 Test module for config settings.
 """
-import pytest
-from codex_ml.config_schema import LoraSettings, TokenizerSettings, TrainingSettings
 
+from codex_ml.config_schema import LoraSettings, TokenizerSettings, TrainingSettings
 
 
 def test_training_settings_round_trip() -> None:

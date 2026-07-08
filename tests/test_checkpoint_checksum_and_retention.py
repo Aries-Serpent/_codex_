@@ -1,16 +1,17 @@
 """
+pytest.importorskip("mlflow")
 Test Checkpoint Checksum And Retention
 
 Test module for checkpoint checksum and retention.
 """
-pytest.importorskip("mlflow")
-torch = pytest.importorskip("torch", reason="Requires torch for checkpoint hashing test")
+
 import json
+
+import pytest
+
+torch = pytest.importorskip("torch", reason="Requires torch for checkpoint hashing test")
+
 from codex_ml.train_loop import run_training
-
-
-
-
 
 
 def test_checkpoint_sha256_and_retention(tmp_path):

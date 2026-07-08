@@ -3,12 +3,12 @@ Test Visual Compare
 
 Test module for visual compare.
 """
+
 import subprocess
 import sys
 from pathlib import Path
-    from PIL import Image  # type: ignore
 
-
+import pytest
 
 pytestmark = pytest.mark.skipif(
     subprocess.call(
@@ -22,6 +22,7 @@ pytestmark = pytest.mark.skipif(
 
 
 def write_img(p: Path, gray: int):
+    from PIL import Image  # type: ignore
 
     img = Image.new("L", (200, 100), color=gray)
     img.save(p)

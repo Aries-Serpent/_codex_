@@ -1,8 +1,9 @@
 from __future__ import annotations
+
+import pytest
+
 from services.ita.app.hygiene import run_hygiene_checks
 from services.ita.app.models import RepoHygieneRequest
-
-
 
 
 def test_run_hygiene_checks_detects_multiple_issue_types() -> None:

@@ -6,13 +6,12 @@ without requiring a live cognitive-app server.
 
 All tests use a lightweight mock so the suite runs fully offline.
 """
+
 from __future__ import annotations
-import pytest
+
 from unittest.mock import MagicMock
+
 from codex.cognitive.session_hook import SessionContextInjector, SessionContextPayload
-
-
-
 
 # ---------------------------------------------------------------------------
 # Helpers

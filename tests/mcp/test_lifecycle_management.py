@@ -4,12 +4,13 @@ Comprehensive test suite for MCP Lifecycle Management.
 Tests cover startup, shutdown, health checks, resource management, and error scenarios.
 Follows the High Maturity Achievement Plan requirements.
 """
+
 import asyncio
 from unittest.mock import AsyncMock, Mock
+
+import pytest
+
 from src.services.mcp.lifecycle import LifecycleManager
-
-
-
 
 
 class TestLifecycleManagerBasics:
@@ -56,7 +57,6 @@ class TestStartupSequence:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_startup_success(self):
         """Test successful startup sequence."""
         manager = LifecycleManager()
@@ -83,7 +83,6 @@ class TestStartupSequence:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_startup_async_hook(self):
         """Test async startup hook execution."""
         manager = LifecycleManager()
@@ -110,7 +109,6 @@ class TestStartupSequence:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_startup_multiple_hooks(self):
         """Test multiple startup hooks execute in order."""
         manager = LifecycleManager()
@@ -143,7 +141,6 @@ class TestStartupSequence:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_startup_failure_raises(self):
         """Test startup failure raises exception."""
         manager = LifecycleManager()
@@ -169,7 +166,6 @@ class TestStartupSequence:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_startup_timeout_handling(self):
         """Test startup hook timeout safeguard."""
         manager = LifecycleManager()
@@ -196,7 +192,6 @@ class TestShutdownSequence:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_shutdown_success(self):
         """Test successful shutdown sequence."""
         manager = LifecycleManager()
@@ -229,7 +224,6 @@ class TestShutdownSequence:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_shutdown_async_hook(self):
         """Test async shutdown hook execution."""
         manager = LifecycleManager()
@@ -256,7 +250,6 @@ class TestShutdownSequence:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_shutdown_reverse_order(self):
         """Test shutdown hooks execute in reverse order."""
         manager = LifecycleManager()
@@ -291,7 +284,6 @@ class TestShutdownSequence:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_shutdown_continues_on_error(self):
         """Test shutdown continues even if a hook fails."""
         manager = LifecycleManager()
@@ -336,7 +328,6 @@ class TestResourceManagement:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_cleanup_sync_close(self):
         """Test cleanup of resources with sync close method."""
         manager = LifecycleManager()
@@ -359,7 +350,6 @@ class TestResourceManagement:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_cleanup_async_close(self):
         """Test cleanup of resources with async close method."""
         manager = LifecycleManager()
@@ -382,7 +372,6 @@ class TestResourceManagement:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_cleanup_multiple_resources(self):
         """Test cleanup of multiple resources."""
         manager = LifecycleManager()
@@ -411,7 +400,6 @@ class TestResourceManagement:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_cleanup_handles_errors(self):
         """Test cleanup handles individual resource errors gracefully."""
         manager = LifecycleManager()
@@ -455,7 +443,6 @@ class TestHealthChecks:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_healthz_after_startup(self):
         """Test health check after successful startup."""
         manager = LifecycleManager()
@@ -476,7 +463,6 @@ class TestHealthChecks:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_healthz_after_shutdown(self):
         """Test health check after shutdown."""
         manager = LifecycleManager()
@@ -514,7 +500,6 @@ class TestEdgeCases:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_empty_hooks(self):
         """Test lifecycle with no hooks registered."""
         manager = LifecycleManager()
@@ -535,7 +520,6 @@ class TestEdgeCases:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_double_startup_raises(self):
         """Test calling startup twice fails appropriately."""
         manager = LifecycleManager()
@@ -566,7 +550,6 @@ class TestEdgeCases:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_shutdown_before_startup(self):
         """Test shutdown can be called before startup."""
         manager = LifecycleManager()
@@ -589,7 +572,6 @@ class TestAdditionalLifecycleScenarios:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_concurrent_startup_calls(self):
         """Test behavior when startup is called concurrently."""
         manager = LifecycleManager()
@@ -620,7 +602,6 @@ class TestAdditionalLifecycleScenarios:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_resource_cleanup_order(self):
         """Test that resources are cleaned up in reverse registration order."""
         manager = LifecycleManager()
@@ -658,7 +639,6 @@ class TestAdditionalLifecycleScenarios:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_health_check_timeout_protection(self):
         """Test that health check has timeout protection."""
         manager = LifecycleManager()
@@ -688,7 +668,6 @@ class TestAdditionalLifecycleScenarios:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_partial_shutdown_recovery(self):
         """Test recovery when shutdown partially fails."""
         manager = LifecycleManager()
@@ -720,7 +699,6 @@ class TestAdditionalLifecycleScenarios:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_graceful_degradation(self):
         """Test graceful degradation when non-critical components fail."""
         manager = LifecycleManager()

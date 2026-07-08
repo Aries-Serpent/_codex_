@@ -3,19 +3,20 @@ Test Config Schema
 
 Test module for config schema.
 """
+
 from __future__ import annotations
+
 import dataclasses
 from typing import Any
+
+import pytest
+
 from omegaconf import OmegaConf
-    from codex_ml.training.unified_training import UnifiedTrainingConfig as _Cfg  # type: ignore
-
-
-
-
 
 # Prefer the project unified config if present; otherwise use a tiny fallback.
 try:
     # Existing project config (if available)
+    from codex_ml.training.unified_training import UnifiedTrainingConfig as _Cfg  # type: ignore
 except ImportError:
 
     @dataclasses.dataclass

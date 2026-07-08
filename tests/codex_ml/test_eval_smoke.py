@@ -3,9 +3,8 @@ Test Eval Smoke
 
 Test module for eval smoke.
 """
-import pytest
-from codex_ml.eval import evaluator
 
+from codex_ml.eval import evaluator
 
 
 def test_evaluate_constant_nonzero_for_match():

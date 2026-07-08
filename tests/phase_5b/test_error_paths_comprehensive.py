@@ -4,44 +4,12 @@ Phase 5B-III: Comprehensive Error Path and Edge Case Tests
 Tests cover error handling, boundary conditions, data validation, resource management,
 and integration errors across major modules.
 """
-        pytest.importorskip("codex.auth")
-        pytest.importorskip("codex.monitoring")
-        pytest.importorskip("codex_ml.utils.checkpoint")
-        pytest.importorskip("codex_ml.utils.retention")
-        pytest.importorskip("codex_ml.data")
-        pytest.importorskip("codex.rag.ingestion")
-        pytest.importorskip("codex.rag.ingestion.chunker")
-        pytest.importorskip("codex.rag.ingestion.validator")
-        pytest.importorskip("codex")
-        pytest.importorskip("codex.rag")
+
 import os
 import tempfile
 from unittest.mock import MagicMock, Mock
-        from codex.auth import Authenticator, TokenManager, UserStore
-        from codex.auth import Authenticator, TokenManager, UserStore
-        from codex.auth import Authenticator, TokenManager, UserStore
-        from codex.auth import Authenticator, TokenManager, UserStore
-        from codex.auth import TokenManager
-        from codex.auth import TokenManager
-        from codex.auth import TokenManager
-        from codex.auth import TokenManager
-        from codex.monitoring import PerformanceMonitor
-            from codex.monitoring import otel_metrics
-        from codex_ml.utils import checkpoint
-        from codex_ml.utils import checkpoint
-        from codex_ml.utils import retention
-        from codex_ml import data
-        from codex.rag import ingestion
-        from codex.rag.ingestion.chunker import Chunker
-        from codex.rag.ingestion import validator
-        import threading
-        import sys
-        from codex import auth
-        from codex import rag
-        from codex import monitoring
-        import threading
 
-
+import pytest
 
 # ============================================================================
 # Authentication Error Path Tests (src/codex/auth/)
@@ -53,6 +21,8 @@ class TestAuthenticatorErrorPaths:
 
     def test_register_duplicate_username(self):
         """Test registration rejects duplicate usernames."""
+        pytest.importorskip("codex.auth")
+        from codex.auth import Authenticator, TokenManager, UserStore
 
         store = UserStore()
         tokens = TokenManager(secret_key="test-secret")
@@ -67,6 +37,8 @@ class TestAuthenticatorErrorPaths:
 
     def test_login_invalid_credentials(self):
         """Test login with invalid credentials."""
+        pytest.importorskip("codex.auth")
+        from codex.auth import Authenticator, TokenManager, UserStore
 
         store = UserStore()
         tokens = TokenManager(secret_key="test-secret")
@@ -78,6 +50,8 @@ class TestAuthenticatorErrorPaths:
 
     def test_login_after_registration(self):
         """Test successful login after registration."""
+        pytest.importorskip("codex.auth")
+        from codex.auth import Authenticator, TokenManager, UserStore
 
         store = UserStore()
         tokens = TokenManager(secret_key="test-secret")
@@ -92,6 +66,8 @@ class TestAuthenticatorErrorPaths:
 
     def test_login_wrong_password(self):
         """Test login with wrong password."""
+        pytest.importorskip("codex.auth")
+        from codex.auth import Authenticator, TokenManager, UserStore
 
         store = UserStore()
         tokens = TokenManager(secret_key="test-secret")
@@ -115,6 +91,8 @@ class TestTokenManagerErrorPaths:
 
     def test_token_creation_and_validation(self):
         """Test token creation and validation."""
+        pytest.importorskip("codex.auth")
+        from codex.auth import TokenManager
 
         manager = TokenManager(secret_key="test-secret")
 
@@ -128,6 +106,8 @@ class TestTokenManagerErrorPaths:
 
     def test_token_refresh_mechanism(self):
         """Test token refresh mechanism."""
+        pytest.importorskip("codex.auth")
+        from codex.auth import TokenManager
 
         manager = TokenManager(secret_key="test-secret")
 
@@ -145,6 +125,8 @@ class TestTokenManagerErrorPaths:
 
     def test_token_revocation(self):
         """Test token revocation."""
+        pytest.importorskip("codex.auth")
+        from codex.auth import TokenManager
 
         manager = TokenManager(secret_key="test-secret")
 
@@ -159,6 +141,8 @@ class TestTokenManagerErrorPaths:
 
     def test_session_token_creation(self):
         """Test session token creation."""
+        pytest.importorskip("codex.auth")
+        from codex.auth import TokenManager
 
         manager = TokenManager(secret_key="test-secret")
 
@@ -176,13 +160,17 @@ class TestMonitoringErrorPaths:
 
     def test_performance_monitor_basic(self):
         """Test performance monitor basic functionality."""
+        pytest.importorskip("codex.monitoring")
+        from codex.monitoring import PerformanceMonitor
 
         monitor = PerformanceMonitor()
         assert monitor is not None, "monitor must be initialized"
 
     def test_otel_metrics_initialization(self):
         """Test OTEL metrics initialization."""
+        pytest.importorskip("codex.monitoring")
         try:
+            from codex.monitoring import otel_metrics
 
             # Should initialize without error
             assert otel_metrics is not None, "otel_metrics must be initialized"
@@ -201,12 +189,16 @@ class TestMLUtilsErrorPaths:
 
     def test_checkpoint_missing_file(self):
         """Test loading checkpoint from missing file."""
+        pytest.importorskip("codex_ml.utils.checkpoint")
+        from codex_ml.utils import checkpoint
 
         with pytest.raises((FileNotFoundError, Exception)):
             checkpoint.load_checkpoint("/nonexistent/path/checkpoint.pt")
 
     def test_checkpoint_corrupted_format(self):
         """Test loading corrupted checkpoint."""
+        pytest.importorskip("codex_ml.utils.checkpoint")
+        from codex_ml.utils import checkpoint
 
         with tempfile.TemporaryDirectory() as tmpdir:
             corrupted_file = os.path.join(tmpdir, "corrupted.pt")
@@ -218,6 +210,8 @@ class TestMLUtilsErrorPaths:
 
     def test_retention_policy_validation(self):
         """Test retention policy validation."""
+        pytest.importorskip("codex_ml.utils.retention")
+        from codex_ml.utils import retention
 
         # Should handle default retention
         assert retention is not None, "retention must be initialized"
@@ -233,6 +227,8 @@ class TestMLDataErrorPaths:
 
     def test_dataset_initialization(self):
         """Test dataset module initialization."""
+        pytest.importorskip("codex_ml.data")
+        from codex_ml import data
 
         # Should initialize without error
         assert data is not None, "data must be initialized"
@@ -248,12 +244,16 @@ class TestRAGIngestionErrorPaths:
 
     def test_rag_ingestion_module_import(self):
         """Test RAG ingestion module imports."""
+        pytest.importorskip("codex.rag.ingestion")
+        from codex.rag import ingestion
 
         # Should import without error
         assert ingestion is not None, "ingestion must be initialized"
 
     def test_chunker_basic_functionality(self):
         """Test chunker basic functionality."""
+        pytest.importorskip("codex.rag.ingestion.chunker")
+        from codex.rag.ingestion.chunker import Chunker
 
         chunker = Chunker()
         chunks = chunker.chunk("Sample text for chunking")
@@ -271,6 +271,8 @@ class TestValidationErrorPaths:
 
     def test_input_validation_module(self):
         """Test input validation."""
+        pytest.importorskip("codex.rag.ingestion.validator")
+        from codex.rag.ingestion import validator
 
         # Should import without error
         assert validator is not None, "validator must be initialized"
@@ -286,6 +288,7 @@ class TestResourceManagementErrors:
 
     def test_resource_cleanup_on_error(self):
         """Test resource cleanup when operation fails."""
+        pytest.importorskip("codex")
 
         mock_resource = MagicMock()
         mock_resource.__enter__ = Mock(return_value=mock_resource)
@@ -303,6 +306,8 @@ class TestResourceManagementErrors:
 
     def test_concurrent_resource_access(self):
         """Test concurrent access to shared resource."""
+        pytest.importorskip("codex")
+        import threading
 
         shared_state = {"counter": 0}
         errors = []
@@ -333,12 +338,15 @@ class TestBoundaryConditions:
 
     def test_zero_division_protection(self):
         """Test protection against zero division."""
+        pytest.importorskip("codex")
 
         with pytest.raises(ZeroDivisionError):
             pass
 
     def test_very_large_values(self):
         """Test handling of very large values."""
+        pytest.importorskip("codex")
+        import sys
 
         large_val = sys.maxsize
 
@@ -351,6 +359,7 @@ class TestBoundaryConditions:
 
     def test_unicode_edge_cases(self):
         """Test handling of unicode edge cases."""
+        pytest.importorskip("codex")
 
         unicode_strings = [
             "Hello 世界 🌍",
@@ -363,6 +372,7 @@ class TestBoundaryConditions:
 
     def test_deep_nesting(self):
         """Test handling of deeply nested structures."""
+        pytest.importorskip("codex")
 
         # Create deeply nested dict
         nested = {"a": {}}
@@ -393,18 +403,24 @@ class TestIntegrationErrors:
 
     def test_auth_module_integration(self):
         """Test auth module integration."""
+        pytest.importorskip("codex.auth")
+        from codex import auth
 
         # Should integrate without error
         assert auth is not None, "auth must be initialized"
 
     def test_rag_module_integration(self):
         """Test RAG module integration."""
+        pytest.importorskip("codex.rag")
+        from codex import rag
 
         # Should integrate without error
         assert rag is not None, "rag must be initialized"
 
     def test_monitoring_module_integration(self):
         """Test monitoring module integration."""
+        pytest.importorskip("codex.monitoring")
+        from codex import monitoring
 
         # Should integrate without error
         assert monitoring is not None, "monitoring must be initialized"
@@ -420,6 +436,7 @@ class TestStateConsistencyErrors:
 
     def test_state_corruption_detection(self):
         """Test detection of corrupted state."""
+        pytest.importorskip("codex")
 
         state = {"version": "1.0", "data": []}
 
@@ -434,6 +451,8 @@ class TestStateConsistencyErrors:
 
     def test_race_condition_in_state_update(self):
         """Test race condition handling in state updates."""
+        pytest.importorskip("codex")
+        import threading
 
         state = {"counter": 0}
 
@@ -463,6 +482,7 @@ class TestErrorRecovery:
 
     def test_retry_on_transient_error(self):
         """Test retry mechanism for transient errors."""
+        pytest.importorskip("codex")
 
         call_count = [0]
 
@@ -487,6 +507,7 @@ class TestErrorRecovery:
 
     def test_graceful_degradation(self):
         """Test graceful degradation when features unavailable."""
+        pytest.importorskip("codex")
 
         # Feature flag approach
         feature_available = False
@@ -500,6 +521,7 @@ class TestErrorRecovery:
 
     def test_error_message_clarity(self):
         """Test error messages are clear and actionable."""
+        pytest.importorskip("codex")
 
         try:
             raise ValueError("Expected config key 'timeout' not found in settings")

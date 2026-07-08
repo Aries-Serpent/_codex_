@@ -2,7 +2,6 @@
 PHASE 6 WAVE 1 - TIER-1 Error Path Tests (Batch 3A-3B: Tests 61-67)
 Error handling and system failure scenarios
 """
-import pytest
 import importlib.util
 
 

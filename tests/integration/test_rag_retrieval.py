@@ -3,32 +3,15 @@ Integration tests for RAG retrieval functionality.
 
 Tests end-to-end retrieval workflows with query processing and ranking.
 """
-pytest.importorskip("torch", reason="PyTorch required for tests")
+
 import importlib.util
 import tempfile
 from unittest.mock import MagicMock, Mock, patch
-        from codex.rag.retriever import Retriever
-        from codex.rag.retriever import Retriever
-        from codex.rag.retriever import Retriever
-        from codex.rag.retriever import Retriever
-        from codex.rag.retriever import Retriever
-        from codex.rag.retriever import Retriever
-        from codex.rag.retriever import Retriever
-        from codex.rag.retriever import Retriever
-        from codex.rag.retriever import Retriever
-        from codex.rag.retriever import Retriever
-        from codex.rag.retriever import Retriever
-        from codex.rag.retriever import Retriever
-        from codex.rag.retriever import Retriever
-        from codex.rag.retriever import Retriever
-        from codex.rag.retriever import Retriever
-        from codex.rag.retriever import Retriever
-        from codex.rag.retriever import Retriever
-        from codex.rag.retriever import Retriever
 
-
+import pytest
 
 # Skip entire module if torch is not available or unloadable
+pytest.importorskip("torch", reason="PyTorch required for tests")
 # Check if required dependencies are available
 NUMPY_AVAILABLE = importlib.util.find_spec("numpy") is not None
 
@@ -51,12 +34,14 @@ class TestRetrieverInitialization:
 
     def test_retriever_import(self):
         """Test Retriever can be imported."""
+        from codex.rag.retriever import Retriever
 
         assert Retriever is not None, "Retriever must be initialized"
 
     @patch("codex.rag.retriever.SentenceTransformer")
     def test_retriever_initialization_basic(self, mock_st):
         """Test Retriever basic initialization."""
+        from codex.rag.retriever import Retriever
 
         mock_model = Mock()
         mock_st.return_value = mock_model
@@ -69,6 +54,7 @@ class TestRetrieverInitialization:
 
     def test_retriever_has_required_attributes(self):
         """Test Retriever has required attributes."""
+        from codex.rag.retriever import Retriever
 
         with patch.object(Retriever, "_load_index"), patch.object(Retriever, "_load_model"):
             r = Retriever()
@@ -84,6 +70,7 @@ class TestRetrieverQuery:
 
     def test_query_method_exists(self):
         """Test query method exists."""
+        from codex.rag.retriever import Retriever
 
         with patch.object(Retriever, "_load_index"), patch.object(Retriever, "_load_model"):
             retriever = Retriever()
@@ -93,6 +80,7 @@ class TestRetrieverQuery:
 
     def test_query_empty_returns_empty_list(self):
         """Test query with empty string returns empty list."""
+        from codex.rag.retriever import Retriever
 
         with patch.object(Retriever, "_load_index"), patch.object(Retriever, "_load_model"):
             retriever = Retriever()
@@ -104,6 +92,7 @@ class TestRetrieverQuery:
 
     def test_query_no_index_returns_empty_list(self):
         """Test query without index returns empty list."""
+        from codex.rag.retriever import Retriever
 
         with patch.object(Retriever, "_load_index"), patch.object(Retriever, "_load_model"):
             retriever = Retriever()
@@ -115,6 +104,7 @@ class TestRetrieverQuery:
 
     def test_query_invalid_top_k_uses_default(self):
         """Test query with invalid top_k uses default."""
+        from codex.rag.retriever import Retriever
 
         with patch.object(Retriever, "_load_index"), patch.object(Retriever, "_load_model"):
             retriever = Retriever()
@@ -133,12 +123,14 @@ class TestRetrieverModelLoading:
 
     def test_load_model_method_exists(self):
         """Test _load_model method exists."""
+        from codex.rag.retriever import Retriever
 
         assert hasattr(Retriever, "_load_model")
 
     @patch("codex.rag.retriever.SentenceTransformer", None)
     def test_load_model_without_sentence_transformers_raises(self):
         """Test _load_model raises when sentence-transformers not installed."""
+        from codex.rag.retriever import Retriever
 
         with patch.object(Retriever, "_load_index"):
             with pytest.raises(ImportError, match="sentence-transformers not installed"):
@@ -149,6 +141,7 @@ class TestRetrieverModelLoading:
     @patch("codex.rag.retriever.SentenceTransformer")
     def test_load_model_uses_hf_token(self, mock_st, mock_safe):
         """Test _load_model uses HF_TOKEN when available."""
+        from codex.rag.retriever import Retriever
 
         mock_model = Mock()
         mock_model.to.return_value = mock_model
@@ -168,12 +161,14 @@ class TestRetrieverIndexLoading:
 
     def test_load_index_method_exists(self):
         """Test _load_index method exists."""
+        from codex.rag.retriever import Retriever
 
         assert hasattr(Retriever, "_load_index")
 
     @patch("codex.rag.retriever.load_index")
     def test_load_index_file_not_found_warning(self, mock_load):
         """Test _load_index handles FileNotFoundError gracefully."""
+        from codex.rag.retriever import Retriever
 
         mock_load.side_effect = FileNotFoundError("Index not found")
 
@@ -187,6 +182,7 @@ class TestRetrieverIndexLoading:
     @patch("codex.rag.retriever.load_index")
     def test_load_index_success(self, mock_load):
         """Test _load_index successful loading."""
+        from codex.rag.retriever import Retriever
 
         mock_index = MagicMock()
         mock_metadata = [{"text": "chunk1"}, {"text": "chunk2"}]
@@ -206,6 +202,7 @@ class TestRetrieverHelperMethods:
 
     def test_estimate_line_number_method_exists(self):
         """Test _estimate_line_number method exists."""
+        from codex.rag.retriever import Retriever
 
         with patch.object(Retriever, "_load_index"), patch.object(Retriever, "_load_model"):
             retriever = Retriever()
@@ -214,6 +211,7 @@ class TestRetrieverHelperMethods:
 
     def test_extract_file_from_metadata_method_exists(self):
         """Test _extract_file_from_metadata method exists."""
+        from codex.rag.retriever import Retriever
 
         with patch.object(Retriever, "_load_index"), patch.object(Retriever, "_load_model"):
             retriever = Retriever()
@@ -227,6 +225,7 @@ class TestRetrieverConfiguration:
     @patch("codex.rag.retriever.SentenceTransformer")
     def test_retriever_custom_index_dir(self, mock_st):
         """Test Retriever with custom index_dir."""
+        from codex.rag.retriever import Retriever
 
         mock_model = Mock()
         mock_st.return_value = mock_model
@@ -239,6 +238,7 @@ class TestRetrieverConfiguration:
     @patch("codex.rag.retriever.SentenceTransformer")
     def test_retriever_custom_tenant_id(self, mock_st):
         """Test Retriever with custom tenant_id."""
+        from codex.rag.retriever import Retriever
 
         mock_model = Mock()
         mock_st.return_value = mock_model
@@ -251,6 +251,7 @@ class TestRetrieverConfiguration:
     @patch("codex.rag.retriever.SentenceTransformer")
     def test_retriever_custom_cache_dir(self, mock_st):
         """Test Retriever with custom cache_dir."""
+        from codex.rag.retriever import Retriever
 
         mock_model = Mock()
         mock_st.return_value = mock_model

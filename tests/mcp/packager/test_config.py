@@ -1,4 +1,3 @@
-import pytest
 from mcp.packager.config import PackageConfig
 
 

@@ -3,16 +3,17 @@ Test Pipeline Config
 
 Test module for pipeline config.
 """
-pytest.importorskip("omegaconf")
+
 import json
 import logging
 import os
 from copy import deepcopy
+
+import pytest
+
+pytest.importorskip("omegaconf")
+
 from codex_ml.pipeline import run_codex_pipeline_from_config
-
-
-
-
 
 
 @pytest.fixture()

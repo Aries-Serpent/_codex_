@@ -3,11 +3,10 @@ Test Cli Viewer
 
 Test module for cli viewer.
 """
-import pytest
+
 import subprocess
 import sys
 from pathlib import Path
-
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 

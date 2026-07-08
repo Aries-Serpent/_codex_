@@ -3,9 +3,8 @@ Test Metrics
 
 Test module for metrics.
 """
-import pytest
-from mcp.observability.metrics import Timer, _counters, _timers, increment, snapshot
 
+from mcp.observability.metrics import Timer, _counters, _timers, increment, snapshot
 
 
 def test_increment_and_snapshot():

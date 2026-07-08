@@ -3,11 +3,10 @@ Test Honesty
 
 Test module for honesty.
 """
-import pytest
+
 import json
+
 from codex_harness.honesty import HonestyRecorder
-
-
 
 
 def test_honesty_recorder_flush_and_reload(tmp_path):

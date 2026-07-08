@@ -3,17 +3,11 @@ Tests for MCP schema validation detector.
 
 Tests Pydantic BaseModel detection and OpenAPI specification detection.
 """
-import pytest
+
 import tempfile
 from pathlib import Path
+
 from scripts.space_traversal.detectors import mcp_schema_validation
-from pydantic import BaseModel
-import pydantic
-from typing import Optional
-from pydantic import BaseModel
-from pydantic import BaseModel
-
-
 
 
 def test_detect_no_schemas():
@@ -40,6 +34,7 @@ def test_detect_base_model():
         # Create file with BaseModel
         py_file = Path(tmpdir) / "models.py"
         py_file.write_text("""
+from pydantic import BaseModel
 
 class User(BaseModel):
     name: str
@@ -64,6 +59,8 @@ def test_detect_pydantic_import():
         # Create file with pydantic import
         py_file = Path(tmpdir) / "schemas.py"
         py_file.write_text("""
+import pydantic
+from typing import Optional
 
 # Using pydantic for validation
 """)
@@ -115,6 +112,7 @@ def test_detect_both_patterns():
     with tempfile.TemporaryDirectory() as tmpdir:
         py_file = Path(tmpdir) / "models.py"
         py_file.write_text("""
+from pydantic import BaseModel
 
 class APISchema(BaseModel):
     pass
@@ -139,6 +137,7 @@ def test_evidence_deduplication():
     with tempfile.TemporaryDirectory() as tmpdir:
         py_file = Path(tmpdir) / "models.py"
         py_file.write_text("""
+from pydantic import BaseModel
 
 class User(BaseModel):
     name: str

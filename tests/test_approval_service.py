@@ -18,16 +18,15 @@ Test Plan:
 - Scenario 12: Destructive operation (R-006) blocks auto-approval without Owner pre-auth
 - Scenario 13: Post-auto-approval governance audit ticket created
 """
-import pytest
+
 import logging
 import sys
 import time
-from src.codex.governance.approval_service import (
-
 
 # Set up path
 sys.path.insert(0, '/home/runner/work/_codex_/_codex_')
 
+from src.codex.governance.approval_service import (
     ApprovalService,
     ApprovalState,
     AuditCode,

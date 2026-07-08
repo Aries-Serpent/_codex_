@@ -10,9 +10,8 @@ Tests all PII detection patterns including:
 - AWS access keys
 - GPL license detection
 """  # pragma: allowlist secret # pragma: allowlist secret
-import pytest
-from codex.knowledge.pii import (
 
+from codex.knowledge.pii import (
     RedactionMode,
     scrub,
     scrub_for_embedding,

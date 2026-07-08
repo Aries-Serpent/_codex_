@@ -3,9 +3,10 @@ Test Csrf Protection
 
 Test module for csrf protection.
 """
+
+import pytest
+
 from security import SecurityError, verify_csrf_token
-
-
 
 
 def test_missing_csrf_token() -> None:

@@ -6,18 +6,16 @@ Coverage Baseline Monitoring Plan (Phase 2).
 
 Reference: .codex/COVERAGE_VALIDATION_CRITERIA.md (Section 5.1)
 """
+
 from __future__ import annotations
-import pytest
+
 import json
 import subprocess
 import sys
 from pathlib import Path
 from typing import Any
+
 from codex.logging.structured_logger import logger
-        import re
-
-
-
 
 
 class DeterminismValidator:
@@ -104,6 +102,7 @@ class DeterminismValidator:
             Number of tests passed
         """
         # Look for "N passed" pattern
+        import re
 
         match = re.search(r"(\d+) passed", output)
         return int(match.group(1)) if match else 0

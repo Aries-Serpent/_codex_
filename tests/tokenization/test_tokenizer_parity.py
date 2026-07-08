@@ -3,12 +3,13 @@ Test Tokenizer Parity
 
 Test module for tokenizer parity.
 """
+
 import sys
-    from transformers import AutoTokenizer  # type: ignore
 
-
+import pytest
 
 try:
+    from transformers import AutoTokenizer  # type: ignore
 except ImportError:
     AutoTokenizer = None  # type: ignore
 

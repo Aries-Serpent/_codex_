@@ -6,9 +6,10 @@ Validates FuzzyEngine membership functions and boundary case handling:
 - evaluate() decision classification
 - fuzzy_blend() boundary override with CODEX_FUZZY_MODE flag
 """
+
+import pytest
+
 from cognitive_brain.analytics.fuzzy import (
-
-
     FuzzyEngine,
     FuzzyResult,
     _fuzzy_mode_enabled,

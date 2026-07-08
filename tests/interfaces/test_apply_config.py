@@ -3,16 +3,15 @@ Test Apply Config
 
 Test module for apply config.
 """
+
 from __future__ import annotations
-import pytest
+
 import json
 import os
+
 import yaml
+
 from codex_ml.interfaces import apply_config, registry
-
-
-
-
 
 
 def test_apply_config_sets_env(monkeypatch, tmp_path):

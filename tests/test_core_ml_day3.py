@@ -3,45 +3,9 @@ Core ML Module Tests — Day 3 Advanced Patterns
 Configuration management edge cases, registry operations, pipeline execution,
 error handling, type coercion, and validation patterns.
 """
-            from codex_ml.config_schema import merge_configs
-            from codex_ml.config_schema import load_config
-            from codex_ml.config_schema import validate_config
-            from codex_ml.config_schema import load_config
-            from codex_ml.config_schema import load_config
-            from codex_ml.config_schema import load_config
-            from codex_ml.config_schema import load_config
-            from codex_ml.config_schema import load_config
-            from codex_ml.registry import Registry
-            from codex_ml.registry import Registry
-            from codex_ml.registry import Registry
-            from codex_ml.registry import Registry
-            from codex_ml.registry import Registry
-            from codex_ml.registry import Registry
-            from codex_ml.pipeline import Pipeline
-            from codex_ml.pipeline import Pipeline, Stage
-            from codex_ml.pipeline import Pipeline
-            from codex_ml.pipeline import Pipeline
-            from codex_ml.pipeline import Pipeline
-            from codex_ml.pipeline import Pipeline
-            from codex_ml.core import execute_with_fallback
-            from codex_ml.core import retry_with_backoff
-            from codex_ml.core import ErrorContext
-            from codex_ml.core import log_error
-            from codex_ml.core import get_error_metrics
-            from codex_ml.core import coerce_type
-            from codex_ml.core import coerce_type
-            from codex_ml.core import coerce_type
-            from codex_ml.core import validate_positive_int
-            from codex_ml.core import validate_probability
-            from codex_ml.core import validate_url
-            from codex_ml.core import coerce_type
-            from codex_ml.core import validate_schema
-            from codex_ml.core import validate_required_fields
-            from codex_ml.core import validate_range
-            from codex_ml.core import validate_encoding
-            from codex_ml.core import validate_collection_uniform
 
 
+import pytest
 
 
 class TestConfigurationEdgeCases:
@@ -50,6 +14,7 @@ class TestConfigurationEdgeCases:
     def test_config_nested_dictionary_merge(self):
         """Configuration should merge nested dictionaries correctly."""
         try:
+            from codex_ml.config_schema import merge_configs
         except (ImportError, AttributeError):
             pytest.skip("Config utilities not available")
 
@@ -64,6 +29,7 @@ class TestConfigurationEdgeCases:
     def test_config_circular_reference_handling(self):
         """Configuration should handle potential circular references."""
         try:
+            from codex_ml.config_schema import load_config
         except (ImportError, AttributeError):
             pytest.skip("Config utilities not available")
 
@@ -78,6 +44,7 @@ class TestConfigurationEdgeCases:
     def test_config_missing_required_fields(self):
         """Configuration should validate required fields."""
         try:
+            from codex_ml.config_schema import validate_config
         except (ImportError, AttributeError):
             pytest.skip("Config validation not available")
 
@@ -92,6 +59,7 @@ class TestConfigurationEdgeCases:
     def test_config_type_coercion(self):
         """Configuration should coerce types appropriately."""
         try:
+            from codex_ml.config_schema import load_config
         except (ImportError, AttributeError):
             pytest.skip("Config utilities not available")
 
@@ -107,6 +75,7 @@ class TestConfigurationEdgeCases:
     def test_config_deep_nesting_limits(self):
         """Configuration should handle deeply nested structures."""
         try:
+            from codex_ml.config_schema import load_config
         except (ImportError, AttributeError):
             pytest.skip("Config utilities not available")
 
@@ -121,6 +90,7 @@ class TestConfigurationEdgeCases:
     def test_config_special_characters_in_keys(self):
         """Configuration should handle special characters in keys."""
         try:
+            from codex_ml.config_schema import load_config
         except (ImportError, AttributeError):
             pytest.skip("Config utilities not available")
 
@@ -134,6 +104,7 @@ class TestConfigurationEdgeCases:
     def test_config_unicode_values(self):
         """Configuration should handle unicode values."""
         try:
+            from codex_ml.config_schema import load_config
         except (ImportError, AttributeError):
             pytest.skip("Config utilities not available")
 
@@ -147,6 +118,7 @@ class TestConfigurationEdgeCases:
     def test_config_very_large_values(self):
         """Configuration should handle very large numeric values."""
         try:
+            from codex_ml.config_schema import load_config
         except (ImportError, AttributeError):
             pytest.skip("Config utilities not available")
 
@@ -164,6 +136,7 @@ class TestRegistryOperations:
     def test_registry_deduplication(self):
         """Registry should handle duplicate registrations."""
         try:
+            from codex_ml.registry import Registry
         except (ImportError, AttributeError):
             pytest.skip("Registry not available")
 
@@ -180,6 +153,7 @@ class TestRegistryOperations:
     def test_registry_case_sensitivity(self):
         """Registry should be case sensitive or consistent."""
         try:
+            from codex_ml.registry import Registry
         except (ImportError, AttributeError):
             pytest.skip("Registry not available")
 
@@ -200,6 +174,7 @@ class TestRegistryOperations:
     def test_registry_special_characters_in_keys(self):
         """Registry should handle special characters in keys."""
         try:
+            from codex_ml.registry import Registry
         except (ImportError, AttributeError):
             pytest.skip("Registry not available")
 
@@ -214,6 +189,7 @@ class TestRegistryOperations:
     def test_registry_list_all_plugins(self):
         """Registry should support listing all plugins."""
         try:
+            from codex_ml.registry import Registry
         except (ImportError, AttributeError):
             pytest.skip("Registry not available")
 
@@ -231,6 +207,7 @@ class TestRegistryOperations:
     def test_registry_plugin_metadata(self):
         """Registry should support plugin metadata."""
         try:
+            from codex_ml.registry import Registry
         except (ImportError, AttributeError):
             pytest.skip("Registry not available")
 
@@ -251,6 +228,7 @@ class TestRegistryOperations:
     def test_registry_plugin_versioning(self):
         """Registry should support version tracking."""
         try:
+            from codex_ml.registry import Registry
         except (ImportError, AttributeError):
             pytest.skip("Registry not available")
 
@@ -272,6 +250,7 @@ class TestPipelineExecution:
     def test_pipeline_empty_execution(self):
         """Pipeline should handle empty execution."""
         try:
+            from codex_ml.pipeline import Pipeline
         except (ImportError, AttributeError):
             pytest.skip("Pipeline not available")
 
@@ -285,6 +264,7 @@ class TestPipelineExecution:
     def test_pipeline_single_stage(self):
         """Pipeline should execute single stage."""
         try:
+            from codex_ml.pipeline import Pipeline, Stage
         except (ImportError, AttributeError):
             pytest.skip("Pipeline not available")
 
@@ -303,6 +283,7 @@ class TestPipelineExecution:
     def test_pipeline_multiple_stages(self):
         """Pipeline should execute multiple stages in order."""
         try:
+            from codex_ml.pipeline import Pipeline
         except (ImportError, AttributeError):
             pytest.skip("Pipeline not available")
 
@@ -320,6 +301,7 @@ class TestPipelineExecution:
     def test_pipeline_stage_with_error(self):
         """Pipeline should handle stage errors."""
         try:
+            from codex_ml.pipeline import Pipeline
         except (ImportError, AttributeError):
             pytest.skip("Pipeline not available")
 
@@ -340,6 +322,7 @@ class TestPipelineExecution:
     def test_pipeline_conditional_branching(self):
         """Pipeline should support conditional branching."""
         try:
+            from codex_ml.pipeline import Pipeline
         except (ImportError, AttributeError):
             pytest.skip("Pipeline not available")
 
@@ -355,6 +338,7 @@ class TestPipelineExecution:
     def test_pipeline_stage_with_state(self):
         """Pipeline should maintain state across stages."""
         try:
+            from codex_ml.pipeline import Pipeline
         except (ImportError, AttributeError):
             pytest.skip("Pipeline not available")
 
@@ -382,6 +366,7 @@ class TestErrorHandlingRecovery:
     def test_error_graceful_degradation(self):
         """System should degrade gracefully on error."""
         try:
+            from codex_ml.core import execute_with_fallback
         except (ImportError, AttributeError):
             pytest.skip("Error handling not available")
 
@@ -400,6 +385,7 @@ class TestErrorHandlingRecovery:
     def test_error_retry_with_backoff(self):
         """System should retry with backoff."""
         try:
+            from codex_ml.core import retry_with_backoff
         except (ImportError, AttributeError):
             pytest.skip("Retry mechanism not available")
 
@@ -420,6 +406,7 @@ class TestErrorHandlingRecovery:
     def test_error_context_preservation(self):
         """Error context should be preserved."""
         try:
+            from codex_ml.core import ErrorContext
         except (ImportError, AttributeError):
             pytest.skip("Error context not available")
 
@@ -433,6 +420,7 @@ class TestErrorHandlingRecovery:
     def test_error_logging_integration(self):
         """Errors should be logged appropriately."""
         try:
+            from codex_ml.core import log_error
         except (ImportError, AttributeError):
             pytest.skip("Error logging not available")
 
@@ -446,6 +434,7 @@ class TestErrorHandlingRecovery:
     def test_error_metrics_tracking(self):
         """Error metrics should be tracked."""
         try:
+            from codex_ml.core import get_error_metrics
         except (ImportError, AttributeError):
             pytest.skip("Error metrics not available")
 
@@ -462,6 +451,7 @@ class TestTypeCoercionValidation:
     def test_type_coercion_string_to_int(self):
         """String should coerce to int."""
         try:
+            from codex_ml.core import coerce_type
         except (ImportError, AttributeError):
             pytest.skip("Type coercion not available")
 
@@ -474,6 +464,7 @@ class TestTypeCoercionValidation:
     def test_type_coercion_string_to_float(self):
         """String should coerce to float."""
         try:
+            from codex_ml.core import coerce_type
         except (ImportError, AttributeError):
             pytest.skip("Type coercion not available")
 
@@ -486,6 +477,7 @@ class TestTypeCoercionValidation:
     def test_type_coercion_int_to_string(self):
         """Int should coerce to string."""
         try:
+            from codex_ml.core import coerce_type
         except (ImportError, AttributeError):
             pytest.skip("Type coercion not available")
 
@@ -498,6 +490,7 @@ class TestTypeCoercionValidation:
     def test_type_validation_positive_int(self):
         """Should validate positive integers."""
         try:
+            from codex_ml.core import validate_positive_int
         except (ImportError, AttributeError):
             pytest.skip("Validation not available")
 
@@ -510,6 +503,7 @@ class TestTypeCoercionValidation:
     def test_type_validation_probability(self):
         """Should validate probability values."""
         try:
+            from codex_ml.core import validate_probability
         except (ImportError, AttributeError):
             pytest.skip("Validation not available")
 
@@ -522,6 +516,7 @@ class TestTypeCoercionValidation:
     def test_type_validation_url(self):
         """Should validate URLs."""
         try:
+            from codex_ml.core import validate_url
         except (ImportError, AttributeError):
             pytest.skip("Validation not available")
 
@@ -534,6 +529,7 @@ class TestTypeCoercionValidation:
     def test_type_coercion_list_to_tuple(self):
         """List should coerce to tuple."""
         try:
+            from codex_ml.core import coerce_type
         except (ImportError, AttributeError):
             pytest.skip("Type coercion not available")
 
@@ -550,6 +546,7 @@ class TestDataValidation:
     def test_validate_schema_matching(self):
         """Should validate data matches schema."""
         try:
+            from codex_ml.core import validate_schema
         except (ImportError, AttributeError):
             pytest.skip("Schema validation not available")
 
@@ -564,6 +561,7 @@ class TestDataValidation:
     def test_validate_required_fields(self):
         """Should validate required fields present."""
         try:
+            from codex_ml.core import validate_required_fields
         except (ImportError, AttributeError):
             pytest.skip("Field validation not available")
 
@@ -578,6 +576,7 @@ class TestDataValidation:
     def test_validate_data_range(self):
         """Should validate data within range."""
         try:
+            from codex_ml.core import validate_range
         except (ImportError, AttributeError):
             pytest.skip("Range validation not available")
 
@@ -590,6 +589,7 @@ class TestDataValidation:
     def test_validate_string_encoding(self):
         """Should validate string encoding."""
         try:
+            from codex_ml.core import validate_encoding
         except (ImportError, AttributeError):
             pytest.skip("Encoding validation not available")
 
@@ -602,6 +602,7 @@ class TestDataValidation:
     def test_validate_collection_uniformity(self):
         """Should validate collection has uniform types."""
         try:
+            from codex_ml.core import validate_collection_uniform
         except (ImportError, AttributeError):
             pytest.skip("Collection validation not available")
 

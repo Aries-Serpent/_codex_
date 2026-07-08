@@ -60,7 +60,6 @@ def test_brevity_penalty_alignment_differs_from_buggy_case():
 
 def test_compute_corpus_bleu_uses_fixed_brevity_penalty():
     """compute_corpus_bleu relies on the fixed brevity penalty implementation."""
-import pytest
 
     hyps = ["the cat sat", "a quick fox"]
     norm_refs = [["the cat sat on the mat"], ["a quick brown fox"]]

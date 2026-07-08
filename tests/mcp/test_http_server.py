@@ -3,16 +3,16 @@ Test Http Server
 
 Test module for http server.
 """
-pytest.importorskip("fastapi")
+
 import os
+
+import pytest
+
+pytest.importorskip("fastapi")
+
 from fastapi.testclient import TestClient
+
 from mcp.server.http import (
-    from mcp.server import http as http_module
-
-
-
-
-
     ContextItem,
     ContextUpsertRequest,
     QueryRequest,
@@ -82,6 +82,7 @@ def test_context_upsert_and_query_round_trip() -> None:
 
 def test_rate_limit_hook_placeholder(monkeypatch) -> None:
     # Rate limit is disabled by default; ensure enabling raises 429
+    from mcp.server import http as http_module
 
     with monkeypatch.context() as mpatch:
         mpatch.setattr(

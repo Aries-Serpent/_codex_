@@ -3,12 +3,11 @@ Test Config Audit
 
 Test module for config audit.
 """
-import pytest
+
 import json
 import subprocess
 import sys
 from pathlib import Path
-
 
 
 def _run_config(*args: str, cwd: Path | None = None) -> subprocess.CompletedProcess:

@@ -3,9 +3,8 @@ Test Pa Reader
 
 Test module for pa reader.
 """
-import pytest
-from codex_crm.pa_legacy.reader import to_template
 
+from codex_crm.pa_legacy.reader import to_template
 
 
 def test_pa_template_shape() -> None:

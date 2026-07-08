@@ -3,13 +3,12 @@ Test Status Report
 
 Test module for status report.
 """
+
 from __future__ import annotations
-import pytest
+
 import subprocess
 import sys
 from pathlib import Path
-
-
 
 
 def run(cmd: list[str]) -> int:

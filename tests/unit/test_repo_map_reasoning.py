@@ -56,7 +56,6 @@ def test_repo_map_without_reasoning_flag(monkeypatch):
 
 def test_repo_map_reasoning_legacy_fallback(monkeypatch):
     """TypeError from render_repo_map(reasoning=...) should trigger fallback call."""
-import pytest
 
     calls: list[tuple[tuple, dict]] = []
 

@@ -8,45 +8,11 @@ Target: +50-70 tests for additional weak modules
 Generated: 2026-06-20
 Authority: @mbaetiong (COPILOT_AGENT_AUTH_ENABLED=true)
 """
+
 import os
 import tempfile
-        from codex.ingestion.file_ingestor import FileIngestor
-        from codex.ingestion.file_ingestor import FileIngestor
-        from codex.ingestion.file_ingestor import FileIngestor
-        from codex.ingestion.file_ingestor import FileIngestor
-        from codex.ingestion.csv_ingestor import CSVIngestor
-        from codex.ingestion.csv_ingestor import CSVIngestor
-        from codex.ingestion.csv_ingestor import CSVIngestor
-        from codex.ingestion.csv_ingestor import CSVIngestor
-        from codex.ingestion.json_ingestor import JSONIngestor
-        from codex.ingestion.json_ingestor import JSONIngestor
-        from codex.ingestion.json_ingestor import JSONIngestor
-        from codex.tokenization.loader import TokenizerLoader
-        from codex.tokenization.loader import TokenizerLoader
-        from codex.tokenization.loader import TokenizerLoader
-        from codex.tokenization.api import Tokenizer
-        from codex.tokenization.api import Tokenizer
-        from codex.tokenization.api import Tokenizer
-        from codex.tokenization.api import Tokenizer
-        from codex.tokenization.api import Tokenizer
-        from codex.tokenization.api import Tokenizer
-        from codex.api.auth_routes import AuthRouter
-        from codex.api.auth_routes import AuthRouter
-        from codex.api.auth_routes import AuthRouter
-        from codex.api.auth_routes import AuthRouter
-        from codex.api.rag_api import RAGAPI
-        from codex.api.rag_api import RAGAPI
-        from codex.api.rag_api import RAGAPI
-        from codex.api.rag_api import RAGAPI
-        from codex.api.rag_api import RAGAPI
-        from codex.codex.archive.util import parse_value
-        from codex.archive.util import parse_value
-        from codex.archive.util import format_data
-        from codex.archive.util import format_data
-        from codex.ingestion.file_ingestor import FileIngestor
-        from codex.tokenization.api import Tokenizer
 
-
+import pytest
 
 # ============================================================================
 # Ingestion Module Tests (20-25 tests) # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
@@ -58,6 +24,7 @@ class TestFileIngestorEdgeCases:
 
     def test_ingest_empty_file(self):
         """Should handle empty file"""
+        from codex.ingestion.file_ingestor import FileIngestor
 
         try:
             ingestor = FileIngestor()
@@ -72,6 +39,7 @@ class TestFileIngestorEdgeCases:
 
     def test_ingest_nonexistent_file(self):
         """Should handle nonexistent file"""
+        from codex.ingestion.file_ingestor import FileIngestor
 
         try:
             ingestor = FileIngestor()
@@ -82,6 +50,7 @@ class TestFileIngestorEdgeCases:
 
     def test_ingest_permission_denied(self):
         """Should handle permission denied"""
+        from codex.ingestion.file_ingestor import FileIngestor
 
         try:
             ingestor = FileIngestor()
@@ -100,6 +69,7 @@ class TestFileIngestorEdgeCases:
 
     def test_ingest_very_large_file(self):
         """Should handle very large file"""
+        from codex.ingestion.file_ingestor import FileIngestor
 
         try:
             ingestor = FileIngestor()
@@ -120,6 +90,7 @@ class TestCSVIngestorEdgeCases:
 
     def test_csv_empty_file(self):
         """Should handle empty CSV file"""
+        from codex.ingestion.csv_ingestor import CSVIngestor
 
         try:
             ingestor = CSVIngestor()
@@ -134,6 +105,7 @@ class TestCSVIngestorEdgeCases:
 
     def test_csv_no_headers(self):
         """Should handle CSV without headers"""
+        from codex.ingestion.csv_ingestor import CSVIngestor
 
         try:
             ingestor = CSVIngestor()
@@ -148,6 +120,7 @@ class TestCSVIngestorEdgeCases:
 
     def test_csv_malformed_rows(self):
         """Should handle malformed CSV rows"""
+        from codex.ingestion.csv_ingestor import CSVIngestor
 
         try:
             ingestor = CSVIngestor()
@@ -164,6 +137,7 @@ class TestCSVIngestorEdgeCases:
 
     def test_csv_with_null_values(self):
         """Should handle null values in CSV"""
+        from codex.ingestion.csv_ingestor import CSVIngestor
 
         try:
             ingestor = CSVIngestor()
@@ -184,6 +158,7 @@ class TestJSONIngestorEdgeCases:
 
     def test_json_invalid_syntax(self):
         """Should handle invalid JSON syntax"""
+        from codex.ingestion.json_ingestor import JSONIngestor
 
         try:
             ingestor = JSONIngestor()
@@ -198,6 +173,7 @@ class TestJSONIngestorEdgeCases:
 
     def test_json_empty_object(self):
         """Should handle empty JSON object"""
+        from codex.ingestion.json_ingestor import JSONIngestor
 
         try:
             ingestor = JSONIngestor()
@@ -212,6 +188,7 @@ class TestJSONIngestorEdgeCases:
 
     def test_json_deeply_nested(self):
         """Should handle deeply nested JSON"""
+        from codex.ingestion.json_ingestor import JSONIngestor
 
         try:
             ingestor = JSONIngestor()
@@ -240,6 +217,7 @@ class TestTokenizerInitialization:
 
     def test_tokenizer_with_empty_vocab(self):
         """Should handle empty vocabulary"""
+        from codex.tokenization.loader import TokenizerLoader
 
         try:
             loader = TokenizerLoader()
@@ -250,6 +228,7 @@ class TestTokenizerInitialization:
 
     def test_tokenizer_with_none_vocab(self):
         """Should reject None vocabulary"""
+        from codex.tokenization.loader import TokenizerLoader
 
         try:
             loader = TokenizerLoader()
@@ -260,6 +239,7 @@ class TestTokenizerInitialization:
 
     def test_tokenizer_with_invalid_vocab_file(self):
         """Should handle invalid vocab file"""
+        from codex.tokenization.loader import TokenizerLoader
 
         try:
             loader = TokenizerLoader()
@@ -278,6 +258,7 @@ class TestTokenizationEdgeCases:
 
     def test_tokenize_empty_text(self):
         """Should handle empty text tokenization"""
+        from codex.tokenization.api import Tokenizer
 
         try:
             tokenizer = Tokenizer()
@@ -289,6 +270,7 @@ class TestTokenizationEdgeCases:
 
     def test_tokenize_none_text(self):
         """Should reject None text"""
+        from codex.tokenization.api import Tokenizer
 
         try:
             tokenizer = Tokenizer()
@@ -299,6 +281,7 @@ class TestTokenizationEdgeCases:
 
     def test_tokenize_special_characters(self):
         """Should handle special characters"""
+        from codex.tokenization.api import Tokenizer
 
         try:
             tokenizer = Tokenizer()
@@ -310,6 +293,7 @@ class TestTokenizationEdgeCases:
 
     def test_tokenize_unicode_text(self):
         """Should handle Unicode text"""
+        from codex.tokenization.api import Tokenizer
 
         try:
             tokenizer = Tokenizer()
@@ -321,6 +305,7 @@ class TestTokenizationEdgeCases:
 
     def test_detokenize_empty_tokens(self):
         """Should handle empty token list"""
+        from codex.tokenization.api import Tokenizer
 
         try:
             tokenizer = Tokenizer()
@@ -332,6 +317,7 @@ class TestTokenizationEdgeCases:
 
     def test_detokenize_invalid_tokens(self):
         """Should handle invalid tokens"""
+        from codex.tokenization.api import Tokenizer
 
         try:
             tokenizer = Tokenizer()
@@ -352,6 +338,7 @@ class TestAPIAuthRoutes:
 
     def test_auth_with_empty_credentials(self):
         """Should reject empty credentials"""
+        from codex.api.auth_routes import AuthRouter
 
         try:
             router = AuthRouter()
@@ -362,6 +349,7 @@ class TestAPIAuthRoutes:
 
     def test_auth_with_none_credentials(self):
         """Should reject None credentials"""
+        from codex.api.auth_routes import AuthRouter
 
         try:
             router = AuthRouter()
@@ -372,6 +360,7 @@ class TestAPIAuthRoutes:
 
     def test_auth_with_very_long_password(self):
         """Should handle very long password"""
+        from codex.api.auth_routes import AuthRouter
 
         try:
             router = AuthRouter()
@@ -382,6 +371,7 @@ class TestAPIAuthRoutes:
 
     def test_auth_with_sql_injection_attempt(self):
         """Should protect against SQL injection"""
+        from codex.api.auth_routes import AuthRouter
 
         try:
             router = AuthRouter()
@@ -397,6 +387,7 @@ class TestAPIRAGEndpoints:
 
     def test_rag_query_empty_string(self):
         """Should handle empty query"""
+        from codex.api.rag_api import RAGAPI
 
         try:
             api = RAGAPI()
@@ -407,6 +398,7 @@ class TestAPIRAGEndpoints:
 
     def test_rag_query_none_query(self):
         """Should reject None query"""
+        from codex.api.rag_api import RAGAPI
 
         try:
             api = RAGAPI()
@@ -417,6 +409,7 @@ class TestAPIRAGEndpoints:
 
     def test_rag_query_very_long_input(self):
         """Should handle very long query"""
+        from codex.api.rag_api import RAGAPI
 
         try:
             api = RAGAPI()
@@ -428,6 +421,7 @@ class TestAPIRAGEndpoints:
 
     def test_rag_index_empty_documents(self):
         """Should handle indexing empty documents"""
+        from codex.api.rag_api import RAGAPI
 
         try:
             api = RAGAPI()
@@ -438,6 +432,7 @@ class TestAPIRAGEndpoints:
 
     def test_rag_index_none_documents(self):
         """Should reject None documents"""
+        from codex.api.rag_api import RAGAPI
 
         try:
             api = RAGAPI()
@@ -457,6 +452,7 @@ class TestUtilityFunctionBoundaries:
 
     def test_util_parse_empty_string(self):
         """Should handle empty string parsing"""
+        from codex.codex.archive.util import parse_value
 
         try:
             result = parse_value("")
@@ -466,6 +462,7 @@ class TestUtilityFunctionBoundaries:
 
     def test_util_parse_none_value(self):
         """Should handle None value"""
+        from codex.archive.util import parse_value
 
         try:
             result = parse_value(None)
@@ -475,6 +472,7 @@ class TestUtilityFunctionBoundaries:
 
     def test_util_format_empty_dict(self):
         """Should format empty dictionary"""
+        from codex.archive.util import format_data
 
         try:
             result = format_data({})
@@ -484,6 +482,7 @@ class TestUtilityFunctionBoundaries:
 
     def test_util_format_nested_dict(self):
         """Should format deeply nested dictionary"""
+        from codex.archive.util import format_data
 
         try:
             nested = {"a": {"b": {"c": {"d": "value"}}}}
@@ -503,6 +502,7 @@ class TestPerformanceUnderStress:
 
     def test_high_volume_ingestion(self):
         """Should handle high volume ingestion"""
+        from codex.ingestion.file_ingestor import FileIngestor
 
         try:
             ingestor = FileIngestor()
@@ -518,6 +518,7 @@ class TestPerformanceUnderStress:
 
     def test_tokenizer_batch_processing(self):
         """Should handle batch tokenization"""
+        from codex.tokenization.api import Tokenizer
 
         try:
             tokenizer = Tokenizer()

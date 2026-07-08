@@ -3,20 +3,19 @@ Test Prometheus Metrics
 
 Test module for prometheus metrics.
 """
-    pytest.importorskip("prometheus_client", reason="prometheus_client not installed")
-import sys
-from pathlib import Path
-from codex_ml.monitoring.metrics import (
-    from prometheus_client import REGISTRY
 
 #!/usr/bin/env python3
 """Tests for Prometheus metrics collection."""
+import sys
+from pathlib import Path
 
+import pytest
 
 # Add src to path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "src"))
 
+from codex_ml.monitoring.metrics import (
     MetricsCollector,
     get_metrics_collector,
     record_latency,
@@ -27,6 +26,8 @@ sys.path.insert(0, str(REPO_ROOT / "src"))
 @pytest.fixture(autouse=True)
 def clear_prometheus_registry():
     """Clear Prometheus registry between tests to prevent collision."""
+    pytest.importorskip("prometheus_client", reason="prometheus_client not installed")
+    from prometheus_client import REGISTRY
 
     # Get collectors before test
     collectors_before = list(REGISTRY._collector_to_names.keys())

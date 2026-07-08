@@ -10,22 +10,13 @@ These tests guard against silent config drift by verifying that:
 Changes to defaults or schema rules must be intentional and reflected
 here — a failing test is a deliberate gate, not a nuisance.
 """
+
 from __future__ import annotations
+
 import sys
 from pathlib import Path
-    from codex_ml.config_schema import TrainConfig
-        from pydantic import ValidationError
-        from pydantic import ValidationError
-        from pydantic import ValidationError
-        from pydantic import ValidationError
-        from pydantic import ValidationError
-        from pydantic import ValidationError
-        from codex_ml.config_schema import TrainConfig
-        from codex_ml.config_schema import TrainConfig, validate_config_dict
-        from codex_ml.config_schema import LoraConfig
 
-
-
+import pytest
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 for _p in (str(_REPO_ROOT / "src"), str(_REPO_ROOT)):
@@ -39,6 +30,7 @@ pytestmark = pytest.mark.regression
 
 
 def _make_train_config(**overrides):
+    from codex_ml.config_schema import TrainConfig
 
     return TrainConfig(**overrides)
 
@@ -123,32 +115,38 @@ class TestTrainConfigValidation:
     """Schema validation must reject known-bad configurations."""
 
     def test_negative_learning_rate_rejected(self):
+        from pydantic import ValidationError
 
         with pytest.raises(ValidationError):
             _make_train_config(learning_rate=-0.001)
 
     def test_zero_learning_rate_rejected(self):
+        from pydantic import ValidationError
 
         with pytest.raises(ValidationError):
             _make_train_config(learning_rate=0.0)
 
     def test_zero_batch_size_rejected(self):
+        from pydantic import ValidationError
 
         with pytest.raises(ValidationError):
             _make_train_config(batch_size=0)
 
     def test_eval_split_above_one_rejected(self):
+        from pydantic import ValidationError
 
         with pytest.raises(ValidationError):
             _make_train_config(eval_split=1.5)
 
     def test_eval_split_negative_rejected(self):
+        from pydantic import ValidationError
 
         with pytest.raises(ValidationError):
             _make_train_config(eval_split=-0.1)
 
     def test_extra_fields_rejected(self):
         """extra='forbid' must prevent silent config drift from unknown keys."""
+        from pydantic import ValidationError
 
         with pytest.raises(ValidationError):
             _make_train_config(totally_unknown_field="oops")
@@ -163,6 +161,7 @@ class TestTrainConfigRoundTrip:
     """JSON round-trip must produce an identical object."""
 
     def test_model_dump_and_reload(self):
+        from codex_ml.config_schema import TrainConfig
 
         original = TrainConfig(model_name="gpt2", learning_rate=5e-5, batch_size=16)
         data = original.model_dump()
@@ -172,6 +171,7 @@ class TestTrainConfigRoundTrip:
 
     def test_validate_config_dict_helper(self):
         """validate_config_dict must accept a plain dict and return a TrainConfig."""
+        from codex_ml.config_schema import TrainConfig, validate_config_dict
 
         cfg = validate_config_dict({"model_name": "llama", "learning_rate": 2e-4})
         assert isinstance(cfg, TrainConfig)
@@ -179,6 +179,7 @@ class TestTrainConfigRoundTrip:
 
     def test_lora_config_round_trip(self):
         """LoraConfig must round-trip correctly through model_dump."""
+        from codex_ml.config_schema import LoraConfig
 
         lora = LoraConfig(enable=True, r=16, lora_alpha=32, lora_dropout=0.1)
         data = lora.model_dump()

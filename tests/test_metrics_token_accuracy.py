@@ -3,15 +3,16 @@ Test Metrics Token Accuracy
 
 Test module for metrics token accuracy.
 """
-torch = pytest.importorskip("torch")
+
 from types import SimpleNamespace
+
+import pytest
+
 from codex_ml.metrics.evaluator import batch_metrics
-
-
-
 
 pytestmark = pytest.mark.requires_torch
 
+torch = pytest.importorskip("torch")
 
 
 def test_token_accuracy_ignores_masked_labels() -> None:

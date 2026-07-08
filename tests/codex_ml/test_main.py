@@ -4,16 +4,15 @@ Test Main Entry Point Module
 Tests for the main.py module including argument parsing,
 version resolution, CLI forwarding, and help display.
 """
+
 from __future__ import annotations
-import pytest
+
 import argparse
 import sys
 from io import StringIO
 from unittest.mock import MagicMock, patch
+
 from codex_ml.main import (
-
-
-
     _forward_to_cli,
     _resolve_version,
     build_parser,

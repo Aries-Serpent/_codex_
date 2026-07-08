@@ -3,10 +3,11 @@ Test Secret Injection
 
 Test module for secret injection.
 """
+
 import re
 from pathlib import Path
 
-
+import pytest
 
 
 def test_compose_does_not_embed_secrets() -> None:

@@ -3,11 +3,12 @@ Test Mypy Type Coverage
 
 Test module for mypy type coverage.
 """
+
 import shutil
 import subprocess
 from pathlib import Path
 
-
+import pytest
 
 MYPY = shutil.which("mypy")
 BASELINE_PATH = Path(".mypy-baseline.txt")

@@ -3,11 +3,10 @@ Test Git Tag Decode
 
 Test module for git tag decode.
 """
-import pytest
+
 import locale
+
 from codex_ml.tracking.git_tag import _decode
-
-
 
 
 def test_decode_fallback(monkeypatch):

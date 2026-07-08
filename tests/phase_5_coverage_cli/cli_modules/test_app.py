@@ -149,7 +149,6 @@ class TestAppImportHandling:
 
     def test_handles_missing_click(self) -> None:
         """Test graceful handling if Click missing."""
-import pytest
         # Should use Typer if available, or Click as fallback
         assert hasattr(app, "echo")
         assert hasattr(app, "Exit")

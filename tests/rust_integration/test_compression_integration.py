@@ -1,22 +1,16 @@
 """
 Python integration tests for Compression
 """
+
 import time
-        from codex_engine import CompressionPipeline
-        from codex_engine import CompressionPipeline
-        from codex_engine import CompressionPipeline
-        from codex_engine import CompressionPipeline
-        from codex_engine import CompressionPipeline
-        from codex_engine import CompressionPipeline
-        from codex_engine import CompressionPipeline
-        from codex_engine import CompressionPipeline
 
-
+import pytest
 
 
 def test_lz4_compression():
     """Test LZ4 compression and decompression."""
     try:
+        from codex_engine import CompressionPipeline
 
         pipeline = CompressionPipeline("lz4")
 
@@ -32,6 +26,7 @@ def test_lz4_compression():
 def test_zstd_compression():
     """Test Zstd compression and decompression."""
     try:
+        from codex_engine import CompressionPipeline
 
         pipeline = CompressionPipeline("zstd", 3)
 
@@ -47,6 +42,7 @@ def test_zstd_compression():
 def test_compression_ratio():
     """Test compression ratio on repetitive data."""
     try:
+        from codex_engine import CompressionPipeline
 
         pipeline = CompressionPipeline("lz4")
 
@@ -63,6 +59,7 @@ def test_compression_ratio():
 def test_compression_performance():
     """Test LZ4 compression performance."""
     try:
+        from codex_engine import CompressionPipeline
 
         pipeline = CompressionPipeline("lz4")
 
@@ -88,6 +85,7 @@ def test_compression_performance():
 def test_different_data_types():
     """Test compression with different data patterns."""
     try:
+        from codex_engine import CompressionPipeline
 
         pipeline = CompressionPipeline("lz4")
 
@@ -110,6 +108,7 @@ def test_different_data_types():
 def test_invalid_codec():
     """Test that invalid codec raises error."""
     try:
+        from codex_engine import CompressionPipeline
 
         with pytest.raises(ValueError):
             CompressionPipeline("invalid_codec")
@@ -120,6 +119,7 @@ def test_invalid_codec():
 def test_zstd_compression_levels():
     """Test different Zstd compression levels."""
     try:
+        from codex_engine import CompressionPipeline
 
         data = b"Test data" * 1000
 
@@ -135,6 +135,7 @@ def test_zstd_compression_levels():
 def test_large_data_compression():
     """Test compression of large data."""
     try:
+        from codex_engine import CompressionPipeline
 
         pipeline = CompressionPipeline("lz4")
 

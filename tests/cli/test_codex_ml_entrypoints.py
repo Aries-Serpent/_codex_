@@ -77,7 +77,6 @@ def _maybe_invoke(app_factory: Callable[[], object]) -> None:
 
 def test_tracking_decide_cli_help():
     """tracking_decide exposes Typer app when typer is installed."""
-import pytest
 
     module = importlib.import_module("codex_ml.cli.tracking_decide")
     app = getattr(module, "app", None)

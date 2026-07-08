@@ -1,4 +1,5 @@
 """
+pytest.importorskip("mlflow")
 Comprehensive test suite for codex_ml.training.strategies module.
 
 This module provides 15+ tests targeting 70%+ coverage of strategies.py.
@@ -9,16 +10,15 @@ Phase: 2.1 - Core ML Training Coverage Initiative
 Created: 2026-01-18
 Target Coverage: 70%+
 """
+
 from __future__ import annotations
-pytest.importorskip("mlflow")
+
 from typing import Any
 from unittest.mock import MagicMock, patch
+
+import pytest
+
 from codex_ml.training.strategies import (
-    from dataclasses import asdict
-
-
-
-
     FunctionalStrategy,
     LegacyStrategy,
     NoOpCallback,
@@ -91,6 +91,7 @@ def test_training_result_empty_extra():
 
 def test_training_result_serialization():
     """Test TrainingResult can be serialized."""
+    from dataclasses import asdict
 
     result = TrainingResult(
         status="ok", backend="functional", final_epoch=3, output_dir="/output", extra={"loss": 0.5}

@@ -3,17 +3,18 @@ Test Logging Config
 
 Test module for logging config.
 """
+
 from __future__ import annotations
+
 import io
 import json
 from pathlib import Path
+
+import pytest
+
 from codex.archive import logging_config
 from codex.archive.config import LoggingConfig, PerformanceConfig
 from codex.archive.perf import TimingMetrics
-
-
-
-
 
 
 def test_setup_logging_json_format() -> None:

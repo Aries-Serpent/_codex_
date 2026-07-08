@@ -1,5 +1,4 @@
 """Day 2: codex_ml - Config tests"""
-import pytest
 
 
 class TestMLConfig:

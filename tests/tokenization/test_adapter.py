@@ -3,10 +3,10 @@ Test Adapter
 
 Test module for adapter.
 """
+
+import pytest
+
 from codex_ml.tokenization.adapter import HFTokenizerAdapter, WhitespaceTokenizer
-    from codex_ml.utils.hf_pinning import HFModelUnavailableError
-
-
 
 
 def test_whitespace_roundtrip():
@@ -19,6 +19,7 @@ def test_whitespace_roundtrip():
 
 
 def test_hf_tokenizer_roundtrip():
+    from codex_ml.utils.hf_pinning import HFModelUnavailableError
 
     try:
         tok = HFTokenizerAdapter("gpt2")

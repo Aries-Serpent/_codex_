@@ -21,27 +21,14 @@ reached by Phase 9.1 / 9.2 happy-path tests:
 
 #AFTERMATH_METRIC - Phase 9.3 error-path coverage tests
 """
+
 from __future__ import annotations
+
 from pathlib import Path
+
+import pytest
+
 from agents.exceptions import (
-from agents.mental_mapping import MentalMap, NodeType
-from agents.workflow_navigator import (
-        from agents.agent_memory import AgentMemory
-        from agents.agent_memory import AgentMemory
-        from agents.physics_orchestrator import EnergyLandscape
-        from agents.physics_orchestrator import EnergyLandscape
-        from agents.physics_orchestrator import SwarmIntelligence
-        from agents.physics_orchestrator import SwarmIntelligence
-        from agents.physics_orchestrator import SuperpositionExplorer
-        import agents.quantum_game_theory as qgt_module
-        import agents.quantum_game_theory as qgt_module
-        import agents.quantum_game_theory as qgt_module
-        import agents.quantum_game_theory as qgt_module
-        from agents.cognitive_adapter import SimpleDictMemory
-
-
-
-
     AgentConfigError,
     AgentError,
     AgentExecutionError,
@@ -50,6 +37,8 @@ from agents.workflow_navigator import (
     EntanglementError,
     GaugeError,
 )
+from agents.mental_mapping import MentalMap, NodeType
+from agents.workflow_navigator import (
     StepStatus,
     WorkflowNavigator,
     WorkflowStep,
@@ -194,12 +183,14 @@ class TestAgentMemoryErrors:
     """Error paths in AgentMemory.__init__."""
 
     def test_disallowed_path_raises_value_error(self) -> None:
+        from agents.agent_memory import AgentMemory
 
         # /etc is outside home, cwd, and /tmp — should always be disallowed
         with pytest.raises(ValueError, match="outside allowed directories"):
             AgentMemory(db_path=Path("/etc/codex_test_db.sqlite"))
 
     def test_allowed_path_tmp_succeeds(self, tmp_path: Path) -> None:
+        from agents.agent_memory import AgentMemory
 
         db_path = tmp_path / "test_memory.db"
         store = AgentMemory(db_path=db_path)
@@ -215,12 +206,14 @@ class TestEnergyLandscapeErrors:
     """Error paths in EnergyLandscape."""
 
     def test_minimize_free_energy_empty_raises(self) -> None:
+        from agents.physics_orchestrator import EnergyLandscape
 
         landscape = EnergyLandscape(temperature=1.0)
         with pytest.raises(ValueError, match="No states in landscape"):
             landscape.minimize_free_energy()
 
     def test_select_state_empty_returns_none(self) -> None:
+        from agents.physics_orchestrator import EnergyLandscape
 
         landscape = EnergyLandscape(temperature=1.0)
         result = landscape.select_state()
@@ -236,12 +229,14 @@ class TestSwarmIntelligenceErrors:
     """Error paths in SwarmIntelligence.run_optimization."""
 
     def test_run_optimization_no_function_raises(self) -> None:
+        from agents.physics_orchestrator import SwarmIntelligence
 
         swarm = SwarmIntelligence(dimensions=2, num_particles=3)
         with pytest.raises(ValueError, match="Either fitness_function or objective_function"):
             swarm.run_optimization()
 
     def test_run_optimization_with_objective_function_succeeds(self) -> None:
+        from agents.physics_orchestrator import SwarmIntelligence
 
         swarm = SwarmIntelligence(dimensions=2, num_particles=3)
         result = swarm.run_optimization(
@@ -261,6 +256,7 @@ class TestSuperpositionExplorerErrors:
     """Error paths in SuperpositionExplorer."""
 
     def test_measure_optimal_path_empty_raises(self) -> None:
+        from agents.physics_orchestrator import SuperpositionExplorer
 
         explorer = SuperpositionExplorer()
         with pytest.raises(ValueError, match="No paths in superposition"):
@@ -276,6 +272,7 @@ class TestQuantumInspiredGameEngineErrors:
     """Error paths in QuantumInspiredGameEngine when numpy is unavailable."""
 
     def test_init_without_numpy_raises_type_error(self) -> None:
+        import agents.quantum_game_theory as qgt_module
 
         original = qgt_module.NUMPY_AVAILABLE
         try:
@@ -295,6 +292,7 @@ class TestBlueRedTeamSimulatorErrors:
     """Error paths in BlueRedTeamSimulator when numpy is unavailable."""
 
     def test_evaluate_hypothesis_without_numpy_raises(self) -> None:
+        import agents.quantum_game_theory as qgt_module
 
         original = qgt_module.NUMPY_AVAILABLE
         try:
@@ -310,6 +308,7 @@ class TestBlueRedTeamSimulatorErrors:
             qgt_module.NUMPY_AVAILABLE = original
 
     def test_compare_strategies_without_numpy_raises(self) -> None:
+        import agents.quantum_game_theory as qgt_module
 
         original = qgt_module.NUMPY_AVAILABLE
         try:
@@ -325,6 +324,7 @@ class TestBlueRedTeamSimulatorErrors:
             qgt_module.NUMPY_AVAILABLE = original
 
     def test_run_simulation_without_numpy_raises(self) -> None:
+        import agents.quantum_game_theory as qgt_module
 
         original = qgt_module.NUMPY_AVAILABLE
         try:
@@ -409,6 +409,7 @@ class TestSimpleMemoryAdapterOperations:
     """Covers SimpleDictMemory store / retrieve / delete / clear / get_history."""
 
     def _make_adapter(self):
+        from agents.cognitive_adapter import SimpleDictMemory
 
         return SimpleDictMemory()
 

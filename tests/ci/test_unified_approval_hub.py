@@ -9,16 +9,15 @@ Reference Documents:
 - .codex/APPROVAL_WORKFLOWS_MAPPING.md
 - .codex/APPROVAL_SECURITY_VALIDATION.md
 """
+
 import json
 import os
 import subprocess
 from datetime import datetime, timedelta
 from pathlib import Path
 from unittest.mock import patch
-        import re
-        import re
 
-
+import pytest
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Test Fixtures
@@ -480,6 +479,7 @@ class TestSecurityValidation:
 
     def _sanitize_approval_reason(self, reason):
         """Sanitize approval reason."""
+        import re
 
         # First, remove special characters
         sanitized = re.sub(r"[^a-zA-Z0-9:_.\-\s]", "", reason)
@@ -518,6 +518,7 @@ class TestSecurityValidation:
 
     def _validate_label_name(self, label):
         """Validate label name."""
+        import re
 
         if not re.match(r"^[a-zA-Z0-9:_\-]+$", label):
             raise ValueError(f"Invalid label: {label}")

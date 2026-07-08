@@ -6,9 +6,8 @@ Test Periodic And Trim
 
 Test module for periodic and trim.
 """
-import pytest
-from src.training.checkpoint_manager import CheckpointManager
 
+from src.training.checkpoint_manager import CheckpointManager
 
 
 def test_periodic_and_trim(tmp_path):

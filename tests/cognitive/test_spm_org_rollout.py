@@ -3,15 +3,10 @@
 Tests that COGNITIVE_BRAIN_ALLOWED_ACTORS env var correctly elevates actors
 to ORG_OWNER tier without code changes (GitHub repo variable pattern).
 """
+
 from __future__ import annotations
-import pytest
+
 from codex.cognitive.structural_policy_manager import PermissionTier, StructuralPolicyManager
-    from unittest.mock import MagicMock, patch
-    from codex.cognitive.mcp_session_bridge import register_mcp_session_hook
-    from codex.cognitive.mcp_session_bridge import register_mcp_session_hook
-    from codex.cognitive.mcp_session_bridge import register_mcp_session_hook
-
-
 
 # ---------------------------------------------------------------------------
 # Env var org rollout
@@ -129,10 +124,12 @@ def test_parse_allowed_actors_trailing_comma():
 
 def test_injection_enabled_flag_true(monkeypatch):
     """COGNITIVE_BRAIN_INJECTION_ENABLED=true allows injection."""
+    from unittest.mock import MagicMock, patch
 
     monkeypatch.setenv("COGNITIVE_BRAIN_INJECTION_ENABLED", "true")
     monkeypatch.setenv("COGNITIVE_BRAIN_ALLOWED_ACTORS", "mbaetiong")
 
+    from codex.cognitive.mcp_session_bridge import register_mcp_session_hook
 
     with (
         patch("codex.cognitive.mcp_session_bridge.AgentBrainAPI"),
@@ -153,6 +150,7 @@ def test_injection_disabled_flag_false(monkeypatch):
     """COGNITIVE_BRAIN_INJECTION_ENABLED=false skips injection entirely."""
     monkeypatch.setenv("COGNITIVE_BRAIN_INJECTION_ENABLED", "false")
 
+    from codex.cognitive.mcp_session_bridge import register_mcp_session_hook
 
     ctx = {"actor": "mbaetiong", "system_prompt": "Base prompt"}
     result = register_mcp_session_hook(ctx)
@@ -165,6 +163,7 @@ def test_injection_disabled_flag_zero(monkeypatch):
     """COGNITIVE_BRAIN_INJECTION_ENABLED=0 skips injection."""
     monkeypatch.setenv("COGNITIVE_BRAIN_INJECTION_ENABLED", "0")
 
+    from codex.cognitive.mcp_session_bridge import register_mcp_session_hook
 
     ctx = {"actor": "mbaetiong"}
     result = register_mcp_session_hook(ctx)

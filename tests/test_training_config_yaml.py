@@ -3,11 +3,12 @@ Test Training Config Yaml
 
 Test module for training config yaml.
 """
-yaml = pytest.importorskip("yaml")
+
 from pathlib import Path
 
+import pytest
 
-
+yaml = pytest.importorskip("yaml")
 
 
 def test_training_base_yaml_defaults():

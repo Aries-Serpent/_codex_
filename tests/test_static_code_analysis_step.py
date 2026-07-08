@@ -3,12 +3,11 @@ Test Static Code Analysis Step
 
 Test module for static code analysis step.
 """
-import pytest
+
 import json
 from pathlib import Path
+
 from analysis.audit_pipeline import step_static_code_analysis
-
-
 
 
 def test_static_code_analysis_logs(tmp_path: Path) -> None:

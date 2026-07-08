@@ -3,15 +3,14 @@ Test Checkpoint Schema And Compat
 
 Test module for checkpoint schema and compat.
 """
+
 from __future__ import annotations
-import pytest
+
 import os
 import tempfile
 import warnings
+
 from codex_ml.checkpointing import compat, schema_v2
-
-
-
 
 
 def test_schema_v2_roundtrip() -> None:

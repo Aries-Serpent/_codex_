@@ -3,14 +3,13 @@ Test Build Kb
 
 Test module for build kb.
 """
+
 from __future__ import annotations
-import pytest
+
 import json
 from pathlib import Path
+
 from codex.knowledge.build import build_kb
-
-
-
 
 
 def test_build_kb(tmp_path: Path):

@@ -1,12 +1,11 @@
 """Smoke tests for :mod:`ingestion.csv_ingestor`."""
+
 from __future__ import annotations
+
 import csv
 from pathlib import Path
-    from ingestion import csv_ingestor
-    from ingestion import csv_ingestor
 
-
-
+import pytest
 
 
 @pytest.fixture
@@ -21,6 +20,7 @@ def sample_csv_file(tmp_path: Path) -> Path:
 
 
 def test_csv_ingestor_reads_rows(sample_csv_file: Path) -> None:
+    from ingestion import csv_ingestor
 
     rows = csv_ingestor.load_csv(sample_csv_file)
     assert len(rows) == 3, "Rows must not be empty"
@@ -28,6 +28,7 @@ def test_csv_ingestor_reads_rows(sample_csv_file: Path) -> None:
 
 
 def test_csv_ingestor_iterates_batches(sample_csv_file: Path) -> None:
+    from ingestion import csv_ingestor
 
     # auto-detect encoding path
     rows = csv_ingestor.load_csv(sample_csv_file, encoding="auto")

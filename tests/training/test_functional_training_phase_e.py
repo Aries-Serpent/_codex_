@@ -147,7 +147,6 @@ class TestMaybeCollectSystemMetrics:
 
     def test_collector_returns_empty_dict_gives_none(self, monkeypatch):
         """Empty dicts contain no numeric values → should return None."""
-import pytest
         monkeypatch.setattr(self.ft, "collect_system_metrics", lambda: {})
         result = self.ft._maybe_collect_system_metrics(True)
         assert result is None, "Result must not be empty"

@@ -643,7 +643,6 @@ class TestAPIServiceChaining:
 
     def test_service_chain_49(self):
         """Test service chaining scenario 49"""
-import pytest
 
         class Service49:
             def __init__(self):

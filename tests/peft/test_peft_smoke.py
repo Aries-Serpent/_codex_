@@ -3,15 +3,16 @@ Test Peft Smoke
 
 Test module for peft smoke.
 """
+
 from __future__ import annotations
-pytest.importorskip("torch")
+
+import pytest
+
+pytest.importorskip("torch", reason="PyTorch required for tests")
 import torch
-    from codex_ml.peft.peft_registry import get_peft_registry
-
-
-
 
 try:
+    from codex_ml.peft.peft_registry import get_peft_registry
 except ImportError:
     get_peft_registry = None  # type: ignore[assignment]
 

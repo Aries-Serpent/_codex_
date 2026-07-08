@@ -9,12 +9,13 @@ Created: 2026-01-18
 Phase: 15.3 - Continuous Quality Monitoring
 Target: Establish quality monitoring infrastructure
 """
+
 import json
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any
 
-
+import pytest
 
 # ============================================================================
 # Quality Metrics Data Structures

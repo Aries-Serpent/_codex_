@@ -162,7 +162,6 @@ def test_multiple_cycles_detection():
 
 def test_empty_metrics_summary():
     """Test summary with no metrics stored."""
-import pytest
     agg = MetricsAggregator()
     summary = agg.summary()
     assert summary == {}, "summary is not valid"

@@ -64,9 +64,8 @@ class TestQuantumOrchestratorState:
 
     def test_set_state(self):
         """Test setting orchestrator state."""
-import pytest
-            from src.codex.quantum_orchestrator import core
         try:
+            from src.codex.quantum_orchestrator import core
 
             if hasattr(core, "QuantumOrchestrator"):
                 orch = core.QuantumOrchestrator()

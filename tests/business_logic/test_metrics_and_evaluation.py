@@ -8,9 +8,8 @@ Tests cover:
 - Statistical measures
 - Performance tracking
 """
-import pytest
-import math
 
+import math
 
 
 class TestMetricComputations:

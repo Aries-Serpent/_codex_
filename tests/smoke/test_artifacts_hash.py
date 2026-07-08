@@ -3,11 +3,12 @@ Test Artifacts Hash
 
 Test module for artifacts hash.
 """
+
 from pathlib import Path
+
+import pytest
+
 from codex_ml.utils.artifacts import compute_sha256, write_hash_sidecar, write_metadata
-
-
-
 
 pytestmark = pytest.mark.smoke
 

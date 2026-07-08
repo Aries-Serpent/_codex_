@@ -3,9 +3,8 @@ Test Cli Determinism Wiring
 
 Test module for cli determinism wiring.
 """
-    cs = pytest.importorskip("codex_ml.codex_script")
-    import sys
 
+import pytest
 
 pytestmark = pytest.mark.smoke
 
@@ -18,10 +17,12 @@ def test_cli_env_wires_determinism(monkeypatch):
 
     # Import module with environment set
     # Force reimport to pick up environment variables
+    import sys
 
     if "codex_ml.codex_script" in sys.modules:
         del sys.modules["codex_ml.codex_script"]
 
+    cs = pytest.importorskip("codex_ml.codex_script")
 
     assert hasattr(cs, "_init_determinism_from_env")
     summary = cs._init_determinism_from_env()

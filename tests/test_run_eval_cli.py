@@ -3,15 +3,16 @@ Test Run Eval Cli
 
 Test module for run eval cli.
 """
-pytest.importorskip("datasets")
+
 import json
 import os
 import subprocess
 import sys
 from pathlib import Path
 
+import pytest
 
-
+pytest.importorskip("datasets")
 
 
 @pytest.mark.slow

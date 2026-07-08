@@ -3,9 +3,8 @@ Test Structured Logger
 
 Test module for structured logger.
 """
-import pytest
-from tools.logging.structured_logger import JsonLogger
 
+from tools.logging.structured_logger import JsonLogger
 
 
 def test_logger(tmp_path):

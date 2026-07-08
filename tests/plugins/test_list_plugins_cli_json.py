@@ -3,13 +3,12 @@ Test List Plugins Cli Json
 
 Test module for list plugins cli json.
 """
+
 from __future__ import annotations
-import pytest
+
 import json
 import subprocess
 import sys
-
-
 
 _ALLOWED_STDERR_FRAGMENTS = (
     "psutil import failed; falling back to minimal sampler",

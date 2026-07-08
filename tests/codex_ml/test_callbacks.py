@@ -6,9 +6,10 @@ Tests for training callbacks that handle events during training.
 Phase 55: MEDIUM Priority Module Tests
 Coverage Target: src/codex_ml 11% → 16%+
 """
+
 from enum import Enum, auto
 
-
+import pytest
 
 
 class TrainingEvent(Enum):

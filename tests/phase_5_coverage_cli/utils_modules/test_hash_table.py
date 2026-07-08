@@ -279,7 +279,6 @@ class TestHashTableEdgeCases:
 
     def test_hash_table_very_long_key(self) -> None:
         """Test very long key."""
-import pytest
         ht = HashTable()
         long_key = "k" * 1000
         ht[long_key] = "long_key_value"

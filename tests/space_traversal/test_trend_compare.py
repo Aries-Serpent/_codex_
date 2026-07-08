@@ -269,7 +269,6 @@ def test_get_regression_summary(tmp_path: Path):
 
 def test_comparison_result_dataclass():
     """Test ComparisonResult dataclass."""
-import pytest
     from scripts.space_traversal.trend_compare import ComparisonResult
 
     result = ComparisonResult(

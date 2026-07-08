@@ -1,4 +1,5 @@
 """
+pytest.importorskip("mlflow")
 Comprehensive test suite for codex_ml.training.unified_training module.
 
 This module provides 25+ tests targeting 70%+ coverage of unified_training.py.
@@ -9,17 +10,16 @@ Phase: 2.1 - Core ML Training Coverage Initiative
 Created: 2026-01-18
 Target Coverage: 70%+
 """
+
 from __future__ import annotations
-pytest.importorskip("mlflow")
+
 from pathlib import Path
 from unittest.mock import MagicMock, patch
-from codex_ml.training.unified_training import (
-    from dataclasses import asdict
 
-
-
+import pytest
 
 # Import modules under test
+from codex_ml.training.unified_training import (
     ContinualConfig,
     ContinualPhase,
     UnifiedTrainingConfig,
@@ -362,6 +362,7 @@ def test_distributed_context_with_torch_dist(mock_torch, monkeypatch):
 
 def test_unified_config_serialization(minimal_config):
     """Test UnifiedTrainingConfig can be serialized to dict."""
+    from dataclasses import asdict
 
     config_dict = asdict(minimal_config)
     assert config_dict["model_name"] == "test-model", "Condition must be true"

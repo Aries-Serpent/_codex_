@@ -7,23 +7,23 @@ Tests cover:
 - Deterministic seeding
 - Test isolation
 """
+
 from __future__ import annotations
-pytest.importorskip("hypothesis")
+
 import random
 import tempfile
 from pathlib import Path
 from typing import Any
+
+import pytest
+
+pytest.importorskip("hypothesis")
+
+
+pytest.importorskip("hypothesis", reason="hypothesis required for property tests")
+
 from hypothesis import given, settings
 from hypothesis import strategies as st
-        import os
-        import shutil
-
-
-
-
-
-
-
 
 # --- Coverage Gate Tests ---
 
@@ -254,6 +254,7 @@ class IsolationManager:
 
     def save_env(self, keys: list[str]) -> None:
         """Save environment variables."""
+        import os
 
         for key in keys:
             if key in os.environ:
@@ -261,6 +262,7 @@ class IsolationManager:
 
     def cleanup(self) -> None:
         """Cleanup all temp resources."""
+        import shutil
 
         for temp_dir in self.temp_dirs:
             if temp_dir.exists():

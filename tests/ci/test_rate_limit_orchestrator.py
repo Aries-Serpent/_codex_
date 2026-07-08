@@ -1,7 +1,6 @@
 from __future__ import annotations
-import pytest
-from scripts.ci import rate_limit_orchestrator as orchestrator
 
+from scripts.ci import rate_limit_orchestrator as orchestrator
 
 
 def test_parse_args_keep_latest_defaults_true():

@@ -1,10 +1,9 @@
 """Regression tests for the public logging/tracking docstrings."""
+
 from __future__ import annotations
-import pytest
+
 import codex_ml.logging as codex_logging
 import codex_ml.tracking as tracking
-
-
 
 
 def _assert_contains(doc: str | None, needle: str) -> None:

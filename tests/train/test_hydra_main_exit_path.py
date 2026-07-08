@@ -3,18 +3,17 @@ Test Hydra Main Exit Path
 
 Test module for hydra main exit path.
 """
+
 from __future__ import annotations
-import pytest
+
 import subprocess
 import sys
-import sys
-import codex_ml.cli.hydra_main as hydra_main
-
-
 
 SCRIPT = """
+import sys
 sys.modules['hydra'] = None
 sys.modules['omegaconf'] = None
+import codex_ml.cli.hydra_main as hydra_main
 sys.exit(hydra_main.main())
 """
 

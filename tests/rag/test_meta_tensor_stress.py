@@ -6,20 +6,16 @@ Tests 1000+ meta-tensor operations across various scenarios.
 
 This module is part of Phase 13.2: RAG Meta-Tensor Safety
 """
+
 import gc
 import logging
 import time
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import Any
-        from codex.rag.meta_tensor_guard import MetaTensorGuardRail
-                from codex.rag.meta_tensor_guard import MetaTensorGuardRail
-        from codex.rag.materialization_prevention import MatTensorDetector
-        from codex.rag.materialization_prevention import MaterializationRecoveryStrategy
-        from codex.rag.meta_tensor_guard import guard_rail_context
-
 
 try:
+    import pytest
 except ImportError:
     pytest = None
 
@@ -83,6 +79,7 @@ class MetaTensorStressTest:
         Tests if guard rails prevent meta tensor creation during rapid
         initialization sequences.
         """
+        from codex.rag.meta_tensor_guard import MetaTensorGuardRail
 
         test_name = "rapid_model_loading_cycles"
         start_time = time.time()
@@ -145,6 +142,7 @@ class MetaTensorStressTest:
 
         for iteration in range(self.iterations):
             try:
+                from codex.rag.meta_tensor_guard import MetaTensorGuardRail
 
                 guard = MetaTensorGuardRail()
 
@@ -195,6 +193,7 @@ class MetaTensorStressTest:
         Tests if detector accurately identifies meta tensors
         across various model architectures.
         """
+        from codex.rag.materialization_prevention import MatTensorDetector
 
         test_name = "meta_tensor_detection_accuracy"
         start_time = time.time()
@@ -252,6 +251,7 @@ class MetaTensorStressTest:
 
         Tests if recovery mechanisms reliably restore model state.
         """
+        from codex.rag.materialization_prevention import MaterializationRecoveryStrategy
 
         test_name = "recovery_mechanism_robustness"
         start_time = time.time()
@@ -296,6 +296,7 @@ class MetaTensorStressTest:
 
         Tests if guard rails don't significantly degrade model loading performance.
         """
+        from codex.rag.meta_tensor_guard import guard_rail_context
 
         test_name = "guard_rail_performance"
         start_time = time.time()

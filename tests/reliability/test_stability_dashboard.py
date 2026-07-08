@@ -3,12 +3,13 @@
 This module tests the test stability dashboard functionality including
 metrics visualization, trend analysis, and reporting capabilities.
 """
+
 import json
 import tempfile
 from datetime import datetime
 from pathlib import Path
 
-
+import pytest
 
 
 class TestStabilityMetrics:

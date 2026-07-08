@@ -11,16 +11,15 @@ This test suite covers:
 
 Total: 60+ test cases targeting 0% → 80%+ coverage for aais_batch/handler.py
 """
+
 from __future__ import annotations
+
 import asyncio
 import warnings
+
+import pytest
+
 from codex.skills.aais_batch.handler import (
-        import time
-        import time
-
-
-
-
     _build_summary,
     _get_max_concurrency,
     _score_item,
@@ -640,6 +639,7 @@ class TestPerformance:
 
     def test_performance_1000_agents_completes_reasonably(self):
         """Test that 1000 items complete in reasonable time (< 60s)."""
+        import time
         items = [{"id": f"i{i}", "text": f"text {i}"} for i in range(1000)]
         payload = {"items": items}
         
@@ -677,6 +677,7 @@ class TestPerformance:
 
     def test_throughput_measurement(self):
         """Test throughput (items per second)."""
+        import time
         items = [{"id": f"i{i}", "text": "text"} for i in range(400)]
         payload = {"items": items}
         

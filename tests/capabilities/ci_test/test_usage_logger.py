@@ -1,19 +1,15 @@
 """
 Tests for scripts/ci/usage_logger.py (T-004).
 """
+
 from __future__ import annotations
+
 import json
 from pathlib import Path
+
+import pytest
+
 import scripts.ci.usage_logger as ul
-        import datetime
-        import datetime
-        import datetime
-        import datetime
-        import datetime
-
-
-
-
 
 
 @pytest.fixture()
@@ -90,6 +86,7 @@ class TestMonthlySummary:
         assert summary["entries"] == 0, "Condition must be true"
 
     def test_sums_current_month_only(self, tmp_log: Path) -> None:
+        import datetime
 
         # Current-month entry
         now = datetime.datetime.now(datetime.timezone.utc)
@@ -123,6 +120,7 @@ class TestMonthlySummary:
         assert summary["entries"] == 1, "Condition must be true"
 
     def test_accumulates_multiple_entries(self, tmp_log: Path) -> None:
+        import datetime
 
         ts = datetime.datetime.now(datetime.timezone.utc).isoformat()
         entries = [
@@ -139,6 +137,7 @@ class TestMonthlySummary:
         assert summary["entries"] == 3, "Condition must be true"
 
     def test_ignores_malformed_lines(self, tmp_log: Path) -> None:
+        import datetime
 
         ts = datetime.datetime.now(datetime.timezone.utc).isoformat()
         with tmp_log.open("w") as fh:
@@ -154,6 +153,7 @@ class TestMonthlySummary:
 
 class TestBudgetAlert:
     def test_below_threshold_returns_0(self, tmp_log: Path) -> None:
+        import datetime
 
         ts = datetime.datetime.now(datetime.timezone.utc).isoformat()
         with tmp_log.open("w") as fh:
@@ -163,6 +163,7 @@ class TestBudgetAlert:
         assert summary["total_minutes"] < 2500.0, "Condition must be true"
 
     def test_at_threshold_returns_alert(self, tmp_log: Path) -> None:
+        import datetime
 
         ts = datetime.datetime.now(datetime.timezone.utc).isoformat()
         with tmp_log.open("w") as fh:

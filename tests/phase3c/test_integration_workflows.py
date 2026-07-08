@@ -5,18 +5,15 @@ end-to-end workflows, and bridge interfaces.
 
 Target: Add 50-100 integration tests for critical workflows
 """
+
 from __future__ import annotations
-import pytest
+
 import tempfile
 from pathlib import Path
 from unittest import mock
+
 from src.codex.agents.memory.manager import MemoryManager
 from src.codex.config.env_vars import EnvironmentManager
-        from src.codex.agents.memory.protocol import MemoryEntry
-        from src.codex.agents.memory.protocol import MemoryQuery
-
-
-
 
 
 class TestAgentCommunicationPatterns:
@@ -249,6 +246,7 @@ class TestAgentBridgeInterfaces:
 
     def test_memory_entry_protocol(self):
         """Test MemoryEntry protocol compliance."""
+        from src.codex.agents.memory.protocol import MemoryEntry
 
         entry = MemoryEntry(content="test", agent_id="test", session_id="test")
 
@@ -262,6 +260,7 @@ class TestAgentBridgeInterfaces:
 
     def test_memory_query_protocol(self):
         """Test MemoryQuery protocol compliance."""
+        from src.codex.agents.memory.protocol import MemoryQuery
 
         query = MemoryQuery(text="test query", agent_id="test", session_id="test", limit=10)
 

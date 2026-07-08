@@ -10,9 +10,8 @@ Categories tested:
 - F4: SSL/TLS Certificate Validation
 - F5: Rate Limiting (boundary conditions)
 """
-import pytest
-from datetime import datetime, timedelta
 
+from datetime import datetime, timedelta
 
 
 class TestConnectionManagement:

@@ -7,35 +7,11 @@ coverage through exhaustive parameter testing.
 Author: Copilot AI Agent
 Version: 1.0.0
 """
+
+import pytest
+
 pytest.importorskip("numpy", reason="numpy not installed")
 import numpy as np
-        from agents.physics_orchestrator import EnergyState, PhysicsOrchestrator
-        from agents.physics_orchestrator import HamiltonianEvolver
-        from agents.physics_orchestrator import SwarmIntelligence
-        from agents.physics_orchestrator import QuantumOperator
-        from agents.quantum_game_theory import StrategyState, TeamType
-        from agents.quantum_game_theory import QuantumGameState, StrategyState
-        from agents.quantum_game_theory import QuantumInspiredGameEngine
-        from agents.mental_mapping import MentalMappingModel, NodeType
-        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
-        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
-        from agents.agent_memory import AgentMemory
-        from agents.agent_memory import AgentMemory
-        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
-        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
-        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
-        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
-        from agents.advanced_physics_calculators import FluidChannel
-        from agents.advanced_physics_calculators import FractalAnalyzer
-        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
-        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
-        from agents.physics_orchestrator import EnergyState
-        from agents.physics_orchestrator import DecisionState, ForceVector
-        from agents.physics_orchestrator import (
-        from agents.agent_memory import AgentMemory
-
-
-
 
 
 class TestMethodVariations_PhysicsOrchestrator:
@@ -43,6 +19,7 @@ class TestMethodVariations_PhysicsOrchestrator:
 
     def test_evolve_state_all_dt_values(self):
         """Test evolve_state with various dt values"""
+        from agents.physics_orchestrator import EnergyState, PhysicsOrchestrator
 
         orch = PhysicsOrchestrator()
         state = EnergyState(configuration={}, energy=100.0, entropy=0.5)
@@ -53,6 +30,7 @@ class TestMethodVariations_PhysicsOrchestrator:
 
     def test_hamiltonian_all_omega_values(self):
         """Test harmonic_hamiltonian with all omega ranges"""
+        from agents.physics_orchestrator import HamiltonianEvolver
 
         evolver = HamiltonianEvolver(grid_size=8)
 
@@ -62,6 +40,7 @@ class TestMethodVariations_PhysicsOrchestrator:
 
     def test_swarm_all_particle_counts(self):
         """Test SwarmIntelligence with various particle counts"""
+        from agents.physics_orchestrator import SwarmIntelligence
 
         for count in [1, 2, 5, 10, 20, 50, 100]:
             swarm = SwarmIntelligence(num_particles=count)
@@ -69,6 +48,7 @@ class TestMethodVariations_PhysicsOrchestrator:
 
     def test_quantum_operator_all_grid_sizes(self):
         """Test QuantumOperator with all grid sizes"""
+        from agents.physics_orchestrator import QuantumOperator
 
         for size in [2, 4, 8, 16, 32, 64]:
             op = QuantumOperator(grid_size=size)
@@ -80,6 +60,7 @@ class TestMethodVariations_QuantumGame:
 
     def test_strategy_state_all_team_types(self):
         """Test StrategyState with all team variations"""
+        from agents.quantum_game_theory import StrategyState, TeamType
 
         teams = [TeamType.BLUE, TeamType.RED, "custom", "team_a", ""]
 
@@ -89,6 +70,7 @@ class TestMethodVariations_QuantumGame:
 
     def test_game_state_all_entanglement_strengths(self):
         """Test QuantumGameState with all entanglement values"""
+        from agents.quantum_game_theory import QuantumGameState, StrategyState
 
         blue = StrategyState("blue", np.array([0.5, 0.5]))
         red = StrategyState("red", np.array([0.5, 0.5]))
@@ -99,6 +81,7 @@ class TestMethodVariations_QuantumGame:
 
     def test_payoff_matrices_all_sizes(self):
         """Test with various payoff matrix sizes"""
+        from agents.quantum_game_theory import QuantumInspiredGameEngine
 
         # 2x2 matrix
         blue = np.array([0.5, 0.5])
@@ -115,6 +98,7 @@ class TestMethodVariations_MentalMapping:
 
     def test_create_node_all_types(self):
         """Test create_node with all NodeType values"""
+        from agents.mental_mapping import MentalMappingModel, NodeType
 
         model = MentalMappingModel()
 
@@ -131,6 +115,7 @@ class TestMethodVariations_MentalMapping:
 
     def test_connect_nodes_all_edge_types(self):
         """Test connect_nodes with all EdgeType values"""
+        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
 
         model = MentalMappingModel()
 
@@ -149,6 +134,7 @@ class TestMethodVariations_MentalMapping:
 
     def test_graph_traversal_all_starting_points(self):
         """Test graph traversal from various starting points"""
+        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
 
         model = MentalMappingModel()
 
@@ -172,6 +158,7 @@ class TestMethodVariations_AgentMemory:
 
     def test_search_all_query_types(self):
         """Test search with various query formats"""
+        from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
 
@@ -188,6 +175,7 @@ class TestMethodVariations_AgentMemory:
 
     def test_filter_all_criteria_types(self):
         """Test filter with various criteria"""
+        from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
 
@@ -208,6 +196,7 @@ class TestMethodVariations_WorkflowNavigator:
 
     def test_workflow_all_step_counts(self):
         """Test workflows with various step counts"""
+        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
 
         navigator = WorkflowNavigator()
 
@@ -218,6 +207,7 @@ class TestMethodVariations_WorkflowNavigator:
 
     def test_navigate_all_indices(self):
         """Test navigation to all valid indices"""
+        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
 
         navigator = WorkflowNavigator()
         steps = [WorkflowStep(f"s{i}", f"Step {i}") for i in range(10)]
@@ -236,6 +226,7 @@ class TestMethodVariations_SelfHealing:
 
     def test_all_issue_severities(self):
         """Test DetectedIssue with all severity levels"""
+        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
 
         severities = [
             IssueSeverity.LOW,
@@ -252,6 +243,7 @@ class TestMethodVariations_SelfHealing:
 
     def test_all_issue_types(self):
         """Test DetectedIssue with all issue types"""
+        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
 
         issue_types = [IssueType.SYNTAX_ERROR]  # Add more as they exist
 
@@ -267,6 +259,7 @@ class TestMethodVariations_AdvancedCalculators:
 
     def test_fluid_channel_all_dimensions(self):
         """Test FluidChannel with various dimensions"""
+        from agents.advanced_physics_calculators import FluidChannel
 
         dimensions = [
             (0.1, 1.0),
@@ -284,6 +277,7 @@ class TestMethodVariations_AdvancedCalculators:
 
     def test_fractal_analyzer_various_dimensions(self):
         """Test FractalAnalyzer with various point dimensions"""
+        from agents.advanced_physics_calculators import FractalAnalyzer
 
         analyzer = FractalAnalyzer()
 
@@ -299,6 +293,7 @@ class TestMethodVariations_DeveloperOrchestrator:
 
     def test_generate_code_all_app_types(self):
         """Test code generation for all app types"""
+        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
         orch = PhysicsGuidedDeveloperOrchestrator()
 
@@ -311,6 +306,7 @@ class TestMethodVariations_DeveloperOrchestrator:
 
     def test_validate_code_various_inputs(self):
         """Test code validation with various inputs"""
+        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
         orch = PhysicsGuidedDeveloperOrchestrator()
 
@@ -332,6 +328,7 @@ class TestCombinatorial_ParameterCombinations:
 
     def test_energy_state_all_combinations(self):
         """Test EnergyState with all parameter combinations"""
+        from agents.physics_orchestrator import EnergyState
 
         energies = [0.0, 50.0, 100.0]
         entropies = [0.0, 0.5, 1.0]
@@ -344,6 +341,7 @@ class TestCombinatorial_ParameterCombinations:
 
     def test_decision_state_all_combinations(self):
         """Test DecisionState with all parameter combinations"""
+        from agents.physics_orchestrator import DecisionState, ForceVector
 
         positions = ["start", "middle", "end"]
         force_configs = [
@@ -365,6 +363,7 @@ class TestOptionalParameters_AllMethods:
 
     def test_all_optional_parameters_physics(self):
         """Test PhysicsOrchestrator methods with optional parameters"""
+        from agents.physics_orchestrator import (
             ActionPath,
             ActionType,
             DecisionState,
@@ -392,6 +391,7 @@ class TestOptionalParameters_AllMethods:
 
     def test_all_optional_parameters_memory(self):
         """Test AgentMemory methods with optional parameters"""
+        from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
 

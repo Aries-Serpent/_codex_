@@ -3,12 +3,11 @@ Test Stable Manifest Cli
 
 Test module for stable manifest cli.
 """
-import pytest
+
 import json
 import subprocess
 import sys
 from pathlib import Path
-
 
 SCRIPT = "scripts/space_traversal/stable_manifest.py"
 

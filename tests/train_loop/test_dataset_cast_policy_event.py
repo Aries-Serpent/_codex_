@@ -3,16 +3,16 @@ Test Dataset Cast Policy Event
 
 Test module for dataset cast policy event.
 """
-pytest.importorskip("torch")
+
 import sys
 from pathlib import Path
-    import torch as _torch
-    from src.codex_ml.train_loop import run_training
 
+import pytest
 
-
+pytest.importorskip("torch")
 
 try:
+    import torch as _torch
 
     _TORCH_312_BUG = sys.version_info >= (3, 12) and _torch.__version__.startswith("2.")
 except ImportError:
@@ -24,6 +24,7 @@ except ImportError:
 )
 def test_dataset_cast_policy_emits_event(tmp_path: Path):
     # Run one synthetic epoch and ensure dataset_cast telemetry is written
+    from src.codex_ml.train_loop import run_training
 
     outdir = tmp_path / "artifacts"
     res = run_training(

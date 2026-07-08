@@ -7,9 +7,10 @@ and well-defined transitions (epochs, checkpoints, training phases).
 Phase 54: HIGH Priority Module Tests
 Coverage Target: src/training 47% → 60%+
 """
+
 from enum import Enum, auto
 
-
+import pytest
 
 
 class TrainingState(Enum):

@@ -3,12 +3,12 @@ Test Validate Repo Base
 
 Test module for validate repo base.
 """
+
 import json
+
+import pytest
+
 from tools import validate_repo_0D_base as validator
-    import os
-
-
-
 
 
 def test_validate_repo_base_outputs(monkeypatch, capsys):
@@ -20,6 +20,7 @@ def test_validate_repo_base_outputs(monkeypatch, capsys):
     # Ensure patterns we expect to hit exist in the repository
     monkeypatch.setattr(validator, "RIPGREP_PATTERNS", ["pytest", "training"])
     # Filter REQUIRED to only files that exist in the working tree
+    import os
 
     existing_required = [f for f in validator.REQUIRED if os.path.exists(f)]
     monkeypatch.setattr(validator, "REQUIRED", existing_required)

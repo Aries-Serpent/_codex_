@@ -3,11 +3,12 @@ Test Backend Mock
 
 Test module for backend mock.
 """
-from mcp.backends.interface import VectorItem
-from mcp.backends.mock_backend import InMemoryMockBackend
 
 # Tests for the mock backend
+import pytest
 
+from mcp.backends.interface import VectorItem
+from mcp.backends.mock_backend import InMemoryMockBackend
 
 
 @pytest.fixture

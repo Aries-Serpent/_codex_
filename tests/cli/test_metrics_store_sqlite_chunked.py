@@ -1,13 +1,12 @@
 """Exercise chunked SQLite ingest behavior."""
+
 from __future__ import annotations
-import pytest
+
 import json
 import sqlite3
 import subprocess
 import sys
 from pathlib import Path
-
-
 
 
 def run_cli(args: list[str]) -> tuple[int, str, str]:

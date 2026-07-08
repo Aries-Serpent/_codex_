@@ -6,46 +6,17 @@ device placement, and model factory patterns.
 DR-003 Guard: PyTorch 2.x + Python 3.12 isinstance union-type bug
 Fixed in torch >= 2.2.0
 """
+
 import sys
 import tempfile
 from pathlib import Path
-    import torch
-            import torch.nn as nn
-            import torch.nn as nn
-            import torch.nn as nn
-            import torch.nn as nn
-            import torch.nn as nn
-            import torch.nn as nn
-            import torch.nn as nn
-            from codex_ml.models.peft_hooks import LoraBuildCfg
-            from codex_ml.models.peft_hooks import LoraBuildCfg
-            from codex_ml.models.peft_hooks import LoraBuildCfg
-            from codex_ml.models.peft_hooks import LoraBuildCfg
-            from codex_ml.models.peft_hooks import LoraBuildCfg
-            from codex_ml.models.peft_hooks import LoraBuildCfg
-            from codex_ml.models.peft_hooks import LoraBuildCfg
-            from codex_ml.models.peft_hooks import LoraBuildCfg
-            from codex_ml.models.peft_hooks import LoraBuildCfg
-            import torch.nn as nn
-            import torch.nn as nn
-            import torch.nn as nn
-            import torch.nn as nn
-            import torch.nn as nn
-            from codex_ml.models.factory import create_model_factory
-            from codex_ml.models.factory import create_model_factory
-            from codex_ml.models.factory import create_model_factory
-            from codex_ml.models.factory import create_model_factory
-            import torch.nn as nn
-            import torch.nn as nn
-            import torch.nn as nn
-            import torch
-            import torch.nn as nn
 
-
+import pytest
 
 # Guard for PyTorch 2.x + Python 3.12 isinstance() union-type bug
 _TORCH_312_BUG = False
 try:
+    import torch
     _TORCH_312_BUG = (
         sys.version_info >= (3, 12)
         and tuple(int(x) for x in torch.__version__.split(".")[:2]) < (2, 2)
@@ -66,6 +37,7 @@ class TestMetaTensorEdgeCases:
     def test_meta_tensor_on_nested_modules(self):
         """Nested modules should not have meta tensors."""
         try:
+            import torch.nn as nn
         except ImportError:
             pytest.skip("PyTorch not installed")
 
@@ -87,6 +59,7 @@ class TestMetaTensorEdgeCases:
     def test_meta_tensor_on_large_model(self):
         """Large model should not have meta tensors."""
         try:
+            import torch.nn as nn
         except ImportError:
             pytest.skip("PyTorch not installed")
 
@@ -100,6 +73,7 @@ class TestMetaTensorEdgeCases:
     def test_meta_tensor_after_dtype_conversion(self):
         """Model should handle dtype conversion without meta tensors."""
         try:
+            import torch.nn as nn
         except ImportError:
             pytest.skip("PyTorch not installed")
 
@@ -118,6 +92,7 @@ class TestMetaTensorEdgeCases:
     def test_meta_tensor_buffer_handling(self):
         """Buffers should also not be on meta device."""
         try:
+            import torch.nn as nn
         except ImportError:
             pytest.skip("PyTorch not installed")
 
@@ -135,6 +110,7 @@ class TestMetaTensorEdgeCases:
     def test_meta_tensor_with_dropout(self):
         """Models with dropout should not have meta tensors."""
         try:
+            import torch.nn as nn
         except ImportError:
             pytest.skip("PyTorch not installed")
 
@@ -150,6 +126,7 @@ class TestMetaTensorEdgeCases:
     def test_meta_tensor_with_batchnorm(self):
         """Batch norm should not result in meta tensors."""
         try:
+            import torch.nn as nn
         except ImportError:
             pytest.skip("PyTorch not installed")
 
@@ -165,6 +142,7 @@ class TestMetaTensorEdgeCases:
     def test_meta_tensor_shared_weights(self):
         """Models with shared weights should not have meta tensors."""
         try:
+            import torch.nn as nn
         except ImportError:
             pytest.skip("PyTorch not installed")
 
@@ -183,6 +161,7 @@ class TestPEFTLoRAEdgeCases:
     def test_lora_config_zero_rank_rejection(self):
         """LoRA with rank=0 should be rejected."""
         try:
+            from codex_ml.models.peft_hooks import LoraBuildCfg
         except (ImportError, AttributeError):
             pytest.skip("LoraBuildCfg not available")
 
@@ -195,6 +174,7 @@ class TestPEFTLoRAEdgeCases:
     def test_lora_config_negative_rank_rejection(self):
         """LoRA with negative rank should be rejected."""
         try:
+            from codex_ml.models.peft_hooks import LoraBuildCfg
         except (ImportError, AttributeError):
             pytest.skip("LoraBuildCfg not available")
 
@@ -208,6 +188,7 @@ class TestPEFTLoRAEdgeCases:
     def test_lora_config_high_rank(self):
         """LoRA with very high rank should be accepted."""
         try:
+            from codex_ml.models.peft_hooks import LoraBuildCfg
         except (ImportError, AttributeError):
             pytest.skip("LoraBuildCfg not available")
 
@@ -217,6 +198,7 @@ class TestPEFTLoRAEdgeCases:
     def test_lora_config_alpha_zero_handling(self):
         """LoRA alpha=0 should be handled."""
         try:
+            from codex_ml.models.peft_hooks import LoraBuildCfg
         except (ImportError, AttributeError):
             pytest.skip("LoraBuildCfg not available")
 
@@ -230,6 +212,7 @@ class TestPEFTLoRAEdgeCases:
     def test_lora_config_dropout_boundary(self):
         """LoRA dropout at boundaries should be accepted."""
         try:
+            from codex_ml.models.peft_hooks import LoraBuildCfg
         except (ImportError, AttributeError):
             pytest.skip("LoraBuildCfg not available")
 
@@ -242,6 +225,7 @@ class TestPEFTLoRAEdgeCases:
     def test_lora_config_dropout_out_of_range(self):
         """LoRA dropout > 1.0 should be rejected."""
         try:
+            from codex_ml.models.peft_hooks import LoraBuildCfg
         except (ImportError, AttributeError):
             pytest.skip("LoraBuildCfg not available")
 
@@ -254,6 +238,7 @@ class TestPEFTLoRAEdgeCases:
     def test_lora_target_modules_empty_list(self):
         """Empty target modules should be handled."""
         try:
+            from codex_ml.models.peft_hooks import LoraBuildCfg
         except (ImportError, AttributeError):
             pytest.skip("LoraBuildCfg not available")
 
@@ -267,6 +252,7 @@ class TestPEFTLoRAEdgeCases:
     def test_lora_target_modules_duplicates(self):
         """Duplicate target modules should be handled."""
         try:
+            from codex_ml.models.peft_hooks import LoraBuildCfg
         except (ImportError, AttributeError):
             pytest.skip("LoraBuildCfg not available")
 
@@ -276,6 +262,7 @@ class TestPEFTLoRAEdgeCases:
     def test_lora_bias_options(self):
         """LoRA bias option should support valid values."""
         try:
+            from codex_ml.models.peft_hooks import LoraBuildCfg
         except (ImportError, AttributeError):
             pytest.skip("LoraBuildCfg not available")
 
@@ -294,6 +281,7 @@ class TestDevicePlacementPatterns:
     def test_device_mismatch_detection(self):
         """Should detect when parameters are on different devices."""
         try:
+            import torch.nn as nn
         except ImportError:
             pytest.skip("PyTorch not installed")
 
@@ -308,6 +296,7 @@ class TestDevicePlacementPatterns:
     def test_device_consistency_forward_pass(self):
         """Device consistency should hold through forward pass."""
         try:
+            import torch.nn as nn
         except ImportError:
             pytest.skip("PyTorch not installed")
 
@@ -323,6 +312,7 @@ class TestDevicePlacementPatterns:
     def test_device_after_state_dict_load(self):
         """Device should be preserved after state_dict load."""
         try:
+            import torch.nn as nn
         except ImportError:
             pytest.skip("PyTorch not installed")
 
@@ -338,6 +328,7 @@ class TestDevicePlacementPatterns:
     def test_device_in_eval_mode(self):
         """Device should be maintained in eval mode."""
         try:
+            import torch.nn as nn
         except ImportError:
             pytest.skip("PyTorch not installed")
 
@@ -352,6 +343,7 @@ class TestDevicePlacementPatterns:
     def test_device_after_zero_grad(self):
         """Device should be unchanged after zero_grad."""
         try:
+            import torch.nn as nn
         except ImportError:
             pytest.skip("PyTorch not installed")
 
@@ -371,6 +363,7 @@ class TestModelFactoryPatterns:
     def test_factory_deterministic_initialization(self):
         """Factory should produce deterministic models."""
         try:
+            from codex_ml.models.factory import create_model_factory
         except (ImportError, AttributeError):
             pytest.skip("Factory not available")
 
@@ -394,6 +387,7 @@ class TestModelFactoryPatterns:
     def test_factory_config_persistence(self):
         """Factory config should be persistent."""
         try:
+            from codex_ml.models.factory import create_model_factory
         except (ImportError, AttributeError):
             pytest.skip("Factory not available")
 
@@ -412,6 +406,7 @@ class TestModelFactoryPatterns:
     def test_factory_invalid_model_type(self):
         """Factory should handle invalid model types."""
         try:
+            from codex_ml.models.factory import create_model_factory
         except (ImportError, AttributeError):
             pytest.skip("Factory not available")
 
@@ -427,6 +422,7 @@ class TestModelFactoryPatterns:
     def test_factory_with_custom_config(self):
         """Factory should accept custom configuration."""
         try:
+            from codex_ml.models.factory import create_model_factory
         except (ImportError, AttributeError):
             pytest.skip("Factory not available")
 
@@ -446,6 +442,7 @@ class TestMetaTensorErrorRecovery:
     def test_model_with_incompatible_dtypes(self):
         """Model should handle incompatible dtypes gracefully."""
         try:
+            import torch.nn as nn
         except ImportError:
             pytest.skip("PyTorch not installed")
 
@@ -460,6 +457,7 @@ class TestMetaTensorErrorRecovery:
     def test_model_serialization_compatibility(self):
         """Model should serialize/deserialize without meta tensors."""
         try:
+            import torch.nn as nn
         except ImportError:
             pytest.skip("PyTorch not installed")
 
@@ -481,6 +479,7 @@ class TestMetaTensorErrorRecovery:
     def test_model_gradient_flow(self):
         """Gradients should flow without meta tensor issues."""
         try:
+            import torch.nn as nn
         except ImportError:
             pytest.skip("PyTorch not installed")
 
@@ -499,6 +498,8 @@ class TestMetaTensorErrorRecovery:
     def test_model_parameter_initialization_variance(self):
         """Parameters should have reasonable initialization variance."""
         try:
+            import torch
+            import torch.nn as nn
         except ImportError:
             pytest.skip("PyTorch not installed")
 

@@ -6,9 +6,8 @@ Validates that the ``@quantum_superposition()`` decorator:
   - Falls back gracefully to classical execution when quantum is disabled
   - Preserves the decorated function's identity (__name__, __wrapped__)
 """
-import pytest
-from cognitive_brain.quantum.superposition import quantum_superposition
 
+from cognitive_brain.quantum.superposition import quantum_superposition
 
 # ---------------------------------------------------------------------------
 # Tests

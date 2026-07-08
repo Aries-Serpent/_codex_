@@ -3,10 +3,11 @@ Test Context And Facets
 
 Test module for context and facets.
 """
+
 import json
 from pathlib import Path
 
-
+import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 CTX = ROOT / "audit_artifacts/context_index.json"

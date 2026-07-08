@@ -3,23 +3,8 @@ Tests for codex.ast.smells module.
 
 This module contains tests for the code smell detection engine.
 """
-import pytest
-from pathlib import Path
-        from codex.ast.smells import SmellSeverity
-        from codex.ast.smells import SmellSeverity
-        from codex.ast.smells import SmellSeverity
-        from codex.ast.smells import SmellSeverity
-        from codex.ast.smells import SmellCategory
-        from codex.ast.smells import SmellCategory
-        from codex.ast.smells import SmellCategory
-        from codex.ast.smells import SmellCategory
-        from codex.ast.smells import CodeSmell, SmellCategory, SmellSeverity
-        from codex.ast.smells import CodeSmell, SmellCategory, SmellSeverity
-        from codex.ast.smells import CodeSmell, SmellCategory, SmellSeverity
-        from codex.ast.smells import SmellCategory, SmellRule, SmellSeverity
-        from codex.ast.smells import SmellCategory, SmellRule, SmellSeverity
-        from codex.ast.smells import logger
 
+from pathlib import Path
 
 
 class TestSmellSeverity:
@@ -27,21 +12,25 @@ class TestSmellSeverity:
 
     def test_info_value(self):
         """Test INFO severity value."""
+        from codex.ast.smells import SmellSeverity
 
         assert SmellSeverity.INFO.value == "info", "Value must be initialized"
 
     def test_warning_value(self):
         """Test WARNING severity value."""
+        from codex.ast.smells import SmellSeverity
 
         assert SmellSeverity.WARNING.value == "warning", "Value must be initialized"
 
     def test_error_value(self):
         """Test ERROR severity value."""
+        from codex.ast.smells import SmellSeverity
 
         assert SmellSeverity.ERROR.value == "error", "Value must be initialized"
 
     def test_critical_value(self):
         """Test CRITICAL severity value."""
+        from codex.ast.smells import SmellSeverity
 
         assert SmellSeverity.CRITICAL.value == "critical", "Value must be initialized"
 
@@ -51,21 +40,25 @@ class TestSmellCategory:
 
     def test_complexity_value(self):
         """Test COMPLEXITY category value."""
+        from codex.ast.smells import SmellCategory
 
         assert SmellCategory.COMPLEXITY.value == "complexity", "Value must be initialized"
 
     def test_naming_value(self):
         """Test NAMING category value."""
+        from codex.ast.smells import SmellCategory
 
         assert SmellCategory.NAMING.value == "naming", "Value must be initialized"
 
     def test_structure_value(self):
         """Test STRUCTURE category value."""
+        from codex.ast.smells import SmellCategory
 
         assert SmellCategory.STRUCTURE.value == "structure", "Value must be initialized"
 
     def test_security_value(self):
         """Test SECURITY category value."""
+        from codex.ast.smells import SmellCategory
 
         assert SmellCategory.SECURITY.value == "security", "Value must be initialized"
 
@@ -75,6 +68,7 @@ class TestCodeSmell:
 
     def test_basic_creation(self):
         """Test CodeSmell basic creation."""
+        from codex.ast.smells import CodeSmell, SmellCategory, SmellSeverity
 
         smell = CodeSmell(
             rule_id="RULE001",
@@ -97,6 +91,7 @@ class TestCodeSmell:
 
     def test_with_suggestion(self):
         """Test CodeSmell with suggestion."""
+        from codex.ast.smells import CodeSmell, SmellCategory, SmellSeverity
 
         smell = CodeSmell(
             rule_id="RULE002",
@@ -113,6 +108,7 @@ class TestCodeSmell:
 
     def test_to_dict(self):
         """Test to_dict serialization."""
+        from codex.ast.smells import CodeSmell, SmellCategory, SmellSeverity
 
         smell = CodeSmell(
             rule_id="RULE003",
@@ -144,6 +140,7 @@ class TestSmellRule:
 
     def test_basic_creation(self):
         """Test SmellRule basic creation."""
+        from codex.ast.smells import SmellCategory, SmellRule, SmellSeverity
 
         def dummy_detector(tree, path):
             return []
@@ -164,6 +161,7 @@ class TestSmellRule:
 
     def test_disabled_rule(self):
         """Test SmellRule when disabled."""
+        from codex.ast.smells import SmellCategory, SmellRule, SmellSeverity
 
         rule = SmellRule(
             rule_id="RULE999",
@@ -183,6 +181,7 @@ class TestModuleLevel:
 
     def test_logger_exists(self):
         """Test logger is configured."""
+        from codex.ast.smells import logger
 
         assert logger is not None, "logger must be initialized"
         assert logger.name == "codex.ast.smells", "name is not valid"

@@ -3,12 +3,13 @@ Test Streaming Datamodule
 
 Test module for streaming datamodule.
 """
+
 import json
 from pathlib import Path
+
+import pytest
+
 from codex_ml.data.datamodule import StreamingDataModule, default_example_validator
-
-
-
 
 
 def _write_jsonl(path: Path, records: list[dict[str, str]]) -> None:

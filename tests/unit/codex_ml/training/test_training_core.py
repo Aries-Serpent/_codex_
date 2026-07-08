@@ -322,7 +322,6 @@ class TestEdgeCases:
     @pytest.mark.parametrize("extreme_lr", [1e-6, 1e2])
     def test_extreme_learning_rates(self, extreme_lr):
         """Test: extreme learning rate values."""
-import pytest
         assert extreme_lr > 0, "extreme_lr must be greater than zero"
 
 

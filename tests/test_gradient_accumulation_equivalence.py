@@ -1,19 +1,20 @@
 """
+pytest.importorskip("mlflow")
 Test Gradient Accumulation Equivalence
 
 Test module for gradient accumulation equivalence.
 """
+
 from __future__ import annotations
-pytest.importorskip("mlflow")
-torch = pytest.importorskip("torch")
+
 import types
 from pathlib import Path
+
+import pytest
+
 from codex_ml.training.functional_training import TrainConfig, train
 
-
-
-
-
+torch = pytest.importorskip("torch")
 
 
 class _FakeTokenizer:

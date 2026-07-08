@@ -6,9 +6,8 @@ Test Ndjson Logging
 
 Test module for ndjson logging.
 """
-import pytest
-from codex_ml import train_loop
 
+from codex_ml import train_loop
 
 
 def test_record_metrics_ndjson(tmp_path, monkeypatch):

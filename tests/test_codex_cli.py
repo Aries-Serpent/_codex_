@@ -3,12 +3,13 @@ Test Codex Cli
 
 Test module for codex cli.
 """
+
 import os
 import subprocess
 import sys
 from pathlib import Path
 
-
+import pytest
 
 
 def _run(args: list[str]) -> int:

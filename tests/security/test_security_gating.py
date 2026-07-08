@@ -6,17 +6,12 @@ This module tests:
 - Gitleaks configuration
 - Security allowlist structure
 """
-    yaml = pytest.importorskip("yaml")
+
 import json
 import subprocess
 from pathlib import Path
-        import tomli as toml
-            import tomllib as toml
-    import yaml
-    import yaml
-    import yaml
 
-
+import pytest
 
 
 def test_precommit_config_exists():
@@ -27,6 +22,7 @@ def test_precommit_config_exists():
 
 def test_precommit_config_valid_yaml():
     """Test that pre-commit config is valid YAML."""
+    yaml = pytest.importorskip("yaml")
 
     config_path = Path(__file__).parents[2] / ".pre-commit-config.yaml"
 
@@ -39,6 +35,7 @@ def test_precommit_config_valid_yaml():
 
 def test_precommit_has_pip_audit():
     """Test that pre-commit config includes pip-audit."""
+    yaml = pytest.importorskip("yaml")
 
     config_path = Path(__file__).parents[2] / ".pre-commit-config.yaml"
 
@@ -60,6 +57,7 @@ def test_precommit_has_pip_audit():
 
 def test_precommit_has_gitleaks():
     """Test that pre-commit config includes gitleaks."""
+    yaml = pytest.importorskip("yaml")
 
     config_path = Path(__file__).parents[2] / ".pre-commit-config.yaml"
 
@@ -89,8 +87,10 @@ def test_gitleaks_config_valid_toml():
     """Test that gitleaks config is valid TOML."""
     toml = None
     try:
+        import tomli as toml
     except ImportError:
         try:
+            import tomllib as toml
         except ImportError:
             pytest.skip("toml library not available")
 
@@ -222,6 +222,7 @@ def test_security_integration_gitleaks_syntax():
 
 def test_precommit_config_has_bandit():
     """Test that pre-commit config already includes bandit (baseline security)."""
+    import yaml
 
     config_path = Path(__file__).parents[2] / ".pre-commit-config.yaml"
 
@@ -236,6 +237,7 @@ def test_precommit_config_has_bandit():
 
 def test_precommit_config_has_detect_secrets():
     """Test that pre-commit config already includes detect-secrets."""
+    import yaml
 
     config_path = Path(__file__).parents[2] / ".pre-commit-config.yaml"
 
@@ -281,6 +283,7 @@ def test_integration_full_security_workflow():
     assert "def security(" in nox_content, "Content must not be empty"
 
     # Verify pre-commit has security hooks
+    import yaml
 
     with open(repo_root / ".pre-commit-config.yaml") as f:
         precommit_config = yaml.safe_load(f)

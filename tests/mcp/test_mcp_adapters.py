@@ -25,7 +25,6 @@ class TestMockBackend:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_connect(self, backend):
         """Test connection to mock backend."""
         result = await backend.connect()
@@ -43,7 +42,6 @@ class TestMockBackend:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_disconnect(self, backend):
         """Test disconnection from mock backend."""
         await backend.connect()
@@ -61,7 +59,6 @@ class TestMockBackend:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_health_check_connected(self, backend):
         """Test health check when connected."""
         await backend.connect()
@@ -79,7 +76,6 @@ class TestMockBackend:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_health_check_disconnected(self, backend):
         """Test health check when disconnected."""
         healthy = await backend.health_check()
@@ -96,7 +92,6 @@ class TestMockBackend:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_query_returns_results(self, backend):
         """Test querying mock backend."""
         await backend.connect()
@@ -125,7 +120,6 @@ class TestMockBackend:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_query_when_disconnected(self, backend):
         """Test query fails when not connected."""
         result = await backend.query("test")
@@ -143,7 +137,6 @@ class TestMockBackend:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_upsert_vectors(self, backend):
         """Test upserting vectors."""
         await backend.connect()
@@ -169,7 +162,6 @@ class TestMockBackend:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_call_count(self, backend):
         """Test call counting."""
         await backend.connect()
@@ -190,7 +182,6 @@ class TestMockBackend:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_reset(self, backend):
         """Test resetting mock backend."""
         await backend.connect()
@@ -310,7 +301,6 @@ class TestMetricCollector:
 
     def test_reset(self, collector):
         """Test resetting collector."""
-import pytest
         collector.increment("test")
         collector.set_gauge("gauge", 10)
 

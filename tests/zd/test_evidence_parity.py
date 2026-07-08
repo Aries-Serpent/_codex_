@@ -3,14 +3,13 @@ Test Evidence Parity
 
 Test module for evidence parity.
 """
+
 from __future__ import annotations
-import pytest
+
 import json
 from pathlib import Path
+
 from codex.evidence.core import evidence_append
-
-
-
 
 
 def test_zendesk_evidence_parity(tmp_path: Path, monkeypatch):

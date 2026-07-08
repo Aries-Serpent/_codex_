@@ -7,13 +7,13 @@ document processing, validation, semantic indexing, and MCP integration.
 Target: 100+ integration tests
 Authority: Lane 3 Unified Documentation Agent
 """
+
 import json
-from codex.docs_agent import (
-import requests
 
-
+import pytest
 
 # Import docs_agent modules
+from codex.docs_agent import (
     document_processor,
     mcp_bridge,
     semantic_indexer,
@@ -34,6 +34,7 @@ class TestDocumentProcessingPipeline:
 OAuth 2.0 is used for authentication.
 
 ```python
+import requests
 requests.get('https://api.example.com/', auth=('user', 'pass'))
 ```
 

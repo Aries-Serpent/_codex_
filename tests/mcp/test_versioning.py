@@ -3,11 +3,12 @@
 Tests for MCP version negotiation with comprehensive safeguards validation.
 Includes tests for input validation, sanitization, and bounds checking.
 """
+
 from __future__ import annotations
+
+import pytest
+
 from mcp.versioning import (
-
-
-
     MAX_VERSIONS_COUNT,
     MCP_VERSIONS,
     negotiate_version,

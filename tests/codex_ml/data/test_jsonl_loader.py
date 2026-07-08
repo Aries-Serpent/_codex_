@@ -1,15 +1,15 @@
 """Smoke coverage for JSONL loader and dataset registry."""
+
 from __future__ import annotations
+
 from pathlib import Path
 from typing import Any
-    from codex_ml.data.jsonl_loader import load_jsonl
-    from codex_ml.data import registry
 
-
-
+import pytest
 
 
 def test_load_jsonl_splits(tmp_path: Path) -> None:
+    from codex_ml.data.jsonl_loader import load_jsonl
 
     path = tmp_path / "data.jsonl"
     path.write_text("\n".join(['{"text": "a"}', '{"text": "b"}']))
@@ -29,6 +29,7 @@ class _EntryPoint:
 
 
 def test_dataset_registry_entrypoints(monkeypatch: pytest.MonkeyPatch) -> None:
+    from codex_ml.data import registry
 
     # Reset singleton so monkeypatched entry_points are discovered
     monkeypatch.setattr(registry.data_loader_registry, "_entry_points_loaded", False)

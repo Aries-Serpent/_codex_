@@ -3,9 +3,8 @@ Test Semparser
 
 Test module for semparser.
 """
-import pytest
-from codex_digest.semparser import SemParser
 
+from codex_digest.semparser import SemParser
 
 
 def test_semparser_intents():

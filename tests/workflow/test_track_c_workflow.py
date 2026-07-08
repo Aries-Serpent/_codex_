@@ -3,17 +3,18 @@ Test Track C Workflow
 
 Test module for track c workflow.
 """
+
 from __future__ import annotations
+
 import json
 import subprocess
 import sys
 from pathlib import Path
+
+import pytest
+
 from codex_ml.workflow import DEFAULT_ROUTER, WorkflowOrchestrator, run_capability
 from codex_ml.workflow.track_c_workflow import (
-
-
-
-
     SIX_PHASES,
     CapabilityPlan,
     CapabilityRouter,

@@ -3,11 +3,10 @@ Test Policy Mapping
 
 Test module for policy mapping.
 """
-import pytest
+
 from pathlib import Path
+
 from codex_audit.policy import RA_RULES, build_policy_mapping, write_policy_mapping
-
-
 
 
 def test_policy_mapping_includes_tracks_and_capabilities(tmp_path: Path) -> None:

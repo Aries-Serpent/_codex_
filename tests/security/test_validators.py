@@ -7,15 +7,9 @@ external state, and system configuration to ensure consistent behavior.
 Phase 54: HIGH Priority Module Tests
 Coverage Target: src/security 38% → 55%+
 """
-import pytest
+
 import os
 from unittest.mock import patch
-        import re
-        import re
-        import html
-        import html
-        import re
-
 
 
 class TestInputValidation:
@@ -23,6 +17,7 @@ class TestInputValidation:
 
     def test_email_validation_basic(self): # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
         """Email validation with standard format."""
+        import re
 
         email_pattern = r"^[\w\.-]+@[\w\.-]+\.\w+$"
 
@@ -47,6 +42,7 @@ class TestInputValidation:
 
     def test_url_validation(self):
         """URL validation patterns."""
+        import re
 
         url_pattern = r"^https?://[\w\.-]+(?:\:\d+)?(?:/[\w\.\-/]*)?$"
 
@@ -113,6 +109,7 @@ class TestXSSPrevention:
 
     def test_html_escape_basic(self):
         """Basic HTML entities are escaped."""
+        import html
 
         dangerous = '<script>alert("xss")</script>'
         escaped = html.escape(dangerous)
@@ -123,6 +120,7 @@ class TestXSSPrevention:
 
     def test_attribute_escape(self):
         """HTML attributes are properly escaped."""
+        import html
 
         dangerous_attr = '" onclick="alert(1)"'
         escaped = html.escape(dangerous_attr, quote=True)
@@ -152,6 +150,7 @@ class TestAuthenticationValidation:
 
     def test_token_format_validation(self):
         """Token format validation."""
+        import re
 
         # JWT-like format: xxx.xxx.xxx
         jwt_pattern = r"^[\w-]+\.[\w-]+\.[\w-]+$"

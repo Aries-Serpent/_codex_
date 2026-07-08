@@ -3,9 +3,10 @@ Test Dockerfile configurations for security and best practices.
 
 Part of deployment-infrastructure capability maturity improvement.
 """
+
 from pathlib import Path
 
-
+import pytest
 
 
 @pytest.fixture

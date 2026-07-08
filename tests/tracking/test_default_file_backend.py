@@ -3,15 +3,15 @@ Test Default File Backend
 
 Test module for default file backend.
 """
+
 from __future__ import annotations
-mlflow = pytest.importorskip("mlflow")
+
 import importlib.util
 import os
-    import sitecustomize
 
+import pytest
 
-
-
+mlflow = pytest.importorskip("mlflow")
 
 _HAS_SITECUSTOMIZE = importlib.util.find_spec("sitecustomize") is not None
 
@@ -25,6 +25,7 @@ def test_default_file_backend(tmp_path, monkeypatch):
     monkeypatch.delenv("MLFLOW_TRACKING_URI", raising=False)
     # sitecustomize should set the default upon import
 
+    import sitecustomize
 
     importlib.reload(sitecustomize)
     assert os.environ.get("MLFLOW_TRACKING_URI", "").startswith("file:")

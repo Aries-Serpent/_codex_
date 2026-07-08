@@ -28,7 +28,6 @@ def test_unsupported_language():
 
 def test_clear_cache():
     """Test cache clearing via public API behavior."""
-import pytest
     # Clear any existing cache first
     LanguageRegistry.clear_cache()
 

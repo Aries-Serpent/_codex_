@@ -3,17 +3,11 @@ Integration tests for artifact monitoring system.
 
 Tests the complete monitoring pipeline from workflow detection to issue creation.
 """
+
 import json
 from pathlib import Path
-            import os
-        import os
-        import yaml
-        import yaml
-            from scripts.cognitive.sensors.monitoring_sensor import MonitoringSensor
-            from scripts.cognitive.actions.monitoring_actions import ActionProposer
-            from scripts.cognitive.self_healing_validation import SelfHealingValidator
 
-
+import pytest
 
 
 class TestMonitoringIntegration:
@@ -53,6 +47,7 @@ class TestMonitoringIntegration:
         for script in scripts:
             assert script.exists(), f"Script {script} should exist"
             # Check if executable bit is set
+            import os
 
             assert os.access(script, os.X_OK), f"Script {script} should be executable"
 
@@ -71,6 +66,7 @@ class TestMonitoringIntegration:
         """Test that CLI wrapper exists and is executable."""
         cli = Path("scripts/agents/artifact_monitor_cli.py")
         assert cli.exists(), "CLI wrapper should exist"
+        import os
 
         assert os.access(cli, os.X_OK), "CLI should be executable"
 
@@ -80,6 +76,7 @@ class TestMonitoringConfiguration:
 
     def test_config_has_required_fields(self):
         """Test that config has all required fields."""
+        import yaml
 
         config_file = Path(".codex/config/monitoring.yaml")
         with open(config_file, "r") as f:
@@ -93,6 +90,7 @@ class TestMonitoringConfiguration:
 
     def test_pattern_database_has_patterns(self):
         """Test that pattern database has patterns defined."""
+        import yaml
 
         pattern_file = Path(".codex/monitoring/patterns/error_signatures.yaml")
         with open(pattern_file, "r") as f:
@@ -117,6 +115,7 @@ class TestCognitiveBrainIntegration:
     def test_monitoring_sensor_import(self):
         """Test that monitoring sensor can be imported."""
         try:
+            from scripts.cognitive.sensors.monitoring_sensor import MonitoringSensor
 
             sensor = MonitoringSensor()
             assert sensor is not None, "sensor must be initialized"
@@ -126,6 +125,7 @@ class TestCognitiveBrainIntegration:
     def test_action_proposer_import(self):
         """Test that action proposer can be imported."""
         try:
+            from scripts.cognitive.actions.monitoring_actions import ActionProposer
 
             proposer = ActionProposer()
             assert proposer is not None, "proposer must be initialized"
@@ -135,6 +135,7 @@ class TestCognitiveBrainIntegration:
     def test_self_healing_validator_import(self):
         """Test that self-healing validator can be imported."""
         try:
+            from scripts.cognitive.self_healing_validation import SelfHealingValidator
 
             validator = SelfHealingValidator()
             assert validator is not None, "validator must be initialized"

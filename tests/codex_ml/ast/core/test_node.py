@@ -6,15 +6,13 @@ Tests cover:
 - StandardizedASTNode: creation, ID generation, parent-child relationships, weakref behavior, tree traversal (60 tests)
 - Finding: creation, severity validation, ID generation, serialization (30 tests)
 """
+
 import json
 from pathlib import Path
+
+import pytest
+
 from codex_ml.ast.core.node import Finding, SourceLocation, StandardizedASTNode
-        import uuid
-        import gc
-        import uuid
-
-
-
 
 
 class TestSourceLocation:
@@ -213,6 +211,7 @@ class TestStandardizedASTNode:
     def test_creation_no_node_id_generates_uuid(self):
         node = StandardizedASTNode(node_id="", type="function", name="test")
         assert node.node_id != "", "node_id is not valid"
+        import uuid
 
         try:
             uuid.UUID(node.node_id)
@@ -287,6 +286,7 @@ class TestStandardizedASTNode:
         child = StandardizedASTNode(node_id="c1", type="function", name="method")
         parent.add_child(child)
         del parent
+        import gc
 
         gc.collect()
         assert child.parent is None, "parent is not valid"
@@ -553,6 +553,7 @@ class TestFinding:
     def test_finding_id_auto_generation(self):
         finding = Finding(type="error", message="Test")
         assert finding.finding_id != "", "finding_id is not valid"
+        import uuid
 
         try:
             uuid.UUID(finding.finding_id)

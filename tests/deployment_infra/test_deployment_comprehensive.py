@@ -1,4 +1,3 @@
-import pytest
 #         assert ", "Condition must be true"
 #         assert "exec" in content or "python" in content, "Content must not be empty"
 # Tests Docker configurations, Helm charts, service endpoints, and orchestration
@@ -159,7 +158,6 @@ class TestServiceEndpoints:
 
     def test_liveness_probe_pattern(self):
         """Test liveness probe configuration."""
-import pytest
         liveness = {
             "httpGet": {
                 "path": "/health",

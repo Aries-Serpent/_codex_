@@ -3,13 +3,13 @@ Test Peft Adapter
 
 Test module for peft adapter.
 """
-    pytest.importorskip("peft")
+
 from typing import Any
+
+import pytest
+
 from codex_ml.peft.peft_adapter import apply_lora
 from tests.helpers.optional_dependencies import import_optional_dependency
-
-
-
 
 torch = import_optional_dependency("torch", allow_stub=False)
 nn = torch.nn
@@ -59,6 +59,7 @@ def test_apply_lora_task_type_and_control_keys(monkeypatch):
 
 
 def test_apply_lora_with_peft():
+    pytest.importorskip("peft")
     model = nn.Linear(4, 4)
     patched = apply_lora(model, lora_dropout=0.1)
     assert hasattr(patched, "peft_config")

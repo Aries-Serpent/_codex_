@@ -12,30 +12,27 @@ Covers:
 * PlansetOrchestrator.save_state() / load_state() — JSON round-trip
 * orchestrate.py CLI — survey, next, session, advance, summary, stamp-plansets
 """
+
 from __future__ import annotations
+
 import json
 import sys
 from pathlib import Path
 from unittest.mock import patch
-from codex.cognitive.planset_orchestrator import (
-from codex.cognitive.quantum_planset_engine import ImprovementArea, QuantumPlansetEngine
-        import re
-        from scripts.cognitive.orchestrate import main
-        from scripts.cognitive.orchestrate import main
-        from scripts.cognitive.orchestrate import main
 
-
-
+import pytest
 
 # Ensure src/ is on path (mirrors orchestrate.py bootstrap)
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
+from codex.cognitive.planset_orchestrator import (
     _PLANSET_MAP,
     OrchestrationState,
     PlansetOrchestrator,
     PlansetRecord,
     PromptSet,
 )
+from codex.cognitive.quantum_planset_engine import ImprovementArea, QuantumPlansetEngine
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -343,6 +340,7 @@ class TestOrchestratorSummary:
     def test_contains_step_ids(self, orch: PlansetOrchestrator):
         s = orch.summary()
         # At least one step ID pattern like SEC-01 or CI-01
+        import re
 
         assert re.search(r"[A-Z]+-\d+", s)
 
@@ -425,6 +423,7 @@ class TestOrchestrateCLI:
 
     def _run(self, argv, planset_dir: Path, tmp_path: Path):
         """Run main() with a patched orchestrator pointing to test planset_dir."""
+        from scripts.cognitive.orchestrate import main
 
         state_path = tmp_path / "cli_state.json"
         with patch(
@@ -515,6 +514,7 @@ class TestOrchestrateCLI:
         (d / "CODEQL_ALERT_RESOLUTION_PLANSET.md").write_text(
             "# CodeQL\n**Status:** 🚧 Active\n", encoding="utf-8"
         )
+        from scripts.cognitive.orchestrate import main
 
         state_path = tmp_path / "s.json"
         orch_instance = PlansetOrchestrator(
@@ -536,6 +536,7 @@ class TestOrchestrateCLI:
         (d / "CODEQL_ALERT_RESOLUTION_PLANSET.md").write_text(
             "# CodeQL\n**Status:** 🚧 Active\n", encoding="utf-8"
         )
+        from scripts.cognitive.orchestrate import main
 
         state_path = tmp_path / "s.json"
 

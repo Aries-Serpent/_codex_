@@ -210,14 +210,13 @@ class TestQuantumTestingIntegration:
 
     def test_performance_characteristics(self):
         """Test performance characteristics of test execution."""
-import pytest
-        import time
         suite = QuantumTestSuite()
 
         # Add many quick tests
         for i in range(100):
             suite.add_test(QuantumTest(name=f"test_{i}", test_func=lambda: True, amplitude=0.8))
 
+        import time
 
         start = time.time()
         results = suite.execute_with_thermodynamic_scheduling()

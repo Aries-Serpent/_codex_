@@ -3,13 +3,14 @@ Test Cloud
 
 Test module for cloud.
 """
+
 import json
 from pathlib import Path
+
+import pytest
+
 from codex_ml.deployment.cloud import provision_stack
 from codex_ml.monitoring.health import HEALTH_LOG_ENV
-
-
-
 
 
 @pytest.fixture()

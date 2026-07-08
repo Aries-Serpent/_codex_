@@ -3,9 +3,10 @@ Phase 7: Component Orchestration Tests (80% → 85%)
 
 Target: 20 tests for multi-component orchestration
 """
+
 import json
 
-
+import pytest
 
 pytestmark = [pytest.mark.integration, pytest.mark.slow]
 

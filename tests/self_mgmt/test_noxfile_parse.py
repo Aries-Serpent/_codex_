@@ -3,11 +3,10 @@ Test Noxfile Parse
 
 Test module for noxfile parse.
 """
+
 from __future__ import annotations
-import pytest
+
 from pathlib import Path
-
-
 
 
 def test_noxfile_has_expected_sessions() -> None:

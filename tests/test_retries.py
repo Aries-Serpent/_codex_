@@ -3,11 +3,12 @@ Test Retries
 
 Test module for retries.
 """
+
 from time import time
+
+import pytest
+
 from mcp.retries import retry_on_exception
-
-
-
 
 counter = {"v": 0}
 

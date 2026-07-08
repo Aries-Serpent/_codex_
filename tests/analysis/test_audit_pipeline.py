@@ -6,12 +6,11 @@ Test Audit Pipeline
 
 Test module for audit pipeline.
 """
-import pytest
+
 from pathlib import Path
+
 from codex_ml.analysis.parsers import parse_tiered
 from codex_ml.cli.audit_pipeline import audit_file
-
-
 
 
 def test_parse_tiered_ast_mode():

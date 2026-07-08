@@ -3,14 +3,15 @@ Test Checkpoint Bundle
 
 Test module for checkpoint bundle.
 """
-torch = pytest.importorskip("torch")
+
 import pathlib
 import sys
+
+import pytest
+
+torch = pytest.importorskip("torch")
+
 from codex_ml.utils.checkpointing import (
-
-
-
-
     load_training_checkpoint,
     save_checkpoint,
 )

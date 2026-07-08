@@ -6,22 +6,24 @@ Tests cover:
 - Prompt safety/sanitization
 - Supply-chain SBOM/provenance
 """
+
 from __future__ import annotations
-pytest.importorskip("hypothesis")
+
 import hashlib
 import json
 import re
 from typing import Any
-from hypothesis import given, settings
-from hypothesis import strategies as st
 
-
-
+import pytest
 
  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+pytest.importorskip("hypothesis")
 
 
+pytest.importorskip("hypothesis", reason="hypothesis required for property tests")
 
+from hypothesis import given, settings
+from hypothesis import strategies as st
 
 # --- Secrets Baseline Enforcement Tests ---
 

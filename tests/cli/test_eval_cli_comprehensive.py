@@ -6,30 +6,8 @@ Tests cover:
 - Prompt sanitization
 - Evaluation pipeline helpers
 """
-        from codex_ml.cli.evaluate import METRIC_FUNCS
-        from codex_ml.cli.evaluate import METRIC_FUNCS
-        from codex_ml.cli.evaluate import METRIC_FUNCS
-        from codex_ml.cli.evaluate import METRIC_FUNCS
-        from codex_ml.cli.evaluate import METRIC_FUNCS
-        from codex_ml.cli.evaluate import _coerce_sequence
-        from codex_ml.cli.evaluate import _coerce_sequence
-        from codex_ml.cli.evaluate import _coerce_sequence
-        from codex_ml.cli.evaluate import _coerce_sequence
-        from codex_ml.cli.evaluate import _coerce_sequence
-        from codex_ml.cli.evaluate import _coerce_sequence
-        from codex_ml.cli.evaluate import _sanitize_prompt_list
-        from codex_ml.cli.evaluate import _sanitize_prompt_list
-        from codex_ml.cli.evaluate import _sanitize_prompt_list
-        from codex_ml.cli.evaluate import _sanitize_prompt_list
-        from codex_ml.cli import evaluate
-        from codex_ml.cli import evaluate
-        from codex_ml.cli import evaluate
-        from codex_ml.cli.evaluate import (
-        from codex_ml.cli.evaluate import accuracy
-        from codex_ml.cli.evaluate import token_accuracy
-        from codex_ml.cli.evaluate import classification_f1
-        from codex_ml.cli.evaluate import perplexity
 
+import pytest
 
 
 class TestMetricFunctions:
@@ -37,29 +15,34 @@ class TestMetricFunctions:
 
     def test_metric_funcs_registry_exists(self):
         """Test that METRIC_FUNCS registry is defined."""
+        from codex_ml.cli.evaluate import METRIC_FUNCS
 
         assert isinstance(METRIC_FUNCS, dict)
 
     def test_metric_funcs_contains_accuracy(self):
         """Test that accuracy metric is registered."""
+        from codex_ml.cli.evaluate import METRIC_FUNCS
 
         assert "accuracy" in METRIC_FUNCS, "Condition must be true"
         assert callable(METRIC_FUNCS["accuracy"]), "Condition must be true"
 
     def test_metric_funcs_contains_token_accuracy(self):
         """Test that token_accuracy metric is registered."""
+        from codex_ml.cli.evaluate import METRIC_FUNCS
 
         assert "token_accuracy" in METRIC_FUNCS, "Condition must be true"
         assert callable(METRIC_FUNCS["token_accuracy"]), "Condition must be true"
 
     def test_metric_funcs_contains_f1(self):
         """Test that f1 metric is registered."""
+        from codex_ml.cli.evaluate import METRIC_FUNCS
 
         assert "f1" in METRIC_FUNCS, "Condition must be true"
         assert callable(METRIC_FUNCS["f1"]), "Condition must be true"
 
     def test_metric_funcs_contains_perplexity(self):
         """Test that perplexity metric is registered."""
+        from codex_ml.cli.evaluate import METRIC_FUNCS
 
         assert "perplexity" in METRIC_FUNCS, "Condition must be true"
         assert callable(METRIC_FUNCS["perplexity"]), "Condition must be true"
@@ -70,17 +53,20 @@ class TestSequenceCoercion:
 
     def test_coerce_sequence_with_none(self):
         """Test _coerce_sequence returns None for None."""
+        from codex_ml.cli.evaluate import _coerce_sequence
 
         assert _coerce_sequence(None) is None, "Condition must be true"
 
     def test_coerce_sequence_with_list(self):
         """Test _coerce_sequence preserves list."""
+        from codex_ml.cli.evaluate import _coerce_sequence
 
         result = _coerce_sequence(["a", "b", "c"])
         assert result == ["a", "b", "c"]
 
     def test_coerce_sequence_with_tuple(self):
         """Test _coerce_sequence converts tuple to list."""
+        from codex_ml.cli.evaluate import _coerce_sequence
 
         result = _coerce_sequence(("a", "b", "c"))
         assert result == ["a", "b", "c"]
@@ -88,6 +74,7 @@ class TestSequenceCoercion:
 
     def test_coerce_sequence_with_set(self):
         """Test _coerce_sequence converts set to list."""
+        from codex_ml.cli.evaluate import _coerce_sequence
 
         result = _coerce_sequence({"a", "b", "c"})
         assert isinstance(result, list)
@@ -95,12 +82,14 @@ class TestSequenceCoercion:
 
     def test_coerce_sequence_with_string(self):
         """Test _coerce_sequence wraps string in list."""
+        from codex_ml.cli.evaluate import _coerce_sequence
 
         result = _coerce_sequence("test_string")
         assert result == ["test_string"], "Result must not be empty"
 
     def test_coerce_sequence_with_integer(self):
         """Test _coerce_sequence returns None for integer."""
+        from codex_ml.cli.evaluate import _coerce_sequence
 
         result = _coerce_sequence(42)
         assert result is None, "Result must not be empty"
@@ -111,6 +100,7 @@ class TestSanitizePromptList:
 
     def test_sanitize_prompt_list_with_strings(self):
         """Test _sanitize_prompt_list with string list."""
+        from codex_ml.cli.evaluate import _sanitize_prompt_list
 
         result, _changed = _sanitize_prompt_list(["prompt1", "prompt2"])
         assert isinstance(result, list)
@@ -118,6 +108,7 @@ class TestSanitizePromptList:
 
     def test_sanitize_prompt_list_empty(self):
         """Test _sanitize_prompt_list with empty list."""
+        from codex_ml.cli.evaluate import _sanitize_prompt_list
 
         result, changed = _sanitize_prompt_list([])
         assert result == [], "Result must not be empty"
@@ -125,6 +116,7 @@ class TestSanitizePromptList:
 
     def test_sanitize_prompt_list_with_dicts(self):
         """Test _sanitize_prompt_list with dict entries."""
+        from codex_ml.cli.evaluate import _sanitize_prompt_list
 
         items = [
             {"prompt": "test prompt", "expected": "output"},
@@ -136,6 +128,7 @@ class TestSanitizePromptList:
 
     def test_sanitize_prompt_list_mixed_types(self):
         """Test _sanitize_prompt_list with mixed types."""
+        from codex_ml.cli.evaluate import _sanitize_prompt_list
 
         items = ["string_prompt", {"prompt": "dict_prompt"}, 123]
         result, _changed = _sanitize_prompt_list(items)
@@ -148,6 +141,7 @@ class TestEvaluateCLIIntegration:
 
     def test_module_imports(self):
         """Test that module can be imported."""
+        from codex_ml.cli import evaluate
 
         assert hasattr(evaluate, "METRIC_FUNCS")
         assert hasattr(evaluate, "_coerce_sequence")
@@ -155,11 +149,13 @@ class TestEvaluateCLIIntegration:
 
     def test_logger_configured(self):
         """Test that logger is properly configured."""
+        from codex_ml.cli import evaluate
 
         assert hasattr(evaluate, "logger")
 
     def test_optional_imports_handled(self):
         """Test that optional imports are handled gracefully."""
+        from codex_ml.cli import evaluate
 
         # Module should be importable regardless of optional deps
         assert hasattr(evaluate, "_HAS_TORCH")
@@ -168,6 +164,7 @@ class TestEvaluateCLIIntegration:
 
     def test_metric_imports(self):
         """Test that metric functions are imported correctly."""
+        from codex_ml.cli.evaluate import (
             accuracy,
             classification_f1,
             perplexity,
@@ -185,21 +182,25 @@ class TestMetricFunctionsBasic:
 
     def test_accuracy_function_callable(self):
         """Test accuracy function is callable."""
+        from codex_ml.cli.evaluate import accuracy
 
         assert callable(accuracy), "Condition must be true"
 
     def test_token_accuracy_function_callable(self):
         """Test token_accuracy function is callable."""
+        from codex_ml.cli.evaluate import token_accuracy
 
         assert callable(token_accuracy), "Condition must be true"
 
     def test_classification_f1_function_callable(self):
         """Test classification_f1 function is callable."""
+        from codex_ml.cli.evaluate import classification_f1
 
         assert callable(classification_f1), "Condition must be true"
 
     def test_perplexity_function_callable(self):
         """Test perplexity function is callable."""
+        from codex_ml.cli.evaluate import perplexity
 
         assert callable(perplexity), "Condition must be true"
 

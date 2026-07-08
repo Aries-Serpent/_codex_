@@ -3,35 +3,10 @@
 Tests event emission during training, callback chain execution,
 and proper event cleanup after training completion.
 """
+
 from __future__ import annotations
-        from src.codex_ml.training.callbacks import EarlyStopping
-        from src.codex_ml.training.callbacks import EarlyStopping
-        from src.codex_ml.training.callbacks import EarlyStopping
-        from src.codex_ml.training.callbacks import EarlyStopping
-        import shutil
-        import tempfile
-        from pathlib import Path
-        from src.codex_ml.checkpointing.checkpoint_core import (
-        import shutil
-        import tempfile
-        from pathlib import Path
-        from src.codex_ml.checkpointing.checkpoint_core import (
-        import shutil
-        import tempfile
-        from pathlib import Path
-        from src.codex_ml.checkpointing.checkpoint_core import (
-        import shutil
-        import tempfile
-        from pathlib import Path
-        from src.codex_ml.checkpointing.checkpoint_core import (
-        from src.codex_ml.training.callbacks import EarlyStopping
-        import shutil
-        import tempfile
-        from pathlib import Path
-        from src.codex_ml.checkpointing.checkpoint_core import (
-        from src.codex_ml.training.callbacks import EarlyStopping
 
-
+import pytest
 
 
 class TestEventIntegrationLifecycle:
@@ -40,6 +15,7 @@ class TestEventIntegrationLifecycle:
     def test_early_stopping_event_integration(self):
         """Verify early stopping works as event sink during training simulation."""
         # Arrange
+        from src.codex_ml.training.callbacks import EarlyStopping
 
         es = EarlyStopping(patience=2, min_delta=0.05, mode="min")
         simulated_losses = [0.5, 0.48, 0.46, 0.46, 0.46, 0.46]
@@ -61,6 +37,7 @@ class TestEventIntegrationLifecycle:
     def test_callback_state_reset_between_training_runs(self):
         """Verify callback state is properly reset for new training runs."""
         # Arrange
+        from src.codex_ml.training.callbacks import EarlyStopping
 
         # First training run
         es = EarlyStopping(patience=2, min_delta=0.0, mode="min")
@@ -88,6 +65,7 @@ class TestEventIntegrationLifecycle:
     def test_event_flow_with_improvement_and_plateau(self):
         """Verify event flow during both improvement and plateau phases."""
         # Arrange
+        from src.codex_ml.training.callbacks import EarlyStopping
 
         es = EarlyStopping(patience=1, min_delta=0.1, mode="min")
         events_fired = []
@@ -118,6 +96,7 @@ class TestEventIntegrationLifecycle:
     def test_multiple_callbacks_independent_state(self):
         """Verify multiple callback instances maintain independent state."""
         # Arrange
+        from src.codex_ml.training.callbacks import EarlyStopping
 
         es1 = EarlyStopping(patience=1, min_delta=0.0, mode="min")
         es2 = EarlyStopping(patience=2, min_delta=0.0, mode="min")
@@ -144,7 +123,11 @@ class TestCheckpointResumeIntegration:
     def test_checkpoint_save_and_resume_state_consistency(self):
         """Verify state is properly preserved through save and resume."""
         # Arrange
+        import shutil
+        import tempfile
+        from pathlib import Path
 
+        from src.codex_ml.checkpointing.checkpoint_core import (
             load_checkpoint,
             save_checkpoint,
         )
@@ -182,7 +165,11 @@ class TestCheckpointResumeIntegration:
     def test_checkpoint_resume_with_modified_training_config(self):
         """Verify resume works even with modified training config."""
         # Arrange
+        import shutil
+        import tempfile
+        from pathlib import Path
 
+        from src.codex_ml.checkpointing.checkpoint_core import (
             load_checkpoint,
             save_checkpoint,
         )
@@ -215,7 +202,11 @@ class TestCheckpointResumeIntegration:
     def test_checkpoint_sequential_saves_preserve_progression(self):
         """Verify sequential checkpoint saves track training progression."""
         # Arrange
+        import shutil
+        import tempfile
+        from pathlib import Path
 
+        from src.codex_ml.checkpointing.checkpoint_core import (
             load_checkpoint,
             save_checkpoint,
         )
@@ -254,10 +245,15 @@ class TestTrainingLoopIntegration:
     def test_simulated_training_loop_with_callbacks_and_checkpoints(self):
         """Simulate realistic training loop with early stopping and checkpointing."""
         # Arrange
+        import shutil
+        import tempfile
+        from pathlib import Path
 
+        from src.codex_ml.checkpointing.checkpoint_core import (
             load_checkpoint,
             save_checkpoint,
         )
+        from src.codex_ml.training.callbacks import EarlyStopping
 
         tmpdir = Path(tempfile.mkdtemp())
 
@@ -313,10 +309,15 @@ class TestTrainingLoopIntegration:
     def test_training_recovery_from_checkpoint(self):
         """Test resuming training from checkpoint after simulated interruption."""
         # Arrange
+        import shutil
+        import tempfile
+        from pathlib import Path
 
+        from src.codex_ml.checkpointing.checkpoint_core import (
             load_checkpoint,
             save_checkpoint,
         )
+        from src.codex_ml.training.callbacks import EarlyStopping
 
         tmpdir = Path(tempfile.mkdtemp())
 

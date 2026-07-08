@@ -12,19 +12,17 @@ Categories:
 - Rate Limiting
 - Error Handling
 """
+
 from __future__ import annotations
-pytest.importorskip("fastapi")
+
 import hashlib  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 import hmac
+
+import pytest
+
+pytest.importorskip("fastapi")
+
 from codex.github.error_utils import (  # noqa: E402
-from codex.github.url_utils import (  # noqa: E402
-        import json
-        import time
-
-
-
-
-
     RateLimitError,
     format_error_message,
     get_backoff_delay,
@@ -32,6 +30,7 @@ from codex.github.url_utils import (  # noqa: E402
     is_rate_limited,
     should_retry,
 )
+from codex.github.url_utils import (  # noqa: E402
     get_url_for_display,
     redact_url_for_log,
     validate_github_api_url,
@@ -395,6 +394,7 @@ class TestWebhookHandlingCore:
 
     def test_webhook_event_parsing(self):
         """Webhook event payload is parsed into a dict with 'action'."""
+        import json
 
         payload = b'{"action": "opened", "number": 5}'
         data = json.loads(payload)
@@ -416,6 +416,7 @@ class TestWebhookHandlingCore:
 
     def test_webhook_replay_detection(self):
         """A timestamp older than 5 minutes is considered a replay."""
+        import time
 
         event_timestamp = int(time.time()) - 400  # 400 seconds ago
         tolerance_seconds = 300  # 5 minutes

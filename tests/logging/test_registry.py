@@ -3,12 +3,11 @@ Test Registry
 
 Test module for registry.
 """
-import pytest
+
 import json
 from pathlib import Path
+
 from codex_ml.logging.registry import build_loggers
-
-
 
 
 def test_ndjson_logger_basic(tmp_path: Path):

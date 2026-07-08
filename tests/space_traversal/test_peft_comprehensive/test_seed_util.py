@@ -1,18 +1,19 @@
 """
+pytest.importorskip("tensorboard")
 Test Seed Util
 
 Test module for seed util.
 """
+
 from __future__ import annotations
-pytest.importorskip("tensorboard")
+
+import pytest
+
 pytest.importorskip("numpy", reason="numpy required")
+
 import random
+
 from training.seed import ensure_global_seed
-
-
-
-
-
 
 
 def test_ensure_global_seed_sets_random_state() -> None:

@@ -2,24 +2,21 @@
 Comprehensive error handling tests for RAG modules.
 Tests all exception paths, edge cases, and failure scenarios.
 """
-pytest.importorskip("numpy")
+
 import importlib.util
 import os
 import tempfile
 import threading
 from pathlib import Path
 from unittest.mock import MagicMock, patch
+
+import pytest
+
+pytest.importorskip("numpy")
+
 import numpy as np
+
 from codex.logging.structured_logger import logger  # pragma: allowlist secret
-    from codex.rag.embeddings import (
-    from codex.rag.indexer import (
-    from codex.rag.retriever import MultiIndexRetriever, Retriever
-    from codex.rag.embeddings import OpenAIEmbeddingProvider
-
-
-
-
-
 
  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 # Check for FAISS specifically
@@ -27,15 +24,18 @@ FAISS_AVAILABLE = importlib.util.find_spec("faiss") is not None
 
 # Conditional imports for RAG dependencies - safely handled at test runtime
 try:
+    from codex.rag.embeddings import (
         CachedEmbeddingProvider,
         LocalSentenceTransformerProvider,
         create_embedding_provider,
     )
+    from codex.rag.indexer import (
         build_index_from_files,
         chunk_text,
         load_index,
         persist_index,
     )
+    from codex.rag.retriever import MultiIndexRetriever, Retriever
 
     RAG_ERROR_HANDLING_AVAILABLE = True
 except ImportError:
@@ -51,6 +51,7 @@ pytestmark = pytest.mark.skipif(
 
 # Only import OpenAI provider if available
 if OPENAI_AVAILABLE:
+    from codex.rag.embeddings import OpenAIEmbeddingProvider
 
 
 class TestIndexerErrorHandling:

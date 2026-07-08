@@ -3,14 +3,13 @@ Test Tracking Guards
 
 Test module for tracking guards.
 """
+
 from __future__ import annotations
-import pytest
+
 import os
 from pathlib import Path
+
 from src.codex_utils.tracking.guards import (
-
-
-
     _is_allowlisted,
     _is_remote_uri,
     ensure_mlflow_offline,

@@ -129,7 +129,6 @@ class TestRateLimitRecoveryScenarios:
 
     def test_partial_success_with_rate_limit(self):
         """Test batch operation with mid-batch rate limit."""
-import pytest
         # Create 3 variables
         # 1st: success
         # 2nd: success

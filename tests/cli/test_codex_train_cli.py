@@ -3,14 +3,13 @@ Test Codex Train Cli
 
 Test module for codex train cli.
 """
-import pytest
+
 from collections.abc import Mapping
+
 import yaml
 from click.testing import CliRunner
+
 from codex_ml.cli.codex_cli import codex
-
-
-
 
 
 def test_train_cli_invokes_training(monkeypatch, tmp_path):

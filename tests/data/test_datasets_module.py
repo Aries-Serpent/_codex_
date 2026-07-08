@@ -3,22 +3,20 @@ Test Datasets Module
 
 Test module for datasets module.
 """
-pytest.importorskip("data")
-torch = pytest.importorskip("torch")
+
 import sys
 from pathlib import Path
-import data.datasets as datasets
-        import torch.profiler as profiler_module
-
-
 
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
+import pytest
 
+import data.datasets as datasets
 
+torch = pytest.importorskip("torch")
 TORCH_STUB = getattr(torch, "__version__", "").endswith("stub")
 pytestmark = pytest.mark.skipif(TORCH_STUB, reason="datasets tests require real torch")
 
@@ -27,6 +25,7 @@ pytestmark = pytest.mark.skipif(TORCH_STUB, reason="datasets tests require real 
 def disable_torch_profiler(monkeypatch):
     """Disable PyTorch profiler to avoid Protocol isinstance issues."""
     try:
+        import torch.profiler as profiler_module
 
         # Disable profiler record function to prevent Protocol isinstance errors
         if hasattr(profiler_module, "_record_function_enter"):

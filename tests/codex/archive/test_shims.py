@@ -3,17 +3,6 @@ Tests for codex.archive.shims module.
 
 This module contains tests for writing consolidation shims and pointers.
 """
-import pytest
-        from codex.archive.shims import write_python_shim
-        from codex.archive.shims import write_python_shim
-        from codex.archive.shims import write_python_shim
-        from codex.archive.shims import write_markdown_pointer
-        from codex.archive.shims import write_markdown_pointer
-        from codex.archive.shims import write_json_pointer
-        from codex.archive.shims import write_json_pointer
-        from codex.archive.shims import write_csv_pointer
-        from codex.archive.shims import write_csv_pointer
-        from codex.archive.shims import _PY_WARN
 
 
 class TestWritePythonShim:
@@ -21,6 +10,7 @@ class TestWritePythonShim:
 
     def test_creates_file(self, tmp_path):
         """Test write_python_shim creates file."""
+        from codex.archive.shims import write_python_shim
 
         shim_path = tmp_path / "module.py"
 
@@ -30,6 +20,7 @@ class TestWritePythonShim:
 
     def test_file_content(self, tmp_path):
         """Test write_python_shim file content."""
+        from codex.archive.shims import write_python_shim
 
         shim_path = tmp_path / "shim.py"
 
@@ -43,6 +34,7 @@ class TestWritePythonShim:
 
     def test_creates_parent_dirs(self, tmp_path):
         """Test write_python_shim creates parent directories."""
+        from codex.archive.shims import write_python_shim
 
         shim_path = tmp_path / "nested" / "deep" / "module.py"
 
@@ -57,6 +49,7 @@ class TestWriteMarkdownPointer:
 
     def test_creates_file(self, tmp_path):
         """Test write_markdown_pointer creates file."""
+        from codex.archive.shims import write_markdown_pointer
 
         pointer_path = tmp_path / "README.md"
 
@@ -66,6 +59,7 @@ class TestWriteMarkdownPointer:
 
     def test_file_content(self, tmp_path):
         """Test write_markdown_pointer file content."""
+        from codex.archive.shims import write_markdown_pointer
 
         pointer_path = tmp_path / "doc.md"
 
@@ -82,6 +76,7 @@ class TestWriteJsonPointer:
 
     def test_creates_file(self, tmp_path):
         """Test write_json_pointer creates file."""
+        from codex.archive.shims import write_json_pointer
 
         pointer_path = tmp_path / "config.json"
 
@@ -91,6 +86,7 @@ class TestWriteJsonPointer:
 
     def test_file_content(self, tmp_path):
         """Test write_json_pointer file content."""
+        from codex.archive.shims import write_json_pointer
 
         pointer_path = tmp_path / "data.json"
 
@@ -107,6 +103,7 @@ class TestWriteCsvPointer:
 
     def test_creates_file(self, tmp_path):
         """Test write_csv_pointer creates file."""
+        from codex.archive.shims import write_csv_pointer
 
         pointer_path = tmp_path / "data.csv"
 
@@ -116,6 +113,7 @@ class TestWriteCsvPointer:
 
     def test_file_content(self, tmp_path):
         """Test write_csv_pointer file content."""
+        from codex.archive.shims import write_csv_pointer
 
         pointer_path = tmp_path / "table.csv"
 
@@ -132,6 +130,7 @@ class TestModuleConstants:
 
     def test_py_warn_constant(self):
         """Test _PY_WARN constant."""
+        from codex.archive.shims import _PY_WARN
 
         assert "DeprecationWarning" in _PY_WARN, "Condition must be true"
         assert "warnings" in _PY_WARN, "Condition must be true"

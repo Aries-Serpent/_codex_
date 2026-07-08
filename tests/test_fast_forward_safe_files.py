@@ -140,7 +140,6 @@ class TestBuildPlanDryRun:
 
     def test_force_files_limits_scope(self):
         """When force_files given, only those files are considered."""
-import pytest
         from fast_forward_safe_files import build_plan
 
         mock_pr = {"head": {"ref": "branch", "sha": "aaa000"}}

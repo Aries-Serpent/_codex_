@@ -16,7 +16,6 @@ MODULE_NAME = "src.tokenization.sentencepiece_adapter"
 
 class _StubProcessor:
     """Minimal stub mimicking a subset of ``SentencePieceProcessor``."""
-import pytest
 
     def __init__(self, pad_id: int = 0, piece_size: int = 0) -> None:
         self._pad_id = pad_id

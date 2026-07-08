@@ -6,18 +6,18 @@ Tests the required API methods:
 - get_pattern_library
 - invalidate_stale_contexts
 """
+
 import tempfile
 from pathlib import Path
-    from agents.agent_memory import AgentMemorySystem
-        from agents.agent_memory import AgentMemorySystem
 
-
+import pytest
 
 
 @pytest.fixture
 def memory_system():
     """Create a temporary memory system for testing."""
     # Import here to avoid import errors if module not available
+    from agents.agent_memory import AgentMemorySystem
 
     with tempfile.TemporaryDirectory() as tmpdir:
         db_path = Path(tmpdir) / "test_memory.db"
@@ -202,6 +202,7 @@ class TestAgentMemoryIntegration:
         db_path = memory_system.memory.db_path
 
         # Create new instance (simulating new session)
+        from agents.agent_memory import AgentMemorySystem
 
         new_system = AgentMemorySystem(agent_id="test_agent_2", db_path=db_path)
 

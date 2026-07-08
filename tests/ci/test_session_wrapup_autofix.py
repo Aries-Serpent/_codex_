@@ -685,10 +685,6 @@ class TestWecNeverCheckTelemetry:
         """select_merge_required_workflows must write to GITHUB_STEP_SUMMARY when a
         never-check item is encountered during activation — not just to stderr.
         """
-import pytest
-        import json
-        import json
-        import json
         summary_file = tmp_path / "step_summary.md"
         monkeypatch.setenv("GITHUB_STEP_SUMMARY", str(summary_file))
 
@@ -750,6 +746,7 @@ class TestHumanGrantTracking:
                 }
             },
         }
+        import json
 
         state_file.write_text(json.dumps(state_data))
         monkeypatch.setattr(swa, "_WEC_STATE_FILE", state_file)
@@ -776,6 +773,7 @@ class TestHumanGrantTracking:
                 }
             },
         }
+        import json
 
         state_file.write_text(json.dumps(state_data))
         monkeypatch.setattr(swa, "_WEC_STATE_FILE", state_file)
@@ -822,6 +820,7 @@ class TestHumanGrantTracking:
                 }
             },
         }
+        import json
 
         state_file.write_text(json.dumps(state_data))
         monkeypatch.setattr(swa, "_WEC_STATE_FILE", state_file)

@@ -3,16 +3,15 @@ Test Generate Schema
 
 Test module for generate schema.
 """
+
 from __future__ import annotations
-import pytest
+
 import json
 import subprocess
 import sys
 from pathlib import Path
+
 from tools.generate_schema import build_schema, infer_schema
-
-
-
 
 ROOT = Path(__file__).resolve().parents[2]
 

@@ -3,17 +3,18 @@ Test Metrics Perplexity
 
 Test module for metrics perplexity.
 """
-pytest.importorskip("torch", reason="PyTorch required for tests")
+
 import math
 from types import SimpleNamespace
-from codex_ml.metrics.evaluator import batch_metrics
-    import torch
 
-
+import pytest
 
 # Skip entire module if torch is not available or unloadable
+pytest.importorskip("torch", reason="PyTorch required for tests")
+from codex_ml.metrics.evaluator import batch_metrics
 
 try:  # pragma: no cover - torch optional in CI
+    import torch
 except ImportError:  # pragma: no cover - skip when torch unavailable
     torch = None  # type: ignore[assignment]
 

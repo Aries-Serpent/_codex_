@@ -5,17 +5,14 @@ Phase 3 Wave 5 Lane 1 — L1_SECURITY
 OWASP Coverage: A01 (Access Control), A02 (Cryptographic Failures), A05 (Misconfiguration)
 Test Count: 17 tests
 """
+
 import hashlib
 import hmac
 import json
 import os
 from typing import Any, Dict, List, Optional
-                import time
-            import os
-        import time
-                import urllib.parse
 
-
+import pytest
 
  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
@@ -87,6 +84,7 @@ class TestAPISecurityHeaders:
             
             def check_rate_limit(self, client_id: str) -> bool:
                 """Check if client has exceeded rate limit."""
+                import time
                 now = int(time.time() / 60)  # Minute
                 
                 key = f"{client_id}:{now}"
@@ -295,6 +293,7 @@ class TestAPIInputValidation:
                 raise ValueError("Empty file")
             
             # Validate extension
+            import os
             _, ext = os.path.splitext(filename)
             ext = ext.lower()
             
@@ -331,6 +330,7 @@ class TestSecretsManagement:
     def test_api_key_rotation_enforced(self):
         """Verify API keys are rotated periodically."""
         
+        import time
         
         class APIKeyManager:
             def __init__(self, rotation_days: int = 90):
@@ -459,6 +459,7 @@ class TestSecretsManagement:
             # Escape special characters in credentials
             def escape(s: str) -> str:
                 # URL encode special characters
+                import urllib.parse
                 return urllib.parse.quote(s, safe='')
             
             escaped_user = escape(user)

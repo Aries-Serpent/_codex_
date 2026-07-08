@@ -1,4 +1,5 @@
 """
+pytest.importorskip("mlflow")
 Unit tests for evaluate_epoch function.
 
 Tests cover:
@@ -8,15 +9,14 @@ Tests cover:
 - Deterministic mode
 - Edge cases (empty batches, NaN metrics, etc.)
 """
+
 from __future__ import annotations
-pytest.importorskip("mlflow")
+
+import pytest
+
 torch = pytest.importorskip("torch")
+
 from codex_ml.evaluation.loop import evaluate_epoch
-    import math
-
-
-
-
 
 
 class _SimpleModel(torch.nn.Module):
@@ -180,6 +180,7 @@ def test_evaluate_epoch_metric_error_handling():
     # Should return NaN for broken metric
     assert "metrics" in result, "Result must not be empty"
     assert "broken" in result["metrics"], "Result must not be empty"
+    import math
 
     assert math.isnan(result["metrics"]["broken"]), "Result must not be empty"
 

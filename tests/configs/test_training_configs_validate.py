@@ -3,12 +3,13 @@ Test Training Configs Validate
 
 Test module for training configs validate.
 """
+
 import importlib.util
 import subprocess
 import sys
 from pathlib import Path
 
-
+import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 SCHEMA = ROOT / "configs/schemas/training.schema.yaml"

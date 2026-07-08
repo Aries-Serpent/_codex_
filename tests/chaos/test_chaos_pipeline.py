@@ -4,17 +4,17 @@ Exercises ContinuousLearningPipeline, FeedbackCollector, and ABTestSuite
 under adverse conditions: repeated drift, corrupt configs, event overflow,
 and degenerate A/B test inputs.
 """
+
 from __future__ import annotations
+
 from typing import Any
+
+import pytest
+
 from codex_ml.continuous_learning.pipeline import ContinuousLearningPipeline
 from codex_ml.experiments.ab_testing import ABTestResult, run_ab_test
 from codex_ml.feedback.collector import FeedbackCollector
 from codex_ml.feedback.events import FeedbackEvent
-        import random as _rnd
-
-
-
-
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -208,6 +208,7 @@ class TestABTestingWithDegenerateInputs:
 
     def test_large_equal_groups_produces_valid_shape(self) -> None:
         """Large (1000-element) equal-value groups: result shape is valid."""
+        import random as _rnd
 
         rng = _rnd.Random(0)
         ctrl = [rng.gauss(0, 1) for _ in range(1000)]

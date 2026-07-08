@@ -7,12 +7,8 @@ Addresses missing test coverage identified by production readiness tool:
 
 Uses physics-guided minimal testing strategy.
 """
-            from src.training import accelerate_init_guard
-            from training import accelerate_init_guard
-            from src.training import streaming
-            from training import streaming
-            from src.codex_ml.tokenization import api
 
+import pytest
 
 
 class TestAccelerateInitGuardSmoke:
@@ -21,6 +17,7 @@ class TestAccelerateInitGuardSmoke:
     def test_import_src(self):
         """Test src.training.accelerate_init_guard can be imported."""
         try:
+            from src.training import accelerate_init_guard
 
             assert accelerate_init_guard is not None, "accelerate_init_guard must be initialized"
         except ImportError as e:
@@ -29,6 +26,7 @@ class TestAccelerateInitGuardSmoke:
     def test_import_top_level(self):
         """Test training.accelerate_init_guard can be imported."""
         try:
+            from training import accelerate_init_guard
 
             assert accelerate_init_guard is not None, "accelerate_init_guard must be initialized"
         except ImportError as e:
@@ -41,6 +39,7 @@ class TestStreamingSmoke:
     def test_import_src(self):
         """Test src.training.streaming can be imported."""
         try:
+            from src.training import streaming
 
             assert streaming is not None, "streaming must be initialized"
         except (ImportError, ModuleNotFoundError) as e:
@@ -49,6 +48,7 @@ class TestStreamingSmoke:
     def test_import_top_level(self):
         """Test training.streaming can be imported."""
         try:
+            from training import streaming
 
             assert streaming is not None, "streaming must be initialized"
         except (ImportError, ModuleNotFoundError) as e:
@@ -61,6 +61,7 @@ class TestTokenizationLoaderSmoke:
     def test_import(self):
         """Test src.codex_ml.tokenization.api can be imported."""
         try:
+            from src.codex_ml.tokenization import api
 
             assert api is not None, "api must be initialized"
         except (ImportError, ModuleNotFoundError) as e:

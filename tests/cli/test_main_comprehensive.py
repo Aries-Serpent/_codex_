@@ -7,20 +7,21 @@ Tests cover:
 - Help text generation
 - Integration with Typer
 """
+
 from __future__ import annotations
+
 from typing import Any
 from unittest.mock import patch
-    from typer.testing import CliRunner
-import codex_ml.cli as cli_pkg
-import codex_ml.cli.main as main  # import the MODULE, not the package_main function
 
-
-
+import pytest
 
 try:
+    from typer.testing import CliRunner
 except ImportError:
     pytest.skip("typer not available", allow_module_level=True)
 
+import codex_ml.cli as cli_pkg
+import codex_ml.cli.main as main  # import the MODULE, not the package_main function
 
 # main.py uses click/hydra CLI — some tests require a typer.Typer app attribute
 _MAIN_HAS_TYPER_APP = hasattr(main, "app") and main.app is not None

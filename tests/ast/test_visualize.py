@@ -2,13 +2,11 @@
 
 CB-005: HTMLVisualizer unit tests — node rendering, tree depth, CSS output.
 """
-import pytest
+
 from codex.ast import parse_python
 from codex.ast.graph import ASTGraph
 from codex.ast.node import NodeType, StandardizedASTNode
 from codex.ast.visualize import HTMLVisualizer
-        from codex.ast.node import SourceLocation
-
 
 
 class TestHTMLVisualizer:
@@ -72,6 +70,7 @@ class TestHTMLVisualizer:
 
     def test_tree_depth_reflected_in_node_children_count(self):
         """CB-005: _node_to_dict reports child count matching actual children."""
+        from codex.ast.node import SourceLocation
 
         loc = SourceLocation(
             file_path="x.py", line_start=1, line_end=5, column_start=0, column_end=0

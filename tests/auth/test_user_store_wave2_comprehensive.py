@@ -8,13 +8,12 @@ Tests cover:
 - Concurrent access
 - Edge cases
 """
+
+import pytest  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+
 from codex.auth.exceptions import InvalidCredentialsError
 from codex.auth.user_model import PasswordHasher
 from codex.auth.user_store import User, UserStore
-        import threading
-        import threading
-
-
 
 # ============================================================================ # pragma: allowlist secret
 # Fixtures
@@ -338,6 +337,7 @@ class TestThreadSafety:
 
     def test_concurrent_user_creation(self, user_store):
         """Test concurrent user creation."""
+        import threading
 
         users_created = []
 
@@ -362,6 +362,7 @@ class TestThreadSafety:
 
     def test_concurrent_user_retrieval(self, user_store):
         """Test concurrent user retrieval."""
+        import threading
 
         # Create some users
         for i in range(5):

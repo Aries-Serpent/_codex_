@@ -3,14 +3,15 @@ Test Data Loader
 
 Test module for data loader.
 """
-pytest.importorskip("omegaconf")
+
 from pathlib import Path
+
+import pytest
+
+pytest.importorskip("omegaconf")
+
 from codex_ml.config import DataConfig, ShardConfig
 from codex_ml.data.loader import (
-
-
-
-
     CacheManifest,
     load_dataset,
     prepare_data_from_config,

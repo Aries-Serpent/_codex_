@@ -2,12 +2,13 @@
 
 Tests for src/services/github/client.py to improve coverage from 7.41% → 25%+
 """
+
 from unittest.mock import patch
+
+import pytest
+
 from src.services.github.client import GitHubClient
 from src.services.github.exceptions import (
-
-
-
     AuthenticationError,
     GitHubAPIError,
     NotFoundError,

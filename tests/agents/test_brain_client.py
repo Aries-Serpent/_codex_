@@ -9,7 +9,9 @@ Covers:
 - BrainClientError raised on HTTP errors and network errors
 - Convenience helpers: git_status, git_log, github_repo_info, github_workflow_runs
 """
+
 from __future__ import annotations
+
 import json
 import os
 import urllib.error
@@ -17,11 +19,10 @@ import urllib.request
 from io import BytesIO
 from typing import Any
 from unittest.mock import MagicMock, patch
+
+import pytest
+
 from codex.agents.brain_client import _DEFAULT_URL, BrainClient, BrainClientError
-
-
-
-
 
 # All env vars consulted by BrainClient._auth_header() — must be excluded
 # in tests that assert "no auth header".

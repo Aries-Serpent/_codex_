@@ -8,16 +8,15 @@ Phase: 14.1 - Core Module Testing
 Created: 2026-01-18
 AI Agency Policy Compliance: ✅
 """
+
 from __future__ import annotations
+
 import subprocess
 import sys
 from pathlib import Path
 from typing import TYPE_CHECKING
-            from codex_ml.cli import train
-            from codex_ml.cli import train
 
-
-
+import pytest
 
 if TYPE_CHECKING:
     pass
@@ -71,6 +70,7 @@ class TestTrainModuleImport:
     def test_train_module_importable(self) -> None:
         """Verify train module can be imported."""
         try:
+            from codex_ml.cli import train
 
             assert train is not None, "train must be initialized"
         except ImportError as e:
@@ -79,6 +79,7 @@ class TestTrainModuleImport:
     def test_train_has_app_or_commands(self) -> None:
         """Verify train module has Typer app or commands."""
         try:
+            from codex_ml.cli import train
 
             # Check for either app or command functions
             has_app = hasattr(train, "app")

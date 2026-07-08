@@ -4,16 +4,12 @@ Integration tests for quantum orchestration system with cross-reference capabili
 This module tests the ability of AI agents to "take the helm" and actively
 produce pathways by cross-referencing existing codebase components.
 """
+
 from __future__ import annotations
+
+import pytest
+
 from src.quantum import (
-        from src.quantum.plugin_registry import calculate_thermodynamic_load_priority
-                import time
-        from src.quantum.plugin_registry import calculate_thermodynamic_load_priority
-        import math
-        from src.quantum.plugin_registry import calculate_thermodynamic_load_priority
-
-
-
     PluginState,
     QuantumPlugin,
     QuantumPluginRegistry,
@@ -330,6 +326,7 @@ class TestCrossReferenceCapabilities:
 
         Demonstrates: AI agent adjusts behavior based on system state.
         """
+        from src.quantum.plugin_registry import calculate_thermodynamic_load_priority
 
         plugins = [
             QuantumPlugin(name="heavy", import_path="sys", energy_cost=5.0),
@@ -446,6 +443,7 @@ class TestCrossReferenceCapabilities:
 
         def make_instrumented_task(name, base_energy):
             def func():
+                import time
 
                 start = time.time()
                 # Simulate work
@@ -507,6 +505,7 @@ class TestCrossReferenceCapabilities:
         # AI agent pathway: Context-aware selection
         context = "production"  # Low energy budget, low temperature
 
+        from src.quantum.plugin_registry import calculate_thermodynamic_load_priority
 
         priorities = calculate_thermodynamic_load_priority(
             plugins, current_temperature=contexts[context]["temperature"]
@@ -524,6 +523,7 @@ class TestCrossReferenceCapabilities:
         suite = QuantumTestSuite(temperature=1.0)
 
         # Create tests with different phases for interference
+        import math
 
         # AI agent pathway: Create constructive/destructive interference patterns
         for i in range(10):
@@ -580,6 +580,7 @@ class TestAgentAutonomyCapabilities:
             )
 
         # Agent creates optimal loading strategy
+        from src.quantum.plugin_registry import calculate_thermodynamic_load_priority
 
         priorities = calculate_thermodynamic_load_priority(
             list(registry.plugins.values()), current_temperature=1.0

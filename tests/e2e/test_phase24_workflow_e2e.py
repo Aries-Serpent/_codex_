@@ -35,6 +35,7 @@ def test_end_to_end_dataloaders_split(tmp_path):
 @pytest.mark.e2e
 def test_end_to_end_validation_path(tmp_path):
     """Test end-to-end validation path workflow."""
+    torch = pytest.importorskip("torch")
     train_path = tmp_path / "train.tsv"
     val_path = tmp_path / "val.tsv"
     train_path.write_text("hello\t1\nworld\t0\n", encoding="utf-8")
@@ -53,6 +54,7 @@ def test_end_to_end_validation_path(tmp_path):
 @pytest.mark.e2e
 def test_end_to_end_single_row_no_val(tmp_path):
     """Test end-to-end single-row workflow."""
+    torch = pytest.importorskip("torch")
     data_file = tmp_path / "single.tsv"
     data_file.write_text("only\t1\n", encoding="utf-8")
 
@@ -68,7 +70,7 @@ def test_end_to_end_single_row_no_val(tmp_path):
 @pytest.mark.e2e
 def test_end_to_end_missing_input_ids(tmp_path):
     """Test end-to-end missing input_ids error handling."""
-import pytest
+    torch = pytest.importorskip("torch")
     data_file = tmp_path / "data.tsv"
     data_file.write_text("hello\t1\nworld\t0\n", encoding="utf-8")
 

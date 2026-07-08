@@ -10,18 +10,17 @@ hook to fail → Fast Validation exit code 2 → cascading into the 8.2 % CI
 failure rate.  These tests lock in the contract so regressions are caught at
 the unit-test level rather than in a remote CI run.
 """
+
 from __future__ import annotations
+
+# Import the module under test -------------------------------------------
 import importlib
 import sys
 import textwrap
 from pathlib import Path
 from unittest.mock import patch
-        import re
-        import re
 
-
-# Import the module under test -------------------------------------------
-
+import pytest
 
 # The script lives outside ``src/``, so we load it via importlib from its
 # filesystem path rather than relying on PYTHONPATH/package install.
@@ -399,6 +398,7 @@ class TestProductionRules:
         assert len(ids) == len(set(ids)), f"Duplicate rule IDs: {duplicates}"
 
     def test_all_rule_patterns_compile(self) -> None:
+        import re
 
         for rule in doc_metrics_sync.RULES:
             try:
@@ -414,6 +414,7 @@ class TestProductionRules:
 
     def test_gather_metrics_returns_all_keys_used_by_rules(self) -> None:
         """Ensure no rule references a metric key that gather_metrics doesn't produce."""
+        import re
 
         metrics = gather_metrics(doc_metrics_sync.REPO_ROOT)
         for rule in doc_metrics_sync.RULES:

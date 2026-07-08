@@ -4,12 +4,13 @@ Tests for Topology Manager - Semantic Code Navigation
 Tests the topology manager's ability to provide concept-based navigation
 and semantic code discovery.
 """
+
 import tempfile
 from pathlib import Path
+
+import pytest
+
 from scripts.cognitive.topology_manager import (
-
-
-
     CodeLocation,
     NavigationMap,
     TopologyManager,

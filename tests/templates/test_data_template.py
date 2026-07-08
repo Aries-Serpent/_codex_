@@ -1,4 +1,3 @@
-import pytest
 #         assert not (, "Condition must be true"
 #             validation_rules["score"]["min"]
 #             <= invalid_record["score"]

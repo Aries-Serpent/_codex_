@@ -4,15 +4,15 @@ Tests for quantum-thermodynamic retrieval scoring.
 Author: Copilot Agent
 Generated: 2025-12-24
 """
+
 from __future__ import annotations
+
 import math
+
+import pytest
+
 from rag.pipelines.chunking import Chunk
 from rag.pipelines.quantum_retrieval import (
-        from rag.pipelines.retrieval import RetrievalResult
-
-
-
-
     QuantumEnhancedRetrieval,
     QuantumRelevanceScorer,
     QuantumState,
@@ -430,6 +430,7 @@ class TestRecordScoringPattern:
         """Test successful pattern recording."""
         scorer = QuantumRelevanceScorer()
 
+        from rag.pipelines.retrieval import RetrievalResult
 
         results = [
             RetrievalResult(

@@ -4,30 +4,15 @@ Tests for repository organization monitoring script
 Tests candidate identification, category classification, JSON report generation,
 and action log integration.
 """
+
 from __future__ import annotations
+
 import importlib.util
 import json
 import tempfile
 from pathlib import Path
-        import sys
-        from monitor_offload_candidates import get_file_age_days
-        import sys
-        from monitor_offload_candidates import get_file_size_mb
-        import sys
-        from monitor_offload_candidates import matches_pattern
-        import sys
-        from monitor_offload_candidates import categorize_file
-        import sys
-        from monitor_offload_candidates import scan_repository
-        import sys
-        from monitor_offload_candidates import scan_repository
-        import sys
-        from monitor_offload_candidates import _get_recommendation
-    import sys
-    from monitor_offload_candidates import scan_repository
 
-
-
+import pytest
 
 
 class TestMonitorOffloadCandidates:
@@ -36,11 +21,13 @@ class TestMonitorOffloadCandidates:
     def test_get_file_age_days(self):
         """Test file age calculation"""
         # Import after path setup
+        import sys
 
         sys.path.insert(
             0, str(Path(__file__).parent.parent.parent / "scripts" / "repository_organization")
         )
 
+        from monitor_offload_candidates import get_file_age_days
 
         with tempfile.NamedTemporaryFile() as tmp:
             tmp_path = Path(tmp.name)
@@ -49,11 +36,13 @@ class TestMonitorOffloadCandidates:
 
     def test_get_file_size_mb(self):
         """Test file size calculation"""
+        import sys
 
         sys.path.insert(
             0, str(Path(__file__).parent.parent.parent / "scripts" / "repository_organization")
         )
 
+        from monitor_offload_candidates import get_file_size_mb
 
         with tempfile.NamedTemporaryFile(mode="w") as tmp:
             tmp_path = Path(tmp.name)
@@ -66,11 +55,13 @@ class TestMonitorOffloadCandidates:
 
     def test_matches_pattern(self):
         """Test pattern matching logic"""
+        import sys
 
         sys.path.insert(
             0, str(Path(__file__).parent.parent.parent / "scripts" / "repository_organization")
         )
 
+        from monitor_offload_candidates import matches_pattern
 
         test_cases = [
             (Path("temp/file.txt"), ["temp/"], True),
@@ -85,11 +76,13 @@ class TestMonitorOffloadCandidates:
 
     def test_categorize_file(self):
         """Test file categorization"""
+        import sys
 
         sys.path.insert(
             0, str(Path(__file__).parent.parent.parent / "scripts" / "repository_organization")
         )
 
+        from monitor_offload_candidates import categorize_file
 
         with tempfile.TemporaryDirectory() as tmpdir:
             repo_root = Path(tmpdir)
@@ -113,11 +106,13 @@ class TestMonitorOffloadCandidates:
 
     def test_scan_repository_basic(self):
         """Test basic repository scanning"""
+        import sys
 
         sys.path.insert(
             0, str(Path(__file__).parent.parent.parent / "scripts" / "repository_organization")
         )
 
+        from monitor_offload_candidates import scan_repository
 
         with tempfile.TemporaryDirectory() as tmpdir:
             repo_root = Path(tmpdir)
@@ -139,11 +134,13 @@ class TestMonitorOffloadCandidates:
 
     def test_json_report_generation(self):
         """Test JSON report structure"""
+        import sys
 
         sys.path.insert(
             0, str(Path(__file__).parent.parent.parent / "scripts" / "repository_organization")
         )
 
+        from monitor_offload_candidates import scan_repository
 
         with tempfile.TemporaryDirectory() as tmpdir:
             repo_root = Path(tmpdir)
@@ -173,11 +170,13 @@ class TestMonitorOffloadCandidates:
     )
     def test_recommendation_generation(self, category, age, size, expected):
         """Test recommendation logic"""
+        import sys
 
         sys.path.insert(
             0, str(Path(__file__).parent.parent.parent / "scripts" / "repository_organization")
         )
 
+        from monitor_offload_candidates import _get_recommendation
 
         recommendation = _get_recommendation(category, age, size)
         assert recommendation == expected, f"Recommendation mismatch for {category}/{age}d/{size}MB"
@@ -211,11 +210,13 @@ class TestMonitorOffloadCandidates:
 @pytest.mark.skipif(True, reason="Integration test - requires full repository setup")
 def test_integration_scan_real_repo():
     """Integration test with real repository (skipped by default)"""
+    import sys
 
     sys.path.insert(
         0, str(Path(__file__).parent.parent.parent / "scripts" / "repository_organization")
     )
 
+    from monitor_offload_candidates import scan_repository
 
     repo_root = Path.cwd()
     results = scan_repository(repo_root)

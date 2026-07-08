@@ -3,22 +3,23 @@ Test Override Propagation
 
 Test module for override propagation.
 """
+
 from __future__ import annotations
-pytest.importorskip("hydra")
+
 import os
 import subprocess
 from pathlib import Path
-    import codex_ml.cli.main as _cli_main
 
-
-
+import pytest
 
 # Skip these tests if hydra is not available in the environment
+pytest.importorskip("hydra")
 
 # Skip when the Typer CLI is active: --override-file is only supported in the
 # Hydra-backed CLI path.  When typer is installed, codex_ml.cli.main uses the
 # Typer app which does not accept this flag.
 try:
+    import codex_ml.cli.main as _cli_main
 
     if hasattr(_cli_main, "_typer_cli_wrapper"):
         pytest.skip(

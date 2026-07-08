@@ -9,13 +9,12 @@ Tests that physical laws are correctly implemented and maintained:
 5. Spinor normalization
 6. Lorentz factor bounds
 """
+
+import pytest
+
 np = pytest.importorskip("numpy")
+
 from codex.quantum_orchestrator.orchestrator import (
-        from codex.quantum_orchestrator.orchestrator import DiracMatrices
-        from codex.quantum_orchestrator.orchestrator import DiracMatrices
-
-
-
     DiracSpinor,
     PhysicsConstants,
     TaskVector,
@@ -344,6 +343,7 @@ class TestPhysicsConsistency:
 
     def test_dirac_matrices_anticommutation(self):
         """Dirac matrices satisfy {αᵢ, αⱼ} = 2δᵢⱼ."""
+        from codex.quantum_orchestrator.orchestrator import DiracMatrices
 
         alpha_vec = DiracMatrices.alpha_vector()
 
@@ -355,6 +355,7 @@ class TestPhysicsConsistency:
 
     def test_beta_matrix_squares_to_identity(self):
         """β² = I (identity matrix)."""
+        from codex.quantum_orchestrator.orchestrator import DiracMatrices
 
         beta = DiracMatrices.beta()
         beta_squared = beta @ beta

@@ -163,7 +163,6 @@ class TestSafeguardsKeywordExpansion:
 
     def test_detector_import(self):
         """Test that detector can be imported"""
-import pytest
         from scripts.space_traversal.detectors import detector_safeguards
 
         assert hasattr(detector_safeguards, "detect")

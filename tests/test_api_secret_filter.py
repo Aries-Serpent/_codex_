@@ -3,14 +3,15 @@ Test Api Secret Filter
 
 Test module for api secret filter.
 """
+
+import pytest
+
 pytest.importorskip("torch", reason="PyTorch is required for API service tests")
+
 pytest.importorskip("fastapi")
 from fastapi.testclient import TestClient
+
 from services.api.main import app
-
-
-
-
 
 
 @pytest.fixture(autouse=True)

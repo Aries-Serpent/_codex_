@@ -3,18 +3,17 @@ Tests for RAG CachedRetriever and LRUCache classes
 
 Comprehensive test coverage for caching functionality in retriever.py
 """
-    pytest.importorskip("sentence_transformers", reason="sentence_transformers not installed")
+
 import tempfile
 import time
 from pathlib import Path
-    from codex.rag.indexer import build_index_from_files
-    from codex.rag.retriever import CachedRetriever, LRUCache
-    import torch as _torch
 
-
+import pytest
 
 # Conditional imports for RAG dependencies - safely handled at test runtime
 try:
+    from codex.rag.indexer import build_index_from_files
+    from codex.rag.retriever import CachedRetriever, LRUCache
 
     RAG_RETRIEVER_AVAILABLE = True
 except ImportError:
@@ -22,6 +21,7 @@ except ImportError:
 
 # sentence_transformers is required at execution time even when the module import succeeds
 if RAG_RETRIEVER_AVAILABLE:
+    pytest.importorskip("sentence_transformers", reason="sentence_transformers not installed")
 
 pytestmark = pytest.mark.skipif(
     not RAG_RETRIEVER_AVAILABLE,
@@ -30,6 +30,7 @@ pytestmark = pytest.mark.skipif(
 
 # Guard for tests that require real SentenceTransformer models on CPU
 try:
+    import torch as _torch
 
     _cuda_available = _torch.cuda.is_available()
 except (ImportError, RuntimeError):

@@ -3,20 +3,20 @@ Test Dataset Wrapper
 
 Test module for dataset wrapper.
 """
+
 from __future__ import annotations
+
+import pytest
+
 pytest.importorskip("datasets")
+
+
 from codex_ml.data.dataset_wrapper import DATASETS_AVAILABLE, train_val_test_split
-    from datasets import Dataset
-    from datasets import Dataset
-
-
-
-
-
 
 
 @pytest.mark.skipif(not DATASETS_AVAILABLE, reason="datasets library not installed")
 def test_train_val_test_split_reproducible() -> None:
+    from datasets import Dataset
 
     source = Dataset.from_dict({"text": [f"row-{i}" for i in range(20)]})
     a_train, a_val, a_test = train_val_test_split(source, seed=123)
@@ -29,6 +29,7 @@ def test_train_val_test_split_reproducible() -> None:
 
 @pytest.mark.skipif(not DATASETS_AVAILABLE, reason="datasets library not installed")
 def test_train_val_test_split_respects_ratios() -> None:
+    from datasets import Dataset
 
     dataset = Dataset.from_dict({"value": list(range(30))})
     train, val, test = train_val_test_split(dataset, splits=(0.6, 0.2, 0.2), seed=7)

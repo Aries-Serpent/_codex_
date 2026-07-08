@@ -5,15 +5,15 @@ Phase 3 Wave 5 Lane 1 — L1_SECURITY
 OWASP Coverage: A03 (Injection), A02 (Cryptographic Failures)
 Test Count: 18 tests
 """
+
 import hashlib
 import os
 import re
 import secrets
 import urllib.parse
 from typing import List
-            import os.path
 
-
+import pytest
 
 
  # pragma: allowlist secret
@@ -114,6 +114,7 @@ class TestInputValidation:
         def validate_file_path(requested_path: str, base_dir: str = "/data") -> str:
             """Validate file path to prevent traversal."""
             # Normalize path
+            import os.path
             
             # Get absolute paths
             requested_abs = os.path.abspath(requested_path)

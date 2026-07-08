@@ -11,18 +11,17 @@ Tests complete safety filtering workflows:
 
 Part of Phase 5B-II: Integration Test Development
 """
+
 from __future__ import annotations
+
 import logging
 from unittest.mock import Mock, patch
-    from codex_ml.safety.filters import (
-    from transformers import AutoTokenizer
-            from codex_ml.safety import filters
 
-
-
+import pytest
 
 # Conditional imports with graceful degradation
 try:
+    from codex_ml.safety.filters import (
         ContentFilter,
         SafetyFilterChain,
         SafetyViolation,
@@ -35,6 +34,7 @@ except (ImportError, AttributeError):
     SAFETY_FILTERS_AVAILABLE = False
 
 try:
+    from transformers import AutoTokenizer
 
     TRANSFORMERS_AVAILABLE = True
 except ImportError:
@@ -316,6 +316,7 @@ class TestSafetyFiltersErrorHandling:
         """Test: System degrades gracefully when filter not available."""
         # This tests that missing optional filters don't crash the system
         try:
+            from codex_ml.safety import filters
 
             assert hasattr(filters, "SafetyFilterChain")
         except ImportError:

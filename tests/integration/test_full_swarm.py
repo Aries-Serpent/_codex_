@@ -3,18 +3,6 @@ Test Full Swarm
 
 Test module for full swarm.
 """
-import pytest
-import sys
-import unittest
-from pathlib import Path
-from codex.logging.structured_logger import logger
-        import time
-        from codex_swarm import SwarmEngine
-        from codex_swarm import Compression
-        import concurrent.futures
-        from codex_swarm import SwarmEngine
-        from codex_swarm import SwarmEngine
-        from codex_swarm import TaskManager
 
 # Rust-Python Hybrid Swarm Integration Tests
 # Phase 4: Full Integration Testing
@@ -26,7 +14,11 @@ Note: These tests are designed to work once the Rust library is built with matur
 For now, they serve as documentation and will be executed in CI.
 """
 
+import sys
+import unittest
+from pathlib import Path
 
+from codex.logging.structured_logger import logger
 
 # Add project to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
@@ -49,7 +41,7 @@ class TestSwarmIntegration(unittest.TestCase):
         processed = swarm.process_batch(1000)
         assert processed == 1000, "processed is not valid"
         """
-        assert expected_behavior is not None
+        self.assertIsNotNone(expected_behavior)
 
     def test_500_agents_10k_tasks(self):
         """
@@ -58,6 +50,8 @@ class TestSwarmIntegration(unittest.TestCase):
         """
         # Expected implementation
         expected_test = """
+        import time
+        from codex_swarm import SwarmEngine
 
         swarm = SwarmEngine(500)
         task_count = 10_000
@@ -73,11 +67,12 @@ class TestSwarmIntegration(unittest.TestCase):
         throughput = task_count / duration
         assert throughput > 5000, f"Throughput: {throughput:.0f} tasks/s"
         """
-        assert expected_test is not None
+        self.assertIsNotNone(expected_test)
 
     def test_compression_integration(self):
         """Test compression in full pipeline."""
         expected_test = """
+        from codex_swarm import Compression
 
         # Create task data
         tasks = [{"id": i, "data": "x" * 1000} for i in range(100)]
@@ -93,11 +88,13 @@ class TestSwarmIntegration(unittest.TestCase):
         assert decompressed == tasks_json, "decompressed is not valid"
         assert ratio >= 10, f"Compression ratio: {ratio:.1f}x"
         """
-        assert expected_test is not None
+        self.assertIsNotNone(expected_test)
 
     def test_concurrent_access_patterns(self):
         """Test multiple concurrent operations."""
         expected_test = """
+        import concurrent.futures
+        from codex_swarm import SwarmEngine
 
         swarm = SwarmEngine(500)
 
@@ -112,11 +109,12 @@ class TestSwarmIntegration(unittest.TestCase):
 
         assert all(results), "All workers should succeed"
         """
-        assert expected_test is not None
+        self.assertIsNotNone(expected_test)
 
     def test_error_recovery_integration(self):
         """Test error handling and recovery."""
         expected_test = """
+        from codex_swarm import SwarmEngine
 
         swarm = SwarmEngine(500)
 
@@ -140,7 +138,7 @@ class TestSwarmIntegration(unittest.TestCase):
         recovery_results = swarm.process_tasks(recovery_tasks)
         assert all(r["success"] for r in recovery_results), "Result must not be empty"
         """
-        assert expected_test is not None
+        self.assertIsNotNone(expected_test)
 
 
 class TestTaskManagerIntegration(unittest.TestCase):
@@ -149,6 +147,7 @@ class TestTaskManagerIntegration(unittest.TestCase):
     def test_task_lifecycle(self):
         """Test complete task lifecycle."""
         expected_test = """
+        from codex_swarm import TaskManager
 
         manager = TaskManager()
 
@@ -162,7 +161,7 @@ class TestTaskManagerIntegration(unittest.TestCase):
         assert result[0] == task_id, "Result must not be empty"
         assert result[1] is True, "Result must not be empty"
         """
-        assert expected_test is not None
+        self.assertIsNotNone(expected_test)
 
 
 class TestMetricsIntegration(unittest.TestCase):
@@ -179,7 +178,7 @@ class TestMetricsIntegration(unittest.TestCase):
         - Memory usage per agent
         - Compression ratios
         """
-        assert expected_behavior is not None
+        self.assertIsNotNone(expected_behavior)
 
 
 def main():

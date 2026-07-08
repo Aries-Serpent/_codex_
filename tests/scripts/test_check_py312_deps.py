@@ -3,18 +3,10 @@ Test check_py312_deps.py script.
 
 Ensures dependency compatibility checker works correctly.
 """
+
 from __future__ import annotations
-import importlib.util
-import sys
-from pathlib import Path
-from unittest.mock import MagicMock, patch
-from check_py312_deps import (
-        import subprocess
-        from check_py312_deps import main
-        from check_py312_deps import main
-        import subprocess
 
-
+import pytest
 
 
 @pytest.fixture(autouse=True)
@@ -24,9 +16,14 @@ def cleanup_mocks():
     mock.patch.stopall()
 
 
+import importlib.util
 
 # Import the script module
+import sys
+from pathlib import Path
+from unittest.mock import MagicMock, patch
 
+import pytest
 
 # Load the script as a module
 script_path = Path(__file__).parent.parent.parent / "scripts" / "check_py312_deps.py"
@@ -36,6 +33,7 @@ sys.modules["check_py312_deps"] = check_py312_deps
 spec.loader.exec_module(check_py312_deps)
 
 # Import functions from the loaded module
+from check_py312_deps import (
     check_package_py312_support,
     load_dependencies_from_pyproject,
     parse_dependency_spec,
@@ -141,6 +139,7 @@ class TestCheckPackagePy312Support:
     @patch("subprocess.run")
     def test_timeout_handling(self, mock_run):
         """Test timeout handling during package check."""
+        import subprocess
 
         mock_run.side_effect = subprocess.TimeoutExpired("pip", 30)
 
@@ -188,6 +187,7 @@ class TestMain:
             "error": None,
         }
 
+        from check_py312_deps import main
 
         with patch("builtins.print"):  # Suppress output
             exit_code = main()
@@ -208,6 +208,7 @@ class TestMain:
             "error": None,
         }
 
+        from check_py312_deps import main
 
         with patch("builtins.print"):  # Suppress output
             exit_code = main()
@@ -221,6 +222,7 @@ class TestIntegration:
 
     def test_script_runs_without_error(self):
         """Test that script runs without crashing."""
+        import subprocess
 
         result = subprocess.run(
             [sys.executable, "scripts/check_py312_deps.py"],

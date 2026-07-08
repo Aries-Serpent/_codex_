@@ -3,14 +3,15 @@ Test Seed
 
 Test module for seed.
 """
+
 from __future__ import annotations
+
 import importlib
 import random
+
+import pytest
+
 from codex_ml.utils.seed import deterministic_shuffle, set_seed
-
-
-
-
 
 
 def _optional_import(module: str):
@@ -20,7 +21,6 @@ def _optional_import(module: str):
         return None
 
 
-@pytest.mark.skipif(_optional_import("torch") is None, reason="torch not installed")
 @pytest.mark.parametrize("seed", [123, 42])
 def test_seed_repro_python(seed: int) -> None:
     set_seed(seed)

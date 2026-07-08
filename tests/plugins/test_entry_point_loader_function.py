@@ -3,11 +3,10 @@ Test Entry Point Loader Function
 
 Test module for entry point loader function.
 """
+
 from __future__ import annotations
-import pytest
+
 from codex_ml import plugins
-
-
 
 
 def test_load_entry_point_plugins_disabled_returns_zero():

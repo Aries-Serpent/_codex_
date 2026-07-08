@@ -23,14 +23,15 @@ Coverage matrix (≥ 10 tests required):
 19.  pipeline end-to-end with mocked drift result (object form)
 20.  RetrainingJob.to_dict serialisation
 """
+
 from __future__ import annotations
+
 from dataclasses import dataclass
 from datetime import UTC, datetime
+
+import pytest
+
 from codex_ml.continuous_learning import (
-
-
-
-
     ContinuousLearningPipeline,
     EvalGate,
     EvalGateResult,

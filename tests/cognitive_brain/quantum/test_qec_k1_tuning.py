@@ -6,13 +6,14 @@ Covers AdaptiveScoringOptimizer k₁ lifecycle:
 - Weight update mechanics, gradient computation
 - Scoring function creation and boundary conditions
 """
+
 from __future__ import annotations
+
 import time
+
+import pytest
+
 from cognitive_brain.quantum.adaptive_scoring import (
-
-
-
-
     AdaptiveScoringEngine,
     AdaptiveScoringOptimizer,
     FeedbackRecord,

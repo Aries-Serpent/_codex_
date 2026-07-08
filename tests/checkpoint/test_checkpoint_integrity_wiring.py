@@ -3,13 +3,12 @@ Test Checkpoint Integrity Wiring
 
 Test module for checkpoint integrity wiring.
 """
+
 from __future__ import annotations
-import pytest
+
 from pathlib import Path
+
 from codex_ml.utils import checkpoint_core
-
-
-
 
 
 def test_save_checkpoint_attaches_integrity(monkeypatch, tmp_path: Path) -> None:

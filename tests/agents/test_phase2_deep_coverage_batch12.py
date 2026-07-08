@@ -11,26 +11,11 @@ Systematically addresses final coverage gaps:
 
 Target: Final push toward 95% coverage (75% → 95%+)
 """
+
+import pytest
+
 pytest.importorskip("numpy", reason="numpy not installed")
 import numpy as np
-        from agents.physics_orchestrator import DiffusionFlowModel
-        from agents.physics_orchestrator import EnergyLandscape
-        from agents.physics_orchestrator import SwarmIntelligence
-        from agents.physics_orchestrator import HamiltonianEvolver
-        from agents.advanced_physics_calculators import ChaoticAttractor
-        from agents.physics_orchestrator import PhysicsOrchestrator
-        from agents.physics_orchestrator import PhysicsOrchestrator
-        from agents.physics_orchestrator import QuantumOperator
-        from agents.physics_orchestrator import EnergyLandscape
-        from agents.advanced_physics_calculators import FractalAnalyzer
-        from agents.physics_orchestrator import PhysicsOrchestrator
-        from agents.quantum_game_theory import QuantumInspiredGameEngine
-        from agents.mental_mapping import MentalMappingModel
-        from agents.agent_memory import AgentMemory
-        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
-
-
-
 
 
 class TestPhase2_APIMismatches:
@@ -85,6 +70,7 @@ class TestPhase2_PropertyAccess:
 
     def test_diffusion_flow_model_properties(self):
         """Test DiffusionFlowModel property access"""
+        from agents.physics_orchestrator import DiffusionFlowModel
 
         model = DiffusionFlowModel(dimensions=2, resolution=10)
         assert hasattr(model, "diffusion_coefficient")
@@ -92,6 +78,7 @@ class TestPhase2_PropertyAccess:
 
     def test_energy_landscape_properties(self):
         """Test EnergyLandscape property access"""
+        from agents.physics_orchestrator import EnergyLandscape
 
         landscape = EnergyLandscape(temperature=1.5)
         assert hasattr(landscape, "temperature")
@@ -99,6 +86,7 @@ class TestPhase2_PropertyAccess:
 
     def test_swarm_intelligence_properties(self):
         """Test SwarmIntelligence property access"""
+        from agents.physics_orchestrator import SwarmIntelligence
 
         swarm = SwarmIntelligence(num_particles=15)
         assert hasattr(swarm, "num_agents")
@@ -106,6 +94,7 @@ class TestPhase2_PropertyAccess:
 
     def test_hamiltonian_evolver_properties(self):
         """Test HamiltonianEvolver property access"""
+        from agents.physics_orchestrator import HamiltonianEvolver
 
         evolver = HamiltonianEvolver(grid_size=32)
         assert hasattr(evolver, "grid_size")
@@ -113,6 +102,7 @@ class TestPhase2_PropertyAccess:
 
     def test_chaotic_attractor_properties(self):
         """Test ChaoticAttractor property access"""
+        from agents.advanced_physics_calculators import ChaoticAttractor
 
         attractor = ChaoticAttractor(attractor_type="logistic")
         assert hasattr(attractor, "attractor_type")
@@ -128,12 +118,14 @@ class TestPhase2_InitializationVariants:
 
     def test_physics_orchestrator_default_init(self):
         """Test PhysicsOrchestrator with defaults"""
+        from agents.physics_orchestrator import PhysicsOrchestrator
 
         orch = PhysicsOrchestrator()
         assert orch is not None, "orch must be initialized"
 
     def test_physics_orchestrator_custom_init(self):
         """Test PhysicsOrchestrator with custom params"""
+        from agents.physics_orchestrator import PhysicsOrchestrator
 
         # May accept various initialization parameters
         orch = PhysicsOrchestrator()
@@ -141,6 +133,7 @@ class TestPhase2_InitializationVariants:
 
     def test_quantum_operator_grid_sizes(self):
         """Test QuantumOperator with different grid sizes"""
+        from agents.physics_orchestrator import QuantumOperator
 
         for size in [4, 8, 16, 32]:
             op = QuantumOperator(grid_size=size)
@@ -148,6 +141,7 @@ class TestPhase2_InitializationVariants:
 
     def test_energy_landscape_temperatures(self):
         """Test EnergyLandscape with various temperatures"""
+        from agents.physics_orchestrator import EnergyLandscape
 
         for temp in [0.5, 1.0, 2.0, 5.0]:
             landscape = EnergyLandscape(temperature=temp)
@@ -155,6 +149,7 @@ class TestPhase2_InitializationVariants:
 
     def test_fractal_analyzer_depths(self):
         """Test FractalAnalyzer with different max_depth"""
+        from agents.advanced_physics_calculators import FractalAnalyzer
 
         for depth in [5, 10, 20]:
             analyzer = FractalAnalyzer(max_depth=depth)
@@ -542,6 +537,7 @@ class TestPhase2_ComprehensiveAPISurface:
 
     def test_all_physics_orchestrator_methods(self):
         """Test PhysicsOrchestrator API surface"""
+        from agents.physics_orchestrator import PhysicsOrchestrator
 
         orch = PhysicsOrchestrator()
         # Test various method existence
@@ -550,6 +546,7 @@ class TestPhase2_ComprehensiveAPISurface:
 
     def test_all_quantum_game_methods(self):
         """Test QuantumGameTheory API surface"""
+        from agents.quantum_game_theory import QuantumInspiredGameEngine
 
         blue = np.array([0.5, 0.5])
         red = np.array([0.5, 0.5])
@@ -563,18 +560,21 @@ class TestPhase2_ComprehensiveAPISurface:
 
     def test_all_mental_mapping_methods(self):
         """Test MentalMapping API surface"""
+        from agents.mental_mapping import MentalMappingModel
 
         model = MentalMappingModel()
         assert hasattr(model, "__init__")
 
     def test_all_agent_memory_methods(self):
         """Test AgentMemory API surface"""
+        from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
         assert hasattr(memory, "__init__")
 
     def test_all_developer_orchestrator_methods(self):
         """Test DeveloperOrchestrator API surface"""
+        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
         dev_orch = PhysicsGuidedDeveloperOrchestrator()
         assert hasattr(dev_orch, "__init__")

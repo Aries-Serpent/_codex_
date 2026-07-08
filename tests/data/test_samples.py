@@ -6,15 +6,14 @@ Test Samples
 
 Test module for samples.
 """
+
 from __future__ import annotations
-import pytest
+
 from pathlib import Path
 from shutil import copyfile
+
 from hhg_logistics.pipeline import run_pipeline
 from omegaconf import OmegaConf
-
-
-
 
 
 def test_pipeline_with_sample_data(tmp_path: Path, monkeypatch) -> None:

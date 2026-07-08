@@ -8,9 +8,8 @@ Created: 2026-01-19
 Phase: 4.3 Part 3 - Error Recovery & Resilience Tests
 Target: 20-30 tests for error recovery scenarios
 """
-import pytest
-from tests.branch_coverage import branch_input
 
+from tests.branch_coverage import branch_input
 
 # ============================================================================
 # Retry Logic with Backoff Tests

@@ -73,6 +73,8 @@ class TestFeatureStoreComplete:
 
     def test_point_in_time_retrieval(self, store):
         """Test point-in-time feature retrieval."""
+        pytest.importorskip("pandas")
+        pytest.importorskip("pyarrow")
 
         def dummy_transform(inputs):
             return inputs.get("value", 0)
@@ -228,6 +230,8 @@ class TestFeatureVersioning:
 
     def test_semantic_versioning(self, store):
         """Test semantic version handling."""
+        pytest.importorskip("pandas")
+        pytest.importorskip("pyarrow")
 
         def dummy_transform(inputs):
             return 0
@@ -247,7 +251,8 @@ class TestFeatureVersioning:
 
     def test_auto_version_increment(self, store):
         """Test automatic version incrementing."""
-import pytest
+        pytest.importorskip("pandas")
+        pytest.importorskip("pyarrow")
 
         def dummy_transform(inputs):
             return 0

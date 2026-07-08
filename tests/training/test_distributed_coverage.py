@@ -1,6 +1,6 @@
 import pytest
-pytest.importorskip("mlflow")
 
+pytest.importorskip("mlflow")
 """
 Comprehensive test suite for codex_ml.training.distributed module.
 
@@ -12,17 +12,16 @@ Phase: 2.1 - Core ML Training Coverage Initiative
 Created: 2026-01-18
 Target Coverage: 70%+
 """
+
 from __future__ import annotations
+
 import os
-import sys
-from unittest.mock import MagicMock, patch
-from codex_ml.training.distributed import (
-        from codex_ml.training.distributed import launch_distributed
-
-
 
 # Mock torch before importing distributed module
+import sys
+from unittest.mock import MagicMock, patch
 
+import pytest
 
 # Save original torch modules before mocking to avoid contaminating later tests
 _TORCH_MOCK_KEYS = ("torch", "torch.distributed", "torch.nn", "torch.nn.parallel")
@@ -37,6 +36,7 @@ sys.modules["torch.distributed"] = mock_torch.distributed
 sys.modules["torch.nn"] = mock_torch.nn
 sys.modules["torch.nn.parallel"] = mock_torch.nn.parallel
 
+from codex_ml.training.distributed import (
     DistributedConfig,
     DistributedManager,
     distributed_context,
@@ -340,6 +340,7 @@ def test_distributed_manager_disabled_mode():
 def test_launch_distributed_function_exists():
     """Test launch_distributed function is available."""
     try:
+        from codex_ml.training.distributed import launch_distributed
 
         assert callable(launch_distributed), "Condition must be true"
     except ImportError:

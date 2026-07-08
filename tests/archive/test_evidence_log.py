@@ -3,18 +3,16 @@ Test Evidence Log
 
 Test module for evidence log.
 """
+
 from __future__ import annotations
-import pytest
+
 import importlib
 import json
 import sys
 from pathlib import Path
 from typing import Any
+
 from click.testing import CliRunner
-    from codex.archive.util import append_evidence
-
-
-
 
 
 def _reload_archive_cli() -> Any:
@@ -38,6 +36,7 @@ def test_append_evidence_preserves_existing_lines(tmp_path: Path, monkeypatch) -
     seed_text = "\n".join(seed_lines) + "\n"
     log_file.write_text(seed_text, encoding="utf-8")
 
+    from codex.archive.util import append_evidence
 
     append_evidence({"action": "FIRST_APPEND", "detail": "one"})
     append_evidence({"action": "SECOND_APPEND", "detail": "two"})

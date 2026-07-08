@@ -3,18 +3,18 @@ Test Component Caps Clamp
 
 Test module for component caps clamp.
 """
+
 from __future__ import annotations
+
 import json
 import subprocess
 import sys
 from pathlib import Path
 from typing import Any
+
+import pytest
+
 from tests.specs._workflow_config_utils import temporary_workflow_config
-        import yaml
-
-
-
-
 
 
 def _run(args: list[str]) -> subprocess.CompletedProcess[str]:
@@ -38,6 +38,7 @@ def test_component_caps_reduce_component_value(tmp_path):
     if not runner.exists():
         pytest.skip("audit runner missing")
     try:
+        import yaml
     except ImportError:
         pytest.skip("pyyaml not installed")
 

@@ -3,13 +3,12 @@ Test Rng State Roundtrip
 
 Test module for rng state roundtrip.
 """
+
 from __future__ import annotations
-import pytest
+
 import random
+
 from codex_ml.utils import checkpoint_core
-
-
-
 
 
 def test_rng_state_roundtrip() -> None:

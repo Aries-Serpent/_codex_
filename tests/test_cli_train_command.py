@@ -3,16 +3,17 @@ Test Cli Train Command
 
 Test module for cli train command.
 """
+
+import pytest
+
 pytest.importorskip("yaml")
 pytest.importorskip("omegaconf")
 pytest.importorskip("torch")
+
 import yaml
 from click.testing import CliRunner
+
 from codex_ml.cli.codex_cli import codex
-
-
-
-
 
 
 def test_cli_train_creates_checkpoint(tmp_path):

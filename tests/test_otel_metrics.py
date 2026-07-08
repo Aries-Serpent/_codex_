@@ -71,7 +71,6 @@ class TestOtelMetricsModule:
 
 class TestComputeCoherence:
     """Unit tests for the compute_coherence helper function."""
-import pytest
 
     def test_full_match_returns_one(self) -> None:
         actual = {"lint": "success", "test": "success", "build": "success"}

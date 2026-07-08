@@ -8,16 +8,15 @@ Created: 2026-01-18
 Phase: 15.1 - Property-Based Testing
 Target: Verify data transformation invariants
 """
-pytest.importorskip("hypothesis")
+
 from typing import Any
+
+import pytest
+
+pytest.importorskip("hypothesis")
+try:
     from hypothesis import HealthCheck, assume, given, settings
     from hypothesis import strategies as st
-        import math
-        from functools import reduce
-
-
-
-try:
 
     HAS_HYPOTHESIS = True
 except ImportError:
@@ -245,6 +244,7 @@ class TestNumericTransformationProperties:
     @settings(suppress_health_check=[HealthCheck.filter_too_much])
     def test_factorial_property(self, n: int) -> None:
         """Factorial is always positive for non-negative integers."""
+        import math
 
         result = math.factorial(n)
         assert result > 0, "result must be greater than zero"
@@ -298,6 +298,7 @@ class TestDataPipelineProperties:
     @given(st.lists(st.integers(min_value=-100, max_value=100), min_size=0, max_size=50))
     def test_reduce_sum_matches_builtin(self, lst: list[int]) -> None:
         """Manual reduce matches builtin sum."""
+        from functools import reduce
 
         reduced = reduce(lambda a, b: a + b, lst, 0) if lst else 0
         assert reduced == sum(lst), "reduced is not valid"

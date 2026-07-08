@@ -10,13 +10,10 @@ Coverage targets:
 
 Target coverage: 28.72% → 85%+
 """
+
+import pytest
+
 from agents.physics_orchestrator import (
-        from agents.physics_orchestrator import DiffusionFlowModel
-        from agents.physics_orchestrator import DiffusionFlowModel
-        from agents.physics_orchestrator import DiffusionFlowModel
-        from agents.physics_orchestrator import DiffusionFlowModel
-
-
     ActionPath,
     ActionType,
     DecisionState,
@@ -450,6 +447,7 @@ class TestDiffusionFlowModel:
 
     def test_diffusion_coefficient_property_exists(self):
         """Test diffusion_coefficient property is accessible."""
+        from agents.physics_orchestrator import DiffusionFlowModel
 
         model = DiffusionFlowModel(dimensions=2, resolution=10, diffusion_coefficient=0.3)
 
@@ -458,6 +456,7 @@ class TestDiffusionFlowModel:
 
     def test_diffusion_coefficient_default_value(self):
         """Test default diffusion coefficient value."""
+        from agents.physics_orchestrator import DiffusionFlowModel
 
         model = DiffusionFlowModel()
 
@@ -465,6 +464,7 @@ class TestDiffusionFlowModel:
 
     def test_add_attractor_and_repulsor(self):
         """Test adding attractors and repulsors."""
+        from agents.physics_orchestrator import DiffusionFlowModel
 
         model = DiffusionFlowModel(dimensions=2, resolution=10)
 
@@ -478,6 +478,7 @@ class TestDiffusionFlowModel:
 
     def test_potential_field_calculation(self):
         """Test potential field is calculated correctly."""
+        from agents.physics_orchestrator import DiffusionFlowModel
 
         model = DiffusionFlowModel(dimensions=2, resolution=5)
         model.add_attractor((0.5, 0.5), strength=1.0)

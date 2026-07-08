@@ -3,9 +3,8 @@ Test Factory Vs Class
 
 Test module for factory vs class.
 """
-import pytest
-from codex_ml.plugins.registry import Registry
 
+from codex_ml.plugins.registry import Registry
 
 
 def test_factory_and_class() -> None:

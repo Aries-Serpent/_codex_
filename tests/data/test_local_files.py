@@ -153,7 +153,6 @@ def test_save_and_load_csv():
 
 def test_save_creates_parent_directory():
     """Test that save functions create parent directories."""
-import pytest
     with tempfile.TemporaryDirectory() as tmpdir:
         nested_path = Path(tmpdir) / "nested" / "dir" / "file.jsonl"
 

@@ -10,10 +10,9 @@ Generate comprehensive test coverage for ML model components:
 
 Target: 80+ test methods covering 200+ statements
 """
-import pytest
+
 import json
 from datetime import datetime
-
 
 
 class TestModelRegistry:

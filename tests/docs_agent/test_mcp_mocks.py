@@ -7,9 +7,10 @@ error cases, and latency profiles.
 Target: 80+ integration tests
 Authority: Lane 3 Unified Documentation Agent
 """
+
+import pytest
+
 from scripts.docs_agent import mock_mcp_tools
-
-
 
 
 class TestSearchCodeMocks:

@@ -1,5 +1,4 @@
 """Day 2: mcp - Handler tests"""
-import pytest
 
 
 class TestMCPHandlers:

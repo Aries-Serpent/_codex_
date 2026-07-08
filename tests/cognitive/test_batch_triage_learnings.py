@@ -48,7 +48,6 @@ def test_generate_signature_normalization(learning_engine):
 
 def test_classify_pattern_type(learning_engine):
     """Test pattern type classification"""
-import pytest
     assert learning_engine._classify_pattern_type("Test failed") == "test_failure", "Condition must be true"
     assert learning_engine._classify_pattern_type("timeout") == "timeout", "Condition must be true"
     assert learning_engine._classify_pattern_type("ImportError") == "import_error", "Error should be raised or set"

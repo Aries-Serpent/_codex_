@@ -6,21 +6,19 @@ Phase 8.1 Performance Benchmark Tests.
 Tests performance targets: compression speed, retrieval speed, cache hit rate,
 memory efficiency, and consolidation throughput.
 """
-import pytest
 pytest.importorskip("psutil")
+
 import os
 import time
+
 import psutil
+
 from cognitive_brain.integrations.memory_integration import (
+    MemoryAugmentedComplianceAssessor,
+)
 from cognitive_brain.quantum.compression import PatternCompressor
 from cognitive_brain.quantum.config import QuantumConfig
 from cognitive_brain.quantum.memory import MemoryPattern, QuantumMemoryManager
-        from cognitive_brain.experiments.complex_scenarios import (
-
-
-
-    MemoryAugmentedComplianceAssessor,
-)
 
 
 class TestPerformanceBenchmarks:
@@ -108,6 +106,7 @@ class TestPerformanceBenchmarks:
         assessor = MemoryAugmentedComplianceAssessor()
 
         # Generate scenarios with patterns (some similar)
+        from cognitive_brain.experiments.complex_scenarios import (
             generate_complex_scenarios,
         )
 

@@ -7,16 +7,16 @@ Covers:
 - Budget and iteration limiting
 - CI harness integration (--once flag)
 """
+
 from __future__ import annotations
-    return pytest.importorskip("agent_runner", reason="agent_runner not importable")
+
 import json
 import os
 import sys
 from pathlib import Path
 from unittest.mock import patch
 
-
-
+import pytest
 
 SCRIPTS_DIR = Path(__file__).resolve().parents[2] / "scripts"
 
@@ -25,6 +25,7 @@ def _import_runner():
     """Import agent_runner, skipping if unavailable."""
     if str(SCRIPTS_DIR) not in sys.path:
         sys.path.insert(0, str(SCRIPTS_DIR))
+    return pytest.importorskip("agent_runner", reason="agent_runner not importable")
 
 
 class TestKillSwitchHalt:

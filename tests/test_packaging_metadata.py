@@ -3,24 +3,24 @@ Test Packaging Metadata
 
 Test module for packaging metadata.
 """
+
 from __future__ import annotations
+
 import re
-    import tomllib
-        import tomli as tomllib
-from pathlib import Path
-        import pathlib
 
-
-
+import pytest
 
 try:  # Python 3.11+ standard library
+    import tomllib
 except ModuleNotFoundError:  # Python 3.10 fallback
     try:
+        import tomli as tomllib
     except ModuleNotFoundError:  # Optional dependency missing
         tomllib = None
 
 if tomllib is None:  # pragma: no cover - guard for missing dependency
     pytest.skip("TOML parser is unavailable", allow_module_level=True)
+from pathlib import Path
 
 
 def load_pyproject() -> dict[str, object]:
@@ -100,6 +100,7 @@ def test_license_files_present():
         assert any("LICENSES" in p for p in lic_files), "Condition must be true"
     else:
         # Fallback: check if LICENSE file exists in repo
+        import pathlib
 
         repo_root = pathlib.Path(__file__).parent.parent
         assert (repo_root / "LICENSE").exists(), "Condition must be true"

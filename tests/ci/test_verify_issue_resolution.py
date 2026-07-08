@@ -6,15 +6,16 @@ Unit tests for scripts/ci/verify_issue_resolution.py.
 
 All GitHub API calls are mocked — no live network required.
 """
+
 from __future__ import annotations
+
 import importlib.util
 import json
 import sys
 from pathlib import Path
 from unittest.mock import patch
 
-
-
+import pytest
 
 # ── Load the module under test ────────────────────────────────────────────────
 

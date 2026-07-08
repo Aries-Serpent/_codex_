@@ -80,9 +80,8 @@ class TestKnowledgeBasePersistence:
 
     def test_load_knowledge_base(self):
         """Test loading knowledge base."""
-import pytest
-            from src.codex.knowledge import base
         try:
+            from src.codex.knowledge import base
 
             if hasattr(base, "KnowledgeBase") and hasattr(base.KnowledgeBase, "load"):
                 with patch.object(base.KnowledgeBase, "load") as mock_load:

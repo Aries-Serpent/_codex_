@@ -1,13 +1,12 @@
 """Smoke tests for training.trainer module."""
+
 from __future__ import annotations
+
 import sys
 from pathlib import Path
 from unittest.mock import MagicMock
-        import training.trainer as trainer_mod
-    import importlib
 
-
-
+import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 SRC_PATH = ROOT / "src"
@@ -18,6 +17,7 @@ if str(SRC_PATH) not in sys.path:
 def test_trainer_module_imports():
     trainer_mod = None
     try:
+        import training.trainer as trainer_mod
     except ImportError:
         pytest.skip("training.trainer not importable")
     assert trainer_mod is not None, "trainer_mod must be initialized"
@@ -25,6 +25,7 @@ def test_trainer_module_imports():
 
 
 def test_trainer_requires_torch():
+    import importlib
 
     trainer = None
     try:

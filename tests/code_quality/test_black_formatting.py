@@ -3,10 +3,11 @@ Test Black Formatting
 
 Test module for black formatting.
 """
+
 import shutil
 import subprocess
 
-
+import pytest
 
 BLACK = shutil.which("black")
 

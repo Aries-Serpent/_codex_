@@ -11,23 +11,13 @@ Tests cover:
 - Dry-run vs. apply modes
 - Error handling and rollback
 """
+
 from __future__ import annotations
-import pytest
+
 from pathlib import Path
 from unittest.mock import Mock, patch
+
 from codex.transform.transformer import (
-        from datetime import datetime, timezone
-        from datetime import datetime, timezone
-        from datetime import datetime, timezone
-        from datetime import datetime, timezone
-        from datetime import datetime, timezone
-        import subprocess
-import requests
-import requests
-import os
-
-
-
     Patch,
     Tier,
     TransformResult,
@@ -95,6 +85,7 @@ class TestTransformResult:
 
     def test_transform_result_creation(self) -> None:
         """Test creating a TransformResult."""
+        from datetime import datetime, timezone
 
         result = TransformResult(
             snapshot_id="test-123",
@@ -110,6 +101,7 @@ class TestTransformResult:
 
     def test_transform_result_to_dict(self) -> None:
         """Test converting TransformResult to dictionary."""
+        from datetime import datetime, timezone
 
         result = TransformResult(
             snapshot_id="test",
@@ -136,6 +128,7 @@ class TestTransformResult:
 
     def test_transform_result_save(self, tmp_path: Path) -> None:
         """Test saving TransformResult to directory."""
+        from datetime import datetime, timezone
 
         result = TransformResult(
             snapshot_id="test",
@@ -150,6 +143,7 @@ class TestTransformResult:
 
     def test_save_with_tier_a_patches(self, tmp_path: Path) -> None:
         """Test saving with Tier A patches."""
+        from datetime import datetime, timezone
 
         result = TransformResult(
             snapshot_id="test",
@@ -176,6 +170,7 @@ class TestTransformResult:
 
     def test_save_with_tier_c_suggestions(self, tmp_path: Path) -> None:
         """Test saving with Tier C suggestions."""
+        from datetime import datetime, timezone
 
         result = TransformResult(
             snapshot_id="test",
@@ -284,6 +279,7 @@ class TestBlackFormatting:
     @patch("subprocess.run")
     def test_run_black_timeout(self, mock_run: Mock, tmp_path: Path) -> None:
         """Test Black timeout handling."""
+        import subprocess
 
         test_file = tmp_path / "test.py"
         test_file.write_text("content")
@@ -490,6 +486,7 @@ class TestTransformTierC:
         """Test Tier C suggests async conversion."""
         test_file = tmp_path / "test.py"
         test_file.write_text("""
+import requests
 
 def fetch_data():
     response = requests.get('https://api.example.com')
@@ -525,6 +522,8 @@ class TestTransformAllTiers:
         """Test transformation processes all tiers when tier=None."""
         test_file = tmp_path / "test.py"
         test_file.write_text("""
+import requests
+import os
 
 def func(x):
     path = os.path.exists('test')

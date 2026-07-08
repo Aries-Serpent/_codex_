@@ -3,24 +3,23 @@ Test Shadowing
 
 Test module for shadowing.
 """
+
 import sys
-    from site-packages (or dist-packages), not a local directory.
-        import hydra
-    from site-packages, not a local directory.
-        import yaml
 
-
+import pytest
 
 
 def test_hydra_resolves_to_site_packages():
     """
     Verify that 'import hydra' resolves to the installed hydra-core package
+    from site-packages (or dist-packages), not a local directory.
 
     This test ensures the repository root does not contain a 'hydra/' directory
     that would shadow the installed package.
     """
     try:
         sys.modules.pop("hydra", None)
+        import hydra
     except ImportError:
         pytest.skip("hydra-core not installed; skipping shadowing test.")
     else:
@@ -41,9 +40,11 @@ def test_hydra_resolves_to_site_packages():
 def test_yaml_resolves_to_site_packages():
     """
     Verify that 'import yaml' resolves to the installed PyYAML package
+    from site-packages, not a local directory.
     """
     try:
         sys.modules.pop("yaml", None)
+        import yaml
     except ImportError:
         pytest.skip("PyYAML not installed; skipping yaml shadowing test.")
     else:

@@ -3,24 +3,24 @@ Test Codex Model
 
 Test module for codex model.
 """
+
 from __future__ import annotations
-    _ = pytest.importorskip("torch")
-        pytest.importorskip("peft")
+
 import types
 from collections.abc import Mapping
 from typing import Any
+
+import pytest
+
 from codex_ml.modeling import codex_model as codex_model_module
 from codex_ml.modeling.codex_model import CodexModel
-
-
-
-
 
 
 @pytest.mark.interfaces
 def test_codex_model_generate_with_stubs(monkeypatch: pytest.MonkeyPatch) -> None:
     if not codex_model_module._HAS_TRANSFORMERS:  # type: ignore[attr-defined]
         pytest.skip("transformers dependency missing")
+    _ = pytest.importorskip("torch")
 
     class DummyTensor(list):
         def to(self, device: str) -> DummyTensor:
@@ -70,6 +70,7 @@ def test_codex_model_prepare_inference_handles_preloaded_model(
 ) -> None:
     if not codex_model_module._HAS_TRANSFORMERS:  # type: ignore[attr-defined]
         pytest.skip("transformers dependency missing")
+    _ = pytest.importorskip("torch")
 
     class DummyModel:
         def __init__(self) -> None:
@@ -97,6 +98,7 @@ def test_codex_model_apply_lora_requires_peft() -> None:
         pytest.skip("transformers dependency missing")
     instance = CodexModel("dummy", tokenizer=object(), model=object())
     if codex_model_module._HAS_PEFT:  # type: ignore[attr-defined]
+        pytest.importorskip("peft")
     else:
         with pytest.raises(ImportError):
             instance.apply_lora(r=2)

@@ -1,10 +1,9 @@
 """Ensure fetch_messages handles absent databases gracefully."""
-import pytest
+
 import logging
 import sqlite3
+
 from codex.logging.fetch_messages import fetch_messages
-
-
 
 
 def test_missing_db_returns_empty_list(tmp_path, caplog):

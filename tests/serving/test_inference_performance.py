@@ -3,24 +3,22 @@ Performance benchmarking tests for inference server.
 
 Measures throughput, latency, and resource utilization.
 """
-pytest.importorskip("fastapi")
-        psutil = pytest.importorskip("psutil")
+
 import statistics
 import time
+
+import pytest
+
+pytest.importorskip("fastapi")
 from fastapi.testclient import TestClient
+
 from codex.logging.structured_logger import logger
-    from src.codex_ml.serving.inference_server import create_app
-        import os
-        import os
-
-
-
-
 
 
 @pytest.fixture
 def perf_client():
     """Create test client for performance testing."""
+    from src.codex_ml.serving.inference_server import create_app
 
     # create_app() takes optional config parameter, not enable_auth
     # Authentication is controlled via env vars (CODEX_API_KEYS, CODEX_JWT_SECRET)
@@ -253,7 +251,9 @@ class TestResourceUtilization:
 
     def test_memory_footprint_measurement(self, perf_client):
         """Measure memory footprint of inference server."""
+        import os
 
+        psutil = pytest.importorskip("psutil")
 
         process = psutil.Process(os.getpid())
         baseline_memory = process.memory_info().rss / 1024 / 1024  # MB
@@ -275,7 +275,9 @@ class TestResourceUtilization:
 
     def test_cpu_utilization_patterns(self, perf_client):
         """Measure CPU utilization during inference."""
+        import os
 
+        psutil = pytest.importorskip("psutil")
 
         process = psutil.Process(os.getpid())
 

@@ -54,7 +54,6 @@ def test_jsonrpc_message_roundtrip(message_id: int, method: str):
 @given(st.lists(st.integers(), min_size=1, max_size=100))
 def test_list_payload_roundtrip(values: list[int]):
     """Test list payload roundtrip."""
-import pytest
     message = {"data": values}
 
     encoded = encode_message(message)

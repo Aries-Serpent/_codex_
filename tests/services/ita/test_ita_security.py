@@ -1,10 +1,11 @@
 from __future__ import annotations
+
 from pathlib import Path
+
+import pytest
 from fastapi import HTTPException
+
 from services.ita.app.security import ApiKeyStore, _load_hash_pepper, hash_key, verify_api_key
-
-
-
 
 
 def test_load_hash_pepper_from_literal_env(monkeypatch: pytest.MonkeyPatch) -> None:

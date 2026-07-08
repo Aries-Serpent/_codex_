@@ -10,53 +10,8 @@ Based on toolkit analysis:
 Applying Table 4 equations #1-#20 for deep module coverage
 Expected gain: +35-40% on this module (22.70% → 60%+)
 """
-        from agents.mental_mapping import MentalMapping
-            from agents.mental_mapping import ReasoningStep
-            from agents.mental_mapping import ConceptNode
-            from agents.mental_mapping import RelationshipEdge
-            from agents.mental_mapping import KnowledgeGraph
-        from agents import mental_mapping as mm
-            from agents.mental_mapping import NodeType
-            from agents.mental_mapping import EdgeType
-        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
-        from agents.mental_mapping import MentalMapping
-        from agents.mental_mapping import MentalMapping
-        from agents.mental_mapping import MentalMapping
-        from agents.mental_mapping import MentalMapping
-        from agents.mental_mapping import MentalMapping
-        from agents.mental_mapping import MentalMapping
-        from agents.mental_mapping import MentalMapping
-        from datetime import UTC, datetime
-        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
-        from datetime import UTC, datetime
-        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
-        from datetime import UTC, datetime
-        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
-        from agents.mental_mapping import MentalMapping
-            import inspect
-            from agents.mental_mapping import ReasoningStep
-        from agents.mental_mapping import MentalMapping
-        from datetime import UTC, datetime
-        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
-        from datetime import UTC, datetime
-        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
-        from agents.mental_mapping import MentalMapping
-        from agents.mental_mapping import MentalMapping
-        from datetime import UTC, datetime
-        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
-        from datetime import UTC, datetime
-        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
-        from datetime import UTC, datetime
-        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
-        from datetime import UTC, datetime
-        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
-        from datetime import UTC, datetime
-        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
-        from agents.mental_mapping import MentalMapping
-        from datetime import UTC, datetime
-        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
-            from agents.mental_mapping import ReasoningStep
 
+import pytest
 
 
 class TestPhase2_MentalMapping_Table4_Eq1:
@@ -64,6 +19,7 @@ class TestPhase2_MentalMapping_Table4_Eq1:
 
     def test_mental_mapping_init(self):
         """Test MentalMapping initialization."""
+        from agents.mental_mapping import MentalMapping
 
         mapping = MentalMapping()
         assert mapping is not None, "mapping must be initialized"
@@ -71,6 +27,7 @@ class TestPhase2_MentalMapping_Table4_Eq1:
     def test_reasoning_step_init(self):
         """Test ReasoningStep initialization."""
         try:
+            from agents.mental_mapping import ReasoningStep
 
             step = ReasoningStep()
             assert step is not None, "step must be initialized"
@@ -80,6 +37,7 @@ class TestPhase2_MentalMapping_Table4_Eq1:
     def test_concept_node_init(self):
         """Test ConceptNode initialization."""
         try:
+            from agents.mental_mapping import ConceptNode
 
             node = ConceptNode()
             assert node is not None, "node must be initialized"
@@ -89,6 +47,7 @@ class TestPhase2_MentalMapping_Table4_Eq1:
     def test_relationship_edge_init(self):
         """Test RelationshipEdge initialization."""
         try:
+            from agents.mental_mapping import RelationshipEdge
 
             edge = RelationshipEdge()
             assert edge is not None, "edge must be initialized"
@@ -98,6 +57,7 @@ class TestPhase2_MentalMapping_Table4_Eq1:
     def test_knowledge_graph_init(self):
         """Test KnowledgeGraph initialization."""
         try:
+            from agents.mental_mapping import KnowledgeGraph
 
             graph = KnowledgeGraph()
             assert graph is not None, "graph must be initialized"
@@ -110,6 +70,7 @@ class TestPhase2_MentalMapping_Table4_Eq2:
 
     def test_all_enum_values(self):
         """Test all enum values in mental_mapping."""
+        from agents import mental_mapping as mm
 
         # Find all enum classes
         enum_found = False
@@ -135,6 +96,7 @@ class TestPhase2_MentalMapping_Table4_Eq2:
     def test_node_type_enum_if_exists(self):
         """Test NodeType enum if it exists."""
         try:
+            from agents.mental_mapping import NodeType
 
             node_types = list(NodeType)
             assert len(node_types) > 0, "Node_types must not be empty"
@@ -147,6 +109,7 @@ class TestPhase2_MentalMapping_Table4_Eq2:
     def test_edge_type_enum_if_exists(self):
         """Test EdgeType enum if it exists."""
         try:
+            from agents.mental_mapping import EdgeType
 
             edge_types = list(EdgeType)
             assert len(edge_types) > 0, "Edge_types must not be empty"
@@ -162,6 +125,7 @@ class TestPhase2_MentalMapping_GraphOperations:
 
     def test_add_node_operation(self):
         """Test adding a node to the graph."""
+        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
 
         mapping = MentalMapping()
 
@@ -180,6 +144,7 @@ class TestPhase2_MentalMapping_GraphOperations:
 
     def test_add_edge_operation(self):
         """Test adding an edge to the graph."""
+        from agents.mental_mapping import MentalMapping
 
         mapping = MentalMapping()
 
@@ -198,6 +163,7 @@ class TestPhase2_MentalMapping_GraphOperations:
 
     def test_remove_node_operation(self):
         """Test removing a node from the graph."""
+        from agents.mental_mapping import MentalMapping
 
         mapping = MentalMapping()
 
@@ -213,6 +179,7 @@ class TestPhase2_MentalMapping_GraphOperations:
 
     def test_remove_edge_operation(self):
         """Test removing an edge from the graph."""
+        from agents.mental_mapping import MentalMapping
 
         mapping = MentalMapping()
 
@@ -230,6 +197,7 @@ class TestPhase2_MentalMapping_GraphOperations:
 
     def test_get_node_operation(self):
         """Test retrieving a node from the graph."""
+        from agents.mental_mapping import MentalMapping
 
         mapping = MentalMapping()
 
@@ -244,6 +212,7 @@ class TestPhase2_MentalMapping_GraphOperations:
 
     def test_has_node_operation(self):
         """Test checking if node exists."""
+        from agents.mental_mapping import MentalMapping
 
         mapping = MentalMapping()
 
@@ -253,6 +222,7 @@ class TestPhase2_MentalMapping_GraphOperations:
 
     def test_has_edge_operation(self):
         """Test checking if edge exists."""
+        from agents.mental_mapping import MentalMapping
 
         mapping = MentalMapping()
 
@@ -266,6 +236,7 @@ class TestPhase2_MentalMapping_TraversalOperations:
 
     def test_get_neighbors_operation(self):
         """Test getting neighbors of a node."""
+        from agents.mental_mapping import MentalMapping
 
         mapping = MentalMapping()
 
@@ -280,7 +251,9 @@ class TestPhase2_MentalMapping_TraversalOperations:
 
     def test_traverse_breadth_first(self):
         """Test breadth-first traversal returns ordered node list."""
+        from datetime import UTC, datetime
 
+        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
 
         ts = datetime.now(UTC).isoformat()
         mapping = MentalMapping()
@@ -302,7 +275,9 @@ class TestPhase2_MentalMapping_TraversalOperations:
 
     def test_traverse_depth_first(self):
         """Test depth-first traversal returns all reachable nodes."""
+        from datetime import UTC, datetime
 
+        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
 
         ts = datetime.now(UTC).isoformat()
         mapping = MentalMapping()
@@ -320,7 +295,9 @@ class TestPhase2_MentalMapping_TraversalOperations:
 
     def test_shortest_path_operation(self):
         """Test shortest path finds correct route between nodes."""
+        from datetime import UTC, datetime
 
+        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
 
         ts = datetime.now(UTC).isoformat()
         mapping = MentalMapping()
@@ -341,6 +318,7 @@ class TestPhase2_MentalMapping_ReasoningChains:
 
     def test_create_reasoning_chain(self):
         """Test MentalMapping has think_through_problem for reasoning chains."""
+        from agents.mental_mapping import MentalMapping
 
         mapping = MentalMapping()
         assert hasattr(mapping, "think_through_problem"), "think_through_problem method must exist"
@@ -348,7 +326,9 @@ class TestPhase2_MentalMapping_ReasoningChains:
     def test_reasoning_step_sequencing(self):
         """Test ReasoningStep can be constructed and sequenced."""
         try:
+            import inspect
 
+            from agents.mental_mapping import ReasoningStep
 
             sig = inspect.signature(ReasoningStep)
             # Build kwargs from required params only
@@ -363,6 +343,7 @@ class TestPhase2_MentalMapping_ReasoningChains:
 
     def test_reasoning_chain_validation(self):
         """Test iterative_review method exists for chain validation."""
+        from agents.mental_mapping import MentalMapping
 
         mapping = MentalMapping()
         # iterative_review is the validation mechanism in MentalMapping
@@ -374,7 +355,9 @@ class TestPhase2_MentalMapping_UpdateOperations:
 
     def test_update_node_data(self):
         """Test node data persists in nodes dict after add_node."""
+        from datetime import UTC, datetime
 
+        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
 
         ts = datetime.now(UTC).isoformat()
         mapping = MentalMapping()
@@ -389,7 +372,9 @@ class TestPhase2_MentalMapping_UpdateOperations:
 
     def test_update_edge_weight(self):
         """Test edges are created with expected weight via connect_nodes."""
+        from datetime import UTC, datetime
 
+        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
 
         ts = datetime.now(UTC).isoformat()
         mapping = MentalMapping()
@@ -406,6 +391,7 @@ class TestPhase2_MentalMapping_UpdateOperations:
 
     def test_merge_nodes_operation(self):
         """Test cluster_nodes (merge-equivalent) is available on MentalMapping."""
+        from agents.mental_mapping import MentalMapping
 
         mapping = MentalMapping()
         assert hasattr(mapping, "cluster_nodes"), "cluster_nodes method must exist"
@@ -416,6 +402,7 @@ class TestPhase2_MentalMapping_QueryOperations:
 
     def test_find_nodes_by_criteria(self):
         """Test finding nodes by criteria."""
+        from agents.mental_mapping import MentalMapping
 
         mapping = MentalMapping()
 
@@ -428,7 +415,9 @@ class TestPhase2_MentalMapping_QueryOperations:
 
     def test_filter_edges_operation(self):
         """Test edges dict is iterable and supports filtering."""
+        from datetime import UTC, datetime
 
+        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
 
         ts = datetime.now(UTC).isoformat()
         mapping = MentalMapping()
@@ -445,7 +434,9 @@ class TestPhase2_MentalMapping_QueryOperations:
 
     def test_get_all_nodes(self):
         """Test nodes dict returns all added nodes."""
+        from datetime import UTC, datetime
 
+        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
 
         ts = datetime.now(UTC).isoformat()
         mapping = MentalMapping()
@@ -458,7 +449,9 @@ class TestPhase2_MentalMapping_QueryOperations:
 
     def test_get_all_edges(self):
         """Test edges dict returns all connected edges."""
+        from datetime import UTC, datetime
 
+        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
 
         ts = datetime.now(UTC).isoformat()
         mapping = MentalMapping()
@@ -478,7 +471,9 @@ class TestPhase2_MentalMapping_EdgeCases:
 
     def test_add_duplicate_node(self):
         """Test adding duplicate node overwrites or raises ValueError."""
+        from datetime import UTC, datetime
 
+        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
 
         ts = datetime.now(UTC).isoformat()
         mapping = MentalMapping()
@@ -496,7 +491,9 @@ class TestPhase2_MentalMapping_EdgeCases:
 
     def test_add_self_loop_edge(self):
         """Test connecting a node to itself is handled gracefully."""
+        from datetime import UTC, datetime
 
+        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
 
         ts = datetime.now(UTC).isoformat()
         mapping = MentalMapping()
@@ -513,6 +510,7 @@ class TestPhase2_MentalMapping_EdgeCases:
 
     def test_remove_nonexistent_node(self):
         """Test that removing a non-existent node doesn't crash."""
+        from agents.mental_mapping import MentalMapping
 
         mapping = MentalMapping()
         # Should not raise; node count unchanged
@@ -522,7 +520,9 @@ class TestPhase2_MentalMapping_EdgeCases:
 
     def test_graph_with_many_nodes(self):
         """Test graph scales to 100 nodes without error."""
+        from datetime import UTC, datetime
 
+        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
 
         ts = datetime.now(UTC).isoformat()
         mapping = MentalMapping()
@@ -537,6 +537,7 @@ class TestPhase2_MentalMapping_EdgeCases:
     def test_deeply_nested_reasoning_chain(self):
         """Test deeply nested reasoning chain."""
         try:
+            from agents.mental_mapping import ReasoningStep
 
             # Create 50-step chain
             steps = [ReasoningStep(content=f"step_{i}") for i in range(50)]

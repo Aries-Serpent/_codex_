@@ -1,20 +1,22 @@
+pytest.importorskip("mlflow")
 """
 Test Evaluate Epoch
 
 Test module for evaluate epoch.
 """
-pytest.importorskip("mlflow")
-pytest.importorskip("torch")
+
 from functools import partial
-import torch
-from codex_ml.evaluation.loop import evaluate_epoch
-from codex_ml.metrics.generative import bleu
 
+import pytest
 
-
+pytest.importorskip("torch")
 
 
 # Skip entire module if torch is not available or unloadable
+pytest.importorskip("torch", reason="PyTorch required for tests")
+import torch
+from codex_ml.evaluation.loop import evaluate_epoch
+from codex_ml.metrics.generative import bleu
 
 
 class DummyModel(torch.nn.Module):

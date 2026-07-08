@@ -1,11 +1,12 @@
 """Focused tests for MCP adapter loading and health routes."""
+
 from __future__ import annotations
+
+import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
+
 from mcp.server import adapter_loader, routes_health
-
-
-
 
 
 def test_load_adapter_uses_explicit_class(monkeypatch: pytest.MonkeyPatch) -> None:

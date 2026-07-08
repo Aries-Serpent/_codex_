@@ -3,25 +3,14 @@ Integration tests for archival-bundling system.
 
 Tests archive creation, manifest generation, and basic workflows.
 """
+
 from __future__ import annotations
+
 import json
 import tempfile
 from pathlib import Path
-        import shutil
-        import shutil
-        import shutil
-        import hashlib
-        import zlib
-        import shutil
-        import shutil
-        from datetime import datetime, timezone
-        from pathlib import Path
-            from src.codex import archive
-        from pathlib import Path
-            from tests.archival import test_archival_tombstone_required
 
-
-
+import pytest
 
 
 class TestArchiveBasics:
@@ -37,6 +26,7 @@ class TestArchiveBasics:
         assert archive_dir.is_dir(), "Condition must be true"
 
         # Cleanup
+        import shutil
 
         shutil.rmtree(test_dir)
 
@@ -64,6 +54,7 @@ class TestArchiveBasics:
         assert len(loaded["items"]) == 1, "Collection must not be empty"
 
         # Cleanup
+        import shutil
 
         shutil.rmtree(test_dir)
 
@@ -90,6 +81,7 @@ class TestArchiveBasics:
         assert len(lines) >= 1, "Lines must not be empty"
 
         # Cleanup
+        import shutil
 
         shutil.rmtree(test_dir)
 
@@ -99,6 +91,7 @@ class TestArchiveUtilities:
 
     def test_sha256_calculation(self):
         """Test SHA256 hash calculation."""
+        import hashlib
 
         content = b"Test content"
         expected_sha = hashlib.sha256(content).hexdigest()
@@ -108,6 +101,7 @@ class TestArchiveUtilities:
 
     def test_compression_basics(self):
         """Test zlib compression/decompression."""
+        import zlib
 
         content = b"AAAA" * 100
         compressed = zlib.compress(content, level=9)
@@ -148,6 +142,7 @@ class TestManifestOperations:
         assert not temp_file.exists(), "Condition must be true"
 
         # Cleanup
+        import shutil
 
         shutil.rmtree(test_dir)
 
@@ -204,11 +199,13 @@ class TestEvidenceLogging:
         assert all(entry["action"] == "ARCHIVE" for entry in entries), "Condition must be true"
 
         # Cleanup
+        import shutil
 
         shutil.rmtree(test_dir)
 
     def test_evidence_timestamp_format(self):
         """Test evidence timestamp format."""
+        from datetime import datetime, timezone
 
         ts = datetime.now(timezone.utc).isoformat()
 
@@ -222,6 +219,7 @@ class TestArchiveScripts:
 
     def test_archive_scripts_exist(self):
         """Test that archive scripts exist in expected locations."""
+        from pathlib import Path
 
         repo_root = Path(__file__).parents[2]
 
@@ -240,6 +238,7 @@ class TestArchiveScripts:
     def test_archive_module_importable(self):
         """Test that archive module can be imported."""
         try:
+            from src.codex import archive
 
             assert hasattr(archive, "api") or True  # Module exists
         except ImportError:
@@ -251,6 +250,7 @@ class TestArchiveTombstoneCompliance:
 
     def test_existing_tombstone_test_exists(self):
         """Verify existing tombstone test file exists."""
+        from pathlib import Path
 
         test_file = Path(__file__).parent / "test_archival_tombstone_required.py"
         assert test_file.exists(), "Condition must be true"
@@ -258,6 +258,7 @@ class TestArchiveTombstoneCompliance:
     def test_tombstone_test_can_be_imported(self):
         """Test that tombstone compliance test can be imported."""
         try:
+            from tests.archival import test_archival_tombstone_required
 
             assert hasattr(test_archival_tombstone_required, "test_missing_tombstone_fails")
         except ImportError as e:

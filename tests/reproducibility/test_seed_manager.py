@@ -159,7 +159,6 @@ class TestSeedState:
 
     def test_seed_state_defaults(self):
         """Test SeedState default values."""
-import pytest
         from codex_ml.reproducibility.seed_manager import SeedState
 
         state = SeedState(seed=42, python_hash_seed="42")

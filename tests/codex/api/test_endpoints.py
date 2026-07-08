@@ -120,9 +120,8 @@ class TestApiEndpointMiddleware:
 
     def test_logging_middleware(self):
         """Test logging middleware."""
-import pytest
-            from src.codex.api import endpoints
         try:
+            from src.codex.api import endpoints
 
             if hasattr(endpoints, "logging_middleware"):
                 mock_request = Mock()

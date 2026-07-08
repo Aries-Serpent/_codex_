@@ -1,20 +1,20 @@
 """Smoke tests for codex.cli_maps CLI entrypoint."""
+
 from __future__ import annotations
-    cli_maps = pytest.importorskip("codex.cli_maps")
+
 import sys
 from pathlib import Path
 from unittest.mock import MagicMock, patch
-    import typer
-    from typer.testing import CliRunner
 
-
-
+import pytest
 
 # Skip if typer is not properly installed
 try:
+    import typer
 
     if not hasattr(typer, "Typer"):
         pytest.skip("typer package not properly installed", allow_module_level=True)
+    from typer.testing import CliRunner
 except (ImportError, AttributeError):
     pytest.skip("typer package not available", allow_module_level=True)
 
@@ -45,6 +45,7 @@ def mock_deps():
 
 
 def test_cli_maps_help(cli_runner: CliRunner, mock_deps):
+    cli_maps = pytest.importorskip("codex.cli_maps")
 
     result = cli_runner.invoke(cli_maps.app, ["--help"])
     if result.exit_code not in (0, 2):
@@ -53,6 +54,7 @@ def test_cli_maps_help(cli_runner: CliRunner, mock_deps):
 
 
 def test_cli_maps_subcommand_help(cli_runner: CliRunner, mock_deps):
+    cli_maps = pytest.importorskip("codex.cli_maps")
 
     result = cli_runner.invoke(cli_maps.app, ["inspect", "--help"])
     if result.exit_code not in (0, 2):

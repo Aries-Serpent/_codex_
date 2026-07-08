@@ -1,16 +1,17 @@
 """
 Tests for SQLiteUserRepository — all CRUD + thread-safety operations.
 """
+
 from __future__ import annotations
+
 import threading
 import time
 from pathlib import Path
+
+import pytest
+
 from codex.auth.sqlite_user_repository import SQLiteUserRepository
 from codex.auth.user_store import User
-
-
-
-
 
 
 def _make_user(

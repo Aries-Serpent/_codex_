@@ -8,16 +8,17 @@ Test Coverage Target: 15+ tests for ~80% coverage of denylist module.
 
 Created: 2026-01-18 (Phase 14.2)
 """
+
 from __future__ import annotations
+
 import re
 import tempfile
-    from codex_ml.security.denylist import (
 
-
-
+import pytest
 
 # Import module under test
 try:
+    from codex_ml.security.denylist import (
         DenylistEnforcer,
         DenylistRules,
         DenylistViolation,

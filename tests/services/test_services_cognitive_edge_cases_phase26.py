@@ -3,10 +3,11 @@ Phase 26: Services & Cognitive Brain Edge Case Tests - Batch 7
 Target: 18+ edge case tests for services and cognitive brain components
 Coverage Target: src/codex/services/, src/codex/cognitive_brain/
 """
+
 import asyncio
 import threading
 
-
+import pytest
 
 
 class TestServiceEdgeCases:
@@ -144,7 +145,6 @@ class TestAsyncEdgeCases:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_async_cancellation(self):
         """Test async task cancellation"""
 
@@ -167,7 +167,6 @@ class TestAsyncEdgeCases:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_async_timeout(self):
         """Test async operation timeout"""
 
@@ -187,7 +186,6 @@ class TestAsyncEdgeCases:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_async_exception_propagation(self):
         """Test async exception propagation"""
 

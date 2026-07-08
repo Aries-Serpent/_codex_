@@ -7,68 +7,13 @@ Tests cover:
 - Model loading and instantiation
 - Device capability checks
 """
+
 import json
 import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock, patch
-        from codex_ml.train_loop import _normalise_snapshot
-        from codex_ml.train_loop import _normalise_snapshot
-        from dataclasses import dataclass
-        from codex_ml.train_loop import _normalise_snapshot
-        from codex_ml.train_loop import _normalise_snapshot
-        from codex_ml.train_loop import _normalise_snapshot
-        from codex_ml.train_loop import _normalise_snapshot
-        from codex_ml.train_loop import _normalise_snapshot
-        from codex_ml.train_loop import _snapshot_payload
-        from codex_ml.train_loop import _snapshot_payload
-        from codex_ml.train_loop import _snapshot_payload
-        from codex_ml.train_loop import _snapshot_payload
-        from codex_ml.train_loop import _apply_metadata_to_state
-        from codex_ml.train_loop import _apply_metadata_to_state
-        from codex_ml.train_loop import _apply_metadata_to_state
-        from codex_ml.train_loop import _write_json_report
-        from codex_ml.train_loop import _write_json_report
-        from codex_ml.train_loop import _write_json_report
-        from codex_ml.train_loop import _write_json_report
-        from codex_ml.train_loop import _resolve_dtype
-        from codex_ml.train_loop import _resolve_dtype
-            import torch
-        from codex_ml.train_loop import _resolve_dtype
-            import torch
-        from codex_ml.train_loop import _resolve_dtype
-            import torch
-        from codex_ml.train_loop import _resolve_dtype
-            import torch
-        from codex_ml.train_loop import _resolve_dtype
-            import torch
-        from codex_ml.train_loop import _resolve_dtype
-        from codex_ml.train_loop import _resolve_device
-        from codex_ml.train_loop import _resolve_device
-        from codex_ml.train_loop import _resolve_device
-        from codex_ml.train_loop import _load_or_create_model
-        from codex_ml.train_loop import _load_or_create_model
-        from codex_ml.train_loop import _load_or_create_model
-        from codex_ml.train_loop import _assert_bf16_capability
-        from codex_ml.train_loop import _assert_bf16_capability
-        from codex_ml.train_loop import _assert_bf16_capability
-        from codex_ml.train_loop import ToyDataset
-            import torch
-        from codex_ml.train_loop import ToyDataset
-            import torch
-        from codex_ml.train_loop import ToyDataset
-            import torch
-        from codex_ml.config import ReasoningConfig
-        from codex_ml.train_loop import ReasoningRuntime
-        from codex_ml.config import ReasoningConfig
-        from codex_ml.train_loop import ReasoningRuntime
-        from codex_ml.config import ReasoningConfig
-        from codex_ml.train_loop import ReasoningRuntime
-        from codex_ml.config import ReasoningConfig
-        from codex_ml.train_loop import ReasoningRuntime
-        from codex_ml.config import ReasoningConfig
-        from codex_ml.train_loop import ReasoningRuntime
 
-
+import pytest
 
 
 class TestNormaliseSnapshot:
@@ -76,6 +21,7 @@ class TestNormaliseSnapshot:
 
     def test_normalise_snapshot_dict(self):
         """Test normalizing a simple dictionary."""
+        from codex_ml.train_loop import _normalise_snapshot
 
         data = {"key": "value", "num": 42}
         result = _normalise_snapshot(data)
@@ -83,6 +29,7 @@ class TestNormaliseSnapshot:
 
     def test_normalise_snapshot_nested_dict(self):
         """Test normalizing nested dictionaries."""
+        from codex_ml.train_loop import _normalise_snapshot
 
         data = {"outer": {"inner": "value"}, "list": [1, 2, 3]}
         result = _normalise_snapshot(data)
@@ -90,7 +37,9 @@ class TestNormaliseSnapshot:
 
     def test_normalise_snapshot_dataclass(self):
         """Test normalizing a dataclass."""
+        from dataclasses import dataclass
 
+        from codex_ml.train_loop import _normalise_snapshot
 
         @dataclass
         class SampleData:
@@ -105,6 +54,7 @@ class TestNormaliseSnapshot:
 
     def test_normalise_snapshot_list(self):
         """Test normalizing lists."""
+        from codex_ml.train_loop import _normalise_snapshot
 
         data = [1, "two", {"three": 3}, [4, 5]]
         result = _normalise_snapshot(data)
@@ -112,6 +62,7 @@ class TestNormaliseSnapshot:
 
     def test_normalise_snapshot_tuple(self):
         """Test normalizing tuples."""
+        from codex_ml.train_loop import _normalise_snapshot
 
         data = (1, "two", {"three": 3})
         result = _normalise_snapshot(data)
@@ -120,6 +71,7 @@ class TestNormaliseSnapshot:
 
     def test_normalise_snapshot_set(self):
         """Test normalizing sets."""
+        from codex_ml.train_loop import _normalise_snapshot
 
         data = {1, 2, 3}
         result = _normalise_snapshot(data)
@@ -128,6 +80,7 @@ class TestNormaliseSnapshot:
 
     def test_normalise_snapshot_primitive(self):
         """Test normalizing primitive types."""
+        from codex_ml.train_loop import _normalise_snapshot
 
         assert _normalise_snapshot("string") == "string", "_n is not valid"
         assert _normalise_snapshot(42) == 42, "_n is not valid"
@@ -141,12 +94,14 @@ class TestSnapshotPayload:
 
     def test_snapshot_payload_none(self):
         """Test snapshot_payload with None input."""
+        from codex_ml.train_loop import _snapshot_payload
 
         result = _snapshot_payload(None)
         assert result is None, "Result must not be empty"
 
     def test_snapshot_payload_dict(self):
         """Test snapshot_payload with dict."""
+        from codex_ml.train_loop import _snapshot_payload
 
         data = {"key": "value"}
         result = _snapshot_payload(data)
@@ -154,12 +109,14 @@ class TestSnapshotPayload:
 
     def test_snapshot_payload_non_mapping(self):
         """Test snapshot_payload with non-mapping data."""
+        from codex_ml.train_loop import _snapshot_payload
 
         result = _snapshot_payload([1, 2, 3])
         assert result is None, "Result must not be empty"
 
     def test_snapshot_payload_empty_dict(self):
         """Test snapshot_payload with empty dict."""
+        from codex_ml.train_loop import _snapshot_payload
 
         result = _snapshot_payload({})
         assert result == {}, "Result must not be empty"
@@ -170,6 +127,7 @@ class TestApplyMetadataToState:
 
     def test_apply_metadata_to_state_with_metadata(self):
         """Test applying metadata to state."""
+        from codex_ml.train_loop import _apply_metadata_to_state
 
         state = {"loss": 0.5}
         metadata = {"rollout_ring": "test"}
@@ -178,6 +136,7 @@ class TestApplyMetadataToState:
 
     def test_apply_metadata_to_state_none_metadata(self):
         """Test applying None metadata to state."""
+        from codex_ml.train_loop import _apply_metadata_to_state
 
         state = {"loss": 0.5}
         _apply_metadata_to_state(state, None)
@@ -185,6 +144,7 @@ class TestApplyMetadataToState:
 
     def test_apply_metadata_to_state_missing_rollout_ring(self):
         """Test that warning is logged when rollout_ring is missing."""
+        from codex_ml.train_loop import _apply_metadata_to_state
 
         state = {"loss": 0.5}
         metadata = {"other": "value"}
@@ -199,6 +159,7 @@ class TestWriteJsonReport:
 
     def test_write_json_report_creates_file(self):
         """Test writing JSON report creates file."""
+        from codex_ml.train_loop import _write_json_report
 
         with tempfile.TemporaryDirectory() as tmpdir:
             output_dir = Path(tmpdir)
@@ -213,12 +174,14 @@ class TestWriteJsonReport:
 
     def test_write_json_report_none_output_dir(self):
         """Test write_json_report with None output_dir."""
+        from codex_ml.train_loop import _write_json_report
 
         # Should not raise
         _write_json_report(None, "test.json", {"key": "value"})
 
     def test_write_json_report_empty_payload(self):
         """Test write_json_report with empty payload."""
+        from codex_ml.train_loop import _write_json_report
 
         with tempfile.TemporaryDirectory() as tmpdir:
             output_dir = Path(tmpdir)
@@ -230,6 +193,7 @@ class TestWriteJsonReport:
 
     def test_write_json_report_creates_directory(self):
         """Test write_json_report creates output directory if missing."""
+        from codex_ml.train_loop import _write_json_report
 
         with tempfile.TemporaryDirectory() as tmpdir:
             output_dir = Path(tmpdir) / "nested" / "dir"
@@ -245,14 +209,17 @@ class TestResolveDtype:
 
     def test_resolve_dtype_none(self):
         """Test resolve_dtype with None."""
+        from codex_ml.train_loop import _resolve_dtype
 
         result = _resolve_dtype(None)
         assert result is None, "Result must not be empty"
 
     def test_resolve_dtype_fp32(self):
         """Test resolve_dtype with fp32."""
+        from codex_ml.train_loop import _resolve_dtype
 
         try:
+            import torch
 
             result = _resolve_dtype("fp32")
             assert result == torch.float32, "Result must not be empty"
@@ -261,8 +228,10 @@ class TestResolveDtype:
 
     def test_resolve_dtype_float32(self):
         """Test resolve_dtype with float32."""
+        from codex_ml.train_loop import _resolve_dtype
 
         try:
+            import torch
 
             result = _resolve_dtype("float32")
             assert result == torch.float32, "Result must not be empty"
@@ -271,8 +240,10 @@ class TestResolveDtype:
 
     def test_resolve_dtype_f32(self):
         """Test resolve_dtype with f32."""
+        from codex_ml.train_loop import _resolve_dtype
 
         try:
+            import torch
 
             result = _resolve_dtype("f32")
             assert result == torch.float32, "Result must not be empty"
@@ -281,8 +252,10 @@ class TestResolveDtype:
 
     def test_resolve_dtype_fp16(self):
         """Test resolve_dtype with fp16."""
+        from codex_ml.train_loop import _resolve_dtype
 
         try:
+            import torch
 
             result = _resolve_dtype("fp16")
             assert result == torch.float16, "Result must not be empty"
@@ -291,8 +264,10 @@ class TestResolveDtype:
 
     def test_resolve_dtype_case_insensitive(self):
         """Test resolve_dtype is case insensitive."""
+        from codex_ml.train_loop import _resolve_dtype
 
         try:
+            import torch
 
             result = _resolve_dtype("FP32")
             assert result == torch.float32, "Result must not be empty"
@@ -301,6 +276,7 @@ class TestResolveDtype:
 
     def test_resolve_dtype_invalid(self):
         """Test resolve_dtype with invalid dtype."""
+        from codex_ml.train_loop import _resolve_dtype
 
         result = _resolve_dtype("invalid_dtype")
         assert result is None, "Result must not be empty"
@@ -311,6 +287,7 @@ class TestResolveDevice:
 
     def test_resolve_device_none(self):
         """Test resolve_device with None."""
+        from codex_ml.train_loop import _resolve_device
 
         result = _resolve_device(None)
         # Should return a device object (CPU or CUDA if available)
@@ -318,12 +295,14 @@ class TestResolveDevice:
 
     def test_resolve_device_cpu(self):
         """Test resolve_device with cpu."""
+        from codex_ml.train_loop import _resolve_device
 
         result = _resolve_device("cpu")
         assert str(result) == "cpu", "Result must not be empty"
 
     def test_resolve_device_invalid(self):
         """Test resolve_device with invalid device."""
+        from codex_ml.train_loop import _resolve_device
 
         # Should return CPU as fallback
         result = _resolve_device("invalid_device_xyz")
@@ -335,6 +314,7 @@ class TestLoadOrCreateModel:
 
     def test_load_or_create_model_provided_model(self):
         """Test when model is already provided."""
+        from codex_ml.train_loop import _load_or_create_model
 
         provided_model = MagicMock()
         model, created = _load_or_create_model(provided_model, None, {})
@@ -344,6 +324,7 @@ class TestLoadOrCreateModel:
 
     def test_load_or_create_model_no_model_no_name(self):
         """Test when no model and no model_name provided."""
+        from codex_ml.train_loop import _load_or_create_model
 
         model, created = _load_or_create_model(None, None, {})
 
@@ -352,6 +333,7 @@ class TestLoadOrCreateModel:
 
     def test_load_or_create_model_with_instantiate(self):
         """Test model instantiation when function is available."""
+        from codex_ml.train_loop import _load_or_create_model
 
         with patch("codex_ml.train_loop.instantiate_model") as mock_instantiate:
             mock_model = MagicMock()
@@ -369,18 +351,21 @@ class TestAssertBf16Capability:
 
     def test_assert_bf16_capability_not_required(self):
         """Test when bf16 is not required."""
+        from codex_ml.train_loop import _assert_bf16_capability
 
         # Should not raise
         _assert_bf16_capability("bf16", None, require=False)
 
     def test_assert_bf16_capability_not_requested(self):
         """Test when bf16 is not requested."""
+        from codex_ml.train_loop import _assert_bf16_capability
 
         # Should not raise
         _assert_bf16_capability("fp32", None, require=True)
 
     def test_assert_bf16_capability_torch_not_installed(self):
         """Test bf16 requirement when torch is not available."""
+        from codex_ml.train_loop import _assert_bf16_capability
 
         with patch.dict("sys.modules", {"torch": None}):
             with pytest.raises(RuntimeError, match="bf16 required but PyTorch"):
@@ -392,8 +377,10 @@ class TestToyDataset:
 
     def test_toy_dataset_creation(self):
         """Test creating a ToyDataset."""
+        from codex_ml.train_loop import ToyDataset
 
         try:
+            import torch
 
             dataset = ToyDataset(num_samples=10, seq_len=20, vocab_size=100, seed=42)
             assert len(dataset) == 10, "Dataset must not be empty"
@@ -407,8 +394,10 @@ class TestToyDataset:
 
     def test_toy_dataset_length(self):
         """Test ToyDataset length."""
+        from codex_ml.train_loop import ToyDataset
 
         try:
+            import torch
 
             dataset = ToyDataset(num_samples=5, seq_len=15, vocab_size=50, seed=42)
             assert len(dataset) == 5, "Dataset must not be empty"
@@ -417,8 +406,10 @@ class TestToyDataset:
 
     def test_toy_dataset_deterministic_seed(self):
         """Test ToyDataset produces same data with same seed."""
+        from codex_ml.train_loop import ToyDataset
 
         try:
+            import torch
 
             dataset1 = ToyDataset(num_samples=3, seq_len=10, vocab_size=50, seed=42)
             dataset2 = ToyDataset(num_samples=3, seq_len=10, vocab_size=50, seed=42)
@@ -435,6 +426,8 @@ class TestReasoningRuntime:
 
     def test_reasoning_runtime_should_capture_enabled(self):
         """Test should_capture with enabled tracing."""
+        from codex_ml.config import ReasoningConfig
+        from codex_ml.train_loop import ReasoningRuntime
 
         config = ReasoningConfig(enabled=True)
         runtime = ReasoningRuntime(
@@ -450,6 +443,8 @@ class TestReasoningRuntime:
 
     def test_reasoning_runtime_should_capture_zero_limit(self):
         """Test should_capture with zero limit (unlimited)."""
+        from codex_ml.config import ReasoningConfig
+        from codex_ml.train_loop import ReasoningRuntime
 
         config = ReasoningConfig(enabled=True)
         runtime = ReasoningRuntime(
@@ -465,6 +460,8 @@ class TestReasoningRuntime:
 
     def test_reasoning_runtime_should_capture_exceeded_limit(self):
         """Test should_capture when limit is exceeded."""
+        from codex_ml.config import ReasoningConfig
+        from codex_ml.train_loop import ReasoningRuntime
 
         config = ReasoningConfig(enabled=True)
         runtime = ReasoningRuntime(
@@ -481,6 +478,8 @@ class TestReasoningRuntime:
 
     def test_reasoning_runtime_on_new_epoch(self):
         """Test on_new_epoch resets counter."""
+        from codex_ml.config import ReasoningConfig
+        from codex_ml.train_loop import ReasoningRuntime
 
         config = ReasoningConfig(enabled=True)
         runtime = ReasoningRuntime(
@@ -498,6 +497,8 @@ class TestReasoningRuntime:
 
     def test_reasoning_runtime_bind_model(self):
         """Test bind_model attaches to harness."""
+        from codex_ml.config import ReasoningConfig
+        from codex_ml.train_loop import ReasoningRuntime
 
         mock_harness = MagicMock()
         config = ReasoningConfig(enabled=True)

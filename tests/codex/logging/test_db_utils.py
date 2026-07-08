@@ -9,20 +9,14 @@ Phase 7 tests covering:
 - _sanitize_table helper
 - resolve_db_path helper
 """
+
 from __future__ import annotations
+
 import os
 import sqlite3
 from pathlib import Path
-        from codex.logging.db_utils import open_db
-        from codex.logging.db_utils import _sanitize_table
-        from codex.logging.db_utils import list_tables
-        from codex.logging.db_utils import get_columns
-        from codex.logging.db_utils import infer_probable_table
-        from codex.logging.db_utils import infer_columns
-        from codex.logging.db_utils import resolve_db_path
 
-
-
+import pytest
 
 
 class TestOpenDb:
@@ -31,6 +25,7 @@ class TestOpenDb:
     @pytest.fixture
     def open_db(self):
         """Import open_db function."""
+        from codex.logging.db_utils import open_db
 
         return open_db
 
@@ -84,6 +79,7 @@ class TestSanitizeTable:
     @pytest.fixture
     def sanitize(self):
         """Import _sanitize_table function."""
+        from codex.logging.db_utils import _sanitize_table
 
         return _sanitize_table
 
@@ -130,6 +126,7 @@ class TestListTables:
     @pytest.fixture
     def list_tables(self):
         """Import list_tables function."""
+        from codex.logging.db_utils import list_tables
 
         return list_tables
 
@@ -160,6 +157,7 @@ class TestGetColumns:
     @pytest.fixture
     def get_columns(self):
         """Import get_columns function."""
+        from codex.logging.db_utils import get_columns
 
         return get_columns
 
@@ -194,6 +192,7 @@ class TestInferProbableTable:
     @pytest.fixture
     def infer_table(self):
         """Import infer_probable_table function."""
+        from codex.logging.db_utils import infer_probable_table
 
         return infer_probable_table
 
@@ -253,6 +252,7 @@ class TestInferColumns:
     @pytest.fixture
     def infer_columns(self):
         """Import infer_columns function."""
+        from codex.logging.db_utils import infer_columns
 
         return infer_columns
 
@@ -302,6 +302,7 @@ class TestResolveDbPath:
     @pytest.fixture
     def resolve_db_path(self):
         """Import resolve_db_path function."""
+        from codex.logging.db_utils import resolve_db_path
 
         return resolve_db_path
 

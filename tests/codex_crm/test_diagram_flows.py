@@ -1,4 +1,3 @@
-import pytest
 #         ("Qualification", "Demo"),
 #         ("Demo", "Close"),
 #     ]

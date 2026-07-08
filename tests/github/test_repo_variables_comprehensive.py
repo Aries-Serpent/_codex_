@@ -9,11 +9,12 @@ This test suite covers:
 
 Process 1 validation from the implementation plan.
 """
+
 from __future__ import annotations
+
 import json
 
-
-
+import pytest
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Repository-Scope Variable Tests

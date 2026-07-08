@@ -3,11 +3,12 @@ Test Diagram Flows
 
 Test module for diagram flows.
 """
+
 from __future__ import annotations
+
+import pytest
+
 from codex_crm.diagram import intake_to_mermaid
-
-
-
 
 
 def test_intake_to_mermaid_generates_flow() -> None:

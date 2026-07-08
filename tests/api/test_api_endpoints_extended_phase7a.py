@@ -498,7 +498,6 @@ class TestAPIRestfulEndpoints:
 
     def test_restful_endpoint_49(self):
         """Test RESTful endpoint 49 (PATCH)"""
-import pytest
         app = FastAPI()
 
         @app.patch("/resource/49")

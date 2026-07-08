@@ -417,7 +417,6 @@ class TestSecurityConcurrency:
 
 class TestSecurityMutationKillers:
     """Mutation-killing tests"""
-import pytest
 
     def test_boolean_return_value_true(self):
         def is_valid():

@@ -3,16 +3,17 @@ Test Schema Validate
 
 Test module for schema validate.
 """
+
 from __future__ import annotations
+
 import json
 import sys
 import types
 from pathlib import Path
+
+import pytest
+
 import tools.schema_validate as sv
-
-
-
-
 
 
 def _install_stub(monkeypatch: pytest.MonkeyPatch) -> None:

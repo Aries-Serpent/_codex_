@@ -3,12 +3,11 @@ Test Codex Mint Tokens Contract
 
 Test module for codex mint tokens contract.
 """
+
 from __future__ import annotations
-import pytest
+
 import sys
 from pathlib import Path
-
-
 
 SCRIPT_MOD = "scripts.ops.codex_mint_tokens_per_run"
 

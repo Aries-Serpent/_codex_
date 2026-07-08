@@ -3,11 +3,10 @@ Test Post Check Validation
 
 Test module for post check validation.
 """
+
 from __future__ import annotations
-import pytest
+
 from tools import post_check_validation
-
-
 
 
 def test_post_check_validation_passes(monkeypatch) -> None:

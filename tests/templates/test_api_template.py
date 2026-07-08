@@ -7,15 +7,14 @@ Copy this file and replace placeholders with actual implementation.
 Template Version: 1.0.0
 Created: 2026-01-18 (Phase 14.0)
 """
+
 from __future__ import annotations
+
 from pathlib import Path
 from typing import Any
 from unittest.mock import MagicMock
-        import json
-        import socket
 
-
-
+import pytest
 
 # Module under test - update this import
 # from codex.api import app
@@ -183,6 +182,7 @@ class TestAPIResponse:
 
     def test_response_is_valid_json(self, api_client) -> None:
         """Test API response is valid JSON."""
+        import json
 
         payload = {"result": "success"}
         api_client.get.return_value = MagicMock(status_code=200, data=json.dumps(payload).encode())
@@ -276,6 +276,7 @@ class TestAPIErrorHandling:
 
     def test_handles_timeout(self, api_client) -> None:
         """Test API handles timeout gracefully."""
+        import socket
 
         api_client.get.side_effect = socket.timeout("request timed out")
         with pytest.raises(socket.timeout):

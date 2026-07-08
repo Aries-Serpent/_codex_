@@ -3,11 +3,10 @@
 Tests ``src/codex/rag/postprocess.py`` — OutputProcessor and the
 ``postprocess_output`` convenience function.
 """
+
 from __future__ import annotations
-import pytest
+
 from codex.rag.postprocess import OutputProcessor, postprocess_output
-
-
 
 # ============================================================================
 # OutputProcessor.scrub_output

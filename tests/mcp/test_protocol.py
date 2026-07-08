@@ -2,11 +2,8 @@
 Tests for MCP protocol surface and JSON-RPC compliance.
 Covers protocol adherence, message formats, and edge cases.
 """
-import pytest
-import json
-    from mcp.errors import (
-    from mcp.versioning import MCP_VERSIONS, negotiate_version
 
+import json
 
 # NOTE: Do not manually manipulate sys.path. The conftest.py already adds src/ to sys.path.
 
@@ -135,6 +132,7 @@ def test_error_code_ranges():
 
 def test_mcp_error_mappings():
     """Test MCP error code to HTTP status mappings."""
+    from mcp.errors import (
         MCPError,
         RateLimitExceeded,
         ToolNotFound,
@@ -157,6 +155,7 @@ def test_mcp_error_mappings():
 
 def test_protocol_version_negotiation():
     """Test MCP version negotiation protocol."""
+    from mcp.versioning import MCP_VERSIONS, negotiate_version
 
     # Server supports certain versions
     assert isinstance(MCP_VERSIONS, list)

@@ -3,12 +3,11 @@ Test Codex Gap Registry
 
 Test module for codex gap registry.
 """
-import pytest
+
 import textwrap
 from pathlib import Path
+
 import tools.codex_gap_registry as cgr
-
-
 
 
 def test_build_registry_from_minimal_audit(tmp_path: Path):

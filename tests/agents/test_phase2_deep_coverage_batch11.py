@@ -11,23 +11,11 @@ Systematically applies integration and coupling patterns:
 
 Target: +4-5% coverage gain (70% → 75%)
 """
+
+import pytest
+
 pytest.importorskip("numpy", reason="numpy not installed")
 import numpy as np
-        from agents.physics_orchestrator import PhysicsOrchestrator
-        from agents.quantum_game_theory import QuantumInspiredGameEngine
-        from agents.agent_memory import AgentMemory
-        from agents.mental_mapping import MentalMappingModel
-        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
-        from agents.workflow_navigator import WorkflowNavigator
-        from agents.physics_integration import PhysicsIntegration
-        from agents.self_healing import SelfHealingEngine
-        from agents.advanced_physics_calculators import ChaoticNeuralNetwork
-        from agents.physics_orchestrator import PhysicsOrchestrator
-        from collections import Counter
-        from collections import deque
-
-
-
 
 
 class TestPhase2_MultiModuleIntegration:
@@ -38,6 +26,8 @@ class TestPhase2_MultiModuleIntegration:
 
     def test_physics_orchestrator_with_quantum_game(self):
         """Test integration between PhysicsOrchestrator and QuantumGame"""
+        from agents.physics_orchestrator import PhysicsOrchestrator
+        from agents.quantum_game_theory import QuantumInspiredGameEngine
 
         orchestrator = PhysicsOrchestrator()
         blue = np.array([0.5, 0.5])
@@ -52,6 +42,8 @@ class TestPhase2_MultiModuleIntegration:
 
     def test_mental_mapping_with_agent_memory(self):
         """Test integration between MentalMapping and AgentMemory"""
+        from agents.agent_memory import AgentMemory
+        from agents.mental_mapping import MentalMappingModel
 
         mental_map = MentalMappingModel()
         memory = AgentMemory()
@@ -61,6 +53,8 @@ class TestPhase2_MultiModuleIntegration:
 
     def test_developer_orchestrator_with_workflow(self):
         """Test integration between DeveloperOrchestrator and WorkflowNavigator"""
+        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
+        from agents.workflow_navigator import WorkflowNavigator
 
         dev_orch = PhysicsGuidedDeveloperOrchestrator()
         workflow_nav = WorkflowNavigator()
@@ -70,6 +64,8 @@ class TestPhase2_MultiModuleIntegration:
 
     def test_self_healing_with_physics_integration(self):
         """Test integration between SelfHealing and PhysicsIntegration"""
+        from agents.physics_integration import PhysicsIntegration
+        from agents.self_healing import SelfHealingEngine
 
         healing = SelfHealingEngine()
         integration = PhysicsIntegration()
@@ -79,6 +75,8 @@ class TestPhase2_MultiModuleIntegration:
 
     def test_advanced_physics_with_orchestrator(self):
         """Test AdvancedPhysics with PhysicsOrchestrator"""
+        from agents.advanced_physics_calculators import ChaoticNeuralNetwork
+        from agents.physics_orchestrator import PhysicsOrchestrator
 
         chaos = ChaoticNeuralNetwork(num_neurons=5)
         orchestrator = PhysicsOrchestrator()
@@ -301,6 +299,7 @@ class TestPhase2_DistributedIntegration:
     def test_consensus_mechanism(self):
         """Test distributed consensus"""
         votes = ["A", "B", "A", "A", "B"]
+        from collections import Counter
 
         counts = Counter(votes)
         winner = counts.most_common(1)[0][0]
@@ -402,6 +401,7 @@ class TestPhase2_ComplexInteractions:
 
     def test_producer_consumer(self):
         """Test producer-consumer pattern"""
+        from collections import deque
 
         queue = deque()
 

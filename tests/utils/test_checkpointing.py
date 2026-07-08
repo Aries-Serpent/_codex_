@@ -3,12 +3,12 @@ Test Checkpointing
 
 Test module for checkpointing.
 """
+
 from __future__ import annotations
-    pytest.importorskip("torch")
+
 import importlib
 
-
-
+import pytest
 
 
 def test_set_seed(tmp_path):

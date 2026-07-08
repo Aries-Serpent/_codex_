@@ -75,9 +75,8 @@ class TestZendeskClientConfiguration:
 
     def test_validate_credentials(self):
         """Test credential validation."""
-import pytest
-            from src.codex.zendesk import client
         try:
+            from src.codex.zendesk import client
 
             if hasattr(client, "validate_credentials"):
                 with patch.object(client, "validate_credentials") as mock_validate:

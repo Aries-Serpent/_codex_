@@ -7,14 +7,11 @@ retrieval, and response generation.
 Phase 56: Integration Tests
 Coverage Target: End-to-end RAG pipeline
 """
+
 from dataclasses import dataclass
 from typing import Any
-        import hashlib
-        import math
-        import math
-            import math
 
-
+import pytest
 
 
 @dataclass
@@ -81,6 +78,7 @@ class TestDocumentIngestion:
 
     def test_duplicate_detection(self):
         """Duplicate documents are detected."""
+        import hashlib
 
         def compute_content_hash(content):
             return hashlib.sha256(content.encode()).hexdigest()
@@ -123,6 +121,7 @@ class TestEmbeddingGeneration:
 
     def test_embedding_normalization(self):
         """Embeddings are normalized."""
+        import math
 
         def normalize_embedding(embedding):
             norm = math.sqrt(sum(x**2 for x in embedding))
@@ -158,6 +157,7 @@ class TestVectorSearch:
 
     def test_cosine_similarity(self):
         """Cosine similarity is computed correctly."""
+        import math
 
         def cosine_similarity(a, b):
             dot_product = sum(x * y for x, y in zip(a, b))
@@ -180,6 +180,7 @@ class TestVectorSearch:
         """Top-K results are returned."""
 
         def retrieve_top_k(query_embedding, index, k=5):
+            import math
 
             def cosine_sim(a, b):
                 dot = sum(x * y for x, y in zip(a, b))

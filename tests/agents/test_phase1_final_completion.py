@@ -10,24 +10,23 @@ Based on Physics Reference Table: Coverage Uplift Paths
 - Equation #3: Property/getter coverage for parameters
 - Equation #6: Initialization tests for operator wiring
 """
+
+import pytest
+
 from agents.mental_mapping import (
-from agents.physics_orchestrator import (
-from agents.quantum_game_theory import (
-            import numpy as np
-            import numpy as np
-
-
     MentalMappingModel,
     MentalNode,
     NodeType,
     ReasoningStep,
 )
+from agents.physics_orchestrator import (
     ActionPath,
     ActionType,
     DecisionState,
     ForceVector,
     PhysicsInspiredOrchestrator,
 )
+from agents.quantum_game_theory import (
     NUMPY_AVAILABLE,
     PayoffOperator,
     QuantumInspiredGameEngine,
@@ -118,6 +117,7 @@ class TestQuantumGameTheoryGettersProperties:
             pytest.skip("NumPy not available")
 
         try:
+            import numpy as np
 
             state = StrategyState(team="blue", strategies=np.array([1.0, 0.0]))
             assert len(state.state_vector) == 2, "Collection must not be empty"
@@ -130,6 +130,7 @@ class TestQuantumGameTheoryGettersProperties:
             pytest.skip("NumPy not available")
 
         try:
+            import numpy as np
 
             payoff = PayoffOperator(payoff_matrix=np.array([[1, 0], [0, 1]]))
             assert payoff.matrix.shape == (2, 2)

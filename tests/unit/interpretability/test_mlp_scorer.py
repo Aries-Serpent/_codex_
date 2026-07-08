@@ -3,19 +3,18 @@ Unit tests for MLPScorer class.
 
 Tests MLP activation extraction, neuron importance scoring, and activation analysis.
 """
-pytest.importorskip("torch")
+
 import sys
-    import numpy as np
-    import torch
-    import torch as _torch_ver
-    from src.codex.interpretability.mlp_scorer import MLPAnalysis, MLPScorer
 
+import pytest
 
-
+pytest.importorskip("torch")
 
 # Graceful import handling for optional dependencies
 try:
+    import numpy as np
 
+    import torch
 
     HAS_DEPS = True
 except ImportError:
@@ -27,6 +26,7 @@ except ImportError:
 # PyTorch 2.x + Python 3.12 isinstance() union-type bug guard
 # Fixed in PyTorch 2.2.0 (DR-003). Skip affected tests until upgrade.
 try:
+    import torch as _torch_ver
 
     _TORCH_312_BUG = sys.version_info >= (3, 12) and _torch_ver.__version__.startswith("2.")
 except ImportError:
@@ -34,6 +34,7 @@ except ImportError:
 
 # Only import if dependencies are available
 if HAS_DEPS:
+    from src.codex.interpretability.mlp_scorer import MLPAnalysis, MLPScorer
 else:
     MLPAnalysis = None
     MLPScorer = None

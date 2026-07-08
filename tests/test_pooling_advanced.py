@@ -6,14 +6,10 @@ Tests advanced pooling scenarios:
 - Pool size limits
 - Stale connection handling
 """
+
 import threading
-        from queue import Queue
-        import importlib
-        import codex.logging.db_manager
-        from codex.logging.db_manager import DBManager
-        from codex.logging.db_manager import DBManager
 
-
+import pytest
 
 
 class TestPoolingBehavior:
@@ -71,6 +67,7 @@ class TestPoolingBehavior:
 
     def test_concurrent_pool_access(self, pooling_db_manager):
         """Test concurrent access to connection pool."""
+        from queue import Queue
 
         errors = []
         connections_used = Queue()  # Thread-safe queue
@@ -119,9 +116,12 @@ class TestPoolingDisabled:
     def test_no_pooling_when_disabled(self, tmp_path, clean_connection_pool):
         """Test that connections are NOT pooled when pooling disabled."""
         # Import with pooling disabled (default)
+        import importlib
 
+        import codex.logging.db_manager
 
         importlib.reload(codex.logging.db_manager)
+        from codex.logging.db_manager import DBManager
 
         # Verify pooling is disabled
         assert DBManager._POOL_ENABLED is False, "Pooling should be disabled by default"
@@ -148,6 +148,7 @@ class TestPoolingParametrized:
         - Once with pooling enabled
         - Once with pooling disabled
         """
+        from codex.logging.db_manager import DBManager
 
         db = DBManager(db_path=tmp_path / f"test_{pooling_mode}.db")
         db.init_schema()

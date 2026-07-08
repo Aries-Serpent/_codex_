@@ -115,7 +115,6 @@ class TestAttentionScorer:
         Note: Scaled dot-product attention is NOT truly scale-invariant due to
         softmax temperature effects. Scaling the query will affect the distribution.
         """
-import pytest
         query = [1.0, 0.5, 0.2]
         keys = [
             [1.0, 0.0, 0.0],

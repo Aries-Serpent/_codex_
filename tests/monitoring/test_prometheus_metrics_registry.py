@@ -10,7 +10,6 @@ import pytest
 @pytest.fixture(name="metrics_module")
 def _metrics_module_fixture():
     """Reload the metrics module to ensure a clean environment per test."""
-import pytest
 
     return importlib.import_module("codex_ml.monitoring.prometheus_metrics")
 

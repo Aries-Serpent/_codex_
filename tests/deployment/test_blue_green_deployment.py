@@ -3,9 +3,8 @@ Test Blue Green Deployment
 
 Test module for blue green deployment.
 """
-import pytest
-from pathlib import Path
 
+from pathlib import Path
 
 
 def test_helm_configuration_supports_scaling() -> None:

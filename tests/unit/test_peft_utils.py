@@ -3,12 +3,12 @@ Test Peft Utils
 
 Test module for peft utils.
 """
+
 from __future__ import annotations
-    peft_utils = pytest.importorskip("hhg_logistics.model.peft_utils")
+
 import importlib.util
 
-
-
+import pytest
 
 
 @pytest.mark.skipif(
@@ -16,6 +16,7 @@ import importlib.util
     reason="transformers/peft not installed in this environment",
 )
 def test_freeze_counts():
+    peft_utils = pytest.importorskip("hhg_logistics.model.peft_utils")
     apply_lora = peft_utils.apply_lora
     freeze_base_weights = peft_utils.freeze_base_weights
     load_hf_llm = peft_utils.load_hf_llm

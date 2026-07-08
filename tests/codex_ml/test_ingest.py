@@ -4,15 +4,14 @@ Test Ingest Module
 Integration tests for the data ingestion module.
 Tests configuration loading, dataset parsing, and preprocessing.
 """
+
 from __future__ import annotations
+
 from pathlib import Path
+
+import pytest
+
 from codex_ml.ingest import (
-        from codex_ml.ingest import ingest
-        from codex_ml import ingest
-
-
-
-
     _DataConfig,
     _default_config,
     _extract_config,
@@ -363,6 +362,7 @@ class TestPublicAPI:
 
     def test_ingest_function_exists(self) -> None:
         """Test ingest function is exported."""
+        from codex_ml.ingest import ingest
 
         assert callable(ingest), "Condition must be true"
 
@@ -372,6 +372,7 @@ class TestAllExports:
 
     def test_all_exports(self) -> None:
         """Test __all__ contains expected exports."""
+        from codex_ml import ingest
 
         expected = ["ingest", "load_dataset", "ingest_sample"]
         for name in expected:

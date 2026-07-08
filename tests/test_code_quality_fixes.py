@@ -8,33 +8,15 @@ Comprehensive test suite for:
 
 This module validates all fixes applied in Track C of Phase 12 WS3.
 """
+
 import asyncio
 import sys
 import time
 from pathlib import Path
 from typing import Any, List, Optional
 from unittest.mock import AsyncMock, MagicMock, Mock, patch
-        from codex import cli as cli_module
-        from codex.cli import (
-            from codex.github.api_client import APIClient
-        from codex import cli
-        from codex import cli
-        import codex.cli
-        from codex.consolidation.async_utils import AsyncResourceManager
-        from codex.consolidation.async_utils import AsyncPoolManager
-        import sys
-        from codex import cli
-        from codex.consolidation.async_utils import AsyncResourceManager
-        from codex import cli
-        from codex.consolidation.async_utils import (
-            from codex.github.api_client import APIClient
-        from codex.cli import app, main, cli
-        from codex.consolidation.async_utils import async_timeout_context
-        from codex.consolidation.async_utils import async_managed_resource
-        import importlib
-        import codex.cli
 
-
+import pytest
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
@@ -45,6 +27,7 @@ class TestUninitializedVariablesFixed:
 
     def test_cli_module_loads_without_none_assignments(self):
         """Verify cli/__init__.py module loads with proper initialization."""
+        from codex import cli as cli_module
 
         # All module-level variables should be properly initialized or typed
         assert hasattr(cli_module, "app"), "app should be defined"
@@ -55,6 +38,7 @@ class TestUninitializedVariablesFixed:
 
     def test_cli_initialization_variables_have_type_hints(self):
         """Verify that CLI module variables are properly typed."""
+        from codex.cli import (
             ALLOWED_TASKS,
             auth_group,
             chronicle,
@@ -97,6 +81,7 @@ class TestUninitializedVariablesFixed:
     def test_github_api_client_elevated_token_initialized(self):
         """Verify APIClient properly initializes token variables."""
         with patch.dict("os.environ", {"GITHUB_TOKEN": "test_token"}):
+            from codex.github.api_client import APIClient
 
             client = APIClient()
             
@@ -107,6 +92,7 @@ class TestUninitializedVariablesFixed:
 
     def test_uninitialized_variable_access_patterns(self):
         """Test that previously uninitialized variables don't cause AttributeError."""
+        from codex import cli
 
         # These patterns should work without NameError or AttributeError
         try:
@@ -124,6 +110,7 @@ class TestUnusedGlobalsRemoved:
 
     def test_no_unused_module_globals_in_cli(self):
         """Verify that unused module-level variables in cli have been removed."""
+        from codex import cli
 
         # Check that __all__ only contains actually exported symbols
         defined_attrs = set(dir(cli))
@@ -136,6 +123,7 @@ class TestUnusedGlobalsRemoved:
 
     def test_module_level_variable_usage(self):
         """Verify module-level variables are actually used."""
+        import codex.cli
 
         # Should be able to access primary exports without issues
         assert codex.cli.app is not None or codex.cli.app is None
@@ -148,6 +136,7 @@ class TestResourceManagementImprovements:
     @pytest.mark.asyncio
     async def test_async_context_manager_cleanup(self):
         """Verify async context managers properly clean up resources."""
+        from codex.consolidation.async_utils import AsyncResourceManager
 
         mock_resource = AsyncMock()
         mock_resource.open = AsyncMock()
@@ -162,6 +151,7 @@ class TestResourceManagementImprovements:
     @pytest.mark.asyncio
     async def test_async_pool_manager_connection_release(self):
         """Verify AsyncPoolManager releases connections properly."""
+        from codex.consolidation.async_utils import AsyncPoolManager
 
         mock_pool = AsyncMock()
         mock_connection = MagicMock()
@@ -263,6 +253,7 @@ class TestIntegerOverflowProtection:
 
     def test_safe_integer_addition(self):
         """Test safe addition with overflow detection."""
+        import sys
 
         max_int = sys.maxsize
         
@@ -318,6 +309,7 @@ class TestPerformanceBenchmarks:
 
     def test_uninitialized_variable_access_overhead(self):
         """Measure performance of accessing properly initialized variables."""
+        from codex import cli
 
         start = time.perf_counter()
         for _ in range(10000):
@@ -349,6 +341,7 @@ class TestPerformanceBenchmarks:
 
     def test_resource_management_overhead(self):
         """Measure performance impact of resource management."""
+        from codex.consolidation.async_utils import AsyncResourceManager
 
         mock_resource = Mock()
         mock_resource.open = Mock()
@@ -369,6 +362,7 @@ class TestCodeQualityMetrics:
 
     def test_cli_module_completeness(self):
         """Verify CLI module is complete and properly initialized."""
+        from codex import cli
 
         # Check critical exports are present
         required_exports = ["app", "main", "__all__"]
@@ -377,6 +371,7 @@ class TestCodeQualityMetrics:
 
     def test_async_context_manager_interface(self):
         """Verify async context managers implement correct interface."""
+        from codex.consolidation.async_utils import (
             AsyncContextBase,
             AsyncPoolManager,
             AsyncResourceManager,
@@ -401,6 +396,7 @@ class TestCodeQualityMetrics:
     def test_error_handling_in_api_client(self):
         """Verify API client has proper error handling."""
         with patch.dict("os.environ", {"GITHUB_TOKEN": "test"}):
+            from codex.github.api_client import APIClient
 
             # Should handle missing token gracefully
             client = APIClient(token="test_token")
@@ -413,6 +409,7 @@ class TestRegressionPrevention:
 
     def test_cli_backward_compatibility(self):
         """Verify CLI changes maintain backward compatibility."""
+        from codex.cli import app, main, cli
 
         # All primary entry points should be available
         assert app is not None, "Typer app should be available"
@@ -423,6 +420,7 @@ class TestRegressionPrevention:
     @pytest.mark.asyncio
     async def test_async_context_no_hang(self):
         """Verify async context managers don't cause hangs."""
+        from codex.consolidation.async_utils import async_timeout_context
 
         # Verify timeout context is properly structured (may not actually timeout)
         async with async_timeout_context(10.0, "test_op"):
@@ -450,6 +448,7 @@ class TestIntegration:
     @pytest.mark.asyncio
     async def test_full_async_workflow(self):
         """Test a complete async resource workflow."""
+        from codex.consolidation.async_utils import async_managed_resource
 
         mock_resource = AsyncMock()
         mock_resource.do_work = AsyncMock(return_value="success")
@@ -462,7 +461,9 @@ class TestIntegration:
 
     def test_cli_initialization_idempotence(self):
         """Verify CLI module can be imported multiple times safely."""
+        import importlib
 
+        import codex.cli
 
         # Re-import should not cause issues
         importlib.reload(codex.cli)

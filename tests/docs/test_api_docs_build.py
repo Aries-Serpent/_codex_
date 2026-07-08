@@ -4,13 +4,14 @@ Skip-safe integration test for API docs build.
 This test validates that the API documentation build completes successfully
 when enabled via environment variable.
 """
+
 import json
 import os
 import subprocess
 import sys
 from pathlib import Path
 
-
+import pytest
 
 
 @pytest.mark.skipif(

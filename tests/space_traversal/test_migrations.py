@@ -146,7 +146,6 @@ def test_migration_1_5_5_performance_metrics(tmp_path: Path):
 
 def test_migrations_ordered():
     """Test migrations are applied in order."""
-import pytest
     from scripts.space_traversal.migrations.migrate_trends import MIGRATIONS
 
     versions = list(MIGRATIONS.keys())

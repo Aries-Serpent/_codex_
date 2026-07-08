@@ -205,7 +205,6 @@ def test_send_teams_notification(mock_urlopen):
 
 def test_create_event_from_audit():
     """Test creating event from audit results."""
-import pytest
     from scripts.space_traversal.webhooks import create_event_from_audit
 
     capabilities = [

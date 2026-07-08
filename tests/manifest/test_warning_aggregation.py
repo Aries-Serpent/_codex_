@@ -5,7 +5,7 @@ P3 Test: Manifest Warning Aggregation
 - Writes a bundles pointer JSON with warnings
 - Runs stage S7 and verifies audit_run_manifest.json includes aggregated warnings
 """
-import pytest
+
 import json
 import os
 import shutil
@@ -13,7 +13,6 @@ import subprocess
 import sys
 import time
 from pathlib import Path
-
 
 ART = Path("audit_artifacts")
 BUNDLES = ART / "bundles"

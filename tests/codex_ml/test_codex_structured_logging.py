@@ -4,17 +4,15 @@ Test Codex Structured Logging Module
 Tests for the structured logging module.
 Tests JSON logging, session management, and formatters.
 """
+
 from __future__ import annotations
-import pytest
+
 import json
 import logging
 import os
 from unittest.mock import MagicMock, patch
+
 from codex_ml.codex_structured_logging import (
-            import sys
-
-
-
     JsonFormatter,
     _json_safe,
     _prepare_session_payload,
@@ -226,6 +224,7 @@ class TestJsonFormatter:
         try:
             raise ValueError("Test error")
         except ValueError:
+            import sys
 
             exc_info = sys.exc_info()
 

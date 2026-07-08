@@ -8,11 +8,11 @@ Created: 2026-01-18
 Phase: 16.3 - Continuous Security Scanning
 Tests: 10+
 """
+
 import re
 from pathlib import Path
-            import yaml
 
-
+import pytest
 
 # Repository root
 REPO_ROOT = Path(__file__).parents[2]
@@ -112,6 +112,7 @@ class TestDependabot:
             pytest.skip("No Dependabot config (optional)")
 
         try:
+            import yaml
 
             content = yaml.safe_load(dependabot_path.read_text(encoding="utf-8"))
             assert "updates" in content, "Dependabot should have updates"

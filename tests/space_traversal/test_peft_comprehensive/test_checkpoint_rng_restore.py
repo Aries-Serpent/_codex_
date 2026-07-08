@@ -3,14 +3,13 @@ Test Checkpoint Rng Restore
 
 Test module for checkpoint rng restore.
 """
+
 from __future__ import annotations
-import pytest
+
 import random
 from pathlib import Path
+
 from codex_ml.utils.checkpoint_core import load_checkpoint, save_checkpoint
-
-
-
 
 
 def test_rng_restore_python_random(tmp_path: Path):

@@ -3,13 +3,12 @@ Test Cli Utils Run Context
 
 Test module for cli utils run context.
 """
-import pytest
+
 from pathlib import Path
+
 import yaml
+
 from codex_ml.cli import utils as cli_utils
-
-
-
 
 
 def test_create_run_dir_and_manifest(tmp_path: Path):

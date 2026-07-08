@@ -3,13 +3,12 @@ Test Catalog Db
 
 Test module for catalog db.
 """
-import pytest
+
 import json
 import os
 from pathlib import Path
+
 from tools import catalog_db
-
-
 
 
 def test_catalog_ingest(tmp_path: Path) -> None:

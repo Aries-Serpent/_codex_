@@ -3,16 +3,18 @@ Test Datasets Hf Disk
 
 Test module for datasets hf disk.
 """
-pytest.importorskip("datasets")
+
 from pathlib import Path
+
+import pytest
+
+pytest.importorskip("datasets")
+
 from codex_ml.eval.datasets import DatasetBundle, Example, load_dataset
 
 
-
-
-
-
 def test_load_dataset_from_datasetdict(tmp_path: Path):
+    datasets = pytest.importorskip("datasets")
     train = datasets.Dataset.from_dict({"input": ["x"], "target": ["y"]})
     val = datasets.Dataset.from_dict({"input": ["v"], "target": ["w"]})
     ds = datasets.DatasetDict({"train": train, "validation": val})
@@ -25,6 +27,7 @@ def test_load_dataset_from_datasetdict(tmp_path: Path):
 
 
 def test_load_dataset_from_hf_disk_datasetdict(tmp_path: Path):
+    datasets = pytest.importorskip("datasets")
     ds = datasets.DatasetDict(
         {
             "train": datasets.Dataset.from_dict({"input": ["a"], "target": ["b"]}),

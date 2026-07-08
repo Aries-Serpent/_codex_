@@ -1,9 +1,8 @@
 """
 Tests for archival_bundling detector (v1.4.0)
 """
-import pytest
-from scripts.space_traversal.detectors.archival_bundling import detect
 
+from scripts.space_traversal.detectors.archival_bundling import detect
 
 
 def test_archival_bundling_detector_basic():

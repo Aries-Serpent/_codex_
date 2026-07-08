@@ -7,10 +7,8 @@ Additional comprehensive tests for:
 - API endpoints
 - Workflow orchestration
 """
-import pytest
-from datetime import datetime, timedelta
-        import re
 
+from datetime import datetime, timedelta
 
 
 class TestModelServing:
@@ -320,6 +318,7 @@ class TestCoreLogic:
 
     def test_string_matching_pattern(self):
         """Test pattern matching."""
+        import re
 
         pattern = r"^[A-Z][a-z]+$"
         valid_names = ["John", "Jane", "Alice"]

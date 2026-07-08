@@ -9,54 +9,10 @@ Systematically applies physics-guided dimensional tunneling to:
 
 Target: +3-5% coverage gain
 """
+
+import pytest
+
 pytest.importorskip("numpy")
-        from agents.physics_orchestrator import ForceVector
-        import numpy as np
-        from agents.physics_orchestrator import DecisionState
-        from agents.physics_orchestrator import ActionPath, ActionType
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import (
-        from agents.physics_orchestrator import DiffusionFlowModel
-        import numpy as np
-        from agents.quantum_game_theory import StrategyState
-        import numpy as np
-        from agents.quantum_game_theory import QuantumGameState, StrategyState
-        import numpy as np
-        from agents.quantum_game_theory import PayoffOperator
-        import numpy as np
-        from agents.quantum_game_theory import QuantumInspiredGameEngine
-        from agents.mental_mapping import MentalMappingModel
-        from agents.mental_mapping import MentalMappingModel, NodeType
-        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
-        from agents.mental_mapping import NodeType
-        from agents.mental_mapping import EdgeType
-        from agents.agent_memory import AgentMemory
-        from agents.agent_memory import AgentMemory
-        from agents.agent_memory import AgentMemory
-        from agents.agent_memory import AgentMemory
-        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
-        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        import numpy as np
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.quantum_game_theory import QuantumInspiredGameEngine
-        from agents.agent_memory import AgentMemory
-        from agents.mental_mapping import MentalMappingModel
-        from agents.physics_orchestrator import ForceVector
-        from agents.physics_orchestrator import ActionType
-        import numpy as np
-        from agents.physics_orchestrator import DecisionState
-        from agents.physics_orchestrator import ForceVector
-        import numpy as np
-        from agents.quantum_game_theory import StrategyState
-        from agents.mental_mapping import MentalMappingModel
-
-
 
 
 class TestPhase2_PhysicsOrchestrator_TimeDimension:
@@ -67,6 +23,7 @@ class TestPhase2_PhysicsOrchestrator_TimeDimension:
 
     def test_force_vector_energy_calculation(self):
         """Test energy calculations (Eq #2: E² = p² c² + m² c⁴)"""
+        from agents.physics_orchestrator import ForceVector
 
         force = ForceVector(
             name="test_force", magnitude=10.0, direction=[1.0, 0.0, 0.0], priority=5
@@ -77,7 +34,9 @@ class TestPhase2_PhysicsOrchestrator_TimeDimension:
 
     def test_decision_state_time_evolution(self):
         """Test decision state evolution with time steps"""
+        import numpy as np
 
+        from agents.physics_orchestrator import DecisionState
 
         current = np.array([0.0, 0.0, 0.0])
         goal = np.array([10.0, 10.0, 10.0])
@@ -93,6 +52,7 @@ class TestPhase2_PhysicsOrchestrator_TimeDimension:
 
     def test_action_path_initialization(self):
         """Test action path with proper parameters"""
+        from agents.physics_orchestrator import ActionPath, ActionType
 
         path = ActionPath(
             action_type=ActionType.RESEARCH,
@@ -112,6 +72,7 @@ class TestPhase2_PhysicsOrchestrator_FlowDimension:
 
     def test_orchestrator_initialization(self):
         """Test physics orchestrator initialization"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         assert orchestrator is not None, "orchestrator must be initialized"
@@ -120,6 +81,7 @@ class TestPhase2_PhysicsOrchestrator_FlowDimension:
 
     def test_orchestrator_assess_situation(self):
         """Test situation assessment with probability conservation"""
+        from agents.physics_orchestrator import (
             DecisionState,
             PhysicsInspiredOrchestrator,
         )
@@ -132,6 +94,7 @@ class TestPhase2_PhysicsOrchestrator_FlowDimension:
 
     def test_diffusion_flow_model_init(self):
         """Test DiffusionFlowModel initialization"""
+        from agents.physics_orchestrator import DiffusionFlowModel
 
         model = DiffusionFlowModel()
         assert model is not None, "model must be initialized"
@@ -145,7 +108,9 @@ class TestPhase2_QuantumGame_StateDimension:
 
     def test_strategy_state_initialization(self):
         """Test StrategyState with correct parameters"""
+        import numpy as np
 
+        from agents.quantum_game_theory import StrategyState
 
         strategies = np.array([0.5, 0.5])
         state = StrategyState(team="blue", strategies=strategies)
@@ -154,7 +119,9 @@ class TestPhase2_QuantumGame_StateDimension:
 
     def test_quantum_game_state_basic(self):
         """Test QuantumGameState initialization"""
+        import numpy as np
 
+        from agents.quantum_game_theory import QuantumGameState, StrategyState
 
         blue_state = StrategyState("blue", np.array([0.7, 0.3]))
         red_state = StrategyState("red", np.array([0.6, 0.4]))
@@ -168,7 +135,9 @@ class TestPhase2_QuantumGame_StateDimension:
 
     def test_payoff_operator_creation(self):
         """Test PayoffOperator with matrix and players"""
+        import numpy as np
 
+        from agents.quantum_game_theory import PayoffOperator
 
         matrix = np.array([[3, 0], [5, 1]])
         operator = PayoffOperator(payoff_matrix=matrix, players=["blue", "red"])
@@ -177,7 +146,9 @@ class TestPhase2_QuantumGame_StateDimension:
 
     def test_quantum_game_engine_initialization(self):
         """Test game engine with complete parameters"""
+        import numpy as np
 
+        from agents.quantum_game_theory import QuantumInspiredGameEngine
 
         blue_strategies = np.array([0.5, 0.5])
         red_strategies = np.array([0.5, 0.5])
@@ -201,12 +172,14 @@ class TestPhase2_MentalMapping_GraphDimension:
 
     def test_mental_mapping_model_init(self):
         """Test MentalMappingModel initialization"""
+        from agents.mental_mapping import MentalMappingModel
 
         model = MentalMappingModel()
         assert model is not None, "model must be initialized"
 
     def test_create_node_operation(self):
         """Test node creation with proper node_type"""
+        from agents.mental_mapping import MentalMappingModel, NodeType
 
         model = MentalMappingModel()
         node_id = model.create_node(node_type=NodeType.PROBLEM, properties={})
@@ -214,6 +187,7 @@ class TestPhase2_MentalMapping_GraphDimension:
 
     def test_connect_nodes_operation(self):
         """Test connecting nodes with edge_type"""
+        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
 
         model = MentalMappingModel()
         node1 = model.create_node(NodeType.PROBLEM, {})
@@ -229,12 +203,14 @@ class TestPhase2_MentalMapping_GraphDimension:
 
     def test_enum_validations_node_type(self):
         """Test NodeType enum values (Eq #2)"""
+        from agents.mental_mapping import NodeType
 
         assert hasattr(NodeType, "CONCEPT")
         assert hasattr(NodeType, "ENTITY")
 
     def test_enum_validations_edge_type(self):
         """Test EdgeType enum values (Eq #2)"""
+        from agents.mental_mapping import EdgeType
 
         assert hasattr(EdgeType, "RELATED")
         assert hasattr(EdgeType, "DEPENDS_ON")
@@ -248,12 +224,14 @@ class TestPhase2_AgentMemory_StorageDimension:
 
     def test_agent_memory_initialization(self):
         """Test AgentMemory initialization"""
+        from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
         assert memory is not None, "memory must be initialized"
 
     def test_memory_store_operation(self):
         """Test storing data in memory"""
+        from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
         memory.store_memory(key="test_key", value="test_value")
@@ -261,6 +239,7 @@ class TestPhase2_AgentMemory_StorageDimension:
 
     def test_memory_retrieve_operation(self):
         """Test retrieving data from memory"""
+        from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
         memory.store_memory(key="test_key", value="test_value")
@@ -269,6 +248,7 @@ class TestPhase2_AgentMemory_StorageDimension:
 
     def test_memory_clear_operation(self):
         """Test clearing memory"""
+        from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
         memory.store_memory(key="test_key", value="test_value")
@@ -285,12 +265,14 @@ class TestPhase2_DeveloperOrchestrator_WorkflowDimension:
 
     def test_developer_orchestrator_init(self):
         """Test PhysicsGuidedDeveloperOrchestrator initialization"""
+        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
         orchestrator = PhysicsGuidedDeveloperOrchestrator()
         assert orchestrator is not None, "orchestrator must be initialized"
 
     def test_task_decomposition(self):
         """Test task decomposition functionality"""
+        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
         orchestrator = PhysicsGuidedDeveloperOrchestrator()
         # Check if method exists and call it if available
@@ -310,6 +292,7 @@ class TestPhase2_Operators_OperatorDimension:
 
     def test_momentum_operator_access(self):
         """Test momentum operator is accessible"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Just verify it can be instantiated, operators are internal
@@ -317,6 +300,7 @@ class TestPhase2_Operators_OperatorDimension:
 
     def test_energy_operator_access(self):
         """Test energy operator is accessible"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Just verify it can be instantiated
@@ -324,6 +308,7 @@ class TestPhase2_Operators_OperatorDimension:
 
     def test_hamiltonian_composition(self):
         """Test Hamiltonian composition (Eq #7: Ĥ = T̂ + V̂)"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Hamiltonian is composed internally
@@ -339,12 +324,14 @@ class TestPhase2_Conservation_FlowDimension:
     def test_continuity_check_availability(self):
         """Test continuity checker is available"""
         # ContinuityChecker should be available as part of physics system
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         assert orchestrator is not None, "orchestrator must be initialized"
 
     def test_normalization_operation(self):
         """Test normalization operations (Eq #24)"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Normalization happens internally
@@ -352,6 +339,7 @@ class TestPhase2_Conservation_FlowDimension:
 
     def test_probability_conservation(self):
         """Test probability conservation (Eq #35: Σρ = 1)"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Conservation is maintained internally
@@ -365,7 +353,10 @@ class TestPhase2_Integration_CouplingDimension:
 
     def test_cross_module_physics_quantum(self):
         """Test physics orchestrator + quantum game integration"""
+        import numpy as np
 
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
+        from agents.quantum_game_theory import QuantumInspiredGameEngine
 
         orchestrator = PhysicsInspiredOrchestrator()
         blue = np.array([0.5, 0.5])
@@ -379,6 +370,8 @@ class TestPhase2_Integration_CouplingDimension:
 
     def test_cross_module_mental_memory(self):
         """Test mental mapping + agent memory integration"""
+        from agents.agent_memory import AgentMemory
+        from agents.mental_mapping import MentalMappingModel
 
         model = MentalMappingModel()
         memory = AgentMemory()
@@ -395,6 +388,7 @@ class TestPhase2_Properties_Getters:
 
     def test_force_vector_properties(self):
         """Test ForceVector property access"""
+        from agents.physics_orchestrator import ForceVector
 
         force = ForceVector("test", 10.0, [1.0, 0.0, 0.0], 5)
         assert force.name == "test", "name is not valid"
@@ -403,6 +397,7 @@ class TestPhase2_Properties_Getters:
 
     def test_action_type_enum_access(self):
         """Test ActionType enum is accessible"""
+        from agents.physics_orchestrator import ActionType
 
         assert hasattr(ActionType, "ANALYZE")
         assert hasattr(ActionType, "EXECUTE")
@@ -416,7 +411,9 @@ class TestPhase2_EdgeCases_Invariants:
 
     def test_empty_force_list(self):
         """Test handling empty force list"""
+        import numpy as np
 
+        from agents.physics_orchestrator import DecisionState
 
         decision = DecisionState(
             current_position=np.array([0.0, 0.0, 0.0]),
@@ -428,13 +425,16 @@ class TestPhase2_EdgeCases_Invariants:
 
     def test_zero_magnitude_force(self):
         """Test force with zero magnitude"""
+        from agents.physics_orchestrator import ForceVector
 
         force = ForceVector("zero_force", 0.0, [0.0, 0.0, 0.0], 1)
         assert force.magnitude == 0.0, "magnitude is not valid"
 
     def test_minimal_strategy_state(self):
         """Test minimal StrategyState"""
+        import numpy as np
 
+        from agents.quantum_game_theory import StrategyState
 
         state = StrategyState("blue", np.array([1.0, 0.0]))
         assert state.team == "blue", "team is not valid"
@@ -442,6 +442,7 @@ class TestPhase2_EdgeCases_Invariants:
 
     def test_empty_mental_model(self):
         """Test empty mental mapping model"""
+        from agents.mental_mapping import MentalMappingModel
 
         model = MentalMappingModel()
         # Model starts empty

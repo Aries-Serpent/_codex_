@@ -3,14 +3,15 @@ Test Tokenizer Wrapper
 
 Test module for tokenizer wrapper.
 """
+
 from __future__ import annotations
+
+import pytest
+
 pytest.importorskip("transformers")
 pytest.importorskip("sentencepiece")
+
 from codex_ml.interfaces.tokenizer import HFTokenizer
-
-
-
-
 
 
 def test_padding_truncation_shapes():

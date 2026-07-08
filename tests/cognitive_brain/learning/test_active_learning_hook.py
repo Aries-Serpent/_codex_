@@ -74,7 +74,6 @@ def test_budget_default_is_50() -> None:
 
 def test_budget_zero_blocks_all(monkeypatch: pytest.MonkeyPatch) -> None:
     """Budget of 0 blocks all queries."""
-import pytest
     hook = ActiveLearningHook(query_budget_per_day=0)
     result = hook.record_if_uncertain(_make_audit(), _make_assessment(confidence=0.1))
     assert result is False, "Result must not be empty"

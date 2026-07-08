@@ -6,43 +6,15 @@ Covers:
 - codex.rag.analytics.dashboard.AnalyticsDashboard.generate_html
 - codex.rag.analytics.__init__ exports
 """
+
 from __future__ import annotations
+
 import json
 import tempfile
 from pathlib import Path
 from unittest.mock import patch
-        from codex.rag.analytics.metrics_db import QueryMetric
-        from codex.rag.analytics.metrics_db import QueryMetric
-        from codex.rag.analytics.metrics_db import QueryMetric
-        from codex.rag.analytics.metrics_db import MetricsDatabase
-        from codex.rag.analytics.metrics_db import QueryMetric
-        from codex.rag.analytics.metrics_db import MetricsDatabase
-        from codex.rag.analytics.metrics_db import MetricsDatabase
-        import sqlite3
-        import sqlite3
-        import sqlite3
-        import sqlite3
-        from codex.rag.analytics.metrics_db import QueryMetric
-        import sqlite3
-        from codex.rag.analytics.metrics_db import QueryMetric
-        from codex.rag.analytics.metrics_db import QueryMetric
-        from codex.rag.analytics.metrics_db import QueryMetric
-        from codex.rag.analytics.metrics_db import QueryMetric
-        from codex.rag.analytics.metrics_db import QueryMetric
-        from codex.rag.analytics.metrics_db import QueryMetric
-        from codex.rag.analytics.metrics_db import QueryMetric
-        from codex.rag.analytics.dashboard import AnalyticsDashboard
-        from codex.rag.analytics.metrics_db import MetricsDatabase
-        from codex.rag.analytics.dashboard import AnalyticsDashboard
-        from codex.rag.analytics.metrics_db import MetricsDatabase, QueryMetric
-        from codex.rag.analytics.dashboard import AnalyticsDashboard
-        from codex.rag.analytics.metrics_db import MetricsDatabase
-        from codex.rag.analytics import AnalyticsDashboard
-        from codex.rag.analytics import MetricsDatabase
-        from codex.rag.analytics import QueryMetric
 
-
-
+import pytest
 
 # ---------------------------------------------------------------------------
 # QueryMetric dataclass
@@ -54,6 +26,7 @@ class TestQueryMetric:
 
     def test_query_metric_creation(self):
         """QueryMetric can be created with all fields."""
+        from codex.rag.analytics.metrics_db import QueryMetric
 
         qm = QueryMetric(
             timestamp="2026-01-01T00:00:00Z",
@@ -78,6 +51,7 @@ class TestQueryMetric:
 
     def test_query_metric_cache_hit_true(self):
         """QueryMetric stores cache_hit=True."""
+        from codex.rag.analytics.metrics_db import QueryMetric
 
         qm = QueryMetric(
             timestamp="2026-01-01T00:00:00Z",
@@ -94,6 +68,7 @@ class TestQueryMetric:
 
     def test_query_metric_equality(self):
         """Two QueryMetrics with same fields are equal (dataclass)."""
+        from codex.rag.analytics.metrics_db import QueryMetric
 
         qm1 = QueryMetric("t", "q", "i", "u", 5, 10.0, False, 5, 0.8)
         qm2 = QueryMetric("t", "q", "i", "u", 5, 10.0, False, 5, 0.8)
@@ -111,11 +86,13 @@ class TestMetricsDatabase:
     @pytest.fixture()
     def db(self, tmp_path):
         """Create a fresh MetricsDatabase backed by a temp file."""
+        from codex.rag.analytics.metrics_db import MetricsDatabase
 
         return MetricsDatabase(db_path=tmp_path / "test_rag_metrics.db")
 
     @pytest.fixture()
     def sample_metric(self):
+        from codex.rag.analytics.metrics_db import QueryMetric
 
         return QueryMetric(
             timestamp="2026-01-01T12:00:00",
@@ -133,6 +110,7 @@ class TestMetricsDatabase:
 
     def test_init_creates_db_file(self, tmp_path):
         """MetricsDatabase.__init__ creates the SQLite file."""
+        from codex.rag.analytics.metrics_db import MetricsDatabase
 
         db_path = tmp_path / "sub" / "rag.db"
         db = MetricsDatabase(db_path=db_path)
@@ -140,6 +118,7 @@ class TestMetricsDatabase:
 
     def test_init_default_path(self):
         """MetricsDatabase uses ~/.codex/rag_metrics.db when no path given."""
+        from codex.rag.analytics.metrics_db import MetricsDatabase
 
         with patch("codex.rag.analytics.metrics_db.Path.home") as mock_home:
             mock_home.return_value = Path(tempfile.mkdtemp())
@@ -148,6 +127,7 @@ class TestMetricsDatabase:
 
     def test_schema_tables_exist(self, db):
         """Both query_metrics and index_stats tables are created."""
+        import sqlite3
 
         with sqlite3.connect(db.db_path) as conn:
             tables = {
@@ -163,6 +143,7 @@ class TestMetricsDatabase:
 
     def test_log_query_inserts_row(self, db, sample_metric):
         """log_query stores the metric in the database."""
+        import sqlite3
 
         db.log_query(sample_metric)
         with sqlite3.connect(db.db_path) as conn:
@@ -171,6 +152,7 @@ class TestMetricsDatabase:
 
     def test_log_query_values_correct(self, db, sample_metric):
         """log_query stores all fields correctly."""
+        import sqlite3
 
         db.log_query(sample_metric)
         with sqlite3.connect(db.db_path) as conn:
@@ -184,7 +166,9 @@ class TestMetricsDatabase:
 
     def test_log_query_cache_hit_stored_as_1(self, db):
         """log_query stores cache_hit=True as integer 1."""
+        import sqlite3
 
+        from codex.rag.analytics.metrics_db import QueryMetric
 
         qm = QueryMetric("2026-01-01T00:00:00", "q", "i", "u", 3, 5.0, True, 3, 0.9)
         db.log_query(qm)
@@ -194,6 +178,7 @@ class TestMetricsDatabase:
 
     def test_log_multiple_queries(self, db, sample_metric):
         """log_query handles multiple inserts."""
+        import sqlite3
 
         for _ in range(5):
             db.log_query(sample_metric)
@@ -221,6 +206,7 @@ class TestMetricsDatabase:
 
     def test_get_stats_cache_hit_rate(self, db):
         """get_stats calculates cache hit rate correctly."""
+        from codex.rag.analytics.metrics_db import QueryMetric
 
         # 2 hits, 2 misses → 50%
         for hit in [True, True, False, False]:
@@ -231,6 +217,7 @@ class TestMetricsDatabase:
 
     def test_get_stats_with_index_filter(self, db):
         """get_stats filters by index_name correctly."""
+        from codex.rag.analytics.metrics_db import QueryMetric
 
         db.log_query(QueryMetric("2026-01-01T00:00:00", "q", "idx-a", "u", 3, 10.0, False, 3, 0.7))
         db.log_query(QueryMetric("2026-01-01T00:00:00", "q", "idx-b", "u", 3, 20.0, False, 3, 0.9))
@@ -242,6 +229,7 @@ class TestMetricsDatabase:
 
     def test_get_stats_multiple_entries(self, db):
         """get_stats averages across multiple entries."""
+        from codex.rag.analytics.metrics_db import QueryMetric
 
         db.log_query(QueryMetric("2026-01-01T00:00:00", "q", "i", "u", 3, 100.0, False, 3, 0.8))
         db.log_query(QueryMetric("2026-01-01T00:00:00", "q", "i", "u", 3, 200.0, False, 3, 0.6))
@@ -265,6 +253,7 @@ class TestMetricsDatabase:
 
     def test_get_percentiles_multiple_entries(self, db):
         """get_percentiles returns correct ordinal values."""
+        from codex.rag.analytics.metrics_db import QueryMetric
 
         latencies = [10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0, 100.0]
         for lat in latencies:
@@ -276,6 +265,7 @@ class TestMetricsDatabase:
 
     def test_get_percentiles_with_index_filter(self, db):
         """get_percentiles accepts index_name filter."""
+        from codex.rag.analytics.metrics_db import QueryMetric
 
         db.log_query(QueryMetric("2026-01-01T00:00:00", "q", "idx-x", "u", 3, 999.0, False, 3, 0.5))
         db.log_query(QueryMetric("2026-01-01T00:00:00", "q", "idx-y", "u", 3, 1.0, False, 3, 0.5))
@@ -306,6 +296,7 @@ class TestMetricsDatabase:
 
     def test_export_to_json_multiple_entries(self, db, tmp_path):
         """export_to_json exports all rows ordered by timestamp DESC."""
+        from codex.rag.analytics.metrics_db import QueryMetric
 
         for i in range(3):
             db.log_query(
@@ -320,6 +311,7 @@ class TestMetricsDatabase:
 
     def test_export_to_json_cache_hit_as_bool(self, db, tmp_path):
         """export_to_json converts cache_hit integer back to bool."""
+        from codex.rag.analytics.metrics_db import QueryMetric
 
         db.log_query(QueryMetric("2026-01-01T00:00:00", "q", "i", "u", 3, 5.0, True, 3, 0.9))
         out = tmp_path / "export.json"
@@ -338,6 +330,8 @@ class TestAnalyticsDashboard:
 
     @pytest.fixture()
     def dashboard(self, tmp_path):
+        from codex.rag.analytics.dashboard import AnalyticsDashboard
+        from codex.rag.analytics.metrics_db import MetricsDatabase
 
         db = MetricsDatabase(db_path=tmp_path / "dash.db")
         return AnalyticsDashboard(metrics_db=db)
@@ -373,6 +367,8 @@ class TestAnalyticsDashboard:
 
     def test_generate_html_with_data(self, tmp_path):
         """generate_html renders actual query data."""
+        from codex.rag.analytics.dashboard import AnalyticsDashboard
+        from codex.rag.analytics.metrics_db import MetricsDatabase, QueryMetric
 
         db = MetricsDatabase(db_path=tmp_path / "data.db")
         db.log_query(
@@ -385,6 +381,8 @@ class TestAnalyticsDashboard:
 
     def test_dashboard_stores_metrics_db_ref(self, tmp_path):
         """AnalyticsDashboard.metrics_db is set on init."""
+        from codex.rag.analytics.dashboard import AnalyticsDashboard
+        from codex.rag.analytics.metrics_db import MetricsDatabase
 
         db = MetricsDatabase(db_path=tmp_path / "ref.db")
         dash = AnalyticsDashboard(metrics_db=db)
@@ -401,15 +399,18 @@ class TestAnalyticsInit:
 
     def test_import_analytics_dashboard(self):
         """AnalyticsDashboard is importable from codex.rag.analytics."""
+        from codex.rag.analytics import AnalyticsDashboard
 
         assert AnalyticsDashboard is not None, "AnalyticsDashboard must be initialized"
 
     def test_import_metrics_database(self):
         """MetricsDatabase is importable from codex.rag.analytics."""
+        from codex.rag.analytics import MetricsDatabase
 
         assert MetricsDatabase is not None, "MetricsDatabase must be initialized"
 
     def test_import_query_metric(self):
         """QueryMetric is importable from codex.rag.analytics."""
+        from codex.rag.analytics import QueryMetric
 
         assert QueryMetric is not None, "QueryMetric must be initialized"

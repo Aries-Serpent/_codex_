@@ -3,13 +3,12 @@ Test Checkpointing
 
 Test module for checkpointing.
 """
-torch = pytest.importorskip("torch", reason="torch required")
+
 from pathlib import Path
-    from src.training.checkpointing import (
-    from src.training.checkpointing import save_checkpoint
 
+import pytest
 
-
+torch = pytest.importorskip("torch", reason="torch required")
 
 pytestmark = pytest.mark.requires_torch
 
@@ -23,6 +22,7 @@ def _toy_model(d_in: int = 8, d_out: int = 3) -> "torch.nn.Module":
 
 
 def test_save_and_load_with_rng(tmp_path: Path) -> None:
+    from src.training.checkpointing import (
         load_checkpoint,
         save_checkpoint,
         snapshot_rng_state,
@@ -53,6 +53,7 @@ def test_save_and_load_with_rng(tmp_path: Path) -> None:
 
 
 def test_best_k_ties_and_nan(tmp_path: Path) -> None:
+    from src.training.checkpointing import save_checkpoint
 
     model = _toy_model()
     optimizer = torch.optim.SGD(model.parameters(), lr=0.01)

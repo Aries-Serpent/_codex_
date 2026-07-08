@@ -13,19 +13,14 @@ Comprehensive test coverage for the transformer module covering:
 
 Tests include basic functionality, edge cases, integration scenarios.
 """
+
 from datetime import datetime, timezone
 from pathlib import Path
 from unittest.mock import patch
+
+import pytest
+
 from src.codex.transform.transformer import (
-import os
-import sys
-import os.path
-import requests
-from pathlib import Path
-        import json
-
-
-
     Patch,
     Tier,
     TransformResult,
@@ -48,6 +43,8 @@ def temp_source_files(tmp_path):
 
     # Create various Python files
     (source_dir / "main.py").write_text("""
+import os
+import sys
 
 def process_file(path):
     if os.path.exists(path):
@@ -56,6 +53,8 @@ def process_file(path):
 """)
 
     (source_dir / "utils.py").write_text("""
+import os.path
+import requests
 
 def fetch_data(url):
     response = requests.get(url)
@@ -63,6 +62,7 @@ def fetch_data(url):
 """)
 
     (source_dir / "clean.py").write_text("""
+from pathlib import Path
 
 def read_file(p: Path) -> str:
     return p.read_text()
@@ -504,6 +504,7 @@ class TestEdgeCases:
 
     def test_transform_result_json_serializable(self, temp_source_files):
         """Test that result is JSON serializable."""
+        import json
 
         result = transform(temp_source_files, "snap-001")
         result_dict = result.to_dict()

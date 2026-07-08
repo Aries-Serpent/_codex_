@@ -4,18 +4,19 @@ Test Streaming Metrics
 Comprehensive unit tests for the streaming metrics module.
 Tests StreamingLoss class.
 """
+
 from __future__ import annotations
-pytest.importorskip("numpy")
-torch = pytest.importorskip("torch")
+
 import numpy as np
-from codex_ml.metrics.streaming import StreamingLoss, _to_numpy
+import pytest
 
-
-
+pytest.importorskip("numpy")
 
 
 # Skip if torch not available
+torch = pytest.importorskip("torch")
 
+from codex_ml.metrics.streaming import StreamingLoss, _to_numpy
 
 
 class TestToNumpy:

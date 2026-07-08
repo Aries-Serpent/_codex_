@@ -3,14 +3,15 @@ Test Mapping Loaders
 
 Test module for mapping loaders.
 """
+
 from __future__ import annotations
+
 import json
 from pathlib import Path
+
+import pytest
+
 from codex.mapping.load import load_all_mappings, load_sla
-
-
-
-
 
 
 @pytest.fixture(autouse=True)

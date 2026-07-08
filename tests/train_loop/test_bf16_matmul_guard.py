@@ -3,11 +3,12 @@ Test Bf16 Matmul Guard
 
 Test module for bf16 matmul guard.
 """
+
 import importlib
 import sys
 import types
 
-
+import pytest
 
 
 def test_bf16_matmul_guard_raises_on_runtime_error(monkeypatch):

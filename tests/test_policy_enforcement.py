@@ -2,10 +2,10 @@
 Test Policy Enforcement
 Tests for security policies, redaction, and validation
 """
+
+import pytest
+
 from services.msp_gateway.security import (
-    from services.msp_gateway.config import settings
-
-
     OfflineGuard,
     PolicyEnforcer,
     redact_content,
@@ -109,6 +109,7 @@ def test_redact_content_function():
 
 def test_offline_guard_blocks_network():
     """Test offline guard blocking network access"""
+    from services.msp_gateway.config import settings
 
     if settings.offline:
         with pytest.raises(RuntimeError, match="offline mode"):

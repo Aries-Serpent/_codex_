@@ -3,13 +3,12 @@ Test Entrypoint Discovery Json Cli
 
 Test module for entrypoint discovery json cli.
 """
+
 from __future__ import annotations
-import pytest
+
 import json
 import subprocess
 import sys
-
-
 
 
 def test_list_plugins_json_includes_programmatic_names() -> None:

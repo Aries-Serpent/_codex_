@@ -3,14 +3,15 @@ Test Repro Capture
 
 Test module for repro capture.
 """
+
 from __future__ import annotations
+
 import json
 from pathlib import Path
+
+import pytest
+
 from codex_ml.utils.repro import capture_environment
-
-
-
-
 
 
 @pytest.mark.infra

@@ -3,19 +3,11 @@ Tests for codex.mapping.models module.
 
 This module contains tests for typed models for CSV-based mapping definitions.
 """
-pydantic = pytest.importorskip("pydantic")
-        from codex.mapping.models import RoutingPattern
-        from codex.mapping.models import RoutingPattern
-        from codex.mapping.models import RoutingPattern
-        from codex.mapping.models import RoutingPattern
-        from codex.mapping.models import SlaParity
-        from codex.mapping.models import SlaParity
-        from codex.mapping.models import SlaParity
-        from codex.mapping.models import SlaParity
-        from codex.mapping.models import __all__
 
+import pytest
 
 # Skip all tests if pydantic is not available
+pydantic = pytest.importorskip("pydantic")
 ValidationError = pydantic.ValidationError
 
 
@@ -24,6 +16,7 @@ class TestRoutingPattern:
 
     def test_basic_creation(self):
         """Test RoutingPattern basic creation."""
+        from codex.mapping.models import RoutingPattern
 
         pattern = RoutingPattern(
             pattern_name="test_pattern",
@@ -39,6 +32,7 @@ class TestRoutingPattern:
 
     def test_from_dict(self):
         """Test RoutingPattern creation from dict."""
+        from codex.mapping.models import RoutingPattern
 
         data = {
             "pattern_name": "pattern_1",
@@ -53,6 +47,7 @@ class TestRoutingPattern:
 
     def test_extra_fields_forbidden(self):
         """Test extra fields are forbidden."""
+        from codex.mapping.models import RoutingPattern
 
         with pytest.raises(ValidationError):
             RoutingPattern(
@@ -65,6 +60,7 @@ class TestRoutingPattern:
 
     def test_missing_required_field(self):
         """Test missing required fields raise error."""
+        from codex.mapping.models import RoutingPattern
 
         with pytest.raises(ValidationError):
             RoutingPattern(
@@ -79,6 +75,7 @@ class TestSlaParity:
 
     def test_basic_creation(self):
         """Test SlaParity basic creation."""
+        from codex.mapping.models import SlaParity
 
         sla = SlaParity(cdm_metric="response_time", zd_target_minutes=30, d365_target_minutes=45)
 
@@ -88,6 +85,7 @@ class TestSlaParity:
 
     def test_zero_minutes(self):
         """Test SlaParity with zero minutes."""
+        from codex.mapping.models import SlaParity
 
         sla = SlaParity(cdm_metric="metric", zd_target_minutes=0, d365_target_minutes=0)
 
@@ -96,12 +94,14 @@ class TestSlaParity:
 
     def test_negative_minutes_rejected(self):
         """Test negative minutes are rejected."""
+        from codex.mapping.models import SlaParity
 
         with pytest.raises(ValidationError):
             SlaParity(cdm_metric="metric", zd_target_minutes=-5, d365_target_minutes=10)
 
     def test_extra_fields_forbidden(self):
         """Test extra fields are forbidden."""
+        from codex.mapping.models import SlaParity
 
         with pytest.raises(ValidationError):
             SlaParity(
@@ -117,6 +117,7 @@ class TestModuleExports:
 
     def test_all_exports(self):
         """Test __all__ exports."""
+        from codex.mapping.models import __all__
 
         assert "RoutingPattern" in __all__, "Condition must be true"
         assert "SlaParity" in __all__, "Condition must be true"

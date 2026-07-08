@@ -4,16 +4,17 @@ Implements:
 - S5: Store key decisions and rationales
 - S6: Enable context retrieval for similar tasks
 """
+
 import tempfile
 from pathlib import Path
-    from agents.agent_memory import AgentMemorySystem
 
-
+import pytest
 
 
 @pytest.fixture
 def memory_system():
     """Create memory system with pre-populated data."""
+    from agents.agent_memory import AgentMemorySystem
 
     with tempfile.TemporaryDirectory() as tmpdir:
         db_path = Path(tmpdir) / "context_test.db"

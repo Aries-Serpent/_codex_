@@ -6,11 +6,12 @@ operations don't break configurations, tools, and imports.
 
 Tests avoid slow subprocess calls that can timeout in parallel test execution.
 """
+
 from pathlib import Path
+
+import pytest
+
 from codex.logging.structured_logger import logger
-
-
-
 
 # ============================================================================
 # PHASE 1: Configuration Loading Tests

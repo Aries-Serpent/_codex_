@@ -1,12 +1,13 @@
 """Middleware and rate limiting behaviours for :mod:`services.api.main`."""
+
 from __future__ import annotations
-fastapi = pytest.importorskip("fastapi")  # ensure FastAPI is available
+
 import importlib
+
+import pytest
+
+fastapi = pytest.importorskip("fastapi")  # ensure FastAPI is available
 from fastapi.testclient import TestClient
-
-
-
-
 
 
 def test_api_key_required(monkeypatch: pytest.MonkeyPatch) -> None:

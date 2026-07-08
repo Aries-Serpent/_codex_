@@ -3,17 +3,18 @@ Test Eval Wrapper
 
 Test module for eval wrapper.
 """
+
 from __future__ import annotations
-    harness = pytest.importorskip("hhg_logistics.eval.harness")
+
 from pathlib import Path
+
+import pytest
+
 from omegaconf import OmegaConf
 
 
-
-
-
-
 def test_eval_guard(tmp_path, monkeypatch):
+    harness = pytest.importorskip("hhg_logistics.eval.harness")
 
     cfg = OmegaConf.create(
         {

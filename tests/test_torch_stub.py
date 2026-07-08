@@ -35,16 +35,15 @@ b. Delegation contract – when real torch is present, ``IS_CODEX_STUB`` is
 c. mypy coverage      – documented via the mypy count reduction in
    ``.mypy_baseline`` (757 → ≤ 600 after this PR).
 """
+
 from __future__ import annotations
-
-import pytest
-
-pytest.importorskip("torch")
 
 import sys
 import types
 from typing import Any
 from unittest.mock import patch
+
+import pytest
 
 # ---------------------------------------------------------------------------
 # Helpers

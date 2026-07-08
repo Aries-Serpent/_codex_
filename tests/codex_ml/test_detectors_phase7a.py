@@ -6,57 +6,14 @@ Comprehensive coverage for capability detection utilities including:
 - Pattern matching and scoring
 - Detector result structures
 """
+
 from __future__ import annotations
+
 import json
 import logging
 from pathlib import Path
-        import tempfile
-        import tempfile
-        import tempfile
-        import tempfile
-        import tempfile
-        import tempfile
-        import tempfile
-        import tempfile
-        import tempfile
-import torch
-from transformers import AutoModel
-        import tempfile
-import torch
-from pathlib import Path
-from typing import Dict, List
-        import tempfile
-        import tempfile
-        import tempfile
-        import tempfile
-        import tempfile
-        from codex_ml.detectors.core import clamp01
-        from codex_ml.detectors.core import DetectorResult
-        from codex_ml.detectors.core import DetectorResult
-        from codex_ml.detectors.core import DetectorResult
-        import tempfile
-from pydantic import BaseModel
-        import tempfile
-from pydantic import BaseModel, field_validator
-        import tempfile
-import yaml
-        import tempfile
-import hashlib
-import json
-        import tempfile
-from dataclasses import dataclass
-        from codex_ml.detectors.core import DetectorResult
-        import tempfile
-        from codex_ml.detectors.core import DetectorResult
-        from codex_ml.detectors.core import DetectorResult
-        import tempfile
-        import tempfile
-        import os
-        import tempfile
-        import tempfile
 
-
-
+import pytest
 
 logger = logging.getLogger(__name__)
 
@@ -71,6 +28,7 @@ class TestPathAndFileUtilities:
 
     def test_path_exists_for_valid_path(self):
         """Test path exists check for valid paths."""
+        import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:
             test_path = Path(tmpdir)
@@ -83,6 +41,7 @@ class TestPathAndFileUtilities:
 
     def test_path_is_directory(self):
         """Test path is directory check."""
+        import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:
             path = Path(tmpdir)
@@ -96,6 +55,7 @@ class TestPathAndFileUtilities:
 
     def test_file_extension_checking(self):
         """Test file extension checking."""
+        import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:
             py_file = Path(tmpdir) / "test.py"
@@ -109,6 +69,7 @@ class TestPathAndFileUtilities:
 
     def test_glob_pattern_matching(self):
         """Test glob pattern matching."""
+        import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:
             tmppath = Path(tmpdir)
@@ -126,6 +87,7 @@ class TestPathAndFileUtilities:
 
     def test_recursive_glob_pattern(self):
         """Test recursive glob pattern matching."""
+        import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:
             tmppath = Path(tmpdir)
@@ -151,6 +113,7 @@ class TestFileContentAnalysis:
 
     def test_read_file_content(self):
         """Test reading file content."""
+        import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:
             test_file = Path(tmpdir) / "test.py"
@@ -162,6 +125,7 @@ class TestFileContentAnalysis:
 
     def test_file_line_counting(self):
         """Test counting lines in file."""
+        import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:
             test_file = Path(tmpdir) / "test.py"
@@ -172,6 +136,7 @@ class TestFileContentAnalysis:
 
     def test_pattern_search_in_content(self):
         """Test pattern searching in file content."""
+        import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:
             test_file = Path(tmpdir) / "config.py"
@@ -187,10 +152,14 @@ class Config:
 
     def test_multiple_pattern_matching(self):
         """Test matching multiple patterns in content."""
+        import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:
             test_file = Path(tmpdir) / "model.py"
             test_file.write_text("""
+import torch
+from transformers import AutoModel
+import pytest
 
 def test_model_load():
     pass
@@ -204,10 +173,14 @@ def test_model_load():
 
     def test_import_statement_detection(self):
         """Test detecting import statements."""
+        import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:
             test_file = Path(tmpdir) / "imports.py"
             test_file.write_text("""
+import torch
+from pathlib import Path
+from typing import Dict, List
 """)
 
             content = test_file.read_text()
@@ -220,6 +193,7 @@ def test_model_load():
 
     def test_json_content_parsing(self):
         """Test parsing JSON content from file."""
+        import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:
             json_file = Path(tmpdir) / "config.json"
@@ -245,6 +219,7 @@ class TestDirectoryAnalysis:
 
     def test_count_python_files_in_directory(self):
         """Test counting Python files in directory."""
+        import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:
             tmppath = Path(tmpdir)
@@ -258,6 +233,7 @@ class TestDirectoryAnalysis:
 
     def test_count_test_files(self):
         """Test counting test files."""
+        import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:
             tmppath = Path(tmpdir)
@@ -271,6 +247,7 @@ class TestDirectoryAnalysis:
 
     def test_count_files_recursively(self):
         """Test counting files recursively."""
+        import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:
             tmppath = Path(tmpdir)
@@ -285,6 +262,7 @@ class TestDirectoryAnalysis:
 
     def test_directory_size_calculation(self):
         """Test directory size calculation."""
+        import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:
             tmppath = Path(tmpdir)
@@ -306,6 +284,7 @@ class TestCapabilityDetectorUtilities:
 
     def test_clamp01_function(self):
         """Test clamping values to [0, 1]."""
+        from codex_ml.detectors.core import clamp01
 
         assert clamp01(-0.5) == 0.0, "Condition must be true"
         assert clamp01(0.0) == 0.0, "Condition must be true"
@@ -315,6 +294,7 @@ class TestCapabilityDetectorUtilities:
 
     def test_detector_result_creation(self):
         """Test DetectorResult creation."""
+        from codex_ml.detectors.core import DetectorResult
 
         result = DetectorResult(
             score=0.85,
@@ -328,6 +308,7 @@ class TestCapabilityDetectorUtilities:
 
     def test_detector_result_score_validation(self):
         """Test DetectorResult score validation."""
+        from codex_ml.detectors.core import DetectorResult
 
         # Valid score
         result = DetectorResult(
@@ -339,6 +320,7 @@ class TestCapabilityDetectorUtilities:
 
     def test_detector_evidence_collection(self):
         """Test evidence collection in detector results."""
+        from codex_ml.detectors.core import DetectorResult
 
         evidence = [
             "config_path_exists",
@@ -367,6 +349,7 @@ class TestConfigurationCapabilityDetection:
 
     def test_config_schema_path_detection(self):
         """Test detecting config schema file."""
+        import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:
             tmppath = Path(tmpdir)
@@ -374,6 +357,7 @@ class TestConfigurationCapabilityDetection:
             # Create config schema file
             schema_file = tmppath / "config_schema.py"
             schema_file.write_text("""
+from pydantic import BaseModel
 
 class ConfigSchema(BaseModel):
     pass
@@ -384,10 +368,12 @@ class ConfigSchema(BaseModel):
 
     def test_pydantic_patterns_detection(self):
         """Test detecting pydantic patterns."""
+        import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:
             schema_file = Path(tmpdir) / "schema.py"
             schema_file.write_text("""
+from pydantic import BaseModel, field_validator
 
 class Config(BaseModel):
     @field_validator('field_name')
@@ -403,10 +389,12 @@ class Config(BaseModel):
 
     def test_yaml_support_detection(self):
         """Test detecting YAML support."""
+        import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:
             loader_file = Path(tmpdir) / "loader.py"
             loader_file.write_text("""
+import yaml
 
 def load_config(path):
     with open(path) as f:
@@ -419,10 +407,13 @@ def load_config(path):
 
     def test_config_hashing_detection(self):
         """Test detecting config hashing."""
+        import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:
             util_file = Path(tmpdir) / "utils.py"
             util_file.write_text("""
+import hashlib
+import json
 
 def hash_config(config):
     return hashlib.sha256(json.dumps(config).encode()).hexdigest()
@@ -434,10 +425,12 @@ def hash_config(config):
 
     def test_defaults_coverage_detection(self):
         """Test detecting default values in config."""
+        import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:
             config_file = Path(tmpdir) / "config.py"
             config_file.write_text("""
+from dataclasses import dataclass
 
 @dataclass
 class Config:
@@ -476,6 +469,7 @@ class TestDetectorScoringAndAggregation:
 
     def test_detector_result_comparison(self):
         """Test comparing detector results."""
+        from codex_ml.detectors.core import DetectorResult
 
         result1 = DetectorResult(score=0.8, category="test", evidence=[])
         result2 = DetectorResult(score=0.9, category="test", evidence=[])
@@ -508,6 +502,7 @@ class TestDetectorIntegration:
 
     def test_configuration_detector_workflow(self):
         """Test full configuration detector workflow."""
+        import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:
             tmppath = Path(tmpdir)
@@ -525,6 +520,7 @@ class TestDetectorIntegration:
 
     def test_detector_result_serialization(self):
         """Test detector result serialization."""
+        from codex_ml.detectors.core import DetectorResult
 
         result = DetectorResult(
             score=0.85,
@@ -545,6 +541,7 @@ class TestDetectorIntegration:
 
     def test_multiple_detectors_execution(self):
         """Test executing multiple detectors."""
+        from codex_ml.detectors.core import DetectorResult
 
         results = [
             DetectorResult(score=0.8, category="config", evidence=[]),
@@ -567,6 +564,7 @@ class TestEdgeCasesAndErrorHandling:
 
     def test_empty_directory_handling(self):
         """Test handling empty directory."""
+        import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:
             tmppath = Path(tmpdir)
@@ -583,6 +581,7 @@ class TestEdgeCasesAndErrorHandling:
 
     def test_invalid_json_in_file(self):
         """Test handling invalid JSON."""
+        import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:
             json_file = Path(tmpdir) / "invalid.json"
@@ -593,6 +592,8 @@ class TestEdgeCasesAndErrorHandling:
 
     def test_permission_denied_handling(self):
         """Test handling permission denied scenarios."""
+        import os
+        import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:
             restricted_file = Path(tmpdir) / "restricted.txt"
@@ -610,6 +611,7 @@ class TestEdgeCasesAndErrorHandling:
 
     def test_large_file_handling(self):
         """Test handling large files gracefully."""
+        import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:
             large_file = Path(tmpdir) / "large.txt"

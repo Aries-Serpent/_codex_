@@ -13,20 +13,19 @@ crash with unexpected exceptions.
 
 Import guard skips the module when ``hypothesis`` is absent.
 """
+
 from __future__ import annotations
+
+import pytest
+
 hypothesis = pytest.importorskip("hypothesis")
+
 from hypothesis import (  # noqa: E402
-from hypothesis import strategies as st  # noqa: E402
-    from codex.api.rag_api import (
-    from pydantic import ValidationError
-
-
-
-
     HealthCheck,  # noqa: E402
     given,
     settings,
 )
+from hypothesis import strategies as st  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # Lazy import helpers
@@ -34,6 +33,7 @@ from hypothesis import strategies as st  # noqa: E402
 
 
 def _import_models():
+    from codex.api.rag_api import (
         BuildIndexRequest,
         DeleteIndexRequest,
         HealthResponse,
@@ -45,6 +45,7 @@ def _import_models():
 
 
 def _validation_error():
+    from pydantic import ValidationError
 
     return ValidationError
 

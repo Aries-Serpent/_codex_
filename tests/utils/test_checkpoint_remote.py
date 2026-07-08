@@ -1,15 +1,16 @@
 """Tests for remote checkpoint synchronisation helpers."""
+
 from __future__ import annotations
-pytest.importorskip("fsspec")
+
 import shutil
 from pathlib import Path
+
+import pytest
+
+pytest.importorskip("fsspec")
+
 from codex_ml.utils.checkpointing import CheckpointManager
 from codex_ml.utils.storage import FSSpecStorage
-
-
-
-
-
 
 
 class _DummyModule:

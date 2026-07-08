@@ -3,12 +3,11 @@ Test Logging Bootstrap Initialization
 
 Test module for logging bootstrap initialization.
 """
-import pytest
+
 import argparse
 import types
+
 from codex_ml.monitoring import codex_logging as cl
-
-
 
 
 def test_logging_bootstrap_initialization(monkeypatch, tmp_path):

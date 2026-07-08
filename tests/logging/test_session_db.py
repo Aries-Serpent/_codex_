@@ -10,17 +10,18 @@ Tests cover:
 - Aggregation and statistics
 - Pattern and event tracking
 """
+
 import tempfile
 import threading  # pragma: allowlist secret # pragma: allowlist secret
 import time
 from datetime import datetime, timedelta
 from pathlib import (
-from codex.logging.session_db import CacheEntry, SessionDB
-
     Path,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 )
 
+import pytest
 
+from codex.logging.session_db import CacheEntry, SessionDB
 
 
 class TestSessionDBInitialization:

@@ -3,10 +3,11 @@ Test Zendesk Validators
 
 Test module for zendesk validators.
 """
+
+import pytest
 from pydantic import ValidationError
+
 from codex.zendesk.plan.validators import validate_plan
-
-
 
 
 def test_validate_minimal_plan() -> None:

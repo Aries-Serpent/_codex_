@@ -8,18 +8,13 @@ Created: 2026-01-19
 Phase: 4.1 - Branch Coverage Analysis
 Target: 100% branch coverage for security modules
 """
+
 import os
 from unittest.mock import MagicMock, patch
+
+import pytest
+
 from tests.branch_coverage import branch_input
-        import time
-        import time
-        import time
-        import time
-        import time
-        import time
-
-
-
 
  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 # ============================================================================
@@ -386,6 +381,7 @@ class TestRateLimitBranches:
 
     def test_rate_limit_window_expired_branch(self) -> None:
         """Test rate limit window expired branch."""
+        import time
 
         last_reset = time.time() - 120  # 2 minutes ago
         window_size = 60  # 1 minute
@@ -395,6 +391,7 @@ class TestRateLimitBranches:
 
     def test_rate_limit_window_active_branch(self) -> None:
         """Test rate limit window active branch."""
+        import time
 
         last_reset = time.time() - 30  # 30 seconds ago
         window_size = 60  # 1 minute
@@ -425,6 +422,7 @@ class TestTokenClaimsBranches:
 
     def test_token_expired_branch(self) -> None:
         """Test token expired branch."""
+        import time
 
         exp = time.time() - 3600  # Expired 1 hour ago
         current_time = time.time()
@@ -433,6 +431,7 @@ class TestTokenClaimsBranches:
 
     def test_token_valid_branch(self) -> None:
         """Test token valid branch."""
+        import time
 
         exp = time.time() + 3600  # Expires in 1 hour
         current_time = time.time()
@@ -441,6 +440,7 @@ class TestTokenClaimsBranches:
 
     def test_token_not_before_future_branch(self) -> None:
         """Test token not before (future) branch."""
+        import time
 
         nbf = time.time() + 3600  # Not valid until 1 hour from now
         current_time = time.time()
@@ -449,6 +449,7 @@ class TestTokenClaimsBranches:
 
     def test_token_not_before_past_branch(self) -> None:
         """Test token not before (past/valid) branch."""
+        import time
 
         nbf = time.time() - 3600  # Valid since 1 hour ago
         current_time = time.time()

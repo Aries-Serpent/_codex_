@@ -349,7 +349,6 @@ class TestCacheManagerIntegration:
 
     def test_multiple_cache_types(self, tmp_path):
         """Test managing multiple cache types."""
-import pytest
         manager = CacheManager(repo_root=tmp_path)
 
         cache_types = [CacheType.PIP, CacheType.NOX, CacheType.MYPY]

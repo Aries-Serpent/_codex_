@@ -13,14 +13,13 @@ Tests cover:
 
 #AFTERMATH_METRIC - Phase 9.2 CoVe verification tests
 """
+
 from __future__ import annotations
-import pytest
+
 from unittest.mock import Mock
-from verification.cove import (
-
-
 
 # NOTE: Do not manually manipulate sys.path. The conftest.py already adds src/ to sys.path.
+from verification.cove import (
     MAX_CLAIMS_PER_RESPONSE,
     MAX_RESPONSE_LENGTH,
     MAX_VERIFICATION_DEPTH,

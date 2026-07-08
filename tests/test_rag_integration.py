@@ -2,20 +2,20 @@
 Integration tests for RAG modules.
 Tests end-to-end workflows, multi-tenant isolation, and cross-module interactions.
 """
-np = pytest.importorskip("numpy")
+
 import importlib.util
 import tempfile
 from pathlib import Path
-    from codex.rag.embeddings import create_embedding_provider
-    from codex.rag.indexer import build_index_from_files, load_index
-    from codex.rag.retriever import MultiIndexRetriever, Retriever
-    import torch as _torch
 
+import pytest
 
-
+np = pytest.importorskip("numpy")
 
 # Conditional imports for RAG dependencies - safely handled at test runtime
 try:
+    from codex.rag.embeddings import create_embedding_provider
+    from codex.rag.indexer import build_index_from_files, load_index
+    from codex.rag.retriever import MultiIndexRetriever, Retriever
 
     RAG_INTEGRATION_AVAILABLE = True
 except ImportError:
@@ -36,6 +36,7 @@ pytestmark = pytest.mark.skipif(
 
 # Guard for tests that require real SentenceTransformer models on CPU
 try:
+    import torch as _torch
 
     _cuda_available = _torch.cuda.is_available()
 except (ImportError, RuntimeError):

@@ -4,17 +4,17 @@ Test Eval Datasets Module
 Tests for the datasets module including Example, DatasetBundle,
 preset datasets, hash computation, and dataset loading.
 """
+
 from __future__ import annotations
+
 import json
 import tempfile
 import warnings
 from pathlib import Path
+
+import pytest
+
 from codex_ml.eval.datasets import (
-        from collections.abc import Sequence
-
-
-
-
     _PRESETS,
     DatasetBundle,
     Example,
@@ -136,6 +136,7 @@ class TestDatasetBundle:
 
     def test_is_sequence(self) -> None:
         """Test that DatasetBundle is a Sequence."""
+        from collections.abc import Sequence
 
         examples = [Example(input="a", target="b")]
         bundle = DatasetBundle(

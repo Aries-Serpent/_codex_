@@ -1,8 +1,7 @@
 """Verify ingestion text readers expose an ``encoding`` parameter."""
-import pytest
+
 import ast
 from pathlib import Path
-
 
 READ_ATTRS = {("Path", "read_text"), ("", "read_text")}
 PANDAS_FUNCS = {"read_csv", "read_table", "read_json"}

@@ -4,21 +4,12 @@ Comprehensive test suite for PEFT hooks detector.
 Tests cover PEFT/LoRA detection, hook patterns, adapter integration,
 and edge cases following the High Maturity Achievement Plan.
 """
-import pytest
+
 import importlib.util
 import types
 from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
-from peft import LoraConfig, get_peft_model
-from peft import PeftModel, inject_adapter
-from peft import prepare_model_for_kbit_training
-from peft import LoraConfig, PeftModel, get_peft_model, LoraLayer
-import torch
-from transformers import AutoModelForCausalLM
-from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
-from codex.logging.structured_logger import logger
-
 
 
 def _load_module(path: Path, name: str) -> types.ModuleType:
@@ -48,6 +39,7 @@ class TestPEFTDetection:
         test_file = tmp_path / "model.py"
         test_file.write_text(
             """
+from peft import LoraConfig, get_peft_model
 
 config = LoraConfig(r=8, lora_alpha=32)
 model = get_peft_model(base_model, config)
@@ -71,6 +63,7 @@ model = get_peft_model(base_model, config)
         test_file = tmp_path / "adapter.py"
         test_file.write_text(
             """
+from peft import PeftModel, inject_adapter
 
 model = PeftModel.from_pretrained(base, adapter_path)
 inject_adapter(model, adapter_config)
@@ -91,6 +84,7 @@ inject_adapter(model, adapter_config)
         test_file = tmp_path / "quantized.py"
         test_file.write_text(
             """
+from peft import prepare_model_for_kbit_training
 
 model = prepare_model_for_kbit_training(model)
 """,
@@ -109,6 +103,7 @@ model = prepare_model_for_kbit_training(model)
         test_file = tmp_path / "comprehensive.py"
         test_file.write_text(
             """
+from peft import LoraConfig, PeftModel, get_peft_model, LoraLayer
 
 config = LoraConfig(r=16, lora_alpha=32)
 peft_model = get_peft_model(base_model, config)
@@ -256,6 +251,10 @@ class TestIntegration:
         test_file = tmp_path / "train_lora.py"
         test_file.write_text(
             """
+import torch
+from transformers import AutoModelForCausalLM
+from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
+from codex.logging.structured_logger import logger
 
 # Load base model
 model = AutoModelForCausalLM.from_pretrained("model_name")

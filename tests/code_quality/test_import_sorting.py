@@ -3,10 +3,11 @@ Test Import Sorting
 
 Test module for import sorting.
 """
+
 import shutil
 import subprocess
 
-
+import pytest
 
 ISORT = shutil.which("isort")
 

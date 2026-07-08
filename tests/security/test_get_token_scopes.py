@@ -8,20 +8,19 @@ Validates that the FastAPI dependency ``get_token_scopes`` in
   - Raises HTTP 503 when CODEX_AUTH_SECRET is not set
   - Returns an empty list when the token has no scope claim
 """
-pytest.importorskip("fastapi")
+
 import os
 import time
 from unittest.mock import patch
+
+import pytest
+
+pytest.importorskip("fastapi")
+
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
+
 from codex.auth.token_manager import TokenManager
-    from fastapi import Depends
-    from security.decorators import get_token_scopes
-
-
-
-
-
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -32,7 +31,9 @@ _SECRET = "cb001-test-secret-do-not-use-in-prod"
 
 def _make_app(secret: str = _SECRET) -> "FastAPI":
     """Build a minimal FastAPI app that exposes get_token_scopes as a route."""
+    from fastapi import Depends
 
+    from security.decorators import get_token_scopes
 
     app = FastAPI()
 

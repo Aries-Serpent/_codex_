@@ -2,13 +2,12 @@ import pytest
 
 pytest.importorskip("tensorboard")
 """Lightweight coverage for training.functional_training helpers."""
+
 from __future__ import annotations
-import pytest
+
 from pathlib import Path
+
 from training import functional_training as ft
-
-
-
 
 
 def test_normalize_and_local_detection(tmp_path):

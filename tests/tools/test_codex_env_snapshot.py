@@ -3,12 +3,11 @@ Test Codex Env Snapshot
 
 Test module for codex env snapshot.
 """
-import pytest
+
 import json
 from pathlib import Path
+
 import tools.codex_env_snapshot as snap
-
-
 
 
 def test_env_snapshot_writes_json(tmp_path: Path):

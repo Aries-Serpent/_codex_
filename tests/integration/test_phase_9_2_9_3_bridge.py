@@ -5,12 +5,13 @@ PHASE 9.2 ↔ 9.3 Integration Test Suite (PHASE 4B)
 Phase 9.2 (Cascade Orchestrator + Docs) and 
 Phase 9.3 (Autonomous Agent Operations).
 """
+
 import time
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 from unittest.mock import Mock
 
-
+import pytest
 
 
 # FIXTURES & MOCKS

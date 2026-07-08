@@ -68,7 +68,6 @@ class TestFeedbackEvent:
 
     def test_payload_isolation(self):
         """Mutations to the original dict do not affect the event's payload."""
-import pytest
         original = {"k": "v"}
         ev = FeedbackEvent(event_type="x", source="y", payload=original)
         original["extra"] = "mutated"

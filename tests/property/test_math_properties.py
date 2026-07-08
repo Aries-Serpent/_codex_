@@ -8,14 +8,15 @@ Created: 2026-01-18
 Phase: 15.1 - Property-Based Testing
 Target: Verify mathematical properties
 """
+
 import math
 from typing import Any
-    from hypothesis import given
-    from hypothesis import strategies as st
 
-
+import pytest
 
 try:
+    from hypothesis import given
+    from hypothesis import strategies as st
 
     HAS_HYPOTHESIS = True
 except ImportError:

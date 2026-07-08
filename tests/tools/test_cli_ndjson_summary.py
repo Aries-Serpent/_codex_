@@ -1,13 +1,14 @@
 """Smoke tests for the ``codex_ml ndjson-summary`` CLI entrypoint."""
+
 from __future__ import annotations
+
 import json
 import os
 import subprocess as sp
 import sys
 from pathlib import Path
 
-
-
+import pytest
 
 
 def _write_ndjson(path: Path, payloads: list[dict]) -> None:

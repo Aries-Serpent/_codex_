@@ -3,6 +3,10 @@ Test Cli Train Engine
 
 Test module for cli train engine.
 """
+
+import pytest
+from click.testing import CliRunner
+
 pytest.importorskip("omegaconf")
 pytest.importorskip("hydra")
 pytest.importorskip("torch")
@@ -10,12 +14,8 @@ pytest.importorskip("transformers")
 pytest.importorskip("datasets")
 pytest.importorskip("accelerate")
 pytest.importorskip("yaml")
-from click.testing import CliRunner
+
 from codex.cli import cli
-    import sys
-
-
-
 
 
 def test_cli_train_engine_option():
@@ -26,6 +26,7 @@ def test_cli_train_engine_option():
 
 
 def test_cli_train_custom_engine_forwards_args(monkeypatch):
+    import sys
 
     runner = CliRunner()
     captured: dict[str, list[str] | None] = {}

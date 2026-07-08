@@ -3,14 +3,13 @@ Test Tokenizer Cli Refresh
 
 Test module for tokenizer cli refresh.
 """
+
 from __future__ import annotations
-import pytest
+
 import json
 from pathlib import Path
+
 from codex_ml.tokenization import cli
-
-
-
 
 
 def test_refresh_creates_manifest(tmp_path: Path) -> None:

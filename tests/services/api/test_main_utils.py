@@ -1,13 +1,14 @@
 """Unit tests for helpers in :mod:`services.api.main`."""
+
 from __future__ import annotations
-pytest.importorskip("fastapi")
+
 import types
+
+import pytest
+
+pytest.importorskip("fastapi")
+
 from services.api import main
-
-
-
-
-
 
 
 class _DummyModel:

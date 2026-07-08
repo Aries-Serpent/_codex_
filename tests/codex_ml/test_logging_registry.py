@@ -3,9 +3,8 @@ Test Logging Registry
 
 Test module for logging registry.
 """
-import pytest
-from codex_ml.logging import registry
 
+from codex_ml.logging import registry
 
 
 def test_register_and_get_logger():

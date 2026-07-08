@@ -1,17 +1,18 @@
 """
+pytest.importorskip("mlflow")
 Test Training Eval
 
 Test module for training eval.
 """
+
 from __future__ import annotations
-pytest.importorskip("mlflow")
+
 import sys
 import types
+
+import pytest
+
 from codex_ml.training import run_functional_training
-
-
-
-
 
 
 def test_training_eval_fallback_metrics(monkeypatch: pytest.MonkeyPatch) -> None:

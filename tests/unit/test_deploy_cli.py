@@ -3,14 +3,14 @@ Test Deploy Cli
 
 Test module for deploy cli.
 """
+
 from __future__ import annotations
-    codex_cli = pytest.importorskip("codex_ml.cli.codex_cli")
+
 import json
 from pathlib import Path
+
+import pytest
 from click.testing import CliRunner
-
-
-
 
 
 @pytest.fixture()
@@ -40,6 +40,7 @@ pod:
     run_meta_dir = tmp_path / "runs"
     _write_run_metadata(run_meta_dir, {"rollout_ring": "0D_base_"})
 
+    codex_cli = pytest.importorskip("codex_ml.cli.codex_cli")
     result = runner.invoke(
         codex_cli.codex,
         [
@@ -64,6 +65,7 @@ def test_deploy_dry_run_blocks_ring_mismatch(tmp_path: Path, runner: CliRunner) 
     run_meta_dir = tmp_path / "runs"
     _write_run_metadata(run_meta_dir, {"rollout_ring": "0C_base_"})
 
+    codex_cli = pytest.importorskip("codex_ml.cli.codex_cli")
     result = runner.invoke(
         codex_cli.codex,
         [
@@ -87,6 +89,7 @@ def test_deploy_requires_dry_run_flag(tmp_path: Path, runner: CliRunner) -> None
     run_meta_dir = tmp_path / "runs"
     _write_run_metadata(run_meta_dir, {"rollout_ring": "0D_base_"})
 
+    codex_cli = pytest.importorskip("codex_ml.cli.codex_cli")
     result = runner.invoke(
         codex_cli.codex,
         [

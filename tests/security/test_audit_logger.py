@@ -1,12 +1,11 @@
 """Regression tests for tamper-evident audit logger."""
+
 from __future__ import annotations
-import pytest
+
 import json
 from pathlib import Path
+
 from security.audit_logger import AuditLogger, log_audit_event
-
-
-
 
 # ---------------------------------------------------------------------------
 # AuditLogger construction

@@ -493,7 +493,6 @@ class TestQuantumOrchestratorStateManagement:
 
     def test_concurrent_task_state_access(self):
         """Test: Multiple task states can be accessed safely."""
-import pytest
         # Arrange: Create tasks
         tasks = create_test_tasks(5)
 

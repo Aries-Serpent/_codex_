@@ -7,12 +7,10 @@ Verifies:
 - Cache hit/miss behavior
 - Cost savings tracking
 """
+
+import pytest
+
 from src.rag.caching import RAGCache, get_rag_cache, set_rag_cache
-        from src.rag.cached_embedding import CachedEmbeddingPipeline
-        from src.rag.cached_embedding import CachedEmbeddingPipeline
-        from src.rag.cached_retrieval import CachedRetrieval
-
-
 
 
 class TestRAGCache:
@@ -119,6 +117,7 @@ class TestCachedEmbeddingPipeline:
 
     def test_embedding_cache_integration(self):
         """Test that embedding pipeline uses cache."""
+        from src.rag.cached_embedding import CachedEmbeddingPipeline
 
         pipeline = CachedEmbeddingPipeline()
 
@@ -132,6 +131,7 @@ class TestCachedEmbeddingPipeline:
 
     def test_batch_embedding_partial_cache(self):
         """Test batch embedding with partial cache hits."""
+        from src.rag.cached_embedding import CachedEmbeddingPipeline
 
         pipeline = CachedEmbeddingPipeline()
 
@@ -152,6 +152,7 @@ class TestCachedRetrieval:
 
     def test_query_cache_integration(self):
         """Test that retrieval uses cache."""
+        from src.rag.cached_retrieval import CachedRetrieval
 
         retrieval = CachedRetrieval()
 

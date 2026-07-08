@@ -1,20 +1,21 @@
 """
+pytest.importorskip("tensorboard")
 Test Metrics Tb
 
 Test module for metrics tb.
 """
-pytest.importorskip("tensorboard")
+
+import pytest
+
 pytest.importorskip("omegaconf")
 pytest.importorskip("transformers")
 pytest.importorskip("torch")
+
 from codex.training import run_functional_training
-    import builtins
-
-
-
 
 
 def test_tb_writer_guard(monkeypatch, tmp_path):
+    import builtins
 
     real_import = builtins.__import__
 

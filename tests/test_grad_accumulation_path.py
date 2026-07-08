@@ -1,26 +1,27 @@
 """
+pytest.importorskip("mlflow")
 Test Grad Accumulation Path
 
 Test module for grad accumulation path.
 """
+
 from __future__ import annotations
-pytest.importorskip("mlflow")
-torch = pytest.importorskip("torch")
+
 import builtins
 import json
 from pathlib import Path
+
+import pytest
+
 from codex_ml.training import run_functional_training
-    import gc
 
-
-
-
-
+torch = pytest.importorskip("torch")
 
 
 @pytest.fixture(scope="function")
 def fresh_torch_state():
     """Ensure fresh torch state for each test to prevent iterator exhaustion."""
+    import gc
 
     gc.collect()
     yield

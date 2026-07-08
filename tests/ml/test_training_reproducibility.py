@@ -2,10 +2,10 @@
 
 Tests for ensuring ML training is reproducible with seed control and determinism.
 """
+
 import random
-        import platform
 
-
+import pytest
 
 
 class TestSeedControl:
@@ -328,6 +328,7 @@ class TestEnvironmentReproducibility:
 
     def test_platform_info_logged(self):
         """Test platform information is logged."""
+        import platform
 
         info = {
             "system": platform.system(),

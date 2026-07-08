@@ -3,16 +3,15 @@ Test Tokenizer Cli Feature Flag
 
 Test module for tokenizer cli feature flag.
 """
+
 from __future__ import annotations
-typer = pytest.importorskip("typer", reason="tokenizer CLI requires typer")
+
 import json
 from pathlib import Path
-    from codex_ml.cli import tokenizer as tokenizer_cli
-    from codex_ml.tokenization import train_tokenizer as trainer
 
+import pytest
 
-
-
+typer = pytest.importorskip("typer", reason="tokenizer CLI requires typer")
 if not hasattr(typer, "Typer"):
     pytest.skip("typer.Typer unavailable", allow_module_level=True)
 
@@ -21,6 +20,8 @@ if not hasattr(typer, "Typer"):
 def test_tokenizer_cli_train_force(tmp_path, monkeypatch, force):
     monkeypatch.setenv("CODEX_ENABLE_TOKENIZER_CLI", "1")
 
+    from codex_ml.cli import tokenizer as tokenizer_cli
+    from codex_ml.tokenization import train_tokenizer as trainer
 
     calls: dict[str, object] = {}
 

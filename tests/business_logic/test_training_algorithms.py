@@ -8,8 +8,6 @@ Tests cover:
 - Epoch management
 - Convergence detection
 """
-import pytest
-        import math
 
 
 class TestOptimizationBasics:
@@ -136,6 +134,7 @@ class TestLearningRateScheduling:
 
     def test_cosine_annealing(self):
         """Test cosine annealing schedule."""
+        import math
 
         max_lr = 0.1
         min_lr = 0.0001

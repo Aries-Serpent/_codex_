@@ -3,13 +3,12 @@ Test Session Query Cli
 
 Test module for session query cli.
 """
-import pytest
+
 import os
 import sqlite3
 import subprocess
 import sys
 from pathlib import Path
-
 
 
 def _run_cli(db: Path, *extra_args: str) -> subprocess.CompletedProcess[str]:

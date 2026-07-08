@@ -3,13 +3,12 @@ Test Jsonl Writer
 
 Test module for jsonl writer.
 """
+
 from __future__ import annotations
-import pytest
+
 import json
+
 from codex_ml.utils.jsonl import append_jsonl
-
-
-
 
 
 def test_append_jsonl_appends_records(tmp_path) -> None:

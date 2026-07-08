@@ -6,17 +6,12 @@ Verifies that all 18 detector functions:
 - Include a non-empty details dict
 - Use the correct detector name
 """
+
 from __future__ import annotations
+
+import pytest
+
 from codex_ml.detectors.capability_detectors import (
-from codex_ml.detectors.core import DetectorResult
-    from codex_ml.detectors.capability_detectors import _check_path_exists
-    from codex_ml.detectors.capability_detectors import _count_python_files
-    from codex_ml.detectors.capability_detectors import _count_test_files
-    from codex_ml.detectors.capability_detectors import _check_file_content
-    from codex_ml.detectors.capability_detectors import _check_file_content
-
-
-
     detector_checkpointing,
     detector_ci_test,
     detector_configuration,
@@ -36,6 +31,7 @@ from codex_ml.detectors.core import DetectorResult
     detector_training_engine,
     detector_versioning,
 )
+from codex_ml.detectors.core import DetectorResult
 
 # All 18 detectors with their expected names
 _ALL_DETECTORS = [
@@ -90,6 +86,7 @@ def test_detector_security_details():
 
 def test_helper_check_path_exists():
     """_check_path_exists works for existing/missing paths."""
+    from codex_ml.detectors.capability_detectors import _check_path_exists
 
     assert _check_path_exists("src/") is True, "Condition must be true"
     assert _check_path_exists("nonexistent_dir_xyz/") is False, "Condition must be true"
@@ -97,6 +94,7 @@ def test_helper_check_path_exists():
 
 def test_helper_count_python_files():
     """_count_python_files counts .py files in a directory."""
+    from codex_ml.detectors.capability_detectors import _count_python_files
 
     count = _count_python_files("src/codex_ml/detectors/")
     assert count >= 4, "count must be positive"
@@ -104,6 +102,7 @@ def test_helper_count_python_files():
 
 def test_helper_count_test_files():
     """_count_test_files counts test_*.py files in a directory."""
+    from codex_ml.detectors.capability_detectors import _count_test_files
 
     count = _count_test_files("tests/detectors/")
     assert count >= 5, "count must be positive"
@@ -111,6 +110,7 @@ def test_helper_count_test_files():
 
 def test_helper_check_file_content():
     """_check_file_content detects patterns in file content."""
+    from codex_ml.detectors.capability_detectors import _check_file_content
 
     result = _check_file_content(
         "src/codex_ml/detectors/core.py",
@@ -123,6 +123,7 @@ def test_helper_check_file_content():
 
 def test_helper_check_file_content_missing_file():
     """_check_file_content returns all False for missing file."""
+    from codex_ml.detectors.capability_detectors import _check_file_content
 
     result = _check_file_content("nonexistent.py", ["pattern"])
     assert result["pattern"] is False, "Result must not be empty"

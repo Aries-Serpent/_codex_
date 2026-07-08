@@ -3,19 +3,17 @@ Test Trainer Reward Registry
 
 Test module for trainer reward registry.
 """
+
 from __future__ import annotations
-    pytest.importorskip("numpy")
-    pytest.importorskip("torch")
-    pytest.importorskip("typer")
+
+import pytest
+
 from codex_ml.plugins.registries import reward_models, trainers
-    from typer.testing import CliRunner
-    from codex_ml.cli import plugins_cli
-
-
-
 
 
 def test_offline_functional_trainer_callable():
+    pytest.importorskip("numpy")
+    pytest.importorskip("torch")
     trainer = trainers.resolve_and_instantiate("offline:functional")
     assert callable(trainer), "Condition must be true"
 
@@ -33,7 +31,10 @@ def test_offline_heuristic_reward_model_scores():
 
 
 def test_plugins_cli_lists_trainer_and_reward_entries():
+    pytest.importorskip("typer")
+    from typer.testing import CliRunner
 
+    from codex_ml.cli import plugins_cli
 
     runner = CliRunner()
     trainers_result = runner.invoke(plugins_cli.app, ["list", "trainers"])

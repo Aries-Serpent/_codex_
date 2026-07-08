@@ -1,14 +1,13 @@
 """Tests for Zendesk quantum orchestration and RAG bridge."""
+
 from __future__ import annotations
-import pytest
+
 from codex.monitoring import metrics
 from codex.zendesk.monitoring.mcp_bridge import export_zendesk_metrics
 from codex.zendesk.monitoring.zendesk_metrics import register_zendesk_metrics
 from codex.zendesk.quantum import ZendeskQuantumOrchestrator, ZendeskTicket
 from codex.zendesk.rag import ZendeskRAGBridge
 from mcp.metrics.mcp_metrics import MetricCollector
-
-
 
 
 def test_prioritize_tickets_edge_cases():

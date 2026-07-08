@@ -74,7 +74,6 @@ class TestPluginLoader:
 
     def test_no_plugin_for_unknown_file(self):
         """Test no plugin returned for unknown file type."""
-import pytest
         loader = PluginLoader()
         loader.discover_plugins()
 

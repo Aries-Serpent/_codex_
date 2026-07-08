@@ -3,14 +3,13 @@ Test Checkpoint Schema
 
 Test module for checkpoint schema.
 """
+
 from __future__ import annotations
-import pytest
+
 import json
 from pathlib import Path
+
 from codex_ml.utils.checkpoint_core import SCHEMA_VERSION, save_checkpoint
-
-
-
 
 
 def test_checkpoint_schema_v2(tmp_path: Path):

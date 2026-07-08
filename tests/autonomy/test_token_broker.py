@@ -2,12 +2,13 @@
 Tests for Phase 2 — Token Broker
 (src/codex/autonomy/token_broker.py)
 """
+
 from __future__ import annotations
+
+import pytest
+
 from codex.autonomy.registry import AutonomyMode, AutonomyRegistry, ControlClass
 from codex.autonomy.token_broker import (
-
-
-
     _SOURCE_CEILING,
     TokenBroker,
     TokenBrokerError,

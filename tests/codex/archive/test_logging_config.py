@@ -3,16 +3,8 @@ Tests for codex.archive.logging_config module.
 
 This module contains tests for structured logging helpers.
 """
-import pytest
-import json
-        from codex.archive.logging_config import StructuredLogRecord
-        from codex.archive.logging_config import StructuredLogRecord
-        from codex.archive.logging_config import StructuredLogRecord
-        from codex.archive.logging_config import StructuredLogRecord
-        from codex.archive.logging_config import StructuredLogRecord
-        from codex.archive.logging_config import ISO_FORMAT
-        from codex.archive.logging_config import _STANDARD_FIELDS
 
+import json
 
 
 class TestStructuredLogRecord:
@@ -20,6 +12,7 @@ class TestStructuredLogRecord:
 
     def test_basic_creation(self):
         """Test StructuredLogRecord basic creation."""
+        from codex.archive.logging_config import StructuredLogRecord
 
         record = StructuredLogRecord(
             level="INFO",
@@ -37,6 +30,7 @@ class TestStructuredLogRecord:
 
     def test_to_dict(self):
         """Test to_dict method."""
+        from codex.archive.logging_config import StructuredLogRecord
 
         record = StructuredLogRecord(
             level="WARNING",
@@ -56,6 +50,7 @@ class TestStructuredLogRecord:
 
     def test_to_json(self):
         """Test to_json method."""
+        from codex.archive.logging_config import StructuredLogRecord
 
         record = StructuredLogRecord(
             level="ERROR",
@@ -74,6 +69,7 @@ class TestStructuredLogRecord:
 
     def test_to_text_with_extra(self):
         """Test to_text method with extra fields."""
+        from codex.archive.logging_config import StructuredLogRecord
 
         record = StructuredLogRecord(
             level="DEBUG",
@@ -91,6 +87,7 @@ class TestStructuredLogRecord:
 
     def test_to_text_without_extra(self):
         """Test to_text method without extra fields."""
+        from codex.archive.logging_config import StructuredLogRecord
 
         record = StructuredLogRecord(
             level="INFO",
@@ -112,11 +109,13 @@ class TestModuleConstants:
 
     def test_iso_format(self):
         """Test ISO_FORMAT constant."""
+        from codex.archive.logging_config import ISO_FORMAT
 
         assert "%Y-%m-%dT%H:%M:%S" in ISO_FORMAT, "Condition must be true"
 
     def test_standard_fields(self):
         """Test _STANDARD_FIELDS constant."""
+        from codex.archive.logging_config import _STANDARD_FIELDS
 
         assert "name" in _STANDARD_FIELDS, "Condition must be true"
         assert "msg" in _STANDARD_FIELDS, "Condition must be true"

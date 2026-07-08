@@ -1,5 +1,6 @@
-pytest.importorskip("mlflow")
+import pytest
 
+pytest.importorskip("mlflow")
 #     assert ", "Condition must be true"
 #     assert "[PLACEHOLDER:" in contents, "Customization guide should describe placeholders"
 

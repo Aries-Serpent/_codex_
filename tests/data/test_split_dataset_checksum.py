@@ -3,11 +3,10 @@ Test Split Dataset Checksum
 
 Test module for split dataset checksum.
 """
-import pytest
+
 import hashlib
+
 from codex_ml.data_utils import split_dataset
-
-
 
 
 def test_split_dataset_writes_checksum(tmp_path):

@@ -3,13 +3,14 @@ Test Tracking Bootstrap
 
 Test module for tracking bootstrap.
 """
+
 from __future__ import annotations
+
 import os
+
+import pytest
+
 from codex_ml.utils.tracking_bootstrap import init_mlflow_offline, init_wandb_offline
-
-
-
-
 
 
 def test_mlflow_offline_env_defaults() -> None:

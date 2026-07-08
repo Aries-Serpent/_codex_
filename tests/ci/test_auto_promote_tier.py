@@ -2,20 +2,18 @@
 Tests for auto_promote_tier.py — specifically the AUTO_PROMOTE_TIER_ENABLED
 guard and the _apply_promotion() write path (W-098 / Priority-3 pre-req).
 """
+
 from __future__ import annotations
-import pytest
+
 import sys
 from pathlib import Path
 from unittest.mock import patch
+
 import yaml
-import auto_promote_tier  # noqa: I001
-        import importlib
-
-
-
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "ci"))
 
+import auto_promote_tier  # noqa: I001
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -165,6 +163,7 @@ class TestApplyPromotion:
 class TestAutoPromoteTierGuard:
     def test_guard_disabled_by_default(self) -> None:
         """_AUTO_PROMOTE_ENABLED is False when AUTO_PROMOTE_TIER_ENABLED env var is absent."""
+        import importlib
 
         with patch.dict("os.environ", {}, clear=True):
             # Reload the module so it re-evaluates the module-level constant

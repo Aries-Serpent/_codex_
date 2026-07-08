@@ -3,11 +3,10 @@ Test Checkpoint System Meta
 
 Test module for checkpoint system meta.
 """
-import pytest
+
 import json
+
 from codex_ml.utils.checkpointing import CheckpointManager
-
-
 
 
 def test_checkpoint_writes_system_meta(tmp_path):

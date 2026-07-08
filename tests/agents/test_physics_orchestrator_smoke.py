@@ -8,30 +8,8 @@ Targets:
 - Equilibrium computation
 - Path optimization logic
 """
-import pytest
-import math
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import ForceVector
-        from agents.physics_orchestrator import ForceVector
-        from agents.physics_orchestrator import ForceVector
-        from agents.physics_orchestrator import ActionPath, ActionType
-        from agents.physics_orchestrator import ActionPath, ActionType
-        from agents.physics_orchestrator import ActionPath, ActionType
-        from agents.physics_orchestrator import DecisionState
-        from agents.physics_orchestrator import DecisionState
-        from agents.physics_orchestrator import DecisionState, ForceVector
-        from agents.physics_orchestrator import (
-        from agents.physics_orchestrator import (
-        from agents.physics_orchestrator import (
-        from agents.physics_orchestrator import ActionType
-        from agents.physics_orchestrator import ActionType
-        from agents.physics_orchestrator import ActionType
-        from agents.physics_orchestrator import DecisionState
-        from agents.physics_orchestrator import DecisionState
-        from agents.physics_orchestrator import ForceVector
-        from agents.physics_orchestrator import ActionPath, ActionType
 
+import math
 
 
 class TestPhysicsOrchestratorInitialization:
@@ -39,12 +17,14 @@ class TestPhysicsOrchestratorInitialization:
 
     def test_orchestrator_init_default(self):
         """Test default initialization."""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orch = PhysicsInspiredOrchestrator()
         assert orch is not None, "orch must be initialized"
 
     def test_orchestrator_with_config(self):
         """Test initialization with config file."""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         # Initialize with default config
         orch = PhysicsInspiredOrchestrator()
@@ -56,6 +36,7 @@ class TestForceVectorOperations:
 
     def test_force_vector_components_2d(self):
         """Test 2D force vector component calculation."""
+        from agents.physics_orchestrator import ForceVector
 
         force = ForceVector(
             name="test_force",
@@ -70,6 +51,7 @@ class TestForceVectorOperations:
 
     def test_force_vector_components_45deg(self):
         """Test force vector at 45 degrees."""
+        from agents.physics_orchestrator import ForceVector
 
         force = ForceVector(
             name="diagonal_force",
@@ -85,6 +67,7 @@ class TestForceVectorOperations:
 
     def test_force_vector_components_3d(self):
         """Test 3D force vector projection."""
+        from agents.physics_orchestrator import ForceVector
 
         force = ForceVector(
             name="3d_force",
@@ -104,6 +87,7 @@ class TestActionPathCalculations:
 
     def test_action_path_total_energy(self):
         """Test total energy calculation."""
+        from agents.physics_orchestrator import ActionPath, ActionType
 
         path = ActionPath(
             action_type=ActionType.TEST,
@@ -121,6 +105,7 @@ class TestActionPathCalculations:
 
     def test_action_path_optimization_score(self):
         """Test optimization score calculation."""
+        from agents.physics_orchestrator import ActionPath, ActionType
 
         path = ActionPath(
             action_type=ActionType.OPTIMIZE,
@@ -144,6 +129,7 @@ class TestActionPathCalculations:
 
     def test_action_path_zero_energy_handling(self):
         """Test handling of zero/near-zero energy."""
+        from agents.physics_orchestrator import ActionPath, ActionType
 
         path = ActionPath(
             action_type=ActionType.DEBUG,
@@ -171,6 +157,7 @@ class TestDecisionStateOperations:
 
     def test_decision_state_creation(self):
         """Test creating a decision state."""
+        from agents.physics_orchestrator import DecisionState
 
         state = DecisionState(
             current_position="task_a",
@@ -188,6 +175,7 @@ class TestDecisionStateOperations:
 
     def test_decision_state_with_context(self):
         """Test decision state with context dictionary."""
+        from agents.physics_orchestrator import DecisionState
 
         state = DecisionState(
             current_position="start",
@@ -201,6 +189,7 @@ class TestDecisionStateOperations:
 
     def test_decision_state_with_forces(self):
         """Test decision state with active forces."""
+        from agents.physics_orchestrator import DecisionState, ForceVector
 
         forces = [
             ForceVector(name="urgency", magnitude=5.0, direction=0.0),
@@ -220,6 +209,7 @@ class TestPhysicsOrchestratorDecisionMaking:
 
     def test_assess_situation_basic(self):
         """Test basic situation assessment."""
+        from agents.physics_orchestrator import (
             DecisionState,
             PhysicsInspiredOrchestrator,
         )
@@ -240,6 +230,7 @@ class TestPhysicsOrchestratorDecisionMaking:
 
     def test_orchestrate_decision_simple(self):
         """Test simple orchestration."""
+        from agents.physics_orchestrator import (
             ActionPath,
             ActionType,
             DecisionState,
@@ -259,6 +250,7 @@ class TestPhysicsOrchestratorDecisionMaking:
 
     def test_optimize_path_selection(self):
         """Test path optimization."""
+        from agents.physics_orchestrator import (
             ActionPath,
             ActionType,
             PhysicsInspiredOrchestrator,
@@ -310,6 +302,7 @@ class TestActionTypeEnum:
 
     def test_action_type_values(self):
         """Test all ActionType enum values."""
+        from agents.physics_orchestrator import ActionType
 
         # Verify expected action types exist
         assert ActionType.AUDIT is not None, "AUDIT must be initialized"
@@ -319,6 +312,7 @@ class TestActionTypeEnum:
 
     def test_action_type_string_values(self):
         """Test ActionType string representations."""
+        from agents.physics_orchestrator import ActionType
 
         assert ActionType.AUDIT.value == "audit", "Value must be initialized"
         assert ActionType.TEST.value == "test", "Value must be initialized"
@@ -326,6 +320,7 @@ class TestActionTypeEnum:
 
     def test_action_type_iteration(self):
         """Test iterating over ActionType enum."""
+        from agents.physics_orchestrator import ActionType
 
         action_types = list(ActionType)
 
@@ -338,6 +333,7 @@ class TestPhysicsOrchestratorEdgeCases:
 
     def test_empty_context(self):
         """Test with empty context."""
+        from agents.physics_orchestrator import DecisionState
 
         state = DecisionState(current_position="a", goal_position="b", context={})
 
@@ -345,6 +341,7 @@ class TestPhysicsOrchestratorEdgeCases:
 
     def test_zero_resources(self):
         """Test with zero available resources."""
+        from agents.physics_orchestrator import DecisionState
 
         state = DecisionState(
             current_position="start", goal_position="end", available_resources=0.0
@@ -354,6 +351,7 @@ class TestPhysicsOrchestratorEdgeCases:
 
     def test_force_vector_zero_magnitude(self):
         """Test force vector with zero magnitude."""
+        from agents.physics_orchestrator import ForceVector
 
         force = ForceVector(name="zero_force", magnitude=0.0, direction=0.0)
 
@@ -363,6 +361,7 @@ class TestPhysicsOrchestratorEdgeCases:
 
     def test_action_path_high_risk(self):
         """Test action path with very high risk."""
+        from agents.physics_orchestrator import ActionPath, ActionType
 
         path = ActionPath(
             action_type=ActionType.EXECUTE,

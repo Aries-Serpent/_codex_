@@ -1,12 +1,11 @@
 from __future__ import annotations
-import pytest
+
 import importlib.util
 import sys
 import tempfile
 import types
 from dataclasses import dataclass
 from pathlib import Path
-
 
 
 def _load_module(module_name: str, path: Path):

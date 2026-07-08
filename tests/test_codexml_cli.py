@@ -3,17 +3,15 @@ Test Codexml Cli
 
 Test module for codexml cli.
 """
+
+import sys
+
+import pytest
+
 pytest.importorskip("hydra")
 pytest.importorskip("datasets")
-import sys
+
 from codex_ml.cli.main import cli
-        from hydra.core.global_hydra import GlobalHydra  # hydra-core 1.2+
-        from hydra._internal.hydra import GlobalHydra  # type: ignore[no-redef]  # older
-    from omegaconf import OmegaConf
-
-
-
-
 
 
 def test_codexml_cli_help():
@@ -32,7 +30,9 @@ def test_codexml_cli_skips_eval(monkeypatch):
         pytest.skip("test requires Hydra CLI path; typer CLI is active")
 
     try:
+        from hydra.core.global_hydra import GlobalHydra  # hydra-core 1.2+
     except ImportError:
+        from hydra._internal.hydra import GlobalHydra  # type: ignore[no-redef]  # older
 
     called = {"eval": False}
 
@@ -67,6 +67,7 @@ def test_run_training_invokes_functional_entry(monkeypatch):
     cli_main = sys.modules.get("codex_ml.cli.main")
     if cli_main is None:
         pytest.skip("codex_ml.cli.main not loaded")
+    from omegaconf import OmegaConf
 
     # The functional training path only exists in the non-typer branch.
     # When typer is available, run_training is a no-op stub that doesn't

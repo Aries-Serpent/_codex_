@@ -3,12 +3,11 @@ Test Codex Logging Cfg
 
 Test module for codex logging cfg.
 """
-import pytest
+
 import argparse
 import types
+
 from codex_ml.monitoring import codex_logging as cl
-
-
 
 
 def test_logging_bootstrap_hydra_cfg(monkeypatch, tmp_path):

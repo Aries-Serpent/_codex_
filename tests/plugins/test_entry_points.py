@@ -183,7 +183,6 @@ class TestRealPluginDiscovery:
 
     def test_discover_codex_ml_plugins(self):
         """Test discovering actual codex_ml plugins."""
-import pytest
         import importlib.metadata
 
         try:

@@ -10,19 +10,20 @@ Tests boundary conditions in scripts/mcp/select_components.py:
   - expand_globs with exclude patterns removing all results → empty set
   - _resolve_patterns with ** patterns on missing prefix dir
 """
+
 from __future__ import annotations
+
 import json
 import sys
 from pathlib import Path
 from unittest.mock import patch
-from select_components import expand_globs, filter_by_globs, load_topics, main  # noqa: E402
 
-
-
+import pytest
 
 # Ensure the mcp scripts directory is importable (same pattern as Phase 9.3)
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / "scripts" / "mcp"))
 
+from select_components import expand_globs, filter_by_globs, load_topics, main  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # filter_by_globs — empty pattern list

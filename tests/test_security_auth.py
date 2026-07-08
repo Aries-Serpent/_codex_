@@ -5,15 +5,14 @@ Phase 3 Wave 5 Lane 1 — L1_SECURITY
 OWASP Coverage: A01 (Broken Access Control), A07 (Authentication Failures)
 Test Count: 15 tests
 """
+
 import hashlib
 import hmac
 import secrets
 import string
 from typing import Any, Dict
-            import math
-        import time
 
-
+import pytest
 
 
  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
@@ -65,6 +64,7 @@ class TestAuthenticationMechanisms:
         
         def calculate_entropy(password: str) -> float:
             """Calculate Shannon entropy of password."""
+            import math
             entropy = 0
             char_set_size = 0
             
@@ -397,6 +397,7 @@ class TestSessionManagement:
 
     def test_session_expiration_enforced(self):
         """Verify sessions expire after configured timeout."""
+        import time
         
         session = {
             "id": "sess_123",

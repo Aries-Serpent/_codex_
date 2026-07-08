@@ -562,7 +562,6 @@ class TestCancelledRunsHandling:
     summary.failed_runs or influence failure_rate; instead they are reported
     separately under summary.cancelled_runs.
     """
-import pytest
 
     @pytest.fixture
     def collector(self):

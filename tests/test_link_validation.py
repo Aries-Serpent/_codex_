@@ -5,12 +5,13 @@ Comprehensive test suite for link validation, internal/external link checking,
 anchor validation, and broken reference detection.
 Coverage: Documentation link integrity.
 """
+
 import re
 from pathlib import Path
 from typing import Dict, List, Set, Tuple
 from urllib.parse import urlparse
 
-
+import pytest
 
 
 class LinkValidator:

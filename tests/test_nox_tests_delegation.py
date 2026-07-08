@@ -3,12 +3,13 @@ Test Nox Tests Delegation
 
 Test module for nox tests delegation.
 """
-pytest.importorskip("nox")
+
 import importlib
 from unittest.mock import MagicMock
 
+import pytest
 
-
+pytest.importorskip("nox")
 
 
 def test_tests_session_delegates_to_coverage():

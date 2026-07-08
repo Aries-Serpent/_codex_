@@ -8,37 +8,12 @@ Target: +50-60 tests for extended coverage
 Generated: 2026-06-20
 Authority: @mbaetiong (COPILOT_AGENT_AUTH_ENABLED=true)
 """
+
 import threading
 import time
 from unittest.mock import MagicMock
-        from codex.archive.dal import ArchiveDAL
-        from codex.archive.dal import ArchiveDAL
-        from codex.archive.dal import ArchiveDAL
-        from codex.ingestion.file_ingestor import FileIngestor
-        from codex.archive.util import format_data
-        from codex.archive.retry import RetryPolicy
-        from codex.archive.retry import CircuitBreaker
-        from codex.api.rag_api import RAGAPI
-        from codex.archive.dal import ArchiveDAL
-            from codex.api.rag_api import RAGAPI
-            from codex.cli import CLI
-            from codex.config.env_vars import load_env_config
-            from codex.ingestion.file_ingestor import FileIngestor
-            from codex.archive.dal import ArchiveDAL
-            from codex.archive.standardization import Standardizer
-            from codex.rag.pipelines.embedding import EmbeddingGenerator
-            from codex.rag.pipelines.retrieval import RetrieverAPI
-            from codex.tokenization.api import Tokenizer
-            from codex.ingestion.file_ingestor import FileIngestor
-            from codex.rag.pipelines.embedding import EmbeddingGenerator
-            from codex.tokenization.api import Tokenizer
-        from codex.tokenization.api import Tokenizer
-            from codex.archive.util import format_data
-        from codex.tokenization.api import Tokenizer
-        from codex.archive.dal import ArchiveDAL
-        from codex.archive.dal import ArchiveDAL
 
-
+import pytest
 
 # ============================================================================
 # Advanced Resource Management Tests (15-20 tests)
@@ -50,6 +25,7 @@ class TestConnectionPooling:
 
     def test_pool_create_connections(self):
         """Should create connection pool"""
+        from codex.archive.dal import ArchiveDAL
 
         try:
             # Test pool initialization
@@ -66,6 +42,7 @@ class TestConnectionPooling:
 
     def test_pool_connection_reuse(self):
         """Should reuse connections from pool"""
+        from codex.archive.dal import ArchiveDAL
 
         try:
             dal = ArchiveDAL(connection_string="dummy")
@@ -83,6 +60,7 @@ class TestConnectionPooling:
 
     def test_pool_close_all_connections(self):
         """Should properly close all pool connections"""
+        from codex.archive.dal import ArchiveDAL
 
         try:
             dal = ArchiveDAL(connection_string="dummy")
@@ -101,6 +79,7 @@ class TestMemoryManagement:
 
     def test_large_data_structure_cleanup(self):
         """Should cleanup large data structures"""
+        from codex.ingestion.file_ingestor import FileIngestor
 
         try:
             ingestor = FileIngestor()
@@ -121,6 +100,7 @@ class TestMemoryManagement:
 
     def test_recursive_structure_cleanup(self):
         """Should handle cleanup of recursive structures"""
+        from codex.archive.util import format_data
 
         try:
             # Create recursive structure
@@ -146,6 +126,7 @@ class TestErrorRecoveryPatterns:
 
     def test_exponential_backoff_retry(self):
         """Should implement exponential backoff"""
+        from codex.archive.retry import RetryPolicy
 
         try:
             policy = RetryPolicy(max_retries=5, backoff_factor=2.0)
@@ -171,6 +152,7 @@ class TestErrorRecoveryPatterns:
 
     def test_circuit_breaker_state_transitions(self):
         """Should properly transition circuit breaker states"""
+        from codex.archive.retry import CircuitBreaker
 
         try:
             breaker = CircuitBreaker(failure_threshold=3, timeout=1)
@@ -200,6 +182,7 @@ class TestDestructorCleanup:
 
     def test_context_manager_cleanup(self):
         """Should cleanup with context manager"""
+        from codex.api.rag_api import RAGAPI
 
         try:
             cleanup_called = {"value": False}
@@ -220,6 +203,7 @@ class TestDestructorCleanup:
 
     def test_finalizer_cleanup(self):
         """Should cleanup on garbage collection"""
+        from codex.archive.dal import ArchiveDAL
 
         try:
 
@@ -247,6 +231,9 @@ class TestDeepModuleIntegration:
     def test_cli_config_api_pipeline(self):
         """Test CLI → Config → API integration"""
         try:
+            from codex.api.rag_api import RAGAPI
+            from codex.cli import CLI
+            from codex.config.env_vars import load_env_config
 
             cli = CLI()
             config = load_env_config()
@@ -262,7 +249,10 @@ class TestDeepModuleIntegration:
     def test_ingest_transform_store_pipeline(self):
         """Test full ingest → transform → store pipeline"""
         try:
+            from codex.ingestion.file_ingestor import FileIngestor
 
+            from codex.archive.dal import ArchiveDAL
+            from codex.archive.standardization import Standardizer
 
             ingestor = FileIngestor()
             standardizer = Standardizer()
@@ -278,6 +268,9 @@ class TestDeepModuleIntegration:
     def test_tokenize_embed_query_pipeline(self):
         """Test full tokenize → embed → query pipeline"""
         try:
+            from codex.rag.pipelines.embedding import EmbeddingGenerator
+            from codex.rag.pipelines.retrieval import RetrieverAPI
+            from codex.tokenization.api import Tokenizer
 
             tokenizer = Tokenizer()
             embedder = EmbeddingGenerator()
@@ -317,6 +310,9 @@ class TestCrossLayerErrorPropagation:
     def test_partial_failure_handling_multimodule(self):
         """Should handle partial failures across modules"""
         try:
+            from codex.ingestion.file_ingestor import FileIngestor
+            from codex.rag.pipelines.embedding import EmbeddingGenerator
+            from codex.tokenization.api import Tokenizer
 
             FileIngestor()
             tokenizer = Tokenizer()
@@ -457,6 +453,7 @@ class TestPerformanceLimits:
 
     def test_high_throughput_processing(self):
         """Should handle high throughput"""
+        from codex.tokenization.api import Tokenizer
 
         try:
             tokenizer = Tokenizer()
@@ -482,6 +479,7 @@ class TestPerformanceLimits:
             return result
 
         try:
+            from codex.archive.util import format_data
 
             # Test with increasing nesting
             for depth in [10, 50, 100, 200]:
@@ -496,6 +494,7 @@ class TestPerformanceLimits:
 
     def test_string_length_limit(self):
         """Should handle very long strings"""
+        from codex.tokenization.api import Tokenizer
 
         try:
             tokenizer = Tokenizer()
@@ -522,6 +521,7 @@ class TestStateTransitions:
 
     def test_valid_state_machine_transitions(self):
         """Should only allow valid state transitions"""
+        from codex.archive.dal import ArchiveDAL
 
         try:
             dal = ArchiveDAL(connection_string="dummy")
@@ -545,6 +545,7 @@ class TestStateTransitions:
 
     def test_invalid_operation_in_state(self):
         """Should reject invalid operations for current state"""
+        from codex.archive.dal import ArchiveDAL
 
         try:
             dal = ArchiveDAL(connection_string="dummy")

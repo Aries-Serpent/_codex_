@@ -327,7 +327,6 @@ def test_add_citations_unknown_style_with_evidence():
 
 def test_postprocess_output_guaranteed_evidence_and_citations():
     """Test that line 169 is reached: include_citations=True with guaranteed evidence."""
-import pytest
     # Build output and doc so the phrase overlap is guaranteed:
     # phrase = "Machine learning works well" (>10 chars, first sentence fragment)
     # appears verbatim in output → evidence list will be non-empty

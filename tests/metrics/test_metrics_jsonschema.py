@@ -3,14 +3,14 @@ Test Metrics Jsonschema
 
 Test module for metrics jsonschema.
 """
-jsonschema = pytest.importorskip("jsonschema", reason="jsonschema not installed")
+
 import json
 from pathlib import Path
+
+import pytest
+
+jsonschema = pytest.importorskip("jsonschema", reason="jsonschema not installed")
 from jsonschema import Draft7Validator  # type: ignore
-    from codex_ml.train_loop import record_metrics
-
-
-
 
 METRICS_SCHEMA = {
     "type": "object",
@@ -31,6 +31,7 @@ METRICS_SCHEMA = {
 
 def test_metrics_history_matches_schema(tmp_path: Path, monkeypatch):
     monkeypatch.chdir(tmp_path)
+    from codex_ml.train_loop import record_metrics
 
     record_metrics(prefix="train", epoch=0, metrics={"loss": 1.0}, config_id="cfg-1")
     record_metrics(prefix="train", epoch=1, metrics={"loss": 0.9, "acc": 0.1}, config_id="cfg-1")

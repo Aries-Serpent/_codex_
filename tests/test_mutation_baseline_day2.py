@@ -3,31 +3,9 @@ Mutation Testing Baseline — Critical Function Coverage
 Designed to catch common mutations in key ML functions
 Each test is atomic with single assertion for mutation detection
 """
-            from codex_ml.models.factory import _resolve_dtype
-            from codex_ml.models.factory import _resolve_dtype
-            from codex_ml.models.factory import _resolve_dtype
-            from codex_ml.models.factory import _resolve_dtype
-            from codex_ml.models.peft_hooks import LoraBuildCfg
-            from codex_ml.models.peft_hooks import LoraBuildCfg
-            from codex_ml.models.peft_hooks import LoraBuildCfg
-            from codex_ml.models.peft_hooks import LoraBuildCfg
-            from codex_ml.models.peft_hooks import LoraBuildCfg
-            from codex_ml.tokenization import get_tokenizer
-            from codex_ml.tokenization import get_tokenizer
-            from codex_ml.pipeline import Pipeline
-            from codex_ml.pipeline import Pipeline
-            from codex_ml.config_schema import ConfigSchema
-            from codex_ml.config_schema import ConfigSchema
-            from codex_ml.config_schema import load_config
-            from codex_ml.registry import Registry
-            from codex_ml.registry import Registry
-            from codex_ml.registry import Registry
-            import torch
-            import torch
-            import torch
-            import torch.nn as nn
 
 
+import pytest
 
 
 class TestDtypeResolution:
@@ -36,6 +14,7 @@ class TestDtypeResolution:
     def test_resolve_dtype_none_returns_none(self):
         """Mutant: dtype None should return None."""
         try:
+            from codex_ml.models.factory import _resolve_dtype
         except (ImportError, AttributeError):
             pytest.skip("_resolve_dtype not available")
 
@@ -45,6 +24,7 @@ class TestDtypeResolution:
     def test_resolve_dtype_fp32_string(self):
         """Mutant: 'fp32' string should resolve correctly."""
         try:
+            from codex_ml.models.factory import _resolve_dtype
         except (ImportError, AttributeError):
             pytest.skip("_resolve_dtype not available")
 
@@ -55,6 +35,7 @@ class TestDtypeResolution:
     def test_resolve_dtype_bf16_string(self):
         """Mutant: 'bf16' string should resolve correctly."""
         try:
+            from codex_ml.models.factory import _resolve_dtype
         except (ImportError, AttributeError):
             pytest.skip("_resolve_dtype not available")
 
@@ -64,6 +45,7 @@ class TestDtypeResolution:
     def test_resolve_dtype_case_insensitive(self):
         """Mutant: dtype resolution should be case-insensitive."""
         try:
+            from codex_ml.models.factory import _resolve_dtype
         except (ImportError, AttributeError):
             pytest.skip("_resolve_dtype not available")
 
@@ -80,6 +62,7 @@ class TestLoraConfiguration:
     def test_lora_rank_positive(self):
         """Mutant: LoRA rank must be positive."""
         try:
+            from codex_ml.models.peft_hooks import LoraBuildCfg
         except (ImportError, AttributeError):
             pytest.skip("LoraBuildCfg not available")
 
@@ -89,6 +72,7 @@ class TestLoraConfiguration:
     def test_lora_alpha_positive(self):
         """Mutant: LoRA alpha must be positive."""
         try:
+            from codex_ml.models.peft_hooks import LoraBuildCfg
         except (ImportError, AttributeError):
             pytest.skip("LoraBuildCfg not available")
 
@@ -98,6 +82,7 @@ class TestLoraConfiguration:
     def test_lora_dropout_range(self):
         """Mutant: LoRA dropout should be in [0, 1]."""
         try:
+            from codex_ml.models.peft_hooks import LoraBuildCfg
         except (ImportError, AttributeError):
             pytest.skip("LoraBuildCfg not available")
 
@@ -107,6 +92,7 @@ class TestLoraConfiguration:
     def test_lora_target_modules_not_empty(self):
         """Mutant: target modules should not be empty."""
         try:
+            from codex_ml.models.peft_hooks import LoraBuildCfg
         except (ImportError, AttributeError):
             pytest.skip("LoraBuildCfg not available")
 
@@ -116,6 +102,7 @@ class TestLoraConfiguration:
     def test_lora_default_rank_8(self):
         """Mutant: default LoRA rank should be exactly 8."""
         try:
+            from codex_ml.models.peft_hooks import LoraBuildCfg
         except (ImportError, AttributeError):
             pytest.skip("LoraBuildCfg not available")
 
@@ -129,6 +116,7 @@ class TestBatchProcessing:
     def test_batch_not_empty_after_encode(self):
         """Mutant: encoded batch should not be empty."""
         try:
+            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -147,6 +135,7 @@ class TestBatchProcessing:
     def test_batch_size_matches_input(self):
         """Mutant: batch result size should match input."""
         try:
+            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -170,6 +159,7 @@ class TestPipelineState:
     def test_pipeline_step_order_maintained(self):
         """Mutant: pipeline steps should execute in order."""
         try:
+            from codex_ml.pipeline import Pipeline
         except (ImportError, AttributeError):
             pytest.skip("Pipeline not available")
 
@@ -185,6 +175,7 @@ class TestPipelineState:
     def test_pipeline_error_propagates(self):
         """Mutant: pipeline errors should propagate."""
         try:
+            from codex_ml.pipeline import Pipeline
         except (ImportError, AttributeError):
             pytest.skip("Pipeline not available")
 
@@ -202,6 +193,7 @@ class TestConfigValidation:
     def test_batch_size_must_be_positive(self):
         """Mutant: batch size must be positive."""
         try:
+            from codex_ml.config_schema import ConfigSchema
         except (ImportError, AttributeError):
             pytest.skip("ConfigSchema not available")
 
@@ -214,6 +206,7 @@ class TestConfigValidation:
     def test_learning_rate_positive(self):
         """Mutant: learning rate must be positive."""
         try:
+            from codex_ml.config_schema import ConfigSchema
         except (ImportError, AttributeError):
             pytest.skip("ConfigSchema not available")
 
@@ -226,6 +219,7 @@ class TestConfigValidation:
     def test_config_dict_key_access(self):
         """Mutant: config dict should be accessible."""
         try:
+            from codex_ml.config_schema import load_config
         except (ImportError, AttributeError):
             pytest.skip("Config loading not available")
 
@@ -243,6 +237,7 @@ class TestRegistryLookup:
     def test_registry_get_returns_registered_item(self):
         """Mutant: registry get should return registered item."""
         try:
+            from codex_ml.registry import Registry
         except (ImportError, AttributeError):
             pytest.skip("Registry not available")
 
@@ -258,6 +253,7 @@ class TestRegistryLookup:
     def test_registry_contains_check(self):
         """Mutant: registry contains should work correctly."""
         try:
+            from codex_ml.registry import Registry
         except (ImportError, AttributeError):
             pytest.skip("Registry not available")
 
@@ -273,6 +269,7 @@ class TestRegistryLookup:
     def test_registry_duplicate_register_error(self):
         """Mutant: registering duplicate key should error."""
         try:
+            from codex_ml.registry import Registry
         except (ImportError, AttributeError):
             pytest.skip("Registry not available")
 
@@ -293,6 +290,7 @@ class TestDeviceHandling:
     def test_device_type_cpu_string(self):
         """Mutant: CPU device type should be 'cpu'."""
         try:
+            import torch
         except ImportError:
             pytest.skip("PyTorch not available")
 
@@ -302,6 +300,7 @@ class TestDeviceHandling:
     def test_device_type_not_meta(self):
         """Mutant: device should not be meta after init."""
         try:
+            import torch
         except ImportError:
             pytest.skip("PyTorch not available")
 
@@ -311,6 +310,8 @@ class TestDeviceHandling:
     def test_parameter_device_consistency(self):
         """Mutant: all parameters should be on same device."""
         try:
+            import torch
+            import torch.nn as nn
         except ImportError:
             pytest.skip("PyTorch not available")
 

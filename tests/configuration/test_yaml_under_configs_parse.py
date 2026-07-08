@@ -3,13 +3,14 @@ Test Yaml Under Configs Parse
 
 Test module for yaml under configs parse.
 """
+
 from __future__ import annotations
+
 import pathlib
 from collections.abc import Iterable
+
+import pytest
 import yaml
-
-
-
 
 
 def _iter_yaml_files(root: pathlib.Path) -> list[pathlib.Path]:

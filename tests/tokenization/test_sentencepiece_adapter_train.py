@@ -3,14 +3,13 @@ Test Sentencepiece Adapter Train
 
 Test module for sentencepiece adapter train.
 """
+
 from __future__ import annotations
-import pytest
+
 import importlib
 import sys
 import types
 from pathlib import Path
-
-
 
 
 def _reload_adapter():

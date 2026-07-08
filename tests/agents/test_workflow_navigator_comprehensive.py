@@ -5,36 +5,11 @@ Target: 31.09% → 65%+ coverage
 Strategy: Test all classes, workflow execution, and state management
 Focus: WorkflowFrequency, StepStatus, WorkflowStep, Workflow, WorkflowNavigator
 """
+
 import tempfile
 from pathlib import Path
-        from agents.workflow_navigator import WorkflowFrequency
-        from agents.workflow_navigator import StepStatus
-        from agents.workflow_navigator import WorkflowStep
-        from agents.workflow_navigator import StepStatus, WorkflowStep
-        from agents.workflow_navigator import StepStatus, WorkflowStep
-        from agents.workflow_navigator import StepStatus, WorkflowStep
-        from agents.workflow_navigator import StepStatus, WorkflowStep
-        from agents.workflow_navigator import Workflow, WorkflowFrequency
-        from agents.workflow_navigator import Workflow, WorkflowFrequency, WorkflowStep
-        from agents.workflow_navigator import Workflow, WorkflowFrequency, WorkflowStep
-        from agents.workflow_navigator import WorkflowNavigator
-        from agents.workflow_navigator import WorkflowNavigator
-        from agents.workflow_navigator import WorkflowNavigator
-        from agents.workflow_navigator import WorkflowNavigator
-        from agents.workflow_navigator import (
-        from agents.workflow_navigator import (
-        from agents.workflow_navigator import WorkflowNavigator
-        from agents.workflow_navigator import WorkflowNavigator
-        from agents.workflow_navigator import WorkflowNavigator
-        from agents.workflow_navigator import WorkflowNavigator
-        from agents.workflow_navigator import WorkflowNavigator
-        from agents.workflow_navigator import WorkflowNavigator
-        from agents.workflow_navigator import WorkflowNavigator
-        from agents.workflow_navigator import WorkflowNavigator
-        from agents.workflow_navigator import (
-        from agents.workflow_navigator import (
 
-
+import pytest
 
 # ============================================================================
 # ENUM TESTS
@@ -46,6 +21,7 @@ class TestWorkflowEnums:
 
     def test_workflow_frequency_values(self):
         """Test WorkflowFrequency enum values."""
+        from agents.workflow_navigator import WorkflowFrequency
 
         assert WorkflowFrequency.HIGH is not None, "HIGH must be initialized"
         assert WorkflowFrequency.MEDIUM is not None, "MEDIUM must be initialized"
@@ -57,6 +33,7 @@ class TestWorkflowEnums:
 
     def test_step_status_values(self):
         """Test StepStatus enum values."""
+        from agents.workflow_navigator import StepStatus
 
         assert StepStatus.PENDING is not None, "PENDING must be initialized"
         assert StepStatus.RUNNING is not None, "RUNNING must be initialized"
@@ -78,6 +55,7 @@ class TestWorkflowStep:
 
     def test_workflow_step_creation(self):
         """Test basic WorkflowStep creation."""
+        from agents.workflow_navigator import WorkflowStep
 
         step = WorkflowStep(id="step1", action="Run tests")
 
@@ -88,6 +66,7 @@ class TestWorkflowStep:
 
     def test_workflow_step_with_command(self):
         """Test WorkflowStep with command."""
+        from agents.workflow_navigator import StepStatus, WorkflowStep
 
         step = WorkflowStep(
             id="test_step", action="Echo test", command="echo 'test'", optional=True
@@ -99,6 +78,7 @@ class TestWorkflowStep:
 
     def test_workflow_step_execute_with_command(self):
         """Test executing a step with a command."""
+        from agents.workflow_navigator import StepStatus, WorkflowStep
 
         step = WorkflowStep(id="echo_step", action="Echo hello", command="echo hello")
 
@@ -112,6 +92,7 @@ class TestWorkflowStep:
 
     def test_workflow_step_execute_no_action(self):
         """Test executing a step with no action."""
+        from agents.workflow_navigator import StepStatus, WorkflowStep
 
         step = WorkflowStep(id="empty_step", action="Empty step")
 
@@ -122,6 +103,7 @@ class TestWorkflowStep:
 
     def test_workflow_step_execute_with_uses(self):
         """Test executing a step that references another workflow."""
+        from agents.workflow_navigator import StepStatus, WorkflowStep
 
         step = WorkflowStep(
             id="delegate_step", action="Use another workflow", uses="other_workflow"
@@ -143,6 +125,7 @@ class TestWorkflow:
 
     def test_workflow_creation(self):
         """Test basic Workflow creation."""
+        from agents.workflow_navigator import Workflow, WorkflowFrequency
 
         workflow = Workflow(
             workflow_id="WF001",
@@ -160,6 +143,7 @@ class TestWorkflow:
 
     def test_workflow_with_steps(self):
         """Test Workflow with multiple steps."""
+        from agents.workflow_navigator import Workflow, WorkflowFrequency, WorkflowStep
 
         steps = [
             WorkflowStep(id="step1", action="First action"),
@@ -180,6 +164,7 @@ class TestWorkflow:
 
     def test_workflow_to_dict(self):
         """Test Workflow.to_dict() method."""
+        from agents.workflow_navigator import Workflow, WorkflowFrequency, WorkflowStep
 
         step = WorkflowStep(id="test", action="Test action")
         workflow = Workflow(
@@ -209,6 +194,7 @@ class TestWorkflowNavigator:
 
     def test_navigator_initialization(self):
         """Test WorkflowNavigator can be initialized."""
+        from agents.workflow_navigator import WorkflowNavigator
 
         nav = WorkflowNavigator()
 
@@ -219,6 +205,7 @@ class TestWorkflowNavigator:
 
     def test_navigator_with_custom_workspace(self):
         """Test WorkflowNavigator with custom workspace directory."""
+        from agents.workflow_navigator import WorkflowNavigator
 
         with tempfile.TemporaryDirectory() as tmpdir:
             workspace = Path(tmpdir)
@@ -228,6 +215,7 @@ class TestWorkflowNavigator:
 
     def test_list_workflows(self):
         """Test listing all workflows."""
+        from agents.workflow_navigator import WorkflowNavigator
 
         nav = WorkflowNavigator()
         workflows = nav.list_workflows()
@@ -238,6 +226,7 @@ class TestWorkflowNavigator:
 
     def test_get_workflow(self):
         """Test getting a workflow by ID."""
+        from agents.workflow_navigator import WorkflowNavigator
 
         nav = WorkflowNavigator()
         workflows = nav.list_workflows()
@@ -251,6 +240,7 @@ class TestWorkflowNavigator:
 
     def test_register_workflow(self):
         """Test registering a new workflow."""
+        from agents.workflow_navigator import (
             Workflow,
             WorkflowFrequency,
             WorkflowNavigator,
@@ -275,6 +265,7 @@ class TestWorkflowNavigator:
 
     def test_execute_workflow(self):
         """Test executing a workflow."""
+        from agents.workflow_navigator import (
             Workflow,
             WorkflowFrequency,
             WorkflowNavigator,
@@ -301,6 +292,7 @@ class TestWorkflowNavigator:
 
     def test_find_workflow(self):
         """Test finding a workflow by description."""
+        from agents.workflow_navigator import WorkflowNavigator
 
         nav = WorkflowNavigator()
 
@@ -312,6 +304,7 @@ class TestWorkflowNavigator:
 
     def test_get_workflow_suggestions(self):
         """Test getting workflow suggestions."""
+        from agents.workflow_navigator import WorkflowNavigator
 
         nav = WorkflowNavigator()
 
@@ -322,6 +315,7 @@ class TestWorkflowNavigator:
 
     def test_execute_chain(self):
         """Test executing a chain of workflows."""
+        from agents.workflow_navigator import WorkflowNavigator
 
         nav = WorkflowNavigator()
         workflows = nav.list_workflows()
@@ -346,6 +340,7 @@ class TestDynamicWorkflows:
 
     def test_create_dynamic_test_coverage_workflow(self):
         """Test creating test_coverage dynamic workflow."""
+        from agents.workflow_navigator import WorkflowNavigator
 
         nav = WorkflowNavigator()
 
@@ -357,6 +352,7 @@ class TestDynamicWorkflows:
 
     def test_create_dynamic_self_heal_workflow(self):
         """Test creating self_heal dynamic workflow."""
+        from agents.workflow_navigator import WorkflowNavigator
 
         nav = WorkflowNavigator()
 
@@ -368,6 +364,7 @@ class TestDynamicWorkflows:
 
     def test_create_dynamic_audit_coverage_workflow(self):
         """Test creating audit_coverage dynamic workflow."""
+        from agents.workflow_navigator import WorkflowNavigator
 
         nav = WorkflowNavigator()
 
@@ -379,6 +376,7 @@ class TestDynamicWorkflows:
 
     def test_create_dynamic_test_run_workflow(self):
         """Test creating test_run dynamic workflow."""
+        from agents.workflow_navigator import WorkflowNavigator
 
         nav = WorkflowNavigator()
 
@@ -390,6 +388,7 @@ class TestDynamicWorkflows:
 
     def test_create_dynamic_unknown_workflow(self):
         """Test creating unknown workflow type raises error."""
+        from agents.workflow_navigator import WorkflowNavigator
 
         nav = WorkflowNavigator()
 
@@ -407,6 +406,7 @@ class TestWorkflowState:
 
     def test_save_workflow_state(self):
         """Test saving workflow state."""
+        from agents.workflow_navigator import (
             Workflow,
             WorkflowFrequency,
             WorkflowNavigator,
@@ -449,6 +449,7 @@ class TestWorkflowIntegration:
 
     def test_full_workflow_lifecycle(self):
         """Test complete workflow lifecycle: create, register, execute."""
+        from agents.workflow_navigator import (
             Workflow,
             WorkflowFrequency,
             WorkflowNavigator,

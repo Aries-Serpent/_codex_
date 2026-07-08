@@ -3,16 +3,17 @@ Test Metrics Validate Tail Badge
 
 Test module for metrics validate tail badge.
 """
+
 from __future__ import annotations
-pytest.importorskip("jsonschema")
+
 import json
 from pathlib import Path
+
+import pytest
+
+pytest.importorskip("jsonschema")
+
 from codex_ml.cli import metrics_cli
-
-
-
-
-
 
 
 def _write_ndjson(path: Path, rows: list[dict]) -> None:

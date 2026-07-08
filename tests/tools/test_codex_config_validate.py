@@ -3,12 +3,11 @@ Test Codex Config Validate
 
 Test module for codex config validate.
 """
-import pytest
+
 import json
 from pathlib import Path
+
 import tools.codex_config_validate as cv
-
-
 
 
 def test_config_validate_reports_success(tmp_path: Path):

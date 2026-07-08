@@ -3,18 +3,19 @@ Test Checkpoint Manager Callback
 
 Test module for checkpoint manager callback.
 """
+
 from __future__ import annotations
+
+import pytest
+
 pytest.importorskip("torch")
 pytest.importorskip("transformers")
+
 from torch.optim import SGD
+
 import torch
 from training.checkpoint_manager import CheckpointManager
 from transformers import TrainerControl, TrainerState
-
-
-
-
-
 
 
 def test_callback_saves_and_prunes(tmp_path):

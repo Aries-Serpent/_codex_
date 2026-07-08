@@ -10,14 +10,13 @@ Covers:
 - replace_in_file handles unreadable files gracefully
 - update_references compiles mapping once and returns correct changed/scanned counts
 """
+
 from __future__ import annotations
-import pytest
+
 import re
 from pathlib import Path
+
 from tools.workflow_merge import compile_replacements, replace_in_file, update_references
-
-
-
 
 # ---------------------------------------------------------------------------
 # compile_replacements

@@ -70,7 +70,6 @@ class TestNotificationHandlers:
 
     def test_initialized_notification(self):
         """Initialized notification completes handshake."""
-import pytest
         state = {"initialized": False}
 
         def handle_initialized(params):

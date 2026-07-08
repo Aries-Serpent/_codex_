@@ -65,7 +65,6 @@ def test_mixed_content_sanitization():
 @pytest.mark.integration
 def test_sanitization_preserves_semantic_content():
     """Test sanitization preserves semantic content."""
-import pytest
     original = "Important message with data"
     sanitized = sanitize_log_input(original)
 

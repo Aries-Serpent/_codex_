@@ -1,9 +1,8 @@
 """Ensure codex version module exposes __version__."""
+
 from __future__ import annotations
-import pytest
+
 from codex import _version
-
-
 
 
 def test_version_exposed():

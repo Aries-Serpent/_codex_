@@ -58,9 +58,8 @@ def test_parse_coverage_xml_to_map_basic(tmp_path: Path):
 
 def test_parse_coverage_xml_to_map_empty():
     """Test parsing empty/invalid XML."""
-import pytest
-    import tempfile
     # Non-existent file - use tempfile for platform agnostic temp
+    import tempfile
 
     with tempfile.TemporaryDirectory() as tmpdir:
         nonexistent = Path(tmpdir) / "nonexistent.xml"

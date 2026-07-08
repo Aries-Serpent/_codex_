@@ -6,22 +6,23 @@ spawning subprocesses, so they run reliably in minimal environments.
 
 NOTE: This test module may be skipped if required dependencies are unavailable.
 """
+
 from __future__ import annotations
+
 import tempfile
-    import click
-    from click.testing import CliRunner
-import inspect
-from unittest.mock import MagicMock, patch
-from codex.cli import (
 
-
-
+import pytest
 
 try:
+    import click
+    from click.testing import CliRunner
 except ImportError:
     pytest.skip("click not available", allow_module_level=True)
 
+import inspect
+from unittest.mock import MagicMock, patch
 
+from codex.cli import (
     ALLOWED_TASKS,
     _emit_group_help,
     _missing_command,

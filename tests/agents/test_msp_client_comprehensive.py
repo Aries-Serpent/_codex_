@@ -9,15 +9,13 @@ Coverage targets:
 - Retry logic
 - Timeout handling
 """
+
 from unittest.mock import Mock, patch
-    from agents.msp_client import (  # pragma: allowlist secret
-        import socket
-        import time
-        import concurrent.futures
 
-
+import pytest
 
 try:
+    from agents.msp_client import (  # pragma: allowlist secret
         MSPClient,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
     )
 
@@ -99,6 +97,7 @@ class TestMSPClientMocked:
 
     def test_client_handles_timeout(self, mock_client):
         """Test handling of timeout."""
+        import socket
 
         if hasattr(mock_client, "request"):
             with (
@@ -306,6 +305,7 @@ class TestMSPClientPerformance:
 
     def test_request_latency(self):
         """Test request latency is reasonable."""
+        import time
 
         client = MSPClient()
 
@@ -321,6 +321,7 @@ class TestMSPClientPerformance:
 
     def test_concurrent_requests(self):
         """Test concurrent requests handling."""
+        import concurrent.futures
 
         client = MSPClient()
         errors = []

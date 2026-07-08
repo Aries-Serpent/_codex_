@@ -14,14 +14,15 @@ Tests cover:
 
 #AFTERMATH_METRIC - Phase 9.2 RAG retrieval pipeline tests
 """
+
 from __future__ import annotations
+
 from unittest.mock import Mock
-from rag.pipelines.retrieval import (
 
-
-
+import pytest
 
 # NOTE: Do not manually manipulate sys.path. The conftest.py already adds src/ to sys.path.
+from rag.pipelines.retrieval import (
     DEFAULT_TOP_K,
     MAX_QUERY_LENGTH,
     MAX_RESULTS,

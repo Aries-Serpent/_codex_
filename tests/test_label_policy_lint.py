@@ -3,14 +3,15 @@ Test Label Policy Lint
 
 Test module for label policy lint.
 """
-pytest.importorskip("yaml")
+
 import json
 import pathlib
 import subprocess
 import sys
 
+import pytest
 
-
+pytest.importorskip("yaml")
 
 SAMPLE_OK = """
 name: ok

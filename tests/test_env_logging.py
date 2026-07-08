@@ -1,20 +1,20 @@
 """
+pytest.importorskip("tensorboard")
 Test Env Logging
 
 Test module for env logging.
 """
-pytest.importorskip("tensorboard")
+
+import json
+
+import pytest
+
+from codex.training import run_functional_training
+from codex_utils.repro import log_env_info
+
 pytest.importorskip("omegaconf")
 pytest.importorskip("transformers")
 torch = pytest.importorskip("torch")
-import json
-from codex.training import run_functional_training
-from codex_utils.repro import log_env_info
-        from codex_ml.monitoring import codex_logging
-
-
-
-
 
 
 def test_log_env_info(tmp_path, monkeypatch):
@@ -30,6 +30,7 @@ def test_log_env_info(tmp_path, monkeypatch):
 
     # Patch _codex_sample_system before calling log_env_info
     try:
+        from codex_ml.monitoring import codex_logging
 
         monkeypatch.setattr(codex_logging, "_codex_sample_system", mock_sample_system)
     except ImportError:

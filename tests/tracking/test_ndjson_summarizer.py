@@ -3,14 +3,14 @@ Test Ndjson Summarizer
 
 Test module for ndjson summarizer.
 """
-    pandas = pytest.importorskip("pandas")
+
 import csv
 from pathlib import Path
+
+import pytest
+
 from codex_ml.logging.run_logger import RunLogger
 from codex_utils.cli import ndjson_summary
-
-
-
 
 
 def _read_csv(path: Path) -> list[dict[str, str]]:
@@ -73,6 +73,7 @@ def test_summarize_rotated_shards_to_csv(tmp_path: Path, monkeypatch: pytest.Mon
 def test_summarize_to_parquet_when_available(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
+    pandas = pytest.importorskip("pandas")
     run_dir = tmp_path / "run"
     monkeypatch.setenv("CODEX_TRACKING_NDJSON_MAX_BYTES", "128")
     logger = RunLogger(run_dir, "run-parquet")

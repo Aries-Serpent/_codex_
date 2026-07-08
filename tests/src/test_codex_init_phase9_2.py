@@ -11,44 +11,10 @@ Tests cover:
 
 #AFTERMATH_METRIC - Phase 9.2 test suite targeting 92% coverage
 """
+
 from __future__ import annotations
-import pytest
+
 import sys
-        from codex import __version__
-        from codex import __version__
-        from codex import __version__
-        import codex
-        import codex
-        from codex import __all__
-        from codex import __all__
-        from codex import __all__
-        from codex import __all__
-        from codex import __all__
-        from codex import __all__
-        from codex import __all__
-        from codex import __all__
-        from codex import __all__
-        from codex import __all__
-        from codex import __all__
-        import codex
-        import codex
-        import codex
-        import codex
-        import codex
-        import codex
-        import codex
-        import codex
-        from codex import __version__ as v1
-        from codex import __version__ as v2
-        from codex import __all__ as all1
-        from codex import __all__ as all2
-        import codex
-        import codex as codex2
-        import codex
-        from codex import __all__
-        from codex import __all__
-
-
 
 
 class TestCodexPackageVersion:
@@ -57,6 +23,7 @@ class TestCodexPackageVersion:
     def test_version_import(self) -> None:
         """Test __version__ can be imported."""
         # Arrange & Act
+        from codex import __version__
 
         # Assert
         assert __version__ is not None, "__version__ must be initialized"
@@ -65,6 +32,7 @@ class TestCodexPackageVersion:
     def test_version_format(self) -> None:
         """Test version follows semantic versioning."""
         # Arrange & Act
+        from codex import __version__
 
         # Assert
         # Should be in format X.Y.Z or X.Y.Z.devN
@@ -74,6 +42,7 @@ class TestCodexPackageVersion:
     def test_version_not_empty(self) -> None:
         """Test version is not empty string."""
         # Arrange & Act
+        from codex import __version__
 
         # Assert
         assert __version__ != "", "__version__ is not valid"
@@ -82,6 +51,7 @@ class TestCodexPackageVersion:
     def test_version_accessible_from_module(self) -> None:
         """Test version is accessible from module level."""
         # Arrange & Act
+        import codex
 
         # Assert
         assert hasattr(codex, "__version__")
@@ -94,6 +64,7 @@ class TestCodexPackageExports:
     def test_all_attribute_exists(self) -> None:
         """Test __all__ attribute is defined."""
         # Arrange & Act
+        import codex
 
         # Assert
         assert hasattr(codex, "__all__")
@@ -102,6 +73,7 @@ class TestCodexPackageExports:
     def test_version_in_all(self) -> None:
         """Test __version__ is in __all__."""
         # Arrange & Act
+        from codex import __all__
 
         # Assert
         assert "__version__" in __all__, "Condition must be true"
@@ -109,6 +81,7 @@ class TestCodexPackageExports:
     def test_module_names_in_all(self) -> None:
         """Test expected module names are in __all__."""
         # Arrange & Act
+        from codex import __all__
 
         # Assert
         expected_modules = ["ingest", "analyze", "intent", "transform", "verify", "cli"]
@@ -118,6 +91,7 @@ class TestCodexPackageExports:
     def test_all_items_are_strings(self) -> None:
         """Test all items in __all__ are strings."""
         # Arrange & Act
+        from codex import __all__
 
         # Assert
         for item in __all__:
@@ -126,6 +100,7 @@ class TestCodexPackageExports:
     def test_all_no_duplicates(self) -> None:
         """Test __all__ has no duplicate entries."""
         # Arrange & Act
+        from codex import __all__
 
         # Assert
         assert len(__all__) == len(set(__all__)), "__all__ should not have duplicates"
@@ -133,6 +108,7 @@ class TestCodexPackageExports:
     def test_all_count(self) -> None:
         """Test __all__ has expected number of exports."""
         # Arrange & Act
+        from codex import __all__
 
         # Assert
         # Should have __version__ + 6 modules = 7 items
@@ -145,6 +121,7 @@ class TestCodexModuleImports:
     def test_ingest_module_in_all(self) -> None:
         """Test 'ingest' is declared in __all__."""
         # Arrange & Act
+        from codex import __all__
 
         # Assert
         assert "ingest" in __all__, "Condition must be true"
@@ -152,6 +129,7 @@ class TestCodexModuleImports:
     def test_analyze_module_in_all(self) -> None:
         """Test 'analyze' is declared in __all__."""
         # Arrange & Act
+        from codex import __all__
 
         # Assert
         assert "analyze" in __all__, "Condition must be true"
@@ -159,6 +137,7 @@ class TestCodexModuleImports:
     def test_intent_module_in_all(self) -> None:
         """Test 'intent' is declared in __all__."""
         # Arrange & Act
+        from codex import __all__
 
         # Assert
         assert "intent" in __all__, "Condition must be true"
@@ -166,6 +145,7 @@ class TestCodexModuleImports:
     def test_transform_module_in_all(self) -> None:
         """Test 'transform' is declared in __all__."""
         # Arrange & Act
+        from codex import __all__
 
         # Assert
         assert "transform" in __all__, "Condition must be true"
@@ -173,6 +153,7 @@ class TestCodexModuleImports:
     def test_verify_module_in_all(self) -> None:
         """Test 'verify' is declared in __all__."""
         # Arrange & Act
+        from codex import __all__
 
         # Assert
         assert "verify" in __all__, "Condition must be true"
@@ -180,6 +161,7 @@ class TestCodexModuleImports:
     def test_cli_module_in_all(self) -> None:
         """Test 'cli' is declared in __all__."""
         # Arrange & Act
+        from codex import __all__
 
         # Assert
         assert "cli" in __all__, "Condition must be true"
@@ -191,6 +173,7 @@ class TestCodexPackageDocumentation:
     def test_package_has_docstring(self) -> None:
         """Test package has a docstring."""
         # Arrange & Act
+        import codex
 
         # Assert
         assert codex.__doc__ is not None, "__doc__ must be initialized"
@@ -199,6 +182,7 @@ class TestCodexPackageDocumentation:
     def test_docstring_mentions_session_logging(self) -> None:
         """Test docstring mentions session logging."""
         # Arrange & Act
+        import codex
 
         # Assert
         assert "session logging" in codex.__doc__.lower(), "Condition must be true"
@@ -206,6 +190,7 @@ class TestCodexPackageDocumentation:
     def test_docstring_mentions_python_ingestion_pipeline(self) -> None:
         """Test docstring mentions Python Ingestion Pipeline."""
         # Arrange & Act
+        import codex
 
         # Assert
         assert "python ingestion pipeline" in codex.__doc__.lower(), "Condition must be true"
@@ -213,6 +198,7 @@ class TestCodexPackageDocumentation:
     def test_docstring_lists_components(self) -> None:
         """Test docstring lists pipeline components."""
         # Arrange & Act
+        import codex
 
         # Assert
         doc_lower = codex.__doc__.lower()
@@ -229,12 +215,14 @@ class TestCodexPackageStructure:
     def test_package_is_importable(self) -> None:
         """Test codex package can be imported."""
         # Arrange & Act & Assert
+        import codex
 
         assert codex is not None, "codex must be initialized"
 
     def test_package_has_name(self) -> None:
         """Test package has __name__ attribute."""
         # Arrange & Act
+        import codex
 
         # Assert
         assert hasattr(codex, "__name__")
@@ -243,6 +231,7 @@ class TestCodexPackageStructure:
     def test_package_has_file_attribute(self) -> None:
         """Test package has __file__ attribute."""
         # Arrange & Act
+        import codex
 
         # Assert
         assert hasattr(codex, "__file__")
@@ -251,6 +240,7 @@ class TestCodexPackageStructure:
     def test_package_path_is_correct(self) -> None:
         """Test package path contains 'codex'."""
         # Arrange & Act
+        import codex
 
         # Assert
         assert "codex" in codex.__file__, "Condition must be true"
@@ -269,6 +259,8 @@ class TestCodexBackwardCompatibility:
     def test_version_import_stable(self) -> None:
         """Test __version__ import is stable across multiple imports."""
         # Arrange & Act
+        from codex import __version__ as v1
+        from codex import __version__ as v2
 
         # Assert
         assert v1 == v2, "v1 is not valid"
@@ -277,6 +269,8 @@ class TestCodexBackwardCompatibility:
     def test_all_export_stable(self) -> None:
         """Test __all__ export is stable across multiple imports."""
         # Arrange & Act
+        from codex import __all__ as all1
+        from codex import __all__ as all2
 
         # Assert
         assert all1 == all2, "all1 is not valid"
@@ -284,9 +278,11 @@ class TestCodexBackwardCompatibility:
     def test_module_reimport_idempotent(self) -> None:
         """Test reimporting module is idempotent."""
         # Arrange & Act
+        import codex
 
         first_id = id(codex)
 
+        import codex as codex2
 
         second_id = id(codex2)
 
@@ -318,6 +314,7 @@ class TestCodexPublicAPI:
     def test_public_exports_accessible(self) -> None:
         """Test all public exports are declared in __all__."""
         # Arrange & Act
+        import codex
 
         # Assert
         # Note: Module names in __all__ are declarations, not necessarily attributes
@@ -329,6 +326,7 @@ class TestCodexPublicAPI:
     def test_no_private_exports_in_all(self) -> None:
         """Test __all__ does not contain private names (except __version__)."""
         # Arrange & Act
+        from codex import __all__
 
         # Assert
         for item in __all__:
@@ -340,6 +338,7 @@ class TestCodexPublicAPI:
     def test_version_is_public(self) -> None:
         """Test __version__ is considered public despite leading underscore."""
         # Arrange & Act
+        from codex import __all__
 
         # Assert
         # Special case: __version__ is public by convention

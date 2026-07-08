@@ -3,16 +3,17 @@ Test Determinism
 
 Test module for determinism.
 """
+
+import pytest
+
 pytest.importorskip("torch")
 pytest.importorskip("transformers")
 pytest.importorskip("datasets")
 pytest.importorskip("accelerate")
 pytest.importorskip("yaml")
+
 import torch
 from src.training.engine_hf_trainer import _seed_everything
-
-
-
 
 
 def test_seed_repeats():

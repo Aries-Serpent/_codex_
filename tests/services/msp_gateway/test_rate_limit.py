@@ -255,12 +255,10 @@ async def test_dispatch_without_tenant_passes_through():
 @pytest.mark.timeout(30)
 async def test_dispatch_rate_limited_request(monkeypatch):
     """Without tenant context middleware, depleted bucket setup still returns 200."""
-import pytest
     from fastapi import FastAPI
     from fastapi.testclient import TestClient
-    from services.msp_gateway.middleware.rate_limit import settings as rl_settings
-    from services.msp_gateway.middleware.rate_limit import rate_limiter as global_rl
 
+    from services.msp_gateway.middleware.rate_limit import settings as rl_settings
 
     monkeypatch.setattr(rl_settings, "rate_limit_enabled", True)
     monkeypatch.setattr(rl_settings, "rate_limit_requests_per_minute", 1)
@@ -274,6 +272,7 @@ import pytest
         return {"ok": True}
 
     # Plant a depleted request bucket
+    from services.msp_gateway.middleware.rate_limit import rate_limiter as global_rl
 
     global_rl.request_buckets["tenant_depleted"] = TokenBucket(
         capacity=1, tokens=0.0, last_refill=time.time(), refill_rate=0.0

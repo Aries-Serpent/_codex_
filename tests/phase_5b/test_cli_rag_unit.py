@@ -8,16 +8,15 @@ Tests cover:
 - Error handling and edge cases
 - Mocking external dependencies
 """
-pytest.importorskip("typer")
+
 import json
 from pathlib import Path
 from unittest.mock import MagicMock, patch
+
+import pytest
 import typer
+
 from codex.cli_rag import (
-
-
-
-
     RAGIndexer,
     RAGRetriever,
     _format_bytes,

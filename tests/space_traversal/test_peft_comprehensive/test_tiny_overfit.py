@@ -1,23 +1,24 @@
 """
+pytest.importorskip("tensorboard")
 Test Tiny Overfit
 
 Test module for tiny overfit.
 """
+
 from __future__ import annotations
-pytest.importorskip("tensorboard")
+
 from pathlib import Path
-from tests.utils.torch_helpers import require_torch
-from training.functional_training import TrainCfg, run_custom_trainer
-from training.seed import ensure_global_seed
 
-
-
+import pytest
 
 # Avoid modifying sys.path to prevent stdlib shadowing (e.g. tests/ast -> ast).
 # Import torch helpers using absolute import from tests package
+from tests.utils.torch_helpers import require_torch
 
 torch = require_torch()
 
+from training.functional_training import TrainCfg, run_custom_trainer
+from training.seed import ensure_global_seed
 
 
 class TinyRegressionDataset(torch.utils.data.Dataset):

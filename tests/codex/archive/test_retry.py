@@ -3,22 +3,10 @@ Tests for codex.archive.retry module.
 
 This module contains tests for retry helpers with exponential backoff.
 """
+
 import random
-        from codex.archive.retry import RetryConfig
-        from codex.archive.retry import RetryConfig
-        from codex.archive.retry import RetryConfig
-        from codex.archive.retry import RetryConfig
-        from codex.archive.retry import RetryConfig, calculate_backoff
-        from codex.archive.retry import RetryConfig, calculate_backoff
-        from codex.archive.retry import RetryConfig, calculate_backoff
-        from codex.archive.retry import RetryConfig, calculate_backoff
-        from codex.archive.retry import RetryConfig, calculate_backoff
-        from codex.archive.retry import RetryConfig, retry_with_backoff
-        from codex.archive.retry import RetryConfig, retry_with_backoff
-        from codex.archive.retry import retry_with_backoff
-        from codex.archive.retry import logger
 
-
+import pytest
 
 
 class TestRetryConfig:
@@ -26,6 +14,7 @@ class TestRetryConfig:
 
     def test_default_values(self):
         """Test RetryConfig default values."""
+        from codex.archive.retry import RetryConfig
 
         config = RetryConfig()
 
@@ -42,6 +31,7 @@ class TestRetryConfig:
 
     def test_custom_values(self):
         """Test RetryConfig with custom values."""
+        from codex.archive.retry import RetryConfig
 
         config = RetryConfig(
             enabled=False,
@@ -59,6 +49,7 @@ class TestRetryConfig:
 
     def test_create_rng(self):
         """Test create_rng method."""
+        from codex.archive.retry import RetryConfig
 
         config = RetryConfig(seed=123)
         rng = config.create_rng()
@@ -73,6 +64,7 @@ class TestRetryConfig:
 
     def test_frozen(self):
         """Test RetryConfig is frozen (immutable)."""
+        from codex.archive.retry import RetryConfig
 
         config = RetryConfig()
 
@@ -85,6 +77,7 @@ class TestCalculateBackoff:
 
     def test_first_attempt(self):
         """Test backoff for first attempt."""
+        from codex.archive.retry import RetryConfig, calculate_backoff
 
         config = RetryConfig(initial_delay=1.0, multiplier=2.0, jitter=0)
 
@@ -94,6 +87,7 @@ class TestCalculateBackoff:
 
     def test_exponential_growth(self):
         """Test exponential growth of backoff."""
+        from codex.archive.retry import RetryConfig, calculate_backoff
 
         config = RetryConfig(initial_delay=1.0, multiplier=2.0, jitter=0, max_delay=100.0)
 
@@ -104,6 +98,7 @@ class TestCalculateBackoff:
 
     def test_max_delay_cap(self):
         """Test max delay capping."""
+        from codex.archive.retry import RetryConfig, calculate_backoff
 
         config = RetryConfig(initial_delay=1.0, multiplier=2.0, jitter=0, max_delay=5.0)
 
@@ -113,6 +108,7 @@ class TestCalculateBackoff:
 
     def test_jitter_applied(self):
         """Test jitter is applied to delay."""
+        from codex.archive.retry import RetryConfig, calculate_backoff
 
         config = RetryConfig(initial_delay=10.0, jitter=0.1, seed=42)
         rng = config.create_rng()
@@ -124,6 +120,7 @@ class TestCalculateBackoff:
 
     def test_zero_jitter(self):
         """Test with zero jitter."""
+        from codex.archive.retry import RetryConfig, calculate_backoff
 
         config = RetryConfig(initial_delay=5.0, jitter=0)
 
@@ -137,6 +134,7 @@ class TestRetryWithBackoff:
 
     def test_decorator_success(self):
         """Test decorator with successful function."""
+        from codex.archive.retry import RetryConfig, retry_with_backoff
 
         config = RetryConfig()
 
@@ -149,6 +147,7 @@ class TestRetryWithBackoff:
 
     def test_decorator_disabled(self):
         """Test decorator when disabled."""
+        from codex.archive.retry import RetryConfig, retry_with_backoff
 
         config = RetryConfig(enabled=False)
         call_count = 0
@@ -167,6 +166,7 @@ class TestRetryWithBackoff:
 
     def test_decorator_default_config(self):
         """Test decorator with default config."""
+        from codex.archive.retry import retry_with_backoff
 
         @retry_with_backoff()
         def successful_func():
@@ -181,6 +181,7 @@ class TestModuleLevel:
 
     def test_logger_exists(self):
         """Test logger is configured."""
+        from codex.archive.retry import logger
 
         assert logger is not None, "logger must be initialized"
         assert logger.name == "codex.archive.retry", "name is not valid"

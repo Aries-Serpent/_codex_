@@ -3,13 +3,12 @@ Test Safety Filter Integration
 
 Test module for safety filter integration.
 """
-import pytest
+
 import json
 from types import SimpleNamespace
+
 from codex_ml.data import stream_paths
 from codex_ml.safety.filters import REDACT_TOKEN
-
-
 
 
 def _cfg(enabled: bool):

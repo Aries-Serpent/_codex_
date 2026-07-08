@@ -10,35 +10,8 @@ Based on toolkit analysis:
 Applying Table 4 equations #1-#20 for deep module coverage
 Expected gain: +25-30% on this module (24.05% → 50%+)
 """
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-            from agents.physics_orchestrator import DiffusionFlowModel
-            from agents.physics_orchestrator import EnergyLandscape
-            from agents.physics_orchestrator import SwarmIntelligence
-            from agents.physics_orchestrator import ReflectionLoop
-            from agents.physics_orchestrator import TaskDecomposition
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import DecisionState
-            from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import DecisionState, PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import (
-        from agents.physics_orchestrator import (
-        from agents.physics_orchestrator import DecisionState, PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import DecisionState
-        from agents.physics_orchestrator import DecisionState
-        from agents.physics_orchestrator import ForceVector
-            import inspect
-            from agents.physics_orchestrator import ForceVector
-        from agents.physics_orchestrator import ActionPath
-        from agents.physics_orchestrator import ActionPath
-        from agents.physics_orchestrator import DecisionState
-        from agents.physics_orchestrator import DecisionState
-            from agents.physics_orchestrator import ForceVector
-        from agents.physics_orchestrator import ForceVector
 
+import pytest
 
 
 class TestPhase2_PhysicsOrchestrator_Table4_Eq1:
@@ -46,6 +19,7 @@ class TestPhase2_PhysicsOrchestrator_Table4_Eq1:
 
     def test_physics_inspired_orchestrator_full_init(self):
         """Test PhysicsInspiredOrchestrator with all parameters."""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         try:
             orch = PhysicsInspiredOrchestrator()
@@ -60,6 +34,7 @@ class TestPhase2_PhysicsOrchestrator_Table4_Eq1:
     def test_diffusion_flow_model_initialization(self):
         """Test DiffusionFlowModel using Eq #11 (Advanced patterns)."""
         try:
+            from agents.physics_orchestrator import DiffusionFlowModel
 
             model = DiffusionFlowModel()
             assert model is not None, "model must be initialized"
@@ -69,6 +44,7 @@ class TestPhase2_PhysicsOrchestrator_Table4_Eq1:
     def test_energy_landscape_initialization(self):
         """Test EnergyLandscape using Eq #11 (Advanced patterns)."""
         try:
+            from agents.physics_orchestrator import EnergyLandscape
 
             landscape = EnergyLandscape()
             assert landscape is not None, "landscape must be initialized"
@@ -78,6 +54,7 @@ class TestPhase2_PhysicsOrchestrator_Table4_Eq1:
     def test_swarm_intelligence_initialization(self):
         """Test SwarmIntelligence using Eq #11 (Advanced patterns)."""
         try:
+            from agents.physics_orchestrator import SwarmIntelligence
 
             swarm = SwarmIntelligence()
             assert swarm is not None, "swarm must be initialized"
@@ -87,6 +64,7 @@ class TestPhase2_PhysicsOrchestrator_Table4_Eq1:
     def test_reflection_loop_initialization(self):
         """Test ReflectionLoop pattern."""
         try:
+            from agents.physics_orchestrator import ReflectionLoop
 
             loop = ReflectionLoop()
             assert loop is not None, "loop must be initialized"
@@ -96,6 +74,7 @@ class TestPhase2_PhysicsOrchestrator_Table4_Eq1:
     def test_task_decomposition_initialization(self):
         """Test TaskDecomposition pattern."""
         try:
+            from agents.physics_orchestrator import TaskDecomposition
 
             decomp = TaskDecomposition()
             assert decomp is not None, "decomp must be initialized"
@@ -108,6 +87,7 @@ class TestPhase2_PhysicsOrchestrator_Table4_Eq6:
 
     def test_orchestrator_operator_configuration(self):
         """Test operator wiring and configuration."""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         try:
             orch = PhysicsInspiredOrchestrator()
@@ -120,6 +100,7 @@ class TestPhase2_PhysicsOrchestrator_Table4_Eq6:
 
     def test_momentum_operator_access(self):
         """Test force_vectors attribute stores momentum-like vectors."""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orch = PhysicsInspiredOrchestrator()
         # force_vectors is the momentum analog in this orchestrator
@@ -128,6 +109,7 @@ class TestPhase2_PhysicsOrchestrator_Table4_Eq6:
 
     def test_energy_operator_access(self):
         """Test DecisionState energy attribute is accessible."""
+        from agents.physics_orchestrator import DecisionState
 
         state = DecisionState()
         assert hasattr(state, "energy")
@@ -140,6 +122,7 @@ class TestPhase2_PhysicsOrchestrator_Table4_Eq7:
     def test_hamiltonian_composition(self):
         """Test Hamiltonian composition of kinetic and potential terms."""
         try:
+            from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
             orch = PhysicsInspiredOrchestrator()
 
@@ -154,6 +137,7 @@ class TestPhase2_PhysicsOrchestrator_Table4_Eq7:
 
     def test_potential_configuration(self):
         """Test config attribute holds potential/operator configuration."""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orch = PhysicsInspiredOrchestrator()
         assert hasattr(orch, "config")
@@ -165,6 +149,7 @@ class TestPhase2_PhysicsOrchestrator_Table4_Eq19:
 
     def test_assess_situation_method(self):
         """Test assess_situation returns a dict with system metrics."""
+        from agents.physics_orchestrator import DecisionState, PhysicsInspiredOrchestrator
 
         orch = PhysicsInspiredOrchestrator()
         state = DecisionState()
@@ -174,12 +159,14 @@ class TestPhase2_PhysicsOrchestrator_Table4_Eq19:
 
     def test_act_method(self):
         """Test act method is callable on PhysicsInspiredOrchestrator."""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orch = PhysicsInspiredOrchestrator()
         assert callable(getattr(orch, "act", None))
 
     def test_optimize_method(self):
         """Test optimize returns None for empty paths and ActionPath for valid ones."""
+        from agents.physics_orchestrator import (
             ActionPath,
             ActionType,
             PhysicsInspiredOrchestrator,
@@ -201,6 +188,7 @@ class TestPhase2_PhysicsOrchestrator_Table4_Eq19:
 
     def test_deliberate_method(self):
         """Test deliberate_paths method returns a list of ActionPaths."""
+        from agents.physics_orchestrator import (
             ActionPath,
             ActionType,
             DecisionState,
@@ -234,6 +222,7 @@ class TestPhase2_PhysicsOrchestrator_Table4_Eq20:
 
     def test_evolution_step(self):
         """Test evolve_state is callable and doesn't raise on valid input."""
+        from agents.physics_orchestrator import DecisionState, PhysicsInspiredOrchestrator
 
         orch = PhysicsInspiredOrchestrator()
         state = DecisionState()
@@ -245,6 +234,7 @@ class TestPhase2_PhysicsOrchestrator_Table4_Eq20:
 
     def test_time_step_configuration(self):
         """Test config dict contains time-step related configuration."""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orch = PhysicsInspiredOrchestrator()
         assert hasattr(orch, "config")
@@ -257,6 +247,7 @@ class TestPhase2_PhysicsOrchestrator_BranchCoverage:
 
     def test_decision_state_with_valid_options(self):
         """Test DecisionState with valid options (branch: valid path)."""
+        from agents.physics_orchestrator import DecisionState
 
         try:
             state = DecisionState(
@@ -272,6 +263,7 @@ class TestPhase2_PhysicsOrchestrator_BranchCoverage:
 
     def test_decision_state_with_empty_options(self):
         """Test DecisionState initializes cleanly with default fields."""
+        from agents.physics_orchestrator import DecisionState
 
         state = DecisionState()
         assert state is not None, "state must be initialized"
@@ -280,6 +272,7 @@ class TestPhase2_PhysicsOrchestrator_BranchCoverage:
 
     def test_force_vector_positive_magnitude(self):
         """Test ForceVector with positive magnitude (branch: positive)."""
+        from agents.physics_orchestrator import ForceVector
 
         try:
             force = ForceVector(magnitude=10.0, direction="forward")
@@ -290,7 +283,9 @@ class TestPhase2_PhysicsOrchestrator_BranchCoverage:
     def test_force_vector_negative_magnitude(self):
         """Test ForceVector is importable and handles magnitude."""
         try:
+            import inspect
 
+            from agents.physics_orchestrator import ForceVector
 
             sig = inspect.signature(ForceVector)
             # Build with required params, filling in sensible defaults
@@ -306,6 +301,7 @@ class TestPhase2_PhysicsOrchestrator_BranchCoverage:
 
     def test_action_path_single_step(self):
         """Test ActionPath with single step (branch: minimal)."""
+        from agents.physics_orchestrator import ActionPath
 
         try:
             path = ActionPath(steps=["step1"])
@@ -315,6 +311,7 @@ class TestPhase2_PhysicsOrchestrator_BranchCoverage:
 
     def test_action_path_many_steps(self):
         """Test ActionPath with many steps (branch: complex)."""
+        from agents.physics_orchestrator import ActionPath
 
         try:
             path = ActionPath(steps=["step1", "step2", "step3", "step4", "step5"])
@@ -328,6 +325,7 @@ class TestPhase2_PhysicsOrchestrator_EdgeCases:
 
     def test_decision_state_with_none_context(self):
         """Test DecisionState.context defaults to empty dict."""
+        from agents.physics_orchestrator import DecisionState
 
         state = DecisionState()
         # context is a dict field by default
@@ -335,6 +333,7 @@ class TestPhase2_PhysicsOrchestrator_EdgeCases:
 
     def test_decision_state_with_complex_constraints(self):
         """Test DecisionState.constraints accepts a dict."""
+        from agents.physics_orchestrator import DecisionState
 
         state = DecisionState()
         state.constraints = {"max_cost": 100, "min_quality": 0.8}
@@ -343,6 +342,7 @@ class TestPhase2_PhysicsOrchestrator_EdgeCases:
     def test_force_vector_zero_magnitude(self):
         """Test ForceVector class is importable."""
         try:
+            from agents.physics_orchestrator import ForceVector
 
             assert ForceVector is not None, "ForceVector must be initialized"
         except ImportError:
@@ -350,6 +350,7 @@ class TestPhase2_PhysicsOrchestrator_EdgeCases:
 
     def test_force_vector_very_large_magnitude(self):
         """Test ForceVector with very large magnitude."""
+        from agents.physics_orchestrator import ForceVector
 
         try:
             force = ForceVector(magnitude=1e10, direction="forward")

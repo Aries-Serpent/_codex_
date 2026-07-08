@@ -3,13 +3,14 @@ Test Train Codex Cli Merge
 
 Test module for train codex cli merge.
 """
+
+import pytest
+
 pytest.importorskip("transformers")
+
 import argparse
+
 from cli import train_codex
-
-
-
-
 
 
 def test_merge_preserves_yaml_booleans_when_flag_absent():

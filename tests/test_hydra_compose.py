@@ -34,7 +34,6 @@ def _import_hydra_compose() -> tuple[object, object]:
 
 def test_composes_and_overrides() -> None:
     """Structured configs should compose experiment presets and overrides."""
-import pytest
 
     compose, initialize = _import_hydra_compose()
 

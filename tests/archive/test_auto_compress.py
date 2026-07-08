@@ -8,13 +8,12 @@ Cases:
 
 Uses small threshold to force compression.
 """
-import pytest
+
 import os
 import shutil
 import subprocess
 import sys
 from pathlib import Path
-
 
 RAW_ROOT = Path("audit_artifacts/raw")
 BUNDLE_ROOT = Path("audit_artifacts/bundles")

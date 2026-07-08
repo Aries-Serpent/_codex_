@@ -48,7 +48,6 @@ def test_smoke_1_class_get():
 
 def test_smoke_1_class_set():
     """Smoke test for class setter."""
-import pytest
     obj = DummyClass_1(50)
     obj.set_value(75)
     assert obj.get_value() == 75, "Value must be initialized"

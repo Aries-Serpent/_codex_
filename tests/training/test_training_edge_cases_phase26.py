@@ -17,30 +17,23 @@ Production code should use:
 - safe_pickle_load with RestrictedUnpickler for legacy compatibility
 - safetensors for new ML models
 """
+
+import pytest
+
 pytest.importorskip("numpy")
 pytest.importorskip("torch")
-import pickle  # for PyTorch ≥2.6 UnpicklingError exception type only
-from unittest.mock import patch
-import numpy as np
-import torch
-from codex_ml.utils.safe_pickle import safe_pickle_load
-        import tempfile
-            import os
-        import os
-        import tempfile
-        import gc
-        import os
-        import tempfile
-        import tempfile
-            import os
-
-
 
 # Import pickle ONLY for exception type - no load/dump operations on untrusted data
+import pickle  # for PyTorch ≥2.6 UnpicklingError exception type only
 
 # Skip entire module if torch is not available or unloadable
+pytest.importorskip("torch", reason="PyTorch required for tests")
+from unittest.mock import patch
 
+import numpy as np
 
+import torch
+from codex_ml.utils.safe_pickle import safe_pickle_load
 
 
 class TestTrainingEdgeCases:
@@ -105,6 +98,7 @@ class TestTrainingEdgeCases:
         checkpoints. We use torch.load with weights_only=True for safe loading.
         The corrupted data is a test fixture we create, not external untrusted data.
         """
+        import tempfile
 
         with tempfile.NamedTemporaryFile(suffix=".pt", delete=False) as f:
             f.write(b"corrupted data")
@@ -116,6 +110,7 @@ class TestTrainingEdgeCases:
             with pytest.raises((RuntimeError, ValueError, pickle.UnpicklingError)):
                 torch.load(checkpoint_path, weights_only=True)
         finally:
+            import os
 
             os.unlink(checkpoint_path)
 
@@ -359,6 +354,8 @@ class TestTrainingEdgeCases:
 
     def test_training_disk_space_full(self):
         """Test training handles disk space full error"""
+        import os
+        import tempfile
 
         with tempfile.NamedTemporaryFile(mode="w", delete=False) as f:
             checkpoint_path = f.name
@@ -393,6 +390,7 @@ class TestTrainingEdgeCases:
             allocations[i] = None
 
         # Garbage collection
+        import gc
 
         gc.collect()
         if torch.cuda.is_available():
@@ -410,6 +408,8 @@ class TestTrainingEdgeCases:
         for corrupted data. We catch UnpicklingError which PyTorch ≥2.6 raises
         for invalid pickle data when using weights_only=True.
         """
+        import os
+        import tempfile
 
         with tempfile.NamedTemporaryFile(mode="wb", suffix=".pt", delete=False) as f:
             # Write corrupted data
@@ -534,6 +534,7 @@ class TestDataLoadingEdgeCases:
         We create a corrupted file as a test fixture to ensure proper exception handling.
         Production code should NOT use raw pickle.load - use safe_pickle_load instead.
         """
+        import tempfile
 
         with tempfile.NamedTemporaryFile(mode="wb", suffix=".pkl", delete=False) as f:
             f.write(b"not a valid pickle")
@@ -543,6 +544,7 @@ class TestDataLoadingEdgeCases:
             with pytest.raises((pickle.UnpicklingError, EOFError)):
                 safe_pickle_load(corrupted_file, use_restricted_unpickler=True)
         finally:
+            import os
 
             os.unlink(corrupted_file)
 

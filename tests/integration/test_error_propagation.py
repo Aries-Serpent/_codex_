@@ -3,9 +3,10 @@ Phase 7: Error Propagation Tests (80% → 85%)
 
 Target: 10 tests for error propagation and recovery
 """
+
 import json
 
-
+import pytest
 
 pytestmark = [pytest.mark.integration, pytest.mark.slow]
 

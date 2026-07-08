@@ -9,15 +9,14 @@ Validates that the symbolic pipeline produces outputs with stable:
 These tests catch accidental API surface breakage and numeric regressions.
 No GPU or heavy ML dependencies required.
 """
+
 from __future__ import annotations
+
 import math
 import sys
 from pathlib import Path
-        from codex_ml.symbolic_pipeline import PretrainCfg, pretrain
-        from codex_ml.symbolic_pipeline import (
 
-
-
+import pytest
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 for _p in (str(_REPO_ROOT / "src"), str(_REPO_ROOT)):
@@ -134,6 +133,7 @@ class TestModelDeterminism:
 
     def test_pretrain_deterministic(self, corpus):
         """Two pretrain calls with the same seed must produce identical token_probs."""
+        from codex_ml.symbolic_pipeline import PretrainCfg, pretrain
 
         cfg = PretrainCfg(epochs=1, seed=99)
         m1 = pretrain(corpus, cfg)
@@ -143,6 +143,7 @@ class TestModelDeterminism:
 
     def test_pipeline_result_deterministic(self, corpus, demos, prefs):
         """Full pipeline run must produce the same objective_U for the same seed."""
+        from codex_ml.symbolic_pipeline import (
             PretrainCfg,
             RewardModelCfg,
             RLHFCfg,

@@ -1,12 +1,11 @@
 """Ensure Prometheus fallback emits NDJSON metrics when client missing."""
+
 from __future__ import annotations
-import pytest
+
 import builtins
 import importlib
 import json
 import sys
-
-
 
 
 def test_prometheus_fallback_writes_ndjson(monkeypatch, tmp_path, capsys):

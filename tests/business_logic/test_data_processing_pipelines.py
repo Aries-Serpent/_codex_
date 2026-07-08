@@ -8,9 +8,6 @@ Tests cover:
 - Transformation logic
 - Error handling and recovery
 """
-import pytest
-        import random
-        import random
 
 
 class TestDataLoadingBasics:
@@ -166,6 +163,7 @@ class TestBatchCreation:
 
     def test_shuffle_batches(self):
         """Test shuffling data before batching."""
+        import random
 
         data = list(range(100))
 
@@ -197,6 +195,7 @@ class TestBatchCreation:
 
     def test_weighted_sampling(self):
         """Test weighted random sampling."""
+        import random
 
         items = ["a", "b", "c"]
         weights = [0.5, 0.3, 0.2]

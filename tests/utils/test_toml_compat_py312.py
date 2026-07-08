@@ -1,7 +1,4 @@
 # @pytest.mark.skipif(sys.version_info < (3, 12), reason="Python 3.12+ specific tests")
-import pytest
-
-
 class TestPython312TomlFeatures:
     """Test Python 3.12-specific TOML features."""
 
@@ -11,13 +8,7 @@ class TestPython312TomlFeatures:
 
         Python 3.12 has optimized tomllib implementation.
         """
-import pytest
         import time
-            import tomllib
-            import tomllib
-            import tomllib
-                import tomli
-            import tomllib
 
         # Create a moderately sized TOML file
         toml_file = tmp_path / "large.toml"
@@ -33,6 +24,7 @@ key4 = true
         toml_file.write_text("\n".join(sections))
 
         try:
+            import tomllib
         except ImportError:
             pytest.skip("tomllib not available")
         else:
@@ -57,6 +49,7 @@ author = "José García"
 
         data: dict = {}
         try:
+            import tomllib
 
             with open(toml_file, "rb") as f:
                 data = tomllib.load(f)
@@ -77,11 +70,13 @@ class TestTomlErrorHandling:
         toml_file.write_text("this is not valid TOML syntax [[")
 
         try:
+            import tomllib
 
             with pytest.raises(tomllib.TOMLDecodeError), open(toml_file, "rb") as f:
                 tomllib.load(f)
         except ImportError:
             try:
+                import tomli
 
                 with pytest.raises(tomli.TOMLDecodeError):
                     with open(toml_file, "rb") as f:
@@ -92,6 +87,7 @@ class TestTomlErrorHandling:
     def test_missing_file(self):
         """Test handling of missing TOML file."""
         try:
+            import tomllib
 
             with pytest.raises(FileNotFoundError), open("nonexistent.toml", "rb") as f:
                 tomllib.load(f)

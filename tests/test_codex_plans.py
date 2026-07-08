@@ -9,20 +9,15 @@ Test coverage includes:
 - Error conditions and edge cases
 - Integration with pathlib.Path
 """
+
 from __future__ import annotations
+
 import tempfile
 from pathlib import Path
+
+import pytest
+
 from codex_plans import list_plan_documents
-        from codex_plans import list_plan_documents as lpd
-        from codex_plans import __all__
-        import codex_plans
-        from codex_plans import __all__
-        from codex_plans import __all__
-        import codex_plans
-
-
-
-
 
 # ============================================================================
 # UNIT TESTS: list_plan_documents() Function
@@ -224,6 +219,7 @@ class TestListPlanDocumentsIntegration:
 
     def test_module_import_successful(self):
         """Test that module imports correctly."""
+        from codex_plans import list_plan_documents as lpd
         assert callable(lpd), "Condition must be true"
 
     def test_function_has_docstring(self):
@@ -368,21 +364,26 @@ class TestCodexPlansModuleExports:
 
     def test_all_export_defined(self):
         """Test that __all__ is defined in module."""
+        from codex_plans import __all__
         assert isinstance(__all__, list)
         assert "list_plan_documents" in __all__, "Condition must be true"
 
     def test_public_api_accessible(self):
         """Test that all exported items are accessible."""
+        import codex_plans
+        from codex_plans import __all__
 
         for name in __all__:
             assert hasattr(codex_plans, name)
 
     def test_list_plan_documents_in_all(self):
         """Test that list_plan_documents is in __all__."""
+        from codex_plans import __all__
         assert "list_plan_documents" in __all__, "Condition must be true"
 
     def test_no_unexpected_exports(self):
         """Test that module doesn't export private items."""
+        import codex_plans
 
         for attr in dir(codex_plans):
             if not attr.startswith("_"):

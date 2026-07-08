@@ -1,11 +1,10 @@
 """Tests ensuring importing train_loop does not mutate the workspace."""
+
 from __future__ import annotations
-import pytest
+
 import importlib
 import sys
 from pathlib import Path
-
-
 
 
 def test_import_has_no_artifact_side_effects(tmp_path, monkeypatch):

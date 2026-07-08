@@ -6,9 +6,8 @@ Test Minimal Train Cli
 
 Test module for minimal train cli.
 """
-import pytest
-from codex_ml.cli import minimal_train
 
+from codex_ml.cli import minimal_train
 
 
 def test_run_minimal_produces_reasonable_metrics():

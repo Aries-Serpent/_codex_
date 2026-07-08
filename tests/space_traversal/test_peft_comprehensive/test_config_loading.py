@@ -3,16 +3,13 @@ Test Config Loading
 
 Test module for config loading.
 """
+
 from pathlib import Path
+
+import pytest
+
 from codex_ml.utils.config_loader import load_training_cfg
 from omegaconf import DictConfig
-    import codex_ml.utils.config_loader as loader_module
-    from hydra import compose, initialize_config_dir
-    from hydra.errors import MissingConfigException
-    from hydra import compose, initialize_config_dir
-
-
-
 
 CFG_DIR = Path("configs/training")
 BASE = CFG_DIR / "base.yaml"
@@ -21,6 +18,7 @@ BASE = CFG_DIR / "base.yaml"
 @pytest.fixture
 def ensure_cfg_dir(tmp_path, monkeypatch):
     """Work inside a temp copy and redirect config loader to temp directory."""
+    import codex_ml.utils.config_loader as loader_module
 
     tmp_repo = tmp_path / "repo"
     tmp_repo.mkdir(parents=True, exist_ok=True)
@@ -60,6 +58,7 @@ def test_loader_file_and_fallback(ensure_cfg_dir, with_file):
 
 
 def test_compose_api_when_file_exists(ensure_cfg_dir):
+    from hydra import compose, initialize_config_dir
 
     CFG_DIR.mkdir(parents=True, exist_ok=True)
     # Include batch_size in the config so we can override it (Hydra struct mode)
@@ -72,6 +71,7 @@ def test_compose_api_when_file_exists(ensure_cfg_dir):
 
 
 def test_missing_config_hard_fail(ensure_cfg_dir):
+    from hydra.errors import MissingConfigException
 
     if BASE.exists():
         BASE.unlink()
@@ -81,6 +81,7 @@ def test_missing_config_hard_fail(ensure_cfg_dir):
 
 def test_file_mode_invariant(ensure_cfg_dir):
     """Test that file mode works when config file exists."""
+    from hydra import compose, initialize_config_dir
 
     # Create the config file in the temp directory
     CFG_DIR.mkdir(parents=True, exist_ok=True)

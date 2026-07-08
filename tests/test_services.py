@@ -10,64 +10,14 @@ Test coverage includes:
 - GitHub client import handling (optional dependency)
 - Error handling for missing optional dependencies
 """
+
 from __future__ import annotations
+
 import logging
 from pathlib import Path
 from unittest.mock import MagicMock, patch
-        import services
-        from services import WorkflowInventory
-        from services import WorkflowParser
-        import services
-        from services import __all__
-        from services import __all__
-        from services import WorkflowParser
-        from services import WorkflowParser
-        from services import WorkflowParser
-        from services import WorkflowParser
-        from services import WorkflowParser
-        from services import WorkflowParser
-        from services import WorkflowParser
-        from services import WorkflowParser
-        from services import WorkflowParser
-        from services import WorkflowParser
-        from services import WorkflowMetadata
-        from services import WorkflowTrigger
-        from services import WorkflowJob
-        from services import WorkflowInput
-        from services import WorkflowDependency
-        from services import WorkflowInventory
-        from services import WorkflowInventory
-        from services import WorkflowInventory
-        from services import WorkflowParser
-        from services import WorkflowParser
-        import services
-        import services
-        import services
-        from services.workflow import WorkflowInventory, WorkflowParser
-        from services.workflow import types
-        from services.workflow import parser
-        from services.workflow import inventory
-        import services
-        from services import WorkflowParser
-        import inspect
-        from services import WorkflowInventory
-        import services
-        import services
-        import tempfile
-        from pathlib import Path
-        from services import WorkflowParser
-        import tempfile
-        from pathlib import Path
-        from services import WorkflowInventory
-        from services import WorkflowParser
-        from services import WorkflowParser
-        from services import __all__
-        import importlib
-        import services
-        from services import __all__ as reloaded_all
 
-
-
+import pytest
 
 # ============================================================================
 # TEST FIXTURES
@@ -113,27 +63,33 @@ class TestServicesModuleInitialization:
 
     def test_module_imports_successfully(self):
         """Test that services module can be imported."""
+        import services
         assert services is not None, "services must be initialized"
 
     def test_workflow_inventory_imported(self):
         """Test that WorkflowInventory is available."""
+        from services import WorkflowInventory
         assert WorkflowInventory is not None, "WorkflowInventory must be initialized"
 
     def test_workflow_parser_imported(self):
         """Test that WorkflowParser is available."""
+        from services import WorkflowParser
         assert WorkflowParser is not None, "WorkflowParser must be initialized"
 
     def test_all_exports_defined(self):
         """Test that __all__ is properly defined."""
+        import services
         assert hasattr(services, "__all__")
         assert isinstance(services.__all__, list)
 
     def test_workflow_parser_in_exports(self):
         """Test that WorkflowParser is in __all__."""
+        from services import __all__
         assert "WorkflowParser" in __all__, "Condition must be true"
 
     def test_workflow_inventory_in_exports(self):
         """Test that WorkflowInventory is in __all__."""
+        from services import __all__
         assert "WorkflowInventory" in __all__, "Condition must be true"
 
     def test_types_exported(self):
@@ -142,6 +98,7 @@ class TestServicesModuleInitialization:
 
     def test_parser_parse_file_accepts_path(self):
         """Test that parse_file accepts Path objects."""
+        from services import WorkflowParser
 
         parser = WorkflowParser()
         # Test with non-existent file - should return None or handle gracefully
@@ -150,12 +107,14 @@ class TestServicesModuleInitialization:
 
     def test_parser_cache_initialized_empty(self):
         """Test that parser cache starts empty."""
+        from services import WorkflowParser
 
         parser = WorkflowParser()
         assert len(parser._cache) == 0, "Collection must not be empty"
 
     def test_multiple_parser_instances_independent(self):
         """Test that multiple parser instances have independent caches."""
+        from services import WorkflowParser
 
         parser1 = WorkflowParser()
         parser2 = WorkflowParser()
@@ -168,6 +127,7 @@ class TestWorkflowParserFileHandling:
 
     def test_parse_file_nonexistent_returns_none(self):
         """Test that parsing nonexistent file returns None."""
+        from services import WorkflowParser
 
         parser = WorkflowParser()
         result = parser.parse_file(Path(os.path.join(tempfile.gettempdir(), "nonexistent_workflow_test_file.yml")))
@@ -175,6 +135,7 @@ class TestWorkflowParserFileHandling:
 
     def test_parse_file_valid_file(self, temp_workflow_file):
         """Test parsing a valid workflow file."""
+        from services import WorkflowParser
 
         parser = WorkflowParser()
         result = parser.parse_file(temp_workflow_file)
@@ -183,6 +144,7 @@ class TestWorkflowParserFileHandling:
 
     def test_parse_file_with_cache_enabled(self, temp_workflow_file):
         """Test that caching works when enabled."""
+        from services import WorkflowParser
 
         parser = WorkflowParser()
         result1 = parser.parse_file(temp_workflow_file, use_cache=True)
@@ -193,6 +155,7 @@ class TestWorkflowParserFileHandling:
 
     def test_parse_file_with_cache_disabled(self, temp_workflow_file):
         """Test that cache can be bypassed."""
+        from services import WorkflowParser
 
         parser = WorkflowParser()
         result1 = parser.parse_file(temp_workflow_file, use_cache=False)
@@ -208,6 +171,7 @@ class TestWorkflowParserYAMLHandling:
 
     def test_parse_empty_yaml_file(self, tmp_path):
         """Test parsing empty YAML file."""
+        from services import WorkflowParser
 
         empty_file = tmp_path / "empty.yml"
         empty_file.write_text("")
@@ -218,6 +182,7 @@ class TestWorkflowParserYAMLHandling:
 
     def test_parse_malformed_yaml(self, tmp_path):
         """Test parsing malformed YAML file."""
+        from services import WorkflowParser
 
         malformed_file = tmp_path / "malformed.yml"
         malformed_file.write_text("key: value: invalid: yaml:")
@@ -228,6 +193,7 @@ class TestWorkflowParserYAMLHandling:
 
     def test_parse_yaml_with_anchors(self, tmp_path):
         """Test parsing YAML with anchors and aliases."""
+        from services import WorkflowParser
 
         yaml_with_anchors = tmp_path / "anchors.yml"
         yaml_with_anchors.write_text(
@@ -257,26 +223,31 @@ class TestWorkflowTypes:
 
     def test_workflow_metadata_type_exists(self):
         """Test that WorkflowMetadata type exists."""
+        from services import WorkflowMetadata
 
         assert WorkflowMetadata is not None, "WorkflowMetadata must be initialized"
 
     def test_workflow_trigger_type_exists(self):
         """Test that WorkflowTrigger type exists."""
+        from services import WorkflowTrigger
 
         assert WorkflowTrigger is not None, "WorkflowTrigger must be initialized"
 
     def test_workflow_job_type_exists(self):
         """Test that WorkflowJob type exists."""
+        from services import WorkflowJob
 
         assert WorkflowJob is not None, "WorkflowJob must be initialized"
 
     def test_workflow_input_type_exists(self):
         """Test that WorkflowInput type exists."""
+        from services import WorkflowInput
 
         assert WorkflowInput is not None, "WorkflowInput must be initialized"
 
     def test_workflow_dependency_type_exists(self):
         """Test that WorkflowDependency type exists."""
+        from services import WorkflowDependency
 
         assert WorkflowDependency is not None, "WorkflowDependency must be initialized"
 
@@ -291,6 +262,7 @@ class TestWorkflowInventoryBasic:
 
     def test_inventory_instantiation(self):
         """Test that WorkflowInventory can be instantiated."""
+        from services import WorkflowInventory
 
         inventory = WorkflowInventory()
         assert inventory is not None, "inventory must be initialized"
@@ -298,6 +270,7 @@ class TestWorkflowInventoryBasic:
 
     def test_inventory_methods_exist(self):
         """Test that common inventory methods exist."""
+        from services import WorkflowInventory
 
         inventory = WorkflowInventory()
         # Common methods that should exist
@@ -308,6 +281,7 @@ class TestWorkflowInventoryBasic:
 
     def test_multiple_inventory_instances(self):
         """Test that multiple inventory instances work independently."""
+        from services import WorkflowInventory
 
         inv1 = WorkflowInventory()
         inv2 = WorkflowInventory()
@@ -324,6 +298,7 @@ class TestServicesErrorHandling:
 
     def test_parser_handles_permissions_error(self, tmp_path):
         """Test parser handles permission errors gracefully."""
+        from services import WorkflowParser
 
         # Create file and remove read permissions
         restricted_file = tmp_path / "restricted.yml"
@@ -342,6 +317,7 @@ class TestServicesErrorHandling:
 
     def test_parser_with_large_file(self, tmp_path):
         """Test parser with large workflow file."""
+        from services import WorkflowParser
 
         large_file = tmp_path / "large.yml"
         # Create a file with many jobs
@@ -366,6 +342,7 @@ class TestGitHubClientImport:
 
     def test_github_client_import_attempt(self):
         """Test that module attempts GitHub client import."""
+        import services
 
         # Module should attempt import, whether successful or not
         if "GitHubClient" in services.__all__:
@@ -374,6 +351,7 @@ class TestGitHubClientImport:
 
     def test_logger_handles_import_errors(self):
         """Test that logger is configured even if imports fail."""
+        import services
 
         # Logger should exist regardless of optional imports
         assert hasattr(services, "logger")
@@ -383,6 +361,7 @@ class TestGitHubClientImport:
     def test_github_client_import_error_handling(self, mock_httpx):
         """Test error handling when GitHub client import fails."""
         # This tests the exception handling in services module
+        import services
 
         # Should have graceful handling
         assert "logger" in dir(services), "Condition must be true"
@@ -398,24 +377,28 @@ class TestWorkflowSubmoduleIntegration:
 
     def test_workflow_module_imports(self):
         """Test that workflow submodule imports correctly."""
+        from services.workflow import WorkflowInventory, WorkflowParser
 
         assert WorkflowInventory is not None, "WorkflowInventory must be initialized"
         assert WorkflowParser is not None, "WorkflowParser must be initialized"
 
     def test_workflow_types_module(self):
         """Test that workflow types module exists."""
+        from services.workflow import types
 
         assert types is not None, "types must be initialized"
         assert hasattr(types, "WorkflowMetadata")
 
     def test_workflow_parser_module(self):
         """Test that parser module exists."""
+        from services.workflow import parser
 
         assert parser is not None, "parser must be initialized"
         assert hasattr(parser, "WorkflowParser")
 
     def test_workflow_inventory_module(self):
         """Test that inventory module exists."""
+        from services.workflow import inventory
 
         assert inventory is not None, "inventory must be initialized"
         assert hasattr(inventory, "WorkflowInventory")
@@ -431,6 +414,7 @@ class TestServicesAPIContract:
 
     def test_services_module_public_api(self):
         """Test that services module exposes required public API."""
+        import services
 
         required_exports = [
             "WorkflowParser",
@@ -447,6 +431,7 @@ class TestServicesAPIContract:
 
     def test_parser_return_type_compatibility(self):
         """Test that parser return types are compatible."""
+        from services import WorkflowParser
 
         parser = WorkflowParser()
         result = parser.parse_file(Path("/nonexistent.yml"))
@@ -456,7 +441,9 @@ class TestServicesAPIContract:
 
     def test_inventory_scan_method_signature(self):
         """Test that inventory scan method has expected signature."""
+        import inspect
 
+        from services import WorkflowInventory
 
         inventory = WorkflowInventory()
         if hasattr(inventory, "scan"):
@@ -475,12 +462,14 @@ class TestServicesLogging:
 
     def test_module_logger_named_correctly(self):
         """Test that logger is named after module."""
+        import services
 
         # Logger name should relate to services module
         assert "services" in services.logger.name.lower() or services.logger.name == "__main__", "name is not valid"
 
     def test_logger_works_during_imports(self):
         """Test that logger works during module import."""
+        import services
 
         # Should be able to use logger
         initial_handlers = len(services.logger.handlers)
@@ -499,7 +488,10 @@ class TestServicesWithMockDependencies:
     @patch("services.workflow.parser.yaml.safe_load")
     def test_parser_with_mocked_yaml_loader(self, mock_yaml):
         """Test parser with mocked YAML loader."""
+        import tempfile
+        from pathlib import Path
 
+        from services import WorkflowParser
 
         mock_yaml.return_value = {"name": "test", "jobs": {}}
 
@@ -515,7 +507,10 @@ class TestServicesWithMockDependencies:
 
     def test_inventory_with_path_variations(self):
         """Test inventory scan with various path inputs."""
+        import tempfile
+        from pathlib import Path
 
+        from services import WorkflowInventory
 
         inventory = WorkflowInventory()
 
@@ -542,6 +537,7 @@ class TestServicesRegression:
 
     def test_multiple_parsers_do_not_share_cache(self):
         """Test that parser caches are not shared."""
+        from services import WorkflowParser
 
         parser1 = WorkflowParser()
         parser2 = WorkflowParser()
@@ -557,6 +553,7 @@ class TestServicesRegression:
 
     def test_parser_reset_between_tests(self):
         """Test that parser state is independent between instantiations."""
+        from services import WorkflowParser
 
         for _ in range(3):
             parser = WorkflowParser()
@@ -564,14 +561,18 @@ class TestServicesRegression:
 
     def test_all_exports_remain_stable(self):
         """Test that module exports remain consistent."""
+        from services import __all__
 
         # Store current exports
         current_exports = set(__all__)
 
         # Re-import and check
+        import importlib
 
+        import services
 
         importlib.reload(services)
+        from services import __all__ as reloaded_all
 
         assert set(reloaded_all) == current_exports, "Condition must be true"
 

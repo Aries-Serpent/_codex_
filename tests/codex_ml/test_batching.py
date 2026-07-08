@@ -120,7 +120,6 @@ class TestBatchingMiddleware:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_initialization(self):
         """Test middleware initialization"""
 
@@ -149,7 +148,6 @@ class TestBatchingMiddleware:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_single_request(self):
         """Test processing a single request"""
 
@@ -173,7 +171,6 @@ class TestBatchingMiddleware:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_batch_on_size(self):
         """Test batching when max_batch_size is reached"""
 
@@ -206,7 +203,6 @@ class TestBatchingMiddleware:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_batch_on_timeout(self):
         """Test batching when max_wait_time is reached"""
 
@@ -243,7 +239,6 @@ class TestBatchingMiddleware:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_multiple_batches(self):
         """Test processing multiple batches"""
 
@@ -276,7 +271,6 @@ class TestBatchingMiddleware:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_error_handling(self):
         """Test error handling in batch processing"""
 
@@ -305,7 +299,6 @@ class TestBatchingMiddleware:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_metrics_tracking(self):
         """Test that metrics are tracked correctly"""
 
@@ -343,10 +336,8 @@ class TestBatchingMiddleware:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_shutdown_flushes_queue(self):
         """Test that shutdown flushes remaining requests"""
-import pytest
 
         def process_fn(inputs):
             return [x * 2 for x in inputs]

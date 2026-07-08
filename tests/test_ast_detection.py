@@ -31,7 +31,6 @@ def goodbye(name):
 
 def test_class_extraction():
     """Test extracting classes and methods."""
-import pytest
     with tempfile.TemporaryDirectory() as tmpdir:
         test_file = Path(tmpdir) / "test.py"
         test_file.write_text("""

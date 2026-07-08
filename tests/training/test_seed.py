@@ -5,16 +5,12 @@ Phase 6 tests covering:
 - Default seed behavior
 - Seed resolution logic
 """
+
 from __future__ import annotations
+
 from unittest.mock import patch
-            from src.training.seed import ensure_global_seed
-        import warnings
-                import importlib
-                import sys
-            from training.seed import ensure_global_seed
 
-
-
+import pytest
 
 
 class TestEnsureGlobalSeed:
@@ -24,6 +20,7 @@ class TestEnsureGlobalSeed:
     def ensure_global_seed(self):
         """Import ensure_global_seed function."""
         try:
+            from src.training.seed import ensure_global_seed
 
             return ensure_global_seed
         except ImportError:
@@ -70,11 +67,14 @@ class TestLegacySeedModule:
 
     def test_import_legacy_shim_emits_deprecation_warning(self):
         """Test that importing legacy shim emits deprecation warning."""
+        import warnings
 
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
             try:
                 # Force reimport
+                import importlib
+                import sys
 
                 if "training.seed" in sys.modules:
                     del sys.modules["training.seed"]
@@ -89,6 +89,7 @@ class TestLegacySeedModule:
     def test_legacy_shim_exports_ensure_global_seed(self):
         """Test that legacy shim exports ensure_global_seed."""
         try:
+            from training.seed import ensure_global_seed
 
             assert callable(ensure_global_seed), "Condition must be true"
         except ImportError:

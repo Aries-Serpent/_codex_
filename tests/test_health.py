@@ -3,18 +3,17 @@ Test Health
 
 Test module for health.
 """
-import pytest
-import sys
-from pathlib import Path
-from codex_ml.serving.health import health_check, readiness_check
 
 #!/usr/bin/env python3
 """Tests for health check endpoints."""
+import sys
+from pathlib import Path
 
 # Add src to path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "src"))
 
+from codex_ml.serving.health import health_check, readiness_check
 
 
 def test_health_check_returns_healthy_status():

@@ -46,6 +46,5 @@ def test_clamp_negative_range_2():
 
 def test_clamp_float_precision_2():
     """Test clamping with float precision."""
-import pytest
     result = clamp(3.14159, 0.0, 3.5)
     assert 3.14 < result < 3.15, "Result must not be empty"

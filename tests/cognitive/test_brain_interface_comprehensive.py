@@ -17,17 +17,17 @@ Focus on predict() function with 12 untested branches:
 
 These tests complete the 343 untested functions in codex module.
 """
+
 import tempfile
 import threading
 import time
 from pathlib import Path
 from typing import Generator
 from unittest.mock import MagicMock, patch
+
+import pytest
+
 from codex.cognitive.brain_interface import BrainInterface
-        import sys
-
-
-
 
 
 class TestCognitiveBrainPredictFunction:
@@ -463,6 +463,7 @@ class TestCognitiveBrainPredictFunction:
 
     def test_predict_memory_cleanup(self, brain: BrainInterface):
         """Test memory is cleaned up after predict()."""
+        import sys
 
         initial_refcount = len(sys.objects) if hasattr(sys, "objects") else 0
 

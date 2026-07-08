@@ -1,5 +1,4 @@
 """Day 2: codex_ml - Validation tests"""
-import pytest
 
 
 class TestMLValidation:

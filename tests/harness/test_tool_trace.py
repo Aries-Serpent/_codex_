@@ -3,11 +3,10 @@ Test Tool Trace
 
 Test module for tool trace.
 """
-import pytest
+
 import json
+
 from codex_harness.tool_trace import ToolTraceLogger
-
-
 
 
 def test_tool_trace_records_invocation(tmp_path):

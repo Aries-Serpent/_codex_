@@ -11,16 +11,17 @@ Key test scenarios:
 - Graceful fallback when PEFT is not installed
 - Proper parameter passing to underlying transformers calls
 """
+
 from __future__ import annotations
-pytest.importorskip("transformers")
-pytest.importorskip("torch")
+
 import importlib
 import types
 from unittest.mock import Mock
 
+import pytest
 
-
-
+pytest.importorskip("transformers")
+pytest.importorskip("torch")
 
 
 def test_load_model_without_lora(monkeypatch):

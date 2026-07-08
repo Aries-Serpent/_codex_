@@ -9,19 +9,15 @@ This test module implements resource exhaustion tests:
 
 Expected coverage gain: +0.3pp from resource management code
 """
+
 import gc
 import resource
 import sys
 import threading
 import time
 from unittest.mock import Mock
-        import tempfile
-        import tempfile
-        import tempfile
-        import subprocess
-        import subprocess
 
-
+import pytest
 
 
 class TestMemoryExhaustion:
@@ -114,6 +110,7 @@ class TestFileDescriptorExhaustion:
 
     def test_file_handle_cleanup(self):
         """Test cleanup of file handles."""
+        import tempfile
 
         files = []
         try:
@@ -131,6 +128,7 @@ class TestFileDescriptorExhaustion:
 
     def test_context_manager_fd_cleanup(self):
         """Test fd cleanup with context manager."""
+        import tempfile
 
         with tempfile.NamedTemporaryFile() as f:
             assert f.file is not None, "file must be initialized"
@@ -139,6 +137,7 @@ class TestFileDescriptorExhaustion:
 
     def test_unclosed_file_handle_warning(self):
         """Test warning for unclosed file handle."""
+        import tempfile
 
         # Create and immediately close
         with tempfile.NamedTemporaryFile(delete=True):
@@ -361,6 +360,7 @@ class TestProcessExhaustion:
 
     def test_subprocess_cleanup(self):
         """Test subprocess cleanup."""
+        import subprocess
 
         try:
             # Create subprocess
@@ -380,6 +380,7 @@ class TestProcessExhaustion:
 
     def test_zombie_process_prevention(self):
         """Test prevention of zombie processes."""
+        import subprocess
 
         try:
             proc = subprocess.Popen([sys.executable, "-c", "pass"], stdout=subprocess.PIPE)

@@ -3,14 +3,13 @@ Test Codex Mltest Runner
 
 Test module for codex mltest runner.
 """
-import pytest
+
 import json
 from pathlib import Path
+
 import yaml
+
 import tools.codex_mltest_runner as runner
-
-
-
 
 
 def test_mltest_runner_builds_summary(tmp_path: Path, monkeypatch):

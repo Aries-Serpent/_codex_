@@ -278,7 +278,6 @@ def test_invalid_min_samples_raises():
 
 def test_dispatch_payload_schema_importable():
     """DISPATCH_PAYLOAD_SCHEMA is exported from the module."""
-import pytest
     from codex_ml.training.auto_retrain import DISPATCH_PAYLOAD_SCHEMA
 
     assert DISPATCH_PAYLOAD_SCHEMA["type"] == "object", "Object must be initialized"

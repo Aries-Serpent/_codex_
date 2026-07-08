@@ -7,17 +7,18 @@ Tests cover:
 - Cross-run comparison
 - MLflow integration
 """
+
 from __future__ import annotations
-pytest.importorskip("hypothesis", reason="hypothesis required for property tests")
+
 import hashlib
 import tempfile
 import time
 from enum import Enum
 from typing import Any
 
+import pytest
 
-
-
+pytest.importorskip("hypothesis", reason="hypothesis required for property tests")
 
 
 # --- Experiment Run Tests ---

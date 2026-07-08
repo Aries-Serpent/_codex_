@@ -355,7 +355,6 @@ class TestGenesisWorkflowSafety:
 
     def test_rollback_script_exists(self, repo_root):
         """Test that rollback script exists for emergency recovery"""
-import pytest
         rollback_path = repo_root / "scripts" / "genesis_rollback.sh"
         assert rollback_path.exists(), "Emergency rollback script not found"
 

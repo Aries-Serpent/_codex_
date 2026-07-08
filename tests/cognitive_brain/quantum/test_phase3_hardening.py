@@ -9,20 +9,10 @@ Validates all Phase 3 additions:
 - Comprehensive audit trail (SOX/GDPR immutable logging)
 - Scalability: multiple seeds with ≥95% accuracy
 """
+
+import pytest
+
 from cognitive_brain.integrations.compliance_integration import (
-from cognitive_brain.models.quantum_metrics import QuantumMetricRepository
-from cognitive_brain.quantum.coherence_monitor import CoherenceMonitor
-from cognitive_brain.quantum.config import QuantumConfig
-from cognitive_brain.quantum.superposition import Decision, SuperpositionEngine
-        import random
-        import random
-        import random
-        import random
-        import math
-        import random
-        from cognitive_brain.experiments.exp1b_revalidation import (
-
-
     AuditResult,
     AuditTrailEntry,
     BiasDetector,
@@ -31,6 +21,10 @@ from cognitive_brain.quantum.superposition import Decision, SuperpositionEngine
     QuantumAuditTrail,
     QuantumComplianceAssessor,
 )
+from cognitive_brain.models.quantum_metrics import QuantumMetricRepository
+from cognitive_brain.quantum.coherence_monitor import CoherenceMonitor
+from cognitive_brain.quantum.config import QuantumConfig
+from cognitive_brain.quantum.superposition import Decision, SuperpositionEngine
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -232,6 +226,7 @@ class TestQuantumNoiseApplication:
         return SuperpositionEngine(config)
 
     def test_apply_noise_changes_scores(self):
+        import random
 
         random.seed(0)
         engine = self._engine_with_noise()
@@ -247,6 +242,7 @@ class TestQuantumNoiseApplication:
         assert noisy == original, "noisy is not valid"
 
     def test_apply_noise_clamps_to_unit_interval(self):
+        import random
 
         random.seed(42)
         engine = self._engine_with_noise(gate_err=0.5, meas_err=0.5)
@@ -256,6 +252,7 @@ class TestQuantumNoiseApplication:
 
     def test_5pct_noise_preserves_winner_mostly(self):
         """At 5% noise, winner should remain correct in ≥90% of random trials."""
+        import random
 
         engine = self._engine_with_noise(gate_err=0.05, meas_err=0.05)
         scores = [0.9, 0.3, 0.2, 0.1]  # Winner is index 0 by a large margin
@@ -270,6 +267,7 @@ class TestQuantumNoiseApplication:
 
     def test_10pct_noise_1000_scenarios_preserves_winner(self):
         """Extended noise validation: at 10% gate error, winner preserved ≥90% of 1000 trials."""
+        import random
 
         engine = self._engine_with_noise(gate_err=0.10, meas_err=0.05)
         # Winner has a decisive lead (0.9 vs 0.3, 0.2, 0.1) — robust to 10% gate noise
@@ -320,6 +318,7 @@ class TestApplyQuantumNoisePublic:
 
     def test_t2_decay_reduces_coherence(self):
         """T2 dephasing decays coherence by exp(-dt/T2) with dt=100µs."""
+        import math
 
         config = QuantumConfig(noise_enabled=True, t2_decoherence_us=50.0)
         engine = SuperpositionEngine(config)
@@ -633,6 +632,7 @@ class TestPhase3Integration:
         monitor = CoherenceMonitor(config, repo)
         assessor = QuantumComplianceAssessor(config, monitor, repo)
 
+        import random
 
         random.seed(42)
         audit = _make_audit()
@@ -642,6 +642,7 @@ class TestPhase3Integration:
 
     def test_phase2_metrics_maintained(self):
         """Phase 1+2 accuracy, coherence, k₁ targets still met with Phase 3 active."""
+        from cognitive_brain.experiments.exp1b_revalidation import (
             run_exp1b_revalidation,
         )
 

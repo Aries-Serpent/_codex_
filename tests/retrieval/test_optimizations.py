@@ -310,7 +310,6 @@ class TestPrecomputeIndexStructures:
 
     def test_without_index(self):
         """Test with store that has no index"""
-import pytest
         mock_store = Mock()
         mock_store.index = None
 

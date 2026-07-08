@@ -3,15 +3,14 @@ Test Repro Rng
 
 Test module for repro rng.
 """
+
 from __future__ import annotations
+
 import random
+
+import pytest
+
 from codex_ml.utils.repro import (
-    import numpy as np
-    import torch
-
-
-
-
     restore_rng_state,
     set_deterministic,
     set_seed,
@@ -19,10 +18,12 @@ from codex_ml.utils.repro import (
 )
 
 try:
+    import numpy as np
 except ImportError:  # pragma: no cover - numpy optional
     np = None  # type: ignore[assignment]
 
 try:
+    import torch
 except ImportError:  # pragma: no cover - torch optional
     torch = None  # type: ignore[assignment]
 

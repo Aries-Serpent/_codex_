@@ -3,11 +3,12 @@ Test Classification Metrics
 
 Test module for classification metrics.
 """
+
 from __future__ import annotations
+
+import pytest
+
 from codex_ml.metrics import f1_score, mean_absolute_error, precision, recall
-
-
-
 
 
 @pytest.mark.ml

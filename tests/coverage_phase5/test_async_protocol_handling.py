@@ -104,7 +104,6 @@ async def test_message_queue_timeout():
 @pytest.mark.timeout(30)
 async def test_concurrent_enqueue_dequeue():
     """Test concurrent enqueue/dequeue operations."""
-import pytest
     queue = AsyncMessageQueue()
 
     async def producer():

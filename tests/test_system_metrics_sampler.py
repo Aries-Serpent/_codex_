@@ -3,14 +3,13 @@ Test System Metrics Sampler
 
 Test module for system metrics sampler.
 """
+
 from __future__ import annotations
-import pytest
+
 import threading
 import time
+
 from codex_ml.monitoring.system_metrics import (
-
-
-
     sample_system_metrics,
     start_metrics_logger,
     system_metrics_scalars,

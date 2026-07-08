@@ -8,12 +8,12 @@ Created: 2026-01-18
 Phase: 16.4 - Final Polish & 100% Coverage
 Tests: 15+
 """
+
 import json
 import re
 from pathlib import Path
-        import tempfile
 
-
+import pytest
 
 # Repository root
 REPO_ROOT = Path(__file__).parents[2]
@@ -26,6 +26,7 @@ class TestCoverageReportGeneration:
 
     def test_coverage_report_directory_creatable(self):
         """Verify coverage report directory can be created."""
+        import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:
             coverage_path = Path(tmpdir) / "coverage"

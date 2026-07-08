@@ -10,16 +10,15 @@ test cases focusing on:
 
 Total: 29 additional test cases targeting edge cases and advanced scenarios.
 """
+
 from __future__ import annotations
+
 import asyncio
 import time
+
+import pytest
+
 from codex.skills.aais_batch.handler import (
-        import warnings
-        import json
-
-
-
-
     _build_summary,
     _get_max_concurrency,
     _score_item,
@@ -451,6 +450,7 @@ class TestStressAndBoundary:
         assert _get_max_concurrency({"max_concurrency": 0}, 5) == 0
         
         # max_workers deprecated but still works
+        import warnings
         with warnings.catch_warnings(record=True):
             warnings.simplefilter("always")
             result = _get_max_concurrency({"max_workers": 8}, 5)
@@ -468,6 +468,7 @@ class TestStressAndBoundary:
 
     def test_json_serializable_output(self):
         """Test that all output is JSON-serializable."""
+        import json
         
         payload = {
             "items": [

@@ -1,3 +1,4 @@
+pytest.importorskip("mlflow")
 """
 Comprehensive test suite for codex_ml.train_loop module
 
@@ -9,22 +10,20 @@ This module provides 100+ tests covering:
 - Checkpoint resumption logic
 - Integration tests with run_training
 """
+
 from __future__ import annotations
-pytest.importorskip("mlflow")
-pytest.importorskip("torch")
+
 import os
 import tempfile
 from datetime import datetime
 from unittest import mock
+
+import pytest
 import torch.optim as optim
+
 import torch
 import torch.nn as nn
 from codex_ml.train_loop import (
-from torch.utils.data import DataLoader, TensorDataset
-
-
-
-
     ReasoningRuntime,
     ToyDataset,
     _attempt_resume,
@@ -35,6 +34,7 @@ from torch.utils.data import DataLoader, TensorDataset
     _set_seed,
     run_training,
 )
+from torch.utils.data import DataLoader, TensorDataset
 
 # ============================================================================
 # FIXTURES

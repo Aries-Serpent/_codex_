@@ -3,12 +3,11 @@ Tests for MCP security safeguards detector.
 
 Tests detection of security patterns like confirmation prompts, dry-run modes, sanitization, etc.
 """
-import pytest
+
 import tempfile
 from pathlib import Path
+
 from scripts.space_traversal.detectors import mcp_security_safeguards
-
-
 
 
 def test_detect_no_safeguards():

@@ -134,9 +134,8 @@ class TestApiModelValidation:
 
     def test_field_type_validation(self):
         """Test validation of field types."""
-import pytest
-            from src.codex.api import models
         try:
+            from src.codex.api import models
 
             if hasattr(models, "RequestModel"):
                 with pytest.raises((TypeError, ValueError)):

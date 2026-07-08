@@ -2,9 +2,6 @@
 Target: src/tokenization/*.py - Increase coverage from 12-21% to 70%+
 Strategy: 100+ tests covering tokenization API, loaders, and utilities
 """
-import pytest
-            import re
-            import re
 
 
 class TestTokenizationAPI:
@@ -56,6 +53,7 @@ class TestTokenizationAPI:
         """Test tokenizer with special characters"""
 
         def tokenize(text):
+            import re
 
             return re.findall(r"\w+", text)
 
@@ -331,6 +329,7 @@ class TestTokenizationEdgeCases:
         """Test punctuation handling"""
 
         def tokenize(text):
+            import re
 
             return re.findall(r"\w+", text)
 

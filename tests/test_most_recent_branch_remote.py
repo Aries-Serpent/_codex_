@@ -3,11 +3,10 @@ Test Most Recent Branch Remote
 
 Test module for most recent branch remote.
 """
-import pytest
+
 import os
+
 from codex_bridge.github_client import most_recent_branch
-
-
 
 
 def test_most_recent_branch_returns_string():

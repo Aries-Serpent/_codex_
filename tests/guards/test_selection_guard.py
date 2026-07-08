@@ -3,12 +3,11 @@ Test Selection Guard
 
 Test module for selection guard.
 """
-import pytest
+
 import json
 from pathlib import Path
+
 import tools.selection_guard as sg
-
-
 
 RULES = {
     "required_signals": [

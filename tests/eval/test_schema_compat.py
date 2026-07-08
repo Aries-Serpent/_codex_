@@ -1,4 +1,3 @@
-import pytest
 #     assert record["tags"]["phase"] in (, "rec is not valid"
 # """Test Schema Compat
 # """

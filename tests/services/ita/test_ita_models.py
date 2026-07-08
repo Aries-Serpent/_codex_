@@ -1,13 +1,14 @@
 from __future__ import annotations
+
 from datetime import datetime
+
+import pytest
+
 from services.ita.app.models import (
-from services.ita.app.models import TestsRunRequest as ITATestsRunRequest
-
-
-
     HealthResponse,
     RepoHygieneRequest,
 )
+from services.ita.app.models import TestsRunRequest as ITATestsRunRequest
 
 
 def test_health_response_has_timestamp_default() -> None:

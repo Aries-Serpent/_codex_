@@ -3,23 +3,12 @@ Comprehensive tests for codex_ml.cli.codex_cli module.
 
 Tests the main CLI entry point and command-line interface functionality.
 """
+
 import subprocess
 import sys
 from unittest.mock import MagicMock, patch
-            from codex_ml.cli import codex_cli
-            from codex_ml.cli import codex_cli
-            from codex_ml.cli.codex_cli import _csv_list
-            from types import SimpleNamespace
-            from codex_ml.cli.codex_cli import _update_path
-            from codex_ml.cli.codex_cli import _get_tokenizer_pipeline
-            from codex_ml.cli.codex_cli import DEFAULT_TOKENIZER_CONFIG
-            from codex_ml.cli.codex_cli import DEFAULT_TOKENIZER_JSON
-            from codex_ml.cli.codex_cli import build_status_report
-            from codex_ml.cli.codex_cli import (
-            from codex_ml.cli.codex_cli import ConfigError, load_app_config
-            from codex_ml.cli.codex_cli import SystemMetricsLogger
 
-
+import pytest
 
 
 class TestCodexCLIHelp:
@@ -28,6 +17,7 @@ class TestCodexCLIHelp:
     def test_codex_cli_module_import(self):
         """Test that codex_cli module can be imported."""
         try:
+            from codex_ml.cli import codex_cli
 
             assert codex_cli is not None, "codex_cli must be initialized"
         except ImportError as e:
@@ -47,6 +37,7 @@ class TestCodexCLIHelp:
     def test_codex_cli_has_click_commands(self):
         """Test that codex_cli has Click commands defined."""
         try:
+            from codex_ml.cli import codex_cli
 
             # Check for common CLI entry points
             assert (hasattr(codex_cli, "DEFAULT_TOKENIZER_CONFIG")
@@ -63,6 +54,7 @@ class TestCodexCLIFunctions:
     def test_csv_list_function(self):
         """Test _csv_list utility function."""
         try:
+            from codex_ml.cli.codex_cli import _csv_list
 
             # Test basic CSV parsing
             result = _csv_list("a, b, c")
@@ -85,7 +77,9 @@ class TestCodexCLIFunctions:
     def test_update_path_function(self):
         """Test _update_path utility function."""
         try:
+            from types import SimpleNamespace
 
+            from codex_ml.cli.codex_cli import _update_path
 
             # Create a nested object
             obj = SimpleNamespace()
@@ -102,6 +96,7 @@ class TestCodexCLIFunctions:
     def test_get_tokenizer_pipeline(self):
         """Test _get_tokenizer_pipeline function."""
         try:
+            from codex_ml.cli.codex_cli import _get_tokenizer_pipeline
 
             # May succeed or fail depending on tokenizers availability
             try:
@@ -120,6 +115,7 @@ class TestCodexCLIConstants:
     def test_default_tokenizer_config_path(self):
         """Test DEFAULT_TOKENIZER_CONFIG constant."""
         try:
+            from codex_ml.cli.codex_cli import DEFAULT_TOKENIZER_CONFIG
 
             assert DEFAULT_TOKENIZER_CONFIG is not None, "DEFAULT_TOKENIZER_CONFIG must be initialized"
             assert isinstance(DEFAULT_TOKENIZER_CONFIG, str)
@@ -132,6 +128,7 @@ class TestCodexCLIConstants:
     def test_default_tokenizer_json_path(self):
         """Test DEFAULT_TOKENIZER_JSON constant."""
         try:
+            from codex_ml.cli.codex_cli import DEFAULT_TOKENIZER_JSON
 
             assert DEFAULT_TOKENIZER_JSON is not None, "DEFAULT_TOKENIZER_JSON must be initialized"
             assert isinstance(DEFAULT_TOKENIZER_JSON, str)
@@ -148,6 +145,7 @@ class TestCodexCLIIntegration:
     def test_status_report_import(self):
         """Test that status_report is properly imported."""
         try:
+            from codex_ml.cli.codex_cli import build_status_report
 
             assert callable(build_status_report, "Condition must be true"
             ), "Condition must be true"
@@ -157,6 +155,7 @@ class TestCodexCLIIntegration:
     def test_logging_utilities_import(self):
         """Test that logging utilities are properly imported."""
         try:
+            from codex_ml.cli.codex_cli import (
                 capture_exceptions,
                 init_json_logging,
                 log_event,
@@ -171,6 +170,7 @@ class TestCodexCLIIntegration:
     def test_config_utilities_import(self):
         """Test that config utilities are properly imported."""
         try:
+            from codex_ml.cli.codex_cli import ConfigError, load_app_config
 
             assert callable(load_app_config), "Condition must be true"
             assert issubclass(ConfigError, Exception)
@@ -182,6 +182,7 @@ class TestCodexCLIIntegration:
         """Test that SystemMetricsLogger is available."""
         mock_logger.return_value = MagicMock()
         try:
+            from codex_ml.cli.codex_cli import SystemMetricsLogger
 
             assert SystemMetricsLogger is not None, "SystemMetricsLogger must be initialized"
         except ImportError as e:

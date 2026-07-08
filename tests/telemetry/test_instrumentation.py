@@ -3,9 +3,8 @@ Test Instrumentation
 
 Test module for instrumentation.
 """
-import pytest
-from codex_ml.telemetry import REQUEST_LATENCY, track_time
 
+from codex_ml.telemetry import REQUEST_LATENCY, track_time
 
 
 def dummy():

@@ -10,17 +10,15 @@ Comprehensive test coverage for src/codex/cli/main.py focusing on:
 - Help and error output
 - Exit codes and status reporting
 """  # pragma: allowlist secret # pragma: allowlist secret
+
 import json
 from unittest.mock import MagicMock, patch
-    import typer
-    from typer.testing import CliRunner
-    from codex.cli.main import TYPER_AVAILABLE, app
-        from codex.cli.main import TYPER_AVAILABLE
-        from codex.cli.main import app
 
-
+import pytest
 
 try:
+    import typer
+    from typer.testing import CliRunner
 
     HAS_TYPER = True
 except ImportError:
@@ -28,6 +26,7 @@ except ImportError:
 
 try:
     # This may fail if typer is not available
+    from codex.cli.main import TYPER_AVAILABLE, app
 
     HAS_CODEX_CLI = True
 except ImportError:
@@ -472,11 +471,13 @@ class TestTyperFallback:
 
     def test_typer_available(self):
         """Test that Typer is available."""
+        from codex.cli.main import TYPER_AVAILABLE
 
         assert TYPER_AVAILABLE is True or TYPER_AVAILABLE is False, "TYPER_AVAILABLE is not valid"
 
     def test_app_initialization(self):
         """Test app is properly initialized."""
+        from codex.cli.main import app
 
         assert app is not None, "app must be initialized"
 

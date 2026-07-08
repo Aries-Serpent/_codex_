@@ -3,26 +3,25 @@ Test Engine Hf Trainer
 
 Test module for engine hf trainer.
 """
+
+import json
+import types
+from pathlib import Path
+from typing import Any
+
+import pytest
+
 pytest.importorskip("numpy")
+
+
 pytest.importorskip("torch")
 pytest.importorskip("transformers")
 pytest.importorskip("datasets")
 pytest.importorskip("accelerate")
 pytest.importorskip("yaml")
-import json
-import types
-from pathlib import Path
-from typing import Any
+
 import torch
 from src.training.engine_hf_trainer import run_hf_trainer
-    import numpy as np
-    from src.training.engine_hf_trainer import _compute_metrics
-
-
-
-
-
-
 
 
 def _install_minimal_hf_stubs(
@@ -438,7 +437,9 @@ def test_run_hf_trainer_respects_grad_accum(monkeypatch, tmp_path):
 
 
 def test_compute_metrics_smoke():
+    import numpy as np
 
+    from src.training.engine_hf_trainer import _compute_metrics
 
     logits = np.zeros((2, 3, 5), dtype=np.float32)
     labels = np.zeros((2, 3), dtype=np.int64)

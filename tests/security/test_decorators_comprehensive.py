@@ -9,13 +9,13 @@ Tests for security decorators including:
 NOTE: This test file tests functionality that is not yet implemented.
 Tests are marked as xfail pending implementation of decorators.
 """
+
 from __future__ import annotations
+
 import logging
 from unittest.mock import MagicMock, patch
-        import time
 
-
-
+import pytest
 
 # Import only functions that exist in the module
 
@@ -255,6 +255,7 @@ class TestRateLimit:
             func()
 
         # After timeout, should work again
+        import time
 
         time.sleep(1.1)
         result = func()

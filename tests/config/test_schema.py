@@ -3,11 +3,10 @@ Test Schema
 
 Test module for schema.
 """
+
 from __future__ import annotations
-import pytest
+
 from codex_ml.config.settings import EvalRow, eval_row_schema
-
-
 
 
 def test_eval_row_schema_has_fields() -> None:

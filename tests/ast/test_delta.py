@@ -111,7 +111,6 @@ def test_detect_unchanged_files():
 
 def test_analyze_file():
     """Test single file analysis."""
-import pytest
     with tempfile.TemporaryDirectory() as tmpdir:
         manager = BaselineManager(f"{tmpdir}/test.db")
         analyzer = DeltaAnalyzer(manager)

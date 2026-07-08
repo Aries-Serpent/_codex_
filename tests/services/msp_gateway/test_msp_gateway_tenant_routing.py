@@ -4,19 +4,20 @@ Integration tests for MSP Gateway tenant routing.
 Verifies that tenant context is correctly resolved from API keys and routed
 through the request lifecycle, ensuring proper tenant isolation in endpoints.
 """
+
 from __future__ import annotations
+
+import pytest
+
 pytest.importorskip("fastapi")
 pytest.importorskip("pydantic_settings")
+
 from fastapi import FastAPI, Request
 from fastapi.testclient import TestClient
+
 from services.msp_gateway.middleware import TenantContextMiddleware
 from services.msp_gateway.middleware import tenant_context as tc_module
 from services.msp_gateway.middleware.tenant_context import TenantRegistry
-
-
-
-
-
 
 
 def test_tenant_routing_single_endpoint_different_keys(

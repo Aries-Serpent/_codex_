@@ -3,14 +3,13 @@ Test Validator
 
 Test module for validator.
 """
+
 from __future__ import annotations
-import pytest
+
 import json
 from pathlib import Path
+
 from codex_ml.data.validator import DatasetValidator
-
-
-
 
 
 def _write_manifest(tmp_path: Path, **overrides) -> Path:

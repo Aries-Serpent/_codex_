@@ -3,15 +3,14 @@ Test Session Logger
 
 Test module for session logger.
 """
+
 from __future__ import annotations
-import pytest
+
 import json
 import os
 from datetime import datetime, timedelta, timezone
+
 from codex_ml.logging.session_logger import SessionLogger
-
-
-
 
 
 class DummyRedactor:

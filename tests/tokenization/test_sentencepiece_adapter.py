@@ -3,14 +3,15 @@ Test Sentencepiece Adapter
 
 Test module for sentencepiece adapter.
 """
+
 from __future__ import annotations
+
 import importlib
 import json
 import types
 from pathlib import Path
 
-
-
+import pytest
 
 
 def test_import_error(no_sentencepiece):

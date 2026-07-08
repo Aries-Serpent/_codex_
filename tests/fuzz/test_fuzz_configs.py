@@ -10,22 +10,21 @@ ensure the models behave predictably: either accepting valid data or raising
 
 Import guard skips the module gracefully when ``hypothesis`` is absent.
 """
+
 from __future__ import annotations
-hypothesis = pytest.importorskip("hypothesis")
+
 import math
+
+import pytest
+
+hypothesis = pytest.importorskip("hypothesis")
+
 from hypothesis import (  # noqa: E402
-from hypothesis import strategies as st  # noqa: E402
-    from codex_ml.config_schema import LoraConfig, TrainConfig
-    from pydantic import ValidationError
-
-
-
-
-
     HealthCheck,  # noqa: E402
     given,
     settings,
 )
+from hypothesis import strategies as st  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # Lazy import helpers
@@ -33,11 +32,13 @@ from hypothesis import strategies as st  # noqa: E402
 
 
 def _import_configs():
+    from codex_ml.config_schema import LoraConfig, TrainConfig
 
     return TrainConfig, LoraConfig
 
 
 def _pydantic_validation_error():
+    from pydantic import ValidationError
 
     return ValidationError
 

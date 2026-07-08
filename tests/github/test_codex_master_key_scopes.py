@@ -13,15 +13,15 @@ Required scopes (23 total):
   project, read:project, admin:gpg_key, write:gpg_key, read:gpg_key,
   admin:ssh_signing_key, write:ssh_signing_key, read:ssh_signing_key
 """
+
 from __future__ import annotations
+
 import os
 from unittest import mock
+
+import pytest
+
 from scripts.ci._token_resolver import get_token
-        import re
-
-
-
-
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Expected Scopes
@@ -339,6 +339,7 @@ class TestAPIVersionHeader:
 
     def test_version_header_format(self):
         """Test API version header format is YYYY-MM-DD."""
+        import re
 
         version_pattern = r"^\d{4}-\d{2}-\d{2}$"
         test_version = "2022-11-28"

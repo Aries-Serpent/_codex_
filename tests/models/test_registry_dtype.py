@@ -3,16 +3,17 @@ Test Registry Dtype
 
 Test module for registry dtype.
 """
+
 from __future__ import annotations
-pytest.importorskip("torch")
+
 from typing import Any
+
+import pytest
+
+pytest.importorskip("torch")
+
 import torch
 from codex_ml.models import registry
-
-
-
-
-
 
 
 class DummyModel:

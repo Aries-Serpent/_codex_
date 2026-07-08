@@ -289,7 +289,6 @@ Content""")
 
     def test_load_manifest_capability_tags_variants(self):
         """Should support both 'capabilities' and 'capability_tags' keys."""
-import pytest
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir_path = Path(tmpdir)
 

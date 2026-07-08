@@ -2,17 +2,18 @@
 Test MSP Inference API
 End-to-end tests for the inference endpoint
 """
+
+import uuid
+
+import pytest
+
 pytest.importorskip("numpy", reason="NumPy required for MSP gateway tests")
 pytest.importorskip("torch", reason="PyTorch required for MSP gateway tests")
-import uuid
+
 from fastapi.testclient import TestClient
+
 from services.msp_gateway.app import create_app
 from services.msp_gateway.middleware.tenant_context import tenant_registry
-
-
-
-
-
 
 
 @pytest.fixture

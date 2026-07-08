@@ -1,15 +1,13 @@
 """
 Tests for MCP configuration management.
 """
-import pytest
+
 import json
 import tempfile
 from pathlib import Path
-from mcp.config import MCPConfig, ToolDefinition, compute_checksum
-    import os
-
 
 # NOTE: Do not manually manipulate sys.path. The conftest.py already adds src/ to sys.path.
+from mcp.config import MCPConfig, ToolDefinition, compute_checksum
 
 
 def test_compute_checksum():
@@ -99,6 +97,7 @@ def test_mcp_config_verify_integrity():
 
 def test_mcp_config_env_override():
     """Test that environment variables override config values."""
+    import os
 
     # Set environment variables
     os.environ["ITA_URL"] = "http://custom-url:9999"

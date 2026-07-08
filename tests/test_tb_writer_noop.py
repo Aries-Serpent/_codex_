@@ -3,13 +3,12 @@ Test Tb Writer Noop
 
 Test module for tb writer noop.
 """
+
 from __future__ import annotations
-import pytest
+
 import builtins
 import importlib
 import sys
-
-
 
 
 def test_tb_writer_noop_when_tensorboard_missing(monkeypatch, tmp_path):

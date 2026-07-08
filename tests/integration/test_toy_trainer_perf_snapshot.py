@@ -3,11 +3,12 @@ Test Toy Trainer Perf Snapshot
 
 Test module for toy trainer perf snapshot.
 """
+
 import json
 import subprocess
 import sys
 
-
+import pytest
 
 
 @pytest.mark.timeout(30)

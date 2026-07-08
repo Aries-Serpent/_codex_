@@ -9,16 +9,16 @@ Comprehensive exception and error handling testing for:
 - Concurrent access errors
 - Recovery from partial failures
 """
+
 from __future__ import annotations
+
 import sqlite3
 from datetime import UTC, datetime
 from pathlib import Path
+
+import pytest
+
 from agents.agent_memory import (
-        import os
-
-
-
-
     AgentMemory,
     ContextFrame,
     MemoryEntry,
@@ -151,6 +151,7 @@ class TestAgentMemoryPathTraversal:
     def test_valid_path_in_current_directory(self, tmp_path: Path) -> None:
         """Test valid path in current directory."""
         # Change to temp directory
+        import os
 
         old_cwd = os.getcwd()
         try:

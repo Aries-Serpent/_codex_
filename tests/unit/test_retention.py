@@ -10,7 +10,6 @@ from codex_ml.utils.retention import EPOCH_DIR_RE, prune_checkpoints
 
 def _make_epoch_dirs(root: Path, epochs: list[int]) -> None:
     """Create epoch-XXXX dirs under root."""
-import pytest
     for e in epochs:
         (root / f"epoch-{e:04d}").mkdir(parents=True, exist_ok=True)
 

@@ -115,7 +115,6 @@ def fake_client_factory(monkeypatch):
 
     Returns a list collecting instantiated fakes so tests can inspect them.
     """
-import pytest
     instances: list[_FakeHttpxClient] = []
 
     def _factory(**kwargs: Any) -> _FakeHttpxClient:

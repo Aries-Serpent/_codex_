@@ -3,19 +3,20 @@ Test Prompt Sanitizer
 
 Test module for prompt sanitizer.
 """
-import sys
-from pathlib import Path
-from codex_ml.safety.prompt_sanitizer import PromptSanitizer
 
 #!/usr/bin/env python3
 """Tests for PromptSanitizer."""
+import sys
+from pathlib import Path
 
+import pytest
 
 # Add src to path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "src"))
 
 # Import directly from the module file
+from codex_ml.safety.prompt_sanitizer import PromptSanitizer
 
 
 def test_prompt_sanitizer_strict_blocks_script():

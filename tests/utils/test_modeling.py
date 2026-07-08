@@ -3,14 +3,15 @@ Test Modeling
 
 Test module for modeling.
 """
+
 from __future__ import annotations
-transformers = pytest.importorskip("transformers")
+
 import importlib
 import types
 
+import pytest
 
-
-
+transformers = pytest.importorskip("transformers")
 if not hasattr(transformers, "AutoTokenizer"):
     pytest.skip("transformers missing AutoTokenizer", allow_module_level=True)
 

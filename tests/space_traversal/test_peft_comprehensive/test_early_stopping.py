@@ -5,41 +5,16 @@ This module tests:
 - Learning rate scheduler factory
 - Integration with training configurations
 """
+
 from unittest.mock import Mock
-    from codex_ml.training.early_stopping import EarlyStopping, EarlyStoppingConfig
-    from codex_ml.training.early_stopping import EarlyStoppingConfig
-    from codex_ml.training.early_stopping import EarlyStoppingConfig
-    from codex_ml.training.early_stopping import EarlyStopping
-    from codex_ml.training.early_stopping import EarlyStopping
-    from codex_ml.training.early_stopping import EarlyStopping
-    from codex_ml.training.early_stopping import EarlyStopping
-    from codex_ml.training.early_stopping import EarlyStopping
-    from codex_ml.training.early_stopping import EarlyStopping
-    from codex_ml.training.early_stopping import EarlyStopping
-    from codex_ml.training.early_stopping import EarlyStopping
-    from codex_ml.training.early_stopping import EarlyStopping
-    from codex_ml.training.early_stopping import EarlyStopping
-    from codex_ml.training.early_stopping import (
-    from codex_ml.training.scheduler_factory import create_scheduler
-    from codex_ml.training.scheduler_factory import get_available_schedulers
-    from codex_ml.training.scheduler_factory import calculate_num_training_steps
-    from codex_ml.training.scheduler_factory import create_scheduler
-    from codex_ml.training.scheduler_factory import create_scheduler
-    from codex_ml.training.scheduler_factory import create_scheduler
-    from codex_ml.training.scheduler_factory import create_scheduler
-    from codex_ml.training.scheduler_factory import create_scheduler
-    from pathlib import Path
-    from pathlib import Path
-    import yaml
-    from codex_ml.training.early_stopping import EarlyStopping
-    from codex_ml.training.scheduler_factory import create_scheduler
 
-
+import pytest
 
 
 # Test early stopping
 def test_early_stopping_import():
     """Test that early stopping module can be imported."""
+    from codex_ml.training.early_stopping import EarlyStopping, EarlyStoppingConfig
 
     assert EarlyStopping is not None, "EarlyStopping must be initialized"
     assert EarlyStoppingConfig is not None, "EarlyStoppingConfig must be initialized"
@@ -47,6 +22,7 @@ def test_early_stopping_import():
 
 def test_early_stopping_config_defaults():
     """Test early stopping config default values."""
+    from codex_ml.training.early_stopping import EarlyStoppingConfig
 
     config = EarlyStoppingConfig()
     assert config.enabled is False, "enabled is not valid"
@@ -59,6 +35,7 @@ def test_early_stopping_config_defaults():
 
 def test_early_stopping_config_custom():
     """Test early stopping config with custom values."""
+    from codex_ml.training.early_stopping import EarlyStoppingConfig
 
     config = EarlyStoppingConfig(
         enabled=True, patience=5, monitor="val_accuracy", mode="max", min_delta=0.001, verbose=False
@@ -74,6 +51,7 @@ def test_early_stopping_config_custom():
 
 def test_early_stopping_initialization():
     """Test early stopping initialization."""
+    from codex_ml.training.early_stopping import EarlyStopping
 
     es = EarlyStopping(patience=3, monitor="val_loss", mode="min")
 
@@ -87,6 +65,7 @@ def test_early_stopping_initialization():
 
 def test_early_stopping_invalid_mode():
     """Test that invalid mode raises ValueError."""
+    from codex_ml.training.early_stopping import EarlyStopping
 
     with pytest.raises(ValueError, match="mode must be"):
         EarlyStopping(mode="invalid")
@@ -94,6 +73,7 @@ def test_early_stopping_invalid_mode():
 
 def test_early_stopping_invalid_patience():
     """Test that invalid patience raises ValueError."""
+    from codex_ml.training.early_stopping import EarlyStopping
 
     with pytest.raises(ValueError, match="patience must be"):
         EarlyStopping(patience=0)
@@ -101,6 +81,7 @@ def test_early_stopping_invalid_patience():
 
 def test_early_stopping_improvement_detection_min():
     """Test improvement detection in min mode."""
+    from codex_ml.training.early_stopping import EarlyStopping
 
     es = EarlyStopping(patience=3, mode="min", min_delta=0.01)
 
@@ -122,6 +103,7 @@ def test_early_stopping_improvement_detection_min():
 
 def test_early_stopping_improvement_detection_max():
     """Test improvement detection in max mode."""
+    from codex_ml.training.early_stopping import EarlyStopping
 
     es = EarlyStopping(patience=3, mode="max", min_delta=0.01)
 
@@ -143,6 +125,7 @@ def test_early_stopping_improvement_detection_max():
 
 def test_early_stopping_update():
     """Test early stopping update method."""
+    from codex_ml.training.early_stopping import EarlyStopping
 
     es = EarlyStopping(patience=3, mode="min", verbose=False)
 
@@ -166,6 +149,7 @@ def test_early_stopping_update():
 
 def test_early_stopping_should_stop():
     """Test early stopping should_stop method."""
+    from codex_ml.training.early_stopping import EarlyStopping
 
     es = EarlyStopping(patience=3, mode="min", verbose=False)
 
@@ -182,6 +166,7 @@ def test_early_stopping_should_stop():
 
 def test_early_stopping_reset():
     """Test early stopping reset method."""
+    from codex_ml.training.early_stopping import EarlyStopping
 
     es = EarlyStopping(patience=3, mode="min", verbose=False)
 
@@ -202,6 +187,7 @@ def test_early_stopping_reset():
 
 def test_early_stopping_state_dict():
     """Test early stopping state_dict serialization."""
+    from codex_ml.training.early_stopping import EarlyStopping
 
     es = EarlyStopping(patience=3, monitor="val_loss", mode="min", verbose=False)
 
@@ -222,6 +208,7 @@ def test_early_stopping_state_dict():
 
 def test_early_stopping_load_state_dict():
     """Test early stopping load_state_dict deserialization."""
+    from codex_ml.training.early_stopping import EarlyStopping
 
     es = EarlyStopping(patience=3, mode="min", verbose=False)
 
@@ -249,6 +236,7 @@ def test_early_stopping_load_state_dict():
 
 def test_create_early_stopping_from_config():
     """Test creating early stopping from config."""
+    from codex_ml.training.early_stopping import (
         EarlyStoppingConfig,
         create_early_stopping_from_config,
     )
@@ -275,12 +263,14 @@ def test_create_early_stopping_from_config():
 # Test scheduler factory
 def test_scheduler_factory_import():
     """Test that scheduler factory can be imported."""
+    from codex_ml.training.scheduler_factory import create_scheduler
 
     assert create_scheduler is not None, "create_scheduler must be initialized"
 
 
 def test_get_available_schedulers():
     """Test getting list of available schedulers."""
+    from codex_ml.training.scheduler_factory import get_available_schedulers
 
     schedulers = get_available_schedulers()
 
@@ -293,6 +283,7 @@ def test_get_available_schedulers():
 
 def test_calculate_num_training_steps():
     """Test calculation of training steps."""
+    from codex_ml.training.scheduler_factory import calculate_num_training_steps
 
     # Simple case
     steps = calculate_num_training_steps(
@@ -315,6 +306,7 @@ def test_calculate_num_training_steps():
 
 def test_create_constant_scheduler():
     """Test creating constant scheduler."""
+    from codex_ml.training.scheduler_factory import create_scheduler
 
     # Mock optimizer
     optimizer = Mock()
@@ -335,6 +327,7 @@ def test_create_constant_scheduler():
 
 def test_create_linear_scheduler():
     """Test creating linear scheduler."""
+    from codex_ml.training.scheduler_factory import create_scheduler
 
     # Mock optimizer
     optimizer = Mock()
@@ -357,6 +350,7 @@ def test_create_linear_scheduler():
 
 def test_create_cosine_scheduler():
     """Test creating cosine scheduler."""
+    from codex_ml.training.scheduler_factory import create_scheduler
 
     # Mock optimizer
     optimizer = Mock()
@@ -379,6 +373,7 @@ def test_create_cosine_scheduler():
 
 def test_create_scheduler_missing_training_steps():
     """Test that missing num_training_steps raises error for non-constant schedulers."""
+    from codex_ml.training.scheduler_factory import create_scheduler
 
     optimizer = Mock()
     optimizer.param_groups = [{"lr": 0.001}]
@@ -397,6 +392,7 @@ def test_create_scheduler_missing_training_steps():
 
 def test_create_scheduler_invalid_type():
     """Test that invalid scheduler type raises error."""
+    from codex_ml.training.scheduler_factory import create_scheduler
 
     optimizer = Mock()
     optimizer.param_groups = [{"lr": 0.001}]
@@ -414,6 +410,7 @@ def test_create_scheduler_invalid_type():
 # Integration tests
 def test_training_enhancements_config_exists():
     """Test that training enhancements config file exists."""
+    from pathlib import Path
 
     config_path = Path(__file__).parents[2] / "configs" / "base" / "training_enhancements.yaml"
     assert config_path.exists(), f"Config file not found: {config_path}"
@@ -421,7 +418,9 @@ def test_training_enhancements_config_exists():
 
 def test_training_enhancements_config_valid():
     """Test that training enhancements config is valid YAML."""
+    from pathlib import Path
 
+    import yaml
 
     config_path = Path(__file__).parents[2] / "configs" / "base" / "training_enhancements.yaml"
 
@@ -449,6 +448,7 @@ def test_training_enhancements_config_valid():
 
 def test_integration_early_stopping_full_training_loop():
     """Test early stopping in a simulated training loop."""
+    from codex_ml.training.early_stopping import EarlyStopping
 
     es = EarlyStopping(patience=2, mode="min", verbose=False)
 
@@ -471,6 +471,7 @@ def test_integration_early_stopping_full_training_loop():
 
 def test_integration_scheduler_with_warmup():
     """Test scheduler behavior during warmup."""
+    from codex_ml.training.scheduler_factory import create_scheduler
 
     # Mock optimizer
     optimizer = Mock()

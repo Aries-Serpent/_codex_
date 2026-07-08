@@ -5,15 +5,16 @@ This module contains 25+ tests covering:
 GitHub webhook security and validation — HMAC-SHA256 signature verification,
 event payload parsing, replay detection, and token format recognition.
 """
+
 from __future__ import annotations
+
 import hashlib
 import hmac as hmac_stdlib
 import json
+
+import pytest
+
 from codex.auth.github_app import WebhookVerifier
-
-
-
-
  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret

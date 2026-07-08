@@ -8,15 +8,13 @@ Python 3.12 has significant performance improvements including:
 - Faster imports
 - Better f-string performance
 """
+
 from __future__ import annotations
+
 import sys
 import time
-        import importlib
-        import json
-            import tomllib
 
-
-
+import pytest
 
 
 @pytest.mark.skipif(sys.version_info < (3, 12), reason="Python 3.12 benchmarks")
@@ -73,6 +71,7 @@ class TestPython312Performance:
 
         Python 3.12 has faster import machinery.
         """
+        import importlib
 
         modules_to_test = [
             "json",
@@ -143,6 +142,7 @@ class TestCriticalPathBenchmarks:
 
     def test_json_parsing_performance(self):
         """Test JSON parsing performance."""
+        import json
 
         # Create sample JSON data
         data = {
@@ -325,6 +325,7 @@ class TestRealWorldPerformance:
     def test_tomllib_parsing_performance(self, tmp_path):
         """Test TOML parsing performance with tomllib."""
         try:
+            import tomllib
         except ImportError:
             pytest.skip("tomllib not available")
 

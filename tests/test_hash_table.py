@@ -401,7 +401,6 @@ class TestHashTableComparison:
 
     def test_robin_hood_vs_cuckoo_lookup(self):
         """Test lookup accuracy."""
-import pytest
         rh_table = RobinHoodHashTable[str, int]()
         cuckoo_table = CuckooHashTable[str, int]()
         for i in range(100):

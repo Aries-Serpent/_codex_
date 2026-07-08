@@ -1,11 +1,12 @@
 """
 Tests for knob parsing utility (scripts/config/parse_knobs.py).
 """
+
 import os
+
+import pytest
+
 from scripts.config.parse_knobs import (
-
-
-
     clear_warnings,
     get_allowlist_extensions,
     get_allowlist_profile,

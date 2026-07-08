@@ -7,22 +7,22 @@ Tests verify that the tarfile extraction is protected against:
 - Symlink/hardlink traversal attacks
 - Malicious archive contents
 """
+
 from __future__ import annotations
+
 import io
 import json
 import shutil
 import sys
 import tarfile # pragma: allowlist secret # pragma: allowlist secret
 from pathlib import Path
-from bootstrap_offline import OfflineBootstrapper
-            import io
 
-
-
+import pytest
 
 # Add scripts/deploy to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "deploy"))
 
+from bootstrap_offline import OfflineBootstrapper
 
 
 @pytest.fixture
@@ -217,6 +217,7 @@ class TestTarfileExtractionSecurity:
         archive_path = tmp_path / "malicious.tar.gz"
         
         with tarfile.open(archive_path, "w:gz") as tar:
+            import io
             
             info = tarfile.TarInfo(name="../../../etc/passwd")
             info.size = 4

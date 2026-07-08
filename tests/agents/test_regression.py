@@ -7,12 +7,13 @@ and historical failure patterns.
 
 Phase 4B Deliverable: Regression Tests
 """
+
 import json
 from typing import Any, Dict
+
+import pytest
+
 from tests.agents.test_harness import (
-
-
-
     AgentTestHarness,
     ExecutionContext,
 )

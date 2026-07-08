@@ -3,13 +3,14 @@ Test Tokenization Compat
 
 Test module for tokenization compat.
 """
+
 from __future__ import annotations
+
 import importlib
 import types
 import warnings
 
-
-
+import pytest
 
 
 def test_tokenization_compat_emits_deprecation_and_forwards_attributes(monkeypatch):

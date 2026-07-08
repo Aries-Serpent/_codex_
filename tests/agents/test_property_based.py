@@ -11,23 +11,22 @@ Test Categories:
 - Mathematical properties
 - Data structure invariants
 """
+
+import pytest
+
 pytest.importorskip("hypothesis")
+
+
 import math
+
 from hypothesis import HealthCheck, assume, given, settings
 from hypothesis import strategies as st
+
 from agents.agent_memory import MemoryEntry
-from agents.physics_orchestrator import DecisionState
-from agents.quantum_game_theory import StrategyState
-        from math import factorial
-        import random
-
-
-
-
-
-
 
 # Import modules to test
+from agents.physics_orchestrator import DecisionState
+from agents.quantum_game_theory import StrategyState
 
 
 class TestPhysicsOrchestratorProperties:
@@ -422,6 +421,7 @@ class TestCombinatorialProperties:
         assume(k <= n)  # Only valid when k <= n
 
         # Using factorial formula
+        from math import factorial
 
         if k > n:
             return
@@ -434,6 +434,7 @@ class TestCombinatorialProperties:
     @given(sequence=st.lists(st.integers(min_value=0, max_value=10), min_size=1, max_size=20))
     def test_permutation_length(self, sequence):
         """Property: Permutation has same length as original."""
+        import random
 
         original_length = len(sequence)
         permuted = sequence.copy()

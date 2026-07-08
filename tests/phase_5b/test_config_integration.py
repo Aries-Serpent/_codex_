@@ -12,18 +12,18 @@ Tests complete configuration workflows:
 
 Part of Phase 5B-II: Integration Test Development
 """
+
 from __future__ import annotations
+
 import logging
 import os
 from unittest.mock import Mock, patch
-    from codex_ml.config import (
-    from hydra import compose, initialize
 
-
-
+import pytest
 
 # Conditional imports with graceful degradation
 try:
+    from codex_ml.config import (
         ConfigError,
         compose_config,
         load_app_config,
@@ -35,6 +35,7 @@ except (ImportError, AttributeError, ModuleNotFoundError):
     CONFIG_AVAILABLE = False
 
 try:
+    from hydra import compose, initialize
 
     HYDRA_AVAILABLE = True
 except ImportError:

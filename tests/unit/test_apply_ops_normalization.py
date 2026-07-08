@@ -1,9 +1,10 @@
 """Unit tests for Zendesk plan normalization helpers."""
+
 from unittest.mock import patch
+
+import pytest
+
 from codex.zendesk import apply as zapply
-
-
-
 
 
 def test_extract_operations_sequence_ok() -> None:

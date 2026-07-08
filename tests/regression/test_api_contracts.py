@@ -1,4 +1,3 @@
-import pytest
 #         assert resp.status_code in (, "Condition must be true"
 #             200,
 #             503,

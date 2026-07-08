@@ -1,10 +1,11 @@
 """Tests for ``mcp.server.schemas`` models."""
+
 from __future__ import annotations
+
+import pytest
 from pydantic import ValidationError
+
 from mcp.server.schemas import CallToolParams, ListToolsParams, NegotiateParams
-
-
-
 
 
 def test_call_tool_params_defaults() -> None:

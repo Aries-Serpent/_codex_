@@ -3,13 +3,14 @@ Test Tokenizers
 
 Test module for tokenizers.
 """
+
 from __future__ import annotations
+
 import sys
+
+import pytest
+
 from codex_ml.registry import tokenizers
-
-
-
-
 
 
 @pytest.fixture(autouse=True)

@@ -3,12 +3,13 @@ Test Metric Registry Registration
 
 Test module for metric registry registration.
 """
+
 from __future__ import annotations
+
+import pytest
+
 from codex_ml.metrics.registry import get_metric, metric_registry
 from codex_ml.registry.base import RegistryNotFoundError
-
-
-
 
 
 def test_custom_metric_registration_round_trip() -> None:

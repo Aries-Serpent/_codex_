@@ -5,14 +5,11 @@ Phase 3 Wave 5 Lane 1 — L1_SECURITY
 OWASP Coverage: A01-A10 (comprehensive coverage)
 Test Count: 22 tests
 """
+
 import re
 from typing import Any, Dict, List
-            import json
-            import pickle
-        import threading
-            import os.path
 
-
+import pytest
 
 
 class TestVulnerabilityPrevention:
@@ -23,6 +20,7 @@ class TestVulnerabilityPrevention:
         
         def safe_deserialize(data: str) -> Dict[str, Any]:
             """Deserialize data safely."""
+            import json
             
             # Safe: use json.loads (no arbitrary code execution)
             try:
@@ -32,6 +30,7 @@ class TestVulnerabilityPrevention:
         
         def unsafe_deserialize(data: str) -> Any:
             """Deserialize data unsafely (example of what NOT to do)."""
+            import pickle
             
             # Unsafe: pickle can execute arbitrary code
             return pickle.loads(data.encode())
@@ -157,6 +156,7 @@ class TestVulnerabilityPrevention:
     def test_race_condition_prevention(self):
         """Verify race conditions are prevented with proper locking."""
         
+        import threading
         
         class ThreadSafeCounter:
             def __init__(self):
@@ -224,6 +224,7 @@ class TestSecureCodingPractices:
         
         def validate_path(user_path: str) -> str:
             """Validate path after canonicalization."""
+            import os.path
             
             # Canonicalize path (resolve ., .., symlinks)
             canonical_path = os.path.normpath(user_path)

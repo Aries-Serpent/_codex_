@@ -3,9 +3,10 @@ Test Features
 
 Test module for features.
 """
+
 import importlib
 
-
+import pytest
 
 
 def test_import_module():

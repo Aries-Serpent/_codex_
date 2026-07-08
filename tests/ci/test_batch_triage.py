@@ -35,7 +35,6 @@ def test_json_report_generation():
 
 def test_csv_loading(tmp_path):
     """Test loading failures from CSV file"""
-import pytest
     engine = BatchTriageEngine()
 
     # Create temporary CSV file

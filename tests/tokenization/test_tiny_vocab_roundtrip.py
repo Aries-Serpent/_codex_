@@ -3,10 +3,10 @@ Test Tiny Vocab Roundtrip
 
 Test module for tiny vocab roundtrip.
 """
+
 from pathlib import Path
-    from codex_ml.tokenization.offline_vocab import TinyVocabTokenizer
 
-
+import pytest
 
 
 def _vocab_path() -> Path:
@@ -18,6 +18,7 @@ def _vocab_path() -> Path:
 
 @pytest.mark.skipif(not _vocab_path().exists(), reason="tiny vocab fixture missing")
 def test_tiny_vocab_roundtrip_and_padding():
+    from codex_ml.tokenization.offline_vocab import TinyVocabTokenizer
 
     vocab_path = _vocab_path()
     tok = TinyVocabTokenizer.from_vocab_file(vocab_path)

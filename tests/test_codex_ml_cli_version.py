@@ -3,12 +3,13 @@ Test Codex Ml Cli Version
 
 Test module for codex ml cli version.
 """
+
+import pytest
+
 pytest.importorskip("omegaconf")
+
 from codex import __version__
 from codex_ml.cli.main import cli
-
-
-
 
 
 def test_cli_reports_package_version(capsys):

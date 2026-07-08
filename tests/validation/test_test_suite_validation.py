@@ -8,11 +8,10 @@ This module provides tests to validate the test suite itself:
 - Test isolation
 - Test dependencies
 """
-import pytest
+
 import ast
 import re
 from pathlib import Path
-
 
 # =============================================================================
 # Test Suite Discovery

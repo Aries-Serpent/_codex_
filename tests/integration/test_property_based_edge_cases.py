@@ -10,6 +10,7 @@ import pytest
 pytest.importorskip("hypothesis")
 
 
+pytest.importorskip("hypothesis", reason="hypothesis required for property tests")
 
 from hypothesis import given, settings
 from hypothesis import strategies as st
@@ -259,7 +260,6 @@ class TestEvaluationProperties:
     @settings(max_examples=30)
     def test_confusion_matrix_counts(self, predictions: list[tuple[bool, bool]]):
         """Confusion matrix counts should sum to total."""
-import pytest
         tp = sum(1 for p, a in predictions if p and a)
         tn = sum(1 for p, a in predictions if not p and not a)
         fp = sum(1 for p, a in predictions if p and not a)

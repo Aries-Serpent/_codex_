@@ -14,7 +14,7 @@ Test Pickle Usage:
 - These are trusted sources used to validate security controls
 - Production code should use safe_pickle_load with RestrictedUnpickler
 """
-        pytest.importorskip("starlette", reason="starlette not installed")
+
 import hashlib
 import io
 import os
@@ -22,22 +22,12 @@ import pickle
 import tempfile
 from pathlib import Path
 from unittest.mock import Mock
-    import torch
-import sys
-from utils.safe_pickle import RestrictedUnpickler, safe_pickle_load, trusted_pickle_dumps
-from utils.safe_torch_loader import safe_load
-            import numpy as np
-        from services.api.middleware.form_validator import SecureMultipartMiddleware
-        from services.api.config import APIConfig
-        import subprocess
-        import shlex
-        from codex.utils import subprocess as secure_subprocess
-        import logging
 
-
+import pytest
 
 # Import torch with error handling for CI environments
 try:
+    import torch
 
     TORCH_AVAILABLE = True
 except (ImportError, OSError):
@@ -50,9 +40,12 @@ pytestmark = pytest.mark.skipif(
 )
 
 # Import security utilities
+import sys
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
+from utils.safe_pickle import RestrictedUnpickler, safe_pickle_load, trusted_pickle_dumps
+from utils.safe_torch_loader import safe_load
 
 
 class TestSafeTorchLoader:
@@ -179,6 +172,7 @@ class TestSafePickle:
         commonly used in ML checkpoints and have limited attack surface.
         """
         try:
+            import numpy as np
 
             data = {"array": np.array([1, 2, 3])}
 
@@ -208,6 +202,8 @@ class TestSecurityMiddleware:
 
     def test_form_size_validation(self, mock_request):
         """Test that middleware validates form size."""
+        pytest.importorskip("starlette", reason="starlette not installed")
+        from services.api.middleware.form_validator import SecureMultipartMiddleware
 
         middleware = SecureMultipartMiddleware(None)
 
@@ -220,6 +216,7 @@ class TestSecurityMiddleware:
 
     def test_security_config_limits(self):
         """Test that APIConfig has appropriate security limits."""
+        from services.api.config import APIConfig
 
         assert APIConfig.MAX_UPLOAD_SIZE == 50 * 1024 * 1024, "MAX_UPLOAD_SIZE is not valid"
         assert APIConfig.MAX_FIELD_SIZE == 1 * 1024 * 1024, "MAX_FIELD_SIZE is not valid"
@@ -256,6 +253,7 @@ class TestSubprocessSecurity:
 
     def test_subprocess_uses_list_form(self):
         """Test that subprocess calls use list form."""
+        import subprocess
 
         # Safe: list form
         result = subprocess.run(["echo", "hello"], capture_output=True, text=True)
@@ -264,6 +262,7 @@ class TestSubprocessSecurity:
 
     def test_shlex_split_for_command_parsing(self):
         """Test shlex.split for safe command parsing."""
+        import shlex
 
         command = "git status --short"
         args = shlex.split(command)
@@ -273,6 +272,7 @@ class TestSubprocessSecurity:
 
     def test_secure_wrapper_rejects_shell_true(self):
         """Secure subprocess wrapper should reject shell=True explicitly."""
+        from codex.utils import subprocess as secure_subprocess
 
         with pytest.raises(ValueError, match="shell=True is not supported"):
             secure_subprocess.run(["echo", "hello"], shell=True)
@@ -283,6 +283,7 @@ class TestErrorHandling:
 
     def test_exceptions_are_logged(self):
         """Test that exceptions include logging."""
+        import logging
 
         logger = logging.getLogger(__name__)
 

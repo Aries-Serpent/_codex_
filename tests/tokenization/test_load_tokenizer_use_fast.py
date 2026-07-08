@@ -3,14 +3,14 @@ Test Load Tokenizer Use Fast
 
 Test module for load tokenizer use fast.
 """
+
 import sys
 from pathlib import Path
 from types import SimpleNamespace
+
+import pytest
+
 from codex_ml.tokenization import load_tokenizer
-    from codex_ml.tokenization.sentencepiece_adapter import SentencePieceAdapter
-
-
-
 
 
 def _sp_stub(monkeypatch, model_path: Path):
@@ -84,6 +84,7 @@ def test_use_fast_flag():
 def test_load_sentencepiece_adapter(tmp_path, monkeypatch):
     model = tmp_path / "toy.model"
     _sp_stub(monkeypatch, model)
+    from codex_ml.tokenization.sentencepiece_adapter import SentencePieceAdapter
 
     SentencePieceAdapter(model).train_or_load(tmp_path / "corpus.txt", vocab_size=8)
     adapter = load_tokenizer(path=str(model))

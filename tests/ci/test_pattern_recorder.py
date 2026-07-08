@@ -20,12 +20,6 @@ def _compute_merge_readiness_score():
         "total": 100,
     }
 """.strip() + "\n",
-import pytest
-from pathlib import Path
-from codex.logging.structured_logger import logger
-        import os
-        import ast
-        import ast
             encoding="utf-8",
         )
 
@@ -107,6 +101,8 @@ def _compute_merge_readiness_score():
 
         (scripts_ci / "session_wrapup_autofix.py").write_text(
             """
+from pathlib import Path
+from codex.logging.structured_logger import logger
 
 _import_count_file = Path(__file__).with_name("import_count.txt")
 _count = int(_import_count_file.read_text(encoding="utf-8")) if _import_count_file.exists() else 0
@@ -144,6 +140,7 @@ class TestResolveAcctDiffBase:
         # repository fixtures. Importing the stdlib symbol under a distinct
         # name avoids a github-code-quality false-positive that would
         # otherwise flag this call against the project wrapper's signature.
+        import os
 
         merged = os.environ.copy()
         merged.update(env or {})
@@ -296,6 +293,7 @@ class TestFindKwargRemovalSpan:
 
     def _make_kw(self, line: str, name: str, value_src: str):
         """Build an ast.keyword for *name=value_src* within *line*."""
+        import ast
 
         # Parse value to get a real AST node with offsets
         tree = ast.parse(f"f({line.strip()})", mode="eval")
@@ -307,6 +305,7 @@ class TestFindKwargRemovalSpan:
 
     def test_simple_kwarg(self):
         fixer = self._make_fixer()
+        import ast
 
         src = "f(x=1, x=2)"
         tree = ast.parse(src, mode="eval")

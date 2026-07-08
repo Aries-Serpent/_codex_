@@ -6,36 +6,14 @@ Comprehensive testing for all RAG embedding providers:
 - OpenAI Provider
 - Provider switching and fallback
 """
-np = pytest.importorskip("numpy")
+
 import tempfile
 from pathlib import Path
 from unittest.mock import Mock, patch
-            from codex.rag.embeddings import TfidfEmbeddingProvider
-            from codex.rag.embeddings import TfidfEmbeddingProvider
-            from codex.rag.embeddings import TfidfEmbeddingProvider
-            from codex.rag.embeddings import TfidfEmbeddingProvider
-            from codex.rag.embeddings import TfidfEmbeddingProvider
-            from codex.rag.embeddings import LocalSentenceTransformerProvider
-            from codex.rag.embeddings import LocalSentenceTransformerProvider
-            from codex.rag.embeddings import LocalSentenceTransformerProvider
-            from codex.rag.embeddings import LocalSentenceTransformerProvider
-            from codex.rag.embeddings import LocalSentenceTransformerProvider
-            from codex.rag.embeddings import OpenAIEmbeddingProvider
-            from codex.rag.embeddings import OpenAIEmbeddingProvider
-            from codex.rag.embeddings import OpenAIEmbeddingProvider
-            from codex.rag.embeddings import get_embedding_provider
-            from codex.rag.embeddings import get_embedding_provider
-            from codex.rag.embeddings import get_embedding_provider
-            from src.codex.rag import embeddings
-            from codex.rag.embeddings import TfidfEmbeddingProvider
-            from codex.rag.embeddings import TfidfEmbeddingProvider
-            import os
-            from codex.rag.embeddings import get_embedding_provider
-            import os
-            from codex.rag.embeddings import LocalSentenceTransformerProvider
 
+import pytest
 
-
+np = pytest.importorskip("numpy")
 
 
 class TestTFIDFProvider:
@@ -44,6 +22,7 @@ class TestTFIDFProvider:
     def test_tfidf_initialization(self):
         """Test TF-IDF provider initialization."""
         try:
+            from codex.rag.embeddings import TfidfEmbeddingProvider
 
             provider = TfidfEmbeddingProvider()
             assert provider is not None, "provider must be initialized"
@@ -57,6 +36,7 @@ class TestTFIDFProvider:
     def test_tfidf_empty_corpus(self):
         """Test TF-IDF with empty corpus."""
         try:
+            from codex.rag.embeddings import TfidfEmbeddingProvider
 
             provider = TfidfEmbeddingProvider()
 
@@ -73,6 +53,7 @@ class TestTFIDFProvider:
     def test_tfidf_vocabulary_growth(self):
         """Test TF-IDF vocabulary expansion."""
         try:
+            from codex.rag.embeddings import TfidfEmbeddingProvider
 
             provider = TfidfEmbeddingProvider()
 
@@ -96,6 +77,7 @@ class TestTFIDFProvider:
     def test_tfidf_sparse_vs_dense(self):
         """Test TF-IDF dense vs sparse representation."""
         try:
+            from codex.rag.embeddings import TfidfEmbeddingProvider
 
             provider = TfidfEmbeddingProvider()
 
@@ -114,6 +96,7 @@ class TestTFIDFProvider:
     def test_tfidf_get_dimension(self):
         """Test getting TF-IDF embedding dimension."""
         try:
+            from codex.rag.embeddings import TfidfEmbeddingProvider
 
             provider = TfidfEmbeddingProvider()
 
@@ -134,6 +117,7 @@ class TestLocalSentenceTransformerProvider:
     def test_local_provider_initialization(self):
         """Test local provider initialization."""
         try:
+            from codex.rag.embeddings import LocalSentenceTransformerProvider
 
             # Should handle model loading or skip if not available
             try:
@@ -147,6 +131,7 @@ class TestLocalSentenceTransformerProvider:
     def test_local_provider_custom_model(self):
         """Test local provider with custom model name."""
         try:
+            from codex.rag.embeddings import LocalSentenceTransformerProvider
 
             custom_model = "sentence-transformers/all-MiniLM-L6-v2"
 
@@ -161,6 +146,7 @@ class TestLocalSentenceTransformerProvider:
     def test_local_provider_cache_dir(self):
         """Test local provider with custom cache directory."""
         try:
+            from codex.rag.embeddings import LocalSentenceTransformerProvider
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 cache_dir = Path(tmpdir) / "models"
@@ -176,6 +162,7 @@ class TestLocalSentenceTransformerProvider:
     def test_local_provider_encoding(self):
         """Test local provider encoding."""
         try:
+            from codex.rag.embeddings import LocalSentenceTransformerProvider
 
             try:
                 provider = LocalSentenceTransformerProvider()
@@ -200,6 +187,7 @@ class TestLocalSentenceTransformerProvider:
     def test_local_provider_device_placement(self):
         """Test that local provider uses CPU correctly."""
         try:
+            from codex.rag.embeddings import LocalSentenceTransformerProvider
 
             try:
                 provider = LocalSentenceTransformerProvider()
@@ -221,6 +209,7 @@ class TestOpenAIProvider:
     def test_openai_provider_initialization(self):
         """Test OpenAI provider initialization."""
         try:
+            from codex.rag.embeddings import OpenAIEmbeddingProvider
 
             # Should handle missing API key gracefully
             try:
@@ -235,6 +224,7 @@ class TestOpenAIProvider:
     def test_openai_provider_with_mock(self, mock_openai):
         """Test OpenAI provider with mocked API."""
         try:
+            from codex.rag.embeddings import OpenAIEmbeddingProvider
 
             # Mock the OpenAI client
             mock_client = Mock()
@@ -263,6 +253,7 @@ class TestOpenAIProvider:
     def test_openai_provider_dimension(self):
         """Test OpenAI provider dimension."""
         try:
+            from codex.rag.embeddings import OpenAIEmbeddingProvider
 
             try:
                 provider = OpenAIEmbeddingProvider()
@@ -283,6 +274,7 @@ class TestProviderSwitching:
     def test_get_default_provider(self):
         """Test getting default embedding provider."""
         try:
+            from codex.rag.embeddings import get_embedding_provider
 
             # Should return a provider (likely TF-IDF as fallback)
             provider = get_embedding_provider()
@@ -297,6 +289,7 @@ class TestProviderSwitching:
     def test_get_provider_by_name(self):
         """Test getting provider by name."""
         try:
+            from codex.rag.embeddings import get_embedding_provider
 
             # Try different provider names
             provider_names = ["tfidf", "local", "openai"]
@@ -314,6 +307,7 @@ class TestProviderSwitching:
     def test_provider_fallback(self):
         """Test provider fallback mechanism."""
         try:
+            from codex.rag.embeddings import get_embedding_provider
 
             # Try to get preferred provider, should fallback if not available
             try:
@@ -333,6 +327,7 @@ class TestProviderCompatibility:
     def test_all_providers_have_encode(self):
         """Test that all providers implement encode method."""
         try:
+            from src.codex.rag import embeddings
 
             # Get all provider classes
             provider_classes = [
@@ -352,6 +347,7 @@ class TestProviderCompatibility:
     def test_all_providers_return_numpy(self):
         """Test that all providers return numpy arrays."""
         try:
+            from codex.rag.embeddings import TfidfEmbeddingProvider
 
             providers_to_test = []
 
@@ -372,6 +368,7 @@ class TestProviderCompatibility:
     def test_provider_batch_consistency(self):
         """Test that batch and single encoding are consistent."""
         try:
+            from codex.rag.embeddings import TfidfEmbeddingProvider
 
             provider = TfidfEmbeddingProvider()
 
@@ -397,7 +394,9 @@ class TestProviderEnvironmentConfig:
     def test_provider_respects_env_var(self):
         """Test that provider selection respects environment variable."""
         try:
+            import os
 
+            from codex.rag.embeddings import get_embedding_provider
 
             # Set environment variable
             old_value = os.environ.get("RAG_EMBEDDING_PROVIDER")
@@ -419,7 +418,9 @@ class TestProviderEnvironmentConfig:
     def test_hf_token_usage(self):
         """Test that HF_TOKEN is used when available."""
         try:
+            import os
 
+            from codex.rag.embeddings import LocalSentenceTransformerProvider
 
             # Set mock HF token
             old_value = os.environ.get("HF_TOKEN")

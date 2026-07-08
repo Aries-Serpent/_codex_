@@ -3,16 +3,14 @@ Test Randomness
 
 Test module for randomness.
 """
-import pytest
-import os
-import random
-from unittest.mock import Mock, patch
-from src.common.randomness import set_seed
-        import numpy as np
 
 #!/usr/bin/env python3
 """Tests for common.randomness module."""
+import os
+import random
+from unittest.mock import Mock, patch
 
+from src.common.randomness import set_seed
 
 
 def test_set_seed_with_explicit_value():
@@ -42,6 +40,7 @@ def test_set_seed_with_none_uses_env_variable(monkeypatch):
 def test_set_seed_sets_numpy_seed_when_available():
     """Test that numpy seed is set when numpy is available."""
     try:
+        import numpy as np
 
         set_seed(42)
         val1 = np.random.random()

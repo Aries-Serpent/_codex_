@@ -16,37 +16,13 @@ runnable via::
 
     pytest tests/integration/test_gap23_boundaries.py -v --tb=short -m integration
 """
+
 from __future__ import annotations
-    pytest.importorskip("fastapi")
+
 from pathlib import Path
 from typing import Any
-    from fastapi.testclient import TestClient  # type: ignore[import]
-    from monitoring.dashboard_api import app  # local import keeps module optional
-    from monitoring.dashboard_api import app
-    from monitoring.dashboard_api import app
-    from monitoring.dashboard_api import app
-    from monitoring.dashboard_api import app
-    from codex.alerting.base import AlertSeverity
-    from codex.alerting.manager import TrainingAlertManager
-    from codex.alerting.base import AlertSeverity
-    from codex.alerting.manager import TrainingAlertManager
-    from codex.alerting.base import AlertSeverity
-    from codex.alerting.manager import TrainingAlertManager
-    from codex.alerting.base import AlertEvent, AlertSeverity
-    from codex_ml.data.dataloader import deterministic_order
-    from codex_ml.data.dataloader import deterministic_order
-    from codex_ml.data.datasets import (
-    from codex_ml.data.datasets import DatasetSpec
-    from codex_ml.config.load import load_base_config
-    from codex_ml.config.load import _deep_merge, load_base_config, load_experiment_config
-    from codex_ml.config_schema import TrainConfig
-    from codex_ml.config_schema import TrainConfig
-    from pydantic import ValidationError
-    from codex_ml.config_schema import TrainConfig
-    from codex_ml.config.schema import CodexConfig, ModelConfig, TrainingConfig
 
-
-
+import pytest
 
 # ---------------------------------------------------------------------------
 # Boundary 1 – API ↔ model-service
@@ -55,6 +31,7 @@ from typing import Any
 # We need FastAPI test-client utilities.  Import guards protect against
 # environments where the dependency is unavailable.
 try:
+    from fastapi.testclient import TestClient  # type: ignore[import]
 except ImportError:  # pragma: no cover
     pass  # FastAPI is optional; TestClient features unavailable without it
 
@@ -62,6 +39,8 @@ except ImportError:  # pragma: no cover
 @pytest.mark.integration
 def test_api_health_endpoint_returns_healthy() -> None:
     """The /health endpoint returns status=healthy (API ↔ model-service boundary)."""
+    pytest.importorskip("fastapi")
+    from monitoring.dashboard_api import app  # local import keeps module optional
 
     client = TestClient(app, raise_server_exceptions=True)
     response = client.get("/health")
@@ -74,6 +53,8 @@ def test_api_health_endpoint_returns_healthy() -> None:
 @pytest.mark.integration
 def test_api_readiness_probe_reports_ready() -> None:
     """The /readiness probe responds 200 OK (API ↔ model-service boundary)."""
+    pytest.importorskip("fastapi")
+    from monitoring.dashboard_api import app
 
     client = TestClient(app)
     response = client.get("/readiness")
@@ -85,6 +66,8 @@ def test_api_readiness_probe_reports_ready() -> None:
 @pytest.mark.integration
 def test_api_liveness_probe_reports_alive() -> None:
     """The /liveness probe responds 200 OK with uptime info (API ↔ model-service)."""
+    pytest.importorskip("fastapi")
+    from monitoring.dashboard_api import app
 
     client = TestClient(app)
     response = client.get("/liveness")
@@ -97,6 +80,8 @@ def test_api_liveness_probe_reports_alive() -> None:
 @pytest.mark.integration
 def test_api_ci_metrics_endpoint_structure() -> None:
     """GET /api/metrics/ci returns a dict with expected keys (API ↔ model-service)."""
+    pytest.importorskip("fastapi")
+    from monitoring.dashboard_api import app
 
     client = TestClient(app)
     response = client.get("/api/metrics/ci")
@@ -109,6 +94,8 @@ def test_api_ci_metrics_endpoint_structure() -> None:
 @pytest.mark.integration
 def test_api_root_lists_known_endpoints() -> None:
     """GET / advertises ci_metrics and alerts endpoints (API ↔ model-service)."""
+    pytest.importorskip("fastapi")
+    from monitoring.dashboard_api import app
 
     client = TestClient(app)
     response = client.get("/")
@@ -140,6 +127,8 @@ class _StubChannel:
 @pytest.mark.integration
 def test_alerting_fires_on_training_failure() -> None:
     """TrainingAlertManager delivers a CRITICAL event when a training run fails."""
+    from codex.alerting.base import AlertSeverity
+    from codex.alerting.manager import TrainingAlertManager
 
     stub = _StubChannel()
     manager = TrainingAlertManager(channels=[stub], min_severity=AlertSeverity.INFO)
@@ -159,6 +148,8 @@ def test_alerting_fires_on_training_failure() -> None:
 @pytest.mark.integration
 def test_alerting_suppresses_events_below_min_severity() -> None:
     """Events below min_severity threshold are silently discarded."""
+    from codex.alerting.base import AlertSeverity
+    from codex.alerting.manager import TrainingAlertManager
 
     stub = _StubChannel()
     # Manager configured to only pass ERROR and above.
@@ -173,6 +164,8 @@ def test_alerting_suppresses_events_below_min_severity() -> None:
 @pytest.mark.integration
 def test_alerting_delivers_to_multiple_channels() -> None:
     """When two channels are registered both receive the event."""
+    from codex.alerting.base import AlertSeverity
+    from codex.alerting.manager import TrainingAlertManager
 
     ch1 = _StubChannel()
     ch2 = _StubChannel()
@@ -189,6 +182,7 @@ def test_alerting_delivers_to_multiple_channels() -> None:
 @pytest.mark.integration
 def test_alerting_timestamp_is_filled_automatically() -> None:
     """AlertEvent.fill_timestamp() populates the timestamp when it is empty."""
+    from codex.alerting.base import AlertEvent, AlertSeverity
 
     event = AlertEvent(
         title="Test",
@@ -210,6 +204,7 @@ def test_alerting_timestamp_is_filled_automatically() -> None:
 @pytest.mark.integration
 def test_data_pipeline_deterministic_order_is_stable() -> None:
     """deterministic_order returns the same sequence for the same seed."""
+    from codex_ml.data.dataloader import deterministic_order
 
     items = list(range(20))
     order_a = deterministic_order(items.copy(), seed=42)
@@ -225,6 +220,7 @@ def test_data_pipeline_different_seeds_produce_different_orders() -> None:
     of 100 items spans the modulus boundary and *does* produce different
     orderings for seeds 42 vs 7.
     """
+    from codex_ml.data.dataloader import deterministic_order
 
     # 100 items cross the modulo-97 boundary → different seeds → different orders.
     items = list(range(100))
@@ -236,6 +232,7 @@ def test_data_pipeline_different_seeds_produce_different_orders() -> None:
 @pytest.mark.integration
 def test_data_pipeline_dataset_registry_roundtrip() -> None:
     """A DatasetSpec registered then retrieved is identical (pipeline ↔ training)."""
+    from codex_ml.data.datasets import (
         _DATASET_REGISTRY,
         DatasetSpec,
         get_dataset_spec,
@@ -264,6 +261,7 @@ def test_data_pipeline_dataset_registry_roundtrip() -> None:
 @pytest.mark.integration
 def test_data_pipeline_loader_callable_invoked_correctly() -> None:
     """The loader callable in a DatasetSpec can be called with its root path."""
+    from codex_ml.data.datasets import DatasetSpec
 
     records = ["line1", "line2", "line3"]
 
@@ -283,6 +281,7 @@ def test_data_pipeline_loader_callable_invoked_correctly() -> None:
 @pytest.mark.integration
 def test_config_load_base_config_returns_dict() -> None:
     """load_base_config() returns a non-empty dict from conf/config.yaml."""
+    from codex_ml.config.load import load_base_config
 
     cfg = load_base_config()
     assert isinstance(cfg, dict)
@@ -292,6 +291,7 @@ def test_config_load_base_config_returns_dict() -> None:
 @pytest.mark.integration
 def test_config_experiment_basic_loads_and_merges() -> None:
     """load_experiment_config('basic') merges correctly with the base config."""
+    from codex_ml.config.load import _deep_merge, load_base_config, load_experiment_config
 
     base = load_base_config()
     exp = load_experiment_config("basic")
@@ -306,6 +306,7 @@ def test_config_experiment_basic_loads_and_merges() -> None:
 @pytest.mark.integration
 def test_config_schema_train_config_defaults_valid() -> None:
     """TrainConfig with default values passes pydantic validation."""
+    from codex_ml.config_schema import TrainConfig
 
     cfg = TrainConfig()
     assert cfg.batch_size > 0, "batch_size must be greater than zero"
@@ -317,6 +318,7 @@ def test_config_schema_train_config_defaults_valid() -> None:
 @pytest.mark.integration
 def test_config_schema_train_config_custom_values() -> None:
     """TrainConfig accepts valid custom values and applies them at runtime."""
+    from codex_ml.config_schema import TrainConfig
 
     cfg = TrainConfig(
         model_name="tiny-lm",
@@ -336,7 +338,9 @@ def test_config_schema_train_config_custom_values() -> None:
 @pytest.mark.integration
 def test_config_schema_train_config_rejects_invalid_lr() -> None:
     """TrainConfig raises ValidationError for a non-positive learning rate."""
+    from pydantic import ValidationError
 
+    from codex_ml.config_schema import TrainConfig
 
     with pytest.raises(ValidationError):
         TrainConfig(learning_rate=-0.001)
@@ -345,6 +349,7 @@ def test_config_schema_train_config_rejects_invalid_lr() -> None:
 @pytest.mark.integration
 def test_config_codex_schema_roundtrip() -> None:
     """CodexConfig can be instantiated from a plain dict and compared."""
+    from codex_ml.config.schema import CodexConfig, ModelConfig, TrainingConfig
 
     model_cfg = ModelConfig(model_name="test-model", hidden_size=128)
     training_cfg = TrainingConfig(learning_rate=1e-3, batch_size=4, max_steps=10)

@@ -3,13 +3,12 @@ Test Logger Fanout Smoke
 
 Test module for logger fanout smoke.
 """
+
 from __future__ import annotations
-import pytest
+
 from typing import Any, Optional
+
 from codex_ml.logging.unified_logger import LoggerBackend, LoggerRegistry
-
-
-
 
 
 class DummyBackend(LoggerBackend):

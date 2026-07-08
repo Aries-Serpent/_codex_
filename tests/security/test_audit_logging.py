@@ -3,11 +3,12 @@ Test Audit Logging
 
 Test module for audit logging.
 """
+
 import logging
+
+import pytest
+
 from security import log_security_event
-
-
-
 
 
 def test_security_event_logged(caplog: pytest.LogCaptureFixture) -> None:

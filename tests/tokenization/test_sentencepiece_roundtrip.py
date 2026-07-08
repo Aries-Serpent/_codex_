@@ -3,14 +3,15 @@ Test Sentencepiece Roundtrip
 
 Test module for sentencepiece roundtrip.
 """
+
 from __future__ import annotations
-spm = pytest.importorskip("sentencepiece")
+
 import importlib
 from pathlib import Path
 
+import pytest
 
-
-
+spm = pytest.importorskip("sentencepiece")
 
 
 def _find_tokenizer_cls():

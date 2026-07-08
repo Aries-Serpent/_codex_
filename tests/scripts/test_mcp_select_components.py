@@ -3,11 +3,6 @@ Test Mcp Select Components
 
 Test module for mcp select components.
 """
-import json
-import sys
-import tempfile
-from pathlib import Path
-from select_components import (
 
 #! /usr/bin/env python3
 """
@@ -15,10 +10,16 @@ Test suite for scripts/mcp/select_components.py
 Tests component selection, glob expansion, and topic filtering
 """
 
+import json
+import sys
+import tempfile
+from pathlib import Path
 
+import pytest
 
 # Add scripts/mcp to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "mcp"))
+from select_components import (
     expand_globs,
     filter_by_globs,
     filter_by_topic,

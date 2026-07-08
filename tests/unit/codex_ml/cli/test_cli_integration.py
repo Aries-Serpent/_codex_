@@ -62,7 +62,6 @@ class TestCLIEdgeCases:
 
     def test_cli_unicode_output(self):
         """Test: unicode characters in output."""
-import pytest
         unicode_text = 'hello 世界 🌍'
         assert '世' in unicode_text, "Condition must be true"
 

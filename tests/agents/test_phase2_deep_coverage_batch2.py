@@ -11,67 +11,11 @@ Systematically applies advanced physics-guided patterns:
 
 Target: +12-15% coverage gain (34% → 48%)
 """
+
+import pytest
+
 pytest.importorskip("numpy", reason="numpy not installed")
 import numpy as np
-        from agents.physics_orchestrator import DiffusionFlowModel
-        from agents.physics_orchestrator import EnergyLandscape
-        from agents.physics_orchestrator import EnergyLandscape, EnergyState
-        from agents.physics_orchestrator import SwarmIntelligence
-        from agents.physics_orchestrator import SwarmIntelligence
-        from agents.quantum_game_theory import QuantumInspiredGameEngine, TeamType
-        from agents.quantum_game_theory import QuantumInspiredGameEngine, TeamType
-        from agents.quantum_game_theory import QuantumInspiredGameEngine
-        from agents.quantum_game_theory import QuantumInspiredGameEngine, TeamType
-        from agents.quantum_game_theory import QuantumGameState, StrategyState
-        from agents.quantum_game_theory import QuantumGameState, StrategyState
-        from agents.mental_mapping import MentalMappingModel, NodeType
-        from agents.mental_mapping import EdgeType
-        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
-        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
-        from agents.mental_mapping import MentalMappingModel, NodeType
-        from agents.mental_mapping import MentalMappingModel, NodeType
-        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
-        from agents.mental_mapping import MentalMappingModel, NodeType
-        from agents.agent_memory import AgentMemory
-        from agents.agent_memory import AgentMemory
-        from agents.agent_memory import AgentMemory
-        from agents.agent_memory import AgentMemory
-        from agents.agent_memory import AgentMemory
-        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
-        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
-        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
-        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
-        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import ForceVector
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.mental_mapping import MentalMappingModel, NodeType
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
-        from agents.quantum_game_theory import QuantumInspiredGameEngine
-        from agents.agent_memory import AgentMemory
-        from agents.mental_mapping import MentalMappingModel, NodeType
-        from agents.physics_orchestrator import ForceVector
-        from agents.physics_orchestrator import ActionPath, ActionType
-        from agents.quantum_game_theory import StrategyState
-        from agents.mental_mapping import MentalMappingModel, NodeType
-        from agents.agent_memory import AgentMemory
-        from agents.physics_orchestrator import ForceVector
-        from agents.quantum_game_theory import QuantumInspiredGameEngine
-        from agents.mental_mapping import MentalMappingModel, NodeType
-        from agents.agent_memory import AgentMemory
-
-
-
 
 
 class TestPhase2_AdvancedPhysics_SpinorDimension:
@@ -82,6 +26,7 @@ class TestPhase2_AdvancedPhysics_SpinorDimension:
 
     def test_diffusion_flow_model_advanced(self):
         """Test DiffusionFlowModel with advanced parameters"""
+        from agents.physics_orchestrator import DiffusionFlowModel
 
         model = DiffusionFlowModel(dimensions=2, resolution=10)
         assert model is not None, "model must be initialized"
@@ -90,12 +35,14 @@ class TestPhase2_AdvancedPhysics_SpinorDimension:
 
     def test_energy_landscape_initialization(self):
         """Test EnergyLandscape initialization"""
+        from agents.physics_orchestrator import EnergyLandscape
 
         landscape = EnergyLandscape()
         assert landscape is not None, "landscape must be initialized"
 
     def test_energy_landscape_add_potential(self):
         """Test adding potential wells to landscape"""
+        from agents.physics_orchestrator import EnergyLandscape, EnergyState
 
         landscape = EnergyLandscape()
         # add_state expects an EnergyState object, not kwargs
@@ -105,6 +52,7 @@ class TestPhase2_AdvancedPhysics_SpinorDimension:
 
     def test_swarm_intelligence_initialization(self):
         """Test SwarmIntelligence initialization"""
+        from agents.physics_orchestrator import SwarmIntelligence
 
         swarm = SwarmIntelligence(num_particles=10)
         assert swarm is not None, "swarm must be initialized"
@@ -112,6 +60,7 @@ class TestPhase2_AdvancedPhysics_SpinorDimension:
 
     def test_swarm_intelligence_optimize(self):
         """Test swarm optimization"""
+        from agents.physics_orchestrator import SwarmIntelligence
 
         swarm = SwarmIntelligence(num_particles=5, dimensions=2)
         # run_optimization takes (fitness_fn, bounds, max_iterations)
@@ -128,6 +77,7 @@ class TestPhase2_QuantumGame_AdvancedEngines:
 
     def test_game_engine_play_round(self):
         """Test playing a single game round"""
+        from agents.quantum_game_theory import QuantumInspiredGameEngine, TeamType
 
         blue = np.array([0.5, 0.5])
         red = np.array([0.5, 0.5])
@@ -141,6 +91,7 @@ class TestPhase2_QuantumGame_AdvancedEngines:
 
     def test_game_engine_get_payoffs(self):
         """Test getting payoffs from current strategies"""
+        from agents.quantum_game_theory import QuantumInspiredGameEngine, TeamType
 
         blue = np.array([0.7, 0.3])
         red = np.array([0.6, 0.4])
@@ -156,6 +107,7 @@ class TestPhase2_QuantumGame_AdvancedEngines:
 
     def test_strategy_optimization(self):
         """Test strategy optimization using annealing (Eq #12)"""
+        from agents.quantum_game_theory import QuantumInspiredGameEngine
 
         blue = np.array([0.5, 0.5])
         red = np.array([0.5, 0.5])
@@ -170,6 +122,7 @@ class TestPhase2_QuantumGame_AdvancedEngines:
 
     def test_nash_equilibrium_search(self):
         """Test Nash equilibrium finding"""
+        from agents.quantum_game_theory import QuantumInspiredGameEngine, TeamType
 
         blue = np.array([0.5, 0.5])
         red = np.array([0.5, 0.5])
@@ -185,6 +138,7 @@ class TestPhase2_QuantumGame_AdvancedEngines:
 
     def test_entanglement_creation(self):
         """Test creating entangled game states (Eq #9)"""
+        from agents.quantum_game_theory import QuantumGameState, StrategyState
 
         blue_state = StrategyState("blue", np.array([0.7, 0.3]))
         red_state = StrategyState("red", np.array([0.6, 0.4]))
@@ -195,6 +149,7 @@ class TestPhase2_QuantumGame_AdvancedEngines:
 
     def test_measurement_collapse(self):
         """Test quantum measurement and state collapse"""
+        from agents.quantum_game_theory import QuantumGameState, StrategyState
 
         blue_state = StrategyState("blue", np.array([0.7, 0.3]))
         red_state = StrategyState("red", np.array([0.6, 0.4]))
@@ -213,12 +168,14 @@ class TestPhase2_MentalMapping_GraphAlgorithms:
 
     def test_bfs_traversal(self):
         """Test breadth-first search traversal"""
+        from agents.mental_mapping import MentalMappingModel, NodeType
 
         model = MentalMappingModel()
         node1 = model.create_node(NodeType.PROBLEM, {"name": "start"})
         node2 = model.create_node(NodeType.PROBLEM, {"name": "mid"})
         node3 = model.create_node(NodeType.PROBLEM, {"name": "end"})
 
+        from agents.mental_mapping import EdgeType
 
         # Use node_id strings, not node objects
         model.connect_nodes(
@@ -237,6 +194,7 @@ class TestPhase2_MentalMapping_GraphAlgorithms:
 
     def test_dfs_traversal(self):
         """Test depth-first search traversal"""
+        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
 
         model = MentalMappingModel()
         node1 = model.create_node(NodeType.PROBLEM, {})
@@ -253,6 +211,7 @@ class TestPhase2_MentalMapping_GraphAlgorithms:
 
     def test_shortest_path(self):
         """Test shortest path finding (Eq #39: ΔS optimization)"""
+        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
 
         model = MentalMappingModel()
         node1 = model.create_node(NodeType.PROBLEM, {})
@@ -276,6 +235,7 @@ class TestPhase2_MentalMapping_GraphAlgorithms:
 
     def test_node_clustering(self):
         """Test node clustering algorithm"""
+        from agents.mental_mapping import MentalMappingModel, NodeType
 
         model = MentalMappingModel()
         [model.create_node(NodeType.PROBLEM, {}) for _ in range(5)]
@@ -285,6 +245,7 @@ class TestPhase2_MentalMapping_GraphAlgorithms:
 
     def test_subgraph_extraction(self):
         """Test extracting subgraphs"""
+        from agents.mental_mapping import MentalMappingModel, NodeType
 
         model = MentalMappingModel()
         node1 = model.create_node(NodeType.PROBLEM, {})
@@ -295,6 +256,7 @@ class TestPhase2_MentalMapping_GraphAlgorithms:
 
     def test_graph_metrics(self):
         """Test graph metric calculations"""
+        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
 
         model = MentalMappingModel()
         node1 = model.create_node(NodeType.PROBLEM, {})
@@ -311,6 +273,7 @@ class TestPhase2_MentalMapping_GraphAlgorithms:
 
     def test_centrality_measures(self):
         """Test centrality calculation for nodes"""
+        from agents.mental_mapping import MentalMappingModel, NodeType
 
         model = MentalMappingModel()
         node1 = model.create_node(NodeType.PROBLEM, {})
@@ -327,6 +290,7 @@ class TestPhase2_AgentMemory_Advanced:
 
     def test_memory_search(self):
         """Test searching memory with query"""
+        from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
         memory.store_memory(key="key1", value="value with keyword")
@@ -340,6 +304,7 @@ class TestPhase2_AgentMemory_Advanced:
 
     def test_memory_filter(self):
         """Test filtering memory by criteria"""
+        from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
         memory.store_memory(key="key1", value={"type": "concept", "value": 1})
@@ -353,6 +318,7 @@ class TestPhase2_AgentMemory_Advanced:
 
     def test_memory_update(self):
         """Test updating existing memory entries"""
+        from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
         memory.store_memory(key="key1", value="initial_value")
@@ -367,6 +333,7 @@ class TestPhase2_AgentMemory_Advanced:
 
     def test_memory_batch_operations(self):
         """Test batch store and retrieve"""
+        from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
 
@@ -383,6 +350,7 @@ class TestPhase2_AgentMemory_Advanced:
 
     def test_memory_statistics(self):
         """Test memory usage statistics"""
+        from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
         memory.store_memory(key="key1", value="value1")
@@ -403,6 +371,7 @@ class TestPhase2_DeveloperOrchestrator_Advanced:
 
     def test_code_generation(self):
         """Test code generation from specification"""
+        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
         orchestrator = PhysicsGuidedDeveloperOrchestrator()
         # generate_code requires component_id, not spec
@@ -423,6 +392,7 @@ class TestPhase2_DeveloperOrchestrator_Advanced:
 
     def test_code_validation(self):
         """Test code validation functionality"""
+        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
         orchestrator = PhysicsGuidedDeveloperOrchestrator()
         valid = orchestrator.validate_code(code="def hello(): return 'world'")
@@ -430,6 +400,7 @@ class TestPhase2_DeveloperOrchestrator_Advanced:
 
     def test_task_prioritization(self):
         """Test task prioritization using energy landscape (Eq #8)"""
+        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
         orchestrator = PhysicsGuidedDeveloperOrchestrator()
         tasks = [
@@ -443,6 +414,7 @@ class TestPhase2_DeveloperOrchestrator_Advanced:
 
     def test_workflow_execution(self):
         """Test executing development workflow"""
+        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
         orchestrator = PhysicsGuidedDeveloperOrchestrator()
 
@@ -458,6 +430,7 @@ class TestPhase2_DeveloperOrchestrator_Advanced:
 
     def test_dependency_resolution(self):
         """Test dependency resolution for tasks"""
+        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
         orchestrator = PhysicsGuidedDeveloperOrchestrator()
 
@@ -484,6 +457,7 @@ class TestPhase2_AdvancedPhysics_OscillationDimension:
 
     def test_oscillation_detection(self):
         """Test detecting oscillations in system state"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Oscillation detection happens internally during evolution
@@ -491,6 +465,7 @@ class TestPhase2_AdvancedPhysics_OscillationDimension:
 
     def test_stability_threshold(self):
         """Test stability threshold checking (Eq #28: ζ threshold)"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Stability checks are internal
@@ -498,6 +473,7 @@ class TestPhase2_AdvancedPhysics_OscillationDimension:
 
     def test_adaptive_timestep(self):
         """Test adaptive time stepping (Eq #3: γ = 1/√(1−v²/c²))"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Time stepping is adaptive internally
@@ -512,6 +488,7 @@ class TestPhase2_AdvancedPhysics_HelicityDimension:
 
     def test_force_alignment(self):
         """Test force vector alignment calculations"""
+        from agents.physics_orchestrator import ForceVector
 
         force1 = ForceVector("f1", 10.0, [1.0, 0.0, 0.0], 5)
         force2 = ForceVector("f2", 10.0, [0.0, 1.0, 0.0], 5)
@@ -521,6 +498,7 @@ class TestPhase2_AdvancedPhysics_HelicityDimension:
 
     def test_momentum_conservation(self):
         """Test momentum conservation (Eq #32: Σpᵢ constant)"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Momentum conservation is maintained internally
@@ -528,6 +506,7 @@ class TestPhase2_AdvancedPhysics_HelicityDimension:
 
     def test_energy_conservation(self):
         """Test energy conservation (Eq #33: ΣEᵢ constant)"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Energy conservation is maintained internally
@@ -542,6 +521,7 @@ class TestPhase2_AdvancedPhysics_CoherenceDimension:
 
     def test_coherence_measurement(self):
         """Test system coherence measurement"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Coherence is measured internally
@@ -549,6 +529,7 @@ class TestPhase2_AdvancedPhysics_CoherenceDimension:
 
     def test_coherence_decay(self):
         """Test coherence decay (Eq #25: e^{-t/τ})"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Decay monitoring is internal
@@ -556,6 +537,7 @@ class TestPhase2_AdvancedPhysics_CoherenceDimension:
 
     def test_coherence_threshold_bands(self):
         """Test coherence threshold bands (Eq #42: green/yellow/red)"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Banding is internal
@@ -571,6 +553,7 @@ class TestPhase2_AdvancedPhysics_CurrentBoundDimension:
 
     def test_current_magnitude_check(self):
         """Test current magnitude boundary (Eq #22)"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Current bounds are enforced internally
@@ -578,6 +561,7 @@ class TestPhase2_AdvancedPhysics_CurrentBoundDimension:
 
     def test_subluminal_guard(self):
         """Test subluminal speed guard (Eq #23, #34: v < c)"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Speed guards are internal
@@ -585,6 +569,7 @@ class TestPhase2_AdvancedPhysics_CurrentBoundDimension:
 
     def test_lorentz_factor_calculation(self):
         """Test Lorentz factor (Eq #3: γ = 1/√(1−v²/c²))"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Gamma calculations are internal
@@ -598,6 +583,8 @@ class TestPhase2_Integration_AdvancedPatterns:
 
     def test_physics_mental_integration(self):
         """Test physics orchestrator + mental mapping integration"""
+        from agents.mental_mapping import MentalMappingModel, NodeType
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         model = MentalMappingModel()
@@ -609,6 +596,8 @@ class TestPhase2_Integration_AdvancedPatterns:
 
     def test_quantum_developer_integration(self):
         """Test quantum game theory + developer orchestrator integration"""
+        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
+        from agents.quantum_game_theory import QuantumInspiredGameEngine
 
         blue = np.array([0.5, 0.5])
         red = np.array([0.5, 0.5])
@@ -623,6 +612,8 @@ class TestPhase2_Integration_AdvancedPatterns:
 
     def test_memory_mental_integration(self):
         """Test agent memory + mental mapping integration"""
+        from agents.agent_memory import AgentMemory
+        from agents.mental_mapping import MentalMappingModel, NodeType
 
         memory = AgentMemory()
         model = MentalMappingModel()
@@ -642,6 +633,7 @@ class TestPhase2_ErrorPaths_AdvancedCases:
 
     def test_invalid_force_direction(self):
         """Test handling invalid force direction"""
+        from agents.physics_orchestrator import ForceVector
 
         # Zero direction vector
         force = ForceVector("test", 10.0, [0.0, 0.0, 0.0], 5)
@@ -649,6 +641,7 @@ class TestPhase2_ErrorPaths_AdvancedCases:
 
     def test_negative_energy(self):
         """Test handling negative energy (Eq #2)"""
+        from agents.physics_orchestrator import ActionPath, ActionType
 
         # Negative energy should be handled - use valid parameter names
         path = ActionPath(action_type=ActionType.RESEARCH, description="test", energy=-10.0)
@@ -656,6 +649,7 @@ class TestPhase2_ErrorPaths_AdvancedCases:
 
     def test_empty_strategy_array(self):
         """Test handling empty strategy arrays"""
+        from agents.quantum_game_theory import StrategyState
 
         # Empty strategies might raise error or handle gracefully
         try:
@@ -667,6 +661,7 @@ class TestPhase2_ErrorPaths_AdvancedCases:
 
     def test_disconnected_graph(self):
         """Test operations on disconnected graph"""
+        from agents.mental_mapping import MentalMappingModel, NodeType
 
         model = MentalMappingModel()
         node1 = model.create_node(NodeType.PROBLEM, {})
@@ -679,6 +674,7 @@ class TestPhase2_ErrorPaths_AdvancedCases:
 
     def test_memory_nonexistent_key(self):
         """Test retrieving nonexistent memory key"""
+        from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
         result = memory.retrieve_memory("nonexistent_key")
@@ -692,12 +688,14 @@ class TestPhase2_Performance_Optimization:
 
     def test_batch_force_evaluation(self):
         """Test batch evaluation of forces"""
+        from agents.physics_orchestrator import ForceVector
 
         forces = [ForceVector(f"f{i}", float(i), [1.0, 0.0, 0.0], i) for i in range(10)]
         assert len(forces) == 10, "Forces must not be empty"
 
     def test_large_game_matrix(self):
         """Test game with larger strategy space"""
+        from agents.quantum_game_theory import QuantumInspiredGameEngine
 
         # 5x5 game
         blue = np.ones(5) / 5
@@ -710,6 +708,7 @@ class TestPhase2_Performance_Optimization:
 
     def test_large_graph_operations(self):
         """Test operations on larger graphs"""
+        from agents.mental_mapping import MentalMappingModel, NodeType
 
         model = MentalMappingModel()
         nodes = [model.create_node(NodeType.PROBLEM, {}) for _ in range(50)]
@@ -717,6 +716,7 @@ class TestPhase2_Performance_Optimization:
 
     def test_memory_bulk_operations(self):
         """Test bulk memory operations"""
+        from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
 

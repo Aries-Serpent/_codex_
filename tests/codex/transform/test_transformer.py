@@ -3,17 +3,6 @@ Tests for codex.transform.transformer module.
 
 This module contains tests for code transformation and patch generation.
 """
-import pytest
-        from codex.transform.transformer import Tier
-        from codex.transform.transformer import Tier
-        from codex.transform.transformer import Tier
-        from codex.transform.transformer import Patch, Tier
-        from codex.transform.transformer import Patch, Tier
-        from datetime import datetime, timezone
-        from codex.transform.transformer import TransformResult
-        from datetime import datetime, timezone
-        from codex.transform.transformer import TransformResult
-        from codex.transform.transformer import logger
 
 
 class TestTier:
@@ -21,16 +10,19 @@ class TestTier:
 
     def test_tier_a_value(self):
         """Test Tier A value."""
+        from codex.transform.transformer import Tier
 
         assert Tier.A.value == "safe_auto_apply", "Value must be initialized"
 
     def test_tier_b_value(self):
         """Test Tier B value."""
+        from codex.transform.transformer import Tier
 
         assert Tier.B.value == "apply_with_tests", "Value must be initialized"
 
     def test_tier_c_value(self):
         """Test Tier C value."""
+        from codex.transform.transformer import Tier
 
         assert Tier.C.value == "suggest_only", "Value must be initialized"
 
@@ -40,6 +32,7 @@ class TestPatch:
 
     def test_basic_creation(self):
         """Test Patch basic creation."""
+        from codex.transform.transformer import Patch, Tier
 
         patch = Patch(
             file_path="src/module.py",
@@ -60,6 +53,7 @@ class TestPatch:
 
     def test_to_dict(self):
         """Test Patch to_dict method."""
+        from codex.transform.transformer import Patch, Tier
 
         patch = Patch(
             file_path="test.py",
@@ -85,7 +79,9 @@ class TestTransformResult:
 
     def test_basic_creation(self):
         """Test TransformResult basic creation."""
+        from datetime import datetime, timezone
 
+        from codex.transform.transformer import TransformResult
 
         result = TransformResult(snapshot_id="snap_123", timestamp=datetime.now(timezone.utc))
 
@@ -98,7 +94,9 @@ class TestTransformResult:
 
     def test_to_dict(self):
         """Test TransformResult to_dict method."""
+        from datetime import datetime, timezone
 
+        from codex.transform.transformer import TransformResult
 
         result = TransformResult(
             snapshot_id="snap_456", timestamp=datetime.now(timezone.utc), applied=True
@@ -116,6 +114,7 @@ class TestModuleLevel:
 
     def test_logger_exists(self):
         """Test logger is configured."""
+        from codex.transform.transformer import logger
 
         assert logger is not None, "logger must be initialized"
         assert logger.name == "codex.transform.transformer", "name is not valid"

@@ -1,14 +1,15 @@
 """Tests for distributed training setup."""
+pytest.importorskip("mlflow")
 
 import os
 
 import pytest
-pytest.importorskip("mlflow")
 
 pytest.importorskip("torch")
 
 
 # Skip entire module if torch is not available or unloadable
+pytest.importorskip("torch", reason="PyTorch required for tests")
 from unittest.mock import patch
 
 import torch
@@ -188,7 +189,6 @@ class SimpleTestModel(nn.Module):
 
 def test_setup_ddp_model_structure():
     """Test setup_ddp_model doesn't crash with proper model."""
-import pytest
     model = SimpleTestModel()
 
     # In single process, should return original

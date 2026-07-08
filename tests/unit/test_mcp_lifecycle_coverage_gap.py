@@ -8,13 +8,14 @@ This test suite covers:
 - Startup and shutdown hooks
 - Request tracking and graceful shutdown
 """
+
 from __future__ import annotations
+
 from unittest.mock import AsyncMock, MagicMock
+
+import pytest
+
 from mcp.lifecycle import (
-
-
-
-
     VALID_TRANSITIONS,
     HealthStatus,
     InvalidStateTransition,
@@ -239,7 +240,6 @@ class TestLifecycleManager:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_transition_to_valid(self):
         """Test valid state transition."""
         manager = LifecycleManager()
@@ -259,7 +259,6 @@ class TestLifecycleManager:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_transition_to_invalid_raises_error(self):
         """Test invalid state transition raises error."""
         manager = LifecycleManager()
@@ -297,7 +296,6 @@ class TestLifecycleManager:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_initialize(self):
         """Test server initialization."""
         manager = LifecycleManager()
@@ -319,7 +317,6 @@ class TestLifecycleManager:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_initialize_with_error(self):
         """Test initialization error handling."""
         manager = LifecycleManager()
@@ -341,7 +338,6 @@ class TestLifecycleManager:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_start(self):
         """Test starting the server."""
         manager = LifecycleManager()
@@ -361,7 +357,6 @@ class TestLifecycleManager:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_start_from_invalid_state_raises_error(self):
         """Test starting from invalid state raises error."""
         manager = LifecycleManager()
@@ -380,7 +375,6 @@ class TestLifecycleManager:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_get_health_when_unhealthy(self):
         """Test get_health when server is unhealthy."""
         manager = LifecycleManager()
@@ -402,7 +396,6 @@ class TestLifecycleManager:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_get_health_with_checks(self):
         """Test get_health with registered checks."""
         manager = LifecycleManager()
@@ -431,7 +424,6 @@ class TestLifecycleManager:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_track_request_start(self):
         """Test tracking request start."""
         manager = LifecycleManager()
@@ -452,7 +444,6 @@ class TestLifecycleManager:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_track_request_start_when_not_accepting(self):
         """Test tracking request start when not accepting."""
         manager = LifecycleManager()
@@ -473,7 +464,6 @@ class TestLifecycleManager:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_track_request_end(self):
         """Test tracking request end."""
         manager = LifecycleManager()
@@ -493,7 +483,6 @@ class TestLifecycleManager:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_track_request_end_when_zero(self):
         """Test tracking request end when already zero."""
         manager = LifecycleManager()

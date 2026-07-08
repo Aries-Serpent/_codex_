@@ -3,20 +3,21 @@ Test Modeling Module
 
 Test module for modeling module.
 """
+
 from __future__ import annotations
-pytest.importorskip("torch")
+
 import types
-    import torch
-from src import modeling
 
+import pytest
 
-
-
+pytest.importorskip("torch")
 
 try:
+    import torch
 except (ImportError, AttributeError) as exc:  # pragma: no cover - runtime guard
     pytest.skip(f"PyTorch runtime not available: {exc}", allow_module_level=True)
 
+from src import modeling
 
 
 class DummyModel(torch.nn.Module):

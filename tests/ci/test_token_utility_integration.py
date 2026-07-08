@@ -16,22 +16,19 @@ Test Categories:
 - Test Category D: Error Scenarios (3 tests)
 - Test Category E: Scope Validation (2 tests)
 """
+
 import logging
 import os
 import sys
 from pathlib import Path
 from unittest.mock import patch
-from ci._token_resolver import TokenResolutionError, get_token, validate_token
-        from ci._token_resolver import get_auth_header
-        from ci._token_resolver import validate_token_scope
-        from ci._token_resolver import get_token_scope
-        from ci._token_resolver import log_token_usage
 
-
+import pytest
 
 # Add scripts to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts"))
 
+from ci._token_resolver import TokenResolutionError, get_token, validate_token
 
 logger = logging.getLogger(__name__)
 
@@ -93,6 +90,7 @@ class TestAPIOperations:
 
     def test_api_call_uses_auth_header(self):
         """TEST B1: Verify API calls properly construct Authorization header."""
+        from ci._token_resolver import get_auth_header
 
         with patch.dict(os.environ, {"CODEX_MASTER_KEY": "test_token_123"}):
             token, _ = get_token(required_elevated=True)
@@ -105,6 +103,7 @@ class TestAPIOperations:
 
     def test_api_error_handling_preserves_scopes(self):
         """TEST B2: Verify API error handling validates scopes."""
+        from ci._token_resolver import validate_token_scope
 
         with patch.dict(os.environ, {"CODEX_MASTER_KEY": "elevated_token"}):
             token, _ = get_token(required_elevated=True)
@@ -197,6 +196,7 @@ class TestScopeValidation:
 
     def test_get_token_scope_detection(self):
         """TEST E1: Verify token scope is correctly detected."""
+        from ci._token_resolver import get_token_scope
 
         with patch.dict(os.environ, {"CODEX_MASTER_KEY": "master_token"}):
             token, source = get_token(required_elevated=True)
@@ -212,6 +212,7 @@ class TestScopeValidation:
 
     def test_log_token_usage_no_exposure(self):
         """TEST E2: Verify log_token_usage never exposes token values."""
+        from ci._token_resolver import log_token_usage
 
         with patch("ci._token_resolver.logger") as mock_logger:
             with patch.dict(os.environ, {"CODEX_MASTER_KEY": "secret_token_12345"}):

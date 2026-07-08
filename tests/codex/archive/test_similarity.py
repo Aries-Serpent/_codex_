@@ -3,25 +3,6 @@ Tests for codex.archive.similarity module.
 
 This module contains tests for similarity utilities.
 """
-import pytest
-        from codex.archive.similarity import _tokens
-        from codex.archive.similarity import _tokens
-        from codex.archive.similarity import _tokens
-        from codex.archive.similarity import _tokens
-        from codex.archive.similarity import _shingles
-        from codex.archive.similarity import _shingles
-        from codex.archive.similarity import _shingles
-        from codex.archive.similarity import jaccard
-        from codex.archive.similarity import jaccard
-        from codex.archive.similarity import jaccard
-        from codex.archive.similarity import jaccard
-        from codex.archive.similarity import py_ast_hash
-        from codex.archive.similarity import py_ast_hash
-        from codex.archive.similarity import py_ast_hash
-        from codex.archive.similarity import simhash64
-        from codex.archive.similarity import simhash64
-        from codex.archive.similarity import simhash64
-        from codex.archive.similarity import logger
 
 
 class TestTokens:
@@ -29,6 +10,7 @@ class TestTokens:
 
     def test_simple_text(self):
         """Test tokenizing simple text."""
+        from codex.archive.similarity import _tokens
 
         result = _tokens("hello world")
 
@@ -36,6 +18,7 @@ class TestTokens:
 
     def test_empty_string(self):
         """Test tokenizing empty string."""
+        from codex.archive.similarity import _tokens
 
         result = _tokens("")
 
@@ -43,6 +26,7 @@ class TestTokens:
 
     def test_punctuation_split(self):
         """Test punctuation splits tokens."""
+        from codex.archive.similarity import _tokens
 
         result = _tokens("hello,world.test")
 
@@ -50,6 +34,7 @@ class TestTokens:
 
     def test_code_like_text(self):
         """Test tokenizing code-like text."""
+        from codex.archive.similarity import _tokens
 
         result = _tokens("def func(x):")
 
@@ -63,6 +48,7 @@ class TestShingles:
 
     def test_basic_shingles(self):
         """Test basic shingle generation."""
+        from codex.archive.similarity import _shingles
 
         tokens = ["a", "b", "c", "d", "e"]
         result = _shingles(tokens, k=3)
@@ -72,6 +58,7 @@ class TestShingles:
 
     def test_shingles_short_input(self):
         """Test shingles with short input."""
+        from codex.archive.similarity import _shingles
 
         tokens = ["a", "b"]
         result = _shingles(tokens, k=5)
@@ -81,6 +68,7 @@ class TestShingles:
 
     def test_shingles_empty(self):
         """Test shingles with empty input."""
+        from codex.archive.similarity import _shingles
 
         result = _shingles([], k=5)
 
@@ -92,6 +80,7 @@ class TestJaccard:
 
     def test_identical_sets(self):
         """Test jaccard of identical sets."""
+        from codex.archive.similarity import jaccard
 
         a = {"a", "b", "c"}
         b = {"a", "b", "c"}
@@ -102,6 +91,7 @@ class TestJaccard:
 
     def test_disjoint_sets(self):
         """Test jaccard of disjoint sets."""
+        from codex.archive.similarity import jaccard
 
         a = {"a", "b"}
         b = {"c", "d"}
@@ -112,6 +102,7 @@ class TestJaccard:
 
     def test_partial_overlap(self):
         """Test jaccard with partial overlap."""
+        from codex.archive.similarity import jaccard
 
         a = {"a", "b", "c"}
         b = {"b", "c", "d"}
@@ -125,6 +116,7 @@ class TestJaccard:
 
     def test_empty_sets(self):
         """Test jaccard with empty sets."""
+        from codex.archive.similarity import jaccard
 
         assert jaccard(set(), set()) == 1.0
         assert jaccard(set(), {"a"}) == 0.0
@@ -136,6 +128,7 @@ class TestPyAstHash:
 
     def test_valid_python(self):
         """Test hashing valid Python code."""
+        from codex.archive.similarity import py_ast_hash
 
         code = "def foo(): pass"
         result = py_ast_hash(code)
@@ -145,6 +138,7 @@ class TestPyAstHash:
 
     def test_invalid_python(self):
         """Test hashing invalid Python code."""
+        from codex.archive.similarity import py_ast_hash
 
         code = "def foo(: invalid"
         result = py_ast_hash(code)
@@ -153,6 +147,7 @@ class TestPyAstHash:
 
     def test_deterministic(self):
         """Test hashing is deterministic."""
+        from codex.archive.similarity import py_ast_hash
 
         code = "x = 1 + 2"
 
@@ -167,6 +162,7 @@ class TestSimhash64:
 
     def test_basic_hash(self):
         """Test basic simhash generation."""
+        from codex.archive.similarity import simhash64
 
         tokens = ["hello", "world", "test"]
         result = simhash64(tokens)
@@ -176,6 +172,7 @@ class TestSimhash64:
 
     def test_deterministic(self):
         """Test simhash is deterministic."""
+        from codex.archive.similarity import simhash64
 
         tokens = ["a", "b", "c"]
 
@@ -186,6 +183,7 @@ class TestSimhash64:
 
     def test_empty_tokens(self):
         """Test simhash with empty tokens."""
+        from codex.archive.similarity import simhash64
 
         result = simhash64([])
 
@@ -198,6 +196,7 @@ class TestModuleLevel:
 
     def test_logger_exists(self):
         """Test logger is configured."""
+        from codex.archive.similarity import logger
 
         assert logger is not None, "logger must be initialized"
         assert logger.name == "codex.archive.similarity", "name is not valid"

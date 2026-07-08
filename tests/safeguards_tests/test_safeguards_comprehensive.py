@@ -3,18 +3,14 @@ Safeguards tests for determinism, checksums, and offline mode.
 
 Tests reproducibility safeguards without requiring actual ML workloads.
 """
+
 from __future__ import annotations
-import pytest
+
 import hashlib
 import os
 import random
 import tempfile
 from pathlib import Path
-        import shutil
-        import shutil
-        import json
-
-
 
 
 class TestDeterminismKeywords:
@@ -82,6 +78,7 @@ class TestChecksumValidation:
         assert checksum == verify_checksum, "checksum is not valid"
 
         # Cleanup
+        import shutil
 
         shutil.rmtree(test_dir)
 
@@ -205,11 +202,13 @@ class TestIntegrityVerification:
         assert verify_checksum == stored_checksum, "verify_checksum is not valid"
 
         # Cleanup
+        import shutil
 
         shutil.rmtree(test_dir)
 
     def test_manifest_integrity(self):
         """Test manifest integrity verification."""
+        import json
 
         manifest = {
             "version": "1.0",

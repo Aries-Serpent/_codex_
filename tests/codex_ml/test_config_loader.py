@@ -3,13 +3,12 @@ Test Config Loader
 
 Test module for config loader.
 """
-import pytest
+
 from pathlib import Path
+
 import yaml
+
 from codex_ml.config import load
-
-
-
 
 
 def test_load_base_and_experiment_merge(tmp_path: Path):

@@ -3,15 +3,16 @@ Comprehensive tests for Pattern 36 (RP-031): Assert Messages Without Context
 
 Tests the detection and auto-fixing of assertions without descriptive messages.
 """
+
 import sys
 from pathlib import Path
-from auto_fix_common_issues import CommonIssueFixer
 
-
+import pytest
 
 # Add scripts/ci to path so we can import auto_fix_common_issues
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "ci"))
 
+from auto_fix_common_issues import CommonIssueFixer
 
 
 class TestRP031AssertMessages:

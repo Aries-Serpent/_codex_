@@ -12,23 +12,24 @@ Tests complete evaluation workflows:
 
 Part of Phase 5B-II: Integration Test Development
 """
+
 from __future__ import annotations
+
 import logging
 from unittest.mock import Mock, patch
-    from codex_ml.training import Evaluator
-    from codex_ml.metrics import MetricsCollector
 
-
-
+import pytest
 
 # Conditional imports with graceful degradation
 try:
+    from codex_ml.training import Evaluator
 
     EVALUATOR_AVAILABLE = True
 except (ImportError, AttributeError, ModuleNotFoundError):
     EVALUATOR_AVAILABLE = False
 
 try:
+    from codex_ml.metrics import MetricsCollector
 
     METRICS_AVAILABLE = True
 except (ImportError, AttributeError, ModuleNotFoundError):

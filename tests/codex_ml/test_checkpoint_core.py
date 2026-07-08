@@ -3,17 +3,18 @@
 These tests validate the checkpoint_core module's save_checkpoint and
 load_checkpoint functions, including round-trip behavior and keep_last_k retention.
 """
+
 from __future__ import annotations
-torch = pytest.importorskip("torch", reason="torch not installed")
+
 import json
 import os
-from codex_ml.checkpointing.checkpoint_core import (
 
-
-
+import pytest
 
 # Import torch with graceful skip if not available
+torch = pytest.importorskip("torch", reason="torch not installed")
 
+from codex_ml.checkpointing.checkpoint_core import (
     load_checkpoint,
     save_checkpoint,
 )

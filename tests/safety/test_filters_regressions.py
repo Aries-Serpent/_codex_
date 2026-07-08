@@ -1,7 +1,6 @@
 """Regression tests for safety filters."""
-import pytest
-from codex_ml.safety.filters import REDACT_TOKEN, SafetyFilters, SafetyPolicy
 
+from codex_ml.safety.filters import REDACT_TOKEN, SafetyFilters, SafetyPolicy
 
 
 def _build_policy() -> SafetyPolicy:

@@ -1,5 +1,4 @@
 """Day 2: cognitive_brain - Core tests"""
-import pytest
 
 
 class TestCognitiveBrainCore:

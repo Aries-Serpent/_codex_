@@ -1,12 +1,11 @@
 """Ensure the Codex ML CLI degrades gracefully when torch is unavailable."""
+
 from __future__ import annotations
-import pytest
+
 import importlib
 from pathlib import Path
+
 from click.testing import CliRunner
-
-
-
 
 
 def test_train_model_reports_missing_torch(monkeypatch) -> None:

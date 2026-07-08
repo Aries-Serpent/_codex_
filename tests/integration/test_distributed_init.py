@@ -3,19 +3,19 @@
 Tests the accelerate_init_guard module with various environment configurations.
 Uses pytest markers to skip tests on CPU-only runners or when ACCELERATE_TEST is not set.
 """
+
 import os
 import sys
 from pathlib import Path
 from unittest.mock import MagicMock, patch
-from tests.utils.torch_helpers import require_torch
-from accelerate_init_guard import (
 
-
+import pytest
 
 # NOTE: removed ad-hoc sys.path modifications that previously attempted to add `tests/`
 # to sys.path. Adding `tests/` at top-level shadows stdlib modules (e.g. `ast`) and
 # causes unpredictable import resolution in CI. Tests should import test utilities
 # using the canonical `tests.utils.*` package import path.
+from tests.utils.torch_helpers import require_torch
 
 torch = require_torch()
 
@@ -25,6 +25,7 @@ _TRAINING_DIR = _REPO_ROOT / "training"
 if str(_TRAINING_DIR) not in sys.path:
     sys.path.insert(0, str(_TRAINING_DIR))
 
+from accelerate_init_guard import (
     AccelerateInitResult,
     get_distributed_env_info,
     is_accelerate_available,

@@ -6,9 +6,10 @@ Tests for collecting, aggregating, and exposing metrics.
 Phase 55: MEDIUM Priority Module Tests
 Coverage Target: src/services 11% → 28%+
 """
+
 from collections import defaultdict
 
-
+import pytest
 
 
 class TestCounterMetrics:

@@ -1,15 +1,16 @@
 from __future__ import annotations
-pytest.importorskip("fastapi")
+
 import sqlite3
 from pathlib import Path
+
+import pytest
+
+pytest.importorskip("fastapi")
 from fastapi import FastAPI, Request
 from fastapi.testclient import TestClient
+
 from services.msp_gateway.middleware import tenant_context as tc_module
 from services.msp_gateway.middleware.tenant_context import TenantContextMiddleware, TenantRegistry
-
-
-
-
 
 
 def test_tenant_registry_sqlite_crud(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:

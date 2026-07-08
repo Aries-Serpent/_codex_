@@ -3,22 +3,21 @@ Test Rng Checkpoint
 
 Test module for rng checkpoint.
 """
+
+#!/usr/bin/env python3
+"""Tests for RNG checkpoint functionality."""
 import json
 import random
 import sys
 from pathlib import Path
-from codex_ml.training.rng_checkpoint import RNGState, set_seed
-        import numpy as np
-        import numpy as np
-
-#!/usr/bin/env python3
-"""Tests for RNG checkpoint functionality."""
 
 # Add src to path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "src"))
 
+import pytest
 
+from codex_ml.training.rng_checkpoint import RNGState, set_seed
 
 
 def test_rng_state_capture():
@@ -44,6 +43,7 @@ def test_rng_state_restore_determinism():
     val1 = random.random()
 
     try:
+        import numpy as np
 
         np_val1 = np.random.rand()
     except ImportError:
@@ -127,6 +127,7 @@ def test_set_seed_sets_python_random():
 def test_set_seed_sets_numpy_random():
     """Test that set_seed sets NumPy random if available."""
     try:
+        import numpy as np
 
         set_seed(101112)
         val1 = np.random.rand()

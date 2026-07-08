@@ -3,13 +3,14 @@ Test Config
 
 Test module for config.
 """
+
 from __future__ import annotations
+
 from pathlib import Path
+
+import pytest
+
 from codex.archive import config as archive_config
-
-
-
-
 
 
 def test_archive_app_config_defaults(tmp_path: Path) -> None:

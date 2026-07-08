@@ -8,9 +8,10 @@ Tests cover:
 - Dictionary sanitization
 - Integration with sensitive patterns
 """
+
+import pytest  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+
 from codex.security.log_sanitizer import (
-
-
     mask_secrets,
     mask_sensitive,
     safe_log,

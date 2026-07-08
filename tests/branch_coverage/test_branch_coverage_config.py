@@ -8,15 +8,16 @@ Created: 2026-01-19
 Phase: 4.1 - Branch Coverage Analysis
 Target: 100% branch coverage for config modules
 """
+
 import os  # pragma: allowlist secret
 from pathlib import Path
 from typing import Any
 from unittest.mock import patch
-from tests.branch_coverage import branch_input
 
-
+import pytest
 
 # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+from tests.branch_coverage import branch_input
 
 # ============================================================================
 # Branch Coverage: Config Loading

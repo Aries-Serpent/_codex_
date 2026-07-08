@@ -50,7 +50,6 @@ class TestConfigSerialization:
 
     def test_app_config_experiment_optional(self):
         """Test AppConfig handles optional experiment field."""
-import pytest
         config = AppConfig()
         # Experiment field should be None or an ExperimentConfig
         assert config.experiment is None or isinstance(config.experiment, ExperimentConfig)

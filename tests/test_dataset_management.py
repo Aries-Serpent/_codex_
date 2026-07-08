@@ -35,7 +35,6 @@ class TestClass:
 
 def test_function():
     """A function."""
-import pytest
     return True
 '''
     (src_dir / "module.py").write_text(python_code)

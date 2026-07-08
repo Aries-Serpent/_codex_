@@ -3,13 +3,14 @@ Test Sp Fixture Roundtrip
 
 Test module for sp fixture roundtrip.
 """
-sp = pytest.importorskip("sentencepiece")
+
 import pathlib
 
-
+import pytest
 
 pytestmark = pytest.mark.requires_sentencepiece
 
+sp = pytest.importorskip("sentencepiece")
 
 
 def test_sp_fixture_roundtrip_if_present():

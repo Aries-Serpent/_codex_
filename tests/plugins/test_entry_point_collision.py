@@ -3,13 +3,12 @@ Test Entry Point Collision
 
 Test module for entry point collision.
 """
-import pytest
+
 import sys
 import types
 import warnings
+
 from codex_ml.plugins.registry import Registry
-
-
 
 
 def test_entry_point_collision_skips(monkeypatch) -> None:

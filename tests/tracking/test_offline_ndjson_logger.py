@@ -3,13 +3,12 @@ Test Offline Ndjson Logger
 
 Test module for offline ndjson logger.
 """
+
 from __future__ import annotations
-import pytest
+
 import json
+
 from codex_ml.tracking.offline import NDJSONLogger
-
-
-
 
 
 def test_ndjson_logger_rotation(tmp_path):

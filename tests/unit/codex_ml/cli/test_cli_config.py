@@ -55,7 +55,6 @@ batch_size: 32
 
     def test_config_validation_success(self):
         """Test: valid config passes validation."""
-import pytest
         valid_config = {
             'model': 'bert',
             'epochs': 10,

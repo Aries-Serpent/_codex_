@@ -3,14 +3,13 @@ Test Randomness
 
 Test module for randomness.
 """
-import pytest
+
 import random
+
 from common.randomness import set_seed
-    import numpy as np
-
-
 
 try:
+    import numpy as np
 except ImportError:
     np = None
 

@@ -3,17 +3,18 @@ Test Config Validation
 
 Test module for config validation.
 """
+
 from __future__ import annotations
-pytest.importorskip("yaml")
-pytest.importorskip("omegaconf")
+
 import textwrap
 from pathlib import Path
+
+import pytest
+
+pytest.importorskip("yaml")
+pytest.importorskip("omegaconf")
+
 from codex_ml.config import ConfigError, load_app_config
-
-
-
-
-
 
 
 def _write(tmp_path: Path, content: str) -> Path:

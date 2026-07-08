@@ -7,16 +7,16 @@ Tests cover:
 - Key derivation and generation
 - Error handling and edge cases
 """
+
 import os
 import stat  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 import tempfile
 from pathlib import Path
 from unittest.mock import patch
+
+import pytest
+
 from codex.security.storage import (
-        from base64 import b64decode
-
-
-
     SecureStorage,
     derive_key_from_password,
     generate_key,
@@ -127,6 +127,7 @@ class TestGenerateKey:
         """Test that generated key is base64-encoded."""
         key = generate_key()
         # Base64 keys should be decodable
+        from base64 import b64decode
 
         decoded = b64decode(key)
         assert isinstance(decoded, bytes)

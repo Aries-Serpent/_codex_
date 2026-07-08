@@ -9,27 +9,8 @@ Using strategies from Physics Reference Tables:
 
 Expected gain: +2.43% to reach 30%
 """
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import DecisionState
-        from agents.physics_orchestrator import ForceVector
-        from agents.physics_orchestrator import ActionPath, ActionType
-        from agents.physics_orchestrator import ActionType
-            from agents.physics_orchestrator import DecisionMode
-            from agents.quantum_game_theory import StrategyType
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-        from agents.physics_orchestrator import DecisionState
-            from agents.quantum_game_theory import QuantumInspiredGameEngine
-        from agents.mental_mapping import MentalMapping
-        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
-            import datetime
-        from agents.workflow_navigator import WorkflowNavigator
-        from agents.self_healing import SelfHealingEngine
-        from agents import (
-            from agents.workflow_navigator import WorkflowNavigator
-        from agents.physics_orchestrator import DecisionState
-        from agents.physics_orchestrator import ForceVector
-        from agents.physics_orchestrator import ActionPath
 
+import pytest
 
 
 class TestPhase1Completion_Table1_Eq1:
@@ -37,12 +18,14 @@ class TestPhase1Completion_Table1_Eq1:
 
     def test_physics_orchestrator_initialization(self):
         """Test PhysicsInspiredOrchestrator initialization."""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         assert orchestrator is not None, "orchestrator must be initialized"
 
     def test_decision_state_initialization(self):
         """Test DecisionState initialization."""
+        from agents.physics_orchestrator import DecisionState
 
         state = DecisionState(
             current_position="start", goal_position="end", context={"test": "value"}
@@ -52,6 +35,7 @@ class TestPhase1Completion_Table1_Eq1:
 
     def test_force_vector_initialization(self):
         """Test ForceVector component initialization."""
+        from agents.physics_orchestrator import ForceVector
 
         force = ForceVector(name="test_force", magnitude=1.0, direction=0.0)
         assert force is not None, "force must be initialized"
@@ -59,6 +43,7 @@ class TestPhase1Completion_Table1_Eq1:
 
     def test_action_path_initialization(self):
         """Test ActionPath initialization."""
+        from agents.physics_orchestrator import ActionPath, ActionType
 
         path = ActionPath(action_type=ActionType.TEST, description="Test path")
         assert path is not None, "path must be initialized"
@@ -70,6 +55,7 @@ class TestPhase1Completion_Table4_Eq2:
 
     def test_action_type_enum_all_values(self):
         """Test all ActionType enum values."""
+        from agents.physics_orchestrator import ActionType
 
         # Test all enum values exist
         action_types = list(ActionType)
@@ -83,6 +69,7 @@ class TestPhase1Completion_Table4_Eq2:
     def test_decision_mode_enum(self):
         """Test decision mode enum if exists."""
         try:
+            from agents.physics_orchestrator import DecisionMode
 
             modes = list(DecisionMode)
             assert len(modes) > 0, "Modes must not be empty"
@@ -92,6 +79,7 @@ class TestPhase1Completion_Table4_Eq2:
     def test_strategy_type_enum(self):
         """Test strategy type enum."""
         try:
+            from agents.quantum_game_theory import StrategyType
 
             strategies = list(StrategyType)
             assert len(strategies) > 0, "Strategies must not be empty"
@@ -104,6 +92,7 @@ class TestPhase1Completion_Table4_Eq3:
 
     def test_physics_orchestrator_properties(self):
         """Test properties on PhysicsInspiredOrchestrator."""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
 
@@ -112,6 +101,7 @@ class TestPhase1Completion_Table4_Eq3:
 
     def test_decision_state_properties(self):
         """Test DecisionState properties."""
+        from agents.physics_orchestrator import DecisionState
 
         state = DecisionState(
             current_position="start", goal_position="end", context={"test": "value"}
@@ -125,6 +115,7 @@ class TestPhase1Completion_Table4_Eq3:
     def test_quantum_game_engine_properties(self):
         """Test QuantumInspiredGameEngine properties."""
         try:
+            from agents.quantum_game_theory import QuantumInspiredGameEngine
 
             engine = QuantumInspiredGameEngine()
             assert engine is not None, "engine must be initialized"
@@ -137,15 +128,18 @@ class TestPhase1Completion_Table1_Eq49:
 
     def test_mental_mapping_initialization(self):
         """Test MentalMapping initialization (high statement count module)."""
+        from agents.mental_mapping import MentalMapping
 
         mapping = MentalMapping()
         assert mapping is not None, "mapping must be initialized"
 
     def test_mental_mapping_add_node(self):
         """Test basic node addition."""
+        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
 
         mapping = MentalMapping()
         try:
+            import datetime
 
             node = MentalNode(
                 node_id="test_node",
@@ -162,6 +156,7 @@ class TestPhase1Completion_Table1_Eq49:
 
     def test_workflow_navigator_simple_methods(self):
         """Test WorkflowNavigator simple methods."""
+        from agents.workflow_navigator import WorkflowNavigator
 
         navigator = WorkflowNavigator()
         assert navigator is not None, "navigator must be initialized"
@@ -171,6 +166,7 @@ class TestPhase1Completion_Table1_Eq49:
 
     def test_self_healing_basic_operations(self):
         """Test SelfHealingSystem basic operations."""
+        from agents.self_healing import SelfHealingEngine
 
         system = SelfHealingEngine()
         assert system is not None, "system must be initialized"
@@ -181,6 +177,7 @@ class TestPhase1Completion_CrossModule:
 
     def test_import_all_orchestrators(self):
         """Test importing all orchestrator modules."""
+        from agents import (
             mental_mapping,
             physics_orchestrator,
             quantum_game_theory,
@@ -197,6 +194,7 @@ class TestPhase1Completion_CrossModule:
     def test_basic_workflow_registration(self):
         """Test basic workflow creation."""
         try:
+            from agents.workflow_navigator import WorkflowNavigator
 
             navigator = WorkflowNavigator()
             # Test workflow registration if method exists
@@ -212,6 +210,7 @@ class TestPhase1Completion_EdgeCases:
 
     def test_empty_decision_state(self):
         """Test DecisionState with minimal params."""
+        from agents.physics_orchestrator import DecisionState
 
         try:
             state = DecisionState(context={}, constraints=[])
@@ -222,6 +221,7 @@ class TestPhase1Completion_EdgeCases:
 
     def test_force_vector_zero_magnitude(self):
         """Test ForceVector with zero magnitude."""
+        from agents.physics_orchestrator import ForceVector
 
         try:
             force = ForceVector(magnitude=0.0, direction="none")
@@ -231,6 +231,7 @@ class TestPhase1Completion_EdgeCases:
 
     def test_action_path_empty(self):
         """Test ActionPath with no steps."""
+        from agents.physics_orchestrator import ActionPath
 
         try:
             path = ActionPath(trajectory=[])

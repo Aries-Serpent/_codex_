@@ -1,16 +1,15 @@
 """
 Tests for streaming metrics functionality
 """
+
+import pytest
+
 np = pytest.importorskip("numpy")
-pytest.importorskip("torch")
+
+# Skip entire module if torch is not available or unloadable
 import torch
 from codex_ml.metrics.classification import StreamingAccuracy
 from codex_ml.metrics.streaming import StreamingLoss
-
-
-
-# Skip entire module if torch is not available or unloadable
-
 
 
 class TestStreamingLoss:

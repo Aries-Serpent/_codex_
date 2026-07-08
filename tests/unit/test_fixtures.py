@@ -27,6 +27,7 @@ class TestFixtureReusability:
 
     @pytest.mark.skipif(
         not hasattr(pytest, "importorskip")
+        or pytest.importorskip("torch", minversion=None) is None,
         reason="torch not available in test environment",
     )
     def test_fixture_independence(self, mock_transformer_model):
@@ -67,7 +68,6 @@ class TestSerializationPatterns:
 
     def test_serializable_mock_model_pattern(self, serializable_mock_model):
         """Test that serializable mock model pattern works."""
-import pytest
         import json
 
         # Should have to_dict method

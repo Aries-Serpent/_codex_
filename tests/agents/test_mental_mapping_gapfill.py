@@ -9,14 +9,15 @@ Focuses on increasing coverage of:
 - MentalEdge
 - MentalMappingModel
 """
-    import sys
-    from agents.mental_mapping import (
 
+import pytest
 
 # Test imports with proper error handling
 try:
+    import sys
 
     sys.path.insert(0, "/home/runner/work/_codex_/_codex_")
+    from agents.mental_mapping import (
         EdgeType,
         MentalEdge,
         MentalMappingModel,

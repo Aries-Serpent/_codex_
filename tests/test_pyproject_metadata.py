@@ -3,17 +3,18 @@ Test Pyproject Metadata
 
 Test module for pyproject metadata.
 """
+
 from __future__ import annotations
+
 from pathlib import Path
-    import tomllib
-        import tomli as tomllib  # type: ignore[import-not-found]
 
-
-
+import pytest
 
 try:  # Python 3.11+
+    import tomllib
 except ModuleNotFoundError:  # pragma: no cover - fallback for 3.10
     try:
+        import tomli as tomllib  # type: ignore[import-not-found]
     except ModuleNotFoundError:  # pragma: no cover - skip when parser missing
         tomllib = None  # type: ignore[assignment]
 

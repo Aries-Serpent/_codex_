@@ -3,15 +3,16 @@ Test Pa Legacy Reader
 
 Test module for pa legacy reader.
 """
+
 from __future__ import annotations
+
 import json
 import zipfile
 from pathlib import Path
+
+import pytest
+
 from codex_crm.pa_legacy import PowerAutomatePackageError, read_pa_legacy, to_template
-
-
-
-
 
 
 def _create_pa_zip(tmp_path: Path) -> Path:

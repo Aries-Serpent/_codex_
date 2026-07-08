@@ -8,12 +8,13 @@ Tests cover:
 - Type checking and coercion
 - Integration scenarios with nested structures
 """
+
 from pathlib import Path
+
+import pytest
 from pydantic import ValidationError
+
 from src.services.workflow.types import (
-
-
-
     InputType,
     InventoryStats,
     TriggerType,

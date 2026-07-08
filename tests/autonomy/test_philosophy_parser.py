@@ -3,15 +3,15 @@
 Covers _extract_headings, _count_words, parse_document, cmd_parse,
 cmd_write, cmd_status, and main entry point.
 """
+
 from __future__ import annotations
-    return pytest.importorskip("philosophy_parser", reason="philosophy_parser not importable")
+
 import json
 import sys
 from pathlib import Path
 from unittest.mock import patch
 
-
-
+import pytest
 
 # ── Import helper ────────────────────────────────────────────────────────────
 
@@ -22,6 +22,7 @@ def _import():
     scripts_dir = str(repo_root / "scripts")
     if scripts_dir not in sys.path:
         sys.path.insert(0, scripts_dir)
+    return pytest.importorskip("philosophy_parser", reason="philosophy_parser not importable")
 
 
 # ── _extract_headings ────────────────────────────────────────────────────────

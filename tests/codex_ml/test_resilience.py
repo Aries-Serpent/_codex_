@@ -333,7 +333,6 @@ class TestFallbackHandler:
 
     def test_cache_then_function_fallback(self):
         """Test fallback priority: cache first, then function"""
-import pytest
         mock_cache = Mock()
         mock_cache.get = Mock(return_value=None)  # Cache miss
         fallback_func = Mock(return_value="fallback_func_result")

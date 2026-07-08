@@ -3,17 +3,17 @@ Tests for Uncertainty Optimizer.
 
 Comprehensive test suite for the UncertaintyOptimizer class.
 """
+
 import sqlite3
 import tempfile
 from pathlib import Path
+
+import pytest
+
 from cognitive_brain.models.quantum_metrics import QuantumMetricRepository
 from cognitive_brain.quantum.coherence_monitor import CoherenceMonitor
 from cognitive_brain.quantum.config import QuantumConfig
 from cognitive_brain.quantum.uncertainty import (
-    from pathlib import Path
-
-
-
     ExecutionMetrics,
     UncertaintyOptimizer,
 )
@@ -357,6 +357,7 @@ def test_execution_time_penalty(optimizer):
 
 def test_integration_with_monitor():
     """Test integration with coherence monitor."""
+    from pathlib import Path
 
     # Create temporary database with schema
     with tempfile.NamedTemporaryFile(suffix=".db", delete=False) as f:

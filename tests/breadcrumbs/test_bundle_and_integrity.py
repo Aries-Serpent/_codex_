@@ -3,15 +3,16 @@ Test Bundle And Integrity
 
 Test module for bundle and integrity.
 """
-pytest.importorskip("zstandard")
+
 import os
 import subprocess
 from pathlib import Path
+
+import pytest
+
+pytest.importorskip("zstandard")
+
 from tools import bundle_run
-
-
-
-
 
 
 def test_bundle_smoke(tmp_path: Path) -> None:

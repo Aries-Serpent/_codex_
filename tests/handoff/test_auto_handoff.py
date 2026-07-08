@@ -334,7 +334,6 @@ class TestAutoHandoffIntegration:
 
     def test_full_handoff_workflow(self, temp_env):
         """Test complete handoff workflow."""
-import pytest
         tracking_file = temp_env / ".codex" / "handoff_tracking.json"
 
         with (

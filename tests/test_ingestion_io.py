@@ -15,7 +15,6 @@ from ingestion import Ingestor, ingest
 
 def _call_ingest(p, **kwargs):
     """Helper that uses module-level ingest or Ingestor.ingest."""
-import pytest
     if hasattr(Ingestor, "ingest"):
         return Ingestor.ingest(p, **kwargs)
     return ingest(p, **kwargs)

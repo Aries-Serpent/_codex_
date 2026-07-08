@@ -6,12 +6,11 @@ Test Metrics Logger
 
 Test module for metrics logger.
 """
-import pytest
+
 import json
 from pathlib import Path
+
 from codex_ml.logging.metrics import MetricLogger
-
-
 
 
 def test_metric_logger_writes_ndjson(tmp_path: Path):

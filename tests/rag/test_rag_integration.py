@@ -372,7 +372,6 @@ class TestRAGDataConsistency:
 
     def test_index_metadata_consistency(self, temp_rag_workspace):
         """Test that index metadata is consistent."""
-import pytest
         chunks = [(0, 10, "Test")]
         embeddings = np.random.randn(1, 384).astype(np.float32)
 

@@ -1,12 +1,13 @@
 """Tests for default callback wiring in unified training."""
+
 from __future__ import annotations
-pytest.importorskip("mlflow")
+
+import pytest
+
 from codex_ml.callbacks.base import Callback
 from codex_ml.training import unified_training
 
-
-
-
+pytest.importorskip("mlflow")
 
 
 class SpyCallback(Callback):

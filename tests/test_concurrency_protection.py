@@ -9,22 +9,23 @@ Tests for:
 - Deadlock recovery
 - Lock contention monitoring
 """
+
 from __future__ import annotations
+
 import concurrent.futures
 import sqlite3
 import threading
 import time
+
+import pytest
+
 from codex.logging.concurrency import (
-from codex.logging.thread_safe_archive import ThreadSafeArchive
-from codex.logging.thread_safe_session_db import ThreadSafeSessionDB
-
-
-
-
     DeadlockRecovery,
     ReadWriteLock,
     SQLiteConnectionPool,
 )
+from codex.logging.thread_safe_archive import ThreadSafeArchive
+from codex.logging.thread_safe_session_db import ThreadSafeSessionDB
 
 
 class TestReadWriteLock:

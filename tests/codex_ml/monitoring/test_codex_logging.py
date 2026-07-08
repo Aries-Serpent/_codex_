@@ -3,11 +3,8 @@ Test Codex Logging
 
 Test module for codex logging.
 """
-            from codex_ml.monitoring.codex_logging import _mlflow_offline_enabled
-            from codex_ml.monitoring.codex_logging import (
-            from codex_ml.monitoring._logger_types import CodexLoggers
-            from codex_ml.monitoring._logger_types import TelemetryComponentStatus
 
+import pytest
 
 
 class TestCodexLogging:
@@ -16,6 +13,7 @@ class TestCodexLogging:
     def test_mlflow_offline_enabled(self):
         """Test _mlflow_offline_enabled function."""
         try:
+            from codex_ml.monitoring.codex_logging import _mlflow_offline_enabled
 
             result = _mlflow_offline_enabled()
             assert isinstance(result, bool)
@@ -25,6 +23,7 @@ class TestCodexLogging:
     def test_ensure_local_mlflow_tracking_uri(self):
         """Test _ensure_local_mlflow_tracking_uri_default function."""
         try:
+            from codex_ml.monitoring.codex_logging import (
                 _ensure_local_mlflow_tracking_uri_default,
             )
 
@@ -39,6 +38,7 @@ class TestCodexLoggers:
     def test_codex_loggers_available(self):
         """Test CodexLoggers enum is available."""
         try:
+            from codex_ml.monitoring._logger_types import CodexLoggers
 
             assert CodexLoggers is not None, "CodexLoggers must be initialized"
         except ImportError as exc:
@@ -51,6 +51,7 @@ class TestTelemetryComponentStatus:
     def test_telemetry_status_available(self):
         """Test TelemetryComponentStatus enum is available."""
         try:
+            from codex_ml.monitoring._logger_types import TelemetryComponentStatus
 
             assert TelemetryComponentStatus is not None, "TelemetryComponentStatus must be initialized"
         except ImportError as exc:

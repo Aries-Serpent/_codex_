@@ -180,7 +180,6 @@ class TestDistributedTraining:
 
     def test_process_group_creation(self):
         """Test process group creation."""
-import pytest
         # Arrange
         init_method = "env://"
 

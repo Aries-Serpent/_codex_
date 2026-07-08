@@ -3,14 +3,15 @@ Test Audit Diff Cli
 
 Test module for audit diff cli.
 """
+
 from __future__ import annotations
+
 import importlib.util
 import subprocess
 import sys
 from pathlib import Path
 
-
-
+import pytest
 
 
 def _run(args: list[str]) -> subprocess.CompletedProcess[str]:

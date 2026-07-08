@@ -3,15 +3,12 @@ Test Hydra Defaults Tree
 
 Test module for hydra defaults tree.
 """
+
 from __future__ import annotations
-    pytest.importorskip("omegaconf")
+
 from pathlib import Path
-        import sys as _sys_hydra
-        from hydra import compose, initialize_config_dir
-        from omegaconf import OmegaConf
 
-
-
+import pytest
 
 
 def _config_root() -> Path:
@@ -28,9 +25,13 @@ def test_defaults_files_exist():
 
 
 def test_hydra_compose_smoke():
+    pytest.importorskip("omegaconf")
     try:
+        import sys as _sys_hydra
 
+        from hydra import compose, initialize_config_dir
 
+        from omegaconf import OmegaConf
 
         hydra_module = _sys_hydra.modules["hydra"]
     except ModuleNotFoundError as exc:  # pragma: no cover - optional dependency guard

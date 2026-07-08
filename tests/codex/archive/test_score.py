@@ -3,17 +3,6 @@ Tests for codex.archive.score module.
 
 This module contains tests for archive scoring functionality.
 """
-import pytest
-        from codex.archive.score import ScoreInput
-        from codex.archive.score import ScoreInput
-        from codex.archive.score import ScoreInput, archive_score
-        from codex.archive.score import ScoreInput, archive_score
-        from codex.archive.score import ScoreInput, archive_score
-        from codex.archive.score import ScoreInput, archive_score
-        from codex.archive.score import ScoreInput, archive_score
-        from codex.archive.score import ScoreInput, archive_score
-        from codex.archive.score import ScoreInput, archive_score
-        from codex.archive.score import ScoreInput, archive_score
 
 
 class TestScoreInput:
@@ -21,6 +10,7 @@ class TestScoreInput:
 
     def test_basic_creation(self):
         """Test ScoreInput basic creation."""
+        from codex.archive.score import ScoreInput
 
         score_input = ScoreInput(
             age_days=100, ref_count=5, coverage=0.75, has_deprecation_tag=False
@@ -33,6 +23,7 @@ class TestScoreInput:
 
     def test_with_deprecation_tag(self):
         """Test ScoreInput with deprecation tag."""
+        from codex.archive.score import ScoreInput
 
         score_input = ScoreInput(age_days=200, ref_count=0, coverage=0.0, has_deprecation_tag=True)
 
@@ -44,6 +35,7 @@ class TestArchiveScore:
 
     def test_high_score_all_criteria(self):
         """Test score when all criteria are met."""
+        from codex.archive.score import ScoreInput, archive_score
 
         inp = ScoreInput(
             age_days=200,  # > 180
@@ -59,6 +51,7 @@ class TestArchiveScore:
 
     def test_low_score_no_criteria(self):
         """Test score when no criteria are met."""
+        from codex.archive.score import ScoreInput, archive_score
 
         inp = ScoreInput(
             age_days=30,  # < 180
@@ -73,6 +66,7 @@ class TestArchiveScore:
 
     def test_partial_score_age_only(self):
         """Test score when only age criteria is met."""
+        from codex.archive.score import ScoreInput, archive_score
 
         inp = ScoreInput(
             age_days=200,  # > 180
@@ -88,6 +82,7 @@ class TestArchiveScore:
 
     def test_partial_score_ref_only(self):
         """Test score when only ref count criteria is met."""
+        from codex.archive.score import ScoreInput, archive_score
 
         inp = ScoreInput(
             age_days=30,  # < 180
@@ -103,6 +98,7 @@ class TestArchiveScore:
 
     def test_custom_weights(self):
         """Test score with custom weights."""
+        from codex.archive.score import ScoreInput, archive_score
 
         inp = ScoreInput(age_days=200, ref_count=0, coverage=0.0, has_deprecation_tag=True)
 
@@ -113,6 +109,7 @@ class TestArchiveScore:
 
     def test_custom_tau(self):
         """Test score with custom tau (age threshold)."""
+        from codex.archive.score import ScoreInput, archive_score
 
         inp = ScoreInput(
             age_days=100,  # Below default 180, above custom 90
@@ -131,6 +128,7 @@ class TestArchiveScore:
 
     def test_score_rounding(self):
         """Test that scores are properly rounded."""
+        from codex.archive.score import ScoreInput, archive_score
 
         inp = ScoreInput(age_days=200, ref_count=0, coverage=0.0, has_deprecation_tag=False)
 
@@ -143,6 +141,7 @@ class TestArchiveScore:
 
     def test_score_clamping(self):
         """Test that scores are clamped between 0 and 1."""
+        from codex.archive.score import ScoreInput, archive_score
 
         inp = ScoreInput(age_days=200, ref_count=0, coverage=0.0, has_deprecation_tag=True)
 

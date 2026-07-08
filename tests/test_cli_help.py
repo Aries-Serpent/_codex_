@@ -3,15 +3,16 @@ Test Cli Help
 
 Test module for cli help.
 """
-pytest.importorskip("omegaconf")
-pytest.importorskip("hydra")
+
 import os
 import subprocess
 import sys
 from pathlib import Path
 
+import pytest
 
-
+pytest.importorskip("omegaconf")
+pytest.importorskip("hydra")
 
 
 def test_cli_help_runs():

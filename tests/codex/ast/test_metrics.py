@@ -3,19 +3,6 @@ Tests for codex.ast.metrics module.
 
 This module contains tests for code metrics aggregation and analysis.
 """
-import pytest
-        from codex.ast.metrics import CodeMetrics
-        from codex.ast.metrics import CodeMetrics
-        from codex.ast.metrics import CodeMetrics
-        from codex.ast.metrics import CodeMetrics
-        from codex.ast.metrics import CodeMetrics
-        from codex.ast.metrics import CodeMetrics
-        from codex.ast.metrics import CodeMetrics
-        from codex.ast.metrics import MetricsAggregator
-        from codex.ast.metrics import CodeMetrics, MetricsAggregator
-        from codex.ast.metrics import MetricsAggregator
-        from codex.ast.metrics import CodeMetrics, MetricsAggregator
-        from codex.ast.metrics import CodeMetrics, MetricsAggregator
 
 
 class TestCodeMetrics:
@@ -23,6 +10,7 @@ class TestCodeMetrics:
 
     def test_basic_creation(self):
         """Test CodeMetrics basic creation."""
+        from codex.ast.metrics import CodeMetrics
 
         metrics = CodeMetrics(
             cyclomatic_complexity=10,
@@ -40,6 +28,7 @@ class TestCodeMetrics:
 
     def test_quality_tier_a(self):
         """Test quality tier A (>= 85)."""
+        from codex.ast.metrics import CodeMetrics
 
         metrics = CodeMetrics(0, 0.0, 0, 0, 90.0)
         assert metrics.quality_tier == "A", "quality_tier is not valid"
@@ -49,6 +38,7 @@ class TestCodeMetrics:
 
     def test_quality_tier_b(self):
         """Test quality tier B (70-84)."""
+        from codex.ast.metrics import CodeMetrics
 
         metrics = CodeMetrics(0, 0.0, 0, 0, 75.0)
         assert metrics.quality_tier == "B", "quality_tier is not valid"
@@ -58,6 +48,7 @@ class TestCodeMetrics:
 
     def test_quality_tier_c(self):
         """Test quality tier C (55-69)."""
+        from codex.ast.metrics import CodeMetrics
 
         metrics = CodeMetrics(0, 0.0, 0, 0, 60.0)
         assert metrics.quality_tier == "C", "quality_tier is not valid"
@@ -67,6 +58,7 @@ class TestCodeMetrics:
 
     def test_quality_tier_d(self):
         """Test quality tier D (40-54)."""
+        from codex.ast.metrics import CodeMetrics
 
         metrics = CodeMetrics(0, 0.0, 0, 0, 45.0)
         assert metrics.quality_tier == "D", "quality_tier is not valid"
@@ -76,6 +68,7 @@ class TestCodeMetrics:
 
     def test_quality_tier_f(self):
         """Test quality tier F (< 40)."""
+        from codex.ast.metrics import CodeMetrics
 
         metrics = CodeMetrics(0, 0.0, 0, 0, 30.0)
         assert metrics.quality_tier == "F", "quality_tier is not valid"
@@ -85,6 +78,7 @@ class TestCodeMetrics:
 
     def test_to_dict(self):
         """Test CodeMetrics serialization."""
+        from codex.ast.metrics import CodeMetrics
 
         metrics = CodeMetrics(
             cyclomatic_complexity=5,
@@ -109,6 +103,7 @@ class TestMetricsAggregator:
 
     def test_init(self):
         """Test MetricsAggregator initialization."""
+        from codex.ast.metrics import MetricsAggregator
 
         aggregator = MetricsAggregator()
 
@@ -116,6 +111,7 @@ class TestMetricsAggregator:
 
     def test_store_metrics(self):
         """Test storing metrics for an entity."""
+        from codex.ast.metrics import CodeMetrics, MetricsAggregator
 
         aggregator = MetricsAggregator()
         metrics = CodeMetrics(5, 3.0, 100, 20, 75.0)
@@ -127,6 +123,7 @@ class TestMetricsAggregator:
 
     def test_aggregate_empty(self):
         """Test aggregation with empty list."""
+        from codex.ast.metrics import MetricsAggregator
 
         aggregator = MetricsAggregator()
         result = aggregator.aggregate([])
@@ -139,6 +136,7 @@ class TestMetricsAggregator:
 
     def test_aggregate_single(self):
         """Test aggregation with single metric."""
+        from codex.ast.metrics import CodeMetrics, MetricsAggregator
 
         aggregator = MetricsAggregator()
         metrics = CodeMetrics(10, 5.0, 100, 20, 80.0)
@@ -153,6 +151,7 @@ class TestMetricsAggregator:
 
     def test_aggregate_multiple(self):
         """Test aggregation with multiple metrics."""
+        from codex.ast.metrics import CodeMetrics, MetricsAggregator
 
         aggregator = MetricsAggregator()
         metrics1 = CodeMetrics(10, 5.0, 100, 20, 80.0)

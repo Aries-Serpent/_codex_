@@ -1,17 +1,18 @@
 """Tests for the monitoring CLI utilities."""
+
 from __future__ import annotations
-pytest.importorskip("typer")
+
 import ast
 import csv
 import json
 from pathlib import Path
+
+import pytest
+
+pytest.importorskip("typer")
 from typer.testing import CliRunner
+
 from codex_ml.monitoring import cli as monitoring_cli
-
-
-
-
-
 
 
 @pytest.fixture()

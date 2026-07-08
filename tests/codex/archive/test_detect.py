@@ -3,19 +3,6 @@ Tests for codex.archive.detect module.
 
 This module contains tests for file detection utilities.
 """
-import pytest
-        from codex.archive.detect import FileMeta
-        from codex.archive.detect import _sloc_of_bytes
-        from codex.archive.detect import _sloc_of_bytes
-        from codex.archive.detect import _sloc_of_bytes
-        from codex.archive.detect import _sloc_of_bytes
-        from codex.archive.detect import _sloc_of_bytes
-        from codex.archive.detect import _sloc_of_bytes
-        from codex.archive.detect import _EXT_TO_MIME
-        from codex.archive.detect import _EXT_TO_MIME
-        from codex.archive.detect import _EXT_TO_LANG
-        from codex.archive.detect import _EXT_TO_LANG
-        from codex.archive.detect import logger
 
 
 class TestFileMeta:
@@ -23,6 +10,7 @@ class TestFileMeta:
 
     def test_basic_creation(self):
         """Test FileMeta basic creation."""
+        from codex.archive.detect import FileMeta
 
         meta = FileMeta(
             path="/path/to/file.py",
@@ -46,6 +34,7 @@ class TestSlocOfBytes:
 
     def test_simple_code(self):
         """Test SLOC counting for simple code."""
+        from codex.archive.detect import _sloc_of_bytes
 
         code = b"def foo():\n    return 1\n\nlogger.info(foo())"
 
@@ -55,6 +44,7 @@ class TestSlocOfBytes:
 
     def test_empty_bytes(self):
         """Test SLOC counting for empty input."""
+        from codex.archive.detect import _sloc_of_bytes
 
         result = _sloc_of_bytes(b"")
 
@@ -62,6 +52,7 @@ class TestSlocOfBytes:
 
     def test_only_comments(self):
         """Test SLOC counting for comment-only input."""
+        from codex.archive.detect import _sloc_of_bytes
 
         code = b"# Comment 1\n# Comment 2\n# Comment 3"
 
@@ -71,6 +62,7 @@ class TestSlocOfBytes:
 
     def test_only_blank_lines(self):
         """Test SLOC counting for blank lines only."""
+        from codex.archive.detect import _sloc_of_bytes
 
         code = b"\n\n   \n  \n"
 
@@ -80,6 +72,7 @@ class TestSlocOfBytes:
 
     def test_mixed_content(self):
         """Test SLOC counting for mixed content."""
+        from codex.archive.detect import _sloc_of_bytes
 
         code = b"# Header\n\ndef foo():\n    # inner comment\n    pass\n\n"
 
@@ -90,6 +83,7 @@ class TestSlocOfBytes:
 
     def test_js_style_comments(self):
         """Test SLOC counting ignores // comments."""
+        from codex.archive.detect import _sloc_of_bytes
 
         code = b"// comment\nlet x = 1;\n// another"
 
@@ -103,21 +97,25 @@ class TestExtMappings:
 
     def test_ext_to_mime_python(self):
         """Test Python extension mapping."""
+        from codex.archive.detect import _EXT_TO_MIME
 
         assert _EXT_TO_MIME[".py"] == "text/x-python", "Condition must be true"
 
     def test_ext_to_mime_json(self):
         """Test JSON extension mapping."""
+        from codex.archive.detect import _EXT_TO_MIME
 
         assert _EXT_TO_MIME[".json"] == "application/json", "Condition must be true"
 
     def test_ext_to_lang_python(self):
         """Test Python language mapping."""
+        from codex.archive.detect import _EXT_TO_LANG
 
         assert _EXT_TO_LANG[".py"] == "python", "Condition must be true"
 
     def test_ext_to_lang_yaml(self):
         """Test YAML extension mapping."""
+        from codex.archive.detect import _EXT_TO_LANG
 
         assert _EXT_TO_LANG[".yml"] == "yaml", "Condition must be true"
         assert _EXT_TO_LANG[".yaml"] == "yaml", "Condition must be true"
@@ -128,6 +126,7 @@ class TestModuleLevel:
 
     def test_logger_exists(self):
         """Test logger is configured."""
+        from codex.archive.detect import logger
 
         assert logger is not None, "logger must be initialized"
         assert logger.name == "codex.archive.detect", "name is not valid"

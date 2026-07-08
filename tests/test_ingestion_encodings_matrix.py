@@ -3,17 +3,18 @@ Test Ingestion Encodings Matrix
 
 Test module for ingestion encodings matrix.
 """
+import pytest
+
 pytest.importorskip("charset_normalizer")
+
 import sys
 from pathlib import Path
-from ingestion import Ingestor
-
-
 
 ROOT = Path(__file__).resolve().parents[1] / "src"
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from ingestion import Ingestor
 
 ENCODINGS = ["iso-8859-1", "cp1252", "utf-16", "auto"]
 

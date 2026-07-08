@@ -525,7 +525,6 @@ class TestHandoffValidator:
 
     def test_mark_failed_for_retry_not_found(self, validator):
         """Test marking handoff for retry - not found."""
-import pytest
         validator.tracking_data = {"handoffs": []}
 
         success, message = validator.mark_failed_for_retry("HO-999")

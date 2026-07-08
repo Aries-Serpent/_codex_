@@ -3,12 +3,11 @@ Test Import Ndjson Dedup
 
 Test module for import ndjson dedup.
 """
-import pytest
+
 import sqlite3
+
 from codex.logging import import_ndjson, session_hooks
 from codex.logging.session_hooks import session
-
-
 
 
 def test_importer_deduplicates_start_end(tmp_path, monkeypatch):

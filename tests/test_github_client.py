@@ -3,11 +3,12 @@ Test Github Client
 
 Test module for github client.
 """
+
 import os
+
+import pytest
+
 from codex_bridge.github_client import list_branches
-
-
-
 
 
 @pytest.mark.network

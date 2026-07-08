@@ -3,17 +3,8 @@ Unit tests for advanced RAG features.
 
 Tests query expansion, reranking algorithms, and advanced embedding strategies.
 """
-        from codex.rag import prompt
-        from codex.rag import prompt
-        from codex.rag import postprocess
-        from codex.rag import embeddings
-        import math
-        from codex.rag import cache
-        from codex.rag import monitoring
-        from codex.rag import gpu_utils
-        from codex.rag import postprocess
-        from codex.rag import prompt
 
+import pytest
 
 
 class TestQueryExpansion:
@@ -21,11 +12,13 @@ class TestQueryExpansion:
 
     def test_query_expansion_import(self):
         """Test query expansion modules can be imported."""
+        from codex.rag import prompt
 
         assert prompt is not None, "prompt must be initialized"
 
     def test_prompt_module_has_expansion_functions(self):
         """Test prompt module has query expansion capabilities."""
+        from codex.rag import prompt
 
         # Check for prompt-related functions - at least one should exist
         has_prompt_api = (
@@ -71,6 +64,7 @@ class TestReranking:
 
     def test_reranking_import(self):
         """Test reranking can be imported."""
+        from codex.rag import postprocess
 
         assert postprocess is not None, "postprocess must be initialized"
 
@@ -139,6 +133,7 @@ class TestAdvancedEmbeddings:
 
     def test_embeddings_module_import(self):
         """Test embeddings module can be imported."""
+        from codex.rag import embeddings
 
         assert embeddings is not None, "embeddings must be initialized"
 
@@ -202,6 +197,7 @@ class TestAdvancedEmbeddings:
 
     def test_embedding_normalization(self):
         """Test embedding normalization."""
+        import math
 
         embedding = [3.0, 4.0]
 
@@ -217,25 +213,30 @@ class TestRAGPipeline:
 
     def test_rag_cache_import(self):
         """Test RAG cache can be imported."""
+        from codex.rag import cache
 
         assert cache is not None, "cache must be initialized"
 
     def test_retrieval_monitoring_import(self):
         """Test retrieval monitoring can be imported."""
+        from codex.rag import monitoring
 
         assert monitoring is not None, "monitoring must be initialized"
 
     def test_gpu_utils_import(self):
         """Test GPU utilities can be imported."""
+        from codex.rag import gpu_utils
 
         assert gpu_utils is not None, "gpu_utils must be initialized"
 
     def test_postprocess_import(self):
         """Test postprocessing can be imported."""
+        from codex.rag import postprocess
 
         assert postprocess is not None, "postprocess must be initialized"
 
     def test_prompt_import(self):
         """Test prompt utilities can be imported."""
+        from codex.rag import prompt
 
         assert prompt is not None, "prompt must be initialized"

@@ -10,15 +10,16 @@ Test Coverage Goals:
   - Error handling (25%): Invalid paths, malformed files
   - Edge cases (15%): Empty files, unicode, special characters
 """
+
 from __future__ import annotations
+
 from pathlib import Path
-    from codex.utils.validators import (
 
-
-
+import pytest
 
 # Import the module to test
 try:
+    from codex.utils.validators import (
         validate_code_quality,
         validate_file_structure,
         validate_with_checksum,

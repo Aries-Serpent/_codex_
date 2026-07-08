@@ -3,16 +3,14 @@ Test ExceptionGroup compatibility (Python 3.12 standard feature).
 
 ExceptionGroup was introduced in Python 3.11 and is fully supported in 3.12.
 """
-from __future__ import annotations
-import sys
-        from an ExceptionGroup.
-        from pathlib import Path
-        import asyncio
 
 # ruff: noqa: F821
 
+from __future__ import annotations
 
+import sys
 
+import pytest
 
 pytestmark = pytest.mark.skipif(
     sys.version_info < (3, 11), reason="ExceptionGroup requires Python 3.11+"
@@ -58,6 +56,7 @@ class TestExceptionGroups:
         Test except* syntax for handling ExceptionGroup (Python 3.11+, standard in 3.12).
 
         The except* syntax allows catching specific exception types
+        from an ExceptionGroup.
         """
         # Test that we can parse except* syntax
         code = """
@@ -150,6 +149,7 @@ class TestCodexMLExceptionHandling:
         Search for ExceptionGroup usage in the codebase.
         If not used, this is informational.
         """
+        from pathlib import Path
 
         repo_root = Path(__file__).parent.parent.parent
         src_dir = repo_root / "src"
@@ -212,6 +212,7 @@ class TestExceptionGroupIntegration:
 
     def test_async_exception_group(self):
         """Test ExceptionGroup with async code."""
+        import asyncio
 
         async def failing_task(n):
             await asyncio.sleep(0.001)

@@ -1,11 +1,12 @@
 """Validate CODEX_SYNC_GROUPS parsing in setup.sh."""
+
 from __future__ import annotations
+
 import subprocess
 import textwrap
 from pathlib import Path
 
-
-
+import pytest
 
 
 def _extract_uv_sync_selective() -> str:

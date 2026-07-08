@@ -100,7 +100,6 @@ def test_hash_sensitive_value_uniqueness():
     This test is a practical sanity check for these specific inputs, not a
     mathematical proof of collision-freedom.
     """
-import pytest
     values = [
         "alpha",
         "Alpha",  # case-variant edge case

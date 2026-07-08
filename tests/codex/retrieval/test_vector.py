@@ -80,9 +80,8 @@ class TestRetrievalVectorIndexing:
 
     def test_save_index(self):
         """Test saving index."""
-import pytest
-            from src.codex.retrieval import vector
         try:
+            from src.codex.retrieval import vector
 
             if hasattr(vector, "VectorStore"):
                 store = vector.VectorStore()

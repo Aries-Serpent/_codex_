@@ -3,17 +3,18 @@ Test Logging Utils Module
 
 Test module for logging utils module.
 """
+
 import sys
 from pathlib import Path
-import logging_utils
-
 
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
+import pytest
 
+import logging_utils
 
 
 def test_init_tensorboard_returns_writer(monkeypatch: pytest.MonkeyPatch) -> None:

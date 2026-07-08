@@ -8,46 +8,8 @@ Target: +50-70 tests for weak modules (Phase 2)
 Generated: 2026-06-20
 Authority: @mbaetiong (COPILOT_AGENT_AUTH_ENABLED=true)
 """
-        from codex.security.encryption import Encryptor
-        from codex.security.encryption import Encryptor
-        from codex.security.encryption import Encryptor
-        from codex.security.encryption import Encryptor
-        from codex.security.encryption import Encryptor
-        from codex.security.token_rotation import TokenRotator
-        from codex.security.token_rotation import TokenRotator
-        from codex.security.token_rotation import TokenRotator
-        from codex.security.content_filters import ContentFilter
-        from codex.security.content_filters import ContentFilter
-        from codex.security.content_filters import ContentFilter
-        from codex.archive.config import ArchiveConfig
-        from codex.archive.config import ArchiveConfig
-        from codex.archive.config import ArchiveConfig
-        from codex.archive.config import ArchiveConfig
-        from codex.archive.config import ArchiveConfig
-        from codex.archive.config import ArchiveConfig
-        from codex.archive.config import ArchiveConfig
-        from codex.archive.dal import ArchiveDAL
-        from codex.archive.dal import ArchiveDAL
-        from codex.archive.dal import ArchiveDAL
-        from codex.archive.dal import ArchiveDAL
-        from codex.archive.dal import ArchiveDAL
-        from codex.archive.dal import ArchiveDAL
-        from codex.archive.dal import ArchiveDAL
-        from codex.archive.dal import ArchiveDAL
-        from codex.archive.dal import ArchiveDAL
-        from codex.archive.standardization import Standardizer
-        from codex.archive.standardization import Standardizer
-        from codex.archive.standardization import Standardizer
-        from codex.archive.similarity import SimilarityCalculator
-        from codex.archive.similarity import SimilarityCalculator
-        from codex.archive.similarity import SimilarityCalculator
-        from codex.rag.pipelines.chunking import TextChunker
-        from codex.rag.pipelines.chunking import TextChunker
-        from codex.rag.pipelines.chunking import TextChunker
-        from codex.rag.pipelines.embedding import EmbeddingGenerator
-        from codex.rag.pipelines.embedding import EmbeddingGenerator
-        from codex.rag.pipelines.embedding import EmbeddingGenerator
 
+import pytest
 
 # ============================================================================
 # Security Module Tests (10-15 tests)
@@ -59,6 +21,7 @@ class TestSecurityEncryptionEdgeCases:
 
     def test_encrypt_empty_plaintext(self):
         """Should handle empty string encryption"""
+        from codex.security.encryption import Encryptor
 
         try:
             encryptor = Encryptor()
@@ -71,6 +34,7 @@ class TestSecurityEncryptionEdgeCases:
 
     def test_encrypt_none_plaintext(self):
         """Should reject None plaintext"""
+        from codex.security.encryption import Encryptor
 
         try:
             encryptor = Encryptor()
@@ -81,6 +45,7 @@ class TestSecurityEncryptionEdgeCases:
 
     def test_encrypt_very_large_plaintext(self):
         """Should handle very large plaintext"""
+        from codex.security.encryption import Encryptor
 
         try:
             encryptor = Encryptor()
@@ -94,6 +59,7 @@ class TestSecurityEncryptionEdgeCases:
 
     def test_decrypt_invalid_ciphertext(self):
         """Should reject invalid ciphertext"""
+        from codex.security.encryption import Encryptor
 
         try:
             encryptor = Encryptor()
@@ -104,6 +70,7 @@ class TestSecurityEncryptionEdgeCases:
 
     def test_decrypt_corrupted_ciphertext(self):
         """Should handle corrupted ciphertext gracefully"""
+        from codex.security.encryption import Encryptor
 
         try:
             encryptor = Encryptor()
@@ -123,6 +90,7 @@ class TestSecurityTokenRotation:
 
     def test_token_rotation_with_empty_current_token(self):
         """Should handle empty current token"""
+        from codex.security.token_rotation import TokenRotator
 
         try:
             rotator = TokenRotator()
@@ -133,6 +101,7 @@ class TestSecurityTokenRotation:
 
     def test_token_rotation_with_none_token(self):
         """Should reject None token"""
+        from codex.security.token_rotation import TokenRotator
 
         try:
             rotator = TokenRotator()
@@ -143,6 +112,7 @@ class TestSecurityTokenRotation:
 
     def test_token_expiration_check(self):
         """Should correctly identify expired tokens"""
+        from codex.security.token_rotation import TokenRotator
 
         try:
             rotator = TokenRotator()
@@ -158,6 +128,7 @@ class TestSecurityContentFilters:
 
     def test_filter_empty_content(self):
         """Should handle empty content"""
+        from codex.security.content_filters import ContentFilter
 
         try:
             filter = ContentFilter()
@@ -168,6 +139,7 @@ class TestSecurityContentFilters:
 
     def test_filter_none_content(self):
         """Should reject None content"""
+        from codex.security.content_filters import ContentFilter
 
         try:
             filter = ContentFilter()
@@ -178,6 +150,7 @@ class TestSecurityContentFilters:
 
     def test_filter_binary_content(self):
         """Should handle binary content"""
+        from codex.security.content_filters import ContentFilter
 
         try:
             filter = ContentFilter()
@@ -198,6 +171,7 @@ class TestConfigurationValidation:
 
     def test_config_with_empty_dict(self):
         """Should handle empty configuration"""
+        from codex.archive.config import ArchiveConfig
 
         try:
             config = ArchiveConfig({})
@@ -208,6 +182,7 @@ class TestConfigurationValidation:
 
     def test_config_with_none_dict(self):
         """Should reject None configuration"""
+        from codex.archive.config import ArchiveConfig
 
         try:
             with pytest.raises((TypeError, ValueError)):
@@ -217,6 +192,7 @@ class TestConfigurationValidation:
 
     def test_config_with_invalid_types(self):
         """Should validate type constraints"""
+        from codex.archive.config import ArchiveConfig
 
         try:
             ArchiveConfig(
@@ -228,6 +204,7 @@ class TestConfigurationValidation:
 
     def test_config_with_missing_required_fields(self):
         """Should validate required fields"""
+        from codex.archive.config import ArchiveConfig
 
         try:
             # Create config without required fields
@@ -242,6 +219,7 @@ class TestConfigurationOverrides:
 
     def test_override_with_empty_dict(self):
         """Should handle empty override dict"""
+        from codex.archive.config import ArchiveConfig
 
         try:
             base_config = ArchiveConfig({"setting1": "value1"})
@@ -253,6 +231,7 @@ class TestConfigurationOverrides:
 
     def test_override_with_null_values(self):
         """Should handle null override values"""
+        from codex.archive.config import ArchiveConfig
 
         try:
             base_config = ArchiveConfig({"setting1": "value1"})
@@ -264,6 +243,7 @@ class TestConfigurationOverrides:
 
     def test_deep_merge_nested_config(self):
         """Should handle deep merge of nested configs"""
+        from codex.archive.config import ArchiveConfig
 
         try:
             base_config = ArchiveConfig({"nested": {"key1": "val1", "key2": "val2"}})
@@ -284,6 +264,7 @@ class TestDalConnectionManagement:
 
     def test_dal_with_invalid_connection_string(self):
         """Should reject invalid connection string"""
+        from codex.archive.dal import ArchiveDAL
 
         try:
             with pytest.raises((ValueError, TypeError)):
@@ -293,6 +274,7 @@ class TestDalConnectionManagement:
 
     def test_dal_with_none_connection_string(self):
         """Should reject None connection string"""
+        from codex.archive.dal import ArchiveDAL
 
         try:
             with pytest.raises((TypeError, ValueError)):
@@ -302,6 +284,7 @@ class TestDalConnectionManagement:
 
     def test_dal_connection_timeout(self):
         """Should handle connection timeout"""
+        from codex.archive.dal import ArchiveDAL
 
         try:
             ArchiveDAL(connection_string="dummy", timeout=0.001)  # Very short timeout
@@ -315,6 +298,7 @@ class TestDalQueryExecution:
 
     def test_dal_query_with_empty_query_string(self):
         """Should handle empty query"""
+        from codex.archive.dal import ArchiveDAL
 
         try:
             dal = ArchiveDAL(connection_string="dummy")
@@ -325,6 +309,7 @@ class TestDalQueryExecution:
 
     def test_dal_query_with_none_params(self):
         """Should handle None query parameters"""
+        from codex.archive.dal import ArchiveDAL
 
         try:
             dal = ArchiveDAL(connection_string="dummy")
@@ -335,6 +320,7 @@ class TestDalQueryExecution:
 
     def test_dal_query_injection_protection(self):
         """Should protect against SQL injection"""
+        from codex.archive.dal import ArchiveDAL
 
         try:
             dal = ArchiveDAL(connection_string="dummy")
@@ -351,6 +337,7 @@ class TestDalTransactionManagement:
 
     def test_dal_commit_without_transaction(self):
         """Should handle commit without active transaction"""
+        from codex.archive.dal import ArchiveDAL
 
         try:
             dal = ArchiveDAL(connection_string="dummy")
@@ -360,6 +347,7 @@ class TestDalTransactionManagement:
 
     def test_dal_rollback_without_transaction(self):
         """Should handle rollback without active transaction"""
+        from codex.archive.dal import ArchiveDAL
 
         try:
             dal = ArchiveDAL(connection_string="dummy")
@@ -369,6 +357,7 @@ class TestDalTransactionManagement:
 
     def test_dal_nested_transactions(self):
         """Should handle nested transactions safely"""
+        from codex.archive.dal import ArchiveDAL
 
         try:
             dal = ArchiveDAL(connection_string="dummy")
@@ -390,6 +379,7 @@ class TestArchiveStandardization:
 
     def test_standardize_empty_data(self):
         """Should handle empty data"""
+        from codex.archive.standardization import Standardizer
 
         try:
             std = Standardizer()
@@ -400,6 +390,7 @@ class TestArchiveStandardization:
 
     def test_standardize_none_data(self):
         """Should reject None data"""
+        from codex.archive.standardization import Standardizer
 
         try:
             std = Standardizer()
@@ -410,6 +401,7 @@ class TestArchiveStandardization:
 
     def test_standardize_missing_required_fields(self):
         """Should handle missing required fields"""
+        from codex.archive.standardization import Standardizer
 
         try:
             std = Standardizer()
@@ -424,6 +416,7 @@ class TestArchiveSimilarity:
 
     def test_similarity_empty_strings(self):
         """Should handle empty string similarity"""
+        from codex.archive.similarity import SimilarityCalculator
 
         try:
             calc = SimilarityCalculator()
@@ -435,6 +428,7 @@ class TestArchiveSimilarity:
 
     def test_similarity_identical_strings(self):
         """Should identify identical strings"""
+        from codex.archive.similarity import SimilarityCalculator
 
         try:
             calc = SimilarityCalculator()
@@ -445,6 +439,7 @@ class TestArchiveSimilarity:
 
     def test_similarity_completely_different_strings(self):
         """Should identify completely different strings"""
+        from codex.archive.similarity import SimilarityCalculator
 
         try:
             calc = SimilarityCalculator()
@@ -465,6 +460,7 @@ class TestRAGChunkingEdgeCases:
 
     def test_chunk_empty_text(self):
         """Should handle empty text"""
+        from codex.rag.pipelines.chunking import TextChunker
 
         try:
             chunker = TextChunker()
@@ -475,6 +471,7 @@ class TestRAGChunkingEdgeCases:
 
     def test_chunk_single_character(self):
         """Should handle single character"""
+        from codex.rag.pipelines.chunking import TextChunker
 
         try:
             chunker = TextChunker()
@@ -485,6 +482,7 @@ class TestRAGChunkingEdgeCases:
 
     def test_chunk_very_long_text(self):
         """Should handle very long text"""
+        from codex.rag.pipelines.chunking import TextChunker
 
         try:
             chunker = TextChunker()
@@ -500,6 +498,7 @@ class TestRAGEmbeddingGeneration:
 
     def test_embedding_empty_text(self):
         """Should handle empty text for embedding"""
+        from codex.rag.pipelines.embedding import EmbeddingGenerator
 
         try:
             gen = EmbeddingGenerator()
@@ -510,6 +509,7 @@ class TestRAGEmbeddingGeneration:
 
     def test_embedding_none_text(self):
         """Should reject None text"""
+        from codex.rag.pipelines.embedding import EmbeddingGenerator
 
         try:
             gen = EmbeddingGenerator()
@@ -520,6 +520,7 @@ class TestRAGEmbeddingGeneration:
 
     def test_embedding_special_characters(self):
         """Should handle special characters in embedding"""
+        from codex.rag.pipelines.embedding import EmbeddingGenerator
 
         try:
             gen = EmbeddingGenerator()

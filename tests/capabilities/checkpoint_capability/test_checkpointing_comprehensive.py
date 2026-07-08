@@ -6,23 +6,25 @@ Tests cover:
 - Best-k retention enforcement
 - Corruption auto-heal
 """
+
 from __future__ import annotations
-pytest.importorskip("hypothesis")
+
 import hashlib
 import json
 import tempfile
 import time
 from pathlib import Path
 from typing import Any
+
+import pytest
+
+pytest.importorskip("hypothesis")
+
+
+pytest.importorskip("hypothesis", reason="hypothesis required for property tests")
+
 from hypothesis import given, settings
 from hypothesis import strategies as st
-
-
-
-
-
-
-
 
 # --- RNG State Tests ---
 

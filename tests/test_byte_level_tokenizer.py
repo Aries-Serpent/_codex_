@@ -8,10 +8,8 @@ Ensures:
 - Deterministic behavior
 - Batch operations work
 """
-import pytest
-from codex_ml.tokenization.base import ByteLevelTokenizer, TokenizerConfig
-        from codex_ml.tokenization.base import tokenize_example
 
+from codex_ml.tokenization.base import ByteLevelTokenizer, TokenizerConfig
 
 
 class TestByteLevelTokenizer:
@@ -223,6 +221,7 @@ class TestLegacyFunction:
 
     def test_legacy_function(self):
         """Legacy function should work for backward compatibility."""
+        from codex_ml.tokenization.base import tokenize_example
 
         ids = tokenize_example("Hello")
         assert isinstance(ids, list)

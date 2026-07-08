@@ -4,6 +4,7 @@ Target: 14 tests for codex_ml integration
 Focus: Coverage gap closure from 20% → 22%+
 """
 
+import pytest
 
 
 class TestIntegrationCore:

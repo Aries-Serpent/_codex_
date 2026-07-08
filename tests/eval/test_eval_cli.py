@@ -3,12 +3,11 @@ Test Eval Cli
 
 Test module for eval cli.
 """
+
 from __future__ import annotations
-import pytest
+
 import subprocess
 import sys
-
-
 
 
 def test_codex_eval_dry_run_succeeds() -> None:

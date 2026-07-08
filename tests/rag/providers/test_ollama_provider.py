@@ -8,13 +8,14 @@ Tests the OllamaEmbeddingProvider class covering:
 - Error handling and edge cases
 - Connection failures and recovery
 """
+
 from unittest.mock import MagicMock, patch
-    from codex.rag.providers.ollama_provider import OllamaEmbeddingProvider
 
-
+import pytest
 
 # Import the provider (may be optional if requests not available)
 try:
+    from codex.rag.providers.ollama_provider import OllamaEmbeddingProvider
 
     OLLAMA_AVAILABLE = True
 except ImportError:

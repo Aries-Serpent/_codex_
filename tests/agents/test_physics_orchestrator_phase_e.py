@@ -1,13 +1,13 @@
 """Phase E tests for agents/physics_orchestrator.py — gaps in less-covered classes."""
+
 from __future__ import annotations
+
 import math
 from unittest.mock import MagicMock
+
+import pytest
+
 from agents.physics_orchestrator import (
-        import json
-
-
-
-
     ActionPath,
     ActionType,
     DecisionState,
@@ -222,6 +222,7 @@ class TestPhysicsOrchestratorPrivateHelpers:
         out = tmp_path / "history.json"
         orch.save_decision_history(out)
         assert out.exists(), "Condition must be true"
+        import json
 
         loaded = json.loads(out.read_text())
         assert loaded[0]["action_taken"] == "test", "Condition must be true"

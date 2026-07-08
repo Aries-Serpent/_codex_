@@ -5,54 +5,22 @@ End-to-end integration tests for CLI workflows, cross-platform compatibility,
 config file integration, error recovery, and performance benchmarks.
 Coverage: Complete CLI workflows and integration scenarios.
 """
+
 import os
 import platform
 import sys
 import time
 from pathlib import Path
+
+import pytest
 from click.testing import CliRunner
-        from codex.cli import cli as main_cli
-            from codex.cli import cli as main_cli
-        from codex.cli import cli as main_cli
-            from codex.cli import cli as main_cli
-            from codex.cli import cli as main_cli
-            from codex.cli import cli as main_cli
-            from codex.cli import cli as main_cli
-            from codex.cli import cli as main_cli
-            from codex.cli import cli as main_cli
-            from codex.cli import cli as main_cli
-            from codex.cli import cli as main_cli
-            from codex.cli import cli as main_cli
-            from codex.cli import cli as main_cli
-            from codex.cli import cli as main_cli
-            from codex.cli import cli as main_cli
-            from codex.cli import cli as main_cli
-            from codex.cli import cli as main_cli
-            from codex.cli import cli as main_cli
-            from codex.cli import cli as main_cli
-            from codex.cli import cli as main_cli
-            from codex.cli import cli as main_cli
-            from codex.cli import cli as main_cli
-            from codex.cli import cli as main_cli
-            from codex.cli import cli as main_cli
-            from codex.cli import cli as main_cli
-            from codex.cli import cli as main_cli
-            from codex.cli import cli as main_cli
-            from codex.cli import cli as main_cli
-            from codex.cli import cli as main_cli
-            from codex.cli import cli as main_cli
-            from codex.cli import cli as main_cli
-            from codex.cli import cli as main_cli
-            from codex.cli import cli as main_cli
-            from codex.cli import cli as main_cli
-
-
 
 
 @pytest.fixture(autouse=True)
 def skip_if_cli_unavailable():
     """Auto-skip tests if CLI not available."""
     try:
+        from codex.cli import cli as main_cli
         if main_cli is None:
             pytest.skip("CLI module not available")
     except ImportError:
@@ -66,6 +34,7 @@ class TestCLIEndToEndWorkflows:
     def setup(self):
         """Skip all tests if CLI not available."""
         try:
+            from codex.cli import cli as main_cli
             if main_cli is None:
                 pytest.skip("CLI module not available")
         except ImportError:
@@ -73,6 +42,7 @@ class TestCLIEndToEndWorkflows:
 
     def test_cli_help_workflow(self):
         """Test basic help workflow."""
+        from codex.cli import cli as main_cli
 
         runner = CliRunner()
         result = runner.invoke(main_cli, ["--help"])
@@ -82,6 +52,7 @@ class TestCLIEndToEndWorkflows:
     def test_cli_subcommand_workflow(self):
         """Test subcommand invocation workflow."""
         try:
+            from codex.cli import cli as main_cli
         except ImportError:
             pytest.skip("CLI module not available")
 
@@ -93,6 +64,7 @@ class TestCLIEndToEndWorkflows:
     def test_cli_option_combination_workflow(self):
         """Test multiple options combined."""
         try:
+            from codex.cli import cli as main_cli
         except ImportError:
             pytest.skip("CLI module not available")
 
@@ -104,6 +76,7 @@ class TestCLIEndToEndWorkflows:
     def test_cli_with_file_input_workflow(self):
         """Test CLI workflow with file input."""
         try:
+            from codex.cli import cli as main_cli
         except ImportError:
             pytest.skip("CLI module not available")
 
@@ -116,6 +89,7 @@ class TestCLIEndToEndWorkflows:
     def test_cli_with_file_output_workflow(self):
         """Test CLI workflow with file output."""
         try:
+            from codex.cli import cli as main_cli
         except ImportError:
             pytest.skip("CLI module not available")
 
@@ -130,6 +104,7 @@ class TestCLIEndToEndWorkflows:
     def test_cli_error_recovery_workflow(self):
         """Test CLI error recovery workflow."""
         try:
+            from codex.cli import cli as main_cli
         except ImportError:
             pytest.skip("CLI module not available")
 
@@ -149,6 +124,7 @@ class TestCrossPlatformCompatibility:
     def test_cli_windows_filename_handling(self):
         """Test that CLI handles Windows-style filenames."""
         try:
+            from codex.cli import cli as main_cli
         except ImportError:
             pytest.skip("CLI module not available")
 
@@ -165,6 +141,7 @@ class TestCrossPlatformCompatibility:
     def test_cli_unix_filename_handling(self):
         """Test that CLI handles Unix-style filenames."""
         try:
+            from codex.cli import cli as main_cli
         except ImportError:
             pytest.skip("CLI module not available")
 
@@ -177,6 +154,7 @@ class TestCrossPlatformCompatibility:
     def test_cli_path_separator_handling(self):
         """Test that CLI handles different path separators."""
         try:
+            from codex.cli import cli as main_cli
         except ImportError:
             pytest.skip("CLI module not available")
 
@@ -191,6 +169,7 @@ class TestCrossPlatformCompatibility:
     def test_cli_environment_variable_case_sensitivity(self):
         """Test environment variable handling across platforms."""
         try:
+            from codex.cli import cli as main_cli
         except ImportError:
             pytest.skip("CLI module not available")
 
@@ -206,6 +185,7 @@ class TestCrossPlatformCompatibility:
     def test_cli_line_ending_handling(self):
         """Test that CLI handles different line endings."""
         try:
+            from codex.cli import cli as main_cli
         except ImportError:
             pytest.skip("CLI module not available")
 
@@ -223,6 +203,7 @@ class TestCLIConfigFileIntegration:
     def test_cli_loads_default_config(self):
         """Test that CLI loads default config if present."""
         try:
+            from codex.cli import cli as main_cli
         except ImportError:
             pytest.skip("CLI module not available")
 
@@ -235,6 +216,7 @@ class TestCLIConfigFileIntegration:
     def test_cli_config_precedence(self):
         """Test config file precedence rules."""
         try:
+            from codex.cli import cli as main_cli
         except ImportError:
             pytest.skip("CLI module not available")
 
@@ -249,6 +231,7 @@ class TestCLIConfigFileIntegration:
     def test_cli_config_override_with_arguments(self):
         """Test that CLI arguments override config settings."""
         try:
+            from codex.cli import cli as main_cli
         except ImportError:
             pytest.skip("CLI module not available")
 
@@ -261,6 +244,7 @@ class TestCLIConfigFileIntegration:
     def test_cli_missing_config_handling(self):
         """Test graceful handling of missing config files."""
         try:
+            from codex.cli import cli as main_cli
         except ImportError:
             pytest.skip("CLI module not available")
 
@@ -274,6 +258,7 @@ class TestCLIConfigFileIntegration:
     def test_cli_config_reload_on_change(self):
         """Test that CLI can detect config changes."""
         try:
+            from codex.cli import cli as main_cli
         except ImportError:
             pytest.skip("CLI module not available")
 
@@ -295,6 +280,7 @@ class TestCLIErrorRecovery:
     def test_cli_graceful_error_on_missing_file(self):
         """Test graceful error handling for missing files."""
         try:
+            from codex.cli import cli as main_cli
         except ImportError:
             pytest.skip("CLI module not available")
 
@@ -307,6 +293,7 @@ class TestCLIErrorRecovery:
     def test_cli_graceful_error_on_permission_denied(self):
         """Test graceful error on permission denied."""
         try:
+            from codex.cli import cli as main_cli
         except ImportError:
             pytest.skip("CLI module not available")
 
@@ -323,6 +310,7 @@ class TestCLIErrorRecovery:
     def test_cli_graceful_error_on_invalid_input(self):
         """Test graceful error on invalid input."""
         try:
+            from codex.cli import cli as main_cli
         except ImportError:
             pytest.skip("CLI module not available")
 
@@ -335,6 +323,7 @@ class TestCLIErrorRecovery:
     def test_cli_recovery_after_partial_failure(self):
         """Test CLI recovery after partial execution failure."""
         try:
+            from codex.cli import cli as main_cli
         except ImportError:
             pytest.skip("CLI module not available")
 
@@ -349,6 +338,7 @@ class TestCLIErrorRecovery:
     def test_cli_handles_keyboard_interrupt(self):
         """Test that CLI can handle keyboard interrupt gracefully."""
         try:
+            from codex.cli import cli as main_cli
         except ImportError:
             pytest.skip("CLI module not available")
 
@@ -364,6 +354,7 @@ class TestCLIPerformance:
     def test_cli_startup_time(self):
         """Test that CLI starts reasonably quickly."""
         try:
+            from codex.cli import cli as main_cli
         except ImportError:
             pytest.skip("CLI module not available")
 
@@ -379,6 +370,7 @@ class TestCLIPerformance:
     def test_cli_help_performance(self):
         """Test that help command is responsive."""
         try:
+            from codex.cli import cli as main_cli
         except ImportError:
             pytest.skip("CLI module not available")
 
@@ -395,6 +387,7 @@ class TestCLIPerformance:
     def test_cli_memory_efficiency(self):
         """Test that CLI doesn't leak memory on multiple invocations."""
         try:
+            from codex.cli import cli as main_cli
         except ImportError:
             pytest.skip("CLI module not available")
 
@@ -407,6 +400,7 @@ class TestCLIPerformance:
     def test_cli_large_input_handling(self):
         """Test CLI performance with large input."""
         try:
+            from codex.cli import cli as main_cli
         except ImportError:
             pytest.skip("CLI module not available")
 
@@ -430,6 +424,7 @@ class TestCLIParallelExecution:
     def test_cli_concurrent_invocations(self):
         """Test that CLI can handle concurrent invocations."""
         try:
+            from codex.cli import cli as main_cli
         except ImportError:
             pytest.skip("CLI module not available")
 
@@ -444,6 +439,7 @@ class TestCLIParallelExecution:
     def test_cli_isolated_filesystem_independence(self):
         """Test that CLI works with isolated filesystems."""
         try:
+            from codex.cli import cli as main_cli
         except ImportError:
             pytest.skip("CLI module not available")
 
@@ -462,6 +458,7 @@ class TestCLIParallelExecution:
     def test_cli_no_state_leakage(self):
         """Test that CLI doesn't leak state between invocations."""
         try:
+            from codex.cli import cli as main_cli
         except ImportError:
             pytest.skip("CLI module not available")
 
@@ -480,6 +477,7 @@ class TestCLIIntegrationWithEnvironment:
     def test_cli_respects_sys_path(self):
         """Test that CLI respects sys.path."""
         try:
+            from codex.cli import cli as main_cli
         except ImportError:
             pytest.skip("CLI module not available")
 
@@ -494,6 +492,7 @@ class TestCLIIntegrationWithEnvironment:
     def test_cli_respects_environment_locale(self):
         """Test that CLI respects environment locale."""
         try:
+            from codex.cli import cli as main_cli
         except ImportError:
             pytest.skip("CLI module not available")
 
@@ -504,6 +503,7 @@ class TestCLIIntegrationWithEnvironment:
     def test_cli_cleans_up_after_execution(self):
         """Test that CLI cleans up temporary resources."""
         try:
+            from codex.cli import cli as main_cli
         except ImportError:
             pytest.skip("CLI module not available")
 
@@ -516,6 +516,7 @@ class TestCLIIntegrationWithEnvironment:
     def test_cli_preserves_environment_state(self):
         """Test that CLI doesn't permanently modify environment."""
         try:
+            from codex.cli import cli as main_cli
         except ImportError:
             pytest.skip("CLI module not available")
 

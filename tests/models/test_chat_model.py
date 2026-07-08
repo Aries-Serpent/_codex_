@@ -3,15 +3,16 @@ Test Chat Model
 
 Test module for chat model.
 """
+
 from __future__ import annotations
+
 import importlib.util
 import sys
 import types
+
+import pytest
+
 from src.models.chat_model import ChatModel, ChatModelConfig
-
-
-
-
 
 
 def _install_stub_modules(monkeypatch: pytest.MonkeyPatch) -> None:

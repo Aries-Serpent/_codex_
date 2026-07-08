@@ -1,4 +1,3 @@
-import pytest
 #         assert ", "Condition must be true"
 #         # Old entry should still be there
 #         assert "old entry" in cl_content, "Content must not be empty"

@@ -3,17 +3,14 @@ Test Checkpoint Peft State
 
 Test module for checkpoint peft state.
 """
+
 from __future__ import annotations
-pytest.importorskip("torch")
-pytest.importorskip("peft")
+
 import importlib.util
 import sys
 from pathlib import Path
-from peft import (
-import torch
 
-
-
+import pytest
 
 src_dir = Path(__file__).resolve().parents[2] / "src"
 sys.path.insert(0, str(src_dir))
@@ -28,13 +25,17 @@ spec.loader.exec_module(checkpointing)
 save_checkpoint = checkpointing.save_checkpoint
 load_checkpoint = checkpointing.load_checkpoint
 
+pytest.importorskip("torch")
+pytest.importorskip("peft")
 
+from peft import (
     LoraConfig,
     TaskType,
     get_peft_model,
     get_peft_model_state_dict,
 )
 
+import torch
 
 # PyTorch 2.x + Python 3.12: torch.FloatStorage PicklingError in torch.save
 _TORCH_312_BUG = sys.version_info >= (3, 12) and tuple(

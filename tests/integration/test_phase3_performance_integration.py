@@ -11,13 +11,13 @@ Target: 30+ performance/load tests
 Part of Phase 3.3: Integration & E2E Test Suite
 Coverage goal: +15-18% (reaching 77-80% total)
 """
+
 from __future__ import annotations
+
 import json
 import time
-        import math
 
-
-
+import pytest
 
 # =============================================================================
 # Training with Large Datasets Performance Tests
@@ -218,6 +218,7 @@ class TestRAGLargeCorpus:
         flat_index_time = num_vectors * 0.0001
 
         # IVF index: O(n log n) time but faster search
+        import math
 
         ivf_index_time = num_vectors * math.log(num_vectors) * 0.00001
 

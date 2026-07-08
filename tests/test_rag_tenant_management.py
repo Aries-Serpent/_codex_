@@ -3,21 +3,19 @@ Tests for RAG Tenant Management
 
 Comprehensive test coverage for manage_tenant_indices function in indexer.py
 """
-np = pytest.importorskip("numpy")
+
 import sys
 import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock
-    from codex.rag.indexer import (
-        import codex.rag.indexer as _indexer
-        import codex.rag._model_utils as _mu
-        import codex.rag.indexer as _indexer
 
+import pytest
 
-
+np = pytest.importorskip("numpy")
 
 # Conditional imports for RAG dependencies - safely handled at test runtime
 try:
+    from codex.rag.indexer import (
         IndexOperation,
         manage_tenant_indices,
     )
@@ -62,6 +60,7 @@ def mock_rag_dependencies(monkeypatch):
     # Patch the module-level `faiss` variable in indexer (already None after
     # the module was imported without faiss installed).
     try:
+        import codex.rag.indexer as _indexer
 
         monkeypatch.setattr(_indexer, "faiss", mock_faiss)
     except ImportError:
@@ -85,6 +84,7 @@ def mock_rag_dependencies(monkeypatch):
     # Also patch safe_load_sentence_transformer to return the mock model
     # directly, bypassing any device/meta-tensor logic.
     try:
+        import codex.rag._model_utils as _mu
 
         monkeypatch.setattr(
             _mu, "safe_load_sentence_transformer", lambda *a, **kw: mock_model_instance
@@ -97,6 +97,7 @@ def mock_rag_dependencies(monkeypatch):
     # FileNotFoundError; load_index checks index.faiss existence before calling
     # faiss.read_index.  Both are patched to use in-memory stubs.
     try:
+        import codex.rag.indexer as _indexer
 
         def _mock_persist_index(
             embeddings,

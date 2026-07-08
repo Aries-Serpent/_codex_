@@ -3,16 +3,17 @@ Test Wandb Shim
 
 Test module for wandb shim.
 """
+
 from __future__ import annotations
+
 import builtins
 import os
 import sys
 import types
+
+import pytest
+
 from codex_ml.utils.logging_wandb import maybe_wandb
-
-
-
-
 
 
 def test_maybe_wandb_raises_when_missing(monkeypatch):

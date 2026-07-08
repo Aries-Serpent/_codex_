@@ -1,4 +1,3 @@
-import pytest
 #         assert "&lt;script&gt;" in content or "&, "Content must not be empty"
 #         assert "<script>alert('xss')</script>" not in content, "Content must not be empty"
 #         assert "<img src=x onerror=alert(1)>" not in content, "Content must not be empty"

@@ -3,13 +3,12 @@ Test Ndjson Writer
 
 Test module for ndjson writer.
 """
-import pytest
+
 import json
 import pathlib
 import tempfile
+
 from codex_ml.metrics.writers import NDJSONMetricsWriter
-
-
 
 
 def test_writer_appends_lines():

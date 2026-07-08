@@ -8,56 +8,13 @@ Tests cover:
 - SqliteDAL concrete implementation
 - Data row classes (ArtifactRow, ItemRow)
 """
+
 import json  # pragma: allowlist secret # pragma: allowlist secret
 import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock, patch
-        from codex.archive.dal import _cursor_row_to_dict
-        from codex.archive.dal import _cursor_row_to_dict
-        from codex.archive.dal import _cursor_row_to_dict
-        from codex.archive.dal import _cursor_row_to_dict
-        from codex.archive.dal import _decode_json_field
-        from codex.archive.dal import _decode_json_field
-        from codex.archive.dal import _decode_json_field
-        from codex.archive.dal import _decode_json_field
-        from codex.archive.dal import _decode_json_field
-        from codex.archive.dal import _decode_json_field
-        from codex.archive.dal import _maybe_bytes
-        from codex.archive.dal import _maybe_bytes
-        from codex.archive.dal import _maybe_bytes
-        from codex.archive.dal import _maybe_bytes
-        from codex.archive.dal import ArtifactRow
-        from codex.archive.dal import ArtifactRow
-        from codex.archive.dal import ItemRow
-        from codex.archive.dal import ItemRow
-        from codex.archive.dal import ArchiveDAL
-            from codex.archive.dal import SqliteDAL
-        from codex.archive.dal import ArchiveDAL
-            from codex.archive.dal import SqliteDAL
-        from codex.archive.dal import ArchiveDAL
-                from codex.archive.dal import PostgresDAL
-        from codex.archive.dal import ArchiveDAL
-                from codex.archive.dal import MariaDbDAL
-        from codex.archive.dal import ArchiveDAL
-        from codex.archive.dal import ArchiveDAL
-            from codex.archive.dal import SqliteDAL
-        from codex.archive.dal import BaseDAL
-        from codex.archive.dal import BaseDAL
-        from codex.archive.dal import BaseDAL
-        from codex.archive.dal import BaseDAL
-        from codex.archive.dal import SqliteDAL
-        from codex.archive.dal import SqliteDAL
-        from codex.archive.dal import SqliteDAL
-        from codex.archive.dal import SqliteDAL
-        from codex.archive.dal import SqliteDAL
-        from codex.archive.dal import SqliteDAL
-        from codex.archive.dal import SqliteDAL
-        from codex.archive.dal import SqliteDAL
-        from codex.archive.dal import SqliteDAL
-        from codex.archive.dal import SqliteDAL
-        from codex.archive.dal import SqliteDAL
 
-
+import pytest
 
  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
@@ -66,6 +23,7 @@ class TestCursorRowToDict:
 
     def test_cursor_row_to_dict_basic(self):
         """Test converting cursor row to dict."""
+        from codex.archive.dal import _cursor_row_to_dict
 
         # Create mock cursor with description
         mock_cursor = MagicMock()
@@ -78,6 +36,7 @@ class TestCursorRowToDict:
 
     def test_cursor_row_to_dict_with_name_attribute(self):
         """Test cursor row conversion with .name attribute."""
+        from codex.archive.dal import _cursor_row_to_dict
 
         # Mock column descriptions with .name attribute
         col1 = MagicMock()
@@ -95,6 +54,7 @@ class TestCursorRowToDict:
 
     def test_cursor_row_to_dict_no_description(self):
         """Test cursor row conversion when description is None."""
+        from codex.archive.dal import _cursor_row_to_dict
 
         mock_cursor = MagicMock()
         mock_cursor.description = None
@@ -107,6 +67,7 @@ class TestCursorRowToDict:
 
     def test_cursor_row_to_dict_missing_col_info(self):
         """Test cursor row conversion with missing column info."""
+        from codex.archive.dal import _cursor_row_to_dict
 
         # Description with object that doesn't have name
         mock_cursor = MagicMock()
@@ -125,6 +86,7 @@ class TestDecodeJsonField:
 
     def test_decode_json_field_valid_json(self):
         """Test decoding valid JSON string."""
+        from codex.archive.dal import _decode_json_field
 
         json_str = '{"key": "value", "num": 42}'
         result = _decode_json_field(json_str)
@@ -133,18 +95,21 @@ class TestDecodeJsonField:
 
     def test_decode_json_field_none(self):
         """Test decoding None returns empty dict."""
+        from codex.archive.dal import _decode_json_field
 
         result = _decode_json_field(None)
         assert result == {}, "Result must not be empty"
 
     def test_decode_json_field_empty_dict(self):
         """Test decoding empty JSON object."""
+        from codex.archive.dal import _decode_json_field
 
         result = _decode_json_field("{}")
         assert result == {}, "Result must not be empty"
 
     def test_decode_json_field_memoryview(self):
         """Test decoding from memoryview."""
+        from codex.archive.dal import _decode_json_field
 
         json_bytes = b'{"key": "value"}'
         mv = memoryview(json_bytes)
@@ -154,6 +119,7 @@ class TestDecodeJsonField:
 
     def test_decode_json_field_bytearray(self):
         """Test decoding from bytearray."""
+        from codex.archive.dal import _decode_json_field
 
         json_bytes = bytearray(b'{"key": "value"}')
         result = _decode_json_field(json_bytes)
@@ -162,6 +128,7 @@ class TestDecodeJsonField:
 
     def test_decode_json_field_invalid_json(self):
         """Test decoding invalid JSON returns empty dict."""
+        from codex.archive.dal import _decode_json_field
 
         # Invalid JSON might be handled gracefully
         try:
@@ -178,12 +145,14 @@ class TestMaybeBytes:
 
     def test_maybe_bytes_none(self):
         """Test _maybe_bytes with None."""
+        from codex.archive.dal import _maybe_bytes
 
         result = _maybe_bytes(None)
         assert result is None, "Result must not be empty"
 
     def test_maybe_bytes_bytes(self):
         """Test _maybe_bytes with bytes."""
+        from codex.archive.dal import _maybe_bytes
 
         data = b"test data"
         result = _maybe_bytes(data)
@@ -191,6 +160,7 @@ class TestMaybeBytes:
 
     def test_maybe_bytes_memoryview(self):
         """Test _maybe_bytes with memoryview."""
+        from codex.archive.dal import _maybe_bytes
 
         data = b"test data"
         mv = memoryview(data)
@@ -199,6 +169,7 @@ class TestMaybeBytes:
 
     def test_maybe_bytes_bytearray(self):
         """Test _maybe_bytes with bytearray."""
+        from codex.archive.dal import _maybe_bytes
 
         data = bytearray(b"test data")
         result = _maybe_bytes(data)
@@ -210,6 +181,7 @@ class TestArtifactRow:
 
     def test_artifact_row_creation(self):
         """Test creating an ArtifactRow."""
+        from codex.archive.dal import ArtifactRow
 
         row = ArtifactRow(
             id="art-001",
@@ -229,6 +201,7 @@ class TestArtifactRow:
 
     def test_artifact_row_none_blob(self):
         """Test ArtifactRow with None blob."""
+        from codex.archive.dal import ArtifactRow
 
         row = ArtifactRow(
             id="art-001",
@@ -250,6 +223,7 @@ class TestItemRow:
 
     def test_item_row_creation(self):
         """Test creating an ItemRow."""
+        from codex.archive.dal import ItemRow
 
         metadata = {"key": "value"}
         row = ItemRow(
@@ -272,6 +246,7 @@ class TestItemRow:
 
     def test_item_row_fields(self):
         """Test ItemRow contains all required fields."""
+        from codex.archive.dal import ItemRow
 
         row = ItemRow(
             id="item-001",
@@ -303,22 +278,27 @@ class TestArchiveDALFactory:
 
     def test_archive_dal_from_env_sqlite_default(self):
         """Test ArchiveDAL.from_env returns SqliteDAL by default."""
+        from codex.archive.dal import ArchiveDAL
 
         with patch.dict("os.environ", {}, clear=True):
             dal = ArchiveDAL.from_env()
+            from codex.archive.dal import SqliteDAL
 
             assert isinstance(dal, SqliteDAL)
 
     def test_archive_dal_from_env_explicit_sqlite(self):
         """Test ArchiveDAL.from_env with explicit sqlite backend."""
+        from codex.archive.dal import ArchiveDAL
 
         with patch.dict("os.environ", {"CODEX_ARCHIVE_BACKEND": "sqlite"}, clear=True):
             dal = ArchiveDAL.from_env()
+            from codex.archive.dal import SqliteDAL
 
             assert isinstance(dal, SqliteDAL)
 
     def test_archive_dal_from_env_postgres(self):
         """Test ArchiveDAL.from_env with postgres backend."""
+        from codex.archive.dal import ArchiveDAL
 
         with patch.dict(
             "os.environ",
@@ -330,6 +310,7 @@ class TestArchiveDALFactory:
         ):
             try:
                 dal = ArchiveDAL.from_env()
+                from codex.archive.dal import PostgresDAL
 
                 assert isinstance(dal, PostgresDAL)
             except RuntimeError as e:
@@ -339,6 +320,7 @@ class TestArchiveDALFactory:
 
     def test_archive_dal_from_env_mariadb(self):
         """Test ArchiveDAL.from_env with mariadb backend."""
+        from codex.archive.dal import ArchiveDAL
 
         with patch.dict(
             "os.environ",
@@ -347,6 +329,7 @@ class TestArchiveDALFactory:
         ):
             try:
                 dal = ArchiveDAL.from_env()
+                from codex.archive.dal import MariaDbDAL
 
                 assert isinstance(dal, MariaDbDAL)
             except RuntimeError as e:
@@ -356,6 +339,7 @@ class TestArchiveDALFactory:
 
     def test_archive_dal_from_env_unsupported_backend(self):
         """Test ArchiveDAL.from_env with unsupported backend."""
+        from codex.archive.dal import ArchiveDAL
 
         with patch.dict("os.environ", {"CODEX_ARCHIVE_BACKEND": "mongodb"}, clear=True):
             with pytest.raises(ValueError, match="Unsupported"):
@@ -363,9 +347,11 @@ class TestArchiveDALFactory:
 
     def test_archive_dal_from_env_case_insensitive(self):
         """Test ArchiveDAL.from_env is case insensitive."""
+        from codex.archive.dal import ArchiveDAL
 
         with patch.dict("os.environ", {"CODEX_ARCHIVE_BACKEND": "SQLITE"}, clear=True):
             dal = ArchiveDAL.from_env()
+            from codex.archive.dal import SqliteDAL
 
             assert isinstance(dal, SqliteDAL)
 
@@ -375,24 +361,28 @@ class TestBaseDALValidateIdentifier:
 
     def test_validate_identifier_allowed(self):
         """Test validate_identifier with allowed identifier."""
+        from codex.archive.dal import BaseDAL
 
         result = BaseDAL.validate_identifier("repo", ["repo", "path", "sha"])
         assert result == "repo", "Result must not be empty"
 
     def test_validate_identifier_not_allowed(self):
         """Test validate_identifier with disallowed identifier."""
+        from codex.archive.dal import BaseDAL
 
         with pytest.raises(ValueError, match="identifier not allowed"):
             BaseDAL.validate_identifier("invalid", ["repo", "path"])
 
     def test_validate_identifier_empty_allowed(self):
         """Test validate_identifier with empty allowed list."""
+        from codex.archive.dal import BaseDAL
 
         with pytest.raises(ValueError):
             BaseDAL.validate_identifier("anything", [])
 
     def test_validate_identifier_case_sensitive(self):
         """Test validate_identifier is case sensitive."""
+        from codex.archive.dal import BaseDAL
 
         with pytest.raises(ValueError):
             BaseDAL.validate_identifier("Repo", ["repo"])
@@ -403,6 +393,7 @@ class TestSqliteDALBasics:
 
     def test_sqlite_dal_from_url(self):
         """Test creating SqliteDAL from URL."""
+        from codex.archive.dal import SqliteDAL
 
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
@@ -414,12 +405,14 @@ class TestSqliteDALBasics:
 
     def test_sqlite_dal_from_url_default(self):
         """Test SqliteDAL.from_url with default path."""
+        from codex.archive.dal import SqliteDAL
 
         dal = SqliteDAL.from_url("sqlite://:memory:")
         assert dal is not None, "dal must be initialized"
 
     def test_sqlite_dal_txn_context_manager(self):
         """Test SqliteDAL transaction context manager."""
+        from codex.archive.dal import SqliteDAL
 
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
@@ -431,6 +424,7 @@ class TestSqliteDALBasics:
 
     def test_sqlite_dal_ensure_schema(self):
         """Test SqliteDAL.ensure_schema creates tables."""
+        from codex.archive.dal import SqliteDAL
 
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
@@ -448,6 +442,7 @@ class TestSqliteDALBasics:
 
     def test_sqlite_dal_summary_empty(self):
         """Test SqliteDAL.summary on empty database."""
+        from codex.archive.dal import SqliteDAL
 
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
@@ -466,6 +461,7 @@ class TestSqliteDALInsertOperations:
 
     def test_sqlite_dal_ensure_artifact(self):
         """Test SqliteDAL.ensure_artifact stores artifact."""
+        from codex.archive.dal import SqliteDAL
 
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
@@ -488,6 +484,7 @@ class TestSqliteDALInsertOperations:
 
     def test_sqlite_dal_insert_item(self):
         """Test SqliteDAL.insert_item stores item."""
+        from codex.archive.dal import SqliteDAL
 
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
@@ -525,6 +522,7 @@ class TestSqliteDALInsertOperations:
 
     def test_sqlite_dal_insert_event(self):
         """Test SqliteDAL.insert_event stores event."""
+        from codex.archive.dal import SqliteDAL
 
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
@@ -574,6 +572,7 @@ class TestSqliteDALFetchOperations:
 
     def test_sqlite_dal_fetch_by_tombstone(self):
         """Test SqliteDAL.fetch_by_tombstone retrieves item and artifact."""
+        from codex.archive.dal import SqliteDAL
 
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
@@ -615,6 +614,7 @@ class TestSqliteDALFetchOperations:
 
     def test_sqlite_dal_fetch_by_tombstone_not_found(self):
         """Test fetch_by_tombstone raises KeyError for missing tombstone."""
+        from codex.archive.dal import SqliteDAL
 
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
@@ -626,6 +626,7 @@ class TestSqliteDALFetchOperations:
 
     def test_sqlite_dal_recent_items(self):
         """Test SqliteDAL.recent_items returns recent items."""
+        from codex.archive.dal import SqliteDAL
 
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"

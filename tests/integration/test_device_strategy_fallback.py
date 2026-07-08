@@ -252,14 +252,13 @@ class TestDeviceStrategyErrorHandling:
 
     def test_device_strategy_bfloat16_check_handles_exceptions(self):
         """Verify bfloat16 check handles errors gracefully."""
-import pytest
-            import torch  # noqa: F401
-        from src.codex_ml.training.device_strategy import _supports_bfloat16
         # Arrange
         try:
+            import torch  # noqa: F401
         except ImportError:
             pytest.skip("PyTorch not available")
 
+        from src.codex_ml.training.device_strategy import _supports_bfloat16
 
         # Mock exception during CUDA check
         with mock.patch("torch.cuda.is_available", side_effect=RuntimeError("CUDA error")):

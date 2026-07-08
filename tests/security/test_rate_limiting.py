@@ -3,9 +3,10 @@ Test Rate Limiting
 
 Test module for rate limiting.
 """
+
+import pytest
+
 from security import SecurityError, rate_limiter
-
-
 
 
 def test_rate_limiter_enforcement() -> None:

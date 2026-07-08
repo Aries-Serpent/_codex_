@@ -3,22 +3,22 @@ Test Model Registry Helpers
 
 Test module for model registry helpers.
 """
+
 from __future__ import annotations
-pytest.importorskip("torch", reason="PyTorch required for tests")
+
 import tempfile
 import types
 from collections.abc import Sequence
-from tests.helpers.optional_dependencies import import_optional_dependency
-from codex_ml.model_registry import LoraRequest, ModelRequest, get_model
-from codex_ml.models.registry import model_registry
-    import codex_ml.model_registry as _mr_mod  # ensure loaded
 
-
-
+import pytest
 
 # Skip entire module if torch is not available or unloadable
+pytest.importorskip("torch", reason="PyTorch required for tests")
+from tests.helpers.optional_dependencies import import_optional_dependency
 
 torch = import_optional_dependency("torch", allow_stub=False)
+from codex_ml.model_registry import LoraRequest, ModelRequest, get_model
+from codex_ml.models.registry import model_registry
 
 
 class _TrackableModule:
@@ -89,6 +89,7 @@ def test_get_model_applies_lora_config(
         return wrapped
 
     # Use object-based patching to avoid string-path resolution issues.
+    import codex_ml.model_registry as _mr_mod  # ensure loaded
 
     monkeypatch.setattr(_mr_mod, "apply_lora_if_available", _fake_apply)
 

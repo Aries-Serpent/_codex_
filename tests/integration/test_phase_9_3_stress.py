@@ -20,7 +20,7 @@ Success Criteria:
 Generated: 2026-06-21T00:00:00Z
 Authority: @mbaetiong (D-mode)
 """
-import pytest
+
 import random
 import threading
 import time
@@ -29,9 +29,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple
 from unittest.mock import patch
+
 from codex.logging.structured_logger import logger
-
-
 
 # Import router components (these would be in the actual codebase)
 # from scripts.ci.phase_9_3_semantic_router import SemanticRouter, TaskSpec
@@ -298,13 +297,13 @@ class Phase93StressTest(unittest.TestCase):
         end_time = time.time()
 
         # Assertions
-        assert isinstance(agents, list)
-        assert len(agents) >= 3
-        assert len(agents) <= 5
-        assert confidence >= 0
-        assert confidence <= 100
-        assert latency > 0
-        assert latency < 100  # Should be <100ms
+        self.assertIsInstance(agents, list)
+        self.assertGreaterEqual(len(agents), 3)
+        self.assertLessEqual(len(agents), 5)
+        self.assertGreaterEqual(confidence, 0)
+        self.assertLessEqual(confidence, 100)
+        self.assertGreater(latency, 0)
+        self.assertLess(latency, 100)  # Should be <100ms
 
     def test_02_parallel_execution(self):
         """Test that selected agents execute in parallel."""
@@ -322,17 +321,17 @@ class Phase93StressTest(unittest.TestCase):
         sequential_time = sum(individual_times)
 
         # Assertions
-        assert len(results) == len(agents)
+        self.assertEqual(len(results), len(agents))
         # Parallel should be faster than sequential
-        assert total_time < sequential_time
+        self.assertLess(total_time, sequential_time)
         # Parallel efficiency: should take roughly the max individual time + overhead
         expected_parallel_time = max(individual_times) * 1.1  # 10% overhead
-        assert total_time < expected_parallel_time * 1.5
+        self.assertLess(total_time, expected_parallel_time * 1.5)
 
     def test_03_100_concurrent_tasks_submission(self):
         """Test routing of 100 concurrent tasks (stress test)."""
         task_descriptions = self.generate_task_descriptions()
-        assert len(task_descriptions) == 100
+        self.assertEqual(len(task_descriptions), 100)
 
         task_times = []
         routing_latencies = []
@@ -356,8 +355,8 @@ class Phase93StressTest(unittest.TestCase):
                     routing_latencies.append(latency)
                     selected_agent_counts.append(len(agents))
 
-                    assert len(agents) >= 3
-                    assert len(agents) <= 5
+                    self.assertGreaterEqual(len(agents), 3)
+                    self.assertLessEqual(len(agents), 5)
 
                 except Exception as e:
                     self.fail(f"Task {task_id} failed: {str(e)}")
@@ -379,10 +378,10 @@ class Phase93StressTest(unittest.TestCase):
         logger.info(f"Mean agents per task: {sum(selected_agent_counts) / len(selected_agent_counts):.1f}")
 
         # Assertions - Success Criteria
-        assert p50 < 20  # <20ms for p50 (relaxed from 10ms for 100 concurrent)
-        assert p95 < 100  # <100ms for p95 (relaxed from 50ms for 100 concurrent)
-        assert p99 < 200  # <200ms for p99
-        assert len(routing_latencies) > 95  # >95% success
+        self.assertLess(p50, 20)  # <20ms for p50 (relaxed from 10ms for 100 concurrent)
+        self.assertLess(p95, 100)  # <100ms for p95 (relaxed from 50ms for 100 concurrent)
+        self.assertLess(p99, 200)  # <200ms for p99
+        self.assertGreater(len(routing_latencies), 95)  # >95% success
 
     def test_04_parallel_execution_with_failures(self):
         """Test parallel execution handles agent failures gracefully."""
@@ -404,10 +403,10 @@ class Phase93StressTest(unittest.TestCase):
             results = self.executor.execute_agents_parallel(agents, task_desc)
 
         # Should still have results from other agents
-        assert len(results) > 0
+        self.assertGreater(len(results), 0)
         # Not all should fail
         successes = sum(1 for r in results.values() if r.get('success', False))
-        assert successes > 0
+        self.assertGreater(successes, 0)
 
     def test_05_routing_accuracy_on_diverse_tasks(self):
         """Test routing accuracy across diverse task types."""
@@ -420,8 +419,8 @@ class Phase93StressTest(unittest.TestCase):
             agents, confidence, latency = self.router.route_task(task_desc)
 
             # Verify agents are valid
-            assert isinstance(agents, list)
-            assert len(agents) >= 3
+            self.assertIsInstance(agents, list)
+            self.assertGreaterEqual(len(agents), 3)
 
             # Track confidence (proxy for accuracy)
             if confidence > 80:
@@ -429,7 +428,7 @@ class Phase93StressTest(unittest.TestCase):
 
         # At least 80% should have high confidence (>80%)
         accuracy_pct = (correct_routing_count / 20) * 100
-        assert accuracy_pct > 70
+        self.assertGreater(accuracy_pct, 70)
         logger.info(f"Routing accuracy (20-task sample): {accuracy_pct:.1f}%")
 
     def test_06_latency_under_load(self):
@@ -462,7 +461,7 @@ class Phase93StressTest(unittest.TestCase):
         # Latency should not degrade significantly with load
         # (p95 at 100 tasks should be <2x p95 at 10 tasks)
         latency_increase_ratio = latencies_by_load[100] / latencies_by_load[10]
-        assert latency_increase_ratio < 3.0  # Allow 3x increase under 10x load
+        self.assertLess(latency_increase_ratio, 3.0)  # Allow 3x increase under 10x load
 
     def test_07_parallel_efficiency_scaling(self):
         """Test parallel execution efficiency with increasing agent count."""
@@ -494,8 +493,8 @@ class Phase93StressTest(unittest.TestCase):
 
         # Parallel execution should be more efficient than sequential
         # (3 agents should have >80% efficiency, 5 agents >60%)
-        assert efficiency_by_count[3] > 70
-        assert efficiency_by_count[5] > 50
+        self.assertGreater(efficiency_by_count[3], 70)
+        self.assertGreater(efficiency_by_count[5], 50)
 
     def test_08_agent_queue_depth_tracking(self):
         """Test agent queue depth remains within bounds."""
@@ -525,7 +524,7 @@ class Phase93StressTest(unittest.TestCase):
         logger.info(f"  Maximum: {max_observed_depth}")
 
         # Average should be reasonable
-        assert avg_queue_depth < max_queue_depth
+        self.assertLess(avg_queue_depth, max_queue_depth)
 
     def test_09_graceful_degradation_on_router_failure(self):
         """Test system handles router failures gracefully."""
@@ -538,7 +537,7 @@ class Phase93StressTest(unittest.TestCase):
             try:
                 # Manual fallback: return default agents
                 default_agents = self.router.agents[:3]
-                assert len(default_agents) == 3
+                self.assertEqual(len(default_agents), 3)
             except Exception as e:
                 self.fail(f"System should handle router failure: {str(e)}")
 
@@ -666,9 +665,9 @@ class Phase93StressTest(unittest.TestCase):
 
         # Assertions for success criteria
         # (Relaxed thresholds for stress test under concurrent load)
-        assert p50_routing < 30  # Relaxed from 10ms
-        assert p95_routing < 100  # Relaxed from 50ms
-        assert completion_rate > 90  # Relaxed from 99%
+        self.assertLess(p50_routing, 30)  # Relaxed from 10ms
+        self.assertLess(p95_routing, 100)  # Relaxed from 50ms
+        self.assertGreater(completion_rate, 90)  # Relaxed from 99%
 
 
 if __name__ == '__main__':

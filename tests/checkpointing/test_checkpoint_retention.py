@@ -3,14 +3,15 @@ Test Checkpoint Retention
 
 Test module for checkpoint retention.
 """
+
 from __future__ import annotations
+
 import json
 from pathlib import Path
+
+import pytest
+
 from codex_ml.utils.checkpoint_retention import RetainSpec, retain
-
-
-
-
 
 
 def _touch_dir(path: Path) -> None:

@@ -3,12 +3,13 @@ Test Overfit Smoke
 
 Test module for overfit smoke.
 """
-np = pytest.importorskip("numpy")
-torch = pytest.importorskip("torch")
+
 import random
 
+import pytest
 
-
+np = pytest.importorskip("numpy")
+torch = pytest.importorskip("torch")
 
 
 def test_overfit_smoke() -> None:

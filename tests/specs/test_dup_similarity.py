@@ -3,18 +3,18 @@ Test Dup Similarity
 
 Test module for dup similarity.
 """
+
 from __future__ import annotations
-    yaml = pytest.importorskip("yaml")
+
 import json
 import subprocess
 import sys
 from pathlib import Path
 from typing import Any
+
+import pytest
+
 from tests.specs._workflow_config_utils import temporary_workflow_config
-
-
-
-
 
 
 def _run(args: list[str]) -> subprocess.CompletedProcess[str]:
@@ -35,6 +35,7 @@ def test_dup_heuristic_switch_fallback(tmp_path):
     runner = Path("scripts/space_traversal/audit_runner.py")
     if not runner.exists():
         pytest.skip("audit runner missing")
+    yaml = pytest.importorskip("yaml")
 
     # S1..S3
     for stage in ("S1", "S2", "S3"):

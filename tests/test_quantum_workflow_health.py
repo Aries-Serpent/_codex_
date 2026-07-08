@@ -7,15 +7,16 @@ These tests use quantum mechanics principles:
 - Entanglement: Correlated behavior
 - Uncertainty: Cannot predict exact outcome
 """
+
 import json
 import math
 import os
 import tempfile
 from dataclasses import asdict
+
+import pytest
+
 from scripts.quantum_workflow_health import (
-
-
-
     ComplexEncoder,
     QuantumWorkflowHealthAnalyzer,
     QuantumWorkflowState,

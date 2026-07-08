@@ -3,15 +3,16 @@ Test Release Dal Pg Mariadb
 
 Test module for release dal pg mariadb.
 """
+
 from __future__ import annotations
+
 import json
 import os
 from pathlib import Path
+
+import pytest
+
 from codex.archive.dal import ArchiveDAL
-
-
-
-
 
 PG = os.getenv("CODEX_ARCHIVE_BACKEND", "") == "postgres"
 MY = os.getenv("CODEX_ARCHIVE_BACKEND", "") == "mariadb"

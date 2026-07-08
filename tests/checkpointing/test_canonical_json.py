@@ -3,14 +3,15 @@ Test Canonical Json
 
 Test module for canonical json.
 """
+
 from __future__ import annotations
+
 import json
 import math
+
+import pytest
+
 from codex_ml.io.atomic import canonical_json_dumps
-
-
-
-
 
 
 @pytest.mark.parametrize("bad", [math.nan, math.inf, -math.inf])

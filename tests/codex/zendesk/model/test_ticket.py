@@ -75,7 +75,6 @@ class TestTicket:
 
     def test_to_api_payload_create(self):
         """Test API payload generation for ticket creation."""
-import pytest
         comment = TicketComment(
             author_id=12345,
             body="Creating a ticket",

@@ -2,7 +2,7 @@
 
 Tests for src/codex_crm/evidence/emit.py to improve CRM module coverage.
 """
-import pytest
+
 import hashlib
 import json
 import platform
@@ -10,9 +10,8 @@ import tempfile
 import time
 from pathlib import Path
 from unittest.mock import patch
+
 from src.codex_crm.evidence.emit import (
-
-
     sha256_file,
     write_evidence,
 )

@@ -1,11 +1,9 @@
 """Check metric curve helpers."""
+
 from __future__ import annotations
-import pytest
+
 import sys
 from pathlib import Path
-    from codex_ml.metrics.curves import append_curve, summarize
-
-
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SRC_DIR = REPO_ROOT / "src"
@@ -14,6 +12,7 @@ if str(SRC_DIR) not in sys.path:
 
 
 def test_append_and_summarize(tmp_path):
+    from codex_ml.metrics.curves import append_curve, summarize
 
     path = tmp_path / "curves"
     path.mkdir()

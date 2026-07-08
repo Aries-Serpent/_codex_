@@ -3,14 +3,12 @@ Test Mlflow Guard
 
 Test module for mlflow guard.
 """
+
 from __future__ import annotations
-import pytest
+
 import importlib
+
 from omegaconf import OmegaConf
-    from common.mlflow_guard import ensure_local_tracking
-
-
-
 
 
 def test_ensure_local_tracking_file_uri(monkeypatch):
@@ -22,6 +20,7 @@ def test_ensure_local_tracking_file_uri(monkeypatch):
     except ImportError:
         return
 
+    from common.mlflow_guard import ensure_local_tracking
 
     ensure_local_tracking(cfg)
     uri = ml.get_tracking_uri()

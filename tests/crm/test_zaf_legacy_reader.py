@@ -3,15 +3,14 @@ Test Zaf Legacy Reader
 
 Test module for zaf legacy reader.
 """
+
 from __future__ import annotations
-import pytest
+
 import json
 import zipfile
 from pathlib import Path
+
 from codex_crm.zaf_legacy import read_zaf, scaffold_template
-
-
-
 
 
 def _create_zaf_zip(tmp_path: Path) -> Path:

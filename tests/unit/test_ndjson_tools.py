@@ -3,14 +3,13 @@ Test Ndjson Tools
 
 Test module for ndjson tools.
 """
+
 from __future__ import annotations
-import pytest
+
 import csv
 from pathlib import Path
+
 from common.ndjson_tools import append_event_ndjson, ndjson_to_csv
-
-
-
 
 
 def test_ndjson_to_csv_roundtrip(tmp_path: Path) -> None:

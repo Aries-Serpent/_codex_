@@ -51,7 +51,6 @@ async def test_saas_client_5_health():
 @pytest.mark.timeout(30)
 async def test_saas_client_5_call():
     """Test SaaS endpoint call."""
-import pytest
     client = SaaSClient("test_key")
     result = await asyncio.wait_for(client.call_endpoint("v1/models", id="test"), timeout=30)
 

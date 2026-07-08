@@ -11,16 +11,13 @@ Test artifacts are stored in `.codex/test_artifacts/archival/` and cleaned up in
 Per repository policy (AGENTS.md), `.codex/` directory contents follow 30-day retention.
 Tests attempt to remove empty directories after cleanup to minimize artifact accumulation.
 """
-import pytest
+
 import json
 import os
 import subprocess
 import sys
 import uuid
 from pathlib import Path
-    from scripts.archival import check_archival_compliance as compliance
-    from scripts.archival import check_archival_compliance as compliance
-
 
 
 # Find repository root
@@ -146,6 +143,7 @@ def test_rename_without_adr_is_flagged():
     """Ensure rename entries require ADR/evidence like deletions."""
 
     # Import inside test to allow monkeypatching the evidence path safely.
+    from scripts.archival import check_archival_compliance as compliance
 
     test_id = str(uuid.uuid4())[:8]
     original_relative = f".codex/test_artifacts/archival/renamed_original_{test_id}.py"
@@ -197,6 +195,7 @@ def test_copy_does_not_require_tombstone():
     A git copy leaves the original file intact and creates a new file at the destination.
     This is not a removal operation and should not trigger archival compliance checks.
     """
+    from scripts.archival import check_archival_compliance as compliance
 
     test_id = str(uuid.uuid4())[:8]
     original_relative = f".codex/test_artifacts/archival/copied_original_{test_id}.py"

@@ -1,15 +1,16 @@
+pytest.importorskip("mlflow")
 """
 Test Training Contracts
 
 Test module for training contracts.
 """
+
 from __future__ import annotations
-pytest.importorskip("mlflow")
+
+import pytest
+
 from codex_ml.interfaces.contracts import TrainingContractError
 from codex_ml.training.loop import train_epoch
-
-
-
 
 
 class _BatchAwareModel:

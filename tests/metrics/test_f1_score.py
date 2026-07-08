@@ -3,11 +3,12 @@ Test F1 Score
 
 Test module for f1 score.
 """
+
 from __future__ import annotations
+
+import pytest
+
 from codex_ml.metrics.metric_implementations import F1Score
-
-
-
 
 
 def test_f1_binary_weighted() -> None:

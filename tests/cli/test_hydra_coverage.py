@@ -8,16 +8,15 @@ Phase: 14.1 - Core Module Testing
 Created: 2026-01-18
 AI Agency Policy Compliance: ✅
 """
+
 from __future__ import annotations
+
 import subprocess
 import sys
 from pathlib import Path
 from typing import TYPE_CHECKING
-            from codex_ml.cli import hydra_main
-            from codex_ml.cli import hydra_entry
 
-
-
+import pytest
 
 if TYPE_CHECKING:
     pass
@@ -67,6 +66,7 @@ class TestModuleImport:
     def test_hydra_main_module_importable(self) -> None:
         """Verify hydra_main module can be imported."""
         try:
+            from codex_ml.cli import hydra_main
 
             assert hydra_main is not None, "hydra_main must be initialized"
         except ImportError as e:
@@ -75,6 +75,7 @@ class TestModuleImport:
     def test_hydra_entry_module_importable(self) -> None:
         """Verify hydra_entry module can be imported."""
         try:
+            from codex_ml.cli import hydra_entry
 
             assert hydra_entry is not None, "hydra_entry must be initialized"
         except ImportError as e:

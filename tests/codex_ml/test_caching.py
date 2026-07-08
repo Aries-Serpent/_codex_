@@ -280,7 +280,6 @@ class TestResponseCache:
 
     def test_contains(self):
         """Test __contains__ operator"""
-import pytest
         cache = ResponseCache()
 
         cache.put("key1", "value1")

@@ -398,11 +398,13 @@ class TestTfidfEmbeddingProvider:
 
     def test_initialization_custom_features(self):
         """Test custom max_features parameter."""
+        pytest.importorskip("sklearn")
         provider = TfidfEmbeddingProvider(max_features=128)
         assert provider.max_features == 128, "max_features is not valid"
 
     def test_encode_fits_on_first_call(self):
         """Test that encode fits the vectorizer on first call."""
+        pytest.importorskip("sklearn")
         provider = TfidfEmbeddingProvider(max_features=64)
         texts = ["hello world", "foo bar baz", "test document here"]
         embeddings = provider.encode(texts)
@@ -413,6 +415,7 @@ class TestTfidfEmbeddingProvider:
 
     def test_encode_reuses_vocabulary_on_second_call(self):
         """Test that subsequent calls reuse the fitted vocabulary."""
+        pytest.importorskip("sklearn")
         provider = TfidfEmbeddingProvider(max_features=64)
         provider.encode(["hello world", "foo bar"])
         assert provider.is_fitted is True, "is_fitted is not valid"
@@ -423,6 +426,7 @@ class TestTfidfEmbeddingProvider:
 
     def test_encode_empty_list_returns_empty_array(self):
         """Test that encoding an empty list returns an empty numpy array."""
+        pytest.importorskip("sklearn")
         provider = TfidfEmbeddingProvider()
         result = provider.encode([])
         assert isinstance(result, np.ndarray)
@@ -430,11 +434,13 @@ class TestTfidfEmbeddingProvider:
 
     def test_get_dimension_returns_max_features(self):
         """Test get_dimension returns the max_features value."""
+        pytest.importorskip("sklearn")
         provider = TfidfEmbeddingProvider(max_features=256)
         assert provider.get_dimension() == 256, "Condition must be true"
 
     def test_encode_returns_dense_array(self):
         """Test that encode returns a dense numpy array."""
+        pytest.importorskip("sklearn")
         provider = TfidfEmbeddingProvider(max_features=32)
         embeddings = provider.encode(["apple orange banana", "dog cat fish"])
         assert isinstance(embeddings, np.ndarray)
@@ -530,6 +536,7 @@ class TestCreateEmbeddingProvider:
 
     def test_auto_skips_ollama_when_server_down(self):
         """Test auto mode skips Ollama when health check fails (covers lines 422-425)."""
+        pytest.importorskip("sklearn")
         import sys
 
         mock_ollama_instance = MagicMock()
@@ -579,6 +586,7 @@ class TestCreateEmbeddingProvider:
 
     def test_auto_uses_gpt4all_when_st_ollama_llamacpp_fail(self):
         """Test auto mode reaches GPT4All branch (lines 441-453)."""
+        pytest.importorskip("sklearn")
         import sys
 
         mock_gpt4all_instance = MagicMock()
@@ -605,6 +613,7 @@ class TestCreateEmbeddingProvider:
 
     def test_auto_fallbacks_to_tfidf_when_st_unavailable(self):
         """Test auto mode falls back to TF-IDF when all other providers fail (lines 455-459)."""
+        pytest.importorskip("sklearn")
         with patch(
             "codex.rag.embeddings.LocalSentenceTransformerProvider",
             side_effect=RuntimeError("no model"),
@@ -633,11 +642,13 @@ class TestCreateEmbeddingProvider:
 
     def test_explicit_tfidf_provider(self):
         """Test explicit 'tfidf' provider type."""
+        pytest.importorskip("sklearn")
         provider = create_embedding_provider(provider_type="tfidf", use_cache=False)
         assert isinstance(provider, TfidfEmbeddingProvider)
 
     def test_tfidf_with_cache_wraps(self, tmp_path):
         """Test 'tfidf' with use_cache=True wraps in CachedEmbeddingProvider."""
+        pytest.importorskip("sklearn")
         provider = create_embedding_provider(
             provider_type="tfidf", use_cache=True, cache_dir=str(tmp_path)
         )
@@ -754,7 +765,6 @@ class TestCachedEmbeddingProviderClearCache:
 
     def test_cache_save_error_is_logged_not_raised(self, tmp_path):
         """Test that a cache save error is swallowed with a warning (lines 295-296)."""
-import pytest
         mock_provider = MagicMock(spec=EmbeddingProvider)
         mock_provider.encode.return_value = np.random.randn(2, 8).astype(np.float32)
 

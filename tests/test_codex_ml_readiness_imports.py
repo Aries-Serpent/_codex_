@@ -3,25 +3,16 @@ Test Codex Ml Readiness Imports
 
 Test module for codex ml readiness imports.
 """
-pytest.importorskip("torch", reason="PyTorch required for tests")
+
 import importlib
 import os
 import sys
 import types
-    from codex_ml.utils import seeding, torch_det
-    from codex_ml.tracking import init_offline, mlflow_wrapper
-    import codex_ml.deployment.package as package
-    import codex_ml.detectors.capability_detectors as capability_detectors
-    import codex_ml.detectors.experiment_summary as exp_summary
-    import codex_ml.safety.moderation as moderation
-    import codex_ml.safety.redaction as redaction
-    import codex_ml.safety.sandbox as sandbox
-    import codex_ml.safety.sanitizers as sanitizers
-    import codex_ml.serving.deployment as serving
 
-
+import pytest
 
 # Skip entire module if torch is not available or unloadable
+pytest.importorskip("torch", reason="PyTorch required for tests")
 
 
 def _assert_import_contract(mod: object, module_name: str) -> None:
@@ -163,6 +154,7 @@ def test_utils_modules_import(module_name):
 
 
 def test_seeding_and_worker_seed(monkeypatch):
+    from codex_ml.utils import seeding, torch_det
 
     seeding.set_reproducible(123, deterministic=True)
     assert os.environ.get("PYTHONHASHSEED") == "123", "Condition must be true"
@@ -188,6 +180,7 @@ def test_analysis_modules(module_name):
 
 
 def test_tracking_helpers(tmp_path):
+    from codex_ml.tracking import init_offline, mlflow_wrapper
 
     uri = init_offline.init_mlflow_offline(local_dir=str(tmp_path / "mlruns"))
     assert uri.startswith("file:"), "Condition must be true"
@@ -274,6 +267,14 @@ def test_tokenization_modules(module_name, monkeypatch):
 
 
 def test_safety_and_deployment_imports():
+    import codex_ml.deployment.package as package
+    import codex_ml.detectors.capability_detectors as capability_detectors
+    import codex_ml.detectors.experiment_summary as exp_summary
+    import codex_ml.safety.moderation as moderation
+    import codex_ml.safety.redaction as redaction
+    import codex_ml.safety.sandbox as sandbox
+    import codex_ml.safety.sanitizers as sanitizers
+    import codex_ml.serving.deployment as serving
 
     settings = moderation.ModerationSettings(enabled=False)
     decision = moderation.ModerationDecision(approved=True, stage="test", provider="offline")

@@ -190,7 +190,6 @@ class TestConstants:
 
     def test_default_d365_output(self):
         """Test default D365 output constant."""
-import pytest
         from codex_crm.cli import DEFAULT_D365_OUTPUT
 
         assert Path(".codex") / "crm" / "d365" == DEFAULT_D365_OUTPUT, "Condition must be true"

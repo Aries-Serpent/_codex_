@@ -3,10 +3,11 @@ Test Tokenization Roundtrip
 
 Test module for tokenization roundtrip.
 """
-    from transformers import AutoTokenizer  # type: ignore
 
+import pytest
 
 try:
+    from transformers import AutoTokenizer  # type: ignore
 except ImportError:
     AutoTokenizer = None  # type: ignore
 

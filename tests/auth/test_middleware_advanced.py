@@ -8,10 +8,6 @@ Tests cover:
 - Error handling
 - Performance
 """
-import pytest
-        import time
-        import time
-        import datetime
 
 
 class TestResponseHeaders:
@@ -297,6 +293,7 @@ class TestTokenHandling:
 
     def test_token_expiration_validation(self):
         """Validate token expiration."""
+        import time
 
         exp = int(time.time()) + 3600
         current = int(time.time())
@@ -304,6 +301,7 @@ class TestTokenHandling:
 
     def test_token_not_before_validation(self):
         """Validate token not-before time."""
+        import time
 
         nbf = int(time.time()) - 60
         current = int(time.time())
@@ -363,6 +361,7 @@ class TestPermissionHandling:
     def test_time_based_permissions(self):
         """Time-based permissions."""
         # Permission valid during certain hours
+        import datetime
 
         current_hour = datetime.datetime.now().hour
         assert 0 <= current_hour <= 23, "0 is not valid"

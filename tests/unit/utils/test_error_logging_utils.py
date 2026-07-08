@@ -97,7 +97,6 @@ def test_log_error_multiline_message(tmp_path):
 
 def test_log_error_context_info(tmp_path):
     """Test log_error includes context information."""
-import pytest
     log_file = tmp_path / "errors.log"
     context = {"user": "test_user", "operation": "test_op"}
     log_error("Error with context", context=context, log_file=str(log_file))

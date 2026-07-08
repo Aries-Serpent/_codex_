@@ -3,12 +3,13 @@ Test Autodiscovery
 
 Test module for autodiscovery.
 """
+
 import json
 import subprocess
 import sys
 from pathlib import Path
 
-
+import pytest
 
 SCRIPT = Path("tools/capability_autodiscover.py")
 OUT = Path("audit_artifacts/capabilities_raw.json")

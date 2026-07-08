@@ -1,19 +1,18 @@
+pytest.importorskip("tensorboard")
 """
 Test Hf Factory Compat
 
 Test module for hf factory compat.
 """
-pytest.importorskip("tensorboard")
+
+import pytest
+
+from codex_ml.utils.hf_pinning import HFModelUnavailableError, load_from_pretrained
+
 pytest.importorskip("datasets")
 pytest.importorskip("torch")
-    pytest.importorskip("transformers")
-from codex_ml.utils.hf_pinning import HFModelUnavailableError, load_from_pretrained
+
 from src.training.datasets import to_hf_dataset
-    from transformers import AutoTokenizer
-
-
-
-
 
 
 @pytest.fixture(autouse=True)
@@ -24,6 +23,8 @@ def _clear_hf_revision_env(monkeypatch):
 
 
 def test_hf_dataset_factory():
+    pytest.importorskip("transformers")
+    from transformers import AutoTokenizer
 
     try:
         tok = load_from_pretrained(AutoTokenizer, "hf-internal-testing/llama-tokenizer")

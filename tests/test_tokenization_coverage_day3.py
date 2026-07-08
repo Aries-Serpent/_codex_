@@ -3,44 +3,10 @@ Tokenization Coverage Tests — Day 3 Advanced Scenarios
 Advanced tokenization scenarios, special token edge cases, batch encoding,
 truncation/padding, vocabulary coverage, and multilingual support.
 """
+
 from pathlib import Path
-            from codex_ml.tokenization import get_tokenizer
-            from codex_ml.tokenization import get_tokenizer
-            from codex_ml.tokenization import get_tokenizer
-            from codex_ml.tokenization import get_tokenizer
-            from codex_ml.tokenization import get_tokenizer
-            from codex_ml.tokenization import get_tokenizer
-            from codex_ml.tokenization import get_tokenizer
-            from codex_ml.tokenization import get_tokenizer
-            from codex_ml.tokenization import get_tokenizer
-            from codex_ml.tokenization import get_tokenizer
-            from codex_ml.tokenization import get_tokenizer
-            from codex_ml.tokenization import get_tokenizer
-            from codex_ml.tokenization import get_tokenizer
-            from codex_ml.tokenization import get_tokenizer
-            from codex_ml.tokenization import get_tokenizer
-            from codex_ml.tokenization import get_tokenizer
-            from codex_ml.tokenization import get_tokenizer
-            from codex_ml.tokenization import get_tokenizer
-            from codex_ml.tokenization import get_tokenizer
-            from codex_ml.tokenization import get_tokenizer
-            from codex_ml.tokenization import get_tokenizer
-            from codex_ml.tokenization import get_tokenizer
-            from codex_ml.tokenization import get_tokenizer
-            from codex_ml.tokenization import get_tokenizer
-            from codex_ml.tokenization import get_tokenizer
-            from codex_ml.tokenization import get_tokenizer
-            from codex_ml.tokenization import get_tokenizer
-            from codex_ml.tokenization import get_tokenizer
-            from codex_ml.tokenization import get_tokenizer
-            from codex_ml.tokenization import get_tokenizer
-            from codex_ml.tokenization import get_tokenizer
-            from codex_ml.tokenization import get_tokenizer
-            from codex_ml.tokenization import get_tokenizer
-            from codex_ml.tokenization import get_cache_dir
-            from codex_ml.tokenization import get_tokenizer
 
-
+import pytest
 
 
 class TestAdvancedTokenizationScenarios:
@@ -49,6 +15,7 @@ class TestAdvancedTokenizationScenarios:
     def test_tokenizer_very_long_text(self):
         """Tokenizer should handle very long text."""
         try:
+            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -66,6 +33,7 @@ class TestAdvancedTokenizationScenarios:
     def test_tokenizer_whitespace_handling(self):
         """Tokenizer should handle various whitespace correctly."""
         try:
+            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -91,6 +59,7 @@ class TestAdvancedTokenizationScenarios:
     def test_tokenizer_special_characters(self):
         """Tokenizer should handle special characters."""
         try:
+            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -116,6 +85,7 @@ class TestAdvancedTokenizationScenarios:
     def test_tokenizer_punctuation_preservation(self):
         """Tokenizer should preserve punctuation information."""
         try:
+            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -136,6 +106,7 @@ class TestAdvancedTokenizationScenarios:
     def test_tokenizer_mixed_case_handling(self):
         """Tokenizer should handle mixed case text."""
         try:
+            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -159,6 +130,7 @@ class TestAdvancedTokenizationScenarios:
     def test_tokenizer_number_handling(self):
         """Tokenizer should handle numeric text."""
         try:
+            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -183,6 +155,7 @@ class TestAdvancedTokenizationScenarios:
     def test_tokenizer_url_handling(self):
         """Tokenizer should handle URLs."""
         try:
+            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -204,6 +177,7 @@ class TestSpecialTokenEdgeCases:
     def test_special_tokens_consistent_ids(self):
         """Special token IDs should be consistent."""
         try:
+            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -224,6 +198,7 @@ class TestSpecialTokenEdgeCases:
     def test_special_tokens_non_overlapping(self):
         """Special token IDs should not overlap."""
         try:
+            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -245,6 +220,7 @@ class TestSpecialTokenEdgeCases:
     def test_special_tokens_in_batch_encode(self):
         """Special tokens should be handled in batch encoding."""
         try:
+            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -263,6 +239,7 @@ class TestSpecialTokenEdgeCases:
     def test_special_tokens_padding_marker(self):
         """Pad token should be distinct from regular tokens."""
         try:
+            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -281,6 +258,7 @@ class TestSpecialTokenEdgeCases:
     def test_special_tokens_unk_fallback(self):
         """Unknown token should be available as fallback."""
         try:
+            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -302,6 +280,7 @@ class TestBatchEncodingEdgeCases:
     def test_batch_encode_single_item(self):
         """Batch encode should handle single item."""
         try:
+            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -319,6 +298,7 @@ class TestBatchEncodingEdgeCases:
     def test_batch_encode_large_batch(self):
         """Batch encode should handle large batches."""
         try:
+            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -337,6 +317,7 @@ class TestBatchEncodingEdgeCases:
     def test_batch_encode_mixed_lengths(self):
         """Batch encode should handle mixed length texts."""
         try:
+            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -355,6 +336,7 @@ class TestBatchEncodingEdgeCases:
     def test_batch_encode_empty_strings(self):
         """Batch encode should handle empty strings."""
         try:
+            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -373,6 +355,7 @@ class TestBatchEncodingEdgeCases:
     def test_batch_encode_return_tensors(self):
         """Batch encode should support tensor returns."""
         try:
+            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -391,6 +374,7 @@ class TestBatchEncodingEdgeCases:
     def test_batch_encode_attention_mask(self):
         """Batch encode should produce attention masks."""
         try:
+            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -412,6 +396,7 @@ class TestTruncationPaddingEdgeCases:
     def test_truncation_exact_max_length(self):
         """Text exactly at max_length should not be truncated."""
         try:
+            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -434,6 +419,7 @@ class TestTruncationPaddingEdgeCases:
     def test_truncation_removes_tokens(self):
         """Truncation should remove tokens beyond limit."""
         try:
+            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -452,6 +438,7 @@ class TestTruncationPaddingEdgeCases:
     def test_padding_exact_max_length(self):
         """Text padded should reach max_length."""
         try:
+            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -470,6 +457,7 @@ class TestTruncationPaddingEdgeCases:
     def test_truncation_strategy_longest_first(self):
         """Truncation strategy should affect output."""
         try:
+            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -493,6 +481,7 @@ class TestTruncationPaddingEdgeCases:
     def test_padding_strategy_other_sequences(self):
         """Padding strategy for batch should work."""
         try:
+            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -517,6 +506,7 @@ class TestVocabularyCoverage:
     def test_vocab_size_positive(self):
         """Vocabulary size should be positive."""
         try:
+            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -533,6 +523,7 @@ class TestVocabularyCoverage:
     def test_vocab_consistent_across_calls(self):
         """Vocabulary should be consistent across calls."""
         try:
+            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -551,6 +542,7 @@ class TestVocabularyCoverage:
     def test_token_frequency_distribution(self):
         """Common tokens should appear in vocabulary."""
         try:
+            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -570,6 +562,7 @@ class TestVocabularyCoverage:
     def test_rare_token_handling(self):
         """Rare tokens should map to unknown token."""
         try:
+            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -592,6 +585,7 @@ class TestMultilingualSupport:
     def test_tokenizer_chinese_characters(self):
         """Tokenizer should handle Chinese."""
         try:
+            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -609,6 +603,7 @@ class TestMultilingualSupport:
     def test_tokenizer_arabic_script(self):
         """Tokenizer should handle Arabic."""
         try:
+            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -626,6 +621,7 @@ class TestMultilingualSupport:
     def test_tokenizer_mixed_language(self):
         """Tokenizer should handle mixed language text."""
         try:
+            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -643,6 +639,7 @@ class TestMultilingualSupport:
     def test_tokenizer_emoji_handling(self):
         """Tokenizer should handle emoji."""
         try:
+            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -660,6 +657,7 @@ class TestMultilingualSupport:
     def test_tokenizer_right_to_left_text(self):
         """Tokenizer should handle right-to-left text."""
         try:
+            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -677,6 +675,7 @@ class TestMultilingualSupport:
     def test_tokenizer_accent_marks(self):
         """Tokenizer should handle accented characters."""
         try:
+            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -698,6 +697,7 @@ class TestTokenizerCaching:
     def test_tokenizer_cache_directory_exists(self):
         """Tokenizer cache should use configured directory."""
         try:
+            from codex_ml.tokenization import get_cache_dir
         except (ImportError, AttributeError):
             pytest.skip("Cache utilities not available")
 
@@ -713,6 +713,7 @@ class TestTokenizerCaching:
     def test_tokenizer_repeated_encoding_consistency(self):
         """Repeated encoding should be consistent."""
         try:
+            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 

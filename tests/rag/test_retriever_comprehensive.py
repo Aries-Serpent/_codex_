@@ -538,7 +538,6 @@ class TestRetrieverStats:
 
     def test_get_stats_no_index(self, temp_index_dir, mock_sentence_transformer):
         """Test getting stats when no index is loaded."""
-import pytest
         with (
             patch("codex.rag.indexer.load_index", side_effect=FileNotFoundError),
             patch(

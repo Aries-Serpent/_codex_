@@ -3,12 +3,11 @@ Test Codex Data
 
 Test module for codex data.
 """
-import pytest
+
 import json
 from pathlib import Path
+
 from codex_ml.codex_data import DataConfig, load_dataset
-
-
 
 
 def test_load_dataset_deterministic(tmp_path: Path) -> None:

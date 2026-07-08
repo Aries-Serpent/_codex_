@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import pytest
-pytest.importorskip("typer")
 
+pytest.importorskip("typer", reason="typer required for browse command tests")
 
 from unittest.mock import MagicMock, patch
 
@@ -73,7 +73,6 @@ class TestBrowseCommand:
 
     def test_browse_dist_installs_selected(self, tmp_path):
         """Browse with --dist installs selected archive."""
-import pytest
         arc = tmp_path / "doc-retriever-core-1.0.0.7z"
         arc.write_bytes(b"fake")
 

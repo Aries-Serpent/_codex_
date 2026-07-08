@@ -3,15 +3,9 @@ Integration tests for advanced CLI commands.
 
 Tests profile, analyze, and report generation commands.
 """
-import pytest
+
 import tempfile
 from pathlib import Path
-        from codex import cli
-        from codex.cli import main
-        import time
-        from codex import cli
-            import json
-
 
 
 class TestCLIProfile:
@@ -19,11 +13,13 @@ class TestCLIProfile:
 
     def test_cli_module_import(self):
         """Test CLI module can be imported."""
+        from codex import cli
 
         assert cli is not None, "cli must be initialized"
 
     def test_cli_main_import(self):
         """Test CLI main can be imported."""
+        from codex.cli import main
 
         assert main is not None, "main must be initialized"
 
@@ -60,6 +56,7 @@ class TestCLIProfile:
 
     def test_profile_timing_measurement(self):
         """Test timing measurement in profiling."""
+        import time
 
         start = time.time()
         time.sleep(0.01)  # Simulate operation
@@ -86,6 +83,7 @@ class TestCLIAnalyze:
 
     def test_analyze_command_import(self):
         """Test analyze command can be imported."""
+        from codex import cli
 
         # CLI should exist
         assert hasattr(cli, "__name__")
@@ -199,6 +197,7 @@ class TestCLIReport:
         with tempfile.TemporaryDirectory() as tmpdir:
             report_file = Path(tmpdir) / "report.json"
 
+            import json
 
             report = {"title": "Test Report", "data": [1, 2, 3]}
 

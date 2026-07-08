@@ -1,4 +1,3 @@
-import pytest
 #         assert (, "Condition must be true"
 # Integration tests for run_hf_trainer in src/training/engine_hf_trainer.py.
 #     """prepare_dataset should handle tokenizers that don't return attention_mask."""
@@ -131,7 +130,6 @@ def test_prepare_dataset_missing_attention_mask(monkeypatch, tmp_path):
 
     class _MinimalTok:
         """Tokenizer that only returns input_ids (no attention_mask)."""
-import pytest
 
         model_max_length = 512
 

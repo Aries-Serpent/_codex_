@@ -2,13 +2,12 @@
 Comprehensive tests for Archival Bundling
 Tests archival processes, bundle creation, and manifest validation
 """
+
 import hashlib
 import json
 from pathlib import Path
-        from scripts.space_traversal.detectors import archival_bundling
-        from scripts.space_traversal.detectors.archival_bundling import detect
 
-
+import pytest
 
 
 class TestArchivalBundlingDetector:
@@ -16,11 +15,13 @@ class TestArchivalBundlingDetector:
 
     def test_detector_import(self):
         """Test that archival detector can be imported"""
+        from scripts.space_traversal.detectors import archival_bundling
 
         assert hasattr(archival_bundling, "detect")
 
     def test_detector_contract(self):
         """Test detector follows the contract"""
+        from scripts.space_traversal.detectors.archival_bundling import detect
 
         result = detect({"files": []})
 

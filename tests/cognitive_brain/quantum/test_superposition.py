@@ -4,17 +4,18 @@ Tests for SuperpositionEngine and related classes.
 Tests parallel decision evaluation, wave function collapse, coherence
 monitoring, and performance characteristics.
 """
+
 import sqlite3
 import tempfile
 import time
 from pathlib import Path
+
+import pytest
+
 from cognitive_brain.models.quantum_metrics import QuantumMetricRepository
 from cognitive_brain.quantum.coherence_monitor import CoherenceMonitor
 from cognitive_brain.quantum.config import QuantumConfig
 from cognitive_brain.quantum.superposition import (
-
-
-
     Decision,
     SuperpositionEngine,
     SuperpositionState,

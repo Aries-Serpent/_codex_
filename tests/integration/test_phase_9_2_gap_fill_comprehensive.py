@@ -10,21 +10,20 @@ Tests to close coverage gaps in:
 Authority: unified-coverage-agent (D-tier autonomous)
 Generated: 2026-07-01
 """
+
 import sys
 import time
 from pathlib import Path
 from unittest.mock import patch
-from phase_9_2_cascade_orchestrator import (
-from phase_9_2_pattern_router import PatternMatcher
-    from orchestration.adapters.cascade_to_router_adapter import (
 
-
+import pytest
 
 # Add scripts/ci to path
 repo_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(repo_root / "scripts" / "ci"))
 sys.path.insert(0, str(repo_root / "src"))
 
+from phase_9_2_cascade_orchestrator import (
     PATTERN_CATALOG,
     CascadeOrchestrator,
     FailureLog,
@@ -37,8 +36,10 @@ sys.path.insert(0, str(repo_root / "src"))
     get_confidence_level,
     run_command,
 )
+from phase_9_2_pattern_router import PatternMatcher
 
 try:
+    from orchestration.adapters.cascade_to_router_adapter import (
         CascadeContext,
         CascadeToRouterAdapter,
         ExecutionStrategy,

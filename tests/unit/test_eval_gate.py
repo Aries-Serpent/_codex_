@@ -22,11 +22,10 @@ Tests cover:
   19. Boundary: improvement exactly equal to min_improvement_pct passes
   20. metrics dict stored in result is a shallow copy of the input
 """
+
 from __future__ import annotations
-import pytest
+
 from codex_ml.continuous_learning.eval_gate import EvalGate, EvalGateResult
-
-
 
 # ---------------------------------------------------------------------------
 # Test 1 — EvalGateResult construction and to_dict

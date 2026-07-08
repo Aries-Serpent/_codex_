@@ -1,21 +1,21 @@
 """Smoke test for codex.cli_knowledge Typer app."""
+
 from __future__ import annotations
+
 import json
 from pathlib import Path
-    import typer
-    from typer.testing import CliRunner
-    from codex import cli_knowledge
-    from codex.archive.util import zstd_decompress
 
-
-
+import pytest
 
 # Skip if typer is not properly installed
 try:
+    import typer
 
     if not hasattr(typer, "Typer"):
         pytest.skip("typer package not properly installed", allow_module_level=True)
+    from typer.testing import CliRunner
 
+    from codex import cli_knowledge
 
     TYPER_AVAILABLE = True
 except (ImportError, AttributeError):
@@ -103,6 +103,7 @@ def test_sync_mermaid_map_generates_searchable_datablobs(tmp_path: Path):
     ), f"coherence_score {qm['coherence_score']} != expected {round(expected_score, 4)}"
 
     # Validate compression roundtrip
+    from codex.archive.util import zstd_decompress
 
     decompressed = zstd_decompress(compressed_path.read_bytes())
     assert json.loads(decompressed) == blob, "Condition must be true"

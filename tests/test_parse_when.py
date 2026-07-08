@@ -3,11 +3,10 @@ Test Parse When
 
 Test module for parse when.
 """
-import pytest
+
 from datetime import timezone
+
 from codex.logging.query_logs import parse_when
-
-
 
 
 def test_parse_when_z():

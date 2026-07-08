@@ -3,41 +3,14 @@ Comprehensive test suite for codex_ml.eval and codex_ml.modeling modules
 Phase 7A Wave 2 Lane 2.2: ML Eval & Modeling Testing
 Test Categories: Unit (70), Integration (40), Edge Cases (15), Error Handling (15)
 """
+
 from __future__ import annotations
-pytest.importorskip("torch")
-pytest.importorskip("numpy")
+
 import numpy as np
+import pytest
+
 import torch
 import torch.nn as nn
-        from codex_ml.eval.fallback import EvaluationDependencyError
-        from codex_ml.metrics.metrics_deprecated import MetricError
-        from codex_ml.eval.run_eval import EvaluationError
-        from codex_ml.metrics.metrics_deprecated import perplexity
-        from codex_ml.eval.eval_runner import perplexity
-        from codex_ml.metrics.metrics_deprecated import MetricError, perplexity
-        from codex_ml.eval.eval_runner import perplexity
-        from codex_ml.eval.evaluator import SyntheticSummary
-        from codex_ml.eval.evaluator import _encode_tokens
-        from codex_ml.eval.reasoning_metrics import ReasoningMetrics
-        from codex_ml.eval.reasoning_metrics import calculate_win_rate
-        from codex_ml.eval.reasoning_metrics import calculate_win_rate
-        from codex_ml.eval.reasoning_metrics import calculate_win_rate
-        from codex_ml.eval.reasoning_metrics import calculate_win_rate
-            from codex_ml.modeling import factory
-            from codex_ml.modeling.codex_model import CodexModel
-        from codex_ml.eval.run_eval import _load_texts
-        from codex_ml.eval.run_eval import _summarise_log
-        from codex_ml.metrics.metrics_deprecated import perplexity
-        from codex_ml.eval.reasoning_metrics import calculate_win_rate
-        from codex_ml.metrics.metrics_deprecated import perplexity
-        from codex_ml.eval.reasoning_metrics import calculate_win_rate
-        from codex_ml.metrics.metrics_deprecated import _materialise
-        from codex_ml.metrics.metrics_deprecated import _ensure_equal_length
-        from codex_ml.metrics.metrics_deprecated import _ensure_equal_length
-
-
-
-
 
 # ============================================================================
 # FIXTURES
@@ -85,16 +58,19 @@ class TestEvaluationErrors:
     def test_dependency_error_is_importerror(self):
         """Test EvaluationDependencyError is an ImportError."""
         # Import and verify it exists
+        from codex_ml.eval.fallback import EvaluationDependencyError
 
         assert issubclass(EvaluationDependencyError, ImportError)
 
     def test_metric_error_is_valueerror(self):
         """Test MetricError is a ValueError."""
+        from codex_ml.metrics.metrics_deprecated import MetricError
 
         assert issubclass(MetricError, ValueError)
 
     def test_evaluation_error_is_runtime_error(self):
         """Test EvaluationError is a RuntimeError."""
+        from codex_ml.eval.run_eval import EvaluationError
 
         assert issubclass(EvaluationError, RuntimeError)
 
@@ -109,6 +85,7 @@ class TestPerplexityCalculation:
 
     def test_perplexity_perfect_predictions(self):
         """Test perplexity with perfect predictions."""
+        from codex_ml.metrics.metrics_deprecated import perplexity
 
         # Perfect predictions: log probability = 0
         predictions = np.array([[1.0, 0.0, 0.0]])  # One-hot for class 0
@@ -119,6 +96,7 @@ class TestPerplexityCalculation:
 
     def test_perplexity_uniform_predictions(self):
         """Test perplexity with uniform predictions."""
+        from codex_ml.eval.eval_runner import perplexity
 
         # Uniform predictions: log probability = log(0.1)
         predictions = np.ones((10, 10)) / 10.0
@@ -129,6 +107,7 @@ class TestPerplexityCalculation:
 
     def test_perplexity_invalid_shape(self):
         """Test perplexity with mismatched shapes."""
+        from codex_ml.metrics.metrics_deprecated import MetricError, perplexity
 
         predictions = np.random.rand(10, 5)
         targets = np.zeros(8)  # Different length
@@ -138,6 +117,7 @@ class TestPerplexityCalculation:
 
     def test_perplexity_batch_processing(self):
         """Test perplexity with batch of data."""
+        from codex_ml.eval.eval_runner import perplexity
 
         batch_size = 32
         num_classes = 1000
@@ -158,12 +138,14 @@ class TestSyntheticDataHandling:
 
     def test_synthetic_summary_initialization(self):
         """Test SyntheticSummary initializes."""
+        from codex_ml.eval.evaluator import SyntheticSummary
 
         summary = SyntheticSummary()
         assert summary is not None, "summary must be initialized"
 
     def test_encode_tokens_function(self):
         """Test _encode_tokens function."""
+        from codex_ml.eval.evaluator import _encode_tokens
 
         tokens = ["hello", "world", "test"]
         encoded = _encode_tokens(tokens)
@@ -180,12 +162,14 @@ class TestReasoningMetrics:
 
     def test_reasoning_metrics_initialization(self):
         """Test ReasoningMetrics initializes."""
+        from codex_ml.eval.reasoning_metrics import ReasoningMetrics
 
         metrics = ReasoningMetrics()
         assert metrics is not None, "metrics must be initialized"
 
     def test_calculate_win_rate_50_percent(self):
         """Test calculate_win_rate with 50% wins."""
+        from codex_ml.eval.reasoning_metrics import calculate_win_rate
 
         outcomes = ["win", "loss", "win", "loss"]
         win_rate = calculate_win_rate(outcomes)
@@ -193,6 +177,7 @@ class TestReasoningMetrics:
 
     def test_calculate_win_rate_100_percent(self):
         """Test calculate_win_rate with 100% wins."""
+        from codex_ml.eval.reasoning_metrics import calculate_win_rate
 
         outcomes = ["win", "win", "win"]
         win_rate = calculate_win_rate(outcomes)
@@ -200,6 +185,7 @@ class TestReasoningMetrics:
 
     def test_calculate_win_rate_0_percent(self):
         """Test calculate_win_rate with 0% wins."""
+        from codex_ml.eval.reasoning_metrics import calculate_win_rate
 
         outcomes = ["loss", "loss", "loss"]
         win_rate = calculate_win_rate(outcomes)
@@ -207,6 +193,7 @@ class TestReasoningMetrics:
 
     def test_calculate_win_rate_empty(self):
         """Test calculate_win_rate with empty outcomes."""
+        from codex_ml.eval.reasoning_metrics import calculate_win_rate
 
         with pytest.raises((ValueError, ZeroDivisionError)):
             calculate_win_rate([])
@@ -261,6 +248,7 @@ class TestModelFactory:
     def test_factory_import(self):
         """Test model factory can be imported."""
         try:
+            from codex_ml.modeling import factory
 
             assert factory is not None, "factory must be initialized"
         except ImportError:
@@ -269,6 +257,7 @@ class TestModelFactory:
     def test_codex_model_import(self):
         """Test CodexModel can be imported."""
         try:
+            from codex_ml.modeling.codex_model import CodexModel
 
             assert CodexModel is not None, "CodexModel must be initialized"
         except ImportError:
@@ -342,6 +331,7 @@ class TestTextProcessing:
 
     def test_load_texts_from_file(self, tmp_path):
         """Test loading texts from file."""
+        from codex_ml.eval.run_eval import _load_texts
 
         # Create test file
         text_path = tmp_path / "texts.txt"
@@ -353,6 +343,7 @@ class TestTextProcessing:
 
     def test_summarise_log_function(self, tmp_path):
         """Test log summarization function."""
+        from codex_ml.eval.run_eval import _summarise_log
 
         # Create test log file
         log_path = tmp_path / "eval.log"
@@ -376,6 +367,7 @@ class TestEvalEdgeCases:
 
     def test_perplexity_single_sample(self):
         """Test perplexity with single sample."""
+        from codex_ml.metrics.metrics_deprecated import perplexity
 
         predictions = np.array([[0.1, 0.9]])
         targets = np.array([1])
@@ -385,6 +377,7 @@ class TestEvalEdgeCases:
 
     def test_win_rate_ties(self):
         """Test win rate calculation with ties."""
+        from codex_ml.eval.reasoning_metrics import calculate_win_rate
 
         outcomes = ["tie", "tie", "tie"]
         try:
@@ -419,6 +412,7 @@ class TestEvalErrorHandling:
 
     def test_perplexity_invalid_probabilities(self):
         """Test perplexity with invalid probability values."""
+        from codex_ml.metrics.metrics_deprecated import perplexity
 
         # Probabilities should sum to 1 but don't
         predictions = np.array([[10.0, 20.0]])
@@ -432,6 +426,7 @@ class TestEvalErrorHandling:
 
     def test_reasoning_metrics_invalid_outcome(self):
         """Test reasoning metrics with invalid outcome."""
+        from codex_ml.eval.reasoning_metrics import calculate_win_rate
 
         outcomes = ["win", "invalid_outcome"]
         try:
@@ -450,6 +445,7 @@ class TestEvalUtils:
 
     def test_materialise_sequence(self):
         """Test _materialise function."""
+        from codex_ml.metrics.metrics_deprecated import _materialise
 
         items = [1, 2, 3, 4, 5]
         result = _materialise(iter(items))
@@ -457,6 +453,7 @@ class TestEvalUtils:
 
     def test_ensure_equal_length_match(self):
         """Test _ensure_equal_length with matching lengths."""
+        from codex_ml.metrics.metrics_deprecated import _ensure_equal_length
 
         a = [1, 2, 3]
         b = [4, 5, 6]
@@ -465,6 +462,7 @@ class TestEvalUtils:
 
     def test_ensure_equal_length_mismatch(self):
         """Test _ensure_equal_length with mismatched lengths."""
+        from codex_ml.metrics.metrics_deprecated import _ensure_equal_length
 
         a = [1, 2, 3]
         b = [4, 5]

@@ -4,24 +4,25 @@ Integration tests for multi-tenant isolation.
 Verifies that data and resources from different tenants are properly isolated,
 with no cross-tenant access or data leakage.
 """
+
 from __future__ import annotations
+
+import json
+
+import pytest
+
 pytest.importorskip("fastapi")
 pytest.importorskip("pydantic_settings")
-import json
+
 from fastapi import FastAPI, Request
 from fastapi.testclient import (
-from services.msp_gateway.middleware import RateLimitMiddleware, TenantContextMiddleware
-from services.msp_gateway.middleware import tenant_context as tc_module
-from services.msp_gateway.middleware.tenant_context import TenantRegistry
-
-
-
-
-
     TestClient,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 )
 
 # pragma: allowlist secret # pragma: allowlist secret
+from services.msp_gateway.middleware import RateLimitMiddleware, TenantContextMiddleware
+from services.msp_gateway.middleware import tenant_context as tc_module
+from services.msp_gateway.middleware.tenant_context import TenantRegistry
 
 
 def test_multi_tenant_isolation_data_separation(

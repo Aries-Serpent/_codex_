@@ -5,15 +5,16 @@ Comprehensive test suite for CLI argument parsing, validation, help text,
 exit codes, error handling, environment variables, and config file loading.
 Coverage: 95%+ of CLI interface surface area.
 """
+
 import os
 from pathlib import Path
+
+import pytest
 from click.testing import CliRunner
-    from codex.cli import cli as main_cli
-
-
 
 # Import CLI modules
 try:
+    from codex.cli import cli as main_cli
 except ImportError:
     main_cli = None
 

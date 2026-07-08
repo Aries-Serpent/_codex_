@@ -1,4 +1,3 @@
-import pytest
 #         assert output.startswith(", "Condition must be true"
 # from __future__ import annotations
 #         output = format_markdown(_make_report())

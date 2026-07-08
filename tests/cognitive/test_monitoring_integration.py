@@ -8,13 +8,14 @@ Tests the complete Cognitive Brain decision loop:
   4. SelfHealingValidator validates outcomes and adjusts confidence
   5. Confidence history feeds back into subsequent decisions
 """
+
 from __future__ import annotations
+
 import importlib.util
 import json
 from pathlib import Path
 
-
-
+import pytest
 
 # ---------------------------------------------------------------------------
 # Module loading

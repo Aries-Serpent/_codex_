@@ -3,18 +3,15 @@ Configuration loading and validation tests.
 
 Tests basic configuration patterns without heavy dependencies.
 """
+
 from __future__ import annotations
-        yaml = pytest.importorskip("yaml")
+
 import json
 import os
 import tempfile
 from pathlib import Path
-        from pathlib import Path
-        import shutil
-        import shutil
 
-
-
+import pytest
 
 
 class TestConfigFileOperations:
@@ -22,6 +19,7 @@ class TestConfigFileOperations:
 
     def test_load_yaml_config(self):
         """Test loading YAML configuration file."""
+        yaml = pytest.importorskip("yaml")
 
         # Use context manager for safe tempfile cleanup
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -295,6 +293,7 @@ class TestConfigPaths:
 
     def test_config_path_resolution(self):
         """Test resolving configuration file paths."""
+        from pathlib import Path
 
         # Typical config paths
         paths = [
@@ -317,6 +316,7 @@ class TestConfigPaths:
         assert config_dir.is_dir(), "Condition must be true"
 
         # Cleanup
+        import shutil
 
         shutil.rmtree(test_dir)
 
@@ -333,5 +333,6 @@ class TestConfigPaths:
         assert not missing_file.exists(), "Condition must be true"
 
         # Cleanup
+        import shutil
 
         shutil.rmtree(test_dir)

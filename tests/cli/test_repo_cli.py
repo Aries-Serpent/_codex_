@@ -3,12 +3,13 @@ Test Repo Cli
 
 Test module for repo cli.
 """
+
 from __future__ import annotations
+
+import pytest
 from click.testing import CliRunner
+
 from codex import cli as repo_cli
-
-
-
 
 
 def _runner() -> CliRunner:

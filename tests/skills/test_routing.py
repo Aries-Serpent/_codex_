@@ -1,11 +1,12 @@
 """Tests for StratifiedRouter."""
+
 from __future__ import annotations
+
+import pytest
+
 from codex.skills.models import BudgetConfig, DocMeta, PolicyConfig, SkillManifest
 from codex.skills.registry import SkillRegistry, reset_registry
 from codex.skills.routing import StratifiedRouter
-
-
-
 
 
 @pytest.fixture(autouse=True)

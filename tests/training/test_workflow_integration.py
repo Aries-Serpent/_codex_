@@ -7,12 +7,12 @@ data loading, training, evaluation, and checkpointing.
 Phase 56: Integration Tests
 Coverage Target: Training workflow completion
 """
+
 from dataclasses import dataclass, field
 from enum import Enum, auto
 from typing import Any
-        import random
 
-
+import pytest
 
 
 class WorkflowState(Enum):
@@ -63,6 +63,7 @@ class TestDataPreparation:
 
     def test_data_shuffling(self):
         """Data is shuffled with reproducible seed."""
+        import random
 
         def shuffle_with_seed(data, seed=42):
             data_copy = data.copy()

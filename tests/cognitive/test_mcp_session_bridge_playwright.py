@@ -8,11 +8,12 @@ Validates that:
 - HF PR surfaces P-043 in injected patterns.
 - API failure triggers graceful handling (no session crash).
 """
+
 from __future__ import annotations
+
+import pytest
+
 from codex.cognitive.mcp_session_bridge import register_mcp_session_hook, validate_actor
-
-
-
 
 # ---------------------------------------------------------------------------
 # Fixtures

@@ -1,18 +1,19 @@
 """
+pytest.importorskip("mlflow")
 Test Simple Cli Seeding
 
 Test module for simple cli seeding.
 """
+
 from __future__ import annotations
-pytest.importorskip("mlflow")
-np = pytest.importorskip("numpy")
+
 import random
+
+import pytest
+
 from codex_ml.cli.simple_cli import _seed_everything
 
-
-
-
-
+np = pytest.importorskip("numpy")
 
 
 @pytest.mark.parametrize("seed", [7, 99])

@@ -189,7 +189,6 @@ diff --git a/CODEX_MANIFEST.json b/CODEX_MANIFEST.json
 """
 
     DIFF_WITH_INTEGRITY_SHA = """
-import pytest
 diff --git a/CODEX_MANIFEST.json b/CODEX_MANIFEST.json
 --- a/CODEX_MANIFEST.json
 +++ b/CODEX_MANIFEST.json

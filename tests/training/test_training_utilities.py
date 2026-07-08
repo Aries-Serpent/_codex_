@@ -165,9 +165,8 @@ def test_ab_testing_flow(tmp_path):
 
 def test_strategy_safe_callbacks_and_result(monkeypatch):
     """Training strategies provide safe callback defaults and dataclass results."""
-import pytest
-    from codex_ml.training import strategies
 
+    from codex_ml.training import strategies
 
     callbacks = strategies._safe_callbacks([])
     assert callbacks and isinstance(callbacks[0], strategies.NoOpCallback)

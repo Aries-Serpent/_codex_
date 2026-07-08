@@ -3,19 +3,17 @@ Test Extended Trainer
 
 Test module for extended trainer.
 """
-from __future__ import annotations
-pytest.importorskip("torch")
-import math
-import sys
-from pathlib import Path
-    import torch
-import training.trainer as trainer_mod
-from logging_utils import LoggingConfig
 
 # isort: skip_file
 
+from __future__ import annotations
+import pytest
 
+pytest.importorskip("torch")
 
+import math
+import sys
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "src"
@@ -24,10 +22,13 @@ if str(SRC) not in sys.path:
 
 
 try:
+    import torch
 except (ImportError, AttributeError) as exc:  # pragma: no cover - runtime guard
     pytest.skip(f"PyTorch runtime not available: {exc}", allow_module_level=True)
 
+import training.trainer as trainer_mod
 
+from logging_utils import LoggingConfig
 
 torch_data = getattr(torch, "utils", None)
 if torch_data is None or not hasattr(torch_data, "data"):

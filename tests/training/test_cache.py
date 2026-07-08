@@ -6,20 +6,15 @@ Phase 6 tests covering:
 - Manifest generation
 - Batch iteration
 """
+
 from __future__ import annotations
-np = pytest.importorskip("numpy")
+
 import json
-        from src.training.cache import TokenCache
-        from src.training.cache import TokenCache
-        from src.training.cache import TokenCache
-        from src.training.cache import TokenCache
-        from src.training.cache import TokenCache
-        from src.training.cache import TokenCache
 
-
-
+import pytest
 
 # Guard numpy import
+np = pytest.importorskip("numpy")
 
 
 class TestTokenCache:
@@ -28,6 +23,7 @@ class TestTokenCache:
     @pytest.fixture
     def cache(self, tmp_path):
         """Create a TokenCache instance."""
+        from src.training.cache import TokenCache
 
         return TokenCache(out_dir=tmp_path, rows_per_shard=10)
 
@@ -134,6 +130,7 @@ class TestTokenCacheIterBatches:
     @pytest.fixture
     def populated_cache(self, tmp_path):
         """Create a cache with some data."""
+        from src.training.cache import TokenCache
 
         cache = TokenCache(out_dir=tmp_path, rows_per_shard=5)
 
@@ -148,6 +145,7 @@ class TestTokenCacheIterBatches:
 
     def test_iter_batches_yields_dicts(self, populated_cache):
         """Test iter_batches yields dictionaries."""
+        from src.training.cache import TokenCache
 
         batches = list(TokenCache.iter_batches(populated_cache))
         assert len(batches) >= 1, "Batches must not be empty"
@@ -155,6 +153,7 @@ class TestTokenCacheIterBatches:
 
     def test_iter_batches_preserves_keys(self, populated_cache):
         """Test iter_batches preserves batch keys."""
+        from src.training.cache import TokenCache
 
         batches = list(TokenCache.iter_batches(populated_cache))
         assert "input_ids" in batches[0], "Condition must be true"
@@ -162,12 +161,14 @@ class TestTokenCacheIterBatches:
 
     def test_iter_batches_yields_numpy_arrays(self, populated_cache):
         """Test iter_batches yields numpy arrays."""
+        from src.training.cache import TokenCache
 
         batches = list(TokenCache.iter_batches(populated_cache))
         assert isinstance(batches[0]["input_ids"], np.ndarray)
 
     def test_iter_batches_empty_cache(self, tmp_path):
         """Test iter_batches with empty cache."""
+        from src.training.cache import TokenCache
 
         cache = TokenCache(out_dir=tmp_path, rows_per_shard=10)
         cache.finalize()

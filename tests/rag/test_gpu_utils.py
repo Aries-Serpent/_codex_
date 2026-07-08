@@ -4,15 +4,11 @@ Comprehensive test suite for RAG GPU utilities.
 Tests all functions in src/codex/rag/gpu_utils.py to achieve 80%+ coverage.
 Priority 1 - CRITICAL gap (0% → 80%)
 """
+
 from unittest import mock
 from unittest.mock import MagicMock, Mock, patch
-from codex.rag.gpu_utils import (
-        from codex.rag.gpu_utils import get_optimal_batch_size
-        from codex.rag.gpu_utils import get_optimal_batch_size
-        from unittest.mock import patch
-        from codex.rag.gpu_utils import get_gpu_memory
 
-
+import pytest
 
 
 @pytest.fixture(autouse=True)
@@ -22,6 +18,7 @@ def cleanup_mocks():
     mock.patch.stopall()
 
 
+from codex.rag.gpu_utils import (
     check_cuda_available,
     get_gpu_memory,
     get_optimal_batch_size,
@@ -447,14 +444,18 @@ class TestGetOptimalBatchSizeValidation:
 
     def test_invalid_embedding_dim_zero(self):
         """Test that embedding_dim=0 raises ValueError (line 88)."""
+        import pytest
 
+        from codex.rag.gpu_utils import get_optimal_batch_size
 
         with pytest.raises(ValueError, match="embedding_dim must be positive"):
             get_optimal_batch_size(embedding_dim=0)
 
     def test_invalid_embedding_dim_negative(self):
         """Test that negative embedding_dim raises ValueError."""
+        import pytest
 
+        from codex.rag.gpu_utils import get_optimal_batch_size
 
         with pytest.raises(ValueError, match="embedding_dim must be positive"):
             get_optimal_batch_size(embedding_dim=-1)
@@ -465,7 +466,9 @@ class TestGetGpuMemoryImportError:
 
     def test_gpu_memory_import_error(self):
         """Test that get_gpu_memory returns (0, 0) when torch raises ImportError."""
+        from unittest.mock import patch
 
+        from codex.rag.gpu_utils import get_gpu_memory
 
         with patch.dict("sys.modules", {"torch": None}):
             free, total = get_gpu_memory()

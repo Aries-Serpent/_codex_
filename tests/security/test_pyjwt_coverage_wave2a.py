@@ -8,26 +8,14 @@ Covers CVE fixes:
   - CVE-2026-48524: JWKS client exploitation
   - CVE-2026-48522: Unsafe request handling
 """
+
 import datetime  # pragma: allowlist secret
 import json
 import time
+
+import pytest
+
 from codex.auth.token_manager import TokenManager
-        import base64
-        import base64
-        import jwt
-        import jwt
-        import jwt
-        import jwt
-        import jwt
-        import jwt
-        import jwt
-        import jwt
-        import jwt
-        import jwt
-        import jwt
-
-
-
 
 
 class TestPyJWTTokenValidation:
@@ -67,6 +55,7 @@ class TestPyJWTTokenValidation:
         assert len(parts) == 3, "JWT must have three parts"
 
         # Verify header contains 'alg: HS256' (HMAC-SHA256)
+        import base64
 
         header_data = json.loads(base64.urlsafe_b64decode(parts[0] + "=="))
         assert header_data.get("alg") in ["HS256", "RS256", "HS512"]
@@ -75,6 +64,7 @@ class TestPyJWTTokenValidation:
         """Test protection against algorithm confusion attacks (CVE-2026-48526)."""
         # Attempt to use HS256 with public key algorithm
         # PyJWT should reject this in validation
+        import base64
 
         # Try to craft a token with 'none' algorithm
         header = {"alg": "none", "typ": "JWT"}
@@ -98,6 +88,7 @@ class TestPyJWTTokenValidation:
             "exp": int(past_time.timestamp()),
         }
 
+        import jwt
 
         token = jwt.encode(payload, "test-secret-key-for-testing-only", algorithm="HS256")
 
@@ -107,6 +98,7 @@ class TestPyJWTTokenValidation:
 
     def test_jwt_missing_required_claims(self, token_manager):
         """Test rejection of tokens missing required claims."""
+        import jwt
 
         # Token without required 'sub' claim
         payload = {"aud": "codex-api", "exp": int(time.time()) + 3600}
@@ -123,6 +115,7 @@ class TestPyJWTTokenValidation:
 
     def test_jwt_invalid_signature_rejection(self, token_manager):
         """Test rejection of tokens with invalid signature."""
+        import jwt
 
         payload = {
             "sub": "test-user",
@@ -152,6 +145,7 @@ class TestPyJWTTokenValidation:
 
     def test_jwt_custom_claims_preservation(self, token_manager):
         """Test that custom claims are preserved in token."""
+        import jwt
 
         custom_claims = {
             "sub": "test-user",
@@ -168,6 +162,7 @@ class TestPyJWTTokenValidation:
 
     def test_jwt_aud_claim_validation(self, token_manager):
         """Test audience claim validation."""
+        import jwt
 
         # Token with wrong audience
         payload = {
@@ -184,6 +179,7 @@ class TestPyJWTTokenValidation:
 
     def test_jwt_iss_claim_handling(self, token_manager):
         """Test issuer claim handling."""
+        import jwt
 
         payload = {
             "sub": "test-user",
@@ -200,6 +196,7 @@ class TestPyJWTTokenValidation:
 
     def test_jwt_nbf_not_before_validation(self, token_manager):
         """Test 'not before' claim validation."""
+        import jwt
 
         future_time = int(time.time()) + 3600
         payload = {
@@ -217,6 +214,7 @@ class TestPyJWTTokenValidation:
 
     def test_jwt_iat_issued_at_validation(self, token_manager):
         """Test 'issued at' claim."""
+        import jwt
 
         current_time = int(time.time())
         payload = {
@@ -233,6 +231,7 @@ class TestPyJWTTokenValidation:
 
     def test_jwt_jti_unique_id_handling(self, token_manager):
         """Test JWT ID (jti) claim handling."""
+        import jwt
 
         payload = {
             "sub": "test-user",
@@ -249,6 +248,7 @@ class TestPyJWTTokenValidation:
 
     def test_jwt_large_payload_handling(self, token_manager):
         """Test handling of tokens with large payloads."""
+        import jwt
 
         payload = {
             "sub": "test-user",
@@ -264,6 +264,7 @@ class TestPyJWTTokenValidation:
 
     def test_jwt_special_characters_in_claims(self, token_manager):
         """Test tokens with special characters in claims."""
+        import jwt
 
         payload = {
             "sub": "test-user@example.com",

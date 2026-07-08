@@ -3,9 +3,8 @@ Test Content Filters
 
 Test module for content filters.
 """
-import pytest
-from security import (
 
+from security import (
     detect_malware_patterns,
     detect_personal_data,
     detect_profanity,

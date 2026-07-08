@@ -3,13 +3,13 @@ Tests for secure token scope verification (PS-05).
 
 Tests the safe token verification without any token decoding or logging.
 """
+
 import os
 from unittest.mock import Mock, patch
+
+import pytest
+
 from scripts.security.verify_token_scope import (  # pragma: allowlist secret
-        import requests as real_requests
-
-
-
     TokenScopeVerifier,
     verify_github_token,
 )
@@ -151,6 +151,7 @@ class TestTokenScopeVerifier:
     @patch("scripts.security.verify_token_scope.requests")
     def test_verify_scopes_with_network_error(self, mock_requests):
         """Test verification handles network errors."""
+        import requests as real_requests
 
         mock_requests.RequestException = real_requests.RequestException
         mock_requests.get.side_effect = real_requests.RequestException("Network error")

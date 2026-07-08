@@ -21,7 +21,6 @@ def test_end_to_end_tool_call() -> None:
     3. The response structure matches JSON-RPC 2.0 expectations.
     4. Tools registered in the registry are returned in the response.
     """
-import pytest
     # Arrange: server with a simple tool in the registry
     registry = ToolRegistry()
     registry.register(Tool(name="echo", description="Echo tool"))

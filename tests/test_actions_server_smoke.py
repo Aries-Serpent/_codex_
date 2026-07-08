@@ -3,6 +3,7 @@ Test Actions Server Smoke
 
 Test module for actions server smoke.
 """
+
 import json
 import os
 import subprocess
@@ -11,10 +12,8 @@ import time
 import urllib.request
 from pathlib import Path
 from urllib.parse import urlsplit
-    from tools import actions_server
-    from tools import actions_server
 
-
+import pytest
 
 
 def _get(url: str, timeout: int = 5, max_retries: int = 5):
@@ -94,12 +93,14 @@ def test_server_health_and_branches_smoke(tmp_path):
 
 
 def test_assert_safe_github_url_requires_string():
+    from tools import actions_server
 
     with pytest.raises(ValueError, match="must be a string"):
         actions_server._assert_safe_github_url(None)  # type: ignore[arg-type]
 
 
 def test_gh_post_rejects_spoofed_github_url():
+    from tools import actions_server
 
     with pytest.raises(ValueError, match="must target api.github.com"):
         actions_server.gh_post("https://api.github.com@evil.com/repos/owner/repo", {})

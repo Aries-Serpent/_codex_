@@ -9,15 +9,13 @@ Comprehensive integration testing for:
 - Data migration paths
 - Batch operations atomicity
 """
+
 from __future__ import annotations
-import pytest
+
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
+
 from agents.agent_memory import (
-        import shutil
-
-
-
     AgentMemory,
     ContextFrame,
     MemoryEntry,
@@ -305,6 +303,7 @@ class TestMemoryDataMigration:
             original.store_memory(entry)
 
         # Backup by copying database
+        import shutil
 
         shutil.copy(original_db, backup_db)
 

@@ -16,11 +16,10 @@ Test Categories:
 - Error handling and fallbacks
 - Integration with existing orchestrators
 """
+
+import pytest
+
 from agents.physics_integration import (
-        import time
-        import time
-
-
     ADVANCED_PHYSICS_AVAILABLE,
     PHYSICS_ORCHESTRATOR_AVAILABLE,
     HybridPhysicsOrchestrator,
@@ -345,6 +344,7 @@ class TestPhysicsIntegrationPerformance:
 
     def test_orchestration_completes_quickly(self):
         """Test that orchestration completes in reasonable time."""
+        import time
 
         orch = HybridPhysicsOrchestrator()
         decision_space = {"current_position": "A", "goal_position": "B"}
@@ -359,6 +359,7 @@ class TestPhysicsIntegrationPerformance:
 
     def test_multiple_rapid_orchestrations(self):
         """Test handling rapid sequential calls."""
+        import time
 
         orch = HybridPhysicsOrchestrator()
 

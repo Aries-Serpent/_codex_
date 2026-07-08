@@ -3,25 +3,10 @@
 Tests early stopping callback registration, metric tracking,
 and plateau detection with various patience and delta configurations.
 """
+
 from __future__ import annotations
-        from src.codex_ml.training.callbacks import EarlyStopping
-        from src.codex_ml.training.callbacks import EarlyStopping
-        from src.codex_ml.training.callbacks import EarlyStopping
-        from src.codex_ml.training.callbacks import EarlyStopping
-        from src.codex_ml.training.callbacks import EarlyStopping
-        from src.codex_ml.training.callbacks import EarlyStopping
-        from src.codex_ml.training.callbacks import EarlyStopping
-        from src.codex_ml.training.callbacks import EarlyStopping
-        from src.codex_ml.training.callbacks import EarlyStopping
-        from src.codex_ml.training.callbacks import EarlyStopping
-        from src.codex_ml.training.callbacks import EarlyStopping
-        from src.codex_ml.training.callbacks import EarlyStopping
-        from src.codex_ml.training.callbacks import EarlyStopping
-        from src.codex_ml.training.callbacks import EarlyStopping
-        from src.codex_ml.training.callbacks import EarlyStopping
-        from src.codex_ml.training.callbacks import EarlyStopping
 
-
+import pytest
 
 
 class TestEarlyStoppingBasics:
@@ -30,6 +15,7 @@ class TestEarlyStoppingBasics:
     def test_early_stopping_initialization(self):
         """Verify EarlyStopping initializes with correct default values."""
         # Arrange & Act
+        from src.codex_ml.training.callbacks import EarlyStopping
 
         es = EarlyStopping()
 
@@ -43,6 +29,7 @@ class TestEarlyStoppingBasics:
     def test_early_stopping_custom_parameters(self):
         """Verify EarlyStopping accepts custom parameters."""
         # Arrange & Act
+        from src.codex_ml.training.callbacks import EarlyStopping
 
         es = EarlyStopping(patience=5, min_delta=0.01, mode="max")
 
@@ -54,6 +41,7 @@ class TestEarlyStoppingBasics:
     def test_early_stopping_first_metric_never_stops(self):
         """Verify first metric never triggers stop condition."""
         # Arrange
+        from src.codex_ml.training.callbacks import EarlyStopping
 
         es = EarlyStopping(patience=2)
         first_metric = 0.5
@@ -68,6 +56,7 @@ class TestEarlyStoppingBasics:
     def test_early_stopping_detects_improvement_min_mode(self):
         """Verify improvement detection works in min mode."""
         # Arrange
+        from src.codex_ml.training.callbacks import EarlyStopping
 
         es = EarlyStopping(patience=2, min_delta=0.0, mode="min")
         metrics = [0.5, 0.4, 0.3]  # Decreasing (improving in min mode)
@@ -81,6 +70,7 @@ class TestEarlyStoppingBasics:
     def test_early_stopping_detects_improvement_max_mode(self):
         """Verify improvement detection works in max mode."""
         # Arrange
+        from src.codex_ml.training.callbacks import EarlyStopping
 
         es = EarlyStopping(patience=2, min_delta=0.0, mode="max")
         metrics = [0.3, 0.4, 0.5]  # Increasing (improving in max mode)
@@ -94,6 +84,7 @@ class TestEarlyStoppingBasics:
     def test_early_stopping_with_min_delta_threshold(self):
         """Verify min_delta threshold is respected for improvements."""
         # Arrange
+        from src.codex_ml.training.callbacks import EarlyStopping
 
         es = EarlyStopping(patience=1, min_delta=0.1, mode="min")
 
@@ -117,6 +108,7 @@ class TestEarlyStoppingPlateauDetection:
     def test_early_stopping_stops_after_patience_exceeded(self):
         """Verify training stops when patience is exceeded."""
         # Arrange
+        from src.codex_ml.training.callbacks import EarlyStopping
 
         es = EarlyStopping(patience=2, min_delta=0.0, mode="min")
         metrics = [0.5]  # First metric (no stop)
@@ -140,6 +132,7 @@ class TestEarlyStoppingPlateauDetection:
     def test_early_stopping_resets_counter_on_improvement(self):
         """Verify bad counter resets when improvement occurs."""
         # Arrange
+        from src.codex_ml.training.callbacks import EarlyStopping
 
         es = EarlyStopping(patience=2, min_delta=0.0, mode="min")
 
@@ -157,6 +150,7 @@ class TestEarlyStoppingPlateauDetection:
     def test_early_stopping_max_mode_plateau_detection(self):
         """Verify plateau detection works in max mode (increasing metrics)."""
         # Arrange
+        from src.codex_ml.training.callbacks import EarlyStopping
 
         es = EarlyStopping(patience=1, min_delta=0.01, mode="max")
 
@@ -182,6 +176,7 @@ class TestEarlyStoppingEdgeCases:
     def test_early_stopping_with_zero_patience(self):
         """Verify behavior with patience=0 (immediate stop on plateau)."""
         # Arrange
+        from src.codex_ml.training.callbacks import EarlyStopping
 
         es = EarlyStopping(patience=0, min_delta=0.0, mode="min")
 
@@ -195,6 +190,7 @@ class TestEarlyStoppingEdgeCases:
     def test_early_stopping_with_large_patience(self):
         """Verify behavior with large patience value."""
         # Arrange
+        from src.codex_ml.training.callbacks import EarlyStopping
 
         es = EarlyStopping(patience=100, min_delta=0.0, mode="min")
 
@@ -212,6 +208,7 @@ class TestEarlyStoppingEdgeCases:
     def test_early_stopping_with_very_small_min_delta(self):
         """Verify min_delta discrimination with tiny threshold."""
         # Arrange
+        from src.codex_ml.training.callbacks import EarlyStopping
 
         es = EarlyStopping(patience=1, min_delta=1e-10, mode="min")
 
@@ -231,6 +228,7 @@ class TestEarlyStoppingEdgeCases:
     def test_early_stopping_negative_metrics(self):
         """Verify handling of negative metric values."""
         # Arrange
+        from src.codex_ml.training.callbacks import EarlyStopping
 
         es = EarlyStopping(patience=1, min_delta=0.0, mode="min")
 
@@ -245,6 +243,7 @@ class TestEarlyStoppingEdgeCases:
     def test_early_stopping_with_identical_consecutive_metrics(self):
         """Verify handling of identical consecutive metric values."""
         # Arrange
+        from src.codex_ml.training.callbacks import EarlyStopping
 
         es = EarlyStopping(patience=2, min_delta=0.0, mode="min")
 
@@ -268,6 +267,7 @@ class TestEarlyStoppingIntegration:
     def test_early_stopping_in_training_loop_min_mode(self):
         """Simulate training loop with decreasing loss and early stopping."""
         # Arrange
+        from src.codex_ml.training.callbacks import EarlyStopping
 
         es = EarlyStopping(patience=2, min_delta=0.05, mode="min")
 
@@ -296,6 +296,7 @@ class TestEarlyStoppingIntegration:
     def test_early_stopping_recovery_sequence(self):
         """Test that significant improvements reset stop counter."""
         # Arrange
+        from src.codex_ml.training.callbacks import EarlyStopping
 
         es = EarlyStopping(patience=1, min_delta=0.1, mode="min")
 

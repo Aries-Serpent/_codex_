@@ -10,7 +10,9 @@ These tests verify that:
 
 Run with: pytest -q tests/test_import_smoke.py
 """
+
 from __future__ import annotations
+
 import importlib
 import importlib.util
 import os
@@ -18,15 +20,8 @@ import pathlib
 import sys
 import time
 from unittest.mock import patch
-        from src.config.openai_client import CodexOpenAIClient  # noqa: F401
-        from src.services.github.client import GitHubClient  # noqa: F401
-        import socket as _socket
-        from src.services.github.client import GitHubClient
-        from src.services.github.client import GitHubClient
-        from src.services.github.client import GitHubClient
 
-
-
+import pytest
 
 _REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
 _SRC = str(_REPO_ROOT / "src")
@@ -66,6 +61,7 @@ class TestImportSmoke:
     def test_config_openai_client_importable(self) -> None:
         """src.config.openai_client imports without error."""
         t0 = time.monotonic()
+        from src.config.openai_client import CodexOpenAIClient  # noqa: F401
 
         elapsed = time.monotonic() - t0
         assert elapsed < 5.0, (
@@ -76,6 +72,7 @@ class TestImportSmoke:
     def test_services_github_client_importable(self) -> None:
         """src.services.github.client imports without error."""
         t0 = time.monotonic()
+        from src.services.github.client import GitHubClient  # noqa: F401
 
         elapsed = time.monotonic() - t0
         assert elapsed < 5.0, (
@@ -135,6 +132,7 @@ class TestImportSmoke:
                 network_called.append(f"socket({a}, {kw})")
                 raise OSError("Network call during import of config.openai_client is forbidden")
 
+        import socket as _socket
 
         with patch.object(_socket, "socket", _BlockingSocket):
             importlib.import_module("src.config.openai_client")
@@ -147,6 +145,7 @@ class TestImportSmoke:
         Regression test for P19: token='' was treated as falsy and fell back
         to GITHUB_TOKEN env var, leaking CI tokens into unit-test assertions.
         """
+        from src.services.github.client import GitHubClient
 
         with patch.dict(os.environ, {"GITHUB_TOKEN": "env-token-should-not-be-used"}):
             client = GitHubClient(token="")
@@ -159,6 +158,7 @@ class TestImportSmoke:
 
     def test_github_client_none_token_uses_env(self) -> None:
         """GitHubClient(token=None) should fall back to GITHUB_TOKEN env var."""
+        from src.services.github.client import GitHubClient
 
         with patch.dict(os.environ, {"GITHUB_TOKEN": "env-token-abc"}):
             client = GitHubClient(token=None)
@@ -166,6 +166,7 @@ class TestImportSmoke:
 
     def test_github_client_explicit_token_used(self) -> None:
         """GitHubClient(token='explicit') should use the provided token."""
+        from src.services.github.client import GitHubClient
 
         with patch.dict(os.environ, {"GITHUB_TOKEN": "env-token-ignored"}):
             client = GitHubClient(token="explicit-token")

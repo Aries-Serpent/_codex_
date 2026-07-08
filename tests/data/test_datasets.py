@@ -1,11 +1,10 @@
 """Smoke tests for :mod:`data.datasets`."""
+
 from __future__ import annotations
-import pytest
+
 from pathlib import Path
+
 from data.datasets import DataConfig, TextClassificationDataset
-
-
-
 
 
 def test_text_classification_dataset_parses_rows(tmp_path: Path):

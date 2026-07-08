@@ -3,19 +3,18 @@ Test Hydra Missing Probe Json
 
 Test module for hydra missing probe json.
 """
+
 from __future__ import annotations
-import pytest
+
 import json
 import subprocess
 import sys
-import sys
-import codex_ml.cli.hydra_main as hydra_main
-
-
 
 SCRIPT = """
+import sys
 sys.modules['hydra'] = None
 sys.modules['omegaconf'] = None
+import codex_ml.cli.hydra_main as hydra_main
 result = hydra_main.main(['--probe-json'])
 code = result if isinstance(result, int) else 0
 sys.exit(code)

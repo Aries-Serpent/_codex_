@@ -6,9 +6,8 @@ Test Seeded Shuffle
 
 Test module for seeded shuffle.
 """
-import pytest
-from ingestion.utils import deterministic_shuffle
 
+from ingestion.utils import deterministic_shuffle
 
 
 def test_seeded_shuffle_deterministic():

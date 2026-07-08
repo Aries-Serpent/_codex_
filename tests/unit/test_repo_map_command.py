@@ -3,14 +3,15 @@ Test Repo Map Command
 
 Test module for repo map command.
 """
+
 from __future__ import annotations
-    codex_cli = pytest.importorskip("codex_ml.cli.codex_cli")
+
+import pytest
 from click.testing import CliRunner
 
 
-
-
 def test_repo_map_lists_visible_entries() -> None:
+    codex_cli = pytest.importorskip("codex_ml.cli.codex_cli")
 
     runner = CliRunner()
     result = runner.invoke(codex_cli.codex, ["repo-map"], catch_exceptions=False)
@@ -22,6 +23,7 @@ def test_repo_map_lists_visible_entries() -> None:
 
 
 def test_repo_map_reasoning_surface_knobs() -> None:
+    codex_cli = pytest.importorskip("codex_ml.cli.codex_cli")
 
     runner = CliRunner()
     result = runner.invoke(

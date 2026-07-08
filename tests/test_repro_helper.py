@@ -3,19 +3,20 @@ Test Repro Helper
 
 Test module for repro helper.
 """
-pytest.importorskip("numpy")
-    torch = pytest.importorskip("torch")
+
 import random
+
+import pytest
+
+pytest.importorskip("numpy")
+
 import numpy as np
+
 from codex_ml.utils import set_reproducible
 
 
-
-
-
-
-
 def test_set_reproducible_consistency():
+    torch = pytest.importorskip("torch")
     set_reproducible(123)
     py1 = random.random()
     np1 = np.random.rand()

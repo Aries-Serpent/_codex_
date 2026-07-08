@@ -116,7 +116,6 @@ def test_correlation_insufficient_data():
 
 def test_correlation_valid_inputs():
     """Test correlation works correctly with valid inputs."""
-import pytest
     agg = MetricsAggregator()
 
     # Test with exactly 2 data points

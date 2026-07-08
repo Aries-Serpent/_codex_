@@ -8,13 +8,14 @@ Created: 2026-01-18
 Phase: 15.1 - Property-Based Testing
 Target: Verify configuration validation properties
 """
+
 from typing import Any
-    from hypothesis import given
-    from hypothesis import (
 
-
+import pytest
 
 try:
+    from hypothesis import given
+    from hypothesis import (
         strategies as st,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
     )
 

@@ -3,13 +3,14 @@ Test Iter Jsonl
 
 Test module for iter jsonl.
 """
+
 from __future__ import annotations
+
 import json
+
+import pytest
+
 from codex_ml.data.jsonl_stream import iter_jsonl
-
-
-
-
 
 
 def test_iter_jsonl_reads_objects(tmp_path):

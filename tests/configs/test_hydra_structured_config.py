@@ -3,19 +3,20 @@ Test Hydra Structured Config
 
 Test module for hydra structured config.
 """
+
 from __future__ import annotations
+
+import pytest
+
 pytest.importorskip("hydra")
 pytest.importorskip("hydra.core")
-    from hydra import compose, initialize
-    from hydra.core.global_hydra import GlobalHydra
-    from configs.schemas import register_schema
-
-
-
 
 
 def test_register_schema_and_compose_from_dataclass() -> None:
+    from hydra import compose, initialize
+    from hydra.core.global_hydra import GlobalHydra
 
+    from configs.schemas import register_schema
 
     global_hydra = GlobalHydra.instance()
     checker = getattr(global_hydra, "is_initialized", None)

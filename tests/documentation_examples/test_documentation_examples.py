@@ -8,12 +8,12 @@ Created: 2026-01-18
 Phase: 14.4 - Final Gaps & Branch Coverage
 Target: All documentation examples validated
 """
+
 import ast
 import re
 from pathlib import Path
-        import json
 
-
+import pytest
 
 # ============================================================================
 # Documentation Example Extraction
@@ -329,6 +329,7 @@ training:
 
     def test_json_config_example_valid(self) -> None:
         """Test that JSON config examples are valid."""
+        import json
 
         json_example = """{
     "model": {

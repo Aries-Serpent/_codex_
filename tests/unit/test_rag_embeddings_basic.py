@@ -3,18 +3,13 @@ Basic unit tests for codex.rag.embeddings module.
 
 Tests provider protocol and TF-IDF fallback (no model downloads required).
 """
+
+import pytest
+
 pytest.importorskip("numpy")
+
+
 import numpy as np
-        from codex.rag.embeddings import TfidfEmbeddingProvider
-        from codex.rag.embeddings import TfidfEmbeddingProvider
-        from codex.rag.embeddings import TfidfEmbeddingProvider
-        from codex.rag.embeddings import TfidfEmbeddingProvider
-        from codex.rag.embeddings import create_embedding_provider
-        from codex.rag.embeddings import create_embedding_provider
-
-
-
-
 
 
 class TestEmbeddingProviderProtocol:
@@ -22,6 +17,7 @@ class TestEmbeddingProviderProtocol:
 
     def test_tfidf_provider_implements_protocol(self):
         """Test TfidfEmbeddingProvider implements protocol."""
+        from codex.rag.embeddings import TfidfEmbeddingProvider
 
         provider = TfidfEmbeddingProvider()
 
@@ -35,6 +31,7 @@ class TestEmbeddingProviderProtocol:
 
     def test_tfidf_encode_returns_ndarray(self):
         """Test TF-IDF encode returns numpy array."""
+        from codex.rag.embeddings import TfidfEmbeddingProvider
 
         provider = TfidfEmbeddingProvider()
         texts = ["hello world", "goodbye world"]
@@ -47,6 +44,7 @@ class TestEmbeddingProviderProtocol:
 
     def test_tfidf_dimension_consistency(self):
         """Test TF-IDF dimension is consistent for same corpus."""
+        from codex.rag.embeddings import TfidfEmbeddingProvider
 
         provider = TfidfEmbeddingProvider()
         texts = ["hello world", "goodbye world", "test document"]
@@ -64,6 +62,7 @@ class TestEmbeddingProviderProtocol:
 
     def test_empty_text_handling(self):
         """Test handling of empty texts."""
+        from codex.rag.embeddings import TfidfEmbeddingProvider
 
         provider = TfidfEmbeddingProvider()
         texts = ["", "non-empty text"]
@@ -80,6 +79,7 @@ class TestCreateEmbeddingProvider:
 
     def test_create_provider_tfidf(self):
         """Test creating TF-IDF provider."""
+        from codex.rag.embeddings import create_embedding_provider
 
         provider = create_embedding_provider(provider_type="tfidf")
 
@@ -88,6 +88,7 @@ class TestCreateEmbeddingProvider:
 
     def test_provider_basic_encode(self):
         """Test basic encoding workflow."""
+        from codex.rag.embeddings import create_embedding_provider
 
         provider = create_embedding_provider(provider_type="tfidf")
         texts = ["hello world", "test document"]

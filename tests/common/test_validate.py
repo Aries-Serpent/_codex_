@@ -1,16 +1,16 @@
 """Smoke tests for :mod:`common.validate` with a stubbed GE backend."""
+
 from __future__ import annotations
-pytest.importorskip("great_expectations", reason="great_expectations not installed")
+
 import sys
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
-    from common import validate
 
-
-
+import pytest
 
 # Skip tests if great_expectations is not available
+pytest.importorskip("great_expectations", reason="great_expectations not installed")
 
 
 class _StubValidator:
@@ -79,6 +79,7 @@ def stub_great_expectations(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_run_clean_checkpoint(tmp_path: Path) -> None:
+    from common import validate
 
     csv_file = tmp_path / "data.csv"
     csv_file.write_text("id,value\n1,1\n2,2\n")

@@ -7,12 +7,8 @@ that should always produce the same output for the same input.
 Phase 54: HIGH Priority Module Tests
 Coverage Target: src/utils 30% → 45%+
 """
-import pytest
-import hashlib
-        import os.path
-        import re
-        import json
 
+import hashlib
 
 
 class TestEigenstateHashPatterns:
@@ -112,6 +108,7 @@ class TestNormalizationEigenstates:
 
     def test_path_normalization_idempotent(self):
         """Path normalization is idempotent."""
+        import os.path
 
         path = "/foo/../bar/./baz"
         result1 = os.path.normpath(path)
@@ -121,6 +118,7 @@ class TestNormalizationEigenstates:
 
     def test_whitespace_collapse_idempotent(self):
         """Whitespace collapse is idempotent."""
+        import re
 
         s = "multiple   spaces   here"
         result1 = re.sub(r"\s+", " ", s)
@@ -182,6 +180,7 @@ class TestContentDigest:
 
     def test_json_content_digest(self):
         """JSON content digest handles key order."""
+        import json
 
         data1 = {"a": 1, "b": 2}
         data2 = {"b": 2, "a": 1}

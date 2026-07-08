@@ -10,9 +10,8 @@ Generate comprehensive test coverage for RAG pipeline stages:
 
 Target: 50+ test methods covering 100+ statements
 """
-import pytest
-from datetime import datetime
 
+from datetime import datetime
 
 
 class TestDocumentIngestion:

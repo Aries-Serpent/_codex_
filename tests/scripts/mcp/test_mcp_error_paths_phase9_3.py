@@ -7,19 +7,20 @@ Tests error paths in scripts/mcp/select_components.py:
   - main() with ValueError from filter_by_topic → returns 1
   - main() with KeyboardInterrupt → returns 130
 """
+
 from __future__ import annotations
+
 import json
 import sys
 from pathlib import Path
 from unittest.mock import patch
-from select_components import filter_by_topic, main  # noqa: E402
 
-
-
+import pytest
 
 # Ensure the mcp scripts directory is importable (same pattern as Phase 9.2)
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / "scripts" / "mcp"))
 
+from select_components import filter_by_topic, main  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # filter_by_topic — unknown topic raises ValueError

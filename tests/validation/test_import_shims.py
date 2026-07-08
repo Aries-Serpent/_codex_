@@ -31,7 +31,6 @@ def _assert_same_public_api(mod_a: types.ModuleType, mod_b: types.ModuleType, at
 )
 def test_training_shims_equivalence(pair):
     """Verify src.training.* shims forward to legacy training.* modules."""
-import pytest
     a, b = pair
     mod_a = importlib.import_module(a)
     mod_b = importlib.import_module(b)

@@ -203,7 +203,6 @@ class TestRayIntegration:
 
     def test_check_ray_available(self):
         """Test Ray availability check."""
-import pytest
         from codex_ml.training.ray_distributed import check_ray_available
 
         # Should return True if Ray is installed, False otherwise

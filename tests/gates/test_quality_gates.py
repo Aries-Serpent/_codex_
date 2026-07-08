@@ -1,26 +1,22 @@
+pytest.importorskip("tensorboard")
 """
 Test Quality Gates
 
 Test module for quality gates.
 """
-pytest.importorskip("tensorboard")
-    torch = pytest.importorskip("torch")
-    pytest.importorskip("sacrebleu")
-    pytest.importorskip("rouge_score")
-    np1 = pytest.importorskip("numpy").random.rand()
+
 import os
 import random
 import sys
 from types import SimpleNamespace
+
+import pytest
+
 from codex_ml.interfaces import get_component
 from codex_ml.metrics import metrics_deprecated as M
 from codex_ml.monitoring import codex_logging as cl
 from codex_ml.utils import set_reproducible
 from codex_ml.utils.checkpointing import (
-    import math
-
-
-
     CheckpointLoadError,
     load_training_checkpoint,
     save_checkpoint,
@@ -29,6 +25,7 @@ from codex_ml.utils.checkpointing import (
 
 # Checkpoint integrity test
 def test_checkpoint_integrity(tmp_path):
+    torch = pytest.importorskip("torch")
     model = torch.nn.Linear(1, 1)
     opt = torch.optim.SGD(model.parameters(), lr=0.1)
     ckpt = tmp_path / "model.pt"
@@ -40,27 +37,33 @@ def test_checkpoint_integrity(tmp_path):
 
 # Metrics correctness
 def test_metrics_correctness():
+    import math
 
     ppl = M.perplexity([math.log(4), math.log(4)], [0, 1], from_logits=False)
     assert ppl == pytest.approx(4.0), "ppl is not valid"
     acc = M.token_accuracy([1, 2, 3], [1, 2, 0], ignore_index=0)
     assert acc == pytest.approx(2 / 2), "acc is not valid"
 
+    pytest.importorskip("sacrebleu")
     score = M.bleu(["a b"], ["a b"])
     assert score == pytest.approx(1.0), "score is not valid"
 
+    pytest.importorskip("rouge_score")
     r = M.rouge_l(["a b c"], ["a b c"])
     assert r is not None and r["rougeL_f"] == pytest.approx(1.0), "r must be initialized"
 
 
 # Reproducibility test
 def test_set_reproducible_repeatable():
+    torch = pytest.importorskip("torch")
     set_reproducible(123)
     py1 = random.random()
+    np1 = pytest.importorskip("numpy").random.rand()
     t1 = torch.rand(1)
 
     set_reproducible(123)
     assert py1 == random.random(), "py1 is not valid"
+    assert np1 == pytest.importorskip("numpy").random.rand(), "np1 is not valid"
     assert torch.allclose(t1, torch.rand(1))
 
 

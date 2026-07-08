@@ -10,23 +10,22 @@ Tests cover:
 Author: cognitive-brain-session-injector
 Phase: 10.1 - Session Checkpoint/Resume System
 """
+
+# Import modules under test
 import sys
 import tempfile
 from datetime import datetime
 from pathlib import Path
-from session_checkpoint_manager import (
-from session_resume_engine import (
-        import time
-        import time
 
-# Import modules under test
-
+import pytest  # pragma: allowlist secret
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "cognitive"))
 
+from session_checkpoint_manager import (
     CheckpointNotFoundError,
     SessionCheckpointManager,
 )
+from session_resume_engine import (
     ContextProvider,
     SessionResumeEngine,
 )
@@ -538,6 +537,7 @@ class TestPerformance:
     
     def test_checkpoint_creation_latency(self, checkpoint_manager, sample_checkpoint_state):
         """Test checkpoint creation is fast."""
+        import time
         
         start = time.time()
         meta = checkpoint_manager.create_checkpoint(
@@ -553,6 +553,7 @@ class TestPerformance:
     
     def test_checkpoint_restore_latency(self, checkpoint_manager, sample_checkpoint_state):
         """Test checkpoint restore is fast."""
+        import time
         
         meta = checkpoint_manager.create_checkpoint(
             session_id="S001",

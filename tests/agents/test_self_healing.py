@@ -8,22 +8,13 @@ Phase 8 tests covering:
 - SelfHealingEngine class
 - DiagnosticResult
 """
+
 from __future__ import annotations
+
 from datetime import datetime
 from pathlib import Path
-        from agents.self_healing import IssueType
-        from agents.self_healing import IssueType
-        from agents.self_healing import IssueSeverity
-        from agents.self_healing import IssueSeverity
-        from agents.self_healing import DetectedIssue
-        from agents.self_healing import IssueType
-        from agents.self_healing import IssueSeverity
-            from agents.self_healing import RemediationAction
-            from agents.self_healing import SelfHealingEngine
-            from agents.self_healing import DiagnosticResult
 
-
-
+import pytest
 
 
 class TestIssueType:
@@ -31,6 +22,7 @@ class TestIssueType:
 
     def test_issue_types_exist(self):
         """Test all expected issue types exist."""
+        from agents.self_healing import IssueType
 
         assert IssueType.TEST_FAILURE.value == "test_failure", "Value must be initialized"
         assert IssueType.BUILD_FAILURE.value == "build_failure", "Value must be initialized"
@@ -39,6 +31,7 @@ class TestIssueType:
 
     def test_issue_type_iteration(self):
         """Test that IssueType is iterable."""
+        from agents.self_healing import IssueType
 
         types = list(IssueType)
         assert len(types) >= 4, "Types must not be empty"
@@ -49,6 +42,7 @@ class TestIssueSeverity:
 
     def test_severity_levels_exist(self):
         """Test all expected severity levels exist."""
+        from agents.self_healing import IssueSeverity
 
         assert IssueSeverity.CRITICAL.value == "critical", "Value must be initialized"
         assert IssueSeverity.HIGH.value == "high", "Value must be initialized"
@@ -58,6 +52,7 @@ class TestIssueSeverity:
 
     def test_severity_ordering(self):
         """Test severity levels can be compared."""
+        from agents.self_healing import IssueSeverity
 
         # Enums can be compared by name
         assert IssueSeverity.CRITICAL.name == "CRITICAL", "name is not valid"
@@ -69,18 +64,21 @@ class TestDetectedIssue:
     @pytest.fixture
     def DetectedIssue(self):
         """Import DetectedIssue class."""
+        from agents.self_healing import DetectedIssue
 
         return DetectedIssue
 
     @pytest.fixture
     def IssueType(self):
         """Import IssueType enum."""
+        from agents.self_healing import IssueType
 
         return IssueType
 
     @pytest.fixture
     def IssueSeverity(self):
         """Import IssueSeverity enum."""
+        from agents.self_healing import IssueSeverity
 
         return IssueSeverity
 
@@ -136,6 +134,7 @@ class TestRemediationAction:
     def RemediationAction(self):
         """Import RemediationAction class if available."""
         try:
+            from agents.self_healing import RemediationAction
 
             return RemediationAction
         except ImportError:
@@ -160,6 +159,7 @@ class TestSelfHealingEngine:
     def SelfHealingEngine(self):
         """Import SelfHealingEngine class."""
         try:
+            from agents.self_healing import SelfHealingEngine
 
             return SelfHealingEngine
         except ImportError:
@@ -198,6 +198,7 @@ class TestDiagnosticResult:
     def DiagnosticResult(self):
         """Import DiagnosticResult class if available."""
         try:
+            from agents.self_healing import DiagnosticResult
 
             return DiagnosticResult
         except ImportError:

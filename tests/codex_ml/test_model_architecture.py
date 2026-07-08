@@ -103,6 +103,5 @@ class TestModelArchitecture:
 
     def test_total_params_estimate(self):
         """Test total parameters estimate."""
-import pytest
         params = 110_000_000  # 110M for BERT-base
         assert params > 0, "params must be greater than zero"

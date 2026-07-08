@@ -8,16 +8,15 @@ Created: 2026-01-18
 Phase: 15.0 - Performance Testing & Benchmarking
 Target: Establish performance baseline for training operations
 """
+
 import gc
 import os
 import time
 from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any
-        import psutil
-        import json
 
-
+import pytest
 
 # ============================================================================
 # Benchmark Utilities
@@ -48,6 +47,7 @@ class BenchmarkResult:
 def get_memory_usage_mb() -> float:
     """Get current memory usage in MB."""
     try:
+        import psutil
 
         process = psutil.Process(os.getpid())
         return process.memory_info().rss / 1024 / 1024
@@ -294,6 +294,7 @@ class TestTrainingLatencyBenchmarks:
 
     def test_checkpoint_save_latency(self) -> None:
         """Benchmark checkpoint save latency (simulated)."""
+        import json
 
         def save_checkpoint() -> str:
             checkpoint = {

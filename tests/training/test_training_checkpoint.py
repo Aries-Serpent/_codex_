@@ -1,12 +1,10 @@
 """Smoke tests for training.checkpoint_manager."""
+
 from __future__ import annotations
+
 from pathlib import Path
-    from src.training.checkpoint_manager import CheckpointManager
-    from src.training.checkpoint_manager import CheckpointManager
-    from src.training.checkpoint_manager import CheckpointManager
 
-
-
+import pytest
 
 
 @pytest.fixture
@@ -17,6 +15,7 @@ def temp_dir(tmp_path: Path) -> Path:
 
 
 def test_checkpoint_manager_imports(temp_dir: Path) -> None:
+    from src.training.checkpoint_manager import CheckpointManager
 
     manager = CheckpointManager(temp_dir)
     assert (temp_dir / "best_candidates").exists(), "Condition must be true"
@@ -24,6 +23,7 @@ def test_checkpoint_manager_imports(temp_dir: Path) -> None:
 
 
 def test_checkpoint_manager_lists_empty(temp_dir: Path) -> None:
+    from src.training.checkpoint_manager import CheckpointManager
 
     manager = CheckpointManager(temp_dir)
     # fallback implementation may not expose listing; ensure directory is writable
@@ -31,6 +31,7 @@ def test_checkpoint_manager_lists_empty(temp_dir: Path) -> None:
 
 
 def test_checkpoint_manager_best_metadata_roundtrip(temp_dir: Path) -> None:
+    from src.training.checkpoint_manager import CheckpointManager
 
     # metadata structure format reference:
     # {"items": [{"path": str(dir / "checkpoint-N"), "value": float, "step": int}]}

@@ -6,9 +6,8 @@ Test Trainloop Grad Accum
 
 Test module for trainloop grad accum.
 """
-import pytest
-from codex_ml.train_loop import demo_epoch
 
+from codex_ml.train_loop import demo_epoch
 
 
 def test_demo_epoch_includes_grad_accum():

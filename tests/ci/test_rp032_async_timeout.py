@@ -3,15 +3,16 @@ Comprehensive tests for Pattern 37 (RP-032): Async Tests Without Timeout
 
 Tests the detection and auto-fixing of async tests missing timeout decorators.
 """
+
 import sys
 from pathlib import Path
-from auto_fix_common_issues import CommonIssueFixer
 
-
+import pytest
 
 # Add scripts/ci to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "ci"))
 
+from auto_fix_common_issues import CommonIssueFixer
 
 
 class TestRP032AsyncTimeout:
@@ -32,6 +33,7 @@ class TestRP032AsyncTimeout:
 
         test_file = tests_dir / "test_async.py"
         test_file.write_text("""
+import pytest
 
 @pytest.mark.asyncio
 @pytest.mark.timeout(30)
@@ -127,6 +129,7 @@ def test_regular():
 
         test_file = tests_dir / "test_async.py"
         test_file.write_text("""
+import pytest
 
 @pytest.mark.asyncio
 @pytest.mark.timeout(30)
@@ -171,7 +174,6 @@ class TestAsync:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
-    @pytest.mark.asyncio
     async def test_method(self):
         pass
 """)

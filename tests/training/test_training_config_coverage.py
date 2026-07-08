@@ -7,31 +7,14 @@ Tests focus on:
 - Optimizer setup and configuration
 - Learning rate scheduling
 """
+
+import pytest
+
 pytest.importorskip("torch")
-    import torch
-        import torch.nn as nn
-        import torch.optim as optim
-        import torch.optim as optim
-        import torch.optim as optim
-        import torch.optim as optim
-        import torch.optim as optim
-        import torch.optim as optim
-        import torch.optim as optim
-        import torch.nn as nn
-        from torch.optim.lr_scheduler import StepLR
-        from torch.optim.lr_scheduler import ExponentialLR
-        from torch.optim.lr_scheduler import CosineAnnealingLR
-        from torch.optim.lr_scheduler import ReduceLROnPlateau
-        from torch.optim.lr_scheduler import StepLR
-        import torch.optim as optim
-        import torch.nn as nn
-        from torch.utils.data import DataLoader, TensorDataset
-        from torch.optim.lr_scheduler import StepLR
-
-
 
 # Import with graceful fallback
 try:
+    import torch
 
     HAS_TORCH = True
 except ImportError:
@@ -136,11 +119,13 @@ class TestOptimizerSetup:
         """Fixture providing a simple model."""
         if not HAS_TORCH:
             pytest.skip("PyTorch not available")
+        import torch.nn as nn
 
         return nn.Linear(10, 2)
 
     def test_adam_optimizer_setup(self, simple_model):
         """Test setting up Adam optimizer."""
+        import torch.optim as optim
 
         optimizer = optim.Adam(
             simple_model.parameters(),
@@ -155,6 +140,7 @@ class TestOptimizerSetup:
 
     def test_adamw_optimizer_setup(self, simple_model):
         """Test setting up AdamW optimizer with weight decay."""
+        import torch.optim as optim
 
         optimizer = optim.AdamW(
             simple_model.parameters(),
@@ -167,6 +153,7 @@ class TestOptimizerSetup:
 
     def test_sgd_optimizer_setup(self, simple_model):
         """Test setting up SGD optimizer with momentum."""
+        import torch.optim as optim
 
         optimizer = optim.SGD(
             simple_model.parameters(),
@@ -181,6 +168,7 @@ class TestOptimizerSetup:
 
     def test_optimizer_parameter_groups(self, simple_model):
         """Test optimizer with different parameter groups."""
+        import torch.optim as optim
 
         # Separate learning rates for different parameters
         params = [
@@ -196,6 +184,7 @@ class TestOptimizerSetup:
 
     def test_optimizer_zero_grad(self, simple_model):
         """Test optimizer zero_grad functionality."""
+        import torch.optim as optim
 
         optimizer = optim.Adam(simple_model.parameters(), lr=0.001)
 
@@ -216,6 +205,7 @@ class TestOptimizerSetup:
 
     def test_optimizer_step(self, simple_model):
         """Test optimizer step updates parameters."""
+        import torch.optim as optim
 
         optimizer = optim.SGD(simple_model.parameters(), lr=0.1)
 
@@ -243,13 +233,16 @@ class TestLearningRateScheduling:
         """Fixture providing optimizer with simple model."""
         if not HAS_TORCH:
             pytest.skip("PyTorch not available")
+        import torch.optim as optim
 
+        import torch.nn as nn
 
         model = nn.Linear(10, 2)
         return optim.Adam(model.parameters(), lr=0.1)
 
     def test_step_lr_scheduler(self, optimizer_with_model):
         """Test StepLR scheduler."""
+        from torch.optim.lr_scheduler import StepLR
 
         scheduler = StepLR(optimizer_with_model, step_size=5, gamma=0.1)
 
@@ -264,6 +257,7 @@ class TestLearningRateScheduling:
 
     def test_exponential_lr_scheduler(self, optimizer_with_model):
         """Test ExponentialLR scheduler."""
+        from torch.optim.lr_scheduler import ExponentialLR
 
         scheduler = ExponentialLR(optimizer_with_model, gamma=0.9)
 
@@ -279,6 +273,7 @@ class TestLearningRateScheduling:
 
     def test_cosine_annealing_scheduler(self, optimizer_with_model):
         """Test CosineAnnealingLR scheduler."""
+        from torch.optim.lr_scheduler import CosineAnnealingLR
 
         T_max = 10
         eta_min = 0.001
@@ -297,6 +292,7 @@ class TestLearningRateScheduling:
 
     def test_reduce_on_plateau_scheduler(self, optimizer_with_model):
         """Test ReduceLROnPlateau scheduler."""
+        from torch.optim.lr_scheduler import ReduceLROnPlateau
 
         scheduler = ReduceLROnPlateau(
             optimizer_with_model,
@@ -336,6 +332,7 @@ class TestLearningRateScheduling:
 
     def test_scheduler_state_dict(self, optimizer_with_model):
         """Test saving and loading scheduler state."""
+        from torch.optim.lr_scheduler import StepLR
 
         scheduler = StepLR(optimizer_with_model, step_size=5, gamma=0.1)
 
@@ -364,7 +361,10 @@ class TestTrainingLoopIntegration:
         """Fixture providing complete training setup."""
         if not HAS_TORCH:
             pytest.skip("PyTorch not available")
+        import torch.optim as optim
 
+        import torch.nn as nn
+        from torch.utils.data import DataLoader, TensorDataset
 
         # Model
         model = nn.Linear(10, 2)
@@ -412,6 +412,7 @@ class TestTrainingLoopIntegration:
 
     def test_training_with_scheduler(self, training_setup):
         """Test training with learning rate scheduler."""
+        from torch.optim.lr_scheduler import StepLR
 
         model = training_setup["model"]
         dataloader = training_setup["dataloader"]

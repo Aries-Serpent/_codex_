@@ -3,19 +3,20 @@ Test Inference Stub
 
 Test module for inference stub.
 """
+
+import pytest
+
+from codex_ml.serving.inference_server import ModelConfig, create_app
+
 pytest.importorskip("fastapi")
 pytest.importorskip("starlette")
-from codex_ml.serving.inference_server import ModelConfig, create_app
-    from fastapi.testclient import TestClient
-
-
-
 
 
 @pytest.fixture()
 def client():
     config = ModelConfig(model_name="stub-model", model_type="stub")
     app = create_app(config=config)
+    from fastapi.testclient import TestClient
 
     return TestClient(app)
 

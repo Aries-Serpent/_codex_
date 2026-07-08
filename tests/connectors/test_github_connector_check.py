@@ -3,10 +3,9 @@ Test Github Connector Check
 
 Test module for github connector check.
 """
-import pytest
+
 import subprocess
 import sys
-
 
 
 def test_connector_offline_ok(tmp_path, monkeypatch):

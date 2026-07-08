@@ -3,18 +3,19 @@ Test Checkpoint Integrity
 
 Test module for checkpoint integrity.
 """
+
+import pytest
+
 pytest.importorskip("torch")
+
 from torch.optim import SGD
+
 from codex_ml.utils.checkpointing import (
-from torch import nn
-
-
-
-
     CheckpointLoadError,
     load_training_checkpoint,
     save_checkpoint,
 )
+from torch import nn
 
 
 def test_load_checkpoint_detects_corruption(tmp_path):

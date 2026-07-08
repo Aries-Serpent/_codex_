@@ -3,12 +3,11 @@ Test Golden Harness Status
 
 Test module for golden harness status.
 """
-import pytest
+
 import json
 from pathlib import Path
+
 from codex_harness.golden_harness_status import compute_golden_harness_status
-
-
 
 
 def _write_tool_trace(path: Path, records: list[dict]):

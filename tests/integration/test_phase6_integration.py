@@ -9,22 +9,13 @@ Tests:
 
 All tests validate backward compatibility and performance.
 """
+
 import tempfile
 import time
 from pathlib import Path
+
+import pytest
 import yaml
-        from codex_ml.training.mlflow_integration import is_mlflow_available
-        from codex_ml.training.mlflow_integration import MLflowTracker
-        from codex_ml.training.mlflow_integration import MLflowTracker
-        from codex_ml.training.mlflow_integration import MLflowTracker
-        from codex_ml.training.loop import run_minimal_training
-        from codex_ml.features.feature_store import FeatureStore
-        from codex_ml.features.feature_store import FeatureStore
-        from codex_ml.evaluation.runner import EvaluationRunner
-        from codex_ml.training.loop import run_minimal_training
-        from codex_ml.training.loop import run_minimal_training
-
-
 
 
 class TestMLflowIntegration:
@@ -32,6 +23,7 @@ class TestMLflowIntegration:
 
     def test_mlflow_available(self):
         """Test that MLflow integration is available."""
+        from codex_ml.training.mlflow_integration import is_mlflow_available
 
         # MLflow may or may not be installed - test should not fail
         available = is_mlflow_available()
@@ -39,6 +31,7 @@ class TestMLflowIntegration:
 
     def test_mlflow_tracker_initialization(self):
         """Test MLflowTracker initialization."""
+        from codex_ml.training.mlflow_integration import MLflowTracker
 
         with tempfile.TemporaryDirectory() as tmpdir:
             tracker = MLflowTracker(
@@ -50,6 +43,7 @@ class TestMLflowIntegration:
 
     def test_mlflow_tracker_no_op_when_disabled(self):
         """Test that MLflowTracker is no-op when MLflow unavailable."""
+        from codex_ml.training.mlflow_integration import MLflowTracker
 
         tracker = MLflowTracker("test")
 
@@ -62,6 +56,7 @@ class TestMLflowIntegration:
 
     def test_mlflow_context_manager(self):
         """Test MLflowTracker context manager."""
+        from codex_ml.training.mlflow_integration import MLflowTracker
 
         with tempfile.TemporaryDirectory() as tmpdir:
             tracker = MLflowTracker(experiment_name="test", tracking_uri=f"file://{tmpdir}/mlruns")
@@ -85,6 +80,7 @@ class TestMLflowIntegration:
 
     def test_backward_compatibility_mlflow_disabled(self):
         """Test that MLflow tracking is opt-in (disabled by default)."""
+        from codex_ml.training.loop import run_minimal_training
 
         with tempfile.TemporaryDirectory() as tmpdir:
             config = {"training": {"base_loss": 10.0, "decay": 0.9}}
@@ -101,11 +97,13 @@ class TestFeatureStoreIntegration:
 
     def test_feature_store_available(self):
         """Test that feature store is available."""
+        from codex_ml.features.feature_store import FeatureStore
 
         assert FeatureStore is not None, "FeatureStore must be initialized"
 
     def test_feature_store_initialization(self):
         """Test FeatureStore initialization."""
+        from codex_ml.features.feature_store import FeatureStore
 
         with tempfile.TemporaryDirectory() as tmpdir:
             store = FeatureStore(tmpdir)
@@ -166,6 +164,7 @@ class TestEvaluationIntegration:
 
     def test_evaluation_runner_available(self):
         """Test that EvaluationRunner is available."""
+        from codex_ml.evaluation.runner import EvaluationRunner
 
         assert EvaluationRunner is not None, "EvaluationRunner must be initialized"
 
@@ -232,6 +231,7 @@ class TestPerformanceOverhead:
 
     def test_mlflow_tracking_overhead(self):
         """Test that MLflow tracking overhead is <5%."""
+        from codex_ml.training.loop import run_minimal_training
 
         with tempfile.TemporaryDirectory() as tmpdir:
             config = {"training": {"base_loss": 10.0, "decay": 0.9}}
@@ -258,6 +258,7 @@ class TestBackwardCompatibility:
 
     def test_existing_training_still_works(self):
         """Test that existing training code works without Phase 6 configs."""
+        from codex_ml.training.loop import run_minimal_training
 
         with tempfile.TemporaryDirectory() as tmpdir:
             # Old-style config without Phase 6 features

@@ -2,33 +2,11 @@
 
 Tests type annotations, function contracts, and API stability.
 """
+
 from pathlib import Path
 from typing import get_type_hints
-            from src.codex_plans import list_plan_documents
-            from src.codex_plans import list_plan_documents
-            from src.codex_plans import list_plan_documents
-            from src.codex_plans import list_plan_documents
-                from codex_plans import list_plan_documents as _lpd
-                from src.codex_plans import list_plan_documents as _lpd  # type: ignore[no-redef]
-            from src.codex_plans import __all__
-            from src.codex_plans import list_plan_documents
-            from src import codex_plans as _codex_plans_mod
-            from src.codex_plans import list_plan_documents
-            from src.codex_plans import list_plan_documents
-            import tempfile
-            from src.codex_plans import list_plan_documents
-            from src.codex_plans import list_plan_documents
-            from src.codex_plans import list_plan_documents
-            from src.codex_plans import list_plan_documents
-            from src.codex_plans import list_plan_documents
-            import tempfile
-            from src.codex_plans import list_plan_documents
-            import tempfile
-            from src.codex_plans import list_plan_documents
-            from src import codex_plans
-            from src import codex_plans
 
-
+import pytest
 
 
 class TestTypeAnnotations:
@@ -37,6 +15,7 @@ class TestTypeAnnotations:
     def test_list_plan_documents_signature(self):
         """Test function signature matches documentation."""
         try:
+            from src.codex_plans import list_plan_documents
 
             # Get type hints
             hints = get_type_hints(list_plan_documents)
@@ -54,6 +33,7 @@ class TestTypeAnnotations:
     def test_function_callable(self):
         """Test that list_plan_documents is callable."""
         try:
+            from src.codex_plans import list_plan_documents
 
             assert callable(list_plan_documents), "Condition must be true"
         except ImportError:
@@ -66,6 +46,7 @@ class TestContractCompliance:
     def test_always_returns_list(self):
         """Test that function always returns a list, never None."""
         try:
+            from src.codex_plans import list_plan_documents
 
             # Test with various inputs
             test_cases = [
@@ -82,6 +63,7 @@ class TestContractCompliance:
     def test_never_returns_none(self):
         """Test that function never returns None."""
         try:
+            from src.codex_plans import list_plan_documents
 
             result = list_plan_documents()
             assert result is not None, "result must be initialized"
@@ -92,7 +74,9 @@ class TestContractCompliance:
         """Test that list contains only Path objects."""
         try:
             try:
+                from codex_plans import list_plan_documents as _lpd
             except ImportError:
+                from src.codex_plans import list_plan_documents as _lpd  # type: ignore[no-redef]
 
             result = _lpd()
             for item in result:
@@ -109,6 +93,7 @@ class TestAPIStability:
     def test_function_exists_in_all(self):
         """Test that list_plan_documents is in __all__."""
         try:
+            from src.codex_plans import __all__
 
             assert "list_plan_documents" in __all__, "Condition must be true"
         except ImportError:
@@ -117,6 +102,7 @@ class TestAPIStability:
     def test_function_accessible_via_import(self):
         """Test that function can be imported directly."""
         try:
+            from src.codex_plans import list_plan_documents
 
             assert list_plan_documents is not None, "list_plan_documents must be initialized"
         except ImportError:
@@ -125,6 +111,7 @@ class TestAPIStability:
     def test_module_has_docstring(self):
         """Test that module has docstring."""
         try:
+            from src import codex_plans as _codex_plans_mod
 
             assert _codex_plans_mod.__doc__ is not None, "__doc__ must be initialized"
             assert len(_codex_plans_mod.__doc__.strip()) > 0, "Collection must not be empty"
@@ -134,6 +121,7 @@ class TestAPIStability:
     def test_function_has_docstring(self):
         """Test that list_plan_documents has docstring."""
         try:
+            from src.codex_plans import list_plan_documents
 
             assert list_plan_documents.__doc__ is not None, "__doc__ must be initialized"
             assert len(list_plan_documents.__doc__.strip()) > 0, "Collection must not be empty"
@@ -147,6 +135,7 @@ class TestParameterValidation:
     def test_base_dir_none_accepted(self):
         """Test that base_dir=None is valid."""
         try:
+            from src.codex_plans import list_plan_documents
 
             # Should not raise
             result = list_plan_documents(base_dir=None)
@@ -157,7 +146,9 @@ class TestParameterValidation:
     def test_base_dir_path_accepted(self):
         """Test that base_dir=Path(...) is valid."""
         try:
+            import tempfile
 
+            from src.codex_plans import list_plan_documents
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 result = list_plan_documents(base_dir=Path(tmpdir))
@@ -172,6 +163,7 @@ class TestDocumentation:
     def test_function_docstring_complete(self):
         """Test that docstring includes all sections."""
         try:
+            from src.codex_plans import list_plan_documents
 
             doc = list_plan_documents.__doc__
             assert doc is not None, "doc must be initialized"
@@ -186,6 +178,7 @@ class TestDocumentation:
     def test_function_name_descriptive(self):
         """Test that function name is descriptive."""
         try:
+            from src.codex_plans import list_plan_documents
 
             # Name should be clear and descriptive
             name = list_plan_documents.__name__
@@ -202,6 +195,7 @@ class TestReturnValueProperties:
     def test_return_list_is_mutable(self):
         """Test that returned list can be modified."""
         try:
+            from src.codex_plans import list_plan_documents
 
             result = list_plan_documents()
             original_len = len(result)
@@ -216,6 +210,7 @@ class TestReturnValueProperties:
     def test_return_list_is_new_instance(self):
         """Test that each call returns a new list instance."""
         try:
+            from src.codex_plans import list_plan_documents
 
             result1 = list_plan_documents()
             result2 = list_plan_documents()
@@ -234,7 +229,9 @@ class TestGlobPatternBehavior:
     def test_glob_is_non_recursive(self):
         """Test that glob only searches immediate directory."""
         try:
+            import tempfile
 
+            from src.codex_plans import list_plan_documents
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 # Create file in root
@@ -256,7 +253,9 @@ class TestGlobPatternBehavior:
     def test_glob_matches_md_extension_only(self):
         """Test that glob only matches .md extension."""
         try:
+            import tempfile
 
+            from src.codex_plans import list_plan_documents
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 # Create files with various extensions
@@ -281,6 +280,7 @@ class TestModuleConstants:
     def test_module_has_all(self):
         """Test that module defines __all__."""
         try:
+            from src import codex_plans
 
             assert hasattr(codex_plans, "__all__")
             assert isinstance(codex_plans.__all__, list)
@@ -290,6 +290,7 @@ class TestModuleConstants:
     def test_all_exports_are_valid(self):
         """Test that all items in __all__ exist."""
         try:
+            from src import codex_plans
 
             for name in codex_plans.__all__:
                 assert hasattr(codex_plans, name), f"{name} should exist in module"

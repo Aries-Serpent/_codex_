@@ -3,15 +3,16 @@ Test Referent Pg Mariadb
 
 Test module for referent pg mariadb.
 """
+
 from __future__ import annotations
+
 import os
 from pathlib import Path
+
+import pytest
+
 from codex.archive.api import refer_dup_to_canonical, store
 from codex.archive.dal import ArchiveDAL
-
-
-
-
 
 BACKEND = os.getenv("CODEX_ARCHIVE_BACKEND", "")
 DSN = os.getenv("CODEX_ARCHIVE_URL", "")

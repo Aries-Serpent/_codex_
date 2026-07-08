@@ -3,13 +3,14 @@ Test Evaluate Cli
 
 Test module for evaluate cli.
 """
+
 import json
 import os
 import subprocess
 import sys
 from pathlib import Path
 
-
+import pytest
 
 
 def _write_jsonl(path: Path) -> None:

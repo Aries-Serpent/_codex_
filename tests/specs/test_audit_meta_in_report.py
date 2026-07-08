@@ -3,15 +3,16 @@ Test Audit Meta In Report
 
 Test module for audit meta in report.
 """
+
 from __future__ import annotations
+
 import importlib.util
 import json
 import subprocess
 import sys
 from pathlib import Path
 
-
-
+import pytest
 
 
 def _run(args: list[str]) -> subprocess.CompletedProcess[str]:

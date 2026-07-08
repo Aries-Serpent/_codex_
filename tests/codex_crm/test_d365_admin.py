@@ -154,7 +154,6 @@ class TestMapType:
 
     def test_map_type_unknown(self):
         """Test unknown type defaults to Text."""
-import pytest
         from codex_crm.d365_admin.generate import _map_type
 
         assert _map_type("text") == "Text", "Condition must be true"

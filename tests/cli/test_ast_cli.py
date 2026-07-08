@@ -4,11 +4,12 @@ Tests for the AST CLI tool.
 Tests cover all commands (parse, stats, query) across all supported languages
 (Python, YAML, JSON, SQL) with various edge cases and error scenarios.
 """
+
 import json
+
+import pytest
+
 from codex.cli.ast_cli import get_adapter, main
-
-
-
 
 
 class TestGetAdapter:

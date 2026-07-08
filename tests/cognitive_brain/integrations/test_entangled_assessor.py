@@ -3,22 +3,23 @@ Tests for EntangledComplianceSecurityAssessor.
 
 Validates entangled agent coordination for compliance and security assessments.
 """
+
+import pytest
+
 from cognitive_brain.integrations.compliance_integration import (
+    AuditResult,
+    QuantumComplianceAssessor,
+)
 from cognitive_brain.integrations.entangled_assessor import (
+    EntangledAssessmentResult,
+    EntangledComplianceSecurityAssessor,
+    MockSecurityScanner,
+)
 from cognitive_brain.models.quantum_metrics import QuantumMetricRepository
 from cognitive_brain.quantum.coherence_monitor import CoherenceMonitor
 from cognitive_brain.quantum.config import QuantumConfig
 from cognitive_brain.quantum.entanglement import EntanglementManager
 from cognitive_brain.quantum.superposition import SuperpositionEngine
-
-
-    AuditResult,
-    QuantumComplianceAssessor,
-)
-    EntangledAssessmentResult,
-    EntangledComplianceSecurityAssessor,
-    MockSecurityScanner,
-)
 
 
 @pytest.fixture

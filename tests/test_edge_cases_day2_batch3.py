@@ -442,7 +442,6 @@ class TestBoundaryAndErrorConditions:
 
     def test_action_path_maximum_all_metrics(self):
         """ActionPath with maximum metric values"""
-import pytest
         ap = ActionPath(
             potential_energy=100.0,
             kinetic_energy=100.0,

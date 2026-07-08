@@ -3,19 +3,14 @@ Test Evaluate Cli Flags
 
 Test module for evaluate cli flags.
 """
+
 from __future__ import annotations
-import pytest
+
 import json
 import sys
 import types
+
 from click.testing import CliRunner
-    import codex_ml.cli.codex_cli as cli
-    from codex_ml.cli.codex_cli import codex
-    import codex_ml.cli.codex_cli as cli
-    from codex_ml.cli.codex_cli import codex
-
-
-
 
 
 def _stub_settings() -> None:
@@ -67,6 +62,8 @@ def test_metrics_only_and_run_id(tmp_path, monkeypatch) -> None:
     _stub_runner()
 
     # Import after stubs
+    import codex_ml.cli.codex_cli as cli
+    from codex_ml.cli.codex_cli import codex
 
     class _EvalCfg:
         dataset_path = "data/val.jsonl"
@@ -118,6 +115,8 @@ def test_metrics_sink_flags(tmp_path, monkeypatch) -> None:
     _stub_settings()
     _stub_runner()
 
+    import codex_ml.cli.codex_cli as cli
+    from codex_ml.cli.codex_cli import codex
 
     class _EvalCfg:
         def __init__(self) -> None:

@@ -3,18 +3,19 @@ Test Hydra Defaults
 
 Test module for hydra defaults.
 """
+
 from __future__ import annotations
+
+from pathlib import Path
+
+import pytest
+
 pytest.importorskip("hydra")
 pytest.importorskip("omegaconf")
-from pathlib import Path
-    from hydra import compose, initialize_config_dir
-
-
-
-
 
 
 def test_conf_defaults_list_round_trip() -> None:
+    from hydra import compose, initialize_config_dir
 
     # Resolve path relative to repository root (2 levels up from this test file)
     config_dir = Path(__file__).resolve().parents[2] / "configs" / "base"

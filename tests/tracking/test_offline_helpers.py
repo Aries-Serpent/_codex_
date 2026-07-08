@@ -20,10 +20,9 @@ def test_init_mlflow_offline_import_only(monkeypatch, tmp_path):
 
 def test_init_wandb_offline_env(monkeypatch):
     """Helper sets WANDB_MODE to offline regardless of availability."""
-import pytest
-    from codex_ml.tracking.init_offline import init_wandb_offline
 
     os.environ.pop("WANDB_MODE", None)
+    from codex_ml.tracking.init_offline import init_wandb_offline
 
     init_wandb_offline(project="x")
     assert os.environ.get("WANDB_MODE") == "offline", "Condition must be true"

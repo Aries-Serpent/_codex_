@@ -6,14 +6,15 @@ PRResult, and PROperator (generate_pr_content, create_pr, save_pr_content).
 Note: This module does NOT require omegaconf/hydra; it tests pure-Python
       PR pipeline logic only.
 """
+
 from __future__ import annotations
+
 import json
 from pathlib import Path
+
+import pytest
+
 from codex.cli.pr_operator import (  # pragma: allowlist secret
-
-
-
-
     DEFAULT_LABELS,
     PRConfig,
     PRContent,

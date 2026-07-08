@@ -5,23 +5,24 @@ Verifies invariants of:
 - ``CircuitBreaker``       (circuit_breaker.py)
 - ``GracefulDegradation``  (degradation.py)
 """
+
 from __future__ import annotations
-hypothesis = pytest.importorskip("hypothesis")
+
 import sys
 from unittest.mock import patch
+
+import pytest
+
+hypothesis = pytest.importorskip("hypothesis")
+
 from hypothesis import given, settings
 from hypothesis import strategies as st
-from codex.resilience.circuit_breaker import CircuitBreaker, CircuitOpenError, CircuitState
-from codex.resilience.degradation import DegradationError, GracefulDegradation
-from codex.resilience.retry import RetryExhausted, retry_with_backoff
-
-
-
-
-
 
 sys.path.insert(0, "src")
 
+from codex.resilience.circuit_breaker import CircuitBreaker, CircuitOpenError, CircuitState
+from codex.resilience.degradation import DegradationError, GracefulDegradation
+from codex.resilience.retry import RetryExhausted, retry_with_backoff
 
 # ---------------------------------------------------------------------------
 # Strategies

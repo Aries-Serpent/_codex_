@@ -13,22 +13,18 @@ Test Categories:
 
 Run with: pytest tests/security/test_hardening_integration.py -v
 """
+
 from __future__ import annotations
+
 from pathlib import Path
 from unittest.mock import Mock
-    from codex.security.validators import (
-        import re
-            from codex.security.middleware import CSRFTokenManager
-            from codex.security.middleware import CSRFTokenManager
-            from codex.security.middleware import RequestValidator
-            from codex.security.middleware import RequestValidator
-
-
 
 # pragma: allowlist secret
+import pytest
 
 # Import validators
 try:
+    from codex.security.validators import (
         BatchSizeValidator,
         EmailValidator,
         FileSizeValidator,
@@ -202,6 +198,7 @@ class TestAPIInputValidation:
 
     def test_username_validation(self) -> None:
         """OWASP A02: Validate username."""
+        import re
         validator = StringValidator(
             min_length=3,
             max_length=30,
@@ -378,6 +375,7 @@ class TestCSRFProtection:
     def test_csrf_token_generation(self) -> None:
         """CSRF tokens can be generated."""
         try:
+            from codex.security.middleware import CSRFTokenManager
         except ImportError:
             pytest.skip("Middleware not available")
 
@@ -389,6 +387,7 @@ class TestCSRFProtection:
     def test_csrf_token_validation(self) -> None:
         """Generated CSRF tokens validate correctly."""
         try:
+            from codex.security.middleware import CSRFTokenManager
         except ImportError:
             pytest.skip("Middleware not available")
 
@@ -409,6 +408,7 @@ class TestAuthenticationValidation:
     def test_bearer_token_format(self) -> None:
         """OWASP A02: Validate ****** format."""
         try:
+            from codex.security.middleware import RequestValidator
         except ImportError:
             pytest.skip("Middleware not available")
 
@@ -425,6 +425,7 @@ class TestAuthenticationValidation:
     def test_content_type_validation(self) -> None:
         """OWASP A04: Validate content type."""
         try:
+            from codex.security.middleware import RequestValidator
         except ImportError:
             pytest.skip("Middleware not available")
 

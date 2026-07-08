@@ -8,32 +8,14 @@ Phase: 14.1 - Core Module Testing
 Created: 2026-01-18
 AI Agency Policy Compliance: ✅
 """
+
 from __future__ import annotations
+
 from pathlib import Path
 from typing import TYPE_CHECKING
 from unittest.mock import MagicMock
-            from codex_ml.training import strategies
-            from codex_ml.training.strategies import resolve_strategy
-            from codex_ml.training.strategies import TrainingCallback
-            from codex_ml.training.strategies import TrainingResult
-            from codex_ml.training.strategies import resolve_strategy
-            from codex_ml.training.strategies import resolve_strategy
-            from codex_ml.training.strategies import resolve_strategy
-            from codex_ml.training.strategies import NoOpCallback
-            from codex_ml.training.strategies import NoOpCallback
-            from codex_ml.training.strategies import NoOpCallback
-            from codex_ml.training.strategies import NoOpCallback
-            from codex_ml.training.strategies import TrainingResult
-            from codex_ml.training.strategies import TrainingResult
-            from codex_ml.training.strategies import TrainingResult
-            from codex_ml.training.strategies import resolve_strategy
-            from codex_ml.training.strategies import resolve_strategy
-            from codex_ml.training.unified_training import UnifiedTrainingConfig
-            from codex_ml.training.strategies import (
-            from codex_ml.training.strategies import NoOpCallback
 
-
-
+import pytest
 
 if TYPE_CHECKING:
     pass
@@ -87,6 +69,7 @@ class TestModuleImport:
     def test_strategies_module_importable(self) -> None:
         """Verify strategies module can be imported."""
         try:
+            from codex_ml.training import strategies
 
             assert strategies is not None, "strategies must be initialized"
         except ImportError as e:
@@ -95,6 +78,7 @@ class TestModuleImport:
     def test_resolve_strategy_importable(self) -> None:
         """Verify resolve_strategy function can be imported."""
         try:
+            from codex_ml.training.strategies import resolve_strategy
 
             assert callable(resolve_strategy), "Condition must be true"
         except ImportError:
@@ -103,6 +87,7 @@ class TestModuleImport:
     def test_training_callback_importable(self) -> None:
         """Verify TrainingCallback can be imported."""
         try:
+            from codex_ml.training.strategies import TrainingCallback
 
             assert TrainingCallback is not None, "TrainingCallback must be initialized"
         except ImportError:
@@ -111,6 +96,7 @@ class TestModuleImport:
     def test_training_result_importable(self) -> None:
         """Verify TrainingResult can be imported."""
         try:
+            from codex_ml.training.strategies import TrainingResult
 
             assert TrainingResult is not None, "TrainingResult must be initialized"
         except ImportError:
@@ -129,6 +115,7 @@ class TestStrategyResolution:
     def test_resolve_valid_strategy(self, strategy_name: str) -> None:
         """Test resolving valid strategy names."""
         try:
+            from codex_ml.training.strategies import resolve_strategy
 
             strategy = resolve_strategy(strategy_name)
             assert strategy is not None, "strategy must be initialized"
@@ -141,6 +128,7 @@ class TestStrategyResolution:
     def test_resolve_invalid_strategy(self) -> None:
         """Test resolving invalid strategy name."""
         try:
+            from codex_ml.training.strategies import resolve_strategy
 
             with pytest.raises((ValueError, KeyError)):
                 resolve_strategy("nonexistent_strategy")
@@ -150,6 +138,7 @@ class TestStrategyResolution:
     def test_resolve_strategy_returns_callable(self) -> None:
         """Test that resolved strategy has a run method."""
         try:
+            from codex_ml.training.strategies import resolve_strategy
 
             strategy = resolve_strategy("functional")
             assert hasattr(strategy, "run") or callable(strategy)
@@ -168,6 +157,7 @@ class TestTrainingCallback:
     def test_callback_instantiation(self) -> None:
         """Test creating a TrainingCallback-compatible instance."""
         try:
+            from codex_ml.training.strategies import NoOpCallback
 
             callback = NoOpCallback()
             assert callback is not None, "callback must be initialized"
@@ -177,6 +167,7 @@ class TestTrainingCallback:
     def test_callback_on_epoch_start(self) -> None:
         """Test on_epoch_start callback method."""
         try:
+            from codex_ml.training.strategies import NoOpCallback
 
             callback = NoOpCallback()
             if hasattr(callback, "on_epoch_start"):
@@ -189,6 +180,7 @@ class TestTrainingCallback:
     def test_callback_on_epoch_end(self) -> None:
         """Test on_epoch_end callback method."""
         try:
+            from codex_ml.training.strategies import NoOpCallback
 
             callback = NoOpCallback()
             if hasattr(callback, "on_epoch_end"):
@@ -200,6 +192,7 @@ class TestTrainingCallback:
     def test_callback_on_step(self) -> None:
         """Test on_step callback method."""
         try:
+            from codex_ml.training.strategies import NoOpCallback
 
             callback = NoOpCallback()
             if hasattr(callback, "on_step"):
@@ -220,6 +213,7 @@ class TestTrainingResult:
     def test_result_instantiation(self) -> None:
         """Test creating a TrainingResult instance."""
         try:
+            from codex_ml.training.strategies import TrainingResult
 
             result = TrainingResult(
                 success=True,
@@ -233,6 +227,7 @@ class TestTrainingResult:
     def test_result_with_metrics(self) -> None:
         """Test TrainingResult with metrics."""
         try:
+            from codex_ml.training.strategies import TrainingResult
 
             result = TrainingResult(
                 success=True,
@@ -246,6 +241,7 @@ class TestTrainingResult:
     def test_result_failure(self) -> None:
         """Test TrainingResult for failed training."""
         try:
+            from codex_ml.training.strategies import TrainingResult
 
             result = TrainingResult(
                 success=False,
@@ -267,6 +263,7 @@ class TestStrategyInterface:
     def test_strategy_has_train_method(self) -> None:
         """Test that resolved strategy has run method."""
         try:
+            from codex_ml.training.strategies import resolve_strategy
 
             strategy = resolve_strategy("functional")
             assert hasattr(strategy, "run") or callable(strategy)
@@ -276,6 +273,8 @@ class TestStrategyInterface:
     def test_strategy_accepts_config(self) -> None:
         """Test that strategy accepts configuration."""
         try:
+            from codex_ml.training.strategies import resolve_strategy
+            from codex_ml.training.unified_training import UnifiedTrainingConfig
 
             strategy = resolve_strategy("functional")
             UnifiedTrainingConfig(model_name="test")
@@ -296,6 +295,7 @@ class TestCallbackRegistration:
     def test_register_callback(self) -> None:
         """Test registering a callback."""
         try:
+            from codex_ml.training.strategies import (
                 NoOpCallback,
                 TrainingCallback,
             )
@@ -314,6 +314,7 @@ class TestCallbackRegistration:
     def test_multiple_callbacks(self) -> None:
         """Test using multiple callbacks."""
         try:
+            from codex_ml.training.strategies import NoOpCallback
 
             callbacks = [NoOpCallback() for _ in range(3)]
             assert len(callbacks) == 3, "Callbacks must not be empty"

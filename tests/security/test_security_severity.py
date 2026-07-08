@@ -3,14 +3,13 @@ Test: Security Severity Classification (P5)
 - Builds a synthetic secret_entropy_report.json with varied entropy/length
 - Ensures classification counts and weighting structure
 """
-import pytest
+
 import json
 import os
 import shutil
 import subprocess
 import sys
 from pathlib import Path
-
 
 ART = Path("audit_artifacts")
 

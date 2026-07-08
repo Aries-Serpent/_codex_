@@ -3,13 +3,12 @@ Test Composite Writer Degrades
 
 Test module for composite writer degrades.
 """
-import pytest
+
 import json
 import time
 from pathlib import Path
+
 from codex_ml.tracking.writers import CompositeWriter, NdjsonWriter
-
-
 
 
 class FailingWriter:

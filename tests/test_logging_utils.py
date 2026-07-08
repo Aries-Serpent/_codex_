@@ -1,16 +1,16 @@
 """
+pytest.importorskip("tensorboard")
 Test Logging Utils
 
 Test module for logging utils.
 """
-pytest.importorskip("tensorboard")
-    pytest.importorskip("mlflow", reason="mlflow not installed")
+
 import json
 from pathlib import Path
+
+import pytest
+
 import src.logging_utils as logging_utils_mod
-
-
-
 
 
 def test_tb_writer_creates_eventfiles(tmp_path: Path):
@@ -23,6 +23,7 @@ def test_tb_writer_creates_eventfiles(tmp_path: Path):
 
 
 def test_mlflow_offline_smoke(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    pytest.importorskip("mlflow", reason="mlflow not installed")
     uri = f"file:{tmp_path / 'mlruns'}"
     monkeypatch.setenv("MLFLOW_TRACKING_URI", uri)
     monkeypatch.setenv("MLFLOW_ALLOW_FILE_STORE", "true")

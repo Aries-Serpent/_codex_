@@ -3,12 +3,12 @@
 These tests are disabled by default and only run when explicitly enabled
 via the CODEX_PERF_SMOKE environment variable.
 """
+
 from __future__ import annotations
+
 import os
-    import time
 
-
-
+import pytest
 
 # Skip all tests in this module unless CODEX_PERF_SMOKE=1
 pytestmark = pytest.mark.skipif(
@@ -27,6 +27,7 @@ def test_perf_smoke_marker():
     assert os.getenv("CODEX_PERF_SMOKE") == "1", "Condition must be true"
 
     # Minimal performance check - import should be fast
+    import time
 
     start = time.time()
 

@@ -6,11 +6,10 @@ Test Streaming Memory
 
 Test module for streaming memory.
 """
-import pytest
+
 import resource
+
 from src.training.streaming import stream_texts
-
-
 
 
 def test_streaming_memory(tmp_path):

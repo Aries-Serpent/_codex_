@@ -3,15 +3,14 @@ Test Purge Shared Artifact
 
 Test module for purge shared artifact.
 """
+
 from __future__ import annotations
-import pytest
+
 import hashlib
 import json
 from pathlib import Path
+
 from codex.archive.backend import ArchiveConfig, ArchiveDAL
-
-
-
 
 
 def _dal(tmp_path: Path) -> ArchiveDAL:

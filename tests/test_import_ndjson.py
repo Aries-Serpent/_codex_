@@ -1,4 +1,3 @@
-import pytest
 #             (session_id, 2, "session_end"),
 #             (session_id, 3, "hi"),
 #         ]

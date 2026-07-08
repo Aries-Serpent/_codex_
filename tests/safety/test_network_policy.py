@@ -1,9 +1,10 @@
 from __future__ import annotations
+
 from pathlib import Path
+
+import pytest
+
 from safety.network_policy import PolicyViolationError, enforce_network_policy, load_network_policy
-
-
-
 
 
 def test_load_network_policy_defaults_when_file_missing(tmp_path: Path) -> None:

@@ -3,16 +3,15 @@ Test Functional Training Evaluation
 
 Test module for functional training evaluation.
 """
+
 from __future__ import annotations
-torch = pytest.importorskip("torch")
+
 import types
 from typing import Any
-    import sys
-    from codex_ml import training
 
+import pytest
 
-
-
+torch = pytest.importorskip("torch")
 
 if not hasattr(torch, "tensor") or not hasattr(torch, "utils"):
     pytest.skip("PyTorch runtime not available", allow_module_level=True)
@@ -80,7 +79,9 @@ class DummyModel(torch.nn.Module):
 
 
 def test_run_functional_training_appends_validation_metrics(monkeypatch):
+    import sys
 
+    from codex_ml import training
 
     # Bypass HF pinning check and tokenizer loading entirely.
     # DummyTokenizer has all attributes that legacy_api expects after loading.

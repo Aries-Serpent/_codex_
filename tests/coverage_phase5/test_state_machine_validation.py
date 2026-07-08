@@ -100,7 +100,6 @@ def test_transition_history():
 
 def test_can_transition_check():
     """Test can_transition_to check."""
-import pytest
     sm = StateMachine()
 
     assert sm.can_transition_to(State.CONNECTING), "Condition must be true"

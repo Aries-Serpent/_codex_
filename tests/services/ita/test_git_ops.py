@@ -1,8 +1,9 @@
 from __future__ import annotations
+
+import pytest
+
 from services.ita.app.git_ops import PullRequestSimulation, _build_pr_url, simulate_pull_request
 from services.ita.app.models import GitCreatePullRequestBody
-
-
 
 
 def _payload() -> GitCreatePullRequestBody:

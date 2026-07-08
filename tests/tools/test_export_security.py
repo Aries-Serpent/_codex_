@@ -3,12 +3,13 @@ Test Export Security
 
 Test module for export security.
 """
+
 import pathlib
+
+import pytest
+
 from tools.codex_sqlite_align import _validate_identifier
 from tools.export_to_parquet import _ensure_within_base
-
-
-
 
 
 @pytest.mark.parametrize(

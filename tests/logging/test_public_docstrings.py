@@ -22,7 +22,6 @@ _DOC_TARGETS: list[tuple[object, str]] = [
 @pytest.mark.parametrize(("target", "expected_fragment"), _DOC_TARGETS)
 def test_public_docstrings_are_present(target: object, expected_fragment: str) -> None:
     """Docstrings should remain present and include a user-facing summary."""
-import pytest
 
     doc = inspect.getdoc(target)
     assert doc, f"{target!r} is missing a docstring"

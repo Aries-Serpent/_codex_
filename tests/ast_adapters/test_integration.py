@@ -3,14 +3,14 @@ Integration tests for AST adapters.
 
 Tests cross-adapter consistency, performance, and real-world usage.
 """
-pytest.importorskip("libcst", reason="libcst optional dependency — PythonASTAdapter unavailable")
+
 import time
+
+import pytest
+
+pytest.importorskip("libcst", reason="libcst optional dependency — PythonASTAdapter unavailable")
+
 from codex.ast_adapters import (
-        import json
-
-
-
-
     JSONASTAdapter,
     PythonASTAdapter,
     StandardizedASTNode,
@@ -234,6 +234,7 @@ config:
         """Test parsing large JSON documents"""
         # Create a large JSON structure
         large_data = {"items": [{"id": i, "name": f"item{i}"} for i in range(1000)]}
+        import json
 
         source = json.dumps(large_data)
 

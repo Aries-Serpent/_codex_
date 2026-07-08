@@ -2,13 +2,14 @@
 
 Tests for src/cli/pipeline.py to improve CLI module coverage.
 """
+
 import tempfile
 from pathlib import Path
 from unittest.mock import Mock, patch
+
+import pytest
+
 from src.cli.pipeline import (
-
-
-
     PipelineValidationError,
     run_pipeline,
     validate_pipeline_config,

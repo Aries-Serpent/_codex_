@@ -3,28 +3,20 @@
 Covers InMemoryBackend, SQLiteBackend, RedisBackend (mocked),
 FeastBackend Protocol conformance, and create_backend() factory.
 """
+
 from __future__ import annotations
-    return pytest.importorskip(
-    return pytest.importorskip(
-        pytest.importorskip("pyarrow")
+
 import importlib.util
 import json
 from unittest.mock import MagicMock, patch
-        import threading
-        import threading
-        import sys
-        import pyarrow.parquet as pq
-        import threading
-        import pyarrow.ipc as pa_ipc
-        import sys
 
-
-
+import pytest
 
 # ── Import helpers ──────────────────────────────────────────────────────────
 
 
 def _import_feast():
+    return pytest.importorskip(
         "codex_ml.features.feast_compat",
         reason="codex_ml.features.feast_compat not importable",
     )
@@ -106,6 +98,7 @@ class TestInMemoryBackend:
 
     def test_thread_safety_concurrent_writes(self):
         """Multiple threads writing to different keys must not clobber each other."""
+        import threading
 
         errors: list[Exception] = []
 
@@ -186,6 +179,7 @@ class TestSQLiteBackend:
         b2.close()
 
     def test_thread_safety(self):
+        import threading
 
         errors: list[Exception] = []
 
@@ -277,6 +271,7 @@ class TestRedisBackend:
 
     def test_missing_redis_package_raises_import_error(self):
         mod = _import_feast()
+        import sys
 
         real_redis = sys.modules.pop("redis", None)
         try:
@@ -348,6 +343,7 @@ def _import_duckdb():
     if importlib.util.find_spec("duckdb") is None:
         pytest.skip("duckdb or feast_compat not importable")
 
+    return pytest.importorskip(
         "codex_ml.features.feast_compat",
         reason="duckdb or feast_compat not importable",
     )
@@ -436,6 +432,7 @@ class TestDuckDBBackend:
         result_path = b.materialize_to_parquet("feats", out)
         assert result_path == out, "Result must not be empty"
         assert out.exists(), "Condition must be true"
+        import pyarrow.parquet as pq
 
         table = pq.read_table(str(out))
         assert table.num_rows == 2, "num_rows is not valid"
@@ -451,6 +448,7 @@ class TestDuckDBBackend:
         b.close()
 
     def test_thread_safety_concurrent_writes(self):
+        import threading
 
         mod = _import_duckdb()
         b = mod.DuckDBBackend()
@@ -501,6 +499,7 @@ class TestDuckDBBackend:
 
     def test_materialize_to_arrow_ipc(self, tmp_path):
         """Arrow IPC export produces a valid file readable by pyarrow."""
+        pytest.importorskip("pyarrow")
         mod = _import_duckdb()
         b = mod.DuckDBBackend()
         b.write("feats", "u1", {"age": 25, "score": 0.8})
@@ -509,6 +508,7 @@ class TestDuckDBBackend:
         result_path = b.materialize_to_arrow_ipc("feats", out)
         assert result_path == out, "Result must not be empty"
         assert out.exists(), "Condition must be true"
+        import pyarrow.ipc as pa_ipc
 
         reader = pa_ipc.open_file(str(out))
         table = reader.read_all()
@@ -517,6 +517,7 @@ class TestDuckDBBackend:
 
     def test_materialize_to_arrow_ipc_creates_parent_dirs(self, tmp_path):
         """Arrow IPC export creates missing parent directories."""
+        pytest.importorskip("pyarrow")
         mod = _import_duckdb()
         b = mod.DuckDBBackend()
         b.write("feats", "u1", {"val": 99})
@@ -528,6 +529,7 @@ class TestDuckDBBackend:
     def test_materialize_to_arrow_ipc_no_pyarrow(self, tmp_path, monkeypatch):
         """materialize_to_arrow_ipc raises ImportError when pyarrow is absent."""
         mod = _import_duckdb()
+        import sys
 
         monkeypatch.setitem(sys.modules, "pyarrow", None)
         monkeypatch.setitem(sys.modules, "pyarrow.ipc", None)

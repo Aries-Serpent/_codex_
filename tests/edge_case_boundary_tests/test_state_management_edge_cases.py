@@ -9,10 +9,9 @@ Categories tested:
 - E3: Data Consistency (ACID properties, version conflicts)
 - E4: Concurrency Edge Cases (race conditions, deadlock, livelock)
 """
-import pytest
+
 import threading
 from datetime import datetime, timedelta
-
 
 
 class TestStateTransitions:

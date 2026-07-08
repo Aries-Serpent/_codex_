@@ -10,9 +10,8 @@ Generate comprehensive test coverage for protocol communication:
 
 Target: 40+ test methods covering 80+ statements
 """
-import pytest
-from datetime import datetime
 
+from datetime import datetime
 
 
 class TestMessageSerialization:

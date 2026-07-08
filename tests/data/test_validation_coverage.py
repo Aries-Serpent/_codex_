@@ -8,30 +8,14 @@ Phase: 14.1 - Core Module Testing
 Created: 2026-01-18
 AI Agency Policy Compliance: ✅
 """
+
 from __future__ import annotations
+
 import json
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
-            from codex_ml.data import validation
-            from codex_ml.data.validation import Validator
-            from codex_ml.data import validation
-            from codex_ml.data import validation
-            from codex_ml.data import validation
-            from codex_ml.data import validation
-            from codex_ml.data import validation
-            from codex_ml.data import validation
-            from codex_ml.data import validation
-            from codex_ml.data import validation
-            from codex_ml.data import validation
-            from codex_ml.data import validation
-            from codex_ml.data import validation
-            from codex_ml.data import validation
-            from codex_ml.data import validation
-            from codex_ml.data import validation
-            from codex_ml.data import validation
 
-
-
+import pytest
 
 if TYPE_CHECKING:
     pass
@@ -89,6 +73,7 @@ class TestModuleImport:
     def test_validation_module_importable(self) -> None:
         """Verify validation module can be imported."""
         try:
+            from codex_ml.data import validation
 
             assert validation is not None, "validation must be initialized"
         except ImportError as e:
@@ -97,6 +82,7 @@ class TestModuleImport:
     def test_validator_class_importable(self) -> None:
         """Verify Validator class can be imported."""
         try:
+            from codex_ml.data.validation import Validator
 
             assert Validator is not None, "Validator must be initialized"
         except ImportError:
@@ -114,6 +100,7 @@ class TestSchemaValidation:
     def test_validate_record_with_valid_data(self) -> None:
         """Test validating a valid data record."""
         try:
+            from codex_ml.data import validation
 
             record = {"id": 1, "text": "test"}
             # Look for validation function
@@ -131,6 +118,7 @@ class TestSchemaValidation:
     def test_validate_record_with_missing_fields(self) -> None:
         """Test validating a record with missing required fields."""
         try:
+            from codex_ml.data import validation
 
             record = {}  # Empty record
             if hasattr(validation, "validate_record"):
@@ -155,6 +143,7 @@ class TestFileValidation:
     def test_validate_jsonl_file(self, valid_jsonl_file: Path) -> None:
         """Test validating a JSONL file."""
         try:
+            from codex_ml.data import validation
 
             if hasattr(validation, "validate_file"):
                 result = validation.validate_file(str(valid_jsonl_file))
@@ -168,6 +157,7 @@ class TestFileValidation:
     def test_validate_invalid_jsonl_file(self, invalid_jsonl_file: Path) -> None:
         """Test validating an invalid JSONL file."""
         try:
+            from codex_ml.data import validation
 
             if hasattr(validation, "validate_file"):
                 result = validation.validate_file(str(invalid_jsonl_file))
@@ -179,6 +169,7 @@ class TestFileValidation:
     def test_validate_empty_file(self, empty_file: Path) -> None:
         """Test validating an empty file."""
         try:
+            from codex_ml.data import validation
 
             if hasattr(validation, "validate_file"):
                 result = validation.validate_file(str(empty_file))
@@ -213,6 +204,7 @@ class TestDataTypeValidation:
     def test_validate_text_field(self) -> None:
         """Test validating text field type."""
         try:
+            from codex_ml.data import validation
 
             if hasattr(validation, "validate_text"):
                 assert validation.validate_text("valid text"), "Condition must be true"
@@ -232,6 +224,7 @@ class TestChecksumValidation:
     def test_compute_checksum(self, valid_jsonl_file: Path) -> None:
         """Test computing file checksum."""
         try:
+            from codex_ml.data import validation
 
             if hasattr(validation, "compute_checksum"):
                 checksum = validation.compute_checksum(str(valid_jsonl_file))
@@ -243,6 +236,7 @@ class TestChecksumValidation:
     def test_verify_checksum(self, valid_jsonl_file: Path) -> None:
         """Test verifying file checksum."""
         try:
+            from codex_ml.data import validation
 
             if hasattr(validation, "compute_checksum") and hasattr(validation, "verify_checksum"):
                 expected = validation.compute_checksum(str(valid_jsonl_file))
@@ -263,6 +257,7 @@ class TestEncodingValidation:
     def test_validate_utf8_encoding(self, valid_jsonl_file: Path) -> None:
         """Test validating UTF-8 encoding."""
         try:
+            from codex_ml.data import validation
 
             if hasattr(validation, "validate_encoding"):
                 result = validation.validate_encoding(str(valid_jsonl_file), "utf-8")
@@ -273,6 +268,7 @@ class TestEncodingValidation:
     def test_detect_encoding(self, valid_jsonl_file: Path) -> None:
         """Test detecting file encoding."""
         try:
+            from codex_ml.data import validation
 
             if hasattr(validation, "detect_encoding"):
                 encoding = validation.detect_encoding(str(valid_jsonl_file))
@@ -292,6 +288,7 @@ class TestRecordCountValidation:
     def test_count_records(self, valid_jsonl_file: Path) -> None:
         """Test counting records in file."""
         try:
+            from codex_ml.data import validation
 
             if hasattr(validation, "count_records"):
                 count = validation.count_records(str(valid_jsonl_file))
@@ -302,6 +299,7 @@ class TestRecordCountValidation:
     def test_validate_record_count(self, valid_jsonl_file: Path) -> None:
         """Test validating expected record count."""
         try:
+            from codex_ml.data import validation
 
             if hasattr(validation, "validate_record_count"):
                 result = validation.validate_record_count(str(valid_jsonl_file), 3)
@@ -321,6 +319,7 @@ class TestValidationResults:
     def test_validation_result_structure(self) -> None:
         """Test validation result structure."""
         try:
+            from codex_ml.data import validation
 
             if hasattr(validation, "ValidationResult"):
                 result = validation.ValidationResult(
@@ -347,6 +346,7 @@ class TestErrorHandling:
     def test_validate_nonexistent_file(self) -> None:
         """Test validating non-existent file."""
         try:
+            from codex_ml.data import validation
 
             if hasattr(validation, "validate_file"):
                 with pytest.raises((FileNotFoundError, IOError, ValueError)):
@@ -357,6 +357,7 @@ class TestErrorHandling:
     def test_validate_null_input(self) -> None:
         """Test validating null input."""
         try:
+            from codex_ml.data import validation
 
             if hasattr(validation, "validate_record"):
                 result = validation.validate_record(None)

@@ -6,10 +6,9 @@ Test Ingestion Split Cache
 
 Test module for ingestion split cache.
 """
-import pytest
+
 from codex_ml.data.cache import SimpleCache
 from ingestion.utils import split_dataset
-
 
 
 def test_split_dataset_deterministic_and_cache():

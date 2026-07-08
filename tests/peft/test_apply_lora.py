@@ -1,9 +1,10 @@
 """Tests for the graceful LoRA fallback when ``peft`` is unavailable."""
+
 from __future__ import annotations
+
+import pytest
+
 from codex_ml.peft import peft_adapter
-
-
-
 
 if peft_adapter.LoraConfig is not None and peft_adapter.get_peft_model is not None:
     pytest.skip("peft is installed, skip fallback test", allow_module_level=True)

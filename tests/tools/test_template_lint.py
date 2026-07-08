@@ -3,10 +3,9 @@ Test Template Lint
 
 Test module for template lint.
 """
-import pytest
+
 import subprocess
 import sys
-
 
 
 def test_template_lint_detects_missing(tmp_path):

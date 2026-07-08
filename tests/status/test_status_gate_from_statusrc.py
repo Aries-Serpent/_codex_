@@ -3,11 +3,10 @@ Test Status Gate From Statusrc
 
 Test module for status gate from statusrc.
 """
-import pytest
+
 import json
 import subprocess
 import sys
-
 
 
 def test_status_gate_with_coverage(tmp_path, monkeypatch):

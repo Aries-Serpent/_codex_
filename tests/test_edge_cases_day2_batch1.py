@@ -3,15 +3,12 @@ Test Suite for Agent Memory, Physics Orchestrator, Mental Mapping, and Cognitive
 
 Focus: Boundary conditions, exception handling, state transitions, integration scenarios
 """
+
 import sys
+
+import pytest
+
 from src.codex.utils.path_extended import get_repo_root
-    from agents.agent_memory import ContextFrame, MemoryEntry, PatternLibrary
-    from agents.mental_mapping import reset_clock, set_clock
-    from agents.physics_orchestrator import ActionPath, ActionType, ForceVector
-        import time
-
-
-
 
 # Add project paths
 sys.path.insert(0, str(get_repo_root() / "src"))
@@ -19,6 +16,9 @@ sys.path.insert(0, "/home/runner/work/_codex_/_codex_")
 
 # Import target modules
 try:
+    from agents.agent_memory import ContextFrame, MemoryEntry, PatternLibrary
+    from agents.mental_mapping import reset_clock, set_clock
+    from agents.physics_orchestrator import ActionPath, ActionType, ForceVector
 except ImportError as e:
     pytest.skip(f"Import error: {e}", allow_module_level=True)
 
@@ -635,6 +635,7 @@ class TestClockAbstraction:
     def test_clock_default_callable(self):
         """Clock should return current time by default"""
         reset_clock()
+        import time
         current = time.time()
         # Clock should return something close to current time
 

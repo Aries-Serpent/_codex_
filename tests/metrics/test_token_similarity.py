@@ -5,14 +5,13 @@ Validates:
 - Disabled mode skips output
 - Enabled mode produces similarity_index in range [0,1]
 """
-import pytest
+
 import json
 import os
 import shutil
 import subprocess
 import sys
 from pathlib import Path
-
 
 ART = Path("audit_artifacts")
 

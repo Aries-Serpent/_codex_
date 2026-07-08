@@ -4,23 +4,21 @@ Test HF Loader Module
 Integration tests for the HuggingFace loader module.
 Tests model/tokenizer loading, registry, and revision handling.
 """
+
 from __future__ import annotations
-pytest.importorskip("torch")
+
 import os
 from pathlib import Path
 from typing import Any
 from unittest.mock import MagicMock, patch
-from codex_ml import hf_loader
-            import torch
-        import torch
-        import torch
 
+import pytest
 
-
-
+pytest.importorskip("torch")
 
 
 # Import the module under test
+from codex_ml import hf_loader
 
 
 class TestCausalLMRegistry:
@@ -111,6 +109,7 @@ class TestAmpDtypeMapping:
     def skip_without_torch(self) -> None:
         """Skip test if torch not available or is a stub."""
         try:
+            import torch
 
             # Check if it's the real torch or a stub
             if not hasattr(torch, "float16") or not hasattr(torch, "bfloat16"):
@@ -120,6 +119,7 @@ class TestAmpDtypeMapping:
 
     def test_bf16_mapping(self, skip_without_torch: None) -> None:
         """Test bfloat16 dtype mapping."""
+        import torch
 
         # Ensure hf_loader module uses real torch, not stub
         hf_loader.torch = torch
@@ -130,6 +130,7 @@ class TestAmpDtypeMapping:
 
     def test_fp16_mapping(self, skip_without_torch: None) -> None:
         """Test float16 dtype mapping."""
+        import torch
 
         # Ensure hf_loader module uses real torch, not stub
         hf_loader.torch = torch

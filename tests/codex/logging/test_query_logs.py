@@ -7,19 +7,13 @@ Phase 6 tests covering:
 - format_text output formatting
 - main CLI entry point
 """
+
 from __future__ import annotations
+
 import importlib
 from unittest.mock import MagicMock, patch
-        from codex.logging.query_logs import parse_when
-        from codex.logging.query_logs import build_query
-        from codex.logging.query_logs import format_text
-        from codex.logging.query_logs import LogQueryEngine
-        from codex.logging.query_logs import _resolve_db_path
-        from codex.logging.query_logs import main
-        from codex.logging.query_logs import main
 
-
-
+import pytest
 
 
 def test_import_module():
@@ -37,6 +31,7 @@ class TestParseWhen:
     @pytest.fixture
     def parse_when(self):
         """Import parse_when function."""
+        from codex.logging.query_logs import parse_when
 
         return parse_when
 
@@ -101,6 +96,7 @@ class TestBuildQuery:
     @pytest.fixture
     def build_query(self):
         """Import build_query function."""
+        from codex.logging.query_logs import build_query
 
         return build_query
 
@@ -311,6 +307,7 @@ class TestFormatText:
     @pytest.fixture
     def format_text(self):
         """Import format_text function."""
+        from codex.logging.query_logs import format_text
 
         return format_text
 
@@ -396,6 +393,7 @@ class TestLogQueryEngine:
     @pytest.fixture
     def engine(self):
         """Create LogQueryEngine instance."""
+        from codex.logging.query_logs import LogQueryEngine
 
         return LogQueryEngine()
 
@@ -448,6 +446,7 @@ class TestResolvDbPath:
     @pytest.fixture
     def resolve_db_path(self):
         """Import _resolve_db_path function."""
+        from codex.logging.query_logs import _resolve_db_path
 
         return _resolve_db_path
 
@@ -472,6 +471,7 @@ class TestMain:
     @patch("codex.logging.query_logs.infer_columns")
     def test_main_with_help(self, mock_infer_cols, mock_infer_table, mock_open_db):
         """Test main with --help flag."""
+        from codex.logging.query_logs import main
 
         with pytest.raises(SystemExit) as exc_info:
             main(["--help"])
@@ -481,6 +481,7 @@ class TestMain:
 
     def test_main_exits_on_missing_db(self):
         """Test that main exits when database doesn't exist."""
+        from codex.logging.query_logs import main
 
         # Should exit with error when db doesn't exist
         result = main(["--db", "/nonexistent/path/to/db.sqlite"])

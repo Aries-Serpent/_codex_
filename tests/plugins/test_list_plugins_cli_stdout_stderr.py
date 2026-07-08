@@ -1,4 +1,3 @@
-import pytest
 #     assert (, "Condition must be true"
 #         proc.stderr.strip() == ""
 #         or "WARNING" in proc.stderr

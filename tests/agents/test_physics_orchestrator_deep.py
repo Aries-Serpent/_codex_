@@ -6,35 +6,8 @@ Strategy: Cover major uncovered classes
 Focus: SwarmIntelligence, TaskDecomposer, ReflectionLoop, QuantumState,
        SuperpositionExplorer, EnergyLandscape, DiffusionFlowModel
 """
-        from agents.physics_orchestrator import SwarmIntelligence
-        from agents.physics_orchestrator import SwarmIntelligence
-        from agents.physics_orchestrator import SwarmIntelligence
-        from agents.physics_orchestrator import SwarmIntelligence
-        from agents.physics_orchestrator import SwarmIntelligence
-        from agents.physics_orchestrator import SwarmParticle
-        from agents.physics_orchestrator import SwarmParticle
-        from agents.physics_orchestrator import TaskDecomposer
-        from agents.physics_orchestrator import ActionPath, ActionType, TaskDecomposer
-        from agents.physics_orchestrator import SubTask, TaskDecomposer
-        from agents.physics_orchestrator import SubTask
-        from agents.physics_orchestrator import SubTask
-            from agents.physics_orchestrator import EnergyLandscape
-            from agents.physics_orchestrator import EnergyLandscape, EnergyState
-            from agents.physics_orchestrator import EnergyLandscape, EnergyState
-            from agents.physics_orchestrator import DiffusionFlowModel
-            from agents.physics_orchestrator import DiffusionFlowModel
-            from agents.physics_orchestrator import ReflectionLoop
-            from agents.physics_orchestrator import ReflectionLoop
-            from agents.physics_orchestrator import ReflectionLoop
-            from agents.physics_orchestrator import QuantumState
-            from agents.physics_orchestrator import QuantumState
-            from agents.physics_orchestrator import QuantumState
-            from agents.physics_orchestrator import SuperpositionExplorer
-            from agents.physics_orchestrator import SuperpositionExplorer
-            from agents.physics_orchestrator import SuperpositionExplorer
-        from agents.physics_orchestrator import SwarmIntelligence, TaskDecomposer
-            from agents.physics_orchestrator import (
 
+import pytest
 
 # ============================================================================
 # SWARM INTELLIGENCE TESTS
@@ -46,6 +19,7 @@ class TestSwarmIntelligence:
 
     def test_swarm_initialization(self):
         """Test SwarmIntelligence initialization."""
+        from agents.physics_orchestrator import SwarmIntelligence
 
         swarm = SwarmIntelligence(num_particles=5, dimensions=2)
 
@@ -56,6 +30,7 @@ class TestSwarmIntelligence:
 
     def test_initialize_swarm(self):
         """Test initializing swarm with bounds."""
+        from agents.physics_orchestrator import SwarmIntelligence
 
         swarm = SwarmIntelligence(num_particles=10, dimensions=3)
         bounds = [(-10.0, 10.0), (-10.0, 10.0), (-10.0, 10.0)]
@@ -69,6 +44,7 @@ class TestSwarmIntelligence:
 
     def test_evaluate_fitness(self):
         """Test fitness evaluation."""
+        from agents.physics_orchestrator import SwarmIntelligence
 
         swarm = SwarmIntelligence()
 
@@ -83,6 +59,7 @@ class TestSwarmIntelligence:
 
     def test_update_swarm(self):
         """Test updating swarm positions and velocities."""
+        from agents.physics_orchestrator import SwarmIntelligence
 
         swarm = SwarmIntelligence(num_particles=3, dimensions=2)
         bounds = [(-5.0, 5.0), (-5.0, 5.0)]
@@ -98,6 +75,7 @@ class TestSwarmIntelligence:
 
     def test_run_optimization(self):
         """Test full swarm optimization."""
+        from agents.physics_orchestrator import SwarmIntelligence
 
         swarm = SwarmIntelligence(num_particles=5, dimensions=2)
 
@@ -123,6 +101,7 @@ class TestSwarmParticle:
 
     def test_swarm_particle_creation(self):
         """Test creating a SwarmParticle."""
+        from agents.physics_orchestrator import SwarmParticle
 
         particle = SwarmParticle(position=(1.0, 2.0), velocity=(0.1, 0.2))
 
@@ -135,6 +114,7 @@ class TestSwarmParticle:
 
     def test_swarm_particle_with_best(self):
         """Test SwarmParticle with explicit personal best."""
+        from agents.physics_orchestrator import SwarmParticle
 
         particle = SwarmParticle(
             position=(1.0, 2.0),
@@ -157,6 +137,7 @@ class TestTaskDecomposer:
 
     def test_task_decomposer_initialization(self):
         """Test TaskDecomposer initialization."""
+        from agents.physics_orchestrator import TaskDecomposer
 
         decomposer = TaskDecomposer(max_workers=4)
 
@@ -165,6 +146,7 @@ class TestTaskDecomposer:
 
     def test_decompose_task(self):
         """Test decomposing a task into subtasks."""
+        from agents.physics_orchestrator import ActionPath, ActionType, TaskDecomposer
 
         decomposer = TaskDecomposer()
 
@@ -176,6 +158,7 @@ class TestTaskDecomposer:
 
     def test_build_dependency_graph(self):
         """Test building dependency graph for subtasks."""
+        from agents.physics_orchestrator import SubTask, TaskDecomposer
 
         decomposer = TaskDecomposer()
 
@@ -201,6 +184,7 @@ class TestSubTask:
 
     def test_subtask_creation(self):
         """Test creating a SubTask."""
+        from agents.physics_orchestrator import SubTask
 
         subtask = SubTask(task_id="task_001", description="Subtask description")
 
@@ -210,6 +194,7 @@ class TestSubTask:
 
     def test_subtask_with_dependencies(self):
         """Test SubTask with dependencies."""
+        from agents.physics_orchestrator import SubTask
 
         subtask = SubTask(
             task_id="task_002",
@@ -233,6 +218,7 @@ class TestEnergyLandscape:
     def test_energy_landscape_initialization(self):
         """Test EnergyLandscape initialization."""
         try:
+            from agents.physics_orchestrator import EnergyLandscape
 
             landscape = EnergyLandscape(temperature=1.0)
 
@@ -244,6 +230,7 @@ class TestEnergyLandscape:
     def test_calculate_potential(self):
         """Test calculating potential energy at a point."""
         try:
+            from agents.physics_orchestrator import EnergyLandscape, EnergyState
 
             landscape = EnergyLandscape(temperature=1.0)
             state = EnergyState(configuration={"x": 1.0, "y": 2.0})
@@ -257,6 +244,7 @@ class TestEnergyLandscape:
     def test_find_local_minimum(self):
         """Test finding optimal state in energy landscape."""
         try:
+            from agents.physics_orchestrator import EnergyLandscape, EnergyState
 
             landscape = EnergyLandscape(temperature=1.0)
             state1 = EnergyState(configuration={"x": 1.0}, energy=10.0)
@@ -281,6 +269,7 @@ class TestDiffusionFlowModel:
     def test_diffusion_model_initialization(self):
         """Test DiffusionFlowModel initialization."""
         try:
+            from agents.physics_orchestrator import DiffusionFlowModel
 
             model = DiffusionFlowModel()
 
@@ -291,6 +280,7 @@ class TestDiffusionFlowModel:
     def test_diffusion_step(self):
         """Test single diffusion step."""
         try:
+            from agents.physics_orchestrator import DiffusionFlowModel
 
             model = DiffusionFlowModel()
 
@@ -315,6 +305,7 @@ class TestReflectionLoop:
     def test_reflection_loop_initialization(self):
         """Test ReflectionLoop initialization."""
         try:
+            from agents.physics_orchestrator import ReflectionLoop
 
             loop = ReflectionLoop()
 
@@ -325,6 +316,7 @@ class TestReflectionLoop:
     def test_reflect_on_decision(self):
         """Test reflecting on a decision."""
         try:
+            from agents.physics_orchestrator import ReflectionLoop
 
             loop = ReflectionLoop()
 
@@ -339,6 +331,7 @@ class TestReflectionLoop:
     def test_learn_from_experience(self):
         """Test learning from past experiences."""
         try:
+            from agents.physics_orchestrator import ReflectionLoop
 
             loop = ReflectionLoop()
 
@@ -365,6 +358,7 @@ class TestQuantumState:
     def test_quantum_state_initialization(self):
         """Test QuantumState initialization."""
         try:
+            from agents.physics_orchestrator import QuantumState
 
             state = QuantumState(amplitudes={"state_a": complex(1.0, 0.0)})
 
@@ -376,6 +370,7 @@ class TestQuantumState:
     def test_quantum_superposition(self):
         """Test creating quantum superposition."""
         try:
+            from agents.physics_orchestrator import QuantumState
 
             # Create a state in superposition of two basis states
             state = QuantumState(
@@ -395,6 +390,7 @@ class TestQuantumState:
     def test_measure_quantum_state(self):
         """Test measuring quantum state."""
         try:
+            from agents.physics_orchestrator import QuantumState
 
             state = QuantumState(amplitudes={"up": complex(0.7, 0.0), "down": complex(0.7, 0.0)})
 
@@ -416,6 +412,7 @@ class TestSuperpositionExplorer:
     def test_superposition_explorer_initialization(self):
         """Test SuperpositionExplorer initialization."""
         try:
+            from agents.physics_orchestrator import SuperpositionExplorer
 
             explorer = SuperpositionExplorer()
 
@@ -426,6 +423,7 @@ class TestSuperpositionExplorer:
     def test_explore_solution_space(self):
         """Test exploring solution space in superposition."""
         try:
+            from agents.physics_orchestrator import SuperpositionExplorer
 
             explorer = SuperpositionExplorer()
 
@@ -438,6 +436,7 @@ class TestSuperpositionExplorer:
     def test_collapse_superposition(self):
         """Test collapsing superposition to single solution."""
         try:
+            from agents.physics_orchestrator import SuperpositionExplorer
 
             explorer = SuperpositionExplorer()
 
@@ -459,6 +458,7 @@ class TestPhysicsOrchestratorIntegration:
 
     def test_swarm_to_task_decomposition(self):
         """Test using swarm intelligence for task decomposition."""
+        from agents.physics_orchestrator import SwarmIntelligence, TaskDecomposer
 
         swarm = SwarmIntelligence(num_particles=3, dimensions=2)
         decomposer = TaskDecomposer(max_workers=2)
@@ -470,6 +470,7 @@ class TestPhysicsOrchestratorIntegration:
     def test_energy_landscape_with_swarm(self):
         """Test optimizing over energy landscape with swarm."""
         try:
+            from agents.physics_orchestrator import (
                 EnergyLandscape,
                 EnergyState,
                 SwarmIntelligence,

@@ -3,13 +3,12 @@ Test System Snapshot
 
 Test module for system snapshot.
 """
+
 from __future__ import annotations
-import pytest
+
 from types import SimpleNamespace
+
 from codex_ml.monitoring import system_metrics
-
-
-
 
 
 def test_system_snapshot_resilient(monkeypatch):

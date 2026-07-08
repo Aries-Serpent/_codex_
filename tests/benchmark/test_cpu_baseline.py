@@ -3,19 +3,15 @@
 Verifies that the baseline runner produces valid output on CPU-only machines.
 All tests are hardware-agnostic and complete in < 5 s.
 """
+
 from __future__ import annotations
-import pytest
+
 import json
 import sys
 from pathlib import Path
-from cpu_baseline import compare_with_baseline, run_benchmarks
-        from cpu_baseline import main
-        from cpu_baseline import main
-        from cpu_baseline import main, run_benchmarks
-
-
 
 sys.path.insert(0, str(Path(__file__).parents[2] / "scripts" / "benchmark"))
+from cpu_baseline import compare_with_baseline, run_benchmarks
 
 
 class TestRunBenchmarks:
@@ -143,6 +139,7 @@ class TestCompareWithBaseline:
 
 class TestCLI:
     def test_cli_suite_flag(self, tmp_path):
+        from cpu_baseline import main
 
         json_path = tmp_path / "result.json"
         rc = main(["--suite", "cpu", "--json", str(json_path)])
@@ -152,6 +149,7 @@ class TestCLI:
         assert "cpu" in data["suites"], "Data must not be empty"
 
     def test_cli_compare_creates_baseline_if_missing(self, tmp_path):
+        from cpu_baseline import main
 
         baseline_path = tmp_path / "baseline.json"
         rc = main(["--suite", "cpu", "--compare", str(baseline_path)])
@@ -159,6 +157,7 @@ class TestCLI:
         assert baseline_path.exists(), "Condition must be true"
 
     def test_cli_compare_no_regression(self, tmp_path):
+        from cpu_baseline import main, run_benchmarks
 
         # Save a baseline first
         baseline_path = tmp_path / "baseline.json"
