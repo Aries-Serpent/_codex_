@@ -293,7 +293,7 @@ class TestSerializationRoundTrip:
         original = {"id": 1, "name": "test", "active": True, "tags": ["a", "b"]}
         serialized = json.dumps(original).encode("utf-8")
         deserializer = DataDeserializer()
-        deserialized = deserializer.load_from_pickle(serialized)
+        deserialized = deserializer.deserialize_data(serialized)
         assert deserialized == original
 
     def test_roundtrip_complex_nested(self):
@@ -308,7 +308,7 @@ class TestSerializationRoundTrip:
         }
         serialized = json.dumps(original).encode("utf-8")
         deserializer = DataDeserializer()
-        deserialized = deserializer.load_from_pickle(serialized)
+        deserialized = deserializer.deserialize_data(serialized)
         assert deserialized == original
 
     def test_roundtrip_config_loader(self):
@@ -323,7 +323,7 @@ class TestSerializationRoundTrip:
 
         try:
             loader = ConfigLoader()
-            loaded = loader.load_pickle_config(temp_path)
+            loaded = loader.load_json_config(temp_path)
             assert loaded == original
         finally:
             Path(temp_path).unlink()
@@ -361,7 +361,7 @@ class TestSecurityImprovements:
         ).encode("utf-8")
 
         # This should safely deserialize without any code execution
-        result = deserializer.load_from_pickle(malicious_json)
+        result = deserializer.deserialize_data(malicious_json)
         assert isinstance(result, dict)
         assert "__class__" in result
 
@@ -385,7 +385,7 @@ class TestSecurityImprovements:
 
         # Attempt to trick JSON into instantiating a dangerous class
         # This is completely impossible with JSON
-        result = deserializer.load_from_pickle(
+        result = deserializer.deserialize_data(
             json.dumps({"type": "subprocess.Popen"}).encode("utf-8")
         )
         assert isinstance(result, dict)
