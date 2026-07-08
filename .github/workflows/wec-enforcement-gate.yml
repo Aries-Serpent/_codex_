@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-    - uses: actions/checkout@v5
-    - name: Check WEC compliance
-      run: |
-        echo "✓ WEC enforcement gate passed"
+      - uses: actions/checkout@v5
+      - name: Check WEC compliance
+        run: |
+          echo "✓ WEC enforcement gate passed"

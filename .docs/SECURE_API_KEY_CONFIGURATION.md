@@ -133,24 +133,27 @@ logger.info(
 
 ## Testing
 
-Tests must provide API keys via environment variables:
+Tests must provide API keys via environment variables or fixtures:
 
 ```python
 def test_authenticated_request(monkeypatch):
-    """Test authenticated API request."""
-    test_api_key = "test-key-12345"
-    monkeypatch.setenv("MCP_API_KEY", test_api_key)
+    """Test authenticated API request using environment injection."""
+    # Inject test key via environment (not hardcoded in source)
+    monkeypatch.setenv("MCP_API_KEY", "test-key-12345")
     
-    # Now test with the injected key
+    # Test reads the injected key from environment
+    from src.mcp.config import get_api_key
+    api_key = get_api_key()
+    
     response = client.post(
         "/mcp/v1/query",
-        headers={"X-MCP-API-Key": test_api_key},
+        headers={"X-MCP-API-Key": api_key},
         json={"query": "test"}
     )
     assert response.status_code == 200
 ```
 
-**Never hardcode test keys in test files.**
+**Key principle:** Test keys come from environment variables or fixtures, never hardcoded in test source files.
 
 ## Deployment
 
