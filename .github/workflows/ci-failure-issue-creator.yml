@@ -83,7 +83,17 @@ jobs:
           \ JSON.stringify(baseLabels));\ncore.setOutput('wf_slug',     wfSlug);\n\
           core.setOutput('badge',       badge);\ncore.info(`\"${wfName}\" \u2192 severity=${severity}\
           \ labels=${JSON.stringify(baseLabels)}`);\n"
-    - name: Fetch failed job details
+    
+      - name: Cache test results (Layer 3)
+        uses: actions/cache@v5
+        if: always()
+        with:
+          path: .pytest_cache/
+          key: ${{ runner.os }}-pytest-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-pytest-
+
+      - name: Fetch failed job details
       id: jobs
       if: github.event.workflow_run.conclusion == 'failure'
       uses: actions/github-script@v8

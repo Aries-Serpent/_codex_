@@ -1,98 +1,114 @@
-# Phase 13.3: Enterprise Compliance Audit - CodeQL
 name: CodeQL Security Analysis
-
 on:
   pull_request:
-    branches: [main, develop]
+    branches:
+    - main
+    - develop
   schedule:
-    - cron: '0 2 * * 0'  # Weekly on Sunday
-
+  - cron: 0 2 * * 0
 permissions:
   contents: read
   security-events: write
-
 jobs:
-  codeql:
+  bandit:
+    name: Bandit Security Scan
     runs-on: ubuntu-latest
+    steps:
+    
+      - name: Cache Python dependencies (Layer 1)
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - uses: actions/checkout@v5
+    - uses: actions/setup-python@v6
+      with:
+        cache: pip
+        python-version: '3.12'
+    - name: Install Bandit
+      run: pip install bandit
+    - name: Run Bandit scan
+      run: bandit -r src -f json -c .bandit.yaml -o bandit-report.json || true
+    - if: always()
+      name: Upload Bandit results (JSON)
+      uses: actions/upload-artifact@v5
+      with:
+        name: bandit-report
+        path: bandit-report.json
+    timeout-minutes: 30
+  codeql:
     name: CodeQL Security Analysis
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v5
+    - uses: github/codeql-action/init@v3
+      with:
+        languages: ${{ matrix.language }}
+    - uses: github/codeql-action/autobuild@v3
+    - uses: github/codeql-action/analyze@v3
+      with:
+        category: /language:${{ matrix.language }}
     strategy:
       matrix:
-        language: ['python', 'javascript']
-    steps:
-      - uses: actions/checkout@v5
-
-      - uses: github/codeql-action/init@v3
-        with:
-          languages: ${{ matrix.language }}
-
-      - uses: github/codeql-action/autobuild@v3
-
-      - uses: github/codeql-action/analyze@v3
-        with:
-          category: /language:${{ matrix.language }}
-
-  bandit:
-    runs-on: ubuntu-latest
-    name: Bandit Security Scan
-    steps:
-      - uses: actions/checkout@v5
-
-      - uses: actions/setup-python@v6
-        with:
-          python-version: '3.12'
-          cache: 'pip'
-
-      - name: Install Bandit
-        run: pip install bandit
-
-      - name: Run Bandit scan
-        run: bandit -r src -f json -c .bandit.yaml -o bandit-report.json || true
-
-      - name: Upload Bandit results (JSON)
-        if: always()
-        uses: actions/upload-artifact@v5
-        with:
-          name: bandit-report
-          path: bandit-report.json
-
-  semgrep:
-    runs-on: ubuntu-latest
-    name: Semgrep Custom Rules
-    steps:
-      - uses: actions/checkout@v5
-
-      - name: Install Semgrep
-        run: pip install semgrep
-
-      - name: Run Semgrep
-        run: |
-          semgrep --config .semgrep/semgrep.yml src --sarif > semgrep-report.json || true
-
-      - name: Upload Semgrep results
-        if: always()
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: semgrep-report.json
-
+        language:
+        - python
+        - javascript
+    timeout-minutes: 30
   compliance-report:
-    needs: [codeql, bandit, semgrep]
-    runs-on: ubuntu-latest
-    name: Generate Compliance Report
     if: always()
+    name: Generate Compliance Report
+    needs:
+    - codeql
+    - bandit
+    - semgrep
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+    - uses: actions/checkout@v5
+    - name: Create compliance dashboard
+      run: 'echo "# 🛡️ Compliance Audit Report"
 
-      - name: Create compliance dashboard
-        run: |
-          echo "# 🛡️ Compliance Audit Report"
-          echo "Generated: $(date)"
-          echo ""
-          echo "## Security Scan Results"
-          echo "- CodeQL: COMPLETE"
-          echo "- Bandit: COMPLETE"
-          echo "- Semgrep: COMPLETE"
-          echo ""
-          echo "## Next Steps"
-          echo "1. Review security alerts in GitHub Security tab"
-          echo "2. Address critical/high severity issues"
-          echo "3. Create issues for medium/low severity findings"
+        echo "Generated: $(date)"
+
+        echo ""
+
+        echo "## Security Scan Results"
+
+        echo "- CodeQL: COMPLETE"
+
+        echo "- Bandit: COMPLETE"
+
+        echo "- Semgrep: COMPLETE"
+
+        echo ""
+
+        echo "## Next Steps"
+
+        echo "1. Review security alerts in GitHub Security tab"
+
+        echo "2. Address critical/high severity issues"
+
+        echo "3. Create issues for medium/low severity findings"
+
+        '
+    timeout-minutes: 30
+  semgrep:
+    name: Semgrep Custom Rules
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v5
+    - name: Install Semgrep
+      run: pip install semgrep
+    - name: Run Semgrep
+      run: 'semgrep --config .semgrep/semgrep.yml src --sarif > semgrep-report.json
+        || true
+
+        '
+    - if: always()
+      name: Upload Semgrep results
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: semgrep-report.json
+    timeout-minutes: 30

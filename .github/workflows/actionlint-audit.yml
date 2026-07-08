@@ -20,7 +20,17 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-    - name: Checkout repository
+    
+      - name: Cache test results (Layer 3)
+        uses: actions/cache@v5
+        if: always()
+        with:
+          path: .pytest_cache/
+          key: ${{ runner.os }}-pytest-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-pytest-
+
+      - name: Checkout repository
       uses: actions/checkout@v5
       with:
         fetch-depth: 1

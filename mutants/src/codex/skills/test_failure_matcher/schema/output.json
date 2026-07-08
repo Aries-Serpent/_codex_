@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["failures", "summary"],
+  "properties": {
+    "failures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["test_name", "pattern_id", "category", "message", "fix"],
+        "properties": {
+          "test_name": {"type": "string"},
+          "pattern_id": {"type": "string"},
+          "category": {"type": "string"},
+          "message": {"type": "string"},
+          "fix": {"type": "string"},
+          "file": {"type": "string"},
+          "line": {"type": ["integer", "null"]}
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": ["total", "categories"],
+      "properties": {
+        "total": {"type": "integer"},
+        "categories": {
+          "type": "object",
+          "additionalProperties": {"type": "integer"}
+        }
+      }
+    }
+  }
+}

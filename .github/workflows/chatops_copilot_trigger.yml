@@ -17,7 +17,16 @@ jobs:
     timeout-minutes: 60
     if: startsWith(github.event.comment.body, '/copilot')
     steps:
-    - uses: actions/checkout@v5
+    
+      - name: Cache Python dependencies (Layer 1)
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - uses: actions/checkout@v5
     - name: Cache pip downloads
       uses: actions/cache@v5
       with:
@@ -221,7 +230,26 @@ jobs:
         \ \"Accept: application/vnd.github+json\" \\\n  \"https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments\"\
         \ \\\n  -d @/tmp/tier_body.json \\\n  > /dev/null\necho \"\u2705 Posted tier\
         \ report on PR  #${PR_NUMBER}\"\n"
-    - name: Execute /copilot help
+    
+      - name: Cache test results (Layer 3)
+        uses: actions/cache@v5
+        if: always()
+        with:
+          path: .pytest_cache/
+          key: ${{ runner.os }}-pytest-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-pytest-
+
+      
+      - name: Cache coverage reports (Layer 4)
+        uses: actions/cache@v5
+        with:
+          path: coverage/
+          key: ${{ runner.os }}-coverage-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-coverage-
+
+      - name: Execute /copilot help
       if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD ==
         'help'
       env:

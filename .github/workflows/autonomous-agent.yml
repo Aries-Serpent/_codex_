@@ -28,7 +28,17 @@ jobs:
     outputs:
       approved: ${{ steps.guard.outputs.approved }}
     steps:
-    - name: Checkout code
+    
+      - name: Cache test results (Layer 3)
+        uses: actions/cache@v5
+        if: always()
+        with:
+          path: .pytest_cache/
+          key: ${{ runner.os }}-pytest-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-pytest-
+
+      - name: Checkout code
       uses: actions/checkout@v5
       with:
         sparse-checkout: '.github

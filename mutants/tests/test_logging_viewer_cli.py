@@ -1,0 +1,87 @@
+"""
+Test Logging Viewer Cli
+
+Test module for logging viewer cli.
+"""
+
+# -*- coding: utf-8 -*-
+import json
+import os
+import sqlite3
+import subprocess
+import sys
+from pathlib import Path
+
+import pytest
+
+from codex.logging import viewer
+
+
+def _make_db(tmp: Path) -> Path:
+    db = tmp / "logs.db"
+    conn = sqlite3.connect(str(db))
+    conn.execute("""CREATE TABLE logs(
+        session_id TEXT, ts TEXT, level TEXT, message TEXT
+    )""")
+    rows = [
+        ("S-1", "2025-08-18 01:00:00", "INFO", "start session"),
+        ("S-1", "2025-08-18 01:01:00", "WARN", "minor warning"),
+        ("S-2", "2025-08-18 01:02:00", "INFO", "other session"),
+        ("S-1", "2025-08-18 01:03:00", "ERROR", "boom"),
+    ]
+    conn.executemany("INSERT INTO logs VALUES (?,?,?,?)", rows)
+    conn.commit()
+    conn.close()
+    return db
+
+
+def test_cli_text_output(tmp_path: Path):
+    db = _make_db(tmp_path)
+    cmd = [
+        sys.executable,
+        "-m",
+        "codex.logging.viewer",
+        "--session-id",
+        "S-1",
+        "--db",
+        str(db),
+        "--format",
+        "text",
+    ]
+    env = {**os.environ, "PYTHONPATH": str(Path(__file__).resolve().parents[1] / "src")}
+    proc = subprocess.run(cmd, capture_output=True, text=True, env=env)
+    assert proc.returncode == 0, proc.stderr
+    out = proc.stdout.strip().splitlines()
+    assert out[0].endswith("start session"), "Condition must be true"
+    assert out[-1].endswith("boom"), "Condition must be true"
+    assert len(out) == 3, "Out must not be empty"
+
+
+def test_cli_json_output(tmp_path: Path):
+    db = _make_db(tmp_path)
+    cmd = [
+        sys.executable,
+        "-m",
+        "codex.logging.viewer",
+        "--session-id",
+        "S-1",
+        "--db",
+        str(db),
+        "--format",
+        "json",
+        "--level",
+        "ERROR",
+    ]
+    env = {**os.environ, "PYTHONPATH": str(Path(__file__).resolve().parents[1] / "src")}
+    proc = subprocess.run(cmd, capture_output=True, text=True, env=env)
+    assert proc.returncode == 0, proc.stderr
+    data = json.loads(proc.stdout)
+    assert len(data) == 1, "Data must not be empty"
+    assert data[0]["message"] == "boom", "Data must not be empty"
+
+
+def test_table_name_validation():
+    ns = viewer.parse_args(["--session-id", "S-1", "--table", "valid_table"])
+    assert ns.table == "valid_table", "table is not valid"
+    with pytest.raises(SystemExit):
+        viewer.parse_args(["--session-id", "S-1", "--table", "invalid-table"])

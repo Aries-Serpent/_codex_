@@ -111,7 +111,17 @@ jobs:
         \ inputs.deployment_name }}\n- **Namespace:** ${{ inputs.namespace }}\n- **Generated\
         \ By:** GitHub Actions\n- **Workflow:** ${{ github.workflow }}\nEOF\n\necho\
         \ \"report_created=true\" >> $GITHUB_OUTPUT\n"
-    - name: Commit generated procedures
+    
+      - name: Cache test results (Layer 3)
+        uses: actions/cache@v5
+        if: always()
+        with:
+          path: .pytest_cache/
+          key: ${{ runner.os }}-pytest-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-pytest-
+
+      - name: Commit generated procedures
       id: commit
       if: steps.validate.outputs.validation_passed == 'true'
       run: "git config user.name \"github-actions[bot]\"\ngit config user.email \"\

@@ -119,7 +119,17 @@ jobs:
       improvement_areas: ${{ steps.analyze.outputs.improvement_areas }}
       has_regressions: ${{ steps.analyze.outputs.has_regressions }}
     steps:
-    - name: Checkout
+    
+      - name: Cache test results (Layer 3)
+        uses: actions/cache@v5
+        if: always()
+        with:
+          path: .pytest_cache/
+          key: ${{ runner.os }}-pytest-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-pytest-
+
+      - name: Checkout
       uses: actions/checkout@v5
       with:
         fetch-depth: 0

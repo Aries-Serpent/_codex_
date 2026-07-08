@@ -146,6 +146,9 @@ def _path_requires_torch(path_obj: pathlib.Path) -> bool:
         return False
     if path_obj.name == "training" and "tests" in path_obj.parts and path_obj.is_dir():
         return not _TRAINING_TORCH_ALLOWLIST_FILENAMES
+    # Exclude test_performance.py from torch requirement (it tests caching/perf utils only)
+    if path_obj.name == "test_performance.py":
+        return False
     if "tests" in path_obj.parts and "space_traversal" in path_obj.parts:
         return True
     if path_obj.name in _TORCH_REQUIRED_TEST_FILES and "tests" in path_obj.parts:

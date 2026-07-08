@@ -1,0 +1,117 @@
+{
+  "batch": "B",
+  "agent": "2/2",
+  "objective": "Test effectiveness improvements via mutation testing",
+  "strategy": "Generate 40+ test enhancements targeting weak mutation points",
+  "target_kill_rate": "85%+ (accept 80%+)",
+  "test_enhancements": [
+    {
+      "category": "Comparison Mutations",
+      "target_count": 10,
+      "techniques": [
+        "Boundary value testing (< vs <=, > vs >=)",
+        "Equality condition testing (== vs !=)",
+        "Off-by-one error detection",
+        "Range boundary verification"
+      ],
+      "examples": [
+        "Test array[len-1] vs array[len] boundaries",
+        "Test x == 0 vs x < 1 conditions",
+        "Test age >= 18 vs age > 18 boundary",
+        "Test index <= limit vs index < limit+1"
+      ]
+    },
+    {
+      "category": "Boolean Logic Mutations",
+      "target_count": 8,
+      "techniques": [
+        "AND/OR operator combinations",
+        "NOT operator presence/absence",
+        "Condition inversion testing",
+        "Short-circuit evaluation tests"
+      ],
+      "examples": [
+        "Test (a and b) vs (a or b) behavior",
+        "Test (not condition) vs condition",
+        "Test (a and b and c) combinations",
+        "Test early return vs full execution"
+      ]
+    },
+    {
+      "category": "Arithmetic Operator Mutations",
+      "target_count": 8,
+      "techniques": [
+        "Addition/subtraction verification",
+        "Multiplication/division accuracy",
+        "Modulo operation testing",
+        "Sign handling (positive/negative)"
+      ],
+      "examples": [
+        "Test a + b vs a - b calculation",
+        "Test a * b vs a / b accuracy",
+        "Test x % n modulo operation",
+        "Test negative number handling"
+      ]
+    },
+    {
+      "category": "Conditional Path Coverage",
+      "target_count": 10,
+      "techniques": [
+        "If/else branch completion",
+        "Loop iteration verification",
+        "Try/except path coverage",
+        "Switch statement completeness"
+      ],
+      "examples": [
+        "Test if condition true/false paths",
+        "Test loop 0, 1, 2+ iterations",
+        "Test exception handling paths",
+        "Test all branches of conditionals"
+      ]
+    },
+    {
+      "category": "Return Value Mutations",
+      "target_count": 6,
+      "techniques": [
+        "Return value verification",
+        "True/False distinction",
+        "None vs value returns",
+        "Type correctness validation"
+      ],
+      "examples": [
+        "Test return True vs False",
+        "Test return value vs None",
+        "Test return type matches signature",
+        "Test error vs success returns"
+      ]
+    }
+  ],
+  "weak_test_patterns_identified": [
+    {
+      "pattern": "Equality imbalance",
+      "files": [
+        "tests/rag/test_indexer_comprehensive.py",
+        "tests/rag/test_pipeline_integration.py"
+      ],
+      "issue": "Tests use == for assertions but don't test != conditions",
+      "fix": "Add complementary inequality tests"
+    },
+    {
+      "pattern": "Boundary untested",
+      "files": [
+        "tests/rag/test_indexer_comprehensive.py"
+      ],
+      "issue": "Loops and ranges don't verify boundary conditions",
+      "fix": "Add edge case tests for 0, 1, n, n+1 iterations"
+    },
+    {
+      "pattern": "Conditional gaps",
+      "files": [
+        "tests/test_sanitize.py",
+        "tests/ingestion/test_io_text.py"
+      ],
+      "issue": "Multiple conditions but limited test paths",
+      "fix": "Expand parametrized tests for all branches"
+    }
+  ]
+}

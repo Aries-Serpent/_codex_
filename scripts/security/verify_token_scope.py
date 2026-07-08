@@ -36,6 +36,7 @@ import sys
 from datetime import UTC, datetime
 from typing import Optional
 from scripts.ci._token_resolver import get_token
+from src.codex.logging_safe import sanitize_for_log
 
 
 # Configure logging (token values are NEVER logged)
@@ -179,14 +180,14 @@ class TokenScopeVerifier:
             return self.verification_results
 
         except requests.RequestException as e:
-            logger.error("Token verification failed: %s", type(e).__name__)
+            logger.error("Token verification failed: %s", sanitize_for_log(type(e).__name__))
             return {
-                "error": f"API request failed: {type(e).__name__}",
+                "error": f"API request failed: {sanitize_for_log(type(e).__name__)}",
                 "status": "error",
                 "timestamp": datetime.now(UTC).isoformat()
             }
         except Exception as e:
-            logger.error("Unexpected error during verification: %s", type(e).__name__)
+            logger.error("Unexpected error during verification: %s", sanitize_for_log(type(e).__name__))
             return {
                 "error": f"Verification error: {type(e).__name__}",
                 "status": "error",

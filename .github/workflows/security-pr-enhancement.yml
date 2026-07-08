@@ -1,196 +1,116 @@
 name: Security PR Enhancement
-
 on:
   pull_request_target:
-    types: [opened, synchronize]
-
+    types:
+    - opened
+    - synchronize
 permissions:
   contents: read
   pull-requests: write
-
 jobs:
   enhance-pr-security:
+    name: PR Security Enhancement
     runs-on: ubuntu-latest
-    name: "PR Security Enhancement"
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
+    - name: Checkout repository
+      uses: actions/checkout@v5
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        cache: pip
+        python-version: '3.12'
+    - name: Install dependencies
+      run: 'python -m pip install --upgrade pip
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.12"
-          cache: pip
+        pip install -q pyyaml
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -q pyyaml
-
-      - name: Generate security findings section
-        id: findings
-        run: |
-          # Create findings file if not exists (for initial runs)
-          if [ ! -f ".codex/security-findings-comprehensive.json" ]; then
-            mkdir -p .codex
-            echo '{"findings": [], "metadata": {"timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'", "status": "no_findings"}}' > .codex/security-findings-comprehensive.json
-          fi
-
-          # Generate PR findings markdown
-          python scripts/ci/security_pr_formatter.py generate \
-            --findings ".codex/security-findings-comprehensive.json" \
-            --output pr-findings.md \
-            --limit 5
-
-          # Add to step summary
-          echo "## 🔐 Security Findings Report" >> $GITHUB_STEP_SUMMARY
-          cat pr-findings.md >> $GITHUB_STEP_SUMMARY
-
-      - name: Read findings content
-        id: read-findings
-        run: |
-          if [ -f "pr-findings.md" ]; then
-            echo "✅ Findings file exists"
-          else
-            echo "ℹ️  Findings file will be created during generation"
-          fi
-
-      - name: Update PR body with findings section
-        uses: actions/github-script@v8
-        with:
-          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          script: |
-            const fs = require('fs');
-
-            // Read findings content
-            let findingsContent = 'No security findings detected.';
-            if (fs.existsSync('pr-findings.md')) {
-              findingsContent = fs.readFileSync('pr-findings.md', 'utf8');
-            }
-
-            const pr = context.payload.pull_request;
-            const body = pr.body || '';
-
-            // Remove old findings section (safely)
-            let newBody = body.replace(/## 🔐 Security Findings[\s\S]*?(?=##|$)/m, '');
-            newBody = newBody.trim();
-
-            // Check if WEC (🔄 Workflow Execution Checklist) section exists
-            const hasWEC = body.includes('🔄 Workflow Execution Checklist') || body.includes('Workflow Execution Checklist');
-
-            // Build updated body - preserve WEC if present
-            let updatedBody = '';
-            if (hasWEC) {
-              // If WEC exists, inject findings after it
-              updatedBody = newBody.replace(
-                /(## 🔄 Workflow Execution Checklist[\s\S]*?)(?=##|$)/m,
-                '$1\n\n## 🔐 Security Findings\n\n' + findingsContent
-              );
-              // If replacement didn't work, just append
-              if (updatedBody === newBody) {
-                updatedBody = newBody + '\n\n## 🔐 Security Findings\n\n' + findingsContent;
-              }
-            } else {
-              // If no WEC, just append findings
-              updatedBody = newBody + '\n\n## 🔐 Security Findings\n\n' + findingsContent;
-            }
-
-            // Update PR body
-            try {
-              await github.rest.pulls.update({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: pr.number,
-                body: updatedBody
-              });
-              console.log('✅ PR body updated with security findings (WEC-aware)');
-            } catch (error) {
-              console.error('❌ Failed to update PR body:', error.message);
-              if (error.status === 422) {
-                console.log('⚠️  PR body update rejected (likely due to size limits)');
-              }
-            }
-
-      - name: Add PR comment with summary
-        if: always()
-        uses: actions/github-script@v8
-        with:
-          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          script: |
-            const fs = require('fs');
-
-            let findingsContent = '';
-            if (fs.existsSync('pr-findings.md')) {
-              findingsContent = fs.readFileSync('pr-findings.md', 'utf8');
-            }
-
-            if (findingsContent && findingsContent.trim()) {
-              const lines = [
-                '## 🔐 Security Findings Detected',
-                '',
-                'This PR has the following security findings from automated scans:',
-                '',
-                findingsContent,
-                '',
-                '**Note**: This is an automated scan for informational purposes. Please review carefully and address any critical or high-severity findings before merging.'
-              ];
-              const comment = lines.join('\n');
-
-              try {
-                await github.rest.issues.createComment({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: context.issue.number,
-                  body: comment
-                });
-                console.log('✅ Security findings comment added to PR');
-              } catch (error) {
-                console.log('⚠️  Could not add comment:', error.message);
-              }
-            }
-
+        '
+    - id: findings
+      name: Generate security findings section
+      run: "# Create findings file if not exists (for initial runs)\nif [ ! -f \"\
+        .codex/security-findings-comprehensive.json\" ]; then\n  mkdir -p .codex\n\
+        \  echo '{\"findings\": [], \"metadata\": {\"timestamp\": \"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'\"\
+        , \"status\": \"no_findings\"}}' > .codex/security-findings-comprehensive.json\n\
+        fi\n\n# Generate PR findings markdown\npython scripts/ci/security_pr_formatter.py\
+        \ generate \\\n  --findings \".codex/security-findings-comprehensive.json\"\
+        \ \\\n  --output pr-findings.md \\\n  --limit 5\n\n# Add to step summary\n\
+        echo \"## \U0001F510 Security Findings Report\" >> $GITHUB_STEP_SUMMARY\n\
+        cat pr-findings.md >> $GITHUB_STEP_SUMMARY\n"
+    - id: read-findings
+      name: Read findings content
+      run: "if [ -f \"pr-findings.md\" ]; then\n  echo \"✅ Findings file exists\"\n\
+        else\n  echo \"ℹ️  Findings file will be created during generation\"\nfi\n"
+    - name: Update PR body with findings section
+      uses: actions/github-script@v8
+      with:
+        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
+          github.token }}
+        script: "const fs = require('fs');\n\n// Read findings content\nlet findingsContent\
+          \ = 'No security findings detected.';\nif (fs.existsSync('pr-findings.md'))\
+          \ {\n  findingsContent = fs.readFileSync('pr-findings.md', 'utf8');\n}\n\
+          \nconst pr = context.payload.pull_request;\nconst body = pr.body || '';\n\
+          \n// Remove old findings section (safely)\nlet newBody = body.replace(/##\
+          \ \U0001F510 Security Findings[\\s\\S]*?(?=##|$)/m, '');\nnewBody = newBody.trim();\n\
+          \n// Check if WEC (\U0001F504 Workflow Execution Checklist) section exists\n\
+          const hasWEC = body.includes('\U0001F504 Workflow Execution Checklist')\
+          \ || body.includes('Workflow Execution Checklist');\n\n// Build updated\
+          \ body - preserve WEC if present\nlet updatedBody = '';\nif (hasWEC) {\n\
+          \  // If WEC exists, inject findings after it\n  updatedBody = newBody.replace(\n\
+          \    /(## \U0001F504 Workflow Execution Checklist[\\s\\S]*?)(?=##|$)/m,\n\
+          \    '$1\\n\\n## \U0001F510 Security Findings\\n\\n' + findingsContent\n\
+          \  );\n  // If replacement didn't work, just append\n  if (updatedBody ===\
+          \ newBody) {\n    updatedBody = newBody + '\\n\\n## \U0001F510 Security\
+          \ Findings\\n\\n' + findingsContent;\n  }\n} else {\n  // If no WEC, just\
+          \ append findings\n  updatedBody = newBody + '\\n\\n## \U0001F510 Security\
+          \ Findings\\n\\n' + findingsContent;\n}\n\n// Update PR body\ntry {\n  await\
+          \ github.rest.pulls.update({\n    owner: context.repo.owner,\n    repo:\
+          \ context.repo.repo,\n    pull_number: pr.number,\n    body: updatedBody\n\
+          \  });\n  console.log('✅ PR body updated with security findings (WEC-aware)');\n\
+          } catch (error) {\n  console.error('❌ Failed to update PR body:', error.message);\n\
+          \  if (error.status === 422) {\n    console.log('⚠️  PR body update rejected\
+          \ (likely due to size limits)');\n  }\n}\n"
+    - if: always()
+      name: Add PR comment with summary
+      uses: actions/github-script@v8
+      with:
+        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
+          github.token }}
+        script: "const fs = require('fs');\n\nlet findingsContent = '';\nif (fs.existsSync('pr-findings.md'))\
+          \ {\n  findingsContent = fs.readFileSync('pr-findings.md', 'utf8');\n}\n\
+          \nif (findingsContent && findingsContent.trim()) {\n  const lines = [\n\
+          \    '## \U0001F510 Security Findings Detected',\n    '',\n    'This PR\
+          \ has the following security findings from automated scans:',\n    '',\n\
+          \    findingsContent,\n    '',\n    '**Note**: This is an automated scan\
+          \ for informational purposes. Please review carefully and address any critical\
+          \ or high-severity findings before merging.'\n  ];\n  const comment = lines.join('\\\
+          n');\n\n  try {\n    await github.rest.issues.createComment({\n      owner:\
+          \ context.repo.owner,\n      repo: context.repo.repo,\n      issue_number:\
+          \ context.issue.number,\n      body: comment\n    });\n    console.log('✅\
+          \ Security findings comment added to PR');\n  } catch (error) {\n    console.log('⚠️\
+          \  Could not add comment:', error.message);\n  }\n}\n"
+    timeout-minutes: 20
   validate-findings-json:
+    name: Validate Findings JSON
     runs-on: ubuntu-latest
-    name: "Validate Findings JSON"
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.12"
-
-      - name: Validate findings JSON structure
-        run: |
-          python3 << 'EOF'
-          import json
-          import sys
-          from pathlib import Path
-
-          findings_file = Path(".codex/security-findings-comprehensive.json")
-
-          if findings_file.exists():
-            try:
-              with open(findings_file) as f:
-                data = json.load(f)
-
-              # Basic structure validation
-              if isinstance(data, dict):
-                if "findings" in data and "metadata" in data:
-                  print("✅ Findings JSON structure is valid")
-                  print(f"   - Total findings: {len(data.get('findings', []))}")
-                  if "metadata" in data and "timestamp" in data["metadata"]:
-                    print(f"   - Last updated: {data['metadata']['timestamp']}")
-                else:
-                  print("⚠️  Expected 'findings' and 'metadata' keys in JSON")
-              else:
-                print("⚠️  Findings file should contain a JSON object")
-            except json.JSONDecodeError as e:
-              print(f"❌ Invalid JSON: {e}")
-              sys.exit(1)
-          else:
-            print("ℹ️  No findings file found (will be created if needed)")
-          EOF
+    - name: Checkout repository
+      uses: actions/checkout@v5
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.12'
+    - name: Validate findings JSON structure
+      run: "python3 << 'EOF'\nimport json\nimport sys\nfrom pathlib import Path\n\n\
+        findings_file = Path(\".codex/security-findings-comprehensive.json\")\n\n\
+        if findings_file.exists():\n  try:\n    with open(findings_file) as f:\n \
+        \     data = json.load(f)\n\n    # Basic structure validation\n    if isinstance(data,\
+        \ dict):\n      if \"findings\" in data and \"metadata\" in data:\n      \
+        \  print(\"✅ Findings JSON structure is valid\")\n        print(f\"   - Total\
+        \ findings: {len(data.get('findings', []))}\")\n        if \"metadata\" in\
+        \ data and \"timestamp\" in data[\"metadata\"]:\n          print(f\"   - Last\
+        \ updated: {data['metadata']['timestamp']}\")\n      else:\n        print(\"\
+        ⚠️  Expected 'findings' and 'metadata' keys in JSON\")\n    else:\n      print(\"\
+        ⚠️  Findings file should contain a JSON object\")\n  except json.JSONDecodeError\
+        \ as e:\n    print(f\"❌ Invalid JSON: {e}\")\n    sys.exit(1)\nelse:\n  print(\"\
+        ℹ️  No findings file found (will be created if needed)\")\nEOF\n"
+    timeout-minutes: 15

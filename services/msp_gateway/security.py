@@ -87,7 +87,7 @@ class PolicyEnforcer:
 
             logger.info("Policies loaded successfully")
         except Exception as e:
-            logger.error("Error loading policies: %s", type(e).__name__)
+            logger.error("Error loading policies: %s", sanitize_log_input(type(e).__name__))
             self.safelist = {}
             self.denylist = {}
 

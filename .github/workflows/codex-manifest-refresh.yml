@@ -26,7 +26,7 @@ jobs:
       with:
         ref: ${{ github.head_ref || 'main' }}
         fetch-depth: 1
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ env.CODEX_MASTER_KEY || env.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
     - name: "\U0001F500 Resolve push target (chain: sub-PR \u2192 0D_base_ \u2192\
         \ main)"
       id: resolve-target

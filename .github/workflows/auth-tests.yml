@@ -34,7 +34,17 @@ jobs:
         python-version:
         - 3.12.13
     steps:
-    - name: Checkout code
+    
+      - name: Cache test results (Layer 3)
+        uses: actions/cache@v5
+        if: always()
+        with:
+          path: .pytest_cache/
+          key: ${{ runner.os }}-pytest-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-pytest-
+
+      - name: Checkout code
       uses: actions/checkout@v5
     - name: Initialize with repository variables
       env:
@@ -69,7 +79,16 @@ jobs:
         \ {pytest_asyncio.__version__}')\"\n\npip install -e \".[dev]\"\npip install\
         \ httpx  # Additional dependency for auth tests\npip install bandit>=1.7.5\
         \  # Pre-install bandit for security scan\n"
-    - name: Run authentication tests
+    
+      - name: Cache coverage reports (Layer 4)
+        uses: actions/cache@v5
+        with:
+          path: coverage/
+          key: ${{ runner.os }}-coverage-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-coverage-
+
+      - name: Run authentication tests
       run: "# Run pytest with verbose output and proper error reporting\npytest tests/auth/\
         \ -v --cov=src/codex/auth --cov-report=xml --cov-report=term --timeout=300\
         \ --tb=short\nTEST_EXIT_CODE=$?\n\nif [ $TEST_EXIT_CODE -ne 0 ]; then\n  echo\

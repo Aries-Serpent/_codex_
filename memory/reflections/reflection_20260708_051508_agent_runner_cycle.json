@@ -1,0 +1,15 @@
+{
+  "target": "src/codex/cli.py",
+  "depth": 1,
+  "summary": "src/codex/cli.py: 2663 lines, 78 functions",
+  "metrics": {
+    "lines": 2663,
+    "functions": 78,
+    "classes": 0,
+    "imports": 91,
+    "recursive_functions": [],
+    "sha": "9a1cd6ffa4a4"
+  },
+  "sub_reports": [],
+  "errors": []
+}

@@ -1,0 +1,170 @@
+{
+  "audit_timestamp": "2026-07-08T15:59:43Z",
+  "status": "IN_PROGRESS",
+  "total_workflows": 236,
+  "valid_workflows": 210,
+  "invalid_workflows": 26,
+  "compliance_percentage": 89.0,
+  "issues_by_type": {
+    "yaml_syntax": 25,
+    "unknown": 1
+  },
+  "detailed_issues": [
+    {
+      "file": "workflows/13-3-cve-scanning.yml",
+      "line": 18,
+      "type": "yaml_syntax",
+      "detail": "Line 18: while parsing a block mapping"
+    },
+    {
+      "file": "workflows/13-3-enterprise-compliance.yml",
+      "line": 14,
+      "type": "yaml_syntax",
+      "detail": "Line 14: while parsing a block mapping"
+    },
+    {
+      "file": "workflows/13-3-secrets-detection.yml",
+      "line": 21,
+      "type": "yaml_syntax",
+      "detail": "Line 21: while parsing a block collection"
+    },
+    {
+      "file": "workflows/actionlint-audit.yml",
+      "line": 24,
+      "type": "yaml_syntax",
+      "detail": "Line 24: while parsing a block collection"
+    },
+    {
+      "file": "workflows/adaptive-agent-delegation.yml",
+      "line": 108,
+      "type": "yaml_syntax",
+      "detail": "Line 108: while parsing a block mapping"
+    },
+    {
+      "file": "workflows/agent-auth-delegation.yml",
+      "line": 135,
+      "type": "yaml_syntax",
+      "detail": "Line 135: while parsing a block collection"
+    },
+    {
+      "file": "workflows/agent-health-check.yml",
+      "line": 15,
+      "type": "yaml_syntax",
+      "detail": "Line 15: while parsing a block mapping"
+    },
+    {
+      "file": "workflows/agent-orchestration-unified.yml",
+      "line": 85,
+      "type": "yaml_syntax",
+      "detail": "Line 85: while parsing a block mapping"
+    },
+    {
+      "file": "workflows/agent-registry-validation.yml",
+      "line": 139,
+      "type": "yaml_syntax",
+      "detail": "Line 139: while parsing a block mapping"
+    },
+    {
+      "file": "workflows/agent_infrastructure_manager.yml",
+      "line": 82,
+      "type": "yaml_syntax",
+      "detail": "Line 82: while parsing a block mapping"
+    },
+    {
+      "file": "workflows/audit-qa-suite.yml",
+      "line": 123,
+      "type": "yaml_syntax",
+      "detail": "Line 123: while parsing a block collection"
+    },
+    {
+      "file": "workflows/auth-tests.yml",
+      "line": 38,
+      "type": "yaml_syntax",
+      "detail": "Line 38: while parsing a block collection"
+    },
+    {
+      "file": "workflows/automated-post-deployment-verification.yml",
+      "line": 91,
+      "type": "yaml_syntax",
+      "detail": "Line 91: while parsing a block mapping"
+    },
+    {
+      "file": "workflows/automated-release-creation.yml",
+      "line": 32,
+      "type": "yaml_syntax",
+      "detail": "Line 32: while parsing a block collection"
+    },
+    {
+      "file": "workflows/automated-rollback-generation.yml",
+      "line": 86,
+      "type": "yaml_syntax",
+      "detail": "Line 86: while parsing a block mapping"
+    },
+    {
+      "file": "workflows/autonomous-agent.yml",
+      "line": 32,
+      "type": "yaml_syntax",
+      "detail": "Line 32: while parsing a block collection"
+    },
+    {
+      "file": "workflows/autonomy-phase-ci-matrix.yml",
+      "line": 70,
+      "type": "yaml_syntax",
+      "detail": "Line 70: while parsing a block collection"
+    },
+    {
+      "file": "workflows/branch-rebase-gate.yml",
+      "line": 55,
+      "type": "yaml_syntax",
+      "detail": "Line 55: while parsing a block mapping"
+    },
+    {
+      "file": "workflows/build-preview-image.yml",
+      "line": 51,
+      "type": "yaml_syntax",
+      "detail": "Line 51: while parsing a block mapping"
+    },
+    {
+      "file": "workflows/chatops_copilot_trigger.yml",
+      "line": 15,
+      "type": "yaml_syntax",
+      "detail": "Line 15: while parsing a block mapping"
+    },
+    {
+      "file": "workflows/ci-checkpoint-validation.yml",
+      "line": 40,
+      "type": "yaml_syntax",
+      "detail": "Line 40: while parsing a block collection"
+    },
+    {
+      "file": "workflows/ci-failure-issue-creator.yml",
+      "line": 65,
+      "type": "yaml_syntax",
+      "detail": "Line 65: while parsing a block mapping"
+    },
+    {
+      "file": "workflows/ci-pass-rate-gate.yml",
+      "line": 15,
+      "type": "unknown",
+      "detail": ""
+    },
+    {
+      "file": "workflows/ci-pattern-prevention-gate.yml",
+      "line": 59,
+      "type": "yaml_syntax",
+      "detail": "Line 59: while parsing a block mapping"
+    },
+    {
+      "file": "workflows/ci-rescue.yml",
+      "line": 52,
+      "type": "yaml_syntax",
+      "detail": "Line 52: while parsing a block mapping"
+    },
+    {
+      "file": "workflows/cleanup-stale-branches.yml",
+      "line": 30,
+      "type": "yaml_syntax",
+      "detail": "Line 30: while parsing a block collection"
+    }
+  ]
+}

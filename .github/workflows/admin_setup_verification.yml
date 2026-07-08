@@ -44,7 +44,26 @@ jobs:
     timeout-minutes: 30
 
     steps:
+      
+      - name: Cache Python dependencies (Layer 1)
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
       - uses: actions/checkout@v5  # v6.0.3
+
+      
+      - name: Cache test results (Layer 3)
+        uses: actions/cache@v5
+        if: always()
+        with:
+          path: .pytest_cache/
+          key: ${{ runner.os }}-pytest-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-pytest-
 
       - name: Set up Python
         uses: actions/setup-python@v6  # v6
@@ -185,6 +204,15 @@ jobs:
           else
             { echo ""; echo "❌ **No functional write key — complete §1 in ADMIN_MANUAL_SETUP_GUIDE.md**"; } >> "$GITHUB_STEP_SUMMARY"
           fi
+
+      
+      - name: Cache coverage reports (Layer 4)
+        uses: actions/cache@v5
+        with:
+          path: coverage/
+          key: ${{ runner.os }}-coverage-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-coverage-
 
       - name: "§1b Delegated agent token coverage"
         run: |

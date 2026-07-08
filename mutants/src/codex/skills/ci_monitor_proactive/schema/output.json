@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CIMonitorProactive Output",
+  "type": "object",
+  "required": ["status"],
+  "properties": {
+    "status": {"type": "string", "enum": ["ok", "error"]},
+    "message": {"type": "string"},
+    "scanned_prs": {"type": "integer"},
+    "failed_runs": {"type": "integer"},
+    "escalated": {"type": "integer"},
+    "skipped_transient": {"type": "integer"},
+    "below_confidence": {"type": "integer"},
+    "already_addressed": {"type": "integer"},
+    "details": {"type": "array", "items": {"type": "object"}},
+    "config": {"type": "object"}
+  }
+}

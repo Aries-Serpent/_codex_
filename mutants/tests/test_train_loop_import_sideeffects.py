@@ -1,0 +1,48 @@
+"""Tests ensuring importing train_loop does not mutate the workspace."""
+
+from __future__ import annotations
+
+import importlib
+import sys
+from pathlib import Path
+
+
+def test_import_has_no_artifact_side_effects(tmp_path, monkeypatch):
+    repo_root = Path(__file__).resolve().parent.parent
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.syspath_prepend(str(repo_root))
+
+    sys.modules.pop("codex_ml.train_loop", None)
+
+    importlib.reload(importlib.import_module("codex_ml.train_loop"))
+
+    assert not (tmp_path / "artifacts").exists(), "Condition must be true"
+    assert not (tmp_path / "artifacts" / "metrics").exists(), "Condition must be true"
+
+
+def test_run_training_creates_artifacts_on_demand(tmp_path):
+    module = importlib.reload(importlib.import_module("codex_ml.train_loop"))
+
+    art_dir = tmp_path / "artifacts" / "metrics"
+    assert not art_dir.exists(), "Condition must be true"
+
+    module.run_training(epochs=0, grad_accum=1, seed=1234, art_dir=art_dir)
+
+    assert art_dir.exists(), "Condition must be true"
+    assert (art_dir / "metrics.json").exists(), "Condition must be true"
+    assert (art_dir / "metrics.ndjson").exists(), "Condition must be true"
+    assert (art_dir / "environment.json").exists(), "Condition must be true"
+
+
+def test_train_loop_cli_custom_art_dir(monkeypatch, tmp_path):
+    module = importlib.reload(importlib.import_module("codex_ml.train_loop"))
+
+    target_dir = tmp_path / "custom" / "metrics"
+    monkeypatch.setattr(
+        sys, "argv", ["codex_ml.train_loop", "--epochs", "0", "--art-dir", str(target_dir)]
+    )
+
+    module.main()
+
+    assert target_dir.exists(), "Condition must be true"
+    assert (target_dir / "metrics.json").exists(), "Condition must be true"

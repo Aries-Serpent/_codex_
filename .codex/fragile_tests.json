@@ -337,9 +337,6 @@
   "tests/rag/test_rag_functionality_comprehensive.py": [
     "numpy"
   ],
-  "tests/repro/test_seed_consistency.py": [
-    "torch"
-  ],
   "tests/restore_pipeline/test_restore_pipeline.py": [
     "numpy"
   ],

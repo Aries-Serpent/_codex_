@@ -161,7 +161,7 @@ jobs:
         '
       uses: actions/github-script@v8
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ env.CODEX_MASTER_KEY || env.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         script: "github.rest.issues.create({\n  owner: context.repo.owner,\n  repo:\
           \ context.repo.repo,\n  title: '\u26A0\uFE0F CODEX_BACKUP_KEY validation\
           \ failed',\n  body: `The CODEX_BACKUP_KEY token validation failed during\

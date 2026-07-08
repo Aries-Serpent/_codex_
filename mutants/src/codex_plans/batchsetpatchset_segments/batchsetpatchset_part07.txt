@@ -1,0 +1,376 @@
+- For each selected category, runs `pytest <targets>`.
+- Aggregates exit codes into a small JSON summary.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import shlex
+import subprocess
+from dataclasses import dataclass, asdict
+from pathlib import Path
+from typing import Dict, List, Any, Optional
+
+import yaml
+
+
+@dataclass
+class CategorySpec:
+    id: str
+    description: str
+    pytest_targets: List[str]
+
+
+@dataclass
+class CategoryResult:
+    id: str
+    description: str
+    pytest_targets: List[str]
+    returncode: int
+    stdout: str
+    stderr: str
+
+
+def _load_map(path: Path) -> List[CategorySpec]:
+    if not path.exists():
+        raise FileNotFoundError(f"ML test map not found: {path}")
+    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    cats = []
+    for item in data.get("ml_test_categories", []) or []:
+        cats.append(
+            CategorySpec(
+                id=str(item.get("id")),
+                description=str(item.get("description") or ""),
+                pytest_targets=list(item.get("pytest_targets") or []),
+            )
+        )
+    return cats
+
+
+def _run_pytest(targets: List[str], cwd: Path) -> tuple[int, str, str]:
+    if not targets:
+        return 0, "", ""
+    cmd = ["pytest"] + targets
+    proc = subprocess.run(
+        cmd,
+        cwd=str(cwd),
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    max_len = 4000
+    return (
+        proc.returncode,
+        proc.stdout[-max_len:],
+        proc.stderr[-max_len:],
+    )
+
+
+def run_categories(
+    repo_root: Path,
+    categories: List[CategorySpec],
+    selected_ids: Optional[List[str]] = None,
+) -> Dict[str, Any]:
+    selected_ids = selected_ids or [c.id for c in categories]
+    selected_ids = list(dict.fromkeys(selected_ids))  # de-duplicate
+
+    results: List[CategoryResult] = []
+    overall_rc = 0
+    for cat in categories:
+        if cat.id not in selected_ids:
+            continue
+        rc, out, err = _run_pytest(cat.pytest_targets, repo_root)
+        results.append(
+            CategoryResult(
+                id=cat.id,
+                description=cat.description,
+                pytest_targets=cat.pytest_targets,
+                returncode=rc,
+                stdout=out,
+                stderr=err,
+            )
+        )
+        if rc != 0:
+            overall_rc = 1
+
+    return {
+        "repo_root": str(repo_root),
+        "overall_returncode": overall_rc,
+        "results": [asdict(r) for r in results],
+    }
+
+
+def main(argv: Optional[List[str]] = None) -> int:
+    parser = argparse.ArgumentParser(
+        description="Run ML-category-scoped tests for `_codex_`."
+    )
+    parser.add_argument(
+        "--repo-root",
+        type=str,
+        default=".",
+        help="Repository root (default: current directory).",
+    )
+    parser.add_argument(
+        "--map",
+        type=str,
+        default="codex_ml_test_map.yaml",
+        help="ML test map YAML (default: codex_ml_test_map.yaml).",
+    )
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument(
+        "--all",
+        action="store_true",
+        help="Run all categories.",
+    )
+    group.add_argument(
+        "--category",
+        type=str,
+        help="Run a single category (e.g. data, model, infra).",
+    )
+    parser.add_argument(
+        "--json-out",
+        type=str,
+        default="codex_mltest_results.json",
+        help="JSON summary output (default: codex_mltest_results.json).",
+    )
+    args = parser.parse_args(argv)
+
+    repo_root = Path(args.repo_root).expanduser().resolve()
+    cat_map = _load_map(Path(args.map).expanduser().resolve())
+
+    if args.all:
+        selected = None
+    else:
+        selected = [args.category]
+
+    summary = run_categories(repo_root, cat_map, selected_ids=selected)
+    out = Path(args.json_out).expanduser().resolve()
+    out.write_text(json.dumps(summary, indent=2, sort_keys=True), encoding="utf-8")
+    print(f"[codex_mltest_runner] Wrote summary to {out}")
+    print(f"[codex_mltest_runner] overall_returncode={summary['overall_returncode']}")
+    return int(summary["overall_returncode"])
+
+
+if __name__ == "__main__":  # pragma: no cover
+    raise SystemExit(main())
+```
+
+===============================================================================
+5) Tests – env snapshot + deps report tools
+===========================================
+
+Create/overwrite: tests/tools/test_codex_env_and_deps_tools.py
+
+```python
+from pathlib import Path
+import json
+
+import tools.codex_env_snapshot as env_snap
+import tools.codex_dependency_report as dep_rep
+import tools.codex_mltest_runner as mltest
+import yaml
+
+
+def test_env_snapshot_writes_json(tmp_path: Path, monkeypatch):
+    out = tmp_path / "codex_env_snapshot.json"
+    rc = env_snap.main(["--out", str(out)])
+    assert rc == 0
+    assert out.exists()
+
+    data = json.loads(out.read_text(encoding="utf-8"))
+    assert "python" in data
+    assert "os" in data
+    assert "env" in data
+    assert isinstance(data["env"], dict)
+
+
+def test_dependency_report_writes_json(tmp_path: Path, monkeypatch):
+    out = tmp_path / "codex_dependency_report.json"
+    rc = dep_rep.main(["--out", str(out)])
+    assert rc == 0
+    assert out.exists()
+
+    data = json.loads(out.read_text(encoding="utf-8"))
+    assert "packages" in data
+    assert isinstance(data["packages"], list)
+
+
+def test_mltest_runner_uses_map_and_writes_summary(tmp_path: Path, monkeypatch):
+    # Minimal map that points at an empty tests dir.
+    mlmap = tmp_path / "codex_ml_test_map.yaml"
+    mlmap.write_text(
+        yaml.safe_dump(
+            {
+                "ml_test_categories": [
+                    {
+                        "id": "data",
+                        "description": "dummy",
+                        "pytest_targets": ["tests"],
+                    }
+                ]
+            },
+            sort_keys=False,
+        ),
+        encoding="utf-8",
+    )
+
+    repo_root = tmp_path
+    tests_dir = repo_root / "tests"
+    tests_dir.mkdir()
+    (tests_dir / "test_dummy.py").write_text(
+        "def test_dummy():\n    assert True\n", encoding="utf-8"
+    )
+
+    out = tmp_path / "mltest.json"
+    rc = mltest.main(
+        [
+            "--repo-root",
+            str(repo_root),
+            "--map",
+            str(mlmap),
+            "--all",
+            "--json-out",
+            str(out),
+        ]
+    )
+    assert rc in (0, 1)  # tests may fail but runner must exit cleanly.
+    assert out.exists()
+    data = json.loads(out.read_text(encoding="utf-8"))
+    assert "results" in data
+```
+
+===============================================================================
+6) Documentation – docs/reproducibility/env_and_dependency_snapshot.md
+======================================================================
+
+Create/overwrite: docs/reproducibility/env_and_dependency_snapshot.md
+
+````markdown
+# Environment & Dependency Snapshots for `_codex_` (Scaffolding)
+
+This document describes the current environment + dependency snapshot
+tooling used by `_codex_`. These artifacts are consumed by:
+
+- `tools/codex_repro_manifest.py`
+- Other local diagnostics and reports.
+
+## 1. Environment Snapshot
+
+Tool:
+
+- `tools/codex_env_snapshot.py`
+
+Output:
+
+- `codex_env_snapshot.json`
+
+Contents (high-level):
+
+- `generated_at` – UTC timestamp
+- `python` – version, executable, implementation
+- `os` – platform, release, version, machine
+- `env` – current environment variables (raw mapping)
+
+Example usage:
+
+```bash
+python tools/codex_env_snapshot.py \
+  --out codex_env_snapshot.json
+````
+
+> NOTE: The `env` section may contain sensitive values; this file is
+> intended for local use. Operators should review before sharing.
+
+## 2. Dependency Report
+
+Tool:
+
+* `tools/codex_dependency_report.py`
+
+Output:
+
+* `codex_dependency_report.json`
+
+Contents:
+
+* `generated_at` – UTC timestamp
+* `packages` – list of:
+
+  * `name`
+  * `version`
+
+The report is built from `importlib.metadata.distributions()` in the
+active Python environment and is therefore environment-specific rather
+than locked.
+
+Example usage:
+
+```bash
+python tools/codex_dependency_report.py \
+  --out codex_dependency_report.json
+```
+
+## 3. Relationship to Reproducibility Manifest
+
+The reproducibility manifest tool:
+
+* `tools/codex_repro_manifest.py`
+
+uses these files as inputs to populate:
+
+* `summary.environment`
+* `summary.dependencies`
+
+This allows `_codex_` to answer:
+
+* Which Python/OS it was run under?
+* Roughly which package set was installed?
+* Do these match expectations for a given run or audit?
+
+## 4. ML Test Runner (Stub Alignment)
+
+The ML Test Score mapping and runner:
+
+* `codex_ml_test_map.yaml`
+* `tools/codex_mltest_runner.py`
+
+are simple, local-only helpers that allow developers to run tests by
+category (data, model, infra, regression, performance) without
+introducing external CI.
+
+Example:
+
+```bash
+python tools/codex_mltest_runner.py --all
+python tools/codex_mltest_runner.py --category model
+```
+
+These tools are complementary to the environment and dependency
+snapshots, giving a compact picture of:
+
+* What environment is in use?
+* Which dependencies are installed?
+* Which test categories currently pass/fail?
+
+````
+
+===============================================================================
+7) Wire env & deps tools into codex_task_sequence.yaml
+===============================================================================
+
+Do **not** rewrite the entire `codex_task_sequence.yaml`. Apply the
+following minimal textual update:
+
+1. Locate the **Preparation** phase (Phase 1) in `codex_task_sequence.yaml`
+   – this is the phase where repo loading and initial checks happen.
+   Under its `steps` list, append two new steps that run the env
+   snapshot and dependency report tools.
+
+   Example (adjust `<PHASE_ID>` to the actual numeric id of the
+   Preparation phase, typically `1`):
+
+```yaml
+       - id: "<PHASE_ID>.E1"
+         description: >
+           Capture a minimal environment snapshot (Python, OS, env

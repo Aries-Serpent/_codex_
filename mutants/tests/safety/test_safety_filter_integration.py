@@ -1,0 +1,46 @@
+"""
+Test Safety Filter Integration
+
+Test module for safety filter integration.
+"""
+
+import json
+from types import SimpleNamespace
+
+from codex_ml.data import stream_paths
+from codex_ml.safety.filters import REDACT_TOKEN
+
+
+def _cfg(enabled: bool):
+    return SimpleNamespace(data=SimpleNamespace(safety_filter_enabled=enabled))
+
+
+def test_loader_redacts_when_enabled(tmp_path):
+    path = tmp_path / "data.jsonl"
+    path.write_text(json.dumps({"prompt": "my credit card", "completion": "credit card"}) + "\n")
+    cfg = _cfg(True)
+    items = list(stream_paths([path], cfg=cfg))
+    assert items[0].prompt == "my " + REDACT_TOKEN, "Item must not be empty"
+    assert items[0].completion == REDACT_TOKEN, "Item must not be empty"
+
+
+def test_loader_no_redact_when_disabled(tmp_path):
+    path = tmp_path / "data.jsonl"
+    path.write_text(json.dumps({"prompt": "my credit card", "completion": "credit card"}) + "\n")
+    cfg = _cfg(False)
+    items = list(stream_paths([path], cfg=cfg))
+    assert items[0].prompt == "my credit card", "Item must not be empty"
+    assert items[0].completion == "credit card", "Item must not be empty"
+
+
+def test_loader_explicit_safety_filters_bool(tmp_path):
+    path = tmp_path / "data.jsonl"
+    path.write_text(json.dumps({"prompt": "my credit card", "completion": "credit card"}) + "\n")
+
+    # Explicitly disable filtering even if defaults would redact.
+    disabled = list(stream_paths([path], safety_filters=False))
+    assert disabled[0].completion == "credit card", "completion is not valid"
+
+    # Enabling via boolean should coerce to default filters and redact secrets.
+    enabled = list(stream_paths([path], safety_filters=True))
+    assert enabled[0].completion == REDACT_TOKEN, "completion is not valid"

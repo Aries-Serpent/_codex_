@@ -1,0 +1,341 @@
+Replace `<PHASE_ID>` with the integer id of that phase (e.g. `"5.G1"`
+if phase id is 5). Keep indentation consistent with neighboring steps.
+
+If there is no clear “Local Tests & Gates” phase, attach this step to
+the phase that currently runs local tests, or create a dedicated phase
+later when consolidating CI behavior.
+
+2. **Experiment Index step**
+
+Locate a phase that logically runs **after** training/eval or final
+consolidation. Append a step to build the experiment index. For
+example (replace `<PHASE_ID>`):
+
+```yaml
+       - id: "<PHASE_ID>.EIDX"
+         description: >
+           Build a lightweight experiment index from the runs/ directory,
+           capturing run IDs, modes, statuses, and config paths into
+           codex_experiment_index.json for reproducibility and analysis.
+         actions:
+           - >
+             python tools/codex_experiment_index.py
+             --runs-root runs
+             --out codex_experiment_index.json
+         on_error:
+           strategy: record_and_continue
+```
+
+Replace `<PHASE_ID>` with an appropriate phase id, such as the
+Reproducibility / Finalization phase where other reports are written.
+
+If there is no such phase, you may attach this step to the same phase
+that generates the reproducibility manifest, ensuring it runs before
+the manifest step so the manifest can include the experiment index.
+
+===============================================================================
+6) After applying this batch
+============================
+
+After you apply all changes from this batch, run locally (not by me):
+
+* `pytest tests/tools/test_codex_local_gate_and_experiment_index.py -q`
+* `pytest tests/tools -q`
+* `python tools/codex_local_gate_runner.py --repo-root . --json-out codex_local_gate_report.json`
+* `python tools/codex_experiment_index.py --runs-root runs --out codex_experiment_index.json`
+* `python tools/codex_task_sequence_runner.py --yaml codex_task_sequence.yaml --repo-root . --change-log codex_change_log.md --errors codex_error_questions.md`
+
+Confirm that:
+
+* `codex_local_gate_report.json` and `codex_experiment_index.json`
+  are created and parseable.
+* The new tests pass.
+* The updated task sequence runs the Local Gate and Experiment Index
+  steps with `record_and_continue` and does not break other phases.
+
+All changes remain local/offline and avoid any GitHub Actions or external CI.
+
+---
+
+Here’s the next **end-to-end Codex batch** (call this **Batch 26**) you can paste directly into your Codex implementation GPT.
+
+This batch gives you a **unified CLI + quick audit script + docs**, so humans (and automation) have a single entrypoint to the whole local audit pipeline:
+
+* `tools/codex_cli.py` – umbrella CLI that wraps the tools we’ve been adding.
+* `scripts/codex_quick_audit.sh` – one-shot local audit runner.
+* `docs/cli/codex_cli_quickstart.md` – how to use the CLI.
+* `docs/cli/codex_cli_reference.md` – reference for subcommands.
+
+All behavior is **local/offline**, and nothing touches GitHub Actions.
+
+---
+
+### Codex Batch 26 – Unified CLI + Quick Audit Script + CLI Docs
+
+````text
+You are ChatGPT @codex, operating on the repository Aries-Serpent/_codex_
+on a feature branch (e.g. feature/codex-cli-and-quick-audit).
+
+Global constraints:
+- DO NOT add or enable any cost-incurring GitHub Actions or external CI workflows.
+- All code MUST be runnable locally and offline.
+- Prefer small, reviewable diffs even when touching several files.
+- Overwrite existing files at the same paths if they exist; otherwise create them.
+- External deps limited to: stdlib + PyYAML + pytest (already used).
+
+Objective of this batch:
+1. Implement a unified CLI wrapper:
+   - `tools/codex_cli.py`
+2. Implement a simple “quick audit” shell script:
+   - `scripts/codex_quick_audit.sh`
+3. Add CLI docs:
+   - `docs/cli/codex_cli_quickstart.md`
+   - `docs/cli/codex_cli_reference.md`
+
+The CLI should *wrap* existing tools (env snapshot, dep report, gap registry,
+YAML gap check, dataset index, local gates, experiment index, task sequence,
+repro manifest), but MUST degrade gracefully if some modules are missing.
+
+Apply the following file operations EXACTLY.
+
+===============================================================================
+1) Unified CLI – tools/codex_cli.py
+===============================================================================
+
+Create/overwrite: tools/codex_cli.py
+
+```python
+#!/usr/bin/env python
+"""Unified CLI for `_codex_`.
+
+This CLI acts as a thin, stable front-door over the internal tooling
+we have been adding, including:
+
+- Environment and dependency snapshots
+- Dataset index
+- Local gates
+- Experiment index
+- Gap registry and YAML coverage checks
+- Task sequence runner
+- Reproducibility manifest
+
+Design goals
+------------
+
+- Local and offline only.
+- Thin wrappers that *delegate* to existing modules rather than
+  re-implementing logic.
+- Graceful degradation: if a module is missing, print a clear message
+  and exit with code 1 for that subcommand, without breaking the rest
+  of the CLI.
+
+Examples
+--------
+
+    # Show top-level help
+    python tools/codex_cli.py --help
+
+    # Run a quick local audit sequence
+    python tools/codex_cli.py quick-audit
+
+    # Just generate environment snapshot
+    python tools/codex_cli.py env snapshot
+
+    # Run local gates
+    python tools/codex_cli.py gates run
+
+"""
+
+from __future__ import annotations
+
+import argparse
+import sys
+from pathlib import Path
+from typing import Callable, List, Optional
+
+
+def _print_missing(module_name: str) -> int:
+    print(
+        f"[codex_cli] Required module {module_name!r} is not available. "
+        "Please ensure the corresponding tool has been added to the codebase.",
+        file=sys.stderr,
+    )
+    return 1
+
+
+# ---------------------------------------------------------------------------
+# Subcommand handlers
+# ---------------------------------------------------------------------------
+
+def _cmd_env_snapshot(args: argparse.Namespace) -> int:
+    try:
+        from tools import codex_env_snapshot as mod
+    except Exception:
+        return _print_missing("tools.codex_env_snapshot")
+
+    out = args.out or "codex_env_snapshot.json"
+    return mod.main(["--out", out])
+
+
+def _cmd_dep_report(args: argparse.Namespace) -> int:
+    try:
+        from tools import codex_dependency_report as mod
+    except Exception:
+        return _print_missing("tools.codex_dependency_report")
+
+    out = args.out or "codex_dependency_report.json"
+    return mod.main(["--out", out])
+
+
+def _cmd_dataset_index(args: argparse.Namespace) -> int:
+    try:
+        from tools import codex_dataset_index as mod
+    except Exception:
+        return _print_missing("tools.codex_dataset_index")
+
+    argv = [
+        "--data-root",
+        args.data_root,
+        "--json-out",
+        args.json_out,
+        "--md-out",
+        args.md_out,
+    ]
+    return mod.main(argv)
+
+
+def _cmd_mltest_run(args: argparse.Namespace) -> int:
+    try:
+        from tools import codex_mltest_runner as mod
+    except Exception:
+        return _print_missing("tools.codex_mltest_runner")
+
+    argv: List[str] = [
+        "--repo-root",
+        args.repo_root,
+        "--map",
+        args.map,
+        "--json-out",
+        args.json_out,
+    ]
+    if args.all:
+        argv.append("--all")
+    else:
+        argv.extend(["--category", args.category])
+    return mod.main(argv)
+
+
+def _cmd_gates_run(args: argparse.Namespace) -> int:
+    try:
+        from tools import codex_local_gate_runner as mod
+    except Exception:
+        return _print_missing("tools.codex_local_gate_runner")
+
+    argv = [
+        "--repo-root",
+        args.repo_root,
+        "--config",
+        args.config,
+        "--json-out",
+        args.json_out,
+    ]
+    return mod.main(argv)
+
+
+def _cmd_experiment_index(args: argparse.Namespace) -> int:
+    try:
+        from tools import codex_experiment_index as mod
+    except Exception:
+        return _print_missing("tools.codex_experiment_index")
+
+    argv = [
+        "--runs-root",
+        args.runs_root,
+        "--out",
+        args.out,
+    ]
+    return mod.main(argv)
+
+
+def _cmd_gap_registry(args: argparse.Namespace) -> int:
+    try:
+        from tools import codex_gap_registry as mod
+    except Exception:
+        return _print_missing("tools.codex_gap_registry")
+
+    argv = [
+        "--audit",
+        args.audit,
+        "--change-log",
+        args.change_log,
+        "--errors",
+        args.errors,
+        "--out",
+        args.out,
+    ]
+    return mod.main(argv)
+
+
+def _cmd_yaml_gap_check(args: argparse.Namespace) -> int:
+    try:
+        from tools import codex_yaml_gap_check as mod
+    except Exception:
+        return _print_missing("tools.codex_yaml_gap_check")
+
+    argv = [
+        "--gaps",
+        args.gaps,
+        "--yaml",
+        args.yaml,
+        "--out",
+        args.out,
+    ]
+    return mod.main(argv)
+
+
+def _cmd_task_sequence_run(args: argparse.Namespace) -> int:
+    try:
+        from tools import codex_task_sequence_runner as mod
+    except Exception:
+        return _print_missing("tools.codex_task_sequence_runner")
+
+    argv = [
+        "--yaml",
+        args.yaml,
+        "--repo-root",
+        args.repo_root,
+        "--change-log",
+        args.change_log,
+        "--errors",
+        args.errors,
+    ]
+    return mod.main(argv)
+
+
+def _cmd_repro_manifest(args: argparse.Namespace) -> int:
+    try:
+        from tools import codex_repro_manifest as mod
+    except Exception:
+        return _print_missing("tools.codex_repro_manifest")
+
+    argv = [
+        "--out",
+        args.out,
+        "--env",
+        args.env,
+        "--deps",
+        args.deps,
+        "--gates",
+        args.gates,
+        "--dataset-index",
+        args.dataset_index,
+        "--experiment-index",
+        args.experiment_index,
+    ]
+    return mod.main(argv)
+
+
+def _cmd_quick_audit(args: argparse.Namespace) -> int:
+    """Run a best-effort local audit sequence.
+
+    This is a Python equivalent of scripts/codex_quick_audit.sh and is
