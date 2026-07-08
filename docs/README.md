@@ -42,7 +42,14 @@ Complete documentation for the _codex_ AI/ML platform. Find guides, API referenc
 
 ### User Guides
 - [CLI Usage](cli.md) — Command-line interface guide
-- [API Reference](API_REFERENCE.md) — Complete API documentation
+- **API Documentation** — Complete API reference (NEW!)
+  - [API Documentation Index](API_DOCUMENTATION_INDEX.md) — Start here
+  - [Core API Reference](CORE_API_REFERENCE.md) — CLI, training, utilities
+  - [Quantum Orchestration API](QUANTUM_ORCHESTRATION_API.md) — Physics-inspired orchestration
+  - [Storage & Archive API](STORAGE_API.md) — Data persistence & retrieval
+  - [Integration & GitHub API](INTEGRATION_API.md) — GitHub, auth, tokens
+  - [ML Inference API](ML_INFERENCE_API.md) — ML validation & integration
+  - [Governance & Memory API](GOVERNANCE_API.md) — RBAC, memory, approval workflows
 - [Configuration](CONFIGURATION_GUIDE.md) — Configuration management
 
 ### Architecture & Design
