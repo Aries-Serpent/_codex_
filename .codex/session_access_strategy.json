@@ -1,20 +1,20 @@
 {
-  "generated_at": "2026-07-08T18:05:23.369038+00:00",
+  "generated_at": "2026-07-08T19:10:22.515767+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 4607,
+  "rest_remaining": 4905,
   "graphql_available": true,
-  "graphql_remaining": 4991,
+  "graphql_remaining": 4990,
   "gh_cli_available": true,
   "codeql_available": false,
   "best_token_var": "CODEX_MASTER_KEY",
   "open_prs": [
-    5269
+    5270
   ],
-  "branch": "copilot/phase-14-initiation-multi-agent-campaign",
+  "branch": "dependabot/npm_and_yarn/cognitive_app/npm_and_yarn-8ed86ed36d",
   "recommendation": "Use REST for data fetches. "
 }
