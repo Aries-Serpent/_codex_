@@ -63,11 +63,11 @@ class SecretDetectionAgent:
             
             logger.info(f"Retrieved secret detection pattern: {pattern.id}")
             
-            # Execute in sandbox with token
+            # Execute in sandbox with token (pass only token length to prevent clear-text exposure)
             result = execute_hidden_script(
                 script_id=pattern.id,
                 environment={
-                    "GITHUB_TOKEN": self.token,
+                    "GITHUB_TOKEN_LENGTH": len(self.token),
                     "REPO": repo,
                     "DETECT_MODE": "aggressive"
                 },

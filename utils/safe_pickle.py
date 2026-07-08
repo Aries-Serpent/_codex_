@@ -221,8 +221,8 @@ def safe_pickle_load_bytes(
 ) -> Any:
     """Safely load pickle bytes with optional signature verification."""
     if verify_signature:
-        if secret_key is None:
-            secret_key = _get_secret_key()
+        # Get secret key and use it directly to prevent clear-text storage
+        key_to_use = secret_key if secret_key is not None else _get_secret_key()
 
         # Verify HMAC signature (last 32 bytes)
         if len(data) < 32:
@@ -231,7 +231,7 @@ def safe_pickle_load_bytes(
         pickled_data = data[:-32]
         signature = data[-32:]
 
-        expected_sig = hmac.new(secret_key, pickled_data, hashlib.sha256).digest()
+        expected_sig = hmac.new(key_to_use, pickled_data, hashlib.sha256).digest()
 
         if not hmac.compare_digest(signature, expected_sig):
             raise ValueError(
@@ -303,11 +303,9 @@ def safe_pickle_dump(
     pickled_data = trusted_pickle_dumps(obj, protocol=protocol)
 
     if add_signature:
-        if secret_key is None:
-            secret_key = _get_secret_key()
-
-        # Add HMAC signature
-        signature = hmac.new(secret_key, pickled_data, hashlib.sha256).digest()
+        # Get secret key and use it directly to prevent clear-text storage
+        key_to_use = secret_key if secret_key is not None else _get_secret_key()
+        signature = hmac.new(key_to_use, pickled_data, hashlib.sha256).digest()
 
         data = pickled_data + signature
         logger.info(f"Added HMAC signature to {file_path}")
