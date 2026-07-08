@@ -17,6 +17,7 @@ Auth:
   - Header scheme defaults to "token"; override with GITHUB_AUTH_SCHEME=Bearer if needed
   - API base defaults to https://api.github.com (override with GITHUB_API)
 """
+
 from __future__ import annotations
 
 import argparse

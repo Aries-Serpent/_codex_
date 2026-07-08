@@ -247,8 +247,7 @@ def matches_allowdeny(rel_path: str, allow_globs: list[str], deny_globs: list[st
 def ensure_sqlite(db_path: str):
     conn = sqlite3.connect(db_path)
     cur = conn.cursor()
-    cur.execute(
-        """
+    cur.execute("""
         CREATE TABLE IF NOT EXISTS code_metadata (
             id INTEGER PRIMARY KEY,
             path TEXT NOT NULL UNIQUE,
@@ -259,8 +258,7 @@ def ensure_sqlite(db_path: str):
             parquet_row_id INTEGER NOT NULL,
             deleted_at TEXT
         );
-    """
-    )
+    """)
     cur.execute("CREATE INDEX IF NOT EXISTS idx_lang ON code_metadata(language);")
     cur.execute("CREATE INDEX IF NOT EXISTS idx_hash ON code_metadata(hash);")
     cur.execute("CREATE INDEX IF NOT EXISTS idx_deleted ON code_metadata(deleted_at);")
@@ -827,8 +825,7 @@ def cmd_verify(args):
     if not files:
         raise SystemExit("No Parquet files available for verify.")
     parquet_list_sql = ", ".join([f"'{f}'" for f in files])
-    counts = con.execute(
-        f"""
+    counts = con.execute(f"""
         WITH active AS (
           SELECT parquet_row_id FROM meta.code_metadata WHERE deleted_at IS NULL
         ),
@@ -840,18 +837,15 @@ def cmd_verify(args):
           (SELECT COUNT(*) FROM present) AS present_count,
           (SELECT COUNT(*) FROM active a
              WHERE a.parquet_row_id NOT IN (SELECT parquet_row_id FROM present)) AS missing_count
-    """
-    ).fetchone()
-    missing_ids = con.execute(
-        f"""
+    """).fetchone()
+    missing_ids = con.execute(f"""
         SELECT parquet_row_id
         FROM meta.code_metadata
         WHERE deleted_at IS NULL
           AND parquet_row_id NOT IN (SELECT parquet_row_id FROM read_parquet([{parquet_list_sql}]))
         ORDER BY parquet_row_id
         LIMIT 50
-    """
-    ).fetchall()
+    """).fetchall()
     print(
         json.dumps(
             {

@@ -14,48 +14,48 @@ jobs:
   check-freshness:
     runs-on: ubuntu-latest
     name: Check Documentation Freshness
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      
+
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
           python-version: '3.11'
-      
+
       - name: Run doc freshness validation
         run: |
           python3 << 'PYTHON_EOF'
           import json
           import datetime
           from pathlib import Path
-          
+
           # Load ownership registry
           registry_path = Path('.codex/DOC_OWNERSHIP_REGISTRY.json')
           if not registry_path.exists():
               print("❌ DOC_OWNERSHIP_REGISTRY.json not found")
               exit(1)
-          
+
           with open(registry_path) as f:
               registry = json.load(f)
-          
+
           today = datetime.date.today()
           stale_docs = []
-          
+
           # Check critical docs
           critical_docs = registry.get('root_level_documentation', {})
           for doc_path, info in critical_docs.items():
               if not Path(doc_path).exists():
                   print(f"⚠️  Missing: {doc_path}")
                   continue
-              
+
               last_reviewed = datetime.date.fromisoformat(info.get('last_reviewed', '2020-01-01'))
               days_old = (today - last_reviewed).days
               sla_days = info.get('sla_days', 90)
-              
+
               if days_old > sla_days:
                   stale_docs.append({
                       'file': doc_path,
@@ -63,19 +63,19 @@ jobs:
                       'days_old': days_old,
                       'sla': sla_days
                   })
-          
+
           if stale_docs:
               print(f"\n⚠️  Found {len(stale_docs)} stale critical documentation files:")
               for doc in stale_docs:
                   print(f"  - {doc['file']}: {doc['days_old']} days old (SLA: {doc['sla']} days)")
                   print(f"    Owner: {doc['owner']}")
-              
+
               # Would create GitHub issue here in real implementation
           else:
               print("✅ All critical documentation is fresh!")
-          
+
           PYTHON_EOF
-      
+
       - name: Report results
         if: always()
         run: |

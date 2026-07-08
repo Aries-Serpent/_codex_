@@ -46,7 +46,7 @@ jobs:
           \ }};\n\n// Read the file content\nconst content = fs.readFileSync(filePath,\
           \ 'utf8');\n\n// Get repository info\nconst owner = context.repo.owner;\n\
           const repo = context.repo.repo;\n\nconsole.log(`\U0001F4DD Posting to Discussion\
-          \ #${discussionNumber}...`);\nconsole.log(`Repository: ${owner}/${repo}`);\n\
+          \  #${discussionNumber}...`);\nconsole.log(`Repository: ${owner}/${repo}`);\n\
           console.log(`File: ${filePath}`);\nconsole.log(`Content length: ${content.length}\
           \ characters`);\n\n// Use GraphQL to post the comment\nconst query = `\n\
           \  mutation AddDiscussionComment($discussionId: ID!, $body: String!) {\n\
@@ -63,7 +63,7 @@ jobs:
           \  const result = await github.graphql(query, {\n    discussionId: discussionId,\n\
           \    body: content\n  });\n\n  const commentId = result.addDiscussionComment.comment.id;\n\
           \  const createdAt = result.addDiscussionComment.comment.createdAt;\n\n\
-          \  console.log(`✅ SUCCESS: Comment posted to Discussion #${discussionNumber}`);\n\
+          \  console.log(`✅ SUCCESS: Comment posted to Discussion  #${discussionNumber}`);\n\
           \  console.log(`Comment ID: ${commentId}`);\n  console.log(`Created at:\
           \ ${createdAt}`);\n\n  core.setOutput('success', 'true');\n  core.setOutput('comment_id',\
           \ commentId);\n  core.setOutput('created_at', createdAt);\n} catch (error)\

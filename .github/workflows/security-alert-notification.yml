@@ -79,7 +79,7 @@ jobs:
           \    summary += `### ${group.emoji} ${severity.charAt(0).toUpperCase() +\
           \ severity.slice(1)} Severity\\n\\n`;\n\n    group.alerts.forEach(alert\
           \ => {\n      const advisory = alert.security_advisory;\n      summary +=\
-          \ `#### Alert #${alert.number}: ${advisory.summary}\\n`;\n      summary\
+          \ `#### Alert  #${alert.number}: ${advisory.summary}\\n`;\n      summary\
           \ += `- **Package:** ${alert.dependency.package.name} (${alert.dependency.package.ecosystem})\\\
           n`;\n      if (advisory.cve_id) {\n        summary += `- **CVE:** [${advisory.cve_id}](${advisory.references[0]?.url\
           \ || advisory.html_url})\\n`;\n      }\n      if (advisory.cvss?.score)\

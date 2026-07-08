@@ -11,6 +11,7 @@ Capabilities:
 
 NO CI/ACTIONS: Does not create or modify any GitHub Actions workflow files.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -142,8 +143,7 @@ def ensure_encoding_support(file_path: Path) -> dict:
     changed = False
     inserts = []
     if "def _codex_detect_encoding(" not in text:
-        helper = textwrap.dedent(
-            """
+        helper = textwrap.dedent("""
         # --- Codex: encoding autodetection helpers ---
         def _codex_detect_encoding(data: bytes) -> str:
             try:
@@ -161,8 +161,7 @@ def ensure_encoding_support(file_path: Path) -> dict:
             except Exception:
                 _ = None  # suppressed: no action needed
             return "utf-8"
-        """
-        )
+        """)
         text = helper + "\n" + text
         changed = True
         inserts.append("helper")
@@ -187,8 +186,7 @@ def ensure_encoding_support(file_path: Path) -> dict:
         and 'encoding=="auto"' not in text
         and 'encoding == "auto"' not in text
     ):
-        guard = textwrap.dedent(
-            """
+        guard = textwrap.dedent("""
         # --- Codex: honor encoding="auto" ---
         if encoding == "auto":
             _p = None
@@ -212,8 +210,7 @@ def ensure_encoding_support(file_path: Path) -> dict:
                     _ = None  # suppressed: no action needed
             else:
                 encoding = _codex_detect_encoding(data)
-        """
-        )
+        """)
         text = text.replace("):\n", "):\n" + guard, 1)
         changed = True
         inserts.append('encoding="auto"')
@@ -236,9 +233,7 @@ def ensure_precommit():
     cfg = REPO_ROOT / ".pre-commit-config.yaml"
     if cfg.exists():
         return {"created": False, "path": str(cfg)}
-    content = (
-        textwrap.dedent(
-            """
+    content = textwrap.dedent("""
     repos:
       - repo: https://github.com/psf/black
         rev: 24.8.0
@@ -256,10 +251,7 @@ def ensure_precommit():
             entry: bash -lc 'pytest -q || true'
             language: system
             pass_filenames: false
-    """
-        ).strip()
-        + "\n"
-    )
+    """).strip() + "\n"
     safe_write(cfg, content)
     return {"created": True, "path": str(cfg)}
 
@@ -282,9 +274,7 @@ def ensure_tests_matrix():
     tfile = TESTS_DIR / "test_encoding_matrix.py"
     if tfile.exists():
         return False
-    content = (
-        textwrap.dedent(
-            r"""
+    content = textwrap.dedent(r"""
     import io, os, tempfile, pathlib, pytest
 
     @pytest.mark.parametrize("enc", ["utf-8", "cp1252", "utf-16"])
@@ -297,10 +287,7 @@ def ensure_tests_matrix():
             assert isinstance(txt_auto, str)
             txt_explicit = p.read_text(encoding=enc, errors="strict")
             assert data == txt_explicit
-    """
-        ).strip()
-        + "\n"
-    )
+    """).strip() + "\n"
     safe_write(tfile, content)
     return True
 

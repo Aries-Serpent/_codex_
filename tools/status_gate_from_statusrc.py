@@ -9,6 +9,7 @@ Checks:
 Exit:
 - 0 on success, 1 on failure (with reasons)
 """
+
 from __future__ import annotations
 
 import json

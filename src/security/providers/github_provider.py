@@ -47,6 +47,7 @@ logger = logging.getLogger(__name__)
 _requests: ModuleType | None
 try:
     import requests as _requests_module
+
     _requests = _requests_module
 
     HAS_REQUESTS = True
@@ -501,8 +502,7 @@ class GitHubTokenProvider(TokenProvider):
         """  # noqa: E501
         try:
             logger.info(
-                "Updating GitHub access scopes (grant_id: %s, scope_count: %d)",
-                _redact_identifier(secret_id) if secret_id else "<none>",
+                "Updating GitHub access scopes (scope_count: %d)",
                 len(scopes) if scopes else 0,
             )
 

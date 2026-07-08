@@ -104,9 +104,9 @@ class PrometheusMetrics:
         self.model_load_count: DefaultDict[str, int] = defaultdict(int)  # {model_name: count}
         self.model_load_latency: dict[str, LatencyHistogram] = {}  # {model_name: LatencyHistogram}
         self.model_prediction_count: DefaultDict[str, int] = defaultdict(int)  # {model_name: count}
-        self.model_prediction_latency: dict[
-            str, LatencyHistogram
-        ] = {}  # {model_name: LatencyHistogram}
+        self.model_prediction_latency: dict[str, LatencyHistogram] = (
+            {}
+        )  # {model_name: LatencyHistogram}
         self.model_cache_hits: int = 0
         self.model_cache_misses: int = 0
 

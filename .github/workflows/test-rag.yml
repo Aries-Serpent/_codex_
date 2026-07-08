@@ -220,7 +220,7 @@ jobs:
         \ access)\")\n        hf_token = None\n     \n    start_time = time.time()\n\
         \     \n    model = SentenceTransformer(\n        'sentence-transformers/all-MiniLM-L6-v2',\n\
         \        cache_folder=cache_dir,\n        token=hf_token\n    )\n     \n \
-        \   load_time = time.time() - start_time\n     \n    # Verify the model is\
+        \   load_time = time.time() - start_time\n     \n  # Verify the model is\
         \ functional\n    print(\"[MODEL-CACHE] Testing model functionality...\")\n\
         \    test_sentences = [\"test sentence 1\", \"test sentence 2\"]\n    embeddings\
         \ = model.encode(test_sentences)\n    print(f\"[MODEL-CACHE] ✓ Model cached\

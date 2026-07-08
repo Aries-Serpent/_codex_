@@ -70,7 +70,9 @@ def split_dataset(
     ]
     if not lines:
         raise ValueError(f"dataset {source} is empty")
-    rng = random.Random(ensure_split_seed(seed))  # nosec B311 — non-cryptographic ML sampling/shuffling
+    rng = random.Random(
+        ensure_split_seed(seed)
+    )  # nosec B311 — non-cryptographic ML sampling/shuffling
     rng.shuffle(lines)
     total = len(lines)
     train_n = int(total * ratios[0])
@@ -131,7 +133,9 @@ def deterministic_split(
         raise ValueError("validation and test fractions must leave room for train split")
 
     indices = list(range(n_items))
-    rng = random.Random(ensure_split_seed(seed))  # nosec B311 — non-cryptographic ML sampling/shuffling
+    rng = random.Random(
+        ensure_split_seed(seed)
+    )  # nosec B311 — non-cryptographic ML sampling/shuffling
     rng.shuffle(indices)
 
     n_test = int(n_items * float(test_fraction))

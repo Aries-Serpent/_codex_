@@ -27,7 +27,7 @@ permissions:
   pull-requests: read
 jobs:
   post-to-discussion:
-    name: "\U0001F4CB Post to Discussion #3673"
+    name: "\U0001F4CB Post to Discussion  #3673"
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -75,7 +75,7 @@ jobs:
         \            session_id = heading_turn.group(1).strip()\n\nturn_id = session_id\n\
         heading_ts = re.search(r\"\\b\\d{4}-\\d{2}-\\d{2}(?:T\\d{2}:\\d{2}Z)?\\b\"\
         , heading_line)\nif heading_ts:\n    turn_id = heading_ts.group(0)\n\npr_number\
-        \ = \"\"\npr_match = re.search(r\"\\bPR #(\\d+)\\b\", latest)\nif pr_match:\n\
+        \ = \"\"\npr_match = re.search(r\"\\bPR  #(\\d+)\\b\", latest)\nif pr_match:\n\
         \    pr_number = pr_match.group(1)\n\nwrite_output(\"should_post\", \"true\"\
         )\nwrite_output(\"session_id\", session_id[:120])\nwrite_output(\"turn_id\"\
         , turn_id[:120])\nwrite_output(\"pr_number\", pr_number)\nwrite_multiline_output(\"\
@@ -125,7 +125,7 @@ jobs:
         \u26A0\uFE0F Using github.token \u2014 discussion write may fail without discussions:write\"\
         \n  fi\nfi\necho \"resolved_token=${RESOLVED_TOKEN}\" >> \"$GITHUB_OUTPUT\"\
         \n"
-    - name: 'Post to GitHub Discussion #3673'
+    - name: 'Post to GitHub Discussion  #3673'
       if: steps.extract.outputs.should_post == 'true'
       uses: actions/github-script@v8
       env:
@@ -148,7 +148,7 @@ jobs:
           \  `branch=${encode(branch)}`,\n  `pr=${encode(prNumber || 'none')}`,\n\
           \  `session=${encode(sessionId)}`,\n  `turn=${encode(turnId)}`,\n  '-->',\n\
           ].join(' ');\nconst metadataLine = prNumber\n  ? `> branch \\`${branch}\\\
-          ` \xB7 PR #${prNumber} \xB7 session \\`${sessionId}\\` \xB7 turn \\`${turnId}\\\
+          ` \xB7 PR  #${prNumber} \xB7 session \\`${sessionId}\\` \xB7 turn \\`${turnId}\\\
           ` \xB7 sha \\`${sha}\\``\n  : `> branch \\`${branch}\\` \xB7 PR n/a \xB7\
           \ session \\`${sessionId}\\` \xB7 turn \\`${turnId}\\` \xB7 sha \\`${sha}\\\
           ``;\nconst body = `${contractMarker}\\n${metadataLine}\\n\\n${entryContent}`;\n\
@@ -159,7 +159,7 @@ jobs:
           \ $owner, name: $name) {\n        discussion(number: $number) { id }\n \
           \     }\n    }\n  `, {\n    owner: context.repo.owner,\n    name: context.repo.repo,\n\
           \    number: discussionNumber,\n  });\n  discussionId = discussion.repository.discussion.id;\n\
-          } catch (e) {\n  core.warning(`Could not fetch discussion #${discussionNumber}:\
+          } catch (e) {\n  core.warning(`Could not fetch discussion  #${discussionNumber}:\
           \ ${e.message}`);\n  core.warning('Ensure the token has discussions:write\
           \ permission');\n  return;\n}\n\nlet existingComment = null;\nlet cursor\
           \ = null;\nwhile (discussionId) {\n  const page = await github.graphql(`\n\
@@ -177,13 +177,13 @@ jobs:
           \ { commentId: $commentId, body: $body }) {\n          comment { id url\
           \ }\n        }\n      }\n    `, {\n      commentId: existingComment.id,\n\
           \      body,\n    });\n    core.info(\n      `\u2705 Updated authoritative\
-          \ accountability entry in discussion #${discussionNumber}: ` +\n      `${result.updateDiscussionComment.comment.url}`\n\
+          \ accountability entry in discussion  #${discussionNumber}: ` +\n      `${result.updateDiscussionComment.comment.url}`\n\
           \    );\n    return;\n  }\n\n  const result = await github.graphql(`\n \
           \   mutation($discussionId: ID!, $body: String!) {\n      addDiscussionComment(input:\
           \ { discussionId: $discussionId, body: $body }) {\n        comment { id\
           \ url }\n      }\n    }\n  `, {\n    discussionId,\n    body,\n  });\n \
           \ core.info(\n    `\u2705 Posted authoritative accountability entry to discussion\
-          \ #${discussionNumber}: ` +\n    `${result.addDiscussionComment.comment.url}`\n\
+          \  #${discussionNumber}: ` +\n    `${result.addDiscussionComment.comment.url}`\n\
           \  );\n} catch (e) {\n  core.warning(`Failed to post discussion comment:\
           \ ${e.message}`);\n  core.info('Body preview (first 200 chars): ' + body.slice(0,\
           \ 200));\n}\n"

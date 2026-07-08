@@ -289,7 +289,9 @@ class IntelligentFixGenerator:
         # Replace ElementTree with defusedxml
         if "xml.etree.ElementTree" in code:
             fixed = re.sub(r"xml\.etree\.ElementTree", "defusedxml.ElementTree", code)
-            fixed = re.sub(r"import xml\.etree\.ElementTree", "import defusedxml.ElementTree", fixed)
+            fixed = re.sub(
+                r"import xml\.etree\.ElementTree", "import defusedxml.ElementTree", fixed
+            )
             explanation = "Replaced xml.etree.ElementTree with defusedxml for XXE protection"
             confidence = 0.90
             return fixed, explanation, confidence
@@ -377,7 +379,9 @@ def validate_input(data, max_length=1000):
                 print(f"Warning: Original code not found in {fix.file_path}")
                 return False
             if occurrences > 1:
-                print(f"Warning: Ambiguous replacement - code appears {occurrences} times in {fix.file_path}")
+                print(
+                    f"Warning: Ambiguous replacement - code appears {occurrences} times in {fix.file_path}"
+                )
                 print("Consider using AST-based or line-number-specific replacement")
                 # Only replace first occurrence to avoid unintended changes
                 new_content = content.replace(fix.original_code, fix.fixed_code, 1)

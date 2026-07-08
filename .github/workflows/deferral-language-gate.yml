@@ -64,7 +64,7 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
-      run: "echo \"Fetching last 50 PR comments for PR #${PR_NUMBER}...\"\ngh api\
+      run: "echo \"Fetching last 50 PR comments for PR  #${PR_NUMBER}...\"\ngh api\
         \ \\\n  \"repos/${{ github.repository }}/issues/${PR_NUMBER}/comments?per_page=50\"\
         \ \\\n  --jq '.[] | select(\n    .user.login == \"copilot-swe-agent[bot]\"\
         \ or\n    .user.login == \"github-copilot[bot]\" or\n    .user.login == \"\

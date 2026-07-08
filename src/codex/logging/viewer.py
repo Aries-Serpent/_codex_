@@ -261,7 +261,9 @@ def main(argv: Optional[list[str]] = None) -> int:
     root = Path.cwd()
     db_path = Path(resolve_db_path(ns.db)) if ns.db else autodetect_db(root)
     if not db_path:
-        logger.error("ERROR: SQLite DB not found. Provide --db or place logs.db/logs.sqlite in repo.",)
+        logger.error(
+            "ERROR: SQLite DB not found. Provide --db or place logs.db/logs.sqlite in repo.",
+        )
         return 2
     try:
         conn = connect_db(db_path)

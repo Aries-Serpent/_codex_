@@ -35,7 +35,7 @@ jobs:
         \  echo \"::warning::CODEX_MASTER_KEY not set \u2014 workflow dispatch and\
         \ auto-approve will use github.token fallback (may 403)\"\n  echo \"token_tier=fallback\"\
         \ >> \"$GITHUB_OUTPUT\"\nelse\n  echo \"token_tier=master\"  >> \"$GITHUB_OUTPUT\"\
-        \nfi\necho \"Approval by ${REVIEWER} on PR #${PR_NUM} @ ${PR_SHA} (${PR_REF})\"\
+        \nfi\necho \"Approval by ${REVIEWER} on PR  #${PR_NUM} @ ${PR_SHA} (${PR_REF})\"\
         \n"
     - name: Checkout
       uses: actions/checkout@v5
@@ -57,7 +57,7 @@ jobs:
         script: "const owner = context.repo.owner;\nconst repo = context.repo.repo;\n\
           const prNumber = parseInt('${{ steps.ctx.outputs.pr_num }}', 10);\nconst\
           \ prSha = '${{ steps.ctx.outputs.pr_sha }}';\nconst reviewer = '${{ steps.ctx.outputs.reviewer\
-          \ }}';\n\ncore.info(`Dispatching auto-approve-workflows.yml for PR #${prNumber}\
+          \ }}';\n\ncore.info(`Dispatching auto-approve-workflows.yml for PR  #${prNumber}\
           \ @ ${prSha.slice(0,8)}`);\n\ntry {\n  await github.rest.actions.createWorkflowDispatch({\n\
           \    owner,\n    repo,\n    workflow_id: 'auto-approve-workflows.yml',\n\
           \    ref: 'main',\n    inputs: {\n      approval_source: 'trigger-on-approval',\n\
@@ -118,7 +118,7 @@ jobs:
           \ reviewer = '${{ steps.ctx.outputs.reviewer }}';\nconst sha      = '${{\
           \ steps.ctx.outputs.pr_sha }}';\n\nconst body = [\n  `<!-- trigger-on-approval-agent-resume\
           \ -->`,\n  `## \u26A1 Approval Dispatch \u2014 Copilot Resume`,\n  ``,\n\
-          \  `PR #${prNumber} approved by **@${reviewer}** at \\`${sha.slice(0,8)}\\\
+          \  `PR  #${prNumber} approved by **@${reviewer}** at \\`${sha.slice(0,8)}\\\
           `.`,\n  ``,\n  `**Dispatched workflows:**`,\n  `- \\`validate.yml\\` (fast\
           \ mode) \u2705`,\n  `- \\`pre-merge-validation.yml\\` \u2705`,\n  `- \\\
           `codeql-alert-fetcher.yml\\` (requires CODEX_MASTER_KEY) \u2705`,\n  `-\
@@ -140,7 +140,7 @@ jobs:
         echo "================================================================" |
         tee -a "$GITHUB_STEP_SUMMARY"
 
-        echo "  PR     : #${{ steps.ctx.outputs.pr_num }}"                     | tee
+        echo "  PR     :  #${{ steps.ctx.outputs.pr_num }}"                     | tee
         -a "$GITHUB_STEP_SUMMARY"
 
         echo "  HEAD   : ${{ steps.ctx.outputs.pr_sha }}"                      | tee

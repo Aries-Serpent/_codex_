@@ -8,7 +8,7 @@ Generates the three required deliverables from validation data.
 
 import json
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Dict, Any
 import yaml
 
 def load_validation_results() -> Dict[str, Any]:

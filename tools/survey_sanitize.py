@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Normalize Codex plaintext survey output into well-formed Markdown."""
+
 from __future__ import annotations
 
 import re

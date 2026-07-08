@@ -87,9 +87,7 @@ class GitHubHTTPClient:
             ValueError: If URL validation fails
         """
         if not self._token:
-            raise RuntimeError(
-                "No GitHub token configured. Set CODEX_MASTER_KEY or GITHUB_TOKEN."
-            )
+            raise RuntimeError("No GitHub token configured. Set CODEX_MASTER_KEY or GITHUB_TOKEN.")
 
         # Ensure full URL
         if not url.startswith("https://"):
@@ -127,9 +125,7 @@ class GitHubHTTPClient:
 
         except urllib.error.HTTPError as e:
             # Log safe error details
-            logger.error(
-                f"GitHub API error: {e.code} {e.reason} at {redact_url_for_log(url)}"
-            )
+            logger.error(f"GitHub API error: {e.code} {e.reason} at {redact_url_for_log(url)}")
             try:
                 error_data = json.loads(e.read().decode("utf-8"))
                 logger.debug(f"Error details: {error_data}")

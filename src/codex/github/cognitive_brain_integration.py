@@ -222,7 +222,7 @@ class CognitiveBrainIntegration:
             return self._api._request("PATCH", url, {"name": name, "value": value})
         except Exception as exc:
             # Check if it's a 404 (not found) — if so, try POST
-            if hasattr(exc, 'code') and exc.code == 404:
+            if hasattr(exc, "code") and exc.code == 404:
                 url_create = f"{_GITHUB_API}/repos/{repo}/actions/variables"
                 return self._api._request("POST", url_create, {"name": name, "value": value})
             raise

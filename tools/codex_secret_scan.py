@@ -5,6 +5,7 @@ The scanner is intentionally lightweight and offline. It searches for
 common credential patterns and emits both JSON and Markdown reports to help
 prevent accidental commits of sensitive material.
 """
+
 from __future__ import annotations
 
 import argparse

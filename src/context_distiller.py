@@ -329,7 +329,9 @@ class ContextDistiller:
             if tokens:
                 compressed = " ".join(tokens[: self.max_tokens])
 
-                logger.info(f"Compressed with sentencepiece: {len(content)} → {len(compressed)} chars")
+                logger.info(
+                    f"Compressed with sentencepiece: {len(content)} → {len(compressed)} chars"
+                )
 
                 return compressed
         logger.warning("Sentencepiece model not found, skipping compression")

@@ -50,15 +50,13 @@ def log_change(action: str, path: Path, why: str, preview: str = "") -> None:
 
 
 def q5(step: str, err: str, ctx: str) -> None:
-    rq = textwrap.dedent(
-        f"""\
+    rq = textwrap.dedent(f"""\
     Question for ChatGPT-5 {ts()}:
     While performing [{step}], encountered the following error:
     {err}
     Context: {ctx}
     What are the possible causes, and how can this be resolved while preserving intended functionality?
-    """
-    )
+    """)
     with ERRORS.open("a", encoding="utf-8") as fh:
         fh.write(json.dumps({"ts": ts(), "step": step, "error": err, "context": ctx}) + "\n")
     sys.stderr.write(rq + "\n")

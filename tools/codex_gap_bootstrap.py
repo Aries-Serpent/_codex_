@@ -8,6 +8,7 @@ Given a gap id, this script can:
 - Create a docs stub under docs/gaps/<gap_id>.md if it does not exist.
 - Print suggestions for where to place code and tests based on the capability.
 """
+
 from __future__ import annotations
 
 import argparse

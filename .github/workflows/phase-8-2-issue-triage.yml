@@ -83,7 +83,7 @@ jobs:
 
             // Apply unique labels
             const uniqueLabels = [...new Set(labels)];
-            console.log(`Applying labels to issue #${context.issue.number}: ${uniqueLabels.join(', ')}`);
+            console.log(`Applying labels to issue  #${context.issue.number}: ${uniqueLabels.join(', ')}`);
 
             await github.rest.issues.addLabels({
               owner: context.repo.owner,

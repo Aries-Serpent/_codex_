@@ -15,6 +15,7 @@ Heuristic:
 Usage:
   python tools/capability_score.py
 """
+
 from __future__ import annotations
 
 import json

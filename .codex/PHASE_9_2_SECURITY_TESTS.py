@@ -10,7 +10,6 @@ Tests for:
 """
 
 import pytest
-import subprocess
 import tempfile
 import time
 from pathlib import Path
@@ -129,7 +128,6 @@ class TestSecureRandomness:
     
     def test_uses_secrets_module(self):
         """Verify secrets module is used for randomness"""
-        import secrets
         import inspect
         
         # Get source code of _simulate_agent_fix
@@ -151,7 +149,6 @@ class TestTypeSafety:
     
     def test_optional_types(self):
         """Verify Optional types are properly used"""
-        from typing import get_type_hints
         
         # PatternMatcher should accept Optional[Dict]
         matcher = PatternMatcher(config=None)

@@ -3,7 +3,7 @@
 import json
 import sqlite3
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Dict, Any, Optional
 from datetime import datetime
 
 
@@ -37,9 +37,9 @@ class CopilotToolsInterface:
                 "phases": phases_count,
                 "tracks": tracks_count,
                 "deliverables": deliverables_count,
-                "agents": agents_count
+                "agents": agents_count,
             },
-            "system_version": "0.1.0-machine-readable"
+            "system_version": "0.1.0-machine-readable",
         }
 
     def get_task_brief(self, task_id: Optional[str] = None) -> Dict[str, Any]:
@@ -55,7 +55,7 @@ class CopilotToolsInterface:
             return {
                 "current_phase": phase_data,
                 "type": "phase_context",
-                "timestamp": datetime.utcnow().isoformat() + "Z"
+                "timestamp": datetime.utcnow().isoformat() + "Z",
             }
 
         # Fetch specific deliverable
@@ -70,7 +70,7 @@ class CopilotToolsInterface:
         # Get related requirements
         self.cursor.execute(
             "SELECT json(data) as data FROM requirements WHERE phase_id = ?",
-            (task_data.get("phase_id"),)
+            (task_data.get("phase_id"),),
         )
         requirements = [json.loads(r["data"]) for r in self.cursor.fetchall()]
 
@@ -78,7 +78,7 @@ class CopilotToolsInterface:
             "task": task_data,
             "requirements": requirements,
             "type": "task_brief",
-            "timestamp": datetime.utcnow().isoformat() + "Z"
+            "timestamp": datetime.utcnow().isoformat() + "Z",
         }
 
     def search_docs(self, query: str) -> Dict[str, Any]:
@@ -89,10 +89,12 @@ class CopilotToolsInterface:
             # Search phases
             self.cursor.execute(
                 "SELECT id FROM fts_phases WHERE name MATCH ? OR description MATCH ? LIMIT 10",
-                (query, query)
+                (query, query),
             )
             for row in self.cursor.fetchall():
-                self.cursor.execute("SELECT json(data) as data FROM campaign_phases WHERE id = ?", (row["id"],))
+                self.cursor.execute(
+                    "SELECT json(data) as data FROM campaign_phases WHERE id = ?", (row["id"],)
+                )
                 results["phases"].append(json.loads(self.cursor.fetchone()["data"]))
         except Exception:
             pass
@@ -101,18 +103,13 @@ class CopilotToolsInterface:
 
     def get_related_context(self, entity_id: str) -> Dict[str, Any]:
         """Tool 4: Get all related entities and dependencies."""
-        context = {
-            "entity_id": entity_id,
-            "upstream": [],
-            "downstream": [],
-            "lateral": []
-        }
+        context = {"entity_id": entity_id, "upstream": [], "downstream": [], "lateral": []}
 
         try:
             # Get relationships where this entity is source
             self.cursor.execute(
                 "SELECT source_id, target_id, json(data) as data FROM relationships WHERE source_id = ?",
-                (entity_id,)
+                (entity_id,),
             )
             for row in self.cursor.fetchall():
                 rel_data = json.loads(row["data"])
@@ -133,14 +130,16 @@ class CopilotToolsInterface:
             "affected_entities": {
                 "direct": len(context["downstream"]) + len(context["upstream"]),
                 "downstream_count": len(context["downstream"]),
-                "upstream_count": len(context["upstream"])
+                "upstream_count": len(context["upstream"]),
             },
-            "risk_level": "low" if (len(context["downstream"]) + len(context["upstream"])) < 5 else "medium",
+            "risk_level": (
+                "low" if (len(context["downstream"]) + len(context["upstream"])) < 5 else "medium"
+            ),
             "validation_steps": [
                 "Verify all downstream deliverables still meet requirements",
                 "Check metrics remain within targets after changes",
-                "Validate no broken dependencies introduced"
-            ]
+                "Validate no broken dependencies introduced",
+            ],
         }
 
         return impact
@@ -149,7 +148,9 @@ class CopilotToolsInterface:
         """Tool 6: List available actions for execution."""
         try:
             if phase_id:
-                self.cursor.execute("SELECT json(data) as data FROM deliverables WHERE phase_id = ?", (phase_id,))
+                self.cursor.execute(
+                    "SELECT json(data) as data FROM deliverables WHERE phase_id = ?", (phase_id,)
+                )
             else:
                 self.cursor.execute("SELECT json(data) as data FROM deliverables LIMIT 20")
 
@@ -161,7 +162,7 @@ class CopilotToolsInterface:
             "phase_id": phase_id,
             "actions": actions,
             "count": len(actions),
-            "timestamp": datetime.utcnow().isoformat() + "Z"
+            "timestamp": datetime.utcnow().isoformat() + "Z",
         }
 
     def validate_docs(self) -> Dict[str, Any]:
@@ -183,7 +184,7 @@ class CopilotToolsInterface:
         return {
             "status": "valid" if not issues else "has_issues",
             "issues": issues,
-            "timestamp": datetime.utcnow().isoformat() + "Z"
+            "timestamp": datetime.utcnow().isoformat() + "Z",
         }
 
     def rebuild_indexes(self) -> Dict[str, Any]:
@@ -209,13 +210,13 @@ class CopilotToolsInterface:
             return {
                 "status": "success",
                 "timestamp": datetime.utcnow().isoformat() + "Z",
-                "message": "FTS indexes rebuilt"
+                "message": "FTS indexes rebuilt",
             }
         except Exception as e:
             return {
                 "status": "error",
                 "error": str(e),
-                "timestamp": datetime.utcnow().isoformat() + "Z"
+                "timestamp": datetime.utcnow().isoformat() + "Z",
             }
 
     def classify_candidate_file(self, file_path: str) -> Dict[str, Any]:
@@ -226,7 +227,7 @@ class CopilotToolsInterface:
             ".codex/*.md",
             "docs-data/canonical/*.jsonl",
             "docs-data/generated/*",
-            "tools/docs_agent/*.py"
+            "tools/docs_agent/*.py",
         ]
 
         is_managed = any(path.match(pattern) for pattern in managed_patterns)
@@ -235,7 +236,7 @@ class CopilotToolsInterface:
             "file_path": file_path,
             "is_managed": is_managed,
             "classification": "managed" if is_managed else "unmanaged",
-            "recommendation": "ingest" if is_managed else "skip"
+            "recommendation": "ingest" if is_managed else "skip",
         }
 
     def ingest_candidate_file(self, file_path: str, content: str) -> Dict[str, Any]:
@@ -245,20 +246,20 @@ class CopilotToolsInterface:
                 "file_path": file_path,
                 "status": "parsed",
                 "type": "markdown",
-                "action": "queue_for_jsonl_generation"
+                "action": "queue_for_jsonl_generation",
             }
         elif file_path.endswith(".jsonl"):
             return {
                 "file_path": file_path,
                 "status": "ingested",
                 "type": "jsonl",
-                "action": "rebuild_indexes"
+                "action": "rebuild_indexes",
             }
         else:
             return {
                 "file_path": file_path,
                 "status": "unsupported",
-                "error": f"Cannot ingest {Path(file_path).suffix} files"
+                "error": f"Cannot ingest {Path(file_path).suffix} files",
             }
 
 

@@ -192,16 +192,14 @@ class MemoryConsolidationEngine:
             frequency_threshold = self.config["frequency_threshold"]
             max_promote = self.config["max_promote_per_cycle"]
 
-            hot_entries = conn.execute(
-                f"""
+            hot_entries = conn.execute(f"""
                 SELECT key, value, pattern_type, frequency, success_rate,
                        confidence, last_accessed, created_at, metadata, tags
                 FROM stm_entries
                 WHERE frequency >= {frequency_threshold}
                 ORDER BY frequency DESC, last_accessed DESC
                 LIMIT {max_promote}
-                """
-            ).fetchall()
+                """).fetchall()
 
             conn.close()
 
@@ -237,8 +235,7 @@ class MemoryConsolidationEngine:
             # Find entries past retention window
             cutoff_date = (datetime.now(timezone.utc) - timedelta(days=90)).isoformat()
 
-            cold_entries = conn.execute(
-                f"""
+            cold_entries = conn.execute(f"""
                 SELECT key, confidence
                 FROM ltm_entries
                 WHERE created_at < '{cutoff_date}'
@@ -246,8 +243,7 @@ class MemoryConsolidationEngine:
                 AND policy != '{RetentionPolicy.EVERGREEN.value}'
                 ORDER BY confidence ASC
                 LIMIT 1000
-                """
-            ).fetchall()
+                """).fetchall()
 
             conn.close()
 

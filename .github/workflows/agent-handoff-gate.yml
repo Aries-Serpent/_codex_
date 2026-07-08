@@ -54,7 +54,7 @@ jobs:
         )\nsignal.signal(signal.SIGALRM, _timeout_handler)\nsignal.alarm(HANDOFF_TIMEOUT)\n\
         \n# Extract JSON block after \"AGENT_HANDOFF:\"\nmatch = re.search(r\"AGENT_HANDOFF:\\\
         s*```(?:json)?\\s*(\\{.*?\\})\\s*```\", comment, re.DOTALL)\nif not match:\n\
-        \    # Try without code fence\n    match = re.search(r\"AGENT_HANDOFF:\\s*(\\\
+        \  # Try without code fence\n    match = re.search(r\"AGENT_HANDOFF:\\s*(\\\
         {.*?\\})\", comment, re.DOTALL)\n\nif not match:\n    print(\"::warning::agent-handoff-gate:\
         \ No JSON payload found after AGENT_HANDOFF: — skipping validation\")\n  \
         \  with open(os.environ.get(\"GITHUB_OUTPUT\", \"/dev/null\"), \"a\") as f:\n\
@@ -87,7 +87,7 @@ jobs:
         n\")\n    f.write(f\"enforcement_tier={snapshot_tier}\\n\")\n    f.write(f\"\
         tier1_gates_count={len(tier1_gates)}\\n\")\n    if errors:\n        f.write(\"\
         validation_status=invalid\\n\")\n        f.write(f\"schema_errors={json.dumps(errors)}\\\
-        n\")\n        # TIER-1: exit 1 — blocks merge on schema violations\n     \
+        n\")\n  # TIER-1: exit 1 — blocks merge on schema violations\n     \
         \   print(f\"::error::agent-handoff-gate: Schema validation failed for {delegating}→{receiving}:\
         \ {errors[0]}\")\n        sys.exit(1)\n    else:\n        f.write(\"validation_status=valid\\\
         n\")\n        print(f\"✅ agent-handoff-gate: Valid handoff {delegating}→{receiving}\

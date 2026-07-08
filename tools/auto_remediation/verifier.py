@@ -264,7 +264,9 @@ class FixVerifier:
         pre_security = pre.metrics.get("security_score", 0)
         post_security = post.metrics.get("security_score", 0)
         if post_security > pre_security + 5:
-            improvements.append(f"Security score improved from {pre_security:.1f} to {post_security:.1f}")
+            improvements.append(
+                f"Security score improved from {pre_security:.1f} to {post_security:.1f}"
+            )
 
         # Check if complexity decreased
         pre_complexity = pre.metrics.get("complexity", 999)
@@ -295,7 +297,9 @@ class FixVerifier:
 
         return max(0.0, min(1.0, confidence))
 
-    def _generate_explanation(self, regressions: list[str], improvements: list[str], success: bool) -> str:
+    def _generate_explanation(
+        self, regressions: list[str], improvements: list[str], success: bool
+    ) -> str:
         """Generate human-readable explanation of verification."""
         if success:
             explanation = "✅ Fix verified successfully\n\n"

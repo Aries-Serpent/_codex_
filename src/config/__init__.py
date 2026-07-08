@@ -5,7 +5,7 @@ This module provides functionality for config package.
 
 Usage:
     from config import CodexOpenAIClient, ExecutionResult
-    
+
     # For backward compatibility, imports are re-exported from:
     # codex.clients.openai_client
 
@@ -39,4 +39,3 @@ __all__ = [
     "ExecutionResult",
     "ModelConfig",
 ]
-

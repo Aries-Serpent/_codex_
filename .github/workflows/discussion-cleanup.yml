@@ -173,7 +173,7 @@ jobs:
         MARKER_PREFIX: ${{ github.event.inputs.marker_prefix || '' }}
       run: "echo \"## \U0001F50D Dry-run Scan\" >> \"$GITHUB_STEP_SUMMARY\"\necho\
         \ \"\" >> \"$GITHUB_STEP_SUMMARY\"\nfor disc in $DISCUSSION_NUMBERS; do\n\
-        \  echo \"### Discussion #${disc}\" >> \"$GITHUB_STEP_SUMMARY\"\n  python\
+        \  echo \"### Discussion  #${disc}\" >> \"$GITHUB_STEP_SUMMARY\"\n  python\
         \ scripts/ci/discussion_cleanup.py scan \\\n    --discussion \"$disc\" \\\n\
         \    ${MARKER_PREFIX:+--marker-prefix \"$MARKER_PREFIX\"} \\\n    2>&1 | tee\
         \ -a \"$GITHUB_STEP_SUMMARY\" || true\n  echo \"\" >> \"$GITHUB_STEP_SUMMARY\"\

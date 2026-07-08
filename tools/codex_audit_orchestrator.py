@@ -9,6 +9,7 @@ Key fixes:
  - Respect CODEX_SKIP_VALIDATE_CHECKOUT semantics (docstring & behavior).
  - Phase functions now return True on success to distinguish from failure (None).
 """
+
 from __future__ import annotations
 
 import argparse

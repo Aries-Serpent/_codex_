@@ -43,7 +43,9 @@ log = logging.getLogger(__name__)
 _CONTROL_CHAR_RE = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f]")
 
 # Directory for debug artefacts (sanitised blobs only — no raw secrets).
-_DEBUG_DIR = Path(os.environ.get("CODEX_JSON_DEBUG_DIR", os.path.join(tempfile.gettempdir(), "codex-json-debug")))  # nosec B108
+_DEBUG_DIR = Path(
+    os.environ.get("CODEX_JSON_DEBUG_DIR", os.path.join(tempfile.gettempdir(), "codex-json-debug"))
+)  # nosec B108
 
 # Simple secret-pattern heuristics used to suppress key=value pairs from
 # log output (we log a redacted snippet, not the raw blob).

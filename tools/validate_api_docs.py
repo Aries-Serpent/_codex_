@@ -15,6 +15,7 @@ Usage:
   python tools/validate_api_docs.py --package codex_ml --out artifacts/docs/api
     --allow-optional wandb tensorboard --summary
 """
+
 from __future__ import annotations
 
 import argparse
@@ -78,7 +79,7 @@ def _scan_imports(root_pkg: str, allow_optional: list[str]) -> dict[str, Any]:
 
 def _build_pdoc(root_pkg: str, out_dir: Path) -> dict[str, Any]:
     result = {"built": False, "file_count": 0, "out_dir": str(out_dir), "notes": ""}
-    if importlib.util.find_spec('pdoc') is None:
+    if importlib.util.find_spec("pdoc") is None:
         result["notes"] = "pdoc unavailable"
         return result
 

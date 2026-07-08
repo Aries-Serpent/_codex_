@@ -55,7 +55,7 @@ jobs:
         status={status}\")\n    print(f\"score={score}\")\n    with open(os.environ[\"\
         GITHUB_OUTPUT\"], \"a\", encoding=\"utf-8\") as output:\n        output.write(f\"\
         status={status}\\n\")\n        output.write(f\"score={score}\\n\")\n\n   \
-        \ # Create summary\n    summary = f\"## Compliance Report\\n\\n\"\n    summary\
+        \  # Create summary\n    summary = f\"## Compliance Report\\n\\n\"\n    summary\
         \ += f\"**Status:** {status}\\n\"\n    summary += f\"**Score:** {score:.1f}/100\\\
         n\\n\"\n\n    summary += \"### Validators\\n\"\n    for validator in report.get('validators',\
         \ []):\n        icon = \"✅\" if validator['status'] == \"pass\" else (\"⚠️\"\

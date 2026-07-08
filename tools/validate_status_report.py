@@ -9,6 +9,7 @@ Usage:
     python validate_status_report.py <report_file.md>
     python validate_status_report.py reports/daily/2025-11-02.md
 """
+
 from __future__ import annotations
 
 import argparse

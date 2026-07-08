@@ -96,7 +96,7 @@ jobs:
       run: "# Pattern C: retry with exponential backoff for PATCH ref updates\n_api_with_retry()\
         \ {\n  local attempt=0\n  local max_attempts=3\n  while [ $attempt -lt $max_attempts\
         \ ]; do\n    if \"$@\"; then\n      return 0\n    fi\n    attempt=$(( attempt\
-        \ + 1 ))\n    local backoff=$(( 2 ** attempt * 5 ))   # attempt 1\u219210s,\
+        \ + 1 ))\n    local backoff=$(( 2 ** attempt * 5 ))  # attempt 1\u219210s,\
         \ attempt 2\u219220s (3 total attempts: 0,1,2)\n    echo \"::warning::API\
         \ call failed (attempt $attempt/$max_attempts) \u2014 retrying in ${backoff}s\"\
         \n    sleep \"$backoff\"\n  done\n  echo \"::error::API call failed after\
@@ -123,7 +123,7 @@ jobs:
         \n  --head \"${TARGET_BRANCH}\" \\\n  --base \"${BASE_BRANCH}\" \\\n  --state\
         \ open \\\n  --json number \\\n  --jq '.[0].number' 2>/dev/null || echo \"\
         \")\necho \"existing_pr=${EXISTING}\" >> \"$GITHUB_OUTPUT\"\nif [ -n \"${EXISTING}\"\
-        \ ]; then\n  echo \"\u2139\uFE0F  Existing promotion PR #${EXISTING} found\"\
+        \ ]; then\n  echo \"\u2139\uFE0F  Existing promotion PR  #${EXISTING} found\"\
         \nelse\n  echo \"\u2139\uFE0F  No existing promotion PR \u2014 will create\
         \ one\"\nfi\n"
     - name: Open promotion PR
@@ -182,7 +182,7 @@ jobs:
         - [x] \U0001F4B0 Cost Proposal Approved\"$'\\n'\nPR_BODY+=\"- [ ] \U0001F504\
         \ Auto-Post @copilot review After Agent Session\"$'\\n'\n\ngh pr edit \"${PR_NUM}\"\
         \ \\\n  --repo \"${{ github.repository }}\" \\\n  --title \"${PR_TITLE}\"\
-        \ \\\n  --body \"${PR_BODY}\"\necho \"\u2705 Updated existing PR #${PR_NUM}\
+        \ \\\n  --body \"${PR_BODY}\"\necho \"\u2705 Updated existing PR  #${PR_NUM}\
         \ title and body\"\n"
     - name: Summary
       if: always()

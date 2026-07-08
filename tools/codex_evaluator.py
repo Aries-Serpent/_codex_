@@ -14,6 +14,7 @@ Exports:
     OPTIONAL_STATUS: dict[str, bool]          # package -> availability
     has_all_optional() -> bool
 """
+
 from __future__ import annotations
 
 import argparse

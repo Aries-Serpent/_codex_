@@ -4,6 +4,7 @@ Validate readiness.json artifacts against docs/status_updates/readiness.schema.j
 Usage:
   python tools/validate_readiness.py <path/to/readiness.json> [...] --schema docs/status_updates/readiness.schema.json
 """
+
 from __future__ import annotations
 
 import argparse

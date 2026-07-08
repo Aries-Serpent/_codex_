@@ -16,17 +16,17 @@ jobs:
     permissions:
       issues: write
       pull-requests: write
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
-      
+
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
           python-version: "3.12"
           cache: pip
-      
+
       - name: Parse Command
         id: parse
         uses: actions/github-script@v8
@@ -36,16 +36,16 @@ jobs:
           script: |
             const fs = require('fs');
             const path = require('path');
-            
+
             // Safely write comment body to file using environment variable
             const commentBody = process.env.COMMENT_BODY;
             const tempFile = path.join(process.env.RUNNER_TEMP, 'comment_body.txt');
             fs.writeFileSync(tempFile, commentBody, 'utf8');
             console.log(`✓ Comment body written to ${tempFile}`);
-            
+
             // Output temp file path for next steps
             core.setOutput('comment_file', tempFile);
-      
+
       - name: Parse Command (Python)
         id: parse_result
         env:
@@ -53,16 +53,16 @@ jobs:
         run: |
           COMMENT_FILE="${RUNNER_TEMP}/comment_body.txt"
           COMMAND_JSON="${RUNNER_TEMP}/command.json"
-          
+
           python scripts/ci/copilot_security_agent_handoff.py parse-command \
             --comment-file "$COMMENT_FILE" \
             --output "$COMMAND_JSON"
-          
+
           # Extract parse result for debugging
           python3 << 'EOF'
           import json
           import os
-          
+
           cmd_file = os.path.join(os.environ['RUNNER_TEMP'], 'command.json')
           with open(cmd_file, 'r') as f:
               data = json.load(f)
@@ -73,7 +73,7 @@ jobs:
               else:
                   print("✗ No valid command found")
           EOF
-      
+
       - name: Generate Response
         id: response
         if: steps.parse_result.outcome == 'success'
@@ -82,13 +82,13 @@ jobs:
         run: |
           COMMAND_JSON="${RUNNER_TEMP}/command.json"
           RESPONSE_MD="${RUNNER_TEMP}/response.md"
-          
+
           python scripts/ci/copilot_security_agent_handoff.py generate-response \
             --query-json "$COMMAND_JSON" \
             --findings-json .codex/security-findings-comprehensive.json \
             --cache-dir .codex/security-cache \
             --output "$RESPONSE_MD"
-          
+
           # Verify response was generated
           if [ -f "$RESPONSE_MD" ]; then
             echo "✓ Response generated ($(wc -l < "$RESPONSE_MD") lines)"
@@ -99,7 +99,7 @@ jobs:
             echo "✗ Failed to generate response"
             exit 1
           fi
-      
+
       - name: Post Comment
         if: steps.response.outcome == 'success'
         uses: actions/github-script@v8
@@ -110,15 +110,15 @@ jobs:
           script: |
             const fs = require('fs');
             const path = require('path');
-            
+
             const responseFile = path.join(process.env.RUNNER_TEMP, 'response.md');
             const response = fs.readFileSync(responseFile, 'utf8');
-            
+
             if (!response || response.length === 0) {
               console.log('Response is empty, skipping comment');
               return;
             }
-            
+
             try {
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
@@ -131,7 +131,7 @@ jobs:
               console.error('Failed to post comment:', error);
               throw error;
             }
-      
+
       - name: Handle Errors
         if: failure()
         uses: actions/github-script@v8

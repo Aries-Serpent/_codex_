@@ -169,11 +169,11 @@ jobs:
           \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    issue_number:\
           \ existingIssue.number,\n    body: `## Update: ${timestamp}\\n\\n${body}\\\
           n\\n---\\n_[\U0001F517 Workflow run](${runUrl})_`\n  });\n\n  console.log(`Updated\
-          \ existing issue #${existingIssue.number}`);\n} else {\n  // Create new\
+          \ existing issue  #${existingIssue.number}`);\n} else {\n  // Create new\
           \ issue\n  const newIssue = await github.rest.issues.create({\n    owner:\
           \ context.repo.owner,\n    repo: context.repo.repo,\n    title: title,\n\
           \    body: body,\n    labels: ['documentation', 'pages-validation', 'automated']\n\
-          \  });\n\n  console.log(`Created new issue #${newIssue.data.number}`);\n\
+          \  });\n\n  console.log(`Created new issue  #${newIssue.data.number}`);\n\
           }\n"
     - name: Upload validation artifacts
       if: always()
@@ -208,8 +208,8 @@ jobs:
         pages-validation-auto/${{ steps.config.outputs.timestamp }}\"\n    git checkout\
         \ -b \"${BRANCH}\"\n    git commit -m \"chore: Update GitHub Pages status\
         \ dashboard [${{ steps.config.outputs.validation_type }}] ${{ steps.config.outputs.timestamp\
-        \ }}\"\n\n    git push origin \"${BRANCH}\"\n\n    # Create PR using gh CLI\
-        \ with JSON-safe body written to isolated temp file.\n    # Use printf line-by-line\
+        \ }}\"\n\n    git push origin \"${BRANCH}\"\n\n  # Create PR using gh CLI\
+        \ with JSON-safe body written to isolated temp file.\n  # Use printf line-by-line\
         \ to avoid multi-line string YAML parse errors.\n    PR_BODY_FILE=\"${RUNNER_TEMP}/pr_body_$$.txt\"\
         \n    printf '## Automated GitHub Pages Status Dashboard Update\\n' > \"${PR_BODY_FILE}\"\
         \n    printf '\\n' >> \"${PR_BODY_FILE}\"\n    printf '**Triggered by:** Scheduled\

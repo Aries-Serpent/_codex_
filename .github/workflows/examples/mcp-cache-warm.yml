@@ -40,16 +40,16 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5 # v5
+        uses: actions/checkout@v5  # v5
 
       - name: Set up Python
-        uses: actions/setup-python@v6 # v6
+        uses: actions/setup-python@v6  # v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Cache Python wheels
         id: cache-wheels
-        uses: actions/cache@v4 # v5
+        uses: actions/cache@v4  # v5
         with:
           path: |
             ~/.cache/pip
@@ -95,16 +95,16 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5 # v5
+        uses: actions/checkout@v5  # v5
 
       - name: Set up Python
-        uses: actions/setup-python@v6 # v6
+        uses: actions/setup-python@v6  # v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Cache Playwright browsers
         id: cache-playwright
-        uses: actions/cache@v4 # v5
+        uses: actions/cache@v4  # v5
         with:
           path: |
             ~/.cache/ms-playwright
@@ -139,7 +139,7 @@ jobs:
 
     steps:
       - name: Cleanup caches older than 14 days
-        uses: actions/github-script@v8 # v9
+        uses: actions/github-script@v8  # v9
         with:
           script: |
             const caches = await github.rest.actions.getActionsCacheList({

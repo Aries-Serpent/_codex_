@@ -180,10 +180,7 @@ class SimpleCache:
             Number of entries removed
         """
         ttl_to_use = ttl if ttl is not None else self.default_ttl
-        keys_to_delete = [
-            key for key, entry in self._cache.items()
-            if entry.is_expired(ttl_to_use)
-        ]
+        keys_to_delete = [key for key, entry in self._cache.items() if entry.is_expired(ttl_to_use)]
         for key in keys_to_delete:
             del self._cache[key]
         return len(keys_to_delete)

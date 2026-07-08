@@ -27,7 +27,7 @@ def load_config(config_path: Path) -> dict[str, Any]:
     if not config_path.exists():
         raise FileNotFoundError(f"Configuration file not found: {config_path}")
 
-    with open(config_path, 'r', encoding='utf-8') as f:
+    with open(config_path, "r", encoding="utf-8") as f:
         return json.load(f)
 
 
@@ -42,14 +42,14 @@ def check_connector(config: dict[str, Any]) -> bool:
         True if connector is valid and accessible, False otherwise
     """
     # Validate required fields
-    required_fields = ['endpoint', 'repo']
+    required_fields = ["endpoint", "repo"]
     for field in required_fields:
         if field not in config:
             logger.error(f"Missing required field: {field}")
             return False
 
     # Check offline_ok flag
-    offline_ok = config.get('offline_ok', False)
+    offline_ok = config.get("offline_ok", False)
 
     if offline_ok:
         # In offline mode, just validate configuration structure

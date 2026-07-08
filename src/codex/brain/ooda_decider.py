@@ -396,9 +396,9 @@ class OODADecider:
                     f"Guardrails: {'✓' if guardrails_passed else '✗'}"
                 ),
                 requires_approval=requires_approval,
-                approved=(best_confidence >= 0.95 and d_mode_authority)
-                if guardrails_passed
-                else False,
+                approved=(
+                    (best_confidence >= 0.95 and d_mode_authority) if guardrails_passed else False
+                ),
             )
 
             # Log to audit trail

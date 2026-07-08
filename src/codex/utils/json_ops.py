@@ -77,7 +77,7 @@ def load_json(
     """
     try:
         path = Path(file_path)
-        with open(path, 'r', encoding=encoding) as f:
+        with open(path, "r", encoding=encoding) as f:
             return json.load(f)
     except (FileNotFoundError, json.JSONDecodeError, IOError):
         return default
@@ -105,12 +105,12 @@ def dump_json(
         >>> dump_json({'a': 1}, pretty=True)
         '{\\n  "a": 1\\n}'
     """
-    kwargs = {'indent': 2 if pretty else None}
+    kwargs = {"indent": 2 if pretty else None}
     json_str = json.dumps(data, **kwargs)
 
     if file_path:
         path = Path(file_path)
-        with open(path, 'w', encoding=encoding) as f:
+        with open(path, "w", encoding=encoding) as f:
             f.write(json_str)
 
     return json_str
@@ -133,7 +133,7 @@ def json_to_obj(data: Dict[str, Any], obj_class: Type[T]) -> T:
         >>> json_to_obj({'name': 'John'}, User)
         <User object>
     """
-    if hasattr(obj_class, 'from_dict'):
+    if hasattr(obj_class, "from_dict"):
         return obj_class.from_dict(data)
     return obj_class(**data)
 
@@ -155,8 +155,8 @@ def obj_to_json(obj: Any) -> Dict[str, Any]:
         >>> obj_to_json(User('John'))
         {'name': 'John'}
     """
-    if hasattr(obj, 'to_dict'):
+    if hasattr(obj, "to_dict"):
         return obj.to_dict()
-    if hasattr(obj, '__dict__'):
+    if hasattr(obj, "__dict__"):
         return obj.__dict__
     raise JSONError(f"Cannot serialize {type(obj)} to JSON")

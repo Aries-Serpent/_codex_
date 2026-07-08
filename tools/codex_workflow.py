@@ -7,6 +7,7 @@ End-to-end Codex workflow:
 - Collect errors as ChatGPT-5 questions
 NOTE: Does NOT enable any GitHub Actions.
 """
+
 from __future__ import annotations
 
 import argparse

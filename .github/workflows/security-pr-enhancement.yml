@@ -12,17 +12,17 @@ jobs:
   enhance-pr-security:
     runs-on: ubuntu-latest
     name: "PR Security Enhancement"
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-      
+
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
           python-version: "3.12"
           cache: pip
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -36,13 +36,13 @@ jobs:
             mkdir -p .codex
             echo '{"findings": [], "metadata": {"timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'", "status": "no_findings"}}' > .codex/security-findings-comprehensive.json
           fi
-          
+
           # Generate PR findings markdown
           python scripts/ci/security_pr_formatter.py generate \
             --findings ".codex/security-findings-comprehensive.json" \
             --output pr-findings.md \
             --limit 5
-          
+
           # Add to step summary
           echo "## 🔐 Security Findings Report" >> $GITHUB_STEP_SUMMARY
           cat pr-findings.md >> $GITHUB_STEP_SUMMARY
@@ -62,23 +62,23 @@ jobs:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
             const fs = require('fs');
-            
+
             // Read findings content
             let findingsContent = 'No security findings detected.';
             if (fs.existsSync('pr-findings.md')) {
               findingsContent = fs.readFileSync('pr-findings.md', 'utf8');
             }
-            
+
             const pr = context.payload.pull_request;
             const body = pr.body || '';
-            
+
             // Remove old findings section (safely)
             let newBody = body.replace(/## 🔐 Security Findings[\s\S]*?(?=##|$)/m, '');
             newBody = newBody.trim();
-            
+
             // Check if WEC (🔄 Workflow Execution Checklist) section exists
             const hasWEC = body.includes('🔄 Workflow Execution Checklist') || body.includes('Workflow Execution Checklist');
-            
+
             // Build updated body - preserve WEC if present
             let updatedBody = '';
             if (hasWEC) {
@@ -95,7 +95,7 @@ jobs:
               // If no WEC, just append findings
               updatedBody = newBody + '\n\n## 🔐 Security Findings\n\n' + findingsContent;
             }
-            
+
             // Update PR body
             try {
               await github.rest.pulls.update({
@@ -119,12 +119,12 @@ jobs:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
             const fs = require('fs');
-            
+
             let findingsContent = '';
             if (fs.existsSync('pr-findings.md')) {
               findingsContent = fs.readFileSync('pr-findings.md', 'utf8');
             }
-            
+
             if (findingsContent && findingsContent.trim()) {
               const lines = [
                 '## 🔐 Security Findings Detected',
@@ -136,7 +136,7 @@ jobs:
                 '**Note**: This is an automated scan for informational purposes. Please review carefully and address any critical or high-severity findings before merging.'
               ];
               const comment = lines.join('\n');
-              
+
               try {
                 await github.rest.issues.createComment({
                   owner: context.repo.owner,
@@ -153,30 +153,30 @@ jobs:
   validate-findings-json:
     runs-on: ubuntu-latest
     name: "Validate Findings JSON"
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-      
+
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
           python-version: "3.12"
-      
+
       - name: Validate findings JSON structure
         run: |
           python3 << 'EOF'
           import json
           import sys
           from pathlib import Path
-          
+
           findings_file = Path(".codex/security-findings-comprehensive.json")
-          
+
           if findings_file.exists():
             try:
               with open(findings_file) as f:
                 data = json.load(f)
-              
+
               # Basic structure validation
               if isinstance(data, dict):
                 if "findings" in data and "metadata" in data:

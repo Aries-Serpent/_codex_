@@ -386,9 +386,7 @@ class L4ModelCache:
         with open(manifest_path, "w") as f:
             json.dump(manifest, f, indent=2)
 
-    def _update_manifest_artifact(
-        self, artifact_id: str, version: str, checksum: str
-    ) -> None:
+    def _update_manifest_artifact(self, artifact_id: str, version: str, checksum: str) -> None:
         """Update artifact manifest file."""
         manifest_path = self.artifacts_dir / artifact_id / "manifest.json"
 

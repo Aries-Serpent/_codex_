@@ -93,8 +93,8 @@ jobs:
         for name, srv in servers.items():\n    metadata = srv.get(\"metadata\", {})\n\
         \    if \"health_check_url\" not in metadata:\n        issues.append(f\"Server\
         \ '{name}' missing metadata.health_check_url\")\n\nif issues:\n    for i in\
-        \ issues:\n        print(f\"⚠️  {i}\")\n    # Config completeness issues are\
-        \ warnings — the server can still start.\n    # Only metric threshold violations\
+        \ issues:\n        print(f\"⚠️  {i}\")\n  # Config completeness issues are\
+        \ warnings — the server can still start.\n  # Only metric threshold violations\
         \ (in the previous step) block CI.\nelse:\n    print(\"✅ Multi-target MCP\
         \ config validation passed\")\nPYEOF\n"
     - name: Post gate summary

@@ -354,7 +354,7 @@ class LessonsLearned:
         if self.storage_path.exists():
             try:
                 return json.loads(self.storage_path.read_text())
-            except (OSError, json.JSONDecodeError) as e:
+            except (OSError, json.JSONDecodeError):
                 # File doesn't exist or is invalid JSON; return empty list
                 return []
         return []

@@ -5,7 +5,6 @@ import ast
 import sys
 import os
 from pathlib import Path
-from typing import Optional
 
 
 class PrintCallFinder(ast.NodeVisitor):
@@ -179,7 +178,7 @@ def main():
                     if files_done % 10 == 0:
                         print(f'  [{files_done}] {str(file_path)}: {num_migrated}')
             
-            except Exception as e:
+            except Exception:
                 pass
         
         print(f'{label}: {files_done} files, {total_migrated} total migrated so far\n')

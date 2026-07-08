@@ -31,9 +31,7 @@ FILE_TRAINER = SMOKE_DIR / "test_hf_trainer_hello.py"
 FILE_FLAGS = SMOKE_DIR / "test_logging_flags_end_to_end.py"
 FILE_MLNOOP = SMOKE_DIR / "test_mlflow_utils_noop.py"
 
-TRAINER_CODE = (
-    f"{TR_SENT}\n"
-    + """
+TRAINER_CODE = f"{TR_SENT}\n" + """
 import os, tempfile
 from pathlib import Path
 import pytest
@@ -81,11 +79,8 @@ def test_hf_trainer_on_tiny_hello_dataset():
         assert (out / "trainer_state.json").exists()
         assert any(out.glob("checkpoint-*"))
 """
-)
 
-FLAGS_CODE = (
-    f"{TB_SENT}\n"
-    + """
+FLAGS_CODE = f"{TB_SENT}\n" + """
 import os, argparse, tempfile, importlib.util
 from pathlib import Path
 import pytest
@@ -124,11 +119,8 @@ def test_deploy_logging_flags_bootstrap_and_log():
         if handles.get("tb") is not None:
             assert any(tb_dir.glob("events.*")), "TensorBoard events missing"
 """
-)
 
-MLNOOP_CODE = (
-    f"{MLF_SENT}\n"
-    + """
+MLNOOP_CODE = f"{MLF_SENT}\n" + """
 import pytest
 
 def test_mlflow_utils_tolerant_when_missing():
@@ -148,7 +140,6 @@ def test_mlflow_utils_tolerant_when_missing():
     MU.log_artifacts([])
     assert True
 """
-)
 
 README_NOTE = f"""{READ_SENT}
 ## Smoke Tests & Offline Logging

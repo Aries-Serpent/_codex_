@@ -4,8 +4,6 @@ import argparse
 import json
 from pathlib import Path
 from typing import Any
-from urllib.parse import urljoin
-from urllib.request import pathname2url
 
 import jsonschema
 from jsonschema import RefResolver

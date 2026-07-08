@@ -49,21 +49,23 @@ class LinkValidator:
             links = self._extract_links(section.content)
 
             for link in links:
-                url = link['url']
+                url = link["url"]
 
-                if link['type'] == 'external':
+                if link["type"] == "external":
                     external_count += 1
-                elif link['type'] == 'internal':
+                elif link["type"] == "internal":
                     if self._resolve_internal_link(url):
                         valid_count += 1
                     else:
                         broken_count += 1
-                        self.broken_links.append({
-                            'source': doc_id,
-                            'target': url,
-                            'text': link['text'],
-                        })
-                elif link['type'] == 'anchor':
+                        self.broken_links.append(
+                            {
+                                "source": doc_id,
+                                "target": url,
+                                "text": link["text"],
+                            }
+                        )
+                elif link["type"] == "anchor":
                     # Check anchor exists in document
                     if self._find_anchor(doc_id, url[1:]):
                         valid_count += 1
@@ -80,20 +82,24 @@ class LinkValidator:
     def _extract_links(content: str) -> List[Dict]:
         """Extract markdown links from content."""
         # [text](url)
-        pattern = re.compile(r'\[([^\]]+)\]\(([^\)]+)\)')
+        pattern = re.compile(r"\[([^\]]+)\]\(([^\)]+)\)")
         links = []
 
         for match in pattern.finditer(content):
             url = match.group(2)
-            link_type = 'external' if url.startswith(('http://', 'https://')) else \
-                        'anchor' if url.startswith('#') else \
-                        'internal'
+            link_type = (
+                "external"
+                if url.startswith(("http://", "https://"))
+                else "anchor" if url.startswith("#") else "internal"
+            )
 
-            links.append({
-                'text': match.group(1),
-                'url': url,
-                'type': link_type,
-            })
+            links.append(
+                {
+                    "text": match.group(1),
+                    "url": url,
+                    "type": link_type,
+                }
+            )
 
         return links
 
@@ -103,7 +109,7 @@ class LinkValidator:
             return True  # Can't verify without registry
 
         # Normalize path
-        if path.startswith('/'):
+        if path.startswith("/"):
             path = path[1:]
 
         # Check if file exists in registry
@@ -119,7 +125,7 @@ class LinkValidator:
 
         for section in sections:
             # Generate anchor from section title
-            section_anchor = section.metadata.get('heading_anchor', '')
+            section_anchor = section.metadata.get("heading_anchor", "")
             if section_anchor == anchor:
                 return True
 
@@ -148,11 +154,11 @@ class ComplianceChecker:
             {requirement_id: {status, details, ...}}
         """
         results = {
-            'req_001': self._audit_critical_docs(),
-            'req_002': self._audit_api_coverage(),
-            'req_003': self._audit_example_quality(),
-            'req_004': self._audit_link_health(),
-            'req_005': self._audit_doc_freshness(),
+            "req_001": self._audit_critical_docs(),
+            "req_002": self._audit_api_coverage(),
+            "req_003": self._audit_example_quality(),
+            "req_004": self._audit_link_health(),
+            "req_005": self._audit_doc_freshness(),
         }
 
         return results
@@ -160,9 +166,9 @@ class ComplianceChecker:
     def _audit_critical_docs(self) -> Dict:
         """REQ-001: Critical documentation must exist."""
         if not self.registry:
-            return {'status': 'unknown'}
+            return {"status": "unknown"}
 
-        critical_docs = ['README.md', 'docs/index.md']
+        critical_docs = ["README.md", "docs/index.md"]
         found = []
         missing = []
 
@@ -172,25 +178,25 @@ class ComplianceChecker:
             else:
                 missing.append(path)
 
-        status = 'pass' if not missing else 'fail'
+        status = "pass" if not missing else "fail"
         return {
-            'status': status,
-            'found': found,
-            'missing': missing,
+            "status": status,
+            "found": found,
+            "missing": missing,
         }
 
     def _audit_api_coverage(self) -> Dict:
         """REQ-002: Public APIs must be documented."""
         return {
-            'status': 'pending',
-            'note': 'Requires codebase inspection',
+            "status": "pending",
+            "note": "Requires codebase inspection",
         }
 
     def _audit_example_quality(self) -> Dict:
         """REQ-003: Examples must be executable and tested."""
         return {
-            'status': 'pending',
-            'note': 'Requires code execution',
+            "status": "pending",
+            "note": "Requires code execution",
         }
 
     def _audit_link_health(self) -> Dict:
@@ -203,10 +209,10 @@ class ComplianceChecker:
                 _, broken, _ = validator.validate_document_links(doc.id)
                 total_broken += broken
 
-        status = 'pass' if total_broken == 0 else 'fail'
+        status = "pass" if total_broken == 0 else "fail"
         return {
-            'status': status,
-            'broken_links': total_broken,
+            "status": status,
+            "broken_links": total_broken,
         }
 
     def _audit_doc_freshness(self) -> Dict:
@@ -214,7 +220,7 @@ class ComplianceChecker:
         from datetime import datetime, timedelta
 
         if not self.registry:
-            return {'status': 'unknown'}
+            return {"status": "unknown"}
 
         docs = self.registry.list_documents()
         stale_docs = []
@@ -223,21 +229,23 @@ class ComplianceChecker:
 
         for doc in docs:
             try:
-                updated = datetime.fromisoformat(doc.updated_at.replace('Z', '+00:00'))
+                updated = datetime.fromisoformat(doc.updated_at.replace("Z", "+00:00"))
                 age = current_time - updated
 
                 if age > freshness_threshold:
-                    stale_docs.append({
-                        'id': doc.id,
-                        'path': doc.path,
-                        'days_old': age.days,
-                    })
+                    stale_docs.append(
+                        {
+                            "id": doc.id,
+                            "path": doc.path,
+                            "days_old": age.days,
+                        }
+                    )
             except (ValueError, AttributeError):
                 pass
 
-        status = 'pass' if not stale_docs else 'warn'
+        status = "pass" if not stale_docs else "warn"
         return {
-            'status': status,
-            'stale_docs': stale_docs,
-            'freshness_threshold_days': 90,
+            "status": status,
+            "stale_docs": stale_docs,
+            "freshness_threshold_days": 90,
         }

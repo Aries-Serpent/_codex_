@@ -91,7 +91,7 @@ async def async_retry(
         except Exception as e:
             last_error = e
             if attempt < retries - 1:
-                wait_time = backoff ** attempt
+                wait_time = backoff**attempt
                 await asyncio.sleep(wait_time)
 
     raise AsyncError(f"Failed after {retries} retries") from last_error

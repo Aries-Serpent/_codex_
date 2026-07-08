@@ -33,7 +33,7 @@ on:
         type: boolean
   repository_dispatch:
     types:
-      - drift-detected   # fired by monitoring agents or post-deploy hooks
+      - drift-detected  # fired by monitoring agents or post-deploy hooks
 
 
 concurrency:
@@ -56,7 +56,7 @@ jobs:
       samples_count: ${{ steps.drift.outputs.samples_count }}
 
     steps:
-      - uses: actions/checkout@v5 # v6.0.3
+      - uses: actions/checkout@v5  # v6.0.3
 
       - name: Setup Python (cached)
         uses: ./.github/actions/setup-python-cached
@@ -151,7 +151,7 @@ jobs:
     timeout-minutes: 60
 
     steps:
-      - uses: actions/checkout@v5 # v6.0.3
+      - uses: actions/checkout@v5  # v6.0.3
 
       - name: "🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)"
         id: resolve-target
@@ -265,7 +265,7 @@ jobs:
 
       - name: Open tracking issue
         if: steps.retrain.outputs.new_version != ''
-        uses: actions/github-script@v8 # v9
+        uses: actions/github-script@v8  # v9
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |

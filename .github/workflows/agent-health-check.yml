@@ -48,7 +48,7 @@ jobs:
       env:
         RATE: ${{ steps.metrics.outputs.rate }}
       run: "python3 -c \"\nimport os\nrate = float(os.environ.get('RATE', '100'))\n\
-        if rate >= 95.0:\n    print(f'::notice::✅ D3 exit criteria #1 met: {rate}%\
+        if rate >= 95.0:\n    print(f'::notice::✅ D3 exit criteria  #1 met: {rate}%\
         \ >= 95%')\nelse:\n    print(f'::warning::D3 success rate {rate}% below 95%\
         \ threshold')\n\"\n"
     env:
@@ -80,7 +80,7 @@ jobs:
         ::warning::Optional OODA artefact absent (generated at runtime): {p}\")\n\
         \    else:\n        print(f\"✅ {p}\")\n\nif missing:\n    print(f\"::warning::OODA\
         \ components missing: {missing}\")\n    sys.exit(1)\nelse:\n    print(\"::notice::✅\
-        \ D3 exit criteria #5 met: OODA loop components all present\")\nPYEOF\n"
+        \ D3 exit criteria  #5 met: OODA loop components all present\")\nPYEOF\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}

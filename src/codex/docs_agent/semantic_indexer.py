@@ -26,13 +26,16 @@ except ImportError:
 try:
     from sentence_transformers import SentenceTransformer
 except ImportError:
-    logger.warning("sentence-transformers not installed. Install with: pip install sentence-transformers")
+    logger.warning(
+        "sentence-transformers not installed. Install with: pip install sentence-transformers"
+    )
     SentenceTransformer = None
 
 
 @dataclass
 class SearchResult:
     """Result from semantic search"""
+
     record_id: str
     record_type: str
     title: str
@@ -85,7 +88,7 @@ class SemanticIndexer:
         Returns:
             True if added successfully
         """
-        record_id = record.get('id')
+        record_id = record.get("id")
         if not record_id:
             logger.warning("Record missing id field")
             return False
@@ -104,7 +107,7 @@ class SemanticIndexer:
         """
         if not self.records:
             logger.warning("No records to index")
-            return {'record_count': 0, 'indexed': 0}
+            return {"record_count": 0, "indexed": 0}
 
         logger.info(f"Building index for {len(self.records)} records")
 
@@ -117,33 +120,33 @@ class SemanticIndexer:
             # Build searchable text from record
             content_parts = []
 
-            if record.get('type') == 'document':
-                content_parts.append(record.get('title', ''))
-                metadata = record.get('metadata', {})
+            if record.get("type") == "document":
+                content_parts.append(record.get("title", ""))
+                metadata = record.get("metadata", {})
                 if isinstance(metadata, dict):
                     for v in metadata.values():
                         if isinstance(v, str):
                             content_parts.append(v)
 
-            elif record.get('type') == 'section':
-                content_parts.append(record.get('title', ''))
-                content_parts.append(record.get('content', '')[:500])  # First 500 chars
+            elif record.get("type") == "section":
+                content_parts.append(record.get("title", ""))
+                content_parts.append(record.get("content", "")[:500])  # First 500 chars
 
-            elif record.get('type') == 'block':
-                content_parts.append(record.get('content_type', ''))
-                content_parts.append(record.get('content', '')[:500])
-                if record.get('language'):
+            elif record.get("type") == "block":
+                content_parts.append(record.get("content_type", ""))
+                content_parts.append(record.get("content", "")[:500])
+                if record.get("language"):
                     content_parts.append(f"Language: {record['language']}")
 
-            elif record.get('type') == 'action':
-                content_parts.append(record.get('description', ''))
+            elif record.get("type") == "action":
+                content_parts.append(record.get("description", ""))
                 content_parts.append(f"Priority: {record.get('priority', '')}")
 
-            elif record.get('type') == 'requirement':
-                content_parts.append(record.get('description', ''))
+            elif record.get("type") == "requirement":
+                content_parts.append(record.get("description", ""))
                 content_parts.append(f"Category: {record.get('category', '')}")
 
-            text = ' '.join(str(p) for p in content_parts if p)
+            text = " ".join(str(p) for p in content_parts if p)
             if text:
                 texts_to_embed.append(text)
                 records_list.append(record)
@@ -151,7 +154,7 @@ class SemanticIndexer:
 
         if not texts_to_embed:
             logger.warning("No indexable content found")
-            return {'record_count': 0, 'indexed': 0}
+            return {"record_count": 0, "indexed": 0}
 
         # Generate embeddings
         logger.info(f"Generating embeddings for {len(texts_to_embed)} records")
@@ -159,7 +162,7 @@ class SemanticIndexer:
 
         if embeddings is None:
             logger.error("Failed to generate embeddings")
-            return {'record_count': len(self.records), 'indexed': 0}
+            return {"record_count": len(self.records), "indexed": 0}
 
         # Create FAISS index
         logger.info(f"Creating FAISS index (dimension: {embeddings.shape[1]})")
@@ -175,12 +178,12 @@ class SemanticIndexer:
             indexed_count = len(record_ids)
             logger.info(f"Index created with {indexed_count} records")
             return {
-                'record_count': len(self.records),
-                'indexed': indexed_count,
-                'embedding_dim': embeddings.shape[1],
+                "record_count": len(self.records),
+                "indexed": indexed_count,
+                "embedding_dim": embeddings.shape[1],
             }
 
-        return {'record_count': len(self.records), 'indexed': 0}
+        return {"record_count": len(self.records), "indexed": 0}
 
     def _embed_texts(self, texts: List[str], batch_size: int = 32) -> Optional[np.ndarray]:
         """Generate embeddings for texts
@@ -199,10 +202,7 @@ class SemanticIndexer:
 
         try:
             embeddings = self.model.encode(
-                texts,
-                batch_size=batch_size,
-                show_progress_bar=True,
-                convert_to_numpy=True
+                texts, batch_size=batch_size, show_progress_bar=True, convert_to_numpy=True
             )
             return embeddings.astype(np.float32)
         except Exception as e:
@@ -257,14 +257,14 @@ class SemanticIndexer:
 
             result = SearchResult(
                 record_id=record_id,
-                record_type=record.get('type', 'unknown'),
-                title=record.get('title', record.get('description', '')),
-                content=record.get('content', '')[:200],
+                record_type=record.get("type", "unknown"),
+                title=record.get("title", record.get("description", "")),
+                content=record.get("content", "")[:200],
                 score=float(similarity),
                 metadata={
-                    'distance': float(dist),
-                    'created_at': record.get('created_at'),
-                }
+                    "distance": float(dist),
+                    "created_at": record.get("created_at"),
+                },
             )
             results.append(result)
 
@@ -283,21 +283,21 @@ class SemanticIndexer:
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
         # Save FAISS index
-        index_file = output_path.with_suffix('.index')
+        index_file = output_path.with_suffix(".index")
         if faiss:
             faiss.write_index(self.index, str(index_file))
             logger.info(f"Saved FAISS index to {index_file}")
 
         # Save metadata
         metadata = {
-            'model_name': self.model_name,
-            'embedding_dim': self.embedding_dim,
-            'record_count': len(self.records),
-            'indexed_count': len(self.id_to_index),
+            "model_name": self.model_name,
+            "embedding_dim": self.embedding_dim,
+            "record_count": len(self.records),
+            "indexed_count": len(self.id_to_index),
         }
 
-        metadata_file = output_path.with_suffix('.json')
-        with open(metadata_file, 'w') as f:
+        metadata_file = output_path.with_suffix(".json")
+        with open(metadata_file, "w") as f:
             json.dump(metadata, f, indent=2)
 
         logger.info(f"Saved metadata to {metadata_file}")
@@ -311,8 +311,8 @@ class SemanticIndexer:
         Returns:
             True if loaded successfully
         """
-        index_file = input_path.with_suffix('.index')
-        metadata_file = input_path.with_suffix('.json')
+        index_file = input_path.with_suffix(".index")
+        metadata_file = input_path.with_suffix(".json")
 
         if not index_file.exists() or not metadata_file.exists():
             logger.error("Index files not found")
@@ -320,11 +320,11 @@ class SemanticIndexer:
 
         try:
             # Load metadata
-            with open(metadata_file, 'r') as f:
+            with open(metadata_file, "r") as f:
                 metadata = json.load(f)
 
-            self.model_name = metadata['model_name']
-            self.embedding_dim = metadata['embedding_dim']
+            self.model_name = metadata["model_name"]
+            self.embedding_dim = metadata["embedding_dim"]
 
             # Load FAISS index
             if faiss:
@@ -343,9 +343,9 @@ class SemanticIndexer:
             Dictionary with statistics
         """
         return {
-            'model_name': self.model_name,
-            'embedding_dim': self.embedding_dim,
-            'total_records': len(self.records),
-            'indexed_records': len(self.id_to_index),
-            'index_built': self.index is not None,
+            "model_name": self.model_name,
+            "embedding_dim": self.embedding_dim,
+            "total_records": len(self.records),
+            "indexed_records": len(self.id_to_index),
+            "index_built": self.index is not None,
         }

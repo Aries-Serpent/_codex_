@@ -23,11 +23,14 @@ def _redact_snippet(snippet: str) -> str:
     Security: Prevents clear-text storage of secrets in scan reports.
     """
     # Redact long base64-like strings, hex strings, and key-like patterns
-    redacted = re.sub(r'[A-Za-z0-9+/]{20,}', '[REDACTED]', snippet)
-    redacted = re.sub(r'[0-9a-fA-F]{32,}', '[REDACTED]', redacted)
-    return re.sub(r'(?:secret|key|password|token)["\s:=]+[^\s"]{8,}',
-                      lambda m: m.group()[:20] + '[REDACTED]',
-                      redacted, flags=re.IGNORECASE)
+    redacted = re.sub(r"[A-Za-z0-9+/]{20,}", "[REDACTED]", snippet)
+    redacted = re.sub(r"[0-9a-fA-F]{32,}", "[REDACTED]", redacted)
+    return re.sub(
+        r'(?:secret|key|password|token)["\s:=]+[^\s"]{8,}',
+        lambda m: m.group()[:20] + "[REDACTED]",
+        redacted,
+        flags=re.IGNORECASE,
+    )
 
 
 def _iter_text_files(root: Path) -> list[Path]:
@@ -52,7 +55,9 @@ def scan(root: Path) -> dict[str, list[dict[str, str]]]:
             if patt in text:
                 snippet = text.strip().splitlines()[0] if text.strip().splitlines() else ""
                 # Security: Redact potential secrets before storing
-                findings.append({"file": str(f), "pattern": patt, "snippet": _redact_snippet(snippet[:200])})
+                findings.append(
+                    {"file": str(f), "pattern": patt, "snippet": _redact_snippet(snippet[:200])}
+                )
     return {"findings": findings, "total_findings": len(findings)}
 
 

@@ -9,6 +9,7 @@ Codex Sequential Runner (offline, local-only)
 
 Invariant: DO NOT ACTIVATE ANY GitHub Actions. All checks run locally here.
 """
+
 import argparse
 import datetime
 import hashlib
@@ -21,7 +22,11 @@ from pathlib import Path
 from typing import Optional
 
 ROOT = Path.cwd()
-SESSION_DIR = ROOT / ".codex" / f"session_{datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%SZ')}"
+SESSION_DIR = (
+    ROOT
+    / ".codex"
+    / f"session_{datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%SZ')}"
+)
 LOGS = SESSION_DIR / "logs"
 PATCHES = SESSION_DIR / "patches"
 ARTIFACTS = SESSION_DIR / "artifacts"
@@ -33,6 +38,7 @@ SUPPLIED_TASK_BASENAME = "supplied_task.md"
 
 def ts() -> str:
     from codex.utils.path_utils import windows_safe_timestamp
+
     return windows_safe_timestamp(fmt="iso")
 
 
@@ -154,9 +160,7 @@ def patch_tokenizer_ids(path: Path):
 
 def patch_functional_training(path: Path):
     pattern = r"except Exception:\n\s*pass"
-    replacement = (
-        'except Exception as exc:\n            print(f"[monitoring-error] <ERROR_TYPE>", file=sys.stderr)'
-    )
+    replacement = 'except Exception as exc:\n            print(f"[monitoring-error] <ERROR_TYPE>", file=sys.stderr)'
     changed, msg = apply_unified_patch(path, [(pattern, replacement)])
     if changed:
         record_changelog("- functional_training: surfaced monitoring exceptions to stderr.")

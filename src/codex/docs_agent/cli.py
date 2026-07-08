@@ -16,10 +16,7 @@ from typing import Optional
 import click
 
 # Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s'
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 
@@ -35,26 +32,10 @@ def cli():
 
 
 @cli.command()
-@click.argument('docs_dir', type=click.Path(exists=True))
-@click.option(
-    '--output',
-    '-o',
-    type=click.Path(),
-    default='docs.jsonl',
-    help='Output JSONL file'
-)
-@click.option(
-    '--prefix',
-    '-p',
-    default='doc',
-    help='ID prefix for documents'
-)
-@click.option(
-    '--verbose',
-    '-v',
-    is_flag=True,
-    help='Verbose output'
-)
+@click.argument("docs_dir", type=click.Path(exists=True))
+@click.option("--output", "-o", type=click.Path(), default="docs.jsonl", help="Output JSONL file")
+@click.option("--prefix", "-p", default="doc", help="ID prefix for documents")
+@click.option("--verbose", "-v", is_flag=True, help="Verbose output")
 def process(docs_dir: str, output: str, prefix: str, verbose: bool):
     """Process Markdown documentation to JSONL format
 
@@ -77,15 +58,15 @@ def process(docs_dir: str, output: str, prefix: str, verbose: bool):
 
         stats = processor.get_statistics()
 
-        click.echo("\n" + "="*60)
+        click.echo("\n" + "=" * 60)
         click.echo("DOCUMENTATION PROCESSING COMPLETE")
-        click.echo("="*60)
+        click.echo("=" * 60)
         click.echo(f"Documents:    {stats['documents']}")
         click.echo(f"Sections:     {stats['sections']}")
         click.echo(f"Blocks:       {stats['blocks']}")
         click.echo(f"Total:        {stats['total_records']}")
         click.echo(f"Output:       {output}")
-        click.echo("="*60 + "\n")
+        click.echo("=" * 60 + "\n")
 
     except Exception as e:
         click.echo(f"ERROR: {e}", err=True)
@@ -93,41 +74,24 @@ def process(docs_dir: str, output: str, prefix: str, verbose: bool):
 
 
 @cli.command()
-@click.argument('jsonl_file', type=click.Path(exists=True))
+@click.argument("jsonl_file", type=click.Path(exists=True))
 @click.option(
-    '--schemas-dir',
+    "--schemas-dir",
     type=click.Path(exists=True),
-    default='.codex/schemas',
-    help='Schemas directory'
+    default=".codex/schemas",
+    help="Schemas directory",
 )
-@click.option(
-    '--csv-report',
-    type=click.Path(),
-    help='Output CSV validation report'
-)
-@click.option(
-    '--json-report',
-    type=click.Path(),
-    help='Output JSON validation report'
-)
-@click.option(
-    '--html-report',
-    type=click.Path(),
-    help='Output HTML validation report'
-)
-@click.option(
-    '--verbose',
-    '-v',
-    is_flag=True,
-    help='Verbose output'
-)
+@click.option("--csv-report", type=click.Path(), help="Output CSV validation report")
+@click.option("--json-report", type=click.Path(), help="Output JSON validation report")
+@click.option("--html-report", type=click.Path(), help="Output HTML validation report")
+@click.option("--verbose", "-v", is_flag=True, help="Verbose output")
 def validate(
     jsonl_file: str,
     schemas_dir: str,
     csv_report: Optional[str],
     json_report: Optional[str],
     html_report: Optional[str],
-    verbose: bool
+    verbose: bool,
 ):
     """Validate JSONL documentation file
 
@@ -147,25 +111,25 @@ def validate(
         results = validator.validate_file(Path(jsonl_file))
 
         # Print summary
-        click.echo("\n" + "="*60)
+        click.echo("\n" + "=" * 60)
         click.echo("VALIDATION SUMMARY")
-        click.echo("="*60)
+        click.echo("=" * 60)
         click.echo(f"Total records:    {results['total_records']}")
         click.echo(f"Valid:            {results['valid_records']}")
         click.echo(f"Invalid:          {results['invalid_records']}")
         click.echo(f"Accuracy:         {results['accuracy_percent']:.1f}%")
 
-        if results['records_by_type']:
+        if results["records_by_type"]:
             click.echo("\nRecords by type:")
-            for rtype, count in sorted(results['records_by_type'].items()):
+            for rtype, count in sorted(results["records_by_type"].items()):
                 click.echo(f"  {rtype}: {count}")
 
-        if results['errors']:
+        if results["errors"]:
             click.echo("\nFirst 5 errors:")
-            for error in results['errors'][:5]:
+            for error in results["errors"][:5]:
                 click.echo(f"  Line {error.get('line')}: {error['message']}")
 
-        click.echo("="*60 + "\n")
+        click.echo("=" * 60 + "\n")
 
         # Generate reports
         if csv_report:
@@ -176,7 +140,7 @@ def validate(
             click.echo(f"HTML report would be saved to: {html_report}")
 
         # Exit with appropriate code
-        sys.exit(0 if results['invalid_records'] == 0 else 1)
+        sys.exit(0 if results["invalid_records"] == 0 else 1)
 
     except Exception as e:
         click.echo(f"ERROR: {e}", err=True)
@@ -184,31 +148,13 @@ def validate(
 
 
 @cli.command()
-@click.argument('jsonl_file', type=click.Path(exists=True))
+@click.argument("jsonl_file", type=click.Path(exists=True))
+@click.option("--model", default="all-MiniLM-L6-v2", help="Embedding model name")
 @click.option(
-    '--model',
-    default='all-MiniLM-L6-v2',
-    help='Embedding model name'
+    "--output", "-o", type=click.Path(), default="semantic_index", help="Output index file path"
 )
-@click.option(
-    '--output',
-    '-o',
-    type=click.Path(),
-    default='semantic_index',
-    help='Output index file path'
-)
-@click.option(
-    '--batch-size',
-    type=int,
-    default=32,
-    help='Batch size for embeddings'
-)
-@click.option(
-    '--verbose',
-    '-v',
-    is_flag=True,
-    help='Verbose output'
-)
+@click.option("--batch-size", type=int, default=32, help="Batch size for embeddings")
+@click.option("--verbose", "-v", is_flag=True, help="Verbose output")
 def build_index(jsonl_file: str, model: str, output: str, batch_size: int, verbose: bool):
     """Build semantic search index from JSONL
 
@@ -228,7 +174,7 @@ def build_index(jsonl_file: str, model: str, output: str, batch_size: int, verbo
         indexer = SemanticIndexer(model_name=model)
 
         # Load records from JSONL
-        with open(jsonl_file, 'r') as f:
+        with open(jsonl_file, "r") as f:
             for line_no, line in enumerate(f, 1):
                 line = line.strip()
                 if not line:
@@ -246,14 +192,14 @@ def build_index(jsonl_file: str, model: str, output: str, batch_size: int, verbo
         indexer.save_index(Path(output))
 
         # Print summary
-        click.echo("\n" + "="*60)
+        click.echo("\n" + "=" * 60)
         click.echo("INDEX BUILD COMPLETE")
-        click.echo("="*60)
+        click.echo("=" * 60)
         click.echo(f"Total records:    {stats['record_count']}")
         click.echo(f"Indexed:          {stats['indexed']}")
         click.echo(f"Embedding dim:    {stats.get('embedding_dim', 'N/A')}")
         click.echo(f"Output:           {output}*")
-        click.echo("="*60 + "\n")
+        click.echo("=" * 60 + "\n")
 
     except Exception as e:
         click.echo(f"ERROR: {e}", err=True)
@@ -261,27 +207,11 @@ def build_index(jsonl_file: str, model: str, output: str, batch_size: int, verbo
 
 
 @cli.command()
-@click.argument('index_path', type=click.Path(exists=True))
-@click.argument('query', required=False)
-@click.option(
-    '--limit',
-    '-k',
-    type=int,
-    default=10,
-    help='Number of results'
-)
-@click.option(
-    '--threshold',
-    type=float,
-    default=0.0,
-    help='Similarity threshold'
-)
-@click.option(
-    '--interactive',
-    '-i',
-    is_flag=True,
-    help='Interactive search mode'
-)
+@click.argument("index_path", type=click.Path(exists=True))
+@click.argument("query", required=False)
+@click.option("--limit", "-k", type=int, default=10, help="Number of results")
+@click.option("--threshold", type=float, default=0.0, help="Similarity threshold")
+@click.option("--interactive", "-i", is_flag=True, help="Interactive search mode")
 def search(index_path: str, query: Optional[str], limit: int, threshold: float, interactive: bool):
     """Search semantic index
 
@@ -341,28 +271,10 @@ def search(index_path: str, query: Optional[str], limit: int, threshold: float, 
 
 
 @cli.command()
-@click.option(
-    '--host',
-    default='127.0.0.1',
-    help='Server host'
-)
-@click.option(
-    '--port',
-    type=int,
-    default=5000,
-    help='Server port'
-)
-@click.option(
-    '--latency',
-    is_flag=True,
-    help='Enable latency simulation'
-)
-@click.option(
-    '--error-rate',
-    type=float,
-    default=0.0,
-    help='Error rate (0.0-1.0)'
-)
+@click.option("--host", default="127.0.0.1", help="Server host")
+@click.option("--port", type=int, default=5000, help="Server port")
+@click.option("--latency", is_flag=True, help="Enable latency simulation")
+@click.option("--error-rate", type=float, default=0.0, help="Error rate (0.0-1.0)")
 def mock_server(host: str, port: int, latency: bool, error_rate: float):
     """Run mock HTTP server for testing
 
@@ -393,5 +305,5 @@ def version():
     click.echo("Authority: Lane 3 Unified Documentation Agent")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     cli()

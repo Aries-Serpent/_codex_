@@ -4,7 +4,7 @@ import json
 import uuid
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any
 import hashlib
 
 
@@ -45,11 +45,11 @@ class CampaignIngester:
                     "memory_consolidation_time_ms": 224,
                     "ooda_cycle_time_ms": 185,
                     "tests_passing": 347,
-                    "test_coverage_percent": 95
+                    "test_coverage_percent": 95,
                 },
                 "created_at": "2026-06-30T16:00:00Z",
                 "completed_at": "2026-06-30T18:00:00Z",
-                "source_trace": ".codex/PHASE_10_*_COMPLETION_REPORT.md"
+                "source_trace": ".codex/PHASE_10_*_COMPLETION_REPORT.md",
             },
             {
                 "id": self.generate_deterministic_id("phase", "12"),
@@ -68,12 +68,12 @@ class CampaignIngester:
                     "observability_dashboard_refresh_ms": 450,
                     "policies_count": 48,
                     "tests_passing": 348,
-                    "test_coverage_percent": 96
+                    "test_coverage_percent": 96,
                 },
                 "created_at": "2026-06-30T14:00:00Z",
                 "completed_at": "2026-06-30T20:00:00Z",
-                "source_trace": ".codex/PHASE_12_*_COMPLETION_REPORT.md"
-            }
+                "source_trace": ".codex/PHASE_12_*_COMPLETION_REPORT.md",
+            },
         ]
         return phases
 
@@ -92,7 +92,7 @@ class CampaignIngester:
                 "key_metrics": {"restore_time_ms": 35, "tests": 32},
                 "created_at": "2026-06-30T16:00:00Z",
                 "completed_at": "2026-06-30T17:00:00Z",
-                "source_trace": ".codex/PHASE_10_1_FINAL_REPORT.md"
+                "source_trace": ".codex/PHASE_10_1_FINAL_REPORT.md",
             },
             {
                 "id": self.generate_deterministic_id("track", "10.2", "phase_10"),
@@ -105,7 +105,7 @@ class CampaignIngester:
                 "key_metrics": {"consolidation_time_ms": 224, "tests": 32},
                 "created_at": "2026-06-30T16:15:00Z",
                 "completed_at": "2026-06-30T17:15:00Z",
-                "source_trace": ".codex/PHASE_10_2_MEMORY_HEALTH.md"
+                "source_trace": ".codex/PHASE_10_2_MEMORY_HEALTH.md",
             },
             {
                 "id": self.generate_deterministic_id("track", "10.3", "phase_10"),
@@ -118,7 +118,7 @@ class CampaignIngester:
                 "key_metrics": {"cycle_time_ms": 185, "tests": 32},
                 "created_at": "2026-06-30T16:30:00Z",
                 "completed_at": "2026-06-30T17:30:00Z",
-                "source_trace": ".codex/PHASE_10_3_OODA_EXECUTOR.md"
+                "source_trace": ".codex/PHASE_10_3_OODA_EXECUTOR.md",
             },
             # Phase 12 tracks
             {
@@ -132,7 +132,7 @@ class CampaignIngester:
                 "key_metrics": {"permission_check_ms": 8.7, "tests": 48},
                 "created_at": "2026-06-30T14:00:00Z",
                 "completed_at": "2026-06-30T18:00:00Z",
-                "source_trace": ".codex/PHASE_12_1_RBAC_SYSTEM.md"
+                "source_trace": ".codex/PHASE_12_1_RBAC_SYSTEM.md",
             },
             {
                 "id": self.generate_deterministic_id("track", "12.2", "phase_12"),
@@ -145,7 +145,7 @@ class CampaignIngester:
                 "key_metrics": {"approval_workflow_ms": 87, "policies": 48},
                 "created_at": "2026-06-30T14:15:00Z",
                 "completed_at": "2026-06-30T18:30:00Z",
-                "source_trace": ".codex/PHASE_12_2_GOVERNANCE.md"
+                "source_trace": ".codex/PHASE_12_2_GOVERNANCE.md",
             },
             {
                 "id": self.generate_deterministic_id("track", "12.3", "phase_12"),
@@ -158,8 +158,8 @@ class CampaignIngester:
                 "key_metrics": {"dashboard_refresh_ms": 450, "tests": 64},
                 "created_at": "2026-06-30T14:30:00Z",
                 "completed_at": "2026-06-30T19:00:00Z",
-                "source_trace": ".codex/PHASE_12_3_OBSERVABILITY.md"
-            }
+                "source_trace": ".codex/PHASE_12_3_OBSERVABILITY.md",
+            },
         ]
         return tracks
 
@@ -172,38 +172,42 @@ class CampaignIngester:
             phase_id = self.generate_deterministic_id("phase", "10")
             track_id = self.generate_deterministic_id("track", track_num, phase_id)
             for i in range(1, 5):
-                deliverables.append({
-                    "id": self.generate_deterministic_id("deliverable", f"{track_num}.{i}"),
-                    "phase_id": phase_id,
-                    "track_id": track_id,
-                    "name": f"Track {track_num} Deliverable {i}",
-                    "status": "complete",
-                    "lines_of_code": 200 + (i * 50),
-                    "tests": 8 + i,
-                    "test_coverage_percent": 90 + i,
-                    "created_at": "2026-06-30T16:00:00Z",
-                    "completed_at": "2026-06-30T17:30:00Z",
-                    "source_trace": f".codex/PHASE_10_{track_num[-1]}_DELIVERABLE_{i}.md"
-                })
+                deliverables.append(
+                    {
+                        "id": self.generate_deterministic_id("deliverable", f"{track_num}.{i}"),
+                        "phase_id": phase_id,
+                        "track_id": track_id,
+                        "name": f"Track {track_num} Deliverable {i}",
+                        "status": "complete",
+                        "lines_of_code": 200 + (i * 50),
+                        "tests": 8 + i,
+                        "test_coverage_percent": 90 + i,
+                        "created_at": "2026-06-30T16:00:00Z",
+                        "completed_at": "2026-06-30T17:30:00Z",
+                        "source_trace": f".codex/PHASE_10_{track_num[-1]}_DELIVERABLE_{i}.md",
+                    }
+                )
 
         # Phase 12 deliverables
         for track_num in ["12.1", "12.2", "12.3"]:
             phase_id = self.generate_deterministic_id("phase", "12")
             track_id = self.generate_deterministic_id("track", track_num, phase_id)
             for i in range(1, 5):
-                deliverables.append({
-                    "id": self.generate_deterministic_id("deliverable", f"{track_num}.{i}"),
-                    "phase_id": phase_id,
-                    "track_id": track_id,
-                    "name": f"Track {track_num} Deliverable {i}",
-                    "status": "complete",
-                    "lines_of_code": 250 + (i * 75),
-                    "tests": 10 + i,
-                    "test_coverage_percent": 92 + i,
-                    "created_at": "2026-06-30T14:00:00Z",
-                    "completed_at": "2026-06-30T19:00:00Z",
-                    "source_trace": f".codex/PHASE_12_{track_num[-1]}_DELIVERABLE_{i}.md"
-                })
+                deliverables.append(
+                    {
+                        "id": self.generate_deterministic_id("deliverable", f"{track_num}.{i}"),
+                        "phase_id": phase_id,
+                        "track_id": track_id,
+                        "name": f"Track {track_num} Deliverable {i}",
+                        "status": "complete",
+                        "lines_of_code": 250 + (i * 75),
+                        "tests": 10 + i,
+                        "test_coverage_percent": 92 + i,
+                        "created_at": "2026-06-30T14:00:00Z",
+                        "completed_at": "2026-06-30T19:00:00Z",
+                        "source_trace": f".codex/PHASE_12_{track_num[-1]}_DELIVERABLE_{i}.md",
+                    }
+                )
 
         return deliverables
 
@@ -216,9 +220,14 @@ class CampaignIngester:
                 "type": "session",
                 "phase_id": self.generate_deterministic_id("phase", "10"),
                 "role": "Session state management",
-                "permissions": ["session.create", "session.read", "session.update", "session.checkpoint"],
+                "permissions": [
+                    "session.create",
+                    "session.read",
+                    "session.update",
+                    "session.checkpoint",
+                ],
                 "assigned_to_tracks": 1,
-                "created_at": "2026-06-30T16:00:00Z"
+                "created_at": "2026-06-30T16:00:00Z",
             },
             {
                 "id": self.generate_deterministic_id("agent", "memory-consolidator"),
@@ -228,7 +237,7 @@ class CampaignIngester:
                 "role": "Memory consolidation",
                 "permissions": ["memory.stm", "memory.ltm", "memory.consolidate"],
                 "assigned_to_tracks": 1,
-                "created_at": "2026-06-30T16:15:00Z"
+                "created_at": "2026-06-30T16:15:00Z",
             },
             {
                 "id": self.generate_deterministic_id("agent", "ooda-executor"),
@@ -238,7 +247,7 @@ class CampaignIngester:
                 "role": "OODA loop execution",
                 "permissions": ["ooda.observe", "ooda.orient", "ooda.decide", "ooda.act"],
                 "assigned_to_tracks": 1,
-                "created_at": "2026-06-30T16:30:00Z"
+                "created_at": "2026-06-30T16:30:00Z",
             },
             {
                 "id": self.generate_deterministic_id("agent", "rbac-controller"),
@@ -248,7 +257,7 @@ class CampaignIngester:
                 "role": "RBAC enforcement",
                 "permissions": ["rbac.enforce", "rbac.audit"],
                 "assigned_to_tracks": 1,
-                "created_at": "2026-06-30T14:00:00Z"
+                "created_at": "2026-06-30T14:00:00Z",
             },
             {
                 "id": self.generate_deterministic_id("agent", "governance-enforcer"),
@@ -258,7 +267,7 @@ class CampaignIngester:
                 "role": "Policy enforcement & approval",
                 "permissions": ["governance.approve", "governance.audit", "governance.report"],
                 "assigned_to_tracks": 1,
-                "created_at": "2026-06-30T14:15:00Z"
+                "created_at": "2026-06-30T14:15:00Z",
             },
             {
                 "id": self.generate_deterministic_id("agent", "observability-monitor"),
@@ -268,8 +277,8 @@ class CampaignIngester:
                 "role": "Metrics & monitoring",
                 "permissions": ["metrics.query", "metrics.alert", "metrics.report"],
                 "assigned_to_tracks": 1,
-                "created_at": "2026-06-30T14:30:00Z"
-            }
+                "created_at": "2026-06-30T14:30:00Z",
+            },
         ]
         return agents
 
@@ -285,7 +294,7 @@ class CampaignIngester:
                 "target": 100,
                 "unit": "milliseconds",
                 "status": "pass",
-                "measured_at": "2026-06-30T17:30:00Z"
+                "measured_at": "2026-06-30T17:30:00Z",
             },
             {
                 "id": self.generate_deterministic_id("metric", "phase_10_memory_consolidation"),
@@ -295,7 +304,7 @@ class CampaignIngester:
                 "target": 500,
                 "unit": "milliseconds",
                 "status": "pass",
-                "measured_at": "2026-06-30T17:45:00Z"
+                "measured_at": "2026-06-30T17:45:00Z",
             },
             {
                 "id": self.generate_deterministic_id("metric", "phase_10_ooda_cycle"),
@@ -305,7 +314,7 @@ class CampaignIngester:
                 "target": 200,
                 "unit": "milliseconds",
                 "status": "pass",
-                "measured_at": "2026-06-30T17:50:00Z"
+                "measured_at": "2026-06-30T17:50:00Z",
             },
             {
                 "id": self.generate_deterministic_id("metric", "phase_10_tests_passing"),
@@ -315,7 +324,7 @@ class CampaignIngester:
                 "target": 347,
                 "unit": "count",
                 "status": "pass",
-                "measured_at": "2026-06-30T18:00:00Z"
+                "measured_at": "2026-06-30T18:00:00Z",
             },
             # Phase 12 metrics
             {
@@ -326,7 +335,7 @@ class CampaignIngester:
                 "target": 50,
                 "unit": "milliseconds",
                 "status": "pass",
-                "measured_at": "2026-06-30T18:00:00Z"
+                "measured_at": "2026-06-30T18:00:00Z",
             },
             {
                 "id": self.generate_deterministic_id("metric", "phase_12_governance_workflow"),
@@ -336,7 +345,7 @@ class CampaignIngester:
                 "target": 200,
                 "unit": "milliseconds",
                 "status": "pass",
-                "measured_at": "2026-06-30T18:30:00Z"
+                "measured_at": "2026-06-30T18:30:00Z",
             },
             {
                 "id": self.generate_deterministic_id("metric", "phase_12_observability_dashboard"),
@@ -346,8 +355,8 @@ class CampaignIngester:
                 "target": 500,
                 "unit": "milliseconds",
                 "status": "pass",
-                "measured_at": "2026-06-30T19:00:00Z"
-            }
+                "measured_at": "2026-06-30T19:00:00Z",
+            },
         ]
         return metrics
 
@@ -362,7 +371,7 @@ class CampaignIngester:
                 "decision": "GO",
                 "authority": "@mbaetiong (D-tier)",
                 "decided_at": "2026-06-30T18:00:00Z",
-                "rationale": "2 days ahead of schedule, all metrics passed"
+                "rationale": "2 days ahead of schedule, all metrics passed",
             },
             {
                 "id": self.generate_deterministic_id("decision", "phase_12_go"),
@@ -372,7 +381,7 @@ class CampaignIngester:
                 "decision": "GO",
                 "authority": "@mbaetiong (D-tier)",
                 "decided_at": "2026-06-30T20:00:00Z",
-                "rationale": "17 days early, all success criteria met"
+                "rationale": "17 days early, all success criteria met",
             },
             {
                 "id": self.generate_deterministic_id("decision", "machine_readable_integration"),
@@ -381,8 +390,8 @@ class CampaignIngester:
                 "decision": "REQUIRED",
                 "authority": "@mbaetiong (D-tier)",
                 "decided_at": "2026-06-30T20:05:00Z",
-                "rationale": "P0 priority for structured agent interaction"
-            }
+                "rationale": "P0 priority for structured agent interaction",
+            },
         ]
         return decisions
 

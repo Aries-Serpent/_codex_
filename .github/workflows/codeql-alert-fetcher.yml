@@ -27,26 +27,26 @@ name: 🔍 CodeQL Alert Fetcher
 # Artifacts produced (90-day retention)
 # --------------------------------------
 #   security-snapshot-{run_id}/
-#     # CodeQL / code-scanning
+#  # CodeQL / code-scanning
 #     codeql/alerts_raw.json          — full CodeQL alert JSON array
 #     codeql/alerts_by_rule.md        — grouped by rule ID (paste into session notes)
 #     codeql/alerts_fixable.md        — top-N prioritised fix list
 #     codeql/alerts_summary.json      — machine-readable counts by rule / severity
-#     # Dependabot
+#  # Dependabot
 #     dependabot/alerts_open.json     — open Dependabot vulnerability alerts
 #     dependabot/alerts_critical.json — critical + high only
 #     dependabot/summary.json         — counts by severity / ecosystem
-#     # Secret scanning
+#  # Secret scanning
 #     secrets/alerts_open.json        — open secret scanning alerts
 #     secrets/alerts_active.json      — validity=active confirmed secrets
 #     secrets/summary.json            — counts by type / validity
-#     # Security policy & community health
+#  # Security policy & community health
 #     policy/community_profile.json   — community health endpoint
 #     policy/security_policy.json     — resolved policy file (path + content)
-#     # Analysis provenance
+#  # Analysis provenance
 #     analyses/recent.json            — last 100 code-scanning analysis runs
 #     analyses/default_setup.json     — CodeQL default-setup status
-#     # Consolidated agent context
+#  # Consolidated agent context
 #     AGENT_SECURITY_CONTEXT.md       — single-file summary for Copilot agent
 #     run_metadata.json               — run parameters + timestamps
 #
@@ -151,14 +151,14 @@ jobs:
 
       - name: Checkout repository
         if: steps.token_check.outputs.token_available == 'true'
-        uses: actions/checkout@v5 # v6.0.3
+        uses: actions/checkout@v5  # v6.0.3
         with:
           fetch-depth: 1
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
 
       - name: Set up Python
         if: steps.token_check.outputs.token_available == 'true'
-        uses: actions/setup-python@v6 # v6
+        uses: actions/setup-python@v6  # v6
         with:
           cache: pip
           python-version: '3.12.13'
@@ -730,7 +730,7 @@ jobs:
       # ── Upload artifact ─────────────────────────────────────────────────────
       - name: Upload security snapshot artifact
         if: steps.token_check.outputs.token_available == 'true' && always()
-        uses: actions/upload-artifact@v5 # v7.0.1
+        uses: actions/upload-artifact@v5  # v7.0.1
         with:
           name: ${{ steps.params.outputs.artifact_name }}
           path: ${{ steps.params.outputs.out_dir }}/

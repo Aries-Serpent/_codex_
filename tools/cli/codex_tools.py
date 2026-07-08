@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 """Tiny CLI wrapper for local _codex_ gates."""
+
 import argparse
 import os
 import subprocess

@@ -9,6 +9,7 @@ Usage examples:
   python tools/actions_cli.py fetch --path docs/prompts/custom_gpt_self_healing_engineer.md --ref 0D_base_
   python tools/actions_cli.py cite --path docs/prompts/custom_gpt_self_healing_engineer.md --ref 0D_base_ --note "Prompt used by CustomGPT"
 """
+
 from __future__ import annotations
 
 import argparse

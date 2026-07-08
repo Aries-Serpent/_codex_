@@ -23,7 +23,7 @@ import argparse
 import logging
 from pathlib import Path
 from datetime import datetime
-from typing import Dict, List, Tuple
+from typing import List, Tuple
 
 
 # Configure logging

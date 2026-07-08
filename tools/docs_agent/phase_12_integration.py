@@ -1,6 +1,5 @@
 """Phase 12 System Integration - RBAC, Governance, Observability integration with machine-readable layer."""
 
-import json
 from tools.docs_agent.copilot_tools_new import CopilotToolsInterface
 from typing import Dict, Any
 
@@ -20,27 +19,27 @@ class Phase12SystemIntegration:
                 "admin": {
                     "granted_agents": ["rbac-controller", "governance-enforcer"],
                     "permissions": ["manage_phases", "manage_tracks", "approve_decisions"],
-                    "entity_scopes": ["phase_id", "track_id"]
+                    "entity_scopes": ["phase_id", "track_id"],
                 },
                 "contributor": {
                     "granted_agents": ["deliverable_owner", "metric_reporter"],
                     "permissions": ["create_deliverables", "report_metrics", "propose_changes"],
-                    "entity_scopes": ["track_id", "deliverable_id"]
+                    "entity_scopes": ["track_id", "deliverable_id"],
                 },
                 "observer": {
                     "granted_agents": ["metric_observer"],
                     "permissions": ["view_metrics", "read_decisions", "search_docs"],
                     "entity_scopes": ["phase_id"],
-                    "tools": ["get_agent_context", "search_docs", "list_actions"]
-                }
+                    "tools": ["get_agent_context", "search_docs", "list_actions"],
+                },
             },
             "resource_level_permissions": {
                 "phase_access": "scope_phase_id",
                 "track_access": "scope_track_id",
                 "deliverable_access": "scope_deliverable_id",
-                "decision_access": "scope_decision_id"
+                "decision_access": "scope_decision_id",
             },
-            "enforcement_pattern": "All Copilot tools filter results by role's entity scopes"
+            "enforcement_pattern": "All Copilot tools filter results by role's entity scopes",
         }
 
         return rbac_design
@@ -58,8 +57,8 @@ class Phase12SystemIntegration:
                         "affected_deliverables": 12,
                         "status": "approved",
                         "approver": "admin_role",
-                        "authority": "D-tier"
-                    }
+                        "authority": "D-tier",
+                    },
                 },
                 "deliverable_approval": {
                     "references": "deliverable_id from deliverables.jsonl",
@@ -69,12 +68,12 @@ class Phase12SystemIntegration:
                         "deliverable_reference": "deliverable_456",
                         "track_context": "track_10_1",
                         "upstream_requirements": "from requirements.jsonl",
-                        "approval_status": "pending_review"
-                    }
-                }
+                        "approval_status": "pending_review",
+                    },
+                },
             },
             "policy_references": "Policies reference decision_id and requirement_id",
-            "audit_trail": "All decisions stored in decisions.jsonl with timestamp and authority"
+            "audit_trail": "All decisions stored in decisions.jsonl with timestamp and authority",
         }
 
         return governance_design
@@ -87,28 +86,28 @@ class Phase12SystemIntegration:
                 "step_1": "Query metrics.jsonl filtered by phase_id",
                 "step_2": "Correlate with deliverables.jsonl (test_coverage_percent)",
                 "step_3": "Link to requirements.jsonl (actual_value vs target_value)",
-                "step_4": "Render as dashboard with real-time SQLite queries"
+                "step_4": "Render as dashboard with real-time SQLite queries",
             },
             "key_metrics": {
                 "phase_health": {
                     "query": "SELECT COUNT(*) FROM deliverables WHERE phase_id=? AND status='complete'",
-                    "dashboard_display": "Phase completion percentage"
+                    "dashboard_display": "Phase completion percentage",
                 },
                 "track_progress": {
                     "query": "SELECT AVG(test_coverage_percent) FROM deliverables WHERE track_id=?",
-                    "dashboard_display": "Track average coverage"
+                    "dashboard_display": "Track average coverage",
                 },
                 "requirement_compliance": {
                     "query": "SELECT COUNT(*) FROM requirements WHERE phase_id=? AND status='met'",
-                    "dashboard_display": "Requirements passed / total"
+                    "dashboard_display": "Requirements passed / total",
                 },
                 "agent_activity": {
                     "query": "SELECT agent_id, phase_id FROM agents",
-                    "dashboard_display": "Agent assignments by phase"
-                }
+                    "dashboard_display": "Agent assignments by phase",
+                },
             },
             "alert_policy": "Thresholds trigger via validate_docs() and get_task_brief() checks",
-            "real_time_capability": "SQLite FTS enables <100ms dashboard refresh"
+            "real_time_capability": "SQLite FTS enables <100ms dashboard refresh",
         }
 
         return observability_design
@@ -119,47 +118,44 @@ class Phase12SystemIntegration:
             "workflow_name": "machine-readable-governance.yml",
             "triggers": ["push", "pull_request"],
             "steps": [
-                {
-                    "name": "Detect Changed Files",
-                    "purpose": "Identify new/modified campaign files"
-                },
+                {"name": "Detect Changed Files", "purpose": "Identify new/modified campaign files"},
                 {
                     "name": "Classify All Candidates",
                     "tool": "classify_candidate_file()",
-                    "classifies": ["managed vs unmanaged", "campaign vs infrastructure"]
+                    "classifies": ["managed vs unmanaged", "campaign vs infrastructure"],
                 },
                 {
                     "name": "Enforce Ingestion",
                     "tool": "ingest_candidate_file()",
-                    "requirement": "All managed files must pass ingestion"
+                    "requirement": "All managed files must pass ingestion",
                 },
                 {
                     "name": "Validate JSONL Schema",
-                    "requirement": "All .jsonl files must have id, phase_id/track_id, source_trace"
+                    "requirement": "All .jsonl files must have id, phase_id/track_id, source_trace",
                 },
                 {
                     "name": "Rebuild SQLite",
                     "tool": "rebuild_indexes()",
-                    "validates": "Foreign keys, relationships, FTS indexes"
+                    "validates": "Foreign keys, relationships, FTS indexes",
                 },
                 {
                     "name": "Validate Tools",
                     "tool": "validate_docs()",
-                    "checks": ["no orphaned deliverables", "all relationships valid"]
+                    "checks": ["no orphaned deliverables", "all relationships valid"],
                 },
                 {
                     "name": "FAIL on Unmanaged",
                     "condition": "Unmanaged files found",
-                    "action": "Block PR merge, require classification"
-                }
+                    "action": "Block PR merge, require classification",
+                },
             ],
             "success_criteria": [
                 "All managed files ingested",
                 "Valid JSONL",
                 "No orphaned relationships",
                 "SQLite indexes operational",
-                "All 10 tools working"
-            ]
+                "All 10 tools working",
+            ],
         }
 
         return workflow_spec
@@ -171,38 +167,35 @@ class Phase12SystemIntegration:
                 {
                     "phase": "Detect",
                     "action": "Changed files (git diff)",
-                    "output": "Candidate list"
+                    "output": "Candidate list",
                 },
                 {
                     "phase": "Classify",
                     "tool": "classify_candidate_file()",
-                    "branches": {
-                        "managed": "→ Ingest",
-                        "unmanaged": "→ Report + Block"
-                    }
+                    "branches": {"managed": "→ Ingest", "unmanaged": "→ Report + Block"},
                 },
                 {
                     "phase": "Ingest",
                     "tool": "ingest_candidate_file()",
-                    "process": "Parse → Generate JSONL → Add record IDs"
+                    "process": "Parse → Generate JSONL → Add record IDs",
                 },
                 {
                     "phase": "Validate",
                     "tool": "validate_docs()",
-                    "checks": ["schema", "relationships", "foreign keys"]
+                    "checks": ["schema", "relationships", "foreign keys"],
                 },
                 {
                     "phase": "Index",
                     "tool": "rebuild_indexes()",
-                    "rebuilds": ["SQLite FTS", "Relationships graph"]
+                    "rebuilds": ["SQLite FTS", "Relationships graph"],
                 },
                 {
                     "phase": "Enforce",
                     "action": "CI gate blocks unmanaged files",
-                    "requirement": "Zero tolerance for unmanaged knowledge"
-                }
+                    "requirement": "Zero tolerance for unmanaged knowledge",
+                },
             ],
-            "automation_coverage": "100% - Manual ingestion prohibited after CI enforcement"
+            "automation_coverage": "100% - Manual ingestion prohibited after CI enforcement",
         }
 
         return pipeline
@@ -217,10 +210,14 @@ if __name__ == "__main__":
     print(f"RBAC Integration: {len(rbac['role_definitions'])} roles with entity-level permissions")
 
     governance = integration.governance_integration()
-    print("Governance Integration: Approval workflows reference structured decision and deliverable IDs")
+    print(
+        "Governance Integration: Approval workflows reference structured decision and deliverable IDs"
+    )
 
     observability = integration.observability_integration()
-    print(f"Observability Integration: {len(observability['key_metrics'])} dashboard metrics via SQLite")
+    print(
+        f"Observability Integration: {len(observability['key_metrics'])} dashboard metrics via SQLite"
+    )
 
     workflow = integration.governance_workflow_specification()
     print(f"Governance Workflow: {len(workflow['steps'])} automated steps")

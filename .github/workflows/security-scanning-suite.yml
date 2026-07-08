@@ -718,7 +718,7 @@ jobs:
             --artifacts-dir security-suite-artifacts \
             --output-json .codex/security-findings-comprehensive.json \
             --output-md security-findings-comprehensive.md
-          
+
           # Count findings by severity
           python -c "
           import json

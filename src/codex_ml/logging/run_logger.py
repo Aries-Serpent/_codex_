@@ -135,10 +135,10 @@ class RunLogger:
         self.metrics_path.parent.mkdir(parents=True, exist_ok=True)
         rotation = _rotation_kwargs()
         manifest_path = self.metrics_path.with_name("metrics_manifest.ndjson")
-        
+
         # Lazy import to avoid circular dependency
         from codex_ml.tracking.writers import NdjsonWriter
-        
+
         self._metrics_writer: BaseWriter = NdjsonWriter(
             self.metrics_path,
             schema_uri=METRICS_SCHEMA_URI,

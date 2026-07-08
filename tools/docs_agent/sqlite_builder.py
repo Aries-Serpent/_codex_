@@ -3,14 +3,15 @@
 import sqlite3
 import json
 from pathlib import Path
-from typing import Dict, List, Any
-from datetime import datetime
+from typing import Dict
 
 
 class SQLiteIndexBuilder:
     """Builds SQLite database with FTS indexing for campaign data."""
 
-    def __init__(self, canonical_dir: str = "docs-data/canonical", output_dir: str = "docs-data/generated"):
+    def __init__(
+        self, canonical_dir: str = "docs-data/canonical", output_dir: str = "docs-data/generated"
+    ):
         self.canonical_dir = Path(canonical_dir)
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
@@ -223,14 +224,18 @@ class SQLiteIndexBuilder:
         self.create_schema()
 
         # Load data
-        results["campaign_phases"] = self.load_jsonl_into_table("campaign_phases.jsonl", "campaign_phases")
+        results["campaign_phases"] = self.load_jsonl_into_table(
+            "campaign_phases.jsonl", "campaign_phases"
+        )
         results["tracks"] = self.load_jsonl_into_table("campaign_tracks.jsonl", "tracks")
         results["deliverables"] = self.load_jsonl_into_table("deliverables.jsonl", "deliverables")
         results["agents"] = self.load_jsonl_into_table("agents.jsonl", "agents")
         results["metrics"] = self.load_jsonl_into_table("metrics.jsonl", "metrics")
         results["decisions"] = self.load_jsonl_into_table("decisions.jsonl", "decisions")
         results["requirements"] = self.load_jsonl_into_table("requirements.jsonl", "requirements")
-        results["relationships"] = self.load_jsonl_into_table("relationships.jsonl", "relationships")
+        results["relationships"] = self.load_jsonl_into_table(
+            "relationships.jsonl", "relationships"
+        )
 
         # Populate FTS
         self.populate_fts_tables()

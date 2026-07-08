@@ -1,0 +1,147 @@
+# Complete List of Modified Workflow Files
+# Total: 112 files
+# Timestamp: 2026-07-08T00:04:25.430+00:00
+# Commit: 67029f07
+
+## Modified Workflows (Alphabetical Order)
+
+.github/workflows/13-3-enterprise-compliance.yml
+.github/workflows/admin-action-notifier.yml
+.github/workflows/admin-action-t03.yml
+.github/workflows/admin_setup_verification.yml
+.github/workflows/agent-auth-delegation.yml
+.github/workflows/agent-handoff-gate.yml
+.github/workflows/agent-health-check.yml
+.github/workflows/agent-orchestration-unified.yml
+.github/workflows/agent-task-janitor.yml
+.github/workflows/agentic-diff-guard.yml
+.github/workflows/app-package-download.yml
+.github/workflows/auth-tests.yml
+.github/workflows/auto-approve-workflows.yml
+.github/workflows/auto-fix-pr-check.yml
+.github/workflows/batch-ci-triage.yml
+.github/workflows/branch-divergence-monitor.yml
+.github/workflows/chatops_copilot_trigger.yml
+.github/workflows/ci-failure-issue-creator.yml
+.github/workflows/ci-health-monitor.yml
+.github/workflows/ci-pass-rate-gate.yml
+.github/workflows/ci-rescue.yml
+.github/workflows/code-quality-coverage-suite.yml
+.github/workflows/codebase-health-sweep.yml
+.github/workflows/codeql-alert-fetcher.yml
+.github/workflows/codeql-analysis.yml
+.github/workflows/codeql-fix-verification.yml
+.github/workflows/codeql.yml
+.github/workflows/codex-manifest-refresh.yml
+.github/workflows/cognitive-perception.yml
+.github/workflows/cognitive_brain_ci_feedback.yml
+.github/workflows/cognitive_brainapi_dev.yml
+.github/workflows/cognitive-action-decision.yml
+.github/workflows/cognitive-k8s-provisioning.yml
+.github/workflows/cognitive-ooda-loop-trigger.yml
+.github/workflows/coherence-snapshot.yml
+.github/workflows/compliance-audit-inline.yml
+.github/workflows/compliance-report-automation.yml
+.github/workflows/compliance-remediation-automation.yml
+.github/workflows/compliance-snapshot.yml
+.github/workflows/copilot-agent-checkin.yml
+.github/workflows/copilot-agent-vars-bootstrap.yml
+.github/workflows/copilot-session-archival.yml
+.github/workflows/dashboard-data-fresh.yml
+.github/workflows/dependency-drift-detector.yml
+.github/workflows/dependency-update-automation.yml
+.github/workflows/deployment-gate-checkpoint.yml
+.github/workflows/dev-diagnostics-runner.yml
+.github/workflows/diagnostic-insights-collector.yml
+.github/workflows/dm-checkpoint-validation.yml
+.github/workflows/doc-live-rebuild.yml
+.github/workflows/docs-live-rebuild.yml
+.github/workflows/docs-validation.yml
+.github/workflows/emergency-response-alert.yml
+.github/workflows/enforce-nt.yml
+.github/workflows/example-trigger-event.yml
+.github/workflows/examples/copilot-with-mcp.yml
+.github/workflows/examples/mcp-cache-warm.yml
+.github/workflows/fail-safe-compliance-pipeline.yml
+.github/workflows/framework-agnostic-test-ci.yml
+.github/workflows/github-guru.yml
+.github/workflows/github-pages-deploy.yml
+.github/workflows/go-build-rust-compatibility.yml
+.github/workflows/health-metrics-dashboard.yml
+.github/workflows/infra-linting-validation.yml
+.github/workflows/integration-test-runner.yml
+.github/workflows/langchain-test-ci.yml
+.github/workflows/link-validation.yml
+.github/workflows/lint-and-format.yml
+.github/workflows/lint-validate-codex-agents.yml
+.github/workflows/lint-workflows.yml
+.github/workflows/local-cache-warm.yml
+.github/workflows/mark-stale-issues.yml
+.github/workflows/manual-agent-dispatch.yml
+.github/workflows/manual-test-run.yml
+.github/workflows/mlops-validation-lite.yml
+.github/workflows/modules-health-check.yml
+.github/workflows/mono-repo-coordination.yml
+.github/workflows/mcp-health.yml
+.github/workflows/nested-reusable-test-framework.yml
+.github/workflows/new-feature-workflow-test.yml
+.github/workflows/notify-test-health.yml
+.github/workflows/on-demand-full-validation.yml
+.github/workflows/orchestrator-lite.yml
+.github/workflows/package-build-validation.yml
+.github/workflows/package-validation.yml
+.github/workflows/performance-benchmarks.yml
+.github/workflows/phase-9-3-router.yml
+.github/workflows/post-merge-doc-alignment.yml
+.github/workflows/post-merge-validation-optimized.yml
+.github/workflows/pre-release-validation.yml
+.github/workflows/profile-validation.yml
+.github/workflows/pypi-publish.yml
+.github/workflows/quantum-validation-gate.yml
+.github/workflows/quick-health-check.yml
+.github/workflows/release-management.yml
+.github/workflows/risk-assessment-trigger.yml
+.github/workflows/role-based-access-validation.yml
+.github/workflows/schedule-monitoring.yml
+.github/workflows/secrets-compliance-check.yml
+.github/workflows/security-audit-runner.yml
+.github/workflows/session-recovery-continuous-monitoring.yml
+.github/workflows/session-context-capture.yml
+.github/workflows/setup-validation-cache.yml
+.github/workflows/snapshot-sync.yml
+.github/workflows/stability-regression-check.yml
+.github/workflows/test-pyramid-report.yml
+.github/workflows/telemetry-ingestion-suite.yml
+.github/workflows/tidyup-runner-cache.yml
+.github/workflows/unit-test-runner.yml
+.github/workflows/validate-generated-code.yml
+.github/workflows/workflow-expiry-enforcer.yml
+.github/workflows/workflow-validation-precheck.yml
+
+## Statistics
+
+- Total workflows: 234
+- Modified workflows: 112 (47.9%)
+- Unmodified workflows: 122 (52.1%)
+
+## Issues Fixed Per File (Sample)
+
+Most files had 2-10 issues fixed:
+- Trailing spaces (1-9 per file)
+- Comment spacing (0-66 per file)
+- Missing newlines (0-1 per file)
+
+## Categories of Changes
+
+- Comment spacing fixes: 439 occurrences
+- Trailing whitespace removal: 194 occurrences
+- Missing EOF newline: 2 occurrences
+
+## Verification
+
+✅ All files pass yamllint (no critical errors)
+✅ All files have proper YAML structure
+✅ All action versions verified compliant
+✅ No permissions issues detected
+✅ No indentation issues detected
+✅ No shell injection vulnerabilities introduced

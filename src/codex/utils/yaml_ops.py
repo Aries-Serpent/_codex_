@@ -34,7 +34,7 @@ def load_yaml(
     """Load YAML from file."""
     try:
         path = Path(file_path)
-        with open(path, 'r', encoding=encoding) as f:
+        with open(path, "r", encoding=encoding) as f:
             return yaml.safe_load(f)
     except (FileNotFoundError, yaml.YAMLError, IOError):
         return default
@@ -50,7 +50,7 @@ def dump_yaml(
 
     if file_path:
         path = Path(file_path)
-        with open(path, 'w', encoding=encoding) as f:
+        with open(path, "w", encoding=encoding) as f:
             f.write(yaml_str)
 
     return yaml_str

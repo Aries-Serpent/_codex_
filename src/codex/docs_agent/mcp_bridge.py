@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 
 class MCPToolType(Enum):
     """MCP tool types"""
+
     SEARCH_DOCUMENTS = "search_documents"
     SEARCH_CODE = "search_code"
     SEARCH_ISSUES = "search_issues"
@@ -28,6 +29,7 @@ class MCPToolType(Enum):
 @dataclass
 class MCPTool:
     """Represents an MCP tool"""
+
     name: str
     description: str
     tool_type: MCPToolType
@@ -60,9 +62,13 @@ class MCPBridge:
             parameters={
                 "query": {"type": "string", "description": "Search query"},
                 "limit": {"type": "integer", "description": "Max results", "default": 10},
-                "threshold": {"type": "number", "description": "Similarity threshold", "default": 0.0},
+                "threshold": {
+                    "type": "number",
+                    "description": "Similarity threshold",
+                    "default": 0.0,
+                },
             },
-            handler=self._handle_search_documents
+            handler=self._handle_search_documents,
         )
 
         # Get document tool
@@ -72,7 +78,7 @@ class MCPBridge:
             parameters={
                 "document_id": {"type": "string", "description": "Document ID"},
             },
-            handler=self._handle_get_document
+            handler=self._handle_get_document,
         )
 
         # List documents tool
@@ -82,7 +88,7 @@ class MCPBridge:
             parameters={
                 "limit": {"type": "integer", "description": "Max results", "default": 50},
             },
-            handler=self._handle_list_documents
+            handler=self._handle_list_documents,
         )
 
     def register_tool(
@@ -91,7 +97,7 @@ class MCPBridge:
         description: str,
         parameters: Dict[str, Any],
         handler: Callable,
-        tool_type: MCPToolType = MCPToolType.GET_DOCUMENT
+        tool_type: MCPToolType = MCPToolType.GET_DOCUMENT,
     ):
         """Register an MCP tool
 
@@ -103,11 +109,11 @@ class MCPBridge:
             tool_type: Tool type enum
         """
         self.tools[name] = {
-            'name': name,
-            'description': description,
-            'parameters': parameters,
-            'handler': handler,
-            'tool_type': tool_type,
+            "name": name,
+            "description": description,
+            "parameters": parameters,
+            "handler": handler,
+            "tool_type": tool_type,
         }
         logger.debug(f"Registered MCP tool: {name}")
 
@@ -119,9 +125,9 @@ class MCPBridge:
         """
         return [
             {
-                'name': tool['name'],
-                'description': tool['description'],
-                'parameters': tool['parameters'],
+                "name": tool["name"],
+                "description": tool["description"],
+                "parameters": tool["parameters"],
             }
             for tool in self.tools.values()
         ]
@@ -141,27 +147,27 @@ class MCPBridge:
 
         if name not in self.tools:
             return {
-                'request_id': request_id,
-                'success': False,
-                'error': f'Unknown tool: {name}',
+                "request_id": request_id,
+                "success": False,
+                "error": f"Unknown tool: {name}",
             }
 
         tool = self.tools[name]
-        handler = tool['handler']
+        handler = tool["handler"]
 
         try:
             result = handler(arguments)
             return {
-                'request_id': request_id,
-                'success': True,
-                'data': result,
+                "request_id": request_id,
+                "success": True,
+                "data": result,
             }
         except Exception as e:
             logger.error(f"Tool {name} failed: {e}")
             return {
-                'request_id': request_id,
-                'success': False,
-                'error': str(e),
+                "request_id": request_id,
+                "success": False,
+                "error": str(e),
             }
 
     def _handle_search_documents(self, args: Dict[str, Any]) -> Dict[str, Any]:
@@ -173,29 +179,29 @@ class MCPBridge:
         Returns:
             Search results
         """
-        query = args.get('query', '')
-        limit = args.get('limit', 10)
-        threshold = args.get('threshold', 0.0)
+        query = args.get("query", "")
+        limit = args.get("limit", 10)
+        threshold = args.get("threshold", 0.0)
 
         if not query:
-            return {'error': 'Missing query parameter'}
+            return {"error": "Missing query parameter"}
 
         results = self.indexer.search(query, k=limit, threshold=threshold)
 
         return {
-            'query': query,
-            'result_count': len(results),
-            'results': [
+            "query": query,
+            "result_count": len(results),
+            "results": [
                 {
-                    'record_id': r.record_id,
-                    'record_type': r.record_type,
-                    'title': r.title,
-                    'content': r.content,
-                    'score': r.score,
-                    'metadata': r.metadata,
+                    "record_id": r.record_id,
+                    "record_type": r.record_type,
+                    "title": r.title,
+                    "content": r.content,
+                    "score": r.score,
+                    "metadata": r.metadata,
                 }
                 for r in results
-            ]
+            ],
         }
 
     def _handle_get_document(self, args: Dict[str, Any]) -> Dict[str, Any]:
@@ -207,16 +213,16 @@ class MCPBridge:
         Returns:
             Document data
         """
-        doc_id = args.get('document_id')
+        doc_id = args.get("document_id")
 
         if not doc_id:
-            return {'error': 'Missing document_id parameter'}
+            return {"error": "Missing document_id parameter"}
 
         if doc_id not in self.indexer.records:
-            return {'error': f'Document not found: {doc_id}'}
+            return {"error": f"Document not found: {doc_id}"}
 
         record = self.indexer.records[doc_id]
-        return {'document': record}
+        return {"document": record}
 
     def _handle_list_documents(self, args: Dict[str, Any]) -> Dict[str, Any]:
         """Handle list documents request
@@ -227,23 +233,21 @@ class MCPBridge:
         Returns:
             Document list
         """
-        limit = args.get('limit', 50)
+        limit = args.get("limit", 50)
 
-        documents = [
-            r for r in self.indexer.records.values()
-            if r.get('type') == 'document'
-        ]
+        documents = [r for r in self.indexer.records.values() if r.get("type") == "document"]
 
         return {
-            'total': len(documents),
-            'returned': min(len(documents), limit),
-            'documents': documents[:limit]
+            "total": len(documents),
+            "returned": min(len(documents), limit),
+            "documents": documents[:limit],
         }
 
 
 # MCP Protocol message types
 class MCPMessageType(Enum):
     """MCP message types"""
+
     REQUEST = "request"
     RESPONSE = "response"
     NOTIFICATION = "notification"
@@ -272,21 +276,21 @@ def create_mcp_message(
         MCP message dictionary
     """
     message: Dict[str, Any] = {
-        'jsonrpc': '2.0',
-        'method': method,
+        "jsonrpc": "2.0",
+        "method": method,
     }
 
     if request_id is not None:
-        message['id'] = request_id
+        message["id"] = request_id
 
     if params:
-        message['params'] = params
+        message["params"] = params
 
     if result is not None:
-        message['result'] = result
+        message["result"] = result
 
     if error:
-        message['error'] = {'message': error}
+        message["error"] = {"message": error}
 
     return message
 

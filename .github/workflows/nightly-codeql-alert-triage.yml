@@ -42,7 +42,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5 # v6.0.3
+        uses: actions/checkout@v5  # v6.0.3
 
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
@@ -85,7 +85,7 @@ jobs:
 
       - name: Upload triage artifacts
         if: always()
-        uses: actions/upload-artifact@v5 # v7.0.1
+        uses: actions/upload-artifact@v5  # v7.0.1
         with:
           name: alert-triage-${{ github.run_id }}
           path: |

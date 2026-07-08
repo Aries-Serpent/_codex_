@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 """Emit a compact PR-body snippet summarizing local gates and selection."""
+
 from __future__ import annotations
 
 import argparse

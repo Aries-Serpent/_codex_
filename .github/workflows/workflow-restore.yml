@@ -77,7 +77,7 @@ jobs:
       id: locate
       run: "WORKFLOW=\"${{ github.event.inputs.workflow_file }}\"\nSOURCE=\"${{ github.event.inputs.restore_source\
         \ }}\"\nDATE=\"${{ github.event.inputs.backup_date }}\"\n\nSOURCE_FILE=\"\"\
-        \n\ncase \"$SOURCE\" in\n  \"backup-latest\")\n    # Find most recent backup\n\
+        \n\ncase \"$SOURCE\" in\n  \"backup-latest\")\n  # Find most recent backup\n\
         \    LATEST_DIR=$(ls -t .github/workflow-archive/backups/ | head -1)\n   \
         \ SOURCE_FILE=\".github/workflow-archive/backups/$LATEST_DIR/$WORKFLOW\"\n\
         \    ;;\n  \"backup-date\")\n    SOURCE_FILE=\".github/workflow-archive/backups/$DATE/$WORKFLOW\"\

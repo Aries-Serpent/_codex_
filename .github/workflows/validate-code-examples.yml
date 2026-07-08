@@ -54,7 +54,7 @@ jobs:
         \    'sys': ['sys.'],\n    'json': ['json.'],\n    'requests': ['requests.',\
         \ 'get(', 'post('],\n    'pathlib': ['Path('],\n    'typing': ['Dict', 'List',\
         \ 'Optional'],\n}\n\nissues = []\nfor file_path, idx, code in blocks:\n  \
-        \  lines = code.split('\\n')\n\n    # Skip if first line is import\n    if\
+        \  lines = code.split('\\n')\n\n  # Skip if first line is import\n    if\
         \ any('import' in line for line in lines[:3]):\n        continue\n\n    for\
         \ module, patterns in common_modules.items():\n        has_import = any(f'import\
         \ {module}' in line for line in lines)\n        if not has_import:\n     \

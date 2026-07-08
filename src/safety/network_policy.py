@@ -30,7 +30,11 @@ class NetworkPolicy:
     allow_localhost: bool = True
 
 
-_DEFAULT_LOCALHOSTS: tuple[str, ...] = ("localhost", "127.0.0.1", "::1") if os.environ.get("CODEX_LOCAL_LOOPBACK", "true").lower() == "true" else ()
+_DEFAULT_LOCALHOSTS: tuple[str, ...] = (
+    ("localhost", "127.0.0.1", "::1")
+    if os.environ.get("CODEX_LOCAL_LOOPBACK", "true").lower() == "true"
+    else ()
+)
 _DEFAULT_POLICY_PATH = Path(".codex/network-policy.yaml")
 
 
@@ -45,9 +49,7 @@ def _default_policy() -> NetworkPolicy:
 def _resolve_policy_path(policy_path: str | Path | None) -> Path:
     if policy_path is not None:
         return Path(policy_path)
-    env_path = os.getenv("CODEX_NETWORK_POLICY_PATH") or os.getenv(
-        "CODEX_NETWORK_ALLOWLIST_PATH"
-    )
+    env_path = os.getenv("CODEX_NETWORK_POLICY_PATH") or os.getenv("CODEX_NETWORK_ALLOWLIST_PATH")
     if env_path:
         return Path(env_path)
     return _DEFAULT_POLICY_PATH

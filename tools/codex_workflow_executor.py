@@ -46,11 +46,9 @@ def log_change(line: str):
 
 
 def ask_gpt5(phase: str, err: str, ctx: str):
-    q = textwrap.dedent(
-        f"""
+    q = textwrap.dedent(f"""
         Question for ChatGPT-5: While performing [{phase}], encountered the following error: {err.strip()} Context: {ctx} What are the possible causes, and how can this be resolved while preserving intended functionality?
-        """
-    ).strip()
+        """).strip()
     ERRORS.parent.mkdir(parents=True, exist_ok=True)
     with open(ERRORS, "a", encoding="utf-8") as f:
         f.write(q + "\n\n")
@@ -104,8 +102,7 @@ def ensure_make_target_shells():
 
 # --- codex_local_gates.sh: venv-first, deterministic
 def ensure_local_gates_present():
-    desired = textwrap.dedent(
-        """
+    desired = textwrap.dedent("""
         #!/usr/bin/env bash
         set -euo pipefail
         echo "[Codex] Running local offline gates..."
@@ -117,8 +114,7 @@ def ensure_local_gates_present():
           pytest --cov=src/codex_ml --cov-fail-under=3.5
         fi
         echo "[Codex] Gates complete (offline)."
-        """
-    ).strip()
+        """).strip()
     if (not LOCAL_GATES.exists()) or (LOCAL_GATES.read_text(encoding="utf-8") != desired + "\n"):
         LOCAL_GATES.write_text(desired + "\n", encoding="utf-8")
         make_user_executable(LOCAL_GATES)

@@ -9,6 +9,7 @@ Outputs codex_yaml_gap_report.md describing:
 - gaps without a mapped YAML step
 - YAML steps that are not referenced by any gap (hygiene)
 """
+
 from __future__ import annotations
 
 import argparse

@@ -33,8 +33,7 @@ class LanguageClassifier:
                 from utils.safe_pickle import safe_pickle_load
 
                 data = safe_pickle_load(
-                    model_path,
-                    use_restricted_unpickler=True  # Enable class whitelisting
+                    model_path, use_restricted_unpickler=True  # Enable class whitelisting
                 )
                 self.model = data.get("model")
                 self.vectorizer = data.get("vectorizer")

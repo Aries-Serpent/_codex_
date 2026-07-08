@@ -86,8 +86,7 @@ class L3KnowledgeCache:
         """Initialize database schema."""
         try:
             conn = self._get_conn()
-            conn.execute(
-                """
+            conn.execute("""
                 CREATE TABLE IF NOT EXISTS cache_entries (
                     key TEXT PRIMARY KEY,
                     value BLOB NOT NULL,
@@ -97,18 +96,13 @@ class L3KnowledgeCache:
                     access_count INTEGER DEFAULT 0,
                     last_accessed INTEGER NOT NULL
                 )
-                """
-            )
-            conn.execute(
-                """
+                """)
+            conn.execute("""
                 CREATE INDEX IF NOT EXISTS idx_ttl_at ON cache_entries(ttl_at)
-                """
-            )
-            conn.execute(
-                """
+                """)
+            conn.execute("""
                 CREATE INDEX IF NOT EXISTS idx_last_accessed ON cache_entries(last_accessed)
-                """
-            )
+                """)
             conn.commit()
             logger.info(f"L3 Knowledge Cache: Initialized at {self.db_path}")
         except Exception as e:
@@ -274,9 +268,7 @@ class L3KnowledgeCache:
             conn = self._get_conn()
 
             # Check current size
-            cursor = conn.execute(
-                "SELECT SUM(size_bytes) FROM cache_entries"
-            )
+            cursor = conn.execute("SELECT SUM(size_bytes) FROM cache_entries")
             current_size = cursor.fetchone()[0] or 0
 
             if current_size + new_size > self.max_size:
@@ -294,22 +286,20 @@ class L3KnowledgeCache:
                 current_size = cursor.fetchone()[0]
                 if current_size > target_size:
                     # Get LRU entries to delete, ordered by access time
-                    cursor = conn.execute(
-                        """
+                    cursor = conn.execute("""
                         SELECT key, size_bytes FROM cache_entries
                         ORDER BY last_accessed ASC
-                        """
-                    )
+                        """)
                     size_to_free = current_size - target_size
                     freed_size = 0
                     keys_to_delete = []
-                    
+
                     for key, size_bytes in cursor.fetchall():
                         if freed_size >= size_to_free:
                             break
                         keys_to_delete.append(key)
                         freed_size += size_bytes
-                    
+
                     # Delete the selected keys
                     for key in keys_to_delete:
                         conn.execute("DELETE FROM cache_entries WHERE key = ?", (key,))
@@ -330,12 +320,10 @@ class L3KnowledgeCache:
             conn = self._get_conn()
 
             # Get entry count and total size
-            cursor = conn.execute(
-                """
+            cursor = conn.execute("""
                 SELECT COUNT(*), SUM(size_bytes), SUM(access_count)
                 FROM cache_entries
-                """
-            )
+                """)
             count, total_size, total_accesses = cursor.fetchone()
             count = count or 0
             total_size = total_size or 0

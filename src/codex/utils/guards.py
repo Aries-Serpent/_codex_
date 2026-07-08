@@ -111,7 +111,5 @@ def require_in(
         'admin'
     """
     if value not in valid_values:
-        raise GuardError(
-            f"'{name}' must be one of {valid_values}, got {value!r}"
-        )
+        raise GuardError(f"'{name}' must be one of {valid_values}, got {value!r}")
     return value

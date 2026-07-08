@@ -15,6 +15,7 @@ from typing import Any, Callable, Dict, List, Optional
 @dataclass
 class RoutingResult:
     """Result of semantic routing query."""
+
     matched_docs: List[str]
     matched_sections: List[str]
     relevance_scores: Dict[str, float]
@@ -126,7 +127,7 @@ class DecisionEvaluator:
 
     def register_decision(self, decision: Dict) -> None:
         """Register a decision rule."""
-        self.decisions[decision['id']] = decision
+        self.decisions[decision["id"]] = decision
 
     def evaluate(
         self,
@@ -146,14 +147,14 @@ class DecisionEvaluator:
         if not decision:
             return None
 
-        logic = decision.get('evaluation_logic', 'weighted_deterministic')
+        logic = decision.get("evaluation_logic", "weighted_deterministic")
 
-        if logic == 'first_match':
+        if logic == "first_match":
             return self._evaluate_first_match(decision, context)
-        elif logic == 'weighted_deterministic':
+        elif logic == "weighted_deterministic":
             return self._evaluate_weighted(decision, context)
         else:
-            return decision.get('default_action_id')
+            return decision.get("default_action_id")
 
     def _evaluate_first_match(
         self,
@@ -161,11 +162,11 @@ class DecisionEvaluator:
         context: Dict[str, Any],
     ) -> Optional[str]:
         """First branch that matches wins."""
-        for branch in decision.get('branches', []):
-            if self._match_condition(branch['condition'], context):
-                return branch.get('action_id')
+        for branch in decision.get("branches", []):
+            if self._match_condition(branch["condition"], context):
+                return branch.get("action_id")
 
-        return decision.get('default_action_id')
+        return decision.get("default_action_id")
 
     def _evaluate_weighted(
         self,
@@ -176,14 +177,14 @@ class DecisionEvaluator:
         max_weight = 0
         best_action = None
 
-        for branch in decision.get('branches', []):
-            if self._match_condition(branch['condition'], context):
-                weight = branch.get('weight', 0)
+        for branch in decision.get("branches", []):
+            if self._match_condition(branch["condition"], context):
+                weight = branch.get("weight", 0)
                 if weight > max_weight:
                     max_weight = weight
-                    best_action = branch.get('action_id')
+                    best_action = branch.get("action_id")
 
-        return best_action or decision.get('default_action_id')
+        return best_action or decision.get("default_action_id")
 
     @staticmethod
     def _safe_eval_expression(expression: str) -> bool:
@@ -205,7 +206,7 @@ class DecisionEvaluator:
         """
         try:
             # Parse the expression into an AST
-            tree = ast.parse(expression, mode='eval')
+            tree = ast.parse(expression, mode="eval")
 
             # Use a visitor to safely evaluate
             return DecisionEvaluator._visit_expr(tree.body)
@@ -292,7 +293,7 @@ class DecisionEvaluator:
                     eval_condition = eval_condition.replace(key, str(value))
 
             # Replace && and || with Python equivalents
-            eval_condition = eval_condition.replace('&&', 'and').replace('||', 'or')
+            eval_condition = eval_condition.replace("&&", "and").replace("||", "or")
 
             # Use safe evaluation instead of raw eval()
             return DecisionEvaluator._safe_eval_expression(eval_condition)
@@ -316,7 +317,7 @@ class ActionDispatcher:
 
     def register_action(self, action: Dict) -> None:
         """Register an action."""
-        self.actions[action['id']] = action
+        self.actions[action["id"]] = action
 
     def register_handler(self, target: str, handler: Callable) -> None:
         """Register handler for action target."""
@@ -341,18 +342,18 @@ class ActionDispatcher:
             return None
 
         # Check guard conditions
-        for condition in action.get('conditions', []):
-            if condition.get('type') == 'gate':
+        for condition in action.get("conditions", []):
+            if condition.get("type") == "gate":
                 # Would check gate conditions here
                 pass
 
-        target = action.get('target')
+        target = action.get("target")
         if not isinstance(target, str):
             return None
         handler = self.handlers.get(target)
 
         if handler:
-            params = action.get('parameters', {})
+            params = action.get("parameters", {})
             # Substitute context variables
             params = self._substitute_params(params, context or {})
             return handler(**params)
@@ -367,7 +368,7 @@ class ActionDispatcher:
         """Substitute context variables in parameters."""
         result = {}
         for key, value in params.items():
-            if isinstance(value, str) and value.startswith('$'):
+            if isinstance(value, str) and value.startswith("$"):
                 # Variable reference: $context_key
                 var_name = value[1:]
                 result[key] = context.get(var_name, value)

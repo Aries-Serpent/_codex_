@@ -66,8 +66,7 @@ def git_commit(msg: str):
 # -------------------- ΔA1: sitecustomize import order --------------------
 def A1():
     p = ROOT / "sitecustomize.py"
-    scaffold = dedent(
-        """\
+    scaffold = dedent("""\
         from __future__ import annotations
         import sys
         from pathlib import Path
@@ -79,8 +78,7 @@ def A1():
                 sys.path.insert(0, s)
         from codex_ml.utils.experiment_tracking_mlflow import ensure_local_tracking  # noqa: E402
         ensure_local_tracking()
-    """
-    )
+    """)
     if not p.exists():
         write_file(p, scaffold, only_if_missing=True)
     else:
@@ -152,8 +150,7 @@ def A5():
     if not moved and not dst.exists():
         write_file(
             dst,
-            dedent(
-                """\
+            dedent("""\
             import json, subprocess, sys
             def test_cli_ndjson_summary_smoke(tmp_path):
                 p = tmp_path/'metrics.ndjson'
@@ -163,8 +160,7 @@ def A5():
                 data = json.loads(proc.stdout.decode('utf-8'))
                 assert isinstance(data, dict)
                 assert data.get('rows') in (None, 2)
-        """
-            ),
+        """),
         )
     git_commit("A5: tests(cli): move/add ndjson-summary smoke test under tests/tools")
 
@@ -181,8 +177,7 @@ def A6():
     )
     write_file(
         DOC / "cli.md",
-        dedent(
-            """\
+        dedent("""\
         # CLI Guide (package-style)
         Use the package-style CLI:
 
@@ -195,8 +190,7 @@ def A6():
         Notes:
         - Prefer this over ad-hoc scripts.
         - Tools in tools/ should call into the package CLI where possible.
-    """
-        ),
+    """),
         only_if_missing=True,
     )
     git_commit("A6: docs: add CLI guide and align examples")
@@ -218,12 +212,10 @@ def A7():
         else:
             txt = txt.replace(
                 "DEFAULT_LOCAL_URI",
-                dedent(
-                    """\
+                dedent("""\
 def _as_mlflow_file_uri(p: Path) -> str:
     return Path(p).resolve().as_uri()
-DEFAULT_LOCAL_URI"""
-                ),
+DEFAULT_LOCAL_URI"""),
             )
         txt = re.sub(
             r"DEFAULT_LOCAL_URI\s*=.*",
@@ -276,8 +268,7 @@ def A8():
     else:
         write_file(
             mod,
-            dedent(
-                """\
+            dedent("""\
             from __future__ import annotations
             import json, glob
             from pathlib import Path
@@ -305,16 +296,14 @@ def A8():
                             a['max'] = val if a['max'] is None else max(a['max'], val)
                 print(json.dumps({'rows': rows, 'metrics': agg}, ensure_ascii=False))
                 return 0
-        """
-            ),
+        """),
         )
         # ensure CLI is wired
         cli = SRC / "codex_ml" / "cli" / "__init__.py"
         if not cli.exists():
             write_file(
                 cli,
-                dedent(
-                    """\
+                dedent("""\
                 import argparse, sys
                 def _build_parser():
                     ap = argparse.ArgumentParser(prog='codex_ml'); sub = ap.add_subparsers(dest='cmd')
@@ -331,8 +320,7 @@ def A8():
                     ap = _build_parser()
                     args = ap.parse_args(sys.argv[1:] if argv is None else argv)
                     return int(args.func(args) or 0)
-            """
-                ),
+            """),
             )
     # update test expectation
     t = TEST / "tools" / "test_cli_ndjson_summary.py"
@@ -350,8 +338,7 @@ def A9():
     t = TEST / "checkpointing" / "test_schema_v2_jcs_numbers.py"
     write_file(
         t,
-        dedent(
-            """\
+        dedent("""\
         import math, importlib, pytest
         mod = importlib.import_module('codex_ml.checkpointing.schema_v2')
         to_bytes = getattr(mod, 'to_canonical_bytes', None)
@@ -360,8 +347,7 @@ def A9():
         def test_canonicalization_rejects_nonfinite_numbers(bad):
             with pytest.raises(ValueError):
                 to_bytes({'x': bad})
-    """
-        ),
+    """),
         only_if_missing=True,
     )
     git_commit(
@@ -412,8 +398,7 @@ def A10():
 def B1():
     write_file(
         SRC / "codex_ml" / "metrics.py",
-        dedent(
-            """\
+        dedent("""\
         \"\"\"Common evaluation metrics for language modelling and classification.\"\"\"
         from __future__ import annotations
         import math
@@ -425,14 +410,12 @@ def B1():
             return correct/total
         def perplexity(loss: float) -> float:
             return math.exp(loss)
-    """
-        ),
+    """),
         only_if_missing=True,
     )
     write_file(
         SRC / "codex_ml" / "callbacks" / "ndjson_logger.py",
-        dedent(
-            """\
+        dedent("""\
         \"\"\"Callback that writes metrics to an NDJSON file per epoch.\"\"\"
         from __future__ import annotations
         import json
@@ -449,16 +432,14 @@ def B1():
                 with self.path.open("a", encoding="utf-8") as f:
                     f.write(json.dumps(rec) + "\\n")
                 return None
-    """
-        ),
+    """),
         only_if_missing=True,
     )
     # test the logger independently of training
     t = TEST / "callbacks" / "test_ndjson_logger.py"
     write_file(
         t,
-        dedent(
-            """\
+        dedent("""\
         import json
         from codex_ml.callbacks.ndjson_logger import NDJSONLogger
         def test_ndjson_logger_writes_lines(tmp_path):
@@ -471,8 +452,7 @@ def B1():
             j0 = json.loads(data[0]); j1 = json.loads(data[1])
             assert j0["epoch"]==0 and "loss" in j0
             assert j1["epoch"]==1 and "acc" in j1
-    """
-        ),
+    """),
         only_if_missing=True,
     )
     git_commit("B1: add metrics.py and NDJSONLogger callback + unit test")
@@ -524,8 +504,7 @@ def B4():
     dm = SRC / "codex_ml" / "data" / "datamodule.py"
     write_file(
         dm,
-        dedent(
-            """\
+        dedent("""\
         from __future__ import annotations
         import random
         from dataclasses import dataclass
@@ -546,15 +525,13 @@ def B4():
             def iter_train(self, batch_size: int) -> Iterable[Tuple[Any, ...]]:
                 for i in range(0, len(self.train), batch_size):
                     yield tuple(self.train[i:i+batch_size])
-    """
-        ),
+    """),
         only_if_missing=True,
     )
     t = TEST / "data" / "test_datamodule_determinism.py"
     write_file(
         t,
-        dedent(
-            """\
+        dedent("""\
         from codex_ml.data.datamodule import DataModule
         def test_datamodule_determinism():
             dm1 = DataModule(train=list(range(10)), val=list(range(10)), test=list(range(10)), seed=7)
@@ -562,8 +539,7 @@ def B4():
             assert list(dm1.iter_train(3)) == list(dm2.iter_train(3))
             dm3 = DataModule(train=list(range(10)), val=list(range(10)), test=list(range(10)), seed=8)
             assert list(dm1.iter_train(3)) != list(dm3.iter_train(3))
-    """
-        ),
+    """),
         only_if_missing=True,
     )
     git_commit("B4: add DataModule with deterministic shuffle + tests")
@@ -574,8 +550,7 @@ def B5():
     t = SRC / "codex_ml" / "tracking" / "init_offline.py"
     write_file(
         t,
-        dedent(
-            """\
+        dedent("""\
         from __future__ import annotations
         import os
         from pathlib import Path
@@ -593,16 +568,14 @@ def B5():
                 return wandb.init(project=project, **kwargs)
             except Exception:
                 return None
-    """
-        ),
+    """),
         only_if_missing=True,
     )
     # minimal import test (no network)
     t2 = TEST / "tracking" / "test_offline_helpers.py"
     write_file(
         t2,
-        dedent(
-            """\
+        dedent("""\
         import os
         from pathlib import Path
         def test_init_mlflow_offline_import_only(monkeypatch, tmp_path):
@@ -619,8 +592,7 @@ def B5():
             from codex_ml.tracking.init_offline import init_wandb_offline
             init_wandb_offline(project="x")
             assert os.environ.get("WANDB_MODE") == "offline"
-    """
-        ),
+    """),
         only_if_missing=True,
     )
     git_commit("B5: tracking: add offline init helpers for MLflow/W&B + tests (import/env)")
@@ -629,15 +601,13 @@ def B5():
 # -------------------- ΔB6: local nox session for tests with coverage --------------------
 def B6():
     nox = ROOT / "configs" / "development" / "noxfile.py"
-    base = dedent(
-        """\
+    base = dedent("""\
         import nox
         @nox.session
         def tests(session):
             session.install('-e','.[dev]') if (session.env.get('DEV_DEPS')=='1') else session.install('pytest','pytest-cov')
             session.run('pytest','-q','--cov=src/codex_ml','--cov-report=term-missing')
-    """
-    )
+    """)
     if not nox.exists():
         write_file(nox, base)
     else:

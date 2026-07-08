@@ -13,6 +13,7 @@ our contributor docs:
 The module continues to expose the legacy ``validate_file`` helper so existing
 callers (tests, CLIs, and docs) remain compatible.
 """
+
 from __future__ import annotations
 
 import argparse

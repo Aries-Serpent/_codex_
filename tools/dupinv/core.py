@@ -64,7 +64,7 @@ class DuplicateScanner:
             # SHIM inventory not found - continue without it
             self.cross_reference = None
             logger.debug("SHIM inventory not found, continuing without cross-reference")
-        except Exception as e:
+        except Exception:
             # Log error but continue
             logger.warning("Failed to load SHIM inventory: <ERROR_TYPE>")
             self.cross_reference = None
@@ -230,7 +230,6 @@ class DuplicateScanner:
             duplicate_groups=all_groups,
             intentional_duplicates=[],  # Will be populated in Phase 6
         )
-
 
     def write_outputs(
         self, inventory: SupplementalInventory, output_dir: Path, formats: list[str] = None

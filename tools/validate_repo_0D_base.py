@@ -12,6 +12,7 @@ Outputs a JSON object to stdout with:
 - missing_files: [paths]
 - summary: quick pass/fail flags for critical items
 """
+
 from __future__ import annotations
 
 import hashlib

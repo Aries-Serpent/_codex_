@@ -45,6 +45,7 @@ from typing import (
 yaml: ModuleType | None
 try:  # pragma: no cover - optional dependency
     import yaml as _yaml_module
+
     yaml = _yaml_module
 except ModuleNotFoundError:  # pragma: no cover - optional dependency
     yaml = None
@@ -781,7 +782,11 @@ class SafetyFilters:
                 if banned_token_ids:
                     logits[(..., tuple(banned_token_ids))] = neg_inf
                 return logits
-        except (ValueError, TypeError, RuntimeError) as exc:  # nosec B110 - fallback to generic masking, log for diagnostics
+        except (
+            ValueError,
+            TypeError,
+            RuntimeError,
+        ) as exc:  # nosec B110 - fallback to generic masking, log for diagnostics
             logger.debug(
                 "safety.filters: numpy masking failed; falling back: %s",
                 exc,
@@ -795,7 +800,11 @@ class SafetyFilters:
         for tid in banned_token_ids:
             try:
                 logits[tid] = neg_inf
-            except (ValueError, TypeError, RuntimeError) as exc:  # nosec B112 - continue loop; log for observability
+            except (
+                ValueError,
+                TypeError,
+                RuntimeError,
+            ) as exc:  # nosec B112 - continue loop; log for observability
                 logger.debug(
                     "safety.filters: failed to assign neg_inf for token %s (%s)",
                     tid,

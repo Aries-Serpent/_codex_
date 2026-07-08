@@ -54,29 +54,25 @@ def append(path: Path, txt: str) -> None:
 def log_change(title: str, path: Path, rationale: str, content_preview: str) -> None:
     append(
         CHANGE_LOG,
-        textwrap.dedent(
-            f"""
+        textwrap.dedent(f"""
     ## {ts()} — {path.relative_to(REPO)}
     - **Action:** {title}
     - **Rationale:** {rationale}
     ```text
     {content_preview[:4000]}
     ```
-    """
-        ).lstrip(),
+    """).lstrip(),
     )
 
 
 def q5(step: str, err: str, ctx: str) -> None:
-    prompt = textwrap.dedent(
-        f"""\
+    prompt = textwrap.dedent(f"""\
     Question for ChatGPT-5 {ts()}:
     While performing [{step}], encountered the following error:
     {err}
     Context: {ctx}
     What are the possible causes, and how can this be resolved while preserving intended functionality?
-    """
-    )
+    """)
     append(
         ERRORS,
         json.dumps({"ts": ts(), "step": step, "error": err, "context": ctx}) + "\n",

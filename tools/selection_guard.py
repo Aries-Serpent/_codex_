@@ -15,6 +15,7 @@ Behavior:
       1 if --selected provided but does not satisfy all required signals,
       2 if no candidate satisfies all required signals.
 """
+
 from __future__ import annotations
 
 import argparse

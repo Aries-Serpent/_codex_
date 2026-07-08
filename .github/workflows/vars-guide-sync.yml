@@ -157,7 +157,7 @@ jobs:
           \ existing open blocker issue\nconst { data: issues } = await github.rest.issues.listForRepo({\n\
           \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  labels: 'variable-blocker',\n\
           \  state: 'open',\n});\n\nif (issues.length > 0) {\n  console.log(`Existing\
-          \ blocker issue #${issues[0].number} already open`);\n  return;\n}\n\nawait\
+          \ blocker issue  #${issues[0].number} already open`);\n  return;\n}\n\nawait\
           \ github.rest.issues.create({\n  owner: context.repo.owner,\n  repo: context.repo.repo,\n\
           \  title: `\U0001F510 Variable Blockers: ${absent} required variable(s)\
           \ absent`,\n  body: `## Variable Audit Blocker\\n\\nThe auto-sync workflow\

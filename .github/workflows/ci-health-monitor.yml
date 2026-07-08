@@ -67,7 +67,7 @@ jobs:
         \necho \"total_runs=${TOTAL_RUNS}\"     >> \"$GITHUB_OUTPUT\"\n\n# Threshold:\
         \ alert if failure rate exceeds CODEX_CI_FAILURE_THRESHOLD.\n# Wired to repo\
         \ variable (P2.3); falls back to 10% (degraded level) if unset.\n# Cascade\
-        \ suppression (issue #3669): when >50% of failures are classified as\n# 'self-healing'\
+        \ suppression (issue  #3669): when >50% of failures are classified as\n# 'self-healing'\
         \ (a cascade from iterative-self-healing-ci.yml), the raw\n# failure rate\
         \ is inflated by automated remediation runs \u2014 NOT real regressions.\n\
         # In that case we double the effective threshold to avoid false-positive alerts.\n\
@@ -137,7 +137,7 @@ jobs:
           \ cnt]) => `| ${pat} | ${cnt} |`)\n    .join('\\n');\n  patternTable = rows\n\
           \    ? `| Pattern | Count |\\n|---------|-------|\\n${rows}`\n    : '_No\
           \ patterns detected._';\n\n  // Include cascade analysis when detected (issue\
-          \ #3669 fix)\n  const ca = report.cascade_analysis || {};\n  if (ca.cascade_detected)\
+          \  #3669 fix)\n  const ca = report.cascade_analysis || {};\n  if (ca.cascade_detected)\
           \ {\n    cascadeSection = [\n      '',\n      '### \u26A0\uFE0F Self-Healing\
           \ Cascade Detected',\n      '',\n      `Self-healing failures account for\
           \ **${(ca.cascade_rate * 100).toFixed(1)}%** ` +\n      `of all failures\
@@ -152,7 +152,7 @@ jobs:
           \ 24 * 60 * 60 * 1000).toISOString();\nconst { data: issues } = await github.rest.issues.listForRepo({\n\
           \  owner: context.repo.owner,\n  repo:  context.repo.repo,\n  state: 'open',\n\
           \  labels: 'ci-health-alert',\n  since,\n});\nif (issues.length > 0) {\n\
-          \  core.info(`Skipping issue creation \u2014 open alert issue #${issues[0].number}\
+          \  core.info(`Skipping issue creation \u2014 open alert issue  #${issues[0].number}\
           \ already exists.`);\n  return;\n}\n\nconst body = [\n  '## \U0001F6A8 CI\
           \ Health Alert',\n  '',\n  'Telemetry analysis for the past 7 days has detected\
           \ concerning patterns.',\n  '',\n  '### Summary',\n  '',\n  `- **Total Runs:**\
@@ -165,7 +165,7 @@ jobs:
           \ { data: issue } = await github.rest.issues.create({\n  owner:  context.repo.owner,\n\
           \  repo:   context.repo.repo,\n  title:  `CI Health Alert: High Failure\
           \ Rate Detected`,\n  body,\n  labels: ['ci-health-alert'],\n});\ncore.info(`Created\
-          \ alert issue #${issue.number}: ${issue.html_url}`);\n"
+          \ alert issue  #${issue.number}: ${issue.html_url}`);\n"
     - name: Update CODEX_CI_FAILURE_RATE repo variable
       if: always()
       continue-on-error: true

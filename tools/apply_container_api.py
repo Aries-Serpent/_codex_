@@ -56,15 +56,13 @@ def log_change(action: str, path: Path, why: str, preview: str = "") -> None:
 
 
 def q5(step: str, err: str, ctx: str) -> None:
-    msg = textwrap.dedent(
-        f"""
+    msg = textwrap.dedent(f"""
         Question for ChatGPT-5 {ts()}:
         While performing [{step}], encountered the following error:
         {err}
         Context: {ctx}
         What are the possible causes, and how can this be resolved while preserving intended functionality?
-        """
-    )
+        """)
     with ERRORS.open("a", encoding="utf-8") as fh:
         fh.write(json.dumps({"ts": ts(), "step": step, "error": err, "context": ctx}) + "\n")
     print(msg, file=sys.stderr)
@@ -80,9 +78,7 @@ def upsert(path: Path, content: str, sentinel: str) -> None:
 
 # ---------------- Dockerfile ----------------
 DF_SENT = "# BEGIN: CODEX_DOCKERFILE"
-DOCKERFILE = (
-    DF_SENT
-    + """
+DOCKERFILE = DF_SENT + """
 # syntax=docker/dockerfile:1
 FROM ubuntu:22.04 AS base
 ENV DEBIAN_FRONTEND=noninteractive PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
@@ -105,13 +101,10 @@ COPY --chown=appuser:appuser services/api /app/services/api
 EXPOSE 8000
 CMD python3 -c "import os; os.umask(0o077); import uvicorn; uvicorn.run('services.api.main:app', host='0.0.0.0', port=8000)"
 """
-)
 
 # ---------------- docker-compose.yml ----------------
 DC_SENT = "# BEGIN: CODEX_COMPOSE"
-COMPOSE = (
-    DC_SENT
-    + """
+COMPOSE = DC_SENT + """
 version: '3.8'
 services:
   api:
@@ -134,26 +127,20 @@ volumes:
   artifacts:
     name: codex_artifacts
 """
-)
 
 # ---------------- FastAPI service ----------------
 API_REQS_SENT = "# BEGIN: CODEX_API_REQS"
-API_REQS = (
-    API_REQS_SENT
-    + """
+API_REQS = API_REQS_SENT + """
 fastapi==0.111.0
 uvicorn==0.30.1
 pydantic==2.8.2
 """
-)
 
 API_INIT_SENT = "# BEGIN: CODEX_API_INIT"
 API_INIT = API_INIT_SENT + "\n# package marker\n"
 
 API_SENT = "# BEGIN: CODEX_API_MAIN"
-API_MAIN = (
-    API_SENT
-    + """
+API_MAIN = API_SENT + """
 from __future__ import annotations
 
 import asyncio
@@ -248,13 +235,10 @@ async def evaluate(req: EvalRequest) -> Dict[str, Any]:
 async def status() -> Dict[str, Any]:
     return {"ok": True, "queue": QUEUE.qsize(), "jobs": JOBS}
 """
-)
 
 # ---------------- Deploy scripts ----------------
 SH_SENT = "# BEGIN: CODEX_DEPLOY_SCRIPT"
-BUILD_SH = (
-    SH_SENT
-    + """
+BUILD_SH = SH_SENT + """
 #!/usr/bin/env bash
 set -euo pipefail
 umask 077
@@ -262,11 +246,8 @@ umask 077
 docker build -t "$IMAGE" -f Dockerfile .
 echo "Built $IMAGE"
 """
-)
 
-RUN_SH = (
-    SH_SENT
-    + """
+RUN_SH = SH_SENT + """
 #!/usr/bin/env bash
 set -euo pipefail
 umask 077
@@ -288,11 +269,8 @@ for i in $(seq 1 30); do
 done
 echo "API failed to become healthy in time"; exit 1
 """
-)
 
-PUSH_SH = (
-    SH_SENT
-    + """
+PUSH_SH = SH_SENT + """
 #!/usr/bin/env bash
 set -euo pipefail
 umask 077
@@ -304,13 +282,10 @@ docker tag "$IMAGE" "$REGISTRY"
 docker push "$REGISTRY"
 echo "Pushed $REGISTRY"
 """
-)
 
 # ---------------- Docs ----------------
 DOC_SENT = "<!-- BEGIN: CODEX_DEPLOY_DOC -->"
-DOC = (
-    DOC_SENT
-    + """
+DOC = DOC_SENT + """
 # Deployment (Docker + Compose)
 
 ## Build
@@ -340,7 +315,6 @@ Artifacts are written under the named volume `codex_artifacts` and visible insid
 
 Policy: DO NOT ACTIVATE ANY GitHub Actions Online files. All validations must run within the Codex environment.
 """
-)
 
 
 def apply() -> None:

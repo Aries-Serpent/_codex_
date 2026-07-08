@@ -3,6 +3,7 @@
 Minimal offline-first HTTP server to back CustomGPT Actions for _codex_.
 Uses GitHub REST (token optional) and local cache. No CI, no secrets committed.
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -38,10 +39,10 @@ _log = logging.getLogger(__name__)
 # ── SSRF prevention ────────────────────────────────────────────────────────────
 # Validate owner/repo/path parameters to prevent partial SSRF via URL path injection.
 # Allowed characters: alphanumeric, hyphen, underscore, dot (GitHub conventions).
-_SAFE_REPO_COMPONENT_RE = re.compile(r'^[A-Za-z0-9_][A-Za-z0-9._\-]{0,99}$')
+_SAFE_REPO_COMPONENT_RE = re.compile(r"^[A-Za-z0-9_][A-Za-z0-9._\-]{0,99}$")
 # Branch names: allow alphanumeric, hyphen, underscore, dot, slash (for nested branches)
 # but no leading slash, double dots, or path-traversal sequences.
-_SAFE_BRANCH_RE = re.compile(r'^[A-Za-z0-9_][A-Za-z0-9._/\-]{0,199}$')
+_SAFE_BRANCH_RE = re.compile(r"^[A-Za-z0-9_][A-Za-z0-9._/\-]{0,199}$")
 
 
 def _validate_repo_component(value: str, name: str) -> None:
@@ -66,6 +67,7 @@ def _validate_file_path(path: str) -> None:
     """
     # Decode percent-encoded characters before checking
     from urllib.parse import unquote as _unquote
+
     decoded = _unquote(path)
     parts = decoded.replace("\\", "/").split("/")
     if ".." in parts or decoded.startswith("/"):
@@ -104,7 +106,8 @@ def _auth_headers() -> dict[str, str]:
 def _cache_path(key: str) -> str:
     return os.path.join(
         CACHE_DIR,
-        hashlib.sha1(key.encode(), usedforsecurity=False).hexdigest() + ".json",  # nosec B324 - Not for security, cache key only
+        hashlib.sha1(key.encode(), usedforsecurity=False).hexdigest()
+        + ".json",  # nosec B324 - Not for security, cache key only
     )
 
 
@@ -116,7 +119,8 @@ def _cache_get(key: str) -> Any | None:
         if not isinstance(obj, dict):
             _log.warning(
                 "Malformed cache entry at %s (expected dict, got %s); treating as cache miss",
-                p, type(obj).__name__,
+                p,
+                type(obj).__name__,
             )
             return None
         # Backwards compatibility: older cache files may not have a per-entry TTL
@@ -126,7 +130,8 @@ def _cache_get(key: str) -> Any | None:
         except (TypeError, ValueError):
             _log.warning(
                 "Malformed cache entry at %s (non-numeric 'ttl': %r); treating as cache miss",
-                p, raw_ttl,
+                p,
+                raw_ttl,
             )
             return None
         ts = obj.get("ts")
@@ -167,10 +172,7 @@ def _assert_safe_github_url(url: str) -> str:
         )
     parsed = urlparse(url)
     host = (parsed.hostname or "").lower()
-    if (
-        parsed.scheme != "https"
-        or host not in {"api.github.com", "raw.githubusercontent.com"}
-    ):
+    if parsed.scheme != "https" or host not in {"api.github.com", "raw.githubusercontent.com"}:
         raise ValueError(
             f"Refusing URL {url!r}: must target api.github.com or "
             "raw.githubusercontent.com (GitHub API allowlist)"
@@ -255,9 +257,7 @@ def gh_post(url: str, payload: dict[str, Any]) -> Any:
     """
     safe_url = _assert_safe_github_url(url)
     if urlparse(safe_url).hostname != "api.github.com":
-        raise ValueError(
-            f"gh_post() is restricted to api.github.com; refusing {safe_url!r}"
-        )
+        raise ValueError(f"gh_post() is restricted to api.github.com; refusing {safe_url!r}")
     data = json.dumps(payload, ensure_ascii=False).encode("utf-8")
     req = _urllib_request.Request(
         safe_url,
@@ -275,7 +275,7 @@ def create_branch(owner: str, repo: str, branch: str, sha: str) -> dict[str, Any
     _validate_repo_component(repo, "repo")
     # Validate branch name before embedding it in the URL path.
     if branch.startswith("refs/"):
-        branch_part = branch[len("refs/heads/"):] if branch.startswith("refs/heads/") else branch
+        branch_part = branch[len("refs/heads/") :] if branch.startswith("refs/heads/") else branch
     else:
         branch_part = branch
     if not _SAFE_BRANCH_RE.match(branch_part) or ".." in branch_part:
@@ -418,7 +418,11 @@ class App(BaseHTTPRequestHandler):
                     return self._ok({"error": "title and head are required"}, 400)
                 return self._ok(
                     open_pull_request(
-                        owner, repo, title, head, base,
+                        owner,
+                        repo,
+                        title,
+                        head,
+                        base,
                         body=body.get("body", ""),
                         draft=bool(body.get("draft", False)),
                     ),

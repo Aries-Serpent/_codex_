@@ -197,7 +197,6 @@ class RetrievalResponse:
     search_time_ms: float = 0.0
 
 
-
 class RetrievalPipeline:
     """
     Pipeline for retrieving relevant documents.

@@ -206,6 +206,5 @@ def type_dispatch(
     # No handler found
     type_names = ", ".join(get_type_name(t) for t in handlers.keys())
     raise TypeCheckError(
-        f"No handler found for type {get_type_name(type(value))}. "
-        f"Supported types: {type_names}"
+        f"No handler found for type {get_type_name(type(value))}. " f"Supported types: {type_names}"
     )

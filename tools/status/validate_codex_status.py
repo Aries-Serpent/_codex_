@@ -3,6 +3,7 @@
 Minimal, stdlib-only validator for `_codex_` status JSON against v1.1 schema shape.
 Use --schema {v1.1,v1.2,dual}. In dual mode, validate v1.1 first, then v1.2 if provided.
 """
+
 import argparse
 import json
 import pathlib

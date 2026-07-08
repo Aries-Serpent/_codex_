@@ -7,6 +7,7 @@ and writes SELECTION_REPORT.md.
 
 No CI, no network, local-only.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -45,6 +46,7 @@ def _ensure_parent(path: Path) -> None:
 
 def _timestamp() -> str:
     from codex.utils.path_utils import windows_safe_timestamp
+
     return windows_safe_timestamp(fmt="compact")
 
 

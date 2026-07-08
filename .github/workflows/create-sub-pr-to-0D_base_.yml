@@ -62,7 +62,7 @@ jobs:
         \ --head \"${{ inputs.session_branch }}\" \\\n  --base \"0D_base_\" \\\n \
         \ --state open \\\n  --json number \\\n  --jq '.[0].number' 2>/dev/null ||\
         \ echo \"\")\necho \"existing_pr=${EXISTING}\" >> \"$GITHUB_OUTPUT\"\nif [\
-        \ -n \"${EXISTING}\" ]; then\n  echo \"\u2139\uFE0F  PR #${EXISTING} already\
+        \ -n \"${EXISTING}\" ]; then\n  echo \"\u2139\uFE0F  PR  #${EXISTING} already\
         \ exists for ${{ inputs.session_branch }} \u2192 0D_base_\"\nfi\n"
     - name: Get latest commit info
       id: commit_info

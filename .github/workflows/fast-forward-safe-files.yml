@@ -50,7 +50,7 @@ permissions:
   actions: read
 jobs:
   preflight:
-    name: '🔍 Preflight — classify PR #${{ inputs.pr_number }} files'
+    name: '🔍 Preflight — classify PR  #${{ inputs.pr_number }} files'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
@@ -99,7 +99,7 @@ jobs:
       run: "python3 - <<'PYEOF'\nimport json, os\ndata = json.load(open('/tmp/ff_plan.json'))\n\
         promote  = data.get('would_promote', [])\nexclude  = data.get('would_exclude',\
         \ [])\ndeny     = data.get('would_deny', [])\nlines = [\n    \"## ⚡ Fast-Forward\
-        \ Preflight\\n\",\n    f\"**PR:** #{data.get('pr_number', '?')}  \"\n    f\"\
+        \ Preflight\\n\",\n    f\"**PR:**  #{data.get('pr_number', '?')}  \"\n    f\"\
         **Source:** `{data.get('pr_branch','?')}@{data.get('source_sha','?')[:8]}`\
         \  \"\n    f\"**Target:** `{data.get('target_branch','?')}`\\n\",\n    \"\
         ---\",\n    f\"### ✅ Would promote ({len(promote)} files)\",\n]\nlines +=\

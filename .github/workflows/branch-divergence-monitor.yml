@@ -82,7 +82,7 @@ jobs:
         \u2500\u2500\n# Four categories (S146 taxonomy \u2014 two sessions of refinement):\n\
         #\n#   AUTO-GEN        \u2014 authored by github-actions[bot] + known subject\n\
         #                     patterns. Self-correctable via forward-sync.\n#\n# \
-        \  PIPELINE-MERGE  \u2014 \"Merge pull request #N from Aries-Serpent/0D_base_\"\
+        \  PIPELINE-MERGE  \u2014 \"Merge pull request  #N from Aries-Serpent/0D_base_\"\
         \n#                     The EXPECTED result of the staging-gate PR flow.\n\
         #                     Triggers auto-correct fast-forward of 0D_base_.\n#\n\
         #   AGENT-COMMIT    \u2014 authored by copilot-swe-agent[bot] or\n#      \
@@ -108,7 +108,7 @@ jobs:
         \  IS_AGENT_COMMIT=false\n\n  # Tier 1 \u2014 Pipeline-merge: staging-gate\
         \ merge commit (0D_base_ \u2192 main)\n  # Anchored to Aries-Serpent org to\
         \ prevent fork false positives.\n  if echo \"$SUBJECT\" | grep -qE '^Merge\
-        \ pull request #[0-9]+ from Aries-Serpent/0D_base_$'; then\n    IS_PIPELINE_MERGE=true\n\
+        \ pull request  #[0-9]+ from Aries-Serpent/0D_base_$'; then\n    IS_PIPELINE_MERGE=true\n\
         \  fi\n\n  # Tier 2 \u2014 Auto-gen: github-actions[bot] + known auto-gen\
         \ subject patterns\n  if [ \"$IS_PIPELINE_MERGE\" = \"false\" ]; then\n  \
         \  if [ \"$AUTHOR\" = \"github-actions[bot]\" ]; then\n      case \"$SUBJECT\"\
@@ -120,8 +120,8 @@ jobs:
         \ \u2014\n  # they are placeholder/plan commits that carry no code risk.\n\
         \  if [ \"$IS_PIPELINE_MERGE\" = \"false\" ] && [ \"$IS_AUTOGEN\" = \"false\"\
         \ ]; then\n    for BOT in $AGENT_BOT_AUTHORS; do\n      [ \"$AUTHOR\" = \"\
-        $BOT\" ] && IS_AGENT_COMMIT=true && break\n    done\n    # Empty commits (0\
-        \ file-tree changes) are always agent-commit regardless\n    # of author \u2014\
+        $BOT\" ] && IS_AGENT_COMMIT=true && break\n    done\n  # Empty commits (0\
+        \ file-tree changes) are always agent-commit regardless\n  # of author \u2014\
         \ they are placeholder/plan commits with no code risk.\n    [ \"$TREE_CHANGES\"\
         \ -eq 0 ] && IS_AGENT_COMMIT=true\n  fi\n\n  if [ \"$IS_PIPELINE_MERGE\" =\
         \ \"true\" ]; then\n    PIPELINE_MERGE_COUNT=$((PIPELINE_MERGE_COUNT + 1))\n\
@@ -146,7 +146,7 @@ jobs:
         \ AUTO-GEN 1\u20135 \u2192 low; none \u2192 healthy\nABSORBER_COUNT=$((PIPELINE_MERGE_COUNT\
         \ + AGENT_COMMIT_COUNT))\nif   [ \"$CODELEAK_COUNT\" -gt 0 ] && [ \"$ABSORBER_COUNT\"\
         \ -eq 0 ]; then\n  SEVERITY=\"critical\"\nelif [ \"$CODELEAK_COUNT\" -gt 0\
-        \ ] && [ \"$ABSORBER_COUNT\" -gt 0 ]; then\n  SEVERITY=\"low\"   # pipeline-merge/agent-commit\
+        \ ] && [ \"$ABSORBER_COUNT\" -gt 0 ]; then\n  SEVERITY=\"low\"  # pipeline-merge/agent-commit\
         \ auto-correct absorbs code-leaks\nelif [ \"$ABSORBER_COUNT\" -gt 0 ]; then\
         \ SEVERITY=\"low\"\nelif [ \"$AUTOGEN_COUNT\"  -gt 5 ]; then SEVERITY=\"high\"\
         \nelif [ \"$AUTOGEN_COUNT\"  -gt 0 ]; then SEVERITY=\"low\"\nelse        \
@@ -228,8 +228,8 @@ jobs:
         \n  \"docs/admin/variable_audit_latest.md\"\n)\n\nCHANGED=0\nCHANGED_NAMES=\"\
         \"\nfor f in \"${FILES[@]}\"; do\n  if git show origin/main:\"$f\" > /tmp/fwd_file\
         \ 2>/dev/null; then\n    if ! cmp -s /tmp/fwd_file \"$f\" 2>/dev/null; then\n\
-        \n      # Special rule: codex_index_meta.json must stay SLIM (no chunks)\n\
-        \      # per scripts/ci/build_embeddings.py \u2014 git-tracked header only.\n\
+        \n  # Special rule: codex_index_meta.json must stay SLIM (no chunks)\n\
+        \  # per scripts/ci/build_embeddings.py \u2014 git-tracked header only.\n\
         \      if [[ \"$f\" == *\"codex_index_meta.json\" ]]; then\n        python3\
         \ - <<PYEOF\nimport json, sys\ntry:\n    d = json.loads(open('/tmp/fwd_file').read())\n\
         \    slim = {k: v for k, v in d.items() if k != 'chunks'}\n    open('/tmp/fwd_file',\
@@ -412,7 +412,7 @@ jobs:
           \ \\`branch-divergence-monitor.yml\\` \u2014 auto-correct absorbs via fast-forward\
           \ |\n| Code leaks on \\`main\\` (no absorbers) | Open a @copilot session\
           \ on the \\`0D_base_\\` \u2192 \\`main\\` PR |\n| Behind > 10 for >24 h\
-          \ | Accelerate staging-gate merge (PR #3630 or equivalent) |\n\n${copilotSection}\n\
+          \ | Accelerate staging-gate merge (PR  #3630 or equivalent) |\n\n${copilotSection}\n\
           ${absorbers > 0 && codeleak > 0 ? `\n## \u2139\uFE0F Pipeline-merge / Agent-commits\
           \ + Code commits \u2014 auto-correct will absorb\n\nA staging-gate merge\
           \ commit or Copilot agent commit was detected alongside\n${codeleak} code\
@@ -430,11 +430,11 @@ jobs:
           \ ${behind}\u2193 main \u2014 ${severity.toUpperCase()}`;\n\nif (existing)\
           \ {\n  await github.rest.issues.update({\n    owner: context.repo.owner,\n\
           \    repo: context.repo.repo,\n    issue_number: existing.number,\n    title,\n\
-          \    body,\n  });\n  console.log(`Updated divergence issue #${existing.number}`);\n\
+          \    body,\n  });\n  console.log(`Updated divergence issue  #${existing.number}`);\n\
           } else {\n  const created = await github.rest.issues.create({\n    owner:\
           \ context.repo.owner,\n    repo: context.repo.repo,\n    title,\n    body,\n\
           \    labels: ['branch-divergence', 'automated', 'ci-triage'],\n  });\n \
-          \ console.log(`Created divergence issue #${created.data.number}`);\n}\n"
+          \ console.log(`Created divergence issue  #${created.data.number}`);\n}\n"
   rescue-comment-push:
     name: "\U0001F6A8 Post rescue comment on failure"
     needs:

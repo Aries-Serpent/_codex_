@@ -15,7 +15,7 @@ from enum import Enum
 from threading import Lock
 from typing import Any, Dict, List, Optional, Tuple
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
 try:
     from scripts.governance.rbac_engine import Action, ResourceType, get_default_engine
 except ImportError:
@@ -24,8 +24,10 @@ except ImportError:
 
 # ==================== ENUMS ====================
 
+
 class ApprovalState(str, Enum):
     """7 distinct approval states per E.4d."""
+
     PENDING = "pending"
     ESCALATED = "escalated"
     ESCALATED_AUTO_APPROVED = "escalated_auto_approved"
@@ -37,6 +39,7 @@ class ApprovalState(str, Enum):
 
 class AuditCode(str, Enum):
     """Audit event codes for compliance and filtering."""
+
     MANUAL_APPROVAL = "MANUAL_APPROVAL"
     SLA_ESCALATION_L1_L2 = "SLA_ESCALATION_L1_L2"
     SLA_ESCALATION_L2_L3 = "SLA_ESCALATION_L2_L3"
@@ -55,9 +58,11 @@ class AuditCode(str, Enum):
 
 # ==================== DATA CLASSES ====================
 
+
 @dataclass
 class ApprovalDecision:
     """A single approver decision."""
+
     approver_id: str
     approver_name: str
     decision: str
@@ -69,6 +74,7 @@ class ApprovalDecision:
 @dataclass
 class SLAPolicy:
     """SLA configuration for a policy."""
+
     policy_code: str
     l1_sla_hours: float = 4.0
     l2_sla_hours: float = 4.0
@@ -82,6 +88,7 @@ class SLAPolicy:
 @dataclass
 class ApprovalRequest:
     """Core approval request."""
+
     request_id: str = field(default_factory=lambda: str(uuid.uuid4()))
     policy_code: str = ""
     requester_id: str = ""
@@ -130,6 +137,7 @@ class ApprovalRequest:
 
 # ==================== APPROVAL SERVICE ====================
 
+
 class ApprovalService:
     """
     Production-ready approval service with 7-state machine, SLA escalation with
@@ -148,9 +156,9 @@ class ApprovalService:
         logger = logging.getLogger("ApprovalService")
         if not logger.handlers:
             handler = logging.StreamHandler()
-            handler.setFormatter(logging.Formatter(
-                '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-            ))
+            handler.setFormatter(
+                logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+            )
             logger.addHandler(handler)
             logger.setLevel(logging.INFO)
         return logger
@@ -232,7 +240,9 @@ class ApprovalService:
                     )
 
         elapsed_ms = (time.time() - start_time) * 1000
-        self.logger.info(f"[PHASE 2] Escalation check: {len(escalated_requests)} escalated ({elapsed_ms:.2f}ms)")
+        self.logger.info(
+            f"[PHASE 2] Escalation check: {len(escalated_requests)} escalated ({elapsed_ms:.2f}ms)"
+        )
 
         return escalated_requests
 
@@ -258,7 +268,9 @@ class ApprovalService:
         req.sla_deadline = time.time() + sla_delta
         req.status = ApprovalState.ESCALATED
 
-        self._audit_event(req, audit_code, f"Escalated from L{old_level} to L{req.current_authority_level}")
+        self._audit_event(
+            req, audit_code, f"Escalated from L{old_level} to L{req.current_authority_level}"
+        )
 
     def check_auto_approval_conditions(self) -> List[ApprovalRequest]:
         start_time = time.time()
@@ -276,7 +288,9 @@ class ApprovalService:
                     self.logger.info(f"[PHASE 3] Auto-approved {req.request_id}")
 
         elapsed_ms = (time.time() - start_time) * 1000
-        self.logger.info(f"[PHASE 3] Auto-approval check: {len(auto_approved)} auto-approved ({elapsed_ms:.2f}ms)")
+        self.logger.info(
+            f"[PHASE 3] Auto-approval check: {len(auto_approved)} auto-approved ({elapsed_ms:.2f}ms)"
+        )
 
         return auto_approved
 
@@ -342,7 +356,8 @@ class ApprovalService:
 
         # Count unavailable
         unavailable_count = sum(
-            1 for approver_id in req.required_approvers
+            1
+            for approver_id in req.required_approvers
             if not self._approver_availability.get(approver_id, True)
         )
 
@@ -376,13 +391,15 @@ class ApprovalService:
         req.auto_approval_reason = reason
         req.auto_approval_timestamp = time.time()
 
-        req.decisions.append(ApprovalDecision(
-            approver_id="SYSTEM_AUTO_APPROVAL",
-            approver_name="System Auto-Approval",
-            decision="approved",
-            reason=reason,
-            authority_level=req.current_authority_level,
-        ))
+        req.decisions.append(
+            ApprovalDecision(
+                approver_id="SYSTEM_AUTO_APPROVAL",
+                approver_name="System Auto-Approval",
+                decision="approved",
+                reason=reason,
+                authority_level=req.current_authority_level,
+            )
+        )
 
         if "Condition 1" in reason:
             audit_code = AuditCode.AUTO_APPROVAL_OWNER_UNAVAILABLE
@@ -401,7 +418,7 @@ class ApprovalService:
         self._audit_event(
             req,
             AuditCode.GOVERNANCE_AUDIT_AUTO_APPROVAL,
-            f"Created governance review ticket {ticket_id}"
+            f"Created governance review ticket {ticket_id}",
         )
 
     def approve_request(
@@ -420,12 +437,18 @@ class ApprovalService:
                 # Ideally, we map the policy_code to a resource, but for now we require APPROVE on WORKFLOWS
                 if not engine.check_permission(approver_id, Action.APPROVE, ResourceType.WORKFLOWS):
                     # For incident modes, check SECRETS or CODE
-                    if req.is_incident_related and not engine.check_permission(approver_id, Action.APPROVE, ResourceType.SECRETS):
-                        raise PermissionError(f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS or SECRETS)")
+                    if req.is_incident_related and not engine.check_permission(
+                        approver_id, Action.APPROVE, ResourceType.SECRETS
+                    ):
+                        raise PermissionError(
+                            f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS or SECRETS)"
+                        )
                     elif not req.is_incident_related:
-                        raise PermissionError(f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS)")
+                        raise PermissionError(
+                            f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS)"
+                        )
             except NameError:
-                pass # If import failed
+                pass  # If import failed
             except Exception as e:
                 # If there's PermissionError, we let it propagate
                 if isinstance(e, PermissionError):
@@ -437,13 +460,15 @@ class ApprovalService:
             if req.status not in [ApprovalState.PENDING, ApprovalState.ESCALATED]:
                 raise ValueError(f"Cannot approve in state {req.status}")
 
-            req.decisions.append(ApprovalDecision(
-                approver_id=approver_id,
-                approver_name=approver_id,
-                decision="approved",
-                reason=reason,
-                authority_level=req.current_authority_level,
-            ))
+            req.decisions.append(
+                ApprovalDecision(
+                    approver_id=approver_id,
+                    approver_name=approver_id,
+                    decision="approved",
+                    reason=reason,
+                    authority_level=req.current_authority_level,
+                )
+            )
 
             req.status = ApprovalState.APPROVED
             self._audit_event(req, AuditCode.MANUAL_APPROVAL, f"Approved by {approver_id}")
@@ -467,12 +492,18 @@ class ApprovalService:
                 # Ideally, we map the policy_code to a resource, but for now we require APPROVE on WORKFLOWS
                 if not engine.check_permission(approver_id, Action.APPROVE, ResourceType.WORKFLOWS):
                     # For incident modes, check SECRETS or CODE
-                    if req.is_incident_related and not engine.check_permission(approver_id, Action.APPROVE, ResourceType.SECRETS):
-                        raise PermissionError(f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS or SECRETS)")
+                    if req.is_incident_related and not engine.check_permission(
+                        approver_id, Action.APPROVE, ResourceType.SECRETS
+                    ):
+                        raise PermissionError(
+                            f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS or SECRETS)"
+                        )
                     elif not req.is_incident_related:
-                        raise PermissionError(f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS)")
+                        raise PermissionError(
+                            f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS)"
+                        )
             except NameError:
-                pass # If import failed
+                pass  # If import failed
             except Exception as e:
                 # If there's PermissionError, we let it propagate
                 if isinstance(e, PermissionError):
@@ -484,16 +515,20 @@ class ApprovalService:
             if req.status not in [ApprovalState.PENDING, ApprovalState.ESCALATED]:
                 raise ValueError(f"Cannot reject in state {req.status}")
 
-            req.decisions.append(ApprovalDecision(
-                approver_id=approver_id,
-                approver_name=approver_id,
-                decision="rejected",
-                reason=reason,
-                authority_level=req.current_authority_level,
-            ))
+            req.decisions.append(
+                ApprovalDecision(
+                    approver_id=approver_id,
+                    approver_name=approver_id,
+                    decision="rejected",
+                    reason=reason,
+                    authority_level=req.current_authority_level,
+                )
+            )
 
             req.status = ApprovalState.REJECTED
-            self._audit_event(req, AuditCode.MANUAL_APPROVAL, f"Rejected by {approver_id}: {reason}")
+            self._audit_event(
+                req, AuditCode.MANUAL_APPROVAL, f"Rejected by {approver_id}: {reason}"
+            )
 
             self.logger.info(f"Request {request_id} rejected by {approver_id}")
             return req
@@ -509,12 +544,18 @@ class ApprovalService:
                 # Ideally, we map the policy_code to a resource, but for now we require APPROVE on WORKFLOWS
                 if not engine.check_permission(approver_id, Action.APPROVE, ResourceType.WORKFLOWS):
                     # For incident modes, check SECRETS or CODE
-                    if req.is_incident_related and not engine.check_permission(approver_id, Action.APPROVE, ResourceType.SECRETS):
-                        raise PermissionError(f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS or SECRETS)")
+                    if req.is_incident_related and not engine.check_permission(
+                        approver_id, Action.APPROVE, ResourceType.SECRETS
+                    ):
+                        raise PermissionError(
+                            f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS or SECRETS)"
+                        )
                     elif not req.is_incident_related:
-                        raise PermissionError(f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS)")
+                        raise PermissionError(
+                            f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS)"
+                        )
             except NameError:
-                pass # If import failed
+                pass  # If import failed
             except Exception as e:
                 # If there's PermissionError, we let it propagate
                 if isinstance(e, PermissionError):
@@ -543,12 +584,18 @@ class ApprovalService:
                 # Ideally, we map the policy_code to a resource, but for now we require APPROVE on WORKFLOWS
                 if not engine.check_permission(approver_id, Action.APPROVE, ResourceType.WORKFLOWS):
                     # For incident modes, check SECRETS or CODE
-                    if req.is_incident_related and not engine.check_permission(approver_id, Action.APPROVE, ResourceType.SECRETS):
-                        raise PermissionError(f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS or SECRETS)")
+                    if req.is_incident_related and not engine.check_permission(
+                        approver_id, Action.APPROVE, ResourceType.SECRETS
+                    ):
+                        raise PermissionError(
+                            f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS or SECRETS)"
+                        )
                     elif not req.is_incident_related:
-                        raise PermissionError(f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS)")
+                        raise PermissionError(
+                            f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS)"
+                        )
             except NameError:
-                pass # If import failed
+                pass  # If import failed
             except Exception as e:
                 # If there's PermissionError, we let it propagate
                 if isinstance(e, PermissionError):
@@ -562,7 +609,7 @@ class ApprovalService:
                 self._audit_event(
                     req,
                     AuditCode.SLA_EXTENSION_LIMIT_REACHED,
-                    "Extension limit reached, escalating"
+                    "Extension limit reached, escalating",
                 )
                 self.logger.info(f"Extension limit reached for {request_id}, escalating")
                 return req
@@ -574,7 +621,7 @@ class ApprovalService:
             self._audit_event(
                 req,
                 AuditCode.SLA_EXTENSION_APPROVED,
-                f"Extended by {extension_hours}h (reason: {reason})"
+                f"Extended by {extension_hours}h (reason: {reason})",
             )
 
             self.logger.info(f"Extended SLA for {request_id}")
@@ -593,7 +640,8 @@ class ApprovalService:
     def list_pending(self) -> List[ApprovalRequest]:
         with self._lock:
             return [
-                r for r in self._requests.values()
+                r
+                for r in self._requests.values()
                 if r.status in [ApprovalState.PENDING, ApprovalState.ESCALATED]
             ]
 
@@ -628,12 +676,18 @@ class ApprovalService:
                 # Ideally, we map the policy_code to a resource, but for now we require APPROVE on WORKFLOWS
                 if not engine.check_permission(approver_id, Action.APPROVE, ResourceType.WORKFLOWS):
                     # For incident modes, check SECRETS or CODE
-                    if req.is_incident_related and not engine.check_permission(approver_id, Action.APPROVE, ResourceType.SECRETS):
-                        raise PermissionError(f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS or SECRETS)")
+                    if req.is_incident_related and not engine.check_permission(
+                        approver_id, Action.APPROVE, ResourceType.SECRETS
+                    ):
+                        raise PermissionError(
+                            f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS or SECRETS)"
+                        )
                     elif not req.is_incident_related:
-                        raise PermissionError(f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS)")
+                        raise PermissionError(
+                            f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS)"
+                        )
             except NameError:
-                pass # If import failed
+                pass  # If import failed
             except Exception as e:
                 # If there's PermissionError, we let it propagate
                 if isinstance(e, PermissionError):
@@ -655,6 +709,7 @@ class ApprovalService:
                 "escalated": sum(1 for r in reqs if r.status == ApprovalState.ESCALATED),
                 "approved": sum(1 for r in reqs if r.status == ApprovalState.APPROVED),
                 "rejected": sum(1 for r in reqs if r.status == ApprovalState.REJECTED),
-                "auto_approved": sum(1 for r in reqs if r.status == ApprovalState.ESCALATED_AUTO_APPROVED),
+                "auto_approved": sum(
+                    1 for r in reqs if r.status == ApprovalState.ESCALATED_AUTO_APPROVED
+                ),
             }
-

@@ -53,15 +53,13 @@ def log_change(action: str, path: Path, why: str, preview: str = "") -> None:
 
 
 def q5(step: str, err: str, ctx: str) -> None:
-    rq = textwrap.dedent(
-        f"""\
+    rq = textwrap.dedent(f"""\
     Question for ChatGPT-5 {ts()}:
     While performing [{step}], encountered the following error:
     {err}
     Context: {ctx}
     What are the possible causes, and how can this be resolved while preserving intended functionality?
-    """
-    )
+    """)
     with ERRORS.open("a", encoding="utf-8") as fh:
         fh.write(json.dumps({"ts": ts(), "step": step, "error": err, "context": ctx}) + "\n")
     sys.stderr.write(rq + "\n")
@@ -192,9 +190,7 @@ __all__ = ["TokenizerAdapter", "RewardModel", "RLAgent"]
 
 # ---------------- Tests ----------------
 S_TESTS = "# BEGIN: CODEX_IFACE_TESTS"
-TESTS = (
-    S_TESTS
-    + """
+TESTS = S_TESTS + """
 import importlib, json, os, types, pytest, yaml
 from typing import Any, Mapping, Optional
 from codex_ml.interfaces import TokenizerAdapter, RewardModel, RLAgent
@@ -317,13 +313,10 @@ def test_rl_agent_abc(tmp_path):
 
 # END: CODEX_IFACE_TESTS
 """
-)
 
 # ---------------- Config example ----------------
 S_CFG = "# BEGIN: CODEX_IFACE_CONFIG"
-CFG = (
-    S_CFG
-    + """
+CFG = S_CFG + """
 # Example mapping of interface groups to concrete implementations
 tokenizer:
   path: yourpkg.tokenizers.hf:HFTokenizer   # TODO: replace with actual module:class
@@ -336,7 +329,6 @@ rl_agent:
   kwargs: {}
 # END: CODEX_IFACE_CONFIG
 """
-)
 
 # ---------------- Docs ----------------
 S_DOCS = "<!-- BEGIN: CODEX_IFACE_DOCS -->"

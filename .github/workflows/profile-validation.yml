@@ -74,13 +74,13 @@ jobs:
           echo "Checking SHA256 hashes in uv.lock..."
           HASH_COUNT=$(grep -c 'hash = "sha256:' uv.lock || true)
           PACKAGE_COUNT=$(grep -c 'name = "' uv.lock | head -1 || echo "unknown")
-          
+
           echo "## Lock File Hash Validation" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **Packages**: $(echo "$PACKAGE_COUNT" | tail -1)" >> $GITHUB_STEP_SUMMARY
           echo "- **SHA256 hashes**: $HASH_COUNT" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           if [ "$HASH_COUNT" -gt 0 ]; then
             echo "✅ Hashes validated" >> $GITHUB_STEP_SUMMARY
           else
@@ -115,7 +115,7 @@ jobs:
           python3 << 'EOF'
           import sys
           print(f"Python version: {sys.version}")
-          
+
           # Test that core profile packages can be imported
           core_packages = [
               "hydra",
@@ -127,7 +127,7 @@ jobs:
               "yaml",
               "marshmallow",
           ]
-          
+
           failed = []
           for pkg in core_packages:
               try:
@@ -136,7 +136,7 @@ jobs:
               except ImportError as e:
                   print(f"✗ {pkg}: {e}")
                   failed.append(pkg)
-          
+
           if failed:
               print(f"\nFailed imports: {failed}")
               sys.exit(1)
@@ -155,7 +155,7 @@ jobs:
         run: |
           echo "## Overall Validation Status" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           if [ "${{ needs.profile-drift-check.result }}" == "success" ] && \
              [ "${{ needs.lock-hash-validation.result }}" == "success" ] && \
              [ "${{ needs.offline-install-test.result }}" == "success" ]; then

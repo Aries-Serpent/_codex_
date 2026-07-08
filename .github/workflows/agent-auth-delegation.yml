@@ -120,7 +120,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Auto-approved
-      run: "echo \"\u2705 Agent token delegation auto-approved for PR #${{ needs.detect-checkbox.outputs.pr_number\
+      run: "echo \"\u2705 Agent token delegation auto-approved for PR  #${{ needs.detect-checkbox.outputs.pr_number\
         \ }}\"\necho \"Copilot is permanently pre-authorized \u2014 no human approval\
         \ required.\"\n"
     env:
@@ -233,7 +233,7 @@ jobs:
           \    issue_number: pr.number,\n    body,\n  });\n}\n\nawait core.summary\n\
           \  .addHeading('REQ-11: Integration-Branch Guard', 3)\n  .addRaw(\n    `\\\
           n\U0001F6AB FAIL \u2014 \\`${head}\\` is an integration/staging branch.\\\
-          n` +\n    `Copilot sessions must use a sub-PR.  See comment on PR #${pr.number}\
+          n` +\n    `Copilot sessions must use a sub-PR.  See comment on PR  #${pr.number}\
           \ for instructions.\\n`\n  )\n  .write();\n\ncore.setFailed(\n  `REQ-11\
           \ FAIL: Branch '${head}' is the staging integration branch. ` +\n  `Copilot\
           \ sessions must NOT run directly on '${head}'. ` +\n  `Create a sub-PR branch\
@@ -709,13 +709,13 @@ jobs:
         \ --json body --jq '.body // \"\"')\n\n# Detect new canonical heading format\n\
         if echo \"$BODY\" | grep -qF '## \U0001F504 Workflow Execution Checklist';\
         \ then\n  echo \"\u2705 Canonical Workflow Execution Checklist (heading format)\
-        \ already present in PR #${PR_NUMBER} \u2014 no injection needed\"\n  printf\
+        \ already present in PR  #${PR_NUMBER} \u2014 no injection needed\"\n  printf\
         \ '### \u2705 Workflow Execution Checklist\\n\\nAlready present (canonical\
         \ format) \u2014 no injection required.\\n' >> \"$GITHUB_STEP_SUMMARY\"\n\
         \  exit 0\nfi\n\n# Also accept legacy bold-text marker to avoid double-injection\
         \ during migration\nif echo \"$BODY\" | grep -qF '**\U0001F504 Workflow Execution\
         \ Checklist**:'; then\n  echo \"\u26A0\uFE0F  Legacy WEC format detected in\
-        \ PR #${PR_NUMBER} \u2014 migrating to canonical heading format\"\nfi\n\n\
+        \ PR  #${PR_NUMBER} \u2014 migrating to canonical heading format\"\nfi\n\n\
         # Extract existing checkbox state so maintainer selections are preserved.\n\
         # Lines of form:  - [x] some-workflow.yml \u2014 description\n_WEC_NEVER_CHECK_ITEMS='copilot-agent-session-done.yml\
         \ copilot-iterative-self-healing.yml auto-approve-workflows'\n_wec_is_never_check()\
@@ -768,7 +768,7 @@ jobs:
         )\n\nUPDATED_BODY=\"${STRIPPED_BODY}${WEC}\"\ngh pr edit \"${PR_NUMBER}\"\
         \ --repo \"${{ github.repository }}\" --body \"${UPDATED_BODY}\"\necho \"\u2705\
         \ Canonical Workflow Execution Checklist (heading format) injected into PR\
-        \ #${PR_NUMBER}\"\nprintf '### \u2705 Workflow Execution Checklist\\n\\nCanonical\
+        \  #${PR_NUMBER}\"\nprintf '### \u2705 Workflow Execution Checklist\\n\\nCanonical\
         \ format injected \u2014 approval gates are now armed.\\n' >> \"$GITHUB_STEP_SUMMARY\"\
         \n"
     - name: Verify SESSION_TIMEBOX_EXPIRED acknowledged
@@ -908,7 +908,7 @@ jobs:
           github.token }}
         script: "const REQUIRED_MARKER = 'BRANCH_REBASE_REQUIRED';\nconst RESOLVED_MARKER\
           \ = 'BRANCH_REBASE_RESOLVED';\nconst prNumber = context.issue.number;\n\n\
-          core.info(`REQ-10: Checking rebase status for PR #${prNumber}`);\n\n// Helper:\
+          core.info(`REQ-10: Checking rebase status for PR  #${prNumber}`);\n\n// Helper:\
           \ check whether all commits in an array are automated\n// [skip ci] github-actions[bot]\
           \ commits.  When true the gap\n// contains only metadata updates and is\
           \ safe to auto-pass.\nconst BOT_LOGINS = new Set([\n  'github-actions[bot]',\n\
@@ -1100,7 +1100,7 @@ jobs:
         script: "const owner = context.repo.owner;\nconst repo = context.repo.repo;\n\
           const prNumber = parseInt('${{ needs.detect-checkbox.outputs.pr_number }}',\
           \ 10);\n\ncore.info(`Dispatching auto-approve-workflows.yml for agent token\
-          \ delegation (PR #${prNumber})`);\n\ntry {\n  await github.rest.actions.createWorkflowDispatch({\n\
+          \ delegation (PR  #${prNumber})`);\n\ntry {\n  await github.rest.actions.createWorkflowDispatch({\n\
           \    owner,\n    repo,\n    workflow_id: 'auto-approve-workflows.yml',\n\
           \    ref: 'main',\n    inputs: {\n      approval_source: 'agent-auth-delegation',\n\
           \      approval_intent: 'conditional_approve',\n      target_pr: prNumber.toString(),\n\
@@ -1254,9 +1254,9 @@ jobs:
           \ lock format: '${activeSession}' \u2014 clearing`);\n    await clearVar('COPILOT_ACTIVE_SESSION');\n\
           \    sessionBusy = false;\n  } else {\n    const age = now - lockEpoch;\n\
           \n    if (age < TTL_SECONDS && activePR !== String(prNumber)) {\n      sessionBusy\
-          \ = true;\n      core.info(`Active session on PR #${activePR} (age: ${age}s,\
+          \ = true;\n      core.info(`Active session on PR  #${activePR} (age: ${age}s,\
           \ TTL: ${TTL_SECONDS}s)`);\n    } else if (age >= TTL_SECONDS) {\n     \
-          \ core.warning(`Stale session lock cleared (PR #${activePR}, age: ${age}s\
+          \ core.warning(`Stale session lock cleared (PR  #${activePR}, age: ${age}s\
           \ > TTL ${TTL_SECONDS}s)`);\n      await clearVar('COPILOT_ACTIVE_SESSION');\n\
           \      sessionBusy = false;\n\n      // S230 fix: when a stale TTL lock\
           \ is cleared, also dequeue\n      // and retrigger any PRs that were waiting\
@@ -1268,13 +1268,13 @@ jobs:
           \        // Peek at the first entry before mutating the array.\n       \
           \ const nextQueuedPR = parseInt(staleClearedList[0], 10);\n        if (!isNaN(nextQueuedPR)\
           \ && nextQueuedPR > 0 && nextQueuedPR !== prNumber) {\n          core.info(`\U0001F513\
-          \ Stale lock cleared \u2014 retriggering queued PR #${nextQueuedPR}`);\n\
+          \ Stale lock cleared \u2014 retriggering queued PR  #${nextQueuedPR}`);\n\
           \          try {\n            await github.rest.issues.createComment({\n\
           \              owner: context.repo.owner,\n              repo: context.repo.repo,\n\
           \              issue_number: nextQueuedPR,\n              body: [\n    \
           \            '<!-- session-gate-dequeued -->',\n                '## \U0001F513\
           \ Session Available (Stale Lock Cleared)',\n                '',\n      \
-          \          `Previous session (PR #${activePR}) exceeded the ${TTL_SECONDS\
+          \          `Previous session (PR  #${activePR}) exceeded the ${TTL_SECONDS\
           \ / 3600}h TTL and was cleared.`,\n                'This PR has been dequeued\
           \ and the session is now starting.',\n                '',\n            \
           \    '@copilot continue',\n              ].join('\\n'),\n            });\n\
@@ -1282,14 +1282,14 @@ jobs:
           \           // comment was successfully posted (review: avoid removing\n\
           \            // from queue if comment creation throws).\n            staleClearedList.shift();\n\
           \            await upsertVar('COPILOT_SESSION_QUEUE', staleClearedList.join(','));\n\
-          \            core.info(`\u2705 Retriggered PR #${nextQueuedPR} after stale\
+          \            core.info(`\u2705 Retriggered PR  #${nextQueuedPR} after stale\
           \ TTL cleanup`);\n          } catch (err) {\n            core.warning(`Failed\
-          \ to retrigger PR #${nextQueuedPR} after stale lock clear: ${err.message}`);\n\
+          \ to retrigger PR  #${nextQueuedPR} after stale lock clear: ${err.message}`);\n\
           \          }\n        } else if (!isNaN(nextQueuedPR) && nextQueuedPR ===\
           \ prNumber) {\n          // Current PR is first in queue \u2014 just clear\
           \ it from the queue\n          staleClearedList.shift();\n          await\
           \ upsertVar('COPILOT_SESSION_QUEUE', staleClearedList.join(','));\n    \
-          \      core.info(`Current PR #${prNumber} was first in queue \u2014 clearing\
+          \      core.info(`Current PR  #${prNumber} was first in queue \u2014 clearing\
           \ from queue and proceeding`);\n        }\n      }\n    } else {\n     \
           \ // Same PR \u2014 re-acquire is fine\n      sessionBusy = false;\n   \
           \ }\n  }\n}\n\nif (sessionBusy && !multiSession) {\n  // Queue this PR \u2014\
@@ -1309,10 +1309,10 @@ jobs:
           \ context.repo.owner, repo: context.repo.repo,\n    issue_number: prNumber,\
           \ per_page: 100,\n  });\n  const queuedCommentBody = [\n    '<!-- session-gate-queued\
           \ -->',\n    '## \u23F3 Session Queued',\n    '',\n    `Another Copilot\
-          \ session is active on PR #${activePR}.`,\n    'This PR has been added to\
+          \ session is active on PR  #${activePR}.`,\n    'This PR has been added to\
           \ the session queue and will be triggered automatically when the active\
           \ session completes.',\n    '',\n    '| Detail | Value |',\n    '|--------|-------|',\n\
-          \    `| Active Session | PR #${activePR} |`,\n    `| Queue Position | ${queueList.length}\
+          \    `| Active Session | PR  #${activePR} |`,\n    `| Queue Position | ${queueList.length}\
           \ |`,\n    `| Multi-Session | \\`${multiSession}\\` (default: disabled)\
           \ |`,\n    '',\n    '> To enable parallel sessions, check the **Multiple\
           \ Copilot Coding Agent Sessions** checkbox in the PR body.',\n    '',\n\
@@ -1323,14 +1323,14 @@ jobs:
           \ latest queue position.\n    await github.rest.issues.updateComment({\n\
           \      owner: context.repo.owner, repo: context.repo.repo,\n      comment_id:\
           \ existingQueuedComment.id,\n      body: queuedCommentBody,\n    });\n \
-          \   core.info(`\u23F3 PR #${prNumber} queue position updated (position ${queueList.length},\
-          \ active: PR #${activePR}).`);\n  } else {\n    // Post a new queued notification\
+          \   core.info(`\u23F3 PR  #${prNumber} queue position updated (position ${queueList.length},\
+          \ active: PR  #${activePR}).`);\n  } else {\n    // Post a new queued notification\
           \ on the PR.\n    await github.rest.issues.createComment({\n      owner:\
           \ context.repo.owner,\n      repo: context.repo.repo,\n      issue_number:\
           \ prNumber,\n      body: queuedCommentBody,\n    });\n    core.info(`\u23F3\
-          \ PR #${prNumber} queued (position ${queueList.length}, active: PR #${activePR}).`);\n\
-          \  }\n  core.info(`\u23F3 PR #${prNumber} queued \u2014 active session on\
-          \ PR #${activePR}`);\n} else {\n  // Acquire the session lock\n  const lockValue\
+          \ PR  #${prNumber} queued (position ${queueList.length}, active: PR #${activePR}).`);\n\
+          \  }\n  core.info(`\u23F3 PR  #${prNumber} queued \u2014 active session on\
+          \ PR  #${activePR}`);\n} else {\n  // Acquire the session lock\n  const lockValue\
           \ = `${prNumber}|${now}|${context.runId}`;\n  await upsertVar('COPILOT_ACTIVE_SESSION',\
           \ lockValue);\n  core.setOutput('acquired', 'true');\n  core.setOutput('queued',\
           \ 'false');\n  core.info(`\U0001F512 Session lock acquired: ${lockValue}`);\n\
@@ -1351,7 +1351,7 @@ jobs:
           \ `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;\n\
           // Read via process.env to prevent code injection via backticks or ${...}\n\
           // in markdown content from breaking the JS template literal.\n// (See review\
-          \ comment: cbPatterns interpolation, PR #3671.)\nconst cbPatterns = (process.env.CB_PATTERNS\
+          \ comment: cbPatterns interpolation, PR  #3671.)\nconst cbPatterns = (process.env.CB_PATTERNS\
           \ || '').trim();\n\nconst UPSERT_MARKER_DELEGATION = '<!-- agent-token-delegation-result\
           \ -->';\nconst cbSection = cbPatterns\n  ? ['', '---', '', cbPatterns, '']\n\
           \  : [];\nconst body = [\n  UPSERT_MARKER_DELEGATION,\n  '## \U0001F510\
@@ -1374,7 +1374,7 @@ jobs:
           \    body,\n  });\n} else {\n  await github.rest.issues.createComment({\n\
           \    owner:        context.repo.owner,\n    repo:         context.repo.repo,\n\
           \    issue_number: prNumber,\n    body,\n  });\n}\ncore.info(`\u2705 Posted\
-          \ @copilot continue on PR #${prNumber}`);\n"
+          \ @copilot continue on PR  #${prNumber}`);\n"
     - name: Increment COGNITIVE_BRAIN_SESSION_NUMBER
       if: steps.session_gate.outputs.acquired == 'true'
       env:
@@ -1401,7 +1401,7 @@ jobs:
         \ ImprovementArea\n    api = AgentBrainAPI(agent_id=f\"agent-auth-delegation-s{session}\"\
         )\n    report = api.report_completion(\n        area=ImprovementArea.CI_CD,\n\
         \        step_id=f\"AUTH-DELEGATION-PR{pr}\",\n        outcome=\"success\"\
-        ,\n        notes=f\"Token delegation activated for PR #{pr} (session S{session})\"\
+        ,\n        notes=f\"Token delegation activated for PR  #{pr} (session S{session})\"\
         ,\n    )\n    print(f\"\u2705 report_completion() \u2192 pattern_id={report.pattern_id}\"\
         )\nexcept Exception as exc:\n    print(f\"\u26A0\uFE0F  AgentBrainAPI.report_completion()\
         \ unavailable: {exc}\")\n    print(\"    (non-fatal \u2014 cognitive brain\
@@ -1509,8 +1509,8 @@ jobs:
           \ lock\nconst activeSession = await getVar('COPILOT_ACTIVE_SESSION');\n\
           if (!activeSession) {\n  core.info('No active session lock to release');\n\
           \  return;\n}\n\nconst activePR = activeSession.split('|')[0];\nif (activePR\
-          \ !== String(closedPR)) {\n  core.info(`Lock held by PR #${activePR}, not\
-          \ closing PR #${closedPR} \u2014 skipping`);\n  return;\n}\n\n// Release\
+          \ !== String(closedPR)) {\n  core.info(`Lock held by PR  #${activePR}, not\
+          \ closing PR  #${closedPR} \u2014 skipping`);\n  return;\n}\n\n// Release\
           \ the lock\nawait clearVar('COPILOT_ACTIVE_SESSION');\ncore.info(`\U0001F513\
           \ Released session lock (was: ${activeSession})`);\n\n// Dequeue next PR\n\
           const queue = await getVar('COPILOT_SESSION_QUEUE');\nif (!queue) {\n  core.info('Session\
@@ -1524,11 +1524,11 @@ jobs:
           \      owner: context.repo.owner,\n      repo: context.repo.repo,\n    \
           \  issue_number: nextPRNumber,\n      body: [\n        '<!-- session-gate-dequeued\
           \ -->',\n        '## \U0001F513 Session Available',\n        '',\n     \
-          \   `Previous session (PR #${closedPR}) has completed.`,\n        'This\
+          \   `Previous session (PR  #${closedPR}) has completed.`,\n        'This\
           \ PR has been dequeued and the session is now starting.',\n        '',\n\
           \        '@copilot continue',\n      ].join('\\n'),\n    });\n    // Only\
           \ remove from queue after successful comment posting\n    await upsertVar('COPILOT_SESSION_QUEUE',\
-          \ queueList.join(','));\n    core.info(`\u2705 Dequeued PR #${nextPR} \u2014\
+          \ queueList.join(','));\n    core.info(`\u2705 Dequeued PR  #${nextPR} \u2014\
           \ posted @copilot continue`);\n\n    // S239: Update the \"\u23F3 Session\
           \ Queued\" comment on any remaining PRs\n    // in the queue so they see\
           \ their new (shifted) queue position.\n    for (let i = 0; i < queueList.length;\
@@ -1542,10 +1542,10 @@ jobs:
           \          const newPos = i + 1; // 1-based position\n          const updatedBody\
           \ = [\n            '<!-- session-gate-queued -->',\n            '## \u23F3\
           \ Session Queued',\n            '',\n            `Another Copilot session\
-          \ is now active on PR #${nextPRNumber} (just dequeued).`,\n            'This\
+          \ is now active on PR  #${nextPRNumber} (just dequeued).`,\n            'This\
           \ PR will be triggered automatically when that session completes.',\n  \
           \          '',\n            '| Detail | Value |',\n            '|--------|-------|',\n\
-          \            `| Active Session | PR #${nextPRNumber} |`,\n            `|\
+          \            `| Active Session | PR  #${nextPRNumber} |`,\n            `|\
           \ Queue Position | ${newPos} |`,\n            `| Ahead in queue | ${newPos\
           \ - 1} PR(s) |`,\n            '',\n            '> To enable parallel sessions,\
           \ check the **Multiple Copilot Coding Agent Sessions** checkbox in the PR\
@@ -1555,10 +1555,10 @@ jobs:
           \            owner: context.repo.owner, repo: context.repo.repo,\n     \
           \       comment_id: queuedComment.id,\n            body: updatedBody,\n\
           \          });\n          core.info(`\u2705 Updated queue position for PR\
-          \ #${waitingPR} \u2192 position ${newPos}`);\n        }\n      } catch (err)\
-          \ {\n        core.warning(`Failed to update queue position for PR #${queueList[i]}:\
+          \  #${waitingPR} \u2192 position ${newPos}`);\n        }\n      } catch (err)\
+          \ {\n        core.warning(`Failed to update queue position for PR  #${queueList[i]}:\
           \ ${err.message}`);\n      }\n    }\n  } catch (err) {\n    core.warning(`Failed\
-          \ to post @copilot continue on PR #${nextPR}: ${err.message}`);\n    //\
+          \ to post @copilot continue on PR  #${nextPR}: ${err.message}`);\n    //\
           \ Don't remove from queue \u2014 will retry on next release\n  }\n} else\
           \ {\n  await clearVar('COPILOT_SESSION_QUEUE');\n}\n"
     env:

@@ -104,7 +104,8 @@ def maybe_export_metrics(app=None, port: int = 9000, *, fallback_dir: Path | str
         _FALLBACK_ACTIVE = True
         _FALLBACK_PATH = sink.path
         _FALLBACK_REASON = repr(exc)
-        logger.info(f"[prometheus] falling back to NDJSON sink at {_FALLBACK_PATH} ({_FALLBACK_REASON})",
+        logger.info(
+            f"[prometheus] falling back to NDJSON sink at {_FALLBACK_PATH} ({_FALLBACK_REASON})",
             file=sys.stderr,
         )
         return counters, gauges

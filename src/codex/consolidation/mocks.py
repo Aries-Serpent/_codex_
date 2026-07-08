@@ -201,6 +201,7 @@ class StubDataFactory:
         item_factory: Optional[Callable[..., Any]] = None, count: int = 5
     ) -> List[Any]:
         """Create a stub list."""
+
         def _default_factory(i: int) -> dict:
             return {"id": i, "value": f"item_{i}"}
 

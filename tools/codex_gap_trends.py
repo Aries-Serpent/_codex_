@@ -7,6 +7,7 @@ a human-readable markdown report.
 This is a snapshot-oriented tool: it only considers the current registry file.
 Over-time trends can be built later using git history or timestamped snapshots.
 """
+
 from __future__ import annotations
 
 import argparse

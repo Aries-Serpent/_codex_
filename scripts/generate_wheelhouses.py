@@ -33,7 +33,6 @@ import argparse
 import hashlib
 import json
 import logging
-import os
 import shutil
 import subprocess
 import sys
@@ -41,7 +40,7 @@ import tarfile
 import tempfile
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Tuple
 
 logger = logging.getLogger(__name__)
 

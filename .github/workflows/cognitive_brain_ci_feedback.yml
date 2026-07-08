@@ -32,10 +32,10 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: write       # write .codex/ files (store_memory, session logs)
+  contents: write  # write .codex/ files (store_memory, session logs)
   pull-requests: write  # post @copilot follow-up comments via mcp_poster
-  issues: write         # post issue comments for escalations
-  actions: read         # read workflow_run metadata
+  issues: write  # post issue comments for escalations
+  actions: read  # read workflow_run metadata
 
 jobs:
   report-outcome:
@@ -57,7 +57,7 @@ jobs:
       github.event.workflow_run.name != 'Workflow Analytics & Health (Unified)'
 
     steps:
-      - uses: actions/checkout@v5 # v6.0.3
+      - uses: actions/checkout@v5  # v6.0.3
 
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached

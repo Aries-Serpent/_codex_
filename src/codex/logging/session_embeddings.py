@@ -202,7 +202,9 @@ class SessionEmbeddings:
 
                 try:
                     with open(self.embeddings_path, "rb") as f:
-                        self._embeddings = pickle.load(f)  # nosec B301 - trusted data only  # nosemgrep: semgrep.unsafe-pickle-load
+                        self._embeddings = pickle.load(
+                            f
+                        )  # nosec B301 - trusted data only  # nosemgrep: semgrep.unsafe-pickle-load
                 except (IOError, OSError):
                     self._embeddings = []  # type: ignore[assignment]
 

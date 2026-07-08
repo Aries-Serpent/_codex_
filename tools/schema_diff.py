@@ -5,6 +5,7 @@ Compare two JSON/YAML schemas and report additive/removal/breaking changes.
 Usage:
   python tools/schema_diff.py --old path/to/old.schema.json --new path/to/new.schema.json
 """
+
 from __future__ import annotations
 
 import argparse

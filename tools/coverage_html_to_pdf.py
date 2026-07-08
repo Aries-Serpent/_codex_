@@ -14,6 +14,7 @@ Requirements:
 Install:
     pip install weasyprint
 """
+
 from __future__ import annotations
 
 import argparse

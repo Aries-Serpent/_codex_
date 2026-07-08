@@ -52,7 +52,7 @@ jobs:
         python-version: 3.12.13
         cache-tier: common
     - name: Install dependencies
-      run: '# Pin pytest plugins before package install (PR #3248 fix)
+      run: '# Pin pytest plugins before package install (PR  #3248 fix)
 
         pip install pytest-xdist==3.8.0 pytest-timeout==2.4.0
 
@@ -335,7 +335,7 @@ jobs:
           \ < 100) break;\n  page++;\n}\nif (existing) {\n  await github.rest.issues.updateComment({\n\
           \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    comment_id:\
           \ existing.id,\n    body,\n  });\n  console.log(`Updated root-org-validation\
-          \ comment #${existing.id}`);\n} else {\n  await github.rest.issues.createComment({\n\
+          \ comment  #${existing.id}`);\n} else {\n  await github.rest.issues.createComment({\n\
           \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    issue_number:\
           \ context.issue.number,\n    body,\n  });\n}\n"
     - name: Set job status

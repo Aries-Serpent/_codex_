@@ -108,12 +108,21 @@ class CacheInstrumentationMiddleware(BaseHTTPMiddleware):
         latency_ms = (time.time() - start_time) * 1000
 
         # Only cache if response is successful and slow enough
-        if use_cache and cache_key and response.status_code == 200 and latency_ms >= self.cache_threshold_ms:
+        if (
+            use_cache
+            and cache_key
+            and response.status_code == 200
+            and latency_ms >= self.cache_threshold_ms
+        ):
             try:
                 # Skip caching StreamingResponse and other non-bufferable responses
-                if hasattr(response, 'body'):
+                if hasattr(response, "body"):
                     # For buffered responses (JSONResponse, etc.)
-                    body = response.body if isinstance(response.body, bytes) else response.body.encode('utf-8')
+                    body = (
+                        response.body
+                        if isinstance(response.body, bytes)
+                        else response.body.encode("utf-8")
+                    )
                 else:
                     # For streaming responses, don't cache
                     logger.debug(f"Skipping cache for streaming response: {endpoint_key}")
@@ -142,7 +151,9 @@ class CacheInstrumentationMiddleware(BaseHTTPMiddleware):
 
         # Record metrics
         if self.enable_metrics:
-            self._record_endpoint_stats(endpoint_key, latency_ms, use_cache and cache_key is not None)
+            self._record_endpoint_stats(
+                endpoint_key, latency_ms, use_cache and cache_key is not None
+            )
 
         return response
 
@@ -189,7 +200,9 @@ class CacheInstrumentationMiddleware(BaseHTTPMiddleware):
             media_type=cached_data.get("media_type", "application/json"),
         )
 
-    def _record_endpoint_stats(self, endpoint_key: str, latency_ms: float, was_cached: bool) -> None:
+    def _record_endpoint_stats(
+        self, endpoint_key: str, latency_ms: float, was_cached: bool
+    ) -> None:
         """Record statistics for endpoint.
 
         Args:

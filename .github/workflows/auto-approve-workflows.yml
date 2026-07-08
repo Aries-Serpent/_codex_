@@ -117,7 +117,7 @@ jobs:
         \ || echo \"\")\n\nif [ -z \"$PR_NUMBER\" ]; then\n  echo \"::notice::No open\
         \ PR found for branch ${{ github.ref_name }} \u2014 skipping approval\"\n\
         \  echo \"pr_number=\" >> $GITHUB_OUTPUT\n  exit 0\nfi\n\necho \"pr_number=$PR_NUMBER\"\
-        \ >> $GITHUB_OUTPUT\necho \"\u2705 Found PR #$PR_NUMBER for branch ${{ github.ref_name\
+        \ >> $GITHUB_OUTPUT\necho \"\u2705 Found PR  #$PR_NUMBER for branch ${{ github.ref_name\
         \ }}\"\n"
     - name: Approve pending runs (if PR found)
       if: steps.resolve.outputs.pr_number
@@ -366,15 +366,15 @@ jobs:
       run: "set -euo pipefail\n\nif [ -z \"$TARGET_PR\" ]; then\n  echo \"::warning::No\
         \ target PR resolved \u2014 skipping approval execution\"\n  exit 0\nfi\n\n\
         if [ \"$DRY_RUN\" = \"true\" ]; then\n  echo \"\U0001F50D DRY RUN MODE: Would\
-        \ approve run $RUN_ID for PR #$TARGET_PR\"\n  exit 0\nfi\n\n# If specific\
+        \ approve run $RUN_ID for PR  #$TARGET_PR\"\n  exit 0\nfi\n\n# If specific\
         \ run ID provided, approve that run\nif [ -n \"$RUN_ID\" ]; then\n  gh run\
-        \ approve \"$RUN_ID\" 2>/dev/null && \\\n    echo \"\u2705 Approved run #$RUN_ID\"\
-        \ || \\\n    echo \"\u26A0\uFE0F Could not approve run #$RUN_ID (may already\
+        \ approve \"$RUN_ID\" 2>/dev/null && \\\n    echo \"\u2705 Approved run  #$RUN_ID\"\
+        \ || \\\n    echo \"\u26A0\uFE0F Could not approve run  #$RUN_ID (may already\
         \ be approved)\"\n  exit 0\nfi\n\n# Otherwise, discover and approve pending\
         \ runs for this PR\nHEAD_SHA=$(gh pr view \"$TARGET_PR\" --repo \"$REPO\"\
         \ --json headRefOid -q '.headRefOid' 2>/dev/null || echo \"\")\nif [ -z \"\
         $HEAD_SHA\" ]; then\n  echo \"::warning::Could not resolve HEAD SHA for PR\
-        \ #$TARGET_PR\"\n  exit 0\nfi\n\n# High-volume detection: If >10 pending runs,\
+        \  #$TARGET_PR\"\n  exit 0\nfi\n\n# High-volume detection: If >10 pending runs,\
         \ use 6-pass approach\nPENDING_COUNT=$(gh run list --repo \"$REPO\" --status\
         \ action_required --json databaseId 2>/dev/null | grep -c '.' || echo \"0\"\
         )\n\nif [ \"$PENDING_COUNT\" -ge 10 ]; then\n  echo \"\U0001F4E6 High-volume\
@@ -383,7 +383,7 @@ jobs:
         \ \"$REPO\" --status action_required --json databaseId -q '.[].databaseId'\
         \ 2>/dev/null | head -n 5 || echo \"\")\n    for BATCH_RUN in $BATCH; do\n\
         \      gh run approve \"$BATCH_RUN\" 2>/dev/null && echo \"  \u2705 Approved\
-        \ run #$BATCH_RUN\" || true\n      sleep 2  # 2-second delay between approvals\n\
+        \ run  #$BATCH_RUN\" || true\n      sleep 2  # 2-second delay between approvals\n\
         \    done\n    [ \"$PASS\" -lt 6 ] && sleep 12  # 12-second delay between\
         \ passes\n  done\nelse\n  echo \"\U0001F50D Finding action_required runs for\
         \ SHA ${HEAD_SHA:0:12}...\"\n  RUNS=$(gh run list --repo \"$REPO\" --status\
@@ -432,7 +432,7 @@ jobs:
 
         git add .codex/approvals.jsonl || true
 
-        git commit -m "audit: Log approval via $APPROVAL_SOURCE (PR #$TARGET_PR, rule:
+        git commit -m "audit: Log approval via $APPROVAL_SOURCE (PR  #$TARGET_PR, rule:
         $RULE_MATCHED)" || true
 
         git push || true
@@ -628,7 +628,7 @@ jobs:
         skip=true\" >> \"$GITHUB_OUTPUT\"\n  exit 0\nfi\n\necho \"pr_number=${PR_NUM}\"\
         \   >> \"$GITHUB_OUTPUT\"\necho \"head_sha=${HEAD_SHA}\"  >> \"$GITHUB_OUTPUT\"\
         \necho \"skip=false\"            >> \"$GITHUB_OUTPUT\"\necho \"Resolved: PR\
-        \ #${PR_NUM}, SHA=${HEAD_SHA:0:12}\"\n"
+        \  #${PR_NUM}, SHA=${HEAD_SHA:0:12}\"\n"
     - name: Approve pending (action_required) workflow runs
       id: approve
       if: steps.resolve.outputs.skip != 'true'
@@ -671,7 +671,7 @@ jobs:
           \ per_page: 100, page,\n    });\n    allRuns = allRuns.concat(data.workflow_runs);\n\
           \    if (data.workflow_runs.length < 100) break;\n    page++;\n  }\n  return\
           \ allRuns;\n}\n\nasync function approvePR(prNum, headSha) {\n  core.info(`\\\
-          n\u2500\u2500 PR #${prNum} @ ${headSha.slice(0,12)} \u2500\u2500\u2500\u2500\
+          n\u2500\u2500 PR  #${prNum} @ ${headSha.slice(0,12)} \u2500\u2500\u2500\u2500\
           \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
           \u2500\u2500\u2500\u2500\u2500\u2500`);\n\n  // Enumerate action_required\
           \ runs for this SHA\n  let allRuns = await listActionRequiredRuns(headSha);\n\
@@ -694,7 +694,7 @@ jobs:
           \ run(s).`);\n      if (allRuns.length === 0) break;\n    }\n\n    for (const\
           \ run of allRuns) {\n      if (processedRunIds.has(run.id)) continue;\n\
           \      processedRunIds.add(run.id);\n\n      const label = `${run.name ||\
-          \ run.workflow_id} (run #${run.id})`;\n      if (dryRun) {\n        core.info(`[DRY]\
+          \ run.workflow_id} (run  #${run.id})`;\n      if (dryRun) {\n        core.info(`[DRY]\
           \ Would approve: ${label}`);\n        results.push({ label, status: '\U0001F50D\
           \ dry-run' });\n        approved++;\n        continue;\n      }\n      try\
           \ {\n        await github.rest.actions.approveWorkflowRun({ owner, repo,\
@@ -730,7 +730,7 @@ jobs:
           \ {\n    // For schedule, label presence already confirmed \u2014 skip re-check\n\
           \    try {\n      const headSha = await getHeadSha(prNum);\n      targets.push({\
           \ prNum, headSha });\n    } catch (e) {\n      core.warning(`\u26A0\uFE0F\
-          \ Could not resolve head SHA for PR #${prNum} (${e?.message || String(e)})\
+          \ Could not resolve head SHA for PR  #${prNum} (${e?.message || String(e)})\
           \ \u2014 skipping`);\n    }\n  }\n} else {\n  const prNum  = process.env.PR_NUMBER;\n\
           \  const headSha = process.env.HEAD_SHA;\n  // Always-on: no opt-in gate\
           \ \u2014 Copilot approves on behalf of human admin.\n  targets.push({ prNum,\
@@ -747,9 +747,9 @@ jobs:
           \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
           \u2500\u2500\u2500\u2500\u2500\u2500\u2500\nconst lines = [\n  `## \u26A1\
           \ Auto-Approve \u2014 ${targets.length > 1 ? `${targets.length} PRs` : `PR\
-          \ #${targets[0].prNum}`}`,\n  '',\n  `| PR | HEAD SHA | Approved | Skipped\
+          \  #${targets[0].prNum}`}`,\n  '',\n  `| PR | HEAD SHA | Approved | Skipped\
           \ | Errors |`,\n  `|----|---------|---------|---------|--------|`,\n];\n\
-          for (const r of allResults) {\n  lines.push(`| #${r.prNum} | \\`${r.headSha.slice(0,12)}\\\
+          for (const r of allResults) {\n  lines.push(`|  #${r.prNum} | \\`${r.headSha.slice(0,12)}\\\
           ` | **${r.approved}** | ${r.skipped} | ${r.errors} |`);\n}\nlines.push('');\n\
           lines.push(`_Mode: ${dryRun ? '\U0001F50D DRY RUN' : '\U0001F680 LIVE'}\
           \ \xB7 Trigger: ${context.eventName} \xB7 ${new Date().toISOString()}_`);\n\
@@ -771,20 +771,20 @@ jobs:
         \ No PR number resolved for active-session monitor; skipping.\"\n  exit 0\n\
         fi\n\nDURATION_SEC=$(( MONITOR_MINUTES * 60 ))\nSTART_TS=$(date +%s)\nEND_TS=$((\
         \ START_TS + DURATION_SEC ))\nHAS_FAILURE=0\n\necho \"### \u23F1\uFE0F Active\
-        \ Copilot Session Monitor\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"- PR: #${PR_NUMBER}\"\
+        \ Copilot Session Monitor\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"- PR:  #${PR_NUMBER}\"\
         \ >> \"$GITHUB_STEP_SUMMARY\"\necho \"- Window: ${MONITOR_MINUTES} minute(s)\"\
         \ >> \"$GITHUB_STEP_SUMMARY\"\necho \"- Interval: ${MONITOR_INTERVAL_SEC}s\"\
         \ >> \"$GITHUB_STEP_SUMMARY\"\n\nwhile [ \"$(date +%s)\" -lt \"${END_TS}\"\
         \ ]; do\n  HEAD_SHA=$(gh pr view \"${PR_NUMBER}\" --repo \"${REPO}\" --json\
         \ headRefOid -q '.headRefOid' 2>/dev/null || echo \"\")\n  if [ -z \"${HEAD_SHA}\"\
         \ ]; then\n    echo \"::warning::Could not resolve current PR head SHA for\
-        \ #${PR_NUMBER}; retrying.\"\n    sleep \"${MONITOR_INTERVAL_SEC}\"\n    continue\n\
+        \  #${PR_NUMBER}; retrying.\"\n    sleep \"${MONITOR_INTERVAL_SEC}\"\n    continue\n\
         \  fi\n\n  echo \"\U0001F504 Monitor pass at $(date -u +%Y-%m-%dT%H:%M:%SZ)\
         \ for SHA ${HEAD_SHA:0:12}\"\n  REPO=\"${REPO}\" HEAD_SHA=\"${HEAD_SHA}\"\
         \ PR_NUMBER=\"${PR_NUMBER}\" MAX_WAIT_SEC=15 \\\n    python scripts/ci/approve_pending_runs.py\
         \ || true\n\n  FAILURES=$(gh api \"repos/${REPO}/actions/runs?head_sha=${HEAD_SHA}&status=completed&per_page=100\"\
         \ \\\n    --jq '.workflow_runs[] | select(.conclusion==\"failure\" or .conclusion==\"\
-        timed_out\" or .conclusion==\"startup_failure\") | \"- #\\(.id) \\(.name)\
+        timed_out\" or .conclusion==\"startup_failure\") | \"-  #\\(.id) \\(.name)\
         \ (\\(.conclusion))\"' 2>/dev/null || true)\n  if [ -n \"${FAILURES}\" ];\
         \ then\n    HAS_FAILURE=1\n    echo \"\u274C Detected failing workflow run(s)\
         \ during active session monitor window:\"\n    echo \"${FAILURES}\"\n    {\n\

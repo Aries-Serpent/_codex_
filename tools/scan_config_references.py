@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Scan configuration directories for stale root path references."""
+
 import re
 import sys
 from pathlib import Path

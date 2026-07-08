@@ -83,7 +83,7 @@ jobs:
         \\n**Aggregate (if all gated jobs run):** {total_eff_min:.0f} eff-min = {budget_pct}%\
         \ of monthly budget\")\n\nsummary = \"\\n\".join(lines)\n\n# Write outputs\n\
         with open(os.environ[\"GITHUB_OUTPUT\"], \"a\") as f:\n    f.write(f\"status={status}\\\
-        n\")\n    # multiline output\n    delim = \"COST_SUMMARY_EOF\"\n    f.write(f\"\
+        n\")\n  # multiline output\n    delim = \"COST_SUMMARY_EOF\"\n    f.write(f\"\
         summary<<{delim}\\n{summary}\\n{delim}\\n\")\n    f.write(f\"red_count={len(red_workflows)}\\\
         n\")\n    f.write(f\"approved={'true' if approved else 'false'}\\n\")\n\n\
         print(f\"✅ Cost check complete: status={status}, red={len(red_workflows)},\
@@ -134,7 +134,7 @@ jobs:
           \  );\n}\nconst { data: comments } = await github.rest.issues.listComments({\n\
           \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  issue_number:\
           \ context.issue.number,\n});\nconst found = comments.find(c => hasApproval(c.body));\n\
-          if (found) {\n  console.log(`✅ Approval found in PR comment #${found.id}`);\n\
+          if (found) {\n  console.log(`✅ Approval found in PR comment  #${found.id}`);\n\
           \  core.setOutput('approved_in_comment', 'true');\n} else {\n  core.setOutput('approved_in_comment',\
           \ 'false');\n}\n"
     - name: Enforce approval gate

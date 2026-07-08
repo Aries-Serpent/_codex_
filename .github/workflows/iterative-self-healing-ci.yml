@@ -43,7 +43,7 @@ jobs:
       \ Comment Review Gate' &&\n  github.event.workflow_run.name != 'Agent Token\
       \ Delegation' &&\n  github.event.workflow_run.name != '\U0001F504 Auto-Post\
       \ @copilot review After Agent Session' &&\n  github.event.workflow_run.name\
-      \ != '\U0001F916 Agent Check-In — Q&A Bridge (Discussion #3756)' &&\n  github.event.workflow_run.name\
+      \ != '\U0001F916 Agent Check-In — Q&A Bridge (Discussion  #3756)' &&\n  github.event.workflow_run.name\
       \ != '\U0001F6A8 CI Failure Issue Creator' &&\n  github.event.workflow_run.name\
       \ != '\U0001F4B0 PR Cost Check' &&\n  github.event.workflow_run.name != 'Copilot\
       \ PR Session Injector' &&\n  github.event.workflow_run.name != 'Session Watchdog\
@@ -98,7 +98,7 @@ jobs:
         \ to break sweep→validate→healer cascade.\" >> \"$GITHUB_STEP_SUMMARY\"\n\
         \    exit 0\n  fi\nfi\n\n# Hard brake: if >= N Iterative Self-Healing CI runs\
         \ have been triggered\n# for this branch in the past hour, skip this run.\
-        \ This prevents the\n# self-healing cascade (issue #3860) where healer failures\
+        \ This prevents the\n# self-healing cascade (issue  #3860) where healer failures\
         \ re-trigger the\n# healer indefinitely (SELF_HEALING_001 sub-scenario C).\n\
         # Default 5 (lowered from 10→5 in S177). Override via CODEX_MAX_HEALER_RUNS_PER_HOUR.\n\
         MAX_PER_HOUR=\"${CODEX_MAX_HEALER_RUNS_PER_HOUR:-5}\"\nONE_HOUR_AGO=$(date\
@@ -108,13 +108,13 @@ jobs:
         \ \\\n    --jq '.total_count' 2>/dev/null || echo \"0\")\n  if [ \"$RECENT\"\
         \ -ge \"$MAX_PER_HOUR\" ]; then\n    echo \"::warning::Self-healing run cap\
         \ reached: ${RECENT} runs in the last hour on ${HEAD_BRANCH} (max ${MAX_PER_HOUR}).\
-        \ Skipping to break cascade (issue #3860 SELF_HEALING_001).\"\n    echo \"\
+        \ Skipping to break cascade (issue  #3860 SELF_HEALING_001).\"\n    echo \"\
         skip=true\" >> \"$GITHUB_OUTPUT\"\n    echo \"### \U0001F6D1 Cascade Brake\
         \ Activated\" >> \"$GITHUB_STEP_SUMMARY\"\n    echo \"Run cap: **${RECENT}**\
         \ healer runs in the past hour on \\`${HEAD_BRANCH}\\` (max ${MAX_PER_HOUR}).\"\
         \ >> \"$GITHUB_STEP_SUMMARY\"\n    echo \"Skipping this run to break self-healing\
         \ cascade (SELF_HEALING_001).\" >> \"$GITHUB_STEP_SUMMARY\"\n    echo \"See:\
-        \ [issue #3860](https://github.com/${GITHUB_REPOSITORY}/issues/3860)\" >>\
+        \ [issue  #3860](https://github.com/${GITHUB_REPOSITORY}/issues/3860)\" >>\
         \ \"$GITHUB_STEP_SUMMARY\"\n    exit 0\n  fi\nfi\necho \"skip=false\" >> \"\
         $GITHUB_OUTPUT\"\n"
     - name: Set up Python (cached)
@@ -142,7 +142,7 @@ jobs:
         \ of 126 self-healing failures (CI health alert 2026-03-21):\n# the venv pip\
         \ launcher was unavailable on cache misses, causing triage to exit 1\n# before\
         \ classify-run could run, which marked the whole workflow as failed.\n# S177\
-        \ hardening (issue #3977): rm stale venv + --clear + pip upgrade to\n# prevent\
+        \ hardening (issue  #3977): rm stale venv + --clear + pip upgrade to\n# prevent\
         \ corrupted partial-cache-restore venvs from causing silent failures.\nPYTHON_BIN=\"\
         ${VENV_PYTHON:-.venv_ci/bin/python}\"\nif ! \"$PYTHON_BIN\" -m pip install\
         \ requests --quiet 2>/dev/null; then\n  rm -rf .venv_ci\n  python3 -m venv\
@@ -173,13 +173,13 @@ jobs:
         \ pattern.\ncase \"$PATTERN\" in\n  ruff-*|import-*|yaml-*|timeout-config|unused-import|auto-fix|\\\
         \n  changelog-*|pip-cache-*|policy-gate-*|rebase-gate-*|mypy-baseline|\\\n\
         \  auth-delegation|branch-diverged|push-race|autostash-race)\n    echo \"\
-        fixable=true\"  >> \"$GITHUB_OUTPUT\"\n    ;;\n  self-healing)\n    # Self-healing\
-        \ cascade detected (SELF_HEALING_001):\n    # The triggering workflow is itself\
-        \ an Iterative Self-Healing CI run.\n    # Most common root cause: the venv\
-        \ pip launcher being unavailable on cache miss caused\n    # triage to fail\
-        \ before classify-run could run (fixed in S172).\n    # This pattern is not\
-        \ auto-fixable here — it indicates the self-healing\n    # loop itself has\
-        \ an infrastructure issue.  Emit a clear summary for\n    # the ci-health-alert-agent\
+        fixable=true\"  >> \"$GITHUB_OUTPUT\"\n    ;;\n  self-healing)\n  # Self-healing\
+        \ cascade detected (SELF_HEALING_001):\n  # The triggering workflow is itself\
+        \ an Iterative Self-Healing CI run.\n  # Most common root cause: the venv\
+        \ pip launcher being unavailable on cache miss caused\n  # triage to fail\
+        \ before classify-run could run (fixed in S172).\n  # This pattern is not\
+        \ auto-fixable here — it indicates the self-healing\n  # loop itself has\
+        \ an infrastructure issue.  Emit a clear summary for\n  # the ci-health-alert-agent\
         \ to detect and report.\n    echo \"fixable=false\" >> \"$GITHUB_OUTPUT\"\n\
         \    echo \"### ⚠️ Self-Healing Cascade Detected (SELF_HEALING_001)\" >> \"\
         $GITHUB_STEP_SUMMARY\"\n    echo \"\" >> \"$GITHUB_STEP_SUMMARY\"\n    echo\
@@ -195,8 +195,8 @@ jobs:
         \ created even on full cache miss.\" >> \"$GITHUB_STEP_SUMMARY\"\n    echo\
         \ \"\" >> \"$GITHUB_STEP_SUMMARY\"\n    echo \"See: [\\`SELF_HEALING_001\\\
         `](.codex/patterns/ci_failure_patterns.yaml)\" >> \"$GITHUB_STEP_SUMMARY\"\
-        \n    ;;\n  integration-branch-direct-session)\n    # REQ-11: session on integration\
-        \ branch — non-fixable; needs sub-PR creation.\n    # Post an informative\
+        \n    ;;\n  integration-branch-direct-session)\n  # REQ-11: session on integration\
+        \ branch — non-fixable; needs sub-PR creation.\n  # Post an informative\
         \ escalation comment and skip auto-fix.\n    echo \"fixable=false\" >> \"\
         $GITHUB_OUTPUT\"\n    echo \"### \U0001F6AB REQ-11: Integration-Branch Direct-Session\
         \ Detected\" >> \"$GITHUB_STEP_SUMMARY\"\n    echo \"\" >> \"$GITHUB_STEP_SUMMARY\"\
@@ -208,11 +208,11 @@ jobs:
         `\\`bash\" >> \"$GITHUB_STEP_SUMMARY\"\n    echo \"gh workflow run copilot-session-chain.yml\
         \ -f source_branch=0D_base_ -f session_title=\\\"<task>\\\"\" >> \"$GITHUB_STEP_SUMMARY\"\
         \n    echo \"\\`\\`\\`\" >> \"$GITHUB_STEP_SUMMARY\"\n    echo \"See: [INTEGRATION_BRANCH_MODEL.md](.codex/docs/INTEGRATION_BRANCH_MODEL.md)\"\
-        \ >> \"$GITHUB_STEP_SUMMARY\"\n    ;;\n  coverage-timeout)\n    # Coverage/test\
-        \ timeout failure (P19 pattern): pre-existing shadow-import\n    # failures\
-        \ (config.openai_client, services.github.client) cause the\n    # Resilient\
-        \ Validation Suite and Pre-Merge Validation to time out.\n    # Not auto-fixable\
-        \ here — root cause is upstream module shadow imports.\n    # Escalated to\
+        \ >> \"$GITHUB_STEP_SUMMARY\"\n    ;;\n  coverage-timeout)\n  # Coverage/test\
+        \ timeout failure (P19 pattern): pre-existing shadow-import\n  # failures\
+        \ (config.openai_client, services.github.client) cause the\n  # Resilient\
+        \ Validation Suite and Pre-Merge Validation to time out.\n  # Not auto-fixable\
+        \ here — root cause is upstream module shadow imports.\n  # Escalated to\
         \ Copilot Coding Agent via copilot-escalation job.\n    echo \"fixable=false\"\
         \ >> \"$GITHUB_OUTPUT\"\n    echo \"### ⏱️ Coverage / Test Timeout (P19)\"\
         \ >> \"$GITHUB_STEP_SUMMARY\"\n    echo \"\" >> \"$GITHUB_STEP_SUMMARY\"\n\
@@ -231,8 +231,8 @@ jobs:
         \ \"**Action:** These failures pre-date this PR. Copilot escalation will\"\
         \ >> \"$GITHUB_STEP_SUMMARY\"\n    echo \"be triggered to investigate and\
         \ fix the shadow-import root cause.\" >> \"$GITHUB_STEP_SUMMARY\"\n    ;;\n\
-        \  unknown)\n    # Pattern unrecognised by collect_telemetry.py classify-run.\n\
-        \    # This occurs when: (a) the run log is not yet available, (b) no\n  \
+        \  unknown)\n  # Pattern unrecognised by collect_telemetry.py classify-run.\n\
+        \  # This occurs when: (a) the run log is not yet available, (b) no\n  \
         \  # known keyword matches, or (c) classify-run itself failed.\n    # Not\
         \ auto-fixable — escalate to human + Copilot for investigation.\n    echo\
         \ \"fixable=false\" >> \"$GITHUB_OUTPUT\"\n    echo \"### ❓ Unknown Failure\
@@ -326,7 +326,7 @@ jobs:
     - name: Install tools
       run: "# Resilient pip install: prefer venv binary but recreate the venv on cache\
         \ miss\n# instead of installing to system/user site-packages (same fix as\
-        \ triage — S172).\n# S177 hardening (issue #3977): rm stale venv + --clear\
+        \ triage — S172).\n# S177 hardening (issue  #3977): rm stale venv + --clear\
         \ + pip upgrade.\nPYTHON_BIN=\"${VENV_PYTHON:-.venv_ci/bin/python}\"\nif !\
         \ \"$PYTHON_BIN\" -m pip install ruff black isort --quiet 2>/dev/null; then\n\
         \  rm -rf .venv_ci\n  python3 -m venv --clear .venv_ci\n  PYTHON_BIN=\".venv_ci/bin/python\"\
@@ -368,11 +368,11 @@ jobs:
         * ]]; then\n  PR_NUMBER=$(gh pr list --head \"${HEAD_BRANCH}\" \\\n    --repo\
         \ Aries-Serpent/_codex_ --json number -q '.[0].number' 2>/dev/null || echo\
         \ \"\")\n  if [ -n \"$PR_NUMBER\" ]; then\n    echo \"  Running branch_rebase_check.py\
-        \ --auto-merge-skip-ci for PR #${PR_NUMBER}…\"\n    python scripts/ci/branch_rebase_check.py\
+        \ --auto-merge-skip-ci for PR  #${PR_NUMBER}…\"\n    python scripts/ci/branch_rebase_check.py\
         \ \\\n      --repo Aries-Serpent/_codex_ \\\n      --pr \"${PR_NUMBER}\" \\\
         \n      --auto-merge-skip-ci \\\n      --post-comment \\\n      --upsert-dashboard\
         \ \\\n      --github-output \\\n      --github-summary \\\n      2>&1 | tee\
-        \ /tmp/fix_output.txt\n    # The script merges via API — no local file changes\
+        \ /tmp/fix_output.txt\n  # The script merges via API — no local file changes\
         \ to stage\n    echo \"changed=false\" >> \"$GITHUB_OUTPUT\"\n    echo \"\
         ✅ Branch rebase check/auto-merge complete\" >> \"$GITHUB_STEP_SUMMARY\"\n\
         \  else\n    echo \"  ⚠️ Could not determine PR number for branch ${HEAD_BRANCH}\"\
@@ -381,7 +381,7 @@ jobs:
         \ --pattern-name flag correctly runs only the matching pattern,\n  # making\
         \ each iteration faster and the diff more targeted.\n  python scripts/ci/auto_fix_common_issues.py\
         \ --pattern-name \"${PATTERN}\" \\\n    2>&1 | tee /tmp/fix_output.txt\n \
-        \ if [ \"${PIPESTATUS[0]}\" -ne 0 ]; then\n    # --pattern-name found no match;\
+        \ if [ \"${PIPESTATUS[0]}\" -ne 0 ]; then\n  # --pattern-name found no match;\
         \ fall back to running all patterns\n    python scripts/ci/auto_fix_common_issues.py\
         \ \\\n      2>&1 | tee /tmp/fix_output.txt\n  fi\nfi\n\n# Restore overlaid\
         \ trusted scripts — only actual fix outputs should be staged\nif [ -f \"$RUNNER_TEMP/overlaid_scripts.txt\"\
@@ -654,10 +654,10 @@ jobs:
         \ read -r sweep_file; do\n        if echo \"${PR_FILES}\" | grep -qxF \"${sweep_file}\"\
         ; then\n          _conflict_pr=\"${PR_NUM}\"\n          break 2\n        fi\n\
         \      done <<< \"${SWEEP_FILES}\"\n    done\n    if [ -n \"${_conflict_pr}\"\
-        \ ]; then\n      echo \"::warning::Open PR #${_conflict_pr} touches the same\
+        \ ]; then\n      echo \"::warning::Open PR  #${_conflict_pr} touches the same\
         \ files — deferring sweep push to '${HEAD_BRANCH}' to prevent merge conflict.\"\
         \n      echo \"### ⏭️ Sweep Push Deferred — open-PR conflict guard\" >> \"\
-        $GITHUB_STEP_SUMMARY\"\n      echo \"Open PR #${_conflict_pr} touches the\
+        $GITHUB_STEP_SUMMARY\"\n      echo \"Open PR  #${_conflict_pr} touches the\
         \ same files. Push to \\`${HEAD_BRANCH}\\` deferred.\" >> \"$GITHUB_STEP_SUMMARY\"\
         \n      echo \"The sweep will be applied the next time the conflicting PR\
         \ merges.\" >> \"$GITHUB_STEP_SUMMARY\"\n      exit 0\n    fi\n  fi\nfi\n\n\
@@ -754,12 +754,12 @@ jobs:
         \ || true\nimport os, sys, json\nsys.path.insert(0, \"scripts/ci\")\ntry:\n\
         \    import pattern_recorder as pr\n    db = os.environ.get(\"CODEX_DB_PATH\"\
         , os.path.expanduser(\"~/.codex/cli_history.db\"))\n    conn = pr._open_db(db)\n\
-        \n    # --- High-recurrence table ---\n    rows = pr.high_recurrence(conn,\
+        \n  # --- High-recurrence table ---\n    rows = pr.high_recurrence(conn,\
         \ min_occurrences=3, min_fix_rate=0.0)\n    if rows:\n        lines = [\"\
         | Pattern | Total | Fix% |\",\n                 \"|---------|-------|------|\"\
         ]\n        for r in rows[:5]:\n            lines.append(f\"| `{r['pattern_name']}`\
         \ | {r['total']} | {r['fix_rate']*100:.0f}% |\")\n        hr_table = \"\\\
-        n\".join(lines)\n    else:\n        hr_table = \"\"\n\n    # --- Cross-PR\
+        n\".join(lines)\n    else:\n        hr_table = \"\"\n\n  # --- Cross-PR\
         \ correlation table (Phase 8 P3) ---\n    cross = pr.cross_pr_correlation(conn,\
         \ min_prs=2)\n    if cross:\n        clines = [\"| Pattern | PRs | Total |\"\
         ,\n                  \"|---------|-----|-------|\"]\n        for r in cross[:5]:\n\
@@ -822,7 +822,7 @@ jobs:
         \ fix\\n3. Push — CI will auto-close this issue on green\\n' \\\n    >> \"\
         ${RUNNER_TEMP}/issue_body.md\"\n  ISSUE_URL=$(gh issue create \\\n    --repo\
         \ Aries-Serpent/_codex_ \\\n    --title \"CI Failure: ${WORKFLOW_NAME} (run\
-        \ #${RUN_ID})\" \\\n    --body-file \"${RUNNER_TEMP}/issue_body.md\" \\\n\
+        \  #${RUN_ID})\" \\\n    --body-file \"${RUNNER_TEMP}/issue_body.md\" \\\n\
         \    --label \"ci-failure\" 2>/dev/null || echo \"\")\n  if [ -n \"$ISSUE_URL\"\
         \ ]; then\n    echo \"✅ Created escalation issue: ${ISSUE_URL}\" >> \"$GITHUB_STEP_SUMMARY\"\
         \n  else\n    echo \"⚠️ Could not create escalation issue (gh CLI unavailable\
@@ -851,7 +851,7 @@ jobs:
         cat > \"${RUNNER_TEMP}/copilot_escalation.txt\" <<COPILOT_EOF\n<!-- copilot-escalation:${PR_NUMBER}\
         \ -->\n## \U0001F916 Copilot Self-Healing Escalation\n\nAuto-fix patterns\
         \ exhausted for this failure. Requesting Copilot Coding Agent assistance.\n\
-        \n@copilot Fix the failing CI workflow \"${WORKFLOW_NAME}\" (run #${RUN_ID}).\n\
+        \n@copilot Fix the failing CI workflow \"${WORKFLOW_NAME}\" (run  #${RUN_ID}).\n\
         \n**Context:**\n- Workflow: \\`${WORKFLOW_NAME}\\`\n- Failed run: [${RUN_ID}](${RUN_URL})\n\
         - Pattern: \\`${PATTERN}\\` (auto-fix not available or exhausted)\n- Branch:\
         \ \\`${HEAD_BRANCH}\\`\n- Commit: \\`${HEAD_SHA}\\`\n\n**High-Recurrence Patterns\
@@ -871,10 +871,10 @@ jobs:
         \ comment \"$PR_NUMBER\" --repo Aries-Serpent/_codex_ \\\n  --body-file \"\
         ${RUNNER_TEMP}/copilot_escalation.txt\"\n\necho \"### \U0001F916 Copilot Escalation\
         \ Posted\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"Posted \\`@copilot\\` fix prompt\
-        \ on PR #${PR_NUMBER}.\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"| Key | Value\
+        \ on PR  #${PR_NUMBER}.\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"| Key | Value\
         \ |\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"|-----|-------|\" >> \"$GITHUB_STEP_SUMMARY\"\
         \necho \"| Pattern | \\`${PATTERN}\\` |\" >> \"$GITHUB_STEP_SUMMARY\"\necho\
-        \ \"| PR | #${PR_NUMBER} |\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"| Run | [${RUN_ID}](${RUN_URL})\
+        \ \"| PR |  #${PR_NUMBER} |\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"| Run | [${RUN_ID}](${RUN_URL})\
         \ |\" >> \"$GITHUB_STEP_SUMMARY\"\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}

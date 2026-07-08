@@ -20,7 +20,7 @@ class AgentExecutionStandard:
         return {
             "step": 2,
             "task_brief": brief,
-            "contains": ["task definition", "requirements", "constraints", "status"]
+            "contains": ["task definition", "requirements", "constraints", "status"],
         }
 
     def step_3_get_related_context(self, entity_id: str) -> Dict[str, Any]:
@@ -29,10 +29,12 @@ class AgentExecutionStandard:
         return {
             "step": 3,
             "dependencies": context,
-            "contains": ["upstream requirements", "downstream impacts", "lateral relationships"]
+            "contains": ["upstream requirements", "downstream impacts", "lateral relationships"],
         }
 
-    def step_4_impact_analysis(self, entity_id: str, proposed_changes: Dict[str, Any]) -> Dict[str, Any]:
+    def step_4_impact_analysis(
+        self, entity_id: str, proposed_changes: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """Step 4: Analyze impact of proposed changes."""
         impact = self.tools.impact_analysis(entity_id, proposed_changes)
         return {
@@ -41,8 +43,8 @@ class AgentExecutionStandard:
             "decision_criteria": [
                 "Risk level assessment",
                 "Affected entity count",
-                "Downstream impact scope"
-            ]
+                "Downstream impact scope",
+            ],
         }
 
     def step_5_execute_task(self, task_id: str, action_plan: List[str]) -> Dict[str, Any]:
@@ -54,8 +56,8 @@ class AgentExecutionStandard:
                 "actions_executed": action_plan,
                 "state_before": "from step 3 (related_context)",
                 "changes_made": "structured and logged",
-                "validation": "all changes reference task_id and phase_id"
-            }
+                "validation": "all changes reference task_id and phase_id",
+            },
         }
 
     def step_6_update_records(self, updates: Dict[str, Any]) -> Dict[str, Any]:
@@ -66,10 +68,10 @@ class AgentExecutionStandard:
                 "deliverable_status": "Complete/In Progress/Blocked",
                 "metrics_update": "If metrics.jsonl changed",
                 "decision_record": "If decisions.jsonl changed",
-                "timestamps": "All records include timestamp"
+                "timestamps": "All records include timestamp",
             },
             "record_updates": updates,
-            "validation": "All records have source_trace for auditability"
+            "validation": "All records have source_trace for auditability",
         }
 
     def step_7_rebuild_indexes(self) -> Dict[str, Any]:
@@ -79,7 +81,7 @@ class AgentExecutionStandard:
             "step": 7,
             "index_rebuild": result,
             "rebuilds": ["FTS for search", "Relationships graph", "Dependency chains"],
-            "validates": "All foreign keys and linkages"
+            "validates": "All foreign keys and linkages",
         }
 
     def step_8_validate_and_persist(self) -> Dict[str, Any]:
@@ -91,56 +93,58 @@ class AgentExecutionStandard:
             "persistence": {
                 "session_checkpoint": "Store phase_id, track_id, task_id",
                 "memory_consolidation": "STM insights with decision/action IDs",
-                "audit_trail": "All changes logged with source agent"
-            }
+                "audit_trail": "All changes logged with source agent",
+            },
         }
 
-    def execute_full_protocol(self, task_id: str = None, proposed_changes: Dict[str, Any] = None) -> Dict[str, Any]:
+    def execute_full_protocol(
+        self, task_id: str = None, proposed_changes: Dict[str, Any] = None
+    ) -> Dict[str, Any]:
         """Execute complete 8-step protocol."""
         protocol_execution = {
             "protocol_name": "Agent Execution Standard",
             "version": "0.1.0",
-            "steps": []
+            "steps": [],
         }
-        
+
         # Step 1
         step_1 = self.step_1_get_context()
         protocol_execution["steps"].append({"step": 1, "result": step_1})
-        
+
         # Step 2
         step_2 = self.step_2_get_task_brief(task_id)
         protocol_execution["steps"].append(step_2)
-        
+
         # Step 3 - Use task_id from step 2 if available
         if task_id or (step_2.get("task_brief") and step_2["task_brief"].get("task")):
             entity = task_id or step_2["task_brief"]["task"]["id"]
             step_3 = self.step_3_get_related_context(entity)
             protocol_execution["steps"].append(step_3)
-        
+
         # Step 4 - Impact analysis
         if proposed_changes and task_id:
             step_4 = self.step_4_impact_analysis(task_id, proposed_changes)
             protocol_execution["steps"].append(step_4)
-        
+
         # Steps 5-8 represented as templates
-        protocol_execution["steps"].append({
-            "step": 5,
-            "action": "Execute task-specific actions",
-            "input": "action_plan from step 4"
-        })
-        
-        protocol_execution["steps"].append({
-            "step": 6,
-            "action": "Update structured records",
-            "input": "results from step 5"
-        })
-        
+        protocol_execution["steps"].append(
+            {
+                "step": 5,
+                "action": "Execute task-specific actions",
+                "input": "action_plan from step 4",
+            }
+        )
+
+        protocol_execution["steps"].append(
+            {"step": 6, "action": "Update structured records", "input": "results from step 5"}
+        )
+
         step_7 = self.step_7_rebuild_indexes()
         protocol_execution["steps"].append(step_7)
-        
+
         step_8 = self.step_8_validate_and_persist()
         protocol_execution["steps"].append(step_8)
-        
+
         return protocol_execution
 
     def generate_agent_implementation_guide(self) -> str:
@@ -236,12 +240,12 @@ CI workflow `machine-readable-governance.yml` validates that:
 
 if __name__ == "__main__":
     standard = AgentExecutionStandard()
-    
+
     print("=== PART 9: Agent Execution Standard ===\n")
-    
+
     # Execute the protocol
     execution = standard.execute_full_protocol()
     print(f"8-Step Protocol Execution: {len(execution['steps'])} steps completed")
-    
+
     # Show the guide
     print("\n" + standard.generate_agent_implementation_guide())

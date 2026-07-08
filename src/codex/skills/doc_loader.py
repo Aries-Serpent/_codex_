@@ -31,6 +31,7 @@ from .models import BudgetConfig, DocMeta, PolicyConfig, RegisteredSkill, SkillM
 yaml: ModuleType | None
 try:
     import yaml as _yaml_module
+
     yaml = _yaml_module
 except (IOError, OSError):  # pragma: no cover
     yaml = None

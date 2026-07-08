@@ -54,8 +54,14 @@ def compute_per_pattern_stats(
     # use the total scenario count and known pattern proportions as denominator.
     # Pattern proportions (from complex_scenarios.py generate_complex_scenarios):
     pattern_proportions = {
-        "A": 0.15, "B": 0.15, "C": 0.15, "D": 0.15,
-        "E": 0.15, "F": 0.15, "G": 0.10, "H": 0.10,
+        "A": 0.15,
+        "B": 0.15,
+        "C": 0.15,
+        "D": 0.15,
+        "E": 0.15,
+        "F": 0.15,
+        "G": 0.10,
+        "H": 0.10,
     }
 
     total_scenarios_all_seeds = sum(r.get("total_scenarios", 0) for r in per_seed_results)
@@ -103,8 +109,10 @@ def print_report(stats: dict[str, dict], min_accuracy: float = 0.95) -> bool:
     if failing:
         print(f"\n⚠️  {len(failing)} pattern(s) below {min_accuracy:.0%} accuracy:")
         for pattern, data in failing:
-            print(f"\n  Pattern {pattern}: {data['accuracy']:.1%} accuracy "
-                  f"({data['failures']} failures / ~{data['estimated_total']} total)")
+            print(
+                f"\n  Pattern {pattern}: {data['accuracy']:.1%} accuracy "
+                f"({data['failures']} failures / ~{data['estimated_total']} total)"
+            )
             for ex in data["examples"][:3]:
                 print(f"    seed={ex.get('seed','?')} | {ex.get('audit_id','?')}")
                 print(f"      Expected: {ex.get('expected','?')}  Got: {ex.get('predicted','?')}")

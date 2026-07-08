@@ -491,7 +491,9 @@ class FSDPCheckpointManager:
 
         Security note: Checkpoint files should only be loaded from trusted sources.
         """
-        checkpoint = torch.load(checkpoint_path, map_location="cpu", weights_only=False)  # nosec B614 - Checkpoint contains optimizer state
+        checkpoint = torch.load(
+            checkpoint_path, map_location="cpu", weights_only=False
+        )  # nosec B614 - Checkpoint contains optimizer state
 
         with FSDP.state_dict_type(
             fsdp_model,
@@ -522,7 +524,9 @@ class FSDPCheckpointManager:
         Security note: Checkpoint files should only be loaded from trusted sources.
         """
         shard_path = checkpoint_path.parent / f"{checkpoint_path.stem}_rank{rank}.pt"
-        checkpoint = torch.load(shard_path, map_location="cpu", weights_only=False)  # nosec B614 - Checkpoint contains optimizer state
+        checkpoint = torch.load(
+            shard_path, map_location="cpu", weights_only=False
+        )  # nosec B614 - Checkpoint contains optimizer state
 
         with FSDP.state_dict_type(
             fsdp_model,

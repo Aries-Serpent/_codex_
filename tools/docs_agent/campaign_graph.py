@@ -2,7 +2,7 @@
 
 import json
 from pathlib import Path
-from typing import Dict, List, Any, Tuple
+from typing import Dict, List, Any
 import hashlib
 import uuid
 
@@ -10,11 +10,13 @@ import uuid
 class CampaignGraphBuilder:
     """Constructs directed graph of campaign entities and relationships."""
 
-    def __init__(self, canonical_dir: str = "docs-data/canonical", output_dir: str = "docs-data/generated"):
+    def __init__(
+        self, canonical_dir: str = "docs-data/canonical", output_dir: str = "docs-data/generated"
+    ):
         self.canonical_dir = Path(canonical_dir)
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Load all JSONL records
         self.phases = self._load_jsonl("campaign_phases.jsonl")
         self.tracks = self._load_jsonl("campaign_tracks.jsonl")
@@ -25,7 +27,7 @@ class CampaignGraphBuilder:
         self.timeline_events = self._load_jsonl("timeline_events.jsonl")
         self.requirements = self._load_jsonl("requirements.jsonl")
         self.documents = self._load_jsonl("documents.jsonl")
-        
+
         # Build relationships
         self.relationships = []
 
@@ -34,7 +36,7 @@ class CampaignGraphBuilder:
         filepath = self.canonical_dir / filename
         if not filepath.exists():
             return []
-        
+
         records = []
         with open(filepath) as f:
             for line in f:
@@ -60,7 +62,7 @@ class CampaignGraphBuilder:
                     "target_type": "track",
                     "relationship_type": "has_track",
                     "weight": 1.0,
-                    "status": "active"
+                    "status": "active",
                 }
                 self.relationships.append(rel)
 
@@ -69,14 +71,16 @@ class CampaignGraphBuilder:
         for deliverable in self.deliverables:
             if "track_id" in deliverable:
                 rel = {
-                    "id": self._make_relationship_id(deliverable["track_id"], deliverable["id"], "has_deliverable"),
+                    "id": self._make_relationship_id(
+                        deliverable["track_id"], deliverable["id"], "has_deliverable"
+                    ),
                     "source_id": deliverable["track_id"],
                     "source_type": "track",
                     "target_id": deliverable["id"],
                     "target_type": "deliverable",
                     "relationship_type": "has_deliverable",
                     "weight": 1.0,
-                    "status": "active"
+                    "status": "active",
                 }
                 self.relationships.append(rel)
 
@@ -90,17 +94,21 @@ class CampaignGraphBuilder:
                 phase_tracks = [t for t in self.tracks if t.get("phase_id") == phase_id]
                 for track in phase_tracks:
                     # Find deliverables in this track
-                    track_deliverables = [d for d in self.deliverables if d.get("track_id") == track["id"]]
+                    track_deliverables = [
+                        d for d in self.deliverables if d.get("track_id") == track["id"]
+                    ]
                     for deliverable in track_deliverables:
                         rel = {
-                            "id": self._make_relationship_id(agent["id"], deliverable["id"], "manages"),
+                            "id": self._make_relationship_id(
+                                agent["id"], deliverable["id"], "manages"
+                            ),
                             "source_id": agent["id"],
                             "source_type": "agent",
                             "target_id": deliverable["id"],
                             "target_type": "deliverable",
                             "relationship_type": "manages",
                             "weight": 0.7,
-                            "status": "active"
+                            "status": "active",
                         }
                         self.relationships.append(rel)
 
@@ -113,14 +121,16 @@ class CampaignGraphBuilder:
                 phase_deliverables = [d for d in self.deliverables if d.get("phase_id") == phase_id]
                 for deliverable in phase_deliverables:
                     rel = {
-                        "id": self._make_relationship_id(metric["id"], deliverable["id"], "measures"),
+                        "id": self._make_relationship_id(
+                            metric["id"], deliverable["id"], "measures"
+                        ),
                         "source_id": metric["id"],
                         "source_type": "metric",
                         "target_id": deliverable["id"],
                         "target_type": "deliverable",
                         "relationship_type": "measures",
                         "weight": 0.5,
-                        "status": "active"
+                        "status": "active",
                     }
                     self.relationships.append(rel)
 
@@ -133,14 +143,16 @@ class CampaignGraphBuilder:
                 phase_deliverables = [d for d in self.deliverables if d.get("phase_id") == phase_id]
                 for deliverable in phase_deliverables:
                     rel = {
-                        "id": self._make_relationship_id(requirement["id"], deliverable["id"], "constrains"),
+                        "id": self._make_relationship_id(
+                            requirement["id"], deliverable["id"], "constrains"
+                        ),
                         "source_id": requirement["id"],
                         "source_type": "requirement",
                         "target_id": deliverable["id"],
                         "target_type": "deliverable",
                         "relationship_type": "constrains",
                         "weight": 0.8,
-                        "status": "active"
+                        "status": "active",
                     }
                     self.relationships.append(rel)
 
@@ -156,7 +168,7 @@ class CampaignGraphBuilder:
                     "target_type": "phase",
                     "relationship_type": "gates",
                     "weight": 1.0,
-                    "status": "active"
+                    "status": "active",
                 }
                 self.relationships.append(rel)
 
@@ -168,7 +180,7 @@ class CampaignGraphBuilder:
         self.build_metric_feedback_relationships()
         self.build_requirement_to_deliverable_relationships()
         self.build_decision_to_phase_relationships()
-        
+
         return self.relationships
 
     def write_relationships_jsonl(self) -> int:
@@ -183,7 +195,7 @@ class CampaignGraphBuilder:
         """Execute complete graph build and export."""
         self.build_all_relationships()
         rel_count = self.write_relationships_jsonl()
-        
+
         return {
             "relationships": rel_count,
             "phases": len(self.phases),
@@ -191,7 +203,7 @@ class CampaignGraphBuilder:
             "deliverables": len(self.deliverables),
             "agents": len(self.agents),
             "metrics": len(self.metrics),
-            "decisions": len(self.decisions)
+            "decisions": len(self.decisions),
         }
 
 

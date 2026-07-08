@@ -104,20 +104,20 @@ jobs:
         \ echo \"\U0001F6AB Push skipped \u2014 active PR(s) detected on ${TARGET_REF}.\"\
         \n  else\n    git pull --rebase --autostash origin \"${TARGET_REF}\" 2>/dev/null\
         \ || true\n    git push origin \"HEAD:${TARGET_REF}\"\n    echo \"\u2705 CODEX_MANIFEST.json\
-        \ + compliance files refreshed and pushed to ${TARGET_REF}\"\n\n    # Re-trigger\
-        \ MkDocs Pages build explicitly after the [skip ci] commit.\n    # [skip ci]\
+        \ + compliance files refreshed and pushed to ${TARGET_REF}\"\n\n  # Re-trigger\
+        \ MkDocs Pages build explicitly after the [skip ci] commit.\n  # [skip ci]\
         \ prevents GitHub Actions workflows (including pages-mkdocs.yml) from\n  \
         \  # running on the auto-refresh push, but the branch-mode pages-build-deployment\n\
-        \    # (internal GitHub Pages service) is NOT skipped and would serve raw\
-        \ files \u2192 404.\n    # This explicit workflow_dispatch call bypasses [skip\
-        \ ci] and ensures the MkDocs\n    # site is always rebuilt after a manifest\
+        \  # (internal GitHub Pages service) is NOT skipped and would serve raw\
+        \ files \u2192 404.\n  # This explicit workflow_dispatch call bypasses [skip\
+        \ ci] and ensures the MkDocs\n  # site is always rebuilt after a manifest\
         \ refresh to main.\n    if [ \"${TARGET_REF}\" = \"main\" ]; then\n      echo\
         \ \"\U0001F504 Triggering pages-mkdocs.yml rebuild to prevent branch-mode\
         \ 404\u2026\"\n      gh workflow run pages-mkdocs.yml \\\n        --ref main\
         \ \\\n        --field reason=\"post-manifest-refresh-pages-heal\" 2>/dev/null\
         \ \\\n        && echo \"\u2705 pages-mkdocs.yml rebuild triggered\" \\\n \
         \       || echo \"\u26A0\uFE0F  Could not trigger pages-mkdocs.yml (non-fatal;\
-        \ pages-health-guard.yml will self-heal)\"\n\n      # Auto-approve pending runs (manifest sync gate)\n      echo \"⚡ Triggering auto-approve-workflows.yml (manifest sync gate)...\"\n      gh workflow run auto-approve-workflows.yml \\\n        --ref \"${TARGET_REF}\" \\\n        -f approval_source=workflow-execution-gate \\\n        -f approval_intent=auto_approve_action_required \\\n        -f target_pr=\"${{ github.event.pull_request.number }}\" \\\n        -f approval_reason=\"codex-manifest-refresh-passed\" 2>/dev/null \\\n        && echo \"✅ auto-approve-workflows.yml triggered (manifest sync)\" \\\n        || echo \"⚠️  Could not trigger auto-approve-workflows.yml (non-fatal)\"\n    fi\n  fi\nfi\n"
+        \ pages-health-guard.yml will self-heal)\"\n\n  # Auto-approve pending runs (manifest sync gate)\n      echo \"⚡ Triggering auto-approve-workflows.yml (manifest sync gate)...\"\n      gh workflow run auto-approve-workflows.yml \\\n        --ref \"${TARGET_REF}\" \\\n        -f approval_source=workflow-execution-gate \\\n        -f approval_intent=auto_approve_action_required \\\n        -f target_pr=\"${{ github.event.pull_request.number }}\" \\\n        -f approval_reason=\"codex-manifest-refresh-passed\" 2>/dev/null \\\n        && echo \"✅ auto-approve-workflows.yml triggered (manifest sync)\" \\\n        || echo \"⚠️  Could not trigger auto-approve-workflows.yml (non-fatal)\"\n    fi\n  fi\nfi\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   rescue-comment:

@@ -159,9 +159,7 @@ def ensure_agents_md() -> bool:
     if precommit_txt:
         tools = sorted(set(tools) | {"pre-commit"})
 
-    required_sections = (
-        textwrap.dedent(
-            f"""
+    required_sections = textwrap.dedent(f"""
 # AGENTS.md — Maintainers & Automation Guide
 
 ## Scope & Non-Goals
@@ -194,10 +192,7 @@ def ensure_agents_md() -> bool:
 ## CI Reference (read-only)
 - Continuous Integration runs `pre-commit run --all-files` and `pytest` on PRs/commits.
 - See the workflow definition under `.github/workflows/ci.yml` (do **not** modify or activate).
-"""
-        ).strip()
-        + "\n"
-    )
+""").strip() + "\n"
 
     if not AGENTS.exists():
         return write_if_changed(
@@ -226,9 +221,7 @@ def ensure_agents_md() -> bool:
 def ensure_readme_refs() -> bool:
     txt = read(README)
     if not txt:
-        base = (
-            textwrap.dedent(
-                """
+        base = textwrap.dedent("""
 # codex-universal
 
 See [docs/guides/AGENTS.md](docs/guides/AGENTS.md) for environment variables, logging roles, testing expectations, and tool usage.
@@ -245,10 +238,7 @@ See the read-only workflow reference at `.github/workflows/ci.yml` (not activate
 ## Logging Locations
 - SQLite DB: `.codex/session_logs.db`
 - NDJSON sessions: `.codex/sessions/<SESSION_ID>.ndjson`
-"""
-            ).strip()
-            + "\n"
-        )
+""").strip() + "\n"
         return write_if_changed(
             README, base, "Create minimal README emphasizing AGENTS, CI, and logging."
         )
@@ -263,8 +253,7 @@ See the read-only workflow reference at `.github/workflows/ci.yml` (not activate
         changed = True
 
     if "Continuous Integration (local parity)" not in txt:
-        ci_block = textwrap.dedent(
-            """
+        ci_block = textwrap.dedent("""
 ## Continuous Integration (local parity)
 Run locally before pushing:
 ```bash
@@ -272,20 +261,17 @@ pre-commit run --all-files
 pytest -q
 ```
 See the read-only workflow reference at `.github/workflows/ci.yml` (not activated by this script).
-"""
-        ).strip()
+""").strip()
         txt = txt.rstrip() + "\n\n" + ci_block + "\n"
         write_if_changed(README, txt, "Ensure CI local run instructions are present.")
         changed = True
 
     if "Logging Locations" not in txt:
-        log_block = textwrap.dedent(
-            """
+        log_block = textwrap.dedent("""
 ## Logging Locations
 - SQLite DB: `.codex/session_logs.db`
 - NDJSON sessions: `.codex/sessions/<SESSION_ID>.ndjson`
-"""
-        ).strip()
+""").strip()
         txt = txt.rstrip() + "\n\n" + log_block + "\n"
         write_if_changed(README, txt, "Ensure logging locations are documented.")
         changed = True

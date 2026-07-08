@@ -1,7 +1,6 @@
 """Serialization module with insecure deserialization."""
 
 import pickle
-import json
 from typing import Any
 
 
@@ -10,10 +9,10 @@ class DataDeserializer:
 
     def load_from_pickle(self, data: bytes) -> Any:
         """Load data from pickle format - CWE-502: Insecure deserialization.
-        
+
         Args:
             data: Pickled data from untrusted source
-            
+
         Returns:
             Deserialized Python object
         """
@@ -22,10 +21,10 @@ class DataDeserializer:
 
     def load_cached_object(self, cache_file: str) -> Any:
         """Load cached object from pickle file - CWE-502 vulnerability.
-        
+
         Args:
             cache_file: Path to cached pickle file
-            
+
         Returns:
             Cached object (VULNERABLE)
         """
@@ -35,10 +34,10 @@ class DataDeserializer:
 
     def deserialize_user_data(self, data: bytes) -> dict:
         """Deserialize user-provided data - CWE-502 vulnerability.
-        
+
         Args:
             data: User-provided data (untrusted)
-            
+
         Returns:
             Deserialized dictionary (VULNERABLE)
         """
@@ -52,10 +51,10 @@ class ConfigLoader:
 
     def load_pickle_config(self, config_path: str) -> dict:
         """Load configuration from pickle file - CWE-502 vulnerability.
-        
+
         Args:
             config_path: Path to pickle configuration file
-            
+
         Returns:
             Configuration dictionary (VULNERABLE)
         """

@@ -30,7 +30,7 @@ jobs:
       run: "python3 - << 'PYEOF'\nimport datetime\nimport os\nimport re\nimport sys\n\
         import yaml\n\n# ── Configuration ────────────────────────────────────────────────\n\
         AGENT_ID            = \"rust-error-validator\"\nOBSERVATION_START   = datetime.date(2026,\
-        \ 3, 4)   # D_CAPABLE promotion date\nOBSERVATION_DAYS    = 30\nREGISTRY_PATH\
+        \ 3, 4)  # D_CAPABLE promotion date\nOBSERVATION_DAYS    = 30\nREGISTRY_PATH\
         \       = \".github/agents/AGENT_REGISTRY.yaml\"\nBASELINE_ADR        = \"\
         docs/arch/ADR-20260304-rust-error-validator-d-capable-promotion.md\"\nHISTORICAL_EVIDENCE\
         \ = \".codex/PHASE8_FINAL_COGNITIVE_BRAIN_UPDATE.md\"\n\n# ── Today's date\
@@ -62,7 +62,7 @@ jobs:
         \ data per task requirements.\nhist_evidence = \"not found\"\nfor path in\
         \ [BASELINE_ADR, HISTORICAL_EVIDENCE]:\n    try:\n        with open(path)\
         \ as f:\n            text = f.read()\n        if \"rust-error-validator\"\
-        \ in text:\n            # Extract pass rate summary if present\n         \
+        \ in text:\n  # Extract pass rate summary if present\n         \
         \   m = re.search(r\"(24/24|100%|violations_30d.*?0)\", text)\n          \
         \  hist_evidence = m.group(0) if m else \"present (no summary extracted)\"\
         \n            print(f\"Historical evidence ({path}): {hist_evidence}\")\n\
@@ -100,7 +100,7 @@ jobs:
 
         echo "|-------|-------|" >> "$GITHUB_STEP_SUMMARY"
 
-        echo "| Observation start | 2026-03-04 (PR #3495) |" >> "$GITHUB_STEP_SUMMARY"
+        echo "| Observation start | 2026-03-04 (PR  #3495) |" >> "$GITHUB_STEP_SUMMARY"
 
         echo "| Observation end   | 2026-04-03 (day 30) |" >> "$GITHUB_STEP_SUMMARY"
 
@@ -151,7 +151,7 @@ jobs:
         echo "**ADR:** \`docs/arch/ADR-20260304-rust-error-validator-d-capable-promotion.md\`"
         >> "$GITHUB_STEP_SUMMARY"
 
-        echo "**Scheduled by:** copilot-swe-agent[bot] (PR #3496, 2026-03-05)" >>
+        echo "**Scheduled by:** copilot-swe-agent[bot] (PR  #3496, 2026-03-05)" >>
         "$GITHUB_STEP_SUMMARY"
 
         '

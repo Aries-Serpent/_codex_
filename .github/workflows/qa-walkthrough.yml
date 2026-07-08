@@ -85,7 +85,7 @@ jobs:
         src\")\nissues = []\n\nfor py_file in sorted(src_root.rglob(\"*.py\")):\n\
         \    try:\n        source = py_file.read_text(encoding=\"utf-8\")\n      \
         \  tree = ast.parse(source, filename=str(py_file))\n        for node in ast.walk(tree):\n\
-        \            # Detect bare except\n            if isinstance(node, ast.ExceptHandler)\
+        \  # Detect bare except\n            if isinstance(node, ast.ExceptHandler)\
         \ and node.type is None:\n                issues.append({\n              \
         \      \"file\": str(py_file),\n                    \"line\": node.lineno,\n\
         \                    \"severity\": \"warning\",\n                    \"category\"\

@@ -320,9 +320,7 @@ class ArchiveOperations:
                 )
             return blob_scrubbed
 
-    def _get_artifact_by_sha(
-        self, execute: Callable[..., Any], sha: str
-    ) -> dict[str, Any] | None:
+    def _get_artifact_by_sha(self, execute: Callable[..., Any], sha: str) -> dict[str, Any] | None:
         """Retrieve artifact by content SHA."""
         return execute(
             "SELECT * FROM artifact WHERE content_sha256 = :sha",

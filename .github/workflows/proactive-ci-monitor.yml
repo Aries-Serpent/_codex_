@@ -109,7 +109,7 @@ jobs:
         ','dry-run':'\U0001F515','already-addressed':'✅','skipped-transient':'⏭️'}\n\
         \    for d in details[:30]:\n        icon = icons.get(d['action'], '❓')\n\
         \        conf = f\"{d.get('confidence',0):.0%}\"\n        lines.append(\n\
-        \            f\"| #{d['pr']} | `{d['sha']}` | {d['workflow'][:38]} \"\n  \
+        \            f\"|  #{d['pr']} | `{d['sha']}` | {d['workflow'][:38]} \"\n  \
         \          f\"| `{d['pattern_id']}` | {conf} | {icon} {d['action']} |\"\n\
         \        )\n    if len(details) > 30:\n        lines.append(f\"\\n_… and {len(details)-30}\
         \ more — download the artifact_\")\nwith open(os.environ['GITHUB_STEP_SUMMARY'],\

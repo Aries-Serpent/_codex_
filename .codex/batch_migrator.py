@@ -6,7 +6,6 @@ import os
 import re
 import sys
 from pathlib import Path
-from typing import Optional
 
 
 def migrate_print_to_logger(source: str, file_path: Path) -> tuple[str, int]:

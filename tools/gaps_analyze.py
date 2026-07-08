@@ -13,6 +13,7 @@ Heuristics:
 Output:
 - audit_artifacts/gaps.json with entries including id (assigned later), name, severity, confidence, weight, maturity, flags
 """
+
 from __future__ import annotations
 
 import argparse

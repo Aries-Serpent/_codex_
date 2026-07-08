@@ -91,7 +91,9 @@ class DiscussionManager:
             "title": title,
             "body": body,
         }
-        result = self._api._graphql_with_retry(mutation, variables, operation_name="CreateDiscussion")
+        result = self._api._graphql_with_retry(
+            mutation, variables, operation_name="CreateDiscussion"
+        )
         return result.get("data", {}).get("createDiscussion", {}).get("discussion", result)
 
     def post_session_summary_discussion(
@@ -201,7 +203,9 @@ class DiscussionManager:
         owner, repo_name = repo.split("/", 1)
 
         if marker:
-            existing_id = self._api._find_discussion_comment(owner, repo_name, discussion_number, marker)
+            existing_id = self._api._find_discussion_comment(
+                owner, repo_name, discussion_number, marker
+            )
             if existing_id:
                 return self._api._update_discussion_comment(existing_id, body)
 
@@ -274,7 +278,9 @@ class DiscussionManager:
           }
         }
         """
-        result = self._api._graphql(query, {"owner": owner, "repo": repo, "number": discussion_number})
+        result = self._api._graphql(
+            query, {"owner": owner, "repo": repo, "number": discussion_number}
+        )
         discussion = result.get("data", {}).get("repository", {}).get("discussion") or {}
         node_id: str = discussion.get("id", "")
         if not node_id:
@@ -1081,4 +1087,3 @@ class DiscussionManager:
             )
             category_id = fallback["id"]
         return repo_id, category_id
-

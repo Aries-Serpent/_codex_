@@ -26,6 +26,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class ValidationError:
     """Validation error details"""
+
     record_id: str
     record_type: str
     field: Optional[str]
@@ -62,7 +63,7 @@ class SchemaValidator:
 
         for schema_file in schema_files:
             try:
-                with open(schema_file, 'r') as f:
+                with open(schema_file, "r") as f:
                     schema = json.load(f)
                     record_type = schema_file.stem
                     self.schemas[record_type] = schema
@@ -86,15 +87,15 @@ class SchemaValidator:
         errors = []
 
         # Require id and type
-        if 'id' not in record:
+        if "id" not in record:
             errors.append("Missing required field: id")
-        if 'type' not in record:
+        if "type" not in record:
             errors.append("Missing required field: type")
 
         if errors:
             return False, errors
 
-        record_type = record.get('type')
+        record_type = record.get("type")
         if record_type not in self.schemas:
             errors.append(f"Unknown record type: {record_type}")
             return False, errors
@@ -118,54 +119,54 @@ class SchemaValidator:
             Dictionary with validation results
         """
         results: Dict[str, Any] = {
-            'total_records': 0,
-            'valid_records': 0,
-            'invalid_records': 0,
-            'errors': [],
-            'records_by_type': {},
+            "total_records": 0,
+            "valid_records": 0,
+            "invalid_records": 0,
+            "errors": [],
+            "records_by_type": {},
         }
 
-        with open(jsonl_file, 'r') as f:
+        with open(jsonl_file, "r") as f:
             for line_no, line in enumerate(f, 1):
                 line = line.strip()
                 if not line:
                     continue
 
-                results['total_records'] += 1
+                results["total_records"] += 1
 
                 try:
                     record = json.loads(line)
                     is_valid, errors = self.validate_record(record)
 
-                    record_type = record.get('type', 'unknown')
-                    record_id = record.get('id', 'unknown')
+                    record_type = record.get("type", "unknown")
+                    record_id = record.get("id", "unknown")
 
-                    if record_type not in results['records_by_type']:
-                        results['records_by_type'][record_type] = 0
-                    results['records_by_type'][record_type] += 1
+                    if record_type not in results["records_by_type"]:
+                        results["records_by_type"][record_type] = 0
+                    results["records_by_type"][record_type] += 1
 
                     if is_valid:
-                        results['valid_records'] += 1
+                        results["valid_records"] += 1
                     else:
-                        results['invalid_records'] += 1
+                        results["invalid_records"] += 1
                         for error in errors:
-                            results['errors'].append({
-                                'line': line_no,
-                                'record_id': record_id,
-                                'record_type': record_type,
-                                'message': error
-                            })
+                            results["errors"].append(
+                                {
+                                    "line": line_no,
+                                    "record_id": record_id,
+                                    "record_type": record_type,
+                                    "message": error,
+                                }
+                            )
 
                 except json.JSONDecodeError as e:
-                    results['invalid_records'] += 1
-                    results['errors'].append({
-                        'line': line_no,
-                        'message': f'Invalid JSON: {e}'
-                    })
+                    results["invalid_records"] += 1
+                    results["errors"].append({"line": line_no, "message": f"Invalid JSON: {e}"})
 
-        results['accuracy_percent'] = (
-            results['valid_records'] / results['total_records'] * 100
-            if results['total_records'] > 0 else 0
+        results["accuracy_percent"] = (
+            results["valid_records"] / results["total_records"] * 100
+            if results["total_records"] > 0
+            else 0
         )
 
         return results

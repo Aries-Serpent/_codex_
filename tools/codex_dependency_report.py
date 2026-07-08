@@ -4,6 +4,7 @@
 Collects installed Python distributions using ``importlib.metadata`` and
 writes a JSON report sorted by package name.
 """
+
 from __future__ import annotations
 
 import argparse

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Rewrite documentation links and update mkdocs navigation."""
+
 import argparse
 import re
 from pathlib import Path

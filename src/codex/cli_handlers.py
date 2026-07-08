@@ -33,6 +33,7 @@ class CommandResult:
 
     Provides consistent return value for all command handlers.
     """
+
     success: bool
     message: str = ""
     error: Optional[Exception] = None
@@ -209,6 +210,7 @@ class CommandRegistry:
 
 # Extracted command handlers (replacing procedural functions from cli.py)
 
+
 class IngestionCommand(CLICommandHandler):
     """Ingest example data into the Codex environment.
 
@@ -218,7 +220,9 @@ class IngestionCommand(CLICommandHandler):
     name = "ingest"
     help = "Ingest example data into Codex"
 
-    def _execute_impl(self, src: Optional[Path] = None, dst: Optional[Path] = None) -> CommandResult:
+    def _execute_impl(
+        self, src: Optional[Path] = None, dst: Optional[Path] = None
+    ) -> CommandResult:
         """Ingest data from source to destination.
 
         Args:

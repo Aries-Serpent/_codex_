@@ -4,6 +4,7 @@ Deterministically build a tiny SentencePiece model offline for tests.
 Writes: tests/fixtures/spm_toy.model and spm_toy.vocab
 Skips gracefully if sentencepiece is not installed.
 """
+
 from __future__ import annotations
 
 import pathlib
@@ -26,15 +27,13 @@ def main():
     model_prefix = out_dir / "spm_toy"
 
     # Small synthetic corpus; deterministic content
-    corpus = textwrap.dedent(
-        """
+    corpus = textwrap.dedent("""
         hello world
         hello codex
         sentencepiece tiny model
         tokenization invariants padding truncation
         reproducibility offline local file store
-        """
-    ).strip()
+        """).strip()
     with tempfile.NamedTemporaryFile("w", delete=False) as fh:
         fh.write(corpus)
         corpus_path = fh.name

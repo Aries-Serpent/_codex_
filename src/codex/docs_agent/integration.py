@@ -40,156 +40,164 @@ class MCPToolBridge:
     def _setup_tools(self) -> None:
         """Register all 12 MCP tools."""
         self.tools = {
-            'list_documentation': self.list_documentation,
-            'search_documentation': self.search_documentation,
-            'fetch_section': self.fetch_section,
-            'validate_links': self.validate_links,
-            'validate_record': self.validate_record,
-            'list_schemas': self.list_schemas,
-            'get_schema': self.get_schema,
-            'evaluate_decision': self.evaluate_decision,
-            'discover_actions': self.discover_actions,
-            'route_query': self.route_query,
-            'verify_references': self.verify_references,
-            'get_reference_context': self.get_reference_context,
+            "list_documentation": self.list_documentation,
+            "search_documentation": self.search_documentation,
+            "fetch_section": self.fetch_section,
+            "validate_links": self.validate_links,
+            "validate_record": self.validate_record,
+            "list_schemas": self.list_schemas,
+            "get_schema": self.get_schema,
+            "evaluate_decision": self.evaluate_decision,
+            "discover_actions": self.discover_actions,
+            "route_query": self.route_query,
+            "verify_references": self.verify_references,
+            "get_reference_context": self.get_reference_context,
         }
 
     def call_tool(self, tool_name: str, **kwargs) -> Any:
         """Call a tool by name."""
         tool = self.tools.get(tool_name)
         if not tool:
-            return {'error': f'Unknown tool: {tool_name}'}
+            return {"error": f"Unknown tool: {tool_name}"}
 
         try:
             result = tool(**kwargs)
             self.tool_results[tool_name] = result
             return result
         except Exception as e:
-            return {'error': str(e)}
+            return {"error": str(e)}
 
     # Tool implementations (mocks)
 
     def list_documentation(self, **kwargs) -> Dict:
         """List all documents with metadata."""
         return {
-            'documents': [
-                {'id': 'doc_001', 'title': 'README', 'path': 'README.md'},
-                {'id': 'doc_002', 'title': 'Configuration Guide', 'path': 'docs/config.md'},
-                {'id': 'doc_003', 'title': 'API Reference', 'path': 'docs/api.md'},
+            "documents": [
+                {"id": "doc_001", "title": "README", "path": "README.md"},
+                {"id": "doc_002", "title": "Configuration Guide", "path": "docs/config.md"},
+                {"id": "doc_003", "title": "API Reference", "path": "docs/api.md"},
             ],
-            'count': 3,
+            "count": 3,
         }
 
-    def search_documentation(self, query: str = '', **kwargs) -> Dict:
+    def search_documentation(self, query: str = "", **kwargs) -> Dict:
         """Search documentation by keyword."""
         return {
-            'results': [
-                {'id': 'doc_001', 'title': 'README', 'relevance': 0.95},
-                {'id': 'doc_003', 'title': 'API Reference', 'relevance': 0.72},
+            "results": [
+                {"id": "doc_001", "title": "README", "relevance": 0.95},
+                {"id": "doc_003", "title": "API Reference", "relevance": 0.72},
             ],
-            'query': query,
-            'count': 2,
+            "query": query,
+            "count": 2,
         }
 
-    def fetch_section(self, section_id: str = '', **kwargs) -> Dict:
+    def fetch_section(self, section_id: str = "", **kwargs) -> Dict:
         """Fetch section by ID."""
         return {
-            'id': section_id,
-            'title': 'Getting Started',
-            'content': 'Content of section...',
-            'level': 1,
+            "id": section_id,
+            "title": "Getting Started",
+            "content": "Content of section...",
+            "level": 1,
         }
 
-    def validate_links(self, doc_id: str = '', **kwargs) -> Dict:
+    def validate_links(self, doc_id: str = "", **kwargs) -> Dict:
         """Validate links in document."""
         return {
-            'doc_id': doc_id,
-            'valid_links': 42,
-            'broken_links': 0,
-            'external_links': 15,
-            'status': 'pass',
+            "doc_id": doc_id,
+            "valid_links": 42,
+            "broken_links": 0,
+            "external_links": 15,
+            "status": "pass",
         }
 
     def validate_record(self, record: Optional[Dict] = None, **kwargs) -> Dict:
         """Validate JSONL record schema."""
         if not record:
-            return {'valid': False, 'error': 'No record provided'}
+            return {"valid": False, "error": "No record provided"}
 
         return {
-            'valid': True,
-            'record_type': record.get('type'),
-            'errors': [],
+            "valid": True,
+            "record_type": record.get("type"),
+            "errors": [],
         }
 
     def list_schemas(self, **kwargs) -> Dict:
         """List available JSONL schemas."""
         return {
-            'schemas': [
-                'document', 'section', 'block', 'action',
-                'decision', 'requirement', 'reference', 'relationship',
+            "schemas": [
+                "document",
+                "section",
+                "block",
+                "action",
+                "decision",
+                "requirement",
+                "reference",
+                "relationship",
             ],
-            'count': 8,
-            'version': '1.0.0',
+            "count": 8,
+            "version": "1.0.0",
         }
 
-    def get_schema(self, schema_name: str = '', **kwargs) -> Dict:
+    def get_schema(self, schema_name: str = "", **kwargs) -> Dict:
         """Get schema definition."""
         schemas = {
-            'document': {
-                'fields': ['id', 'type', 'title', 'path', 'content_hash'],
-                'required': ['id', 'type', 'title', 'path'],
+            "document": {
+                "fields": ["id", "type", "title", "path", "content_hash"],
+                "required": ["id", "type", "title", "path"],
             },
-            'section': {
-                'fields': ['id', 'type', 'document_id', 'level', 'title', 'content'],
-                'required': ['id', 'type', 'document_id', 'level', 'title'],
+            "section": {
+                "fields": ["id", "type", "document_id", "level", "title", "content"],
+                "required": ["id", "type", "document_id", "level", "title"],
             },
         }
         return schemas.get(schema_name, {})
 
-    def evaluate_decision(self, decision_id: str = '', context: Optional[Dict] = None, **kwargs) -> Dict:
+    def evaluate_decision(
+        self, decision_id: str = "", context: Optional[Dict] = None, **kwargs
+    ) -> Dict:
         """Evaluate decision logic."""
         return {
-            'decision_id': decision_id,
-            'result_action_id': 'act_route_standard',
-            'evaluation_logic': 'weighted_deterministic',
-            'matched_branches': 1,
+            "decision_id": decision_id,
+            "result_action_id": "act_route_standard",
+            "evaluation_logic": "weighted_deterministic",
+            "matched_branches": 1,
         }
 
-    def discover_actions(self, criteria: str = '', **kwargs) -> Dict:
+    def discover_actions(self, criteria: str = "", **kwargs) -> Dict:
         """Discover machine-readable actions."""
         return {
-            'actions': [
-                {'id': 'act_001', 'name': 'run_tests', 'target': 'pytest'},
-                {'id': 'act_002', 'name': 'build_docs', 'target': 'mkdocs'},
+            "actions": [
+                {"id": "act_001", "name": "run_tests", "target": "pytest"},
+                {"id": "act_002", "name": "build_docs", "target": "mkdocs"},
             ],
-            'criteria': criteria,
-            'count': 2,
+            "criteria": criteria,
+            "count": 2,
         }
 
-    def route_query(self, query: str = '', **kwargs) -> Dict:
+    def route_query(self, query: str = "", **kwargs) -> Dict:
         """Route documentation query."""
         return {
-            'query': query,
-            'matched_docs': ['doc_001', 'doc_003'],
-            'matched_sections': ['sec_001', 'sec_042'],
-            'relevance_scores': {'doc_001': 0.95, 'doc_003': 0.72},
+            "query": query,
+            "matched_docs": ["doc_001", "doc_003"],
+            "matched_sections": ["sec_001", "sec_042"],
+            "relevance_scores": {"doc_001": 0.95, "doc_003": 0.72},
         }
 
     def verify_references(self, reference_ids: Optional[List[str]] = None, **kwargs) -> Dict:
         """Verify cross-repository references."""
         return {
-            'verified': 42,
-            'broken': 0,
-            'references': reference_ids or [],
+            "verified": 42,
+            "broken": 0,
+            "references": reference_ids or [],
         }
 
-    def get_reference_context(self, reference_id: str = '', **kwargs) -> Dict:
+    def get_reference_context(self, reference_id: str = "", **kwargs) -> Dict:
         """Get context for a reference."""
         return {
-            'reference_id': reference_id,
-            'type': 'commit',
-            'value': 'abc123def456',
-            'context': 'feat: implement docs infrastructure',
+            "reference_id": reference_id,
+            "type": "commit",
+            "value": "abc123def456",
+            "context": "feat: implement docs infrastructure",
         }
 
 
@@ -215,16 +223,16 @@ class CognitiveBrainIntegration:
         # In real implementation, would extract patterns from JSONL index
         self.extracted_patterns = [
             {
-                'pattern_id': 'p_001',
-                'name': 'api_documentation',
-                'frequency': 42,
-                'confidence': 0.95,
+                "pattern_id": "p_001",
+                "name": "api_documentation",
+                "frequency": 42,
+                "confidence": 0.95,
             },
             {
-                'pattern_id': 'p_002',
-                'name': 'code_examples',
-                'frequency': 38,
-                'confidence': 0.92,
+                "pattern_id": "p_002",
+                "name": "code_examples",
+                "frequency": 38,
+                "confidence": 0.92,
             },
         ]
         return self.extracted_patterns
@@ -259,7 +267,7 @@ class PersistenceManager:
         records = []
 
         try:
-            with open(filepath, 'r', encoding='utf-8') as f:
+            with open(filepath, "r", encoding="utf-8") as f:
                 for line_no, line in enumerate(f, 1):
                     if line.strip():
                         try:
@@ -281,9 +289,9 @@ class PersistenceManager:
         count = 0
 
         try:
-            with open(filepath, 'w', encoding='utf-8') as f:
+            with open(filepath, "w", encoding="utf-8") as f:
                 for record in records:
-                    f.write(json.dumps(record, separators=(',', ':')) + '\n')
+                    f.write(json.dumps(record, separators=(",", ":")) + "\n")
                     count += 1
 
             self.loaded_files[filepath] = time.time()
@@ -295,7 +303,7 @@ class PersistenceManager:
 
     def _cache_record(self, record: Dict) -> None:
         """Cache a record in memory."""
-        record_id = record.get('id')
+        record_id = record.get("id")
         if record_id:
             self.cache[record_id] = record
 
@@ -314,7 +322,7 @@ class PersistenceManager:
     def get_cache_stats(self) -> Dict:
         """Get cache statistics."""
         return {
-            'size': len(self.cache),
-            'max_size': self.cache_size,
-            'utilization': len(self.cache) / self.cache_size if self.cache_size > 0 else 0,
+            "size": len(self.cache),
+            "max_size": self.cache_size,
+            "utilization": len(self.cache) / self.cache_size if self.cache_size > 0 else 0,
         }

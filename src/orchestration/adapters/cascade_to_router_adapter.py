@@ -380,9 +380,7 @@ class CascadeToRouterAdapter:
             description = self._build_task_description(pattern, context)
 
             # Extract required capabilities
-            capabilities = self.PATTERN_TO_CAPABILITIES.get(
-                pattern.pattern_id, []
-            ).copy()
+            capabilities = self.PATTERN_TO_CAPABILITIES.get(pattern.pattern_id, []).copy()
 
             # Identify agents to exclude
             excluded = self._identify_excluded_agents(pattern.pattern_id)
@@ -442,18 +440,12 @@ class CascadeToRouterAdapter:
         Returns:
             SemanticRoutingResult with execution strategy
         """
-        cascade_default_agent = self.PATTERN_TO_DEFAULT_AGENT.get(
-            pattern_id, "unknown"
-        )
+        cascade_default_agent = self.PATTERN_TO_DEFAULT_AGENT.get(pattern_id, "unknown")
 
         primary_agent = (
-            routing_decision.primary_agent.agent_id
-            if routing_decision.primary_agent
-            else None
+            routing_decision.primary_agent.agent_id if routing_decision.primary_agent else None
         )
-        fallback_agents = [
-            agent.agent_id for agent in routing_decision.fallback_chain
-        ]
+        fallback_agents = [agent.agent_id for agent in routing_decision.fallback_chain]
 
         # Determine execution strategy
         strategy = self._determine_execution_strategy(
@@ -543,9 +535,7 @@ class CascadeToRouterAdapter:
     # Transformation Helper Methods
     # ========================================================================
 
-    def _build_task_description(
-        self, pattern: PatternMatch, context: CascadeContext
-    ) -> str:
+    def _build_task_description(self, pattern: PatternMatch, context: CascadeContext) -> str:
         """Build natural language task description from pattern.
 
         Args:

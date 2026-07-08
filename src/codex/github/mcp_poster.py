@@ -208,7 +208,9 @@ class GitHubMCPPoster:
         category_slug: str = "show-and-tell",
     ) -> tuple[int, str]:
         """Find or create a per-PR Discussion. See DiscussionManager.find_or_create_pr_discussion()."""
-        return self._discussions.find_or_create_pr_discussion(repo, pr_number, purpose, category_slug)
+        return self._discussions.find_or_create_pr_discussion(
+            repo, pr_number, purpose, category_slug
+        )
 
     def check_discussion_replies(
         self,
@@ -218,7 +220,9 @@ class GitHubMCPPoster:
         max_comments: int = 200,
     ) -> list[dict[str, Any]]:
         """Check for unread human replies in a Discussion. See DiscussionManager.check_discussion_replies()."""
-        return self._discussions.check_discussion_replies(repo, discussion_number, since_marker, max_comments)
+        return self._discussions.check_discussion_replies(
+            repo, discussion_number, since_marker, max_comments
+        )
 
     def update_discussion(
         self,
@@ -230,7 +234,9 @@ class GitHubMCPPoster:
         category_slug: str | None = None,
     ) -> dict[str, Any]:
         """Update a Discussion. See DiscussionManager.update_discussion()."""
-        return self._discussions.update_discussion(repo, discussion_number, title=title, body=body, category_slug=category_slug)
+        return self._discussions.update_discussion(
+            repo, discussion_number, title=title, body=body, category_slug=category_slug
+        )
 
     def lock_discussion(
         self, repo: str, discussion_number: int, reason: str = "RESOLVED"
@@ -276,7 +282,9 @@ class GitHubMCPPoster:
         comments_after: str | None = None,
     ) -> dict[str, Any]:
         """Get a single Discussion with comments. See DiscussionManager.get_discussion()."""
-        return self._discussions.get_discussion(repo, discussion_number, comments_first, comments_after)
+        return self._discussions.get_discussion(
+            repo, discussion_number, comments_first, comments_after
+        )
 
     def pin_discussion(self, repo: str, discussion_number: int) -> dict[str, Any]:
         """Pin a Discussion. See DiscussionManager.pin_discussion()."""
@@ -400,8 +408,6 @@ class GitHubMCPPoster:
     ) -> dict[str, str] | None:
         """Find a discussion comment by marker. Delegates to DiscussionManager."""
         return self._discussions._find_discussion_comment(repo, discussion_number, marker)
-
-
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -645,7 +651,8 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "post-comment":
             body = args.body or Path(args.body_file).read_text()
             result = poster.post_pr_comment(args.repo, args.pr, body)
-            logger.error(f"✅ Comment posted: {result.get('html_url', result)}"
+            logger.error(
+                f"✅ Comment posted: {result.get('html_url', result)}"
             )  # codeql[py/clear-text-logging-sensitive-data]
 
         elif args.command == "set-variable":
@@ -729,10 +736,14 @@ def main(argv: list[str] | None = None) -> int:
                 logger.info(_json.dumps(disc, indent=2))
             else:
                 logger.info(f"## Discussion #{disc['number']}: {disc['title']}")
-                logger.info(f"   URL: {disc['url']}")  # codeql[py/clear-text-logging-sensitive-data]
+                logger.info(
+                    f"   URL: {disc['url']}"
+                )  # codeql[py/clear-text-logging-sensitive-data]
                 logger.info(f"   Category: {disc.get('category', {}).get('name', '?')}")
-                logger.info(f"   Answered: {disc.get('isAnswered', False)}"
-                    f"  |  Locked: {disc.get('isLocked', False)}")
+                logger.info(
+                    f"   Answered: {disc.get('isAnswered', False)}"
+                    f"  |  Locked: {disc.get('isLocked', False)}"
+                )
                 logger.info(f"   Comments: {disc.get('comments', {}).get('totalCount', 0)}")
                 comments_page_info = disc.get("comments", {}).get("pageInfo", {})
                 if comments_page_info.get("hasNextPage"):
@@ -782,7 +793,9 @@ def main(argv: list[str] | None = None) -> int:
             result = poster.merge_branch(args.repo, args.base, args.head, args.message)
             if result:
                 sha = result.get("sha", "")
-                logger.info(f"✅ Merged {args.head} → {args.base}: {sha[:8] if sha else 'up-to-date'}")
+                logger.info(
+                    f"✅ Merged {args.head} → {args.base}: {sha[:8] if sha else 'up-to-date'}"
+                )
             else:
                 logger.info(f"✅ {args.head} already up-to-date with {args.base} — no merge needed")
 
@@ -791,14 +804,18 @@ def main(argv: list[str] | None = None) -> int:
             if md:
                 logger.info(md)
             else:
-                logger.info("ℹ️  No cognitive-brain patterns found (CB package unavailable or DB empty).")
+                logger.info(
+                    "ℹ️  No cognitive-brain patterns found (CB package unavailable or DB empty)."
+                )
 
         elif args.command == "commit-files":
             files: dict[str, str] = {}
             for mapping in args.files:
                 dest, _, src = mapping.partition(":")
                 if not dest or not src:
-                    logger.error(f"❌ Invalid --file mapping {mapping!r} — expected DEST:SRC",)
+                    logger.error(
+                        f"❌ Invalid --file mapping {mapping!r} — expected DEST:SRC",
+                    )
                     return 1
                 files[dest] = Path(src).read_text(encoding="utf-8")
             commit_sha = poster.commit_files(
@@ -819,12 +836,16 @@ def main(argv: list[str] | None = None) -> int:
         elif args.command == "post-ci-pattern-summary":
             body = Path(args.body_file).read_text(encoding="utf-8")
             result = poster.post_ci_pattern_summary(args.repo, args.number, body, args.session_id)
-            logger.info(f"✅ CI pattern summary posted to discussion #{args.number}: {result.get('url', result)}")  # noqa: E501
+            logger.info(
+                f"✅ CI pattern summary posted to discussion #{args.number}: {result.get('url', result)}"
+            )  # noqa: E501
 
         elif args.command == "post-continuation":
             body = args.body or Path(args.body_file).read_text(encoding="utf-8")
             result = poster.post_continuation_chain(args.repo, args.number, body)
-            logger.info(f"✅ Continuation chain posted to discussion #{args.number}: {result.get('url', result)}")  # noqa: E501
+            logger.info(
+                f"✅ Continuation chain posted to discussion #{args.number}: {result.get('url', result)}"
+            )  # noqa: E501
 
     except RuntimeError as exc:
         type(exc).__name__
