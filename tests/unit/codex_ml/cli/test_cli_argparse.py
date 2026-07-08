@@ -10,7 +10,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../../src'))
 
 from click.testing import CliRunner
 
-from codex_ml.cli.codex_cli import cli
+from codex_ml.cli.codex_cli import codex as cli
 
 
 class TestCLIBasicCommands:
