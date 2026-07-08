@@ -42,6 +42,7 @@ class ExecutionStatus(Enum):
 class TestPhase(Enum):
     """Test execution phases."""
 
+    PENDING = "pending"
     INITIALIZATION = "initialization"
     SETUP = "setup"
     EXECUTION = "execution"
