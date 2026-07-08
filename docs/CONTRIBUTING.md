@@ -2,7 +2,7 @@
 
 **Last Updated:** 2026-07-08  
 **Audience:** Contributors, Maintainers  
-**Related:** [Code Style Guide](guides/code_style_guide.md), [Testing Guide](TESTING.md), [Documentation Style Guide](./.codex/DOCUMENTATION_STYLE_GUIDE.md)
+**Related:** [Code Style Guide](guides/code_style_guide.md), [Testing Guide](TESTING.md), [Documentation Style Guide](../.codex/DOCUMENTATION_STYLE_GUIDE.md)
 
 ---
 

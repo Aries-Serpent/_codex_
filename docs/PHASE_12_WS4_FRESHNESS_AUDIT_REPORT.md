@@ -468,7 +468,7 @@ This audit integrates with the **unified-doc-agent** (M-02 merge) for:
 - [mkdocs_fix_plan.md](./mkdocs_fix_plan.md) - MkDocs build configuration fixes
 - [mkdocs_warnings_analysis.md](./mkdocs_warnings_analysis.md) - Warning categorization and root causes
 - [DOCUMENTATION_UPDATE_MANIFEST.md](./DOCUMENTATION_UPDATE_MANIFEST.md) - Completed updates tracking
-- [unified-doc-agent](../agents/unified-doc-agent.md) - Lead documentation agent
+- [unified-doc-agent](../.github/agents/unified-doc-agent.md) - Lead documentation agent
 
 ---
 
