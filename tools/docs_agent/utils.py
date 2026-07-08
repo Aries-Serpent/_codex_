@@ -196,11 +196,18 @@ def scan_candidate_files(repo_root: Path, policy: dict[str, Any]) -> list[Path]:
     return sorted(results)
 
 
-def classify_path(path: str, exceptions: set[str]) -> tuple[str, float]:
+def classify_path(path: str, exceptions: set[str], exempted_paths: list[str] | None = None) -> tuple[str, float]:
     name = Path(path).name.lower()
 
     if path in exceptions:
         return "exception_candidate", 1.0
+    
+    # Check if path matches any exempted glob patterns from policy
+    if exempted_paths:
+        for pattern in exempted_paths:
+            if fnmatch.fnmatch(path, pattern):
+                return "exception_candidate", 1.0
+    
     if path.startswith("docs-data/generated/"):
         return "generated_machine_readable_artifact", 1.0
     if path.startswith("docs-data/") and (

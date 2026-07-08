@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-08T00:21:14Z",
+  "generated_at": "2026-07-08T19:17:36Z",
   "scripts": [
     "tools/codex_ingest_md.py",
     "tools/codex_sqlite_align.py",
@@ -7,7 +7,7 @@
     "scripts/docs_agent/validate_jsonl.py",
     "src/codex/docs_agent/cli.py"
   ],
-  "workflow_count": 231,
+  "workflow_count": 233,
   "workflows": [
     "13-3-cve-scanning.yml",
     "13-3-enterprise-compliance.yml",
@@ -34,6 +34,7 @@
     "auto-approve-workflows.yml",
     "auto-fix-common-issues.yml",
     "auto-fix-pr-check.yml",
+    "automated-compliance-check.yml",
     "automated-monitoring-setup.yml",
     "automated-post-deployment-verification.yml",
     "automated-release-creation.yml",
@@ -234,6 +235,7 @@
     "validate-token-health.yml",
     "validate.yml",
     "vars-guide-sync.yml",
+    "wec-enforcement-gate.yml",
     "workflow-analytics-unified.yml",
     "workflow-compliance-gate.yml",
     "workflow-execution-gate.yml",
