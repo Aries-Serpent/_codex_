@@ -24,7 +24,7 @@ import re
 from typing import Any, Optional
 
 
-def _sanitize_value(value: Any) -> str:
+def _sanitize_value(value: Any, max_length: int = 1000) -> str:
     """
     Sanitize a single value for safe logging.
     
@@ -37,6 +37,7 @@ def _sanitize_value(value: Any) -> str:
     
     Args:
         value: Value to sanitize (will be converted to string)
+        max_length: Maximum length of output string (default: 1000)
     
     Returns:
         Safe string representation
@@ -56,8 +57,8 @@ def _sanitize_value(value: Any) -> str:
     str_val = re.sub(r"[\n\r\t\x00-\x08\x0b-\x0c\x0e-\x1f\x7f-\x9f]", "", str_val)
     
     # Truncate if too long to prevent DoS
-    if len(str_val) > 1000:
-        str_val = str_val[:1000] + "...[truncated]"
+    if len(str_val) > max_length:
+        str_val = str_val[:max_length] + "...[truncated]"
     
     return str_val
 
