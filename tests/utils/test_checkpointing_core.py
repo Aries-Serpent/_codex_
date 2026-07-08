@@ -4,6 +4,7 @@ Test Checkpointing Core
 Test module for checkpointing core.
 """
 
+import importlib
 import json
 import random
 from pathlib import Path
@@ -16,6 +17,14 @@ from codex_ml.utils.checkpointing import (
     load_rng_state,
     set_seed,
 )
+
+
+def _has_torch():
+    try:
+        importlib.import_module("torch")
+        return True
+    except (ImportError, AttributeError):
+        return False
 
 
 def test_rng_roundtrip(monkeypatch):
@@ -46,6 +55,7 @@ def test_rng_roundtrip(monkeypatch):
     assert torch.rand(1).item() == t_val, "Item must not be empty"
 
 
+@pytest.mark.skipif(not _has_torch(), reason="torch not installed")
 def test_checkpoint_best_k(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setattr("codex_ml.utils.checkpointing.TORCH_AVAILABLE", False, raising=False)
     mgr = CheckpointManager(tmp_path, keep_last=1, keep_best=1)
