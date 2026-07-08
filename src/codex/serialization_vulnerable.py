@@ -20,8 +20,8 @@ logger = logging.getLogger(__name__)
 class DataDeserializer:
     """Deserializes data from untrusted sources - SECURE (CWE-502 patched)."""
 
-    def load_from_pickle(self, data: bytes) -> Any:
-        """Load data from JSON format (safe alternative to pickle).
+    def deserialize_data(self, data: bytes) -> Any:
+        """Deserialize data from JSON format (safe alternative to pickle).
 
         SECURITY NOTE (CWE-502 FIX):
         Replaced unsafe pickle.loads() with json.loads() to prevent
@@ -46,6 +46,9 @@ class DataDeserializer:
         except UnicodeDecodeError as e:
             logger.error("Failed to decode bytes as UTF-8: %s", e)
             raise ValueError(f"Invalid UTF-8 encoding: {e}") from e
+
+    # Backward compatibility alias
+    load_from_pickle = deserialize_data
 
     def load_cached_object(self, cache_file: str) -> Any:
         """Load cached object from JSON file (safe alternative to pickle).
@@ -110,12 +113,12 @@ class DataDeserializer:
 class ConfigLoader:
     """Loads configuration from various formats (secure)."""
 
-    def load_pickle_config(self, config_path: str) -> dict:
+    def load_json_config(self, config_path: str) -> dict:
         """Load configuration from JSON file (safe alternative to pickle).
 
         SECURITY NOTE (CWE-502 FIX):
         Replaced unsafe pickle.load() with json.load() to prevent
-        arbitrary code execution from configuration files.
+        arbitrary code execution from untrusted files.
 
         Args:
             config_path: Path to JSON configuration file
@@ -141,3 +144,6 @@ class ConfigLoader:
         except json.JSONDecodeError as e:
             logger.error("Failed to deserialize JSON from config file %s: %s", config_path, e)
             raise ValueError(f"Invalid JSON in config file {config_path}: {e}") from e
+
+    # Backward compatibility alias
+    load_pickle_config = load_json_config

@@ -335,14 +335,27 @@ class TestSecurityImprovements:
     def test_json_cannot_execute_code(self):
         """Verify that JSON deserialization cannot execute arbitrary code.
 
-        This is a security test to ensure that even if an attacker controls
-        the serialized data, they cannot execute arbitrary Python code through
-        JSON deserialization (which is safe by design).
+        SECURITY VALIDATION:
+        This test demonstrates that JSON deserialization is inherently safe
+        against arbitrary code execution attacks, unlike pickle.
+
+        In pickle, a specially crafted payload could use __reduce__ or other
+        magic methods to execute arbitrary Python code with full system access
+        (equivalent to 'rm -rf /' or any other shell command).
+
+        In JSON, there is no code execution mechanism whatsoever. Even a payload
+        that looks like it's trying to call dangerous functions is just parsed
+        as literal dictionaries and strings. No classes are instantiated, no
+        methods are called, no code is executed.
+
+        This test validates that the JSON-based deserialization correctly
+        prevents the entire class of pickle-based RCE vulnerabilities.
         """
         deserializer = DataDeserializer()
 
-        # In pickle, this would execute __import__ and potentially execute code
-        # In JSON, this is just a string/dict literal - completely safe
+        # This payload attempts to trigger a dangerous operation.
+        # With pickle: Would cause code execution (DANGEROUS!)
+        # With JSON: Simply deserializes as a literal dict (SAFE)
         malicious_json = json.dumps(
             {"__class__": "os.system", "args": ["rm -rf /"]}
         ).encode("utf-8")
@@ -353,11 +366,25 @@ class TestSecurityImprovements:
         assert "__class__" in result
 
     def test_json_no_object_instantiation(self):
-        """Verify that JSON cannot instantiate arbitrary classes."""
+        """Verify that JSON cannot instantiate arbitrary classes.
+
+        SECURITY VALIDATION:
+        This test validates that JSON deserialization cannot be tricked into
+        instantiating arbitrary classes, which is a key vulnerability in pickle.
+
+        With pickle: A specially crafted object stream could instantiate ANY
+        class in the system and call any of its methods during deserialization.
+
+        With JSON: Only primitive types and built-in collections can be created
+        (dict, list, str, int, float, bool, null). There is no mechanism to
+        instantiate arbitrary classes or call any methods.
+
+        This test confirms the vulnerability is completely eliminated.
+        """
         deserializer = DataDeserializer()
 
         # Attempt to trick JSON into instantiating a dangerous class
-        # This is not possible with JSON - it can only create basic types
+        # This is completely impossible with JSON
         result = deserializer.load_from_pickle(
             json.dumps({"type": "subprocess.Popen"}).encode("utf-8")
         )
