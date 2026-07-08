@@ -26,7 +26,16 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-    - uses: actions/checkout@v5
+    
+      - name: Cache Python dependencies (Layer 1)
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - uses: actions/checkout@v5
       with:
         sparse-checkout: 'scripts/ci/cleanup_stale_branches.py
 

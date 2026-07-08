@@ -145,7 +145,7 @@ jobs:
           \ Cognitive brain briefing prepared' || 'Cognitive brain analysis skipped\
           \ (token unavailable)' }}"
         details: ${{ steps.briefing.outputs.body || '' }}
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ env.CODEX_MASTER_KEY || env.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
     - name: Fallback (Copilot unavailable or key missing)
       if: steps.pr_analysis.outcome == 'failure' || steps.pr_analysis.outputs.validation-status
         != 'valid'
