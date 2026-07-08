@@ -1,18 +1,20 @@
 {
-  "generated_at": "2026-07-08T00:45:09.190925+00:00",
+  "generated_at": "2026-07-08T01:03:11.153655+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 4816,
+  "rest_remaining": 4998,
   "graphql_available": true,
-  "graphql_remaining": 4994,
+  "graphql_remaining": 5000,
   "gh_cli_available": true,
   "codeql_available": false,
-  "best_token_var": "CODEX_MASTER_KEY",
-  "open_prs": [],
+  "best_token_var": "GITHUB_TOKEN",
+  "open_prs": [
+    5265
+  ],
   "branch": "copilot/monitoring-healing-campaign",
   "recommendation": "Use REST for data fetches. "
 }
