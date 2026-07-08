@@ -1,5 +1,22 @@
 ## [Unreleased]
 
+### Changed (2026-07-08T19:29:51Z — PR #5271: Merge v0.1.0-final-validation into main — Integration of PR #5270 + Production Release)
+- **Mission:** Integrate PR #5270 dependency updates and workflow action upgrades into v0.1.0-final release branch
+- **Changes:**
+  - **Workflow Action Upgrade:** `.github/workflows/dependency-submission.yml`
+    - Upgraded `github/dependency-submission-action@v3` → `advanced-security/component-detection-dependency-submission-action@v0.1.4`
+    - **Impact:** Improved security scanning with advanced component detection capabilities
+  - **Accountability Documentation:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+    - Added WEC human grant logs from 2026-07-08T19:09:11Z session
+    - **Impact:** Enhanced governance tracking and Phase 14 WS4 completion audit trail
+- **npm Dependency Updates:** (via PR #5270 integration)
+  - `cognitive_app/package-lock.json`: esbuild 0.27.7 → 0.28.1 (patch update)
+  - `cognitive_app/package-lock.json`: ws 8.19.0 → 8.21.0 (patch update)
+  - **Impact:** Minor security patches with no breaking changes
+- **Test Results:** All required CI gates passing
+- **Authority:** v0.1.0-final production release, full Phase 14 WS4 completion
+- **Success Criteria:** All governance pillars PASS ✅, zero regressions ✅, action versions compliant ✅
+
 ### Fixed (2026-07-08T18:08Z — Phase 14 WS3: CodeQL Alert Resolution — 5 Security Findings Resolved ✅)
 - **Mission:** Autonomous resolution of 5 CodeQL security findings in critical files (D-tier approved)
 - **Findings Resolved:**
