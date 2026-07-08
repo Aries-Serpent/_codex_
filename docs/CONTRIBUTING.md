@@ -2,7 +2,7 @@
 
 **Last Updated:** 2026-07-08  
 **Audience:** Contributors, Maintainers  
-**Related:** [Code Style Guide](guides/code_style_guide.md), [Testing Guide](TESTING.md), [Documentation Style Guide](../.codex/DOCUMENTATION_STYLE_GUIDE.md)
+**Related:** [Code Style Guide](guides/code_style_guide.md), [Testing Guide](TESTING.md), [Documentation Style Guide](.../.codex/DOCUMENTATION_STYLE_GUIDE.md)
 
 ---
 
@@ -70,7 +70,7 @@ Follow the [Code Style Guide](guides/code_style_guide.md) for:
 
 ### Documentation Standards
 
-All documentation must follow the [Documentation Style Guide](./.codex/DOCUMENTATION_STYLE_GUIDE.md):
+All documentation must follow the [Documentation Style Guide](../.codex/DOCUMENTATION_STYLE_GUIDE.md):
 - Single H1 title per file
 - Clear, active voice
 - Working code examples

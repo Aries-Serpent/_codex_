@@ -123,9 +123,9 @@ This document provides detailed architectural guidance for deploying Codex acros
 
 ## Related Architecture Docs
 
-- [System Architecture Overview](system-architecture-overview.md)
+- [System Architecture Overview](../arch/system-architecture-overview.md)
 - [Infrastructure Architecture](../infrastructure/INFRASTRUCTURE_ARCHITECTURE.md)
-- [Operations Manual](../ops/DEPLOYMENT_MASTER_RUNBOOK.md)
+- [Operations Manual](DEPLOYMENT_MASTER_RUNBOOK.md)
 
 ---
 

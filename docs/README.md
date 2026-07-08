@@ -2,7 +2,7 @@
 
 **Last Updated:** 2026-07-08  
 **Audience:** Developers, DevOps, Admins  
-**Related:** [Master Index](MASTER_INDEX.md), [Style Guide](../.codex/DOCUMENTATION_STYLE_GUIDE.md)
+**Related:** [Master Index](MASTER_INDEX.md), [Style Guide](.../.codex/DOCUMENTATION_STYLE_GUIDE.md)
 
 ---
 
@@ -85,7 +85,7 @@ Complete documentation for the _codex_ AI/ML platform. Find guides, API referenc
 - [Master Index](MASTER_INDEX.md) — Complete documentation index (all 1,900+ files)
 - [Documentation Index](DOCUMENTATION_INDEX.md) — Documents organized by topic
 - [Archive](archive/INDEX.md) — Archived and deprecated documentation
-- [Style Guide](./.codex/DOCUMENTATION_STYLE_GUIDE.md) — Documentation standards
+- [Style Guide](../.codex/DOCUMENTATION_STYLE_GUIDE.md) — Documentation standards
 - [Quality Report](DOCUMENTATION_QUALITY_REPORT.md) — Quality metrics and improvements
 
 ---
@@ -133,13 +133,13 @@ This documentation is actively maintained by the _codex_ team and automated agen
 Found an error or outdated information?
 - **Errors:** [Open an issue](https://github.com/Aries-Serpent/_codex_/issues/new)
 - **Missing docs:** Check [Gap Analysis](DOCUMENTATION_GAP_ANALYSIS.json)
-- **Style questions:** See [Style Guide](./.codex/DOCUMENTATION_STYLE_GUIDE.md)
+- **Style questions:** See [Style Guide](../.codex/DOCUMENTATION_STYLE_GUIDE.md)
 
 ### Contribute
 
 Improve the documentation:
 1. Read [Contributing Guidelines](CONTRIBUTING.md)
-2. Follow [Style Guide](./.codex/DOCUMENTATION_STYLE_GUIDE.md)
+2. Follow [Style Guide](../.codex/DOCUMENTATION_STYLE_GUIDE.md)
 3. Test your changes locally with `mkdocs build --strict`
 4. Submit a pull request
 
@@ -155,7 +155,7 @@ All documentation follows these standards:
 - ✅ 13-point quality checklist
 - ✅ Updated every 6 months
 
-See [Style Guide](./.codex/DOCUMENTATION_STYLE_GUIDE.md) for full standards.
+See [Style Guide](../.codex/DOCUMENTATION_STYLE_GUIDE.md) for full standards.
 
 ---
 
