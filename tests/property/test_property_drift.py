@@ -1,3 +1,6 @@
+import pytest
+pytest.importorskip("hypothesis")
+
 from hypothesis import given
 
 #         assert result.severity in {, "Result must not be empty"

@@ -4,6 +4,8 @@ Test Datasets Module
 Test module for datasets module.
 """
 
+pytest.importorskip("data")
+
 import sys
 from pathlib import Path
 

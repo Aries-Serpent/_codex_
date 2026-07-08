@@ -15,6 +15,8 @@ Target: Final push toward 95% coverage (75% → 95%+)
 import pytest
 
 pytest.importorskip("numpy", reason="numpy not installed")
+pytest.importorskip("numpy")
+
 import numpy as np
 
 

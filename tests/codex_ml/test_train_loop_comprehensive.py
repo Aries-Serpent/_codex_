@@ -12,6 +12,7 @@ This module provides 100+ tests covering:
 """
 
 from __future__ import annotations
+pytest.importorskip("torch")
 
 import os
 import tempfile

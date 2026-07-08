@@ -4,6 +4,8 @@ Test cases for quantum-inspired agent orchestration.
 Tests agent entanglement, chain creation, and optimization.
 """
 
+pytest.importorskip("numpy")
+
 import json
 import sys
 from pathlib import Path

@@ -15,6 +15,8 @@ Target: +3-4% coverage gain (62% → 66%)
 import pytest
 
 pytest.importorskip("numpy", reason="numpy not installed")
+pytest.importorskip("numpy")
+
 import numpy as np
 
 

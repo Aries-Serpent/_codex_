@@ -12,6 +12,8 @@ Target coverage: 33.40% → 85%+
 import pytest
 
 pytest.importorskip("numpy", reason="numpy not installed")
+pytest.importorskip("numpy")
+
 import numpy as np
 
 from agents.quantum_game_theory import (

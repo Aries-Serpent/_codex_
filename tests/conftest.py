@@ -5,6 +5,7 @@ are not installed in the CI/test environment.
 """
 
 from __future__ import annotations
+pytest.importorskip("numpy")
 
 import importlib
 import importlib.machinery

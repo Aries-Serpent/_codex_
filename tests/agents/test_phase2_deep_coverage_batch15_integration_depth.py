@@ -11,6 +11,8 @@ Version: 1.0.0
 import pytest
 
 pytest.importorskip("numpy", reason="numpy not installed")
+pytest.importorskip("numpy")
+
 import numpy as np
 
 

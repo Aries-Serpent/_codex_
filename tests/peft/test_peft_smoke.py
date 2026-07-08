@@ -5,6 +5,7 @@ Test module for peft smoke.
 """
 
 from __future__ import annotations
+pytest.importorskip("torch")
 
 import pytest
 

@@ -17,6 +17,8 @@ import pytest
 np = pytest.importorskip("numpy")
 
 # Skip entire module if torch is not available or unloadable
+pytest.importorskip("torch")
+
 import torch
 
 # Mark all tests in this module

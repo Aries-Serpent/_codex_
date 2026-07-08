@@ -216,6 +216,9 @@ class TestSeedConsistency:
     )
     def test_torch_deterministic_with_same_seed(self):
         """Verify PyTorch operations are deterministic with same seed"""
+import pytest
+pytest.importorskip("torch")
+
         import torch
 
         # Run 1

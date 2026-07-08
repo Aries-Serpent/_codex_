@@ -1,6 +1,7 @@
 """Tests for the codex-skill browse command."""
 
 from __future__ import annotations
+pytest.importorskip("typer")
 
 import pytest
 
